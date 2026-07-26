@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -128,257 +127,367 @@ import java.util.jar.Manifest;
 @SuppressWarnings("rawtypes")
 public class InstallMap implements Map {
 
-    // Keys
-    private static final String RUNTIME_INSTALL_DIR = "runtime.install.dir";
-    private static final String INSTALL_KERNEL_INIT_CODE = "install.kernel.init.code";
-    private static final String INSTALL_MAP_JAR = "install.map.jar";
-    private static final String INSTALL_MAP_JAR_FILE = "install.map.jar.file";
-    private static final String OVERRIDE_JAR_BUNDLES = "override.jar.bundles";
-    private static final String INSTALL_KERNEL_INIT_ERROR_MESSAGE = "install.kernel.init.error.message";
-    private static final String MESSAGE_LOCALE = "message.locale";
+    public InstallMap() {
+        this.locale = null;
+        this.resourceBundle = null;
 
-    // Return code
-    private static final Integer ERROR = Integer.valueOf(1);
+        this.inputData = new HashMap<String, Object>();
+        this.outputData = null;
+    }
 
-    private final Map data = new HashMap();
-    private Map installKernelMap = null;
+    //
 
     private Locale locale;
-    private ResourceBundle messagesRes;
-    private URLClassLoader loader;
+    private ResourceBundle resourceBundle;
 
-    public InstallMap() {
+    private void setLocale(Object locale) {
+        setInput(MESSAGE_LOCALE, locale, Locale.class);
+        this.locale = (Locale) locale;
     }
 
     private String getMessage(String key, Object... args) {
-        if (messagesRes == null) {
-            if (locale == null)
+        if ( resourceBundle == null ) {
+            if ( locale == null ) {
                 locale = Locale.getDefault();
-            messagesRes = ResourceBundle.getBundle("com.ibm.ws.install.internal.resources.InstallMapMessages", locale);
+            }
+            resourceBundle = ResourceBundle.getBundle("com.ibm.ws.install.internal.resources.InstallMapMessages", locale);
         }
-        String message = messagesRes.getString(key);
-        if (args.length == 0)
+
+        String message = resourceBundle.getString(key);
+        if ( args.length == 0 ) {
             return message;
+        }
+
         MessageFormat messageFormat = new MessageFormat(message, locale);
         return messageFormat.format(args);
     }
 
-    /**
-     * Unsupported operation
-     */
+    //
+
+    @Override
+    public void clear() {
+        clearData();
+        clearLoader();
+    }
+
+    //
+
+    private URLClassLoader loader;
+
+    private void clearLoader() {
+        if ( loader == null ) {
+            return;
+        }
+
+        URLClassLoader useLoader = loader;
+        loader = null;
+        try {
+            useLoader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void setOutput(File installDir) throws Exception {
+        URL[] jars = getJars(installDir);
+        loader = new URLClassLoader(jars, getClass().getClassLoader());
+        outputData = AccessController.doPrivileged(
+            new PrivilegedExceptionAction<Map<String, Object>>() {
+                @SuppressWarnings("unchecked")
+                @Override
+                public Map<String, Object> run() throws Exception {
+                    Class<Map<String, Object>> clazz;
+                    clazz = (Class<Map<String, Object>>)
+                        loader.loadClass("com.ibm.ws.install.internal.InstallKernelMap");
+                    return clazz.newInstance();
+                }
+            });
+    }
+
+    // Keys
+
+    public static final String RUNTIME_INSTALL_DIR = "runtime.install.dir";
+    public static final String INSTALL_KERNEL_INIT_CODE = "install.kernel.init.code";
+    public static final String INSTALL_MAP_JAR = "install.map.jar";
+    public static final String INSTALL_MAP_JAR_FILE = "install.map.jar.file";
+    public static final String OVERRIDE_JAR_BUNDLES = "override.jar.bundles";
+    public static final String INSTALL_KERNEL_INIT_ERROR_MESSAGE = "install.kernel.init.error.message";
+    public static final String MESSAGE_LOCALE = "message.locale";
+
+    // Return code
+
+    public static final Integer ERROR = Integer.valueOf(1);
+
+    // Unsupported operations ...
+
     @Override
     public int size() {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     * return true if object is empty
-     */
-
-    @Override
-    public boolean isEmpty() {
-        return data.isEmpty();
-    }
-
-    /**
-     * {@inheritDoc}
-     * return true if object contains the input key
-     */
-    @Override
-    public boolean containsKey(Object key) {
-        return data.containsKey(key);
-    }
-
-    /**
-     * Unsupported operation
-     */
     @Override
     public boolean containsValue(Object value) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Unsupported operation
-     */
     @Override
     public Object remove(Object key) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Unsupported operation
-     */
     @Override
     public void putAll(Map m) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Clears the map and closes all resources.
-     *
-     * <b>MUST</b> be used when the map is no longer needed.
-     * 
-     * Throws RuntimeException if resources could not be closed.
-     */
-    @Override
-    public void clear() {
-        installKernelMap = null;
-        data.clear();
-        if (loader != null) {
-            try {
-                loader.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    /**
-     * Unsupported operation
-     */
     @Override
     public Set keySet() {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Unsupported operation
-     */
     @Override
     public Collection values() {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Unsupported operation
-     */
     @Override
     public Set entrySet() {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * {@inheritDoc}
-     * return object value associated with input key
-     */
+    private final Map<String, Object> inputData;
+    private Map<String, Object> outputData;
+
+    private Object transferIn(String key) {
+        Object outputDatum = outputData.get(key);
+        inputData.put(key, outputDatum);
+        return outputDatum;
+    }
+
+    private void transferInputs() {
+        for ( String key : inputData.keySet() ) {
+            transferOut(key);
+        }
+    }
+
+    private Integer transferResults() {
+        Integer rc = (Integer) transferIn(INSTALL_KERNEL_INIT_CODE);
+        transferIn(INSTALL_KERNEL_INIT_ERROR_MESSAGE);
+        return rc;
+    }
+
+    private Object transferOut(String key) {
+        Object outputDatum = outputData.get(key);
+        inputData.put(key, outputDatum);
+        return outputDatum;
+    }
+
+    private void clearData() {
+        inputData.clear();
+        outputData = null;
+    }
+
+    private String putError(String msgKey, Object... msgArgs) {
+        basicPut(INSTALL_KERNEL_INIT_CODE, ERROR);
+
+        String message = getMessage(msgKey, msgArgs);
+        basicPutError(message);
+        return message;
+    }
+
+    private void basicPutError(String message) {
+        basicPut(INSTALL_KERNEL_INIT_ERROR_MESSAGE, message);
+    }
+
+    private Object setInput(String key, Object value) {
+        if ( RUNTIME_INSTALL_DIR.equals(key) ) {
+            return setInput(RUNTIME_INSTALL_DIR, value, File.class);
+        } else if ( INSTALL_MAP_JAR.equals(key) ) {
+            return setInput(INSTALL_MAP_JAR, value, String.class);
+        } else if ( INSTALL_MAP_JAR_FILE.equals(key) ) {
+            return setInput(INSTALL_MAP_JAR_FILE, value, File.class);
+        } else if ( OVERRIDE_JAR_BUNDLES.equals(key) ) {
+            return setInput(OVERRIDE_JAR_BUNDLES, value, List.class);
+        } else {
+            throw new RuntimeException( putError("MAPBASED_ERROR_KERNEL_NOT_INIT") );
+        }
+
+    }
+
+    private Object setInput(String key, Object value, Class<?> requiredType) {
+        if ( (value != null) && !requiredType.isAssignableFrom( value.getClass() ) ) {
+            throw new IllegalArgumentException(
+                "Key [ " + key + " ]" +
+                " requires an instance of type [ " + requiredType.getName() + " ]" +
+                " but was given an instance of [ " + value.getClass().getName() + " ]");
+        }
+        return basicPut(key, value);
+    }
+
+    private Object basicPut(String key, Object value) {
+        return inputData.put(key, value);
+    }
+
+    private Object basicGet(String key) {
+        return inputData.get(key);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return inputData.containsKey(key);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return inputData.isEmpty();
+    }
+
     @Override
     public Object get(Object key) {
-        if (INSTALL_KERNEL_INIT_CODE.equals(key))
+        String useKey = (String) key;
+
+        if ( INSTALL_KERNEL_INIT_CODE.equals(useKey) ) {
             return initValidate();
-        if (INSTALL_KERNEL_INIT_ERROR_MESSAGE.equals(key) ||
-            RUNTIME_INSTALL_DIR.equals(key))
-            return data.get(key);
-        if (installKernelMap == null) {
-            throw new RuntimeException(getMessage("MAPBASED_ERROR_KERNEL_NOT_INIT"));
         }
-        return installKernelMap.get(key);
+
+        if ( INSTALL_KERNEL_INIT_ERROR_MESSAGE.equals(useKey) ||
+             RUNTIME_INSTALL_DIR.equals(useKey) ) {
+            return basicGet(useKey);
+
+        } else if ( outputData == null ) {
+            throw new RuntimeException( getMessage("MAPBASED_ERROR_KERNEL_NOT_INIT") );
+
+        } else {
+            return outputData.get(useKey);
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return the value, or null if an error occurs.
-     */
-    @SuppressWarnings("unchecked")
     @Override
     public Object put(Object key, Object value) {
-        if (MESSAGE_LOCALE.equals(key)) {
-            if (value instanceof Locale) {
-                locale = (Locale) value;
-                data.put(MESSAGE_LOCALE, value);
-            } else {
-                throw new IllegalArgumentException();
+        String useKey = (String) key;
+
+        if ( MESSAGE_LOCALE.equals(useKey) ) {
+            setLocale(value);
+            if ( outputData != null ) {
+                outputData.put(useKey, value);
             }
-            if (installKernelMap != null)
-                installKernelMap.put(key, value);
             return value;
         }
-        if (installKernelMap == null) {
-            if (RUNTIME_INSTALL_DIR.equals(key)) {
-                if (value instanceof File) {
-                    return data.put(RUNTIME_INSTALL_DIR, value);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            } else if (INSTALL_MAP_JAR.equals(key)) {
-                if (value instanceof String) {
-                    return data.put(INSTALL_MAP_JAR, value);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            } else if (INSTALL_MAP_JAR_FILE.equals(key)) {
-                if (value instanceof File) {
-                    return data.put(INSTALL_MAP_JAR_FILE, value);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            } else if (OVERRIDE_JAR_BUNDLES.equals(key)) {
-                if (value instanceof List) {
-                    return data.put(OVERRIDE_JAR_BUNDLES, value);
-                } else {
-                    throw new IllegalArgumentException();
-                }
-            } else {
-                data.put(INSTALL_KERNEL_INIT_CODE, ERROR);
-                data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, getMessage("MAPBASED_ERROR_KERNEL_NOT_INIT"));
-                throw new RuntimeException(getMessage("MAPBASED_ERROR_KERNEL_NOT_INIT"));
-            }
+
+        if ( outputData == null ) {
+            return setInput(useKey, value);
+
         } else {
-            return installKernelMap.put(key, value);
+            return outputData.put(useKey, value);
         }
     }
 
-    /**
-     * Compare files in jarsList based on file name's length
-     * Sort the files depending on the comparison
-     *
-     * @param jarsList -abstract representation of file/directory names
-     * @param fName    - name of file
-     */
-    public static void sortFile(List<File> jarsList, final String fName) {
-        Collections.sort(jarsList, new Comparator<File>() {
-            @Override
-            public int compare(File f1, File f2) {
-                String f1Name = f1.getName();
-                f1Name = f1Name.substring(fName.length() + 1, f1Name.length() - 4);
-                String f2Name = f2.getName();
-                f2Name = f2Name.substring(fName.length() + 1, f2Name.length() - 4);
-                Version v1 = Version.createVersion(f1Name);
-                Version v2 = Version.createVersion(f2Name);
-                if (v1 != null && v2 != null)
-                    return v1.compareTo(v2);
-                return f1Name.compareTo(f2Name);
+    private Integer initValidate() {
+        File installDir = validateInstallDir();
+        if ( installDir == null ) {
+            return ERROR;
+        }
+
+        try {
+            setOutput(installDir);
+        } catch ( Exception e ) {
+            putError("MAPBASED_ERROR_KERNEL_INIT_FAILED", e.getMessage());
+            return ERROR;
+        }
+
+        transferInputs();
+
+        return transferResults();
+    }
+
+    private File validateInstallDir() {
+        File installDir = (File) basicGet(RUNTIME_INSTALL_DIR);
+        if ( installDir == null ) {
+            putError("MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET");
+            return null;
+        } else if ( !installDir.exists() ) {
+            putError("MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS", installDir);
+            return null;
+        } else if ( !installDir.isDirectory() ) {
+            putError("MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR", installDir);
+            return null;
+        } else {
+            return installDir;
+        }
+    }
+
+    //
+
+    private URL[] getJars(File installDir) throws Exception {
+        File mapFile = (File) basicGet(INSTALL_MAP_JAR_FILE);
+        if ( mapFile == null ) {
+            mapFile = new File( installDir, (String) basicGet(INSTALL_MAP_JAR) );
+        }
+
+        Manifest manifest;
+        try ( JarFile installMapJar = new JarFile(mapFile) ) {
+            manifest = installMapJar.getManifest();
+        }
+        Attributes attributes = manifest.getMainAttributes();
+        String[] requireBundle = attributes.getValue("Require-Bundle").split(",");
+
+        Map<String, File> overrideMap = getOverrideMap();
+
+        List<URL> jarURLs = new ArrayList<URL>();
+
+        for ( String requiredBundle : requireBundle ) {
+            String[] bundle = requiredBundle.split(";");
+            URL url = getURL(installDir, bundle);
+            if ( url == null ) {
+                continue;
             }
-        });
+
+            if ( overrideMap == null ) {
+                jarURLs.add(url);
+                continue;
+            }
+
+            boolean found = false;
+            for ( String bundleName : overrideMap.keySet() ) {
+                if ( matchesBundle( url.toURI().toURL().toString(), bundleName ) ) {
+                    found = true;
+                    jarURLs.add( overrideMap.get(bundleName).toURI().toURL() );
+                    overrideMap.put(bundleName, null);
+                }
+            }
+            if ( !found ) {
+                jarURLs.add(url);
+            }
+        }
+
+        if ( overrideMap != null ) {
+            for ( String remainingBundle : overrideMap.keySet() ) {
+                if ( overrideMap.get(remainingBundle) != null ) {
+                    jarURLs.add( overrideMap.get(remainingBundle).toURI().toURL() );
+                }
+            }
+        }
+
+        return jarURLs.toArray(new URL[jarURLs.size()]);
     }
 
-    /**
-     * This method compares the fName with name for a match and checks if it is a jar file
-     * The file is accepted if either min/max is null or the newly created Version is null
-     *
-     * @param fName - file name
-     * @param name  - string value
-     * @param min   - Version
-     * @param max   - Version
-     * @return boolean value depending on acceptance
-     */
-    public static boolean accept(String fName, String name, Version min, Version max) {
-        if (fName.startsWith(name + "_") && fName.toLowerCase().endsWith(".jar")) {
-            if (min == null || max == null)
-                return true;
-            int i = fName.indexOf("_");
-            String versionStr = fName.substring(i + 1, fName.length() - 4);
-            Version v = Version.createVersion(versionStr);
-            if (v == null)
-                return true;
-            return v.compareTo(min) >= 0 && v.compareTo(max) < 0;
+    @SuppressWarnings("unchecked")
+    private Map<String, File> getOverrideMap() {
+        List<String> overrides = (List<String>) basicGet(OVERRIDE_JAR_BUNDLES);
+        if ( overrides == null ) {
+            return null;
         }
-        return false;
+
+        Map<String, File> overrideMap = getBundleMap(overrides);
+        if ( (overrideMap != null) && overrideMap.isEmpty() ) {
+            overrideMap = null;
+        }
+        return overrideMap;
     }
+
 
     private URL getURL(File installDir, String[] bundle) {
-        final String fName = bundle[0].trim();
+        String fName = bundle[0].trim();
         String location = null;
         Version minVersion = null;
         Version maxVersion = null;
@@ -406,12 +515,12 @@ public class InstallMap implements Map {
             }
         }
         File libDir = new File(installDir, location == null ? "lib" : location);
-        final Version min = minVersion;
-        final Version max = maxVersion;
+        Version min = minVersion;
+        Version max = maxVersion;
         File[] jars = libDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return InstallMap.accept(name, fName, min, max);
+                return InstallMap.isJarInRange(name, fName, min, max);
             }
         });
 
@@ -425,7 +534,7 @@ public class InstallMap implements Map {
             }
         }
         List<File> jarsList = Arrays.asList(jars);
-        sortFile(jarsList, fName);
+        sort(jarsList, fName);
         try {
             return jarsList.get(jarsList.size() - 1).toURI().toURL();
         } catch (MalformedURLException e) {
@@ -433,85 +542,25 @@ public class InstallMap implements Map {
         }
     }
 
-    @SuppressWarnings({ "unchecked" })
-    private URL[] getJars(File installDir) {
-        JarFile installKernelJar = null;
-        List<URL> jarURLs = new ArrayList<URL>();
-        try {
-            File installKernelJarFile = (File) data.get(INSTALL_MAP_JAR_FILE);
-            installKernelJar = new JarFile(installKernelJarFile != null ? installKernelJarFile : new File(installDir, (String) data.get(INSTALL_MAP_JAR)));
-            List<String> overrideList = (List<String>) data.get(OVERRIDE_JAR_BUNDLES);
-            boolean doOverride = overrideList != null;
-            Map<String, File> overrideJarMap = null;
-            if (doOverride) {
-                overrideJarMap = getBundleFileMap(overrideList);
+    private boolean matchesBundle(String urlPath, String bundleName) {
+        String[] parts = urlPath.split("/");
+        for ( String part : parts ) {
+            if (!part.endsWith(".jar")) {
+                continue;
             }
-            if (overrideJarMap == null) {
-                doOverride = false;
-            }
-            Manifest manifest = installKernelJar.getManifest();
-            Attributes attributes = manifest.getMainAttributes();
-            String[] requireBundles = attributes.getValue("Require-Bundle").split(",");
-            for (String requireBundle : requireBundles) {
-                String[] bundle = requireBundle.split(";");
-                URL url = getURL(installDir, bundle);
-                if (url != null) {
-                    if (doOverride) {
-                        boolean jarFound = false;
-                        for (String bundleName : overrideJarMap.keySet()) {
-                            if (isBundleInUrl(url.toURI().toURL().toString(), bundleName)) {
-                                jarFound = true;
-                                jarURLs.add(overrideJarMap.get(bundleName).toURI().toURL());
-                                overrideJarMap.put(bundleName, null);
-                            }
-                        }
-                        if (!jarFound) {
-                            jarURLs.add(url);
-                        }
-                    } else {
-                        jarURLs.add(url);
-                    }
-                }
-            }
-            if (doOverride) {
-                for (String remainingBundle : overrideJarMap.keySet()) {
-                    if (overrideJarMap.get(remainingBundle) != null) {
-                        jarURLs.add(overrideJarMap.get(remainingBundle).toURI().toURL());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, e.getMessage());
-            return null;
-        } finally {
-            if (installKernelJar != null) {
-                try {
-                    installKernelJar.close();
-                } catch (IOException e) {
+
+            String[] subParts = part.split("_");
+            for ( String subPart : subParts ) {
+                if ( subPart.equals(bundleName) ) {
+                    return true;
                 }
             }
         }
-        return jarURLs.toArray(new URL[jarURLs.size()]);
+
+        return false;
     }
 
-    private boolean isBundleInUrl(String urlPath, String bundleName) {
-        boolean bundleInUrl = false;
-        String[] splitBundlePath = urlPath.split("/");
-
-        for (String item : splitBundlePath) {
-            if (item.endsWith(".jar")) {
-                String[] splitOnUnderscore = item.split("_");
-                for (String str : splitOnUnderscore) {
-                    if (str.equals(bundleName)) {
-                        bundleInUrl = true;
-                    }
-                }
-            }
-        }
-        return bundleInUrl;
-    }
-
-    private Map<String, File> getBundleFileMap(List<String> bundleList) {
+    private Map<String, File> getBundleMap(List<String> bundleList) {
         Map<String, File> bundleNameToFile = new HashMap<String, File>();
 
         for (String bundle : bundleList) {
@@ -532,45 +581,57 @@ public class InstallMap implements Map {
         return bundleNameToFile;
     }
 
-    @SuppressWarnings("unchecked")
-    private Integer initValidate() {
-        File installDir = (File) data.get(RUNTIME_INSTALL_DIR);
-        if (installDir == null) {
-            data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, getMessage("MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_SET"));
-            return null;
-        }
-        if (!installDir.exists()) {
-            data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, getMessage("MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_EXISTS", installDir));
-            return null;
-        }
-        if (!installDir.isDirectory()) {
-            data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, getMessage("MAPBASED_ERROR_RUNTIME_INSTALL_DIR_NOT_DIR", installDir));
-            return null;
-        }
-        final URL[] jars = getJars(installDir);
-        if (jars == null) {
-            return ERROR;
-        }
-        loader = new URLClassLoader(jars, getClass().getClassLoader());
-        try {
-            installKernelMap = AccessController.doPrivileged(new PrivilegedExceptionAction<Map<String, Object>>() {
-                @Override
-                public Map<String, Object> run() throws Exception {
-                    Class<Map<String, Object>> clazz;
-                    clazz = (Class<Map<String, Object>>) loader.loadClass("com.ibm.ws.install.internal.InstallKernelMap");
-                    return clazz.newInstance();
+    /**
+     * Compare files in jarsList based on file name's length
+     * Sort the files depending on the comparison
+     *
+     * @param jarsList -abstract representation of file/directory names
+     * @param fName    - name of file
+     */
+    private static void sort(List<File> jarsList, String fName) {
+        Collections.sort(jarsList, new Comparator<File>() {
+            @Override
+            public int compare(File f1, File f2) {
+                String f1Name = f1.getName();
+                String f1Version = f1Name.substring(fName.length() + 1, f1Name.length() - 4);
+                Version v1 = Version.createVersion(f1Version);
+
+                String f2Name = f2.getName();
+                String f2Version= f2Name.substring(fName.length() + 1, f2Name.length() - 4);
+                Version v2 = Version.createVersion(f2Version);
+
+                // TODO: What if one has a version and the other does not??
+                // TODO: What if the two names are different??
+
+                if ( (v1 != null) && (v2 != null) ) {
+                    return v1.compareTo(v2);
                 }
-            });
-        } catch (PrivilegedActionException e) {
-            data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, getMessage("MAPBASED_ERROR_KERNEL_INIT_FAILED", e.getMessage()));
-            return ERROR;
+                return f1Name.compareTo(f2Name);
+            }
+        });
+    }
+
+    /**
+     * This method compares the fName with name for a match and checks if it is a jar file
+     * The file is accepted if either min/max is null or the newly created Version is null
+     *
+     * @param fName - file name
+     * @param name  - string value
+     * @param min   - Version
+     * @param max   - Version
+     * @return boolean value depending on acceptance
+     */
+    public static boolean isJarInRange(String fName, String name, Version min, Version max) {
+        if (fName.startsWith(name + "_") && fName.toLowerCase().endsWith(".jar")) {
+            if (min == null || max == null)
+                return true;
+            int i = fName.indexOf("_");
+            String versionStr = fName.substring(i + 1, fName.length() - 4);
+            Version v = Version.createVersion(versionStr);
+            if (v == null)
+                return true;
+            return v.compareTo(min) >= 0 && v.compareTo(max) < 0;
         }
-        for (Object key : data.keySet()) {
-            installKernelMap.put(key, data.get(key));
-        }
-        Integer rc = (Integer) installKernelMap.get(INSTALL_KERNEL_INIT_CODE);
-        data.put(INSTALL_KERNEL_INIT_CODE, rc);
-        data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, installKernelMap.get(INSTALL_KERNEL_INIT_ERROR_MESSAGE));
-        return rc;
+        return false;
     }
 }
