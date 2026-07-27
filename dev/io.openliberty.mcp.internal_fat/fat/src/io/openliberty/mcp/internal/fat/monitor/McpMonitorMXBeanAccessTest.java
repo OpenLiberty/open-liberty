@@ -88,7 +88,8 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage())
-                                   .addPackage(McpMXBeanAccessServlet.class.getPackage());
+                                   .addPackage(McpMXBeanAccessServlet.class.getPackage())
+                                   .addAsManifestResource(McpMonitorMXBeanAccessTest.class.getResource("permissions.xml"), "permissions.xml");
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
         server.startServer();
