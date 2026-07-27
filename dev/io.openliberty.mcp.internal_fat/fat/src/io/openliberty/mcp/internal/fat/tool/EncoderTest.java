@@ -573,7 +573,7 @@ public class EncoderTest extends FATServletClient {
     /**
      * Tests that a ToolResponseEncoder registered for interface IShape is selected
      * when the tool return type is a different implementing record (Circle).
-     * This validates the getType().isAssignableFrom(runtimeClass) dispatch semantics.
+     * This validates the getType().isInstance(result) dispatch semantics.
      * The encoder output reflects the concrete runtime class name (Circle).
      */
     @Test

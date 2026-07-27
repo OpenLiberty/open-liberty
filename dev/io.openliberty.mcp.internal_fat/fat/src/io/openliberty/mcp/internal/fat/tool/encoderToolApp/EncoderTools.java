@@ -439,7 +439,7 @@ public class EncoderTools {
 
     /*******************************************************************************
      * Test that a ToolResponseEncoder declared for an interface type (IShape) also
-     * handles implementing records (Circle), via getType().isAssignableFrom(runtimeClass).
+     * handles implementing records (Circle), via getType().isInstance(result).
      * The encoder identifies the handled type by its concrete runtime class name.
      *******************************************************************************/
 
