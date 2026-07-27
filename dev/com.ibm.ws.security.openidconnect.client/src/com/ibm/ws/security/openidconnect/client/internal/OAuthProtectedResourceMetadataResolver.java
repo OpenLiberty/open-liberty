@@ -93,6 +93,7 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
 
     /**
      * Creates the OAuth 2.0 protected resource metadata JSON document.
+     * Package-scoped for unit testing.
      *
      * @param config             matching OIDC client configuration
      * @param absoluteResourceUrl absolute protected resource URL

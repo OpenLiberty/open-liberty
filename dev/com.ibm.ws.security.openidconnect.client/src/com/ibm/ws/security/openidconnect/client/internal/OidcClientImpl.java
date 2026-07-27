@@ -968,8 +968,6 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return userName.equals(accessId);
     }
 
-    /** {@inheritDoc} */
-    @Override
     public String getOidcProviderByAuthFilter(HttpServletRequest req) {
         String provider = selectByAuthFilter(req);
         if (provider != null) {
