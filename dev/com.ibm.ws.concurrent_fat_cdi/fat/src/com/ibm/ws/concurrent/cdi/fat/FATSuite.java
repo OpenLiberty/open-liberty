@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ConcurrentCDITest.class, // latest
                 ConcurrentCDI2Test.class, // Jakarta EE 8 and Java EE 8
                 ConcurrentCDI3Test.class, // Jakarta EE 9
-                ConcurrentCDI4Test.class // Jakarta EE 10
+                ConcurrentCDI4Test.class, // Jakarta EE 10
+                ConcurrentCDI4_1Test.class, // Jakarta EE 11
+                ConcurrentCDI5Test.class
 })
 public class FATSuite {
 }
