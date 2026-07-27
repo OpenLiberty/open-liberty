@@ -3373,4 +3373,10 @@ public class Data_1_1_Servlet extends FATServlet {
         }
     }
 
+    @Test
+    public void testBooleanRestriction() {
+        fractions.where(Restrict.all(_Fraction.name.contains("Four"),
+                                     _Fraction.reduced.isTrue()));
+    }
+
 }
