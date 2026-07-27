@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>io.openliberty.org.eclipse</groupId>
 			<artifactId>yasson</artifactId>
-			<version>3.0.4</version>
+			<version>3.0.5-RC1</version>
 			<scope>system</scope>
 			<systemPath>${io.openliberty.org.eclipse.yasson.3.0}</systemPath>
 		</dependency>
