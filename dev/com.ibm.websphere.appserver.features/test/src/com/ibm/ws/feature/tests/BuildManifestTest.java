@@ -84,13 +84,13 @@ public class BuildManifestTest {
                                                                    .getConstituents(SubsystemContentType.BUNDLE_TYPE)
                                                                    .forEach(bundle -> {
                                                                         if (bundle.getVersionRange() == null || bundle.getVersionRange().toString().equals("0.0.0")) {
-                                                                            errorMessage.append(String.format("The feature manifest %s did not resolve the bundle %s jar version correctly%n", path.getFileName(), bundle.toString()));
+                                                                            errorMessage.append(String.format("The feature manifest %s did not resolve the bundle %s jar version correctly\n", path.getFileName(), bundle.toString()));
                                                                         }
                                                                    });
         }
 
         if (errorMessage.length() != 0) {
-            Assert.fail("There were more than 1 features with malformed bundle versions: " + errorMessage.toString());
+            Assert.fail("There were features with malformed bundle versions: " + errorMessage.toString());
         }
     }
 
