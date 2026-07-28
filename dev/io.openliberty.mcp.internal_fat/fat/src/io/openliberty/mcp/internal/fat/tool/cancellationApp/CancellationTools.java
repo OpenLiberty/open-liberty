@@ -47,6 +47,10 @@ public class CancellationTools {
                 LOG.info("[cancellationTool] tool is cancelled");
                 throw new Cancellation.OperationCancelledException();
             }
+            if (toolStatus.shouldEnd(latchName)) {
+                LOG.info("[cancellationTool] test signalled tool should end");
+                break;
+            }
         }
         LOG.info("[cancellationTool] the tool was not cancelled");
         return "If this String is returned, then the tool was not cancelled";
