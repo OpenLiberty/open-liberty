@@ -76,6 +76,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
+import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
 
 /**
  *
@@ -144,7 +145,8 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 PermitAllTestsStateless.class,
                 DenyAllTestsStateless.class,
                 NoClassAnnotationTestsStateless.class,
-                AdminsRoleAllowedTestsStateless.class
+                AdminsRoleAllowedTestsStateless.class,
+                UnsupportedAnnotationWarningTest.class
 
 })
 

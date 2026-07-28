@@ -333,3 +333,11 @@ CWMCM0041E.invalid.metadata.name.useraction=Update the metadata name in the Meta
 CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: The {0} metadata key value in the MetaField annotation of the {1} method cannot be converted to the {2} type. The error is {3}
 CWMCM0042E.metadata.value.conversion.error.explanation=The metadata value in the MetaField annotation cannot be converted to the type that is specified in the annotation. The value might be in the wrong format or might be incompatible with the specified type.
 CWMCM0042E.metadata.value.conversion.error.useraction=Review the error message, the message.log file, and the FFDC logs to identify the cause of the conversion failure. Update the metadata value in the MetaField annotation so that it is compatible with the specified type.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: The {0} method uses the {1} annotation which is not supported. This method is ignored.
+CWMCM0043W.unsupported.annotation.explanation=The Model Context Protocol (MCP) Java API includes annotations for features that are not supported by this implementation. Methods annotated with unsupported annotations are ignored.
+CWMCM0043W.unsupported.annotation.useraction=Remove the unsupported annotation from the method, or use only supported Model Context Protocol (MCP) annotations.
