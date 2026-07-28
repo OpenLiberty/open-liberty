@@ -21,7 +21,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 HotAddMPConfig.class, //FULL
                 ServerXMLTest.class, //FULL
                 VariableServerXMLTest.class, //LITE
-                ConfigOrdinalServerXMLTest.class // FULL
+                ConfigOrdinalServerXMLTest.class, // FULL
+                VarExpansionTest.class //LITE
 })
 public class FATSuite {
 
