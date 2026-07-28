@@ -1,0 +1,2 @@
+#com.ibm.wsspi.rest.handler.root=/bellEP
+com.ibm.ws.test.BellEndpoint

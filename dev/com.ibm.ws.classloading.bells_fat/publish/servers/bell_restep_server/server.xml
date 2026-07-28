@@ -1,0 +1,39 @@
+<server>
+
+    <featureManager>
+        <feature>bells-1.0</feature>
+        <feature>restConnector-2.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Provide a BELL service that implements the RESTHander SPI interface.
+         Protected feature restHandler-1.0 enables the REST handler framework 
+         and exports the SPI; restHandler-1.0 is enabled by restConnector-2.0. --> 
+
+    <library id="testRestEndpoint">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testRestEndpoint.jar" />
+    </library>
+
+    <bell libraryRef="testRestEndpoint"
+         service="com.ibm.wsspi.rest.handler.RESTHandler"
+         spiVisibility="true" >
+       <properties hello="DOLLY" />
+    </bell>
+
+    <!-- REST endpoint access requires secure transport (transportSecurity-1.0)
+         and a user mapped to the administrator role --> 
+
+    <keyStore id="defaultKeyStore" password="keystorePassword" />
+
+    <basicRegistry>
+        <user name="you" password="yourPassword" />
+        <group name="yourGroup" />
+    </basicRegistry>
+    <administrator-role>
+        <user>you</user>
+        <group>yourGroup</group>
+    </administrator-role>
+
+</server>
