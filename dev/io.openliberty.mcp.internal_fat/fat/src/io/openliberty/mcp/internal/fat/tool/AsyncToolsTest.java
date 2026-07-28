@@ -44,7 +44,7 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 public class AsyncToolsTest extends FATServletClient {
 
     private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async")
+    @Server("mcp-server-async-tools")
     public static LibertyServer server;
 
     @Rule
@@ -59,7 +59,7 @@ public class AsyncToolsTest extends FATServletClient {
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
 
         server.startServer();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
