@@ -295,6 +295,11 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         this.myStatusCode = StatusCodes.OK;
         this.myReason = null;
         this.myReasonBytes = null;
+        /*
+         * this.myStatusCode = StatusCodes.OK;
+         * this.myReason = null;
+         * this.myReasonBytes = null;
+         */
     }
 
     /**
@@ -302,14 +307,8 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      */
     @Override
     public void destroy() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Destroying this response: " + this);
-        }
-        HttpObjectFactory tempFactory = getObjectFactory();
-        super.destroy();
-        if (null != tempFactory) {
-            tempFactory.releaseResponse(this);
-        }
+        clearBuffers();
+
     }
 
     /**
