@@ -317,7 +317,16 @@ public class McpTransport {
                     sendResponse(result);
 
                 } else {
-                    sendError(throwable);
+                    Throwable cause = throwable instanceof java.util.concurrent.CompletionException
+                                      ? throwable.getCause()
+                                      : throwable;
+                    if (cause instanceof JSONRPCException jsonRpcEx) {
+                        sendJsonRpcException(jsonRpcEx);
+                    } else if (cause instanceof HttpResponseException httpEx) {
+                        sendHttpException(httpEx);
+                    } else {
+                        sendError(throwable);
+                    }
                 }
             } catch (Exception e) {
                 Tr.error(tc, "CWMCM0016E.error.sending.response.exception", e);
