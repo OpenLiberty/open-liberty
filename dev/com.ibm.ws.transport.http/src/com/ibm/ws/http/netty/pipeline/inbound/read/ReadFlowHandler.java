@@ -147,32 +147,42 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         FlowState state = state(context);
         boolean hasFlowControl = (context.pipeline().get(FlowControlHandler.class) != null);
 
-        if (hasFlowControl && state.isReadPending()){
+        if (hasFlowControl && state.isReadPending()) {
             state.setReadPending(false);
-            if (state.isReadAgain()){
+            if (state.isReadAgain()) {
                 state.setReadAgain(false);
                 requestRead(context);
             }
         }
 
-        if(message instanceof HttpRequest){
+        if (message instanceof HttpRequest) {
             state.setResponseInFlight(true);
             HttpRequest request = (HttpRequest) message;
             state.setHeadRequest(request.method() == HttpMethod.HEAD);
             state.setBodyReadWanted(false);
             state.setReadAgain(false);
             boolean requestEnd = (message instanceof LastHttpContent) || !isBodyExpected(request);
-            
+
             state.setRequestConsumed(requestEnd);
             super.channelRead(context, message);
 
-            if(requestEnd && !(message instanceof LastHttpContent)){
-                context.channel().read();
+            if (requestEnd && !(message instanceof LastHttpContent)) {
+                // Let the codec finish emitting terminal content before granting the
+                // FlowControlHandler another read. Otherwise the empty flow-control
+                // queue forwards this credit as an unnecessary physical socket read.
+                context.executor().execute(() -> {
+                    if (!context.isRemoved()
+                            && context.pipeline().get(FlowControlHandler.class) != null
+                            && !state.stoppedReading()
+                            && context.channel().isActive()) {
+                        context.read();
+                    }
+                });
             }
             return;
         }
 
-        if(message instanceof LastHttpContent){
+        if (message instanceof LastHttpContent) {
             state.setRequestConsumed(true);
             super.channelRead(context, message);
             verifyNeedRead(context, state);
