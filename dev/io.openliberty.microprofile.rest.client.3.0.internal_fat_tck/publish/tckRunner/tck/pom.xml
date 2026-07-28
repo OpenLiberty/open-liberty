@@ -74,6 +74,9 @@
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-tck</artifactId>
             <version>${microprofile.rest.client.version}</version>
+            <scope>system</scope>
+            <systemPath>/Users/jckrueg/dev-git/mpRestClient/microprofile-rest-client/tck/target/microprofile-rest-client-tck-3.1-SNAPSHOT.jar</systemPath> 
+
         </dependency>
 
         <dependency>
@@ -86,6 +89,9 @@
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-api</artifactId>
             <version>${microprofile.rest.client.version}</version>
+            <scope>system</scope>
+            <systemPath>/Users/jckrueg/dev-git/mpRestClient/microprofile-rest-client/api/target/microprofile-rest-client-api-3.1-SNAPSHOT.jar</systemPath> 
+
         </dependency>
 
         <dependency>
@@ -394,6 +400,12 @@
                         <!-- <suiteXmlFile>tck-suite.xml</suiteXmlFile> -->
                     </suiteXmlFiles>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                    <includes>
+                        <!--  Example to run just one test. 
+                        <include>ee.jakarta.tck.ws.rs.signaturetest.jaxrs.JAXRSSigTestIT</include> -->                          
+                    <include>org.eclipse.microprofile.rest.client.tck.AdditionalRegistrationTest</include>
+                    </includes>
+
                 </configuration>
             </plugin>
             <plugin>
