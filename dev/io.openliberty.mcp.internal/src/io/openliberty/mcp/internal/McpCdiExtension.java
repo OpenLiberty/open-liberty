@@ -37,8 +37,6 @@ import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.content.TextContentImpl;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
-import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
-import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
 import io.openliberty.mcp.internal.requests.IconImpl;
 import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
@@ -157,7 +155,8 @@ public class McpCdiExtension implements Extension {
             error |= reportOnInvalidToolNames(afterDeploymentValidation, toolRegistry) |
                      reportOnDuplicateTools(afterDeploymentValidation, toolRegistry) |
                      reportOnToolArgEdgeCases(afterDeploymentValidation, toolRegistry) |
-                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry);
+                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry) |
+                     reportOnDeferredValidationErrors(toolRegistry);
         }
 
         if (error) {
@@ -298,7 +297,7 @@ public class McpCdiExtension implements Extension {
                         case NAME_MISSING -> Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());
                         case NO_CONVERTER -> Tr.error(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type());
                         case CONVERSION_ERROR -> Tr.error(tc, "CWMCM0020E.defaultvalue.conversion.error", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type(),
-                                                          argMetadata.defaultValue(), error.exception());
+                                                          argMetadata.defaultValue(), error.exception().toString());
                     }
                     foundErrors = true;
                 }
@@ -365,29 +364,32 @@ public class McpCdiExtension implements Extension {
         return error.get();
     }
 
+    private boolean reportOnDeferredValidationErrors(ToolRegistry tools) {
+        boolean anyErrors = false;
+        for (ToolMetadata tool : tools.getAllTools()) {
+            for (var error : tool.validationErrors()) {
+                anyErrors = true;
+                Tr.error(tc, error.messageKey(), error.objects());
+            }
+        }
+        return anyErrors;
+    }
+
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method, BeanManager beanManager) {
-        try {
-            ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
-            J2EEName module = getModuleForBean(bean);
-            List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(module, key -> new HashMap<>())
-                                                           .computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
-            duplicatesList.add(toolmd.getToolQualifiedName());
-            if (duplicatesList.size() <= 1) {
-                toolRegistries.getForModule(module).addTool(toolmd);
-                if (TraceComponent.isAnyTracingEnabled()) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
-                    } else if (tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
-                    }
+        ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
+        J2EEName module = getModuleForBean(bean);
+        List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(module, key -> new HashMap<>())
+                                                       .computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
+        duplicatesList.add(toolmd.getToolQualifiedName());
+        if (duplicatesList.size() <= 1) {
+            toolRegistries.getForModule(module).addTool(toolmd);
+            if (TraceComponent.isAnyTracingEnabled()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
+                } else if (tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
                 }
             }
-        } catch (GenericArgumentException e) {
-            for (String argument : e.getArguments()) {
-                Tr.error(tc, "CWMCM0018E.generic.arguments", ToolMetadata.getToolQualifiedName(bean, method), argument);
-            }
-        } catch (UnsupportedTypeException e) {
-            Tr.error(tc, "CWMCM0025E.unsupported.output", e.getType(), ToolMetadata.getToolQualifiedName(bean, method));
         }
     }
 

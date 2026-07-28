@@ -23,7 +23,7 @@ public class MetaCarrierBuilderImplTest {
 
     private static void assertInvalid(String key) {
         try {
-            MetaCarrierBuilderImpl.validateMetaKey(key);
+            MetaCarrierBuilderImpl.requireValidMetaKey(key);
             fail("Expected IllegalArgumentException for key: " + key);
         } catch (IllegalArgumentException e) {
             // expected
@@ -31,7 +31,7 @@ public class MetaCarrierBuilderImplTest {
     }
 
     private static void assertValid(String key) {
-        MetaCarrierBuilderImpl.validateMetaKey(key); // must not throw
+        MetaCarrierBuilderImpl.requireValidMetaKey(key); // must not throw
     }
 
     // Null key
@@ -118,36 +118,6 @@ public class MetaCarrierBuilderImplTest {
         assertInvalid("com.example./key"); // trailing dot → empty last label
     }
 
-    // Reserved prefixes — second label is "mcp" or "modelcontextprotocol"
-    @Test
-    public void testReservedMcpPrefix() {
-        assertInvalid("io.mcp/key");
-        assertInvalid("dev.mcp/key");
-        assertInvalid("org.mcp/feature");
-        assertInvalid("com.mcp.tools/key"); // second label is "mcp"
-    }
-
-    @Test
-    public void testReservedModelContextProtocolPrefix() {
-        assertInvalid("io.modelcontextprotocol/key");
-        assertInvalid("org.modelcontextprotocol.api/key");
-    }
-
-    @Test
-    public void testReservedCheckIsCaseInsensitive() {
-        assertInvalid("io.MCP/key");
-        assertInvalid("io.Mcp/key");
-        assertInvalid("io.ModelContextProtocol/key");
-    }
-
-    @Test
-    public void testNonReservedPrefixWithMcpElsewhere() {
-        // Spec example: com.example.mcp/ is NOT reserved — second label is "example"
-        assertValid("com.example.mcp/key");
-        // "mcp" as the first label — second label is "example", not reserved
-        assertValid("mcp.example/key");
-    }
-
     // putMetadata and setMetadata integration
     @Test
     public void testPutMetadataValidKey() {
@@ -160,7 +130,7 @@ public class MetaCarrierBuilderImplTest {
     public void testPutMetadataInvalidKeyThrows() {
         MetaCarrierBuilderImpl<?> builder = new MetaCarrierBuilderImpl<>();
         try {
-            builder.putMetadata("io.mcp/reserved", "value");
+            builder.putMetadata("com.example-/key", "value");
             fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // expected
@@ -182,7 +152,7 @@ public class MetaCarrierBuilderImplTest {
     public void testSetMetadataInvalidKeyThrows() {
         MetaCarrierBuilderImpl<?> builder = new MetaCarrierBuilderImpl<>();
         Map<String, Object> map = new HashMap<>();
-        map.put("dev.mcp/reserved", "value");
+        map.put("com.example-/key", "value");
         try {
             builder.setMetadata(map);
             fail("Expected IllegalArgumentException");

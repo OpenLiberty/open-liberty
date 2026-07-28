@@ -158,10 +158,19 @@ public class ToolManagerTest extends FATServletClient {
         var tools = getTools();
 
         // Covers: name, title, description, arguments (several types, required/not, default)
-        //         annotations, generated schema
+        //         annotations, generated schema, metadata
         JsonObject toolWithArgs = tools.get("tool-with-args");
         JSONAssert.assertEquals("""
                         {
+                            "_meta": {
+                                "hasArgs": true,
+                                "hasStructuredOutput": false,
+                                "argCount": 3,
+                                "foo": {
+                                    "foo": ["bar", "baz"],
+                                    "qux": 7
+                                }
+                            },
                             "name": "tool-with-args",
                             "title": "Tool With Args",
                             "description": "Test tool with arguments",

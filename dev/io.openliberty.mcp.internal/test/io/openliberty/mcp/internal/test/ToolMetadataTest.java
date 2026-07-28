@@ -9,6 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +27,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mcpjava.server.MetaField;
 import org.mcpjava.server.content.ContentBlock;
 import org.mcpjava.server.content.TextContent;
 import org.mcpjava.server.tools.Tool;
@@ -32,7 +36,6 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.internal.ToolMetadata;
-import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.TestUtils;
@@ -80,10 +83,10 @@ public class ToolMetadataTest {
         return null;
     }
 
-    @Test(expected = UnsupportedTypeException.class)
+    @Test
     public void testAsyncToolWithOutputSchema() {
         ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "asyncToolWithOutputSchema");
-
+        assertThat("Expected validation error", metadata.validationErrors(), not(empty()));
     }
 
     @Tool(structuredContent = true)
@@ -377,6 +380,41 @@ public class ToolMetadataTest {
     public void testToolResponseWithCustomSchemaType() {
         ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "customSchemaType");
         assertNotNull(metadata.outputSchema());
+    }
+
+    @MetaField(name = "foo", value = "bar")
+    @Tool
+    public String toolWithOneMeta() {
+        return null;
+    }
+
+    @Test
+    public void testToolWithMetaField() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "toolWithOneMeta");
+        assertEquals("bar", metadata.metadata().get("foo"));
+    }
+
+    @MetaField(name = "foo", value = "bar")
+    @MetaField(prefix = "com.example/", name = "foo", value = "bar")
+    @MetaField(name = "apples", value = "3", type = MetaField.Type.INT)
+    @MetaField(name = "isFunky", value = "true", type = MetaField.Type.BOOLEAN)
+    @MetaField(name = "isSquare", value = "false", type = MetaField.Type.BOOLEAN)
+    @MetaField(name = "allowedRoles", type = MetaField.Type.JSON,
+               value = "[\"reader\", \"admin\"]")
+    @Tool
+    public String toolWithManyMeta() {
+        return null;
+    }
+
+    @Test
+    public void testToolWithMetaFields() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "toolWithManyMeta");
+        assertEquals("bar", metadata.metadata().get("foo"));
+        assertEquals("bar", metadata.metadata().get("com.example/foo"));
+        assertEquals(3, metadata.metadata().get("apples"));
+        assertEquals(true, metadata.metadata().get("isFunky"));
+        assertEquals(false, metadata.metadata().get("isSquare"));
+        assertEquals(List.of("reader", "admin"), metadata.metadata().get("allowedRoles"));
     }
 
 }

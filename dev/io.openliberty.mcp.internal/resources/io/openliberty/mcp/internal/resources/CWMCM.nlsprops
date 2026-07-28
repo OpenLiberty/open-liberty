@@ -308,9 +308,28 @@ CWMCM0039E.invalid.meta.key.label=CWMCM0039E: The {0} _meta key has an invalid p
 CWMCM0039E.invalid.meta.key.label.explanation=The prefix segment of the _meta key contains a label that does not follow the MCP specification rules.
 CWMCM0039E.invalid.meta.key.label.useraction=Make sure that each label in the _meta key prefix starts with a letter and ends with a letter or digit. Make sure that only letters, digits, or hyphens are in between the letters.
 
-# Used as exception message
-# do not translate _meta, modelcontextprotocol, MCP
-# {0} = The reserved _meta key
-CWMCM0040E.reserved.meta.key=CWMCM0040E: The {0} _meta key uses a reserved prefix. An implementation cannot use a prefix whose second label is "mcp" or "modelcontextprotocol". The label is case-sensitive.
-CWMCM0040E.reserved.meta.key.explanation=The _meta key prefix is reserved by the MCP specification. An implementation cannot use a prefix whose second label is "mcp" or "modelcontextprotocol". The label is case-sensitive.
-CWMCM0040E.reserved.meta.key.useraction=Use a prefix whose second label is not "mcp" or "modelcontextprotocol". For example, the "com.example/" label is valid but the "com.mcp/" label is not.
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: The {0} metadata prefix in the MetaField annotation of the {1} method is not valid. A valid prefix is a series of dot-separated labels. Each label must start with a letter, end with a letter or digit, and contain only letters, digits, or hyphens in between.
+CWMCM0040E.invalid.metadata.prefix.explanation=The metadata prefix in the MetaField annotation does not meet the Model Context Protocol (MCP) specification requirements.
+CWMCM0040E.invalid.metadata.prefix.useraction=Update the metadata prefix in the MetaField annotation on the method to meet the MCP specification requirements. The prefix must consist of dot-separated labels that are followed by a slash. Each label must start with a letter and end with a letter or digit. The interior characters of each label can be letters, digits, or hyphens.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: The {0} metadata name in the MetaField annotation of the {1} method is not valid. A valid metadata name must begin and end with an alphanumeric character and can contain hyphens, underscores, dots, and alphanumeric characters.
+CWMCM0041E.invalid.metadata.name.explanation=The metadata name in the MetaField annotation does not meet the Model Context Protocol (MCP) specification requirements.
+CWMCM0041E.invalid.metadata.name.useraction=Update the metadata name in the MetaField annotation on the method to meet the MCP specification requirements. Ensure that the name begins and ends with an alphanumeric character and contains only hyphens, underscores, dots, and alphanumeric characters.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: The {0} metadata key value in the MetaField annotation of the {1} method cannot be converted to the {2} type. The error is {3}
+CWMCM0042E.metadata.value.conversion.error.explanation=The metadata value in the MetaField annotation cannot be converted to the type that is specified in the annotation. The value might be in the wrong format or might be incompatible with the specified type.
+CWMCM0042E.metadata.value.conversion.error.useraction=Review the error message, the message.log file, and the FFDC logs to identify the cause of the conversion failure. Update the metadata value in the MetaField annotation so that it is compatible with the specified type.
