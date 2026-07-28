@@ -234,31 +234,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      *            - name of the server 2 config file to reconfig to
      * @throws Exception
      */
-    public void notfoundExceptionTest(String serverCfgFile) throws Exception {
-
-        testSAMLServer2.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
-        // Create the conversation object which will maintain state for us
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-        
-        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check
-        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        webClient.getOptions().setUseInsecureSSL(true); 
-
-        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*security token could not be authenticated or authorized.*";
-        
-        String testMode = "negative";
-
-        SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);
-
-        List<validationData> expectations = helpers.setErrorSAMLCXFExpectationsMatches(null, flowType, updatedTestSettings, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive the proper failure.", null, "SOAPFaultException");
-
-        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
-
-    }
     
-    public void notfoundExceptionTestEE8(String serverCfgFile) throws Exception {
+    //issue 25405 removed old notfoundExceptionTest(), not applicable now and renamed notfoundExceptionTestEE8() as follows
+    public void notfoundExceptionTest(String serverCfgFile) throws Exception {
 
         testSAMLServer2.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
@@ -886,7 +864,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGood() throws Exception {
         
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood.xml");
     	
     }
 
@@ -930,7 +908,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmitted() throws Exception {
         
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted.xml");
     	
     }
    
@@ -973,7 +951,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted() throws Exception {
          	
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted.xml");
     	
     }
  
@@ -1017,7 +995,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted() throws Exception {
         
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted.xml");
     	
     }
  
@@ -1060,7 +1038,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted() throws Exception {
           	
-        notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted.xml");
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted.xml");
     	
     }
  
@@ -1103,7 +1081,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted() throws Exception {    
     	
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted.xml");
     	
     }
  
@@ -1147,7 +1125,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad() throws Exception {
     	
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad.xml");
     	
     }
 
@@ -1190,7 +1168,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad() throws Exception {
         
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad.xml");
     	
     }
  
@@ -1275,7 +1253,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad() throws Exception {
         
-    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad.xml");
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad.xml");
     	
     }
 
