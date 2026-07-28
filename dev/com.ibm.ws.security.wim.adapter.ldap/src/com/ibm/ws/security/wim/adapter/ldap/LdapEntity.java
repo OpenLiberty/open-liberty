@@ -139,6 +139,15 @@ public class LdapEntity {
         return iSearchBaseList;
     }
 
+    /**
+     * iSearchFilter is created using the defined objectclasses.
+     * These will be from user/groupFilter in filters, PersonAccount/Group
+     * EntityType objectclasses, or defaults.
+     * eg. userFilter=(&(|(objectclass=user)(objectclass=person))(cn=%v))
+     * iSearchFilter = (|(objectclass=user)(objectclass=person))
+     *
+     * @return The search filter described above.
+     */
     public String getSearchFilter() {
         return iSearchFilter;
     }
@@ -283,6 +292,15 @@ public class LdapEntity {
         }
     }
 
+    /**
+     * Set the search filter (iSearchFilter) to filter, or if filter is null,
+     * use iObjectClasses from userFilter/groupFilter or PersonAccount/Group
+     * EntityType definitions. Eg. (objectclass=user)
+     * Note that this does not include login properties. These are appended
+     * separately.
+     *
+     * @param filter The filter to use.
+     */
     public void setSearchFilter(String filter) {
         if (filter != null && filter.trim().length() > 0) {
             filter = filter.trim();
