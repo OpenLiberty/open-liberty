@@ -22,6 +22,7 @@ src: \
 	test-applications/variableServerXMLApp/src,\
 	test-applications/duplicateInServerXMLApp/src,\
 	test-applications/serverXMLWebApp/src,\
+	test-applications/varExpansionApp/src,\
 	test-applications/configOrdinalServerXMLApp/src,\
 	test-applications/configOrdinalServerXMLApp/resources
 	
