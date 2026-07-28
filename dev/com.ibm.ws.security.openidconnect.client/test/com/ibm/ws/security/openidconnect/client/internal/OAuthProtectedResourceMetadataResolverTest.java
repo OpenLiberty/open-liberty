@@ -822,5 +822,3 @@ public class OAuthProtectedResourceMetadataResolverTest {
 
     }
 }
-
-// Made with Bob
