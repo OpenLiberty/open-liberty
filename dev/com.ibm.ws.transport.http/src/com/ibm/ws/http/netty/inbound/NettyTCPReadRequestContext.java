@@ -535,8 +535,16 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     } catch (Throwable ignore) {
                     }
                 }
-                    
-                h.setToBuffer();
+
+                try {
+                    h.setToBuffer();
+                } catch (Throwable t) {
+                    dispatchError(v,
+                            ctx,
+                            (t instanceof IOException) ? (IOException) t
+                                    : new IOException("Failed to copy queued upgrade data: " + t, t));
+                    return;
+                }
                 if (callback != null) {
                     HttpDispatcher.getExecutorService().execute(() -> {
                             try {
@@ -558,14 +566,19 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                         f.cancel(false);
                     } catch (Throwable ignore) {
                     }
-                    if (callback != null) {
-                        HttpDispatcher.getExecutorService().execute(() -> {
-                            try {
-                                callback.error(v, ctx, e);
-                            } catch (Throwable ignore) {
-                            }
-                        });
-                    }
+                    dispatchError(v, ctx, e);
+                }
+
+            private void dispatchError(VirtualConnection v, TCPReadRequestContext ctx, IOException e){
+                if (callback != null) {
+                    HttpDispatcher.getExecutorService().execute(() -> {
+                        try {
+                            callback.error(v, ctx, e);
+                        } catch (Throwable ignore) {
+                            
+                        }
+                    });
+                }
             }
         };
 

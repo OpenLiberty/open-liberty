@@ -12,13 +12,13 @@ package com.ibm.ws.netty.upgrade;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -244,8 +244,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         if (buffers == null || buffers.length == 0 || buffers[0] == null)
             return 0L;
 
-        final AtomicLong written = new AtomicLong(0L);
-        final Runnable task = () -> {
+        final Callable<Long> task = () -> {
             int capacity = 0;
             for (WsByteBuffer b : buffers) {
                 if (b == null)
@@ -255,13 +254,16 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             final int available = queuedBytes.get();
             final int toRead = Math.min(capacity, available);
             if (toRead <= 0) {
-                written.set(0L);
-                return;
+                return 0L;
             }
 
             ByteBuf chunk = read(toRead, null); 
+            final int removed = chunk.readableBytes();
+            if (removed > 0) {
+                queuedBytes.addAndGet(-removed);
+            }
             try {
-                int remaining = chunk.readableBytes();
+                int remaining = removed;
                 int copied = 0;
 
                 for (WsByteBuffer b : buffers) {
@@ -274,44 +276,58 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
                     final int lim = dst.limit();
                     final int pos = dst.position();
-                    dst.limit(pos + can);
-                    chunk.readBytes(dst);
-                    dst.limit(lim);
+                    try {
+                        dst.limit(pos + can);
+                        chunk.readBytes(dst);
+                    } finally {
+                        dst.limit(lim);
+                    }
 
                     b.position(dst.position());
                     remaining -= can;
                     copied += can;
                 }
+                return (long) copied;
 
-            
-                if (copied > 0) {
-                    queuedBytes.addAndGet(-copied);
-                }
-                written.set(copied);
             } finally {
                 chunk.release();
             }
         };
 
         if (context != null && !context.executor().inEventLoop()) {
-            final CountDownLatch latch = new CountDownLatch(1);
-            context.executor().execute(() -> {
-                try {
-                    task.run();
-                } finally {
-                    latch.countDown();
-                }
-            });
+            java.util.concurrent.Future<Long> copy = context.executor().submit(task);
+            boolean interrupted = false;
             try {
-                latch.await(250, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
+                while (true) {
+                    try {
+                        return copy.get();
+                    } catch (InterruptedException e) {
+                        interrupted = true;
+                    } catch (ExecutionException e) {
+                        Throwable cause = e.getCause();
+                        if (cause instanceof RuntimeException) {
+                            throw (RuntimeException) cause;
+                        }
+                        if (cause instanceof Error) {
+                            throw (Error) cause;
+                        }
+                        throw new IllegalStateException("Failed to copy queued upgrade data", cause);
+                    }
+                }
+            } finally {
+                if (interrupted) {
+                    Thread.currentThread().interrupt();
+                }
             }
         } else {
-            task.run();
+            try {
+                return task.call();
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new IllegalStateException("Failed to copy queued upgrade data", e);
+            }
         }
-
-        return written.get();
     }
 
     @Override
@@ -439,5 +455,4 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     public void setTCPReadContext(TCPReadRequestContext tcpReadContext) {
         this.readContext = tcpReadContext;
     }
-
 }
