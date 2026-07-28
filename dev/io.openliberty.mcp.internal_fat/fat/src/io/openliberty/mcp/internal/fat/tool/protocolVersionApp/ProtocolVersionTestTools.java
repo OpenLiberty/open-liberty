@@ -9,9 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.protocolVersionApp;
 
+import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolResponse;
 
-import org.mcpjava.server.tools.Tool;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -38,8 +38,8 @@ public class ProtocolVersionTestTools {
     public static class MyResponseObjectEncoder implements ToolResponseEncoder<MyResponseObject> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return MyResponseObject.class.isAssignableFrom(runtimeType);
+        public Class<MyResponseObject> getType() {
+            return MyResponseObject.class;
         }
 
         @Override
