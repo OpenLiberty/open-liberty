@@ -968,15 +968,6 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return userName.equals(accessId);
     }
 
-    public String getOidcProviderByAuthFilter(HttpServletRequest req) {
-        String provider = selectByAuthFilter(req);
-        if (provider != null) {
-            warnIfAmbiguousAuthFilters(oidcClientConfigRef.getServices(), req, authFilterServiceRef);
-        }
-        return provider;
-    }
-
-
     // The request was processed by this Configuration ID. The client
     // should/must not change
     public OidcClientConfigImpl getOidcClientConfig(HttpServletRequest req, String clientId) {
