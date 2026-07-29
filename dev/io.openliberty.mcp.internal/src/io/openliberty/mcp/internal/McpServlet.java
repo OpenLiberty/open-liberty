@@ -63,6 +63,7 @@ import io.openliberty.mcp.internal.sessions.McpSessionStores;
 import io.openliberty.mcp.internal.tools.ToolResponseImpl;
 import io.openliberty.mcp.internal.tools.ToolResponses;
 import io.openliberty.mcp.tools.ToolCallException;
+import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
@@ -243,7 +244,7 @@ public class McpServlet extends HttpServlet {
         }
     }
 
-    @FFDCIgnore(ToolCallException.class)
+    @FFDCIgnore({ ToolCallUnauthorizedException.class, ToolCallException.class })
     private void callTool(McpTransport transport, McpOperationMetrics metrics) {
         traceEvent("A tool call request has arrived");
 
@@ -275,6 +276,8 @@ public class McpServlet extends HttpServlet {
             } else {
                 callToolAndSendResponseSync(transport, requestId, request, params, metrics);
             }
+        } catch (ToolCallUnauthorizedException e) {
+            throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         } catch (ToolCallException e) {
             // Catch validation errors that occur before calling the tool and should result in a tool call error response
             ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
@@ -285,7 +288,7 @@ public class McpServlet extends HttpServlet {
         }
     }
 
-    @FFDCIgnore({ McpResponseException.class, ToolCallException.class, Exception.class })
+    @FFDCIgnore({ McpResponseException.class, ToolCallUnauthorizedException.class, ToolCallException.class, Exception.class })
     private void callToolAndSendResponseSync(McpTransport transport,
                                              ExecutionRequestId requestId,
                                              McpRequest mcpRequest,
@@ -305,6 +308,8 @@ public class McpServlet extends HttpServlet {
         } catch (McpResponseException e) {
             // These exceptions indicate a specific response should be used
             throw e;
+        } catch (ToolCallUnauthorizedException e) {
+            throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         } catch (ToolCallException e) {
             // ToolCallException is the only business exception type that can be thrown by a handler
             response = ToolResponses.createBusinessErrorResponse(e);
@@ -344,6 +349,8 @@ public class McpServlet extends HttpServlet {
                                }
                                if (throwable instanceof McpResponseException responseEx) {
                                    throw responseEx;
+                               } else if (throwable instanceof ToolCallUnauthorizedException unauthorizedEx) {
+                                   throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, unauthorizedEx.getMessage());
                                } else if (throwable instanceof ToolCallException toolEx) {
                                    return ToolResponses.createBusinessErrorResponse(toolEx);
                                } else {
