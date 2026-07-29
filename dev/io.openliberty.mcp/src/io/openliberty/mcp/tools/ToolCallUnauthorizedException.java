@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.tools;
 
-import io.openliberty.mcp.annotations.Tool;
-
 /**
  * Indicates that the caller is not authorized to invoke a {@link Tool} method.
  * <p>
