@@ -119,12 +119,6 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configured pipeline with " + ctx.pipeline().names());
             }
-            // SslHandshakeCompletionEvent is consumed by ApplicationProtocolNegotiationHandler
-            // (this class) and never forwarded to ReadFlowHandler. ReadFlowHandler also did not
-            // receive channelActive (added dynamically after handshake). Issue the first read
-            // here so the channel does not stall waiting for an application-data read that
-            // will never be scheduled.
-            ctx.read();
             return;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

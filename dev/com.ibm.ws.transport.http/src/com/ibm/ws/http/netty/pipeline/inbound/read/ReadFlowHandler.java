@@ -207,6 +207,11 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             + " readAgain=" + state.isReadAgain());
 
         if (context.pipeline().get(FlowControlHandler.class) != null){
+            if (state.isReadPending()){
+                state.setReadPending(false);
+                state.setReadAgain(false);
+                requestRead(context);
+            }
             return;
         }
         
@@ -351,7 +356,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                     Tr.debug(tc, "Found successful SslHandshakeCompletionEvent, queueing read if auto read is disabled. AutoRead: " + context.channel().config().isAutoRead());
                 }
                 if (!context.channel().config().isAutoRead()) {
-                    context.read();
+                    requestRead(context);
                 }
         }
         super.userEventTriggered(context, event);
