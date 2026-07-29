@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.interceptor.AroundInvoke;
@@ -155,6 +156,24 @@ public class LockInterceptor implements Serializable {
                                        beanInstance);
             }
         }
+    }
+
+    /**
+     * Receives notification that a bean instance with intercepted methods is
+     * being destroyed. Removes references to the bean instance from the map
+     * of locks.
+     *
+     * @param invocation
+     * @throws Exception if an error occurs
+     */
+    @PreDestroy
+    @Trivial
+    public void preDestroyBean(InvocationContext invocation) throws Exception {
+        Object beanInstance = invocation.getTarget();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "preDestroyBean", invocation, beanInstance);
+        locks.remove(new InstanceEqualityKey(beanInstance));
+        invocation.proceed();
     }
 
     /**
