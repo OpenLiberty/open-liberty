@@ -61,16 +61,13 @@ public class ReadLockBean {
           accessTimeout = Lock.IMMEDIATE)
     public void delayedWriteValue(CountDownLatch methodisRunning,
                                   CountDownLatch delayer,
-                                  String newValue) {
+                                  String newValue) //
+                    throws InterruptedException, TimeoutException {
         methodisRunning.countDown();
-        try {
-            if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
-                value = newValue;
-            else
-                throw new AssertionError(new TimeoutException("timed out"));
-        } catch (InterruptedException x) {
-            throw new AssertionError(x);
-        }
+        if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
+            value = newValue;
+        else
+            throw new TimeoutException("timed out");
     }
 
     public String readValue() {

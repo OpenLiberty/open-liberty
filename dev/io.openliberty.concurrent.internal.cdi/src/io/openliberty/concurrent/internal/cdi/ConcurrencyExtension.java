@@ -54,6 +54,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 /**
  * CDI Extension for
@@ -100,17 +101,23 @@ public class ConcurrencyExtension implements Extension {
         // register the Lock interceptor binding and interceptor (if available)
         if (LockInterceptor.ANNO_CLASS != null) {
             // register the Asynchronous interceptor binding and interceptor
-            AnnotatedType<? extends Annotation> lockBindingType = //
-                            beanManager.createAnnotatedType(LockInterceptor.ANNO_CLASS);
+            AnnotatedType<? extends Annotation> lockBindingType = beanManager //
+                            .createAnnotatedType(LockInterceptor.ANNO_CLASS);
             event.addInterceptorBinding(lockBindingType);
 
-            AnnotatedType<LockInterceptor> lockInterceptorType = //
-                            beanManager.createAnnotatedType(LockInterceptor.class);
-            String lockInterceptorTypeString = CDIServiceUtils //
+            AnnotatedType<LockInterceptor> lockInterceptorType = beanManager //
+                            .createAnnotatedType(LockInterceptor.class);
+            String identifier = CDIServiceUtils //
                             .getAnnotatedTypeIdentifier(lockInterceptorType,
                                                         getClass());
-            event.addAnnotatedType(lockInterceptorType,
-                                   lockInterceptorTypeString);
+            AnnotatedTypeConfigurator<LockInterceptor> lockInterceptorConfigurator = //
+                            event.addAnnotatedType(LockInterceptor.class,
+                                                   identifier);
+
+            // We are not able to code @Lock directly on LockInterceptor because
+            // the project must compile against Java 17 (@Lock requires Java 21).
+            // To work around that, we add it dynamically here:
+            lockInterceptorConfigurator.add(LockInterceptor.LOCK_ANNO);
         }
     }
 

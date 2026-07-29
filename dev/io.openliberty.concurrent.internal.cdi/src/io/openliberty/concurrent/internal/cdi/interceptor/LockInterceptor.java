@@ -37,16 +37,33 @@ import jakarta.interceptor.InvocationContext;
 /**
  * Interceptor for the Lock annotation.
  */
+// @Lock should annotate this interceptor, but won't compile against Java 17.
+// Instead, ConcurrencyExtension.beforeBeanDiscovery adds it dynamically.
 @Interceptor
-@jakarta.enterprise.concurrent.Lock
-@Priority(Interceptor.Priority.PLATFORM_BEFORE + 6)
+@Priority(Interceptor.Priority.PLATFORM_BEFORE + 10) // TODO determine correct value
 public class LockInterceptor implements Serializable {
     private static final long serialVersionUID = 757018268808860939L;
 
     private static final TraceComponent tc = Tr.register(LockInterceptor.class);
 
+    /**
+     * jakarta.enterprise.concurrent.Lock if Jakarta Concurrency 3.2+
+     * and otherwise null.
+     */
     public static final Class<? extends Annotation> ANNO_CLASS;
-    public static final Method ACCESS_TIMEOUT, TYPE, UNIT;
+
+    /**
+     * Methods to access fields of jakarta.enterprise.concurrent.Lock
+     * if Jakarta Concurrency 3.2+ and otherwise null.
+     */
+    private static final Method ACCESS_TIMEOUT, TYPE, UNIT;
+
+    /**
+     * jakarta.enterprise.concurrent.Lock.Literal.INSTANCE
+     * if Jakarta Concurrency 3.2+ and otherwise null.
+     */
+    public static final Annotation LOCK_ANNO;
+
     static {
         String specVersion = ManagedExecutors.class.getPackage() //
                         .getSpecificationVersion();
@@ -55,18 +72,28 @@ public class LockInterceptor implements Serializable {
             ACCESS_TIMEOUT = null;
             TYPE = null;
             UNIT = null;
+            LOCK_ANNO = null;
         } else {
+            ClassLoader loader = ManagedExecutors.class.getClassLoader();
             try {
                 @SuppressWarnings("unchecked")
                 Class<? extends Annotation> c = //
                                 (Class<? extends Annotation>) //
-                                Class.forName("jakarta.enterprise.concurrent.Lock");
+                                loader.loadClass("jakarta.enterprise.concurrent.Lock");
                 ANNO_CLASS = c;
 
                 ACCESS_TIMEOUT = c.getMethod("accessTimeout");
                 TYPE = c.getMethod("type");
                 UNIT = c.getMethod("unit");
-            } catch (ClassNotFoundException | NoSuchMethodException x) {
+
+                LOCK_ANNO = (Annotation) loader //
+                                .loadClass("jakarta.enterprise.concurrent.Lock$Literal") //
+                                .getField("INSTANCE") //
+                                .get(null);
+            } catch (ClassNotFoundException | //
+                            IllegalAccessException | //
+                            NoSuchFieldException | //
+                            NoSuchMethodException x) {
                 throw (ExceptionInInitializerError) // should never occur
                 new ExceptionInInitializerError //
                 ("Incorrect definition of @Lock in Concurrency " + specVersion) //
@@ -89,7 +116,6 @@ public class LockInterceptor implements Serializable {
         Method method = invocation.getMethod();
         Annotation anno = invocation.getInterceptorBinding(ANNO_CLASS);
 
-        // TODO use Lock API directly
         boolean read = "READ".equals(TYPE.invoke(anno).toString());
         long timeout = (Long) ACCESS_TIMEOUT.invoke(anno);
         TimeUnit unit = (TimeUnit) UNIT.invoke(anno);
