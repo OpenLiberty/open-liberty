@@ -44,8 +44,7 @@ public class Concurrency32Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Test application ConcurrencyTestApp.ear
-        // [ConcurrencyTestEJB.jar, ConcurrencyTestWeb.war, application.xml]
+        // Test application Concurrency32TestApp.ear
 
         WebArchive concurrency32TestWeb = ShrinkHelper
                         .buildDefaultApp("Concurrency32TestWeb",

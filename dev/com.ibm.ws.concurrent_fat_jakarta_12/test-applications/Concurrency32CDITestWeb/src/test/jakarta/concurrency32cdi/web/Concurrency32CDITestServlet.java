@@ -18,6 +18,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +62,11 @@ public class Concurrency32CDITestServlet extends FATServlet {
     // TODO switch to the above
     @Resource(lookup = "java:comp/concurrent/cdi/async-3-scheduler")
     ManagedScheduledExecutorService async3Scheduler;
+
+    @Inject
+    ReadLockBean readLockBean;
+
+    ExecutorService testThreads = Executors.newVirtualThreadPerTaskExecutor();
 
     /**
      * Cancel futures that are still incomplete when tests methods end,
@@ -103,4 +111,44 @@ public class Concurrency32CDITestServlet extends FATServlet {
                      future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
+    /**
+     * Bean methods that require a READ Lock must be able to run at the same time.
+     * An ApplicationScoped CDI bean is annotated with a Lock of type READ, which
+     * becomes the default for all bean methods unless explicitly overridden by
+     * annotating the method.
+     */
+    @Test
+    public void testReadLockAcquiredByMultipleThreads() throws Exception {
+        readLockBean.writeValue("testReadLockAcquiredByMultipleThreads");
+
+        // read by single thread
+        assertEquals("testReadLockAcquiredByMultipleThreads",
+                     readLockBean.readValue());
+
+        // have thread2 acquire READ lock on bean
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch running = new CountDownLatch(1);
+        Future<?> thread2Future = testThreads.submit(() -> readLockBean //
+                        .delayedReadValue(running, blocker));
+        cancelAfterTest.add(thread2Future);
+        running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // current thread must also be able to acquire READ lock on bean
+        assertEquals("testReadLockAcquiredByMultipleThreads",
+                     readLockBean.readValue());
+
+        assertEquals("testReadLockAcquiredByMultipleThreads",
+                     readLockBean.blockingReadValue());
+
+        // allow thread2 to complete
+        blocker.countDown();
+
+        // current thread can acquire WRITE lock now
+        readLockBean.blockingWriteValue(null);
+
+        assertEquals(null,
+                     readLockBean.readValue());
+
+        thread2Future.cancel(true);
+    }
 }

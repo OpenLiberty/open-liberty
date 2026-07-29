@@ -14,6 +14,9 @@
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.1; singleton:=true
+Specification-Title: Jakarta Concurrency
+Specification-Vendor: Eclipse Foundation
+Specification-Version: 3.1
 
 javac.source: 17
 javac.target: 17
