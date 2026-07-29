@@ -32,6 +32,7 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
+import io.openliberty.concurrent.internal.cdi.interceptor.LockInterceptor;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.Asynchronous;
@@ -55,14 +56,18 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 
 /**
- * CDI Extension for Jakarta Concurrency 3.1+ in Jakarta EE 11+, which corresponds to CDI 4.1+
+ * CDI Extension for
+ * Jakarta Concurrency 3.1/CDI 4.1 in Jakarta EE 11 and
+ * Jakarta Concurrency 3.2/CDI 5.0 in Jakarta EE 12
  */
 public class ConcurrencyExtension implements Extension {
     private static final TraceComponent tc = Tr.register(ConcurrencyExtension.class);
 
-    private static final Annotation[] DEFAULT_QUALIFIER_ARRAY = new Annotation[] { Default.Literal.INSTANCE };
+    private static final Annotation[] DEFAULT_QUALIFIER_ARRAY = //
+                    new Annotation[] { Default.Literal.INSTANCE };
 
-    private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
+    private static final Set<Annotation> DEFAULT_QUALIFIER_SET = //
+                    Set.of(Default.Literal.INSTANCE);
 
     /**
      * Indicates if we were able to create a default ManagedThreadFactory bean.
@@ -77,21 +82,47 @@ public class ConcurrencyExtension implements Extension {
      * @param beforeBeanDiscovery
      * @param beanManager
      */
-    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-        // register the interceptor binding and the interceptor
-        AnnotatedType<Asynchronous> bindingType = beanManager.createAnnotatedType(Asynchronous.class);
-        beforeBeanDiscovery.addInterceptorBinding(bindingType);
-        AnnotatedType<AsyncInterceptor> interceptorType = beanManager.createAnnotatedType(AsyncInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery event,
+                                    BeanManager beanManager) {
+        // register the Asynchronous interceptor binding and interceptor
+        AnnotatedType<Asynchronous> asyncBindingType = //
+                        beanManager.createAnnotatedType(Asynchronous.class);
+        event.addInterceptorBinding(asyncBindingType);
+
+        AnnotatedType<AsyncInterceptor> asyncInterceptorType = //
+                        beanManager.createAnnotatedType(AsyncInterceptor.class);
+        String asyncInterceptorTypeString = CDIServiceUtils //
+                        .getAnnotatedTypeIdentifier(asyncInterceptorType,
+                                                    getClass());
+        event.addAnnotatedType(asyncInterceptorType,
+                               asyncInterceptorTypeString);
+
+        // register the Lock interceptor binding and interceptor (if available)
+        if (LockInterceptor.ANNO_CLASS != null) {
+            // register the Asynchronous interceptor binding and interceptor
+            AnnotatedType<? extends Annotation> lockBindingType = //
+                            beanManager.createAnnotatedType(LockInterceptor.ANNO_CLASS);
+            event.addInterceptorBinding(lockBindingType);
+
+            AnnotatedType<LockInterceptor> lockInterceptorType = //
+                            beanManager.createAnnotatedType(LockInterceptor.class);
+            String lockInterceptorTypeString = CDIServiceUtils //
+                            .getAnnotatedTypeIdentifier(lockInterceptorType,
+                                                        getClass());
+            event.addAnnotatedType(lockInterceptorType,
+                                   lockInterceptorTypeString);
+        }
     }
 
     /**
-     * Register beans for default instances and qualified instances of concurrency resources after bean discovery.
+     * Register beans for default instances and qualified instances of concurrency
+     * resources after bean discovery.
      *
      * @param event
      * @param beanManager
      */
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event,
+                                   BeanManager beanManager) {
 
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd == null)
