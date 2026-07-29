@@ -20,12 +20,8 @@ package io.openliberty.mcp.tools;
  * <p>
  * This allows application code to perform fine-grained authorization checks inside a {@code @Tool}
  * method body and signal an authorization failure using the standard HTTP 403 status code.
- * <p>
- * {@link ToolCallUnauthorizedException} extends {@link ToolCallException} so that it is treated
- * consistently as a first-class tool exception in the framework, while still being routed to the
- * HTTP 403 path rather than the business-error {@code isError: true} path.
  */
-public class ToolCallUnauthorizedException extends ToolCallException {
+public class ToolCallUnauthorizedException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

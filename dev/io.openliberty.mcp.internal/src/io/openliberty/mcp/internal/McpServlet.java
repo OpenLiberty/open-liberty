@@ -244,7 +244,7 @@ public class McpServlet extends HttpServlet {
         }
     }
 
-    @FFDCIgnore(ToolCallException.class)
+    @FFDCIgnore({ ToolCallUnauthorizedException.class, ToolCallException.class })
     private void callTool(McpTransport transport, McpOperationMetrics metrics) {
         traceEvent("A tool call request has arrived");
 
@@ -309,7 +309,6 @@ public class McpServlet extends HttpServlet {
             // These exceptions indicate a specific response should be used
             throw e;
         } catch (ToolCallUnauthorizedException e) {
-            // ToolCallUnauthorizedException must be checked before ToolCallException because it extends it
             throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         } catch (ToolCallException e) {
             // ToolCallException is the only business exception type that can be thrown by a handler
@@ -351,7 +350,6 @@ public class McpServlet extends HttpServlet {
                                if (throwable instanceof McpResponseException responseEx) {
                                    throw responseEx;
                                } else if (throwable instanceof ToolCallUnauthorizedException unauthorizedEx) {
-                                   // ToolCallUnauthorizedException must be checked before ToolCallException because it extends it
                                    throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, unauthorizedEx.getMessage());
                                } else if (throwable instanceof ToolCallException toolEx) {
                                    return ToolResponses.createBusinessErrorResponse(toolEx);
