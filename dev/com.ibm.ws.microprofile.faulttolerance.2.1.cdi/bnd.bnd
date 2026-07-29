@@ -57,4 +57,5 @@ testsrc=test/src
 	com.ibm.ws.container.service;version=latest, \
 	org.eclipse.osgi;version=latest, \
 	com.ibm.ws.microprofile.faulttolerance.2.0;version=latest, \
-	com.ibm.ws.microprofile.faulttolerance;version=latest
+	com.ibm.ws.microprofile.faulttolerance;version=latest, \
+	com.ibm.ws.config;version=latest
