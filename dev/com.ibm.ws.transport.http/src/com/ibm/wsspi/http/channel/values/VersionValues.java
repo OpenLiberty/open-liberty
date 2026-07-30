@@ -318,7 +318,7 @@ public class VersionValues extends GenericKeys {
                         minor += (c - '0');
                     }
                 } else if (' ' == c || '\t' == c) {
-                    if (0 >= minor)
+                    if (-1 == minor)
                         continue; // leading whitespace
                     // trailing whitespace must extend to the end
                     for (; i < data.length; i++) {
@@ -446,7 +446,7 @@ public class VersionValues extends GenericKeys {
                         minor += (c - '0');
                     }
                 } else if (' ' == c || '\t' == c) {
-                    if (0 >= minor)
+                    if (-1 == minor)
                         continue; // leading whitespace
                     // trailing whitespace must extend to the end
                     for (; i < data.length; i++) {
