@@ -8,7 +8,10 @@
   </featureManager>
 
   <application location="asyncToolsTest.war">
-    <mcpServer asyncTimeout="5s"/>
+  </application>
+  
+  <application location="asyncToolsTestShortTimeout.war">
+    <mcp asyncTimeout="5s"/>
   </application>
 
   <include location="../fatTestPorts.xml" />

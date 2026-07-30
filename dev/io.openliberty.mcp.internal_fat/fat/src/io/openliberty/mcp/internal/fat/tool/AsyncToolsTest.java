@@ -51,6 +51,9 @@ public class AsyncToolsTest extends FATServletClient {
     public McpClient client = new McpClient(server, "/asyncToolsTest");
 
     @Rule
+    public McpClient shortTimeoutClient = new McpClient(server, "/asyncToolsTestShortTimeout");
+
+    @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");
 
     @BeforeClass
@@ -60,6 +63,13 @@ public class AsyncToolsTest extends FATServletClient {
                                    .addPackage(ToolStatus.class.getPackage());
 
         ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+
+        // Same app deployed a second time, but has different config in server.xml
+        WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, "asyncToolsTestShortTimeout.war")
+                                               .addPackage(AsyncTools.class.getPackage())
+                                               .addPackage(ToolStatus.class.getPackage());
+
+        ShrinkHelper.exportAppToServer(server, shortTimeoutWar, SERVER_ONLY);
 
         server.startServer();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
@@ -262,7 +272,7 @@ public class AsyncToolsTest extends FATServletClient {
                             }
                           }
                         """;
-        client.callMCP(request);
+        shortTimeoutClient.callMCP(request);
     }
 
     @Test
