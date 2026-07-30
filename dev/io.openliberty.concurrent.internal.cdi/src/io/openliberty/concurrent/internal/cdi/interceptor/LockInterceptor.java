@@ -141,6 +141,11 @@ public class LockInterceptor implements Serializable {
 
         boolean acquired = false;
         try {
+            // reject unsupported escalation from READ to WRITE
+            // (which would otherwise time out or deadlock self)
+            if (!read && reentrantLock.getReadHoldCount() > 0)
+                throw new IllegalStateException("Cannot upgrade from READ to WRITE lock"); // TODO NLS
+
             if (timeout > 0) {
                 acquired = lock.tryLock(timeout, unit);
             } else if (timeout == 0) { // IMMEDIATE
