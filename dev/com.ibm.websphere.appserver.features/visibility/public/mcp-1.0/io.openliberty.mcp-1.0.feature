@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mcpServer-1.0
+symbolicName=io.openliberty.mcp-1.0
 visibility=public
 IBM-App-ForceRestart: install, \
  uninstall
@@ -18,9 +18,9 @@ IBM-API-Package: \
  org.mcpjava.server.sampling; type="stable", \
  org.mcpjava.server.spi; type="stable", \
  org.mcpjava.server.tools; type="stable"
-IBM-ShortName: mcpServer-1.0
-Subsystem-Name: Model Context Protocol Server 1.0
--features=io.openliberty.mcpServer1.0.ee-10.0;ibm.tolerates:="11.0, 12.0"
+IBM-ShortName: mcp-1.0
+Subsystem-Name: Model Context Protocol 1.0
+-features=io.openliberty.mcp1.0.ee-10.0;ibm.tolerates:="11.0, 12.0"
 -bundles=io.openliberty.mcp; location:="dev/api/ibm/,lib/", \
  io.openliberty.mcp.internal, \
  io.openliberty.org.mcpjava.mcp-server-api; location:="dev/api/stable/,lib/"; mavenCoordinates="org.mcpjava:mcp-server-api:1.0.0", \
