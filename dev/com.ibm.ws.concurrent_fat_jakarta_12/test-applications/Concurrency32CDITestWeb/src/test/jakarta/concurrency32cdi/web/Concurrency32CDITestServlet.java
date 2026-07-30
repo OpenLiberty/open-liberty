@@ -69,6 +69,9 @@ public class Concurrency32CDITestServlet extends FATServlet {
     ManagedScheduledExecutorService async3Scheduler;
 
     @Inject
+    LoopbackBean loopbackBean;
+
+    @Inject
     ReadLockBean readLockBean;
 
     ExecutorService testThreads = Executors.newVirtualThreadPerTaskExecutor();
@@ -161,6 +164,47 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * Invoke a bean method annotated Lock(READ) which invokes another
+     * method of the same bean instance annotated Lock(READ).
+     * The LoopbackBean.power method is annotated Lock(READ) and recursively
+     * invokes itself through the CDI proxy, also annotated Lock(READ).
+     * Because READ locks are shared and reentrant, this must succeed.
+     */
+    @Test
+    public void testReadLockLoopbackToReadLock() throws Exception {
+        loopbackBean.setNumber(3);
+
+        // power(4, bean) returns number^4 = 81; exercises deep READ->READ recursion
+        assertEquals(81L, loopbackBean.power(4, loopbackBean));
+    }
+
+    /**
+     * Invoke a bean method annotated Lock(READ) which invokes another
+     * method of the same bean instance annotated Lock(WRITE) and confirm
+     * that this raises IllegalStateException as required by the Lock
+     * annotation.
+     * The LoopbackBean.square method is annotated Lock(READ) and calls
+     * setNumber which is annotated Lock(WRITE, accessTimeout=IMMEDIATE).
+     * Upgrading from READ to WRITE on the same thread is prohibited, so
+     * IllegalStateException must be raised.
+     */
+    @Test
+    public void testReadLockLoopbackToWriteLock() throws Exception {
+        loopbackBean.setNumber(5);
+
+        try {
+            loopbackBean.square(loopbackBean);
+            fail("Expected IllegalStateException when a READ-locked method " +
+                 "attempts to invoke a WRITE-locked method via loopback.");
+        } catch (IllegalStateException x) {
+            // expected: READ -> WRITE loopback is not permitted
+        }
+
+        // The value must be unchanged because the write was blocked
+        assertEquals(5L, loopbackBean.getNumber());
+    }
+
+    /**
      * When the current thread holds a READ lock, another thread must not be able
      * to acquire a WRITE lock.
      */
@@ -210,6 +254,41 @@ public class Concurrency32CDITestServlet extends FATServlet {
         }
 
         readLockBean.blockingWriteValue(null);
+    }
+
+    /**
+     * Invoke a bean method annotated Lock(WRITE) which invokes another
+     * method of the same bean instance annotated Lock(READ).
+     * The LoopbackBean.increment method is annotated Lock(WRITE) and calls
+     * getNumber which is annotated Lock(READ, accessTimeout=UNLIMITED).
+     * A thread holding the WRITE lock may also acquire a READ lock, so
+     * this must succeed and leave the number incremented by one.
+     */
+    @Test
+    public void testWriteLockLoopbackToReadLock() throws Exception {
+        loopbackBean.setNumber(2);
+
+        loopbackBean.increment(loopbackBean);
+
+        assertEquals(3L, loopbackBean.getNumber());
+    }
+
+    /**
+     * Invoke a bean method annotated Lock(WRITE) which invokes another
+     * method of the same bean instance annotated Lock(WRITE).
+     * The LoopbackBean.clear method is annotated Lock(WRITE) and calls
+     * setNumber which is annotated Lock(WRITE, accessTimeout=IMMEDIATE).
+     * Because WRITE locks are reentrant on the same thread, this must
+     * succeed and leave the number set to zero.
+     */
+    @Test
+    public void testWriteLockLoopbackToWriteLock() throws Exception {
+        loopbackBean.setNumber(99);
+        assertEquals(99L, loopbackBean.getNumber());
+
+        loopbackBean.clear(loopbackBean);
+
+        assertEquals(0L, loopbackBean.getNumber());
     }
 
     /**
