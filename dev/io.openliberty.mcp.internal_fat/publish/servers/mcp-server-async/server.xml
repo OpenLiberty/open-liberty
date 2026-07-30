@@ -8,5 +8,5 @@
   </featureManager>
 
   <include location="../fatTestPorts.xml" />
-  
+
 </server>
