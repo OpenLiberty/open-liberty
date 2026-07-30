@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1412,7 +1412,7 @@ public class HttpRequestMessageImplTest {
             buff1 = mgr.allocate(32);
             buff2 = mgr.allocate(32);
             buff1.put("GETAABBCCDDEEFFGGHHIIJJKKLLMMNNO".getBytes());
-            buff2.put("O / HTTP/0001.1\r\n\r\n".getBytes());
+            buff2.put("O / HTTP/1.1\r\n\r\n".getBytes());
             buff1.flip();
             buff2.flip();
             assertFalse(getRequest().parseMessage(buff1, true));
