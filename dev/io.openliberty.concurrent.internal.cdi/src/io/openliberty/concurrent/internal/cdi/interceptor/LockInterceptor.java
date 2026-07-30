@@ -146,7 +146,7 @@ public class LockInterceptor implements Serializable {
             } else if (timeout == 0) { // IMMEDIATE
                 acquired = lock.tryLock();
             } else if (timeout == -1) { // UNLIMITED
-                lock.lock();
+                lock.lockInterruptibly();
                 acquired = true;
             } else { // negative accessTimeout value
                 throw new CompletionException(new UnsupportedOperationException//
@@ -175,11 +175,16 @@ public class LockInterceptor implements Serializable {
             throw x;
         } finally {
             if (acquired) {
+                int lockCount = 0;
+                if (trace && tc.isDebugEnabled())
+                    lockCount = reentrantLock.getReadLockCount() +
+                                reentrantLock.getWriteHoldCount() -
+                                1; // -1 for subsequent unlock
                 lock.unlock();
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc,
-                             (read ? "READ" : "WRITE") + " completed for " +
-                                       beanInstance);
+                             (read ? "READ" : "WRITE") + " completed, with " +
+                                       lockCount + " Lock methods still accessing");
             }
         }
     }

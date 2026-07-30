@@ -13,17 +13,22 @@
 package test.jakarta.concurrency32cdi.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
@@ -67,6 +72,9 @@ public class Concurrency32CDITestServlet extends FATServlet {
     ReadLockBean readLockBean;
 
     ExecutorService testThreads = Executors.newVirtualThreadPerTaskExecutor();
+
+    @Inject
+    WriteLockBean writeLockBean;
 
     /**
      * Cancel futures that are still incomplete when tests methods end,
@@ -150,5 +158,136 @@ public class Concurrency32CDITestServlet extends FATServlet {
                      readLockBean.readValue());
 
         thread2Future.cancel(true);
+    }
+
+    /**
+     * When the current thread holds a READ lock, another thread must not be able
+     * to acquire a WRITE lock.
+     */
+    @Test
+    public void testReadLockPreventsWriteLockFromOtherThread() throws Exception {
+        readLockBean.writeValue("testReadLockPreventsWriteLockFromOtherThread");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch running = new CountDownLatch(1);
+        CompletableFuture<?> thread2Future = CompletableFuture.runAsync(() -> {
+            // wait for main thread to acquire READ lock
+            try {
+                assertEquals(true,
+                             running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            } catch (InterruptedException x) {
+                throw new AssertionError(x);
+            }
+
+            try {
+                readLockBean.writeValue("thread2's value");
+            } finally {
+                // allow main thread to complete
+                blocker.countDown();
+            }
+        });
+
+        // obtain READ lock and block until thread2 allows us to continue
+        assertEquals("testReadLockPreventsWriteLockFromOtherThread",
+                     readLockBean.delayedReadValue(running, blocker));
+
+        try {
+            thread2Future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof TimeoutException) // TODO different exception
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            thread2Future.join();
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof TimeoutException) // TODO different exception
+                ; // expected
+            else
+                throw x;
+        }
+
+        readLockBean.blockingWriteValue(null);
+    }
+
+    /**
+     * Bean methods that require a WRITE Lock must not run at the same time on
+     * different threads.
+     * An ApplicationScoped CDI bean is annotated with a Lock of type WRITE, which
+     * becomes the default for all bean methods unless explicitly overridden by
+     * annotating the method.
+     */
+    @Test
+    public void testWriteLockNotAcquiredByMultipleThreads() throws Exception {
+
+        // write by single thread
+        writeLockBean.writeNumber(41);
+
+        // have thread2 acquire WRITE lock on bean
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch running = new CountDownLatch(1);
+        Future<Boolean> thread2Future = testThreads.submit(() -> writeLockBean //
+                        .delayedWriteNumber(running, blocker, 51));
+        cancelAfterTest.add(thread2Future);
+        running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // have thread3 attempt WRITE lock and end up blocked
+        Future<?> thread3Future = testThreads.submit(() -> writeLockBean //
+                        .blockingWriteNumber(61));
+        cancelAfterTest.add(thread3Future);
+
+        // current thread must not be able to acquire WRITE lock on bean
+        try {
+            writeLockBean.writeNumber(71);
+            fail("Should not be able to acquire the WRITE lock while the second" +
+                 " thread still holds the WRITE lock.");
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof TimeoutException) // TODO different exception
+                ; // expected
+            else
+                throw x;
+        }
+
+        // current thread must not be able to acquire READ lock on bean
+        try {
+            int num = writeLockBean.readNumber();
+            fail("Should not be able to acquire a READ lock while the second" +
+                 " thread still holds the WRITE lock. Result: " + num);
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof TimeoutException) // TODO different exception
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            thread3Future.get(1, TimeUnit.SECONDS);
+            fail("A third thread should not be able to acquire the WRITE lock" +
+                 " while the second thread still holds the WRITE lock.");
+        } catch (TimeoutException x) {
+            // expected
+        }
+
+        // interrupt thread3 while it is waiting for the WRITE lock
+        assertEquals(true,
+                     thread3Future.cancel(true));
+
+        // allow thread2 to complete
+        blocker.countDown();
+
+        // current thread can acquire READ lock now
+        assertEquals(51,
+                     writeLockBean.blockingReadNumber());
+
+        // current thread can acquire WRITE lock now
+        writeLockBean.writeNumber(81);
+
+        assertEquals(81,
+                     writeLockBean.readNumber());
+
+        assertEquals(true,
+                     thread2Future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 }
