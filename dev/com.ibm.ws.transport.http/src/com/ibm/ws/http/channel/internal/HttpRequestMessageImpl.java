@@ -238,27 +238,10 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /*
-     * @see com.ibm.ws.http.channel.internal.HttpBaseMessageImpl#isBodyExpected()
-     */
-    @Override
-    public boolean isBodyExpected() {
-
-        // check basic validation first
-        if (super.isBodyExpected()) {
-            // return whatever is default for this method
-            return this.myMethod.isBodyAllowed();
-        }
-
-        // no body here
-        return false;
-    }
-
-    /*
      * @see com.ibm.ws.http.channel.internal.HttpBaseMessageImpl#isBodyAllowed()
      */
     @Override
     public boolean isBodyAllowed() {
-
         // requests must be delimited by something (not socket closure) so
         // the behavior here is the same as isBodyExpected
         return isBodyExpected();
