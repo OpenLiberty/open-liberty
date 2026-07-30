@@ -43,7 +43,7 @@ Export-Package: \
    com.ibm.ws.security.openidconnect.client.jose4j
 
 Private-Package: \
-    com.ibm.ws.security.openidconnect.client.internal, \
+    com.ibm.ws.security.openidconnect.client.internal.*, \
     com.ibm.ws.security.openidconnect.client.web
 
 Import-Package: \

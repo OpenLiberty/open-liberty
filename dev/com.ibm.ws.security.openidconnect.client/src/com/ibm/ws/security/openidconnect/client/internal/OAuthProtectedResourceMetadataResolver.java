@@ -78,7 +78,7 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
             return null;
         }
 
-        OidcClientConfig config = client.getOidcClientConfig(request, providerId);
+        OidcClientConfig config = client.getOidcClientConfig(request, providerId); // OidcClientImpl
 
         if (config == null) {
             return null;
