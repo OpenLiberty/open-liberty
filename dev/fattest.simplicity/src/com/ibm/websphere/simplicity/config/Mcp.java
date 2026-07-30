@@ -12,9 +12,9 @@ package com.ibm.websphere.simplicity.config;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * Represents the <mcpServer> child element of an application in a server.xml
+ * Represents the {@code <mcp>} child element of an application in a server.xml
  */
-public class McpServer extends ConfigElement {
+public class Mcp extends ConfigElement {
 
     private String stateless;
     private String moduleName;
@@ -58,7 +58,7 @@ public class McpServer extends ConfigElement {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("McpServer {");
+        StringBuilder builder = new StringBuilder("Mcp {");
         if (stateless != null)
             builder.append("stateless=\"" + stateless + "\" ");
         if (moduleName != null)
@@ -70,8 +70,8 @@ public class McpServer extends ConfigElement {
     }
 
     @Override
-    public McpServer clone() throws CloneNotSupportedException {
-        McpServer clone = (McpServer) super.clone();
+    public Mcp clone() throws CloneNotSupportedException {
+        Mcp clone = (Mcp) super.clone();
         return clone;
     }
 
