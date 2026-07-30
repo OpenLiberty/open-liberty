@@ -36,7 +36,7 @@ dependencies {
   
   yasson2 'org.eclipse:yasson:2.0.4'
 
-  yasson3 'org.eclipse:yasson:3.0.5-RC1'
+  yasson3 'org.eclipse.yasson:yasson:3.0.5'
 }
 
 task addJohnzon(type: Copy) {

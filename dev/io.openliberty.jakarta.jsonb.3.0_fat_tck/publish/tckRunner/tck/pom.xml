@@ -92,9 +92,9 @@
 		</dependency>
 		<!-- impl - jsonb - yasson - internal bundle -->
 		<dependency>
-			<groupId>io.openliberty.org.eclipse</groupId>
+			<groupId>org.eclipse.yasson</groupId>
 			<artifactId>yasson</artifactId>
-			<version>3.0.5-RC1</version>
+			<version>3.0.5</version>
 			<scope>system</scope>
 			<systemPath>${io.openliberty.org.eclipse.yasson.3.0}</systemPath>
 		</dependency>
