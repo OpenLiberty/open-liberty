@@ -20,14 +20,14 @@ Contributors must use **commit comments** to clearly mark AI-generated contribut
 Commits that include AI-generated content must have their commit message end in the following format:
 
 ```
-Co-authored-by-AI: <AI Tool/IDE/Platform> (<Model Name/Version>)
+Co-authored-by-AI: <AI Tool/IDE/Platform>
 ```
 
 **Examples:**
 ```
 Co-authored-by-AI: IBM Bob 1.0.0
-Co-authored-by-AI: GitHub Copilot (gpt-4.1)
-Co-authored-by-AI: Claude Code (claude-sonnet-4-6)
+Co-authored-by-AI: GitHub Copilot
+Co-authored-by-AI: Claude Code
 ```
 
 ### 2. Functional Quality
