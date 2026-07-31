@@ -45,7 +45,8 @@ public class ConcurrentCDI5Test extends FATServletClient {
     @Server("concurrent_fat_cdi5")
     @TestServlets({
                     @TestServlet(servlet = ConcurrentCDI4_1Servlet.class,
-                                 contextRoot = APP_NAME)
+                                 contextRoot = APP_NAME,
+                                 minJavaLevel = 17)
     })
     public static LibertyServer server;
 

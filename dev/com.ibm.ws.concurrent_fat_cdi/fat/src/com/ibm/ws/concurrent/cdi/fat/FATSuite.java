@@ -22,7 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 ConcurrentCDI3Test.class, // Jakarta EE 9
                 ConcurrentCDI4Test.class, // Jakarta EE 10
                 ConcurrentCDI4_1Test.class, // Jakarta EE 11
-                ConcurrentCDI5Test.class
+                ConcurrentCDI5Test.class // Jakarta EE 12
 })
 public class FATSuite {
 }
