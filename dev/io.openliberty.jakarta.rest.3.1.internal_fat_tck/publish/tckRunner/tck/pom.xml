@@ -446,7 +446,7 @@
                         <authuser>javajoe</authuser>
                         <authpassword>javajoe</authpassword>
                     </systemPropertyVariables>
-                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                    <testSourceDirectory>${basedir}${file.separator}src${file.separator}main${file.separator}java${file.separator}</testSourceDirectory>
                     <dependenciesToScan>
                          <dependency>io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck</dependency>   
                      </dependenciesToScan>
