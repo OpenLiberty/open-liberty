@@ -181,7 +181,6 @@
 					</excludes>
 					<groups>${included.groups}</groups>
 					<reportNameSuffix>${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
-					<testSourceDirectory>${basedir}${file.separator}src${file.separator}main${file.separator}java${file.separator}</testSourceDirectory>
 				</configuration>
 			</plugin>
 		</plugins>

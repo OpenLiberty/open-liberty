@@ -183,7 +183,6 @@
                     </systemPropertyVariables>
                     <groups>${jakarta.tck.platform}</groups> <!-- Groups to include i.e. web/full -->
                     <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
-                    <testSourceDirectory>${basedir}${file.separator}src${file.separator}main${file.separator}java${file.separator}</testSourceDirectory>
                 </configuration>
             </plugin>
         </plugins>
