@@ -269,11 +269,25 @@ public class McpTransport {
      * This method is responsible for sending a JSON-RPC error response.
      * It takes a JSONRPCException as an argument and constructs an McpErrorResponse object.
      * This error response is then serialised to JSON and written to the provided writer.
+     * <p>
+     * Per the JSON-RPC 2.0 specification, notifications (requests with no id) must not be
+     * responded to, including with error responses. If the current request is a notification,
+     * this method returns without sending anything.
      *
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new RequestId("") : mcpRequest.id(), e);
+        // JSON-RPC notifications must not receive a response.
+        if (mcpRequest != null && mcpRequest.id() == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
+            }
+            sendEmptyResponse();
+            return;
+        }
+        RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
+        McpResponse mcpResponse = new McpErrorResponse(id, e);
+
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
