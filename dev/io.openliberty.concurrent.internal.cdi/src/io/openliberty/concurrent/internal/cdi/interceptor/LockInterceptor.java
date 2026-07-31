@@ -189,7 +189,9 @@ public class LockInterceptor implements Serializable {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc,
                              (read ? "READ" : "WRITE") + " completed, with " +
-                                       lockCount + " Lock methods still accessing");
+                                       lockCount + " Lock methods still accessing, " +
+                                       reentrantLock.getQueueLength() +
+                                       " Lock methods waiting");
             }
         }
     }
