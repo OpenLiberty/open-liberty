@@ -96,7 +96,7 @@ public class KeycloakContainer extends GenericContainer<KeycloakContainer> {
          * Wait to finish startup until we get HTTP responses of 200 for the root context.
          */
         WaitAllStrategy strategy = new WaitAllStrategy(WaitAllStrategy.Mode.WITH_OUTER_TIMEOUT);
-        strategy.withStartupTimeout(Duration.ofMinutes(2));
+        strategy.withStartupTimeout(Duration.ofMinutes(4));
         strategy.withStrategy(Wait.forListeningPort());
         strategy.withStrategy(Wait.forHttp("/").forPort(HTTP_PORT).forStatusCode(200));
         waitingFor(strategy);
