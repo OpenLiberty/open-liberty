@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
+import org.mcpjava.server.tools.ToolResponse;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -2278,6 +2279,113 @@ public class SchemaTest {
 
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+
+    // ---- outputSchemaFrom tests ----
+
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    public ToolResponse toolResponseWithOutputSchemaFromWidget() {
+        return ToolResponse.ofStructured(new Widget("cog", 4));
+    }
+
+    @Test
+    public void testOutputSchemaFromOnToolResponseGeneratesWidgetSchema() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromWidget");
+        // The effective output type is Widget, not ToolResponse
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"]
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom on a plain (non-ToolResponse, non-object) return type: String would normally
+    // produce no output schema, but outputSchemaFrom=Widget forces the registry to generate Widget schema.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    public String plainReturnWithOutputSchemaFromWidget() {
+        return "{}";
+    }
+
+    @Test
+    public void testOutputSchemaFromOnPlainReturnTypeGeneratesWidgetSchema() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "plainReturnWithOutputSchemaFromWidget");
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"]
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom on a non-ToolResponse return type: the registry generates the schema for the
+    // declared outputSchemaFrom class (Widget), NOT for the actual return type (CompositeWidget).
+    // CompositeWidget has a "subwidgets" field; Widget does not — NON_EXTENSIBLE catches any extra fields.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    public CompositeWidget toolWithOutputSchemaFromOverride() {
+        return new CompositeWidget("cog", 4, List.of());
+    }
+
+    @Test
+    public void testOutputSchemaFromOverridesReturnType() {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolWithOutputSchemaFromOverride");
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"]
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // When both @Schema (inline JSON on method) and outputSchemaFrom are present, @Schema wins:
+    // the registry uses the method-level @Schema body, ignoring the outputSchemaFrom type.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    @Schema("""
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": { "type": "string" }
+                      }
+                    }
+                    """)
+    public ToolResponse toolResponseWithSchemaAndOutputSchemaFrom() {
+        return ToolResponse.ofStructured(Map.of("message", "hi"));
+    }
+
+    @Test
+    public void testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithSchemaAndOutputSchemaFrom");
+        // Passing Widget.class as the type, but @Schema on the method overrides — result has "message", not Widget fields
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string" }
+                            }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
     }
 
 }
