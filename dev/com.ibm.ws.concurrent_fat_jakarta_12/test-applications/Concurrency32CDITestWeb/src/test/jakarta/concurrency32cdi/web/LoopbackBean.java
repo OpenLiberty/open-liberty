@@ -84,7 +84,7 @@ public class LoopbackBean {
     @Lock(type = Lock.Type.WRITE,
           accessTimeout = Lock.IMMEDIATE)
     public long setNumber(long number) {
-        long previous = number;
+        long previous = this.number;
         this.number = number;
         return previous;
     }
