@@ -329,8 +329,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     // see defect 218708
     static String firstRandom = OidcUtil.generateRandom(32);
 
-    public OidcClientConfigImpl() {
-    }
+    public OidcClientConfigImpl() {}
 
     @Reference(name = KEY_CONFIGURATION_ADMIN, service = ConfigurationAdmin.class, policy = ReferencePolicy.DYNAMIC)
     protected void setConfigurationAdmin(ServiceReference<ConfigurationAdmin> ref) {
@@ -718,7 +717,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      * flattened onto the parent props map as "protectedResourceMetadata.0.{childProp}".
      * This feature is only available in beta mode.
      *
-     * <p>Sub-element presence is detected via the Liberty config sentinel key
+     * <p>
+     * Sub-element presence is detected via the Liberty config sentinel key
      * {@code protectedResourceMetadata.0.config.referenceType}, which is always injected
      * when the sub-element is present, even when it is empty. We cannot rely solely on
      * the child property keys ({@code advertisedScopes}, {@code jwtBuilderRef}) for presence
@@ -726,12 +726,14 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      * matching jwtBuilder service exists, the config framework does not inject the flat key,
      * so both child keys can be absent even when the element is configured.
      *
-     * @param props the configuration properties map
+     * @param props
+     *            the configuration properties map
      */
     private void processProtectedResourceMetadata(Map<String, Object> props) {
         serveProtectedResourceMetadata = false;
         protectedResourceMetadataAdvertisedScopes = null;
         protectedResourceMetadataJwtBuilderRef = null;
+        protectedResourceMetadataJwtBuilderId = null;
 
         // Beta fencing: only process if running in beta mode
         if (!ProductInfo.getBetaEdition()) {
@@ -764,18 +766,24 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             // not the user-assigned id. Use ConfigAdmin to look up the human-readable "id" property.
             if (protectedResourceMetadataJwtBuilderRef != null) {
                 try {
-                    org.osgi.service.cm.Configuration jwtBuilderConfig = configAdminRef.getService().getConfiguration(protectedResourceMetadataJwtBuilderRef, null);
+                    Configuration jwtBuilderConfig = configAdminRef.getService().getConfiguration(protectedResourceMetadataJwtBuilderRef, null);
                     if (jwtBuilderConfig != null) {
                         java.util.Dictionary<String, Object> jwtBuilderProps = jwtBuilderConfig.getProperties();
                         if (jwtBuilderProps != null) {
-                            protectedResourceMetadataJwtBuilderId = (String) jwtBuilderProps.get("id");
+                            protectedResourceMetadataJwtBuilderId = trimIt((String) jwtBuilderProps.get("id"));
                         }
                     }
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + protectedResourceMetadataJwtBuilderRef + "]: " + e.getMessage());
+                        Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + protectedResourceMetadataJwtBuilderRef + "]: " + e);
                     }
                 }
+                if (protectedResourceMetadataJwtBuilderId == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + protectedResourceMetadataJwtBuilderRef + "]");
+                    }
+                }
+
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2077,11 +2085,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public List<String> getProtectedResourceMetadataAdvertisedScopes() {
         return protectedResourceMetadataAdvertisedScopes;
-    }
-
-    @Override
-    public String getProtectedResourceMetadataJwtBuilderRef() {
-        return protectedResourceMetadataJwtBuilderRef;
     }
 
     @Override

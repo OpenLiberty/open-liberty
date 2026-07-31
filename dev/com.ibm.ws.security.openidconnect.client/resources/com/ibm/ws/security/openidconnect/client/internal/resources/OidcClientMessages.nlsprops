@@ -229,10 +229,6 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: A request to [{0}] is not valid. Th
 OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=A request was received that did not include a required state parameter.
 OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verify the OpenID Connect provider configuration. This message can also be caused by snooping with a browser.
 
-PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1742W: The protected resource metadata could not include a signed_metadata JWT because the JWT builder [{0}] failed to build the token: {1}
-PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=The configured JWT builder raised an exception when building the signed metadata token. The metadata document is still returned without the signed_metadata field.
-PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=Check the JWT builder configuration [{0}] and the server logs for more information about the failure.
-
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
 # do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
@@ -296,5 +292,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verify the OpenID Con
 REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: An authentication request failed because the OpenID Connect provider returned the following {0} error: {1}
 REDIRECT_URI_CONTAINED_ERROR.explanation=The specified response status indicated that the authentication was not successful. The error and error description that are provided in the message contain additional information.
 REDIRECT_URI_CONTAINED_ERROR.useraction=For more information, see the error in the message.
+
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: The protected resource metadata cannot include a signed_metadata JWT because the [{0}] JWT builder failed to build the token: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=The configured JWT builder created an exception when building the signed metadata token. The server returns the metadata document without the signed_metadata field.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=Check the JWT builder configuration and the server logs for more information about the failure.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

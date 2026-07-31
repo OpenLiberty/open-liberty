@@ -216,8 +216,7 @@
     </authFilter>
 
     <!--
-        OIDC client with jwtBuilderRef — tests that signed_metadata, jwks_uri, and
-        bearer_methods_supported are included in the metadata response (HTTP).
+        OIDC client with jwtBuilderRef — tests that signed_metadata is included in the metadata response (HTTP).
     -->
     <openidConnectClient
         id="OidcConfigWithSigning"
@@ -231,13 +230,13 @@
     </openidConnectClient>
 
     <!-- JWT builder used by OidcConfigWithSigning to produce signed_metadata JWTs. -->
-    <jwtBuilder id="metadataJwtBuilder" jwkEnabled="true"/>
+    <jwtBuilder id="metadataJwtBuilder" jwkEnabled="true" issuer="testIssuer" />
 
     <!--
         RS512, jwkEnabled=true, 4096-bit key.
-        Exercises: larger RSA digest, ephemeral JWK key pair (not from keystore), non-default key size.
+        Exercises: larger RSA digest, ephemeral JWK key pair (not from keystore).
     -->
-    <jwtBuilder id="metadataJwtBuilderRs512Jwk" signatureAlgorithm="RS512" jwkEnabled="true" jwkSigningKeySize="4096"/>
+    <jwtBuilder id="metadataJwtBuilderRs512Jwk" signatureAlgorithm="RS512" jwkEnabled="true"/>
 
     <!--
         ES256, jwkEnabled=true.
@@ -247,13 +246,6 @@
     -->
     <jwtBuilder id="metadataJwtBuilderEs256Jwk" signatureAlgorithm="ES256" jwkEnabled="true"/>
 
-    <!--
-        RS384, jwkEnabled=true, 2048-bit key, short JWK rotation window (60 minutes — the minimum).
-        Exercises: a third RSA digest variant, confirmed ephemeral key, and the jwkRotationTime
-        config field being wired through to the JWKProvider.
-    -->
-    <jwtBuilder id="metadataJwtBuilderRs384JwkRotation" signatureAlgorithm="RS384" jwkEnabled="true"
-                jwkSigningKeySize="2048" jwkRotationTime="60m"/>
 
     <authFilter id="authFilterSigning">
         <requestUrl
@@ -263,7 +255,7 @@
     </authFilter>
 
     <!--
-        OIDC client for RS512/4096-bit JWK signing test.
+        OIDC client for RS512 JWK signing test.
     -->
     <openidConnectClient
         id="OidcConfigWithSigningRs512Jwk"
@@ -305,24 +297,48 @@
     </authFilter>
 
     <!--
-        OIDC client for RS384/2048-bit/short-rotation JWK signing test.
+        OIDC client for non JWK signing test.
     -->
     <openidConnectClient
-        id="OidcConfigWithSigningRs384JwkRotation"
-        clientId="client12"
+        id="OidcConfigWithSigningJwkDisabled"
+        clientId="client13"
         clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterSigningRs384JwkRotation">
-        <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="metadataJwtBuilderRs384JwkRotation"/>
+        authFilterRef="authFilterSigningJwkDisabled">
+        <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="metadataJwtBuilderJwkDisabled"/>
     </openidConnectClient>
 
-    <authFilter id="authFilterSigningRs384JwkRotation">
+    <authFilter id="authFilterSigningJwkDisabled">
         <requestUrl
-            id="requestUrlSigningRs384JwkRotation"
-            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningRs384JwkRotation"
+            id="requestUrlSigningJwkDisabled"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningJwkDisabled"
             matchType="equals" />
     </authFilter>
+    
+    <jwtBuilder id="metadataJwtBuilderJwkDisabled"/>
+
+    <!--
+        OIDC client for non JWK signing test.
+    -->
+    <openidConnectClient
+        id="OidcConfigWithInvalidJwtBuilder"
+        clientId="client14"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilterInvalidJwtBuilder">
+        <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="invalid-reference"/>
+    </openidConnectClient>
+
+    <authFilter id="authFilterInvalidJwtBuilder">
+        <requestUrl
+            id="requestUrlInvalidJwtBuilder"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withInvalidJwtBuilder"
+            matchType="equals" />
+    </authFilter>
+
 
 </server>

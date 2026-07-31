@@ -868,8 +868,6 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             // Verify: advertisedScopes, jwtBuilderRef, and jwtBuilderId should be set
             assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile", "email"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertEquals("jwtBuilderRef should be " + jwtBuilderRef, jwtBuilderRef,
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
             assertEquals("jwtBuilderId should be " + jwtBuilderRef, jwtBuilderRef,
                     oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
@@ -909,8 +907,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertNull("jwtBuilderRef should be null when not configured",
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
@@ -946,8 +944,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
                     oidcClientConfig.getServeProtectedResourceMetadata());
             assertNull("advertisedScopes should be null when not configured",
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertNull("jwtBuilderRef should be null when not configured",
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -984,8 +982,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             // Verify: both fields should be null because beta fencing prevents processing
             assertEquals("advertisedScopes should be null when not in beta mode", null,
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertEquals("jwtBuilderRef should be null when not in beta mode", null,
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertFalse("serveProtectedResourceMetadata should be false when not in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
@@ -1018,8 +1016,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             // Verify: both fields should be null
             assertEquals("advertisedScopes should be null when not configured", null,
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertEquals("jwtBuilderRef should be null when not configured", null,
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertFalse("serveProtectedResourceMetadata should be false when sub-element is not configured",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {

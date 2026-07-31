@@ -16,11 +16,6 @@ src: \
 fat.project: true
 publish.wlp.jar.disabled: true
 
-Import-Package: \
-    !*.internal.*, \
-    org.jose4j.*;version="[0.5,1)", \
-    *
-
 tested.features:\
     openidConnectClient-1.0, \
     appSecurity-2.0, \

@@ -9,19 +9,15 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.HashMap;
 import java.util.List;
-
-import com.ibm.json.java.JSONArray;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -175,8 +171,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
 
     @Test
     public void wrapperGetRequestURIReturnsProtectedResourcePath() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("/myApp/protected", wrapper.getRequestURI());
     }
@@ -190,8 +185,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
             }
         });
 
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("https://localhost:9443/myApp/protected", wrapper.getRequestURL().toString());
     }
@@ -205,77 +199,30 @@ public class OAuthProtectedResourceMetadataResolverTest {
             }
         });
 
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("https://localhost:9443/myApp/protected", wrapper.getRequestURL().toString());
     }
 
     @Test
     public void wrapperGetServletPathReturnsProtectedResourcePath() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("/myApp/protected", wrapper.getServletPath());
     }
 
     @Test
     public void wrapperGetContextPathReturnsEmpty() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("", wrapper.getContextPath());
     }
 
     @Test
     public void wrapperGetPathInfoReturnsNull() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertNull(wrapper.getPathInfo());
-    }
-
-    // ---- buildJwksUri -------------------------------------------------------
-
-    @Test
-    public void buildJwksUriReturnsCorrectUrl() {
-        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
-
-        mock.checking(new Expectations() {
-            {
-                oneOf(mockRequest).getScheme();
-                will(returnValue("https"));
-                oneOf(mockRequest).getServerName();
-                will(returnValue("localhost"));
-                oneOf(mockRequest).getServerPort();
-                will(returnValue(9443));
-            }
-        });
-
-        String result = resolver.buildJwksUri(mockRequest, "myBuilder");
-
-        assertEquals("https://localhost:9443/jwt/ibm/api/myBuilder/jwk", result);
-    }
-
-    @Test
-    public void buildJwksUriOmitsPortForStandardHttpsPort() {
-        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
-
-        mock.checking(new Expectations() {
-            {
-                oneOf(mockRequest).getScheme();
-                will(returnValue("https"));
-                oneOf(mockRequest).getServerName();
-                will(returnValue("localhost"));
-                oneOf(mockRequest).getServerPort();
-                will(returnValue(443));
-            }
-        });
-
-        String result = resolver.buildJwksUri(mockRequest, "myBuilder");
-
-        assertEquals("https://localhost/jwt/ibm/api/myBuilder/jwk", result);
-        assertFalse("Port 443 should not appear in the URL", result.contains(":443"));
     }
 
     // ---- createSignedMetadata null/blank guard ------------------------------
@@ -284,7 +231,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
     public void createSignedMetadataReturnsNullWhenBuilderIdIsNull() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
 
-        String result = resolver.createSignedMetadata(null, "https://res.example.com", null, "https://res.example.com/jwk", null);
+        String result = resolver.createSignedMetadata(null, null);
 
         assertNull("Expected null when jwtBuilderRef is null", result);
     }
@@ -293,7 +240,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
     public void createSignedMetadataReturnsNullWhenBuilderIdIsBlank() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
 
-        String result = resolver.createSignedMetadata("  ", "https://res.example.com", null, "https://res.example.com/jwk", null);
+        String result = resolver.createSignedMetadata("  ", null);
 
         assertNull("Expected null when jwtBuilderRef is blank", result);
     }
@@ -331,60 +278,10 @@ public class OAuthProtectedResourceMetadataResolverTest {
     // ---- createMetadataJson with jwtBuilderRef ------------------------------
 
     @Test
-    public void createMetadataJsonIncludesJwksUriAndBearerMethodsWhenJwtBuilderRefIsConfigured() throws Exception {
-        TestResolver resolver = new TestResolver();
-        TestOidcClientConfig config = new TestOidcClientConfig("https://issuer.example.com", "myBuilder");
-        config.id = "client1";
-
-        mock.checking(new Expectations() {
-            {
-                oneOf(mockRequest).getScheme();
-                will(returnValue("https"));
-                oneOf(mockRequest).getServerName();
-                will(returnValue("localhost"));
-                oneOf(mockRequest).getServerPort();
-                will(returnValue(9443));
-            }
-        });
-
-        String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected", mockRequest);
-
-        JSONObject metadata = JSONObject.parse(metadataJson);
-        assertEquals("https://localhost:9443/jwt/ibm/api/myBuilder/jwk", metadata.get("jwks_uri"));
-        JSONArray bearerMethods = (JSONArray) metadata.get("bearer_methods_supported");
-        assertNotNull("Expected bearer_methods_supported in result", bearerMethods);
-        assertTrue("Expected 'header' in bearer_methods_supported", bearerMethods.contains("header"));
-    }
-
-    @Test
-    public void createMetadataJsonOmitsJwksUriAndBearerMethodsWhenJwtBuilderRefIsNull() throws Exception {
-        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
-        TestOidcClientConfig config = new TestOidcClientConfig(null);
-        config.id = "client1";
-
-        String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected", mockRequest);
-
-        JSONObject metadata = JSONObject.parse(metadataJson);
-        assertFalse("jwks_uri should be absent when jwtBuilderRef is null", metadata.containsKey("jwks_uri"));
-        assertFalse("bearer_methods_supported should be absent when jwtBuilderRef is null", metadata.containsKey("bearer_methods_supported"));
-    }
-
-    @Test
     public void createMetadataJsonIncludesSignedMetadataWhenJwtBuilderRefIsConfigured() throws Exception {
         TestResolver resolver = new TestResolver();
         TestOidcClientConfig config = new TestOidcClientConfig("https://issuer.example.com", "myBuilder");
         config.id = "client1";
-
-        mock.checking(new Expectations() {
-            {
-                oneOf(mockRequest).getScheme();
-                will(returnValue("https"));
-                oneOf(mockRequest).getServerName();
-                will(returnValue("localhost"));
-                oneOf(mockRequest).getServerPort();
-                will(returnValue(9443));
-            }
-        });
 
         String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected", mockRequest);
 
@@ -408,7 +305,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
 
     private static class TestResolver extends OAuthProtectedResourceMetadataResolver {
         @Override
-        String createSignedMetadata(String jwtBuilderRef, String resourceUrl, String authorizationServer, String jwksUri, List<String> scopesSupported) {
+        String createSignedMetadata(String jwtBuilderRef, JSONObject metadata) {
             return "test.signed.jwt";
         }
     }
@@ -422,7 +319,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
         String issuerIdentifier;
         String discoveryEndpointUrl;
         String authorizationEndpointUrl;
-        String jwtBuilderRef;
+        String jwtBuilderId;
 
         private TestOidcClientConfig() {
             // Default constructor for existing tests.
@@ -432,9 +329,9 @@ public class OAuthProtectedResourceMetadataResolverTest {
             this.issuerIdentifier = issuerIdentifier;
         }
 
-        private TestOidcClientConfig(String issuerIdentifier, String jwtBuilderRef) {
+        private TestOidcClientConfig(String issuerIdentifier, String jwtBuilderId) {
             this.issuerIdentifier = issuerIdentifier;
-            this.jwtBuilderRef = jwtBuilderRef;
+            this.jwtBuilderId = jwtBuilderId;
         }
 
         @Override
@@ -973,14 +870,8 @@ public class OAuthProtectedResourceMetadataResolverTest {
         }
 
         @Override
-        public String getProtectedResourceMetadataJwtBuilderRef() {
-            return jwtBuilderRef;
-        }
-
-        @Override
         public String getProtectedResourceMetadataJwtBuilderId() {
-            // In tests the jwtBuilderRef field doubles as the user-facing id.
-            return jwtBuilderRef;
+            return jwtBuilderId;
         }
 
     }
