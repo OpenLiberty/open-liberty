@@ -36,4 +36,8 @@ feature.project: true
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	biz.aQute.bnd:biz.aQute.bnd;strategy=exact;version=6.4.1;packages=**,\
-	org.apache.aries:org.apache.aries.util;version=1.1.3
+	org.apache.aries:org.apache.aries.util;version=1.1.3,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.runtime.update;version=latest

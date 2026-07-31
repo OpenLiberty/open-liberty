@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020,2025 IBM Corporation and others.
+# Copyright (c) 2020,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;\${repo;io.openliberty.org.apache.santuario:xmlsec;2.3.6.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;io.openliberty.org.apache.santuario:xmlsec;2.3.6.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -sub: *.bnd
 
@@ -19,11 +19,11 @@ santuarioVersion=2.3.6.1
 instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
 
 -includeresource: \
-  @\${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/!META-INF/maven/*,\
-  @\${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/META-INF/**, \
-  @\${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/templates/**, \
-  @\${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/schemas/**, \
-  @\${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/*xml, \
+  @${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/META-INF/**, \
+  @${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/templates/**, \
+  @${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/schemas/**, \
+  @${repo;io.openliberty.org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/*xml, \
   org/apache/xml/security=${bin}/org/apache/xml/security/, \
   org/apache/xml/security/resource/xmlsecurity_en.nlsprops=resources/org/apache/xml/security/resource/xmlsecurity_en.nlsprops
 

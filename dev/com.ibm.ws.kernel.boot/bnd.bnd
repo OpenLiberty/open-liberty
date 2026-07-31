@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2025 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -78,15 +78,15 @@ Private-Package: \
 # with the name of the osgi jar specified above.
 -includeresource: \
     OSGI-OPT=resources/OSGI-OPT, \
-    OSGI-OPT/websphere/bin/tools/ws-server.jar=\${repo;com.ibm.ws.kernel.boot.ws-server}, \
+    OSGI-OPT/websphere/bin/tools/ws-server.jar=${repo;com.ibm.ws.kernel.boot.ws-server}, \
     {OSGI-OPT/websphere/autopd-collection-environment-v2.xml=resources/OSGI-OPT/websphere/autopd-collection-environment-v2.xml}, \
-    @\${repo;com.ibm.websphere.org.osgi.core}!/org/osgi/framework/Version*, \
-    @\${repo;com.ibm.ws.kernel.boot.core}, \
-    @\${repo;com.ibm.ws.kernel.boot.nested}, \
-    @\${repo;com.ibm.ws.kernel.boot.cmdline}, \
-    @\${repo;com.ibm.ws.kernel.boot.common}, \
-    @\${repo;com.ibm.ws.kernel.boot.logging}, \
-    @\${repo;com.ibm.ws.kernel.security.thread}
+    @${repo;com.ibm.websphere.org.osgi.core}!/org/osgi/framework/Version*, \
+    @${repo;com.ibm.ws.kernel.boot.core}, \
+    @${repo;com.ibm.ws.kernel.boot.nested}, \
+    @${repo;com.ibm.ws.kernel.boot.cmdline}, \
+    @${repo;com.ibm.ws.kernel.boot.common}, \
+    @${repo;com.ibm.ws.kernel.boot.logging}, \
+    @${repo;com.ibm.ws.kernel.security.thread}
 
 -dependson: \
     com.ibm.ws.kernel.boot.ws-server

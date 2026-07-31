@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
                 MPHealthTest.class,
                 MPHealthTestFileBased.class,
                 MPHealthTestFileBasedConfig.class,
+                MPHealthTestFileBasedEnableEndpoints.class,
                 MPTelemetryJaxRsIntegrationTest.class,
                 OpenAPIConfigTest.class
 })

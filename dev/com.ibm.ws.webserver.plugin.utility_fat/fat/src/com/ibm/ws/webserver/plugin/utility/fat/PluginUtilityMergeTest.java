@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,19 @@
 package com.ibm.ws.webserver.plugin.utility.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -307,9 +316,75 @@ public class PluginUtilityMergeTest {
     }
     
     /**
+     * Tests that four plugin-cfg.xml files whose VirtualHostGroup entries form an "improperly
+     * scoped subset" — where a cross-cutting wildcard vhost (e.g. {@code *:8981}) appears in
+     * all four input files but each pair of files only partially overlaps the shared plugin
+     * accumulated from the other pair — can be merged successfully.
+     * <p>
+     * Prior to the fix, {@code lfMerge()} returned {@code false} immediately on the first partial
+     * overlap, causing all orderings to fail with exit code 5.  After the fix the merge completes
+     * with exit code 0 and the merged output contains every endpoint reachable through the
+     * expected VirtualHostGroup / UriGroup / ServerCluster combination.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPluginUtilityMergeImproperlyScoppedSubset() throws Exception {
+        final String methodName = "testPluginUtilityMergeImproperlyScoppedSubset";
+        Log.entering(c, methodName);
+
+        Path sourceDir = Paths.get(PluginUtilityEndpointMergeTest.pathToAutoFVTTestFiles,
+                                   "improperly-scoped-subset", "source");
+        Path expectedFile = Paths.get(PluginUtilityEndpointMergeTest.pathToAutoFVTTestFiles,
+                                      "improperly-scoped-subset", "expected.xml");
+        Path workDir = Paths.get("improperly-scoped-subset-test");
+        Path mergedFile = workDir.resolve("merged-plugin-cfg.xml");
+
+        Files.createDirectories(workDir);
+        try {
+            ProgramOutput po = machine.execute(defaultServerInstallRoot + "/bin/pluginUtility",
+                    new String[] { "merge",
+                            "--sourcePath=" + sourceDir.toAbsolutePath().toString()
+                    }, workDir.toAbsolutePath().toString());
+
+            Log.info(c, methodName, "merge result:\n" + po.getStdout());
+            assertEquals("pluginUtility merge should complete with return code 0 for the improperly-scoped-subset scenario.",
+                         0, po.getReturnCode());
+            assertTrue("merged-plugin-cfg.xml was not created in " + workDir.toAbsolutePath(),
+                       Files.exists(mergedFile));
+
+            List<XMLIssue> issues = XMLCompare.getInstance().compareEndpoints(expectedFile.toFile(), mergedFile.toFile());
+            if (!issues.isEmpty()) {
+                StringBuffer sb = new StringBuffer();
+                for (XMLIssue issue : issues)
+                    sb.append("\t").append(issue.getPath()).append("\n\t\t").append(issue.getProblem()).append("\n");
+                Log.info(c, methodName, "Merged file contents:");
+                for (String line : readLines(mergedFile.toAbsolutePath().toString()))
+                    Log.info(c, methodName, line);
+                assertFalse("Merged output does not match expected for improperly-scoped-subset:\n" + sb, true);
+            }
+        } finally {
+            Files.deleteIfExists(mergedFile);
+            workDir.toFile().delete();
+        }
+
+        Log.exiting(c, methodName);
+    }
+
+    private List<String> readLines(String filename) {
+        List<String> lines = new ArrayList<>();
+        try (Stream<String> stream = Files.lines(Paths.get(filename))) {
+            lines = stream.collect(Collectors.toList());
+        } catch (IOException e) {
+            Log.info(c, "readLines", "Failed to read " + filename + ": " + e);
+        }
+        return lines;
+    }
+
+    /**
      * Test to ensure that if a directory is specified to --sourcePath and there is not at least one
      * plugin-cfg.xml file present in that directory an error message is given and processing is aborted.
-     * 
+     *
      * @throws Exception
      */
     @Mode(TestMode.FULL)

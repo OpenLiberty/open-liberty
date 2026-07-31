@@ -53,7 +53,7 @@ Import-Package: \
 instrument.ffdc: false
 
 Include-Resource:\
-@\${repo;org.jboss.resteasy:resteasy-validator-provider;${resteasy-version};EXACT}, \
+@${repo;org.jboss.resteasy:resteasy-validator-provider;${resteasy-version};EXACT}, \
 org/jboss/resteasy=${bin}/org/jboss/resteasy
 
 -buildpath: \

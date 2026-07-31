@@ -193,6 +193,7 @@
                     </suiteXmlFiles>
                     <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory" /> <!-- Use TCP/IP instead of process pipes for ZOS -->
                 </configuration>
             </plugin>
         </plugins>

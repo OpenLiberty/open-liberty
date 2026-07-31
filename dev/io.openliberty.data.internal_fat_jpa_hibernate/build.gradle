@@ -163,7 +163,7 @@ addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn copyJdbcDriversJava17Plus
 
 addRequiredLibraries.dependsOn addHibernateJPA32
-addRequiredLibraries.dependsOn addDerbyJava17Plus
+addRequiredLibraries.dependsOn addH2
 
 jar.dependsOn addHibernatePermissions
 

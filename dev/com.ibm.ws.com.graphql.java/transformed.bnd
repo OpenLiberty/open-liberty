@@ -14,7 +14,7 @@ Bundle-SymbolicName: com.ibm.ws.com.graphql.java.jakarta
 Bundle-Description: Provides GraphQL google common code as a bundle; Jakarta Enabled
 
 -includeresource: \
-  @\${repo;com.graphql-java:graphql-java;20.9}!/(graphql/com/google/common/**)
+  @${repo;com.graphql-java:graphql-java;20.9}!/(graphql/com/google/common/**)
 
 Export-Package: \
   graphql.com.google.common.*;version=20.9

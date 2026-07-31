@@ -43,7 +43,7 @@ instrument.disabled: false
 
 
 Include-Resource:\
-  @\${repo;org.jboss.resteasy:resteasy-cdi;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-cdi;${resteasy-version};EXACT}, \
   io/openliberty=${bin}/io/openliberty, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   META-INF=resources/META-INF

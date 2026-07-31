@@ -6,13 +6,9 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache.keyproviders;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,9 +18,8 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.common.crypto.MessageDigestUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.cache.AuthCacheConfig;
 import com.ibm.ws.security.authentication.cache.CacheContext;
@@ -41,8 +36,6 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
     private static final String KEY_SEPARATOR = ":";
 
     private static final String SHA_512 = "SHA-512";
-    private static MessageDigest CLONEABLE_MESSAGE_DIGEST = null;
-    private static final Object SYNC_OBJECT = new Object();
 
     /** {@inheritDoc} */
     @Override
@@ -179,49 +172,8 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
         return lookupKey;
     }
 
-    /**
-     * Use clone() to get a new instance as its approximately 50% faster (as
-     * seen in empirical testing), if we can. Worst case scenario is we will
-     * create a new one each time.
-     *
-     * @return
-     * @throws NoSuchAlgorithmException
-     */
-    @Trivial
-    @FFDCIgnore(CloneNotSupportedException.class)
-    private static MessageDigest getMessageDigest() throws NoSuchAlgorithmException {
-        /*
-         * If we've never been asked for a MessageDigest, create the parent of
-         * our clones.
-         */
-        if (CLONEABLE_MESSAGE_DIGEST == null) {
-            synchronized (SYNC_OBJECT) {
-                if (CLONEABLE_MESSAGE_DIGEST == null) {
-                    CLONEABLE_MESSAGE_DIGEST = MessageDigest.getInstance(SHA_512);
-                }
-            }
-        }
-
-        /*
-         * Try to clone the parent. If we can't, then we'll ignore the FFDC and create a
-         * new instance. If the clone fails, which is REALLY unlikely, as we
-         * know the SHA MessageDigest is cloneable on IBM and Sun JDKs
-         */
-        try {
-            return (MessageDigest) CLONEABLE_MESSAGE_DIGEST.clone();
-        } catch (CloneNotSupportedException cnse) {
-            //Since implementation of clone is optional in Java, if the clone does not work, just return a new instance.
-            return MessageDigest.getInstance(SHA_512);
-        }
-    }
-
     private static String getHashedPassword(@Sensitive String password) throws NoSuchAlgorithmException {
-        String hashedPassword = null;
-        if (password != null) {
-            MessageDigest messageDigest = getMessageDigest();
-            hashedPassword = Base64Coder.base64EncodeToString(messageDigest.digest(Base64Coder.getBytes(password)));
-        }
-        return hashedPassword;
+        return password == null ? null : MessageDigestUtils.getHashedValue(password, SHA_512);
     }
 
 }

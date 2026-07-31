@@ -1602,6 +1602,11 @@
       <version>2.1.1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.concurrency</groupId>
+      <artifactId>jakarta.concurrency-api</artifactId>
+      <version>3.2.0-M2</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.data</groupId>
       <artifactId>jakarta.data-api</artifactId>
       <version>1.0.0</version>
@@ -3494,7 +3499,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3514,7 +3519,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3534,7 +3539,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3554,7 +3559,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3564,7 +3569,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>

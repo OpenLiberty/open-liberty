@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.http.channel.values;
 
@@ -98,6 +95,9 @@ public class MethodValues extends GenericKeys {
     /** Flag on whether or not this instance is an undefined one */
     private boolean undefined = false;
 
+    /** Maximum number of request method values retained in static lookup storage. */
+    public static final int ORD_MAX = 64;
+
     /**
      * Constructor that takes as input the name of the value plus a specific
      * ordinal value.
@@ -108,8 +108,10 @@ public class MethodValues extends GenericKeys {
     public MethodValues(String name, boolean isBodyAllowed) {
         super(name, NEXT_ORDINAL.getAndIncrement());
         setBodyAllowed(isBodyAllowed);
-        allKeys.add(this);
-        myMatcher.add(this);
+        if (NEXT_ORDINAL.get() <= ORD_MAX) {
+            allKeys.add(this);
+            myMatcher.add(this);
+        }
     }
 
     /**

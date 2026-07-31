@@ -565,11 +565,14 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         isCheckPointFinished = true;
 
         /*
-         * For an instantOn scenario, re-process config including for env var
+         * For an instantOn scenario, re-process config including for env var.
+         * processEnableEndpointsWithWAB() must be called AFTER processConfig() so that
+         * any ENV var overrides (e.g. MP_HEALTH_ENABLE_ENDPOINTS=false) picked up
+         * during restore are applied to the WAB registration state.
          */
         if (!CheckpointPhase.getPhase().equals(CheckpointPhase.INACTIVE)) {
-            System.out.println("debug: reprocess");
             processConfig();
+            processEnableEndpointsWithWAB(componentContext);
         }
 
         if (isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled()) {

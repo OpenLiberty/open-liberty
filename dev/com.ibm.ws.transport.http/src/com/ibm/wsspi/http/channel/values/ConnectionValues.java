@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.http.channel.values;
 
@@ -47,6 +44,9 @@ public class ConnectionValues extends GenericKeys {
     /** Flag on whether or not this instance is an undefined one */
     private boolean undefined = false;
 
+    /** Maximum number of Connection values retained in static lookup storage. */
+    public static final int ORD_MAX = 16;
+
     /**
      * Constructor that takes in the given String.
      * 
@@ -54,8 +54,10 @@ public class ConnectionValues extends GenericKeys {
      */
     public ConnectionValues(String name) {
         super(name, NEXT_ORDINAL.getAndIncrement());
-        allKeys.add(this);
-        myMatcher.add(this);
+        if (NEXT_ORDINAL.get() <= ORD_MAX) {
+            allKeys.add(this);
+            myMatcher.add(this);
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2048,6 +2048,13 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 if (isChunkedEncodingSet()) {
                     removeTransferEncoding(TransferEncodingValues.CHUNKED);
                 }
+            } else {
+                // Unknown / undefined HTTP version. Do not allow a persistent
+                // response without framing headers.
+                if (!isCloseSet()) {
+                    setupConnectionClose();
+                }
+                sc.setPersistent(false);
             }
 
             /*

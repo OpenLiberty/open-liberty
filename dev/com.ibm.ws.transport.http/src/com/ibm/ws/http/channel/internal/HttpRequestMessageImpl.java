@@ -238,27 +238,10 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /*
-     * @see com.ibm.ws.http.channel.internal.HttpBaseMessageImpl#isBodyExpected()
-     */
-    @Override
-    public boolean isBodyExpected() {
-
-        // check basic validation first
-        if (super.isBodyExpected()) {
-            // return whatever is default for this method
-            return this.myMethod.isBodyAllowed();
-        }
-
-        // no body here
-        return false;
-    }
-
-    /*
      * @see com.ibm.ws.http.channel.internal.HttpBaseMessageImpl#isBodyAllowed()
      */
     @Override
     public boolean isBodyAllowed() {
-
         // requests must be delimited by something (not socket closure) so
         // the behavior here is the same as isBodyExpected
         return isBodyExpected();
@@ -391,7 +374,36 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
      */
     @Override
     protected void setParsedThirdToken(byte[] token) throws Exception {
-        setVersion(token);
+        setVersion(parseSupportedRequestVersion(token));
+    }
+
+    private VersionValues parseSupportedRequestVersion(byte[] token) throws Exception {
+        if (token == null || token.length != 8) {
+            throw new MalformedMessageException("Invalid HTTP version");
+        }
+
+        if (token[0] != 'H' || token[1] != 'T' || token[2] != 'T' || token[3] != 'P'
+                || token[4] != '/' || token[6] != '.') {
+            throw new MalformedMessageException("Invalid HTTP version");
+        }
+
+        byte major = token[5];
+        byte minor = token[7];
+
+        if (major < '0' || major > '9' || minor < '0' || minor > '9') {
+            throw new MalformedMessageException("Invalid HTTP version");
+        }
+
+        if (major == '1' && minor == '0') {
+            return VersionValues.V10;
+        }
+
+        if (major == '1' && minor == '1') {
+            return VersionValues.V11;
+        }
+
+        throw new UnsupportedProtocolVersionException(
+                "Unsupported: " + HttpChannelUtils.getEnglishString(token));
     }
 
     /*
