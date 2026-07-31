@@ -40,3 +40,4 @@ generate.replacement: true
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.json4j;version=latest
+
