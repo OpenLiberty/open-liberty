@@ -54,7 +54,7 @@ public class KerberosPlatformRule implements TestRule {
     }
 
     public static boolean shouldRun(Description desc) {
-        Class<?> c = desc == null ? KerberosPlatformRule.class : desc.getTestClass();
+        Class<?> c = desc == null || desc.getTestClass() == null ? KerberosPlatformRule.class : desc.getTestClass();
         String m = (desc == null || desc.getMethodName() == null) ? "shouldRun" : desc.getMethodName();
 
         // Kerberos is only supported on certain operating systems
