@@ -20,64 +20,69 @@ import jakarta.enterprise.concurrent.Lock;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
- * A bean that is annotated at the class level to require a Lock of type READ.
+ * A bean that is annotated at the class level to require a Lock of type WRITE.
  * Unannotated methods should follow the class level annotation.
  * Annotated methods override the class level annotation.
  */
+@Lock(type = Lock.Type.WRITE,
+      accessTimeout = Lock.UNLIMITED)
 @ApplicationScoped
-@Lock(type = Lock.Type.READ,
-      accessTimeout = Lock.IMMEDIATE)
-public class ReadLockBean {
+public class WriteLockBean {
     /**
      * Maximum amount of time for an operation to remain delayed.
      */
     static final long MAX_DELAY_MS = TimeUnit.MINUTES.toMillis(5);
 
-    private String value;
+    private int number;
 
     @Lock(type = Lock.Type.READ,
           accessTimeout = Lock.UNLIMITED)
-    public String blockingReadValue() {
-        return value;
+    public int blockingReadNumber() {
+        return number;
     }
 
-    @Lock(// type defaults to WRITE
-          accessTimeout = Lock.UNLIMITED)
-    public void blockingWriteValue(String newValue) {
-        value = newValue;
+    public void blockingWriteNumber(int newNumber) {
+        number = newNumber;
     }
 
-    public String delayedReadValue(CountDownLatch methodisRunning,
-                                   CountDownLatch delayer) //
+    @Lock(type = Lock.Type.READ,
+          accessTimeout = Lock.IMMEDIATE)
+    public int delayedReadNumber(CountDownLatch methodisRunning,
+                                 CountDownLatch delayer) //
                     throws InterruptedException, TimeoutException {
         methodisRunning.countDown();
         if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
-            return value;
+            return number;
         else
             throw new TimeoutException("timed out");
     }
 
     @Lock(type = Lock.Type.WRITE,
           accessTimeout = Lock.IMMEDIATE)
-    public void delayedWriteValue(CountDownLatch methodisRunning,
-                                  CountDownLatch delayer,
-                                  String newValue) //
+    public boolean delayedWriteNumber(CountDownLatch methodisRunning,
+                                      CountDownLatch delayer,
+                                      int newNumber) //
                     throws InterruptedException, TimeoutException {
         methodisRunning.countDown();
-        if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
-            value = newValue;
-        else
-            throw new TimeoutException("timed out");
+        if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS)) {
+            number = newNumber;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public String readValue() {
-        return value;
+    @Lock(type = Lock.Type.READ,
+          accessTimeout = 100L,
+          unit = TimeUnit.MILLISECONDS)
+    public int readNumber() {
+        return number;
     }
 
     @Lock(// type defaults to WRITE
-          accessTimeout = 222333L,
-          unit = TimeUnit.MICROSECONDS)
-    public void writeValue(String newValue) {
-        value = newValue;
+          accessTimeout = 111222333L,
+          unit = TimeUnit.NANOSECONDS)
+    public void writeNumber(int newNumber) {
+        number = newNumber;
     }
 }
