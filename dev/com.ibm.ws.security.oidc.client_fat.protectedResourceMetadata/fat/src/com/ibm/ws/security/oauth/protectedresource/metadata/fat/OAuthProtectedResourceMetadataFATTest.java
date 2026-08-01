@@ -352,7 +352,7 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setProtectedResourceMetadataUrl(url);
 
-        List<validationData> expectations = vData.addSuccessStatusCodes(null, Constants.INVOKE_PROTECTED_RESOURCE_METADATA_ENDPOINT);
+        List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = vData.addResponseExpectation(expectations, Constants.INVOKE_PROTECTED_RESOURCE_METADATA_ENDPOINT,
                 "Did not find protected resource metadata in the response.", "\"resource\":");
 
