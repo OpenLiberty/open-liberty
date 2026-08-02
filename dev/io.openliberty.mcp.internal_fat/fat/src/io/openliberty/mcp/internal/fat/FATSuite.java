@@ -117,10 +117,6 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
-                // TestContainer Tests
-                ConformanceTests.class,
-                OidcTests.class,
-                CustomServerInfoTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
@@ -130,7 +126,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 MpMetricsOperationsTest.class,
                 ToolErrorHandlingTest.class,
                 ToolManagerTest.class,
-                ToolTest.class,
+                UnsupportedAnnotationWarningTest.class,
                 // Authorisation Tests
                 AdminsRoleAllowedTests.class,
                 DenyAllTests.class,
@@ -146,8 +142,12 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 DenyAllTestsStateless.class,
                 NoClassAnnotationTestsStateless.class,
                 AdminsRoleAllowedTestsStateless.class,
-                UnsupportedAnnotationWarningTest.class
-
+                // Tool test must be last the last test on "mcp-server" because
+                // it has special repeats in lite mode which would affect later tests
+                ToolTest.class,
+                // TestContainer Tests
+                ConformanceTests.class,
+                OidcTests.class
 })
 
 public class FATSuite extends TestContainerSuite {
