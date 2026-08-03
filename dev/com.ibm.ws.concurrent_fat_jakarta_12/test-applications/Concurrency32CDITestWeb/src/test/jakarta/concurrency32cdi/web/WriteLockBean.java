@@ -72,6 +72,30 @@ public class WriteLockBean {
         }
     }
 
+    // type defaults to WRITE
+    public void interruptRepeatedly(Thread threadToInterrupt,
+                                    CountDownLatch methodisRunning,
+                                    CountDownLatch doneInterrupting) {
+        methodisRunning.countDown();
+        while (!Thread.interrupted()) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(200);
+            } catch (InterruptedException x) {
+                break;
+            }
+            threadToInterrupt.interrupt();
+        }
+        doneInterrupting.countDown();
+    }
+
+    @Lock(type = Lock.Type.WRITE,
+          accessTimeout = 7L,
+          unit = TimeUnit.DAYS)
+    public void interruptSelf() throws InterruptedException {
+        Thread.currentThread().interrupt();
+        Thread.sleep(1000); // cause InterruptedException to be raised
+    }
+
     @Lock(type = Lock.Type.READ,
           accessTimeout = 100L,
           unit = TimeUnit.MILLISECONDS)
