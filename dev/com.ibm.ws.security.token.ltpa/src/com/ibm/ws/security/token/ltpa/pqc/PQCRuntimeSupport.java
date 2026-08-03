@@ -81,44 +81,34 @@ public class PQCRuntimeSupport {
      *
      * Behavior:
      * - If property is set to "true": Returns true only if Java 26+ with ML-KEM is available
-     * - If property is set to "false": Returns false (PQC disabled)
-     * - If property is not set: Auto-detect based on Java version (default behavior)
+     * - If property is set to "false" or not set: Returns false (PQC disabled)
      *
-     * @return true if PQC support is enabled and available
+     * @return true if PQC support is explicitly enabled and the runtime supports it
      */
     public static boolean isPQCSupported() {
         String pqcEnabled = System.getProperty(PQC_ENABLED_PROPERTY);
-        
-        if (pqcEnabled != null) {
-            boolean enabled = Boolean.parseBoolean(pqcEnabled);
-            
+
+        if (!Boolean.parseBoolean(pqcEnabled)) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "PQC mode explicitly set via system property: " +
-                        PQC_ENABLED_PROPERTY + "=" + pqcEnabled);
+                Tr.debug(tc, "PQC disabled: property " + PQC_ENABLED_PROPERTY +
+                        " is not set to true (value=" + pqcEnabled + ")");
             }
-            
-            // If explicitly enabled, still require Java 26+ runtime support
-            if (enabled) {
-                if (!IS_JAVA_26_OR_LATER) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "PQC enabled via property but Java 26+ not available. " +
-                                "Current Java version: " + getJavaVersion());
-                    }
-                    return false;
-                }
-                return true;
-            }
-            
-            // Explicitly disabled
             return false;
         }
-        
-        // Default: auto-detect based on Java version
-        if (tc.isDebugEnabled() && IS_JAVA_26_OR_LATER) {
-            Tr.debug(tc, "PQC auto-detected as available (Java 26+)");
+
+        // Property is explicitly "true" — still require Java 26+ runtime support
+        if (!IS_JAVA_26_OR_LATER) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "PQC enabled via property but Java 26+ not available. " +
+                        "Current Java version: " + getJavaVersion());
+            }
+            return false;
         }
-        
-        return IS_JAVA_26_OR_LATER;
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "PQC enabled via property " + PQC_ENABLED_PROPERTY + " on Java 26+");
+        }
+        return true;
     }
     
     /**
