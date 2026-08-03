@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.path;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.metamodel.Attribute;
 
@@ -20,7 +21,9 @@ import jakarta.data.metamodel.Attribute;
  */
 public interface Path<T, U> {
 
+    @Nonnull
     Attribute<U> attribute();
 
+    @Nonnull
     NavigableExpression<T, U> expression();
 }

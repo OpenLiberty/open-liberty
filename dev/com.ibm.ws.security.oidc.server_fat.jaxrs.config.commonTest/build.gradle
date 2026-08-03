@@ -92,7 +92,8 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.OPserver',
-    'com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver'
+    'com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver',
+    'com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver_beta'
   ]
 
   servers.each { server ->
@@ -185,7 +186,8 @@ autoFVT.doLast {
    * Copy helloworld application and the associated keystore to the applicable test server.
    */
   servers = [
-    'com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver'
+    'com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver',
+    'com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver_beta'
   ]
   servers.each { server ->
     copy {

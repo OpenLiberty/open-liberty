@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 
 public class HeaderEntry {
 
-    private final H2HeaderField headerField;
+    private H2HeaderField headerField;
     private final HpackConstants.LiteralIndexType formatType;
     private final boolean huffman;
 
@@ -29,6 +29,12 @@ public class HeaderEntry {
 
     public H2HeaderField getH2HeaderField() {
         return headerField;
+    }
+
+    // This is not thread safe. If attempting to change the header field, ensure that
+    // the client has already finished using the header entry
+    public void setH2HeaderField(H2HeaderField headerField) {
+        this.headerField = headerField;
     }
 
     public HpackConstants.LiteralIndexType getFormatType() {

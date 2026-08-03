@@ -63,14 +63,14 @@ src: src/
 -dsannotations: com.ibm.ws.io.smallrye.graphql.component.*
 
 -includeresource: \
-  @\${repo;io.smallrye:smallrye-graphql;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
-  @\${repo;io.smallrye:smallrye-graphql-api;${smallryeGraphQLVersion}},\
-  @\${repo;io.smallrye:smallrye-graphql-cdi;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
-  @\${repo;io.smallrye:smallrye-graphql-client;${smallryeGraphQLVersion}},\
-  @\${repo;io.smallrye:smallrye-graphql-client-api;${smallryeGraphQLVersion}},\
-  @\${repo;io.smallrye:smallrye-graphql-schema-builder;${smallryeGraphQLVersion}},\
-  @\${repo;io.smallrye:smallrye-graphql-schema-model;${smallryeGraphQLVersion}},\
-  @\${repo;io.smallrye:smallrye-graphql-servlet;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
+  @${repo;io.smallrye:smallrye-graphql-api;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-cdi;${smallryeGraphQLVersion}}!/!META-INF/beans.xml,\
+  @${repo;io.smallrye:smallrye-graphql-client;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-client-api;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-schema-builder;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-schema-model;${smallryeGraphQLVersion}},\
+  @${repo;io.smallrye:smallrye-graphql-servlet;${smallryeGraphQLVersion}},\
   com/ibm/ws=${bin}/com/ibm/ws,\
   io/smallrye=${bin}/io/smallrye,\
   META-INF=resources/META-INF

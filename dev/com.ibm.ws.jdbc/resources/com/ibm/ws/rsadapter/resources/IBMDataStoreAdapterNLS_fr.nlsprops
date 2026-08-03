@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -305,11 +305,11 @@ META_DATA_EXCEPTION.useraction=V\u00e9rifiez que les m\u00e9tadonn\u00e9es sont 
 # 7021-7042 deleted
 
 # Do not translate: java.util.Logging
-ORACLE_TRACE_PARSE_WARNING=DSRA7043W: Une valeur par d\u00e9faut a \u00e9t\u00e9 utilis\u00e9e pour la propri\u00e9t\u00e9 syst\u00e8me {0} en raison de l''erreur d''analyse suivante : {1}
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W : Une valeur par d\u00e9faut a \u00e9t\u00e9 utilis\u00e9e pour la propri\u00e9t\u00e9 syst\u00e8me {0} en raison de l''erreur d''analyse suivante : {1}
 ORACLE_TRACE_PARSE_WARNING.explanation=Les cha\u00eenes de propri\u00e9t\u00e9 syst\u00e8me pour Oracle sont analys\u00e9es et transmises \u00e0 la biblioth\u00e8que java.util.logging. Si une valeur de propri\u00e9t\u00e9 ne peut pas \u00eatre analys\u00e9e, une valeur par d\u00e9faut est utilis\u00e9e \u00e0 la place.
 ORACLE_TRACE_PARSE_WARNING.useraction=Examinez l'erreur d'analyse et modifiez la propri\u00e9t\u00e9 syst\u00e8me. Les propri\u00e9t\u00e9s de journalisation valides sont document\u00e9es dans le package java.util.logging.
 
-ORACLE_TRACE_ENABLE_INFO=DSRA7044I: Le tra\u00e7age du pilote JDBC Oracle a \u00e9t\u00e9 activ\u00e9 par la propri\u00e9t\u00e9 syst\u00e8me {0}. Une ou plusieurs des propri\u00e9t\u00e9s syst\u00e8me [{1}] requises pour s\u00e9parer les fichiers journaux Oracle sont manquantes.
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I : Le tra\u00e7age du pilote JDBC Oracle a \u00e9t\u00e9 activ\u00e9 par la propri\u00e9t\u00e9 syst\u00e8me {0}. Une ou plusieurs des propri\u00e9t\u00e9s syst\u00e8me [{1}] requises pour s\u00e9parer les fichiers journaux Oracle sont manquantes.
 ORACLE_TRACE_ENABLE_INFO.explanation=Le pilote de d\u00e9bogage JDBC Oracle utilise le package java.util.logging pour le tra\u00e7age. Les journaux de d\u00e9bogage JDBC Oracle sont int\u00e9gr\u00e9s aux journaux Liberty par d\u00e9faut. Pour configurer la s\u00e9paration de la trace de d\u00e9bogage JDBC Oracle, il faut que toutes les propri\u00e9t\u00e9s de ce message soient configur\u00e9es en tant que propri\u00e9t\u00e9s syst\u00e8me.
 ORACLE_TRACE_ENABLE_INFO.useraction=Si vous souhaitez configurer des fichiers journaux JDBC Oracle s\u00e9par\u00e9s, v\u00e9rifiez vos propri\u00e9t\u00e9s syst\u00e8me et ajoutez les propri\u00e9t\u00e9s manquantes. Sinon, vous pouvez ignorer ce message.
 
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=V\u00e9rifiez que la valeur indiqu\u00e9e pour la prop
 8069_HELPER_INIT_ERR=DSRA8069E: La source de donn\u00e9es {0} ne parvient pas \u00e0 initialiser l''impl\u00e9mentation DataStoreHelper {1} en raison d''une erreur : {2}
 8069_HELPER_INIT_ERR.explanation=La classe DataStoreHelper configur\u00e9e est inaccessible, ne contient pas de constructeur public avec un seul param\u00e8tre java.util.Properties ou a g\u00e9n\u00e9r\u00e9 une erreur lorsqu'elle a \u00e9t\u00e9 appel\u00e9e.
 8069_HELPER_INIT_ERR.useraction=Inspectez l'exception cha\u00een\u00e9e pour d\u00e9terminer la cause.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: La base de donn\u00e9es \u00ab H2 \u00bb ( URL ) pour \u00ab DataSource \u00bb ( {0} ) contient un param\u00e8tre PASSWORD. Pour des raisons de s\u00e9curit\u00e9, utilisez l''attribut \u00ab password \u00bb de l''\u00e9l\u00e9ment \u00ab properties.h2 \u00bb ou configurez plut\u00f4t \u00ab containerAuthData \u00bb.
+8070_H2_URL_PASSWORD.explanation=L'int\u00e9gration de mots de passe dans les URL des bases de donn\u00e9es constitue un risque pour la s\u00e9curit\u00e9, car le mot de passe pourrait \u00eatre divulgu\u00e9 dans les journaux, les traces ou les sauvegardes de configuration. Le pilote de base de donn\u00e9es \u00ab H2 \u00bb prend en charge des alternatives s\u00e9curis\u00e9es pour la configuration des mots de passe.
+8070_H2_URL_PASSWORD.useraction=Supprimez le param\u00e8tre PASSWORD de la requ\u00eate H2URL et sp\u00e9cifiez plut\u00f4t le mot de passe \u00e0 l'aide de l'attribut \u00ab password \u00bb de l'\u00e9l\u00e9ment properties.h2 ou de la configuration containerAuthData.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Impossible d''obtenir une {0} de la source de donn\u00e9es (DataSource).

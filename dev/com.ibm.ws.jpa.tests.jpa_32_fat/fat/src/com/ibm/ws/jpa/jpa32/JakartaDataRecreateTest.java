@@ -30,6 +30,7 @@ import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -47,6 +48,7 @@ import io.openliberty.jpa.data.tests.web.JakartaDataRecreateServlet;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25)  // Hibernate ByteBuddy limitation
 public class JakartaDataRecreateTest {
     public static final String APP_NAME = "jakartadata";
     public static final String SERVLET = "JakartaDataRecreate";

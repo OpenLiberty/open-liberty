@@ -34,6 +34,7 @@ import com.ibm.ws.jpa.jpa31.AbstractFATSuite;
 import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
@@ -50,6 +51,7 @@ import io.openliberty.jpa.tests.jpa31.json.web.JPAJSONTestServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
+@MaximumJavaLevel(javaLevel = 25) 
 @SkipForRepeat("JPA32_HIBERNATE")
 public class JPAJSONTest extends JPAFATServletClient {
     private final static String CONTEXT_ROOT = "jpajson";

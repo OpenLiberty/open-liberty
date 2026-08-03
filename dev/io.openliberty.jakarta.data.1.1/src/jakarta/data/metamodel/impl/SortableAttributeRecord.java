@@ -12,12 +12,13 @@
  *******************************************************************************/
 package jakarta.data.metamodel.impl;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.metamodel.SortableAttribute;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 @Deprecated(since = "1.1")
-public record SortableAttributeRecord<T>(String name) implements SortableAttribute<T> {
+public record SortableAttributeRecord<T>(@Nonnull String name) implements SortableAttribute<T> {
 
 }

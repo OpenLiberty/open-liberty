@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2024, 2025 IBM Corporation and others.
+    Copyright (c) 2024, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -32,16 +32,16 @@
 
   <dataSource id="LibertyDataSource" jndiName="jdbc/LibertyDataSource">
     <jdbcDriver libraryRef="JDBCLibrary"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:libertydb" user="dbuser1" password="dbpwd1"/>
+    <properties.h2 URL="jdbc:h2:mem:libertydb;DB_CLOSE_DELAY=-1" user="dbuser1" password="dbpwd1"/>
   </dataSource>
   
   <dataSource id="HibernateDataSource" jndiName="jdbc/HibernateDataSource">
     <jdbcDriver libraryRef="JDBCLibrary"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:hibernatedb" user="dbuser1" password="dbpwd1"/>
+    <properties.h2 URL="jdbc:h2:mem:hibernatedb;DB_CLOSE_DELAY=-1" user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/derbyJava17Plus" includes="*.jar"/>
+    <fileset dir="${shared.resource.dir}/h2" includes="*.jar"/>
   </library>
   
   <library id="HibernateLib">

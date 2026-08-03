@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: \u5e94\u7528\u7a0b\u5e8f\u4e2d\u7684 sendRedirect \u76f8\u5bf9 URL \u65e0\u6cd5\u8f6c\u6362\u4e3a\u6709\u6548\u7684 URL\u3002
 sendRedirect.cannot.convert.relative.url.explanation=\u7ed9\u51fa\u7684\u76f8\u5bf9 URL \u53ef\u80fd\u5305\u542b\u65e0\u6548\u7684\u8def\u5f84\u904d\u5386\u5b57\u7b26\u6216\u7d22\u5f15\u3002
 sendRedirect.cannot.convert.relative.url.useraction=\u5728\u8c03\u7528 response.sendRedirect( ) \u65b9\u6cd5\u4e4b\u524d\uff0c\u5148\u5728\u5e94\u7528\u7a0b\u5e8f\u4e2d\u9a8c\u8bc1 sendRedirect \u4f4d\u7f6e URL
+
+invalid.accept.language.length=CWWWC0013E: HTTP \u8bf7\u6c42\u4e2d\u7684Accept-Language\u6807\u5934\u503c\u8fc7\u957f\u3002
+invalid.accept.language.length.explanation=\u5ba2\u6237\u7aef\u53d1\u9001\u7684 Accept-Language \u5934\u8fc7\u957f\u3002
+invalid.accept.language.length.useraction=\u5ba2\u6237\u7aef\u5fc5\u987b\u53d1\u9001\u4e00\u4e2a Accept-Language \u5934\uff0c\u5176\u503c\u7684\u957f\u5ea6\u4e0d\u5f97\u8d85\u8fc7 4096 \u5b57\u8282\u3002

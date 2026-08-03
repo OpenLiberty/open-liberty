@@ -12,12 +12,15 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 public interface Null<V> extends Constraint<V> {
 
     @SuppressWarnings("unchecked")
+    @Nonnull
     static <V> Null<V> instance() {
         return (Null<V>) NullRecord.INSTANCE;
     }

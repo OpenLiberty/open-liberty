@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.path;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.metamodel.NavigableAttribute;
 
@@ -22,8 +23,9 @@ public interface NavigablePath<T, U, V> extends //
                 Path<T, U>, //
                 NavigableExpression<T, V> {
 
-    static <T, U, V> NavigablePath<T, U, V> of(NavigableExpression<T, U> expression,
-                                               NavigableAttribute<U, V> attribute) {
+    @Nonnull
+    static <T, U, V> NavigablePath<T, U, V> of(@Nonnull NavigableExpression<T, U> expression,
+                                               @Nonnull NavigableAttribute<U, V> attribute) {
         return new NavigablePathRecord<>(expression, attribute);
     }
 }

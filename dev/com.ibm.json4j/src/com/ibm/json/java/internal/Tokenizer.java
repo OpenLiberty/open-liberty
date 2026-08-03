@@ -20,6 +20,8 @@ import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.StringReader;
 
+import com.ibm.json.java.internal.ParserConfig;
+
 /**
  * Tokenizes a stream into JSON tokens.
  */
@@ -153,8 +155,42 @@ public class Tokenizer {
     }
 
     /**
+     * Validates that the current length does not exceed the maximum allowed string length.
+     *
+     * @param currentLength The current length of the string being parsed
+     * @param maxLength The maximum allowed string length
+     * @param lineNo The current line number in the JSON input
+     * @param colNo The current column number in the JSON input
+     * @throws IOException If the current length exceeds the maximum allowed length
+     */
+    private void checkStringLengthLimit(int currentLength, int maxLength, int lineNo, int colNo) throws IOException {
+        if (currentLength >= maxLength) {
+            throw new IOException("String length exceeds maximum allowed length of " +
+                maxLength + " characters at line " + lineNo + ", column " + colNo +
+                ". Configure with system property: com.ibm.json4j.max.string.length");
+        }
+    }
+
+    /**
+     * Validates that the current length does not exceed the maximum allowed number length.
+     *
+     * @param currentLength The current length of the number string being parsed
+     * @param maxLength The maximum allowed number length
+     * @param lineNo The current line number in the JSON input
+     * @param colNo The current column number in the JSON input
+     * @throws IOException If the current length exceeds the maximum allowed length
+     */
+    private void checkNumberLengthLimit(int currentLength, int maxLength, int lineNo, int colNo) throws IOException {
+        if (currentLength >= maxLength) {
+            throw new IOException("Number string length exceeds maximum allowed length of " +
+                maxLength + " characters at line " + lineNo + ", column " + colNo +
+                ". Configure with system property: com.ibm.json4j.max.number.length");
+        }
+    }
+
+    /**
      * Method to read a string from the JSON string, converting escapes accordingly.
-     * 
+     *
      * @return The parsed JSON string with all escapes properly converyed.
      *
      * @throws IOException Thrown on unterminated strings, invalid characters, bad escapes, and so on. Basically, invalid JSON.
@@ -164,13 +200,18 @@ public class Tokenizer {
         int delim = lastChar;
         int l = lineNo;
         int c = colNo;
+        int maxLength = ParserConfig.getMaxStringLength();
+        int currentLength = 0;
 
         readChar();
         while ((-1 != lastChar) && (delim != lastChar)) {
             StringBuffer digitBuffer;
 
             if (lastChar != '\\') {
+                // Check length limit BEFORE appending
+                checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                 sb.append((char) lastChar);
+                currentLength++;
                 readChar();
                 continue;
             }
@@ -179,46 +220,68 @@ public class Tokenizer {
 
             switch (lastChar) {
                 case 'b':
+                    // Check length limit BEFORE appending
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('\b');
+                    currentLength++;
                     continue;
                 case 'f':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('\f');
+                    currentLength++;
                     continue;
                 case 'n':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('\n');
+                    currentLength++;
                     continue;
                 case 'r':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('\r');
+                    currentLength++;
                     continue;
                 case 't':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('\t');
+                    currentLength++;
                     continue;
                 case '\'':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('\'');
+                    currentLength++;
                     continue;
                 case '"':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('"');
+                    currentLength++;
                     continue;
                 case '\\':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('\\');
+                    currentLength++;
                     continue;
                 case '/':
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
                     readChar();
                     sb.append('/');
+                    currentLength++;
                     continue;
 
                 // hex constant
                 // unicode constant
                 case 'x':
                 case 'u':
+                    // Check length limit BEFORE appending
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
+                    
                     digitBuffer = new StringBuffer();
 
                     int toRead = 2;
@@ -236,6 +299,7 @@ public class Tokenizer {
                     try {
                         int digitValue = Integer.parseInt(digitBuffer.toString(), 16);
                         sb.append((char) digitValue);
+                        currentLength++;
                     } catch (NumberFormatException e) {
                         throw new IOException("non-hex digit " + onLineCol());
                     }
@@ -246,6 +310,9 @@ public class Tokenizer {
                 default:
                     if (!isOctalDigit(lastChar))
                         throw new IOException("non-hex digit " + onLineCol());
+
+                    // Check length limit BEFORE appending
+                    checkStringLengthLimit(currentLength, maxLength, lineNo, colNo);
 
                     digitBuffer = new StringBuffer();
                     digitBuffer.append((char) lastChar);
@@ -261,6 +328,7 @@ public class Tokenizer {
                     try {
                         int digitValue = Integer.parseInt(digitBuffer.toString(), 8);
                         sb.append((char) digitValue);
+                        currentLength++;
                     } catch (NumberFormatException e) {
                         throw new IOException("non-hex digit " + onLineCol());
                     }
@@ -292,9 +360,14 @@ public class Tokenizer {
         StringBuffer sb = new StringBuffer();
         int l = lineNo;
         int c = colNo;
+        int maxLength = ParserConfig.getMaxNumberLength();
+        int currentLength = 0;
 
         while (isDigitChar(lastChar)) {
+            // Check length limit BEFORE appending
+            checkNumberLengthLimit(currentLength, maxLength, lineNo, colNo);
             sb.append((char) lastChar);
+            currentLength++;
             readChar();
         }
 
@@ -471,5 +544,21 @@ public class Tokenizer {
      */
     public String onLineCol() {
         return onLineCol(lineNo, colNo);
+    }
+
+    /**
+     * Method to get the current line number in the JSON string.
+     * @return The current line number.
+     */
+    public int getLine() {
+        return lineNo;
+    }
+
+    /**
+     * Method to get the current column number in the JSON string.
+     * @return The current column number.
+     */
+    public int getCol() {
+        return colNo;
     }
 }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.function;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NumericExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.NumericLiteral;
@@ -28,12 +29,14 @@ public interface NumericOperatorExpression<T, N extends Number & Comparable<N>> 
         DIVIDE
     }
 
+    @Nonnull
     NumericExpression<? super T, N> left();
 
+    @Nonnull
     static <T, N extends Number & Comparable<N>> NumericOperatorExpression<T, N> //
-                    of(Operator operator,
-                       N left,
-                       NumericExpression<T, N> right) {
+                    of(@Nonnull Operator operator,
+                       @Nonnull N left,
+                       @Nonnull NumericExpression<T, N> right) {
         Messages.requireNonNull(left, "left");
 
         return new NumericOperatorExpressionRecord<>(operator, //
@@ -41,10 +44,11 @@ public interface NumericOperatorExpression<T, N extends Number & Comparable<N>> 
                         right);
     }
 
+    @Nonnull
     static <T, N extends Number & Comparable<N>> NumericOperatorExpression<T, N> //
-                    of(Operator operator,
-                       NumericExpression<T, N> left,
-                       N right) {
+                    of(@Nonnull Operator operator,
+                       @Nonnull NumericExpression<T, N> left,
+                       @Nonnull N right) {
         Messages.requireNonNull(right, "right");
 
         return new NumericOperatorExpressionRecord<>(operator, //
@@ -52,16 +56,19 @@ public interface NumericOperatorExpression<T, N extends Number & Comparable<N>> 
                         NumericLiteral.of(left.type(), right));
     }
 
+    @Nonnull
     static <T, N extends Number & Comparable<N>> NumericOperatorExpression<T, N> //
-                    of(Operator operator,
-                       NumericExpression<T, N> left,
-                       NumericExpression<? super T, N> right) {
+                    of(@Nonnull Operator operator,
+                       @Nonnull NumericExpression<T, N> left,
+                       @Nonnull NumericExpression<? super T, N> right) {
         return new NumericOperatorExpressionRecord<>(operator, //
                         left, //
                         right);
     }
 
+    @Nonnull
     Operator operator();
 
+    @Nonnull
     NumericExpression<? super T, N> right();
 }

@@ -24,6 +24,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +41,7 @@ import io.openliberty.jpa.jpacdiintegration.tests.web.JPACDIIntegrationServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25)  // Hibernate ByteBuddy limitation
 public class JPACDIIntegrationTest {
     public static final String APP_NAME = "jpacdiintegration";
     public static final String SERVLET = "JPACDI32";

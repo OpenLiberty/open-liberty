@@ -34,6 +34,7 @@ import com.ibm.ws.jpa.jpa31.AbstractFATSuite;
 import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -54,6 +55,7 @@ import io.openliberty.jpa.tests.jpa31.web.TestUUIDEntityIDServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
+@MaximumJavaLevel(javaLevel = 25) 
 public class JPA31Test extends JPAFATServletClient {
     private final static String CONTEXT_ROOT = "JPA31";
     private final static String RESOURCE_ROOT = "test-applications/jpa31/";

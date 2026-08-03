@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,12 @@ public class CacheHashMap extends BackedHashMap {
      * Reusable patterns for String.replaceAll
      */
     private static final Pattern COLON = Pattern.compile(":"), PERCENT = Pattern.compile("%"), SLASH = Pattern.compile("/");
+
+    /**
+     * Cache name prefixes for session metadata and attributes
+     */
+    private static final String SESSION_META_CACHE_PREFIX = "com.ibm.ws.session.meta.";
+    private static final String SESSION_ATTR_CACHE_PREFIX = "com.ibm.ws.session.attr.";
 
     /**
      * The end-of-line marker.
@@ -169,7 +175,9 @@ public class CacheHashMap extends BackedHashMap {
 
             // Session Meta Information Cache
 
-            String metaCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.meta.").append(a).toString();
+            String prefix = cacheStoreService.cacheNamePrefix;
+            String baseMetaPrefix = prefix.isEmpty() ? SESSION_META_CACHE_PREFIX : prefix + SESSION_META_CACHE_PREFIX;
+            String metaCacheName = new StringBuilder(baseMetaPrefix.length() + a.length()).append(baseMetaPrefix).append(a).toString();
 
             if (trace && tc.isDebugEnabled())
                 tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
@@ -209,7 +217,8 @@ public class CacheHashMap extends BackedHashMap {
 
             // Session Attributes Cache
 
-            String attrCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.attr.").append(a).toString();
+            String baseAttrPrefix = prefix.isEmpty() ? SESSION_ATTR_CACHE_PREFIX : prefix + SESSION_ATTR_CACHE_PREFIX;
+            String attrCacheName = new StringBuilder(baseAttrPrefix.length() + a.length()).append(baseAttrPrefix).append(a).toString();
 
             if (trace && tc.isDebugEnabled())
                 tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");

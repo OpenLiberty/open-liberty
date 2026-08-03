@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,3 +42,8 @@
  identify the entity class that declares the attribute. For static metamodel \
  classes, use an .of method that is defined on an Attribute subtype to supply \
  the entity class and entity attribute type.
+013.arg.invalid=The {0} argument cannot have a value of {1}.
+014.mode.disallows.offset=A page request cannot include both an offset \
+ and a {0} mode.
+015.cursor.uncomputable=The requested operation is not available because a \
+ cursor cannot be computed from sort criteria that include an expression.

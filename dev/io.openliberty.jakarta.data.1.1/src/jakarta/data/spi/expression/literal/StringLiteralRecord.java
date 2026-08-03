@@ -12,12 +12,13 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record StringLiteralRecord(String value)
+record StringLiteralRecord(@Nonnull String value)
                 implements StringLiteral {
 
     StringLiteralRecord {
@@ -25,6 +26,7 @@ record StringLiteralRecord(String value)
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return '\'' + value.replace("'", "''") + '\'';
     }

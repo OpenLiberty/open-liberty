@@ -19,6 +19,7 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.time.temporal.Temporal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.TemporalExpression;
 
 /**
@@ -29,29 +30,39 @@ public interface TemporalLiteral<V extends Temporal & Comparable<? extends Tempo
                 ComparableLiteral<V>, //
                 TemporalExpression<Object, V> {
 
+    @Nonnull
     static <V extends Temporal & Comparable<? extends Temporal>> TemporalLiteral<V> //
-                    of(Class<V> type, V value) {
+                    of(@Nonnull Class<V> type, @Nonnull V value) {
         return new TemporalLiteralRecord<>(type, value);
     }
 
-    static TemporalLiteral<Instant> of(Instant value) {
+    @Nonnull
+    static TemporalLiteral<Instant> of(@Nonnull Instant value) {
         return new TemporalLiteralRecord<>(Instant.class, value);
     }
 
-    static TemporalLiteral<LocalDate> of(LocalDate value) {
+    @Nonnull
+    static TemporalLiteral<LocalDate> of(@Nonnull LocalDate value) {
         return new TemporalLiteralRecord<>(LocalDate.class, value);
     }
 
-    static TemporalLiteral<LocalDateTime> of(LocalDateTime value) {
+    @Nonnull
+    static TemporalLiteral<LocalDateTime> of(@Nonnull LocalDateTime value) {
         return new TemporalLiteralRecord<>(LocalDateTime.class, value);
     }
 
-    static TemporalLiteral<LocalTime> of(LocalTime value) {
+    @Nonnull
+    static TemporalLiteral<LocalTime> of(@Nonnull LocalTime value) {
         return new TemporalLiteralRecord<>(LocalTime.class, value);
     }
 
-    static TemporalLiteral<Year> of(Year value) {
+    @Nonnull
+    static TemporalLiteral<Year> of(@Nonnull Year value) {
         return new TemporalLiteralRecord<>(Year.class, value);
     }
+
+    @Override
+    @Nonnull
+    String toString();
 
 }

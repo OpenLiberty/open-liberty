@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=Verificare che il valore specificato sia valido per la
 8069_HELPER_INIT_ERR=DSRA8069E: L''origine dati {0} non \u00e8 in grado di inizializzare l''implementazione DataStoreHelper {1} a causa di un errore: {2}
 8069_HELPER_INIT_ERR.explanation=La classe DataStoreHelper configurata non era accessibile, non disponeva di un costruttore pubblico con un singolo parametro java.util.Properties oppure ha generato un errore durante l'invocazione.
 8069_HELPER_INIT_ERR.useraction=Analizzare l'eccezione chained per determinare la causa.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: Il database " H2 " ( URL ) per " DataSource " ( {0} ) contiene un parametro denominato PASSWORD. Per motivi di sicurezza, utilizzare l''attributo "password" sull''elemento " properties.h2 " oppure configurare " containerAuthData ".
+8070_H2_URL_PASSWORD.explanation=Inserire le password negli URL dei database rappresenta un rischio per la sicurezza, poich\u00e9 la password potrebbe essere divulgata nei log, nelle tracce o nei dump di configurazione. Il driver di database H2 supporta alternative sicure per la configurazione delle password.
+8070_H2_URL_PASSWORD.useraction=Rimuovere il parametro PASSWORD da H2URL e specificare invece la password utilizzando l'attributo password sull'elemento properties.h2 oppure la configurazione containerAuthData.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Impossibile richiamare {0} dal DataSource.

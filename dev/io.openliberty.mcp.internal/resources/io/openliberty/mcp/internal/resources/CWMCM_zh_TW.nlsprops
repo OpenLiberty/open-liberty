@@ -271,3 +271,17 @@ CWMCM0032E.duplicate.argument.name.useraction=\u70ba\u6bcf\u500b\u5de5\u5177\u53
 CWMCM0033A.forbidden.error=CWMCM0033A: \u7981\u6b62\u8acb\u6c42\u3002 \u65b9\u6cd5= {0} RequestURI={1 } RequestQuery={2 }, \u4f8b\u5916: {3}
 CWMCM0033A.forbidden.error.explanation=\u5df2\u63d0\u51fa\u8acb\u6c42\uff0c\u4f46\u4f7f\u7528\u8005\u7121\u6b0a\u57f7\u884c\u6b64\u64cd\u4f5c\u3002
 CWMCM0033A.forbidden.error.useraction=\u8acb\u78ba\u4fdd\u8acb\u6c42\u662f\u7531\u7d93\u6388\u6b0a\u7684\u4f7f\u7528\u8005\u6240\u767c\u8d77\u3002
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: {0} \u7684 DefaultValueConverter \u5be6\u4f5c\u5fc5\u9808\u6307\u5b9a\u4e00\u500b\u985e\u578b\u53c3\u6578\u3002
+CWMCM0034W.converter.missing.type.parameter.explanation=\u5df2\u8a3b\u518a\u4e00\u500b ` DefaultValueConverter ` \u5be6\u4f5c\u985e\u5225\uff0c\u4f46\u7f3a\u5c11\u985e\u578b\u53c3\u6578\uff0c\u56e0\u6b64\u7121\u6cd5\u5075\u6e2c\u5176\u8f49\u63db\u6210\u7684\u985e\u578b\u3002
+CWMCM0034W.converter.missing.type.parameter.useraction=\u5c07\u985e\u5225\u5ba3\u544a\u4fee\u6539\u70ba\u5be6\u4f5c\u5e36\u6709\u5177\u9ad4\u985e\u578b\u53c3\u6578\u7684 ` DefaultValueConverter ` \u4ecb\u9762\u3002 \u4f8b\u5982\uff1a MyConverterClass \u5be6\u4f5c\u4e86 DefaultValueConverter<MyType>\u3002
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: {0} \u7684 DefaultValueConverter \u5be6\u4f5c\u6703\u5c07\u5176\u8f49\u63db\u70ba\u6cdb\u578b\u578b\u5225\u53c3\u6578\uff0c\u800c\u975e\u5177\u9ad4\u578b\u5225\u3002
+CWMCM0035W.converter.generic.type.explanation=\u4e00\u500b DefaultValueConverter \u5be6\u4f5c\u985e\u5225\u662f\u4ee5\u6cdb\u578b\u53c3\u6578\uff08\u4f8b\u5982 T\uff09\u800c\u975e\u5177\u9ad4\u985e\u578b\u9032\u884c\u8a3b\u518a\u7684\u3002
+CWMCM0035W.converter.generic.type.useraction=\u5c07\u985e\u5225\u5ba3\u544a\u4fee\u6539\u70ba\u5be6\u4f5c\u5e36\u6709\u5177\u9ad4\u985e\u578b\u53c3\u6578\u7684 ` DefaultValueConverter ` \u4ecb\u9762\u3002 \u4f8b\u5982\uff1a MyConverterClass \u5be6\u4f5c\u4e86 DefaultValueConverter<MyType>\u3002

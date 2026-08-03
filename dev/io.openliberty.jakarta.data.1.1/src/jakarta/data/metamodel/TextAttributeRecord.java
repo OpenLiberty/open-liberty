@@ -12,13 +12,16 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record TextAttributeRecord<T>(Class<T> declaringType, String name)
+record TextAttributeRecord<T>(@Nonnull Class<T> declaringType, @Nonnull String name)
                 implements TextAttribute<T> {
 
     @Override
+    @Nonnull
     public String toString() {
         return declaringType.getSimpleName().toLowerCase() + '.' + name;
     }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -159,9 +159,9 @@ morethanoneonopen.annotation=CWWKH0036E: W\u00e4hrend der Implementierung der We
 morethanoneonopen.annotation.explanation=Die annotierte ServerEndpoint-Klasse ist ung\u00fcltig, weil mehrere @OnOpen-Methoden in der annotierten Endpoint-Klasse definiert sind. Die WebSocket-Anwendung wurde nicht erfolgreich implementiert.
 morethanoneonopen.annotation.useraction=Korrigieren Sie die annotierte ServerEndpoint-Klasse, indem Sie nur eine einzige @OnOpen-Methode definieren. Nachdem Sie das Problem behoben haben, implementieren Sie die Anwendung erneut.
 
-invalid.message.toobig=CWWKH0037E: Ung\u00fcltige eingehende WebSocket-Nachricht in der ServerEndpoint-Klasse {0}. Die eingehende Nachricht hat die Gr\u00f6\u00dfe {1}, die gr\u00f6\u00dfer ist als der in der @OnMessage-Annotationsmethode {3} definierte maxMessageSize-Wert {2}.
-invalid.message.toobig.explanation=Die Gr\u00f6\u00dfe einer WebSocket-Nachricht darf den in der @OnMessage-Annotation definierten maxMessageSize-Wert nicht \u00fcberschreiten.
-invalid.message.toobig.useraction=Stellen Sie sicher, dass der Client WebSocket-Nachrichten sendet, die kleiner sind als der mit maxMessageSize in @OnMessage definierte Wert, oder erh\u00f6hen Sie den maxMessageSize-Wert in @OnMessage und implementieren Sie die Anwendung erneut.
+invalid.message.toobig=CWWKH0037E: Eine eingehende Nachricht mit einer Gr\u00f6\u00dfe von {0} Bytes \u00fcberschreitet die maximal zul\u00e4ssige Gr\u00f6\u00dfe von {1} Bytes in der Klasse \u201e {2} \u201c f\u00fcr die Methode \u201e {3} \u201c.
+invalid.message.toobig.explanation=Die Nachricht hat die festgelegte Gr\u00f6\u00dfenbeschr\u00e4nkung \u00fcberschritten. Dieses Problem kann durch den Wert der Annotation \u201e @OnMessage \u201c ( maxMessageSize ), die Gr\u00f6\u00dfe des Sitzungspuffers ( maxTextMessageBufferSize oder maxBinaryMessageBufferSize ) oder die Standardbegrenzung verursacht werden, wenn f\u00fcr den Nachrichtentyp kein Handler vorhanden ist.
+invalid.message.toobig.useraction=Reduzieren Sie entweder die Gr\u00f6\u00dfe der Client-Nachricht, erh\u00f6hen Sie den Wert der Annotation \u201e @OnMessage \u201c ( maxMessageSize ), vergr\u00f6\u00dfern Sie den Sitzungspuffer \u00fcber setMaxTextMessageBufferSize( ) oder setMaxBinaryMessageBufferSize( ), verwenden Sie die Konfigurationsoption \u201e HTTP \u201c ( websocketBufferSize, ) oder f\u00fcgen Sie einen geeigneten \u201e @OnMessage \u201c-Handler f\u00fcr den Nachrichtentyp hinzu.
 
 maxidletimeout.closesession=CWWKH0038E: Die WebSocket-Sitzung ist seit {0} Sekunden inaktiv. Die Verbindung wird geschlossen.
 maxidletimeout.closesession.explanation=Das WebSocket-Sitzungszeitlimit wurde \u00fcberschritten. WebSocket-Sitzungen werden inaktiv, wenn innerhalb des mit der maxIdleTimeout-Einstellung angegebenen Anzahl von Sekunden keine Nachrichten gesendet oder empfangen werden.

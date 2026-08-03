@@ -6,7 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
  *******************************************************************************/
 package com.ibm.ws.transaction.context.internal;
 
@@ -65,7 +64,7 @@ public class TransactionContextImpl implements ThreadContext {
     /**
      * Unit of work that was on the thread of execution prior to invoking the contextual task.
      */
-    private transient ThreadLocal<UOWToken> suspendedUOW = new ThreadLocal<UOWToken>();
+    private transient UOWToken suspendedUOW;
 
     /**
      * Indicates that prior to invoking a task, any transaction that is present on the thread of execution
@@ -85,12 +84,7 @@ public class TransactionContextImpl implements ThreadContext {
     public ThreadContext clone() {
         try {
             TransactionContextImpl copy = (TransactionContextImpl) super.clone();
-            // Copy the ThreadLocal value to the cloned instance
-            copy.suspendedUOW = new ThreadLocal<UOWToken>();
-            UOWToken currentValue = this.suspendedUOW.get();
-            if (currentValue != null) {
-                copy.suspendedUOW.set(currentValue);
-            }
+            copy.suspendedUOW = null;
             return copy;
         } catch (CloneNotSupportedException x) {
             throw new RuntimeException(x);
@@ -108,8 +102,7 @@ public class TransactionContextImpl implements ThreadContext {
             // Suspend whatever is currently on the thread.
             try {
                 UOWManager uowManager = UOWManagerFactory.getUOWManager();
-                UOWToken localuSpendedUOW = uowManager.suspend();
-                suspendedUOW.set(localuSpendedUOW);
+                suspendedUOW = uowManager.suspend();
             } catch (com.ibm.ws.uow.embeddable.SystemException e) {
             }
 
@@ -161,11 +154,10 @@ public class TransactionContextImpl implements ThreadContext {
 
             // Resume the original transaction.
             try {
-                UOWToken localSuspendedUOW = suspendedUOW.get();
-                if (localSuspendedUOW != null) {
+                if (suspendedUOW != null) {
                     UOWManager uowManager = UOWManagerFactory.getUOWManager();
-                    uowManager.resume(localSuspendedUOW);
-                    suspendedUOW.remove();
+                    uowManager.resume(suspendedUOW);
+                    suspendedUOW = null;
                 }
             } catch (Throwable e) {
                 exception = e;
@@ -187,8 +179,6 @@ public class TransactionContextImpl implements ThreadContext {
      * @throws ClassNotFoundException
      */
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-        suspendedUOW = new ThreadLocal<UOWToken>();//Reinitialize transient field.
-
         GetField fields = in.readFields();
 
         Object type = fields.get(TYPE, null);
