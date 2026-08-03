@@ -18,10 +18,10 @@ bVersion=1.0
 
 WS-TraceGroup: JPA, CDI
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 -dsannotations: io.openliberty.jpa.container.v40.cdi.internal.JPACDIExtensionMetaData
 
@@ -35,7 +35,7 @@ Private-Package: \
 
 -buildpath: \
 	com.ibm.ws.cdi.interfaces.jakarta,\
-	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.jakarta.cdi.4.1;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	io.openliberty.jakarta.persistence.api.4.0;version=latest,\
 	com.ibm.ws.jpa.container.jakarta,\
