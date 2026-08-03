@@ -39,8 +39,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.common.crypto.CryptoUtils;
 
@@ -691,6 +691,82 @@ final class LTPACrypto {
         SecretKey sKey = constructSecretKey(key, cipher);
         Cipher ci = createCipher(Cipher.DECRYPT_MODE, key, cipher, sKey);
         return ci.doFinal(msg);
+    }
+
+    /**
+     * Encrypt the data using AES-GCM (authenticated encryption).
+     * PQC Issue #35556 - Task 2.6: AES-GCM provides authenticated encryption,
+     * preventing tampering attacks that are possible with AES-CBC.
+     *
+     * @param data The byte representation of the data
+     * @param key  The key used to encrypt the data
+     * @return The encrypted data with format: [IV (12 bytes)][Ciphertext][Auth Tag (16 bytes)]
+     * @throws Exception if encryption fails
+     */
+    @Trivial
+    protected static final byte[] encryptGCM(byte[] data, byte[] key) throws Exception {
+        // Generate random 12-byte IV for GCM
+        SecureRandom random = new SecureRandom();
+        byte[] iv = new byte[12];
+        random.nextBytes(iv);
+        
+        // Create AES key
+        int keyLength = fipsEnabled ? CryptoUtils.AES_256_KEY_LENGTH_BYTES : CryptoUtils.AES_128_KEY_LENGTH_BYTES;
+        SecretKeySpec keySpec = new SecretKeySpec(key, 0, keyLength, CryptoUtils.ENCRYPT_ALGORITHM_AES);
+        
+        // Initialize cipher with GCM mode
+        Cipher cipher = (provider == null) 
+            ? Cipher.getInstance("AES/GCM/NoPadding")
+            : Cipher.getInstance("AES/GCM/NoPadding", provider);
+        
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(128, iv); // 128-bit auth tag
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmSpec);
+        
+        // Encrypt data (includes authentication tag)
+        byte[] ciphertext = cipher.doFinal(data);
+        
+        // Combine IV and ciphertext: [IV][Ciphertext+Tag]
+        byte[] result = new byte[iv.length + ciphertext.length];
+        System.arraycopy(iv, 0, result, 0, iv.length);
+        System.arraycopy(ciphertext, 0, result, iv.length, ciphertext.length);
+        
+        return result;
+    }
+
+    /**
+     * Decrypt the data using AES-GCM (authenticated encryption).
+     * PQC Issue #35556 - Task 2.6: AES-GCM verifies authentication tag,
+     * ensuring data has not been tampered with.
+     *
+     * @param encryptedData The encrypted data with format: [IV (12 bytes)][Ciphertext][Auth Tag (16 bytes)]
+     * @param key           The key used to decrypt the data
+     * @return The decrypted data (plaintext)
+     * @throws Exception if decryption fails or authentication tag is invalid
+     */
+    @Trivial
+    protected static final byte[] decryptGCM(byte[] encryptedData, byte[] key) throws Exception {
+        // Extract IV (first 12 bytes)
+        byte[] iv = new byte[12];
+        System.arraycopy(encryptedData, 0, iv, 0, 12);
+        
+        // Extract ciphertext + auth tag (remaining bytes)
+        byte[] ciphertext = new byte[encryptedData.length - 12];
+        System.arraycopy(encryptedData, 12, ciphertext, 0, ciphertext.length);
+        
+        // Create AES key
+        int keyLength = fipsEnabled ? CryptoUtils.AES_256_KEY_LENGTH_BYTES : CryptoUtils.AES_128_KEY_LENGTH_BYTES;
+        SecretKeySpec keySpec = new SecretKeySpec(key, 0, keyLength, CryptoUtils.ENCRYPT_ALGORITHM_AES);
+        
+        // Initialize cipher with GCM mode
+        Cipher cipher = (provider == null)
+            ? Cipher.getInstance("AES/GCM/NoPadding")
+            : Cipher.getInstance("AES/GCM/NoPadding", provider);
+        
+        GCMParameterSpec gcmSpec = new GCMParameterSpec(128, iv); // 128-bit auth tag
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmSpec);
+        
+        // Decrypt and verify authentication tag
+        return cipher.doFinal(ciphertext);
     }
 
     /*
