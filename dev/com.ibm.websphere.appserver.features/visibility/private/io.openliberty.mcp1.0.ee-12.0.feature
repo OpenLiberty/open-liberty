@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mcpServer1.0.ee-12.0
+symbolicName=io.openliberty.mcp1.0.ee-12.0
 singleton=true
 -features=\
   com.ibm.websphere.appserver.servlet-6.2, \

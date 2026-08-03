@@ -45,6 +45,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -54,6 +55,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.tool.metaKeyApp.MetaKeyValidationTestServlet;
 import io.openliberty.mcp.internal.fat.tool.progressApp.ProgressTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
@@ -64,6 +66,7 @@ import io.openliberty.mcp.internal.fat.utils.TestConstants;
 @RunWith(FATRunner.class)
 public class ToolTest extends FATServletClient {
 
+    @TestServlet(contextRoot = "metaKeyTest", servlet = MetaKeyValidationTestServlet.class)
     @Server("mcp-server")
     public static LibertyServer server;
 
@@ -101,8 +104,12 @@ public class ToolTest extends FATServletClient {
         WebArchive progressWar = ShrinkWrap.create(WebArchive.class, "progressTest.war")
                                            .addPackage(ProgressTools.class.getPackage());
 
+        WebArchive metaKeyWar = ShrinkWrap.create(WebArchive.class, "metaKeyTest.war")
+                                          .addPackage(MetaKeyValidationTestServlet.class.getPackage());
+
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, progressWar, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, metaKeyWar, SERVER_ONLY);
 
         server.startServer();
 

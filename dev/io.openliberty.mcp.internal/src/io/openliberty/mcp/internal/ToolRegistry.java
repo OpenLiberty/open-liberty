@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
 import io.openliberty.mcp.internal.security.SecurityRequirement.SecurityAnnotation;
+import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
 import io.openliberty.mcp.tools.ToolManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.json.JsonObject;
@@ -133,7 +134,7 @@ public class ToolRegistry implements ToolManager {
         return converterRegistry;
     }
 
-    public class ToolDefinitionImpl implements ToolDefinition {
+    public class ToolDefinitionImpl extends MetaCarrierBuilderImpl<ToolDefinitionImpl> implements ToolDefinition {
 
         private final String name;
         private String title;
@@ -215,7 +216,7 @@ public class ToolRegistry implements ToolManager {
                     }
                     case CONVERSION_ERROR -> {
                         String msg = Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error",
-                                                      this.name, arg.name(), arg.type().getTypeName(), arg.defaultValue(), error.exception());
+                                                      this.name, arg.name(), arg.type().getTypeName(), arg.defaultValue(), error.exception().toString());
                         throw new IllegalArgumentException(msg, error.exception());
                     }
                     // This case should not occur here, but switch is required to cover all cases
@@ -279,7 +280,9 @@ public class ToolRegistry implements ToolManager {
                                                     asyncHandler,
                                                     Optional.empty(), // Method metadata
                                                     securityRequirement,
-                                                    Instant.now());
+                                                    Instant.now(),
+                                                    metadata,
+                                                    Collections.emptyList()); // Validation errors
 
             addTool(newTool);
 

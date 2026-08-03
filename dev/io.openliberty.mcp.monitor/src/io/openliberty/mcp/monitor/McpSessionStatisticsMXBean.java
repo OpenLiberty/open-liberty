@@ -21,7 +21,7 @@ import com.ibm.websphere.monitor.jmx.StatisticsMeter;
  * The values are intended to be consumed through JMX by administrators,
  * monitoring tools, and applications that need to observe MCP server behavior.
  */
-public interface McpSessionStatsMXBean {
+public interface McpSessionStatisticsMXBean {
 
     /**
      * Returns the error type associated with the session.
@@ -93,5 +93,5 @@ public interface McpSessionStatsMXBean {
      *
      * @return statistical details about the duration sessions
      */
-    public StatisticsMeter getDurationDetails();
+    StatisticsMeter getDurationDetails();
 }

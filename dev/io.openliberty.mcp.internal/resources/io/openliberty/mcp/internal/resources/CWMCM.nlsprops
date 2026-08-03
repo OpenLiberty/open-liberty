@@ -285,3 +285,59 @@ CWMCM0034W.converter.missing.type.parameter.useraction=Change the class declarat
 CWMCM0035W.converter.generic.type=CWMCM0035W: The {0} DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type.
 CWMCM0035W.converter.generic.type.explanation=A DefaultValueConverter implementation class was registered with a generic type parameter such as T instead of a concrete type.
 CWMCM0035W.converter.generic.type.useraction=Change the class declaration to implement the DefaultValueConverter interface with a concrete type parameter. For example: MyConverterClass implements DefaultValueConverter<MyType>.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: The {0} _meta key is not valid. The name segment must begin and end with an alphanumeric character and can contain only alphanumerics, hyphens, underscores, or dots in between.
+CWMCM0037E.invalid.meta.key.name.explanation=The name segment of the _meta key does not follow the MCP specification rules. The name segment is the part after the optional prefix slash, or the whole key when no prefix is present.
+CWMCM0037E.invalid.meta.key.name.useraction=Make sure that the name segment of the _meta key begins and ends with an alphanumeric character.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: The {0} _meta key has an empty prefix before the '/' character.
+CWMCM0038E.empty.meta.key.prefix.explanation=The _meta key contains a '/' character but has no prefix labels before it. The prefix must be one or more dot-separated labels.
+CWMCM0038E.empty.meta.key.prefix.useraction=Add a valid prefix before the '/' character, or remove the '/' character if no prefix is needed.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: The {0} _meta key has an invalid prefix label {1}. Labels must start with a letter, end with a letter or digit, and can contain only letters, digits, or hyphens in between.
+CWMCM0039E.invalid.meta.key.label.explanation=The prefix segment of the _meta key contains a label that does not follow the MCP specification rules.
+CWMCM0039E.invalid.meta.key.label.useraction=Make sure that each label in the _meta key prefix starts with a letter and ends with a letter or digit. Make sure that only letters, digits, or hyphens are in between the letters.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: The {0} metadata prefix in the MetaField annotation of the {1} method is not valid. A valid prefix is a series of dot-separated labels. Each label must start with a letter, end with a letter or digit, and contain only letters, digits, or hyphens in between.
+CWMCM0040E.invalid.metadata.prefix.explanation=The metadata prefix in the MetaField annotation does not meet the Model Context Protocol (MCP) specification requirements.
+CWMCM0040E.invalid.metadata.prefix.useraction=Update the metadata prefix in the MetaField annotation on the method to meet the MCP specification requirements. The prefix must consist of dot-separated labels that are followed by a slash. Each label must start with a letter and end with a letter or digit. The interior characters of each label can be letters, digits, or hyphens.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: The {0} metadata name in the MetaField annotation of the {1} method is not valid. A valid metadata name must begin and end with an alphanumeric character and can contain hyphens, underscores, dots, and alphanumeric characters.
+CWMCM0041E.invalid.metadata.name.explanation=The metadata name in the MetaField annotation does not meet the Model Context Protocol (MCP) specification requirements.
+CWMCM0041E.invalid.metadata.name.useraction=Update the metadata name in the MetaField annotation on the method to meet the MCP specification requirements. Ensure that the name begins and ends with an alphanumeric character and contains only hyphens, underscores, dots, and alphanumeric characters.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: The {0} metadata key value in the MetaField annotation of the {1} method cannot be converted to the {2} type. The error is {3}
+CWMCM0042E.metadata.value.conversion.error.explanation=The metadata value in the MetaField annotation cannot be converted to the type that is specified in the annotation. The value might be in the wrong format or might be incompatible with the specified type.
+CWMCM0042E.metadata.value.conversion.error.useraction=Review the error message, the message.log file, and the FFDC logs to identify the cause of the conversion failure. Update the metadata value in the MetaField annotation so that it is compatible with the specified type.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: The {0} method uses the {1} annotation which is not supported. This method is ignored.
+CWMCM0043W.unsupported.annotation.explanation=The Model Context Protocol (MCP) Java API includes annotations for features that are not supported by this implementation. Methods annotated with unsupported annotations are ignored.
+CWMCM0043W.unsupported.annotation.useraction=Remove the unsupported annotation from the method, or use only supported Model Context Protocol (MCP) annotations.
