@@ -47,10 +47,10 @@ public class WriteLockBean {
 
     @Lock(type = Lock.Type.READ,
           accessTimeout = Lock.IMMEDIATE)
-    public int delayedReadNumber(CountDownLatch methodisRunning,
+    public int delayedReadNumber(CountDownLatch methodIsRunning,
                                  CountDownLatch delayer) //
                     throws InterruptedException, TimeoutException {
-        methodisRunning.countDown();
+        methodIsRunning.countDown();
         if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
             return number;
         else
@@ -59,11 +59,11 @@ public class WriteLockBean {
 
     @Lock(type = Lock.Type.WRITE,
           accessTimeout = Lock.IMMEDIATE)
-    public boolean delayedWriteNumber(CountDownLatch methodisRunning,
+    public boolean delayedWriteNumber(CountDownLatch methodIsRunning,
                                       CountDownLatch delayer,
                                       int newNumber) //
                     throws InterruptedException, TimeoutException {
-        methodisRunning.countDown();
+        methodIsRunning.countDown();
         if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS)) {
             number = newNumber;
             return true;
@@ -74,9 +74,9 @@ public class WriteLockBean {
 
     // type defaults to WRITE
     public void interruptRepeatedly(Thread threadToInterrupt,
-                                    CountDownLatch methodisRunning,
+                                    CountDownLatch methodIsRunning,
                                     CountDownLatch doneInterrupting) {
-        methodisRunning.countDown();
+        methodIsRunning.countDown();
         while (!Thread.interrupted()) {
             try {
                 TimeUnit.MILLISECONDS.sleep(200);
