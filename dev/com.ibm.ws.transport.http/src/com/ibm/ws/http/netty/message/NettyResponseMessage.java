@@ -373,10 +373,11 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         Objects.requireNonNull(header);
         Objects.requireNonNull(value);
 
-        if (!headers.contains(header.getName())) {
-            headers.set(header.getName(), value);
+        String normalizedName = HeaderValidator.process(header.getName(), FieldType.NAME, config);
+        if (!headers.contains(normalizedName)) { 
+            String normalizedValue = HeaderValidator.process(value, FieldType.VALUE, config);
+            headers.set(normalizedName, normalizedValue);
         }
-
         return null;
     }
 
@@ -423,24 +424,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public HttpServiceContext getServiceContext() {
         return this.context;
-    }
-
-    protected void processCookie(HttpCookie cookie, HeaderKeys header) {
-        String result = null;
-        if (Objects.nonNull(cookie) && Objects.nonNull(header)) {
-            String userAgent = getServiceContext().getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString();
-            result = CookieEncoder.encodeCookie(cookie, header, config, userAgent);
-
-            if (Objects.nonNull(result)) {
-                if (config.doNotAllowDuplicateSetCookies() && header.equals(HttpHeaderKeys.HDR_SET_COOKIE)) {
-                    if (this.headers.contains(HttpHeaderKeys.HDR_SET_COOKIE.getName())) {
-                        headers.set(header.getName(), result);
-                    }
-                } else {
-                    headers.add(header.getName(), result);
-                }
-            }
-        }
     }
 
     @Override

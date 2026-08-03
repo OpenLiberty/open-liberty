@@ -11,7 +11,6 @@ package io.openliberty.http.netty.channel.utils;
 
 import java.util.regex.Pattern;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
@@ -32,8 +31,6 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
  * whitespaces from both names and values.
  */
 public class HeaderValidator {
-
-    private static boolean disabledUntilRFE = true;
     
         /**
          * Defines a pattern for valid header names (token characters or "tchars") as specified in 
