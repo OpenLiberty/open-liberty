@@ -520,7 +520,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Perform setup for testing with SSL connections: TrustManager, hostname
      * verifier, ...
      */
-    private static void setupSSLClient() {
+    protected static void setupSSLClient() {
 
         String thisMethod = "setupSSLCLient";
 

@@ -558,7 +558,9 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         if (providerHint == null || providerHint.isEmpty())
             providerHint = getHeader(req, ClientConstants.OIDC_CLIENT);
         if (providerHint == null || providerHint.isEmpty()) {
-            PostParameterHelper.savePostParams((IExtendedRequest) req);
+            if (req instanceof IExtendedRequest) {
+                PostParameterHelper.savePostParams((IExtendedRequest) req);
+            }
             // otherwise get it from parameter
             providerHint = req.getParameter(ClientConstants.OIDC_CLIENT);
             if (providerHint != null)
