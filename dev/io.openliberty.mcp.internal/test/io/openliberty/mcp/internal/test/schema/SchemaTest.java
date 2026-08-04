@@ -2388,4 +2388,82 @@ public class SchemaTest {
         JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
     }
 
+    // outputSchemaFrom=Widget with @Schema(description=...) on the tool method:
+    // the generated Widget schema should include the method-level description.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    @Schema(description = "Returns the current state of a widget")
+    public ToolResponse toolResponseWithOutputSchemaFromAndMethodDescription() {
+        return ToolResponse.ofStructured(new Widget("cog", 4));
+    }
+
+    @Test
+    public void testOutputSchemaFromWithDescriptionOnMethod() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromAndMethodDescription");
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"],
+                            "description": "Returns the current state of a widget"
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom=DescribedWidget where the class itself has @Schema(description=...).
+    // The generated schema should include the class-level description.
+    @Schema(description = "A described widget")
+    public record DescribedWidget(String name, int flangeCount) {}
+
+    @Tool(structuredContent = true, outputSchemaFrom = DescribedWidget.class)
+    public ToolResponse toolResponseWithOutputSchemaFromDescribedWidget() {
+        return ToolResponse.ofStructured(new DescribedWidget("cog", 4));
+    }
+
+    @Test
+    public void testOutputSchemaFromWithDescriptionOnClass() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromDescribedWidget");
+        String response = registry.getToolOutputSchema(toolMethod, DescribedWidget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"],
+                            "description": "A described widget"
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom=Street where Street has @Schema(value="...") with inline JSON.
+    // The inline JSON on the class wins — no auto-generation from Street's fields.
+    @Tool(structuredContent = true, outputSchemaFrom = Street.class)
+    public ToolResponse toolResponseWithOutputSchemaFromInlineSchemaClass() {
+        return ToolResponse.ofStructured(Map.of("streetName", "Main St"));
+    }
+
+    @Test
+    public void testOutputSchemaFromWithInlineSchemaOnClass() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromInlineSchemaClass");
+        String response = registry.getToolOutputSchema(toolMethod, Street.class).toString();
+        String expectedSchema = """
+                        {
+                            "properties": {
+                                "streetName": { "type": "string" },
+                                "roadType":   { "type": "string" }
+                            },
+                            "required": ["streetName"],
+                            "type": "object"
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
 }
