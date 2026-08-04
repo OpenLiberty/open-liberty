@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.path;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.metamodel.TextAttribute;
@@ -23,8 +24,9 @@ public interface TextPath<T, U> extends //
                 Path<T, U>, //
                 TextExpression<T> {
 
-    static <T, U> TextPath<T, U> of(NavigableExpression<T, U> expression,
-                                    TextAttribute<U> attribute) {
+    @Nonnull
+    static <T, U> TextPath<T, U> of(@Nonnull NavigableExpression<T, U> expression,
+                                    @Nonnull TextAttribute<U> attribute) {
 
         return new TextPathRecord<>(expression, attribute);
     }

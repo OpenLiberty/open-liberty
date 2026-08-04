@@ -467,12 +467,11 @@ public class OidcClientImplTest {
         oidcClientCfgs.add(oidcClientConfig_issuer2_noAuthFilter);
         oidcClientCfgs.add(oidcClientConfig_issuer1_authFilterA);
         oidcClientCfgs.add(oidcClientConfig_issuer2_authFilterB);
-        final Iterator<OidcClientConfig> oidcClientCfgIterator = oidcClientCfgs.iterator();
 
         mock.checking(new Expectations() {
             {
                 allowing(oidcClientConfigRef).getServices();
-                will(returnValue(oidcClientCfgIterator));
+                will(onConsecutiveCalls(returnValue(oidcClientCfgs.iterator()), returnValue(oidcClientCfgs.iterator()), returnValue(oidcClientCfgs.iterator()), returnValue(oidcClientCfgs.iterator())));
             }
         });
     }
@@ -493,6 +492,8 @@ public class OidcClientImplTest {
                 will(returnValue(99L));
                 allowing(cc).locateService("authFilter", authFilterRef);
                 will(returnValue(authFilter));
+                allowing(req).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost/app")));
                 allowing(authFilter).isAccepted(req);
                 will(returnValue(accepted));
             }

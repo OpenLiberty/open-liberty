@@ -19,7 +19,7 @@ Export-Package: \
 Private-Package: com.ibm.ws.security.authorization.jacc.role
 
 Include-Resource: \
-  @\${repo;com.ibm.ws.security.authorization.jacc.testprovider.jakarta}!/(OSGI-INF/l10n/*|OSGI-INF/metatype/*)
+  @${repo;com.ibm.ws.security.authorization.jacc.testprovider.jakarta}!/(OSGI-INF/l10n/*|OSGI-INF/metatype/*)
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.service.ProviderServiceImpl

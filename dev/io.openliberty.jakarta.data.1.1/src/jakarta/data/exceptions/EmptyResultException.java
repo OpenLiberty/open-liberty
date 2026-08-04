@@ -12,21 +12,23 @@
  *******************************************************************************/
 package jakarta.data.exceptions;
 
+import jakarta.annotation.Nullable;
+
 /**
  * copied from Jakarta Data git repository
  */
 public class EmptyResultException extends DataException {
     private static final long serialVersionUID = -4477636987874974491L;
 
-    public EmptyResultException(String message) {
+    public EmptyResultException(@Nullable String message) {
         super(message);
     }
 
-    public EmptyResultException(String message, Throwable cause) {
+    public EmptyResultException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    public EmptyResultException(Throwable cause) {
+    public EmptyResultException(@Nullable Throwable cause) {
         super(cause);
     }
 }

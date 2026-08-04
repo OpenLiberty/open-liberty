@@ -12,10 +12,13 @@
  *******************************************************************************/
 package jakarta.data.restrict;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 public interface Restriction<T> {
 
+    @Nonnull
     Restriction<T> negate();
 }

@@ -13,6 +13,7 @@
 package jakarta.data;
 
 import jakarta.data.messages.Messages;
+import jakarta.annotation.Nonnull;
 
 /**
  * Method signatures are copied from the jakarta.data.repository.Limit from the Jakarta Data repo.
@@ -27,10 +28,12 @@ public record Limit(int maxResults,
             throw new IllegalArgumentException("maxResults: " + maxResults);
     }
 
+    @Nonnull
     public static Limit of(int maxResults) {
         return new Limit(maxResults, 1L);
     }
 
+    @Nonnull
     public static Limit of(int maxResults, long offset) {
         if (offset < 0)
             throw new IllegalArgumentException(Messages.get("004.arg.negative",
@@ -44,6 +47,7 @@ public record Limit(int maxResults,
         return new Limit(maxResults, offset + 1);
     }
 
+    @Nonnull
     public static Limit range(long startAt, long endAt) {
         if (startAt > endAt)
             throw new IllegalArgumentException("startAt: " + startAt +

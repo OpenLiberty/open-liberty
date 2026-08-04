@@ -21,6 +21,7 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.util.UUID;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
 
@@ -31,16 +32,19 @@ public interface ComparableLiteral<V extends Comparable<?>> extends //
                 ComparableExpression<Object, V>, //
                 Literal<V> {
 
+    @Nonnull
     static ComparableLiteral<Character> of(char value) {
         return new ComparableLiteralRecord<>(Character.class, value);
     }
 
-    static ComparableLiteral<UUID> of(UUID value) {
+    @Nonnull
+    static ComparableLiteral<UUID> of(@Nonnull UUID value) {
         return new ComparableLiteralRecord<>(UUID.class, value);
     }
 
+    @Nonnull
     @SuppressWarnings("unchecked")
-    static <V extends Comparable<?>> ComparableLiteral<V> of(V value) {
+    static <V extends Comparable<?>> ComparableLiteral<V> of(@Nonnull V value) {
         if (value instanceof String s)
             return (ComparableLiteral<V>) StringLiteral.of(s);
         else if (value instanceof Long n)
@@ -76,4 +80,8 @@ public interface ComparableLiteral<V extends Comparable<?>> extends //
         else
             return new ComparableLiteralRecord<>((Class<? extends V>) value.getClass(), value);
     }
+
+    @Override
+    @Nonnull
+    String toString();
 }

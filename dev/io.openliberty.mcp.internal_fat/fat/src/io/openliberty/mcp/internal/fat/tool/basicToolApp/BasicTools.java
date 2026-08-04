@@ -26,6 +26,8 @@ import java.util.concurrent.CompletionStage;
 
 import org.mcpjava.server.ImplementationInfo;
 import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.MetaField;
+import org.mcpjava.server.MetaField.Type;
 import org.mcpjava.server.Role;
 import org.mcpjava.server.content.Annotations;
 import org.mcpjava.server.content.AudioContent;
@@ -658,6 +660,27 @@ public class BasicTools {
         result.append(name);
         result.append(" of ").append(req.clientInfo().title());
         return result.toString();
+    }
+
+    @Tool
+    @MetaField(name = "test", value = "foo")
+    public String metaFieldSimple() {
+        return "OK";
+    }
+
+    @Tool
+    @MetaField(name = "testString", value = "foo")
+    @MetaField(name = "testInt", value = "42", type = Type.INT)
+    @MetaField(name = "testBool", value = "false", type = Type.BOOLEAN)
+    @MetaField(name = "testJson", type = Type.JSON, value = """
+                    {
+                        "letters": ["a", "b", "c"],
+                        "numbers": [1, 2, 3],
+                        "booleans": [true, false]
+                    }
+                    """)
+    public String metaFieldComplex() {
+        return "OK";
     }
 
     /**

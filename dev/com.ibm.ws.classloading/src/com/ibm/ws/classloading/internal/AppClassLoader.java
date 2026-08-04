@@ -536,9 +536,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                         ? tc : getClassLoadingTraceComponent(packageName);
                 if (traceActive.isDebugEnabled()) {
                     String loc = byteResourceInformation.getContainerURL().toString();
-                    String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";
-                    Tr.debug(traceActive, String.format("%s: class=[%s]; classloader=[%s]; location=[%s]; codeSource=[%s]",
-                            message, name, toShortString(), loc, getCodeSourceString(clazz)));
+                    String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";                    
+                    Tr.debug(traceActive, String.format("%s: class=[%s]; classloader=[%s]; location=[%s]",
+                            message, name, toShortString(), loc));
                 }
             }
         }
@@ -652,17 +652,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         throw toThrow;
     }
-    
-    @Trivial
-    private static String getCodeSourceString(Class<?> clazz) {
-        if (clazz == null) {
-            return "unknown";
-        }
-        ProtectionDomain pd = clazz.getProtectionDomain();
-        return (pd.getCodeSource() != null)
-                ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown";
-    }
-
 
     @Trivial
     Class<?> generateClass(String name) throws ClassNotFoundException {

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.restrict;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.constraint.Constraint;
 import jakarta.data.expression.Expression;
 import jakarta.data.messages.Messages;
@@ -20,8 +21,8 @@ import jakarta.data.metamodel.Attribute;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record BasicRestrictionRecord<T, V>(Expression<T, V> expression,
-                Constraint<V> constraint)
+record BasicRestrictionRecord<T, V>(@Nonnull Expression<T, V> expression,
+                @Nonnull Constraint<V> constraint)
                 implements BasicRestriction<T, V> {
 
     BasicRestrictionRecord {
@@ -30,6 +31,7 @@ record BasicRestrictionRecord<T, V>(Expression<T, V> expression,
     }
 
     @Override
+    @Nonnull
     public Restriction<T> negate() {
         return BasicRestriction.of(expression, constraint.negate());
     }

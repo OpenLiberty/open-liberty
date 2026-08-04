@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.spi.expression.literal.ComparableLiteral;
 
@@ -20,13 +21,16 @@ import jakarta.data.spi.expression.literal.ComparableLiteral;
  */
 public interface GreaterThan<V extends Comparable<?>> extends Constraint<V> {
 
+    @Nonnull
     ComparableExpression<?, V> bound();
 
-    static <V extends Comparable<?>> GreaterThan<V> bound(ComparableExpression<?, V> exp) {
+    @Nonnull
+    static <V extends Comparable<?>> GreaterThan<V> bound(@Nonnull ComparableExpression<?, V> exp) {
         return new GreaterThanRecord<>(exp);
     }
 
-    static <V extends Comparable<?>> GreaterThan<V> bound(V lowerBound) {
+    @Nonnull
+    static <V extends Comparable<?>> GreaterThan<V> bound(@Nonnull V lowerBound) {
         return new GreaterThanRecord<>(ComparableLiteral.of(lowerBound));
     }
 

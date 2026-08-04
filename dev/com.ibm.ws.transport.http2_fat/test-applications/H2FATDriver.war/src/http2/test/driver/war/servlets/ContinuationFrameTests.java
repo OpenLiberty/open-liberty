@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -173,38 +173,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
     }
 
     /**
-     * Send a big header that exceeds the established token field size. Expect a go away frame from the server.
-     */
-    public void testHeaderTokenSizeExceeded(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
-        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testHeaderTokenSizeExceeded";
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-
-        byte[] debugData = "Headers on stream: 3 exceed limits configured for the server.".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, USING_NETTY ? 2147483647 : 1, false);
-        h2Client.addExpectedFrame(errorFrame);
-
-        setupDefaultUpgradedConnection(h2Client);
-
-        String extraLongHeaderValue = "This is a test header which should be relatively long and will repeat.This is a test header which should be relatively long and will repeat.";
-
-        // create headers to send over to the server; note that end_headers IS set
-        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader1", extraLongHeaderValue), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
-        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-        // send over the header frames followed by the data and continuation frames
-        h2Client.sendFrame(frameHeadersToSend);
-
-        blockUntilConnectionIsDone.await();
-        this.handleErrors(h2Client, testName);
-    }
-
-    /**
      * Sends a big number of header that exceeds the established limit number of headers. Expect a go away frame from the server.
      */
     public void testHeaderSizeExceeded(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
@@ -301,6 +269,82 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         // send over the header frames followed by the data and continuation frames
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(frameContinuationHeaders);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Send a header whose name length is exactly 101 characters — the smallest name that crosses
+     * the configured limitFieldSize (100) by one.
+     */
+    public void testHeaderNameLengthExceedsLimit(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderNameLengthExceedsLimit";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        byte[] debugData = "Headers on stream: 3 exceed limits configured for the server.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, USING_NETTY ? 2147483647 : 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        // Build a header name that is 101 lowercase 'a' characters (> limitFieldSize=100).
+        // The pre-allocation guard in decodeFragment fires on fragmentLength alone before the
+        // string is decoded, so no byte array is ever allocated for the oversized name.
+        StringBuilder longName = new StringBuilder();
+        for (int i = 0; i < 101; i++) {
+            longName.append('a');
+        }
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        // The oversized name triggers decodeFragment on the name path (H2Headers line 239)
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(longName.toString(), "v"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        h2Client.sendFrame(frameHeadersToSend);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Send a header whose value length is exactly 101 characters — the smallest value that crosses
+     * the configured limitFieldSize (100) by one.
+     */
+    public void testHeaderValueLengthExceedsLimit(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderValueLengthExceedsLimit";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        byte[] debugData = "Headers on stream: 3 exceed limits configured for the server.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, USING_NETTY ? 2147483647 : 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        // Build a value that is exactly 101 characters (limitFieldSize=100, so 101 is the smallest over-limit value).
+        // The pre-allocation guard in decodeFragment fires on fragmentLength alone before the
+        // string is decoded, so no byte array is ever allocated for the oversized value.
+        StringBuilder longValue = new StringBuilder();
+        for (int i = 0; i < 101; i++) {
+            longValue.append('x');
+        }
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        // The oversized value triggers decodeFragment on the value path (H2Headers line 256)
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("x-test", longValue.toString()), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        h2Client.sendFrame(frameHeadersToSend);
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);

@@ -490,6 +490,24 @@ public abstract class QueryInfo {
                                                       Annotation[] annos);
 
     /**
+     * Appends restrictions to the query (jpqlCount) that selects the
+     * COUNT of all matching entities.
+     *
+     * @param restrictions represented as a WHERE clause, or otherwise as an
+     *                         AND clause to append to the query's WHERE clause
+     * @return the new count query that is assigned to jpqlCount
+     */
+    private String appendCountRestrictions(String restrictions) {
+        int countLen = jpqlCount.length() + 1 + restrictions.length();
+
+        return jpqlCount = new StringBuilder(countLen) //
+                        .append(jpqlCount) //
+                        .append(' ') //
+                        .append(restrictions) //
+                        .toString();
+    }
+
+    /**
      * Asks the Jakarta Persistence provider whether the given query uses named
      * parameters. The API for this is optional, but supported by Hibernate.
      * If the API is not supported, assume named parameters are not permitted.
@@ -925,7 +943,7 @@ public abstract class QueryInfo {
             info.specialParamsStartAt = specialParamsStartAt;
 
             if (restriction == null) {
-                // no Constraints deferred or Restriction
+                // no Constraints deferred and no Restriction
                 q = new StringBuilder(ql);
             } else {
                 // has Restriction, but no Constraints deferred
@@ -936,9 +954,15 @@ public abstract class QueryInfo {
                 else
                     q.append(ql).append(' ');
 
+                int restrictAtForCount = jpqlCount == null || jpqlCount.length() < //
+                                Util.MIN_COUNT_QUERY_LENGTH ? -1 : q.length();
+
                 q.append(info.hasWhere ? "AND " : "WHERE ");
                 info.hasWhere = true;
                 info.generateRestrictions(q, restriction, reqJPQLParams);
+
+                if (restrictAtForCount >= 0)
+                    info.appendCountRestrictions(q.substring(restrictAtForCount));
 
                 if (info.restrictAt >= 0 && info.restrictAt < len) {
                     int newPosition = q.length();
@@ -956,9 +980,15 @@ public abstract class QueryInfo {
             q = info.initQueryByParameters(countPages, constraints, reqJPQLParams);
 
             if (restriction != null) {
+                int restrictAtForCount = jpqlCount == null || jpqlCount.length() < //
+                                Util.MIN_COUNT_QUERY_LENGTH ? -1 : q.length();
+
                 q.append(info.hasWhere ? " AND " : " WHERE ");
                 info.hasWhere = true;
                 info.generateRestrictions(q, restriction, reqJPQLParams);
+
+                if (restrictAtForCount >= 0)
+                    info.appendCountRestrictions(q.substring(restrictAtForCount));
             }
 
             // If there are no overrides from Order/Sort parameters, keep the
@@ -2222,11 +2252,13 @@ public abstract class QueryInfo {
      */
     private void generateCount(String where) {
         String o = entityVar;
-        StringBuilder q = new StringBuilder(21 + 2 * o.length() +
-                                            entityInfo.name.length() +
-                                            (where == null ? 0 : where.length())) //
-                                                            .append("SELECT COUNT(").append(o).append(") FROM ") //
-                                                            .append(entityInfo.name);
+        int len = 21 + 2 * o.length() +
+                  entityInfo.name.length() +
+                  (where == null ? 0 : where.length());
+
+        StringBuilder q = new StringBuilder(len) //
+                        .append("SELECT COUNT(").append(o).append(") FROM ") //
+                        .append(entityInfo.name);
         if (o != THIS)
             q.append(' ').append(o);
 

@@ -1,0 +1,217 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server>
+    <featureManager>
+        <feature>openidConnectClient-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>ssl-1.0</feature>
+    </featureManager>
+
+    <!-- Port configuration copied from common project during the build. -->
+    <include location="${server.config.dir}/imports/fatTestPorts.xml" />
+
+    <!-- SSL keystore used by both the server (for HTTPS) and the OIDC client SSL requirement. -->
+    <keyStore id="defaultKeyStore" password="Liberty" />
+
+    <!--
+        OIDC client with an equals auth filter — tests that an exact path match
+        returns metadata for that resource (HTTP).
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <openidConnectClient
+        id="OidcConfigSample"
+        clientId="client01"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilter1">
+        <protectedResourceMetadata />
+    </openidConnectClient>
+
+    <!--
+        Second OIDC client with a contains auth filter — tests that a sub-path
+        of the pattern (e.g. /myApp/protected/subPath) also returns metadata (HTTP).
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <openidConnectClient
+        id="OidcConfigSampleContains"
+        clientId="client02"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilter2">
+        <protectedResourceMetadata />
+    </openidConnectClient>
+
+    <!--
+        OIDC client with an equals auth filter — HTTPS variant.
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <openidConnectClient
+        id="OidcConfigSampleHttps"
+        clientId="client03"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
+        authFilterRef="authFilter3">
+        <protectedResourceMetadata />
+    </openidConnectClient>
+
+    <!--
+        OIDC client with a contains auth filter — HTTPS variant.
+        Uses authFilter4 (its own filter) rather than authFilter2 to avoid the
+        CONFIG_AUTHFILTER_NOTUNIQUE warning from Liberty.
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <openidConnectClient
+        id="OidcConfigSampleContainsHttps"
+        clientId="client04"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
+        authFilterRef="authFilter4">
+        <protectedResourceMetadata />
+    </openidConnectClient>
+
+    <!--
+        authFilter1: exact match on the full HTTP URL — only /myApp/protectedExact returns metadata,
+        not sub-paths or the contains-match test path.
+    -->
+    <authFilter id="authFilter1">
+        <requestUrl
+            id="requestUrl1"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protectedExact"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        authFilter2: contains match for the HTTP sub-path test resource.
+    -->
+    <authFilter id="authFilter2">
+        <requestUrl
+            id="requestUrl2"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protected/subPath"
+            matchType="contains" />
+    </authFilter>
+
+    <!--
+        authFilter4: contains match for the HTTPS sub-path test resource.
+    -->
+    <authFilter id="authFilter4">
+        <requestUrl
+            id="requestUrl4"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protected/subPath"
+            matchType="contains" />
+    </authFilter>
+
+    <!--
+        authFilter3: exact match on the full HTTPS URL — only /myApp/protectedExact returns metadata,
+        not sub-paths or the contains-match test path.
+    -->
+    <authFilter id="authFilter3">
+        <requestUrl
+            id="requestUrl3"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protectedExact"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client that matches /myApp/metadataDisabled but has no protectedResourceMetadata
+        sub-element, so serveProtectedResourceMetadata=false. Tests that the endpoint returns
+        404 even when an auth filter matches the path.
+    -->
+    <openidConnectClient
+        id="OidcConfigMetadataDisabled"
+        clientId="client05"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilter5"
+    />
+
+    <authFilter id="authFilter5">
+        <requestUrl
+            id="requestUrl5"
+            urlPattern="/myApp/metadataDisabled"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client with protectedResourceMetadata configured with advertisedScopes.
+        Tests that scopes_supported in the metadata response matches the configured scopes.
+    -->
+    <openidConnectClient
+        id="OidcConfigWithScopes"
+        clientId="client06"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilter6">
+        <protectedResourceMetadata advertisedScopes="openid,profile,email" />
+    </openidConnectClient>
+
+    <authFilter id="authFilter6">
+        <requestUrl
+            id="requestUrl6"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withScopes"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        HTTPS variant: OIDC client that matches /myApp/metadataDisabled but has no
+        protectedResourceMetadata sub-element, so serveProtectedResourceMetadata=false.
+    -->
+    <openidConnectClient
+        id="OidcConfigMetadataDisabledHttps"
+        clientId="client07"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
+        authFilterRef="authFilter7"
+    />
+
+    <authFilter id="authFilter7">
+        <requestUrl
+            id="requestUrl7"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/metadataDisabled"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        HTTPS variant: OIDC client with protectedResourceMetadata configured with advertisedScopes.
+    -->
+    <openidConnectClient
+        id="OidcConfigWithScopesHttps"
+        clientId="client08"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
+        authFilterRef="authFilter8">
+        <protectedResourceMetadata advertisedScopes="openid,profile,email" />
+    </openidConnectClient>
+
+    <authFilter id="authFilter8">
+        <requestUrl
+            id="requestUrl8"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/withScopes"
+            matchType="equals" />
+    </authFilter>
+
+</server>

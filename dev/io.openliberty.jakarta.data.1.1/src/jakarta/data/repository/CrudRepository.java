@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,19 +14,25 @@ package jakarta.data.repository;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Interface methods copied from Jakarta Data.
  */
 public interface CrudRepository<T, K> extends BasicRepository<T, K> {
     @Insert
-    <S extends T> S insert(S entity);
+    @Nonnull
+    <S extends T> S insert(@Nonnull S entity);
 
     @Insert
-    <S extends T> List<S> insertAll(List<S> entities);
+    @Nonnull
+    <S extends T> List<S> insertAll(@Nonnull List<S> entities);
 
     @Update
-    <S extends T> S update(S entity);
+    @Nonnull
+    <S extends T> S update(@Nonnull S entity);
 
     @Update
-    <S extends T> List<S> updateAll(List<S> entities);
+    @Nonnull
+    <S extends T> List<S> updateAll(@Nonnull List<S> entities);
 }

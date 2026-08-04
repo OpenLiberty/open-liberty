@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
 
@@ -19,7 +20,7 @@ import jakarta.data.messages.Messages;
  * Method signatures are copied from Jakarta Data.
  */
 record AtLeastRecord<V extends Comparable<?>>(
-                ComparableExpression<?, V> bound)
+                @Nonnull ComparableExpression<?, V> bound)
                 implements AtLeast<V> {
 
     public AtLeastRecord {
@@ -27,11 +28,13 @@ record AtLeastRecord<V extends Comparable<?>>(
     }
 
     @Override
+    @Nonnull
     public LessThan<V> negate() {
         return LessThan.bound(bound);
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return ">= " + bound.toString();
     }

@@ -191,7 +191,6 @@ public class McpSessionStatsJMXTest {
         Double duration = (Double) mbs.getAttribute(objectName, "Duration");
         assertEquals("Total duration should be sum of all sessions",
                      6_000_000_000.0, duration, 1.0);
-
         var durationData = (CompositeData) mbs.getAttribute(objectName, "DurationDetails");
         assertEquals("Duration should be updated", 2_000_000_000.0, (Double) durationData.get("mean"), 1.0);
         assertEquals("DurationDetails count should be updated", Long.valueOf(3), durationData.get("count"));

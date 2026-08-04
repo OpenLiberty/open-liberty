@@ -28,5 +28,10 @@
     <webApplication id="metric-servlet" location="metric-servlet.war" name="metric-servlet">
     	<classloader commonLibraryRef="lib"/>
     </webApplication> 
+    
+    <javaPermission
+    codeBase="${server.config.dir}/apps/metric-servlet.war"
+    className="java.lang.RuntimePermission"
+    name="getProtectionDomain"/>
 
 </server>

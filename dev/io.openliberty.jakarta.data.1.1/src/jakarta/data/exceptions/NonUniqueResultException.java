@@ -12,21 +12,23 @@
  *******************************************************************************/
 package jakarta.data.exceptions;
 
+import jakarta.annotation.Nullable;
+
 /**
  * copied from Jakarta Data git repository
  */
 public class NonUniqueResultException extends DataException {
     private static final long serialVersionUID = 7742411163016495764L;
 
-    public NonUniqueResultException(String message) {
+    public NonUniqueResultException(@Nullable String message) {
         super(message);
     }
 
-    public NonUniqueResultException(String message, Throwable cause) {
+    public NonUniqueResultException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    public NonUniqueResultException(Throwable cause) {
+    public NonUniqueResultException(@Nullable Throwable cause) {
         super(cause);
     }
 }

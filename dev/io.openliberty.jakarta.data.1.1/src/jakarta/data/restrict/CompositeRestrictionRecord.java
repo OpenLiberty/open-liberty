@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,14 +14,15 @@ package jakarta.data.restrict;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record CompositeRestrictionRecord<T>(
-                Type type,
-                List<Restriction<? super T>> restrictions,
+                @Nonnull Type type,
+                @Nonnull List<Restriction<? super T>> restrictions,
                 boolean isNegated)
                 implements CompositeRestriction<T> {
 
@@ -38,19 +39,21 @@ record CompositeRestrictionRecord<T>(
         restrictions.forEach(r -> Messages.requireNonNull(r, "restriction"));
     }
 
-    CompositeRestrictionRecord(Type type,
-                               List<Restriction<? super T>> restrictions) {
+    CompositeRestrictionRecord(@Nonnull Type type,
+                               @Nonnull List<Restriction<? super T>> restrictions) {
 
         this(type, restrictions, false);
     }
 
     @Override
+    @Nonnull
     public CompositeRestriction<T> negate() {
 
         return new CompositeRestrictionRecord<>(type, restrictions, !isNegated);
     }
 
     @Override
+    @Nonnull
     public String toString() {
 
         String op = type.asQueryLanguage();

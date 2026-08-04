@@ -15,14 +15,15 @@ package jakarta.data.spi.expression.literal;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record NumericLiteralRecord<N extends Number & Comparable<N>>(
-                Class<? extends N> type,
-                N value)
+                @Nonnull Class<? extends N> type,
+                @Nonnull N value)
                 implements NumericLiteral<N> {
 
     NumericLiteralRecord {
@@ -31,6 +32,7 @@ record NumericLiteralRecord<N extends Number & Comparable<N>>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         if (value instanceof Long l)
             return l + "L";

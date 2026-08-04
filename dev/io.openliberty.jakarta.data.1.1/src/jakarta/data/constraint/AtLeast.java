@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.spi.expression.literal.ComparableLiteral;
 
@@ -20,13 +21,16 @@ import jakarta.data.spi.expression.literal.ComparableLiteral;
  */
 public interface AtLeast<V extends Comparable<?>> extends Constraint<V> {
 
+    @Nonnull
     ComparableExpression<?, V> bound();
 
-    static <V extends Comparable<?>> AtLeast<V> min(ComparableExpression<?, V> minimum) {
+    @Nonnull
+    static <V extends Comparable<?>> AtLeast<V> min(@Nonnull ComparableExpression<?, V> minimum) {
         return new AtLeastRecord<>(minimum);
     }
 
-    static <V extends Comparable<?>> AtLeast<V> min(V minimum) {
+    @Nonnull
+    static <V extends Comparable<?>> AtLeast<V> min(@Nonnull V minimum) {
         return new AtLeastRecord<>(ComparableLiteral.of(minimum));
     }
 

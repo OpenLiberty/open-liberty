@@ -14,6 +14,7 @@ package jakarta.data.spi.expression.function;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.expression.NumericExpression;
 import jakarta.data.expression.TextExpression;
@@ -30,12 +31,14 @@ public interface NumericFunctionExpression<T, N extends Number & Comparable<N>> 
     String NEG = "-";
 
     @Override
+    @Nonnull
     List<? extends ComparableExpression<? super T, ?>> arguments();
 
+    @Nonnull
     static <T, N extends Number & Comparable<N>> NumericFunctionExpression<T, N> //
-                    of(String name,
-                       Class<? extends N> returnType,
-                       NumericExpression<? super T, N> expression) {
+                    of(@Nonnull String name,
+                       @Nonnull Class<? extends N> returnType,
+                       @Nonnull NumericExpression<? super T, N> expression) {
 
         Messages.requireNonNull(expression, "expression");
 
@@ -45,10 +48,11 @@ public interface NumericFunctionExpression<T, N extends Number & Comparable<N>> 
                         List.of(expression));
     }
 
+    @Nonnull
     static <T, N extends Number & Comparable<N>> NumericFunctionExpression<T, N> //
-                    of(String name,
-                       Class<N> returnType,
-                       TextExpression<? super T> expression) {
+                    of(@Nonnull String name,
+                       @Nonnull Class<N> returnType,
+                       @Nonnull TextExpression<? super T> expression) {
 
         Messages.requireNonNull(expression, "expression");
 

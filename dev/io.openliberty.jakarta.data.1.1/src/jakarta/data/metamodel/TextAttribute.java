@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.messages.Messages;
 
@@ -20,8 +21,9 @@ import jakarta.data.messages.Messages;
  */
 public interface TextAttribute<T> extends ComparableAttribute<T, String>, TextExpression<T> {
 
-    static <T> TextAttribute<T> of(Class<T> entityClass,
-                                   String name) {
+    @Nonnull
+    static <T> TextAttribute<T> of(@Nonnull Class<T> entityClass,
+                                   @Nonnull String name) {
         Messages.requireNonNull(entityClass, "entityClass");
         Messages.requireNonNull(name, "name");
 
@@ -29,6 +31,7 @@ public interface TextAttribute<T> extends ComparableAttribute<T, String>, TextEx
     }
 
     @Override
+    @Nonnull
     default Class<String> type() {
         return String.class;
     }

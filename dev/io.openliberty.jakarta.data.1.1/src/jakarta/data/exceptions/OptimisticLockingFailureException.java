@@ -12,21 +12,23 @@
  *******************************************************************************/
 package jakarta.data.exceptions;
 
+import jakarta.annotation.Nullable;
+
 /**
  * copied from Jakarta Data git repository
  */
 public class OptimisticLockingFailureException extends DataException {
     private static final long serialVersionUID = 1982179693469903341L;
 
-    public OptimisticLockingFailureException(String message) {
+    public OptimisticLockingFailureException(@Nullable String message) {
         super(message);
     }
 
-    public OptimisticLockingFailureException(String message, Throwable cause) {
+    public OptimisticLockingFailureException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    public OptimisticLockingFailureException(Throwable cause) {
+    public OptimisticLockingFailureException(@Nullable Throwable cause) {
         super(cause);
     }
 }

@@ -82,6 +82,12 @@ public record ImplementationInfoImpl(List<Icon> icons,
 
         @Override
         public ImplementationInfo adaptFromJson(ImplementationInfoTO to) throws Exception {
+            if (to.icons != null && to.icons.contains(null)) {
+                // Remove any unparsable icons
+                to.icons = to.icons.stream()
+                                   .filter(Objects::nonNull)
+                                   .toList();
+            }
             return new ImplementationInfoImpl(to.icons == null ? List.of() : to.icons,
                                               to.name,
                                               to.title,
