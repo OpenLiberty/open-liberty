@@ -110,7 +110,7 @@ tested.features: \
 	com.ibm.ws.security.registry_test.servlet;version=latest, \
 	io.openliberty.jakarta.servlet.6.0;version=latest, \
 	io.openliberty.com.fasterxml.jackson, \
-	com.fasterxml.jackson.core:jackson-databind;version=2.21.2,\
+	com.fasterxml.jackson.core:jackson-databind;version=2.21.5,\
 	io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest, \
 	io.opentracing:opentracing-util;version='0.33.0', \
 	io.opentracing:opentracing-noop;version='0.33.0', \

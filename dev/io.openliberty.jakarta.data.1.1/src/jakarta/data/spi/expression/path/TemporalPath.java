@@ -14,6 +14,7 @@ package jakarta.data.spi.expression.path;
 
 import java.time.temporal.Temporal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.expression.TemporalExpression;
 import jakarta.data.metamodel.TemporalAttribute;
@@ -29,9 +30,10 @@ public interface TemporalPath< //
                 Path<T, U>, //
                 TemporalExpression<T, V> {
 
+    @Nonnull
     static <T, U, V extends Temporal & Comparable<? extends Temporal>> //
-    TemporalPath<T, U, V> of(NavigableExpression<T, U> expression,
-                             TemporalAttribute<U, V> attribute) {
+    TemporalPath<T, U, V> of(@Nonnull NavigableExpression<T, U> expression,
+                             @Nonnull TemporalAttribute<U, V> attribute) {
 
         return new TemporalPathRecord<>(expression, attribute);
     }

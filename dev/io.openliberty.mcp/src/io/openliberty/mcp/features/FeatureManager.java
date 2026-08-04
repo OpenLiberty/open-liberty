@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import org.mcpjava.server.Cancellation;
 import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.MetaCarrier;
 import org.mcpjava.server.progress.Progress;
 
 import io.openliberty.mcp.features.FeatureManager.FeatureInfo;
@@ -40,7 +41,7 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
     /**
      *
      */
-    interface FeatureInfo extends Comparable<FeatureInfo> {
+    interface FeatureInfo extends Comparable<FeatureInfo>, MetaCarrier {
 
         /**
          * It is guaranteed that the name is unique for a specific feature.
@@ -80,7 +81,7 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 
     }
 
-    interface FeatureDefinition<INFO extends FeatureInfo, ARGUMENTS extends FeatureArguments, RESPONSE, THIS extends FeatureDefinition<INFO, ARGUMENTS, RESPONSE, THIS>> {
+    interface FeatureDefinition<INFO extends FeatureInfo, ARGUMENTS extends FeatureArguments, RESPONSE, THIS extends FeatureDefinition<INFO, ARGUMENTS, RESPONSE, THIS>> extends MetaCarrier.Builder<THIS> {
 
         /**
          *

@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
-import com.ibm.websphere.simplicity.config.McpServer;
+import com.ibm.websphere.simplicity.config.Mcp;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -185,8 +185,8 @@ public class DynamicMcpPathUpdateTest extends FATServletClient {
 
         assertNotNull("Expected to find the application in server config", app);
 
-        McpServer mcpServer = app.getMcpServers().get(0);
-        mcpServer.setPath(updatedEndpoint);
+        Mcp mcp = app.getMcps().get(0);
+        mcp.setPath(updatedEndpoint);
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
 

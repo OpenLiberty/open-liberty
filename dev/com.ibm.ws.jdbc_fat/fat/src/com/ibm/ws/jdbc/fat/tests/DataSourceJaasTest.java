@@ -94,7 +94,9 @@ public class DataSourceJaasTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("DSRA9543W", //Expected since we're using a GSS Credential for authentication with Derby.
-                          "CWWKE0701E"); //TODO investigate why this warning is being logged
+                          "CWWKE0701E", //TODO investigate why this warning is being logged
+                          "CWWKE1102W", //Quiesce did not complete due to active GSS connection during shutdown
+                          "CWWKE1107W"); //1 thread did not complete during quiesce period
     }
 
     @Test

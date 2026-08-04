@@ -12,18 +12,23 @@
  *******************************************************************************/
 package jakarta.data.page;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Methods are copied from proposed interfaces in the Jakarta Data repo.
  */
 public interface CursoredPage<T> extends Page<T> {
+    @Nonnull
     PageRequest.Cursor cursor(int index);
 
     @Override
     boolean hasPrevious();
 
     @Override
+    @Nonnull
     PageRequest nextPageRequest();
 
     @Override
+    @Nonnull
     PageRequest previousPageRequest();
 }

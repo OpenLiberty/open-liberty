@@ -2048,6 +2048,13 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 if (isChunkedEncodingSet()) {
                     removeTransferEncoding(TransferEncodingValues.CHUNKED);
                 }
+            } else {
+                // Unknown / undefined HTTP version. Do not allow a persistent
+                // response without framing headers.
+                if (!isCloseSet()) {
+                    setupConnectionClose();
+                }
+                sc.setPersistent(false);
             }
 
             /*

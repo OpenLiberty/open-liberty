@@ -12,11 +12,12 @@
  *******************************************************************************/
 package jakarta.data.metamodel.impl;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.metamodel.Attribute;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 @Deprecated(since = "1.1")
-public record AttributeRecord<T>(String name) implements Attribute<T> {
+public record AttributeRecord<T>(@Nonnull String name) implements Attribute<T> {
 }

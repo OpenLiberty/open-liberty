@@ -13,10 +13,10 @@ triggers:
       isRequired: true
       description: "PR number to perform delivery requirement verification against e.g. 30188"
     - name: githubPRBranch
-      isRequired: false
+      isRequired: true
       description: "Head branch of specified PR"
     - name: githubPRBranchOwner
-      isRequired: false
+      isRequired: true
       description: "PR head branch owner"
 
 steps:

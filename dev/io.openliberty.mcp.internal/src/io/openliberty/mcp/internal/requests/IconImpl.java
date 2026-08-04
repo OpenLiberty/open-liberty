@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.requests;
 import static io.openliberty.mcp.internal.EnumAdapters.THEME_ADAPTER;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,12 +33,12 @@ public record IconImpl(String src, String mimeTypeValue, List<String> sizes, The
 
     @Override
     public Optional<String> mimeType() {
-        return Optional.of(mimeTypeValue);
+        return Optional.ofNullable(mimeTypeValue);
     }
 
     @Override
     public Optional<Theme> theme() {
-        return Optional.of(themeValue);
+        return Optional.ofNullable(themeValue);
     }
 
     /**
@@ -113,9 +114,12 @@ public record IconImpl(String src, String mimeTypeValue, List<String> sizes, The
 
         @Override
         public Icon adaptFromJson(IconTO to) throws Exception {
+            if (to.src == null) {
+                return null;
+            }
             return new IconImpl(to.src,
                                 to.mimeType,
-                                to.sizes,
+                                to.sizes == null ? Collections.emptyList() : to.sizes,
                                 to.theme == null ? null : THEME_ADAPTER.adaptFromJson(to.theme));
         }
 

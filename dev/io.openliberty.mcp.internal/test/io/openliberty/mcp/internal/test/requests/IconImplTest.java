@@ -10,8 +10,10 @@
 package io.openliberty.mcp.internal.test.requests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,4 +81,21 @@ public class IconImplTest {
         assertEquals(Theme.LIGHT, icon.theme().get());
 
     }
+
+    @Test
+    public void testIconDeserializationMinimal() throws JsonbException, JSONException {
+        JSONObject iconJson = new JSONObject().put("src", TEST_ICON_URL);
+
+        Icon icon = jsonb.fromJson(iconJson.toString(), Icon.class);
+
+        assertEquals(TEST_ICON_URL, icon.src());
+        assertEquals(Optional.empty(), icon.mimeType());
+        assertEquals(List.of(), icon.sizes());
+        assertEquals(Optional.empty(), icon.theme());
+
+        JSONObject emptyIconJson = new JSONObject();
+        Icon emptyIcon = jsonb.fromJson(emptyIconJson.toString(), Icon.class);
+        assertNull(emptyIcon);
+    }
+
 }

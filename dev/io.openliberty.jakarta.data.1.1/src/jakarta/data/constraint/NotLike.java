@@ -17,6 +17,7 @@ import static jakarta.data.constraint.LikeRecord.ESCAPE;
 import static jakarta.data.constraint.LikeRecord.STRING_WILDCARD;
 import static jakarta.data.constraint.LikeRecord.translate;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.StringLiteral;
@@ -28,7 +29,8 @@ public interface NotLike extends Constraint<String> {
 
     char escape();
 
-    static NotLike literal(String value) {
+    @Nonnull
+    static NotLike literal(@Nonnull String value) {
         Messages.requireNonNull(value, "value");
 
         StringLiteral expression = StringLiteral.of(LikeRecord.escape(value));
@@ -36,13 +38,16 @@ public interface NotLike extends Constraint<String> {
         return new NotLikeRecord(expression, ESCAPE);
     }
 
+    @Nonnull
     TextExpression<?> pattern();
 
-    static NotLike pattern(String pattern) {
+    @Nonnull
+    static NotLike pattern(@Nonnull String pattern) {
         return pattern(pattern, CHAR_WILDCARD, STRING_WILDCARD);
     }
 
-    static NotLike pattern(String pattern,
+    @Nonnull
+    static NotLike pattern(@Nonnull String pattern,
                            char charWildcard,
                            char stringWildcard) {
         Messages.requireNonNull(pattern, "pattern");
@@ -56,7 +61,8 @@ public interface NotLike extends Constraint<String> {
         return new NotLikeRecord(expression, ESCAPE);
     }
 
-    static NotLike pattern(String pattern,
+    @Nonnull
+    static NotLike pattern(@Nonnull String pattern,
                            char charWildcard,
                            char stringWildcard,
                            char escape) {
@@ -70,13 +76,15 @@ public interface NotLike extends Constraint<String> {
         return new NotLikeRecord(expression, escape);
     }
 
-    static NotLike pattern(TextExpression<?> pattern, char escape) {
+    @Nonnull
+    static NotLike pattern(@Nonnull TextExpression<?> pattern, char escape) {
         Messages.requireNonNull(pattern, "pattern");
 
         return new NotLikeRecord(pattern, escape);
     }
 
-    static NotLike prefix(String prefix) {
+    @Nonnull
+    static NotLike prefix(@Nonnull String prefix) {
         Messages.requireNonNull(prefix, "prefix");
 
         StringLiteral expression = StringLiteral.of(LikeRecord.escape(prefix) +
@@ -85,7 +93,8 @@ public interface NotLike extends Constraint<String> {
         return new NotLikeRecord(expression, ESCAPE);
     }
 
-    static NotLike substring(String substring) {
+    @Nonnull
+    static NotLike substring(@Nonnull String substring) {
         Messages.requireNonNull(substring, "substring");
 
         StringLiteral expression = StringLiteral.of(STRING_WILDCARD +
@@ -95,7 +104,8 @@ public interface NotLike extends Constraint<String> {
         return new NotLikeRecord(expression, ESCAPE);
     }
 
-    static NotLike suffix(String suffix) {
+    @Nonnull
+    static NotLike suffix(@Nonnull String suffix) {
         Messages.requireNonNull(suffix, "suffix");
 
         StringLiteral expression = StringLiteral.of(STRING_WILDCARD +

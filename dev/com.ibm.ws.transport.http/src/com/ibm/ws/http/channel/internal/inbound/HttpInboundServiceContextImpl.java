@@ -2133,6 +2133,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (super.isContentLength()) {
             checkIncomingMessageLimit(super.getContentLength());
         }
+        if (!getRequest().getMethodValue().isBodyAllowed() && getRequest().isBodyExpected() && getHttpConfig().isRequestSmugglingProtectionEnabled()) {
+            // If there is a body on a request that should not have one, disable persistence
+            setPersistent(false);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Found request with body where method does not allow any. Disabling persistence.");
+            }
+            return;
+        }
     }
 
     /**

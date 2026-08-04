@@ -12,14 +12,17 @@
  *******************************************************************************/
 package jakarta.data.event;
 
+import jakarta.annotation.Nonnull;
+
 public abstract class LifecycleEvent<E> {
 
     private final E entityInstance;
 
-    public LifecycleEvent(E entity) {
+    public LifecycleEvent(@Nonnull E entity) {
         entityInstance = entity;
     }
 
+    @Nonnull
     public E entity() {
         return entityInstance;
     }

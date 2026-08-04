@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
 
@@ -19,8 +20,8 @@ import jakarta.data.messages.Messages;
  * Method signatures are copied from Jakarta Data.
  */
 record BetweenRecord<V extends Comparable<?>>(
-                ComparableExpression<?, V> lowerBound,
-                ComparableExpression<?, V> upperBound)
+                @Nonnull ComparableExpression<?, V> lowerBound,
+                @Nonnull ComparableExpression<?, V> upperBound)
                 implements Between<V> {
 
     public BetweenRecord {
@@ -30,11 +31,13 @@ record BetweenRecord<V extends Comparable<?>>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "BETWEEN " + lowerBound + " AND " + upperBound;
     }
 
     @Override
+    @Nonnull
     public NotBetween<V> negate() {
         return NotBetween.bounds(lowerBound, upperBound);
     }

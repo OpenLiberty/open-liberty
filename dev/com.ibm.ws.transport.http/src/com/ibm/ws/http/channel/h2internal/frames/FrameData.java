@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -234,6 +234,24 @@ public class FrameData extends Frame {
 
     public byte[] getData() {
         return (initialized) ? this.data : null;
+    }
+    
+    /**
+     * Get a copy of the data buffer contents for defensive copying.
+     * Used when deferring writes to ensure buffer data is preserved.
+     *
+     * @return byte array copy of buffer data, or null if no data
+     */
+    public byte[] getDataBufferCopy() {
+        if (dataBuffer != null && dataBuffer.hasRemaining()) {
+            int remaining = dataBuffer.remaining();
+            byte[] copy = new byte[remaining];
+            int savedPosition = dataBuffer.position();
+            dataBuffer.get(copy);
+            dataBuffer.position(savedPosition); // Restore position
+            return copy;
+        }
+        return null;
     }
 
     @Override

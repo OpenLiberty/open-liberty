@@ -12,21 +12,23 @@
  *******************************************************************************/
 package jakarta.data.exceptions;
 
+import jakarta.annotation.Nullable;
+
 /**
  * Method signatures copied from jakarta.data.DataException.
  */
 public class DataException extends RuntimeException {
     private static final long serialVersionUID = 468278092602073093L;
 
-    public DataException(String message) {
+    public DataException(@Nullable String message) {
         super(message);
     }
 
-    public DataException(String message, Throwable cause) {
+    public DataException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    public DataException(Throwable cause) {
+    public DataException(@Nullable Throwable cause) {
         super(cause);
     }
 }

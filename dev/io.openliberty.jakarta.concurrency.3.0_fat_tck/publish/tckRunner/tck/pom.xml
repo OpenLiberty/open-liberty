@@ -178,7 +178,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
+                <version>3.5.6</version> <!-- Any changes to the surefire version must be tested against ZOS -->
                 <configuration>
                     <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
                     <systemPropertyVariables>
@@ -193,6 +193,7 @@
                     </suiteXmlFiles>
                     <reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory" /> <!-- Use TCP/IP instead of process pipes for ZOS -->
                 </configuration>
             </plugin>
         </plugins>

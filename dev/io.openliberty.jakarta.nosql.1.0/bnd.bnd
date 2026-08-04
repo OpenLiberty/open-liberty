@@ -29,7 +29,7 @@ Export-Package: \
   jakarta.nosql;version="${jnosql-version}"
 
 -includeresource: \
-  @\${repo;jakarta.nosql:jakarta.nosql-api;${jnosql-version};EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.nosql:jakarta.nosql-api;${jnosql-version};EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 

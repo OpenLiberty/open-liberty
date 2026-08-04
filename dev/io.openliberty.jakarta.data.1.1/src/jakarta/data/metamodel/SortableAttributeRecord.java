@@ -12,16 +12,19 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record SortableAttributeRecord<T>(
-                Class<T> declaringType,
-                String name,
-                Class<?> type)
+                @Nonnull Class<T> declaringType,
+                @Nonnull String name,
+                @Nonnull Class<?> type)
                 implements SortableAttribute<T> {
 
     @Override
+    @Nonnull
     public String toString() {
         return declaringType.getSimpleName().toLowerCase() + '.' + name;
     }

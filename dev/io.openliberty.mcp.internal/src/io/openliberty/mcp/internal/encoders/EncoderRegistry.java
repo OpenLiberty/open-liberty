@@ -61,9 +61,8 @@ public class EncoderRegistry {
 
     public <T> Optional<ToolResponseEncoder<? super T>> findToolResponseEncoder(T result) {
         // Check local encoders first
-        Class<?> clazz = result.getClass();
         for (var encoder : toolResponseEncoders) {
-            if (encoder.supports(clazz)) {
+            if (encoder.getType().isInstance(result)) {
                 return Optional.of((ToolResponseEncoder<? super T>) encoder);
             }
         }

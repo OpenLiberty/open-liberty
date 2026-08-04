@@ -152,6 +152,22 @@ public interface Fractions {
      Order<Fraction> order,
      PageRequest pageReq);
 
+    @Find
+    @SuppressWarnings("unchecked")
+    Page<Fraction> fetchOffsetPage //
+    (@By(_Fraction.DENOMINATOR) @Is(AtMost.class) int maxDenominator,
+     Restriction<Fraction> filter,
+     PageRequest pageReq,
+     Sort<Fraction>... sorts);
+
+    Page<Fraction> findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+    (List<Integer> denominators,
+     int minNumerator,
+     int maxNumerator,
+     Sort<Fraction> sort,
+     Restriction<Fraction> filter,
+     PageRequest pageReq);
+
     @First
     @NativeQuery("""
                     SELECT *

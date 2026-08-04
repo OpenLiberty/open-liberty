@@ -14,6 +14,8 @@ package com.ibm.ws.classloading.internal;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -230,22 +232,16 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && result != null) {
-            ClassLoader classLoader = result.getClassLoader();
-            Tr.debug(tc, String.format("CLASS LOAD: class=[%s]; classloader=[%s]; codeSource=[%s]",
+            final Class<?> result0 = result;
+            ClassLoader classLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) result0::getClassLoader);
+            ProtectionDomain pd = AccessController.doPrivileged((PrivilegedAction<ProtectionDomain>) result0::getProtectionDomain);
+            Tr.debug(tc, String.format("CLASS LOAD: class=[%s]; classloader=[%s]; location=[%s]",
                                        className,
                                        classLoader != null ? classLoader.toString() : "bootstrap",
-                                       getCodeSourceString(result)));
+                                       pd.getCodeSource() != null ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown"));
         }
         return result;
     }
-
-    @Trivial
-    private static String getCodeSourceString(Class<?> clazz) {
-        ProtectionDomain pd = clazz.getProtectionDomain();
-        return (pd.getCodeSource() != null)
-                ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown";
-    }
-
 
     @Override
     @FFDCIgnore(ClassNotFoundException.class)

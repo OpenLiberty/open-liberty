@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -34,6 +36,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -84,6 +89,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    Sectors sectors; // has security roles that will eventually be enforced
 
     @Inject
     StatefulFractionRepository statefulFractionRepo;
@@ -504,6 +512,44 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Request cursor pagination from a repository method that accepts a
+     * Restriction parameter, but specify the unrestricted restriction.
+     * Verify the total count of elements and pages is computed correctly.
+     */
+    @Test
+    public void testCursoredPageCountWithEmptyRestriction() {
+
+        Between<Integer> denominators5to10 = Between.bounds(5, 10);
+
+        Order<Fraction> order = Order.by(_Fraction.denominator.asc(),
+                                         _Fraction.numerator.asc());
+
+        Cursor fourSeventhsCursor = Cursor.forKey(7, 4);
+        PageRequest page3Req = PageRequest.ofSize(5)
+                        .pageNumber(3)
+                        .afterCursor(fourSeventhsCursor);
+
+        CursoredPage<Fraction> page3 = fractions
+                        .fetchCursored(denominators5to10,
+                                       true, // reduced
+                                       Restrict.unrestricted(),
+                                       order,
+                                       page3Req);
+
+        assertEquals(26L,
+                     page3.totalElements());
+
+        assertEquals(List.of("5/7",
+                             "6/7",
+                             "1/8",
+                             "3/8",
+                             "5/8"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
      * Use a stateful repository to find an entity. Use a detach operation to
      * make the entity unmanaged. Make updates to the entity. After committing,
      * verify that updates made after the detach operation are not written to
@@ -759,26 +805,25 @@ public class Data_1_1_Servlet extends FATServlet {
         //        20      R          24     4 /  7
         //        21      R          30     3 / 11
         //        22      R          32     4 /  9
-        //        23      R          36     3 / 13
-        //        24      R          40     5 /  9
-        // 3      25      R          40     4 / 11
-        // 3      26      R          48     4 / 13
-        // 3      27      R          50     5 / 11
-        // 3      28      R          55     5 / 12
-        // 3      29      R          60     6 / 11
-        // 4      30      R          60     5 / 13
-        // 4      31      R          65     5 / 14
-        // 4      32      R          70     7 / 11
-        // 4      33      R          72     6 / 13
-        // 4      34      R          77     7 / 12
-        // 4      35      R          80     8 / 11
-        // 4      36      R          98     7 / 15
-        // 4      37      R         108     9 / 13
-        // 4      38      R         112     8 / 15
-        //        39      R         112     7 / 17
-        //        40      R         117     9 / 14
-        //        41      R         128     8 / 17
-        //        42      R         162     9 / 19
+        //        23      R          40     5 /  9
+        // 3      24      R          40     4 / 11
+        // 3      25      R          48     4 / 13
+        // 3      26      R          50     5 / 11
+        // 3      27      R          55     5 / 12
+        // 3      28      R          60     6 / 11
+        // 4      29      R          60     5 / 13
+        // 4      30      R          65     5 / 14
+        // 4      31      R          70     7 / 11
+        // 4      32      R          72     6 / 13
+        // 4      33      R          77     7 / 12
+        // 4      34      R          80     8 / 11
+        // 4      35      R          98     7 / 15
+        // 4      36      R         108     9 / 13
+        // 4      37      R         112     8 / 15
+        //        38      R         112     7 / 17
+        //        39      R         117     9 / 14
+        //        40      R         128     8 / 17
+        //        41      R         162     9 / 19
 
         Between<Integer> denominator3to10MoreThanNumerator = Between
                         .bounds(_Fraction.numerator.plus(3),
@@ -829,9 +874,8 @@ public class Data_1_1_Servlet extends FATServlet {
                      page4.hasPrevious());
         assertEquals(true,
                      page4.hasTotals());
-        // TODO implement count queries when restriction is present
-        //assertEquals(42L,
-        //             page4.totalElements());
+        assertEquals(41L,
+                     page4.totalElements());
 
         Fraction firstOnPage = page4.content().get(0);
         Cursor firstOnPageCursor = Cursor
@@ -862,9 +906,8 @@ public class Data_1_1_Servlet extends FATServlet {
                      page3.hasPrevious());
         assertEquals(true,
                      page3.hasTotals());
-        // TODO implement count queries when restriction is present
-        //assertEquals(42L,
-        //             page3.totalElements());
+        assertEquals(41L,
+                     page3.totalElements());
 
         CursoredPage<Fraction> page1 = fractions
                         .fetchCursored(denominator3to10MoreThanNumerator,
@@ -877,11 +920,10 @@ public class Data_1_1_Servlet extends FATServlet {
                      page1.hasNext());
         assertEquals(true,
                      page1.hasTotals());
-        // TODO implement count queries when restriction is present
-        //assertEquals(42L,
-        //             page1.totalElements());
-        //assertEquals(4L,
-        //             page1.totalPages());
+        assertEquals(41L,
+                     page1.totalElements());
+        assertEquals(4L,
+                     page1.totalPages());
 
         assertEquals(List.of("1/4",
                              "1/5",
@@ -2261,6 +2303,53 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Request offset pagination from a repository method that accepts a
+     * Restriction parameter. Verify the total count of elements and pages
+     * takes into account the given Restriction value.
+     */
+    @Test
+    public void testOffsetPageCountWithRestrictions() {
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page1 = fractions //
+                        .fetchOffsetPage(12,
+                                         _Fraction.reduced.isTrue(),
+                                         PageRequest.ofSize(9),
+                                         _Fraction.name.asc());
+        assertEquals(45,
+                     page1.totalElements());
+        assertEquals(5,
+                     page1.totalPages());
+
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page3 = fractions //
+                        .fetchOffsetPage(12,
+                                         _Fraction.reduced.isTrue(),
+                                         PageRequest.ofSize(9).pageNumber(3),
+                                         _Fraction.name.asc());
+        assertEquals(45,
+                     page3.totalElements());
+        assertEquals(5,
+                     page3.totalPages());
+
+        Restriction<Fraction> restriction = Restrict //
+                        .any(_Fraction.reduced.isTrue(),
+                             _Fraction.numerator.equalTo(3),
+                             _Fraction.name.length().equalTo(10));
+
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page2 = fractions //
+                        .fetchOffsetPage(12,
+                                         restriction,
+                                         PageRequest.ofSize(8).pageNumber(2),
+                                         _Fraction.numerator.asc(),
+                                         _Fraction.denominator.desc());
+        assertEquals(52,
+                     page2.totalElements());
+        assertEquals(7,
+                     page2.totalPages());
+    }
+
+    /**
      * Use a stateless repository to find an entity. Modify the entity. Verify the
      * updates can be committed or rolled back.
      */
@@ -2376,6 +2465,66 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.where(restriction)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Request offset pagination from a query by method name that accepts a
+     * Restriction parameter, and specify a restriction.
+     * Verify the total count of elements and pages is computed correctly.
+     */
+    @Test
+    public void testQueryByMethodNameWithRestriction() {
+        Page<Fraction> page1 = fractions//
+                        .findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+                        (List.of(12, 20, 16),
+                         3,
+                         17,
+                         _Fraction.denominator.desc(),
+                         _Fraction.reduced.isTrue(),
+                         PageRequest.ofSize(6));
+
+        assertEquals(List.of("3/20",
+                             "3/16",
+                             "5/16",
+                             "5/12",
+                             "7/20",
+                             "7/16"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(16L,
+                     page1.totalElements());
+        assertEquals(3L,
+                     page1.totalPages());
+
+        assertEquals(true,
+                     page1.hasNext());
+
+        Page<Fraction> page2 = fractions//
+                        .findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+                        (List.of(12, 20, 16),
+                         3,
+                         17,
+                         _Fraction.denominator.desc(),
+                         _Fraction.reduced.isTrue(),
+                         page1.nextPageRequest());
+
+        assertEquals(List.of("7/12",
+                             "9/20",
+                             "9/16",
+                             "11/20",
+                             "11/16",
+                             "11/12"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(16L,
+                     page2.totalElements());
+        assertEquals(3L,
+                     page2.totalPages());
+
     }
 
     /**
@@ -2839,6 +2988,100 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Annotations from the jakarta.annotation.security package that are
+     * found on a repository interface methods are automatically copied to the
+     * respective method on the repository bean instance/proxy.
+     * Data PR 1507 would like to add class level annotations as well, but
+     * Weld does not preserve them on bean proxies/interceptor proxies.
+     * This test case enforces that the current behavior is not regressed.
+     */
+    @Test
+    public void testSecurityAnnotationsTransferedToBeanMethods() throws Exception {
+
+        // repository bean method: alter(Sector)
+
+        Method alter = sectors.getClass().getMethod("alter", Sector.class);
+        RolesAllowed rolesForMethod = alter.getAnnotation(RolesAllowed.class);
+        assertNotNull("Repository bean method " + alter +
+                      " lacks the RolesAllowed annotation",
+                      rolesForMethod);
+
+        assertEquals(List.of("operator"),
+                     List.of(rolesForMethod.value()));
+
+        for (Annotation anno : alter.getAnnotations())
+            if (RolesAllowed.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !RolesAllowed.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: byLabel(String)
+
+        Method byLabel = sectors.getClass().getMethod("byLabel", String.class);
+        assertNotNull(byLabel.getAnnotation(PermitAll.class));
+
+        for (Annotation anno : byLabel.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !PermitAll.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: create(Sector)
+
+        Method create = sectors.getClass().getMethod("create", Sector.class);
+
+        for (Annotation anno : create.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: destroy(Sector)
+
+        Method destroy = sectors.getClass().getMethod("destroy", Sector.class);
+
+        for (Annotation anno : destroy.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: eraseEverything()
+
+        Method eraseEverything = sectors.getClass().getMethod("eraseEverything");
+        assertNotNull(eraseEverything.getAnnotation(DenyAll.class));
+
+        for (Annotation anno : eraseEverything.getAnnotations())
+            if (DenyAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !DenyAll.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean class
+
+        RolesAllowed rolesForClass = //
+                        sectors.getClass().getAnnotation(RolesAllowed.class);
+        // The Weld proxy for the bean does not include class-level annotations.
+        // Jakarta Security would need to define these annotations as interceptor
+        // bindings to have them to apply to CDI beans.
+        // TODO add test based on changes made during EE 12
+
+        for (Annotation anno : sectors.getClass().getAnnotations())
+            if (RolesAllowed.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !RolesAllowed.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean: " + anno);
+
+    }
+
+    /**
      * Use a repository method that performs a Query consisting of a SELECT
      * clause that uses the NEW keyword to specify the constructor for a
      * Java record.
@@ -3128,6 +3371,12 @@ public class Data_1_1_Servlet extends FATServlet {
                                   AtMost.max(Integer.MAX_VALUE),
                                   Restrict.unrestricted());
         }
+    }
+
+    @Test
+    public void testBooleanRestriction() {
+        fractions.where(Restrict.all(_Fraction.name.contains("Four"),
+                                     _Fraction.reduced.isTrue()));
     }
 
 }

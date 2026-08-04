@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.expression;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.Sort;
 import jakarta.data.constraint.AtLeast;
 import jakarta.data.constraint.AtMost;
@@ -28,79 +29,93 @@ import jakarta.data.restrict.Restriction;
  */
 public interface ComparableExpression<T, V extends Comparable<?>> //
                 extends Expression<T, V> {
+    @Nonnull
     default Sort<T> asc() {
         return Sort.asc(this);
     }
 
+    @Nonnull
     default <U extends ComparableExpression<? super T, V>> Restriction<T> //
-                    between(U minExpression,
-                            U maxExpression) {
+                    between(@Nonnull U minExpression,
+                            @Nonnull U maxExpression) {
         Constraint<V> constraint = Between.bounds(minExpression,
                                                   maxExpression);
         return BasicRestriction.of(this, constraint);
     }
 
-    default Restriction<T> between(V min, V max) {
+    @Nonnull
+    default Restriction<T> between(@Nonnull V min, @Nonnull V max) {
         Constraint<V> constraint = Between.bounds(min, max);
         return BasicRestriction.of(this, constraint);
     }
 
+    @Nonnull
     default Sort<T> desc() {
         return Sort.desc(this);
     }
 
+    @Nonnull
     default Restriction<T> greaterThan//
-    (ComparableExpression<? super T, V> expression) {
+    (@Nonnull ComparableExpression<? super T, V> expression) {
         Constraint<V> constraint = GreaterThan.bound(expression);
         return BasicRestriction.of(this, constraint);
     }
 
-    default Restriction<T> greaterThan(V value) {
+    @Nonnull
+    default Restriction<T> greaterThan(@Nonnull V value) {
         Constraint<V> constraint = GreaterThan.bound(value);
         return BasicRestriction.of(this, constraint);
     }
 
+    @Nonnull
     default Restriction<T> greaterThanEqual//
-    (ComparableExpression<? super T, V> expression) {
+    (@Nonnull ComparableExpression<? super T, V> expression) {
         Constraint<V> constraint = AtLeast.min(expression);
         return BasicRestriction.of(this, constraint);
     }
 
-    default Restriction<T> greaterThanEqual(V value) {
+    @Nonnull
+    default Restriction<T> greaterThanEqual(@Nonnull V value) {
         Constraint<V> constraint = AtLeast.min(value);
         return BasicRestriction.of(this, constraint);
     }
 
-    default Restriction<T> lessThan(ComparableExpression<? super T, V> expression) {
+    @Nonnull
+    default Restriction<T> lessThan(@Nonnull ComparableExpression<? super T, V> expression) {
         Constraint<V> constraint = LessThan.bound(expression);
         return BasicRestriction.of(this, constraint);
     }
 
-    default Restriction<T> lessThan(V value) {
+    @Nonnull
+    default Restriction<T> lessThan(@Nonnull V value) {
         Constraint<V> constraint = LessThan.bound(value);
         return BasicRestriction.of(this, constraint);
     }
 
+    @Nonnull
     default Restriction<T> lessThanEqual//
-    (ComparableExpression<? super T, V> expression) {
+    (@Nonnull ComparableExpression<? super T, V> expression) {
         Constraint<V> constraint = AtMost.max(expression);
         return BasicRestriction.of(this, constraint);
     }
 
-    default Restriction<T> lessThanEqual(V value) {
+    @Nonnull
+    default Restriction<T> lessThanEqual(@Nonnull V value) {
         Constraint<V> constraint = AtMost.max(value);
         return BasicRestriction.of(this, constraint);
     }
 
+    @Nonnull
     default <U extends ComparableExpression<? super T, V>> Restriction<T> //
-                    notBetween(U minExpression,
-                               U maxExpression) {
+                    notBetween(@Nonnull U minExpression,
+                               @Nonnull U maxExpression) {
         Constraint<V> constraint = NotBetween.bounds(minExpression,
                                                      maxExpression);
         return BasicRestriction.of(this, constraint);
     }
 
-    default Restriction<T> notBetween(V min, V max) {
+    @Nonnull
+    default Restriction<T> notBetween(@Nonnull V min, @Nonnull V max) {
         Constraint<V> constraint = NotBetween.bounds(min, max);
         return BasicRestriction.of(this, constraint);
     }

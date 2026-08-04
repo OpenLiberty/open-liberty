@@ -15,6 +15,7 @@ package jakarta.data.spi.expression.literal;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NumericExpression;
 
 /**
@@ -24,42 +25,54 @@ public interface NumericLiteral<N extends Number & Comparable<N>> extends //
                 ComparableLiteral<N>, //
                 NumericExpression<Object, N> {
 
-    static NumericLiteral<BigDecimal> of(BigDecimal value) {
+    @Nonnull
+    static NumericLiteral<BigDecimal> of(@Nonnull BigDecimal value) {
         return new NumericLiteralRecord<>(BigDecimal.class, value);
     }
 
-    static NumericLiteral<BigInteger> of(BigInteger value) {
+    @Nonnull
+    static NumericLiteral<BigInteger> of(@Nonnull BigInteger value) {
         return new NumericLiteralRecord<>(BigInteger.class, value);
     }
 
+    @Nonnull
     static NumericLiteral<Byte> of(byte value) {
         return new NumericLiteralRecord<>(Byte.class, value);
     }
 
+    @Nonnull
     static NumericLiteral<Double> of(double value) {
         return new NumericLiteralRecord<>(Double.class, value);
     }
 
+    @Nonnull
     static NumericLiteral<Float> of(float value) {
         return new NumericLiteralRecord<>(Float.class, value);
     }
 
+    @Nonnull
     static NumericLiteral<Long> of(long value) {
         return new NumericLiteralRecord<>(Long.class, value);
     }
 
+    @Nonnull
     static NumericLiteral<Integer> of(int value) {
         return new NumericLiteralRecord<>(Integer.class, value);
     }
 
+    @Nonnull
     static NumericLiteral<Short> of(short value) {
         return new NumericLiteralRecord<>(Short.class, value);
     }
 
+    @Nonnull
     static <N extends Number & Comparable<N>> NumericLiteral<N> of//
-    (Class<? extends N> type,
-     N value) {
+    (@Nonnull Class<? extends N> type,
+     @Nonnull N value) {
         return new NumericLiteralRecord<>(type, value);
     }
 
+    @Override
+    @Nonnull
+    String toString();
 }

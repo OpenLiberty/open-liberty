@@ -14,6 +14,7 @@ package jakarta.data.constraint;
 
 import static java.util.Collections.unmodifiableList;
 
+import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,10 +28,12 @@ import jakarta.data.spi.expression.literal.Literal;
  */
 public interface NotIn<V> extends Constraint<V> {
 
+    @Nonnull
     List<Expression<?, V>> expressions();
 
     @SafeVarargs
-    static <V> NotIn<V> expressions(Expression<?, V>... expressions) {
+    @Nonnull
+    static <V> NotIn<V> expressions(@Nonnull Expression<?, V>... expressions) {
         Messages.requireNonNull(expressions, "expressions");
 
         if (expressions.length == 0)
@@ -46,7 +49,8 @@ public interface NotIn<V> extends Constraint<V> {
         return new NotInRecord<>(List.of(expressions));
     }
 
-    static <V> NotIn<V> expressions(List<Expression<?, V>> expressions) {
+    @Nonnull
+    static <V> NotIn<V> expressions(@Nonnull List<Expression<?, V>> expressions) {
         Messages.requireNonNull(expressions, "expressions");
 
         if (expressions.isEmpty())
@@ -62,7 +66,8 @@ public interface NotIn<V> extends Constraint<V> {
         return new NotInRecord<>(List.copyOf(expressions));
     }
 
-    static <V> NotIn<V> values(Collection<V> values) {
+    @Nonnull
+    static <V> NotIn<V> values(@Nonnull Collection<V> values) {
         Messages.requireNonNull(values, "values");
 
         if (values.isEmpty())
@@ -82,7 +87,8 @@ public interface NotIn<V> extends Constraint<V> {
     }
 
     @SafeVarargs
-    static <V> NotIn<V> values(V... values) {
+    @Nonnull
+    static <V> NotIn<V> values(@Nonnull V... values) {
         Messages.requireNonNull(values, "values");
 
         if (values.length == 0)

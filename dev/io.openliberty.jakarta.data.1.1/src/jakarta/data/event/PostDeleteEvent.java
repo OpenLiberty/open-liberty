@@ -12,9 +12,11 @@
  *******************************************************************************/
 package jakarta.data.event;
 
+import jakarta.annotation.Nonnull;
+
 public class PostDeleteEvent<E> extends LifecycleEvent<E> {
 
-    public PostDeleteEvent(E entity) {
+    public PostDeleteEvent(@Nonnull E entity) {
         super(entity);
     }
 }

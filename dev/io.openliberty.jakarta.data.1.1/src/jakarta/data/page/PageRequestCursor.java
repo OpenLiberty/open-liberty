@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data.page;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +24,7 @@ import jakarta.data.messages.Messages;
 public class PageRequestCursor implements PageRequest.Cursor {
     private final Object[] keyComponents;
 
-    PageRequestCursor(Object... keyComponents) {
+    PageRequestCursor(@Nonnull Object... keyComponents) {
         this.keyComponents = keyComponents;
 
         if (keyComponents == null || keyComponents.length < 1)
@@ -30,16 +32,18 @@ public class PageRequestCursor implements PageRequest.Cursor {
     }
 
     @Override
+    @Nonnull
     public List<?> elements() {
         return List.of(keyComponents);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         return o == this || o != null && o.getClass().equals(getClass()) && Arrays.equals(((PageRequestCursor) o).keyComponents, keyComponents);
     }
 
     @Override
+    @Nullable
     public Object get(int index) {
         return keyComponents[index];
     }
@@ -55,6 +59,7 @@ public class PageRequestCursor implements PageRequest.Cursor {
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return new StringBuilder("Cursor@").append(Integer.toHexString(hashCode())) //
                         .append(" with ").append(keyComponents.length).append(" values") //

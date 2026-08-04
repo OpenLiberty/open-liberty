@@ -15,10 +15,10 @@ javac.target: 17
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
--include= jar:${fileuri;\${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}}!/META-INF/MANIFEST.MF,check-me-in-if-i-change.bnd
+-include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}}!/META-INF/MANIFEST.MF,check-me-in-if-i-change.bnd
 
 -includeresource: \
-  @\${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}!/!META-INF/client/*
+  @${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}!/!META-INF/client/*
 
 Bundle-SymbolicName: io.openliberty.org.jboss.weld6; singleton:=true
 
