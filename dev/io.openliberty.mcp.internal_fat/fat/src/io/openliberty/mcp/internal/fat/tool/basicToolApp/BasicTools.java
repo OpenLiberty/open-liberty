@@ -372,6 +372,42 @@ public class BasicTools {
         return new City(name, "England", 8000, false);
     }
 
+    @Tool(name = "testOutputSchemaFromOnToolResponse",
+          title = "Create a city via outputSchemaFrom",
+          description = "ToolResponse return type with outputSchemaFrom=City generates City output schema",
+          structuredContent = true, outputSchemaFrom = City.class)
+    public ToolResponse testOutputSchemaFromOnToolResponse(@ToolArg(name = "name", description = "name of your city") String name) {
+        return ToolResponse.ofStructured(new City(name, "England", 8000, false));
+    }
+
+    // outputSchemaFrom on a plain return type (String): String is normally excluded from outputSchema,
+    // but outputSchemaFrom=City forces the City schema to be generated.
+    @Tool(name = "testOutputSchemaFromOverridesReturnType",
+          title = "outputSchemaFrom overrides plain return type",
+          description = "String return type with outputSchemaFrom=City generates City schema, not a string schema",
+          structuredContent = true, outputSchemaFrom = City.class)
+    public String testOutputSchemaFromOverridesReturnType(@ToolArg(name = "name", description = "name of your city") String name) {
+        return name;
+    }
+
+    // @Schema on the method takes precedence over outputSchemaFrom: the inline schema wins over City.
+    @Tool(name = "testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom",
+          title = "@Schema wins over outputSchemaFrom",
+          description = "@Schema inline JSON wins over outputSchemaFrom=City — schema has cityName, not City fields",
+          structuredContent = true, outputSchemaFrom = City.class)
+    @Schema("""
+                    {
+                      "type": "object",
+                      "properties": {
+                        "cityName": { "type": "string" }
+                      },
+                      "required": ["cityName"]
+                    }
+                    """)
+    public ToolResponse testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom(@ToolArg(name = "name", description = "name of your city") String name) {
+        return ToolResponse.ofStructured(Map.of("cityName", name));
+    }
+
     public static record City(String name, String country, int population, boolean isCapital) {};
 
     // Test ToolArg.required is always true by default, check that it works when it is set to true
