@@ -186,11 +186,11 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             int host_start = start;
             int slash_start = host.length();
             for (; i < host.length(); i++) {
-                // find either a "@" or "/"
+                // find either a "@", "/", "?", or "#" per RFC 3986 §3.2
                 if ('@' == host.charAt(i)) {
                     // Note: we're just cutting off the userinfo section for now
                     host_start = i + 1;
-                } else if ('/' == host.charAt(i)) {
+                } else if ('/' == host.charAt(i) || '?' == host.charAt(i) || '#' == host.charAt(i)) {
                     slash_start = i;
                     break;
                 }
@@ -223,8 +223,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
         int uri_end = data.length;
         for (int i = start; i < data.length; i++) {
-            // look for the query string marker
-            if ('?' == data[i]) {
+            // look for the query string marker or fragment marker
+            if ('?' == data[i] || '#' == data[i]) {
                 uri_end = i;
                 break;
             }
