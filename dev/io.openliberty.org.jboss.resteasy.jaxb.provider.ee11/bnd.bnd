@@ -50,7 +50,7 @@ Import-Package: \
   *
 
 Include-Resource:\
-  @\${repo;org.jboss.resteasy:resteasy-jaxb-provider;${resteasy-version};EXACT}
+  @${repo;org.jboss.resteasy:resteasy-jaxb-provider;${resteasy-version};EXACT}
 
 -buildpath: \
   org.jboss.resteasy:resteasy-jaxb-provider;version=${resteasy-version};strategy=exact

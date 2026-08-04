@@ -12,17 +12,22 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 public interface Attribute<T> {
 
+    @Nonnull
     default Class<T> declaringType() {
         throw new UnsupportedOperationException();
     }
 
+    @Nonnull
     String name();
 
+    @Nonnull
     default Class<?> type() {
         throw new UnsupportedOperationException();
     }

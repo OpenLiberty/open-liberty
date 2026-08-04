@@ -52,6 +52,11 @@ import org.junit.Test;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
+@DataSourceDefinition(name = "java:app/jdbc/H2JdbcDataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
+                      user = "dbuser1",
+                      password = "dbpwd1")
 @DataSourceDefinition(name = "java:app/jdbc/H2ConnectionPoolDataSource",
                       className = "javax.sql.ConnectionPoolDataSource",
                       url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
@@ -75,6 +80,9 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class H2TestServlet extends FATServlet {
+    @Resource(lookup = "java:app/jdbc/H2JdbcDataSource")
+    DataSource h2initDataSource;
+
     @Resource(lookup = "java:app/jdbc/H2ConnectionPoolDataSource")
     DataSource h2cpDataSource;
 
@@ -107,7 +115,7 @@ public class H2TestServlet extends FATServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        try (Connection con = h2cpDataSource.getConnection()) {
+        try (Connection con = h2initDataSource.getConnection()) {
             Statement stmt = con.createStatement();
             stmt.execute("""
                             CREATE TABLE COMPOUNDS (

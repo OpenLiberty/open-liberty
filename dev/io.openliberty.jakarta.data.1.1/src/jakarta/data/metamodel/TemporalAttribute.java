@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import java.time.temporal.Temporal;
 
 import jakarta.data.expression.TemporalExpression;
@@ -25,10 +26,11 @@ public interface TemporalAttribute<T, V extends Temporal & Comparable<? extends 
                 ComparableAttribute<T, V>, //
                 TemporalExpression<T, V> {
 
+    @Nonnull
     static <T, V extends Temporal & Comparable<? extends Temporal>> //
-    TemporalAttribute<T, V> of(Class<T> entityClass,
-                               String name,
-                               Class<V> attributeType) {
+    TemporalAttribute<T, V> of(@Nonnull Class<T> entityClass,
+                               @Nonnull String name,
+                               @Nonnull Class<V> attributeType) {
 
         Messages.requireNonNull(entityClass, "entityClass");
         Messages.requireNonNull(name, "name");

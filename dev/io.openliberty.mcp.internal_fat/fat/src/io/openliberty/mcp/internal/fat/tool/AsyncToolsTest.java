@@ -44,11 +44,14 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 public class AsyncToolsTest extends FATServletClient {
 
     private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async")
+    @Server("mcp-server-async-tools")
     public static LibertyServer server;
 
     @Rule
     public McpClient client = new McpClient(server, "/asyncToolsTest");
+
+    @Rule
+    public McpClient shortTimeoutClient = new McpClient(server, "/asyncToolsTestShortTimeout");
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");
@@ -59,7 +62,14 @@ public class AsyncToolsTest extends FATServletClient {
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+
+        // Same app deployed a second time, but has different config in server.xml
+        WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, "asyncToolsTestShortTimeout.war")
+                                               .addPackage(AsyncTools.class.getPackage())
+                                               .addPackage(ToolStatus.class.getPackage());
+
+        ShrinkHelper.exportAppToServer(server, shortTimeoutWar, SERVER_ONLY);
 
         server.startServer();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
@@ -262,7 +272,7 @@ public class AsyncToolsTest extends FATServletClient {
                             }
                           }
                         """;
-        client.callMCP(request);
+        shortTimeoutClient.callMCP(request);
     }
 
     @Test

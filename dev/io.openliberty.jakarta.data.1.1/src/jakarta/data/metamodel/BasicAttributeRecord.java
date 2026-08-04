@@ -12,16 +12,19 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record BasicAttributeRecord<T, V>(
-                Class<T> declaringType,
-                String name,
-                Class<V> type)
+                @Nonnull Class<T> declaringType,
+                @Nonnull String name,
+                @Nonnull Class<V> type)
                 implements BasicAttribute<T, V> {
 
     @Override
+    @Nonnull
     public String toString() {
         return declaringType.getSimpleName().toLowerCase() + '.' + name;
     }

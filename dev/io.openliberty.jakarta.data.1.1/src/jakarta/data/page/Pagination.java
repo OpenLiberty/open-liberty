@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data.page;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.Optional;
 
 import jakarta.data.messages.Messages;
@@ -22,8 +24,8 @@ import jakarta.data.messages.Messages;
  */
 record Pagination(long pageNumber,
                 int size,
-                Mode mode,
-                Cursor type,
+                @Nonnull Mode mode,
+                @Nullable Cursor type,
                 boolean requestTotal)
                 implements PageRequest {
 
@@ -37,31 +39,37 @@ record Pagination(long pageNumber,
     }
 
     @Override
-    public PageRequest afterCursor(PageRequest.Cursor cursor) {
+    @Nonnull
+    public PageRequest afterCursor(@Nonnull PageRequest.Cursor cursor) {
         return new Pagination(pageNumber, size, Mode.CURSOR_NEXT, cursor, requestTotal);
     }
 
     @Override
-    public PageRequest beforeCursor(PageRequest.Cursor cursor) {
+    @Nonnull
+    public PageRequest beforeCursor(@Nonnull PageRequest.Cursor cursor) {
         return new Pagination(pageNumber, size, Mode.CURSOR_PREVIOUS, cursor, requestTotal);
     }
 
     @Override
+    @Nonnull
     public Optional<Cursor> cursor() {
         return type == null ? Optional.empty() : Optional.of(type);
     }
 
     @Override
+    @Nonnull
     public PageRequest pageNumber(long pageNum) {
         return new Pagination(pageNum, size, mode, type, requestTotal);
     }
 
     @Override
+    @Nonnull
     public Pagination size(int maxPageSize) {
         return new Pagination(pageNumber, maxPageSize, mode, type, requestTotal);
     }
 
     @Override
+    @Nonnull
     public String toString() {
         StringBuilder b = new StringBuilder("PageRequest{pageNumber=") //
                         .append(pageNumber) //
@@ -77,11 +85,13 @@ record Pagination(long pageNumber,
     }
 
     @Override
+    @Nonnull
     public PageRequest withoutTotal() {
         return new Pagination(pageNumber, size, mode, type, false);
     }
 
     @Override
+    @Nonnull
     public PageRequest withTotal() {
         return new Pagination(pageNumber, size, mode, type, true);
     }

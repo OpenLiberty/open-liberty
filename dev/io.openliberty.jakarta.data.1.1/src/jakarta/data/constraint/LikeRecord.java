@@ -12,19 +12,21 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.TextExpression;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record LikeRecord(TextExpression<?> pattern, char escape)
+record LikeRecord(@Nonnull TextExpression<?> pattern, char escape)
                 implements Like {
 
     static final char CHAR_WILDCARD = '_';
     static final char ESCAPE = '\\';
     static final char STRING_WILDCARD = '%';
 
-    static String escape(String literal) {
+    @Nonnull
+    static String escape(@Nonnull String literal) {
         StringBuilder s = new StringBuilder();
 
         for (int c = 0; c < literal.length(); c++) {
@@ -41,16 +43,19 @@ record LikeRecord(TextExpression<?> pattern, char escape)
     }
 
     @Override
+    @Nonnull
     public NotLike negate() {
         return new NotLikeRecord(pattern, escape);
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "LIKE " + pattern + " ESCAPE '" + escape + "'";
     }
 
-    static String translate(String pattern,
+    @Nonnull
+    static String translate(@Nonnull String pattern,
                             char charWildcard,
                             char stringWildcard,
                             char escape,

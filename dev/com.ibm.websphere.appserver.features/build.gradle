@@ -432,3 +432,7 @@ if (isAutomatedBuild) {
         }
     }
 }
+
+test {
+  dependsOn createFeatureResources
+}

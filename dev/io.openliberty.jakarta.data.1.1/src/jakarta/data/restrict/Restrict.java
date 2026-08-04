@@ -14,6 +14,7 @@ package jakarta.data.restrict;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
@@ -24,45 +25,51 @@ public class Restrict {
     private Restrict() {
     }
 
+    @Nonnull
     public static <T> Restriction<T> //
-                    all(List<? extends Restriction<? super T>> restrictions) {
+                    all(@Nonnull List<? extends Restriction<? super T>> restrictions) {
 
         return new CompositeRestrictionRecord<>( //
                         CompositeRestriction.Type.ALL, //
                         List.copyOf(restrictions));
     }
 
+    @Nonnull
     @SafeVarargs
-    public static <T> Restriction<T> all(Restriction<? super T>... restrictions) {
+    public static <T> Restriction<T> all(@Nonnull Restriction<? super T>... restrictions) {
 
         return new CompositeRestrictionRecord<T>( //
                         CompositeRestriction.Type.ALL, //
                         List.of(restrictions));
     }
 
+    @Nonnull
     public static <T> Restriction<T> //
-                    any(List<? extends Restriction<? super T>> restrictions) {
+                    any(@Nonnull List<? extends Restriction<? super T>> restrictions) {
 
         return new CompositeRestrictionRecord<>( //
                         CompositeRestriction.Type.ANY, //
                         List.copyOf(restrictions));
     }
 
+    @Nonnull
     @SafeVarargs
-    public static <T> Restriction<T> any(Restriction<? super T>... restrictions) {
+    public static <T> Restriction<T> any(@Nonnull Restriction<? super T>... restrictions) {
 
         return new CompositeRestrictionRecord<T>( //
                         CompositeRestriction.Type.ANY, //
                         List.of(restrictions));
     }
 
-    public static <T> Restriction<T> not(Restriction<T> restriction) {
+    @Nonnull
+    public static <T> Restriction<T> not(@Nonnull Restriction<T> restriction) {
 
         Messages.requireNonNull(restriction, "restriction");
 
         return restriction.negate();
     }
 
+    @Nonnull
     @SuppressWarnings("unchecked")
     public static <T> Restriction<T> unrestricted() {
 

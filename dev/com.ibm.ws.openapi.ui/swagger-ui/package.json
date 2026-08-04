@@ -23,14 +23,14 @@
     "mini-css-extract-plugin": "^2.10.2",
     "postcss-loader": "^8.2.1",
     "postcss-preset-env": "^11.3.2",
-    "sass": "^1.101.0",
+    "sass": "^1.101.3",
     "sass-loader": "^17.0.0",
     "source-map-loader": "^5.0.0",
     "style-loader": "^4.0.0",
     "tachyons-sass": "^4.9.5",
-    "webpack": "^5.108.3",
-    "webpack-cli": "^7.1.0",
-    "webpack-dev-server": "^5.2.5"
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1",
+    "webpack-dev-server": "^5.2.6"
   },
   "dependencies": {
     "buffer": "^6.0.3",
@@ -38,7 +38,7 @@
     "process": "^0.11.10",
     "regenerator-runtime": "^0.14.1",
     "stream-browserify": "^3.0.0",
-    "swagger-ui": "^5.32.8"
+    "swagger-ui": "^5.32.11"
   },
   "overrides": {
     "axios": "npm:dry-uninstall",

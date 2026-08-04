@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import java.util.Set;
 
 /**
@@ -19,98 +20,119 @@ import java.util.Set;
  */
 public interface Constraint<V> {
 
-    static <V extends Comparable<?>> Between<V> between(V minimum,
-                                                        V maximum) {
+    @Nonnull
+    static <V extends Comparable<?>> Between<V> between(@Nonnull V minimum,
+                                                        @Nonnull V maximum) {
         return Between.bounds(minimum, maximum);
     }
 
-    static <V> EqualTo<V> equalTo(V value) {
+    @Nonnull
+    static <V> EqualTo<V> equalTo(@Nonnull V value) {
         return EqualTo.value(value);
     }
 
-    static <V extends Comparable<?>> GreaterThan<V> greaterThan(V bound) {
+    @Nonnull
+    static <V extends Comparable<?>> GreaterThan<V> greaterThan(@Nonnull V bound) {
         return GreaterThan.bound(bound);
     }
 
-    static <V extends Comparable<?>> AtLeast<V> greaterThanEqual(V minimum) {
+    @Nonnull
+    static <V extends Comparable<?>> AtLeast<V> greaterThanEqual(@Nonnull V minimum) {
         return AtLeast.min(minimum);
     }
 
-    static <V> In<V> in(Set<V> values) {
+    @Nonnull
+    static <V> In<V> in(@Nonnull Set<V> values) {
         return In.values(values);
     }
 
     @SafeVarargs
-    static <V> In<V> in(V... values) {
+    @Nonnull
+    static <V> In<V> in(@Nonnull V... values) {
         return In.values(values);
     }
 
+    @Nonnull
     static <V> Null<V> isNull() {
         return Null.instance();
     }
 
-    static <V extends Comparable<?>> LessThan<V> lessThan(V bound) {
+    @Nonnull
+    static <V extends Comparable<?>> LessThan<V> lessThan(@Nonnull V bound) {
         return LessThan.bound(bound);
     }
 
-    static <V extends Comparable<?>> AtMost<V> lessThanEqual(V maximum) {
+    @Nonnull
+    static <V extends Comparable<?>> AtMost<V> lessThanEqual(@Nonnull V maximum) {
         return AtMost.max(maximum);
     }
 
-    static Like like(String pattern) {
+    @Nonnull
+    static Like like(@Nonnull String pattern) {
         return Like.pattern(pattern);
     }
 
-    static Like like(String pattern,
+    @Nonnull
+    static Like like(@Nonnull String pattern,
                      char charWildcard,
                      char stringWildcard) {
         return Like.pattern(pattern, charWildcard, stringWildcard);
     }
 
-    static Like like(String pattern,
+    @Nonnull
+    static Like like(@Nonnull String pattern,
                      char charWildcard,
                      char stringWildcard,
                      char escape) {
         return Like.pattern(pattern, charWildcard, stringWildcard, escape);
     }
 
+    @Nonnull
     Constraint<V> negate();
 
-    static <V extends Comparable<?>> NotBetween<V> notBetween(V lowerBound,
-                                                              V upperBound) {
+    @Nonnull
+    static <V extends Comparable<?>> NotBetween<V> notBetween(@Nonnull V lowerBound,
+                                                              @Nonnull V upperBound) {
         return NotBetween.bounds(lowerBound, upperBound);
     }
 
-    static <V> NotEqualTo<V> notEqualTo(V value) {
+    @Nonnull
+    static <V> NotEqualTo<V> notEqualTo(@Nonnull V value) {
         return NotEqualTo.value(value);
     }
 
-    static <V> NotIn<V> notIn(Set<V> values) {
+    @Nonnull
+    static <V> NotIn<V> notIn(@Nonnull Set<V> values) {
         return NotIn.values(values);
     }
 
     @SafeVarargs
-    static <V> NotIn<V> notIn(V... values) {
+    @Nonnull
+    static <V> NotIn<V> notIn(@Nonnull V... values) {
         return NotIn.values(values);
     }
 
-    static NotLike notLike(String pattern) {
+    @Nonnull
+    static NotLike notLike(@Nonnull String pattern) {
         return NotLike.pattern(pattern);
     }
 
-    static NotLike notLike(String pattern,
+    @Nonnull
+    static NotLike notLike(@Nonnull String pattern,
                            char charWildcard,
                            char stringWildcard) {
         return NotLike.pattern(pattern, charWildcard, stringWildcard);
     }
 
-    static NotLike notLike(String pattern,
+    @Nonnull
+    static NotLike notLike(@Nonnull String pattern,
                            char charWildcard,
                            char stringWildcard,
                            char escape) {
         return NotLike.pattern(pattern, charWildcard, stringWildcard, escape);
     }
 
+    @Nonnull
     static <V> NotNull<V> notNull() {
         return NotNull.instance();
     }

@@ -12,13 +12,14 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.path;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.metamodel.ComparableAttribute;
 
 record ComparablePathRecord<T, U, C extends Comparable<?>>(
-                NavigableExpression<T, U> expression,
-                ComparableAttribute<U, C> attribute)
+                @Nonnull NavigableExpression<T, U> expression,
+                @Nonnull ComparableAttribute<U, C> attribute)
                 implements ComparablePath<T, U, C> {
 
     ComparablePathRecord {
@@ -27,6 +28,7 @@ record ComparablePathRecord<T, U, C extends Comparable<?>>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         String exp = expression.toString();
         String name = attribute.name();
@@ -40,6 +42,7 @@ record ComparablePathRecord<T, U, C extends Comparable<?>>(
     }
 
     @Override
+    @Nonnull
     public Class<? extends C> type() {
         return attribute.type();
     }

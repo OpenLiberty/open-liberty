@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,8 @@ public class Http2FullModeTests extends FATServletClient {
     public static final String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
     public static final String methodServletPath = "H2FATDriver/HttpMethodTests?hostName=";
     public static final String pushPromisePath = "H2FATDriver/PushPromiseTests?hostName=";
+    public static final String lowWindowStreamPath = "H2FATDriver/LowWindowStreamTests?hostName=";
+    public static final String queuedBytesPath = "H2FATDriver/QueuedBytesTests?hostName=";
 
     @Rule
     public TestName testName = new Utils.CustomTestName();

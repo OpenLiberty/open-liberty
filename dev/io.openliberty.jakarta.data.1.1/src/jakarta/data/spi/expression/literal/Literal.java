@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.Expression;
 
 /**
@@ -19,10 +20,12 @@ import jakarta.data.expression.Expression;
  */
 public interface Literal<V> extends Expression<Object, V> {
 
+    @Nonnull
     V value();
 
+    @Nonnull
     @SuppressWarnings("unchecked")
-    static <V> Literal<V> of(V value) {
+    static <V> Literal<V> of(@Nonnull V value) {
         if (value instanceof Comparable<?> comparable) {
             return (Literal<V>) ComparableLiteral.of(comparable);
         } else {
@@ -32,4 +35,7 @@ public interface Literal<V> extends Expression<Object, V> {
         }
     }
 
+    @Override
+    @Nonnull
+    String toString();
 }

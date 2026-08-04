@@ -16,7 +16,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.monitor.metrics.McpOperationStatAttributes;
-import io.openliberty.mcp.monitor.McpOperationStatsMXBean;
+import io.openliberty.mcp.monitor.McpOperationStatisticsMXBean;
 
 /**
  * Records statistics for MCP (Model Context Protocol) operations.
@@ -28,7 +28,7 @@ import io.openliberty.mcp.monitor.McpOperationStatsMXBean;
  * The statistics are exposed via JMX through the {@link McpOperationStatsMXBean} interface
  * and can be consumed by monitoring systems like MicroProfile Metrics and MicroProfile Telemetry.
  */
-public class McpOperationStatistics extends Meter implements McpOperationStatsMXBean {
+public class McpOperationStatistics extends Meter implements McpOperationStatisticsMXBean {
     private static final TraceComponent tc = Tr.register(McpOperationStatistics.class);
 
     private final String mcpMethodName;
@@ -157,5 +157,4 @@ public class McpOperationStatistics extends Meter implements McpOperationStatsMX
     public StatisticsMeter getDurationDetails() {
         return operationDuration;
     }
-
 }

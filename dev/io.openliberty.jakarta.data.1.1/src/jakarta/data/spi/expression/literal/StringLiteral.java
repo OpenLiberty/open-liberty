@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.TextExpression;
 
 /**
@@ -21,8 +22,13 @@ public interface StringLiteral extends //
                 ComparableLiteral<String>, //
                 TextExpression<Object> {
 
-    static StringLiteral of(String value) {
+    @Nonnull
+    static StringLiteral of(@Nonnull String value) {
         return new StringLiteralRecord(value);
     }
+
+    @Override
+    @Nonnull
+    String toString();
 
 }

@@ -38,7 +38,8 @@ src:\
     test-applications/TestServlet31AltVHost2.war/src,\
     test-applications/TestServletMapping.war/src,\
     test-applications/TestServletMappingAnno.war/src,\
-    test-applications/PH62271.war/src
+    test-applications/PH62271.war/src,\
+    test-applications//MaxParamPerRequest.war/src
 
 fat.project: true
 

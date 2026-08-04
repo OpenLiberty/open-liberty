@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.function;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NumericExpression;
 
 /**
@@ -20,13 +21,16 @@ import jakarta.data.expression.NumericExpression;
 public interface NumericCast<T, N extends Number & Comparable<N>> //
                 extends NumericExpression<T, N> {
 
+    @Nonnull
     NumericExpression<T, ?> expression();
 
+    @Nonnull
     static <T, N extends Number & Comparable<N>> NumericCast<T, N> //
-                    of(NumericExpression<T, ?> expression, Class<N> type) {
+                    of(@Nonnull NumericExpression<T, ?> expression, @Nonnull Class<N> type) {
 
         return new NumericCastRecord<>(expression, type);
     }
 
+    @Nonnull
     Class<N> type();
 }

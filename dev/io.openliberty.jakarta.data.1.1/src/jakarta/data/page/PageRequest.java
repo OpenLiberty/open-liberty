@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data.page;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,43 +29,57 @@ public interface PageRequest {
     }
 
     public interface Cursor {
-        public static Cursor forKey(Object... componentsOfKey) {
+        @Nonnull
+        public static Cursor forKey(@Nonnull Object... componentsOfKey) {
             return new PageRequestCursor(componentsOfKey);
         }
 
+        @Nonnull
         public List<?> elements();
+
+        @Override
+        boolean equals(@Nullable Object cursor);
 
         public Object get(int index);
 
         public int size();
     }
 
-    public static PageRequest afterCursor(Cursor cursor, long page, int size, boolean withTotal) {
+    @Nonnull
+    public static PageRequest afterCursor(@Nonnull Cursor cursor, long page, int size, boolean withTotal) {
         return new Pagination(page, size, Mode.CURSOR_NEXT, cursor, withTotal);
     }
 
-    public static PageRequest beforeCursor(Cursor cursor, long page, int size, boolean withTotal) {
+    @Nonnull
+    public static PageRequest beforeCursor(@Nonnull Cursor cursor, long page, int size, boolean withTotal) {
         return new Pagination(page, size, Mode.CURSOR_PREVIOUS, cursor, withTotal);
     }
 
+    @Nonnull
     public static PageRequest ofPage(long page) {
         return new Pagination(page, 10, Mode.OFFSET, null, true);
     }
 
+    @Nonnull
     public static PageRequest ofPage(long page, int size, boolean withTotal) {
         return new Pagination(page, size, Mode.OFFSET, null, withTotal);
     }
 
+    @Nonnull
     public static PageRequest ofSize(int size) {
         return new Pagination(1, size, Mode.OFFSET, null, true);
     }
 
-    public PageRequest afterCursor(PageRequest.Cursor cursor);
+    @Nonnull
+    public PageRequest afterCursor(@Nonnull PageRequest.Cursor cursor);
 
-    public PageRequest beforeCursor(PageRequest.Cursor cursor);
+    @Nonnull
+    public PageRequest beforeCursor(@Nonnull PageRequest.Cursor cursor);
 
+    @Nonnull
     public Optional<Cursor> cursor();
 
+    @Nonnull
     public Mode mode();
 
     public default long page() {
@@ -72,8 +88,10 @@ public interface PageRequest {
 
     public long pageNumber();
 
+    @Nonnull
     public PageRequest pageNumber(long pageNum);
 
+    @Nonnull
     public default PageRequest pageOffset(long offset) {
         if (mode() != Mode.OFFSET)
             throw new IllegalStateException(Messages.get("014.mode.disallows.offset",
@@ -95,10 +113,13 @@ public interface PageRequest {
 
     public int size();
 
+    @Nonnull
     public PageRequest size(int size);
 
+    @Nonnull
     public PageRequest withoutTotal();
 
+    @Nonnull
     public PageRequest withTotal();
 
 }

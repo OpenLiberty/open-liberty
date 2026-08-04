@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
@@ -23,14 +24,14 @@ import jakarta.data.page.PageRequest;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-public record PageRecord<T>(PageRequest pageRequest,
-                List<T> content,
+public record PageRecord<T>(@Nonnull PageRequest pageRequest,
+                @Nonnull List<T> content,
                 long totalElements,
                 boolean moreResults)
                 implements Page<T> {
 
-    public PageRecord(PageRequest pageRequest,
-                      List<T> content,
+    public PageRecord(@Nonnull PageRequest pageRequest,
+                      @Nonnull List<T> content,
                       long totalElements,
                       boolean moreResults) {
         this.content = List.copyOf(content);
@@ -39,8 +40,8 @@ public record PageRecord<T>(PageRequest pageRequest,
         this.totalElements = totalElements;
     }
 
-    public PageRecord(PageRequest req,
-                      List<T> content,
+    public PageRecord(@Nonnull PageRequest req,
+                      @Nonnull List<T> content,
                       long total) {
         this(req, //
              content, //
@@ -70,11 +71,13 @@ public record PageRecord<T>(PageRequest pageRequest,
     }
 
     @Override
+    @Nonnull
     public Iterator<T> iterator() {
         return content.iterator();
     }
 
     @Override
+    @Nonnull
     public PageRequest nextPageRequest() {
         if (hasNext())
             return PageRequest.ofPage(pageRequest.pageNumber() + 1L,
@@ -90,6 +93,7 @@ public record PageRecord<T>(PageRequest pageRequest,
     }
 
     @Override
+    @Nonnull
     public PageRequest previousPageRequest() {
         if (hasPrevious())
             return PageRequest.ofPage(pageRequest.pageNumber() - 1L,

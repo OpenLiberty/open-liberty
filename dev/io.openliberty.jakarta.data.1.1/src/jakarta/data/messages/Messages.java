@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data.messages;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -25,14 +27,15 @@ public class Messages {
     private Messages() {
     }
 
-    public static String get(String messageId,
-                             Object... messageArgs) {
+    @Nonnull
+    public static String get(@Nonnull String messageId,
+                             @Nonnull Object... messageArgs) {
         return MessageFormat.format(messages.getString(messageId),
                                     messageArgs);
     }
 
-    public static void requireNonNull(Object value,
-                                      String methodArg) {
+    public static void requireNonNull(@Nullable Object value,
+                                      @Nonnull String methodArg) {
         if (value == null)
             throw new NullPointerException(get("001.arg.required",
                                                methodArg));

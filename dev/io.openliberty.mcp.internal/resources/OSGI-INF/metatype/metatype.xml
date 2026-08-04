@@ -8,9 +8,9 @@
     <Object ocdref="io.openliberty.mcp.internal.config.McpConfigurationComponent" />
 </Designate>
 
-<OCD name="%mcpServer.name" description="%mcpServer.description"
+<OCD name="%mcp.name" description="%mcp.description"
      id="io.openliberty.mcp.internal.config.McpConfigurationComponent"
-     ibm:childAlias="mcpServer"
+     ibm:childAlias="mcp"
      ibm:parentPid="com.ibm.ws.app.manager"
      ibm:supportHiddenExtensions="true">
     <AD name="%stateless.name"

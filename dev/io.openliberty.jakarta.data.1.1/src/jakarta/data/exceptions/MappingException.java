@@ -12,21 +12,23 @@
  *******************************************************************************/
 package jakarta.data.exceptions;
 
+import jakarta.annotation.Nullable;
+
 /**
  * copied from Jakarta Data git repository
  */
 public class MappingException extends DataException {
     private static final long serialVersionUID = 6021238091536264838L;
 
-    public MappingException(String message) {
+    public MappingException(@Nullable String message) {
         super(message);
     }
 
-    public MappingException(String message, Throwable cause) {
+    public MappingException(@Nullable String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    public MappingException(Throwable cause) {
+    public MappingException(@Nullable Throwable cause) {
         super(cause);
     }
 }
