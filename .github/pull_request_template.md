@@ -1,7 +1,9 @@
 
 - [ ] I have considered the risk of behavior change or other zero migration impact (https://github.com/OpenLiberty/open-liberty/wiki/Behavior-Changes).
-- [ ] If this PR fixes an Issue, the description includes "Fixes #FILLMEIN" or "Resolves #FILLMEIN" (verify `release bug` label if applicable: https://github.com/OpenLiberty/open-liberty/wiki/Open-Liberty-Conventions).
-- [ ] If this PR resolves an external Known Issue (including APARS), the description includes "Fixes #FILLMEIN" or "Resolves #FILLMEIN".
+- [ ] If this PR fixes a **github** issue, the description includes "Fixes #FILLMEIN" or "Resolves #FILLMEIN" (verify `release bug` label if applicable: https://github.com/OpenLiberty/open-liberty/wiki/Open-Liberty-Conventions).
+- [ ] If this PR resolves an **external known issue**, ensure both a release-bug github issue
+      **and** the external known issue (such as DT123456) are mentioned in the description or comments using a pair of 
+      "Fixes #FILLMEIN" or "Resolves #FILLMEIN" 
 
 ################################################################################################
 
@@ -13,8 +15,8 @@ Read and understand this completely, then delete the static part of the template
 
 If a reviewer or merger sees this template, they should fail the review or merge.
 
-If this code change is fixing a user-visible bug in previously released code, it MUST
-have an associated issue **mentioned in the PR text or description**.  
+If this code change is fixing a user-visible bug in previously released code, including
+any security issue, it MUST have an associated issue **mentioned in the PR text or description**.  
  
    - That Issue also MUST be labelled “release bug”
 
