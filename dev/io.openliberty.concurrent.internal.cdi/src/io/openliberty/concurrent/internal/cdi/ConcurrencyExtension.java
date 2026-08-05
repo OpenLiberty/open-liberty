@@ -15,21 +15,35 @@ package io.openliberty.concurrent.internal.cdi;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.CDIServiceUtils;
+import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.resource.ResourceFactory;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
 import io.openliberty.concurrent.internal.cdi.interceptor.LockInterceptor;
@@ -44,17 +58,22 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
+import jakarta.inject.Qualifier;
 
 /**
  * CDI Extension for
@@ -63,6 +82,9 @@ import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
  */
 public class ConcurrencyExtension implements Extension {
     private static final TraceComponent tc = Tr.register(ConcurrencyExtension.class);
+
+    private static final String DEFAULT_MSES_FILTER = //
+                    "(&(id=DefaultManagedScheduledExecutorService)(component.name=com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl))";
 
     private static final Annotation[] DEFAULT_QUALIFIER_ARRAY = //
                     new Annotation[] { Default.Literal.INSTANCE };
@@ -76,6 +98,12 @@ public class ConcurrencyExtension implements Extension {
      * to force context capture to occur.
      */
     private boolean producedDefaultMTF;
+
+    /**
+     * Collects the bean classes that have methods directly annotated Schedule.
+     */
+    private final List<AnnotatedType<?>> beanClassesWithScheduleMethods = //
+                    new ArrayList<>();
 
     /**
      * Register interceptors before bean discovery.
@@ -119,6 +147,20 @@ public class ConcurrencyExtension implements Extension {
             // To work around that, we add it dynamically here:
             lockInterceptorConfigurator.add(LockInterceptor.LOCK_ANNO);
         }
+    }
+
+    /**
+     * Collect a list of bean classes that have methods directly annotated Schedule.
+     *
+     * @param <T>         bean class
+     * @param event       the event
+     * @param beanManager the bean manager
+     */
+    public <T> void addAnnotatedType//
+    (
+     @Observes @WithAnnotations(Schedule.class) ProcessAnnotatedType<T> event,
+     BeanManager beanManager) {
+        beanClassesWithScheduleMethods.add(event.getAnnotatedType());
     }
 
     /**
@@ -266,6 +308,8 @@ public class ConcurrencyExtension implements Extension {
     }
 
     /**
+     * Schedule bean methods that are annotated @Schedule.
+     *
      * Force context to be initialized for the default ManagedThreadFactory instance
      * if we were able to produce one.
      *
@@ -273,7 +317,10 @@ public class ConcurrencyExtension implements Extension {
      * @param beanManager
      */
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event,
-                                          BeanManager beanManager) {
+                                          BeanManager beanManager) //
+                    throws InvalidSyntaxException {
+
+        // Default ManagedThreadFactory bean
         if (producedDefaultMTF) {
             CDI<Object> cdi = CDI.current();
             Instance<ManagedThreadFactory> instance = //
@@ -283,6 +330,97 @@ public class ConcurrencyExtension implements Extension {
             // Force instantiation of the bean in order to cause context to be captured
             mtf.toString();
         }
+
+        // Schedule annotations on bean methods
+        if (!beanClassesWithScheduleMethods.isEmpty()) {
+            // DefaultManagedScheduledExecutor is used by all Schedule methods
+            BundleContext bc = FrameworkUtil//
+                            .getBundle(WSManagedExecutorService.class) //
+                            .getBundleContext();;
+            Collection<ServiceReference<ResourceFactory>> refs = bc == null ? //
+                            List.of() : //
+                            bc.getServiceReferences(ResourceFactory.class,
+                                                    DEFAULT_MSES_FILTER);
+            WSManagedExecutorService execSvc = refs.isEmpty() ? //
+                            null : //
+                            (WSManagedExecutorService) bc //
+                                            .getService(refs.iterator().next());
+
+            // CDIService can identify which module a bean comes from
+            ServiceReference<CDIService> cdiSvcRef = bc //
+                            .getServiceReference(CDIService.class);
+            CDIService cdiSvc = cdiSvcRef == null ? null : bc.getService(cdiSvcRef);
+
+            if (execSvc == null || cdiSvc == null)
+                throw new IllegalStateException(); // TODO NLS message if shutting down?
+
+            // Group bean classes by module
+            Map<J2EEName, List<AnnotatedType<?>>> beanClassesPerModule = new HashMap<>();
+            for (AnnotatedType<?> beanType : beanClassesWithScheduleMethods) {
+                Optional<J2EEName> jeeNameOptional = cdiSvc //
+                                .getModuleNameForClass(beanType.getJavaClass());
+                if (jeeNameOptional.isEmpty()) {
+                    // TODO NLS error message
+                    throw new UnsupportedOperationException //
+                    (beanType.getJavaClass().getName() +
+                     " has one or more methods annotated Schedule" +
+                     " but the bean class is not associated with a" +
+                     " Jakarta EE application module.");
+                }
+                beanClassesPerModule //
+                                .computeIfAbsent(jeeNameOptional.get(),
+                                                 ConcurrencyExtension::newList) //
+                                .add(beanType);
+            }
+            bc.ungetService(cdiSvcRef);
+
+            for (Entry<J2EEName, List<AnnotatedType<?>>> group : //
+            /*   */ beanClassesPerModule.entrySet()) {
+                // Capture thread context for the respective module
+                ThreadContextDescriptor threadContext;
+                J2EEName moduleJeeName = group.getKey();
+                // TODO put the correct metadata onto the thread based on the module
+                try {
+                    threadContext = execSvc.captureThreadContext(null);
+                } finally {
+                    // TODO restore previous metadata
+                }
+
+                // Schedule each method that is annotated @Schedule
+                for (AnnotatedType<?> beanType : group.getValue())
+                    for (AnnotatedMethod<?> method : beanType.getMethods()) {
+                        Schedule schedule = method.getAnnotation(Schedule.class);
+                        if (schedule != null) {
+                            ArrayList<Annotation> beanAnnoList = new ArrayList<>();
+                            for (Annotation beanAnno : beanType.getAnnotations())
+                                if (beanAnno.annotationType() //
+                                                .isAnnotationPresent(Qualifier.class))
+                                    beanAnnoList.add(beanAnno);
+                            Annotation[] beanAnnos = beanAnnoList //
+                                            .toArray(new Annotation[beanAnnoList.size()]);
+                            new ScheduledMethod( //
+                                            method.getJavaMember(), //
+                                            schedule, //
+                                            threadContext, //
+                                            execSvc, //
+                                            beanType.getJavaClass(), //
+                                            beanAnnos);
+                        }
+                    }
+            }
+        }
+    }
+
+    /**
+     * Constructs a new modifiable list.
+     *
+     * @param <T>    type of list elements
+     * @param ignore ignored value
+     * @return a new modifiable list.
+     */
+    @Trivial
+    private static final <T> ArrayList<T> newList(Object ignore) {
+        return new ArrayList<T>();
     }
 
     /**
