@@ -25,10 +25,8 @@ public abstract class McpResponse {
     private static final TraceComponent tc = Tr.register(McpResponse.class);
 
     public McpResponse(String jsonrpc, RequestId id) {
-        if (jsonrpc == null || !jsonrpc.equals("2.0"))
+        if (!"2.0".equals(jsonrpc))
             throw new IllegalArgumentException(Tr.formatMessage(tc, "jsonrpc field must be present. Only JSONRPC 2.0 is currently supported\"", jsonrpc));
-        if (id == null)
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "id must not be null", id));
 
         this.jsonrpc = jsonrpc;
         this.id = id;

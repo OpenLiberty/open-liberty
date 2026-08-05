@@ -322,7 +322,7 @@ public class EE10Features {
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("springBoot-3.0");
             features.remove("nosql-1.0");
-            features.remove("mcpServer-1.0");
+            features.remove("mcp-1.0");
         }
 
         return features;

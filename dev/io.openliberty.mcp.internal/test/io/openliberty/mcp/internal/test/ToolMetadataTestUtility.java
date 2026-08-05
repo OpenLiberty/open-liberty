@@ -10,7 +10,9 @@
 package io.openliberty.mcp.internal.test;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.mcpjava.server.tools.Tool;
@@ -38,6 +40,8 @@ public class ToolMetadataTestUtility {
                                 null,
                                 Optional.empty(),
                                 null,
-                                Instant.now());
+                                Instant.now(),
+                                Map.of(),
+                                Collections.emptyList());
     }
 }

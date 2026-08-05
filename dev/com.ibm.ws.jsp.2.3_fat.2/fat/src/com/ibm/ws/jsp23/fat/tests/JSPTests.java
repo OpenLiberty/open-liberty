@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2025 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public class JSPTests {
     private static final String PH62212_APP_NAME = "PH62212";
     private static final String PH62212_THREADPOOL_APP_NAME = "PH62212_ThreadPool";
     private static final String PH62212_PAGEPOOL_APP_NAME = "PH62212_PagePool";
+    private static final String OLGH6725_APP_NAME = "OLGH6725";
 
     @Server("jspServer")
     public static LibertyServer server;
@@ -90,6 +91,8 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, PH62212_THREADPOOL_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, PH62212_PAGEPOOL_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, OLGH6725_APP_NAME + ".war");
 
         JavaArchive jspJar = ShrinkWrap.create(JavaArchive.class, "OLGH20509Include.jar");
         jspJar = (JavaArchive) ShrinkHelper.addDirectory(jspJar, "test-applications/includejar/resources");
@@ -436,8 +439,29 @@ public class JSPTests {
         }
         assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
     }
-    // Helper Methods
 
+
+    /*
+        Issue: https://github.com/OpenLiberty/open-liberty/issues/6725
+        Verifies slash comments can be embdeded within a java expression that spans multiple lines. 
+     */
+    @Test
+    public void testOLGH6725_comments() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        WebRequest request = new GetMethodWebRequest(JSPUtils.createHttpUrlString(server, OLGH6725_APP_NAME, "index.jsp"));
+        WebResponse response = wc.getResponse(request);
+
+        int status = response.getResponseCode();
+
+        if (status != 200) {
+            LOG.info("Response : " + response.getText());
+        }
+        assertEquals("Expected " + 200 + " status code was not returned!", 200, status);
+    }
+
+    // Helper Methods
     public void makeConcurrentRequests(WebConversation wc1, WebRequest request1, int numberOfCalls) throws Exception {
         final ExecutorService executor = Executors.newFixedThreadPool(numberOfCalls);
         final Collection<Future<Boolean>> tasks = new ArrayList<Future<Boolean>>();

@@ -1907,6 +1907,35 @@
                                             },
                                             "required": ["input"]
                                         }
+                                    },
+                                    {
+                                        "name": "metaFieldSimple",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "_meta": {
+                                            "test": "foo"
+                                        }
+                                    },
+                                    {
+                                        "name": "metaFieldComplex",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "_meta": {
+                                            "testString": "foo",
+                                            "testInt": 42,
+                                            "testBool": false,
+                                            "testJson": {
+                                                "letters": ["a", "b", "c"],
+                                                "numbers": [1, 2, 3],
+                                                "booleans": [true, false]
+                                            }
+                                        }
                                     }
                                 ]
                             },

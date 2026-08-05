@@ -3,18 +3,18 @@
   <featureManager>
     <feature>servlet-6.0</feature>
     <feature>cdi-4.0</feature>
-    <feature>mcpServer-1.0</feature>
+    <feature>mcp-1.0</feature>
     <feature>concurrent-3.0</feature>
   </featureManager>
   
   <!-- Application with updated async timeout (5 seconds, changed from 2 seconds) -->
   <application location="shortTimeoutTest.war">
-    <mcpServer asyncTimeout="5s"/>
+    <mcp asyncTimeout="5s"/>
   </application>
 
   <!-- Application with default async timeout (30 seconds) -->
   <application location="defaultTimeoutTest.war">
-    <mcpServer/>
+    <mcp/>
   </application>
 
   <include location="../fatTestPorts.xml" />

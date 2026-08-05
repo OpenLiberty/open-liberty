@@ -15,6 +15,7 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -826,10 +827,9 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     }
 
     /**
-     * Test that protectedResourceMetadata sub-element is properly processed
-     * when configured with both advertisedScopes and jwtBuilderRef in beta mode.
-     * With ibm:flat="true" the child properties are present directly on props as
-     * "protectedResourceMetadata.0.{childProp}".
+     * Test that protectedResourceMetadata sub-element is properly processed when configured
+     * with both advertisedScopes and jwtBuilderRef in beta mode.
+     * The config.referenceType sentinel key is always injected by the config framework.
      */
     @Test
     public void testProtectedResourceMetadata_BetaMode_WithBothFields_ReturnsConfiguredValues() {
@@ -841,7 +841,10 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             final String advertisedScopes = "openid,profile,email";
             final String jwtBuilderRef = "myCustomJwtBuilder";
 
-            // ibm:flat=true flattens child properties directly onto the parent props map
+            // ibm:flat=true flattens child properties directly onto the parent props map.
+            // config.referenceType is the sentinel Liberty always injects when the sub-element exists.
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType",
+                    "com.ibm.ws.security.openidconnect.client.protectedResourceMetadata");
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, advertisedScopes);
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_JWT_BUILDER_REF, jwtBuilderRef);
 
@@ -868,12 +871,11 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     }
 
     /**
-     * Test that protectedResourceMetadata sub-element uses default jwtBuilderRef
-     * when only advertisedScopes is configured in beta mode.
-     * With ibm:flat="true" the child properties are present directly on props.
+     * Test that protectedResourceMetadata sub-element leaves jwtBuilderRef as null
+     * when only advertisedScopes is configured in beta mode (jwtBuilderRef is optional, no default).
      */
     @Test
-    public void testProtectedResourceMetadata_BetaMode_OnlyAdvertisedScopes_UsesDefaultJwtBuilderRef() {
+    public void testProtectedResourceMetadata_BetaMode_OnlyAdvertisedScopes_JwtBuilderRefIsNull() {
         try {
             // Simulate running in beta mode
             System.setProperty(BETA_EDITION_PROPERTY, "true");
@@ -881,7 +883,9 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             final Map<String, Object> props = createProps(false);
             final String advertisedScopes = "openid,profile";
 
-            // Only advertisedScopes is present; jwtBuilderRef is absent so the default is used
+            // Only advertisedScopes is present; jwtBuilderRef absent — should be null, not a default.
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType",
+                    "com.ibm.ws.security.openidconnect.client.protectedResourceMetadata");
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, advertisedScopes);
 
             mock.checking(new Expectations() {
@@ -894,13 +898,47 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             });
             oidcClientConfig.modify(props);
 
-            // Verify: advertisedScopes should be set, jwtBuilderRef should be default
             assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertEquals("jwtBuilderRef should be default", "defaultProtectedResourceMetadataJwtBuilder",
+            assertNull("jwtBuilderRef should be null when not configured",
                     oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
             assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that a bare &lt;protectedResourceMetadata /&gt; (no advertisedScopes, no jwtBuilderRef)
+     * is detected via the config.referenceType sentinel and sets serveProtectedResourceMetadata=true.
+     */
+    @Test
+    public void testProtectedResourceMetadata_BetaMode_BareElement_SetsServeTrue() {
+        try {
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            // Only the sentinel key is present — no optional attributes configured.
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType",
+                    "com.ibm.ws.security.openidconnect.client.protectedResourceMetadata");
+
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            assertTrue("serveProtectedResourceMetadata should be true for bare <protectedResourceMetadata />",
+                    oidcClientConfig.getServeProtectedResourceMetadata());
+            assertNull("advertisedScopes should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+            assertNull("jwtBuilderRef should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -918,7 +956,9 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             final Map<String, Object> props = createProps(false);
 
-            // Put flat properties onto props — they must be ignored due to beta fencing
+            // Put flat properties (including sentinel) onto props — must be ignored due to beta fencing.
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType",
+                    "com.ibm.ws.security.openidconnect.client.protectedResourceMetadata");
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "openid,profile");
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_JWT_BUILDER_REF, "myJwtBuilder");
 
@@ -988,6 +1028,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             System.setProperty(BETA_EDITION_PROPERTY, "true");
 
             final Map<String, Object> props = createProps(false);
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType",
+                    "com.ibm.ws.security.openidconnect.client.protectedResourceMetadata");
             // Scopes separated by ", " (comma followed by space)
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "a, b, c");
 
@@ -1010,8 +1052,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     }
 
     /**
-     * Test that a trailing comma in advertisedScopes produces an empty string as the last element.
-     * e.g. "a,b,c," should produce ["a", "b", "c", ""] reflecting Java's split() default behaviour.
+     * Test that a trailing comma in advertisedScopes does not produce a trailing empty element.
+     * e.g. "a,b,c," should produce ["a", "b", "c"] reflecting Java's split() default behaviour.
      */
     @Test
     public void testProtectedResourceMetadata_BetaMode_AdvertisedScopesWithTrailingComma_ProducesExpectedList() {
@@ -1019,6 +1061,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             System.setProperty(BETA_EDITION_PROPERTY, "true");
 
             final Map<String, Object> props = createProps(false);
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType",
+                    "com.ibm.ws.security.openidconnect.client.protectedResourceMetadata");
             // Scopes with a trailing comma
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "a,b,c,");
 

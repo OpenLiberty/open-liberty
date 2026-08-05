@@ -141,12 +141,17 @@ public class LockInterceptor implements Serializable {
 
         boolean acquired = false;
         try {
+            // reject unsupported escalation from READ to WRITE
+            // (which would otherwise time out or deadlock self)
+            if (!read && reentrantLock.getReadHoldCount() > 0)
+                throw new IllegalStateException("Cannot upgrade from READ to WRITE lock"); // TODO NLS
+
             if (timeout > 0) {
                 acquired = lock.tryLock(timeout, unit);
             } else if (timeout == 0) { // IMMEDIATE
                 acquired = lock.tryLock();
             } else if (timeout == -1) { // UNLIMITED
-                lock.lock();
+                lock.lockInterruptibly();
                 acquired = true;
             } else { // negative accessTimeout value
                 throw new CompletionException(new UnsupportedOperationException//
@@ -175,11 +180,18 @@ public class LockInterceptor implements Serializable {
             throw x;
         } finally {
             if (acquired) {
+                int lockCount = 0;
+                if (trace && tc.isDebugEnabled())
+                    lockCount = reentrantLock.getReadLockCount() +
+                                reentrantLock.getWriteHoldCount() -
+                                1; // -1 for subsequent unlock
                 lock.unlock();
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc,
-                             (read ? "READ" : "WRITE") + " completed for " +
-                                       beanInstance);
+                             (read ? "READ" : "WRITE") + " completed, with " +
+                                       lockCount + " Lock methods still accessing, " +
+                                       reentrantLock.getQueueLength() +
+                                       " Lock methods waiting");
             }
         }
     }

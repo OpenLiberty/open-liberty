@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -316,6 +317,24 @@ public class MessageParsingTest {
         McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
         assertThat(notificationRequest.getRequestId().value(), equalTo(new BigDecimal(5)));
         assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
+    }
+
+    /**
+     * A notification (no {@code id} field) must parse to a request with {@code id == null}.
+     * This is the precondition for the fix that prevents {@code sendJsonRpcException}
+     * from attempting to build an error response for notifications, which would
+     * throw {@code IllegalArgumentException: id must not be null}.
+     */
+    @Test
+    public void notificationRequestHasNullId() throws Exception {
+        StringReader reader = new StringReader("""
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/initialized"
+                        }
+                        """);
+        McpRequest request = McpRequest.createValidMCPRequest(reader);
+        assertNull("Notification request must have a null id", request.id());
     }
 
     @Test

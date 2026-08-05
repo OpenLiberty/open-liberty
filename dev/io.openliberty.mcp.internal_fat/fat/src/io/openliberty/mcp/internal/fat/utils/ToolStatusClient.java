@@ -63,10 +63,15 @@ public class ToolStatusClient extends ExternalResource implements ToolStatus {
         callServer("awaitShouldEnd", latchName);
     }
 
+    @Override
+    public boolean shouldEnd(String latchName) {
+        throw new UnsupportedOperationException("shouldEnd is only meaningful server-side via ToolStatusImpl");
+    }
+
     private void callServer(String method, String latchName) {
         latchesUsed.add(latchName);
         try {
-            new HttpRequest(server, urlPrefix, "/toolStatus", "/", method, "/", latchName).method("POST").run(String.class);
+            new HttpRequest(server, urlPrefix, "/toolStatus/", method, "/", latchName).method("POST").run(String.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

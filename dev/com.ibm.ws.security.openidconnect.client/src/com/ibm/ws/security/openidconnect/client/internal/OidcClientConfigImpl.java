@@ -717,10 +717,21 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      * flattened onto the parent props map as "protectedResourceMetadata.0.{childProp}".
      * This feature is only available in beta mode.
      *
-     * @param props
-     *                  The configuration properties map
+     * <p>Sub-element presence is detected via the Liberty config sentinel key
+     * {@code protectedResourceMetadata.0.config.referenceType}, which is always injected
+     * when the sub-element is present, even when it is empty. We cannot rely solely on
+     * the child property keys ({@code advertisedScopes}, {@code jwtBuilderRef}) for presence
+     * detection because {@code jwtBuilderRef} is an {@code ibm:type="pid"} reference: if no
+     * matching jwtBuilder service exists, the config framework does not inject the flat key,
+     * so both child keys can be absent even when the element is configured.
+     *
+     * @param props the configuration properties map
      */
     private void processProtectedResourceMetadata(Map<String, Object> props) {
+        serveProtectedResourceMetadata = false;
+        protectedResourceMetadataAdvertisedScopes = null;
+        protectedResourceMetadataJwtBuilderRef = null;
+
         // Beta fencing: only process if running in beta mode
         if (!ProductInfo.getBetaEdition()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -729,24 +740,23 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             return;
         }
 
-        // With ibm:flat="true" the child properties are available directly on props
-        // under the key "protectedResourceMetadata.0.<childPropertyId>".
-        // Only process if the sub-element is present (i.e. at least one flat key was contributed).
+        // Use config.referenceType as the sentinel for sub-element presence.
+        // This key is always injected by the config framework when ibm:flat="true" and
+        // the sub-element exists, regardless of whether any optional child ADs were set.
+        final String flatReferenceTypeKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType";
         final String flatAdvertisedScopesKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_ADVERTISED_SCOPES;
         final String flatJwtBuilderRefKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_JWT_BUILDER_REF;
-        if (props.containsKey(flatAdvertisedScopesKey) || props.containsKey(flatJwtBuilderRefKey)) {
+        if (props.containsKey(flatReferenceTypeKey)) {
+            // Sub-element is present: enable the metadata endpoint unconditionally.
+            serveProtectedResourceMetadata = true;
+
             String advertisedScopes = configUtils.getConfigAttribute(props, flatAdvertisedScopesKey);
             protectedResourceMetadataAdvertisedScopes = advertisedScopes == null ? null
                     : Arrays.stream(advertisedScopes.split(","))
                             .map(String::trim)
                             .collect(java.util.stream.Collectors.toList());
 
-            protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttributeWithDefaultValue(props,
-                    flatJwtBuilderRefKey, "defaultProtectedResourceMetadataJwtBuilder");
-
-            if (protectedResourceMetadataAdvertisedScopes != null || protectedResourceMetadataJwtBuilderRef != null) {
-                serveProtectedResourceMetadata = true;
-            }
+            protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttribute(props, flatJwtBuilderRefKey);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "protectedResourceMetadata configured - advertisedScopes: " + protectedResourceMetadataAdvertisedScopes

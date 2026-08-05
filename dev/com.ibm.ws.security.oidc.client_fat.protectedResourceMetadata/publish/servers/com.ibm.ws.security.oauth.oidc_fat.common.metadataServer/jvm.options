@@ -1,0 +1,2 @@
+# Enable beta mode so that protectedResourceMetadata configuration is honoured.
+-Dcom.ibm.ws.beta.edition=true

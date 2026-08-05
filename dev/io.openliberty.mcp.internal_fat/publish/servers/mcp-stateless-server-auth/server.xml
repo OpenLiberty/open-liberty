@@ -3,12 +3,12 @@
   <featureManager>
     <feature>servlet-6.0</feature>
     <feature>cdi-4.0</feature>
-    <feature>mcpServer-1.0</feature>
+    <feature>mcp-1.0</feature>
     <feature>appSecurity-5.0</feature>
   </featureManager>
   
   <application location="securityTests.war">
-  	<mcpServer stateless="true"/>
+  	<mcp stateless="true"/>
   </application>
 
   <include location="../fatTestPorts.xml" />

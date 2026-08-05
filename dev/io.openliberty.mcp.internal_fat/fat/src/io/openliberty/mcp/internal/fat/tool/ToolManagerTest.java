@@ -15,8 +15,10 @@ import static java.util.function.Function.identity;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 
 import java.io.StringReader;
@@ -158,10 +160,19 @@ public class ToolManagerTest extends FATServletClient {
         var tools = getTools();
 
         // Covers: name, title, description, arguments (several types, required/not, default)
-        //         annotations, generated schema
+        //         annotations, generated schema, metadata
         JsonObject toolWithArgs = tools.get("tool-with-args");
         JSONAssert.assertEquals("""
                         {
+                            "_meta": {
+                                "hasArgs": true,
+                                "hasStructuredOutput": false,
+                                "argCount": 3,
+                                "foo": {
+                                    "foo": ["bar", "baz"],
+                                    "qux": 7
+                                }
+                            },
                             "name": "tool-with-args",
                             "title": "Tool With Args",
                             "description": "Test tool with arguments",
@@ -550,6 +561,70 @@ public class ToolManagerTest extends FATServletClient {
         String asyncExceptionResponse = client.callMCP(asyncExceptionRequest);
         JSONAssert.assertEquals(expectedAsyncExceptionResponse, asyncExceptionResponse, STRICT);
         assertNotNull(server.waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Async Exception"));
+    }
+
+    /**
+     * Test that a synchronous tool registered via the ToolManager API returns HTTP 403
+     * when it throws {@link io.openliberty.mcp.tools.ToolCallUnauthorizedException}.
+     * <p>
+     * Tool defined in {@link ToolManagerStartupTestBean#createSyncUnauthorizedTool}
+     *
+     * @throws Exception on error
+     */
+    @Test
+    public void testCallSyncToolThrowsToolCallUnauthorizedException() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 10,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "sync-unauthorized-tool",
+                            "arguments": {
+                              "message": "not allowed"
+                            }
+                          }
+                        }
+                        """;
+
+        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+
+        assertEquals(403, response.statusCode());
+        assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
+        assertTrue("Response body must contain the exception message", response.body().contains("not allowed"));
+        assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
+    }
+
+    /**
+     * Test that an asynchronous tool registered via the ToolManager API returns HTTP 403
+     * when it throws {@link io.openliberty.mcp.tools.ToolCallUnauthorizedException}.
+     * <p>
+     * Tool defined in {@link ToolManagerStartupTestBean#createAsyncUnauthorizedTool}
+     *
+     * @throws Exception on error
+     */
+    @Test
+    public void testCallAsyncToolThrowsToolCallUnauthorizedException() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 11,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "async-unauthorized-tool",
+                            "arguments": {
+                              "message": "not allowed"
+                            }
+                          }
+                        }
+                        """;
+
+        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+
+        assertEquals(403, response.statusCode());
+        assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
+        assertTrue("Response body must contain the exception message", response.body().contains("not allowed"));
+        assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
     }
 
     /**

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -382,5 +383,8 @@ public class OidcClientImplGetOidcProviderTest {
             outputMgr.failWithThrowable(methodName, t);
         }
     }
+
+    // ---- getOidcProviderByAuthFilter(req, requiredScheme) -------------------
+
 
 }

@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -349,5 +350,31 @@ public class ToolManagerTest {
         assertThrows(() -> def.addArgument("bar", null, false, String.class),
                      exception().ofType(IllegalArgumentException.class)
                                 .messageIncludes("CWMCM0032E: Cannot add a second argument with the bar name to the foo MCP tool."));
+    }
+
+    @Test
+    public void testMetadata() {
+        Map<String, Object> metadata = Map.of("a.b/c", "foo",
+                                              "d.e/f", "bar",
+                                              "g", "baz");
+        ToolInfo tool = toolManager.newTool("foo")
+                                   .setMetadata(metadata)
+                                   .putMetadata("h", "qux")
+                                   .setHandler(arg -> ToolResponse.ofText("OK"))
+                                   .register();
+
+        var expectedMetadata = Map.of("a.b/c", "foo",
+                                      "d.e/f", "bar",
+                                      "g", "baz",
+                                      "h", "qux");
+        assertEquals(expectedMetadata, tool.metadata());
+    }
+
+    @Test
+    public void testInvalidMetadataKey() {
+        var def = toolManager.newTool("foo");
+        assertThrows(() -> def.putMetadata("a.b/c/d", "bar"),
+                     exception().ofType(IllegalArgumentException.class)
+                                .messageIncludes("CWMCM0037E: The a.b/c/d"));
     }
 }

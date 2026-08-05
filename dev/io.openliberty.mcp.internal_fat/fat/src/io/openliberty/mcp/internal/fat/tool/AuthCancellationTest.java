@@ -36,6 +36,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -117,13 +118,20 @@ public class AuthCancellationTest extends FATServletClient {
 
         toolStatus.awaitStarted(LATCH_NAME);
 
+        // Send cancellation with the wrong user — expect 403 Forbidden
         client.callMCPNotificationWithBasicAuthForbiddenErrorExpected(cancellationRequestNotification, "testuser", "testpassword");
+
+        // Wait briefly to confirm the tool is still running (it was not cancelled)
+        TimeUnit.MILLISECONDS.sleep(TestConstants.NEGATIVE_TIMEOUT_MS);
+
+        // Test is done — signal the tool to exit its polling loop
+        toolStatus.signalShouldEnd(LATCH_NAME);
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"If this String is returned, then the tool was not cancelled","type":"text"}],"isError":false}}
                         """;
 
-        String responseA = futureA.get();
+        String responseA = futureA.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
         assertTrue(!server.findStringsInLogs("Exception: The tool cannot be cancelled as the calling user is not authorized.").isEmpty());

@@ -80,4 +80,10 @@ public class ToolStatusImpl implements ToolStatus {
             throw new AssertionError("Interrupted: waiting end signal '" + latchName + "'");
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean shouldEnd(String latchName) {
+        return getOrCreateEndLatch(latchName).getCount() == 0;
+    }
 }

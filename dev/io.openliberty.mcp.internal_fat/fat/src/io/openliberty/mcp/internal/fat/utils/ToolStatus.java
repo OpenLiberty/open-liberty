@@ -81,4 +81,11 @@ public interface ToolStatus {
      */
     void awaitShouldEnd(String latchName);
 
+    /**
+     * Returns true if the end latch has already been counted down (i.e. signalShouldEnd
+     * has been called), false otherwise. Non-blocking; intended for use in tool polling
+     * loops so the tool can exit early when the test is finished with it.
+     */
+    boolean shouldEnd(String latchName);
+
 }

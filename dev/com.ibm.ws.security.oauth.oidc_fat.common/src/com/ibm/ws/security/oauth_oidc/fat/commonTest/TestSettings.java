@@ -44,6 +44,7 @@ public class TestSettings {
     protected String endSession = null;
     protected String postLogoutRedirect = null;
     protected String protectedResource = null;
+    protected String protectedResourceMetadataUrl = null;
     protected String rsProtectedResource = null;
     protected String refreshTokUrl = null;
     protected String jwtTokUrl = null;
@@ -160,6 +161,7 @@ public class TestSettings {
         endSession = settings.endSession;
         postLogoutRedirect = settings.postLogoutRedirect;
         protectedResource = settings.protectedResource;
+        protectedResourceMetadataUrl = settings.protectedResourceMetadataUrl;
         rsProtectedResource = settings.rsProtectedResource;
         refreshTokUrl = settings.refreshTokUrl;
         jwtTokUrl = settings.jwtTokUrl;
@@ -771,6 +773,14 @@ public class TestSettings {
 
     public String getProtectedResource() {
         return protectedResource;
+    }
+
+    public void setProtectedResourceMetadataUrl(String inProtectedResourceMetadataUrl) {
+        protectedResourceMetadataUrl = inProtectedResourceMetadataUrl;
+    }
+
+    public String getProtectedResourceMetadataUrl() {
+        return protectedResourceMetadataUrl;
     }
 
     public void setRSProtectedResource(String inRSProtectedResource) {

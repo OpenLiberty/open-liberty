@@ -10,7 +10,10 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -639,6 +642,23 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                           },
                                           "name": "inputValidationTool",
                                           "title": "Input Validation Tool"
+                                        },
+                                        {
+                                          "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                              "input": {
+                                                "description": "input",
+                                                "type": "string"
+                                              }
+                                            },
+                                            "required": [
+                                              "input"
+                                            ]
+                                          },
+                                          "name": "unauthorizedTool",
+                                          "description": "Tool that throws ToolCallUnauthorizedException",
+                                          "title": "Unauthorized Tool"
                                         }
                                      ]
                                     },
@@ -647,7 +667,33 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                  }
                                  """;
 
-        // Lenient mode test (false boolean in 3rd parameter
-        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
-    }
+       // Lenient mode test (false boolean in 3rd parameter
+       JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
+   }
+
+   @Test
+   public void testToolThrowsToolCallUnauthorizedException() throws Exception {
+       String request = """
+                       {
+                         "jsonrpc": "2.0",
+                         "id": 1,
+                         "method": "tools/call",
+                         "params": {
+                           "name": "unauthorizedTool",
+                           "arguments": {
+                             "input": "bad-value"
+                           }
+                         }
+                       }
+                       """;
+
+       McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+       Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
+
+       assertEquals(403, response.statusCode());
+       assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
+       assertTrue("Response body must contain the exception message",
+                  response.body().contains("Not authorized to call this tool for input: bad-value"));
+       assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
+   }
 }

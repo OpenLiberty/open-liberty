@@ -74,7 +74,9 @@ public class ReadLockBean {
         return value;
     }
 
-    @Lock // type defaults to WRITE
+    @Lock(// type defaults to WRITE
+          accessTimeout = 222333L,
+          unit = TimeUnit.MICROSECONDS)
     public void writeValue(String newValue) {
         value = newValue;
     }

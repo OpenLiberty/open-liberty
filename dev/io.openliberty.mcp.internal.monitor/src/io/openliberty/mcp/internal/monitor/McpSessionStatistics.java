@@ -16,9 +16,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.monitor.metrics.McpSessionStatAttributes;
-import io.openliberty.mcp.monitor.McpSessionStatsMXBean;
+import io.openliberty.mcp.monitor.McpSessionStatisticsMXBean;
 
-public class McpSessionStatistics extends Meter implements McpSessionStatsMXBean {
+public class McpSessionStatistics extends Meter implements McpSessionStatisticsMXBean {
 
     private static final TraceComponent tc = Tr.register(McpSessionStatistics.class);
 
@@ -97,13 +97,13 @@ public class McpSessionStatistics extends Meter implements McpSessionStatsMXBean
     }
 
     @Override
-    public com.ibm.websphere.monitor.jmx.Counter getCountDetails() {
-        return sessionCount;
+    public double getDuration() {
+        return sessionDuration.getTotal();
     }
 
     @Override
-    public double getDuration() {
-        return sessionDuration.getTotal();
+    public com.ibm.websphere.monitor.jmx.Counter getCountDetails() {
+        return sessionCount;
     }
 
     @Override
@@ -112,5 +112,3 @@ public class McpSessionStatistics extends Meter implements McpSessionStatsMXBean
     }
 
 }
-
-// Made with Bob

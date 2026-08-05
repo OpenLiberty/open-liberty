@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import java.util.Map;
 import java.util.Optional;
 
 import io.openliberty.mcp.tools.ToolManager.ToolAnnotations;
@@ -22,6 +23,7 @@ public class ToolDescription {
     private final JsonObject inputSchema;
     private final JsonObject outputSchema;
     private final AnnotationsDescription annotations;
+    private final Map<String, Object> _meta;
 
     public String getName() {
         return name;
@@ -47,6 +49,10 @@ public class ToolDescription {
         return annotations;
     }
 
+    public Map<String, Object> get_meta() {
+        return _meta;
+    }
+
     /**
      * Only for testing
      */
@@ -69,6 +75,7 @@ public class ToolDescription {
 
         this.inputSchema = toolMetadata.inputSchema();
         this.outputSchema = includeOutputSchema ? toolMetadata.outputSchema() : null;
+        this._meta = toolMetadata.metadata().isEmpty() ? null : toolMetadata.metadata();
     }
 
     public record AnnotationsDescription(

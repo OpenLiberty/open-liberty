@@ -35,7 +35,7 @@ import componenttest.topology.utils.FATServletClient;
 import concurrent.cdi4_1.web.ConcurrentCDI4_1Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
+@MinimumJavaLevel(javaLevel = 21)
 public class ConcurrentCDI5Test extends FATServletClient {
 
     public static final String APP_NAME = "concurrentCDI4_1App";
@@ -45,7 +45,8 @@ public class ConcurrentCDI5Test extends FATServletClient {
     @Server("concurrent_fat_cdi5")
     @TestServlets({
                     @TestServlet(servlet = ConcurrentCDI4_1Servlet.class,
-                                 contextRoot = APP_NAME)
+                                 contextRoot = APP_NAME,
+                                 minJavaLevel = 21)
     })
     public static LibertyServer server;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <server description="Sample Liberty server with invalid sessionTimeout">
     <featureManager>
-        <feature>mcpserver-1.0</feature>
+        <feature>mcp-1.0</feature>
         <feature>componenttest-2.0</feature>
         <feature>monitor-1.0</feature>
         <feature>cdi-4.0</feature>
@@ -9,7 +9,7 @@
         <feature>servlet-6.0</feature>
     </featureManager>
   	<application id="InvalidTimeoutTest" location="InvalidTimeoutTest.war">
-  	     <mcpServer sessionTimeout="invalid-value"/>
+  	     <mcp sessionTimeout="invalid-value"/>
   	 </application>
     
     <include location="../fatTestPorts.xml"/>

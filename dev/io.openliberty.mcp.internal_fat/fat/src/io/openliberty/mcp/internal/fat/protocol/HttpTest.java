@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,6 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
  *
@@ -61,6 +63,9 @@ public class HttpTest {
     }
 
     private static final String ENDPOINT = "/httpTest/mcp";
+
+    @Rule
+    public McpClient client = new McpClient(server, "/httpTest");
 
     @Test
     public void testGetRequestWithoutAcceptHeaderReturns405() throws Exception {
@@ -187,5 +192,20 @@ public class HttpTest {
 
         String contentType = httpRequest.getResponseHeader("Content-Type");
         assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
+    }
+
+    @Test
+    public void testInvalidNotificationReturns202() throws Exception {
+        // A JSON-RPC notification (no "id" field) with an unknown method triggers a
+        // METHOD_NOT_FOUND JSONRPCException. Per the JSON-RPC spec, notifications must
+        // not receive any response — the server should return 202 with no body.
+        String notification = """
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/unknownMethod"
+                        }
+                        """;
+
+        client.callMCPNotification(notification);
     }
 }
