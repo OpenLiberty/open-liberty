@@ -62,7 +62,7 @@ public class HttpVersionValidationHandler extends ChannelInboundHandlerAdapter {
      * @return  true if the version was unsupported and a 505 was sent;
      *          false if the version is legal and the caller should continue
      */
-    public static boolean rejectIfUnsupported(ChannelHandlerContext ctx, HttpRequest msg) {
+    private static boolean rejectIfUnsupported(ChannelHandlerContext ctx, HttpRequest msg) {
         HttpVersion version = msg.protocolVersion();
 
         if (HttpVersion.HTTP_1_0.equals(version) || HttpVersion.HTTP_1_1.equals(version)) {

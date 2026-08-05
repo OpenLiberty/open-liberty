@@ -40,7 +40,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpMessage;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
@@ -239,15 +238,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
 
                 pipeline.addBefore("transportHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                
+                //Adding Version Validator Handler to reject illegal versions
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HttpVersionValidationHandler.NAME, HttpVersionValidationHandler.INSTANCE);
                 ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
-
-                //Vershion Check - reject illegal versions
-
-                if (msg instanceof HttpRequest
-                        && HttpVersionValidationHandler.rejectIfUnsupported(ctx, (HttpRequest) msg)) {
-                    ctx.pipeline().remove(this);
-                    return;
-                }
                 
                 // Add TimeoutHandler before the aggregator
                 if (pipeline.get(TimeoutHandler.class) == null) {
@@ -255,7 +249,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
                 
                 //TODO: this is a very large number (under https://github.com/OpenLiberty/open-liberty/issues/33114)
-                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
+                pipeline.addAfter(HttpVersionValidationHandler.NAME, HTTP_AGGREGATOR_HANDLER_NAME,
                                   new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit(), httpConfig));
                 pipeline.addAfter(HTTP_AGGREGATOR_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler(httpConfig));
                 ctx.pipeline().remove(this);
