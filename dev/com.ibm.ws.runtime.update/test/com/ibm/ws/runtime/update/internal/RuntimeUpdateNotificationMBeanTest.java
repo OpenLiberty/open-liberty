@@ -266,11 +266,12 @@ public class RuntimeUpdateNotificationMBeanTest {
     /**
      * Verifies that successful completion notifications contain
      * a status value of {@code Boolean.TRUE}.
+     * 
      */
     @Test
     @SuppressWarnings("unchecked")
     public void testSuccessfulCompletionStatusIsTrue() {
-        // Capture emitted JMX notifications.
+        // Capture emitted JMX notifications and propogate to test runner.
         NotficationRecorder nr = new NotficationRecorder();
         mBean.addNotificationListener(nr, null, null);
 
