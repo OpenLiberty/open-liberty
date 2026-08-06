@@ -33,7 +33,8 @@ Private-Package: \
   com.ibm.ws.tcpchannel.internal.resources, \
   com.ibm.ws.udpchannel.internal.resources, \
   com.ibm.ws.channelfw.internal.resources, \
-  io.openliberty.channel.config.internal
+  io.openliberty.channel.config.internal, \
+  io.openliberty.netty.internal.impl.resources
 
 -includeresource: \
     OSGI-INF=resources/OSGI-INF
