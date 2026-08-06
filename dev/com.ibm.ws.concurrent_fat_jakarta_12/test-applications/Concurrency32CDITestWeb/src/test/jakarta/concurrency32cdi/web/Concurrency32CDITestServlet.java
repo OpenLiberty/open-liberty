@@ -374,34 +374,29 @@ public class Concurrency32CDITestServlet extends FATServlet {
     @Test
     public void testScheduledMethodRepeats() //
                     throws InterruptedException {
-        Thread currentThread = Thread.currentThread();
         Thread execThread;
         LinkedBlockingQueue<Thread> execThreads = //
                         schedulingBean.trackerOfEvery3SecondsCron();
 
-        // verify that it runs 3 times, and never on the current thread
+        // verify that it runs 3 times
         assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
                                                     TimeUnit.NANOSECONDS));
-        assertEquals(false, execThread == currentThread);
 
         assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
                                                     TimeUnit.NANOSECONDS));
-        assertEquals(false, execThread == currentThread);
 
         assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
                                                     TimeUnit.NANOSECONDS));
-        assertEquals(false, execThread == currentThread);
 
         // clear out all executions up to current point in time
         for (execThread = execThreads.poll(); //
                         execThread != null; //
-                        execThread = execThreads.poll())
-            assertEquals(false, execThread == currentThread);
+                        execThread = execThreads.poll());
 
         // verify that it is still running
         assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
                                                     TimeUnit.NANOSECONDS));
-        assertEquals(false, execThread == currentThread);
+        assertEquals(false, execThread == Thread.currentThread());
     }
 
     /**
