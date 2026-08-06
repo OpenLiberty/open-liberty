@@ -154,3 +154,7 @@ ZOSAIO_ACTIVATED.useraction=No action is required.
 ZOSAIO_DEACTIVATED=CWWKO0230I: Native Asynchronous I/O support for z/OS has been deactivated.
 ZOSAIO_DEACTIVATED.explanation=The Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS service, which provides basic capabilities of an Asynchronous I/O package at the operating system level, is deactivated.
 ZOSAIO_DEACTIVATED.useraction=No action is required.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: A required Netty channel handler {0} was removed from an active connection pipeline.
+netty.handler.removed.from.pipeline.explanation=A Netty pipeline handler that is required for correct operation of the connection was unexpectedly removed while the channel was still active.
+netty.handler.removed.from.pipeline.useraction=No action is required. This is an internal error. If this message persists, collect diagnostic information and contact IBM Support.
