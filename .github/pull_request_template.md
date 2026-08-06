@@ -9,7 +9,7 @@
 
 # Delete this section and fill in the remaining info from the template
 
-ATTENTION, READ THIS: Updated July 2024 
+ATTENTION, READ THIS: Updated August 2026
 
 Read and understand this completely, then delete the static part of the template. 
 
