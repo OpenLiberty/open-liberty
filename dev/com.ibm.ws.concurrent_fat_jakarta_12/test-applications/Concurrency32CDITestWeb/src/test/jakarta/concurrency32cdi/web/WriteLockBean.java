@@ -47,10 +47,10 @@ public class WriteLockBean {
 
     @Lock(type = Lock.Type.READ,
           accessTimeout = Lock.IMMEDIATE)
-    public int delayedReadNumber(CountDownLatch methodisRunning,
+    public int delayedReadNumber(CountDownLatch methodIsRunning,
                                  CountDownLatch delayer) //
                     throws InterruptedException, TimeoutException {
-        methodisRunning.countDown();
+        methodIsRunning.countDown();
         if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
             return number;
         else
@@ -59,17 +59,41 @@ public class WriteLockBean {
 
     @Lock(type = Lock.Type.WRITE,
           accessTimeout = Lock.IMMEDIATE)
-    public boolean delayedWriteNumber(CountDownLatch methodisRunning,
+    public boolean delayedWriteNumber(CountDownLatch methodIsRunning,
                                       CountDownLatch delayer,
                                       int newNumber) //
                     throws InterruptedException, TimeoutException {
-        methodisRunning.countDown();
+        methodIsRunning.countDown();
         if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS)) {
             number = newNumber;
             return true;
         } else {
             return false;
         }
+    }
+
+    // type defaults to WRITE
+    public void interruptRepeatedly(Thread threadToInterrupt,
+                                    CountDownLatch methodIsRunning,
+                                    CountDownLatch doneInterrupting) {
+        methodIsRunning.countDown();
+        while (!Thread.interrupted()) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(200);
+            } catch (InterruptedException x) {
+                break;
+            }
+            threadToInterrupt.interrupt();
+        }
+        doneInterrupting.countDown();
+    }
+
+    @Lock(type = Lock.Type.WRITE,
+          accessTimeout = 7L,
+          unit = TimeUnit.DAYS)
+    public void interruptSelf() throws InterruptedException {
+        Thread.currentThread().interrupt();
+        Thread.sleep(1000); // cause InterruptedException to be raised
     }
 
     @Lock(type = Lock.Type.READ,

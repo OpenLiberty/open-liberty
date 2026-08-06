@@ -47,10 +47,10 @@ public class ReadLockBean {
         value = newValue;
     }
 
-    public String delayedReadValue(CountDownLatch methodisRunning,
+    public String delayedReadValue(CountDownLatch methodIsRunning,
                                    CountDownLatch delayer) //
                     throws InterruptedException, TimeoutException {
-        methodisRunning.countDown();
+        methodIsRunning.countDown();
         if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
             return value;
         else
@@ -59,11 +59,11 @@ public class ReadLockBean {
 
     @Lock(type = Lock.Type.WRITE,
           accessTimeout = Lock.IMMEDIATE)
-    public void delayedWriteValue(CountDownLatch methodisRunning,
+    public void delayedWriteValue(CountDownLatch methodIsRunning,
                                   CountDownLatch delayer,
                                   String newValue) //
                     throws InterruptedException, TimeoutException {
-        methodisRunning.countDown();
+        methodIsRunning.countDown();
         if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS))
             value = newValue;
         else

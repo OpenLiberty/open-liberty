@@ -108,6 +108,61 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * Tests the current thread being interrupted while waiting for a lock
+     */
+    @Test
+    public void testInterruptedDuringBeanMethod() throws Exception {
+        try {
+            writeLockBean.interruptSelf();
+            fail("Bean method should raise InterruptedException.");
+        } catch (InterruptedException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Tests the current thread being interrupted while waiting for a lock
+     */
+    @Test
+    public void testInterruptedWhileAttemptingLock() throws Exception {
+        Thread currentThread = Thread.currentThread();
+
+        // thread2 acquires the WRITE lock and repeatedly interrupts the current thread
+        CountDownLatch running = new CountDownLatch(1);
+        CountDownLatch doneInterrupting = new CountDownLatch(1);
+        Future<?> thread2Future = testThreads.submit(() -> writeLockBean //
+                        .interruptRepeatedly(currentThread,
+                                             running,
+                                             doneInterrupting));
+        cancelAfterTest.add(thread2Future);
+        running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // current thread attempts to acquire the WRITE lock while thread2 holds it;
+        // the repeated interrupts must cause this to raise InterruptedException
+        try {
+            writeLockBean.blockingWriteNumber(22);
+            fail("Expected InterruptedException while waiting for the WRITE lock.");
+        } catch (IllegalStateException x) {
+            if (x.getCause() instanceof InterruptedException)
+                ; // expected
+            else
+                throw x;
+        }
+
+        // cancel and wait for thread 2 to stop interrupting
+        thread2Future.cancel(true);
+        for (boolean thread2Done = false; !thread2Done;)
+            try {
+                assertEquals(true,
+                             thread2Done = doneInterrupting //
+                                             .await(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+            } catch (InterruptedException x) {
+                thread2Done = false;
+            }
+    }
+
+    /**
      * Confirm that a java:comp lookup can be successfully performed from a
      * scheduled task.
      */

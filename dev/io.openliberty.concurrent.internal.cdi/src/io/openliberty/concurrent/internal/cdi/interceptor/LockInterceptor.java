@@ -110,7 +110,10 @@ public class LockInterceptor implements Serializable {
     locks = new ConcurrentHashMap<>();
 
     @AroundInvoke
-    @FFDCIgnore({ Error.class, Exception.class }) // raised by user's @Lock method
+    @FFDCIgnore({
+                  Error.class, Exception.class, // raised by user's @Lock method
+                  InterruptedException.class, // interrupted while awaiting Lock
+    })
     @Trivial
     public Object intercept(InvocationContext invocation) throws Exception {
         Method method = invocation.getMethod();
@@ -170,6 +173,17 @@ public class LockInterceptor implements Serializable {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + method.getName(), result);
             return result;
+        } catch (InterruptedException x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "invoke " + method.getName(), x);
+            Thread.currentThread().interrupt(); // restore interrupted status
+            for (Class<?> c : invocation.getMethod().getExceptionTypes())
+                if (c.isInstance(x))
+                    throw x;
+            String message = acquired //
+                            ? x.toString() //
+                            : "Interrupted while waiting for lock"; // TODO NLS
+            throw new IllegalStateException(message, x);
         } catch (Exception x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + method.getName(), x);
