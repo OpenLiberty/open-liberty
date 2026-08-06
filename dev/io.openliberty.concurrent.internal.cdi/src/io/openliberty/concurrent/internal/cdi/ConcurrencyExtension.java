@@ -309,11 +309,9 @@ public class ConcurrencyExtension implements Extension {
      * Force context to be initialized for the default ManagedThreadFactory instance
      * if we were able to produce one.
      *
-     * @param event
-     * @param beanManager
+     * @param event the event
      */
-    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event,
-                                          BeanManager beanManager) //
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event) //
                     throws InvalidSyntaxException {
 
         // Default ManagedThreadFactory bean
