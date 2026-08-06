@@ -38,7 +38,7 @@ public class ScheduledMethod extends ScheduledMethodAbstract {
      * Constructor for Schedule directly annotating a bean method.
      * This constructor also schedules the first execution.
      *
-     * @param the               bean method annotated with a Schedule
+     * @param method            the bean method annotated with a Schedule
      * @param schedule          the Schedule annotation
      * @param contextDescriptor captured thread context
      * @param managedExecutor   managed executor or managed scheduled executor

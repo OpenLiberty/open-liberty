@@ -336,7 +336,7 @@ public class ConcurrencyExtension implements Extension {
             // DefaultManagedScheduledExecutor is used by all Schedule methods
             BundleContext bc = FrameworkUtil//
                             .getBundle(WSManagedExecutorService.class) //
-                            .getBundleContext();;
+                            .getBundleContext();
             Collection<ServiceReference<ResourceFactory>> refs = bc == null ? //
                             List.of() : //
                             bc.getServiceReferences(ResourceFactory.class,

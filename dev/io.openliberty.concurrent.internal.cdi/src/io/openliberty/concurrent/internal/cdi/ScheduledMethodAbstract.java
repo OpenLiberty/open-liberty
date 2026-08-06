@@ -77,7 +77,7 @@ public abstract class ScheduledMethodAbstract implements //
                                       WSManagedExecutorService managedExecutor,
                                       List<ScheduleCronTrigger> triggers,
                                       List<Long> skipIfLateBySeconds) {
-        this.contextDescriptor = managedExecutor.captureThreadContext(null);
+        this.contextDescriptor = contextDescriptor;
         this.future = ((ManagedExecutorService) managedExecutor).newIncompleteFuture();
         this.method = method;
         this.skipIfLateBySeconds = skipIfLateBySeconds;
