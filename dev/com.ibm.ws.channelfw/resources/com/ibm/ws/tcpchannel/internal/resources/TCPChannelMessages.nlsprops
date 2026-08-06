@@ -158,3 +158,15 @@ ZOSAIO_DEACTIVATED.useraction=No action is required.
 netty.handler.removed.from.pipeline=CWWKO0231W: A required Netty channel handler {0} was removed from an active connection pipeline.
 netty.handler.removed.from.pipeline.explanation=A Netty pipeline handler that is required for correct operation of the connection was unexpectedly removed while the channel was still active.
 netty.handler.removed.from.pipeline.useraction=No action is required. This is an internal error. If this message persists, collect diagnostic information and contact IBM Support.
+
+read.timeout=CWWKO1713W: An HTTP read operation timed out. {0}
+read.timeout.explanation=An inbound HTTP connection did not receive data within the configured read timeout period.
+read.timeout.useraction=Check the network connection and consider increasing the read timeout value in the HTTP endpoint configuration.
+
+write.timeout=CWWKO1714W: An HTTP write operation timed out. {0}
+write.timeout.explanation=An outbound HTTP write did not complete within the configured write timeout period.
+write.timeout.useraction=Check the network connection and consider increasing the write timeout value in the HTTP endpoint configuration.
+
+h2.idle.timeout=CWWKO1715W: An HTTP/2 connection closed due to idle timeout. {0}
+h2.idle.timeout.explanation=The HTTP/2 connection was idle for longer than the configured idle timeout period and has been closed.
+h2.idle.timeout.useraction=Check the network connection and consider increasing the HTTP/2 connection idle timeout value in the HTTP endpoint configuration.
