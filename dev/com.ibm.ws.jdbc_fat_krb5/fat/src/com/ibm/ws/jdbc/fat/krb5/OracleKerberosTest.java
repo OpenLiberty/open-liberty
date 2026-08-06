@@ -94,7 +94,7 @@ public class OracleKerberosTest extends FATServletClient {
 
         // Add JVM properties
         List<String> jvmOpts = new ArrayList<>();
-        //Debug 
+        //Debug
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.jgss.debug=all"); // IBM JDK
@@ -102,6 +102,7 @@ public class OracleKerberosTest extends FATServletClient {
         //Canonicalization
         jvmOpts.add("-Dsun.security.krb5.canonicalize=false"); // Hotspot / OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.canonicalize=false"); // IBM Semeru
+        jvmOpts.add("-Doracle.net.disableCanonicalNameLookup=true"); // Oracle JDBC driver
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
