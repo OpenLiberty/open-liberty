@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2003, 2010 IBM Corporation and others.
+# Copyright (c) 2003, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
 #
@@ -552,6 +549,45 @@ CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Examine the exception named in the
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: The messaging transport chain {0} has been stopped.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=The transport chain was stopped following a security configuration change which means that no bus defined to the cell any longer permits use of the chain.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=No action required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception which occurred
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086=CWSIJ0086E: An internal error prevented the Netty transport bootstrap from being initialized because of exception: {0}.
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.explanation=The Netty transport bootstrap object could not be initialized. Outbound JMS connections using the Netty transport path will not be possible.
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.useraction=Examine the exception named in the message and the associated server logs to determine the cause. Verify that the Netty framework service is active and that the TCP transport options are correctly configured.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel for which no connection could be found
+NETTY_READ_NO_CONNECTION_SICJ0087=CWSIJ0087W: An incoming message on channel {0} could not be associated with a JMS connection. The message will be discarded and the channel will be closed.
+NETTY_READ_NO_CONNECTION_SICJ0087.explanation=A message was received on a Netty transport channel that has no associated JMS connection object. This may indicate a race condition during connection teardown. The message cannot be processed.
+NETTY_READ_NO_CONNECTION_SICJ0087.useraction=Examine the server logs for accompanying error or warning messages that may explain why the connection object was not present. If this problem persists, collect a server trace and contact IBM support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the JMS Connection object
+# {1} the IOReadCompletedCallback object
+# {2} the IOReadRequestContext object
+# {3} the NetworkConnection object
+NETTY_UNEXPECTED_CALLBACK_SICJ0088=CWSIJ0088W: An incoming message or heartbeat event on a Netty channel could not be processed because one or more of the associated objects is not of the expected Netty type. Connection: {0}  Callback: {1}  ReadContext: {2}  NetworkConnection: {3}.
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.explanation=The Netty channel received data or a timeout event but the connection, callback, read context, or network connection object attached to the channel is not of the expected Netty-specific type. The channel will be closed. This condition indicates an internal programming error.
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.useraction=Examine the server logs and any FFDC records for accompanying error messages that may explain why the connection objects are not of the expected types. If this problem persists, collect a server trace and contact IBM support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the IdleStateEvent that was received
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089=CWSIJ0089W: A Netty idle-state event of an unexpected type was received and will be passed through the pipeline. Event: {0}.
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.explanation=The Netty JMS heartbeat handler received an idle-state event that is not a reader-idle (read timeout) event. Only reader-idle events are expected by the heartbeat handler. The event has been passed along the pipeline for further processing.
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.useraction=No action is required if this message appears infrequently. If this message appears repeatedly, examine the server logs for related warnings or errors and contact IBM support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel on which the heartbeat timeout event occurred
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090=CWSIJ0090W: A heartbeat timeout event on channel {0} could not be associated with a JMS connection. The event will be passed through the pipeline.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.explanation=A read-idle (heartbeat timeout) event fired on a Netty channel that has no associated JMS connection object. This may indicate a race condition during connection teardown. The event cannot be processed and will be forwarded along the pipeline.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.useraction=Examine the server logs for accompanying error or warning messages that may explain why the connection object was not present. If this problem persists, collect a server trace and contact IBM support.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel (null) for which the SSL session was requested
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091=CWSIJ0091W: An SSL session was requested but no Netty channel has been registered with this connection. Channel: {0}.
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.explanation=The SSL session could not be retrieved because the Netty channel has not yet been associated with this connection object. This may indicate a timing issue during connection setup.
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.useraction=Examine the server logs for accompanying error or warning messages that may explain why the channel was not registered. If this problem persists, collect a server trace and contact IBM support.
 
 # Emergency use
 # -------------------------------------------------------------------------------------------------

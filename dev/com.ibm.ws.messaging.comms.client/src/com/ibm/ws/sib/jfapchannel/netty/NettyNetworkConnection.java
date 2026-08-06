@@ -184,7 +184,7 @@ public class NettyNetworkConnection implements NetworkConnection{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getSSLSession", new Object[] {chan});
 		SSLSession session = null;
 		if(chan == null) {
-			SibTr.warning(tc, "getSSLSession: Tried to get SSLSession without registering channel.", new Object[] {this.chan});
+			SibTr.warning(tc, "NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091", new Object[] {this.chan});
 		}else {
 			ChannelHandler handler = this.chan.pipeline().get(NettyNetworkConnectionFactory.SSL_HANDLER_KEY);
 			if(handler == null || !(handler instanceof SslHandler)) {
