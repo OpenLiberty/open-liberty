@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,10 @@ public class JAXRS20CallBackTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            // SRVE9017E is expected: the test intentionally resumes an AsyncResponse with
+            // an ExceptionThrowingStringBean whose writeTo() throws RuntimeException(IOException),
+            // causing WCOutputStream31 to log SRVE9017E when the stream is closed mid-write.
+            server.stopServer("SRVE9017E");
         }
     }
 
