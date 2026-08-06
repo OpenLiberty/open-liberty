@@ -338,7 +338,7 @@ public class Headers {
      */
     public void setProtocolHeadersInConnection(HttpURLConnection connection) throws IOException {
         // If no Content-Type is set for empty requests then HttpUrlConnection:
-        // - sets a form Content-Type for empty POST
+        // - sets a form Content-Type for empty POST 
         // - replaces custom Accept value with */* if HTTP proxy is used
         boolean contentTypeSet = headers.containsKey(Message.CONTENT_TYPE);
         if (!contentTypeSet) {
@@ -347,10 +347,8 @@ public class Headers {
             boolean getRequest = "GET".equals(message.get(Message.HTTP_REQUEST_METHOD));
             boolean emptyRequest = getRequest || PropertyUtils.isTrue(message.get(EMPTY_REQUEST_PROPERTY));
             // If it is an empty request (without a request body) then check further if CT still needs be set
-            if (emptyRequest) {
-                //Liberty code change start
-                Object setCtForEmptyRequestProp = getSetEmptyRequestCtProperty();
-                //Liberty code change end
+            if (emptyRequest) { 
+                Object setCtForEmptyRequestProp = message.getContextualProperty(SET_EMPTY_REQUEST_CT_PROPERTY);
                 if (setCtForEmptyRequestProp != null) {
                     // If SET_EMPTY_REQUEST_CT_PROPERTY is set then do as a user prefers.
                     // CT will be dropped if setting CT for empty requests was explicitly disabled
@@ -373,34 +371,6 @@ public class Headers {
         Map<String, List<Object>> theHeaders = CastUtils.cast(headers);
         logProtocolHeaders(LOG, Level.FINE, theHeaders, logSensitiveHeaders());
     }
-
-    /**
-     * Liberty code change start
-     * Resolves the set.content.type.for.empty.request property by first
-     * checking the message contextual properties, then falling back to jaxrs.filter.properties in
-     * the invocation context. The fallback is needed because InvocationBuilder.property() stores
-     * values in jaxrs.filter.properties rather than in the top-level request context, making them
-     * invisible to getContextualProperty().
-     *
-     * @return the property value, or null if not set
-     */
-    private Object getSetEmptyRequestCtProperty() {
-        Object value = message.getContextualProperty(SET_EMPTY_REQUEST_CT_PROPERTY);
-        if (value == null) {
-            Map<?, ?> invContext = CastUtils.cast((Map<?, ?>) message.get(Message.INVOCATION_CONTEXT));
-            if (invContext != null) {
-                Map<?, ?> reqContext = CastUtils.cast((Map<?, ?>) invContext.get("RequestContext"));
-                if (reqContext != null) {
-                    Map<?, ?> filterProps = CastUtils.cast((Map<?, ?>) reqContext.get("jaxrs.filter.properties"));
-                    if (filterProps != null) {
-                        value = filterProps.get(SET_EMPTY_REQUEST_CT_PROPERTY);
-                    }
-                }
-            }
-        }
-        return value;
-    }
-    //Liberty code change end
 
     public String determineContentType() {
         String ct = null;
