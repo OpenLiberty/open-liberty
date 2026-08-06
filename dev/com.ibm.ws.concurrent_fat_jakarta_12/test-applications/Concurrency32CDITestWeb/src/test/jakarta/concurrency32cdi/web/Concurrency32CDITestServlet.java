@@ -100,7 +100,7 @@ public class Concurrency32CDITestServlet extends FATServlet {
      * needed for when test methods fail and cannot easily clean up.
      */
     @After
-    public void cancelFuturesAfterTest() {
+    void cancelFuturesAfterTest() {
         int count = 0;
         for (Iterator<Future<?>> it = cancelAfterTest.iterator(); it.hasNext();) {
             Future<?> f = it.next();
@@ -184,12 +184,13 @@ public class Concurrency32CDITestServlet extends FATServlet {
         CountDownLatch methodStarts = schedulingBean.trackerOfNotScheduled();
 
         // wait up to 15 seconds past initialization to see if it runs
-        long remainingNS = System.nanoTime() - initTimeNS.get();
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
         if (remainingNS > 0)
             assertEquals(false,
                          methodStarts.await(remainingNS, TimeUnit.NANOSECONDS));
         else
-            assertEquals(0,
+            assertEquals(1, // countDown was never invoked
                          methodStarts.getCount());
     }
 
@@ -359,7 +360,8 @@ public class Concurrency32CDITestServlet extends FATServlet {
                      executionCount.get());
 
         // wait up to 15 seconds past initialization to see if it runs a second time
-        long remainingNS = System.nanoTime() - initTimeNS.get();
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
         if (remainingNS > 0)
             TimeUnit.NANOSECONDS.sleep(remainingNS);
 
@@ -417,7 +419,8 @@ public class Concurrency32CDITestServlet extends FATServlet {
                      executionCount.get());
 
         // wait up to 25 seconds past initialization to see if it runs a 4th time
-        long remainingNS = System.nanoTime() - initTimeNS.get();
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(25) - elapsedNS;
         if (remainingNS > 0)
             TimeUnit.NANOSECONDS.sleep(remainingNS);
 

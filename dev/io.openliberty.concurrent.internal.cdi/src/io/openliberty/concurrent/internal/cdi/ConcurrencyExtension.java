@@ -152,14 +152,12 @@ public class ConcurrencyExtension implements Extension {
     /**
      * Collect a list of bean classes that have methods directly annotated Schedule.
      *
-     * @param <T>         bean class
-     * @param event       the event
-     * @param beanManager the bean manager
+     * @param <T>   bean class
+     * @param event the event
      */
     public <T> void addAnnotatedType//
     (
-     @Observes @WithAnnotations(Schedule.class) ProcessAnnotatedType<T> event,
-     BeanManager beanManager) {
+     @Observes @WithAnnotations(Schedule.class) ProcessAnnotatedType<T> event) {
         beanClassesWithScheduleMethods.add(event.getAnnotatedType());
     }
 
@@ -167,11 +165,9 @@ public class ConcurrencyExtension implements Extension {
      * Register beans for default instances and qualified instances of concurrency
      * resources after bean discovery.
      *
-     * @param event
-     * @param beanManager
+     * @param event the event
      */
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event,
-                                   BeanManager beanManager) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
 
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd == null)
@@ -345,6 +341,8 @@ public class ConcurrencyExtension implements Extension {
                             null : //
                             (WSManagedExecutorService) bc //
                                             .getService(refs.iterator().next());
+            // TODO consider if we should unget the above on applicaton stop
+            // or if it would be safe to do so at the end of this method.
 
             // CDIService can identify which module a bean comes from
             ServiceReference<CDIService> cdiSvcRef = bc //
@@ -398,7 +396,7 @@ public class ConcurrencyExtension implements Extension {
                                     beanAnnoList.add(beanAnno);
                             Annotation[] beanAnnos = beanAnnoList //
                                             .toArray(new Annotation[beanAnnoList.size()]);
-                            new ScheduledMethod( //
+                            new ScheduledMethod<>( //
                                             method.getJavaMember(), //
                                             schedule, //
                                             threadContext, //

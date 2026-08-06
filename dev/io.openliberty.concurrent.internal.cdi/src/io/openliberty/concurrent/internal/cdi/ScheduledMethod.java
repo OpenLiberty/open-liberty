@@ -21,17 +21,17 @@ import java.util.concurrent.CompletionStage;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
-import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.Schedule;
-import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance.Handle;
 import jakarta.enterprise.inject.spi.CDI;
 
 /**
  * A task that can be scheduled to run a method at the appropriate time,
  * according to the method's Schedule annotation.
  */
-public class ScheduledMethod extends ScheduledMethodAbstract {
-    private final Class<?> beanClass;
+public class ScheduledMethod<T> extends ScheduledMethodAbstract {
+    private final Class<T> beanClass;
     private final Annotation[] beanQualifierAnnos;
 
     /**
@@ -48,7 +48,7 @@ public class ScheduledMethod extends ScheduledMethodAbstract {
                     Schedule schedule,
                     ThreadContextDescriptor contextDescriptor,
                     WSManagedExecutorService managedExecutor,
-                    Class<?> beanClass,
+                    Class<T> beanClass,
                     Annotation... beanQualifierAnnos) {
         super(method, //
               contextDescriptor, //
@@ -73,15 +73,17 @@ public class ScheduledMethod extends ScheduledMethodAbstract {
     protected CompletionStage<?> invokeMethod() //
                     throws InvocationTargetException, Exception {
 
-        Instance<?> instance = CDI.current().select(beanClass, beanQualifierAnnos);
-        Object bean = instance.get();
+        Handle<T> handle = CDI.current() //
+                        .select(beanClass, beanQualifierAnnos) //
+                        .getHandle();
+        boolean isDependent = Dependent.class.equals(handle.getBean().getScope());
 
         Object result;
-        Asynchronous.Result.setFuture(future); // TODO include this for @Schedule?
         try {
-            result = method.invoke(bean);
+            result = method.invoke(handle.get());
         } finally {
-            Asynchronous.Result.setFuture(null);
+            if (isDependent)
+                handle.destroy();
         }
 
         if (result instanceof CompletionStage<?> cs)
