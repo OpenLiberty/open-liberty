@@ -12,6 +12,7 @@ package io.openliberty.microprofile.reactive.messaging.fat.apps.shutdown;
 
 import java.util.concurrent.CompletionStage;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
@@ -25,7 +26,15 @@ public class AckOnShutdownKafkaConsumer extends AbstractReceptionBean<String> {
     @Incoming("TestAckOnShutdown")
     @Override
     public CompletionStage<Void> receiveMessage(Message<String> message) {
-        return super.receiveMessage(message);
+        @SuppressWarnings("unchecked")
+        ConsumerRecord<?, String> record = message.unwrap(ConsumerRecord.class);
+        System.out.println("AckOnShutdown processing message:"
+                           + " partition=" + record.partition()
+                           + " offset=" + record.offset()
+                           + " leaderEpoch=" + record.leaderEpoch().orElse(-1)
+                           + " timestamp=" + record.timestamp()
+                           + " payload=" + record.value());
+        return message.ack();
     }
 
 }
