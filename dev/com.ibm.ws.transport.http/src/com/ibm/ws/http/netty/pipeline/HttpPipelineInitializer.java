@@ -165,7 +165,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         SslHandler handler = null;
 
         if(tlsProvider == null){
-            throw new NettyException("TLS Provider is not loaded");
+            Tr.error(tc, "netty.tls.provider.not.loaded");
+            throw new NettyException(Tr.formatMessage(tc, "netty.tls.provider.not.loaded"));
         }
         EndPointInfo ep = this.chain.getEndpointInfo();
         String host = ep.getHost();
@@ -178,7 +179,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         }
 
         if (handler == null) {
-            throw new NettyException("Failed to create SSL handler for endpoint: " + ep.getHost() + ":" + ep.getPort());
+            Tr.error(tc, "netty.ssl.handler.create.failed", ep.getHost(), ep.getPort());
+            throw new NettyException(Tr.formatMessage(tc, "netty.ssl.handler.create.failed", ep.getHost(), ep.getPort()));
         }
 
         return handler;
