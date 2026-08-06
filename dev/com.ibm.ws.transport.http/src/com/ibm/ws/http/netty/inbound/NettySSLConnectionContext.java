@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public class NettySSLConnectionContext implements SSLConnectionContext {
         if (isOutbound) {
             getSslHandler().engine().setEnableSessionCreation(flag);
         } else {
-            throw new SSLException("error, established setting cannot be modified.");
+            throw new SSLException("Error, established setting cannot be modified.");
         }
 
     }
@@ -119,7 +119,7 @@ public class NettySSLConnectionContext implements SSLConnectionContext {
         if (isOutbound) {
             getSslHandler().engine().setWantClientAuth(want);
         } else {
-            throw new SSLException("Error, established setting cannot be modificed.");
+            throw new SSLException("Error, established setting cannot be modified.");
         }
 
     }

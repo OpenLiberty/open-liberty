@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -47,7 +48,9 @@ import io.openliberty.netty.internal.impl.QuiesceState;
  */
 public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
-    private static final TraceComponent tc = Tr.register(NettyServletUpgradeHandler.class);
+    private static final TraceComponent tc = Tr.register(NettyServletUpgradeHandler.class,
+                                                         HttpMessages.HTTP_TRACE_NAME,
+                                                         HttpMessages.HTTP_BUNDLE);
 
     private final CoalescingBufferQueue queue;
     private final Channel channel;
@@ -93,21 +96,19 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Timeout hit for channel " + channel + " while reading async? " + isReadingAsync);
         }
-        StringBuilder error = new StringBuilder();
-        error.append("Socket operation timed out before it could be completed local=");
-        error.append(readContext.getInterface().getLocalAddress().getHostName()).append("/");
-        error.append(readContext.getInterface().getLocalAddress().getHostAddress()).append(":");
-        error.append(readContext.getInterface().getLocalPort());
-        error.append(" remote=");
-        error.append(readContext.getInterface().getRemoteAddress().getHostName()).append("/");
-        error.append(readContext.getInterface().getRemoteAddress().getHostAddress()).append(":");
-        error.append(readContext.getInterface().getRemotePort());
+        String timeoutMessage = Tr.formatMessage(tc, "netty.socket.timeout",
+                readContext.getInterface().getLocalAddress().getHostName(),
+                readContext.getInterface().getLocalAddress().getHostAddress(),
+                readContext.getInterface().getLocalPort(),
+                readContext.getInterface().getRemoteAddress().getHostName(),
+                readContext.getInterface().getRemoteAddress().getHostAddress(),
+                readContext.getInterface().getRemotePort());
 
         if(isReadingAsync) {
             isReadingAsync = false;
             HttpDispatcher.getExecutorService().execute(() -> {
                 try {
-                    getReadListener().error(vc, readContext, new SocketTimeoutException(error.toString()));
+                    getReadListener().error(vc, readContext, new SocketTimeoutException(timeoutMessage));
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc,
@@ -117,7 +118,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             });
         }
         else
-            channelContext.fireExceptionCaught(new SocketTimeoutException(error.toString()));
+            channelContext.fireExceptionCaught(new SocketTimeoutException(timeoutMessage));
     }
 
     private void cancelTimer(){
@@ -274,19 +275,17 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Timeout hit for channel on async" + channel);
             }
-            StringBuilder error = new StringBuilder();
-            error.append("Socket operation timed out before it could be completed local=");
-            error.append(readContext.getInterface().getLocalAddress().getHostName()).append("/");
-            error.append(readContext.getInterface().getLocalAddress().getHostAddress()).append(":");
-            error.append(readContext.getInterface().getLocalPort());
-            error.append(" remote=");
-            error.append(readContext.getInterface().getRemoteAddress().getHostName()).append("/");
-            error.append(readContext.getInterface().getRemoteAddress().getHostAddress()).append(":");
-            error.append(readContext.getInterface().getRemotePort());
+            String timeoutMessage = Tr.formatMessage(tc, "netty.socket.timeout",
+                    readContext.getInterface().getLocalAddress().getHostName(),
+                    readContext.getInterface().getLocalAddress().getHostAddress(),
+                    readContext.getInterface().getLocalPort(),
+                    readContext.getInterface().getRemoteAddress().getHostName(),
+                    readContext.getInterface().getRemoteAddress().getHostAddress(),
+                    readContext.getInterface().getRemotePort());
             isReadingAsync = false;
             HttpDispatcher.getExecutorService().execute(() -> {
                 try {
-                    getReadListener().error(vc, readContext, new SocketTimeoutException(error.toString()));
+                    getReadListener().error(vc, readContext, new SocketTimeoutException(timeoutMessage));
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc,
