@@ -450,6 +450,36 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * Two methods annotated Lock and Schedule attempt to run every third second
+     * four times and increment a shared counter in a way that will lose updates
+     * if the executions overlap. Verify the counter records all 8 executions.
+     */
+    @Test
+    public void testScheduledMethodsWithWriteLockDoNotOverlap() //
+                    throws InterruptedException {
+        AtomicInteger executionCount = schedulingBean //
+                        .trackerOfLockEvery3Seconds4Times();
+
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < TIMEOUT_NS * 2 &&
+                                             executionCount.get() < 8L; //
+                        TimeUnit.NANOSECONDS.sleep(POLL_NS));
+
+        assertEquals(8L,
+                     executionCount.get());
+
+        // wait up to 20 seconds past initialization to find out if any additional
+        // executions occur
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(20) - elapsedNS;
+        if (remainingNS > 0)
+            TimeUnit.NANOSECONDS.sleep(remainingNS);
+
+        assertEquals(8L,
+                     executionCount.get());
+    }
+
+    /**
      * Invoke a bean method annotated Lock(WRITE) which invokes another
      * method of the same bean instance annotated Lock(READ).
      * The LoopbackBean.increment method is annotated Lock(WRITE) and calls
