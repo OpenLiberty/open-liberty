@@ -344,6 +344,27 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * A bean method that is annotated Asynchronous and Schedule must raise
+     * UnsupportedOperationException.
+     */
+    @Test
+    public void testRejectAsynchronousAndScheduleOnSameMethod() {
+        try {
+            schedulingBean.alsoAsynchronous();
+            fail("Expected UnsupportedOperationException for a method " +
+                 "annotated both @Asynchronous and @Schedule.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+            // TODO NLS message prefix can be asserted once added
+                !x.getMessage().contains("alsoAsynchronous") ||
+                !x.getMessage().contains("@Asynchronous") ||
+                !x.getMessage().contains("@Schedule"))
+                throw x;
+            // else expected error
+        }
+    }
+
+    /**
      * A bean method that is scheduled to automatically run every 4 seconds,
      * but completes itself the first time it runs must run exactly once.
      */

@@ -18,6 +18,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -50,6 +51,13 @@ public class SchedulingBean {
      */
     private final AtomicInteger onceOn4thSecondCount = //
                     new AtomicInteger(0);
+
+    @Asynchronous
+    @Schedule(cron = "* * * * * *")
+    public void alsoAsynchronous() {
+        System.out.println("Running a method that has an invalid combination" +
+                           " of annotations");
+    }
 
     // Seconds at which methods aim to run:
     //     02    05    08    11    14    17    20    23    26    29    32    35    38    41    44    47    50    53    56    59
