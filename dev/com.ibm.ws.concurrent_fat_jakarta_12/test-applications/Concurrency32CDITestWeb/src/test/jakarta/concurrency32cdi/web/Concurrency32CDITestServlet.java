@@ -13,6 +13,7 @@
 package test.jakarta.concurrency32cdi.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
@@ -26,9 +27,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
@@ -54,6 +58,9 @@ import componenttest.app.FATServlet;
 @WebServlet("/*")
 public class Concurrency32CDITestServlet extends FATServlet {
 
+    // Poll interval in nanoseconds
+    static final long POLL_NS = TimeUnit.MILLISECONDS.toNanos(200);
+
     // Maximum number of nanoseconds to wait for a task to finish.
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
@@ -68,11 +75,16 @@ public class Concurrency32CDITestServlet extends FATServlet {
     @Resource(lookup = "java:comp/concurrent/cdi/async-3-scheduler")
     ManagedScheduledExecutorService async3Scheduler;
 
+    static final AtomicLong initTimeNS = new AtomicLong(0);
+
     @Inject
     LoopbackBean loopbackBean;
 
     @Inject
     ReadLockBean readLockBean;
+
+    @Inject
+    SchedulingBean schedulingBean;
 
     ExecutorService testThreads = Executors.newVirtualThreadPerTaskExecutor();
 
@@ -105,6 +117,7 @@ public class Concurrency32CDITestServlet extends FATServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        initTimeNS.compareAndSet(0, System.nanoTime());
     }
 
     /**
@@ -160,6 +173,25 @@ public class Concurrency32CDITestServlet extends FATServlet {
             } catch (InterruptedException x) {
                 thread2Done = false;
             }
+    }
+
+    /**
+     * A bean method that lacks the Schedule annotation does not run automatically.
+     */
+    @Test
+    public void testMethodWithoutScheduleAnnotationDoesNotRunAutomatically() //
+                    throws InterruptedException {
+        CountDownLatch methodStarts = schedulingBean.trackerOfNotScheduled();
+
+        // wait up to 15 seconds past initialization to see if it runs
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
+        if (remainingNS > 0)
+            assertEquals(false,
+                         methodStarts.await(remainingNS, TimeUnit.NANOSECONDS));
+        else
+            assertEquals(1, // countDown was never invoked
+                         methodStarts.getCount());
     }
 
     /**
@@ -309,6 +341,91 @@ public class Concurrency32CDITestServlet extends FATServlet {
         }
 
         readLockBean.blockingWriteValue(null);
+    }
+
+    /**
+     * A bean method that is scheduled to automatically run every 4 seconds,
+     * but completes itself the first time it runs must run exactly once.
+     */
+    @Test
+    public void testScheduledMethodCompletesItselfAfter1Execution() //
+                    throws InterruptedException {
+        AtomicInteger executionCount = schedulingBean.trackerOfOnceOn4thSecond();
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < TIMEOUT_NS &&
+                                             executionCount.get() == 0; //
+                        TimeUnit.NANOSECONDS.sleep(POLL_NS));
+
+        assertEquals(1L,
+                     executionCount.get());
+
+        // wait up to 15 seconds past initialization to see if it runs a second time
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
+        if (remainingNS > 0)
+            TimeUnit.NANOSECONDS.sleep(remainingNS);
+
+        assertEquals(1L,
+                     executionCount.get());
+    }
+
+    /**
+     * A bean method that is scheduled (with a cron expression) to automatically
+     * run every 3 seconds indefinitely continues running multiple times.
+     */
+    @Test
+    public void testScheduledMethodRepeats() //
+                    throws InterruptedException {
+        Thread execThread;
+        LinkedBlockingQueue<Thread> execThreads = //
+                        schedulingBean.trackerOfEvery3SecondsCron();
+
+        // verify that it runs 3 times
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+
+        // clear out all executions up to current point in time
+        for (execThread = execThreads.poll(); //
+                        execThread != null; //
+                        execThread = execThreads.poll());
+
+        // verify that it is still running
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+        assertEquals(false, execThread == Thread.currentThread());
+    }
+
+    /**
+     * A bean method that is scheduled to automatically run every 5 seconds,
+     * but raises an exception its third execution, runs only 3 times.
+     */
+    @Test
+    public void testScheduledMethodStopsAfterRaisingException() //
+                    throws InterruptedException {
+
+        AtomicInteger executionCount = schedulingBean.trackerOfEvery5Seconds3Times();
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < TIMEOUT_NS &&
+                                             executionCount.get() < 3; //
+                        TimeUnit.NANOSECONDS.sleep(POLL_NS));
+
+        assertEquals(3L,
+                     executionCount.get());
+
+        // wait up to 25 seconds past initialization to see if it runs a 4th time
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(25) - elapsedNS;
+        if (remainingNS > 0)
+            TimeUnit.NANOSECONDS.sleep(remainingNS);
+
+        assertEquals(3L,
+                     executionCount.get());
     }
 
     /**
