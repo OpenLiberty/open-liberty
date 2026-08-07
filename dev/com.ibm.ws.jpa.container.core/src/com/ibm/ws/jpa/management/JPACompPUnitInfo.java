@@ -263,6 +263,27 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
         return ivPUnitInfo.getValidationMode();
     }
 
+    /**
+     * Returns all class names in the persistence unit.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getAllClassNames() {
+        return ivPUnitInfo.getAllClassNames();
+    }
+
+    /**
+     * Returns the default fetch type for to-one associations.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Returns EAGER, which is the backward-compatible default as per the JPA 4.0 spec.
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will return jakarta.persistence.FetchType.EAGER.
+     */
+    public javax.persistence.FetchType getDefaultToOneFetchType() {
+        return ivPUnitInfo.getDefaultToOneFetchType();
+    }
+
     // --------------------------------------------------------------------------
     //
     // internal  methods

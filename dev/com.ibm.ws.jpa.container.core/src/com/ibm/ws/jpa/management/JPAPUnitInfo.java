@@ -1505,18 +1505,23 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     }
 
     /**
-     * @see jakarta.persistence.spi.PersistenceUnitInfo#getAllClassNames()
+     * Returns all class names in the persistence unit.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
      */
-    @Override
     public List<String> getAllClassNames() {
         return getManagedClassNames();
     }
 
     /**
-     * @see jakarta.persistence.spi.PersistenceUnitInfo#getDefaultToOneFetchType()
+     * Returns the default fetch type for to-one associations.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Returns EAGER, which is the backward-compatible default as per the JPA 4.0 spec.
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will return jakarta.persistence.FetchType.EAGER.
      */
-    @Override
-    public jakarta.persistence.FetchType getDefaultToOneFetchType() {
-        return jakarta.persistence.FetchType.DEFAULT;
+    public javax.persistence.FetchType getDefaultToOneFetchType() {
+        return javax.persistence.FetchType.EAGER;
     }
 }
