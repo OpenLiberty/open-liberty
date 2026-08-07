@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,13 @@ public interface KafkaConsumer<K, V> extends KafkaAdapter {
      * @param object
      */
     void commitAsync(Map<TopicPartition, OffsetAndMetadata> offsets, OffsetCommitCallback callback);
+
+    /**
+     * Synchronously commit the specified offsets. Blocks until the broker acknowledges the commit or throws.
+     *
+     * @param offsets the offsets to commit
+     */
+    void commitSync(Map<TopicPartition, OffsetAndMetadata> offsets);
 
     long position(TopicPartition partition);
 
