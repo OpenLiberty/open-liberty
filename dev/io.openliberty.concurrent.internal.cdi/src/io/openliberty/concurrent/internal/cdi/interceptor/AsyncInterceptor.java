@@ -57,7 +57,15 @@ public class AsyncInterceptor implements Serializable {
         Method method = invocation.getMethod();
         Asynchronous anno = invocation.getInterceptorBinding(Asynchronous.class);
 
-        // Is it a scheduled asynchronous method?
+        // Reject invalid combination of @Asynchronous and @Schedule
+        if (method.isAnnotationPresent(Schedule.class))
+            throw new UnsupportedOperationException //
+            ("The " + method.getName() + " method of the " +
+             method.getDeclaringClass().getName() +
+             " bean cannot be annotated both " + "@Asynchronous" + " and " +
+             "@Schedule"); // TODO NLS
+
+        // Is it a scheduled asynchronous method? @Asynchronous(runAt = @Schedule)
         Schedule[] schedules = anno == null ? new Schedule[0] : anno.runAt();
         if (schedules.length > 0) {
             // Identify requested inline execution for scheduled executions other than the first,
