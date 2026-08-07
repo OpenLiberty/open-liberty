@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -212,16 +212,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         this.prefixQueue.add(object);
     }
 
-    private void awaitChannelFuture(ChannelPromise future, String failureMsg)
-        throws IOException, InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        future.addListener(f -> latch.countDown());
-        latch.await();
-        if (!future.isSuccess()) {
-            throw new IOException(failureMsg, future.cause());
-        }
-    }
-
     private void verifyTimeout(int timeout) {
         // Verify timeout and add it to the timeout handler
         long timeoutNanos = TimeUnit.MILLISECONDS.toNanos(timeout);
@@ -274,18 +264,15 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                 if (isH2) {
                     
                     writtenBytes += buffer.remaining();
-                    ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                    HttpContent httpContent = new StreamSpecificHttpContent(Integer.valueOf(this.streamID), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
-                    writeQueue.add(httpContent);
+                    writeQueue.add(new StreamSpecificHttpContent(Integer.valueOf(this.streamID),
+                        Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer))));
                   
                 } else if (hasContentLength || isWsoc || isHttp10) {
                     ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                     int bytes = nettyBuf.readableBytes();
                     writeQueue.add(nettyBuf);
                     writtenBytes += bytes;
-
                 } else {
-
                     ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                     DefaultHttpContent httpContent = new DefaultHttpContent(nettyBuf);
                     writtenBytes += nettyBuf.readableBytes();
@@ -310,8 +297,12 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER, writePromise);
                 }
             });
-            awaitChannelFuture(writePromise, "Flush operation timed out!");
 
+            writePromise.await();
+
+            if (!writePromise.isSuccess()) {
+                throw new IOException("Flush operation failed!", writePromise.cause());
+            }
 
         } catch (InterruptedException e) {
             // Restore interrupt status
@@ -363,10 +354,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
                         if (isH2) {
                             totalWrittenBytes += buffer.remaining();
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            HttpContent httpContent = new StreamSpecificHttpContent(Integer.valueOf(this.streamID), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
-                            writeQueue.add(httpContent);
-
+                            writeQueue.add(new StreamSpecificHttpContent(Integer.valueOf(this.streamID), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer))));
                         }
 
                         else if (hasContentLength || isWsoc || isHttp10) {
@@ -380,9 +368,8 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
                         else {
                             ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            DefaultHttpContent httpContent = new DefaultHttpContent(nettyBuf);
                             totalWrittenBytes += nettyBuf.readableBytes();
-                            writeQueue.add(httpContent);
+                            writeQueue.add(new DefaultHttpContent(nettyBuf));
                         }
                     }
                 }
