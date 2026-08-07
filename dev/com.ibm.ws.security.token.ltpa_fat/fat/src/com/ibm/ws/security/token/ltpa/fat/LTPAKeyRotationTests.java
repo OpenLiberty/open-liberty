@@ -452,9 +452,11 @@ public class LTPAKeyRotationTests {
 
         waitForLTPAKeysCreatedMessage();
 
-        // LTPA config is modified twice due to monitor, prevents sending request before LTPA service is reinitialized
+        // Wait for LTPA to be ready after renaming the primary key to validation key
         waitForLTPAConfigurationReadyMessage();
-        waitForLTPAConfigurationReadyMessage(); 
+        // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
+        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
+        Thread.sleep(200);
         
         // Assert that a new ltpa.keys file was created
         assertFileWasCreated(DEFAULT_KEY_PATH);
@@ -1969,9 +1971,11 @@ public class LTPAKeyRotationTests {
         // Wait for the ltpa.keys file to be regenerated
         waitForLTPAKeysCreatedMessage();
 
-        // Wait for the LTPA configuration to be ready after the change, prevents sending request before LTPA config is ready
+        // Wait for LTPA to be ready after renaming file
         waitForLTPAConfigurationReadyMessage();
-        waitForLTPAConfigurationReadyMessage();
+        // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
+        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
+        Thread.sleep(200);
 
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
     }
@@ -2119,9 +2123,11 @@ public class LTPAKeyRotationTests {
         // Rename the ltpa.keys file to validation1.keys
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
 
-        // Wait for the LTPA configuration to be ready after the change, prevents sending request before LTPA config is ready
+        // Wait for the LTPA configuration to be ready after renaming file
         waitForLTPAConfigurationReadyMessage();
-        waitForLTPAConfigurationReadyMessage();
+        // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
+        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
+        Thread.sleep(200);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
