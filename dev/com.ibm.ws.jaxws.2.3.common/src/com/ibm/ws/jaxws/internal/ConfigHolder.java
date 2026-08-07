@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -292,6 +292,13 @@ public class ConfigHolder {
         return tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled();
     }
     
+    /**
+     * Validates that the provided properties map is non-null and non-empty, updating
+     * the internal {@code configExists} flag accordingly.
+     *
+     * @param properties the OSGi component properties to validate
+     * @return {@code true} if properties are present and non-empty; {@code false} otherwise
+     */
     public static boolean checkConfig(Map<String, Object> properties) {
         if (properties == null || properties.isEmpty()) {
             if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
@@ -303,8 +310,30 @@ public class ConfigHolder {
         }
         return configExists;
     }
-    
+
+    /**
+     * Returns whether any configuration has been registered with this holder.
+     * Used as a fast-path guard in interceptors and endpoints to skip processing
+     * when no webService/webServiceClient config is present.
+     *
+     * @return {@code true} if at least one configuration entry has been registered
+     */
     public static boolean isConfigExists() {
         return configExists;
+    }
+
+    /**
+     * Returns true if any named (non-default) configuration exists.
+     * Used to distinguish "no named config registered" from "named config exists but name doesn't match".
+     */
+    public static boolean hasNamedConfig() {
+        synchronized (ConfigHolder.class) {
+            for (String key : configInfo.keySet()) {
+                if (!key.equals(WebServiceConfigConstants.DEFAULT_PROP)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
