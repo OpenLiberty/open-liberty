@@ -1503,4 +1503,20 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     void setValidationMode(ValidationMode mode) {
         ivValidationMode = mode;
     }
+
+    /**
+     * @see jakarta.persistence.spi.PersistenceUnitInfo#getAllClassNames()
+     */
+    @Override
+    public List<String> getAllClassNames() {
+        return getManagedClassNames();
+    }
+
+    /**
+     * @see jakarta.persistence.spi.PersistenceUnitInfo#getDefaultToOneFetchType()
+     */
+    @Override
+    public jakarta.persistence.FetchType getDefaultToOneFetchType() {
+        return jakarta.persistence.FetchType.DEFAULT;
+    }
 }
