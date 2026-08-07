@@ -99,7 +99,11 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         FixedRecvByteBufAllocator channelAllocator = new FixedRecvByteBufAllocator(httpConfig.getIncomingBodyBufferSize());
         LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator, channel);
-        channel.config().setRecvByteBufAllocator(loggingAllocator);
+        if (TraceComponent.isAnyTracingEnabled()) {
+            channel.config().setRecvByteBufAllocator(loggingAllocator);
+        } else {
+            channel.config().setRecvByteBufAllocator(channelAllocator);
+        }
 
         pipeline.addLast(WRITE_TIMEOUT_HANDER_NAME, new WriteTimeoutHandler(httpConfig.getWriteTimeout(), TimeUnit.MILLISECONDS));
 
