@@ -107,6 +107,9 @@ EOT
     echo "(*) Creating FREE/oracle Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} FREE/oracle@${KRB5_REALM}"
     
+    echo "(*) Creating FREE/oracle Account with canonical hostname"
+    kadmin.local -q "addprinc -pw ${KRB5_PASS} FREE/oracle.dev.fyre.ibm.com@${KRB5_REALM}"
+    
     echo "(*) Creating oracle kerberos principal"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} ORACLEUSR@${KRB5_REALM}"
 
