@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,15 +15,13 @@ import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB1_JAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB2_JAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB3_JAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB4_JAR;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB_PRECECENCE_APP;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB_PRECENCENC_WAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB_PRECEDENCE_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB_PRECEDENCE_WAR;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -40,11 +38,8 @@ import io.openliberty.classloading.library.precedence.test.app.LibPrecedenceBefo
 public class LibraryPrecedenceBeforeAppTests extends FATServletClient {
 
     @Server(LIB_PRECEDENCE_BEFORE_APP_SERVER)
-    @TestServlet(servlet = LibPrecedenceBeforeAppTestServlet.class, contextRoot = TEST_LIB_PRECECENCE_APP)
+    @TestServlet(servlet = LibPrecedenceBeforeAppTestServlet.class, contextRoot = TEST_LIB_PRECEDENCE_APP)
     public static LibertyServer server;
-
-    @Rule
-    public TestName testName = new TestName();
 
     @BeforeClass
     public static void setupTestServer() throws Exception {
@@ -55,7 +50,7 @@ public class LibraryPrecedenceBeforeAppTests extends FATServletClient {
         assertTrue("test.bundle.threading.jar should have been copied to lib",
                    server.fileExistsInLibertyInstallRoot("lib/test.bundle.api.jar"));
 
-        ShrinkHelper.exportAppToServer(server, TEST_LIB_PRECENCENC_WAR, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, TEST_LIB_PRECEDENCE_WAR, DeployOptions.SERVER_ONLY);
 
         ShrinkHelper.exportToServer(server, "/libs", TEST_LIB1_JAR, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "/libs", TEST_LIB2_JAR, DeployOptions.SERVER_ONLY);
@@ -79,7 +74,4 @@ public class LibraryPrecedenceBeforeAppTests extends FATServletClient {
         }
     }
 
-    @AfterClass
-    public static void removeTestFeatures() throws Exception {
-    }
 }
