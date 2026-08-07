@@ -592,4 +592,54 @@ public class Concurrency32CDITestServlet extends FATServlet {
         assertEquals(true,
                      thread2Future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
+
+    /**
+     * The Lock annotation also applies to methods annotated Asynchronous,
+     * such that the execution of the asynchronous work (not the submission of it)
+     * is subject to the lock.
+     */
+    @Test
+    public void testWriteLockOnAsyncMethod() throws Exception {
+
+        // write by single thread
+        writeLockBean.writeNumber(90);
+
+        // invoke an asynchronous method and wait for it to start running
+        CountDownLatch blocker1 = new CountDownLatch(1);
+        CountDownLatch asyncMethod1Running = new CountDownLatch(1);
+        CompletableFuture<Integer> future1 = writeLockBean //
+                        .asyncWriteNumber(asyncMethod1Running, blocker1, 91);
+        cancelAfterTest.add(future1);
+
+        asyncMethod1Running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // invoke a second asynchronous method that is subject to the same
+        // WRITE Lock and verify it does not run yet
+        CountDownLatch blocker2 = new CountDownLatch(1);
+        CountDownLatch asyncMethod2Running = new CountDownLatch(1);
+        CompletableFuture<Integer> future2 = writeLockBean //
+                        .asyncWriteNumber(asyncMethod2Running, blocker2, 92);
+        cancelAfterTest.add(future2);
+
+        assertEquals(false,
+                     asyncMethod2Running.await(2, TimeUnit.SECONDS));
+
+        // allow the first asynchronous method to complete
+        blocker1.countDown();
+
+        // the second asynchronous method must start now
+        assertEquals(true,
+                     asyncMethod2Running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(Integer.valueOf(91),
+                     future1.join());
+
+        // allow the second asynchronous method to complete
+        blocker2.countDown();
+        assertEquals(Integer.valueOf(92),
+                     future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(92,
+                     writeLockBean.blockingReadNumber());
+    }
 }

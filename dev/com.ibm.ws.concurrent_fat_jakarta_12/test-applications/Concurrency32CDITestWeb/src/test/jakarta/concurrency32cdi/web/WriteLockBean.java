@@ -12,10 +12,12 @@
  *******************************************************************************/
 package test.jakarta.concurrency32cdi.web;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.Lock;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -34,6 +36,22 @@ public class WriteLockBean {
     static final long MAX_DELAY_MS = TimeUnit.MINUTES.toMillis(5);
 
     private int number;
+
+    @Asynchronous
+    public CompletableFuture<Integer> //
+                    asyncWriteNumber(CountDownLatch methodIsRunning,
+                                     CountDownLatch delayer,
+                                     int newNumber) //
+                                    throws InterruptedException {
+        methodIsRunning.countDown();
+        if (delayer.await(MAX_DELAY_MS, TimeUnit.MILLISECONDS)) {
+            return Asynchronous.Result.complete(number = newNumber);
+        } else {
+            CompletableFuture<Integer> future = Asynchronous.Result.getFuture();
+            future.completeExceptionally(new TimeoutException("Timed Out"));
+            return future;
+        }
+    }
 
     @Lock(type = Lock.Type.READ,
           accessTimeout = Lock.UNLIMITED)
