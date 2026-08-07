@@ -19,7 +19,10 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -113,11 +116,44 @@ public class Resource extends Application {
 
     /**
      * Returns the Content-Type header value received, or "none" if absent.
-     * Used to verify whether Liberty sends Content-Type for empty-body DELETE requests.
+     * Used to verify whether Liberty sends Content-Type for empty-body requests.
+     * Shared by DELETE, POST (no body), PUT (no body), HEAD, and OPTIONS tests.
      */
     @DELETE
     @Path("/contentTypeCheck")
     public Response deleteContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    @POST
+    @Path("/contentTypeCheck")
+    public Response postContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    @PUT
+    @Path("/contentTypeCheck")
+    public Response putContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    @HEAD
+    @Path("/contentTypeCheck")
+    public Response headContentTypeCheck() {
+        // HEAD responses must not include a body; return Content-Type value as a custom header
+        String ct = httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
+        boolean absent = (ct == null || ct.isEmpty() || "null".equals(ct));
+        String value = absent ? "none" : ct;
+        return Response.ok().header("X-Received-Content-Type", value).build();
+    }
+
+    @OPTIONS
+    @Path("/contentTypeCheck")
+    public Response optionsContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    private Response contentTypeCheckResponse() {
         String ct = httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
         // treat null, empty string, and the literal "null" as absent
         boolean absent = (ct == null || ct.isEmpty() || "null".equals(ct));

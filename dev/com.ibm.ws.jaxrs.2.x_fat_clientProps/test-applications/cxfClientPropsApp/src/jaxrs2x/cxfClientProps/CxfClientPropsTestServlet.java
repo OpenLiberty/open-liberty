@@ -672,4 +672,80 @@ public class CxfClientPropsTestServlet extends FATServlet {
         assertEquals("DELETE with set.content.type.for.empty.request=true on InvocationBuilder should send Content-Type: star/star",
                      "*/*", ct);
     }
+
+    // -------------------------------------------------------------------------
+    // Tests for POST, PUT, HEAD, OPTIONS with set.content.type.for.empty.request
+    // These verify the InvocationBuilder dual-write fix covers all empty-body
+    // HTTP methods, not just DELETE.
+    // -------------------------------------------------------------------------
+
+    /**
+     * POST with no body and set.content.type.for.empty.request=false on InvocationBuilder.
+     * Unlike DELETE, the JDK HttpURLConnection automatically sets Content-Type:
+     * application/x-www-form-urlencoded for empty POST requests before CXF's transport
+     * layer runs. This means CXF sees contentTypeSet=true and skips the dropContentType
+     * logic entirely -- so the property cannot suppress Content-Type for POST with no body.
+     * This test documents that known JDK behaviour and verifies the InvocationBuilder
+     * dual-write fix does not break it.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_POST_noBody_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .method("POST", String.class);
+        // JDK HttpURLConnection sets application/x-www-form-urlencoded for empty POST
+        // before CXF transport runs -- the property cannot suppress it for POST
+        assertEquals("POST with no body: JDK HttpURLConnection sets Content-Type regardless of the property",
+                     "application/x-www-form-urlencoded", ct);
+    }
+
+    /**
+     * PUT with no body and set.content.type.for.empty.request=false on InvocationBuilder
+     * must NOT send Content-Type.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_PUT_noBody_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .method("PUT", String.class);
+        assertEquals("PUT with no body and set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
+    }
+
+    /**
+     * HEAD with set.content.type.for.empty.request=false on InvocationBuilder must NOT send
+     * Content-Type. HEAD responses have no body so the result is returned via the
+     * X-Received-Content-Type response header set by the server endpoint.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_HEAD_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        javax.ws.rs.core.Response response = client
+                          .target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .head();
+        String ct = response.getHeaderString("X-Received-Content-Type");
+        assertEquals("HEAD with set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
+    }
+
+    /**
+     * OPTIONS with set.content.type.for.empty.request=false on InvocationBuilder must NOT send
+     * Content-Type.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_OPTIONS_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .method("OPTIONS", String.class);
+        assertEquals("OPTIONS with set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
+    }
 }
