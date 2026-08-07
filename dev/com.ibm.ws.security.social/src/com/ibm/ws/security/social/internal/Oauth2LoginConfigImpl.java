@@ -15,7 +15,9 @@ import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -35,6 +37,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.structures.Cache;
@@ -193,6 +196,16 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected boolean accessTokenSupported = false;
     public static final String KEY_accessTokenHeaderName = "accessTokenHeaderName";
     protected String accessTokenHeaderName = null;
+    
+    public static final String KEY_protectedResourceMetadataReferenceType = "protectedResourceMetadata.0.config.referenceType";
+    protected boolean protectedResourceMetadataEnabled = false;
+    public static final String KEY_protectedResourceMetadataAdvertisedScopes = "protectedResourceMetadata.0.advertisedScopes";
+    protected List<String> protectedResourceMetadataAdvertisedScopes;
+    public static final String KEY_protectedResourceMetadataJwtBuilderRef = "protectedResourceMetadata.0.jwtBuilderRef";
+    protected String protectedResourceMetadataJwtBuilderRef;
+    protected String protectedResourceMetadataJwtBuilderId;
+    public static final String KEY_protectedResourceMetadataAuthServerIssuerId = "protectedResourceMetadata.0.authServerIssuerId";
+    protected String protectedResourceMetadataAuthServerIssuerId;
 
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
     protected SocialConfigUtils socialConfigUtils = new SocialConfigUtils();
@@ -345,6 +358,13 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         if (isKubeConfiguration(props)) {
             checkForRequiredAttributesForKubernetesAuthorizationCodeFlow(props);
         }
+        if (ProductInfo.getBetaEdition()) {
+            this.protectedResourceMetadataEnabled = configUtils.getConfigAttribute(props, KEY_protectedResourceMetadataReferenceType) != null;
+            this.protectedResourceMetadataAdvertisedScopes = splitAdvertisedScopes(configUtils.getConfigAttribute(props, KEY_protectedResourceMetadataAdvertisedScopes));
+            this.protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttribute(props, KEY_protectedResourceMetadataJwtBuilderRef);
+            this.protectedResourceMetadataJwtBuilderId = resolveJwtBuilderId(protectedResourceMetadataJwtBuilderRef);
+            this.protectedResourceMetadataAuthServerIssuerId = configUtils.getConfigAttribute(props, KEY_protectedResourceMetadataAuthServerIssuerId);
+        }
     }
 
     protected void checkForRequiredAttributesForKubernetesAuthorizationCodeFlow(Map<String, Object> props) {
@@ -353,6 +373,50 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_authorizationEndpoint, uniqueId);
             configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_tokenEndpoint, uniqueId);
         }
+    }
+
+    List<String> splitAdvertisedScopes(String scopes) {
+        if (scopes == null) {
+            return null;
+        }
+        List<String> result = Arrays.stream(scopes.split(","))
+              .map(String::trim)
+              .filter(s -> !s.isEmpty())
+              .collect(Collectors.toList());
+        
+        return result.isEmpty() ? null : result;
+    }
+
+    /**
+     * Takes a jwtBuilderRef config PID, and converts it to the user-facing jwtBuilder ID
+     * @param jwtBuilderRef the config PID, referring to a jwtBuilder
+     * @return the builder ID
+     */
+    String resolveJwtBuilderId(String jwtBuilderRef) {
+        SocialLoginService socialLoginService = socialLoginServiceRef.getService();
+        if (socialLoginService == null) {
+            return null;
+        }
+        String result = null;
+        try {
+            Configuration jwtBuilderConfig = socialLoginService.getConfigAdmin().getConfiguration(jwtBuilderRef, null);
+            if (jwtBuilderConfig != null) {
+                java.util.Dictionary<String, Object> jwtBuilderProps = jwtBuilderConfig.getProperties();
+                if (jwtBuilderProps != null) {
+                    result = CommonConfigUtils.trim((String) jwtBuilderProps.get("id"));
+                }
+            }
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + jwtBuilderRef + "]: " + e);
+            }
+        }
+        if (result == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + jwtBuilderRef + "]");
+            }
+        }
+        return result;
     }
 
     protected void initializeMembersAfterConfigAttributesPopulated(Map<String, Object> props) throws SocialLoginException {
@@ -482,6 +546,11 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
             Tr.debug(tc, KEY_isClientSideRedirectSupported + " = " + isClientSideRedirectSupported);
             Tr.debug(tc, KEY_nonce + " = " + nonce);
             Tr.debug(tc, KEY_userApiNeedsSpecialHeader + " = " + userApiNeedsSpecialHeader);
+            Tr.debug(tc, "protected resource metadata enabled = " + protectedResourceMetadataEnabled);
+            Tr.debug(tc, KEY_protectedResourceMetadataAdvertisedScopes + " = " + protectedResourceMetadataAdvertisedScopes);
+            Tr.debug(tc, KEY_protectedResourceMetadataJwtBuilderRef + " = " + protectedResourceMetadataJwtBuilderRef);
+            Tr.debug(tc, KEY_protectedResourceMetadataJwtBuilderRef + "Id = " + protectedResourceMetadataJwtBuilderId);
+            Tr.debug(tc, KEY_protectedResourceMetadataAuthServerIssuerId + " = " + protectedResourceMetadataAuthServerIssuerId);
         }
     }
 
@@ -820,6 +889,31 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public long getApiResponseCacheTime() {
         return 0;
+    }
+
+    @Override
+    public boolean getServeProtectedResourceMetadata() {
+        return protectedResourceMetadataEnabled;
+    }
+
+    @Override
+    public List<String> getProtectedResourceMetadataAdvertisedScopes() {
+        return protectedResourceMetadataAdvertisedScopes;
+    }
+
+    @Override
+    public String getProtectedResourceMetadataJwtBuilderRef() {
+        return protectedResourceMetadataJwtBuilderRef;
+    }
+
+    @Override
+    public String getProtectedResourceMetadataJwtBuilderId() {
+        return protectedResourceMetadataJwtBuilderId;
+    }
+
+    @Override
+    public String getProtectedResourceMetadataAuthServer() {
+        return protectedResourceMetadataAuthServerIssuerId;
     }
 
 }

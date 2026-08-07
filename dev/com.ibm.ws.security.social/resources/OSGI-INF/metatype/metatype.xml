@@ -348,6 +348,7 @@
             required="false" type="Boolean" default="false" />
         <AD id="accessTokenHeaderName" name="%accessTokenHeaderName" description="%accessTokenHeaderName.desc"
             required="false" type="String" />
+        <AD id="protectedResourceMetadata" name="%protectedResourceMetadata" description="%protectedResourceMetadata.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.protectedResourceMetadata" ibm:flat="true" cardinality="1" ibm:beta="true"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.social.oauth2login">
@@ -499,6 +500,17 @@
         <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" ibm:type="token" />
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
     </OCD>
+
+    <OCD id="com.ibm.ws.security.social.protectedResourceMetadata.metatype" name="%protectedResourceMetadata" description="%protectedResourceMetadata.desc"
+         ibmui:localization="OSGI-INF/l10n/metatype" ibm:beta="true">
+        <AD id="advertisedScopes" name="%advertisedScopes" description="%advertisedScopes.desc" required="false" type="String"/>
+        <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.jwt.builder"/>
+        <AD id="authServerIssuerId" name="%authServerIssuerId" description="%authServerIssuerId.desc" required="false" type="String"/>
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.protectedResourceMetadata">
+        <Object ocdref="com.ibm.ws.security.social.protectedResourceMetadata.metatype" />
+    </Designate>
 
      <!-- 238750, configurable context root.
           The alias or name is the name of the element in server.xml.

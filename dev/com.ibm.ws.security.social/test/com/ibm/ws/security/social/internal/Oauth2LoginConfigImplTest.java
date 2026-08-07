@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -29,6 +31,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.hamcrest.object.HasToString;
 import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -39,6 +42,7 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.social.Constants;
@@ -50,6 +54,8 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import test.common.SharedOutputManager;
 
 public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
+
+    private static final String BETA_EDITION_PROPERTY = "com.ibm.ws.beta.edition";
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
             .trace("com.ibm.ws.security.social.*=all");
@@ -78,6 +84,7 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
     @After
     public void tearDown() throws Exception {
         System.out.println("Exiting test: " + testName.getMethodName());
+        System.clearProperty(BETA_EDITION_PROPERTY);
         outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
@@ -1178,6 +1185,92 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+
+    @Test
+    public void splitAdvertisedScopes() {
+        try {
+
+            mockery.checking(new Expectations() {
+                {
+                    allowing(cc).getBundleContext();
+                }
+            });
+
+            configImpl = getActivatedConfig(getStandardConfigProps());
+            assertThat(configImpl.splitAdvertisedScopes("a,b,c"), contains("a", "b", "c"));
+            assertNull(configImpl.splitAdvertisedScopes(null));
+            assertNull(configImpl.splitAdvertisedScopes(""));
+            assertNull(configImpl.splitAdvertisedScopes("  "));
+            assertNull(configImpl.splitAdvertisedScopes(",  , "));
+            assertThat(configImpl.splitAdvertisedScopes("a,,b"), contains("a", "b"));
+            assertThat(configImpl.splitAdvertisedScopes("a  b"), contains("a  b"));
+            assertThat(configImpl.splitAdvertisedScopes("a, b, c"), contains("a", "b", "c"));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void resolveJwtBuilderId_successful() {
+        try {
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            Dictionary<String, Object> jwtProps = new Hashtable<>();
+            jwtProps.put("id", "testId");
+
+            mockery.checking(new Expectations() {
+                {
+                    allowing(cc).getBundleContext();
+                    one(socialLoginService).getConfigAdmin();
+                    will(returnValue(configAdmin));
+                    one(configAdmin).getConfiguration("testRef", null);
+                    will(returnValue(configuration));
+                    one(configuration).getProperties();
+                    will(returnValue(jwtProps));
+                }
+            });
+
+            Oauth2LoginConfigImpl configImpl = getActivatedConfig(getRequiredConfigProps());
+            configImpl = setSocialLoginServiceReference(configImpl, socialLoginService);
+
+            assertEquals("Incorrect PRM jwtBuilder id resolved", "testId", configImpl.resolveJwtBuilderId("testRef"));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
+    @Test
+    public void resolveJwtBuilderId_noIdPresent() {
+        try {
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            Dictionary<String, Object> jwtProps = new Hashtable<>();
+
+            mockery.checking(new Expectations() {
+                {
+                    allowing(cc).getBundleContext();
+                    one(socialLoginService).getConfigAdmin();
+                    will(returnValue(configAdmin));
+                    one(configAdmin).getConfiguration("testRef", null);
+                    will(returnValue(configuration));
+                    one(configuration).getProperties();
+                    will(returnValue(jwtProps));
+                }
+            });
+
+            Oauth2LoginConfigImpl configImpl = getActivatedConfig(getRequiredConfigProps());
+            configImpl = setSocialLoginServiceReference(configImpl, socialLoginService);
+
+            assertNull("Expected no PRM jwtBuilder id resolved", configImpl.resolveJwtBuilderId("testRef"));
+            
+            outputMgr.checkForLiteralTrace("Could not resolve jwtBuilder id from PID [testRef]");
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
 
     /**************************************
      * Helper methods
