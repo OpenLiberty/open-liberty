@@ -71,7 +71,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     private final ByteBuffer byteBufferArrayOf4[] = null;
 
     private VirtualConnection vc;
-    private String streamID = "-1";
+    private int streamID = -1;
 
     public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
@@ -98,7 +98,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         this.vc = vc;
     }
 
-    public void setStreamId(String streamId) {
+    public void setStreamId(int streamId) {
         this.streamID = streamId;
     }
 
@@ -275,7 +275,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     
                     writtenBytes += buffer.remaining();
                     ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                    HttpContent httpContent = new StreamSpecificHttpContent(Integer.valueOf(this.streamID), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
+                    HttpContent httpContent = new StreamSpecificHttpContent(this.streamID, Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
                     writeQueue.add(httpContent);
                   
                 } else if (hasContentLength || isWsoc || isHttp10) {
@@ -358,36 +358,29 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         try {
             for (WsByteBuffer buffer : buffers) {
                 if (buffer != null && buffer.hasRemaining()) { // Check if buffer is not null and has data
-                    byte[] byteArray = WsByteBufferUtils.asByteArray(buffer);
-                    if (byteArray != null) {
+                    if (isH2) {
+                        totalWrittenBytes += buffer.remaining();
+                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                        HttpContent httpContent = new StreamSpecificHttpContent(this.streamID, Unpooled.wrappedBuffer(nettyBuf));
+                        writeQueue.add(httpContent);
 
-                        if (isH2) {
-                            totalWrittenBytes += buffer.remaining();
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            HttpContent httpContent = new StreamSpecificHttpContent(Integer.valueOf(this.streamID), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
-                            writeQueue.add(httpContent);
-
+                    }
+                    else if (hasContentLength || isWsoc || isHttp10) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Writing sync on channel: " + nettyChannel + " which is wsoc? " + isWsoc);
                         }
-
-                        else if (hasContentLength || isWsoc || isHttp10) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "Writing sync on channel: " + nettyChannel + " which is wsoc? " + isWsoc);
-                            }
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            totalWrittenBytes += nettyBuf.readableBytes();
-                            writeQueue.add(nettyBuf);
-                        }
-
-                        else {
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            DefaultHttpContent httpContent = new DefaultHttpContent(nettyBuf);
-                            totalWrittenBytes += nettyBuf.readableBytes();
-                            writeQueue.add(httpContent);
-                        }
+                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                        totalWrittenBytes += nettyBuf.readableBytes();
+                        writeQueue.add(nettyBuf);
+                    }
+                    else {
+                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                        DefaultHttpContent httpContent = new DefaultHttpContent(nettyBuf);
+                        totalWrittenBytes += nettyBuf.readableBytes();
+                        writeQueue.add(httpContent);
                     }
                 }
             }
-
             // Run all channel operations in the event loop
             nettyChannel.eventLoop().execute(new Runnable() {
                 @Override

@@ -80,6 +80,9 @@ public class NettyBaseMessage implements HttpBaseMessage {
     protected long startTime = 0;
     protected long endTime = 0;
 
+    int streamId = -1;
+    private long cachedContentLength = HttpGenerics.NOT_SET;
+
     /** Cookie Caches */
     private final Map<HttpHeaderKeys, CookieCacheData> cookieCacheMap = new HashMap<>();
     /** Reference to the cookie parser */
@@ -406,6 +409,10 @@ public class NettyBaseMessage implements HttpBaseMessage {
         cache.getAllCookieValues(name, list);
     }
 
+    public int getStreamId() {
+        return streamId;
+    }
+
 
     @Override
     public HttpCookie getCookie(String name) {
@@ -608,6 +615,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
     public void clear() {
         cookieCacheMap.clear();
         this.committed = false;
+        this.cachedContentLength = HttpGenerics.NOT_SET;
     }
 
     @Override
@@ -668,13 +676,20 @@ public class NettyBaseMessage implements HttpBaseMessage {
                 }
             }
         }
-
-        headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), length);
+        headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getAsciiStringName(), length);
+        this.cachedContentLength = length;
     }
 
     @Override
     public long getContentLength() {
-        return HttpUtil.isContentLengthSet(message) ? HttpUtil.getContentLength(message) : HttpGenerics.NOT_SET;
+        if (cachedContentLength != HttpGenerics.NOT_SET)
+            return cachedContentLength;
+        if (HttpUtil.isContentLengthSet(message)) {
+            cachedContentLength = HttpUtil.getContentLength(message);
+            return cachedContentLength;
+        }
+        cachedContentLength = HttpGenerics.NOT_SET;
+        return HttpGenerics.NOT_SET;
     }
 
     @Override
@@ -814,7 +829,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public VersionValues getVersionValue() {
-        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (streamId != -1) {
             return VersionValues.V20;
         }
         return VersionValues.find(message.protocolVersion().text());
@@ -822,7 +837,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public String getVersion() {
-        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (streamId != -1) {
             return VersionValues.V20.getName();
         }
         return this.message.protocolVersion().text();
