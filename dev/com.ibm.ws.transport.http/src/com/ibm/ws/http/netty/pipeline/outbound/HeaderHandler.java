@@ -32,6 +32,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.netty.util.AsciiString;
 import io.openliberty.http.netty.channel.utils.HeaderValidator;
 import io.openliberty.http.netty.channel.utils.HeaderValidator.FieldType;
 
@@ -45,18 +46,19 @@ public class HeaderHandler {
     HttpChannelConfig config;
     HttpResponse response;
     HttpHeaders headers;
+    boolean isH2;
 
     private static final String NOCACHE_VALUE = "no-cache=\"set-cookie, set-cookie2\"";
     private static final String LONG_AGO = "Thu, 01 Dec 1994 16:00:00 GMT";
 
-    public HeaderHandler(HttpChannelConfig config, HttpResponse response) {
+    public HeaderHandler(HttpChannelConfig config, HttpResponse response, boolean isH2) {
         Objects.requireNonNull(config);
         this.config = config;
 
         Objects.requireNonNull(response);
         this.response = response;
         this.headers = response.headers();
-
+        this.isH2 = isH2;
     }
 
     public void complianceCheck() {
@@ -67,8 +69,8 @@ public class HeaderHandler {
 
         if (!headers.contains(HttpHeaderKeys.HDR_DATE.getName())) {
             byte[] date = HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange());
-            headers.set(HttpHeaderKeys.HDR_DATE.getName(),
-                        new String(date, StandardCharsets.UTF_8));
+            headers.set(HttpHeaderKeys.HDR_DATE.getAsciiStringName(),
+                        new AsciiString(date, false));
         }
 
         // If HTTP 1.0 remove the Transfer-Encoding header if it exists.
@@ -76,9 +78,9 @@ public class HeaderHandler {
             if (headers.contains(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName())) {
                 headers.remove(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName());
             }
-        } else if (!HttpUtil.isContentLengthSet(response) && !headers.contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        } else if (!HttpUtil.isContentLengthSet(response) && !this.isH2) {
             if (response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
-                headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), 0);
+                headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getAsciiStringName(), 0);
 
                 //from HttpUtil.setTransferEncodingChunked false case
                 List<String> encodings = headers.getAll(HttpHeaderNames.TRANSFER_ENCODING);
@@ -110,13 +112,12 @@ public class HeaderHandler {
                 Tr.debug(tc, "Configuration forcing removal of Server header");
                 headers.remove(HttpHeaderKeys.HDR_SERVER.getName());
             }
-        } else if (!headers.contains(HttpHeaderKeys.HDR_SERVER.getName())) {
-            byte[] serverHeader = config.getServerHeaderValue();
+        } else if (!headers.contains(HttpHeaderKeys.HDR_SERVER.getAsciiStringName())) {
+            AsciiString serverHeader = config.getNettyServerHeaderValue();
             if (Objects.nonNull(serverHeader)) {
-                headers.set(HttpHeaderKeys.HDR_SERVER.getName(), new String(serverHeader, StandardCharsets.UTF_8));
+                headers.set(HttpHeaderKeys.HDR_SERVER.getAsciiStringName(), serverHeader);
                 Tr.debug(tc, "Adding the Server header value: " + headers.get(HttpHeaderKeys.HDR_SERVER.getName()));
             }
-
         }
 
         if (config.shouldCookiesConfigureNoCache()) {

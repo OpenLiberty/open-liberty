@@ -34,6 +34,7 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -69,13 +70,15 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         this.context = isc;
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
-        this.trailers = new DefaultHttpHeaders().clear();
+        this.trailers = new DefaultHttpHeaders();
         this.nettyTrailerWrapper = new NettyTrailers(this.trailers, new Runnable() {
             @Override
             public void run() {
                 forceChunkedEncodingForTrailers();
             }
         });
+
+        this.streamId = headers.getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), -1);
 
         if (isc instanceof HttpInboundServiceContextImpl) {
             incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());
