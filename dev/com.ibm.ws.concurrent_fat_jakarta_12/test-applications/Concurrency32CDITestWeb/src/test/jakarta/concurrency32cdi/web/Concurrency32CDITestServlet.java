@@ -344,6 +344,27 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * A bean method that is annotated Asynchronous and Schedule must raise
+     * UnsupportedOperationException.
+     */
+    @Test
+    public void testRejectAsynchronousAndScheduleOnSameMethod() {
+        try {
+            schedulingBean.alsoAsynchronous();
+            fail("Expected UnsupportedOperationException for a method " +
+                 "annotated both @Asynchronous and @Schedule.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+            // TODO NLS message prefix can be asserted once added
+                !x.getMessage().contains("alsoAsynchronous") ||
+                !x.getMessage().contains("@Asynchronous") ||
+                !x.getMessage().contains("@Schedule"))
+                throw x;
+            // else expected error
+        }
+    }
+
+    /**
      * A bean method that is scheduled to automatically run every 4 seconds,
      * but completes itself the first time it runs must run exactly once.
      */
@@ -425,6 +446,36 @@ public class Concurrency32CDITestServlet extends FATServlet {
             TimeUnit.NANOSECONDS.sleep(remainingNS);
 
         assertEquals(3L,
+                     executionCount.get());
+    }
+
+    /**
+     * Two methods annotated Lock and Schedule attempt to run every third second
+     * four times and increment a shared counter in a way that will lose updates
+     * if the executions overlap. Verify the counter records all 8 executions.
+     */
+    @Test
+    public void testScheduledMethodsWithWriteLockDoNotOverlap() //
+                    throws InterruptedException {
+        AtomicInteger executionCount = schedulingBean //
+                        .trackerOfLockEvery3Seconds4Times();
+
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < TIMEOUT_NS * 2 &&
+                                             executionCount.get() < 8L; //
+                        TimeUnit.NANOSECONDS.sleep(POLL_NS));
+
+        assertEquals(8L,
+                     executionCount.get());
+
+        // wait up to 20 seconds past initialization to find out if any additional
+        // executions occur
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(20) - elapsedNS;
+        if (remainingNS > 0)
+            TimeUnit.NANOSECONDS.sleep(remainingNS);
+
+        assertEquals(8L,
                      executionCount.get());
     }
 
@@ -540,5 +591,55 @@ public class Concurrency32CDITestServlet extends FATServlet {
 
         assertEquals(true,
                      thread2Future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * The Lock annotation also applies to methods annotated Asynchronous,
+     * such that the execution of the asynchronous work (not the submission of it)
+     * is subject to the lock.
+     */
+    @Test
+    public void testWriteLockOnAsyncMethod() throws Exception {
+
+        // write by single thread
+        writeLockBean.writeNumber(90);
+
+        // invoke an asynchronous method and wait for it to start running
+        CountDownLatch blocker1 = new CountDownLatch(1);
+        CountDownLatch asyncMethod1Running = new CountDownLatch(1);
+        CompletableFuture<Integer> future1 = writeLockBean //
+                        .asyncWriteNumber(asyncMethod1Running, blocker1, 91);
+        cancelAfterTest.add(future1);
+
+        asyncMethod1Running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // invoke a second asynchronous method that is subject to the same
+        // WRITE Lock and verify it does not run yet
+        CountDownLatch blocker2 = new CountDownLatch(1);
+        CountDownLatch asyncMethod2Running = new CountDownLatch(1);
+        CompletableFuture<Integer> future2 = writeLockBean //
+                        .asyncWriteNumber(asyncMethod2Running, blocker2, 92);
+        cancelAfterTest.add(future2);
+
+        assertEquals(false,
+                     asyncMethod2Running.await(2, TimeUnit.SECONDS));
+
+        // allow the first asynchronous method to complete
+        blocker1.countDown();
+
+        // the second asynchronous method must start now
+        assertEquals(true,
+                     asyncMethod2Running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(Integer.valueOf(91),
+                     future1.join());
+
+        // allow the second asynchronous method to complete
+        blocker2.countDown();
+        assertEquals(Integer.valueOf(92),
+                     future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(92,
+                     writeLockBean.blockingReadNumber());
     }
 }

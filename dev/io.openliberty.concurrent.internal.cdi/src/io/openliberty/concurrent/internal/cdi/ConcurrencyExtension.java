@@ -385,8 +385,12 @@ public class ConcurrencyExtension implements Extension {
                 // Schedule each method that is annotated @Schedule
                 for (AnnotatedType<?> beanType : group.getValue())
                     for (AnnotatedMethod<?> method : beanType.getMethods()) {
+                        Class<?> beanClass = beanType.getJavaClass();
                         Schedule schedule = method.getAnnotation(Schedule.class);
-                        if (schedule != null) {
+                        if (schedule != null &&
+                            !beanClass.isAnnotationPresent(Asynchronous.class) &&
+                            !method.isAnnotationPresent(Asynchronous.class)) {
+
                             ArrayList<Annotation> beanAnnoList = new ArrayList<>();
                             for (Annotation beanAnno : beanType.getAnnotations())
                                 if (beanAnno.annotationType() //
@@ -399,9 +403,9 @@ public class ConcurrencyExtension implements Extension {
                                             schedule, //
                                             threadContext, //
                                             execSvc, //
-                                            beanType.getJavaClass(), //
+                                            beanClass, //
                                             beanAnnos);
-                        }
+                        } // let Asynchronous handle the invalid combination of annos
                     }
             }
         }

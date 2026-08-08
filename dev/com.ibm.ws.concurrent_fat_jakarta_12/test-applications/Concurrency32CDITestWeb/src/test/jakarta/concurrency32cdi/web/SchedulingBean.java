@@ -12,12 +12,16 @@
  *******************************************************************************/
 package test.jakarta.concurrency32cdi.web;
 
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.Lock;
 import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -40,6 +44,25 @@ public class SchedulingBean {
                     new AtomicInteger(0);
 
     /**
+     * Tracks the executions of both the lockEvery3Seconds4Times method
+     * AND the lockEveryThreeSeconds4Times method.
+     */
+    private final AtomicInteger lockEvery3Seconds4TimesCount = //
+                    new AtomicInteger(0);
+
+    /**
+     * Tracks completion of 4 executions of the lockEvery3Seconds4Times method.
+     */
+    private final CountDownLatch lockEvery3Seconds4TimesCompleted = //
+                    new CountDownLatch(4);
+
+    /**
+     * Tracks completion of 4 executions of the lockEveryThreeSeconds4Times method.
+     */
+    private final CountDownLatch lockEveryThreeSeconds4TimesCompleted = //
+                    new CountDownLatch(4);
+
+    /**
      * Tracks the non-execution of the notScheduled method.
      */
     private final CountDownLatch notScheduledLatch = //
@@ -51,11 +74,19 @@ public class SchedulingBean {
     private final AtomicInteger onceOn4thSecondCount = //
                     new AtomicInteger(0);
 
-    // Seconds at which methods aim to run:
+    @Asynchronous
+    @Schedule(cron = "* * * * * *")
+    public void alsoAsynchronous() {
+        System.out.println("Running a method that has an invalid combination" +
+                           " of annotations");
+    }
+
+    // Seconds at which methods aim to run: (DD indicates a delayed execution)
     //     02    05    08    11    14    17    20    23    26    29    32    35    38    41    44    47    50    53    56    59
-    //       03        08        13        18        23       28         33        38        43        48        53        58
-    //
-    // 00      04      08      12      16      20      24     28       32      36      40      44      48      52      56
+    //       03        08        13        18        23        28        33        38        43        48        53        58
+    // 00    03    06    09    12    15    18    21    24    27    30    33    36    39    42    45    48    51    54    57
+    //   DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD
+    // 00      04      08      12      16      20      24      28      32      36      40      44      48      52      56
 
     @Schedule(cron = "2/3 * * * * *",
               zone = "America/Chicago")
@@ -75,6 +106,35 @@ public class SchedulingBean {
         System.out.println("every5Seconds3Times #" + count);
         if (count == 3)
             throw new RuntimeException("Please stop running this method");
+    }
+
+    @Lock
+    @Schedule(cron = "1/3 * * * * *")
+    public void lockEvery3Seconds4Times() throws InterruptedException {
+        int count = lockEvery3Seconds4TimesCount.get();
+        TimeUnit.SECONDS.sleep(1);
+        // This intentionally does not use compareAndSet because we want to
+        // rely on the write lock instead.
+        lockEvery3Seconds4TimesCount.set(++count);
+
+        lockEvery3Seconds4TimesCompleted.countDown();
+        if (lockEvery3Seconds4TimesCompleted.getCount() == 0)
+            throw new CancellationException("Cancel this scheduled method");
+    }
+
+    @Lock
+    @Schedule(cron = "1/3 * * * * *")
+    public void lockEveryThreeSeconds4Times() //
+                    throws InterruptedException, NoMoreExecutionsException {
+        int count = lockEvery3Seconds4TimesCount.get();
+        TimeUnit.SECONDS.sleep(1);
+        // This intentionally does not use compareAndSet because we want to
+        // rely on the write lock instead.
+        lockEvery3Seconds4TimesCount.set(++count);
+
+        lockEveryThreeSeconds4TimesCompleted.countDown();
+        if (lockEveryThreeSeconds4TimesCompleted.getCount() == 0)
+            throw new NoMoreExecutionsException();
     }
 
     public void notScheduled() {
@@ -106,6 +166,17 @@ public class SchedulingBean {
      */
     public AtomicInteger trackerOfEvery5Seconds3Times() {
         return every5Seconds3TimesCount;
+    }
+
+    /**
+     * Returns a combined count tracking the executions of the following methods:
+     * lockEvery3Seconds4Times
+     * lockEveryThreeSeconds4Times
+     *
+     * @return a count tracking the executions of the every5Seconds3Times method
+     */
+    public AtomicInteger trackerOfLockEvery3Seconds4Times() {
+        return lockEvery3Seconds4TimesCount;
     }
 
     /**
