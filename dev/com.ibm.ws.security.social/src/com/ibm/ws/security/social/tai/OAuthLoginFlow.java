@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
@@ -25,11 +26,15 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
+import com.ibm.ws.security.social.internal.utils.SocialTaiRequest;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -40,6 +45,7 @@ public class OAuthLoginFlow {
     public static final TraceComponent tc = Tr.register(OAuthLoginFlow.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     ReferrerURLCookieHandler referrerURLCookieHandler = null;
+    TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
     TAIWebUtils taiWebUtils = new TAIWebUtils();
     SocialWebUtils webUtils = new SocialWebUtils();
 
@@ -79,6 +85,12 @@ public class OAuthLoginFlow {
         if (requestShouldHaveToken(clientConfig)) {
             if (isAccessTokenNullOrEmpty(tokenFromRequest)) {
                 Tr.error(tc, "ACCESS_TOKEN_MISSING_FROM_HEADERS", clientConfig.getUniqueId());
+                if (ProductInfo.getBetaEdition()) {
+                    String wwwAuthenticateHeader = constructWwwAuthenticateHeader(request, clientConfig);
+                    if (wwwAuthenticateHeader != null && !response.isCommitted()) {
+                        response.addHeader("WWW-Authenticate", wwwAuthenticateHeader);
+                    }
+                }
                 return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
             return handleAccessToken(tokenFromRequest, request, response, clientConfig);
@@ -119,6 +131,154 @@ public class OAuthLoginFlow {
 
     private boolean requestShouldHaveToken(SocialLoginConfig clientConfig) {
         return clientConfig.isAccessTokenRequired();
+    }
+
+    private String constructWwwAuthenticateHeader(HttpServletRequest request, SocialLoginConfig clientConfig) {
+        if (clientConfig.getServeProtectedResourceMetadata()) {
+            String resourceMetadataUrl = constructResourceMetadataUrl(request, clientConfig);
+            if (resourceMetadataUrl != null) {
+                return "Bearer realm=\"oauth\" resource_metadata=\"" + resourceMetadataUrl + "\"";
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Construct the resource_metadata URL from the request URL.
+     * According to RFC 9728, the resource_metadata URL should point to the
+     * protected resource metadata endpoint.
+     *
+     * The base URI is found by starting at the beginning of the URL (no path) and
+     * walking forward one path segment at a time until we find a path that is handled
+     * by the same social login config.
+     *
+     * Algorithm:
+     * 1. Strip the path completely
+     * 2. check whether the resulting request would be handled by the same socialLoginConfig
+     * (a) If yes, use the path
+     * (b) If no, re-add one path segment and repeat this step
+     * 3. if we never find a matching path, use the original path
+     * 3. Build: <scheme>://<host>[:<port>]/.well-known/oauth-protected-resource[<path>]
+     *
+     * @param req
+     *     the HTTP servlet request
+     * @param config
+     *     the social login configuration
+     * @return the resource_metadata URL, or null if it cannot be derived
+     */
+    private String constructResourceMetadataUrl(HttpServletRequest req, SocialLoginConfig config) {
+        if (req == null) {
+            return null;
+        }
+
+        try {
+            String scheme = req.getScheme();
+            String serverName = req.getServerName();
+            int serverPort = req.getServerPort();
+
+            // Build the scheme+host+port prefix (no path)
+            StringBuilder hostPrefix = new StringBuilder();
+            hostPrefix.append(scheme).append("://").append(serverName);
+            if ((scheme.equals("http") && serverPort != 80) ||
+                    (scheme.equals("https") && serverPort != 443)) {
+                hostPrefix.append(":").append(serverPort);
+            }
+            String baseOrigin = hostPrefix.toString();
+
+            // Determine the path to use as the resource identifier base
+            String resourcePath = findResourceMetadataBasePath(req, config, baseOrigin);
+
+            // Build: <origin>/.well-known/oauth-protected-resource[<path>]
+            StringBuilder metadataUrl = new StringBuilder(baseOrigin);
+            metadataUrl.append("/.well-known/oauth-protected-resource");
+            if (resourcePath != null && !resourcePath.isEmpty() && !resourcePath.equals("/")) {
+                metadataUrl.append(resourcePath);
+            }
+
+            return metadataUrl.toString();
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Failed to derive resource_metadata URL", e);
+            }
+            return null;
+        }
+    }
+
+    
+    /**
+     * Find the shortest path prefix of the original request URI such that the
+     * auth filter for the candidate URL is the same as for the original request.
+     *
+     * Starting from no path at all, segments are added back one at a time from the
+     * original request URI until the filter accepts the candidate URL.
+     *
+     * @param req
+     *                             the original HTTP servlet request
+     * @param config
+     *                             the OIDC client configuration (may be null)
+     * @param baseOrigin
+     *                             the scheme+host+port string with no trailing slash
+     * @return the path to append to the origin, or null / empty string if no path is needed
+     */
+    private String findResourceMetadataBasePath(HttpServletRequest req, SocialLoginConfig config, String baseOrigin) {
+
+        // Split the original path into segments
+        String requestUri = req.getRequestURI();
+        String[] segments = requestUri == null ? new String[0] : requestUri.split("/");
+        // segments[0] is always "" because the URI starts with "/"; real segments start at index 1.
+        
+        StringBuilder candidatePath = new StringBuilder();
+        for (int i = 1; i < segments.length; i++) {
+            candidatePath.append("/").append(segments[i]);
+            
+            PathOverrideRequestWrapper candidatePathRequest = new PathOverrideRequestWrapper(req, baseOrigin, candidatePath.toString());
+            SocialLoginConfig candidateConfig = null;
+            
+            SocialTaiRequest socialTaiRequest = taiRequestHelper.createSocialTaiRequestAndSetRequestAttribute(candidatePathRequest);
+            if (taiRequestHelper.requestShouldBeHandledByTAI(candidatePathRequest, socialTaiRequest)) {
+                try {
+                    candidateConfig = socialTaiRequest.getTheOnlySocialLoginConfig();
+                } catch (SocialLoginException e) {
+                    // More than one config matches this path, can't be the one we're looking for
+                    continue;
+                }
+            }
+            
+            // Note: Configs are DS components, we should get the same instance
+            if (candidateConfig == config) {
+                // the candidate path results in the same social login config as the actual request
+                // the candidate path is the shortest subpath which has the same authorization requirements
+                return candidatePath.toString();
+            }
+        }
+        
+        // Nothing matched, return the full original path
+        return requestUri;
+    }
+
+    /**
+     * HttpServletRequest wrapper that overrides getRequestURL() and
+     * getRequestURI() to point to a candidate URL during auth-filter probing.
+     */
+    private static final class PathOverrideRequestWrapper extends HttpServletRequestWrapper {
+        private final String overrideUrl;
+        private final String overridePath;
+
+        PathOverrideRequestWrapper(HttpServletRequest wrapped, String baseOrigin, String path) {
+            super(wrapped);
+            this.overridePath = path;
+            this.overrideUrl = baseOrigin + path;
+        }
+
+        @Override
+        public StringBuffer getRequestURL() {
+            return new StringBuffer(overrideUrl);
+        }
+
+        @Override
+        public String getRequestURI() {
+            return overridePath;
+        }
     }
 
     @FFDCIgnore(SocialLoginException.class)
