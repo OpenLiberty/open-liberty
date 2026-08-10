@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -94,9 +94,16 @@ public class OracleKerberosTest extends FATServletClient {
 
         // Add JVM properties
         List<String> jvmOpts = new ArrayList<>();
+        // Kerberos debug
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
-        jvmOpts.add("-Dsun.security.jgss.debug=true");
-        jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+        jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
+        jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=all"); // IBM JDK
+        jvmOpts.add("-Dcom.ibm.security.jgss.debug=all"); // IBM JDK
+        // Hostname Canonicalization
+        jvmOpts.add("-Dsun.security.krb5.canonicalize=false"); // Hotspot / OpenJ9
+        jvmOpts.add("-Dcom.ibm.security.krb5.canonicalize=false"); // IBM Semeru
+        jvmOpts.add("-Doracle.net.disableCanonicalNameLookup=true"); // Oracle JDBC driver
+
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
