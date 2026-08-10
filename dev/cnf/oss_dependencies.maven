@@ -566,12 +566,16 @@ org.asynchttpclient:async-http-client:2.12.3
 org.bitbucket.b_c:jose4j:0.9.6
 org.bouncycastle:bcpg-jdk18on:1.82
 org.bouncycastle:bcpg-jdk18on:1.84
+org.bouncycastle:bcpg-jdk18on:1.85
 org.bouncycastle:bcpkix-jdk18on:1.82
 org.bouncycastle:bcpkix-jdk18on:1.84
+org.bouncycastle:bcpkix-jdk18on:1.85
 org.bouncycastle:bcprov-jdk18on:1.82
 org.bouncycastle:bcprov-jdk18on:1.84
+org.bouncycastle:bcprov-jdk18on:1.85
 org.bouncycastle:bcutil-jdk18on:1.82
 org.bouncycastle:bcutil-jdk18on:1.84
+org.bouncycastle:bcutil-jdk18on:1.85
 org.brotli:dec:0.1.2
 org.checkerframework:checker-compat-qual:2.5.2
 org.codehaus.plexus:plexus-utils:3.2.1
@@ -1056,6 +1060,7 @@ org.testcontainers:testcontainers:1.21.3
 org.testng:testng:7.5.1
 org.yaml:snakeyaml:2.6
 software.amazon.jdbc:aws-advanced-jdbc-wrapper:2.2.3
+sorg.bouncycastle:bcutil-jdk18on:1.84
 wsdl4j:wsdl4j:1.6.2
 xalan:xalan:2.7.2
 xerces:xercesImpl:2.12.2
