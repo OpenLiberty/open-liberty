@@ -27,7 +27,8 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 autoFVT.doLast {
   def servers = [
     'com.ibm.ws.security.oauth.oidc_fat.common.metadataServer',
-    'com.ibm.ws.security.oauth.oidc_fat.common.metadataServerNonBeta'
+    'com.ibm.ws.security.oauth.oidc_fat.common.metadataServerNonBeta',
+    'com.ibm.ws.security.oauth.oidc_fat.common.sociallogin.metadataServer'
   ]
   servers.each { server ->
     copy {

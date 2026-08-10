@@ -1,0 +1,434 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server>
+    <featureManager>
+        <feature>socialLogin-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>ssl-1.0</feature>
+        <feature>jwt-1.0</feature>
+    </featureManager>
+
+    <!-- Port configuration copied from common project during the build. -->
+    <include location="${server.config.dir}/imports/fatTestPorts.xml" />
+
+    <!-- SSL keystore used by both the server (for HTTPS) and the OIDC client SSL requirement. -->
+    <keyStore id="defaultKeyStore" password="Liberty" />
+
+    <!--
+        OIDC client with an equals auth filter — tests that an exact path match
+        returns metadata for that resource (HTTP).
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <oauth2Login
+        id="OidcConfigSample"
+        signatureAlgorithm="RS256"
+        scope="profile email"
+        userNameAttribute="sub"
+        clientId="client01"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        userApiType="introspect"
+        authFilterRef="authFilter1">
+        <protectedResourceMetadata
+            authServerIssuerId="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        />
+    </oauth2Login>
+
+    <!--
+        Second OIDC client with a contains auth filter — tests that a sub-path
+        of the pattern (e.g. /myApp/protected/subPath) also returns metadata (HTTP).
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <oauth2Login
+        id="OidcConfigSampleContains"
+        signatureAlgorithm="RS256"
+        scope="profile email"
+        userNameAttribute="sub"
+        clientId="client02"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilter2">
+        <protectedResourceMetadata />
+    </oauth2Login>
+
+    <!--
+        OIDC client with an equals auth filter — HTTPS variant.
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <oauth2Login
+        id="OidcConfigSampleHttps"
+        signatureAlgorithm="RS256"
+        scope="profile email"
+        userNameAttribute="sub"
+        clientId="client03"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+        userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilter3">
+        <protectedResourceMetadata
+            authServerIssuerId="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
+        />
+    </oauth2Login>
+
+    <!--
+        OIDC client with a contains auth filter — HTTPS variant.
+        Uses authFilter4 (its own filter) rather than authFilter2 to avoid the
+        CONFIG_AUTHFILTER_NOTUNIQUE warning from Liberty.
+        <protectedResourceMetadata /> enables the metadata endpoint for this client.
+    -->
+    <oauth2Login
+        id="OidcConfigSampleContainsHttps"
+        signatureAlgorithm="RS256"
+        scope="profile email"
+        userNameAttribute="sub"
+        clientId="client04"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+        userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilter4">
+        <protectedResourceMetadata />
+    </oauth2Login>
+
+    <!--
+        authFilter1: exact match on the full HTTP URL — only /myApp/protectedExact returns metadata,
+        not sub-paths or the contains-match test path.
+    -->
+    <authFilter id="authFilter1">
+        <requestUrl
+            id="requestUrl1"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protectedExact"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        authFilter2: contains match for the HTTP sub-path test resource.
+    -->
+    <authFilter id="authFilter2">
+        <requestUrl
+            id="requestUrl2"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protected/subPath"
+            matchType="contains" />
+    </authFilter>
+
+    <!--
+        authFilter4: contains match for the HTTPS sub-path test resource.
+    -->
+    <authFilter id="authFilter4">
+        <requestUrl
+            id="requestUrl4"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protected/subPath"
+            matchType="contains" />
+    </authFilter>
+
+    <!--
+        authFilter3: exact match on the full HTTPS URL — only /myApp/protectedExact returns metadata,
+        not sub-paths or the contains-match test path.
+    -->
+    <authFilter id="authFilter3">
+        <requestUrl
+            id="requestUrl3"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protectedExact"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client that matches /myApp/metadataDisabled but has no protectedResourceMetadata
+        sub-element, so serveProtectedResourceMetadata=false. Tests that the endpoint returns
+        404 even when an auth filter matches the path.
+    -->
+    <oauth2Login
+        id="OidcConfigMetadataDisabled"
+        signatureAlgorithm="RS256"
+        scope="profile email"
+        userNameAttribute="sub"
+        clientId="client05"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilter5"
+    />
+
+    <authFilter id="authFilter5">
+        <requestUrl
+            id="requestUrl5"
+            urlPattern="/myApp/metadataDisabled"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client with protectedResourceMetadata configured with advertisedScopes.
+        Tests that scopes_supported in the metadata response matches the configured scopes.
+    -->
+    <oauth2Login
+        id="OidcConfigWithScopes"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client06"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilter6">
+        <protectedResourceMetadata
+            advertisedScopes="openid,profile,email"
+            authServerIssuerId="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        />
+    </oauth2Login>
+
+    <authFilter id="authFilter6">
+        <requestUrl
+            id="requestUrl6"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withScopes"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        HTTPS variant: OIDC client that matches /myApp/metadataDisabled but has no
+        protectedResourceMetadata sub-element, so serveProtectedResourceMetadata=false.
+    -->
+    <oauth2Login
+        id="OidcConfigMetadataDisabledHttps"
+        signatureAlgorithm="RS256"
+        scope="profile email"
+        userNameAttribute="sub"
+        clientId="client07"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+        userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilter7"
+    />
+
+    <authFilter id="authFilter7">
+        <requestUrl
+            id="requestUrl7"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/metadataDisabled"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        HTTPS variant: OIDC client with protectedResourceMetadata configured with advertisedScopes.
+    -->
+    <oauth2Login
+        id="OidcConfigWithScopesHttps"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client08"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+        userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilter8">
+        <protectedResourceMetadata
+            advertisedScopes="openid,profile,email"
+            authServerIssuerId="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample"
+        />
+    </oauth2Login>
+
+    <authFilter id="authFilter8">
+        <requestUrl
+            id="requestUrl8"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/withScopes"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client with jwtBuilderRef — tests that signed_metadata, jwks_uri, and
+        bearer_methods_supported are included in the metadata response (HTTP).
+    -->
+    <oauth2Login
+        id="OidcConfigWithSigning"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client09"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilterSigning">
+        <protectedResourceMetadata
+            advertisedScopes="openid,profile,email"
+            jwtBuilderRef="metadataJwtBuilder"
+            authServerIssuerId="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        />
+    </oauth2Login>
+
+    <!-- JWT builder used by OidcConfigWithSigning to produce signed_metadata JWTs. -->
+    <jwtBuilder id="metadataJwtBuilder" jwkEnabled="true" issuer="testIssuer" />
+
+    <!--
+        RS512, jwkEnabled=true, 4096-bit key.
+        Exercises: larger RSA digest, ephemeral JWK key pair (not from keystore), non-default key size.
+    -->
+    <jwtBuilder id="metadataJwtBuilderRs512Jwk" signatureAlgorithm="RS512" jwkEnabled="true" jwkSigningKeySize="4096"/>
+
+    <!--
+        ES256, jwkEnabled=true.
+        Exercises: elliptic-curve signing — entirely different key type and JWK representation
+        (kty=EC, crv=P-256) rather than RSA (kty=RSA). EC keys are much shorter so this also
+        checks that the signature-verification path handles non-RSA JWKs correctly.
+    -->
+    <jwtBuilder id="metadataJwtBuilderEs256Jwk" signatureAlgorithm="ES256" jwkEnabled="true"/>
+
+    <!--
+        RS384, jwkEnabled=true, 2048-bit key, short JWK rotation window (60 minutes — the minimum).
+        Exercises: a third RSA digest variant, confirmed ephemeral key, and the jwkRotationTime
+        config field being wired through to the JWKProvider.
+    -->
+    <jwtBuilder id="metadataJwtBuilderRs384JwkRotation" signatureAlgorithm="RS384" jwkEnabled="true"
+                jwkSigningKeySize="2048" jwkRotationTime="60m"/>
+
+    <authFilter id="authFilterSigning">
+        <requestUrl
+            id="requestUrlSigning"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigning"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client for RS512/4096-bit JWK signing test.
+    -->
+    <oauth2Login
+        id="OidcConfigWithSigningRs512Jwk"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client10"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilterSigningRs512Jwk">
+        <protectedResourceMetadata advertisedScopes="openid,profile" jwtBuilderRef="metadataJwtBuilderRs512Jwk"/>
+    </oauth2Login>
+
+    <authFilter id="authFilterSigningRs512Jwk">
+        <requestUrl
+            id="requestUrlSigningRs512Jwk"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningRs512Jwk"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client for ES256 JWK signing test.
+    -->
+    <oauth2Login
+        id="OidcConfigWithSigningEs256Jwk"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client11"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilterSigningEs256Jwk">
+        <protectedResourceMetadata jwtBuilderRef="metadataJwtBuilderEs256Jwk"/>
+    </oauth2Login>
+
+    <authFilter id="authFilterSigningEs256Jwk">
+        <requestUrl
+            id="requestUrlSigningEs256Jwk"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningEs256Jwk"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client for RS384/2048-bit/short-rotation JWK signing test.
+    -->
+    <oauth2Login
+        id="OidcConfigWithSigningRs384JwkRotation"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client12"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilterSigningRs384JwkRotation">
+        <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="metadataJwtBuilderRs384JwkRotation"/>
+    </oauth2Login>
+
+    <authFilter id="authFilterSigningRs384JwkRotation">
+        <requestUrl
+            id="requestUrlSigningRs384JwkRotation"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningRs384JwkRotation"
+            matchType="equals" />
+    </authFilter>
+    
+    <!--
+        OIDC client for non JWK signing test.
+    -->
+    <oauth2Login
+        id="OidcConfigWithSigningJwkDisabled"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client13"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilterSigningJwkDisabled">
+        <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="metadataJwtBuilderJwkDisabled"/>
+    </oauth2Login>
+
+    <authFilter id="authFilterSigningJwkDisabled">
+        <requestUrl
+            id="requestUrlSigningJwkDisabled"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningJwkDisabled"
+            matchType="equals" />
+    </authFilter>
+    
+    <jwtBuilder id="metadataJwtBuilderJwkDisabled"/>
+
+    <!--
+        OIDC client for non JWK signing test.
+    -->
+    <oauth2Login
+        id="OidcConfigWithInvalidJwtBuilder"
+        signatureAlgorithm="RS256"
+        scope="openid profile email"
+        userNameAttribute="sub"
+        clientId="client13"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
+        authFilterRef="authFilterInvalidJwtBuilder">
+        <protectedResourceMetadata
+            advertisedScopes="openid"
+            jwtBuilderRef="invalid-reference"
+            authServerIssuerId="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+            />
+    </oauth2Login>
+
+    <authFilter id="authFilterInvalidJwtBuilder">
+        <requestUrl
+            id="requestUrlInvalidJwtBuilder"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withInvalidJwtBuilder"
+            matchType="equals" />
+    </authFilter>
+
+
+</server>

@@ -22,6 +22,7 @@ import java.util.Set;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jws.JsonWebSignature;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,6 +38,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * FAT tests for OAuth 2.0 Protected Resource Metadata endpoint (RFC 9728).
@@ -53,7 +55,7 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     private static final Class<?> thisClass = OAuthProtectedResourceMetadataFATTest.class;
 
     private static final String PROTECTED_RESOURCE_METADATA_PATH = "/.well-known/oauth-protected-resource";
-    private static final String RSServerName = "com.ibm.ws.security.oauth.oidc_fat.common.metadataServer";
+    private static String RSServerName = null;
 
     private static String serverHttpString;
     private static String serverHttpsString;
@@ -68,9 +70,14 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     private static final String SIGNED_JWK_DISABLED_PATH = "/myApp/withSigningJwkDisabled";
     private static final String SIGNED_JWK_INVALID_PATH = "/myApp/withInvalidJwtBuilder";
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new RepeatOnServer("oidcClient", "com.ibm.ws.security.oauth.oidc_fat.common.metadataServer"))
+            .andWith(new RepeatOnServer("socialLogin", "com.ibm.ws.security.oauth.oidc_fat.common.sociallogin.metadataServer"));
+
     @BeforeClass
     public static void setUp() throws Exception {
         String methodName = "setUp";
+        RSServerName = RepeatOnServer.getServerName();
         Log.info(thisClass, methodName, "Starting server: " + RSServerName);
         testSettings = new TestSettings();
         genericTestServer = commonSetUp(RSServerName, "server.xml", Constants.GENERIC_SERVER, null, Constants.DO_NOT_USE_DERBY, null, null, null);
