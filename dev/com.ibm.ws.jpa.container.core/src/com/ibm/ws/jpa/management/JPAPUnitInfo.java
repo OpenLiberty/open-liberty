@@ -140,6 +140,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // ValidataionMode
     private ValidationMode ivValidationMode = null; // F743-8705
 
+    // DefaultToOneFetchType (JPA 4.0)
+    private javax.persistence.FetchType ivDefaultToOneFetchType = javax.persistence.FetchType.EAGER;
+
     // EntityManagerFactory associated with this persistence unit (non java:comp/env).
     private EntityManagerFactory ivEMFactory = null; // d510184
 
@@ -1226,6 +1229,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         sbuf.append("\n ExcludeUnlistedClass : ").append(ivExcludeUnlistedClasses);
         sbuf.append("\n SharedCacheMode      : ").append(ivCaching); // d597764
         sbuf.append("\n ValidationMode       : ").append(ivValidationMode); // d597764
+        sbuf.append("\n DefaultToOneFetchType: ").append(ivDefaultToOneFetchType);
         sbuf.append("\n Properties           : ").append(ivProperties);
 
         boolean first;
@@ -1517,11 +1521,20 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     /**
      * Returns the default fetch type for to-one associations.
      * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
-     * Returns EAGER, which is the backward-compatible default as per the JPA 4.0 spec.
      * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
-     * the jakarta-namespace transformed version will return jakarta.persistence.FetchType.EAGER.
+     * the jakarta-namespace transformed version will implement it correctly.
      */
     public javax.persistence.FetchType getDefaultToOneFetchType() {
-        return javax.persistence.FetchType.EAGER;
+        return ivDefaultToOneFetchType;
+    }
+
+    /**
+     * Internal method used to populate the Persistence Unit Info metadata from persistence.xml.
+     * Sets the default fetch type for to-one associations (JPA 4.0).
+     */
+    void setDefaultToOneFetchType(javax.persistence.FetchType fetchType) {
+        if (fetchType != null) {
+            ivDefaultToOneFetchType = fetchType;
+        }
     }
 }

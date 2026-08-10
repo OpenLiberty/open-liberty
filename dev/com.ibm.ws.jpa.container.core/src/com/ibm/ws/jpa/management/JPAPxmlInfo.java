@@ -143,6 +143,9 @@ class JPAPxmlInfo {
             // Set <validataion-mode> (mapped by JaxbPUnit abstraction)  // F743-8705 F1879-16302
             puInfo.setValidationMode(pu.getValidationMode());
 
+            // Set <default-to-one-fetch-type> (JPA 4.0+, returns null for earlier schema versions)
+            puInfo.setDefaultToOneFetchType(pu.getDefaultToOneFetchType());
+
             // Set <exclude-unlisted-classes>
             puInfo.setExcludeUnlistedClasses(pu.isExcludeUnlistedClasses());
 

@@ -187,6 +187,15 @@ abstract class JaxbPUnit {
     }
 
     /**
+     * Gets the default fetch type for to-one associations.
+     * Not available prior to JPA 4.0 persistence schema.
+     * Returns null when not specified; JPAPUnitInfo will use EAGER as the default.
+     */
+    javax.persistence.FetchType getDefaultToOneFetchType() {
+        return null;
+    }
+
+    /**
      * Gets the value of the properties property.
      *
      * @return value of the properties property.
