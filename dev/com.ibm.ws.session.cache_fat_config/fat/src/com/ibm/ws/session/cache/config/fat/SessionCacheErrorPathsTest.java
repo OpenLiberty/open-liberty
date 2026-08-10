@@ -356,7 +356,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         TimeUnit.SECONDS.sleep(10);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
         run("testSetAttribute&attribute=testModifyFileset&value=1", session);
-        run("testCacheContains&attribute=testModifyFileset&value=1", session);
+        run("testPollCache&attribute=testModifyFileset&value=1", session);
 
         server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException", "SESN0307E", "SESN0309E", "SESN0306E");
     }
