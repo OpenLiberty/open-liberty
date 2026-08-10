@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.microprofile.config.internals.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.Iterator;
@@ -171,5 +172,34 @@ public class SortedSourcesTest extends AbstractConfigTest {
         } catch (UnsupportedOperationException e) {
             //expected
         }
+    }
+
+    @Test
+    public void testUnmodifiableRetainsSize() {
+        SortedSources sources = new SortedSourcesImpl();
+        TestSource testSource0 = new TestSource(0, "TestSource0");
+        TestSource testSource1 = new TestSource(1, "TestSource1");
+        sources.add(testSource0);
+        sources.add(testSource1);
+
+        sources = sources.unmodifiable();
+
+        assertEquals("Calling unmodifiable() should not change the size", 2, sources.size());
+
+        Iterator<ConfigSource> itr = sources.iterator();
+        assertEquals(sources.toString(), testSource1, itr.next());
+        assertEquals(sources.toString(), testSource0, itr.next());
+        assertFalse("Should be no more elements", itr.hasNext());
+    }
+
+    @Test
+    public void testDuplicateSourceNotAdded() {
+        SortedSources sources = new SortedSourcesImpl();
+        TestSource testSource = new TestSource(100, "TestSource");
+
+        sources.add(testSource);
+        sources.add(testSource);
+
+        assertEquals("Adding the same source should not increase the size", 1, sources.size());
     }
 }
