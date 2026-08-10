@@ -39,7 +39,6 @@ wasliberty-infrastructure-docker/selenium/standalone-chrome:4.8.3
 wasliberty-internal-docker-local/openliberty/testcontainers/couchdb-ssl:3.0.0.1
 wasliberty-internal-docker-local/openliberty/testcontainers/db2-krb5:12.1.2.0
 wasliberty-internal-docker-local/openliberty/testcontainers/db2-ssl:12.1.1.0
-wasliberty-internal-docker-local/openliberty/testcontainers/kdc-jdbc-server:3.0.0.2
 wasliberty-internal-docker-local/openliberty/testcontainers/kdc-jdbc-server:3.0.0.3
 wasliberty-internal-docker-local/openliberty/testcontainers/kdc-security-server:3.17
 wasliberty-internal-docker-local/openliberty/testcontainers/keyserver-simple:3.11.6
@@ -47,7 +46,6 @@ wasliberty-internal-docker-local/openliberty/testcontainers/ldap-kdc-server:1.0.
 wasliberty-internal-docker-local/openliberty/testcontainers/ldap-server:3.17
 wasliberty-internal-docker-local/openliberty/testcontainers/ldap-server:3.18
 wasliberty-internal-docker-local/openliberty/testcontainers/oracle-krb5:23.26.2-full-faststart
-wasliberty-internal-docker-local/openliberty/testcontainers/oracle-krb5:23.9-full-faststart
 wasliberty-internal-docker-local/openliberty/testcontainers/oracle-ssl:23.9-full-faststart
 wasliberty-internal-docker-local/openliberty/testcontainers/postgres-init:17-alpine
 wasliberty-internal-docker-local/openliberty/testcontainers/postgres-krb5:17.0.0.1
