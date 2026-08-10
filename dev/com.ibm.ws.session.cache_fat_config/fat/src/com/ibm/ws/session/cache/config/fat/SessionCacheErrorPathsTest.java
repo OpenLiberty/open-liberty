@@ -71,7 +71,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public void cleanUpPerTest() throws Exception {
         try {
             if (server.isStarted()) {
-                server.stopServer("CWWKG0033W", "SESN0307E", "SRVE8059E");
+                // CWWKL0012W and SESN0309E are expected when testModifyFileset fails before reaching its own stopServer call (e.g. cache not ready under EE11 timing).
+                server.stopServer("CWWKG0033W", "SESN0307E", "SRVE8059E", "CWWKL0012W", "SESN0309E");
             }
         } finally {
             server.updateServerConfiguration(savedConfig);
