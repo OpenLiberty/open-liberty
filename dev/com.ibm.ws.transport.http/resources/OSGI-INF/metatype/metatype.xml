@@ -249,6 +249,15 @@
         <AD name="%http2.maxHeaderBlockSize" description="%http2.maxHeaderBlockSize.desc"
             id="maxHeaderBlockSize" required="false" type="Long" min="0" default="512000" />
 
+        <AD name="%http2.maxLowWindowStreams" description="%http2.maxLowWindowStreams.desc"
+            id="maxLowWindowStreams" required="false" type="Integer" min="0" default="20" />
+
+        <AD name="%http2.lowWindowLimit" description="%http2.lowWindowLimit.desc"
+            id="lowWindowLimit" required="false" type="Integer" min="0" default="16384" />
+
+        <AD name="%http2.maxQueuedBytes" description="%http2.maxQueuedBytes.desc"
+            id="maxQueuedBytes" required="false" type="Long" min="0" default="2097152" />
+
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"
             id="v0CookieDateRFC1123compat" required="false" type="Boolean" default="true" />

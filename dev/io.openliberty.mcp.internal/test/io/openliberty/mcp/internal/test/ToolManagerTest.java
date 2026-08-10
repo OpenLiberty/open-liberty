@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -35,6 +36,7 @@ import java.util.stream.StreamSupport;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mcpjava.server.tools.ToolResponse;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -42,31 +44,30 @@ import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
-import io.openliberty.mcp.tools.ToolManager;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.tools.ToolManager.ToolDefinition;
 import io.openliberty.mcp.tools.ToolManager.ToolInfo;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 
 /**
  *
  */
 public class ToolManagerTest {
 
-    private ToolManager toolManager;
+    private ToolRegistry toolManager;
     private SchemaRegistry schemaRegistry;
     private Jsonb jsonb;
 
     @Before
     public void setup() {
         schemaRegistry = new SchemaRegistry();
-        jsonb = JsonbBuilder.create();
+        jsonb = TestUtils.createJsonb();
         toolManager = new ToolRegistry(schemaRegistry, jsonb);
+        toolManager.setConverterRegistry(TestUtils.createTestConverterRegistry());
     }
 
     @Test
@@ -75,9 +76,9 @@ public class ToolManagerTest {
             String input = (String) args.args().get("input");
             boolean isFancy = (boolean) args.args().get("isFancy");
             if (isFancy) {
-                return ToolResponse.success("Good morning, I am delighted to make your aquaintance " + input);
+                return ToolResponse.ofText("Good morning, I am delighted to make your aquaintance " + input);
             } else {
-                return ToolResponse.success("Hi " + input);
+                return ToolResponse.ofText("Hi " + input);
             }
         };
 
@@ -138,7 +139,7 @@ public class ToolManagerTest {
     @Test
     public void testAsyncHandler() throws Exception {
         Function<ToolArguments, CompletionStage<ToolResponse>> asyncHandler = args -> {
-            return CompletableFuture.completedFuture(ToolResponse.success("hello"));
+            return CompletableFuture.completedFuture(ToolResponse.ofText("hello"));
         };
 
         toolManager.newTool("async-tool")
@@ -173,14 +174,14 @@ public class ToolManagerTest {
                                       .build();
 
         toolManager.newTool("schemas")
-                   .setHandler(a -> ToolResponse.success("OK"))
+                   .setHandler(a -> ToolResponse.ofText("OK"))
                    .setInputSchema(inputSchema)
                    .setOutputSchema(outputSchema)
                    .register();
 
         var newTool = toolManager.getTool("schemas");
 
-        ToolMetadata newToolMetadata = (ToolMetadata) newTool;
+        ToolMetadata newToolMetadata = newTool;
         String expectedInputSchema = """
                         {
                             "type": "object",
@@ -206,12 +207,12 @@ public class ToolManagerTest {
         record OutputObject(String category, List<String> items) {};
 
         toolManager.newTool("class-schemas")
-                   .setHandler(a -> ToolResponse.structuredSuccess(new OutputObject("test", List.of("foo", "bar"))))
+                   .setHandler(a -> ToolResponse.ofStructured(new OutputObject("test", List.of("foo", "bar"))))
                    .generateOutputSchema(OutputObject.class)
                    .register();
 
         var newTool = toolManager.getTool("class-schemas");
-        ToolMetadata newToolMetadata = (ToolMetadata) newTool;
+        ToolMetadata newToolMetadata = newTool;
 
         String expectedOutputSchema = """
                         {
@@ -243,15 +244,15 @@ public class ToolManagerTest {
     @Test
     public void testDuplicateToolName() {
         // Test check on newTool
-        toolManager.newTool("foo").setHandler(a -> ToolResponse.success("ok")).register();
+        toolManager.newTool("foo").setHandler(a -> ToolResponse.ofText("ok")).register();
 
         assertThrows(() -> toolManager.newTool("foo"),
                      exception().ofType(IllegalArgumentException.class)
                                 .messageIncludes("CWMCM0026E: An MCP tool with the name foo already exists."));
 
         // Test check on register (tool is not a duplicate when newTool is called, but is a duplicate when register is called)
-        ToolDefinition def1 = toolManager.newTool("bar").setHandler(a -> ToolResponse.success("ok"));
-        ToolDefinition def2 = toolManager.newTool("bar").setHandler(a -> ToolResponse.success("ok"));
+        ToolDefinition def1 = toolManager.newTool("bar").setHandler(a -> ToolResponse.ofText("ok"));
+        ToolDefinition def2 = toolManager.newTool("bar").setHandler(a -> ToolResponse.ofText("ok"));
 
         def1.register();
         assertThrows(() -> def2.register(),
@@ -259,7 +260,7 @@ public class ToolManagerTest {
                                 .messageIncludes("CWMCM0026E: An MCP tool with the name bar already exists."));
 
         // Test calling register twice
-        ToolDefinition def3 = toolManager.newTool("baz").setHandler(a -> ToolResponse.success("OK"));
+        ToolDefinition def3 = toolManager.newTool("baz").setHandler(a -> ToolResponse.ofText("OK"));
         def3.register();
         assertThrows(() -> def3.register(),
                      exception().ofType(IllegalArgumentException.class)
@@ -278,8 +279,8 @@ public class ToolManagerTest {
     @Test
     public void testBothHandlers() {
         var def = toolManager.newTool("foo")
-                             .setHandler(a -> ToolResponse.success("ok"))
-                             .setAsyncHandler(a -> CompletableFuture.completedFuture(ToolResponse.success("ok")));
+                             .setHandler(a -> ToolResponse.ofText("ok"))
+                             .setAsyncHandler(a -> CompletableFuture.completedFuture(ToolResponse.ofText("ok")));
 
         assertThrows(() -> def.register(),
                      exception().ofType(IllegalStateException.class)
@@ -349,5 +350,31 @@ public class ToolManagerTest {
         assertThrows(() -> def.addArgument("bar", null, false, String.class),
                      exception().ofType(IllegalArgumentException.class)
                                 .messageIncludes("CWMCM0032E: Cannot add a second argument with the bar name to the foo MCP tool."));
+    }
+
+    @Test
+    public void testMetadata() {
+        Map<String, Object> metadata = Map.of("a.b/c", "foo",
+                                              "d.e/f", "bar",
+                                              "g", "baz");
+        ToolInfo tool = toolManager.newTool("foo")
+                                   .setMetadata(metadata)
+                                   .putMetadata("h", "qux")
+                                   .setHandler(arg -> ToolResponse.ofText("OK"))
+                                   .register();
+
+        var expectedMetadata = Map.of("a.b/c", "foo",
+                                      "d.e/f", "bar",
+                                      "g", "baz",
+                                      "h", "qux");
+        assertEquals(expectedMetadata, tool.metadata());
+    }
+
+    @Test
+    public void testInvalidMetadataKey() {
+        var def = toolManager.newTool("foo");
+        assertThrows(() -> def.putMetadata("a.b/c/d", "bar"),
+                     exception().ofType(IllegalArgumentException.class)
+                                .messageIncludes("CWMCM0037E: The a.b/c/d"));
     }
 }

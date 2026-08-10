@@ -255,12 +255,8 @@ public class LTPATokenizer {
                 case USER_DATA_DELIM_DOLLAR:
                 case USER_ATTRIB_DELIM_COLON:
                 case STRING_ATTRIB_DELIM_CHAR_PIPE:
-                    sb.append(BACKSLASH);
-                    break;
                 case BACKSLASH:
-                    if (i == len - 1) {
-                        sb.append(BACKSLASH);
-                    }
+                    sb.append(BACKSLASH);
                     break;
                 default:
                     break;
@@ -282,14 +278,20 @@ public class LTPATokenizer {
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             if ((c == BACKSLASH) && (i < len - 1)) {
-                char d = str.charAt(i + 1);
-                if (!((d == USER_DATA_DELIM_DOLLAR) || (d == USER_ATTRIB_DELIM_COLON) || (d == TOKEN_DELIM_PERCENT) || (d == STRING_ATTRIB_DELIM_CHAR_PIPE) || (d == BACKSLASH))) {
-                    // if next char is delim, skip this escape char
-                    sb.append(c);
+                char next = str.charAt(i + 1);
+                if (next == USER_DATA_DELIM_DOLLAR
+                        || next == USER_ATTRIB_DELIM_COLON
+                        || next == TOKEN_DELIM_PERCENT
+                        || next == STRING_ATTRIB_DELIM_CHAR_PIPE
+                        || next == BACKSLASH) {
+                    // add escaped character then i++ (move on)
+                    sb.append(next);
+                    i++;
+                    continue;
                 }
-            } else {
-                sb.append(c);
             }
+
+            sb.append(c);
         }
         return sb.toString();
     }

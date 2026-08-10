@@ -19,11 +19,18 @@
         version="3.2">
 
     <persistence-unit name="JakartaPersistenceUnit">
-    	<properties>
-   <!-- Drop and recreate the database schema automatically for clean test runs -->
-   <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
-			<property name="eclipselink.logging.parameters" value="true"/>
-			<property name="hibernate.show_sql" value="true"/>
-		</properties>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <!-- Drop and recreate the database schema automatically for clean test runs -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <!-- L2 cache via JCache/EHCache -->
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.jcache.internal.JCacheRegionFactory"/>
+            <property name="hibernate.javax.cache.missing_cache_strategy" value="create"/>
+            <!-- ORA-43853: disable SecureFiles LOB syntax for non-ASSM tablespaces (e.g. SYSTEM) -->
+            <property name="hibernate.dialect.oracle.value_lob_enabled" value="false"/>
+        </properties>
     </persistence-unit>
 </persistence>

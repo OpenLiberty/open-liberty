@@ -9,7 +9,13 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import static io.openliberty.mcp.internal.encoders.EncoderRegistry.DEFAULT_ENCODER_PRIORITY;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,23 +24,37 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.completion.CompletePrompt;
+import org.mcpjava.server.completion.CompleteResourceTemplate;
+import org.mcpjava.server.prompts.Prompt;
+import org.mcpjava.server.resources.Resource;
+import org.mcpjava.server.resources.ResourceTemplate;
+import org.mcpjava.server.tools.Tool;
+
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.content.ContentEncoder;
+import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
+import io.openliberty.mcp.internal.content.TextContentImpl;
+import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
-import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
-import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
+import io.openliberty.mcp.internal.requests.IconImpl;
+import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
-import io.openliberty.mcp.messaging.Encoder;
+import io.openliberty.mcp.internal.tools.ToolResponseImpl;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -58,19 +78,32 @@ import jakarta.json.bind.JsonbConfig;
 public class McpCdiExtension implements Extension {
 
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
+    private static final ServiceCaller<CDIService> CDI_SERVICE = new ServiceCaller<>(McpCdiExtension.class, CDIService.class);
 
-    private final List<Bean<?>> encoderBeans = new ArrayList<>();
-    private EncoderRegistry encoderRegistry;
-    private ConcurrentHashMap<String, ArrayList<String>> duplicateToolsMap = new ConcurrentHashMap<>();
+    private static final List<Class<? extends Annotation>> UNSUPPORTED_ANNOTATIONS = List.of(
+                                                                                             Prompt.class,
+                                                                                             Resource.class,
+                                                                                             ResourceTemplate.class,
+                                                                                             CompletePrompt.class,
+                                                                                             CompleteResourceTemplate.class);
+
+    private final List<Bean<?>> toolResponseEncoderBeans = new ArrayList<>();
+    private final List<Bean<?>> contentEncoderBeans = new ArrayList<>();
+    private final Map<Bean<?>, Integer> encoderPriorities = new HashMap<>();
+    private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
+    private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
     private Jsonb jsonb = createJsonb();
-    private ToolRegistry tools = new ToolRegistry(schemas, jsonb);
+    private ToolRegistries toolRegistries = new ToolRegistries(schemas, jsonb);
     private ModuleContext moduleContext;
 
     private static Jsonb createJsonb() {
-        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
-                                                   .withDeserializers(new McpRequestIdDeserializer());
+        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer(), new TextContentImpl.Serializer(), new ToolResponseImpl.Serializer())
+                                                   .withDeserializers(new McpRequestIdDeserializer())
+                                                   .withAdapters(EnumAdapters.ROLE_ADAPTER,
+                                                                 new ImplementationInfoImpl.Adapter(),
+                                                                 new IconImpl.Adapter());
 
         return JsonbBuilder.create(jsonbConfig);
     }
@@ -92,63 +125,178 @@ public class McpCdiExtension implements Extension {
             Tool toolAnnotation = m.getAnnotation(Tool.class);
             if (toolAnnotation != null) {
                 registerTool(toolAnnotation, pmb.getBean(), m, beanManager);
+            } else {
+                for (Class<? extends Annotation> unsupported : UNSUPPORTED_ANNOTATIONS) {
+                    if (m.isAnnotationPresent(unsupported)) {
+                        String methodName = type.getJavaClass().getName() + "." + m.getJavaMember().getName();
+                        Tr.warning(tc, "CWMCM0043W.unsupported.annotation", methodName, "@" + unsupported.getSimpleName());
+                    }
+                }
             }
         }
     }
 
     void discoverEncoderBeans(@Observes ProcessManagedBean<?> processManagedBean) {
         AnnotatedType<?> type = processManagedBean.getAnnotatedBeanClass();
-        Class<?> javaClass = type.getJavaClass();
-        if (Encoder.class.isAssignableFrom(javaClass)) {
-            encoderBeans.add(processManagedBean.getBean());
+
+        if (ToolResponseEncoder.class.isAssignableFrom(type.getJavaClass())) {
+            Bean<?> bean = processManagedBean.getBean();
+            toolResponseEncoderBeans.add(bean);
+
+            Priority priority = type.getAnnotation(Priority.class);
+            int priorityValue = priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
+            encoderPriorities.put(bean, priorityValue);
+        }
+
+        if (ContentEncoder.class.isAssignableFrom(type.getJavaClass())) {
+            Bean<?> bean = processManagedBean.getBean();
+            contentEncoderBeans.add(bean);
+
+            Priority priority = type.getAnnotation(Priority.class);
+            int priorityValue = priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
+            encoderPriorities.put(bean, priorityValue);
+        }
+    }
+
+    void discoverConverterBeans(@Observes ProcessManagedBean<?> pmb) {
+        Class<?> javaClass = pmb.getAnnotatedBeanClass().getJavaClass();
+        if (DefaultValueConverter.class.isAssignableFrom(javaClass)) {
+            TypeUtility.getDefaultValueConverterType(javaClass).ifPresent(type -> converterBeans.put(pmb.getBean(), type));
         }
     }
 
     void afterDeploymentValidation(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager manager) {
-        registerEncoders(manager);
+        registerEncoders(manager); // Called once with all encoder beans available
+        registerCustomConverters(manager); // Called once with all Converter beans available
 
-        boolean error = reportOnInvalidToolNames(afterDeploymentValidation) |
-                        reportOnDuplicateTools(afterDeploymentValidation) |
-                        reportOnToolArgEdgeCases(afterDeploymentValidation) |
-                        reportOnDuplicateSpecialArguments(afterDeploymentValidation) |
-                        reportOnInvalidSpecialArguments(afterDeploymentValidation);
+        boolean error = false;
+
+        for (ToolRegistry toolRegistry : toolRegistries.getAll()) {
+            error |= reportOnInvalidToolNames(afterDeploymentValidation, toolRegistry) |
+                     reportOnDuplicateTools(afterDeploymentValidation, toolRegistry) |
+                     reportOnToolArgEdgeCases(afterDeploymentValidation, toolRegistry) |
+                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry) |
+                     reportOnDeferredValidationErrors(toolRegistry);
+        }
 
         if (error) {
             afterDeploymentValidation.addDeploymentProblem(new Exception(Tr.formatMessage(tc, "CWMCM0005E.validation.error")));
         }
     }
 
+    /**
+     * Registers all discovered encoder beans to their appropriate encoder registries.
+     *
+     * <p>This method handles encoder registration.
+     * Encoders must be routed to the correct registry based on their module of origin.
+     *
+     * <p><b>Encoder Types and Scopes:</b>
+     * <ul>
+     * <li><b>Global encoders</b> - Beans from EAR/lib or runtime (no module association).
+     * Registered to the Global registry and accessible to all modules.</li>
+     * <li><b>Module encoders</b> - Beans from specific WAR or EJB modules.
+     * Registered to their module's registry and isolated from other modules.</li>
+     * </ul>
+     *
+     *
+     * @param beanManager The CDI BeanManager for obtaining encoder bean references
+     */
     void registerEncoders(BeanManager beanManager) {
-        encoderRegistry = beanManager.createInstance().select(EncoderRegistry.class).get();
-
+        // we cannot inject into an extension so retrieve encoderRegistries via the beanManager
+        EncoderRegistries encoderRegistries = beanManager.createInstance().select(EncoderRegistries.class).get();
         CreationalContext<?> context = beanManager.createCreationalContext(null);
 
-        List<ToolResponseEncoder<?>> toolResponseEncoders = new ArrayList<>();
-        List<ContentEncoder<?>> contentEncoders = new ArrayList<>();
+        // Group encoders by module (null = global)
+        Map<J2EEName, List<ToolResponseEncoder<?>>> toolEncoders = new HashMap<>();
+        Map<J2EEName, List<ContentEncoder<?>>> contentEncoders = new HashMap<>();
+        Map<J2EEName, Map<Object, Integer>> encoderInstancePrioritiesByModule = new HashMap<>();
 
-        for (Bean<?> bean : encoderBeans) {
-            if (ToolResponseEncoder.class.isAssignableFrom(bean.getBeanClass())) {
-                ToolResponseEncoder<?> encoder = (ToolResponseEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
-                toolResponseEncoders.add(encoder);
-                logEncoderRegistration(bean);
-            } else if (ContentEncoder.class.isAssignableFrom(bean.getBeanClass())) {
-                ContentEncoder<?> encoder = (ContentEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
-                contentEncoders.add(encoder);
-                logEncoderRegistration(bean);
-            }
+        // Collect and classify all encoder beans
+        for (Bean<?> bean : toolResponseEncoderBeans) {
+            J2EEName module = getModuleForBeanOrNull(bean);
+            ToolResponseEncoder<?> encoder = (ToolResponseEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
+            int priority = encoderPriorities.getOrDefault(bean, DEFAULT_ENCODER_PRIORITY);
+
+            toolEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(encoder);
+            encoderInstancePrioritiesByModule.computeIfAbsent(module, k -> new HashMap<>()).put(encoder, priority);
+
+            traceRegistration("encoder", bean, module);
         }
 
-        encoderRegistry.registerEncoders(toolResponseEncoders, contentEncoders);
+        for (Bean<?> bean : contentEncoderBeans) {
+            J2EEName module = getModuleForBeanOrNull(bean);
+            ContentEncoder<?> encoder = (ContentEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
+            int priority = encoderPriorities.getOrDefault(bean, DEFAULT_ENCODER_PRIORITY);
+
+            contentEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(encoder);
+            encoderInstancePrioritiesByModule.computeIfAbsent(module, k -> new HashMap<>()).put(encoder, priority);
+        }
+
+        // Register encoders (global and module-specific)
+        Set<J2EEName> allModules = new HashSet<>();
+        allModules.addAll(toolEncoders.keySet());
+        allModules.addAll(contentEncoders.keySet());
+
+        for (J2EEName module : allModules) {
+            EncoderRegistry registry = module == null ? encoderRegistries.getGlobal() : encoderRegistries.getForModule(module);
+
+            registry.registerEncoders(
+                                      toolEncoders.getOrDefault(module, Collections.emptyList()),
+                                      contentEncoders.getOrDefault(module, Collections.emptyList()),
+                                      encoderInstancePrioritiesByModule.getOrDefault(module, Collections.emptyMap()));
+        }
 
         context.release();
     }
 
-    private static void logEncoderRegistration(Bean<?> encoderBean) {
+    void registerCustomConverters(BeanManager beanManager) {
+        ConverterRegistries converterRegistries = beanManager.createInstance().select(ConverterRegistries.class).get();
+        CreationalContext<?> context = beanManager.createCreationalContext(null);
+
+        // Group converters by module (null = global/EAR-lib)
+        Map<J2EEName, Map<Type, List<DefaultValueConverter<?>>>> convertersByModule = new HashMap<>();
+
+        // Collect and classify custom converter beans by module
+        for (Map.Entry<Bean<?>, Type> entry : converterBeans.entrySet()) {
+            Bean<?> bean = entry.getKey();
+            Type converterType = entry.getValue();
+            J2EEName module = getModuleForBeanOrNull(bean);
+
+            DefaultValueConverter<?> converter = (DefaultValueConverter<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
+            convertersByModule.computeIfAbsent(module, k -> new HashMap<>())
+                              .computeIfAbsent(converterType, k -> new ArrayList<>())
+                              .add(converter);
+            traceRegistration("converter", bean, module);
+        }
+
+        for (Map.Entry<J2EEName, Map<Type, List<DefaultValueConverter<?>>>> entry : convertersByModule.entrySet()) {
+            J2EEName module = entry.getKey();
+            ConverterRegistry registry = (module == null) ? converterRegistries.getGlobal() : converterRegistries.getForModule(module);
+            registry.registerConverters(entry.getValue(), context);
+        }
+
+        // Wire converter registries to tool registries
+        toolRegistries.getAllMappings().forEach((moduleName, toolRegistry) -> {
+            ConverterRegistry converterRegistry = converterRegistries.getForModule(moduleName);
+            toolRegistry.setConverterRegistry(converterRegistry);
+        });
+    }
+
+    /**
+     * Logs registration of an encoder or converter bean to its appropriate scope.
+     *
+     * @param type The type of bean being registered ("encoder" or "converter")
+     * @param bean The CDI bean being registered
+     * @param moduleName The module name (null for global/EAR-lib scope)
+     */
+    private static void traceRegistration(String type, Bean<?> bean, J2EEName moduleName) {
         if (TraceComponent.isAnyTracingEnabled()) {
+            String scope = (moduleName == null) ? "GLOBAL (EAR/lib)" : "MODULE (" + moduleName + ")";
+            String beanName = bean.getName() != null ? bean.getName() : bean.getBeanClass().getSimpleName();
             if (tc.isDebugEnabled()) {
-                Tr.debug(McpCdiExtension.class, tc, "Registered encoder: " + encoderBean.getName(), encoderBean);
+                Tr.event(McpCdiExtension.class, tc, "Registered " + type + " [" + scope + "]: " + beanName, bean);
             } else if (tc.isEventEnabled()) {
-                Tr.event(McpCdiExtension.class, tc, "Registered encoder: " + encoderBean.getName());
+                Tr.event(McpCdiExtension.class, tc, "Registered " + type + " [" + scope + "]: " + beanName);
             }
         }
     }
@@ -156,20 +304,20 @@ public class McpCdiExtension implements Extension {
     /**
      * @param afterDeploymentValidation
      */
-    private boolean reportOnToolArgEdgeCases(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnToolArgEdgeCases(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         boolean foundErrors = false;
 
         for (ToolMetadata tool : tools.getAllTools()) {
             Set<String> names = new HashSet<>();
 
             for (ToolArgument argMetadata : tool.arguments()) {
-                for (var error : ToolValidation.validateToolArgument(argMetadata)) {
+                for (var error : ToolValidation.validateToolArgument(argMetadata, tools.getConverterRegistry())) {
                     switch (error.type()) {
                         case NAME_BLANK -> Tr.error(tc, "CWMCM0001E.blank.arguments", tool.getToolQualifiedName());
                         case NAME_MISSING -> Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());
                         case NO_CONVERTER -> Tr.error(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type());
                         case CONVERSION_ERROR -> Tr.error(tc, "CWMCM0020E.defaultvalue.conversion.error", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type(),
-                                                          argMetadata.defaultValue(), error.exception());
+                                                          argMetadata.defaultValue(), error.exception().toString());
                     }
                     foundErrors = true;
                 }
@@ -184,20 +332,22 @@ public class McpCdiExtension implements Extension {
         return foundErrors;
     }
 
-    private boolean reportOnDuplicateTools(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnDuplicateTools(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         boolean error = false;
-        // prune items that are not duplicates
-        duplicateToolsMap.entrySet().removeIf(e -> e.getValue().size() == 1);
-        for (String toolName : duplicateToolsMap.keySet()) {
-            error = true;
-            List<String> qualifiedNames = duplicateToolsMap.get(toolName);
-            Tr.error(tc, "CWMCM0004E.duplicate.tools", toolName, String.join(",", qualifiedNames));
+        for (var moduleDuplicateToolsMap : duplicateToolsMap.values()) {
+            // prune items that are not duplicates
+            moduleDuplicateToolsMap.entrySet().removeIf(e -> e.getValue().size() == 1);
+            for (String toolName : moduleDuplicateToolsMap.keySet()) {
+                error = true;
+                List<String> qualifiedNames = moduleDuplicateToolsMap.get(toolName);
+                Tr.error(tc, "CWMCM0004E.duplicate.tools", toolName, String.join(",", qualifiedNames));
+            }
         }
         return error;
 
     }
 
-    private boolean reportOnInvalidToolNames(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnInvalidToolNames(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         boolean hasErrors = false;
         for (ToolMetadata tool : tools.getAllTools()) {
             for (var error : ToolValidation.validateToolName(tool.name())) {
@@ -211,79 +361,60 @@ public class McpCdiExtension implements Extension {
         return hasErrors;
     }
 
-    private boolean reportOnDuplicateSpecialArguments(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnDuplicateSpecialArguments(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         AtomicBoolean error = new AtomicBoolean(false);
         for (ToolMetadata tool : tools.getAllTools()) {
             if (tool.methodMetadata().isEmpty()) {
                 continue;
             }
             MethodMetadata methodMetadata = tool.methodMetadata().get();
-            Map<SpecialArgumentType.Resolution, Integer> resultCountMap = new HashMap<>();
+            Map<SpecialArgumentType, Integer> argCountMap = new EnumMap<>(SpecialArgumentType.class);
             for (SpecialArgumentMetadata specialArgument : methodMetadata.specialArguments()) {
-                SpecialArgumentType.Resolution specialArgumentTypeResolution = specialArgument.typeResolution();
-                if (specialArgumentTypeResolution.specialArgsType() == SpecialArgumentType.UNSUPPORTED) {
-                    continue;
-                }
-                resultCountMap.merge(specialArgumentTypeResolution, 1, Integer::sum);
-
+                SpecialArgumentType specialArgumentType = specialArgument.type();
+                argCountMap.merge(specialArgumentType, 1, Integer::sum);
             }
-            resultCountMap.forEach((k, v) -> {
-                if (v > 1) {
+            argCountMap.forEach((type, count) -> {
+                if (count > 1) {
                     error.set(true);
                     Tr.error(tc, "CWMCM0006E.duplicate.special.arguments", tool.getToolQualifiedName(),
-                             k.actualClass().getSimpleName());
-
+                             type.getTypeClass().getSimpleName());
                 }
-
             });
         }
         return error.get();
-
     }
 
-    private boolean reportOnInvalidSpecialArguments(AfterDeploymentValidation afterDeploymentValidation) {
-        boolean error = false;
+    private boolean reportOnDeferredValidationErrors(ToolRegistry tools) {
+        boolean anyErrors = false;
         for (ToolMetadata tool : tools.getAllTools()) {
-            if (tool.methodMetadata().isEmpty()) {
-                continue;
-            }
-            for (SpecialArgumentMetadata specialArgument : tool.methodMetadata().get().specialArguments()) {
-                if (specialArgument.typeResolution().specialArgsType() == SpecialArgumentType.UNSUPPORTED) {
-                    error = true;
-                    Tr.error(tc, "CWMCM0007E.invalid.arguments", tool.getToolQualifiedName(),
-                             specialArgument.typeResolution());
-                }
+            for (var error : tool.validationErrors()) {
+                anyErrors = true;
+                Tr.error(tc, error.messageKey(), error.objects());
             }
         }
-        return error;
+        return anyErrors;
     }
 
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method, BeanManager beanManager) {
-        try {
-            ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
-            List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
-            duplicatesList.add(toolmd.getToolQualifiedName());
-            if (duplicatesList.size() <= 1) {
-                tools.addTool(toolmd);
-                if (TraceComponent.isAnyTracingEnabled()) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
-                    } else if (tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
-                    }
+        ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
+        J2EEName module = getModuleForBean(bean);
+        List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(module, key -> new HashMap<>())
+                                                       .computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
+        duplicatesList.add(toolmd.getToolQualifiedName());
+        if (duplicatesList.size() <= 1) {
+            toolRegistries.getForModule(module).addTool(toolmd);
+            if (TraceComponent.isAnyTracingEnabled()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
+                } else if (tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
                 }
             }
-        } catch (GenericArgumentException e) {
-            for (String argument : e.getArguments()) {
-                Tr.error(tc, "CWMCM0018E.generic.arguments", ToolMetadata.getToolQualifiedName(bean, method), argument);
-            }
-        } catch (UnsupportedTypeException e) {
-            Tr.error(tc, "CWMCM0025E.unsupported.output", e.getType(), ToolMetadata.getToolQualifiedName(bean, method));
         }
     }
 
-    public ToolRegistry getToolRegistry() {
-        return tools;
+    public ToolRegistry getCurrentToolRegistry() {
+        return toolRegistries.getCurrent();
     }
 
     public SchemaRegistry getSchemaRegistry() {
@@ -294,7 +425,27 @@ public class McpCdiExtension implements Extension {
         return jsonb;
     }
 
-    public EncoderRegistry getEncoderRegistry() {
-        return encoderRegistry;
+    private J2EEName getModuleForBean(Bean<?> bean) {
+        J2EEName moduleName = CDI_SERVICE.run(cdiService -> cdiService.getModuleNameForClass(bean.getBeanClass()))
+                                         .orElseThrow(() -> new RuntimeException("No current CDIService"))
+                                         .orElseThrow(() -> new RuntimeException("No module for bean " + bean));
+        return moduleName;
+    }
+
+    /**
+     * Determines the J2EE module (J2EEName) that owns a CDI bean, or null if the bean has no module association.
+     *
+     *
+     * @param bean The CDI bean to check
+     * @return The J2EEName of the bean's module, or null if the bean has no module
+     * @throws RuntimeException if CDI service is unavailable (system error)
+     */
+    private J2EEName getModuleForBeanOrNull(Bean<?> bean) {
+        // Get the Optional<Optional<J2EEName>> from CDI service
+        // Outer Optional: CDI service availability
+        // Inner Optional: Module name for bean class
+        return CDI_SERVICE.run(cdiService -> cdiService.getModuleNameForClass(bean.getBeanClass()))
+                          .orElseThrow(() -> new RuntimeException("No current CDIService"))
+                          .orElse(null); // No module = global bean (EAR/lib or runtime)
     }
 }

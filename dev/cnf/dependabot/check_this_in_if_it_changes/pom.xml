@@ -94,32 +94,32 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.21.2</version>
+      <version>2.21.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.21.2</version>
+      <version>2.21.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>2.21.2</version>
+      <version>2.21.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-base</artifactId>
-      <version>2.21.2</version>
+      <version>2.21.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
-      <version>2.21.2</version>
+      <version>2.21.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-jaxb-annotations</artifactId>
-      <version>2.21.2</version>
+      <version>2.21.5</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.woodstox</groupId>
@@ -190,6 +190,11 @@
       <groupId>com.graphql-java</groupId>
       <artifactId>java-dataloader</artifactId>
       <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.4.240</version>
     </dependency>
     <dependency>
       <groupId>com.hazelcast</groupId>
@@ -548,8 +553,28 @@
     </dependency>
     <dependency>
       <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-commons</artifactId>
+      <version>1.15.12</version>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+      <version>1.15.12</version>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
       <artifactId>micrometer-core</artifactId>
       <version>1.9.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
+      <version>1.15.12</version>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+      <version>1.15.12</version>
     </dependency>
     <dependency>
       <groupId>io.micrometer</groupId>
@@ -559,72 +584,72 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-base</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-compression</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-classes-epoll</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-classes-kqueue</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-epoll</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -639,7 +664,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-kqueue</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -654,12 +679,12 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-unix-common</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.2.13.Final</version>
+      <version>4.2.15.Final</version>
     </dependency>
     <dependency>
       <groupId>io.openliberty.arquillian</groupId>
@@ -785,6 +810,11 @@
       <groupId>io.opentelemetry.semconv</groupId>
       <artifactId>opentelemetry-semconv-incubating</artifactId>
       <version>1.32.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.semconv</groupId>
+      <artifactId>opentelemetry-semconv-incubating</artifactId>
+      <version>1.40.0-alpha</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.semconv</groupId>
@@ -1223,8 +1253,18 @@
     </dependency>
     <dependency>
       <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient</artifactId>
+      <version>0.16.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
       <artifactId>simpleclient_common</artifactId>
       <version>0.15.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_common</artifactId>
+      <version>0.16.0</version>
     </dependency>
     <dependency>
       <groupId>io.prometheus</groupId>
@@ -1233,13 +1273,28 @@
     </dependency>
     <dependency>
       <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_tracer_common</artifactId>
+      <version>0.16.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
       <artifactId>simpleclient_tracer_otel</artifactId>
       <version>0.15.0</version>
     </dependency>
     <dependency>
       <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_tracer_otel</artifactId>
+      <version>0.16.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
       <artifactId>simpleclient_tracer_otel_agent</artifactId>
       <version>0.15.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient_tracer_otel_agent</artifactId>
+      <version>0.16.0</version>
     </dependency>
     <dependency>
       <groupId>io.reactivex.rxjava2</groupId>
@@ -1547,6 +1602,11 @@
       <version>2.1.1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.concurrency</groupId>
+      <artifactId>jakarta.concurrency-api</artifactId>
+      <version>3.2.0-M2</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.data</groupId>
       <artifactId>jakarta.data-api</artifactId>
       <version>1.0.0</version>
@@ -1695,6 +1755,11 @@
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
       <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>4.0.0-M2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.resource</groupId>
@@ -2714,7 +2779,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.1.49</version>
+      <version>10.1.55</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2729,7 +2794,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.1.49</version>
+      <version>10.1.55</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -3409,7 +3474,7 @@
     <dependency>
       <groupId>org.eclipse.parsson</groupId>
       <artifactId>parsson</artifactId>
-      <version>1.1.7</version>
+      <version>1.1.9</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3439,7 +3504,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3459,7 +3524,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3479,7 +3544,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3499,7 +3564,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3509,7 +3574,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
@@ -4305,6 +4370,11 @@
       <groupId>org.latencyutils</groupId>
       <artifactId>LatencyUtils</artifactId>
       <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mcpjava</groupId>
+      <artifactId>mcp-server-api</artifactId>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.mock-server</groupId>
@@ -5264,17 +5334,17 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
-      <version>2.0.2.ibm</version>
+      <version>2.0.3.ibm</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
-      <version>1.0.5.ibm</version>
+      <version>1.0.6.ibm</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
-      <version>1.1.5.ibm</version>
+      <version>1.1.6.ibm</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml</groupId>

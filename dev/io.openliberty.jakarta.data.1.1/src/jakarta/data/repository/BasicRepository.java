@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.Order;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
@@ -28,26 +29,32 @@ import jakarta.data.page.PageRequest;
 public interface BasicRepository<T, K> extends DataRepository<T, K> {
 
     @Delete
-    void delete(T entity);
+    void delete(@Nonnull T entity);
 
     @Delete
-    void deleteAll(List<? extends T> entities);
+    void deleteAll(@Nonnull List<? extends T> entities);
 
     @Delete
-    void deleteById(@By(ID) K id);
+    void deleteById(@By(ID) @Nonnull K id);
 
     @Find
+    @Nonnull
     Stream<T> findAll();
 
     @Find
-    Page<T> findAll(PageRequest pageRequest, Order<T> sortBy);
+    @Nonnull
+    Page<T> findAll(@Nonnull PageRequest pageRequest,
+                    @Nonnull Order<T> sortBy);
 
     @Find
-    Optional<T> findById(@By(ID) K id);
+    @Nonnull
+    Optional<T> findById(@By(ID) @Nonnull K id);
 
+    @Nonnull
     @Save
-    <S extends T> S save(S entity);
+    <S extends T> S save(@Nonnull S entity);
 
+    @Nonnull
     @Save
-    <S extends T> List<S> saveAll(List<S> entities);
+    <S extends T> List<S> saveAll(@Nonnull List<S> entities);
 }

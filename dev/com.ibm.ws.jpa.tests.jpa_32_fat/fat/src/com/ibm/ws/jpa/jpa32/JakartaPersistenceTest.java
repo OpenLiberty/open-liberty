@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -45,6 +46,7 @@ import io.openliberty.jpa.persistence.tests.web.JakartaPersistenceServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25)  // Hibernate ByteBuddy limitation
 public class JakartaPersistenceTest {
 
     public static final String APP_NAME = "jakartapersistence";

@@ -144,12 +144,36 @@ public interface Fractions {
      int exclusiveMax,
      Restriction<Fraction> filter);
 
+    @Find
+    CursoredPage<Fraction> fetchCursored //
+    (@By(_Fraction.DENOMINATOR) Between<Integer> denominatorRange,
+     @By(_Fraction.REDUCED) @Is(EqualTo.class) boolean isReduced,
+     Restriction<Fraction> filter,
+     Order<Fraction> order,
+     PageRequest pageReq);
+
+    @Find
+    @SuppressWarnings("unchecked")
+    Page<Fraction> fetchOffsetPage //
+    (@By(_Fraction.DENOMINATOR) @Is(AtMost.class) int maxDenominator,
+     Restriction<Fraction> filter,
+     PageRequest pageReq,
+     Sort<Fraction>... sorts);
+
+    Page<Fraction> findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+    (List<Integer> denominators,
+     int minNumerator,
+     int maxNumerator,
+     Sort<Fraction> sort,
+     Restriction<Fraction> filter,
+     PageRequest pageReq);
+
     @First
     @NativeQuery("""
                     SELECT *
                       FROM Fraction
-                     WHERE val >= ? AND val <= ?
-                     ORDER BY val
+                     WHERE VAL >= ? AND VAL <= ?
+                     ORDER BY VAL
                     """)
     Optional<Fraction> firstValueWithin(double minValue, double maxValue);
 

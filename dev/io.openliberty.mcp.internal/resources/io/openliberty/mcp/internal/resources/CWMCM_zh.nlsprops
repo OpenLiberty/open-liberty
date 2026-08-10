@@ -271,3 +271,17 @@ CWMCM0032E.duplicate.argument.name.useraction=\u4e3a\u6bcf\u4e2a\u5de5\u5177\u53
 CWMCM0033A.forbidden.error=CWMCM0033A: \u8bf7\u6c42\u88ab\u7981\u6b62\u3002 \u65b9\u6cd5= {0}RequestURI={1 } RequestQuery={2 }, \u5f02\u5e38: {3}
 CWMCM0033A.forbidden.error.explanation=\u5df2\u53d1\u51fa\u8bf7\u6c42\uff0c\u4f46\u7528\u6237\u65e0\u6743\u6267\u884c\u8be5\u64cd\u4f5c\u3002
 CWMCM0033A.forbidden.error.useraction=\u8bf7\u786e\u4fdd\u8bf7\u6c42\u662f\u7531\u6388\u6743\u7528\u6237\u53d1\u8d77\u7684\u3002
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: {0} DefaultValueConverter \u7684\u5b9e\u73b0\u5fc5\u987b\u6307\u5b9a\u4e00\u4e2a\u7c7b\u578b\u53c2\u6570\u3002
+CWMCM0034W.converter.missing.type.parameter.explanation=\u5df2\u6ce8\u518c\u4e00\u4e2a ` DefaultValueConverter ` \u5b9e\u73b0\u7c7b\uff0c\u4f46\u8be5\u7c7b\u7f3a\u5c11\u7c7b\u578b\u53c2\u6570\uff0c\u56e0\u6b64\u65e0\u6cd5\u68c0\u6d4b\u5230\u5176\u8f6c\u6362\u7684\u76ee\u6807\u7c7b\u578b\u3002
+CWMCM0034W.converter.missing.type.parameter.useraction=\u4fee\u6539\u7c7b\u58f0\u660e\uff0c\u4f7f\u5176\u5b9e\u73b0\u5e26\u6709\u5177\u4f53\u7c7b\u578b\u53c2\u6570\u7684 DefaultValueConverter \u63a5\u53e3\u3002 \u4f8b\u5982\uff1a MyConverterClass \u5b9e\u73b0\u4e86 DefaultValueConverter<MyType>\u3002
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: {0} DefaultValueConverter \u7684\u5b9e\u73b0\u5c06\u5176\u8f6c\u6362\u4e3a\u6cdb\u578b\u7c7b\u578b\u53c2\u6570\uff0c\u800c\u975e\u5177\u4f53\u7c7b\u578b\u3002
+CWMCM0035W.converter.generic.type.explanation=\u4e00\u4e2a DefaultValueConverter \u5b9e\u73b0\u7c7b\u88ab\u6ce8\u518c\u65f6\uff0c\u4f7f\u7528\u7684\u662f\u4e00\u822c\u7c7b\u578b\u53c2\u6570\uff08\u5982T\uff09\uff0c\u800c\u4e0d\u662f\u5177\u4f53\u7c7b\u578b\u3002
+CWMCM0035W.converter.generic.type.useraction=\u4fee\u6539\u7c7b\u58f0\u660e\uff0c\u4f7f\u5176\u5b9e\u73b0\u5e26\u6709\u5177\u4f53\u7c7b\u578b\u53c2\u6570\u7684 DefaultValueConverter \u63a5\u53e3\u3002 \u4f8b\u5982\uff1a MyConverterClass \u5b9e\u73b0\u4e86 DefaultValueConverter<MyType>\u3002

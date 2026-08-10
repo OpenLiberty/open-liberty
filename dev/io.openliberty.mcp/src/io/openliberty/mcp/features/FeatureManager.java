@@ -25,10 +25,12 @@ import java.time.Instant;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
+import org.mcpjava.server.Cancellation;
+import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.MetaCarrier;
+import org.mcpjava.server.progress.Progress;
+
 import io.openliberty.mcp.features.FeatureManager.FeatureInfo;
-import io.openliberty.mcp.messaging.Cancellation;
-import io.openliberty.mcp.meta.Meta;
-import io.openliberty.mcp.request.RequestId;
 
 /**
  *
@@ -39,7 +41,7 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
     /**
      *
      */
-    interface FeatureInfo extends Comparable<FeatureInfo> {
+    interface FeatureInfo extends Comparable<FeatureInfo>, MetaCarrier {
 
         /**
          * It is guaranteed that the name is unique for a specific feature.
@@ -79,7 +81,7 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 
     }
 
-    interface FeatureDefinition<INFO extends FeatureInfo, ARGUMENTS extends FeatureArguments, RESPONSE, THIS extends FeatureDefinition<INFO, ARGUMENTS, RESPONSE, THIS>> {
+    interface FeatureDefinition<INFO extends FeatureInfo, ARGUMENTS extends FeatureArguments, RESPONSE, THIS extends FeatureDefinition<INFO, ARGUMENTS, RESPONSE, THIS>> extends MetaCarrier.Builder<THIS> {
 
         /**
          *
@@ -121,10 +123,9 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 
     interface RequestFeatureArguments extends FeatureArguments {
 
-        RequestId requestId();
+        McpRequest request();
 
-// Not yet implemented:
-//        Progress progress();
+        Progress progress();
 
         Cancellation cancellation();
 
@@ -145,8 +146,6 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 //
 //        RawMessage rawMessage();
 //
-        Meta meta();
-
     }
 
 }

@@ -15,11 +15,11 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.POSITIVE_TIMEO
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.Cancellation;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
-import io.openliberty.mcp.messaging.Cancellation;
-import io.openliberty.mcp.messaging.Cancellation.OperationCancellationException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -45,7 +45,11 @@ public class CancellationTools {
             LOG.info("[cancellationTool] Checking if tool is cancelled");
             if (cancellation.check().isRequested()) {
                 LOG.info("[cancellationTool] tool is cancelled");
-                throw new OperationCancellationException();
+                throw new Cancellation.OperationCancelledException();
+            }
+            if (toolStatus.shouldEnd(latchName)) {
+                LOG.info("[cancellationTool] test signalled tool should end");
+                break;
             }
         }
         LOG.info("[cancellationTool] the tool was not cancelled");
@@ -61,7 +65,7 @@ public class CancellationTools {
             LOG.info("[cancellationToolMinimalWait] Checking if tool is cancelled");
             if (cancellation.check().isRequested()) {
                 LOG.info("[cancellationToolMinimalWait] tool is cancelled");
-                throw new OperationCancellationException();
+                throw new Cancellation.OperationCancelledException();
             }
         }
         LOG.info("[cancellationToolMinimalWait] the tool was not cancelled");
@@ -80,7 +84,7 @@ public class CancellationTools {
             LOG.info("[cancellationToolForStatelessMinimalWait] Checking if tool is cancelled");
             if (cancellation.check().isRequested()) {
                 LOG.info("[cancellationToolForStatelessMinimalWait] tool is cancelled");
-                throw new OperationCancellationException();
+                throw new Cancellation.OperationCancelledException();
             }
         }
         LOG.info("[cancellationToolForStatelessMinimalWait] the tool was not cancelled");

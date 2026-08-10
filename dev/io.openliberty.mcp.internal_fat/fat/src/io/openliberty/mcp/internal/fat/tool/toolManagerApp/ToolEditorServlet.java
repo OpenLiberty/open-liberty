@@ -11,8 +11,9 @@ package io.openliberty.mcp.internal.fat.tool.toolManagerApp;
 
 import java.io.IOException;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import io.openliberty.mcp.tools.ToolManager;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -57,7 +58,7 @@ public class ToolEditorServlet extends HttpServlet {
                        for (int i = 0; i < repeatCount; i++) {
                            sb.append(input);
                        }
-                       return ToolResponse.success(sb.toString());
+                       return ToolResponse.ofText(sb.toString());
                    })
                    .register();
     }

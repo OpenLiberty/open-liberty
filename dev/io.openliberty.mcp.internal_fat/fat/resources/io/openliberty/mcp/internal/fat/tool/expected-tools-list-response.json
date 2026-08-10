@@ -206,6 +206,23 @@
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        },
+                                        "name": "failedStageTool",
+                                        "description": "Synchronous tool that throws an exception for testing error metrics",
+                                        "title": "Failed Stage Tool"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
                                                 "num1": {
                                                     "description": "long",
                                                     "type": "integer"
@@ -692,6 +709,94 @@
                                       "title": "Audio Content Tool With Content Annotation"
                                     },
                                     {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "description": "Resource name",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "name",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "resourceLinkTool",
+                                      "description": "Returns a resource link content object",
+                                      "title": "Resource Link Tool"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "description": "Resource name",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "name",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "resourceLinkToolWithAnnotation",
+                                      "description": "Returns a resource link content object with annotation",
+                                      "title": "Resource Link Tool With Annotation"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "text": {
+                                            "description": "Text content",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "text",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "embeddedTextResourceTool",
+                                      "description": "Returns an embedded text resource content object",
+                                      "title": "Embedded Text Resource Tool"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "imageData": {
+                                            "description": "Base64-encoded image data",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "imageData",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "embeddedBlobResourceTool",
+                                      "description": "Returns an embedded blob resource content object",
+                                      "title": "Embedded Blob Resource Tool"
+                                    },
+                                    {
                                         "outputSchema": {
                                             "type": "object",
                                             "properties": {
@@ -848,58 +953,6 @@
                                         "name": "testMultipleToolArgsOneNotRequired",
                                         "description": "MultipleToolArgsOneNotRequired",
                                         "title": "testMultipleToolArgsOneNotRequired"
-                                     },
-                                     {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "planet": {
-                                                    "description": "planet you live in",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": []
-                                        },
-
-                                        "name": "testToolArgStringDefaultValue",
-                                        "description": "Test tool defaults to default value when argument not provided",
-                                        "title": "ToolArg String Default Value"
-                                     },
-                                     {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "year": {
-                                                    "description": "current year",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": []
-                                        },
-
-                                        "name": "testToolArgIntDefaultValue",
-                                        "description": "Test tool defaults to default value when argument not provided",
-                                        "title": "ToolArg Int Default Value"
-                                        },
-                                      {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "planet": {
-                                                    "description": "planet you live in",
-                                                    "type": "string"
-                                                },
-                                                "year": {
-                                                    "description": "current year",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": ["year"]
-                                        },
-
-                                        "name": "testMultipleToolArgsOneDefaultValue",
-                                        "description": "MultipleToolArgsOneDefaultValue",
-                                        "title": "testMultipleToolArgsOneDefaultValue"
                                      },
                                     {
                                         "inputSchema": {
@@ -1725,6 +1778,163 @@
                                             "type": "object",
                                             "properties": {},
                                             "required": []
+                                        }
+                                    },
+                                    {
+                                        "name": "businessErrorTool",
+                                        "description": "Sync tool that throws ToolCallException for testing error metrics",
+                                        "title": "Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "nonBusinessErrorTool",
+                                        "description": "Sync tool that throws generic exception for testing error metrics",
+                                        "title": "Non-Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "asyncBusinessErrorTool",
+                                        "description": "Async tool that throws ToolCallException for testing async error metrics",
+                                        "title": "Async Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "asyncNonBusinessErrorTool",
+                                        "description": "Async tool that throws generic exception for testing async error metrics",
+                                        "title": "Async Non-Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "asyncFailedStageTool",
+                                        "description": "Async tool that returns failed CompletionStage for testing async error metrics",
+                                        "title": "Async Failed Stage Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "checkMcpRequest",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        }
+                                    },
+                                    {
+                                        "name": "readSessionIdReversed",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        }
+                                    },
+                                    {
+                                        "name": "unannotatedArgTool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "count": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": ["name", "count"]
+                                        }
+                                    },
+                                    {
+                                        "name": "echoNoParamName",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": ["input"]
+                                        }
+                                    },
+                                    {
+                                        "name": "metaFieldSimple",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "_meta": {
+                                            "test": "foo"
+                                        }
+                                    },
+                                    {
+                                        "name": "metaFieldComplex",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "_meta": {
+                                            "testString": "foo",
+                                            "testInt": 42,
+                                            "testBool": false,
+                                            "testJson": {
+                                                "letters": ["a", "b", "c"],
+                                                "numbers": [1, 2, 3],
+                                                "booleans": [true, false]
+                                            }
                                         }
                                     }
                                 ]

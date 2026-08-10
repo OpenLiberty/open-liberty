@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2025 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -73,11 +73,11 @@ DynamicImport-Package: \
   com.ctc.wstx.*
 
 -includeresource: \
-  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \
-  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
-  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
-  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
-  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/cxf/*, \
+  @${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \
+  @${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/cxf/*, \
   META-INF/cxf/bus-extensions.txt=resources/META-INF/cxf/bus-extensions.txt, \
   cxf-ehcache.xml=resources/cxf-ehcache.xml, \
   org/apache/cxf=${bin}/org/apache/cxf

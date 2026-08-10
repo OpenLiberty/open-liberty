@@ -50,6 +50,7 @@ public.ecr.aws/docker/library/postgres:17-alpine
 public.ecr.aws/docker/library/python:3.11.6
 public.ecr.aws/elastic/logstash:9.3.3
 quay.io/jaegertracing/all-in-one:1.76.0
+quay.io/keycloak/keycloak:26.6.2
 ryanesch/acme-boulder:1.2
 seleniarm/standalone-chromium:4.8.3
 selenium/standalone-chrome:4.8.3

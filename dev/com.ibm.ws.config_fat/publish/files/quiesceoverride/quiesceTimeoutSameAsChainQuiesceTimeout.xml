@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Test server with both timeouts set to same non-default value" quiesceTimeout="47s">
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <!-- Include fatTestPorts.xml for timedexit-1.0 feature -->
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Configure channel framework with chainQuiesceTimeout set to same non-default value as quiesceTimeout -->
+    <channelfw chainQuiesceTimeout="47s"/>
+</server>
+
+<!-- Made with Bob -->

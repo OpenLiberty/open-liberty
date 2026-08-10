@@ -25,6 +25,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.schemas.SchemaGenerator.SchemaGenerationContext;
 import io.openliberty.mcp.internal.typeimpl.GenericArrayTypeImpl;
 import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
@@ -34,6 +38,7 @@ import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
  */
 public class TypeUtility {
 
+    private static final TraceComponent tc = Tr.register(TypeUtility.class);
     public static Map<Type, Class<?>> PRIMITIVE_WRAPPERS = Map.of(
                                                                   Boolean.TYPE, Boolean.class,
                                                                   Character.TYPE, Character.class,
@@ -108,6 +113,33 @@ public class TypeUtility {
         List<Type> route = getRouteToType(rootType, Optional.class);
         Type[] resolvedParameters = resolveTypeArguments(route);
         return resolvedParameters[0];
+    }
+
+    /**
+     * Find the type parameter {@code T} that a class implementing {@code DefaultValueConverter<T>} converts a string to.
+     * <p>
+     * For example, if {@code implementedConverter} implements {@code DefaultValueConverter<MyType>},
+     * then the type parameter {@code MyType} would be returned.
+     *
+     * If {@code implementedConverter} extends a class {@code exampleClass<MyType>}
+     * that implements {@code DefaultValueConverter<T>}, then the type parameter {@code MyType} would be returned.
+     *
+     * @param implementedConverter the type that is assignable to {@code DefaultValueConverter}
+     * @return the type that the converter converts values to
+     */
+    public static Optional<Type> getDefaultValueConverterType(Type implementedConverter) {
+        List<Type> route = getRouteToType(implementedConverter, DefaultValueConverter.class);
+        Type[] resolvedParameters = resolveTypeArguments(route);
+        if (resolvedParameters.length == 0) {
+            Tr.warning(tc, "CWMCM0034W.converter.missing.type.parameter", implementedConverter);
+            return Optional.empty();
+        }
+        Type converterType = resolvedParameters[0];
+        if (converterType instanceof TypeVariable) {
+            Tr.warning(tc, "CWMCM0035W.converter.generic.type", implementedConverter);
+            return Optional.empty();
+        }
+        return Optional.of(converterType);
     }
 
     /**

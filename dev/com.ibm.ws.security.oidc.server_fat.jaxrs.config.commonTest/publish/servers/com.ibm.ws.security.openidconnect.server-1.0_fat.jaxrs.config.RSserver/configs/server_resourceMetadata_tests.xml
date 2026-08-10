@@ -1,0 +1,29 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!--
+    RS server configuration for NoOPResourceMetadataNonBetaRSServerTests (non-beta variant).
+
+    The <protectedResourceMetadata> element in oidcClient_RSResourceMetadata.xml is present
+    in the XML, but the server runs WITHOUT -Dcom.ibm.ws.beta.edition=true so the feature
+    is beta-fenced and the element is ignored at runtime.  The WWW-Authenticate 401 response
+    must therefore NOT contain the resource_metadata parameter.
+ -->
+<server>
+    <include location="${server.config.dir}/imports/oidcClientFeatures.xml" />
+    <include location="${server.config.dir}/imports/BasicRegistry.xml" />
+    <include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+    <include location="${server.config.dir}/imports/misc.xml" />
+    <include location="${server.config.dir}/imports/oidcClient_RSResourceMetadata.xml" />
+    <include location="${server.config.dir}/imports/helloworldApplication.xml" />
+</server>

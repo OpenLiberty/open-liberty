@@ -109,4 +109,19 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
     }
 
     public abstract Bundle getBundle();
+
+    @Override
+    @Trivial
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("@");
+        sb.append(Integer.toHexString(this.hashCode()));
+        
+        if (parent != null) {
+            sb.append(" parent=").append(parent.getClass().getSimpleName());
+        }
+        
+        return sb.toString();
+    }
 }

@@ -27,6 +27,8 @@ import javax.servlet.http.HttpSession;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import javax.servlet.http.Cookie;
 /**
@@ -190,33 +192,58 @@ public class SessionFilter implements Filter {
     }
 
     /**
-     * Normalizes the URI path by removing query strings, fragments, and resolving path traversal attempts.
-     *
-     * @param uri The raw request URI
-     * @return Normalized path safe for pattern matching
+     * Normalizes the URI path for security guard matching.
+     * @param uri The raw request URI from {@code getRequestURI()}
+     * @return Decoded, normalised path safe for endpoint pattern matching
      */
     private String normalizePath(String uri) {
         if (uri == null || uri.isEmpty()) {
             return "";
         }
-        
-        // Remove query string and fragment
-        String path = uri.split("\\?")[0].split("#")[0];
-        
-        // Remove any path traversal attempts (../)
-        // This prevents attacks like /adminCenter/../malicious/dojo/
+
+
+        // Sequences like %6B, %2e%2e%2F, etc. are resolved to their literal
+        // equivalents so that endpoint guards cannot be bypassed by encoding.
+        // Use UTF-8; fall back to the original string on malformed input.
+        String decoded;
+        try {
+            decoded = URLDecoder.decode(uri, StandardCharsets.UTF_8.name());
+        } catch (java.io.UnsupportedEncodingException e) {
+            // UTF-8 is always supported; this branch is unreachable in practice.
+            decoded = uri;
+        } catch (IllegalArgumentException e) {
+            // Malformed percent-sequence (e.g. a bare '%'). Keep original so
+            // that the request is still subjected to guard checks below.
+            decoded = uri;
+        }
+
+        // The servlet container discards everything from the first ';' when
+        // matching URL patterns and routing to servlets.  Without this step,
+        // appending ";jsessionid=AAABBB" to any guarded endpoint name causes
+        // endsWith() checks to miss the endpoint and the guard to be bypassed.
+        // We must strip before the query-string split so that a URI like
+        //   /j_security_check;foo=bar?q=1
+        // does not leave ";foo=bar" attached to the path segment.
+        int semicolonIdx = decoded.indexOf(';');
+        if (semicolonIdx >= 0) {
+            decoded = decoded.substring(0, semicolonIdx);
+        }
+
+        // Step 3 — Remove query string and fragment.
+        String path = decoded.split("\\?")[0].split("#")[0];
+
+        // Step 4 — Collapse path-traversal sequences (/../).
+        // Prevents attacks like /adminCenter/../malicious/dojo/.
         while (path.contains("/../")) {
             path = path.replaceAll("/[^/]+/\\.\\./", "/");
         }
-        
-        // Remove trailing /../ if present
         if (path.endsWith("/..")) {
             path = path.substring(0, path.lastIndexOf("/.."));
         }
-        
-        // Normalize multiple slashes to single slash
+
+        // Step 5 — Collapse duplicate slashes.
         path = path.replaceAll("/+", "/");
-        
+
         return path;
     }
 
@@ -276,12 +303,12 @@ public class SessionFilter implements Filter {
         if (token == null) {
             // Generate new token only if completely missing
             token = UUID.randomUUID().toString();
-            
+
             // Set cookie with all security attributes including SameSite
             // Using addHeader() because Cookie class doesn't support SameSite attribute
             String cookieValue = buildCookieHeaderValue(token, request.isSecure());
             response.addHeader(SET_COOKIE_HEADER, cookieValue);
-            
+
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Generated new CSRF token");
             }
@@ -384,6 +411,13 @@ public class SessionFilter implements Filter {
         final String requestURI = httpRequest.getRequestURI();
         final String method = httpRequest.getMethod();
 
+        // Block GET to j_security_check before any token is written to the response.
+        // This must run first so that rejected requests do not receive a CSRF token cookie,
+        // which would otherwise bootstrap the double-submit pattern for free.
+        if (handleSecurityCheckValidation(httpRequest, httpResponse, requestURI)) {
+            return;
+        }
+
         // Set HSTS header for secure connections
         // This ensures browsers always use HTTPS for Admin Center resources including 404.js
         if (httpRequest.isSecure()) {
@@ -404,11 +438,6 @@ public class SessionFilter implements Filter {
         }
         if (needsCsrfValidation && tc.isDebugEnabled()) {
             Tr.debug(tc, "CSRF validation passed for " + method + " " + requestURI);
-        }
-
-        // Additional security check for j_security_check endpoint
-        if (handleSecurityCheckValidation(httpRequest, httpResponse, requestURI)) {
-            return;
         }
 
         try {

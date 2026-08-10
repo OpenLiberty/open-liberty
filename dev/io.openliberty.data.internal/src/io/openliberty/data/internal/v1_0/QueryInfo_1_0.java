@@ -22,7 +22,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -112,14 +111,6 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
-    protected void appendExpression(Sort<?> sort,
-                                    StringBuilder q,
-                                    Map<Object, Object> jpqlParams) {
-        throw new IllegalArgumentException(sort.toString());
-    }
-
-    @Override
-    @Trivial
     protected <T> Sort<T> createSort(String expression, OrderBy orderBy) {
         return new Sort<T>( //
                         expression, //
@@ -190,20 +181,24 @@ public class QueryInfo_1_0 extends QueryInfo {
     }
 
     @Override
-    protected int generateConstraint(StringBuilder q,
-                                     Object constraint,
-                                     int jpqlParamCount,
-                                     Set<String> jpqlParamNames,
-                                     Map<Object, Object> jpqlParams) {
+    protected void generateConstraint(StringBuilder q,
+                                      Object constraint,
+                                      Map<Object, Object> jpqlParams) {
         throw new UnsupportedOperationException("jakarta.data.constraint.Constraint");
     }
 
     @Override
-    protected int generateRestrictions(StringBuilder q,
-                                       Object restriction,
-                                       int jpqlParamCount,
-                                       Set<String> jpqlParamNames,
-                                       Map<Object, Object> jpqlParams) {
+    protected int generateExpression(StringBuilder q,
+                                     Object expression,
+                                     int jpqlParamCount,
+                                     Map<Object, Object> xprParams) {
+        throw new IllegalArgumentException("Sort: " + expression.toString());
+    }
+
+    @Override
+    protected void generateRestrictions(StringBuilder q,
+                                        Object restriction,
+                                        Map<Object, Object> jpqlParams) {
         throw new UnsupportedOperationException("jakarta.data.restrict.Restriction");
     }
 
@@ -212,6 +207,12 @@ public class QueryInfo_1_0 extends QueryInfo {
     protected Map<Integer, Object> getDeferredConstraints(boolean alwaysDefer,
                                                           Object[] methodParams) {
         return Collections.emptyMap();
+    }
+
+    @Override
+    @Trivial
+    protected Object getExpression(Sort<?> sort) {
+        return null;
     }
 
     @Override
@@ -251,11 +252,10 @@ public class QueryInfo_1_0 extends QueryInfo {
                                   Annotation[] paramAnnos,
                                   String[] attrNames,
                                   AttributeConstraint[] constraints,
-                                  char[] updateOps,
-                                  int prevNumJPQLParams) {
+                                  char[] updateOps) {
         // In Data 1.0, all constraints are the equality condition
         constraints[p] = AttributeConstraint.Equal;
-        return prevNumJPQLParams + 1;
+        return ++qlParamCount;
     }
 
     @Override

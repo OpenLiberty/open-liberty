@@ -12,18 +12,22 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record LiteralRecord<V>(Class<? extends V> type, V value) implements Literal<V> {
+record LiteralRecord<V>(
+                @Nonnull Class<? extends V> type,
+                @Nonnull V value) implements Literal<V> {
 
     LiteralRecord {
         Messages.requireNonNull(value, "value");
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "{Literal " + value.getClass().getName() + " '" + value + "'}";
     }

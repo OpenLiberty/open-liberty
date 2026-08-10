@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.config;
 
+import java.time.Duration;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -19,20 +20,21 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
+
 /**
  * Configuration for the MCP Server feature.
- * This component stores it's configuration and publishes itself as a service.
+ * This component stores its configuration and publishes itself as a service.
  * The McpServerApplicationTracker compares this with Application services to
  * determine which application this configuration belongs to.
- *
  */
-
 @Component(service = McpConfigurationComponent.class,
            configurationPid = "io.openliberty.mcp.internal.config.McpConfigurationComponent",
            configurationPolicy = org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE)
 public class McpConfigurationComponent {
 
     private static final TraceComponent tc = Tr.register(McpConfigurationComponent.class);
+
     private volatile McpServerConfigProps config;
     private volatile String servicePid;
 
@@ -54,17 +56,32 @@ public class McpConfigurationComponent {
 
     private void processConfig(Map<String, Object> properties) {
         this.servicePid = (String) properties.get("service.pid");
-
         String moduleName = (String) properties.get("moduleName");
         String path = (String) properties.get("path");
-        Object statelessObj = properties.get("stateless");
-        boolean stateless = statelessObj != null ? Boolean.parseBoolean(String.valueOf(statelessObj)) : false;
+        boolean stateless = (boolean) properties.get("stateless");
+        long asyncTimeout = (long) properties.get("asyncTimeout");
+        Duration sessionTimeout = Duration.ofSeconds((Long) properties.get("sessionTimeout"));
 
-        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid);
+        // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
+        ServerInfo serverInfo = parseServerInfo(properties);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "McpConfigurationComponent activated: servicePid=" + servicePid);
-        }
+        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout);
+    }
+
+    /**
+     * Parse the server info configuration from flattened properties.
+     * With ibm:flat="true", nested properties arrive as "info.0.name", "info.0.version", etc...
+     *
+     * @param properties the configuration properties
+     * @return the ServerInfo object with configured or default values
+     */
+    private ServerInfo parseServerInfo(Map<String, Object> properties) {
+        String name = (String) properties.get("info.0.name");
+        String title = (String) properties.get("info.0.title");
+        String version = (String) properties.get("info.0.version");
+        String description = (String) properties.get("info.0.description");
+
+        return new ServerInfo(name, title, version, description);
     }
 
     public McpServerConfigProps getConfigProps() {

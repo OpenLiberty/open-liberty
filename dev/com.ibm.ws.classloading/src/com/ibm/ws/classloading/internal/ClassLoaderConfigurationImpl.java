@@ -167,16 +167,33 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration, ClassLoa
     }
 
     @Override
+    @Trivial
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(id)
-          .append(" [child of ").append(parentId).append("]")
-          .append(" overrideLibraries = ").append(overrideLibraries)
-          .append(" privateLibraries = ").append(sharedLibraries)
-          .append(" commonLibraries = ").append(commonLibraries)
-          .append(" providers = ").append(providers)
-          .append(" nativeLibraries = ").append(nativeLibraryContainers)
-          .append(" parentLast = ").append(delegateLast);
+        sb.append("Config@");
+        
+        if (id != null) {
+            sb.append(":").append(id.getDomain()).append(":").append(id.getId());
+        }
+        
+        if (parentId != null) {
+            sb.append(" [child of ").append(parentId).append("]");
+        }
+        
+        sb.append(":").append(delegateLast ? "PL" : "PF");
+        
+        if (!sharedLibraries.isEmpty()) {
+            sb.append(":privateLibs=").append(sharedLibraries.size());
+        }
+        
+        if (!overrideLibraries.isEmpty()) {
+            sb.append(":overrideLibs=").append(overrideLibraries.size());
+        }
+        
+        if (!commonLibraries.isEmpty()) {
+            sb.append(":commonLibs=").append(commonLibraries.size());
+        }
+        
         return sb.toString();
     }
 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,13 +30,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import test.common.SharedLocationManager;
-import test.common.SharedOutputManager;
-import test.utils.Utils;
-
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+
+import test.common.SharedLocationManager;
+import test.common.SharedOutputManager;
+import test.utils.Utils;
 
 /**
  *
@@ -58,6 +58,8 @@ public class WsLocationAdminImplTest {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         SymbolRegistry.getRegistry().clear();
+        outputMgr.copyTraceStream();
+        outputMgr.copyMessageStream();
         SharedLocationManager.resetWsLocationAdmin();
 
         // Make stdout and stderr "normal"
@@ -134,7 +136,7 @@ public class WsLocationAdminImplTest {
 
     /**
      * Test method for {@link com.ibm.ws.kernel.service.location.internal.WsLocationAdminImpl#getServerResource(java.lang.String)} .
-     * 
+     *
      * @throws IOException
      */
     @Test
@@ -173,7 +175,7 @@ public class WsLocationAdminImplTest {
 
     /**
      * Test method for {@link WsLocationAdminImpl#resolveResource(String)
-
+     *
      */
     @Test(expected = MalformedLocationException.class)
     public void testResolveResourceUnknownSymbol() {
@@ -222,10 +224,12 @@ public class WsLocationAdminImplTest {
 
             // Resolve path with relative segments
             r = impl.resolveResource("${server.config.dir}/../other.dir/");
+            System.out.println("Resolved: " + r.toString());
             assertNotNull("Non-null resource should be returned for non-existent resource", r);
             assertEquals(".. should be allowed to traverse to parent (also symbolic path)", "${wlp.user.dir}/servers/other.dir/", r.toRepositoryPath());
 
             r = impl.resolveResource("${server.config.dir}/./other.dir/");
+            System.out.println("Resolved: " + r);
             assertNotNull("Non-null resource should be returned for non-existent resource", r);
             assertEquals(".. should be allowed to traverse to parent (also symbolic path)", "${server.config.dir}/other.dir/", r.toRepositoryPath());
         } catch (Throwable t) {
@@ -284,8 +288,15 @@ public class WsLocationAdminImplTest {
 
             // Resolve path with relative segments
             r = impl.resolveString("${server.config.dir}/../other.dir/");
+            System.out.println("Resolved: " + r.toString());
             assertNotNull("Non-null resource should be returned for non-existent resource", r);
             assertEquals(".. should be allowed to traverse to parent (also symbolic path): " + r, NORMALIZED_ROOT + "/servers/other.dir/", r);
+
+            // Resolve path with relative segments including partial symbol segment
+            r = impl.resolveString("${server.config.dir}/../${server.config.dir/../../other.dir/");
+            System.out.println("Resolved: " + r.toString());
+            assertNotNull("Non-null resource should be returned for non-existent resource", r);
+            assertEquals("../.. this shows traversal beyond parent, but it collapses all .. segments correctly...(also symbolic path): " + r, NORMALIZED_ROOT + "/other.dir/", r);
 
             r = impl.resolveString("${server.config.dir}/./other.dir/");
             assertNotNull("Non-null resource should be returned for non-existent resource", r);
@@ -333,7 +344,7 @@ public class WsLocationAdminImplTest {
 
     /**
      * Test method for {@link com.ibm.ws.kernel.service.location.internal.WsLocationAdminImpl#getResource(String, String)}
-     * 
+     *
      * @throws IOException
      */
     @Test

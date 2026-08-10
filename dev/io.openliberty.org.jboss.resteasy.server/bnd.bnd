@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2025 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -58,6 +58,7 @@ Import-Package: \
   !org.jboss.resteasy.plugins.providers.jaxb, \
   !sun.misc, \
   org.jboss.resteasy.plugins.server.servlet, \
+  org.jboss.logging;version="[3.4,3.5)", \
   *
 
 
@@ -70,7 +71,7 @@ instrument.disabled: false
 
 
 Include-Resource:\
-  @\${repo;org.jboss.resteasy:resteasy-servlet-initializer;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;${resteasy-version};EXACT}, \
   com/ibm/websphere=${bin}/com/ibm/websphere, \
   io/openliberty=${bin}/io/openliberty
 

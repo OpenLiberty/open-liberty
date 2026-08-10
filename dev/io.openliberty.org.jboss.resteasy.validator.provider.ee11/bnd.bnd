@@ -42,6 +42,7 @@ Export-Package: \
   org.jboss.resteasy.plugins.validation.i18n;version=${resteasy-version}
 
 Import-Package: \
+  org.jboss.logging;version="[3.6,3.7)", \
   org.jboss.resteasy.api.validation, \
   jakarta.enterprise.context;version=!,\
   jakarta.persistence,\
@@ -52,12 +53,12 @@ Import-Package: \
 instrument.ffdc: false
 
 Include-Resource:\
-@\${repo;org.jboss.resteasy:resteasy-validator-provider;${resteasy-version};EXACT}, \
+@${repo;org.jboss.resteasy:resteasy-validator-provider;${resteasy-version};EXACT}, \
 org/jboss/resteasy=${bin}/org/jboss/resteasy
 
 -buildpath: \
   org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version='${resteasy-version}',\
-  io.openliberty.org.jboss.logging35,\
+  io.openliberty.org.jboss.logging36,\
   io.openliberty.org.jboss.resteasy.common.ee11,\
   io.openliberty.org.jboss.resteasy.cdi.ee11,\
   com.ibm.ws.com.fasterxml.classmate;version=latest,\

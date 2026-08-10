@@ -82,7 +82,9 @@ public class DataStoreTest extends FATServletClient {
 
         JavaArchive DataStoreTestAppLib = ShrinkWrap.create(JavaArchive.class,
                                                             "DataStoreTestAppLib.jar")
-                        .addPackage("test.jakarta.data.datastore.lib");
+                        .addPackage("test.jakarta.data.datastore.lib")
+                        .addAsResource(new File("test-applications/DataStoreTestApp/resources/META-INF/persistence.xml"),
+                                       "META-INF/persistence.xml");
 
         JavaArchive DataStoreTestAppWebLib = ShrinkWrap.create(JavaArchive.class,
                                                                "DataStoreTestAppWebLib.jar")

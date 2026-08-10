@@ -52,7 +52,10 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0020E", //  Invalid default value for argument type.
                           "CWMCM0023E", // Invalid tool name length
                           "CWMCM0024E", // Invalid tool name character
-                          "CWMCM0025E" //  Invalid return type.
+                          "CWMCM0025E", //  Invalid return type.
+                          "CWMCM0040E", // Invalid metadata prefix
+                          "CWMCM0041E", // Invalid metadata name
+                          "CWMCM0042E" // Unable to convert metadata value
         );
     }
 
@@ -90,13 +93,6 @@ public class DeploymentProblemTest extends FATServletClient {
         String expectedErrorHeader = "The (.+?) MCP Tool has more than one parameter with the (.+?) type. Use only one (.+?) parameter in each Tool method.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateSpecialArgsErrorTest.duplicateCancellation");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Duplicate Special Args: ", expectedErrorHeader, expectedErrorList, server);
-    }
-
-    @Test
-    public void testInvalidSpecialArgsTestCase() throws Exception {
-        String expectedErrorHeader = "The (.+?) MCP Tool has a parameter of type (.+?) which is not a recognized special argument type and does not have a `@ToolArg` annotation.";
-        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidSpecialArgsErrorTest.invalidSpecialArgumentTool");
-        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Special Args: ", expectedErrorHeader, expectedErrorList, server);
     }
 
     @Test
@@ -162,5 +158,29 @@ public class DeploymentProblemTest extends FATServletClient {
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testArrayResponse",
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testListStringResponse");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid return type: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testInvalidPrefix() throws Exception {
+        String expectedError = "CWMCM0040E.*a&b.*invalidPrefix";
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid MetaField prefix", expectedError, List.of(), server);
+    }
+
+    @Test
+    public void testInvalidName() throws Exception {
+        String expectedError = "CWMCM0041E.*c/d.*invalidName";
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid MetaField name", expectedError, List.of(), server);
+    }
+
+    @Test
+    public void testInvalidIntValue() throws Exception {
+        String expectedError = "CWMCM0042E.*a.b/c.*invalidIntValue.*INT.*NumberFormatException";
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid MetaField int value", expectedError, List.of(), server);
+    }
+
+    @Test
+    public void testInvalidJsonValue() throws Exception {
+        String expectedError = "CWMCM0042E.*a.b/c.*invalidJsonValue.*JSON.*JsonbException";
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid MetaField json value", expectedError, List.of(), server);
     }
 }

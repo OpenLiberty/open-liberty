@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
 
@@ -19,18 +20,20 @@ import jakarta.data.messages.Messages;
  * Method signatures are copied from Jakarta Data.
  */
 record AtMostRecord<V extends Comparable<?>>(
-                ComparableExpression<?, V> bound)
+                @Nonnull ComparableExpression<?, V> bound)
                 implements AtMost<V> {
     public AtMostRecord {
         Messages.requireNonNull(bound, "maximum");
     }
 
     @Override
+    @Nonnull
     public GreaterThan<V> negate() {
         return GreaterThan.bound(bound);
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "<= " + bound.toString();
     }

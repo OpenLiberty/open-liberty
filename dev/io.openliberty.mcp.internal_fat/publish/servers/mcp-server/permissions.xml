@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <!-- Permissions for toolTest.war -->
+    <javaPermission codebase="${server.config.dir}/dropins/toolTest.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${server.config.dir}/dropins/toolTest.war" className="javax.management.MBeanPermission" name="*" actions="*"/>
+    <javaPermission codebase="${server.config.dir}/dropins/toolTest.war" className="javax.management.MBeanTrustPermission" name="register"/>
+</server>
+
+<!-- Made with Bob -->

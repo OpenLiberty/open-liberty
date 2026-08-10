@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ Private-Package: io.openliberty.microprofile.config.internal.extension
 Import-Package: \
         io.openliberty.microprofile.config.internal.common.resources, \
         jakarta.annotation;version="[2.1,4)",\
+        org.jboss.logging;version="[3.5,3.6)", \
         *
 
 Export-Package: \
@@ -65,7 +66,7 @@ Export-Package: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
-  com.ibm.ws.org.jboss.logging;version=latest,\
+  io.openliberty.org.jboss.logging35;version=latest,\
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.kernel.boot.common;version=latest

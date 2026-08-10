@@ -12,13 +12,14 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record BooleanLiteralRecord(
-                Boolean value)
+                @Nonnull Boolean value)
                 implements BooleanLiteral {
 
     BooleanLiteralRecord {
@@ -26,6 +27,7 @@ record BooleanLiteralRecord(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return value ? "TRUE" : "FALSE";
     }

@@ -17,14 +17,14 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
+import org.mcpjava.server.Cancellation;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
-import io.openliberty.mcp.messaging.Cancellation;
-import io.openliberty.mcp.messaging.Cancellation.OperationCancellationException;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -92,7 +92,7 @@ public class AsyncTools {
                 LOG.info("[asyncCancellationTool] Checking if tool is cancelled");
                 if (cancellation.check().isRequested()) {
                     LOG.info("[asyncCancellationTool] tool is cancelled");
-                    throw new OperationCancellationException();
+                    throw new Cancellation.OperationCancelledException();
                 }
             }
             LOG.info("[asyncCancellationTool] the tool was not cancelled");
@@ -131,14 +131,14 @@ public class AsyncTools {
         private final Jsonb jsonb = JsonbBuilder.create();
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return Person.class.isAssignableFrom(runtimeType);
+        public Class<Person> getType() {
+            return Person.class;
         }
 
         @Override
-        public Content encode(Person person) {
+        public ContentBlock encode(Person person) {
             Person encodedPerson = new Person(person.fistName, "Encoded by PersonContentEncoder", person.age);
-            return new TextContent(jsonb.toJson(encodedPerson));
+            return TextContent.of(jsonb.toJson(encodedPerson));
         }
     }
 

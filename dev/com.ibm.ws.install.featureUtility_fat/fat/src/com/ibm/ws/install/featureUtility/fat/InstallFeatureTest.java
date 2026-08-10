@@ -41,14 +41,16 @@ import com.ibm.ws.install.InstallException;
 import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
+
 public class InstallFeatureTest extends FeatureUtilityToolTest {
 
     private static final Class<?> c = InstallFeatureTest.class;
     private static String userFeatureSigPath = "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc";
     static Network network = Network.newNetwork();
-    
-    
-//  @ClassRule
+
+    // @ClassRule
     /*
      * Increased startup timeout because nexus container might take more than 60
      * seconds (default start up time) to start. Also wait for log
@@ -56,28 +58,29 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      * Disabling due to intermittent time out
      */
     // TODO publish Dockerfile for this custom image
-//  public static GenericContainer<?> nexusContainer = new GenericContainer<>("jiwoo/nexus:1.0")
-//      .withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
-//      .waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1))
-//      .withNetwork(network)
-//      .withNetworkAliases("nexus");
-    
-    //TODO Start using ImageBuilder
-//  private static final DockerImageName KEYSERVER_SIMPLE = ImageBuilder.build("keyserver-simple:3.11.6").getDockerImageName();
-    
+    // public static GenericContainer<?> nexusContainer = new
+    // GenericContainer<>("jiwoo/nexus:1.0")
+    // .withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
+    // .waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1))
+    // .withNetwork(network)
+    // .withNetworkAliases("nexus");
+
+    // TODO Start using ImageBuilder
+    // private static final DockerImageName KEYSERVER_SIMPLE =
+    // ImageBuilder.build("keyserver-simple:3.11.6").getDockerImageName();
+
     private static final DockerImageName KEYSERVER_SIMPLE = DockerImageName.parse("jiwoo/simple-keyserver:1.0");
 
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(KEYSERVER_SIMPLE)
-        .withExposedPorts(8080).waitingFor(Wait.forHttp("/"))
-        .withLogConsumer(new SimpleLogConsumer(InstallFeatureTest.class, "keyserver")).withNetwork(network)
-        .withNetworkAliases("keyserver");
+            .withExposedPorts(8080).waitingFor(Wait.forHttp("/"))
+            .withLogConsumer(new SimpleLogConsumer(InstallFeatureTest.class, "keyserver")).withNetwork(network)
+            .withNetworkAliases("keyserver");
 
-    //TODO publish Dockerfile for this custom image
+    // TODO publish Dockerfile for this custom image
     @ClassRule
     public static GenericContainer<?> proxyContainer = new GenericContainer<>("jiwoo/squid-proxy:1.0")
-        .withExposedPorts(3128).withNetwork(network);
-
+            .withExposedPorts(3128).withNetwork(network);
 
     @BeforeClass
     public static void beforeClassSetup() throws Exception {
@@ -93,7 +96,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     @Before
     public void beforeSetUp() throws Exception {
         copyFileToMinifiedRoot("etc",
-            "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+                "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
     }
 
@@ -124,15 +127,15 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String[] filesList = { "/lib/features/com.ibm.websphere.appserver.jsp-2.2.mf",
-            "/lib/features/com.ibm.websphere.appserver.jsp-2.3.mf" };
+                "/lib/features/com.ibm.websphere.appserver.jsp-2.3.mf" };
 
         // Begin Test
         String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
-        try{
+        try {
             checkCommandOutput(po, 0, null, filesList);
-        }catch(AssertionError e) {
+        } catch (AssertionError e) {
             retryFeatureUtility(METHOD_NAME);
         }
     }
@@ -159,6 +162,54 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     }
 
     /**
+     * Test installation of feature maven central mirror. Verifies feature
+     * signature.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInstallFeatureFromMavenCentralMirror() throws Exception {
+        final String METHOD_NAME = "testInstallFeature";
+        Log.entering(c, METHOD_NAME);
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer("staticWebServer");
+
+        try {
+            server.startServer();
+
+            // add the liberty server as the maven central mirror
+            writeToProps(minifiedRoot + "/etc/featureUtility.properties",
+                    "mavenCentralMirror.url",
+                    String.format("http://%s:%s/staticWebApp/",
+                            server.getHostname(),
+                            server.getHttpDefaultPort()));
+
+            // create a temporary local maven repo
+            writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo",
+                    Files.createTempDirectory("maven-repo").toAbsolutePath().toString());
+
+            // Begin Test
+            String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+            String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+            ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+            checkCommandOutput(po, 0, null, filesList);
+        } finally {
+
+            // restore the local maven repo properties
+            copyFileToMinifiedRoot("etc",
+                    "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+            writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
+
+            if (server.isStarted()) {
+                server.stopServer("SRVE0190E");
+            }
+        }
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
      * Test installation of feature json-1.0.esa from local file.
      * 
      *
@@ -170,11 +221,12 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String esaFile = String.format("/io/openliberty/features/json-1.0/%s/json-1.0-%s.esa", libertyVersion,
-            libertyVersion);
-        //copy json esa file from local Maven repo to a temporary location (wlp/tmp)
+                libertyVersion);
+        // copy json esa file from local Maven repo to a temporary location (wlp/tmp)
         copyFileToMinifiedRoot("tmp", mavenLocalRepo1 + esaFile);
         // Begin Test
-        String[] param1s = { "installFeature", minifiedRoot + "/tmp/" + String.format("json-1.0-%s.esa", libertyVersion), "--verbose" };
+        String[] param1s = { "installFeature",
+                minifiedRoot + "/tmp/" + String.format("json-1.0-%s.esa", libertyVersion), "--verbose" };
         String[] filesList = { "lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
@@ -182,9 +234,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         Log.exiting(c, METHOD_NAME);
     }
-    
+
     /**
-     * Test installation of feature usertest.with.api.esa from local. 
+     * Test installation of feature usertest.with.api.esa from local.
      * 
      *
      * @throws Exception
@@ -216,7 +268,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String[] filesList = { "/lib/features/com.ibm.websphere.appserver.eventLogging-1.0.mf",
-            "/lib/features/com.ibm.websphere.appserver.osgiConsole-1.0.mf" };
+                "/lib/features/com.ibm.websphere.appserver.osgiConsole-1.0.mf" };
 
         // Begin Test
         String[] param1s = { "installFeature", "eventLogging-1.0", "osgiConsole-1.0", "--verbose" };
@@ -241,14 +293,14 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         if (FeatureUtilityToolTest.isClosedLiberty) {
-        Log.info(c, METHOD_NAME, "Wlp is already Closed liberty. This test case will not be run.");
-        Log.exiting(c, METHOD_NAME);
-        return;
+            Log.info(c, METHOD_NAME, "Wlp is already Closed liberty. This test case will not be run.");
+            Log.exiting(c, METHOD_NAME);
+            return;
         }
 
         // Begin Test
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "wlptestjson.featuresbom",
-            String.format("com.ibm.websphere.appserver.features:features:%s", libertyVersion));
+                String.format("com.ibm.websphere.appserver.features:features:%s", libertyVersion));
         String[] param1s = { "installFeature", "rtcomm-1.0", "--acceptLicense", "-verbose" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
@@ -274,13 +326,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         if (FeatureUtilityToolTest.isClosedLiberty) {
-        Log.info(c, METHOD_NAME, "Wlp is already Closed liberty. This test case will not be run.");
-        Log.exiting(c, METHOD_NAME);
-        return;
+            Log.info(c, METHOD_NAME, "Wlp is already Closed liberty. This test case will not be run.");
+            Log.exiting(c, METHOD_NAME);
+            return;
         }
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "wlptestjson.featuresbom",
-            String.format("com.ibm.websphere.appserver.features:features:%s", libertyVersion));
+                String.format("com.ibm.websphere.appserver.features:features:%s", libertyVersion));
         String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
@@ -293,7 +345,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.exiting(c, METHOD_NAME);
     }
 
-
     /**
      * Test the installation of a made up feature.
      * 
@@ -305,14 +356,14 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String[] param1s = { "installFeature",
-            "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0", "--verbose" };
+                "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String output = po.getStdout();
 
         if (FeatureUtilityToolTest.isClosedLiberty) {
-        checkCommandOutput(po, InstallException.RUNTIME_EXCEPTION, "CWWKF1203E", null);
+            checkCommandOutput(po, InstallException.RUNTIME_EXCEPTION, "CWWKF1203E", null);
         } else {
-        checkCommandOutput(po, InstallException.RUNTIME_EXCEPTION, "CWWKF1402E", null);
+            checkCommandOutput(po, InstallException.RUNTIME_EXCEPTION, "CWWKF1402E", null);
         }
 
         Log.exiting(c, METHOD_NAME);
@@ -448,7 +499,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String output = po.getStdout();
 
         assertTrue("Should pass validation",
-            output.contains("Validation Results: The properties file successfully passed the validation."));
+                output.contains("Validation Results: The properties file successfully passed the validation."));
         assertEquals(0, po.getReturnCode());
 
         Log.exiting(c, METHOD_NAME);
@@ -485,7 +536,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
@@ -501,12 +552,12 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--to=ext.test", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--to=ext.test", "--verbose" };
 
         createExtensionDirs("ext.test");
 
         String[] filesList = { "usr/cik/extensions/ext.test/lib/features/testesa1.mf",
-            "usr/cik/extensions/ext.test/bin/testesa1.bat" };
+                "usr/cik/extensions/ext.test/bin/testesa1.bat" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
@@ -539,7 +590,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String[] param1s = { "installFeature", "testesa1", "--featuresBOM=com.ibm.ws.userFeature:invalid",
-            "--verbose" };
+                "--verbose" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, InstallException.RUNTIME_EXCEPTION, "CWWKF1503E", null);
@@ -567,7 +618,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         // initial validation
         // If 1st check fails, then the tool looks up xml and lpmf files
         copyFileToMinifiedRoot("lib/platform/checksums",
-            "publish/tmp/iFix/com.ibm.websphere.appserver.testIfix-1.0.cs");
+                "publish/tmp/iFix/com.ibm.websphere.appserver.testIfix-1.0.cs");
         // These files will have the correct checksum.
         copyFileToMinifiedRoot("lib/fixes", "publish/tmp/iFix/xml.xml");
         copyFileToMinifiedRoot("lib/fixes", "publish/tmp/iFix/lpmf.lpmf");
@@ -578,7 +629,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         // delete manifest file so the tool doesn't pick up.
         deleteFiles(METHOD_NAME, "testIfix-1.0",
-            new String[] { relativeMinifiedRoot + "/wlp/lib/platform/testIfix-1.0.mf" });
+                new String[] { relativeMinifiedRoot + "/wlp/lib/platform/testIfix-1.0.mf" });
 
         checkCommandOutput(po, 0, null, null);
 
@@ -599,32 +650,36 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
     }
-    
+
     /*
-     * Test installFeature --verify=enforce with user feature and no signature (userFeature.asc) file. Default verify option
+     * Test installFeature --verify=enforce with user feature and no signature
+     * (userFeature.asc) file. Default verify option
      * is "enforce". Only IBM Liberty feature will be verified. User feature
-     * signature verification is expected to fail as there are no signature file and public key to verify,
-     *  but should install all features successfully.
+     * signature verification is expected to fail as there are no signature file and
+     * public key to verify,
+     * but should install all features successfully.
      */
-    
+
     @Test
     public void testFeatureVerifyENFORCEnoSig() throws Exception {
         final String METHOD_NAME = "testFeatureVerifyENFORCEnoSig";
         Log.entering(c, METHOD_NAME);
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
-        
-        //copy testesa1 esa file from local Maven repo to a temporary location (wlp/tmp)
-        copyFileToMinifiedRoot("tmp", mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
-        
+
+        // copy testesa1 esa file from local Maven repo to a temporary location
+        // (wlp/tmp)
+        copyFileToMinifiedRoot("tmp",
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa");
+
         // Begin Test
         String[] param1s = { "installFeature", minifiedRoot + "/tmp/testesa1-19.0.0.8.esa", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
@@ -641,13 +696,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=all", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=all", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
@@ -663,13 +718,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testFeatureVerifySKIP";
         Log.entering(c, METHOD_NAME);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=skip", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=skip", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String output = po.getStdout();
 
@@ -691,7 +746,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=warn", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=warn", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
@@ -706,7 +761,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=invalid", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=invalid", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1505E", null);
         Log.exiting(c, METHOD_NAME);
@@ -724,7 +779,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ;
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=all", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verify=all", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1504E", null);
         Log.exiting(c, METHOD_NAME);
@@ -740,13 +795,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
@@ -763,13 +818,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         envProps.put("FEATURE_VERIFY", "all");
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
@@ -784,7 +839,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String containerUrl = "http://" + container.getHost() + ":" + container.getMappedPort(8080)
-            + "/validKey.asc";
+                + "/validKey.asc";
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
@@ -793,7 +848,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         checkCommandOutput(po, 0, null, filesList);
         Log.exiting(c, METHOD_NAME);
@@ -814,24 +869,24 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         // backup the valid user feature signature
         Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath),
-            Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
+                Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
         // overwrite with signature signed by revoked key
         Files.copy(Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/revoked/testesa1-19.0.0.8.esa.asc"),
-            Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
+                Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/revoked/revokedKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/revoked/revokedKey.asc");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "2CB7FEADC826EA27");
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         // Change back to valid signature
         Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"),
-            Paths.get(mavenLocalRepo1 + userFeatureSigPath),
-            StandardCopyOption.REPLACE_EXISTING);
+                Paths.get(mavenLocalRepo1 + userFeatureSigPath),
+                StandardCopyOption.REPLACE_EXISTING);
 
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1510E", null);
         Log.exiting(c, METHOD_NAME);
@@ -851,23 +906,23 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         // backup the valid user feature signature
         Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath),
-            Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
+                Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
         // overwrite with signature signed by expired key
         Files.copy(Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/expired/testesa1-19.0.0.8.esa.asc"),
-            Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
+                Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/expired/expiredKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/expired/expiredKey.asc");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "61B792CE2DAA8C02");
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         // Change back to valid signature
         Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"),
-            Paths.get(mavenLocalRepo1 + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
+                Paths.get(mavenLocalRepo1 + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
 
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1511E", null);
         Log.exiting(c, METHOD_NAME);
@@ -886,10 +941,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1508E", null);
@@ -911,11 +966,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "warn");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            "https://keyserver.invalid.ibm.com");
+                "https://keyserver.invalid.ibm.com");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1506E", null);
@@ -937,10 +992,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            "ftp:///repo/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+                "ftp:///repo/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1509E", null);
@@ -960,25 +1015,24 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         // backup the valid user feature signature
         Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath),
-            Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
+                Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"));
         // overwrtie valid signature to invalid signature
         Files.copy(
-            Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/invalidSig/testesa1-19.0.0.8.esa.asc"),
-            Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
+                Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/invalidSig/testesa1-19.0.0.8.esa.asc"),
+                Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-            mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+                mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         // Change back to valid signature
         Files.move(Paths.get(mavenLocalRepo1 + userFeatureSigPath + ".bck"),
-            Paths.get(mavenLocalRepo1 + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
-
+                Paths.get(mavenLocalRepo1 + userFeatureSigPath), StandardCopyOption.REPLACE_EXISTING);
 
         checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1512E", null);
         Log.exiting(c, METHOD_NAME);
@@ -996,13 +1050,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         // Begin Test
         String[] param1s = { "installFeature", "RestfulWS-3.0", "--verbose" };
         String[] filesList = { "/lib/features/com.ibm.websphere.appserver.eeCompatible-6.0.mf",
-            "/lib/features/com.ibm.websphere.appserver.eeCompatible-7.0.mf",
-            "/lib/features/com.ibm.websphere.appserver.eeCompatible-8.0.mf",
-            "/lib/features/com.ibm.websphere.appserver.eeCompatible-9.0.mf",
-            "/lib/features/io.openliberty.servlet.api-3.0.mf",
-            "/lib/features/io.openliberty.servlet.api-3.1.mf",
-            "/lib/features/io.openliberty.servlet.api-4.0.mf",
-            "/lib/features/io.openliberty.servlet.api-5.0.mf" };
+                "/lib/features/com.ibm.websphere.appserver.eeCompatible-7.0.mf",
+                "/lib/features/com.ibm.websphere.appserver.eeCompatible-8.0.mf",
+                "/lib/features/com.ibm.websphere.appserver.eeCompatible-9.0.mf",
+                "/lib/features/io.openliberty.servlet.api-3.0.mf",
+                "/lib/features/io.openliberty.servlet.api-3.1.mf",
+                "/lib/features/io.openliberty.servlet.api-4.0.mf",
+                "/lib/features/io.openliberty.servlet.api-5.0.mf" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
@@ -1012,7 +1066,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     }
 
     /*
-     * Test installFeature --verify=all from external test container with proxy through properties
+     * Test installFeature --verify=all from external test container with proxy
+     * through properties
      */
     @Test
     public void testProxyAuth() throws Exception {
@@ -1036,21 +1091,22 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-      
+
         try {
-        checkCommandOutput(po, 0, null, filesList);
+            checkCommandOutput(po, 0, null, filesList);
         } catch (AssertionError e) {
-        checkProxyLog(METHOD_NAME, proxyContainer);
-          throw e;
+            checkProxyLog(METHOD_NAME, proxyContainer);
+            throw e;
         }
-        
+
         Log.exiting(c, METHOD_NAME);
     }
-    
+
     /*
-     * Test installFeature --verify=all from external test container with proxy through env
+     * Test installFeature --verify=all from external test container with proxy
+     * through env
      */
     @Test
     public void testProxyEnv() throws Exception {
@@ -1065,30 +1121,30 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
-        
+
         Properties envProps = new Properties();
         envProps.put("http_proxy", "http://wasngi:test@" + proxyHost + ":" + proxyPort);
-
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
-      
+
         try {
-                checkCommandOutput(po, 0, null, filesList);
+            checkCommandOutput(po, 0, null, filesList);
         } catch (AssertionError e) {
-                checkProxyLog(METHOD_NAME, proxyContainer);
-                throw e;
+            checkProxyLog(METHOD_NAME, proxyContainer);
+            throw e;
         }
-        
+
         Log.exiting(c, METHOD_NAME);
 
     }
-    
+
     /*
-     * Test installFeature --verify=all from external test container with proxy through env
+     * Test installFeature --verify=all from external test container with proxy
+     * through env
      */
     @Test
     public void testProxyWrongFormatEnv() throws Exception {
@@ -1103,60 +1159,59 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
-        
+
         Properties envProps = new Properties();
         envProps.put("http_proxy", "http://wasngi:test@" + "://" + proxyHost + ":" + proxyPort);
 
-
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
-      
+
         try {
-                checkCommandOutput(po, 21, "CWWKF1401E" , null);
+            checkCommandOutput(po, 21, "CWWKF1401E", null);
         } catch (AssertionError e) {
-                throw e;
+            throw e;
         }
-        
+
         Log.exiting(c, METHOD_NAME);
 
     }
-    
+
     @Test
     @Ignore("Disabling due to intermittent nexusContianer startup timeout")
     public void testProxyAndRepoAuth() throws Exception {
         final String METHOD_NAME = "testProxyAndRepoAuth";
         Log.entering(c, METHOD_NAME);
-        
-//        container.dependsOn(nexusContainer).start();
-        
+
+        // container.dependsOn(nexusContainer).start();
+
         String proxyHost = "http://" + proxyContainer.getHost();
         String proxyPort = proxyContainer.getMappedPort(3128).toString();
         String nexusURL = "http://nexus:8081/repository/maven-central/";
-        
-        //overwrite the local maven repo so it can fetch the artifact from nexus repo
+
+        // overwrite the local maven repo so it can fetch the artifact from nexus repo
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", "tmp");
-            
+
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyUser", "wasngi");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPassword", "test");
-        
+
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.url", nexusURL);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.user", "admin");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.password", "golf");
-        
+
         String[] param1s = { "installFeature", "json-1.0", "--verbose", "--noCache" };
         String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         try {
-        checkCommandOutput(po, 0, null, filesList);
+            checkCommandOutput(po, 0, null, filesList);
         } catch (AssertionError e) {
-        checkProxyLog(METHOD_NAME, proxyContainer);
-          throw e;
+            checkProxyLog(METHOD_NAME, proxyContainer);
+            throw e;
         }
-        
+
         Log.exiting(c, METHOD_NAME);
 
     }
@@ -1167,7 +1222,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testProxyAndRepoAuthEncoded";
         Log.entering(c, METHOD_NAME);
 
-//        container.dependsOn(nexusContainer).start();
+        // container.dependsOn(nexusContainer).start();
 
         String proxyHost = "http://" + proxyContainer.getHost();
         String proxyPort = proxyContainer.getMappedPort(3128).toString();
@@ -1184,21 +1239,21 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.url", nexusURL);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.user", "admin");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.password",
-            "{xor}ODAzOQ==");
+                "{xor}ODAzOQ==");
 
         String[] param1s = { "installFeature", "json-1.0", "--verbose", "--noCache" };
         String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         try {
-        checkCommandOutput(po, 0, null, filesList);
+            checkCommandOutput(po, 0, null, filesList);
         } catch (AssertionError e) {
-        checkProxyLog(METHOD_NAME, proxyContainer);
-        throw e;
+            checkProxyLog(METHOD_NAME, proxyContainer);
+            throw e;
         }
-        
+
         Log.exiting(c, METHOD_NAME);
-        
+
     }
 
     /*
@@ -1218,10 +1273,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Properties envProps = new Properties();
         envProps.put("no_proxy", "keyserver");
 
-
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
-        
+
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
@@ -1229,15 +1283,15 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
 
         try {
-        checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1506E", null);
+            checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1506E", null);
         } catch (AssertionError e) {
-        checkProxyLog(METHOD_NAME, proxyContainer);
-        throw e;
+            checkProxyLog(METHOD_NAME, proxyContainer);
+            throw e;
         }
 
         Log.exiting(c, METHOD_NAME);
@@ -1267,14 +1321,14 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
         String[] param1s = { "installFeature", "testesa1",
-            "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+                "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
         try {
-        checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1506E", null);
+            checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1506E", null);
         } catch (AssertionError e) {
-        checkProxyLog(METHOD_NAME, proxyContainer);
-        throw e;
+            checkProxyLog(METHOD_NAME, proxyContainer);
+            throw e;
         }
 
         Log.exiting(c, METHOD_NAME);

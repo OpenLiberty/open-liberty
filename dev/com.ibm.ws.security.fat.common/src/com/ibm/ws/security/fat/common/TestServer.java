@@ -951,8 +951,9 @@ public class TestServer extends ExternalResource {
 
         // look for the "CWWKO0220I: TCP Channel defaultHttpEndpoint-ssl has stopped listening for requests on host " message
         // if we find it, then wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
-        String sslStopMsg = server.waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
-        if (sslStopMsg != null) {
+        // count instances instead of standard wait, as we then don't log a timed out message causing a test to bail if too many occur
+        int sslStopMsgs = server.waitForMultipleStringsInLogUsingMark(1, "CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500, server.getDefaultLogFile());
+        if (sslStopMsgs > 0) {
             String sslStartMsg = server.waitForDefaultHTTPEndpointSSLStart(true);
             if (sslStartMsg == null) {
                 Log.warning(thisClass, "SSL may not have started properly - future failures may be due to this");

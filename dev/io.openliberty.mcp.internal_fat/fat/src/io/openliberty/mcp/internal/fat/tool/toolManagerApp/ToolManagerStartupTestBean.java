@@ -10,13 +10,16 @@
 package io.openliberty.mcp.internal.fat.tool.toolManagerApp;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import io.openliberty.mcp.annotations.Tool;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolResponse;
+
 import io.openliberty.mcp.tools.ToolCallException;
+import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
 import io.openliberty.mcp.tools.ToolManager;
 import io.openliberty.mcp.tools.ToolManager.ToolAnnotations;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
@@ -37,7 +40,7 @@ public class ToolManagerStartupTestBean {
     private void createCreatedTool(@Observes Startup startup) {
         // For ToolManagerTestServlet.testCreatedToolInfo
         toolManager.newTool("startup-tool")
-                   .setHandler(a -> ToolResponse.success("OK"))
+                   .setHandler(a -> ToolResponse.ofText("OK"))
                    .register();
     }
 
@@ -70,7 +73,12 @@ public class ToolManagerStartupTestBean {
                    .setTitle("Tool With Args")
                    .setDescription("Test tool with arguments")
                    .setAnnotations(new ToolAnnotations("Anno Title", true, false, false, false))
-                   .setHandler(a -> ToolResponse.success("OK"))
+                   .setHandler(a -> ToolResponse.ofText("OK"))
+                   .putMetadata("hasArgs", true)
+                   .putMetadata("hasStructuredOutput", false)
+                   .putMetadata("argCount", 3)
+                   .putMetadata("foo", Map.of("foo", List.of("bar", "baz"),
+                                              "qux", 7))
                    .register();
 
         JsonObject inputSchema = Json.createObjectBuilder()
@@ -100,7 +108,17 @@ public class ToolManagerStartupTestBean {
         toolManager.newTool("tool-with-manual-schema")
                    .setInputSchema(inputSchema)
                    .setOutputSchema(outputSchema)
-                   .setAsyncHandler(a -> CompletableFuture.completedStage(ToolResponse.success("OK")))
+                   .setAsyncHandler(a -> CompletableFuture.completedStage(ToolResponse.ofText("OK")))
+                   .register();
+    }
+
+    @SuppressWarnings("unused")
+    private void createDefaultValueTool(@Observes Startup startup) {
+        toolManager.newTool("tool-with-defaultvalue")
+                   .addArgument("year", "current year", false, String.class, "2025")
+                   .setTitle("ToolArg Int Default Value")
+                   .setDescription("Test tool defaults to default value when argument not provided")
+                   .setHandler(a -> ToolResponse.ofText((String) a.args().get("year")))
                    .register();
     }
 
@@ -109,14 +127,34 @@ public class ToolManagerStartupTestBean {
     private static record PojoOutput(String baz, List<Boolean> qux) {}
 
     @SuppressWarnings("unused")
+    private void createSyncUnauthorizedTool(@Observes Startup startup) {
+        toolManager.newTool("sync-unauthorized-tool")
+                   .addArgument("message", null, true, String.class)
+                   .setHandler(a -> {
+                       throw new ToolCallUnauthorizedException((String) a.args().get("message"));
+                   })
+                   .register();
+    }
+
+    @SuppressWarnings("unused")
+    private void createAsyncUnauthorizedTool(@Observes Startup startup) {
+        toolManager.newTool("async-unauthorized-tool")
+                   .addArgument("message", null, true, String.class)
+                   .setAsyncHandler(a -> {
+                       throw new ToolCallUnauthorizedException((String) a.args().get("message"));
+                   })
+                   .register();
+    }
+
+    @SuppressWarnings("unused")
     private void createSyncTestTool(@Observes Startup startup) {
         toolManager.newTool("sync-test-tool")
                    .addArgument("action", null, true, String.class)
                    .setHandler(a -> {
                        String action = (String) a.args().get("action");
                        return switch (action) {
-                           case "success" -> ToolResponse.success("OK");
-                           case "error" -> ToolResponse.error("Error");
+                           case "success" -> ToolResponse.ofText("OK");
+                           case "error" -> ToolResponse.ofError("Error");
                            case "exception" -> throw new RuntimeException("Test Exception");
                            default -> throw new RuntimeException("Unknown action");
                        };
@@ -131,9 +169,9 @@ public class ToolManagerStartupTestBean {
                    .setAsyncHandler(a -> {
                        String action = (String) a.args().get("action");
                        return switch (action) {
-                           case "success" -> CompletableFuture.completedFuture(ToolResponse.success("OK"));
+                           case "success" -> CompletableFuture.completedFuture(ToolResponse.ofText("OK"));
                            case "error" -> throw new ToolCallException("Error");
-                           case "async-error" -> CompletableFuture.completedFuture(ToolResponse.error("Error"));
+                           case "async-error" -> CompletableFuture.completedFuture(ToolResponse.ofError("Error"));
                            case "exception" -> throw new RuntimeException("Test Exception");
                            case "async-exception" -> CompletableFuture.failedFuture(new RuntimeException("Test Async Exception"));
                            default -> throw new RuntimeException("Unknown action");

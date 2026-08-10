@@ -12,13 +12,14 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.path;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.metamodel.BooleanAttribute;
 
 record BooleanPathRecord<T, U>(
-                NavigableExpression<T, U> expression,
-                BooleanAttribute<U> attribute)
+                @Nonnull NavigableExpression<T, U> expression,
+                @Nonnull BooleanAttribute<U> attribute)
                 implements BooleanPath<T, U> {
 
     BooleanPathRecord {
@@ -27,6 +28,7 @@ record BooleanPathRecord<T, U>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         String exp = expression.toString();
         String name = attribute.name();

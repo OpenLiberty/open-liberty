@@ -11,6 +11,7 @@ package com.ibm.ws.http2.test.connection;
 
 import java.io.IOException;
 import java.io.EOFException;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,12 +27,14 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 public class H2TCPReadCallback implements TCPReadCompletedCallback {
 
     H2Connection h2connection = null;
+    Socket socket;
 
     private static final String CLASS_NAME = H2TCPReadCallback.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    public H2TCPReadCallback(H2Connection connection) {
+    public H2TCPReadCallback(H2Connection connection, Socket socket) {
         h2connection = connection;
+        this.socket = socket;
     }
 
     /*
@@ -64,22 +67,22 @@ public class H2TCPReadCallback implements TCPReadCompletedCallback {
             SocketException exception = (SocketException) arg2;
             if (exception.getMessage() != null && exception.getMessage().contains("Connection reset")) {
                 if (LOGGER.isLoggable(Level.FINEST))
-                    LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Ignoring Connection Reset for connection " + arg1.getSocket());
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Ignoring Connection Reset for connection " + socket);
                 return;
             }
         }
         if (arg2 instanceof EOFException) {
             if (LOGGER.isLoggable(Level.FINEST))
-                LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Ignoring EOFException in read callback from connection " + arg1.getSocket() + " -> " + arg2);
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Ignoring EOFException in read callback from connection " + socket + " -> " + arg2);
                 return;
         }
         if (LOGGER.isLoggable(Level.FINEST))
-            LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Received error callback from connection " + arg1.getSocket() + " -> " + arg2);
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Received error callback from connection " + socket + " -> " + arg2);
         if (!h2connection.isClosedCalled()) {
             if (LOGGER.isLoggable(Level.FINEST))
-                LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Calling close with encountered exception");
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Calling error occurred on connection");
             h2connection.getReportedExceptions().add(arg2);
-            h2connection.close();
+            h2connection.setConnectionErrorOccurred();
         }
     }
 

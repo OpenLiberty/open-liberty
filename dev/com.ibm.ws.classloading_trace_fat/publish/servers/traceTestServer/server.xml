@@ -18,6 +18,9 @@
     <!-- Test EAR application with multiple modules -->
     <enterpriseApplication id="traceTestEar" 
                           location="traceTestEar.ear" 
-                          name="traceTestEar"/>
+                          name="traceTestEar">
+        <!-- Configure parent-last delegation for the web module to test ParentLastClassLoader -->
+        <classloader delegation="parentLast"/>
+    </enterpriseApplication>
 
 </server>

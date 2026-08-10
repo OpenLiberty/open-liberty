@@ -12,21 +12,24 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.Expression;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record EqualToRecord<V>(
-                Expression<?, V> expression)
+                @Nonnull Expression<?, V> expression)
                 implements EqualTo<V> {
 
     @Override
+    @Nonnull
     public NotEqualTo<V> negate() {
         return NotEqualTo.expression(expression);
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "= " + expression.toString();
     }

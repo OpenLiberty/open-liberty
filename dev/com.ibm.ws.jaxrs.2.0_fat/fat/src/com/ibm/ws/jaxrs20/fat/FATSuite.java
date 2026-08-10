@@ -56,6 +56,7 @@ import componenttest.rules.repeater.RepeatTests;
                 LinkHeaderTest.class,
                 MediaTypeTest.class,
                 MultipartTest.class,
+                SecurityLimitsTest.class,
                 ManagedBeansTest.class,
                 OptionsTest.class,
                 ParamConverterTest.class,

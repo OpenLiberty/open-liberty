@@ -9,8 +9,13 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.test.schema;
 
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
+
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,19 +24,20 @@ import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.ToolMethodArgument;
-import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
+import io.openliberty.mcp.internal.ToolValidation.ToolValidationError;
 import io.openliberty.mcp.internal.schemas.SchemaDirection;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.MockAnnotatedMethod;
+import io.openliberty.mcp.internal.testutils.MockBean;
 import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTransient;
@@ -301,7 +307,7 @@ public class SchemaTest {
     @Test
     public void testToolInputSchema() throws NoSuchMethodException, SecurityException {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "updateWidget");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedSchema = """
                         {
@@ -374,7 +380,7 @@ public class SchemaTest {
     @Test
     public void testToolInputRecursive() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "combineWidgets");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
 
         String expectedSchema = """
@@ -465,7 +471,7 @@ public class SchemaTest {
     @Test
     public void testPersonCheckToolSchema() throws NoSuchMethodException, SecurityException {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "checkPerson");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                         {
@@ -900,7 +906,7 @@ public class SchemaTest {
     @Test
     public void testPersonAddtoListToolInputSchema() throws NoSuchMethodException, SecurityException {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addPersonToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                                 {
@@ -1945,11 +1951,12 @@ public class SchemaTest {
     }
 
     @SuppressWarnings("unused")
-    @Test(expected = GenericArgumentException.class)
+    @Test
     public void testGenericToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
-        String toolInputSchema = registry.getToolInputSchema(arguments).toString();
+        List<ToolValidationError> validationErrors = new ArrayList<>();
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(MockBean.of(SchemaTest.class), toolMethod, Collections.emptyMap(), validationErrors);
+        assertThat("Expected validation errors", validationErrors, not(empty()));
     }
 
     @Tool(name = "addGenericSingleBoundToList", title = "adds generic to generic list", description = "adds person to employee list, returns nothing")
@@ -1963,11 +1970,12 @@ public class SchemaTest {
     }
 
     @SuppressWarnings("unused")
-    @Test(expected = GenericArgumentException.class)
+    @Test
     public void testGenericSingleBoundToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericSingleBoundToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
-        String toolInputSchema = registry.getToolInputSchema(arguments).toString();
+        List<ToolValidationError> validationErrors = new ArrayList<>();
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(MockBean.of(SchemaTest.class), toolMethod, Collections.emptyMap(), validationErrors);
+        assertThat("Expected validation errors", validationErrors, not(empty()));
     }
 
     public static interface NumberRestrictor {
@@ -2046,7 +2054,7 @@ public class SchemaTest {
     @Test
     public void testWildcardToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addWildcardToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                         {
@@ -2085,7 +2093,7 @@ public class SchemaTest {
     @Test
     public void testGenericExtendBoundToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addWildcardExtendBoundToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                     {
@@ -2136,7 +2144,7 @@ public class SchemaTest {
     @Test
     public void testWildcardSuperBoundsToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addWildcardSuperBoundsToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                     {
@@ -2200,7 +2208,7 @@ public class SchemaTest {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericToGenericArrayGenericConcrete");
         Map<TypeVariable<?>, Type> genericMap = new HashMap<>();
         genericMap.put((TypeVariable<?>) toolMethod.getJavaMember().getParameters()[2].getParameterizedType(), String.class);
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, genericMap);
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, genericMap, Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                             {

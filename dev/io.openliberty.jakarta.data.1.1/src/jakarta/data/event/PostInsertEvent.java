@@ -12,9 +12,11 @@
  *******************************************************************************/
 package jakarta.data.event;
 
+import jakarta.annotation.Nonnull;
+
 public class PostInsertEvent<E> extends LifecycleEvent<E> {
 
-    public PostInsertEvent(E entity) {
+    public PostInsertEvent(@Nonnull E entity) {
         super(entity);
     }
 }

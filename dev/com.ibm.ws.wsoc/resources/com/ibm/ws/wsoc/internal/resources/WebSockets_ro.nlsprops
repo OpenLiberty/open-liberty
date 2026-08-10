@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -159,9 +159,9 @@ morethanoneonopen.annotation=CWWKH0036E: A ap\u0103rut o excep\u0163ie \u00een t
 morethanoneonopen.annotation.explanation=ServerEndpoint adnotat\u0103 este invalid\u0103 deoarece sunt definite mai mult de o metod\u0103 @OnOpen \u00een clasa Endpoint adnotat\u0103. Aplica\u0163ia WebSocket nu este implementat\u0103 corect.
 morethanoneonopen.annotation.useraction=Corecta\u0163i clasa ServerEndpoint adnotat\u0103 definind doar o singur\u0103 metod\u0103 @OnOpen. Dup\u0103 ce rezolva\u0163i problema, implementa\u0163i aplica\u0163ia din nou.
 
-invalid.message.toobig=CWWKH0037E: Mesaj WebSocket de intrare invalid \u00een clasa ServerEndpoint {0}. Dimensiunea mesajului de intrare este {1} care este mai mare dec\u00e2t valoarea maxMessageSize {2} definit\u0103 \u00een metoda adnot\u0103rii @onMessage {3}.
-invalid.message.toobig.explanation=Mesajul WebSocket nu poate dep\u0103\u015fi valoarea maxMessageSize definit\u0103 \u00een adnotarea @OnMessage.
-invalid.message.toobig.useraction=Verifica\u0163i ca clientul s\u0103 trimit\u0103 mesajul WebSocket cu o lungime mai mic\u0103 dec\u00e2t maxMessageSize definit \u00een @onMessage sau cre\u015fte\u0163i maxMessageSize \u00een @onMessage \u015fi implementa\u0163i aplica\u0163ia din nou.
+invalid.message.toobig=CWWKH0037E: Un mesaj primit cu dimensiunea de {0} octe\u021bi dep\u0103\u0219e\u0219te dimensiunea maxim\u0103 permis\u0103 de {1} octe\u021bi \u00een clasa {2} pentru metoda {3}.
+invalid.message.toobig.explanation=Mesajul a dep\u0103\u0219it limita de dimensiune configurat\u0103. Aceast\u0103 problem\u0103 poate fi cauzat\u0103 de valoarea adnot\u0103rii \u201e @OnMessage \u201d ( maxMessageSize ), de dimensiunea bufferului de sesiune ( maxTextMessageBufferSize sau maxBinaryMessageBufferSize ) sau de limita implicit\u0103 atunci c\u00e2nd nu exist\u0103 niciun handler pentru tipul respectiv de mesaj.
+invalid.message.toobig.useraction=Fie reduce\u021bi dimensiunea mesajului clientului, fie m\u0103ri\u021bi valoarea adnot\u0103rii \u201e @OnMessage \u201d ( maxMessageSize ), fie m\u0103ri\u021bi dimensiunea bufferului de sesiune folosind setMaxTextMessageBufferSize( ) sau setMaxBinaryMessageBufferSize( ), fie utiliza\u021bi op\u021biunea de configurare \u201e HTTP \u201d ( websocketBufferSize, ), fie ad\u0103uga\u021bi un handler adecvat de tipul \u201e @OnMessage \u201d pentru tipul respectiv de mesaj.
 
 maxidletimeout.closesession=CWWKH0038E: Sesiunea WebSocket a fost inactiv\u0103 pentru {0} secunde. Se \u00eenchide conexiunea.
 maxidletimeout.closesession.explanation=Sesiune de WebSocket a expirat. Sesiunile WebSocket devin inactive c\u00e2nd mesajele nu sunt trimise sau primite \u00een num\u0103rul de secunde specificat de setarea maxIdleTimeout.

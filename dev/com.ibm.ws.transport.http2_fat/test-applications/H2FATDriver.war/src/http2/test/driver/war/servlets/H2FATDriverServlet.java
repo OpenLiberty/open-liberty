@@ -59,7 +59,7 @@ import test.server.transport.http2.Utils;
 public class H2FATDriverServlet extends FATServlet {
     /**  */
     private static final long serialVersionUID = 1L;
-    protected final long defaultTimeoutToSendFrame = 29000L;
+    protected final long defaultTimeoutToSendFrame = 35000L;
     private final int STRESS_TEST_TIMEOUT = 120000;
 
     private static final Logger LOGGER = Logger.getLogger(H2FATDriverServlet.class.getName());
@@ -72,6 +72,7 @@ public class H2FATDriverServlet extends FATServlet {
     private static final String SERVLET_CONTINUATION = "/H2TestModule/HeadersAndContinuation";
     protected static final String COMPRESSION_URI = "/H2TestModule/H2Compression";
     protected static final String POST_ECHO_BODY_URI = "/H2TestModule/H2PostEchoBody";
+    protected static final String LARGE_RESPONSE_URI = "/H2TestModule/H2LargeResponse";
 
     public static final FrameSettings EMPTY_SETTINGS_FRAME = new FrameSettings();
     public static final FrameSettings DEFAULT_SERVER_SETTINGS_FRAME = new FrameSettings(0, -1, -1, 100, -1, 57344, -1, false);

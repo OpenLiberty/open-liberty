@@ -25,14 +25,16 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
 import io.openliberty.mcp.internal.security.SecurityRequirement.SecurityAnnotation;
+import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
 import io.openliberty.mcp.tools.ToolManager;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
@@ -46,7 +48,7 @@ public class ToolRegistry implements ToolManager {
         if (staticInstance != null) {
             return staticInstance;
         }
-        return CDI.current().select(McpCdiExtension.class).get().getToolRegistry();
+        return CDI.current().select(McpCdiExtension.class).get().getCurrentToolRegistry();
     }
 
     /**
@@ -59,6 +61,7 @@ public class ToolRegistry implements ToolManager {
     }
 
     private final SchemaRegistry schemaRegistry;
+    private ConverterRegistry converterRegistry;
     private final Jsonb jsonb;
 
     private final ToolStore toolStore = new ToolStore();
@@ -123,7 +126,15 @@ public class ToolRegistry implements ToolManager {
         return new ToolDefinitionImpl(name);
     }
 
-    public class ToolDefinitionImpl implements ToolDefinition {
+    public void setConverterRegistry(ConverterRegistry converterRegistry) {
+        this.converterRegistry = converterRegistry;
+    }
+
+    public ConverterRegistry getConverterRegistry() {
+        return converterRegistry;
+    }
+
+    public class ToolDefinitionImpl extends MetaCarrierBuilderImpl<ToolDefinitionImpl> implements ToolDefinition {
 
         private final String name;
         private String title;
@@ -193,7 +204,7 @@ public class ToolRegistry implements ToolManager {
                 String message = Tr.formatMessage(tc, "CWMCM0032E.duplicate.argument.name", this.name, arg.name());
                 throw new IllegalArgumentException(message);
             }
-            for (var error : ToolValidation.validateToolArgument(arg)) {
+            for (var error : ToolValidation.validateToolArgument(arg, converterRegistry)) {
                 switch (error.type()) {
                     case NAME_BLANK -> {
                         String message = Tr.formatMessage(tc, "CWMCM0030E.blank.arguments", this.name);
@@ -205,7 +216,7 @@ public class ToolRegistry implements ToolManager {
                     }
                     case CONVERSION_ERROR -> {
                         String msg = Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error",
-                                                      this.name, arg.name(), arg.type().getTypeName(), arg.defaultValue(), error.exception());
+                                                      this.name, arg.name(), arg.type().getTypeName(), arg.defaultValue(), error.exception().toString());
                         throw new IllegalArgumentException(msg, error.exception());
                     }
                     // This case should not occur here, but switch is required to cover all cases
@@ -269,7 +280,9 @@ public class ToolRegistry implements ToolManager {
                                                     asyncHandler,
                                                     Optional.empty(), // Method metadata
                                                     securityRequirement,
-                                                    Instant.now());
+                                                    Instant.now(),
+                                                    metadata,
+                                                    Collections.emptyList()); // Validation errors
 
             addTool(newTool);
 

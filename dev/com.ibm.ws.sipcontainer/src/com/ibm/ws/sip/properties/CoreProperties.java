@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2003, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.properties;
 
@@ -694,13 +691,35 @@ public class CoreProperties
 	public static final boolean MARK_INTERNAL_ERROR_RESPONSE_DEFAULT = false;
 	
 	/**
-	 * Indicates whether an incoming request needs to be sent externally to Route header if there is no next application. 
-	 * The default is true that means to route it as according to JSR 289 15.4.1. 
+	 * Indicates whether an incoming request needs to be sent externally to Route header if there is no next application.
+	 * The default is true that means to route it as according to JSR 289 15.4.1.
 	 * If this property is set to false, we send an error defined in the <code>sip.no.route.error.code</code> CP.
 	 * PI17820
 	 */
 	public static final String  WAS80_ROUTE_WHEN_NO_APPLICATION = "routeWhenNoApp";
 	public static final boolean WAS80_ROUTE_WHEN_NO_APPLICATION_DEFAULT = true;
+
+	/**
+	 * Comma-separated allow list of hosts (and optional ports) to which the SIP container
+	 * may forward requests when acting as a transparent proxy (i.e. when no SIP application
+	 * matched the incoming request and <code>routeWhenNoApp=true</code>).
+	 * <p>
+	 * Each entry is either a bare hostname / IP address (e.g. {@code proxy.example.com} or
+	 * {@code 192.168.1.10}) or a host:port pair (e.g. {@code proxy.example.com:5060}).
+	 * A host-only entry matches any port on that host.
+	 * <p>
+	 * When the property is empty (the default) all external forwarding is blocked and the
+	 * container responds with the error code defined by <code>sipNoRouteErrorCode</code>
+	 * (default 403). Set it to a non-empty value to explicitly permit forwarding to the
+	 * listed destinations. This mitigates the open-proxy / SSRF vector (CWE-918 / PH72053).
+	 * <p>
+	 * Example:
+	 * <pre>
+	 *   sipProxyAllowList=proxy.example.com:5060,10.0.0.1
+	 * </pre>
+	 */
+	public static final String  SIP_PROXY_ALLOW_LIST = "sipProxyAllowList";
+	public static final String  SIP_PROXY_ALLOW_LIST_DEFAULT = "";
 	
 	/**
 	 * This property sets a response code for session invalidated in underlying state
@@ -890,6 +909,7 @@ public class CoreProperties
 		properties.setBoolean(ENABLE_HPEL_SIP_LOG_EXTENSION, ENABLE_HPEL_SIP_LOG_EXTENSION_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(SAVE_MESSAGE_ARRIVAL_TIME_ATTRIBUTE, SAVE_MESSAGE_ARRIVAL_TIME_ATTRIBUTE_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(WAS80_ROUTE_WHEN_NO_APPLICATION, WAS80_ROUTE_WHEN_NO_APPLICATION_DEFAULT, CustPropSource.DEFAULT);
+		properties.setString(SIP_PROXY_ALLOW_LIST, SIP_PROXY_ALLOW_LIST_DEFAULT, CustPropSource.DEFAULT);
 		properties.setInt(WAS80_SESSION_INVALIDATE_RESPONSE, WAS80_SESSION_INVALIDATE_RESPONSE_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(WAS80_TREAT_2XX_6XX_AS_BEST_RESPONSE, WAS80_TREAT_2XX_6XX_AS_BEST_RESPONSE_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(ALLOW_SETTING_SYSTEM_CONTACT_DISPLAY_NAME, ALLOW_SETTING_SYSTEM_CONTACT_DISPLAY_NAME_DEFAULT, CustPropSource.DEFAULT);

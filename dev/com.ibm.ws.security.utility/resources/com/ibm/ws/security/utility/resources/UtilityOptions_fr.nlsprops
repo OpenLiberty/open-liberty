@@ -54,7 +54,7 @@ encode.desc=\tEncoder le texte fourni.\n\n\tSi votre mot de passe comprend des c
 encode.usage.options=\t{0} encode [options] textToEncode
 encode.option-key.1.text=\ \ \ \ textToEncode
 encode.option-desc.1.text=\tSi aucun argument n''est sp\u00e9cifi\u00e9, l''outil entrera en mode interactif sinon, le texte fourni sera encod\u00e9.\n\tLe texte contenant des espaces doit \u00eatre enti\u00e8rement mis entre guillemets s''il est sp\u00e9cifi\u00e9 comme argument.
-encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|aes-128|hash{1}]
 encode.option-desc.encoding=\tIndiquez comment coder le mot de passe. Les encodages pris en charge sont xor, aes, aes-128, et hash. Le codage par d\u00e9faut est xor. Le cryptage Aes s''effectue \u00e0 l''aide d''une cl\u00e9 de aes-256 bits.\n\taes-128 peut \u00eatre utilis\u00e9 pour assurer la compatibilit\u00e9 avec les versions du serveur ant\u00e9rieures \u00e0 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
 encode.option-desc.key=\tIndiquer une cl\u00e9 \u00e0 utiliser lors du codage \u00e0 l''aide\nde la norme AES. Cette cha\u00eene servira\n\u00e0 g\u00e9n\u00e9rer une cl\u00e9 de chiffrement AES, qui sera utilis\u00e9e pour chiffrer et\nd\u00e9chiffrer le mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur en d\u00e9finissant\nla variable wlp.password.encryption.key dont la valeur correspond \u00e0 la\ncl\u00e9. \u00c0 partir d'' 26.0.0.3, la cl\u00e9 par d\u00e9faut n''est plus utilis\u00e9e. \u00c0 la place,\nindiquez l''un des arguments suivants : --key, --base64Key, --aesConfigFile, ou --keyring.

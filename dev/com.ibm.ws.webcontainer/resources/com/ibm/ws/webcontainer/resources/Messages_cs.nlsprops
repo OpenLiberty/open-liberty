@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Upravte logiku aplikace, abyste se uj
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: Relativn\u00ed adresu sendRedirect URL v aplikaci nelze p\u0159ev\u00e9st na platnou adresu URL.
 sendRedirect.cannot.convert.relative.url.explanation=Zadan\u00fd relativn\u00ed URL m\u016f\u017ee obsahovat neplatn\u00e9 znaky proch\u00e1zen\u00ed cest nebo indexy.
 sendRedirect.cannot.convert.relative.url.useraction=Ov\u011b\u0159en\u00ed um\u00edst\u011bn\u00ed sendRedirect URL v aplikaci p\u0159ed vol\u00e1n\u00edm metody response.sendRedirect( )
+
+invalid.accept.language.length=CWWWC0013E: Hodnota hlavi\u010dky Accept-Language v po\u017eadavku HTTP je p\u0159\u00edli\u0161 dlouh\u00e1.
+invalid.accept.language.length.explanation=Klient ode\u0161le hlavi\u010dku Accept-Language, kter\u00e1 je p\u0159\u00edli\u0161 dlouh\u00e1.
+invalid.accept.language.length.useraction=Klient mus\u00ed odeslat hlavi\u010dku Accept-Language s hodnotou d\u00e9lky 4096 bajt\u016f nebo m\u00e9n\u011b.

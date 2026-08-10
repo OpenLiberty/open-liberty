@@ -43,7 +43,8 @@ import componenttest.topology.impl.LibertyServer;
                 BasicSpringBootWebfluxTests.class,
                 BasicSpringBootFailStart.class,
                 BasicSpringBootTests40.class,
-                BasicSpringBootWebfluxTests40.class
+                BasicSpringBootWebfluxTests40.class,
+                BasicSpringBootFailStart40.class
 })
 
 public class FATSuite {

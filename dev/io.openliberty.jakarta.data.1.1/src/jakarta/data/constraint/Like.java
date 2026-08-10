@@ -17,6 +17,7 @@ import static jakarta.data.constraint.LikeRecord.ESCAPE;
 import static jakarta.data.constraint.LikeRecord.STRING_WILDCARD;
 import static jakarta.data.constraint.LikeRecord.translate;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.StringLiteral;
@@ -28,7 +29,8 @@ public interface Like extends Constraint<String> {
 
     char escape();
 
-    static Like literal(String value) {
+    @Nonnull
+    static Like literal(@Nonnull String value) {
 
         Messages.requireNonNull(value, "value");
 
@@ -37,14 +39,17 @@ public interface Like extends Constraint<String> {
         return new LikeRecord(expression, ESCAPE);
     }
 
+    @Nonnull
     TextExpression<?> pattern();
 
-    static Like pattern(String pattern) {
+    @Nonnull
+    static Like pattern(@Nonnull String pattern) {
 
         return pattern(pattern, CHAR_WILDCARD, STRING_WILDCARD);
     }
 
-    static Like pattern(String pattern, char charWildcard, char stringWildcard) {
+    @Nonnull
+    static Like pattern(@Nonnull String pattern, char charWildcard, char stringWildcard) {
         Messages.requireNonNull(pattern, "pattern");
 
         StringLiteral expression = StringLiteral.of(translate(pattern,
@@ -56,7 +61,8 @@ public interface Like extends Constraint<String> {
         return new LikeRecord(expression, ESCAPE);
     }
 
-    static Like pattern(String pattern,
+    @Nonnull
+    static Like pattern(@Nonnull String pattern,
                         char charWildcard,
                         char stringWildcard,
                         char escape) {
@@ -72,14 +78,16 @@ public interface Like extends Constraint<String> {
         return new LikeRecord(expression, escape);
     }
 
-    static Like pattern(TextExpression<?> pattern, char escape) {
+    @Nonnull
+    static Like pattern(@Nonnull TextExpression<?> pattern, char escape) {
 
         Messages.requireNonNull(pattern, "pattern");
 
         return new LikeRecord(pattern, escape);
     }
 
-    static Like prefix(String prefix) {
+    @Nonnull
+    static Like prefix(@Nonnull String prefix) {
 
         Messages.requireNonNull(prefix, "prefix");
 
@@ -89,7 +97,8 @@ public interface Like extends Constraint<String> {
         return new LikeRecord(expression, ESCAPE);
     }
 
-    static Like substring(String substring) {
+    @Nonnull
+    static Like substring(@Nonnull String substring) {
 
         Messages.requireNonNull(substring, "substring");
 
@@ -100,7 +109,8 @@ public interface Like extends Constraint<String> {
         return new LikeRecord(expression, ESCAPE);
     }
 
-    static Like suffix(String suffix) {
+    @Nonnull
+    static Like suffix(@Nonnull String suffix) {
 
         Messages.requireNonNull(suffix, "suffix");
 

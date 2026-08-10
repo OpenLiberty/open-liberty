@@ -58,6 +58,9 @@ import test.jakarta.data.datastore.web.lib.WebLibRepo;
 public class DataStoreTestServlet extends FATServlet {
 
     @Inject
+    AppJarPersistenceUnitRepo appJarPersistenceUnitRepo;
+
+    @Inject
     DefaultDSRepo defaultDSRepo;
 
     @Inject
@@ -292,6 +295,44 @@ public class DataStoreTestServlet extends FATServlet {
             else
                 tx.rollback();
         }
+    }
+
+    /**
+     * Use a repository defined in the web module, but which requires a
+     * persistence unit that is defined in a JAR file of the enterprise
+     * application.
+     */
+    @Test
+    public void testPersistenceUnitInAppJarUsedByWebModule() {
+        // insert data using a different repository
+        ServerDSEntity forty_eight = ServerDSEntity.of("forty-eight", 12);
+        serverDSJNDIRepo.insert(forty_eight);
+
+        assertEquals(true,
+                     appJarPersistenceUnitRepo.quadruple("forty-eight"));
+
+        try (EntityManager em = appJarPersistenceUnitRepo.entityMgr()) {
+
+            String jpql = "FROM ServerDSEntity WHERE id = 'forty-eight'";
+            ServerDSEntity entity = em
+                            .createQuery(jpql, ServerDSEntity.class)
+                            .getSingleResult();
+            assertEquals("forty-eight", entity.id);
+            assertEquals(48, entity.value);
+
+            try {
+                Class<?> c = entity.getClass()
+                                .getClassLoader()
+                                .loadClass(AppJarPersistenceUnitRepo.class.getName());
+                fail("Loaded web module class from the class loader of a" +
+                     " persistence unit for an entity class defined in a" +
+                     " JAR of the application. Loaded: " + c);
+            } catch (ClassNotFoundException x) {
+                // expected
+            }
+        }
+
+        serverDSIdRepo.remove(ServerDSEntity.of("forty-eight", 48));
     }
 
     /**

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -159,9 +159,9 @@ morethanoneonopen.annotation=CWWKH0036E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSoc
 morethanoneonopen.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert t\u00f6bb @OnOpen met\u00f3dus van megadva az annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre.
 morethanoneonopen.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen @OnOpen met\u00f3dus megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
 
-invalid.message.toobig=CWWKH0037E: \u00c9rv\u00e9nytelen bej\u00f6v\u0151 WebSocket \u00fczenet a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban. A bej\u00f6v\u0151 \u00fczenet {1} m\u00e9rettel rendelkezik, amely nagyobb, mint a(z) {3} @OnMessage feljegyz\u00e9si met\u00f3dusban megadott {2} maxMessageSize \u00e9rt\u00e9k.
-invalid.message.toobig.explanation=A WebSocket \u00fczenet m\u00e9rete nem haladhatja meg az @OnMessage feljegyz\u00e9sben megadott maxMessageSize \u00e9rt\u00e9ket.
-invalid.message.toobig.useraction=\u00c1ll\u00edtsa be az \u00fcgyfelet az @OnMessage met\u00f3dusban megadott maxMessageSize \u00e9rt\u00e9kn\u00e9l kisebb m\u00e9ret\u0171 WebSocket \u00fczenetek k\u00fcld\u00e9s\u00e9re, vagy n\u00f6velje a maxMessageSize \u00e9rt\u00e9ket az @OnMessage met\u00f3dusban, majd telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+invalid.message.toobig=CWWKH0037E: A {0} b\u00e1jt m\u00e9ret\u0171 be\u00e9rkez\u0151 \u00fczenet meghaladja a {2} oszt\u00e1lyban az {3} met\u00f3dusra vonatkoz\u00f3an megengedett maxim\u00e1lis m\u00e9retet, amely {1} b\u00e1jt.
+invalid.message.toobig.explanation=Az \u00fczenet meghaladta a be\u00e1ll\u00edtott m\u00e9retkorl\u00e1tot. Ezt a probl\u00e9m\u00e1t az \u201e @OnMessage \u201d ( maxMessageSize ) annot\u00e1ci\u00f3 \u00e9rt\u00e9ke, a munkamenet-puffer m\u00e9rete ( maxTextMessageBufferSize vagy maxBinaryMessageBufferSize ), illetve az \u00fczenett\u00edpusra vonatkoz\u00f3 kezel\u0151 hi\u00e1ny\u00e1ban \u00e9rv\u00e9nyes alap\u00e9rtelmezett korl\u00e1t okozhatja.
+invalid.message.toobig.useraction=Vagy cs\u00f6kkentse az \u00fcgyf\u00e9l\u00fczenet m\u00e9ret\u00e9t, n\u00f6velje az @OnMessage maxMessageSize annot\u00e1ci\u00f3 \u00e9rt\u00e9k\u00e9t, n\u00f6velje a munkamenet-puffer m\u00e9ret\u00e9t a setMaxTextMessageBufferSize( ) vagy a setMaxBinaryMessageBufferSize( ) seg\u00edts\u00e9g\u00e9vel, haszn\u00e1lja a HTTP konfigur\u00e1ci\u00f3s opci\u00f3t websocketBufferSize,, vagy adjon hozz\u00e1 egy megfelel\u0151 @OnMessage kezel\u0151t az \u00fczenett\u00edpushoz.
 
 maxidletimeout.closesession=CWWKH0038E: A WebSocket munkamenet {0} m\u00e1sodpercig inakt\u00edv volt. A kapcsolat lez\u00e1r\u00e1sa.
 maxidletimeout.closesession.explanation=A WebSocket munkamenet t\u00fall\u00e9pte az id\u0151korl\u00e1tot. A WebSocket munkamenet akkor v\u00e1lik inakt\u00edvv\u00e1, amikor a maxIdleTimeout be\u00e1ll\u00edt\u00e1s \u00e1ltal megadott m\u00e1sodpercen bel\u00fcl nem t\u00f6rt\u00e9nik \u00fczenetek k\u00fcld\u00e9se \u00e9s fogad\u00e1sa.

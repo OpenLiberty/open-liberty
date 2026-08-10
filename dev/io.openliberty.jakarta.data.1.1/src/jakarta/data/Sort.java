@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.messages.Messages;
@@ -21,11 +23,11 @@ import jakarta.data.metamodel.Attribute;
  * Method signatures copied from jakarta.data.Sort from the Jakarta Data repo.
  */
 public record Sort<T>(
-                ComparableExpression<T, ? extends Comparable<?>> expression,
-                String property,
+                @Nullable ComparableExpression<T, ? extends Comparable<?>> expression,
+                @Nullable String property,
                 boolean isAscending,
                 boolean ignoreCase,
-                Nulls nullOrdering) {
+                @Nonnull Nulls nullOrdering) {
 
     public enum Nulls {
         FIRST,
@@ -50,7 +52,7 @@ public record Sort<T>(
         }
     }
 
-    public Sort(String property, boolean isAscending, boolean ignoreCase) {
+    public Sort(@Nonnull String property, boolean isAscending, boolean ignoreCase) {
         this(null, //
              property, //
              isAscending, //
@@ -58,12 +60,13 @@ public record Sort<T>(
              Nulls.UNSPECIFIED);
     }
 
-    public static <T, V extends Comparable<?>> Sort<T> //
-                    asc(ComparableExpression<T, V> expression) {
+    @Nonnull
+    public static <T, V extends Comparable<?>> Sort<T> asc(@Nonnull ComparableExpression<T, V> expression) {
         return new Sort<>(expression, null, true, false, Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> asc(String attribute) {
+    @Nonnull
+    public static <T> Sort<T> asc(@Nonnull String attribute) {
         return new Sort<>( //
                         null, //
                         attribute, //
@@ -72,7 +75,8 @@ public record Sort<T>(
                         Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> ascIgnoreCase(String attribute) {
+    @Nonnull
+    public static <T> Sort<T> ascIgnoreCase(@Nonnull String attribute) {
         return new Sort<>( //
                         null, //
                         attribute, //
@@ -81,16 +85,18 @@ public record Sort<T>(
                         Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> ascIgnoreCase(TextExpression<T> expression) {
+    @Nonnull
+    public static <T> Sort<T> ascIgnoreCase(@Nonnull TextExpression<T> expression) {
         return new Sort<>(expression, null, true, true, Nulls.UNSPECIFIED);
     }
 
-    public static <T, V extends Comparable<?>> Sort<T> //
-                    desc(ComparableExpression<T, V> expression) {
+    @Nonnull
+    public static <T, V extends Comparable<?>> Sort<T> desc(@Nonnull ComparableExpression<T, V> expression) {
         return new Sort<>(expression, null, false, false, Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> desc(String attribute) {
+    @Nonnull
+    public static <T> Sort<T> desc(@Nonnull String attribute) {
         return new Sort<>( //
                         null, //
                         attribute, //
@@ -99,7 +105,8 @@ public record Sort<T>(
                         Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> descIgnoreCase(String attribute) {
+    @Nonnull
+    public static <T> Sort<T> descIgnoreCase(@Nonnull String attribute) {
         return new Sort<>( //
                         null, //
                         attribute, //
@@ -108,14 +115,26 @@ public record Sort<T>(
                         Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> descIgnoreCase(TextExpression<T> expression) {
+    @Nonnull
+    public static <T> Sort<T> descIgnoreCase(@Nonnull TextExpression<T> expression) {
         return new Sort<>(expression, null, false, true, Nulls.UNSPECIFIED);
+    }
+
+    @Nullable
+    public ComparableExpression<T, ? extends Comparable<?>> expression() {
+        return expression;
+    }
+
+    @Nullable
+    public String property() {
+        return property;
     }
 
     public boolean isDescending() {
         return !isAscending;
     }
 
+    @Nonnull
     public Sort<T> nullsFirst() {
         return new Sort<>( //
                         expression, //
@@ -125,6 +144,7 @@ public record Sort<T>(
                         Nulls.FIRST);
     }
 
+    @Nonnull
     public Sort<T> nullsLast() {
         return new Sort<>( //
                         expression, //
@@ -134,8 +154,14 @@ public record Sort<T>(
                         Nulls.LAST);
     }
 
-    public static <T> Sort<T> of(String attribute,
-                                 Direction direction,
+    @Nonnull
+    public Nulls nullOrdering() {
+        return nullOrdering;
+    }
+
+    @Nonnull
+    public static <T> Sort<T> of(@Nonnull String attribute,
+                                 @Nonnull Direction direction,
                                  boolean ignoreCase) {
         Messages.requireNonNull(direction, "direction");
 
@@ -147,10 +173,11 @@ public record Sort<T>(
                         Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> of(String attribute,
-                                 Direction direction,
+    @Nonnull
+    public static <T> Sort<T> of(@Nonnull String attribute,
+                                 @Nonnull Direction direction,
                                  boolean ignoreCase,
-                                 Nulls nullOrdering) {
+                                 @Nonnull Nulls nullOrdering) {
         Messages.requireNonNull(direction, "direction");
 
         return new Sort<>( //

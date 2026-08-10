@@ -51,6 +51,8 @@ public class Data_1_1_HibernateTest extends FATServletClient {
                                    "CWWKD1091E.*countBySurgePriceGreaterThanEqual",
                                    "DSRA0302E.*XA_RBTIMEOUT", // query timeout
                                    "DSRA0304E.*", // query timeout
+                                   "DSRA9400E.*", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                                   "J2CA0026E.*", // caused by the above during connection re-association
                                    "J2CA0027E.*" // query timeout
                     };
 

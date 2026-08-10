@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=Stellen Sie sicher, dass der angegebene Wert f\u00fcr 
 8069_HELPER_INIT_ERR=DSRA8069E: Die Datenquelle {0} kann die DataStoreHelper-Implementierung {1} wegen des folgenden Fehlers nicht initialisieren: {2}
 8069_HELPER_INIT_ERR.explanation=Die konfigurierte DataStoreHelper-Klasse ist entweder nicht zug\u00e4nglich oder sie hat keinen \u00f6ffentlichen Konstruktor mit einem einzelnen Parameter java.util.Properties oder beim Aufruf wurde ein Fehler ausgel\u00f6st.
 8069_HELPER_INIT_ERR.useraction=Untersuchen Sie die verkettete Ausnahme, um die Ursache zu bestimmen.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: Die Datenbank \u201e H2 \u201c ( URL ) f\u00fcr \u201e DataSource \u201c ( {0} ) enth\u00e4lt einen PASSWORD-Parameter. Verwenden Sie aus Sicherheitsgr\u00fcnden das Attribut \u201epassword\u201c im Element \u201e properties.h2 \u201c oder konfigurieren Sie stattdessen \u201e containerAuthData \u201c.
+8070_H2_URL_PASSWORD.explanation=Das Einbetten von Passw\u00f6rtern in Datenbank-URLs stellt ein Sicherheitsrisiko dar, da das Passwort in Protokollen, Trace-Daten oder Konfigurationsausz\u00fcgen offengelegt werden k\u00f6nnte. Der Datenbanktreiber \u201e H2 \u201c unterst\u00fctzt sichere Alternativen f\u00fcr die Passwortkonfiguration.
+8070_H2_URL_PASSWORD.useraction=Entfernen Sie den Parameter \u201ePASSWORD\u201c aus der Datei \u201e H2 \u201c ( URL ) und geben Sie das Passwort stattdessen \u00fcber das Attribut \u201epassword\u201c des Elements \u201e properties.h2 \u201c oder in der Konfiguration \u201e containerAuthData \u201c an.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: {0} kann nicht aus der DataSource abgerufen werden.

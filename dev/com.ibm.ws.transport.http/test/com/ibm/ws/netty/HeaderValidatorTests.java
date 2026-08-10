@@ -75,15 +75,18 @@ public class HeaderValidatorTests {
         assertThat(result, is(token));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = StringIndexOutOfBoundsException.class)
     public void testEmptyNameTokenThrows(){
+        // Empty header name should throw StringIndexOutOfBoundsException to match CHFW behavior
+        // This exception comes from KeyMatcher.add() when HttpHeaderKeys.find() is called
         HeaderValidator.process("", NAME, config);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testEmptyValueToken() {
-        String result = HeaderValidator.process(null, VALUE, config);
-        assertThat(result, is(""));
+        // Null header value should throw IllegalArgumentException to match CHFW behavior
+        // CHFW throws: "Null input provided: <name> null"
+        HeaderValidator.process(null, VALUE, config);
     }
 
     @Test

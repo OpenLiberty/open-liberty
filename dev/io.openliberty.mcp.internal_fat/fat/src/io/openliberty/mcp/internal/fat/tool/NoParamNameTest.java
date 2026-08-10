@@ -46,4 +46,11 @@ public class NoParamNameTest extends FATServletClient {
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.noparamtool.NoParamTools.missingToolArgNameTool");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Missing arguments found in MCP Tool: ", expectedErrorHeader, expectedErrorList, server);
     }
+
+    @Test
+    public void missingToolArgAnnotation() throws Exception {
+        String expectedErrorHeader = "CWMCM0003E: The (.+?) MCP tool method has one or more arguments without a name specified.";
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.noparamtool.NoParamTools.missingToolArgAnnotation");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Missing arguments found in MCP Tool: ", expectedErrorHeader, expectedErrorList, server);
+    }
 }

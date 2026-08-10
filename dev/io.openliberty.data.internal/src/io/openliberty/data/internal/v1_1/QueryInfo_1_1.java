@@ -41,6 +41,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.Fail;
 import io.openliberty.data.internal.QueryInfo;
 import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.Util;
@@ -200,7 +201,7 @@ public class QueryInfo_1_1 extends QueryInfo {
      * @param jpqlParamCount parameter number to include in the generated name.
      * @param jpqlParamNames list of named parameter names to which to add the
      *                           generated name, which must not already be in the list.
-     * @return
+     * @return generated name
      */
     @Trivial
     private String addExpressionParam(int jpqlParamCount, Set<String> jpqlParamNames) {
@@ -336,19 +337,6 @@ public class QueryInfo_1_1 extends QueryInfo {
         }
 
         return q;
-    }
-
-    @Override
-    @Trivial
-    protected void appendExpression(Sort<?> sort,
-                                    StringBuilder q,
-                                    Map<Object, Object> jpqlParams) {
-        qlParamCount = generateExpression(q,
-                                          entityVar_,
-                                          sort.expression(),
-                                          qlParamCount,
-                                          qlParamNames,
-                                          jpqlParams);
     }
 
     /**
@@ -648,30 +636,20 @@ public class QueryInfo_1_1 extends QueryInfo {
     /**
      * Appends JPQL to the partially built query to represent a Constraint.
      *
-     * @param q              partially built query to which to append JPQL
-     *                           representing the Constraint.
-     * @param entityVar_     entity identifier variable name and . character.
-     * @param constraint     the Constraint for which to generate JPQL.
-     * @param jpqlParamCount number of named or positional parameters identified
-     *                           up to this point for the JPQL.
-     * @param jpqlParamNames names of named parameters in the partially built
-     *                           query. Empty if the query uses positional
-     *                           parameeters or has none. If using named parameters,
-     *                           this method should add any that are generated.
-     * @param jpqlParams     list for this method to populate with the name of
-     *                           named parameters or index of positional parameters,
-     *                           mapped to value, for each value obtained from the
-     *                           processed Restriction(s).
-     * @return the new count of named or positional parameters, including any that
-     *         were generated for the Constraint.
+     * @param q          partially built query to which to append JPQL
+     *                       representing the Constraint.
+     * @param entityVar_ entity identifier variable name and . character.
+     * @param constraint the Constraint for which to generate JPQL.
+     * @param jpqlParams list for this method to populate with the name of
+     *                       named parameters or index of positional parameters,
+     *                       mapped to value, for each value obtained from the
+     *                       processed Restriction(s).
      */
     @Override
     // TODO @Trivial // avoid tracing values found in Expression.toString()
-    protected int generateConstraint(StringBuilder q,
-                                     Object constraint,
-                                     int jpqlParamCount,
-                                     Set<String> jpqlParamNames,
-                                     Map<Object, Object> jpqlParams) {
+    protected void generateConstraint(StringBuilder q,
+                                      Object constraint,
+                                      Map<Object, Object> jpqlParams) {
 
         Expression<?, ?> exp1 = null;
         Expression<?, ?> exp2 = null;
@@ -730,12 +708,10 @@ public class QueryInfo_1_1 extends QueryInfo {
         q.append(c.operator());
 
         if (exp1 != null) {
-            jpqlParamCount = generateExpression(q,
-                                                entityVar_,
-                                                exp1,
-                                                jpqlParamCount,
-                                                jpqlParamNames,
-                                                jpqlParams);
+            qlParamCount = generateExpression(q,
+                                              exp1,
+                                              qlParamCount,
+                                              jpqlParams);
 
             if (exp2 != null) {
                 if (c == AttributeConstraint.LikeEscaped ||
@@ -748,12 +724,10 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw new IllegalArgumentException("Constraint: " +
                                                        constraint.getClass().getName());
 
-                jpqlParamCount = generateExpression(q,
-                                                    entityVar_,
-                                                    exp2,
-                                                    jpqlParamCount,
-                                                    jpqlParamNames,
-                                                    jpqlParams);
+                qlParamCount = generateExpression(q,
+                                                  exp2,
+                                                  qlParamCount,
+                                                  jpqlParams);
             }
         } else if (exps != null) { // IN or NOT IN
             q.append('(');
@@ -761,56 +735,31 @@ public class QueryInfo_1_1 extends QueryInfo {
                 if (i != 0)
                     q.append(", ");
 
-                jpqlParamCount = generateExpression(q,
-                                                    entityVar_,
-                                                    exps.get(i),
-                                                    jpqlParamCount,
-                                                    jpqlParamNames,
-                                                    jpqlParams);
+                qlParamCount = generateExpression(q,
+                                                  exps.get(i),
+                                                  qlParamCount,
+                                                  jpqlParams);
             }
             q.append(')');
         }
-
-        return jpqlParamCount;
     }
 
-    /**
-     * Appends JPQL to the partially built query to represent an Expression
-     * parameter of a Constraint or Restriction.
-     *
-     * @param q              partially built query ending with the WHERE clause.
-     * @param entityVar_     entity identifier variable name and . character.
-     * @param expression     the Expression for which to generate JPQL.
-     * @param jpqlParamCount number of named or positional parameters in the
-     *                           partially built query.
-     * @param jpqlParamNames names of named parameters in the partially built
-     *                           query. Empty if the query uses positional
-     *                           parameeters or has none. If using named parameters,
-     *                           this method should add any that are generated.
-     * @param xprParams      list for this method to populate with the name of
-     *                           named parameters or index of positional parameters,
-     *                           mapped to value, for values (if any) obtained from
-     *                           the Expression.
-     * @return the new count of named or positional parameters, including any that
-     *         were generated for the Expression.
-     */
+    @Override
     @Trivial // avoid tracing values found in Expression.toString()
-    private int generateExpression(StringBuilder q,
-                                   String entityVar_,
-                                   Expression<?, ?> expression,
-                                   int jpqlParamCount,
-                                   Set<String> jpqlParamNames,
-                                   Map<Object, Object> xprParams) {
+    protected int generateExpression(StringBuilder q,
+                                     Object expression,
+                                     int jpqlParamCount,
+                                     Map<Object, Object> xprParams) {
         if (expression instanceof Attribute<?> attr) {
             q.append(entityVar_).append(attr.name());
         } else if (expression instanceof Literal<?> literal) {
             jpqlParamCount++;
-            boolean positionalParams = jpqlParamNames.isEmpty();
+            boolean positionalParams = qlParamNames.isEmpty();
             if (positionalParams) {
                 q.append('?').append(jpqlParamCount);
                 xprParams.put(jpqlParamCount, literal.value());
             } else {
-                String paramName = addExpressionParam(jpqlParamCount, jpqlParamNames);
+                String paramName = addExpressionParam(jpqlParamCount, qlParamNames);
                 q.append(':').append(paramName);
                 xprParams.put(paramName, literal.value());
             }
@@ -857,10 +806,8 @@ public class QueryInfo_1_1 extends QueryInfo {
             }
             // first argument:
             jpqlParamCount = generateExpression(q,
-                                                entityVar_,
                                                 args.get(0),
                                                 jpqlParamCount,
-                                                jpqlParamNames,
                                                 xprParams);
             // between first and second arguments:
             switch (name) {
@@ -878,10 +825,8 @@ public class QueryInfo_1_1 extends QueryInfo {
                 case TextFunctionExpression.LEFT:
                 case TextFunctionExpression.RIGHT:
                     jpqlParamCount = generateExpression(q,
-                                                        entityVar_,
                                                         args.get(1),
                                                         jpqlParamCount,
-                                                        jpqlParamNames,
                                                         xprParams);
                     break;
             }
@@ -901,19 +846,15 @@ public class QueryInfo_1_1 extends QueryInfo {
             String typeName = cast.type().getSimpleName();
             q.append("CAST (");
             jpqlParamCount = generateExpression(q,
-                                                entityVar_,
                                                 cast.expression(),
                                                 jpqlParamCount,
-                                                jpqlParamNames,
                                                 xprParams);
             q.append(" AS ").append(typeName).append(')');
         } else if (expression instanceof NumericOperatorExpression<?, ?> op) {
             q.append('(');
             jpqlParamCount = generateExpression(q,
-                                                entityVar_,
                                                 op.left(),
                                                 jpqlParamCount,
-                                                jpqlParamNames,
                                                 xprParams);
             q.append(switch (op.operator()) {
                 case PLUS -> " + ";
@@ -922,10 +863,8 @@ public class QueryInfo_1_1 extends QueryInfo {
                 case DIVIDE -> " / ";
             });
             jpqlParamCount = generateExpression(q,
-                                                entityVar_,
                                                 op.right(),
                                                 jpqlParamCount,
-                                                jpqlParamNames,
                                                 xprParams);
             q.append(')');
         } else if (expression instanceof TemporalExpression<?, ?> temporal) {
@@ -949,43 +888,25 @@ public class QueryInfo_1_1 extends QueryInfo {
      * Appends JPQL to the partially built query to implement a Restriction
      * parameter of a repository method.
      *
-     * @param q              partially built query ending with the WHERE clause.
-     * @param restriction    value of Restriction parameter. Otherwise null.
-     * @param jpqlParamCount number of named or positional parameters in the
-     *                           partially built query.
-     * @param jpqlParamNames names of named parameters in the partially bulit
-     *                           query. Empty if the query uses positional
-     *                           parameters or has none. If using named parameters,
-     *                           this method should add any that are generated for
-     *                           the restriction part of the query.
-     * @param qrParams       initially empty list for this method to populate
-     *                           with the name of named parameters or index of
-     *                           positional parameters, mapped to value, for each
-     *                           value obtained from the processed Restriction(s).
-     * @return the new count of named or positional parameters, including any that
-     *         were generated for the Restriction(s).
+     * @param q           partially built query ending with the WHERE clause.
+     * @param restriction value of Restriction parameter. Otherwise null.
+     * @param qrParams    initially empty list for this method to populate
+     *                        with the name of named parameters or index of
+     *                        positional parameters, mapped to value, for each
+     *                        value obtained from the processed Restriction(s).
      */
     @Override
     // TODO @Trivial // avoid tracing values found in Restriction.toString()
-    public int generateRestrictions(StringBuilder q,
-                                    Object restriction,
-                                    int jpqlParamCount,
-                                    Set<String> jpqlParamNames,
-                                    Map<Object, Object> qrParams) {
+    public void generateRestrictions(StringBuilder q,
+                                     Object restriction,
+                                     Map<Object, Object> qrParams) {
 
         if (restriction instanceof BasicRestriction<?, ?> r) {
-            jpqlParamCount = generateExpression(q,
-                                                entityVar_,
-                                                r.expression(),
-                                                jpqlParamCount,
-                                                jpqlParamNames,
-                                                qrParams);
-
-            jpqlParamCount = generateConstraint(q,
-                                                r.constraint(),
-                                                jpqlParamCount,
-                                                jpqlParamNames,
-                                                qrParams);
+            qlParamCount = generateExpression(q,
+                                              r.expression(),
+                                              qlParamCount,
+                                              qrParams);
+            generateConstraint(q, r.constraint(), qrParams);
         } else if (restriction instanceof CompositeRestriction<?> r) {
             q.append(r.isNegated() ? "NOT (" : "(");
             boolean all = r.type() == CompositeRestriction.Type.ALL;
@@ -998,19 +919,13 @@ public class QueryInfo_1_1 extends QueryInfo {
                     if (i > 0)
                         q.append(all ? " AND " : " OR ");
 
-                    jpqlParamCount = generateRestrictions(q,
-                                                          rr.get(i),
-                                                          jpqlParamCount,
-                                                          jpqlParamNames,
-                                                          qrParams);
+                    generateRestrictions(q, rr.get(i), qrParams);
                 }
             q.append(')');
         } else {
             throw new IllegalArgumentException("Unsupported Restriction type: " +
                                                restriction.getClass().getName());
         }
-
-        return jpqlParamCount;
     }
 
     @Override
@@ -1041,6 +956,12 @@ public class QueryInfo_1_1 extends QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getDeferredConstraints", deferred.keySet());
         return deferred;
+    }
+
+    @Override
+    @Trivial
+    protected Object getExpression(Sort<?> sort) {
+        return sort.expression();
     }
 
     @Override
@@ -1153,9 +1074,8 @@ public class QueryInfo_1_1 extends QueryInfo {
                                   Annotation[] paramAnnos,
                                   String[] attrNames,
                                   AttributeConstraint[] constraints,
-                                  char[] updateOps,
-                                  int prevNumJPQLParams) {
-        int numJPQLParams = prevNumJPQLParams;
+                                  char[] updateOps) {
+        int prevNumJPQLParams = qlParamCount;
 
         for (Annotation anno : paramAnnos)
             if (anno instanceof Is) {
@@ -1163,43 +1083,44 @@ public class QueryInfo_1_1 extends QueryInfo {
             } else if (anno instanceof Assign) {
                 attrNames[p] = ((Assign) anno).value();
                 updateOps[p] = '=';
-                numJPQLParams++;
+                qlParamCount++;
             } else if (anno instanceof Add) {
                 attrNames[p] = ((Add) anno).value();
                 updateOps[p] = '+';
-                numJPQLParams++;
+                qlParamCount++;
             } else if (anno instanceof Multiply) {
                 attrNames[p] = ((Multiply) anno).value();
                 updateOps[p] = '*';
-                numJPQLParams++;
+                qlParamCount++;
             } else if (anno instanceof Divide) {
                 attrNames[p] = ((Divide) anno).value();
                 updateOps[p] = '/';
-                numJPQLParams++;
+                qlParamCount++;
             } else if (anno instanceof SubtractFrom) {
                 attrNames[p] = ((SubtractFrom) anno).value();
                 updateOps[p] = '-';
-                numJPQLParams++;
+                qlParamCount++;
             }
 
         if (constraints[p] == null && Constraint.class.isAssignableFrom(paramType)) {
             constraints[p] = toAttributeConstraint(null, paramType);
         }
 
-        if (numJPQLParams == prevNumJPQLParams) {
+        if (qlParamCount == prevNumJPQLParams) {
             if (constraints[p] == null)
                 constraints[p] = AttributeConstraint.Equal;
 
             // no annotation indicating a constraint or update
-            numJPQLParams += constraints[p].numMethodParams();
-        } else if (numJPQLParams - prevNumJPQLParams > 1) {
+            qlParamCount += constraints[p].numMethodParams();
+        } else if (qlParamCount - prevNumJPQLParams > 1) {
             // TODO possibly allow a redundant Constraint that matches the Is annotation.
-            numJPQLParams = PARAM_ANNOS_CONFLICT;
+            throw Fail.methodParamAnnoConflict(this, false, p, paramType, paramAnnos);
         } else if (false) { // TODO 1.1 check if paramType is a Constraint
-            numJPQLParams = PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT;
+            throw Fail.methodParamAnnoConflict(this, true, p, paramType, paramAnnos);
+            // TODO send in boolean for _CONFLICTS_WITH_CONSTRAINT
         }
 
-        return numJPQLParams;
+        return qlParamCount;
     }
 
     /**

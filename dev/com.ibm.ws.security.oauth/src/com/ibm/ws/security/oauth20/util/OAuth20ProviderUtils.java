@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -151,6 +151,22 @@ public class OAuth20ProviderUtils {
     public static void handleOAuthChallenge(HttpServletResponse rsp,
             ProviderAuthenticationResult oauthResult,
             String errorDescription) throws IOException {
+        handleOAuthChallenge(rsp, oauthResult, errorDescription, null);
+    }
+
+    /**
+     * Handle OAuth challenge with optional resource metadata URL support (RFC 9728)
+     *
+     * @param rsp -- non-null
+     * @param oauthResult -- non-null
+     * @param errorDescription -- non-null
+     * @param resourceMetadataUrl -- optional, the resource_metadata URL to include in WWW-Authenticate header
+     * @throws IOException
+     */
+    public static void handleOAuthChallenge(HttpServletResponse rsp,
+            ProviderAuthenticationResult oauthResult,
+            String errorDescription,
+            String resourceMetadataUrl) throws IOException {
         if (rsp.isCommitted())
             return; // if it had already been handled the response
         final String error = "error";
@@ -160,8 +176,23 @@ public class OAuth20ProviderUtils {
         rsp.setStatus(errorCode);
         // in case, make sure we set the WWW-Authenticate
         String wwwAuthenticate = rsp.getHeader(AUTHENTICATE_HDR);
+        boolean headerNeedsUpdate = false;
         if (wwwAuthenticate == null || wwwAuthenticate.isEmpty()) {
             wwwAuthenticate = "Bearer realm=\"oauth\"";
+            headerNeedsUpdate = true;
+        }
+
+        // Add resource_metadata parameter if provided (RFC 9728) and not already present
+        if (resourceMetadataUrl != null && !resourceMetadataUrl.isEmpty() && wwwAuthenticate != null
+                && !wwwAuthenticate.contains("resource_metadata")) {
+            wwwAuthenticate += ", resource_metadata=\"" + resourceMetadataUrl + "\"";
+            headerNeedsUpdate = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Adding resource_metadata to WWW-Authenticate header: " + resourceMetadataUrl);
+            }
+        }
+
+        if (headerNeedsUpdate) {
             rsp.setHeader(AUTHENTICATE_HDR, wwwAuthenticate);
         }
 
@@ -180,4 +211,5 @@ public class OAuth20ProviderUtils {
             Tr.debug(tc, "WWW-Authenticate:'" + wwwAuthenticate + "' code:" + errorCode + " reason:" + errorDescription);
         }
     }
+
 }

@@ -17,8 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Converter;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
@@ -136,10 +139,13 @@ public class Fraction {
 
     @Embeddable
     public static record Digits(
-                    @Column(nullable = false, table = "Fraction") //
+
+                    @Convert(converter = DigitConverter.class)
+                    @Column(table = "Fraction") //
                     String nonrepeating,
 
-                    @Column(nullable = false, table = "Fraction") //
+                    @Convert(converter = DigitConverter.class)
+                    @Column(table = "Fraction") //
                     String repeating) {
 
         static Digits of(long[] digitValues, int nonRepeating, int total) {
@@ -157,6 +163,22 @@ public class Fraction {
             return repeating.length() > 0 //
                             ? nonrepeating + repeating + repeating + "..." //
                             : nonrepeating;
+        }
+
+    }
+
+	//Converter to handle Oracle storing "" as null
+    @Converter
+    public static class DigitConverter implements AttributeConverter<String, String> {
+
+        @Override
+        public String convertToDatabaseColumn(String attribute) {
+            return attribute;
+        }
+
+        @Override
+        public String convertToEntityAttribute(String dbData) {
+            return dbData == null ? "" : dbData;
         }
     }
 

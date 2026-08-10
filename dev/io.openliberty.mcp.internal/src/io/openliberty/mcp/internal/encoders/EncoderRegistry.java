@@ -9,26 +9,45 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.encoders;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.messaging.Encoder;
-import io.openliberty.mcp.tools.ToolResponseEncoder;
-import jakarta.annotation.Priority;
-import jakarta.enterprise.context.ApplicationScoped;
+import org.mcpjava.server.ContentEncoder;
 
-@ApplicationScoped
+import io.openliberty.mcp.tools.ToolResponseEncoder;
+
 public class EncoderRegistry {
 
-    private static final int DEFAULT_ENCODER_PRIORITY = 0;
-    private List<ToolResponseEncoder<?>> toolResponseEncoders;
-    private List<ContentEncoder<?>> contentEncoders;
+    public static final int DEFAULT_ENCODER_PRIORITY = 0;
+    private List<ToolResponseEncoder<?>> toolResponseEncoders = new ArrayList<>();
+    private List<ContentEncoder<?>> contentEncoders = new ArrayList<>();
+    private Map<Object, Integer> encoderPriorities = new HashMap<>();
+    private final EncoderRegistry globalRegistry;
 
-    public void registerEncoders(List<ToolResponseEncoder<?>> toolResponseEncoders, List<ContentEncoder<?>> contentEncoders) {
+    /**
+     * Constructor for module registries (receives global reference)
+     */
+    public EncoderRegistry(EncoderRegistry globalRegistry) {
+        this.globalRegistry = globalRegistry;
+    }
+
+    /**
+     * Constructor for the global registry (which no parent registry)
+     */
+    public EncoderRegistry() {
+        this.globalRegistry = null;
+    }
+
+    public void registerEncoders(List<ToolResponseEncoder<?>> toolResponseEncoders,
+                                 List<ContentEncoder<?>> contentEncoders,
+                                 Map<Object, Integer> encoderPriorities) {
         this.toolResponseEncoders = toolResponseEncoders;
         this.contentEncoders = contentEncoders;
+        this.encoderPriorities = encoderPriorities;
         sortEncoders();
     }
 
@@ -36,28 +55,41 @@ public class EncoderRegistry {
      * Sort the registered encoders by priority (highest first, descending)
      */
     private void sortEncoders() {
-        toolResponseEncoders.sort(Comparator.<ToolResponseEncoder<?>> comparingInt(toolResponseEncoder -> getPriority(toolResponseEncoder)).reversed());
-        contentEncoders.sort(Comparator.<ContentEncoder<?>> comparingInt(contentEncoder -> getPriority(contentEncoder)).reversed());
+        toolResponseEncoders.sort(Comparator.<ToolResponseEncoder<?>> comparingInt(encoder -> encoderPriorities.getOrDefault(encoder, DEFAULT_ENCODER_PRIORITY)).reversed());
+        contentEncoders.sort(Comparator.<ContentEncoder<?>> comparingInt(encoder -> encoderPriorities.getOrDefault(encoder, DEFAULT_ENCODER_PRIORITY)).reversed());
     }
 
-    private int getPriority(Object encoder) {
-        Priority priority = encoder.getClass().getAnnotation(Priority.class);
-        return priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
+    public <T> Optional<ToolResponseEncoder<? super T>> findToolResponseEncoder(T result) {
+        // Check local encoders first
+        for (var encoder : toolResponseEncoders) {
+            if (encoder.getType().isInstance(result)) {
+                return Optional.of((ToolResponseEncoder<? super T>) encoder);
+            }
+        }
+
+        // Fallback to global if not found and we have a global registry
+        if (globalRegistry != null) {
+            return globalRegistry.findToolResponseEncoder(result);
+        } else {
+            return Optional.empty();
+        }
     }
 
-    public Optional<Encoder<?, ?>> findEncoder(Class<?> returnType) {
+    public <T> Optional<ContentEncoder<? super T>> findContentEncoder(T result) {
+        // Check local encoders first
+        for (var encoder : contentEncoders) {
+            if (encoder.getType().isInstance(result)) {
+                return Optional.of((ContentEncoder<? super T>) encoder);
+            }
+        }
 
-        for (ToolResponseEncoder<?> encoder : toolResponseEncoders) {
-            if (encoder.supports(returnType)) {
-                return Optional.of(encoder);
-            }
+        // Fallback to global if not found and we have a global registry
+        if (globalRegistry != null) {
+            return globalRegistry.findContentEncoder(result);
+        } else {
+            return Optional.empty();
         }
-        for (ContentEncoder<?> encoder : contentEncoders) {
-            if (encoder.supports(returnType)) {
-                return Optional.of(encoder);
-            }
-        }
-        return Optional.empty();
+
     }
 
 }

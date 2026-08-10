@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.spi.expression.literal.ComparableLiteral;
 
@@ -20,13 +21,16 @@ import jakarta.data.spi.expression.literal.ComparableLiteral;
  */
 public interface LessThan<V extends Comparable<?>> extends Constraint<V> {
 
+    @Nonnull
     ComparableExpression<?, V> bound();
 
-    static <V extends Comparable<?>> LessThan<V> bound(ComparableExpression<?, V> exp) {
+    @Nonnull
+    static <V extends Comparable<?>> LessThan<V> bound(@Nonnull ComparableExpression<?, V> exp) {
         return new LessThanRecord<>(exp);
     }
 
-    static <V extends Comparable<?>> LessThan<V> bound(V upperBound) {
+    @Nonnull
+    static <V extends Comparable<?>> LessThan<V> bound(@Nonnull V upperBound) {
 
         return new LessThanRecord<>(ComparableLiteral.of(upperBound));
     }

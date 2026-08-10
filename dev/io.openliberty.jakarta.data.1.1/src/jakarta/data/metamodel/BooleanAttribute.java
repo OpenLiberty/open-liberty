@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.BooleanExpression;
 import jakarta.data.messages.Messages;
 
@@ -21,9 +22,10 @@ import jakarta.data.messages.Messages;
 public interface BooleanAttribute<T> //
                 extends ComparableAttribute<T, Boolean>, BooleanExpression<T> {
 
-    static <T> BooleanAttribute<T> of(Class<T> entityClass,
-                                      String name,
-                                      Class<Boolean> attributeType) {
+    @Nonnull
+    static <T> BooleanAttribute<T> of(@Nonnull Class<T> entityClass,
+                                      @Nonnull String name,
+                                      @Nonnull Class<Boolean> attributeType) {
 
         Messages.requireNonNull(entityClass, "entityClass");
         Messages.requireNonNull(name, "name");
@@ -33,5 +35,6 @@ public interface BooleanAttribute<T> //
     }
 
     @Override
+    @Nonnull
     Class<Boolean> type();
 }

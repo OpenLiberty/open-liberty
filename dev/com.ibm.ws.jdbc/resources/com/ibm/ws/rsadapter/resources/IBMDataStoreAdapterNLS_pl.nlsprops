@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=Sprawd\u017a, czy okre\u015blona warto\u015b\u0107 jes
 8069_HELPER_INIT_ERR=DSRA8069E: Obiekt DataSource {0} nie mo\u017ce zainicjowa\u0107 implementacji DataStoreHelper {1} z powodu b\u0142\u0119du: {2}
 8069_HELPER_INIT_ERR.explanation=Skonfigurowana klasa DataStoreHelper by\u0142a niedost\u0119pna, nie mia\u0142a konstruktora publicznego z jednym parametrem java.util.Properties lub zg\u0142osi\u0142a b\u0142\u0105d po wywo\u0142aniu.
 8069_HELPER_INIT_ERR.useraction=Sprawd\u017a po\u0142\u0105czony wyj\u0105tek, aby ustali\u0107 przyczyn\u0119.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: Baza danych \u201e H2 \u201d ( URL ) dla serwisu \u201e DataSource \u201d ( {0} ) zawiera parametr PASSWORD. Ze wzgl\u0119d\u00f3w bezpiecze\u0144stwa nale\u017cy u\u017cy\u0107 atrybutu \u201epassword\u201d w elemencie \u201e properties.h2 \u201d lub skonfigurowa\u0107 plik \u201e containerAuthData \u201d.
+8070_H2_URL_PASSWORD.explanation=Umieszczanie hase\u0142 w adresach URL baz danych stanowi zagro\u017cenie dla bezpiecze\u0144stwa, poniewa\u017c has\u0142o mo\u017ce zosta\u0107 ujawnione w logach, \u015bladach lub zrzutach konfiguracji. Sterownik bazy danych H2 obs\u0142uguje bezpieczne alternatywne metody konfiguracji has\u0142a.
+8070_H2_URL_PASSWORD.useraction=Usu\u0144 parametr PASSWORD z pliku H2 URL i zamiast tego podaj has\u0142o, korzystaj\u0105c z atrybutu \u201epassword\u201d w elemencie properties.h2 lub w konfiguracji containerAuthData.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Nie mo\u017cna uzyska\u0107 po\u0142\u0105czenia typu {0} z klasy DataSource.

@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: A sendRedirect relat\u00edv URL az alkalmaz\u00e1sban nem alak\u00edthat\u00f3 \u00e1t \u00e9rv\u00e9nyes URL -re.
 sendRedirect.cannot.convert.relative.url.explanation=A megadott relat\u00edv URL tartalmazhat \u00e9rv\u00e9nytelen el\u00e9r\u00e9si \u00fatvonalkeresztez\u0151 karaktereket vagy indexeket.
 sendRedirect.cannot.convert.relative.url.useraction=Ellen\u0151rizze a sendRedirect hely\u00e9t URL az alkalmaz\u00e1sban, miel\u0151tt megh\u00edvja a response.sendRedirect( ) m\u00f3dszert
+
+invalid.accept.language.length=CWWWC0013E: Az HTTP k\u00e9r\u00e9s Accept-Language fejl\u00e9c\u00e9nek \u00e9rt\u00e9ke t\u00fal hossz\u00fa.
+invalid.accept.language.length.explanation=Az \u00fcgyf\u00e9l t\u00fal hossz\u00fa \u201eAccept-Language\u201d fejl\u00e9ceket k\u00fcld.
+invalid.accept.language.length.useraction=Az \u00fcgyf\u00e9lnek olyan Accept-Language fejl\u00e9cet kell elk\u00fcldenie, amelynek \u00e9rt\u00e9ke legfeljebb 4096 b\u00e1jt hossz\u00fas\u00e1g\u00fa.

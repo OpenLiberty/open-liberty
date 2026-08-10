@@ -95,7 +95,7 @@ public class McpServletInitializer implements ServletContainerInitializer {
         filterReg.setAsyncSupported(true);
 
         String fullMcpUrl = virtualHost.getUrlString(context.getContextPath() + path, false);
-        Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
+        Tr.info(tc, "CWMCM0008I.mcp.endpoint.url", fullMcpUrl);
     }
 
     private String getApplicationName(ComponentMetaData componentMetaData) {
@@ -107,7 +107,18 @@ public class McpServletInitializer implements ServletContainerInitializer {
 
     private String getModuleName(ComponentMetaData componentMetaData) {
         if (componentMetaData != null) {
-            return componentMetaData.getJ2EEName().getModule();
+            String moduleName = componentMetaData.getJ2EEName().getModule();
+
+            // Enhanced debug logging to investigate when .war suffix is present
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                String appName = componentMetaData.getJ2EEName().getApplication();
+                boolean hasWarSuffix = moduleName != null && moduleName.endsWith(".war");
+                Tr.debug(this, tc, "Module name retrieved: '" + moduleName +
+                                   "', hasWarSuffix=" + hasWarSuffix +
+                                   ", application='" + appName + "'");
+            }
+
+            return moduleName;
         }
         return null;
     }

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.topology.impl;
 
@@ -21,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -513,7 +511,9 @@ public class LibertyServerFactory {
         String workDir = usrServersDir.getAbsolutePath();
         String command = server.getMachineJavaJarCommandPath();
         String[] param = { "cMf", backup.getAbsolutePath(), server.getServerName() };
-        ProgramOutput o = m.execute(command, param, workDir);
+        Properties properties = new Properties();
+        server.setLibPathForJava8onZOS(JavaInfo.forServer(server), properties);
+        ProgramOutput o = m.execute(command, param, workDir, properties);
         if (o.getReturnCode() == 0) {
             Log.finer(c, METHOD, "Successfully backed up server: " + server.getServerName() + " to zip file: " + backup.getAbsolutePath());
         } else {
@@ -566,7 +566,9 @@ public class LibertyServerFactory {
         String workDir = usrServersDir.getAbsolutePath();
         String command = server.getMachineJavaJarCommandPath();
         String[] param = { "xf", backup.getAbsolutePath() };
-        ProgramOutput o = m.execute(command, param, workDir);
+        Properties properties = new Properties();
+        server.setLibPathForJava8onZOS(JavaInfo.forServer(server), properties);
+        ProgramOutput o = m.execute(command, param, workDir, properties);
         if (o.getReturnCode() == 0) {
             Log.finer(c, METHOD, "Successfully recovered server: " + server.getServerName() + " from zip file: " + backup.getAbsolutePath());
         } else {
