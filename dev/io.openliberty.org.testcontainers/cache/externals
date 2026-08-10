@@ -2,6 +2,7 @@
 # Please check these changes into GitHub
 confluentinc/cp-kafka:7.1.1
 fbicodex/spnego-kdc-server:1.0
+ghcr.io/gvenzl/oracle-free:23.26.2-full-faststart
 ghcr.io/gvenzl/oracle-free:23.9-full-faststart
 ghcr.io/gvenzl/oracle-free:23.9-slim-faststart
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0
@@ -25,11 +26,13 @@ localhost/openliberty/testcontainers/couchdb-ssl:3.0.0.1
 localhost/openliberty/testcontainers/db2-krb5:12.1.2.0
 localhost/openliberty/testcontainers/db2-ssl:12.1.1.0
 localhost/openliberty/testcontainers/kdc-jdbc-server:3.0.0.2
+localhost/openliberty/testcontainers/kdc-jdbc-server:3.0.0.3
 localhost/openliberty/testcontainers/kdc-security-server:3.17
 localhost/openliberty/testcontainers/keyserver-simple:3.11.6
 localhost/openliberty/testcontainers/ldap-kdc-server:1.0.0.1
 localhost/openliberty/testcontainers/ldap-server:3.17
 localhost/openliberty/testcontainers/ldap-server:3.18
+localhost/openliberty/testcontainers/oracle-krb5:23.26.2-full-faststart
 localhost/openliberty/testcontainers/oracle-krb5:23.9-full-faststart
 localhost/openliberty/testcontainers/oracle-ssl:23.9-full-faststart
 localhost/openliberty/testcontainers/postgres-init:17-alpine
