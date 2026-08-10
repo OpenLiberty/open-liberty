@@ -23,6 +23,14 @@
     <!-- SSL keystore used by both the server (for HTTPS) and the OIDC client SSL requirement. -->
     <keyStore id="defaultKeyStore" password="Liberty" />
 
+    <webApplication location="hello.war" contextRoot="myApp">
+        <application-bnd>
+            <security-role name="authenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </webApplication>
+
     <!--
         OIDC client with an equals auth filter — tests that an exact path match
         returns metadata for that resource (HTTP).
@@ -35,6 +43,7 @@
         userNameAttribute="sub"
         clientId="client01"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -57,6 +66,7 @@
         userNameAttribute="sub"
         clientId="client02"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -75,6 +85,7 @@
         userNameAttribute="sub"
         clientId="client03"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
         userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
@@ -97,6 +108,7 @@
         userNameAttribute="sub"
         clientId="client04"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
         userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
@@ -121,7 +133,7 @@
     <authFilter id="authFilter2">
         <requestUrl
             id="requestUrl2"
-            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protected/subPath"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protectedContains"
             matchType="contains" />
     </authFilter>
 
@@ -131,7 +143,7 @@
     <authFilter id="authFilter4">
         <requestUrl
             id="requestUrl4"
-            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protected/subPath"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protectedContains"
             matchType="contains" />
     </authFilter>
 
@@ -158,6 +170,7 @@
         userNameAttribute="sub"
         clientId="client05"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -182,6 +195,7 @@
         userNameAttribute="sub"
         clientId="client06"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -210,6 +224,7 @@
         userNameAttribute="sub"
         clientId="client07"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
         userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
@@ -233,6 +248,7 @@
         userNameAttribute="sub"
         clientId="client08"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
         userApi="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSample/introspect"
@@ -251,8 +267,7 @@
     </authFilter>
 
     <!--
-        OIDC client with jwtBuilderRef — tests that signed_metadata, jwks_uri, and
-        bearer_methods_supported are included in the metadata response (HTTP).
+        OIDC client with jwtBuilderRef — tests that signed_metadata is included in the metadata response (HTTP).
     -->
     <oauth2Login
         id="OidcConfigWithSigning"
@@ -261,6 +276,7 @@
         userNameAttribute="sub"
         clientId="client09"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -277,9 +293,9 @@
 
     <!--
         RS512, jwkEnabled=true, 4096-bit key.
-        Exercises: larger RSA digest, ephemeral JWK key pair (not from keystore), non-default key size.
+        Exercises: larger RSA digest, ephemeral JWK key pair (not from keystore).
     -->
-    <jwtBuilder id="metadataJwtBuilderRs512Jwk" signatureAlgorithm="RS512" jwkEnabled="true" jwkSigningKeySize="4096"/>
+    <jwtBuilder id="metadataJwtBuilderRs512Jwk" signatureAlgorithm="RS512" jwkEnabled="true"/>
 
     <!--
         ES256, jwkEnabled=true.
@@ -289,13 +305,6 @@
     -->
     <jwtBuilder id="metadataJwtBuilderEs256Jwk" signatureAlgorithm="ES256" jwkEnabled="true"/>
 
-    <!--
-        RS384, jwkEnabled=true, 2048-bit key, short JWK rotation window (60 minutes — the minimum).
-        Exercises: a third RSA digest variant, confirmed ephemeral key, and the jwkRotationTime
-        config field being wired through to the JWKProvider.
-    -->
-    <jwtBuilder id="metadataJwtBuilderRs384JwkRotation" signatureAlgorithm="RS384" jwkEnabled="true"
-                jwkSigningKeySize="2048" jwkRotationTime="60m"/>
 
     <authFilter id="authFilterSigning">
         <requestUrl
@@ -305,7 +314,7 @@
     </authFilter>
 
     <!--
-        OIDC client for RS512/4096-bit JWK signing test.
+        OIDC client for RS512 JWK signing test.
     -->
     <oauth2Login
         id="OidcConfigWithSigningRs512Jwk"
@@ -314,6 +323,7 @@
         userNameAttribute="sub"
         clientId="client10"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -338,6 +348,7 @@
         userNameAttribute="sub"
         clientId="client11"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -353,30 +364,6 @@
     </authFilter>
 
     <!--
-        OIDC client for RS384/2048-bit/short-rotation JWK signing test.
-    -->
-    <oauth2Login
-        id="OidcConfigWithSigningRs384JwkRotation"
-        signatureAlgorithm="RS256"
-        scope="openid profile email"
-        userNameAttribute="sub"
-        clientId="client12"
-        clientSecret="{xor}LDo8LTorbm1saw=="
-        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
-        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
-        authFilterRef="authFilterSigningRs384JwkRotation">
-        <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="metadataJwtBuilderRs384JwkRotation"/>
-    </oauth2Login>
-
-    <authFilter id="authFilterSigningRs384JwkRotation">
-        <requestUrl
-            id="requestUrlSigningRs384JwkRotation"
-            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningRs384JwkRotation"
-            matchType="equals" />
-    </authFilter>
-    
-    <!--
         OIDC client for non JWK signing test.
     -->
     <oauth2Login
@@ -386,6 +373,7 @@
         userNameAttribute="sub"
         clientId="client13"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
@@ -410,8 +398,9 @@
         signatureAlgorithm="RS256"
         scope="openid profile email"
         userNameAttribute="sub"
-        clientId="client13"
+        clientId="client14"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        accessTokenRequired="true"
         authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"

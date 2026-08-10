@@ -23,6 +23,14 @@
     <!-- SSL keystore used by both the server (for HTTPS) and the OIDC client SSL requirement. -->
     <keyStore id="defaultKeyStore" password="Liberty" />
 
+    <webApplication location="hello.war" contextRoot="myApp">
+        <application-bnd>
+            <security-role name="authenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </webApplication>
+
     <!--
         OIDC client with an equals auth filter — tests that an exact path match
         returns metadata for that resource (HTTP).
@@ -32,6 +40,7 @@
         id="OidcConfigSample"
         clientId="client01"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
@@ -48,6 +57,7 @@
         id="OidcConfigSampleContains"
         clientId="client02"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
@@ -63,6 +73,7 @@
         id="OidcConfigSampleHttps"
         clientId="client03"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
@@ -80,6 +91,7 @@
         id="OidcConfigSampleContainsHttps"
         clientId="client04"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
@@ -104,7 +116,7 @@
     <authFilter id="authFilter2">
         <requestUrl
             id="requestUrl2"
-            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protected/subPath"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/protectedContains"
             matchType="contains" />
     </authFilter>
 
@@ -114,7 +126,7 @@
     <authFilter id="authFilter4">
         <requestUrl
             id="requestUrl4"
-            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protected/subPath"
+            urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/protectedContains"
             matchType="contains" />
     </authFilter>
 
@@ -138,6 +150,7 @@
         id="OidcConfigMetadataDisabled"
         clientId="client05"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
@@ -181,6 +194,7 @@
         id="OidcConfigMetadataDisabledHttps"
         clientId="client07"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
@@ -201,6 +215,7 @@
         id="OidcConfigWithScopesHttps"
         clientId="client08"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
@@ -222,6 +237,7 @@
         id="OidcConfigWithSigning"
         clientId="client09"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
@@ -261,6 +277,7 @@
         id="OidcConfigWithSigningRs512Jwk"
         clientId="client10"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
@@ -282,6 +299,7 @@
         id="OidcConfigWithSigningEs256Jwk"
         clientId="client11"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
@@ -303,6 +321,7 @@
         id="OidcConfigWithSigningJwkDisabled"
         clientId="client13"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
@@ -326,6 +345,7 @@
         id="OidcConfigWithInvalidJwtBuilder"
         clientId="client14"
         clientSecret="{xor}LDo8LTorbm1saw=="
+        inboundPropagation="required"
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"

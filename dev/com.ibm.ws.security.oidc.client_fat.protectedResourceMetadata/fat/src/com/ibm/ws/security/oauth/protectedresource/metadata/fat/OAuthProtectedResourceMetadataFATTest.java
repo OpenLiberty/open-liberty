@@ -9,9 +9,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth.protectedresource.metadata.fat;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.security.PublicKey;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jws.JsonWebSignature;
 import org.junit.BeforeClass;
@@ -28,7 +32,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.oauth.protectedresource.metadata.fat.hello.app.HelloServlet;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ApacheJsonUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -61,7 +67,8 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     private static String serverHttpsString;
 
     private static final String PROTECTED_RESOURCE_PATH = "/myApp/protectedExact";
-    private static final String PROTECTED_RESOURCE_SUBPATH = "/myApp/protected/subPath";
+    private static final String PROTECTED_RESOURCE_SUBPATH = "/myApp/protectedContains/subPath";
+    private static final String PROTECTED_RESOURCE_SUBPATH_ROOT = "/myApp/protectedContains";
     private static final String METADATA_DISABLED_PATH = "/myApp/metadataDisabled";
     private static final String WITH_SCOPES_PATH = "/myApp/withScopes";
     private static final String SIGNED_PATH = "/myApp/withSigning";
@@ -78,10 +85,19 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     public static void setUp() throws Exception {
         String methodName = "setUp";
         RSServerName = RepeatOnServer.getServerName();
+
+        // Deploy test app directly to publish before security FAT framework starts the server
+        WebArchive helloWar = ShrinkWrap.create(WebArchive.class, "hello.war")
+                .addClass(HelloServlet.class)
+                .setWebXML(HelloServlet.class.getResource("web.xml"));
+        ShrinkHelper.exportArtifact(helloWar, "publish/servers/" + RSServerName + "/apps");
+
         Log.info(thisClass, methodName, "Starting server: " + RSServerName);
         testSettings = new TestSettings();
         genericTestServer = commonSetUp(RSServerName, "server.xml", Constants.GENERIC_SERVER, null, Constants.DO_NOT_USE_DERBY, null, null, null);
         genericTestServer.addIgnoredServerException("CWWKG0033W"); // reference not found in configuration
+        genericTestServer.addIgnoredServerException("CWWKS5375E"); // access token required but not provided
+        genericTestServer.getServer().addInstalledAppForValidation("hello");
         serverHttpString = genericTestServer.getHttpString();
         serverHttpsString = genericTestServer.getHttpsString();
         Log.info(thisClass, methodName, "Server started successfully. HTTP: " + serverHttpString + "  HTTPS: " + serverHttpsString);
@@ -428,6 +444,26 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
                 json.containsKey("signed_metadata"));
     }
 
+    @Test
+    public void test401IncludesMetadataUrl() throws Exception {
+        WebResponse wr = get401ErrorResponse(serverHttpsString + PROTECTED_RESOURCE_PATH);
+        assertEquals("Expected 401 status code", 401, wr.getResponseCode());
+        String wwwAuthenticateHeader = wr.getHeaderField("WWW-Authenticate");
+        assertNotNull("Expected WWW-Authenticate header", wwwAuthenticateHeader);
+        String expectedMetadataUrl = buildMetadataUrl(serverHttpsString, PROTECTED_RESOURCE_PATH);
+        assertThat("Expected metadata URL in WWW-Authenticate header", wwwAuthenticateHeader, containsString("resource_metadata=\"" + expectedMetadataUrl + "\""));
+    }
+
+    @Test
+    public void test401SubpathIncludesRootMetadataUrl() throws Exception {
+        WebResponse wr = get401ErrorResponse(serverHttpsString + PROTECTED_RESOURCE_SUBPATH);
+        assertEquals("Expected 401 status code", 401, wr.getResponseCode());
+        String wwwAuthenticateHeader = wr.getHeaderField("WWW-Authenticate");
+        assertNotNull("Expected WWW-Authenticate header", wwwAuthenticateHeader);
+        String expectedMetadataUrl = buildMetadataUrl(serverHttpsString, PROTECTED_RESOURCE_SUBPATH_ROOT);
+        assertThat("Expected metadata URL in WWW-Authenticate header", wwwAuthenticateHeader, containsString("resource_metadata=\"" + expectedMetadataUrl + "\""));
+    }
+
     /**
      * Validates that the metadata is signed and internally consistent.
      * <p>
@@ -617,4 +653,18 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
 
         return response;
     }
+
+    private WebResponse get401ErrorResponse(String url) throws Exception {
+        WebConversation wc = new WebConversation();
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setProtectedResourceMetadataUrl(url);
+
+        List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_PROTECTED_RESOURCE_METADATA_ENDPOINT, Constants.UNAUTHORIZED_STATUS);
+
+        WebResponse response = genericInvokeEndpoint(_testName, wc, null, updatedTestSettings.getProtectedResourceMetadataUrl(),
+                Constants.GETMETHOD, Constants.INVOKE_PROTECTED_RESOURCE_METADATA_ENDPOINT, null, null, expectations);
+
+        return response;
+    }
+
 }
