@@ -500,7 +500,7 @@ error.config.root.deleted.useraction=Add the server.xml file back to the server.
 
 warn.invalid.quiesce.timeout=CWWKG0111W: The {0} value that is specified for the quiesceTimeout attribute on the server element in the server.xml file is not valid. The value must be a duration of 30 seconds or greater. The server uses the default value of 30 seconds.
 warn.invalid.quiesce.timeout.explanation=The quiesceTimeout attribute specifies the time to wait for the server to quiesce during shutdown. Specify a positive integer followed by a unit of time, such as 30s, 1m, or 1m30s. If you omit a time unit, the server assumes seconds. The value must be at least 30 seconds. Values less than 30 seconds do not provide sufficient time for the server to complete in-flight requests and perform orderly shutdown operations.
-warn.invalid.quiesce.timeout.useraction=Edit the server.xml file and change the quiesceTimeout attribute on the server element to a duration value of 30 seconds or greater (for example, 30s, 45s, or 1m30s), or remove the attribute to use the default value of 30 seconds.
+warn.invalid.quiesce.timeout.useraction=In the server.xml file, change the quiesceTimeout attribute on the server element to a duration value of 30 seconds or greater (for example, 30s, 45s, or 1m30s), or remove the attribute to use the default value of 30 seconds.
 
 
 # Non-TR message
