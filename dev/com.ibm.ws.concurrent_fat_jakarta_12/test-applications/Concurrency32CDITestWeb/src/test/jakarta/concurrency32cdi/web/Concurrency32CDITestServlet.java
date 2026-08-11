@@ -13,6 +13,7 @@
 package test.jakarta.concurrency32cdi.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
@@ -26,9 +27,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
@@ -54,6 +58,9 @@ import componenttest.app.FATServlet;
 @WebServlet("/*")
 public class Concurrency32CDITestServlet extends FATServlet {
 
+    // Poll interval in nanoseconds
+    static final long POLL_NS = TimeUnit.MILLISECONDS.toNanos(200);
+
     // Maximum number of nanoseconds to wait for a task to finish.
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
@@ -68,11 +75,16 @@ public class Concurrency32CDITestServlet extends FATServlet {
     @Resource(lookup = "java:comp/concurrent/cdi/async-3-scheduler")
     ManagedScheduledExecutorService async3Scheduler;
 
+    static final AtomicLong initTimeNS = new AtomicLong(0);
+
     @Inject
     LoopbackBean loopbackBean;
 
     @Inject
     ReadLockBean readLockBean;
+
+    @Inject
+    SchedulingBean schedulingBean;
 
     ExecutorService testThreads = Executors.newVirtualThreadPerTaskExecutor();
 
@@ -105,6 +117,81 @@ public class Concurrency32CDITestServlet extends FATServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+        initTimeNS.compareAndSet(0, System.nanoTime());
+    }
+
+    /**
+     * Tests the current thread being interrupted while waiting for a lock
+     */
+    @Test
+    public void testInterruptedDuringBeanMethod() throws Exception {
+        try {
+            writeLockBean.interruptSelf();
+            fail("Bean method should raise InterruptedException.");
+        } catch (InterruptedException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Tests the current thread being interrupted while waiting for a lock
+     */
+    @Test
+    public void testInterruptedWhileAttemptingLock() throws Exception {
+        Thread currentThread = Thread.currentThread();
+
+        // thread2 acquires the WRITE lock and repeatedly interrupts the current thread
+        CountDownLatch running = new CountDownLatch(1);
+        CountDownLatch doneInterrupting = new CountDownLatch(1);
+        Future<?> thread2Future = testThreads.submit(() -> writeLockBean //
+                        .interruptRepeatedly(currentThread,
+                                             running,
+                                             doneInterrupting));
+        cancelAfterTest.add(thread2Future);
+        running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // current thread attempts to acquire the WRITE lock while thread2 holds it;
+        // the repeated interrupts must cause this to raise InterruptedException
+        try {
+            writeLockBean.blockingWriteNumber(22);
+            fail("Expected InterruptedException while waiting for the WRITE lock.");
+        } catch (IllegalStateException x) {
+            if (x.getCause() instanceof InterruptedException)
+                ; // expected
+            else
+                throw x;
+        }
+
+        // cancel and wait for thread 2 to stop interrupting
+        thread2Future.cancel(true);
+        for (boolean thread2Done = false; !thread2Done;)
+            try {
+                assertEquals(true,
+                             thread2Done = doneInterrupting //
+                                             .await(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+            } catch (InterruptedException x) {
+                thread2Done = false;
+            }
+    }
+
+    /**
+     * A bean method that lacks the Schedule annotation does not run automatically.
+     */
+    @Test
+    public void testMethodWithoutScheduleAnnotationDoesNotRunAutomatically() //
+                    throws InterruptedException {
+        CountDownLatch methodStarts = schedulingBean.trackerOfNotScheduled();
+
+        // wait up to 15 seconds past initialization to see if it runs
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
+        if (remainingNS > 0)
+            assertEquals(false,
+                         methodStarts.await(remainingNS, TimeUnit.NANOSECONDS));
+        else
+            assertEquals(1, // countDown was never invoked
+                         methodStarts.getCount());
     }
 
     /**
@@ -257,6 +344,142 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * A bean method that is annotated Asynchronous and Schedule must raise
+     * UnsupportedOperationException.
+     */
+    @Test
+    public void testRejectAsynchronousAndScheduleOnSameMethod() {
+        try {
+            schedulingBean.alsoAsynchronous();
+            fail("Expected UnsupportedOperationException for a method " +
+                 "annotated both @Asynchronous and @Schedule.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+            // TODO NLS message prefix can be asserted once added
+                !x.getMessage().contains("alsoAsynchronous") ||
+                !x.getMessage().contains("@Asynchronous") ||
+                !x.getMessage().contains("@Schedule"))
+                throw x;
+            // else expected error
+        }
+    }
+
+    /**
+     * A bean method that is scheduled to automatically run every 4 seconds,
+     * but completes itself the first time it runs must run exactly once.
+     */
+    @Test
+    public void testScheduledMethodCompletesItselfAfter1Execution() //
+                    throws InterruptedException {
+        AtomicInteger executionCount = schedulingBean.trackerOfOnceOn4thSecond();
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < TIMEOUT_NS &&
+                                             executionCount.get() == 0; //
+                        TimeUnit.NANOSECONDS.sleep(POLL_NS));
+
+        assertEquals(1L,
+                     executionCount.get());
+
+        // wait up to 15 seconds past initialization to see if it runs a second time
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
+        if (remainingNS > 0)
+            TimeUnit.NANOSECONDS.sleep(remainingNS);
+
+        assertEquals(1L,
+                     executionCount.get());
+    }
+
+    /**
+     * A bean method that is scheduled (with a cron expression) to automatically
+     * run every 3 seconds indefinitely continues running multiple times.
+     */
+    @Test
+    public void testScheduledMethodRepeats() //
+                    throws InterruptedException {
+        Thread execThread;
+        LinkedBlockingQueue<Thread> execThreads = //
+                        schedulingBean.trackerOfEvery3SecondsCron();
+
+        // verify that it runs 3 times
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+
+        // clear out all executions up to current point in time
+        for (execThread = execThreads.poll(); //
+                        execThread != null; //
+                        execThread = execThreads.poll());
+
+        // verify that it is still running
+        assertNotNull(execThread = execThreads.poll(TIMEOUT_NS,
+                                                    TimeUnit.NANOSECONDS));
+        assertEquals(false, execThread == Thread.currentThread());
+    }
+
+    /**
+     * A bean method that is scheduled to automatically run every 5 seconds,
+     * but raises an exception its third execution, runs only 3 times.
+     */
+    @Test
+    public void testScheduledMethodStopsAfterRaisingException() //
+                    throws InterruptedException {
+
+        AtomicInteger executionCount = schedulingBean.trackerOfEvery5Seconds3Times();
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < TIMEOUT_NS &&
+                                             executionCount.get() < 3; //
+                        TimeUnit.NANOSECONDS.sleep(POLL_NS));
+
+        assertEquals(3L,
+                     executionCount.get());
+
+        // wait up to 25 seconds past initialization to see if it runs a 4th time
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(25) - elapsedNS;
+        if (remainingNS > 0)
+            TimeUnit.NANOSECONDS.sleep(remainingNS);
+
+        assertEquals(3L,
+                     executionCount.get());
+    }
+
+    /**
+     * Two methods annotated Lock and Schedule attempt to run every third second
+     * four times and increment a shared counter in a way that will lose updates
+     * if the executions overlap. Verify the counter records all 8 executions.
+     */
+    @Test
+    public void testScheduledMethodsWithWriteLockDoNotOverlap() //
+                    throws InterruptedException {
+        AtomicInteger executionCount = schedulingBean //
+                        .trackerOfLockEvery3Seconds4Times();
+
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < TIMEOUT_NS * 2 &&
+                                             executionCount.get() < 8L; //
+                        TimeUnit.NANOSECONDS.sleep(POLL_NS));
+
+        assertEquals(8L,
+                     executionCount.get());
+
+        // wait up to 20 seconds past initialization to find out if any additional
+        // executions occur
+        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long remainingNS = TimeUnit.SECONDS.toNanos(20) - elapsedNS;
+        if (remainingNS > 0)
+            TimeUnit.NANOSECONDS.sleep(remainingNS);
+
+        assertEquals(8L,
+                     executionCount.get());
+    }
+
+    /**
      * Invoke a bean method annotated Lock(WRITE) which invokes another
      * method of the same bean instance annotated Lock(READ).
      * The LoopbackBean.increment method is annotated Lock(WRITE) and calls
@@ -368,5 +591,55 @@ public class Concurrency32CDITestServlet extends FATServlet {
 
         assertEquals(true,
                      thread2Future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * The Lock annotation also applies to methods annotated Asynchronous,
+     * such that the execution of the asynchronous work (not the submission of it)
+     * is subject to the lock.
+     */
+    @Test
+    public void testWriteLockOnAsyncMethod() throws Exception {
+
+        // write by single thread
+        writeLockBean.writeNumber(90);
+
+        // invoke an asynchronous method and wait for it to start running
+        CountDownLatch blocker1 = new CountDownLatch(1);
+        CountDownLatch asyncMethod1Running = new CountDownLatch(1);
+        CompletableFuture<Integer> future1 = writeLockBean //
+                        .asyncWriteNumber(asyncMethod1Running, blocker1, 91);
+        cancelAfterTest.add(future1);
+
+        asyncMethod1Running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        // invoke a second asynchronous method that is subject to the same
+        // WRITE Lock and verify it does not run yet
+        CountDownLatch blocker2 = new CountDownLatch(1);
+        CountDownLatch asyncMethod2Running = new CountDownLatch(1);
+        CompletableFuture<Integer> future2 = writeLockBean //
+                        .asyncWriteNumber(asyncMethod2Running, blocker2, 92);
+        cancelAfterTest.add(future2);
+
+        assertEquals(false,
+                     asyncMethod2Running.await(2, TimeUnit.SECONDS));
+
+        // allow the first asynchronous method to complete
+        blocker1.countDown();
+
+        // the second asynchronous method must start now
+        assertEquals(true,
+                     asyncMethod2Running.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(Integer.valueOf(91),
+                     future1.join());
+
+        // allow the second asynchronous method to complete
+        blocker2.countDown();
+        assertEquals(Integer.valueOf(92),
+                     future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(92,
+                     writeLockBean.blockingReadNumber());
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2025 IBM Corporation and others.
+ * Copyright (c) 2021,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.concurrent.internal.cdi.ScheduleCronTrigger;
 import io.openliberty.concurrent.internal.messages.ConcurrencyNLS;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.concurrent.Asynchronous;
@@ -56,7 +57,15 @@ public class AsyncInterceptor implements Serializable {
         Method method = invocation.getMethod();
         Asynchronous anno = invocation.getInterceptorBinding(Asynchronous.class);
 
-        // Is it a scheduled asynchronous method?
+        // Reject invalid combination of @Asynchronous and @Schedule
+        if (method.isAnnotationPresent(Schedule.class))
+            throw new UnsupportedOperationException //
+            ("The " + method.getName() + " method of the " +
+             method.getDeclaringClass().getName() +
+             " bean cannot be annotated both " + "@Asynchronous" + " and " +
+             "@Schedule"); // TODO NLS
+
+        // Is it a scheduled asynchronous method? @Asynchronous(runAt = @Schedule)
         Schedule[] schedules = anno == null ? new Schedule[0] : anno.runAt();
         if (schedules.length > 0) {
             // Identify requested inline execution for scheduled executions other than the first,

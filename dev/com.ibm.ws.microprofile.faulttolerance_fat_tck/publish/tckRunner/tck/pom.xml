@@ -168,7 +168,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
-                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                    <testSourceDirectory>${basedir}${file.separator}src${file.separator}main${file.separator}java${file.separator}</testSourceDirectory>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
@@ -34,8 +35,10 @@ import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRebalanceListener;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecord;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecords;
@@ -44,6 +47,9 @@ import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.OffsetAndMetadata;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.TopicPartition;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.WakeupException;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMAsyncProvider;
 import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMContext;
@@ -64,6 +70,28 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     private final KafkaConsumer<K, V> kafkaConsumer;
     private final RMAsyncProvider asyncProvider;
     private final Collection<String> topics;
+
+    /**
+     * The name of the application that created this KafkaInput, captured at construction time.
+     * May be {@code null} if the application name could not be determined.
+     */
+    private final String applicationName;
+
+    /**
+     * Cached flag set to {@code true} once the application-started latch has been observed to have
+     * counted down. Once {@code true}, subsequent calls to {@link #executePollActions} skip the
+     * latch await entirely for performance.
+     */
+    private volatile boolean applicationStarted = false;
+
+    /**
+     * Latch obtained from {@link KafkaApplicationStateListener} for the owning application.
+     * Counted down to zero once the application has fully started.
+     * {@link #executePollActions} awaits this latch before entering its poll loop so
+     * that messages are never dispatched to application code before the application
+     * is fully started.
+     */
+    private final CountDownLatch applicationStartedLatch;
 
     private PublisherBuilder<Message<V>> publisher;
     private boolean subscribed = false;
@@ -100,6 +128,9 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
      */
     private final ReentrantLock lock = new ReentrantLock();
 
+    private final static ServiceCaller<KafkaApplicationStateListener> APP_STATE_LISTENER_CALLER = new ServiceCaller<>(KafkaInput.class,
+                                                                                                                      KafkaApplicationStateListener.class);
+
     public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, PartitionTrackerFactory partitionTrackerFactory,
                       KafkaConsumer<K, V> kafkaConsumer, RMAsyncProvider asyncProvider,
                       String topic, int unackedLimit, boolean fastAck) {
@@ -116,6 +147,40 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
             this.unackedMessageCounter = ThresholdCounter.UNLIMITED;
         }
         this.fastAck = fastAck;
+        this.applicationName = resolveApplicationName();
+
+        if (applicationName == null) {
+            throw new IllegalStateException("Could not determine the application name for this KafkaInput");
+        }
+
+        this.applicationStartedLatch = APP_STATE_LISTENER_CALLER.run(kasl -> kasl.getLatch(applicationName))
+                                                                .orElseThrow(() -> new IllegalStateException("Could not acquire the latch KafkaInput with applicationName "
+                                                                                                             + applicationName));
+
+    }
+
+    /**
+     * Capture the application name at construction time.
+     * <p>
+     * Mirrors OSGiConfigUtils.getApplicationName (in io.openliberty.microprofile.config.internal.serverxml):
+     * reads the thread-local {@link ComponentMetaData} first then falls back to asking the {@link CDIService}
+     * for the current application context ID.
+     *
+     * @return the application name, or {@code null} if it cannot be determined
+     */
+    private static String resolveApplicationName() {
+        if (!FrameworkState.isValid()) {
+            return null;
+        }
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd != null) {
+            return cmd.getJ2EEName().getApplication();
+        }
+
+        //Fallback to try getting the name from CDI. This will work if CDI's startup routine is on the current thread stack.
+        return ServiceCaller.runOnce(KafkaInput.class, CDIService.class,
+                                     CDIService::getCurrentApplicationContextID)
+                            .orElse(null);
     }
 
     public PublisherBuilder<Message<V>> getPublisher() {
@@ -198,6 +263,10 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         }
 
         this.running = false;
+        // Unlock the application-started latch so threads
+        // can observe running == false and exit cleanly.
+        applicationStartedLatch.countDown();
+
         this.kafkaConsumer.wakeup();
         this.lock.lock();
         try {
@@ -213,6 +282,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
 
     @FFDCIgnore({ WakeupException.class, RejectedExecutionException.class })
     private CompletionStage<PublisherBuilder<Message<V>>> pollKafkaAsync() {
+
         if (!this.subscribed) {
             this.lock.lock();
             try {
@@ -235,7 +305,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
 
         ConsumerRecords<K, V> records = null;
 
-        while (this.lock.tryLock()) {
+        while (applicationStarted && this.lock.tryLock()) {
             try {
                 records = this.kafkaConsumer.poll(ZERO);
                 break;
@@ -271,9 +341,22 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
 
     /**
      * Run any pending actions and then poll Kafka for messages.
+     * <p>
+     * Waits until the owning application has fully started before entering the poll loop,
+     * so that messages are never dispatched to application code during application startup.
+     * The wait is skipped on subsequent calls once {@link #applicationStarted} is {@code true}.
      */
-    @FFDCIgnore(WakeupException.class)
+    @FFDCIgnore({ WakeupException.class, InterruptedException.class })
     private void executePollActions(CompletableFuture<PublisherBuilder<Message<V>>> result) {
+        if (!applicationStarted) {
+            try {
+                applicationStartedLatch.await();
+                applicationStarted = true;
+            } catch (InterruptedException e) {
+                result.completeExceptionally(e);
+                return;
+            }
+        }
         this.lock.lock();
         try {
             while (this.running) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.concurrent.internal.cdi.interceptor;
+package io.openliberty.concurrent.internal.cdi;
 
 import java.time.DayOfWeek;
 import java.time.Month;
@@ -28,7 +28,7 @@ import jakarta.enterprise.concurrent.Schedule;
  * Inherits from the CronTrigger class to expose the next(ZonedDateTime) method
  * so that multiple triggers can compute from the same time.
  */
-class ScheduleCronTrigger extends CronTrigger {
+public class ScheduleCronTrigger extends CronTrigger {
     private static final TraceComponent tc = Tr.register(ScheduleCronTrigger.class);
 
     private static final Month[] ALL_MONTHS = Month.values();
@@ -73,7 +73,7 @@ class ScheduleCronTrigger extends CronTrigger {
      * @return the trigger.
      */
     @Trivial
-    static ScheduleCronTrigger create(Schedule schedule) {
+    public static ScheduleCronTrigger create(Schedule schedule) {
         ScheduleCronTrigger trigger;
 
         String zone = schedule.zone();
