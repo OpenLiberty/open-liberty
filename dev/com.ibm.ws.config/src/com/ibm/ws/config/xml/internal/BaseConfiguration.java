@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2026 IBM Corporation and others.
+ * Copyright (c) 2010, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,21 +35,8 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 class BaseConfiguration {
 
     private static final TraceComponent tc = Tr.register(BaseConfiguration.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
-    
-    /**
-     * Default quiesce timeout value in milliseconds.
-     * This is the timeout used when no quiesceTimeout attribute is specified in server.xml.
-     */
-    public static final long DEFAULT_QUIESCE_TIMEOUT_MILLIS = 30000L;
 
     private String description;
-    private long quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_MILLIS;
-    
-    /**
-     * Tracks whether quiesceTimeout was explicitly configured in server.xml.
-     * True if the user specified a quiesceTimeout attribute, false if using the default.
-     */
-    private boolean quiesceTimeoutExplicitlyConfigured = false;
 
     protected long lastModified = -1;
 
@@ -457,52 +444,6 @@ class BaseConfiguration {
 
     public String getDescription() {
         return description;
-    }
-
-    /**
-     * Set the quiesce timeout value in milliseconds.
-     * This method is called when the user explicitly configures the quiesceTimeout attribute.
-     *
-     * @param timeoutMillis The timeout value in milliseconds (must be >= the minimum of 30 seconds).
-     *                      If less than the minimum, it sets to the default.
-     * @return true if the value was set successfully, false if the value was below the minimum
-     */
-    public boolean setQuiesceTimeoutMillis(long timeoutMillis) {
-        long minTimeout = DEFAULT_QUIESCE_TIMEOUT_MILLIS;
-        if (timeoutMillis < minTimeout) {
-            setDefaultQuiesceTimeout();
-            return false;
-        }
-        this.quiesceTimeout = timeoutMillis;
-        this.quiesceTimeoutExplicitlyConfigured = true;
-        return true;
-    }
-
-    /**
-     * Get the quiesce timeout value in milliseconds.
-     *
-     * @return The timeout value in milliseconds
-     */
-    public long getQuiesceTimeoutMillis() {
-        return quiesceTimeout;
-    }
-    
-    /**
-     * Check if the quiesce timeout was explicitly configured in server.xml.
-     *
-     * @return true if the user specified a quiesceTimeout attribute, false if using the default
-     */
-    public boolean isQuiesceTimeoutExplicitlyConfigured() {
-        return quiesceTimeoutExplicitlyConfigured;
-    }
-
-    /**
-     * Reset the quiesce timeout to the default value.
-     * This is called when using the metatype default or when an invalid value is provided.
-     */
-    public void setDefaultQuiesceTimeout() {
-        this.quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_MILLIS;
-        this.quiesceTimeoutExplicitlyConfigured = false;
     }
 
     @Override

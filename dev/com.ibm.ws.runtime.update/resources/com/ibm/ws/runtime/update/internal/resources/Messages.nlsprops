@@ -41,7 +41,7 @@ quiesce.end.useraction=No action is required.
 
 quiece.warning=CWWKE1102W: The quiesce operation did not complete. The server will now stop.
 quiece.warning.explanation=The process was unable to quiesce all services within the quiesce timeout period.
-quiece.warning.useraction=You can safely ignore error messages that are the result of unavailable required services. If the problem persists, increase the 'quiesceTimeout' duration by adding 'quiesceTimeout' attribute to the 'server' element in the 'server.xml' file.
+quiece.warning.useraction=You can safely ignore error messages that are the result of unavailable required services. If the problem persists, increase the 'quiesceTimeout' duration by adding 'quiesceTimeout' attribute to the 'executor' element in the 'server.xml' file.
 
 client.quiesce.begin=CWWKE1103I: Waiting for up to {0} seconds for the client to quiesce.
 client.quiesce.begin.explanation=The client waits for services to quiesce before it proceeds with shutdown.
@@ -59,10 +59,6 @@ quiesce.listeners.not.complete=CWWKE1106W: {0} shutdown operations did not compl
 quiesce.listeners.not.complete.explanation=One or more operations that were initiated during the shutdown operation did not complete. 
 quiesce.listeners.not.complete.useraction=No action is required.
 
-quiesce.waiting.on.threads=CWWKE1107W: {0} threads did not complete during the quiesce period.
+quiesce.waiting.on.threads=CWWKE1107W: {0} threads did not complete during the quiesce period. 
 quiesce.waiting.on.threads.explanation=One or more threads that were active before shutting down the server were still active at the end of the quiesce period.
-quiesce.waiting.on.threads.useraction=No action is required.
-
-server.element.config.missing=CWWKE1108W: ServerElementConfig service not available, using default quiesce timeout of 30 seconds. If quiesceTimeout was configured in server.xml, it will not be applied.
-server.element.config.missing.explanation=The ServerElementConfig service is required to read the quiesceTimeout attribute from the server element in server.xml. Without this service, the configured value cannot be retrieved and the default timeout of 30 seconds will be used instead.
-server.element.config.missing.useraction=This is an internal error. If the problem persists, check the server logs for bundle activation failures or missing dependencies.
+quiesce.waiting.on.threads.useraction=No action is required. 

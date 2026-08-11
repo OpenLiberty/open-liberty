@@ -20,12 +20,13 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface ThreadQuiesce {
 
-    @Deprecated
     boolean quiesceThreads();
 
-    boolean quiesceThreads(long quiesceTimeout);
+    boolean quiesceThreads(long startTime);
 
     int getActiveThreads();
 
     boolean quiesceStarted();
+
+    int getQuiesceTimeout();
 }
