@@ -45,7 +45,6 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -874,9 +873,6 @@ public class ConversionManager extends CoreConversionManager implements Serializ
             instant = Instant.ofEpochMilli(((java.sql.Date) sourceObject).getTime());
         } else if (sourceObject instanceof java.sql.Timestamp) {
             instant = ((java.sql.Timestamp) sourceObject).toInstant();
-        } else if (sourceObject instanceof OffsetDateTime odt) {
-            // Handles OffsetDateTime for TIMESTAMP columns;
-            instant = odt.toInstant();
         } else if (sourceObject instanceof java.util.Date) {
             // handles sql.Time too
             instant = ((java.util.Date) sourceObject).toInstant();
@@ -973,7 +969,7 @@ public class ConversionManager extends CoreConversionManager implements Serializ
      *
      * @param sourceObject
      *            Valid object of class java.sql.Timestamp, String,
-     *            java.util.Date, java.time.OffsetDateTime, or Long
+     *            java.util.Date, or Long
      */
     protected java.time.LocalDateTime convertObjectToLocalDateTime(Object sourceObject) throws ConversionException {
         java.time.LocalDateTime localDateTime = null;
@@ -986,10 +982,6 @@ public class ConversionManager extends CoreConversionManager implements Serializ
             localDateTime = java.time.LocalDateTime.parse(((String) sourceObject).replace(' ', 'T'), Helper.getDefaultDateTimeFormatter());
         } else if (sourceObject instanceof java.sql.Timestamp) {
             localDateTime = ((java.sql.Timestamp) sourceObject).toLocalDateTime();
-        } else if (sourceObject instanceof OffsetDateTime odt) {
-            // Handles OffsetDateTime for TIMESTAMP columns
-            // This will strip the offset and use the local date-time part directly
-            localDateTime = odt.toLocalDateTime();
         } else if (sourceObject instanceof java.util.Date) {
             // handles sql.Time, sql.Date
             Calendar cal = Helper.allocateCalendar();
@@ -1881,4 +1873,5 @@ public class ConversionManager extends CoreConversionManager implements Serializ
         vec.add(Character[].class);
         return vec;
     }
+
 }
