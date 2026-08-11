@@ -20,10 +20,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.enterprise.concurrent.AbortedException;
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.Lock;
 import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.context.ApplicationScoped;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * Bean with methods that are automatically scheduled to run per their
@@ -63,6 +67,18 @@ public class SchedulingBean {
                     new CountDownLatch(4);
 
     /**
+     * Tracks completion of 3 executions of the lookUp3Times method.
+     */
+    private final AtomicInteger lookUp3TimesCount = //
+                    new AtomicInteger(0);
+
+    /**
+     * Tracks the results of executions of the lookUp3Times method.
+     */
+    private final LinkedBlockingQueue<Object> lookUp3TimesQueue = //
+                    new LinkedBlockingQueue<>();
+
+    /**
      * Tracks the non-execution of the notScheduled method.
      */
     private final CountDownLatch notScheduledLatch = //
@@ -86,6 +102,7 @@ public class SchedulingBean {
     //       03        08        13        18        23        28        33        38        43        48        53        58
     // 00    03    06    09    12    15    18    21    24    27    30    33    36    39    42    45    48    51    54    57
     //   DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD    DD
+    //   01              09          15            22                31              39              47              55
     // 00      04      08      12      16      20      24      28      32      36      40      44      48      52      56
 
     @Schedule(cron = "2/3 * * * * *",
@@ -137,6 +154,21 @@ public class SchedulingBean {
             throw new NoMoreExecutionsException();
     }
 
+    @Schedule(seconds = { 1, 9, 15, 22, 31, 39, 47, 55 },
+              minutes = {}, // not restricted
+              hours = {}) // not restricted
+    public void lookUp3Times() throws AbortedException, NamingException {
+        try {
+            lookUp3TimesQueue.add(InitialContext //
+                            .doLookup("java:comp/env/TestEntry"));
+            if (lookUp3TimesCount.incrementAndGet() == 3)
+                throw new AbortedException("Do not continue after 3 executions");
+        } catch (NamingException x) {
+            lookUp3TimesQueue.add(x);
+            throw x;
+        }
+    }
+
     public void notScheduled() {
         System.out.println("Running a method that is NOT SCHEDULED!");
         notScheduledLatch.countDown();
@@ -177,6 +209,15 @@ public class SchedulingBean {
      */
     public AtomicInteger trackerOfLockEvery3Seconds4Times() {
         return lockEvery3Seconds4TimesCount;
+    }
+
+    /**
+     * Returns a queue tracking the executions of the lookUp3Times method.
+     *
+     * @return a queue tracking the executions of the lookUp3Times method
+     */
+    public LinkedBlockingQueue<Object> trackerOfLookUp3Times() {
+        return lookUp3TimesQueue;
     }
 
     /**

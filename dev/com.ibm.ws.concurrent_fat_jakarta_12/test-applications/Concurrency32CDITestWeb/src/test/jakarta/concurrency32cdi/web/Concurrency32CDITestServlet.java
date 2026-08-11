@@ -184,7 +184,7 @@ public class Concurrency32CDITestServlet extends FATServlet {
         CountDownLatch methodStarts = schedulingBean.trackerOfNotScheduled();
 
         // wait up to 15 seconds past initialization to see if it runs
-        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long elapsedNS = System.nanoTime() - initTimeNS.get();
         long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
         if (remainingNS > 0)
             assertEquals(false,
@@ -207,6 +207,39 @@ public class Concurrency32CDITestServlet extends FATServlet {
                                   TimeUnit.MILLISECONDS);
         assertEquals("value3",
                      future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Confirm that a method annotated Schedule can look up resources from
+     * the java:comp namespace of the web module that provides the bean.
+     */
+    @Test
+    public void testLookupFromScheduledMethod() throws Exception {
+        LinkedBlockingQueue<Object> results = schedulingBean.trackerOfLookUp3Times();
+
+        for (int i = 1; i <= 3; i++) {
+            Object result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertNotNull("Timed out waiting for lookUp3Times execution #" + i,
+                          result);
+            if (result instanceof Throwable)
+                throw new AssertionError("lookUp3Times raised an exception" +
+                                         " on execution #" + i, //
+                                (Throwable) result);
+            assertEquals("value3", result);
+        }
+
+        // wait up to 35 seconds past initialization to see if it runs again
+        long elapsedNS = System.nanoTime() - initTimeNS.get();
+        long remainingNS = TimeUnit.SECONDS.toNanos(35) - elapsedNS;
+        Object result;
+        if (remainingNS > 0)
+            result = results.poll(remainingNS, TimeUnit.NANOSECONDS);
+        else
+            result = results.poll();
+
+        assertEquals(null,
+                     result);
+
     }
 
     /**
@@ -381,7 +414,7 @@ public class Concurrency32CDITestServlet extends FATServlet {
                      executionCount.get());
 
         // wait up to 15 seconds past initialization to see if it runs a second time
-        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long elapsedNS = System.nanoTime() - initTimeNS.get();
         long remainingNS = TimeUnit.SECONDS.toNanos(15) - elapsedNS;
         if (remainingNS > 0)
             TimeUnit.NANOSECONDS.sleep(remainingNS);
@@ -440,7 +473,7 @@ public class Concurrency32CDITestServlet extends FATServlet {
                      executionCount.get());
 
         // wait up to 25 seconds past initialization to see if it runs a 4th time
-        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long elapsedNS = System.nanoTime() - initTimeNS.get();
         long remainingNS = TimeUnit.SECONDS.toNanos(25) - elapsedNS;
         if (remainingNS > 0)
             TimeUnit.NANOSECONDS.sleep(remainingNS);
@@ -470,7 +503,8 @@ public class Concurrency32CDITestServlet extends FATServlet {
 
         // wait up to 20 seconds past initialization to find out if any additional
         // executions occur
-        long elapsedNS = System.nanoTime() - initTimeNS.get();;
+        long elapsedNS = System.nanoTime() - initTimeNS.get();
+
         long remainingNS = TimeUnit.SECONDS.toNanos(20) - elapsedNS;
         if (remainingNS > 0)
             TimeUnit.NANOSECONDS.sleep(remainingNS);
