@@ -40,7 +40,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
-@MaximumJavaLevel(javaLevel = 21) //Fails on Java 23 due to updates to CLDR https://jdk.java.net/23/release-notes#JDK-8319990
+@MaximumJavaLevel(javaLevel = 21) // TODO Fails on Java 23 due to updates to CLDR https://jdk.java.net/23/release-notes#JDK-8319990
 public class JsonbTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -59,8 +59,8 @@ public class JsonbTckLauncher {
         }
 
         // Enable to run against Snapshot version
-        additionalProps.put("jakarta.jsonb.tck.groupId", "jakarta.json.bind");
-        additionalProps.put("jakarta.jsonb.tck.version", "3.1.0-SNAPSHOT");
+//        additionalProps.put("jakarta.jsonb.tck.groupId", "jakarta.json.bind");
+//        additionalProps.put("jakarta.jsonb.tck.version", "3.1.0-SNAPSHOT");
 
         // Skip signature testing on Windows
         // So far as I can tell the signature test plugin is not supported on Windows
