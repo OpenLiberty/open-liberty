@@ -10,6 +10,7 @@
 package com.ibm.ws.security.oauth.protectedresource.metadata.fat;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -462,6 +463,16 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         assertNotNull("Expected WWW-Authenticate header", wwwAuthenticateHeader);
         String expectedMetadataUrl = buildMetadataUrl(serverHttpsString, PROTECTED_RESOURCE_SUBPATH_ROOT);
         assertThat("Expected metadata URL in WWW-Authenticate header", wwwAuthenticateHeader, containsString("resource_metadata=\"" + expectedMetadataUrl + "\""));
+    }
+
+    @Test
+    public void testMetadataDisabled401DoesNotIncludeMetadata() throws Exception {
+        WebResponse wr = get401ErrorResponse(serverHttpsString + METADATA_DISABLED_PATH);
+        assertEquals("Expected 401 status code", 401, wr.getResponseCode());
+        String wwwAuthenticateHeader = wr.getHeaderField("WWW-Authenticate");
+        if (wwwAuthenticateHeader != null) {
+            assertThat(wwwAuthenticateHeader, not(containsString("resource_metadata")));
+        }
     }
 
     /**

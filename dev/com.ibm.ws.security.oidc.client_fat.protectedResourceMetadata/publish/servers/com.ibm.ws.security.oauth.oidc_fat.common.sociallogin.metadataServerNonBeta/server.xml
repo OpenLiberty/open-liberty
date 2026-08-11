@@ -9,7 +9,7 @@
  -->
 <server>
     <featureManager>
-        <feature>openidConnectClient-1.0</feature>
+        <feature>socialLogin-1.0</feature>
         <feature>servlet-3.1</feature>
         <feature>appSecurity-2.0</feature>
         <feature>jsp-2.3</feature>
@@ -33,17 +33,23 @@
         OIDC client with protectedResourceMetadata configured. In non-beta mode the
         protectedResourceMetadata sub-element is ignored, so the endpoint must return 404.
     -->
-    <openidConnectClient
+    <oauth2Login
         id="OidcConfigWithScopes"
+        signatureAlgorithm="RS256"
+        scope="profile email"
+        userNameAttribute="sub"
         clientId="client01"
         clientSecret="{xor}LDo8LTorbm1saw=="
-        inboundPropagation="required"
-        issuerIdentifier="https://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
-        authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
-        tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        accessTokenRequired="true"
+        authorizationEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpoint="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        userApi="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/introspect"
         authFilterRef="authFilter1">
-        <protectedResourceMetadata advertisedScopes="openid,profile,email" />
-    </openidConnectClient>
+        <protectedResourceMetadata
+            advertisedScopes="profile,email"
+            authServerIssuerId="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        />
+    </oauth2Login>
 
     <authFilter id="authFilter1">
         <requestUrl
