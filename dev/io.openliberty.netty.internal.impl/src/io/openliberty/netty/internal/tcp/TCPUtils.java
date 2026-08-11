@@ -9,9 +9,12 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import java.io.IOException;
 import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
@@ -26,8 +29,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
@@ -53,7 +54,7 @@ public class TCPUtils {
      */
     public static ServerBootstrapExtended createTCPBootstrapInbound(NettyFrameworkImpl framework,
                                                                     Map<String, Object> tcpOptions) throws NettyException {
-        return (ServerBootstrapExtended)createBootstrap(framework, tcpOptions, true);
+        return (ServerBootstrapExtended) createBootstrap(framework, tcpOptions, true);
     }
 
     /**
@@ -66,7 +67,7 @@ public class TCPUtils {
      */
     public static BootstrapExtended createTCPBootstrapOutbound(NettyFrameworkImpl framework,
                                                                Map<String, Object> tcpOptions) throws NettyException {
-        return (BootstrapExtended)createBootstrap(framework, tcpOptions, false);
+        return (BootstrapExtended) createBootstrap(framework, tcpOptions, false);
     }
 
     private static AbstractBootstrap createBootstrap(NettyFrameworkImpl framework, Map<String, Object> tcpOptions, boolean isInbound) throws NettyException {
@@ -75,16 +76,16 @@ public class TCPUtils {
         AbstractBootstrap bs;
         if (isInbound) {
             bs = new ServerBootstrapExtended()
-                .applyConfiguration(config)
-                .setBaseInitializer(tcpInitializer)
-                .group(framework.getParentGroup(), framework.getChildGroup())
-                .channel(framework.getServerSocketChannelClass());
+                            .applyConfiguration(config)
+                            .setBaseInitializer(tcpInitializer)
+                            .group(framework.getParentGroup(), framework.getChildGroup())
+                            .channel(framework.getServerSocketChannelClass());
         } else {
             bs = new BootstrapExtended()
-                .applyConfiguration(config)
-                .setBaseInitializer(tcpInitializer)
-                .group(framework.getChildGroup())
-                .channel(framework.getSocketChannelClass());
+                            .applyConfiguration(config)
+                            .setBaseInitializer(tcpInitializer)
+                            .group(framework.getChildGroup())
+                            .channel(framework.getSocketChannelClass());
         }
         return bs;
     }
@@ -117,6 +118,26 @@ public class TCPUtils {
                 // add new channel to set of active channels, and set a close future to
                 // remove it
                 // Get parent and increment active connections
+
+                if (config.isInbound() && !NettyConstants.INADDR_ANY.equals(newHost)) {
+                    InetAddress boundAddr = ((InetSocketAddress) channel.localAddress()).getAddress();
+                    if (!boundAddr.isLoopbackAddress() && wildcardListenerDetected(inetPort)) {
+                        // A wildcard listener already owns this port. Close our channel and report the error as a bind conflict.
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Specific-address bind for " + newHost + ":" + inetPort
+                                         + " conflicts with an existing wildcard listener on the same port. Closing channel.");
+                        }
+                        channel.close();
+                        Tr.error(tc, TCPMessageConstants.BIND_ERROR,
+                                 new Object[] { config.getExternalName(), newHost,
+                                                String.valueOf(inetPort), "Address already in use" });
+                        return;
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "No conflicting wildcard listener found for port " + inetPort + "; bind of " + newHost + " is valid.");
+                        }
+                    }
+                }
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
@@ -151,7 +172,7 @@ public class TCPUtils {
                 if (newHost == NettyConstants.INADDR_ANY) {
                     hostLogString = "*  (" + IPvType + ")";
                 } else {
-                    hostLogString = config.getHostname() + "  (" + IPvType + ": "
+                    hostLogString = newHost + "  (" + IPvType + ": "
                                     + inetAddr.getAddress().getHostAddress() + ")";
                 }
 
@@ -402,4 +423,42 @@ public class TCPUtils {
         }
     }
 
+    /**
+     * Probes whether any wildcard listener (IPv4 or IPv6) is already accepting
+     * connections on the given port. Used to detect the case where SO_REUSEADDR=true
+     * has allowed a specific-address bind to succeed even though a wildcard socket
+     * already owns the port — a condition the legacy TCPPort would have rejected.
+     *
+     * A successful connection on either indicates a wildcard listener is present.
+     *
+     * @param inetPort the port to probe
+     * @return true if a wildcard listener is detected on that port; false otherwise
+     */
+    private static boolean wildcardListenerDetected(int inetPort) {
+        if (canConnect("127.0.0.1", inetPort)) {
+            return true;
+        }
+
+        if (canConnect("::1", inetPort)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Attempts a connection to the given host and port.
+     *
+     * @return true if the connection was accepted; false if refused or the address
+     *         is not available on this host
+     */
+    private static boolean canConnect(String host, int port) {
+        try {
+            InetAddress addr = InetAddress.getByName(host);
+            SocketChannel testChannel = SocketChannel.open(new InetSocketAddress(addr, port));
+            testChannel.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }
