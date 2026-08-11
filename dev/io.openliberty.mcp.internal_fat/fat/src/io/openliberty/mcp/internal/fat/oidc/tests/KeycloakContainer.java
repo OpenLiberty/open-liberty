@@ -59,7 +59,6 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
     static final String REALM = "mcp-realm";
     static final String LIBERTY_CLIENT_ID = "liberty-mcp-server-conf-client";
     static final String PUBLIC_CLIENT_ID = "mcp-public-client";
-    static final String TEST_PASSWORD = "123";
 
     // TLS / HTTP-client state created once, reused across both test classes
     private KeyStore keycloakKeystore = null;
@@ -72,6 +71,23 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
     private String confidentialClientSecret = null;
     private String publicClientUUID = null;
     private boolean realmConfigured = false;
+
+    // Constant test user credentials
+    private static final String TEST_ADMIN_USERNAME = "admin@example.com";
+    private static final String TEST_USER_USERNAME = "user@example.com";
+    private static final String TEST_PASSWORD = "123";
+
+    public static String getTestAdminUsername() {
+        return TEST_ADMIN_USERNAME;
+    }
+
+    public static String getTestUserUsername() {
+        return TEST_USER_USERNAME;
+    }
+
+    public static String getTestPassword() {
+        return TEST_PASSWORD;
+    }
 
     // Constructor
     public KeycloakContainer() {

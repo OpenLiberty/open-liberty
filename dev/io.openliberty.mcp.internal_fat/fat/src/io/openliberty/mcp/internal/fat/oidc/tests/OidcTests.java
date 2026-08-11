@@ -48,14 +48,17 @@ import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 @RunWith(FATRunner.class)
 public class OidcTests extends FATServletClient {
 
-    private static final String TEST_ADMIN_USERNAME = "admin@example.com";
-    private static final String TEST_USER_USERNAME = "user@example.com";
+    // Credentials used by the Keycloak test users
+    private static final String TEST_ADMIN_USERNAME = KeycloakContainer.getTestAdminUsername();
+    private static final String TEST_USER_USERNAME = KeycloakContainer.getTestUserUsername();
+    private static final String TEST_PASSWORD = KeycloakContainer.getTestPassword();
 
     // Note: We don't use @Rule for McpClient because it runs McpClient.before() which sends the MCP initialize request without an authorization header.
     // This would cause a 401 as the server in this test uses OIDC which requires a token each request
     @Server("mcp-server-oidc")
     public static LibertyServer server;
 
+    // Provides an isolated Keycloak instance for this test class
     @ClassRule
     public static KeycloakContainer keycloakContainer = new KeycloakContainer();
 
@@ -109,7 +112,7 @@ public class OidcTests extends FATServletClient {
 
     @Test
     public void testUserRestrictedToolCallWithUserAccessTokenSucceeds() throws Exception {
-        String accessToken = getAccessToken(TEST_USER_USERNAME, KeycloakContainer.TEST_PASSWORD);
+        String accessToken = getAccessToken(TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
         McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);
@@ -136,7 +139,7 @@ public class OidcTests extends FATServletClient {
 
     @Test
     public void testUserRestrictedToolCallWithAdminAccessTokenSucceeds() throws Exception {
-        String accessToken = getAccessToken(TEST_ADMIN_USERNAME, KeycloakContainer.TEST_PASSWORD);
+        String accessToken = getAccessToken(TEST_ADMIN_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
         McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);
@@ -163,7 +166,7 @@ public class OidcTests extends FATServletClient {
 
     @Test
     public void testToolCallWithAdminAccessTokenSucceeds() throws Exception {
-        String accessToken = getAccessToken(TEST_ADMIN_USERNAME, KeycloakContainer.TEST_PASSWORD);
+        String accessToken = getAccessToken(TEST_ADMIN_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
         McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);
@@ -190,7 +193,7 @@ public class OidcTests extends FATServletClient {
 
     @Test
     public void testAdminRestrictedToolCallWithBasicUserTokenFails() throws Exception {
-        String accessToken = getAccessToken(TEST_USER_USERNAME, KeycloakContainer.TEST_PASSWORD);
+        String accessToken = getAccessToken(TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
         McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);

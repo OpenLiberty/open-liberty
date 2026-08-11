@@ -70,13 +70,12 @@ public class OidcAuthorizationFlowTests extends FATServletClient {
     private static final String CONTEXT_ROOT = "/oidcAuthFlowTests";
     private static final String AS_METADATA_SUFFIX = "/.well-known/oauth-authorization-server";
 
-    // Credentials — must match the Keycloak realm configured via KeycloakContainer
-    private static final String TEST_ADMIN_USERNAME = "admin@example.com";
-    private static final String TEST_USER_USERNAME = "user@example.com";
+    // Credentials used by the Keycloak test users
+    private static final String TEST_ADMIN_USERNAME = KeycloakContainer.getTestAdminUsername();
+    private static final String TEST_USER_USERNAME = KeycloakContainer.getTestUserUsername();
+    private static final String TEST_PASSWORD = KeycloakContainer.getTestPassword();
 
-    // @ClassRule on the shared Keycloak container ensures it is running whether this
-    // test class runs standalone or as part of the full suite after OidcTests.
-    // Testcontainers is idempotent: starting an already-running container is a no-op.
+    // Provides an isolated Keycloak instance for this test class.
     @ClassRule
     public static KeycloakContainer keycloakContainer = new KeycloakContainer();
 
@@ -99,7 +98,7 @@ public class OidcAuthorizationFlowTests extends FATServletClient {
         keycloakContainer.setupRealm();
         // wipe the oidcAuthFlowTests.war we just deployed above.
         // cleanStart=false: no --clean flag; the OSGi cache from OidcTests' run is still valid.
-        server.startServer("OidcAuthorizationFlowTests.log", false, false);
+        server.startServer();
         // Write the live Keycloak coordinates into server.xml now that the server is running
         // so waitForStringInLogUsingMark works correctly against an active log.
         keycloakContainer.updateServerConfig(server);
@@ -110,9 +109,7 @@ public class OidcAuthorizationFlowTests extends FATServletClient {
     public static void teardown() throws Exception {
         // CWWKZ0014W: oidcTests.war is declared in server.xml but was deployed by OidcTests
         // in its own server lifecycle — it will not be present when this class restarts the server.
-        // CWWKO0221E: port-already-in-use can appear in the log if a previous server run left a
-        // stale port binding entry; it is not caused by this test class.
-        server.stopServer("CWWKZ0014W", "CWWKO0221E");
+        server.stopServer("CWWKZ0014W");
     }
 
     /**
@@ -196,7 +193,7 @@ public class OidcAuthorizationFlowTests extends FATServletClient {
         String tokenEndpoint = discoverTokenEndpoint("adminTool");
 
         // Step 6: obtain admin access token via discovered token endpoint
-        String accessToken = fetchAccessToken(tokenEndpoint, TEST_ADMIN_USERNAME, KeycloakContainer.TEST_PASSWORD);
+        String accessToken = fetchAccessToken(tokenEndpoint, TEST_ADMIN_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
         // Step 7: call the admin-only tool with the discovered access token
@@ -218,7 +215,7 @@ public class OidcAuthorizationFlowTests extends FATServletClient {
     public void testFullOAuthDiscoveryFlowAllowsUserToolCall() throws Exception {
         String tokenEndpoint = discoverTokenEndpoint("userTool");
 
-        String accessToken = fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, KeycloakContainer.TEST_PASSWORD);
+        String accessToken = fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
         McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS, accessToken);
@@ -239,7 +236,7 @@ public class OidcAuthorizationFlowTests extends FATServletClient {
     public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool() throws Exception {
         String tokenEndpoint = discoverTokenEndpoint("adminTool");
 
-        String accessToken = fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, KeycloakContainer.TEST_PASSWORD);
+        String accessToken = fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
         McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS, accessToken);
