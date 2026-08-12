@@ -8,6 +8,9 @@
 	<classpathentry kind="src" path="test-applications/testLib17.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testRar1.rar/src"/>
 	<classpathentry kind="src" path="test-applications/testResourceAdaptor.jar/src"/>
+	<classpathentry kind="src" path="test-applications/traceTestLib.jar/src"/>
+	<classpathentry kind="src" path="test-applications/traceTestWar.war/src"/>
+	<classpathentry kind="src" path="test-applications/testBadClass.jar/src"/>
 	<classpathentry kind="src" path="test-resourceadapters/testDummyRA/src"/>
 	<classpathentry kind="src" path="test-bundles/userApiBundle/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
