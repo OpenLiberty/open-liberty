@@ -67,7 +67,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     HttpInboundServiceContext context;
     HttpChannelConfig config;
 
-    public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc, HttpRequest request) {
+    public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc, HttpRequest request, int streamId) {
         Objects.requireNonNull(isc);
         Objects.requireNonNull(response);
 
@@ -77,7 +77,11 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         this.trailers = new DefaultHttpHeaders();
         this.nettyTrailerWrapper = new NettyTrailers(this.trailers);
 
-        this.streamId = headers.getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), -1);
+        // For a matching request, a matching header must be set for stream id in HTTP 2.0
+        if(streamId != -1) {
+            this.streamId = streamId;
+            nettyResponse.headers().setInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
+        }
 
         if (isc instanceof HttpInboundServiceContextImpl) {
             incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());
