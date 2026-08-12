@@ -33,8 +33,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.inject.Inject;
@@ -76,6 +78,9 @@ public class Concurrency32CDITestServlet extends FATServlet {
     ManagedScheduledExecutorService async3Scheduler;
 
     static final AtomicLong initTimeNS = new AtomicLong(0);
+
+    @EJB(beanName = "ScheduleTracker")
+    Function<String, ?> scheduleTracker;
 
     @Inject
     LoopbackBean loopbackBean;
@@ -196,7 +201,8 @@ public class Concurrency32CDITestServlet extends FATServlet {
 
     /**
      * Confirm that a java:comp lookup can be successfully performed from a
-     * scheduled task.
+     * scheduled task. The managed bean with the Schedule method is in a
+     * web module
      */
     @Test
     public void testJavaCompAccessibleFromScheduledTask() throws Exception {
@@ -207,6 +213,30 @@ public class Concurrency32CDITestServlet extends FATServlet {
                                   TimeUnit.MILLISECONDS);
         assertEquals("value3",
                      future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Confirm that a java:module lookup can be successfully performed from a
+     * scheduled task that is defined by a managed bean within an EJB module.
+     */
+    @Test
+    public void testJavaModuleAccessibleFromScheduledTask() //
+                    throws InterruptedException {
+
+        LinkedBlockingQueue<?> queue = (LinkedBlockingQueue<?>) scheduleTracker //
+                        .apply("lookUpEvery4Seconds");
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**

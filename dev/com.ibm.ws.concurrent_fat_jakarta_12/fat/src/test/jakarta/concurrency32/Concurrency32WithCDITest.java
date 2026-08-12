@@ -14,6 +14,7 @@ package test.jakarta.concurrency32;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -51,10 +52,17 @@ public class Concurrency32WithCDITest extends FATServletClient {
         ShrinkHelper.addDirectory(concurrency32CDITestWeb,
                                   APP_RESOURCES + "/Concurrency32CDITestWeb");
 
+        JavaArchive concurrency32CDITestEJB = ShrinkHelper
+                        .buildJavaArchive("Concurrency32CDITestEJB",
+                                          "test.jakarta.concurrency32cdi.ejb");
+        ShrinkHelper.addDirectory(concurrency32CDITestEJB,
+                                  APP_RESOURCES + "/Concurrency32CDITestEJB");
+
         EnterpriseArchive concurrency32CDITestApp = ShrinkWrap
                         .create(EnterpriseArchive.class,
                                 APP_NAME + ".ear");
         concurrency32CDITestApp.addAsModule(concurrency32CDITestWeb);
+        concurrency32CDITestApp.addAsModule(concurrency32CDITestEJB);
         ShrinkHelper.addDirectory(concurrency32CDITestApp,
                                   APP_RESOURCES);
         ShrinkHelper.exportAppToServer(server,

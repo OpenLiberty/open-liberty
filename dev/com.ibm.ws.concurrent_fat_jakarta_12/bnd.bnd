@@ -31,6 +31,6 @@ fat.project: true
   io.openliberty.jakarta.cdi.4.1;version=latest,\
   io.openliberty.jakarta.concurrency.3.2;version=latest,\
   io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
-    io.openliberty.jakarta.interceptor.2.2,\
+  io.openliberty.jakarta.interceptor.2.2,\
   io.openliberty.jakarta.servlet.6.1;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest
