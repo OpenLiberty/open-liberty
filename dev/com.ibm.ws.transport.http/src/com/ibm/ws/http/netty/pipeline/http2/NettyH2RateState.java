@@ -145,7 +145,7 @@ public class NettyH2RateState {
     }
 
     /**
-     * Pre-admission check: would adding {@code streamId} to the tracking set
+     * Pre-admission check: would adding streamId to the tracking set
      * cause the count to exceed the configured limit
      *
      * @return true if adding the stream would exceed the limit
