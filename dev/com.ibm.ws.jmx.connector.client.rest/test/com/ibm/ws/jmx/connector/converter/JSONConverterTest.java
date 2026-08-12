@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,7 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONArtifact;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
+import com.ibm.ws.jmx.connector.datatypes.ConversionException;
 import com.ibm.ws.jmx.connector.datatypes.CreateMBean;
 import com.ibm.ws.jmx.connector.datatypes.Invocation;
 import com.ibm.ws.jmx.connector.datatypes.JMXServerInfo;
@@ -3460,4 +3461,100 @@ public class JSONConverterTest {
         }
         return false;
     }
+
+    /**
+     * Test method for {@link JSONConverter#readAttributeList} when the POJO
+     * value of an attribute contains an openTypes array with invalid index
+     * references. The converter must reject the malformed input with a
+     * ConversionException.
+     */
+    @Test
+    public void testReadAttributeList_invalidOpenTypeRef_throwsConversionException() throws Exception {
+        String json = "["
+            + "{"
+            + "  \"name\": \"CollectionUsage\","
+            + "  \"value\": {"
+            + "    \"value\": { \"committed\": \"2686976\" },"
+            + "    \"type\": {"
+            + "      \"className\": \"javax.management.openmbean.CompositeDataSupport\","
+            + "      \"openType\": \"0\""
+            + "    },"
+            + "    \"openTypes\": ["
+            + "      {"
+            + "        \"openTypeClass\": \"javax.management.openmbean.CompositeType\","
+            + "        \"className\":     \"javax.management.openmbean.CompositeData\","
+            + "        \"typeName\":      \"java.lang.management.MemoryUsage\","
+            + "        \"description\":   \"java.lang.management.MemoryUsage\","
+            + "        \"items\": [ { \"key\": \"committed\", \"description\": \"committed\","
+            + "                       \"type\": \"1\" } ]"
+            + "      },"
+            + "      {"
+            + "        \"openTypeClass\": \"javax.management.openmbean.CompositeType\","
+            + "        \"className\":     \"javax.management.openmbean.CompositeData\","
+            + "        \"typeName\":      \"java.lang.management.MemoryUsage\","
+            + "        \"description\":   \"java.lang.management.MemoryUsage\","
+            + "        \"items\": [ { \"key\": \"committed\", \"description\": \"committed\","
+            + "                       \"type\": \"0\" } ]"
+            + "      }"
+            + "    ]"
+            + "  }"
+            + "}"
+            + "]";
+
+        InputStream in = new ByteArrayInputStream(json.getBytes("UTF-8"));
+
+        try {
+            converter.readAttributeList(in);
+            fail("Expected ConversionException for malformed openTypes");
+        } catch (ConversionException e) {
+            // expected — malformed openTypes rejected cleanly
+        }
+    }
+
+    /**
+     * Test method for {@link JSONConverter#readAttributeList} when the POJO
+     * value of an attribute contains an openTypes array where two composite
+     * type items reference the same index. The converter must successfully
+     * parse the attribute list without error.
+     */
+    @Test
+    public void testReadAttributeList_sharedOpenTypeRef_succeeds() throws Exception {
+        // openTypes[0] is a SimpleType (java.lang.Long).
+        // openTypes[1] is a CompositeType with two items both pointing at index 0.
+        // This is a valid shared-reference (diamond) pattern and must parse cleanly.
+        String json = "["
+            + "{"
+            + "  \"name\": \"HeapMemoryUsage\","
+            + "  \"value\": {"
+            + "    \"value\": { \"committed\": \"536870912\", \"used\": \"268435456\" },"
+            + "    \"type\": {"
+            + "      \"className\": \"javax.management.openmbean.CompositeDataSupport\","
+            + "      \"openType\": \"1\""
+            + "    },"
+            + "    \"openTypes\": ["
+            + "      \"java.lang.Long\","
+            + "      {"
+            + "        \"openTypeClass\": \"javax.management.openmbean.CompositeType\","
+            + "        \"className\":     \"javax.management.openmbean.CompositeData\","
+            + "        \"typeName\":      \"java.lang.management.MemoryUsage\","
+            + "        \"description\":   \"java.lang.management.MemoryUsage\","
+            + "        \"items\": ["
+            + "          { \"key\": \"committed\", \"description\": \"committed\", \"type\": \"0\" },"
+            + "          { \"key\": \"used\",      \"description\": \"used\",      \"type\": \"0\" }"
+            + "        ]"
+            + "      }"
+            + "    ]"
+            + "  }"
+            + "}"
+            + "]";
+
+        InputStream in = new ByteArrayInputStream(json.getBytes("UTF-8"));
+        try {
+            AttributeList result = converter.readAttributeList(in);
+            assertTrue("Expected non-empty AttributeList", result != null && !result.isEmpty());
+        } catch (Exception e) {
+            fail("Unexpected exception for valid shared openType reference: " + e);
+        }
+    }
+
 }
