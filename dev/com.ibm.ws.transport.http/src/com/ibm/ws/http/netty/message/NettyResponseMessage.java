@@ -47,6 +47,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.openliberty.http.constants.HttpGenerics;
 import io.openliberty.http.netty.channel.utils.HeaderValidator;
 import io.openliberty.http.netty.channel.utils.HeaderValidator.FieldType;
 import io.openliberty.http.netty.cookie.CookieEncoder;
@@ -339,44 +340,9 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
-    public void removeHeader(byte[] header) {
-        removeHeader(new String(header, StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public void removeHeader(HeaderKeys header) {
-        removeHeader(header.getName());
-    }
-
-    @Override
-    public void removeHeader(String header) {
-        headers.remove(header);
-    }
-
-    @Override
-    public void removeAllHeaders() {
-        headers.clear();
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, String value) {
-        setHeader(header.getName(), value);
-    }
-
-    @Override
-    public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
-        Objects.requireNonNull(header);
-        Objects.requireNonNull(value);
-
-        if (!headers.contains(header.getName())) {
-            headers.set(header.getName(), value);
-        }
-
-        return null;
-    }
-
-    @Override
     public void setHeader(String header, String value) {
+        // String name: always invalidate — avoids equalsIgnoreCase on every header write.
+        cachedContentLength = HttpGenerics.NOT_SET;
         headers.set(header.trim(), value.trim());
     }
 
