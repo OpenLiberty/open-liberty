@@ -31,12 +31,12 @@ Export-Package: jakarta.persistence.*; jpa=4.0; consumer=persistenceService; man
 Private-Package: io.openliberty.jakarta.persistence.internal
 
 Include-Resource: \
-   @\${repo;jakarta.persistence:jakarta.persistence-api;4.0}!/about.html
+   @\${repo;jakarta.persistence:jakarta.persistence-api;4.0.0.M6;EXACT}!/about.html
 
 instrument.disabled: true
 
 -buildpath: \
-	jakarta.persistence:jakarta.persistence-api;version=4.0.0,\
+	jakarta.persistence:jakarta.persistence-api;version=4.0.0.M6;strategy=exact,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

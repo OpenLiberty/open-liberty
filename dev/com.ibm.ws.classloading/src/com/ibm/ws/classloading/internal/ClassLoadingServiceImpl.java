@@ -353,7 +353,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
 
         @Override
         public byte[] transform(ClassLoader loader, String name, Class<?> classBeingRedefined, ProtectionDomain pd, byte[] bytes) throws IllegalClassFormatException {
-            return transformer.transformClass(name, bytes, pd == null ? null : pd.getCodeSource(), loader);
+            return transformer.transformClass(name, classBeingRedefined, bytes, pd, loader);
         }
 
         @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2024 IBM Corporation and others.
+ * Copyright (c) 2008, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
+import javax.persistence.FetchType;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
@@ -45,7 +46,7 @@ import com.ibm.ws.jpa.JPAPuId;
  * This allows the datasources to be cached per component, rather than
  * per persistence unit. <p>
  */
-final class JPACompPUnitInfo implements PersistenceUnitInfo {
+final class JPACompPUnitInfo implements PersistenceUnitInfo, PersistenceUnitInfoDelegate {
     private static final TraceComponent tc = Tr.register(JPACompPUnitInfo.class,
                                                          JPA_TRACE_GROUP,
                                                          JPA_RESOURCE_BUNDLE_NAME);
@@ -133,7 +134,7 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
             Tr.entry(tc, "getJtaDataSource : " + this);
 
         if (ivJtaDataSource == null) {
-            ivJtaDataSource = ivPUnitInfo.lookupJtaDataSource();
+            ivJtaDataSource = ivJ2eeName == null ? ivPUnitInfo.getJtaDataSource() : ivPUnitInfo.lookupJtaDataSource();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -148,6 +149,13 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
     @Override
     public List<String> getManagedClassNames() {
         return ivPUnitInfo.getManagedClassNames();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getAllClassNames() {
+        return ivPUnitInfo.getAllClassNames();
     }
 
     /**
@@ -175,7 +183,7 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
             Tr.entry(tc, "getNonJtaDataSource : " + this);
 
         if (ivNonJtaDataSource == null) {
-            ivNonJtaDataSource = ivPUnitInfo.lookupNonJtaDataSource();
+            ivNonJtaDataSource = ivJ2eeName == null ? ivPUnitInfo.getNonJtaDataSource() : ivPUnitInfo.lookupNonJtaDataSource();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -235,7 +243,7 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
      */
     @Override
     public final PersistenceUnitTransactionType getTransactionType() {
-        return ivPUnitInfo.getTransactionType();
+        return PersistenceUnitTransactionType.valueOf(ivPUnitInfo.getTransactionTypeName());
     }
 
     // New JPA 2.0 methods - F743-954.1
@@ -261,6 +269,18 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
     @Override
     public ValidationMode getValidationMode() {
         return ivPUnitInfo.getValidationMode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public FetchType getDefaultToOneFetchType() {
+        return ivPUnitInfo.getDefaultToOneFetchType();
+    }
+
+    @Override
+    public JPAPUnitInfo getPersistenceUnitState() {
+        return ivPUnitInfo;
     }
 
     // --------------------------------------------------------------------------
