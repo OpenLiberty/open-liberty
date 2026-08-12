@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Specify a valid value for the URL string. T
 jndi.decode.failed=CWWKN0011E: An error occurred while decoding the {0} password. Verify that the password is encoded correctly. The exception was: {1}.
 jndi.decode.failed.explanation=The password is not encoded correctly.
 jndi.decode.failed.useraction=Verify that the password is encoded correctly. See the exception for details.
+
+jndi.decode.warning=CWWKN0012W: An error occurred while decoding the value for JNDI name: {0}. 
+jndi.decode.warning.explanation=The password is not encoded correctly.
+jndi.decode.warning.useraction=Verify that the password is encoded correctly. See the exception for details.
