@@ -59,11 +59,11 @@ CWMCM0006E.duplicate.special.arguments.explanation=Egy vagy t\u00f6bb speci\u00e
 CWMCM0006E.duplicate.special.arguments.useraction=T\u00e1vol\u00edtsa el a felesleges p\u00e9ld\u00e1nyokat.
 
 # Used for server logging
-# {0} = The fully qualified method name
-# {1} = The parameter type simple name
-CWMCM0007E.invalid.arguments=CWMCM0007E: Az {0} MCP eszk\u00f6znek van egy t\u00edpus\u00fa {1} param\u00e9tere, amely nem felismert speci\u00e1lis argumentumt\u00edpus, \u00e9s nincs `@ToolArg` annot\u00e1ci\u00f3ja.
-CWMCM0007E.invalid.arguments.explanation=Egy vagy t\u00f6bb param\u00e9ter nem lett eszk\u00f6zargumentumk\u00e9nt megjel\u00f6lve, \u00e9s nem ismerik fel \u0151ket speci\u00e1lis argumentumt\u00edpusk\u00e9nt.
-CWMCM0007E.invalid.arguments.useraction=Ellen\u0151rizze, hogy az argumentumhoz a megfelel\u0151 oszt\u00e1lyt import\u00e1lta-e, vagy azt akarta-e beilleszteni @ToolArg.
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: Az MCP-kiszolg\u00e1l\u00f3 v\u00e9gpontja: {0}
+CWMCM0008I.mcp.endpoint.url.explanation=Az alkalmaz\u00e1smodul MCP-kiszolg\u00e1l\u00f3 v\u00e9gpontja ( URL ) a megadott URL c\u00edmen \u00e9rhet\u0151 el.
+CWMCM0008I.mcp.endpoint.url.useraction=Nincs teend\u0151.
 
 # Used as part of a response to a client
 # {0} = Request id
@@ -285,3 +285,59 @@ CWMCM0034W.converter.missing.type.parameter.useraction=M\u00f3dos\u00edtsd az os
 CWMCM0035W.converter.generic.type=CWMCM0035W: Az {0} DefaultValueConverter megval\u00f3s\u00edt\u00e1s a konkr\u00e9t t\u00edpus helyett generikus t\u00edpusparam\u00e9terre konvert\u00e1l.
 CWMCM0035W.converter.generic.type.explanation=Egy \u201e DefaultValueConverter \u201d implement\u00e1ci\u00f3s oszt\u00e1lyt konkr\u00e9t t\u00edpus helyett egy T-hez hasonl\u00f3 generikus t\u00edpusparam\u00e9terrel regisztr\u00e1ltak.
 CWMCM0035W.converter.generic.type.useraction=M\u00f3dos\u00edtsd az oszt\u00e1lydeklar\u00e1ci\u00f3t \u00fagy, hogy az a \u201e DefaultValueConverter \u201d interf\u00e9szt egy konkr\u00e9t t\u00edpusparam\u00e9terrel val\u00f3s\u00edtsa meg. P\u00e9ld\u00e1ul: az ` MyConverterClass ` oszt\u00e1ly megval\u00f3s\u00edtja az ` DefaultValueConverter<MyType> ` interf\u00e9szt.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: A \u201e {0} \u201d _meta kulcs \u00e9rv\u00e9nytelen. A n\u00e9vszegmensnek alfanumerikus karakterrel kell kezd\u0151dnie \u00e9s v\u00e9gz\u0151dnie, \u00e9s k\u00f6zb\u00fcls\u0151 r\u00e9szek\u00e9nt kiz\u00e1r\u00f3lag alfanumerikus karaktereket, k\u00f6t\u0151jeleket, al\u00e1h\u00faz\u00f3jeleket vagy pontokat tartalmazhat.
+CWMCM0037E.invalid.meta.key.name.explanation=A _meta kulcs n\u00e9vszegmense nem felel meg az MCP-specifik\u00e1ci\u00f3 szab\u00e1lyainak. A n\u00e9vszegmens az opcion\u00e1lis el\u0151tagk\u00e9nt szolg\u00e1l\u00f3 perjel ut\u00e1n tal\u00e1lhat\u00f3 r\u00e9sz, illetve \u2013 ha nincs el\u0151tag \u2013 a teljes kulcs.
+CWMCM0037E.invalid.meta.key.name.useraction=Gy\u0151z\u0151dj meg arr\u00f3l, hogy a _meta kulcs n\u00e9vszegmense alfanumerikus karakterrel kezd\u0151dik \u00e9s v\u00e9gz\u0151dik.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: Az \u201e {0} \u201d _meta kulcsnak \u00fcres el\u0151tagja van a \u201e/\u201d karakter el\u0151tt.
+CWMCM0038E.empty.meta.key.prefix.explanation=A _meta kulcs tartalmaz egy \u201e/\u201d karaktert, de el\u0151tte nincs el\u0151tag. Az el\u0151tagot egy vagy t\u00f6bb, ponttal elv\u00e1lasztott c\u00edmke alkotja.
+CWMCM0038E.empty.meta.key.prefix.useraction=Adjon meg egy \u00e9rv\u00e9nyes el\u0151tagot a \u201e/\u201d karakter el\u00e9, vagy t\u00e1vol\u00edtsa el a \u201e/\u201d karaktert, ha nincs sz\u00fcks\u00e9g el\u0151tagra.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: Az \u201e {0} \u201d _meta kulcs el\u0151tagja (\u201e {1} \u201d) \u00e9rv\u00e9nytelen. A c\u00edmk\u00e9knek bet\u0171vel kell kezd\u0151dni\u00fck, bet\u0171vel vagy sz\u00e1mmal kell v\u00e9gz\u0151dni\u00fck, \u00e9s k\u00f6z\u00f6tt\u00fck csak bet\u0171ket, sz\u00e1mokat vagy k\u00f6t\u0151jeleket tartalmazhatnak.
+CWMCM0039E.invalid.meta.key.label.explanation=A _meta kulcs el\u0151tag-szegmense olyan c\u00edmk\u00e9t tartalmaz, amely nem felel meg az MCP-specifik\u00e1ci\u00f3 szab\u00e1lyainak.
+CWMCM0039E.invalid.meta.key.label.useraction=Gy\u0151z\u0151dj meg arr\u00f3l, hogy a _meta kulcs el\u0151tag alatt szerepl\u0151 minden c\u00edmke bet\u0171vel kezd\u0151dj\u00f6n, \u00e9s bet\u0171vel vagy sz\u00e1mmal v\u00e9gz\u0151dj\u00f6n. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a bet\u0171k k\u00f6z\u00f6tt csak bet\u0171k, sz\u00e1mok vagy k\u00f6t\u0151jelek szerepelnek.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: A {1} met\u00f3dus MetaField annot\u00e1ci\u00f3j\u00e1ban szerepl\u0151 \u201e {0} \u201d metaadat-el\u0151tag \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes el\u0151tag pontokkal elv\u00e1lasztott c\u00edmk\u00e9k sorozata. Minden c\u00edmk\u00e9nek bet\u0171vel kell kezd\u0151dnie, bet\u0171vel vagy sz\u00e1mmal kell v\u00e9gz\u0151dnie, \u00e9s a k\u00f6zb\u00fcls\u0151 r\u00e9szekben kiz\u00e1r\u00f3lag bet\u0171ket, sz\u00e1mokat vagy k\u00f6t\u0151jeleket tartalmazhat.
+CWMCM0040E.invalid.metadata.prefix.explanation=Az \u201e MetaField \u201d annot\u00e1ci\u00f3ban szerepl\u0151 metaadat-el\u0151tag nem felel meg a Model Context Protocol (MCP) specifik\u00e1ci\u00f3 k\u00f6vetelm\u00e9nyeinek.
+CWMCM0040E.invalid.metadata.prefix.useraction=Friss\u00edtse a metadat\u00e1k el\u0151tagj\u00e1t a met\u00f3dus \u201e MetaField \u201d annot\u00e1ci\u00f3j\u00e1ban, hogy az megfeleljen az MCP specifik\u00e1ci\u00f3 k\u00f6vetelm\u00e9nyeinek. Az el\u0151tag ponttal elv\u00e1lasztott c\u00edmk\u00e9kb\u0151l kell \u00e1llnia, amelyeket perjel k\u00f6vet. Minden c\u00edmk\u00e9nek bet\u0171vel kell kezd\u0151dnie, \u00e9s bet\u0171vel vagy sz\u00e1mmal kell v\u00e9gz\u0151dnie. Az egyes c\u00edmk\u00e9k bels\u0151 karakterei lehetnek bet\u0171k, sz\u00e1mok vagy k\u00f6t\u0151jelek.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: A {1} met\u00f3dus MetaField annot\u00e1ci\u00f3j\u00e1ban szerepl\u0151 \u201e {0} \u201d metaadatn\u00e9v \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes metaadat-n\u00e9vnek alfanumerikus karakterrel kell kezd\u0151dnie \u00e9s v\u00e9gz\u0151dnie, \u00e9s tartalmazhat k\u00f6t\u0151jeleket, al\u00e1h\u00faz\u00f3jeleket, pontokat, valamint alfanumerikus karaktereket.
+CWMCM0041E.invalid.metadata.name.explanation=Az \u201e MetaField \u201d annot\u00e1ci\u00f3ban szerepl\u0151 metaadat-n\u00e9v nem felel meg a Model Context Protocol (MCP) specifik\u00e1ci\u00f3 k\u00f6vetelm\u00e9nyeinek.
+CWMCM0041E.invalid.metadata.name.useraction=Friss\u00edtse a metadat\u00e1k nev\u00e9t a ` MetaField ` annot\u00e1ci\u00f3ban a met\u00f3dusn\u00e1l, hogy az megfeleljen az MCP specifik\u00e1ci\u00f3 k\u00f6vetelm\u00e9nyeinek. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a n\u00e9v alfanumerikus karakterrel kezd\u0151dik \u00e9s v\u00e9gz\u0151dik, \u00e9s kiz\u00e1r\u00f3lag k\u00f6t\u0151jeleket, al\u00e1h\u00faz\u00f3jeleket, pontokat \u00e9s alfanumerikus karaktereket tartalmaz.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: A {1} met\u00f3dus MetaField annot\u00e1ci\u00f3j\u00e1ban szerepl\u0151 \u201e {0} \u201d metaadat-kulcs\u00e9rt\u00e9k nem konvert\u00e1lhat\u00f3 {2} t\u00edpusra. A hiba: {3}
+CWMCM0042E.metadata.value.conversion.error.explanation=Az \u201e MetaField \u201d annot\u00e1ci\u00f3ban szerepl\u0151 metaadat-\u00e9rt\u00e9k nem konvert\u00e1lhat\u00f3 az annot\u00e1ci\u00f3ban megadott t\u00edpusra. Lehet, hogy az \u00e9rt\u00e9k form\u00e1tuma nem megfelel\u0151, vagy nem kompatibilis a megadott adatt\u00edpussal.
+CWMCM0042E.metadata.value.conversion.error.useraction=Ellen\u0151rizze a hiba\u00fczenetet, az \u201e message.log \u201d f\u00e1jlt \u00e9s az FFDC-napl\u00f3kat, hogy azonos\u00edtsa az \u00e1talak\u00edt\u00e1s sikertelens\u00e9g\u00e9nek ok\u00e1t. Friss\u00edtse az \u201e MetaField \u201d annot\u00e1ci\u00f3ban szerepl\u0151 metaadat-\u00e9rt\u00e9ket \u00fagy, hogy az kompatibilis legyen a megadott t\u00edpussal.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: Az ` {0} ` met\u00f3dus a ` {1} ` annot\u00e1ci\u00f3t haszn\u00e1lja, amelyet a rendszer nem t\u00e1mogat. Ezt a m\u00f3dszert a rendszer figyelmen k\u00edv\u00fcl hagyja.
+CWMCM0043W.unsupported.annotation.explanation=A Model Context Protocol (MCP) Java API olyan funkci\u00f3kra vonatkoz\u00f3 annot\u00e1ci\u00f3kat is tartalmaz, amelyeket ez a megval\u00f3s\u00edt\u00e1s nem t\u00e1mogat. A nem t\u00e1mogatott annot\u00e1ci\u00f3kkal ell\u00e1tott m\u00f3dszereket a rendszer figyelmen k\u00edv\u00fcl hagyja.
+CWMCM0043W.unsupported.annotation.useraction=T\u00e1vol\u00edtsa el a met\u00f3dusb\u00f3l a nem t\u00e1mogatott annot\u00e1ci\u00f3t, vagy kiz\u00e1r\u00f3lag a Model Context Protocol (MCP) \u00e1ltal t\u00e1mogatott annot\u00e1ci\u00f3kat haszn\u00e1lja.
