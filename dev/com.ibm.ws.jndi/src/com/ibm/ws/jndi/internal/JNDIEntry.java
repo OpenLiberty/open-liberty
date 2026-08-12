@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,15 +69,7 @@ public class JNDIEntry {
             }
             return;
         }
-        String value = originalValue;
-        if (decode) {
-            try {
-                value = PasswordUtil.decode(originalValue);
-            } catch (Exception e) {
-                Tr.error(tc, "jndi.decode.failed", originalValue, e);
-            }
-        }
-        Object parsedValue = LiteralParser.parse(value);
+        Object parsedValue = parseLiteral(originalValue, decode);
         String valueClassName = parsedValue.getClass().getName();
         final Object serviceObject = decode ? new Decode(originalValue) : parsedValue;
         Dictionary<String, Object> propertiesForJndiService = new Hashtable<>();
@@ -86,6 +78,23 @@ public class JNDIEntry {
             Tr.debug(tc, "Registering JNDIEntry " + valueClassName + " with value " + parsedValue + " and JNDI name " + jndiName);
         }
         this.serviceRegistration = context.registerService(valueClassName, serviceObject, propertiesForJndiService);
+    }
+
+    /**
+     * @param val the value to parse
+     * @param decode if true, val is decoded if it's encrypted, otherwise val is parsed directly.
+     * @return the parsed literal value
+     */
+    static Object parseLiteral(String val, boolean decode) {
+        String decodedVal = val;
+        if (decode && PasswordUtil.isEncrypted(val)) {
+            try {
+                decodedVal = PasswordUtil.decode(val);
+            } catch (Exception e) {
+                Tr.error(tc, "jndi.decode.failed", val, e);
+            }
+        }
+        return LiteralParser.parse(decodedVal);
     }
 
     /**
@@ -116,14 +125,7 @@ public class JNDIEntry {
 
         @Override
         public Object getService(Bundle bundle, ServiceRegistration<Object> registration) {
-            try {
-                String decodedValue = PasswordUtil.decode(value);
-                Object parsedValue = LiteralParser.parse(decodedValue);
-                return parsedValue;
-            } catch (Exception e) {
-                Tr.error(tc, "jndi.decode.failed", value, e);
-            }
-            return value;
+            return parseLiteral(value, true);
         }
 
         @Override
