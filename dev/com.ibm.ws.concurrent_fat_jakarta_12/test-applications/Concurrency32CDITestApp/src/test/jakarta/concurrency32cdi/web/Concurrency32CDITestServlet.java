@@ -50,6 +50,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jakarta.concurrency32cdi.ejb.AsyncWithSchedule;
 
 @ManagedScheduledExecutorDefinition
 /**/ (name = "java:comp/concurrent/cdi/async-3-scheduler",
@@ -76,6 +77,12 @@ public class Concurrency32CDITestServlet extends FATServlet {
     // TODO switch to the above
     @Resource(lookup = "java:comp/concurrent/cdi/async-3-scheduler")
     ManagedScheduledExecutorService async3Scheduler;
+
+    /**
+     * The method on this bean is intentionally not valid.
+     */
+    @Inject
+    AsyncWithSchedule asyncWithSchedule;
 
     static final AtomicLong initTimeNS = new AtomicLong(0);
 
@@ -420,6 +427,28 @@ public class Concurrency32CDITestServlet extends FATServlet {
             if (x.getMessage() == null ||
             // TODO NLS message prefix can be asserted once added
                 !x.getMessage().contains("alsoAsynchronous") ||
+                !x.getMessage().contains("@Asynchronous") ||
+                !x.getMessage().contains("@Schedule"))
+                throw x;
+            // else expected error
+        }
+    }
+
+    /**
+     * A bean method that is annotated Schedule must raise
+     * UnsupportedOperationException if the bean is annotated
+     * Asynchronous.
+     */
+    @Test
+    public void testRejectAsynchronousOnBeanAndScheduleOnMethod() {
+        try {
+            asyncWithSchedule.runOnAugust12th();
+            fail("Expected UnsupportedOperationException for a method " +
+                 "@Schedule on a bean annotated @Asynchronous.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+            // TODO NLS message prefix can be asserted once added
+                !x.getMessage().contains("runOnAugust12th") ||
                 !x.getMessage().contains("@Asynchronous") ||
                 !x.getMessage().contains("@Schedule"))
                 throw x;
