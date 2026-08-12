@@ -295,6 +295,13 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             @Override
             public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                 if (evt instanceof PriorKnowledgeUpgradeEvent) {
+                    // Prior-knowledge negotiation establishes trusted HTTP/2 without reading request headers.
+                    TimeoutHandler timeoutHandler = ctx.pipeline().get(TimeoutHandler.class);
+                    if (timeoutHandler != null) {
+                        timeoutHandler.markProtocol(ctx.pipeline(), ProtocolName.HTTP2);
+                    } else {
+                        ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP2.name());
+                    }
                     ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
                 }
                 super.userEventTriggered(ctx, evt);

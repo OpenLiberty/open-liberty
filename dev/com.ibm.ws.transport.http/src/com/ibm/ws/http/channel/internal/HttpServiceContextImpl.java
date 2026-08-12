@@ -63,6 +63,7 @@ import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -323,6 +324,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     protected ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
+    /** Validated, request-scoped HTTP/2 stream identity; never inferred from a response. */
+    private Integer nettyHttp2StreamId;
 
     /**
      * Constructor for this base service context class.
@@ -344,6 +347,26 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     public void setNettyRequest(FullHttpRequest request) {
         this.nettyRequest = request;
+        final CharSequence streamIdHeader = HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text();
+        if (NettyHttpConstants.isHttp2Pipeline(nettyContext.channel())) {
+            Integer streamId = request.headers().getInt(streamIdHeader);
+            if (streamId == null || streamId.intValue() <= 0) {
+                throw new NettyHttpConstants.InvalidHttp2StreamMetadataException("Trusted HTTP/2 request is missing a positive stream id");
+            }
+            this.nettyHttp2StreamId = streamId;
+            request.headers().set(streamIdHeader, streamId.intValue());
+        } else {
+            this.nettyHttp2StreamId = null;
+            request.headers().remove(streamIdHeader);
+        }
+    }
+
+    public final boolean isNettyHttp2Request() {
+        return nettyHttp2StreamId != null;
+    }
+
+    public final int getNettyHttp2StreamId() {
+        return nettyHttp2StreamId == null ? -1 : nettyHttp2StreamId.intValue();
     }
 
     public void setNettyResponse(io.netty.handler.codec.http.HttpResponse response) {
@@ -2306,6 +2329,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     private void prepareNettyHeadersToSend() {
         HttpResponse response = ((NettyResponseMessage) getResponse()).getResponse();
+        final CharSequence streamIdHeader = HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text();
+        if (nettyHttp2StreamId == null) {
+            response.headers().remove(streamIdHeader);
+        } else {
+            response.headers().set(streamIdHeader, nettyHttp2StreamId.intValue());
+        }
 
         // check compression and set up the Content-Encoding header if need be
         if (null != this.compressHandler) {
@@ -2328,6 +2357,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         ((NettyResponseMessage) getResponse()).processCookies();
         HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
         headerHandler.complianceCheck();
+        // Configured response-header ADD/SET/REMOVE must not mutate STREAM_ID authority.
+        // Reassert the immutable request snapshot (or clear for non-H2) immediately after compliance.
+        if (nettyHttp2StreamId == null) {
+            response.headers().remove(streamIdHeader);
+        } else {
+            response.headers().set(streamIdHeader, nettyHttp2StreamId.intValue());
+        }
         String closeNonUpgraded = (String) (this.myVC.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
         // Shouldn't close upgraded requests
         boolean upgradedRequest = closeNonUpgraded != null && "true".equalsIgnoreCase(closeNonUpgraded);
@@ -3045,8 +3081,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyResponseMessage)msg).update(nettyResponse);
             }
             prepareNettyHeadersToSend();
-            if (getResponse().containsHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString())) {
-                nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
+            if (isNettyHttp2Request()) {
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
                 if (Objects.isNull(handler)) {
                 } else if (handler.connection().remote().allowPushTo()) {
@@ -3075,8 +3110,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            HeaderField streamIdField = getResponse().getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-            String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
+            String streamId = Integer.toString(getNettyHttp2StreamId());
 
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
                 ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
@@ -3099,7 +3133,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         Http2Connection connection = handler.connection();
 
         int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
-        int currentStreamId = nettyRequest.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+        int currentStreamId = getNettyHttp2StreamId();
 
         Http2Headers headers = new DefaultHttp2Headers().clear();
         String scheme = "https";
@@ -3370,7 +3404,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyResponseMessage)msg).update(nettyResponse);
             }
             prepareNettyHeadersToSend();
-            if (msg.containsHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString())) {
+            if (isNettyHttp2Request()) {
 
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
                 if (Objects.isNull(handler)) {
@@ -3400,8 +3434,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            HeaderField streamIdField = getResponse().getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-            String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
+            String streamId = Integer.toString(getNettyHttp2StreamId());
 
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
                 ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
@@ -3797,10 +3830,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     }
 
     private void prepareNettyCloseForIncompleteRequestBody(boolean finalWrite) {
-        if (!finalWrite || isBodyComplete() || nettyResponse == null) {
+        if (!finalWrite || nettyResponse == null) {
             return;
         }
-        if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (isNettyHttp2Request()) {
+            return;
+        }
+        if (!hasUnconsumedNettyRequestBody()) {
             return;
         }
 
@@ -3812,6 +3848,20 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
     }
 
+    /**
+     * Determines whether an HTTP/1.x response must close because request entity
+     * bytes may still be unread. Protocol completion remains owned by
+     * {@code LastHttpContent}; consuming the declared fixed-length entity is
+     * sufficient only for this response-close decision.
+     */
+    private boolean hasUnconsumedNettyRequestBody() {
+        // Incomplete-body forced-close is an HTTP/1 keep-alive concern only.
+        if (isNettyHttp2Request()) {
+            return false;
+        }
+        return !isBodyComplete() && !ReadFlowHandler.state(nettyContext).isRequestConsumed();
+    }
+
     private void sendNettyFinalContent() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
@@ -3819,17 +3869,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         NettyResponseMessage resp = (NettyResponseMessage) getResponse();
         HttpHeaders trailers = resp.getNettyTrailers();
 
-        HeaderField streamIdField = resp.getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-        String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
+        String streamId = Integer.toString(getNettyHttp2StreamId());
 
         DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
         boolean closeAfterFinalContent = "-1".equals(streamId)
                                         && (!isPersistent()
                                             || resp.getResponse().headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
                                             || !trailers.isEmpty()
-                                            || !isBodyComplete());
+                                            || hasUnconsumedNettyRequestBody());
 
-        if (closeAfterFinalContent && !isBodyComplete()) {
+        // Re-sample before forcing a close; request consumption can race response finalization.
+        if (closeAfterFinalContent && hasUnconsumedNettyRequestBody()) {
             this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
             setPersistent(false);
             resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);

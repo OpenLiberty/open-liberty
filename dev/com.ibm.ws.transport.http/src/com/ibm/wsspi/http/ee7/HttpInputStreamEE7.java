@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
@@ -139,59 +140,65 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         }
 
         AtomicBoolean delivered = new AtomicBoolean();
+        AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(context.channel());
         Runnable[] successRef = new Runnable[1];
+        Runnable[] errorRef = new Runnable[1];
         successRef[0] = () -> {
             if (delivered.get()) {
                 return;
             }
+            AsyncReadDispatchState.Registration rearmed = null;
             try {
                 if (!isStreamingReadReady()){
-                    context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(successRef[0]);
+                    rearmed = state.arm(successRef[0], errorRef[0]);
                     if (!isStreamingReadReady()) {
                         ReadFlowHandler.setBodyReadWanted(context, true);
                         return;
                     }
                 }
                 if (delivered.compareAndSet(false, true)) {
-                    clearStreamingReadCallback();
+                    state.clear(rearmed);
                     callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
                 }
             } catch (IOException ioe) {
+                state.clear(rearmed);
                 if (delivered.compareAndSet(false, true)) {
-                    clearStreamingReadCallback();
                     callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
                 }
             } catch (RuntimeException rte) {
+                state.clear(rearmed);
                if (delivered.compareAndSet(false, true)){
-                    clearStreamingReadCallback();
                     callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, rte);
                 }
                 throw rte; 
+            } catch (Error error) {
+                state.clear(rearmed);
+                throw error;
             }
         };
-        Runnable error = () -> {
+        errorRef[0] = () -> {
             if (!delivered.compareAndSet(false, true)) {
                 return;
             }
-            try {
                 callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, 
                     new EOFException("Peer input shutdown before request body completed"));
-            } finally {
-                clearStreamingReadCallback();
-            }
         };
-        context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(successRef[0]);
-        context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(error);
+        AsyncReadDispatchState.Registration registration = state.arm(successRef[0], errorRef[0]);
         
+        try {
         if (isStreamingReadReady()){
             if (delivered.compareAndSet(false, true)){
-                clearStreamingReadCallback();
+                    state.clear(registration);
                 return true;
             }
             return false;
         }
         ReadFlowHandler.setBodyReadWanted(context, true);
         return false;
+        } catch (IOException | RuntimeException | Error failure) {
+            state.clear(registration);
+            throw failure;
+        }
     }
 
     private boolean isStreamingReadReady() throws IOException {
@@ -206,11 +213,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
 
     private boolean isStreamingReadCompleteForCallback() throws IOException {
         return streaming && readChannelComplete && available() <= 0 && isStreamingEndReadyForCallback();
-    }
-
-    private void clearStreamingReadCallback() {
-        context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
-        context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
     }
 
     public boolean isFinished() {

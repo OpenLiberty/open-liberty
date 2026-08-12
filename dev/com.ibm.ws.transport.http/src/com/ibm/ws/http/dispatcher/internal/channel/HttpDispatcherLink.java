@@ -96,7 +96,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
@@ -346,8 +345,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
-        final FullHttpRequest requestReference = (this.nettyRequest !=null) ? this.nettyRequest:this.nettyHeaderOnly;
-        if (requestReference !=null && requestReference.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (this.isc != null && this.isc.isNettyHttp2Request()) {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=FATAL_UPGRADE_CLOSE"
         + " link=" + System.identityHashCode(this)
         + " ch=" + qpNettyChannelId());
@@ -450,6 +448,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             + " ch=" + qpNettyChannelId()
             + " quiescing=" + quiescing);
 
+        final FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
         boolean requestTrailersRequireClose = requestTrailersRequireClose(requestReference);
         if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing || requestTrailersRequireClose) {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=NO_KEEPALIVE_CLOSE_CHANNEL"
@@ -2100,7 +2099,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void setBodyComplete(){
         if (this.isc != null) {
             this.isc.setBodyComplete();
-            ReadFlowHandler.markRequestConsumed(nettyContext);
+            // HTTP/1 read-flow state is not authority for trusted HTTP/2 streams.
+            if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
+                ReadFlowHandler.markRequestConsumed(nettyContext);
+            }
             if (deferClear.compareAndSet(true, false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Body complete; performing deferred ISC.clear() for keep-alive.");

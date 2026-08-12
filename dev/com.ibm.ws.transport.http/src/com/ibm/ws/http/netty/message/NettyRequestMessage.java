@@ -355,8 +355,20 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public VersionValues getVersionValue() {
+        if (context instanceof HttpServiceContextImpl
+            && ((HttpServiceContextImpl) context).isNettyHttp2Request()) {
+            return VersionValues.V20;
+        }
         return VersionValues.find(request.protocolVersion().text());
+    }
 
+    @Override
+    public String getVersion() {
+        if (context instanceof HttpServiceContextImpl
+            && ((HttpServiceContextImpl) context).isNettyHttp2Request()) {
+            return VersionValues.V20.getName();
+        }
+        return request.protocolVersion().text();
     }
 
     @Override
@@ -820,7 +832,24 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         Http2Connection connection = handler.connection();
 
         int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
-        int currentStreamId = this.request.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+        // Immutable request-scoped snapshot is the only parent-stream authority (not mutable headers).
+        final int currentStreamId;
+        if (context instanceof HttpServiceContextImpl) {
+            HttpServiceContextImpl serviceContext = (HttpServiceContextImpl) context;
+            if (serviceContext.isNettyHttp2Request()) {
+                currentStreamId = serviceContext.getNettyHttp2StreamId();
+            } else {
+                currentStreamId = -1;
+            }
+        } else {
+            currentStreamId = -1;
+        }
+        if (currentStreamId <= 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "pushNewRequest(): missing immutable HTTP/2 stream snapshot; push ignored");
+            }
+            return;
+        }
 
         Http2Headers headers = new DefaultHttp2Headers().clear();
         String scheme = "https";

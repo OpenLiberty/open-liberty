@@ -16,6 +16,8 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.AttributeKey;
 import java.net.Socket;
 
@@ -23,6 +25,32 @@ import java.net.Socket;
  *
  */
 public class NettyHttpConstants {
+
+    /**
+     * TODO: temp, create exception class
+     * Unchecked signal that trusted HTTP/2 stream metadata failed validation.
+     * Must not be an {@link IllegalArgumentException}: that class is intentionally
+     * ignored by {@code HttpDispatcherHandler.exceptionCaught} for codec preludes.
+     */
+    public static final class InvalidHttp2StreamMetadataException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public InvalidHttp2StreamMetadataException(String message) {
+            super(message);
+        }
+
+        public InvalidHttp2StreamMetadataException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    /**
+     * Returns whether the server-owned HTTP/2 connection handler is installed.
+     * Request and response headers are deliberately not protocol authority.
+     */
+    public static boolean isHttp2Pipeline(Channel channel) {
+        return channel != null && channel.pipeline().get(HttpToHttp2ConnectionHandler.class) != null;
+    }
 
     public static final AttributeKey<String> FORWARDED_PROTO_KEY = AttributeKey.valueOf("forwardedProto");
     public static final AttributeKey<String> FORWARDED_HOST_KEY = AttributeKey.valueOf("forwardedHost");

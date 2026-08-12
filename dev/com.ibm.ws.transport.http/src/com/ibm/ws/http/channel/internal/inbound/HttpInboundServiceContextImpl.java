@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
+import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -1857,101 +1858,29 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     }
 
     private void dispatchNettyRequestBodyCallback(Runnable pending) {
-        if (!claimNettyRequestBodyDispatch()) {
-            this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(pending);
-            this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.TRUE);
-            return;
-        }
-
-        HttpDispatcher.getExecutorService().execute(() -> {
-            Runnable current = pending;
-            try {
-                while (current != null) {
-                    current.run();
-                    if (Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get())) {
-                        firePendingNettyRequestBodyError();
-                        return;
-                    }
-                    if (!Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).get())) {
-                        return;
-                    }
-                    Runnable next = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
-                    if (next == null) {
-                        return;
-                    }
-                    this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
-                    current = next;
-                }
-            } finally {
-                releaseNettyRequestBodyDispatch();
-                dispatchPendingNettyRequestBodyCallback();
-            }
-        });
+        AsyncReadDispatchState.forChannel(this.nettyContext.channel())
+                        .submitReady(pending, null);
     }
 
-    private void dispatchPendingNettyRequestBodyCallback() {
-        if (!Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).get())) {
-            return;
-        }
-        Runnable next = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
-        if (next != null) {
-            this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
-            dispatchNettyRequestBodyCallback(next);
-        }
-    }
-
-    private boolean claimNettyRequestBodyDispatch() {
-        AtomicBoolean dispatched = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
-        if (dispatched == null) {
-            AtomicBoolean created = new AtomicBoolean();
-            AtomicBoolean existing = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).setIfAbsent(created);
-            dispatched = existing == null ? created : existing;
-        }
-        return dispatched.compareAndSet(false, true);
-    }
-
-    private void releaseNettyRequestBodyDispatch() {
-        AtomicBoolean dispatched = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
-        if (dispatched != null) {
-            dispatched.set(false);
-        }
-    }
-
-    private void firePendingNettyRequestBodyError() {
-        Runnable error = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).getAndSet(null);
-        if (error != null) {
-            HttpDispatcher.getExecutorService().execute(error);
-        }
-        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
-        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
-    }
-
-    private void armNettyRequestBodyCallback(InterChannelCallback callback){
+    private void armNettyRequestBodyCallback(InterChannelCallback callback) {
         AtomicBoolean delivered = new AtomicBoolean();
+        AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(this.nettyContext.channel());
         Runnable success = () -> {
-            if (!delivered.compareAndSet(false, true)){
+            if (!delivered.compareAndSet(false, true)) {
                 return;
             }
-            clearNettyRequestBodyCallback();
             callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
         };
         Runnable error = () -> {
-            if (!delivered.compareAndSet(false, true)){
+            if (!delivered.compareAndSet(false, true)) {
                 return;
         }
-        clearNettyRequestBodyCallback();
         callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, 
                new EOFException("Peer input shutdown before request body completed."));
         };
 
-        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(success);
-        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(error);
+        state.arm(success, error);
         ReadFlowHandler.setBodyReadWanted(this.nettyContext, true);
-    }
-
-    private void clearNettyRequestBodyCallback(){
-        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
-        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
     }
 
     public void countDownFirstReadLatch(boolean force) {

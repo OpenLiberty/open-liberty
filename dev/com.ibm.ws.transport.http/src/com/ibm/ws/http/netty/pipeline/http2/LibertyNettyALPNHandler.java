@@ -70,9 +70,8 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
 
                 ctx.pipeline().addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, h);
-                h.markProtocol(ctx.pipeline(), ProtocolName.HTTP2);
-
             }
+            ctx.pipeline().get(TimeoutHandler.class).markProtocol(ctx.pipeline(), ProtocolName.HTTP2);
 
             QuiesceHandler quiesceHandler = ctx.pipeline().get(QuiesceHandler.class);
             if (quiesceHandler != null) {
@@ -103,9 +102,8 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
 
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, h);
-                h.markProtocol(ctx.pipeline(), ProtocolName.HTTP1);
-
             }   
+            ctx.pipeline().get(TimeoutHandler.class).markProtocol(ctx.pipeline(), ProtocolName.HTTP1);
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
             
             if(ctx.pipeline().get(FlowControlHandler.class) == null){

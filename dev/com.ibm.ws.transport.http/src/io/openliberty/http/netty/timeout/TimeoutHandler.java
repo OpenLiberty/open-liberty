@@ -213,8 +213,12 @@ public class TimeoutHandler extends ChannelDuplexHandler {
                     return;
                 }
                 if (AsciiString.contains(up, "h2c")) {
-                    markProtocol(context.pipeline(), ProtocolName.HTTP2);
-                    cancel();
+                    // Only mark HTTP/2 when the server-owned H2 topology is already installed.
+                    // Bare HTTP/1 101 Upgrade:h2c headers must not forge PROTOCOL or H2 write framing.
+                    if (NettyHttpConstants.isHttp2Pipeline(context.channel())) {
+                        markProtocol(context.pipeline(), ProtocolName.HTTP2);
+                        cancel();
+                    }
                 }
             }
         } else if (message instanceof HttpResponse) {
