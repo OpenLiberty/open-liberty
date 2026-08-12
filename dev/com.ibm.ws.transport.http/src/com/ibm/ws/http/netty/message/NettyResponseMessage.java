@@ -34,7 +34,6 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -45,6 +44,8 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.openliberty.http.constants.HttpGenerics;
 import io.openliberty.http.netty.channel.utils.HeaderValidator;
 import io.openliberty.http.netty.channel.utils.HeaderValidator.FieldType;
 
@@ -355,28 +356,12 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
-    public void removeHeader(byte[] header) {
-        removeHeader(new String(header, StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public void removeHeader(HeaderKeys header) {
-        removeHeader(header.getName());
-    }
-
-    @Override
-    public void removeHeader(String header) {
-        headers.remove(header);
-    }
-
-    @Override
-    public void removeAllHeaders() {
-        headers.clear();
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, String value) {
-        setHeader(header.getName(), value);
+    public void setHeader(String header, String value) {
+        // String name: always invalidate — avoids equalsIgnoreCase on every header write.
+        cachedContentLength = HttpGenerics.NOT_SET;
+        String normalizedName = HeaderValidator.process(header, FieldType.NAME, config);
+        String normalizedValue = HeaderValidator.process(value, FieldType.VALUE, config);
+        headers.set(normalizedName, normalizedValue);
     }
 
     @Override
@@ -390,13 +375,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
             headers.set(normalizedName, normalizedValue);
         }
         return null;
-    }
-
-    @Override
-    public void setHeader(String header, String value) {
-        String normalizedName = HeaderValidator.process(header, FieldType.NAME, config);
-        String normalizedValue = HeaderValidator.process(value, FieldType.VALUE, config);
-        headers.set(normalizedName, normalizedValue);
     }
 
     @Override
