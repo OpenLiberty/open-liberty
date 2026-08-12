@@ -209,7 +209,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
         pipeline.addLast(CRLFValidationHandler.NAME, CRLFValidationHandler.INSTANCE);
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
-        pipeline.addLast(HttpVersionValidationHandler.NAME, HttpVersionValidationHandler.INSTANCE);
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, false);
@@ -289,7 +288,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private void addPreDispatcherHandlers(ChannelPipeline pipeline, boolean isHttp2) {
 
         if (!isHttp2) {
-            pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HttpVersionValidationHandler.NAME, HttpVersionValidationHandler.INSTANCE);
+            pipeline.addAfter(HttpVersionValidationHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             
             // Add TimeoutHandler before the aggregator
             if (pipeline.get(TimeoutHandler.class) == null) {

@@ -14,6 +14,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -81,7 +82,7 @@ public class HttpVersionValidationHandler extends ChannelInboundHandlerAdapter {
                 Unpooled.EMPTY_BUFFER);
         HttpUtil.setContentLength(response, 0);
         HttpUtil.setKeepAlive(response, false);
-        ctx.writeAndFlush(response);
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
         return true;
     }
 }
