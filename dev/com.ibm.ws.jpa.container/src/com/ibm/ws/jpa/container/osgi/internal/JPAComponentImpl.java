@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -546,7 +546,8 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
                                 puArchiveName = rootPrefix + entry.getName();
                             }
                             URL puRoot = getPXmlRootURL(appName, archiveName, pxml);
-                            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, puArchiveName, scope, puRoot, classLaoder, pxml));
+                            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, puArchiveName, scope, puRoot, classLaoder, pxml,
+                                                                        jarContainer, null));
                         }
                     } catch (UnableToAdaptException ex) {
                         // Not really a jar archive, just a poorly named file
@@ -593,7 +594,8 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (pxml != null) {
             String appName = applInfo.getApplName();
             URL puRoot = getPXmlRootURL(appName, archiveName, pxml);
-            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, archiveName, JPAPuScope.Web_Scope, puRoot, warClassLoader, pxml));
+            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, archiveName, JPAPuScope.Web_Scope, puRoot, warClassLoader, pxml,
+                                                        warContainer, "WEB-INF/classes"));
         }
 
         // Obtain any persistenc.xml in WEB-INF/lib/*.jar. This includes 'utility'
@@ -648,7 +650,8 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (pxml != null) {
             String appName = applInfo.getApplName();
             URL puRoot = getPXmlRootURL(appName, archiveName, pxml);
-            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, archiveName, JPAPuScope.EJB_Scope, puRoot, ejbClassLoader, pxml));
+            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, archiveName, JPAPuScope.EJB_Scope, puRoot, ejbClassLoader, pxml,
+                                                        ejbContainer, null));
         }
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -688,7 +691,8 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (pxml != null) {
             String appName = applInfo.getApplName();
             URL puRoot = getPXmlRootURL(appName, archiveName, pxml);
-            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, archiveName, JPAPuScope.Client_Scope, puRoot, clientClassLoader, pxml));
+            applInfo.addPersistenceUnits(new OSGiJPAPXml(applInfo, archiveName, JPAPuScope.Client_Scope, puRoot, clientClassLoader, pxml,
+                                                        clientContainer, null));
         }
 
         if (isTraceOn && tc.isEntryEnabled())

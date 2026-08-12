@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2024 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,7 @@ class JPAPxmlInfo {
 
             // JaxbPunit abstraction properly maps the TransactionType from
             // the JAXB generated class to the JPA enum value.          F1879-16302
-            puInfo.setTransactionType(pu.getTransactionType());
+            puInfo.setTransactionType(pu.getTransactionType() == null ? null : pu.getTransactionType().name());
 
             // Set <persistence-unit>
             puInfo.setPersistenceUnitDescription(pu.getDescription());
@@ -146,8 +146,15 @@ class JPAPxmlInfo {
             // Set <exclude-unlisted-classes>
             puInfo.setExcludeUnlistedClasses(pu.isExcludeUnlistedClasses());
 
+            // Set <default-to-one-fetch-type>
+            puInfo.setDefaultToOneFetchType(pu.getDefaultToOneFetchType());
+
             // Set <properties> (mapped by JaxbPUnit abstraction)       F1879-16302
             puInfo.setProperties(pu.getProperties());
+
+            // Jakarta Persistence 4 requires the container to complete model
+            // discovery before the provider is bootstrapped.
+            puInfo.discoverAllClassNames();
 
             if (isTraceOn && tc.isDebugEnabled()) {
                 String rootURLStr = pxml.getRootURL().getFile();

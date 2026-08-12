@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,22 +28,25 @@ import java.security.Permissions;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FetchType;
 import javax.persistence.PersistenceException;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -57,9 +60,14 @@ import com.ibm.ws.jpa.JPAPuId;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
- * Internal representation of a persistence unit in the form of a PersistenceUnitInfo object.
+ * Internal, persistence-version-neutral representation of a persistence unit.
  */
-public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
+public abstract class JPAPUnitInfo {
+    private enum TransactionType {
+        JTA,
+        RESOURCE_LOCAL
+    }
+
     private static final String CLASS_NAME = JPAPUnitInfo.class.getName();
 
     private static final TraceComponent tc = Tr.register(JPAPUnitInfo.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
@@ -76,7 +84,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     protected final JPAPuId ivArchivePuId;
 
     // Transaction Type, i.e. JTA or ResourceLocal
-    private PersistenceUnitTransactionType ivTxType = null;
+    private TransactionType ivTxType = null;
 
     // Persistence unit description.
     private String ivDesc = null;
@@ -106,6 +114,12 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // Collection of the managed POJO entity class names, if specified.
     private List<String> ivManagedClassNames = null;
 
+    // Complete collection of classes belonging to the persistence unit.
+    private List<String> ivAllClassNames = null;
+
+    // Set form of all class names, used to route Jakarta Persistence 4 transformation.
+    private Set<String> ivAllClassNameSet = Collections.emptySet();
+
     // Indicator to exclude unlist classes for managed POJO entity search.
     private boolean ivExcludeUnlistedClasses = false;
 
@@ -131,6 +145,12 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // List of provider transformers registered to be called when application classes are loaded.
     private List<ClassTransformer> ivTransformers = null;
 
+    // Jakarta Persistence 4 obtains the provider transformer before provider bootstrap.
+    private boolean ivContainerManagedTransformer = false;
+
+    // Whether registration with the application class loader was attempted.
+    private boolean ivClassFileTransformerRegistrationAttempted = false;
+
     // XML Schema version string
     private String xmlSchemaVersion = null;
 
@@ -140,8 +160,14 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // ValidataionMode
     private ValidationMode ivValidationMode = null; // F743-8705
 
+    // Default fetch type for to-one associations.
+    private FetchType ivDefaultToOneFetchType = FetchType.EAGER;
+
     // EntityManagerFactory associated with this persistence unit (non java:comp/env).
     private EntityManagerFactory ivEMFactory = null; // d510184
+
+    // Provider-facing API adapter associated with the base entity manager factory.
+    private PersistenceUnitInfo ivProviderPUnitInfo = null;
 
     /**
      * The failure that occurred while creating {@link #ivEMFactory}.
@@ -195,10 +221,11 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
         ivApplInfo = applInfo;
         ivArchivePuId = puId;
-        ivTxType = PersistenceUnitTransactionType.JTA;
+        ivTxType = TransactionType.JTA;
         ivQualifierClassNames = new ArrayList<String>();
         ivJarFileURLs = new ArrayList<URL>();
         ivManagedClassNames = new ArrayList<String>();
+        ivAllClassNames = new ArrayList<String>();
         ivMappingFileNames = new ArrayList<String>();
         ivTransformers = new CopyOnWriteArrayList<ClassTransformer>(); // PM77840
         ivClassLoader = loader; // d473432.1
@@ -236,7 +263,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitName()
      */
-    @Override
     public final String getPersistenceUnitName() {
         return ivArchivePuId.getPuName();
     }
@@ -244,23 +270,28 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     /**
      * (non-Javadoc)
      *
-     * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
+     * Returns the version-neutral transaction type name used by provider-facing adapters.
+     *
+     * @return {@code JTA} or {@code RESOURCE_LOCAL}
      */
-    @Override
-    public final PersistenceUnitTransactionType getTransactionType() {
-        return ivTxType;
+    public final String getTransactionTypeName() {
+        return ivTxType.name();
     }
 
-    final void setTransactionType(PersistenceUnitTransactionType newValue) {
+    public final boolean isJtaTransactionType() {
+        return ivTxType == TransactionType.JTA;
+    }
+
+    final void setTransactionType(String newValue) {
         if (newValue == null) {
-            // if newValue is not specified, default to PersistenceUnitTransactionType.JTA
-            // if running on the server environment, to PersistenceUnitTransactionType.RESOURCE_LOCAL
+            // If newValue is not specified, default to JTA in the server environment
+            // and RESOURCE_LOCAL in the client environment.
             // if running on the client environment.
             boolean serverRT = ivApplInfo.getJPAComponent().isServerRuntime();
 
-            ivTxType = (serverRT) ? PersistenceUnitTransactionType.JTA : PersistenceUnitTransactionType.RESOURCE_LOCAL;
+            ivTxType = serverRT ? TransactionType.JTA : TransactionType.RESOURCE_LOCAL;
         } else {
-            ivTxType = newValue;
+            ivTxType = TransactionType.valueOf(newValue);
         }
     }
 
@@ -280,7 +311,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceProviderClassName()
      */
-    @Override
     public final String getPersistenceProviderClassName() {
         return ivProviderClassName;
     }
@@ -303,7 +333,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *         specified
      */
     public final List<String> getQualifierAnnotationNames() {
-        return ivQualifierClassNames;
+        return isPersistence40() ? Collections.unmodifiableList(ivQualifierClassNames) : ivQualifierClassNames;
     }
 
     final void setQualifierAnnotationNames(List<String> list) {
@@ -434,7 +464,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getJtaDataSource()
      */
-    @Override
     public final DataSource getJtaDataSource() {
         if (ivJtaDataSource == null || ivJtaDataSource instanceof GenericDataSource) { // d455055
             ivJtaDataSource = getJPADataSource(ivJtaDataSourceJNDIName);
@@ -451,7 +480,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getNonJtaDataSource()
      */
-    @Override
     public final DataSource getNonJtaDataSource() {
         if (ivNonJtaDataSource == null || ivNonJtaDataSource instanceof GenericDataSource) { // d455055
             ivNonJtaDataSource = getJPADataSource(ivNonJtaDataSourceJNDIName);
@@ -476,7 +504,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * @see com.ibm.ws.jpa.management.JPACompPUnitInfo
      **/
     // d510184
-    DataSource lookupJtaDataSource() {
+    public final DataSource lookupJtaDataSource() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "lookupJtaDataSource : " + ivArchivePuId);
@@ -502,7 +530,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * @see com.ibm.ws.jpa.management.JPACompPUnitInfo
      **/
     // d510184
-    DataSource lookupNonJtaDataSource() {
+    public final DataSource lookupNonJtaDataSource() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "lookupNonJtaDataSource : " + ivArchivePuId);
@@ -520,9 +548,8 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getMappingFileNames()
      */
-    @Override
     public final List<String> getMappingFileNames() {
-        return ivMappingFileNames;
+        return isPersistence40() ? Collections.unmodifiableList(ivMappingFileNames) : ivMappingFileNames;
     }
 
     final void setMappingFileNames(List<String> newValues) {
@@ -550,9 +577,8 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getJarFileUrls()
      */
-    @Override
     public final List<URL> getJarFileUrls() {
-        return ivJarFileURLs;
+        return isPersistence40() ? Collections.unmodifiableList(ivJarFileURLs) : ivJarFileURLs;
     }
 
     /**
@@ -589,6 +615,13 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         for (String jarFilePath : jarFilePaths) {
             if (!addJarFileUrls(trim(jarFilePath), pxml)) {
                 Tr.error(tc, "INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E", jarFilePath, getPersistenceUnitName());
+                if (isPersistence40()) {
+                    throw new IllegalStateException("Persistence-unit archive could not be resolved"
+                                                    + " [application=" + ivArchivePuId.getApplName()
+                                                    + ", module=" + ivArchivePuId.getModJarName()
+                                                    + ", persistence-unit=" + getPersistenceUnitName()
+                                                    + ", archive=" + jarFilePath + "]");
+                }
             }
         }
 
@@ -609,14 +642,14 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getManagedClassNames()
      */
-    @Override
     public final List<String> getManagedClassNames() {
-        return ivManagedClassNames;
+        return isPersistence40() ? Collections.unmodifiableList(ivManagedClassNames) : ivManagedClassNames;
     }
 
     final void setManagedClassNames(List<String> newValues) {
         ivManagedClassNames.clear();
         addManagedClassNames(newValues);
+        setAllClassNames(ivManagedClassNames);
     }
 
     void addManagedClassNames(List<String> newValues) {
@@ -626,11 +659,38 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public final List<String> getAllClassNames() {
+        return isPersistence40() ? Collections.unmodifiableList(ivAllClassNames) : ivAllClassNames;
+    }
+
+    protected final void setAllClassNames(List<String> newValues) {
+        ivAllClassNames.clear();
+        for (String className : newValues) {
+            ivAllClassNames.add(trim(className));
+        }
+        ivAllClassNameSet = Collections.unmodifiableSet(new HashSet<String>(ivAllClassNames));
+    }
+
+    /**
+     * Complete container-owned persistence model discovery before provider bootstrap.
+     * Subclasses which own deployment metadata may replace the initial explicit-only
+     * value of {@link #getAllClassNames()}.
+     */
+    protected void discoverAllClassNames() {
+        // The pre-Jakarta Persistence 4 container does not own model discovery.
+    }
+
+    private boolean isPersistence40() {
+        return "4.0".equals(xmlSchemaVersion);
+    }
+
+    /**
      * (non-Javadoc)
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#excludeUnlistedClasses()
      */
-    @Override
     public final boolean excludeUnlistedClasses() {
         return ivExcludeUnlistedClasses;
     }
@@ -644,7 +704,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getProperties()
      */
-    @Override
     public final Properties getProperties() {
         return ivProperties;
     }
@@ -668,7 +727,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitRootUrl()
      */
-    @Override
     public final URL getPersistenceUnitRootUrl() {
         return ivPUnitRootURL;
     }
@@ -691,7 +749,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getClassLoader()
      */
-    @Override
     public final ClassLoader getClassLoader() {
         return ivClassLoader;
     }
@@ -705,7 +762,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()
      */
-    @Override
     public final synchronized ClassLoader getNewTempClassLoader() {
         if (tempClassLoader == null) {
             tempClassLoader = createTempClassLoader(ivClassLoader);
@@ -721,13 +777,26 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#addTransformer(javax.persistence.spi.ClassTransformer)
      */
-    @Override
     public final void addTransformer(ClassTransformer transformerClass) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "addTransformer: PUID = " + ivArchivePuId + ", transformer = " + transformerClass); //d454146
         }
 
+        if (ivContainerManagedTransformer) {
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Ignoring PersistenceUnitInfo.addTransformer after the Jakarta Persistence 4 provider transformer was obtained");
+            }
+        } else {
+            addProviderTransformer(transformerClass);
+        }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "addTransformer : # registered transfromer = " + ivTransformers.size());
+        }
+    }
+
+    private void addProviderTransformer(ClassTransformer transformerClass) {
         if (transformerClass != null) {
             JPAComponent jpaComp = getJPAComponent();
             if (jpaComp != null && jpaComp.getCaptureEnhancedEntityClassBytecode()) {
@@ -736,10 +805,23 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         }
 
         ivTransformers.add(transformerClass);
+    }
 
-        if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(tc, "addTransformer : # registered transfromer = " + ivTransformers.size());
+    private void setContainerManagedTransformer(ClassTransformer transformerClass) {
+        if (transformerClass == null) {
+            throw new IllegalStateException("The Jakarta Persistence 4 provider returned a null ClassTransformer"
+                                            + " [application=" + ivArchivePuId.getApplName()
+                                            + ", module=" + ivArchivePuId.getModJarName()
+                                            + ", provider=" + ivProviderClassName
+                                            + ", persistence-unit=" + getPersistenceUnitName() + "]");
         }
+
+        ivContainerManagedTransformer = true;
+        addProviderTransformer(transformerClass);
+    }
+
+    protected final boolean usesContainerManagedClassTransformer() {
+        return ivContainerManagedTransformer;
     }
 
     /**
@@ -770,9 +852,15 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             throw new IllegalStateException("EntityManagerFactory already created for PU : " + ivArchivePuId);
         }
 
-        if (!registerClassFileTransformer(ivClassLoader)) {
-            Tr.warning(tc, "APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W", ivArchivePuId.getPuName(), ivPUnitRootURL, ivClassLoader.getClass().getName());
-            tempClassLoader = ivClassLoader;
+        // Persistence versions before 4.0 continue to register the per-PU
+        // adapter before the provider is instantiated. Jakarta Persistence 4
+        // registration must wait until the provider supplies its transformer.
+        if (!isPersistence40()) {
+            ivClassFileTransformerRegistrationAttempted = true;
+            if (!registerClassFileTransformer(ivClassLoader)) {
+                Tr.warning(tc, "APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W", ivArchivePuId.getPuName(), ivPUnitRootURL, ivClassLoader.getClass().getName());
+                tempClassLoader = ivClassLoader;
+            }
         }
 
         // First, determine the final data source JNDI names.
@@ -823,10 +911,21 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         }
 
         try {
-            ivEMFactory = createEMFactory(this, true);
+            ivProviderPUnitInfo = jpaComponent.getJPARuntime().createPersistenceUnitInfo(this, null);
+            ivEMFactory = createEMFactory(ivProviderPUnitInfo, true);
         } catch (RuntimeException ex) {
             ivEMFactoryException = ex; // d743091
         }
+    }
+
+    /**
+     * Returns the provider-facing adapter created for the base persistence-unit
+     * bootstrap.
+     *
+     * @return the active provider-facing persistence-unit adapter
+     */
+    public final PersistenceUnitInfo getProviderPersistenceUnitInfo() {
+        return ivProviderPUnitInfo;
     }
 
     /**
@@ -889,7 +988,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
                 if (emf == null) {
                     if (ivCreateEMFAllowed) {
-                        PersistenceUnitInfo puInfo = new JPACompPUnitInfo(ivArchivePuId, this, j2eeName);
+                        PersistenceUnitInfo puInfo = getJPAComponent().getJPARuntime().createPersistenceUnitInfo(this, j2eeName);
                         emf = createEMFactory(puInfo, false);
                         ivEMFMap.put(j2eeName, emf);
 
@@ -985,6 +1084,18 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         try {
             Class<?> providerClass = ivClassLoader.loadClass(ivProviderClassName);
             provider = (PersistenceProvider) providerClass.newInstance();
+
+            if (isPersistence40() && puInfo == ivProviderPUnitInfo && !ivClassFileTransformerRegistrationAttempted) {
+                setContainerManagedTransformer(getJPAComponent().getJPARuntime().getClassTransformer(provider,
+                                                                                                       puInfo,
+                                                                                                       integrationProperties));
+
+                ivClassFileTransformerRegistrationAttempted = true;
+                if (!registerClassFileTransformer(ivClassLoader)) {
+                    Tr.warning(tc, "APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W", ivArchivePuId.getPuName(), ivPUnitRootURL, ivClassLoader.getClass().getName());
+                    tempClassLoader = ivClassLoader;
+                }
+            }
 
             // Use properties defined in default persistence providers in factory creation.
             // Properties defined in PU are used in createEntityManager to override factory settings.
@@ -1180,6 +1291,8 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             }
         }
 
+        ivProviderPUnitInfo = null;
+
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "close : " + ivArchivePuId);
     }
@@ -1295,11 +1408,16 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             Tr.entry(tc, "classNeedsTransform : PUID = " + ivArchivePuId + ", class name = " + className); //d454146
         }
 
-        boolean rtnVal = true;
-        for (Pattern regex : transformExclusionPatterns) {
-            if (regex.matcher(className).matches()) {
-                rtnVal = false;
-                break;
+        boolean rtnVal;
+        if (ivContainerManagedTransformer) {
+            rtnVal = ivAllClassNameSet.contains(className.replace('/', '.'));
+        } else {
+            rtnVal = true;
+            for (Pattern regex : transformExclusionPatterns) {
+                if (regex.matcher(className).matches()) {
+                    rtnVal = false;
+                    break;
+                }
             }
         }
         if (isTraceOn && tc.isEntryEnabled())
@@ -1312,11 +1430,20 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                                  byte[] classBytes,
                                  CodeSource codeSource,
                                  ClassLoader classloader) {
+        ProtectionDomain protectionDomain = new ProtectionDomain(codeSource, new Permissions(), classloader, null);
+        return transformClass(className, null, classBytes, protectionDomain, classloader);
+    }
+
+    public byte[] transformClass(String className,
+                                 Class<?> classBeingRedefined,
+                                 byte[] classBytes,
+                                 ProtectionDomain protectionDomain,
+                                 ClassLoader classloader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tcTransformer.isEntryEnabled()) {
             Tr.entry(tcTransformer, "transformClass: PUID = " + ivArchivePuId + ", class name = " + className
                                     + ", classBytes.length = " + ((classBytes == null) ? 0 : classBytes.length),
-                     codeSource, classloader); //d454146
+                     protectionDomain == null ? null : protectionDomain.getCodeSource(), classloader); //d454146
         }
 
         int numTransform = 0;
@@ -1330,7 +1457,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
                 // perform the class transformation by the persistence provider only if it is
                 // defined as a POJO entity class.
-                ProtectionDomain pd = new ProtectionDomain(codeSource, new Permissions(), classloader, null);
                 int oldClassBytesLength;
 
                 // Future performance optimizatin:
@@ -1347,8 +1473,8 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                     try {
                         byte[] transformedClassBytes = transformer.transform(classloader,
                                                                              className,
-                                                                             null,
-                                                                             pd,
+                                                                             classBeingRedefined,
+                                                                             protectionDomain,
                                                                              classBytes);
                         if (transformedClassBytes != null) {
                             // replace and return the transformed classBytes back to the caller.
@@ -1388,6 +1514,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                             sb.append("Original Class Byte Code (length = ").append(((classBytes == null) ? 0 : classBytes.length));
                             sb.append(") for class ").append(className).append(" :\n");
                             sb.append(dumpByteCode(classBytes));
+
+                            sb.append("\nPersistence unit: ").append(ivArchivePuId);
+                            sb.append("\nProvider: ").append(ivProviderClassName).append('\n');
 
                             sb.append("\nException thrown by transformer:\n");
                             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1452,7 +1581,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceXMLSchemaVersion()
      **/
     // F743-954.1
-    @Override
     public final String getPersistenceXMLSchemaVersion() // d603827
     {
         return xmlSchemaVersion;
@@ -1472,7 +1600,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * @see javax.persistence.spi.PersistenceUnitInfo#getSharedCacheMode()
      **/
     // F743-8705
-    @Override
     public final SharedCacheMode getSharedCacheMode() {
         return ivCaching;
     }
@@ -1491,7 +1618,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      * @see javax.persistence.spi.PersistenceUnitInfo#getValidationMode()
      **/
     // F743-8705
-    @Override
     public final ValidationMode getValidationMode() {
         return ivValidationMode;
     }
@@ -1502,5 +1628,16 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // F743-8705
     void setValidationMode(ValidationMode mode) {
         ivValidationMode = mode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final FetchType getDefaultToOneFetchType() {
+        return ivDefaultToOneFetchType;
+    }
+
+    final void setDefaultToOneFetchType(FetchType fetchType) {
+        ivDefaultToOneFetchType = fetchType;
     }
 }

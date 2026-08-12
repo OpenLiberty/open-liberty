@@ -1,20 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.6.0
- */
-@org.osgi.annotation.versioning.Version("1.6.0")
-@TraceOptions(traceGroup = "ClassLoadingService", messageBundle = "com.ibm.ws.classloading.internal.resources.ClassLoadingServiceMessages")
-package com.ibm.wsspi.classloading;
+package com.ibm.ws.jpa.management;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+/**
+ * Identifies a provider-facing persistence-unit adapter and exposes its
+ * version-neutral Liberty state.
+ */
+public interface PersistenceUnitInfoDelegate {
+    /**
+     * Returns the persistence-unit state represented by this adapter.
+     *
+     * @return the owning persistence-unit state
+     */
+    JPAPUnitInfo getPersistenceUnitState();
+}

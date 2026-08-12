@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.ClassTransformer;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.Transaction.UOWCoordinator;
@@ -48,6 +51,15 @@ public interface JPARuntime {
      * @return
      */
     public EntityManagerFactory createJPAEMFactory(JPAPuId puId, J2EEName j2eeName, EntityManagerFactory emf);
+
+    /**
+     * Creates the provider-facing persistence-unit adapter for this runtime.
+     *
+     * @param puInfo version-neutral persistence-unit state
+     * @param j2eeName component identity for component-specific data sources, or null
+     * @return the persistence-unit interface appropriate for this runtime
+     */
+    public PersistenceUnitInfo createPersistenceUnitInfo(JPAPUnitInfo puInfo, J2EEName j2eeName);
 
     /**
      * Creates a new JPATxEntityManager instance.
@@ -137,4 +149,18 @@ public interface JPARuntime {
     public String processJEE7JTADataSource(String jtaDataSource, String nonJtaDataSource);
 
     public boolean isIgnoreDataSourceErrors(Boolean ignoreDataSource);
+
+    /**
+     * Obtain the provider transformer used by a container-managed persistence unit.
+     * Implementations for persistence versions before 4.0 return {@code null} and
+     * continue to use {@link PersistenceUnitInfo#addTransformer(ClassTransformer)}.
+     *
+     * @param provider selected persistence provider
+     * @param puInfo persistence-unit metadata
+     * @param properties provider integration properties
+     * @return the container-managed transformer, or {@code null} when unsupported
+     */
+    public ClassTransformer getClassTransformer(PersistenceProvider provider,
+                                                PersistenceUnitInfo puInfo,
+                                                Map<?, ?> properties);
 }
