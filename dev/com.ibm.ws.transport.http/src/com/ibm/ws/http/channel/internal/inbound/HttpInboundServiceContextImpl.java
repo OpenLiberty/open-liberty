@@ -198,7 +198,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setNettyResponse(HttpResponse response) {
         this.nettyResponse = response;
         super.setNettyResponse(response);
-        this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
+        // TODO requires further cleanup
+        this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest, ((NettyRequestMessage)getRequest()).getStreamId());
     }
 
     public FullHttpRequest getNettyRequest() {
@@ -590,7 +591,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     @Override
     public HttpResponseMessage getResponse() {
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
-            this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
+            this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest, ((NettyRequestMessage)getRequest()).getStreamId());
 
         }
 
