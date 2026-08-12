@@ -155,6 +155,7 @@ public abstract class ScheduledMethodAbstract implements //
                 if (failure.getCause() != null)
                     failure = failure.getCause();
             }
+            // TODO application can also raise types of RuntimeException
             if (!appException)
                 FFDCFilter.processException(x, getClass().getName(), "183", this);
         } finally {
