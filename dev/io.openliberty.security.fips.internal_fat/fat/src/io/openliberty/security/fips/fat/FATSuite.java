@@ -11,6 +11,7 @@
 package io.openliberty.security.fips.fat;
 
 import io.openliberty.security.fips.fat.tests.fips1403.client.FIPS1403ClientTest;
+import io.openliberty.security.fips.fat.tests.fips1403.security.utility.FIPS1403SecurityUtilityInvalidEnvTets;
 import io.openliberty.security.fips.fat.tests.fips1403.security.utility.FIPS1403SecurityUtilityTests;
 import io.openliberty.security.fips.fat.tests.fips1403.server.FIPS1403ServerTest;
 import org.junit.runner.RunWith;
@@ -24,7 +25,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
         AlwaysPassesTest.class,
         FIPS1403ServerTest.class,
         FIPS1403ClientTest.class,
-        FIPS1403SecurityUtilityTests.class
+        FIPS1403SecurityUtilityTests.class,
+        FIPS1403SecurityUtilityInvalidEnvTets.class
 })
 public class FATSuite {
 }
