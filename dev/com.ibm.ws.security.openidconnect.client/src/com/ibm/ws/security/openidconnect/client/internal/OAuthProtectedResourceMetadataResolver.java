@@ -10,6 +10,7 @@
 package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -22,8 +23,11 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.jwt.JwtBuilder;
+import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.openidconnect.client.OAuthProtectedResourceMetadataService;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
+import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 
 /**
  * Gets the OAuth 2.0 protected resource metadata for a given protected resource path.
@@ -55,12 +59,16 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
      * Returns the OAuth 2.0 protected resource metadata JSON for the given request and
      * protected resource path, or {@code null} if no OIDC client configuration matches.
      *
-     * @param request               the incoming metadata endpoint HTTP request
-     * @param protectedResourcePath normalized protected resource path, e.g. {@code /myApp/protected}
-     * @param absoluteResourceUrl   absolute protected resource URL to include in the metadata document,
-     *                                  e.g. {@code https://localhost:9443/myApp/protected}
+     * @param request
+     *            the incoming metadata endpoint HTTP request
+     * @param protectedResourcePath
+     *            normalized protected resource path, e.g. {@code /myApp/protected}
+     * @param absoluteResourceUrl
+     *            absolute protected resource URL to include in the metadata document,
+     *            e.g. {@code https://localhost:9443/myApp/protected}
      * @return serialized JSON metadata document, or {@code null} if no match
      */
+    @Override
     public String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath, String absoluteResourceUrl) {
         OidcClientImpl client = oidcClientImpl;
         if (client == null) {
@@ -88,18 +96,23 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
             return null;
         }
 
-        return createMetadataJson(config, absoluteResourceUrl);
+        return createMetadataJson(config, absoluteResourceUrl, request);
     }
 
     /**
      * Creates the OAuth 2.0 protected resource metadata JSON document.
      * Package-scoped for unit testing.
      *
-     * @param config             matching OIDC client configuration
-     * @param absoluteResourceUrl absolute protected resource URL
+     * @param config
+     *            matching OIDC client configuration
+     * @param absoluteResourceUrl
+     *            absolute protected resource URL
+     * @param request
+     *            the incoming HTTP request (used to derive {@code jwks_uri})
      * @return serialized JSON metadata document
      */
-    String createMetadataJson(OidcClientConfig config, String absoluteResourceUrl) {
+    // package visible for unit testing
+    String createMetadataJson(OidcClientConfig config, String absoluteResourceUrl, HttpServletRequest request) {
         JSONObject metadata = new JSONObject();
 
         metadata.put("resource", absoluteResourceUrl);
@@ -125,6 +138,14 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
             metadata.put("scopes_supported", scopesSupported);
         }
 
+        String jwtBuilderId = config.getProtectedResourceMetadataJwtBuilderId();
+        if (jwtBuilderId != null && !jwtBuilderId.trim().isEmpty()) {
+            String signedJwt = createSignedMetadata(jwtBuilderId, metadata);
+            if (signedJwt != null) {
+                metadata.put("signed_metadata", signedJwt);
+            }
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Resolved OAuth protected resource metadata for resource [" + absoluteResourceUrl + "] using client [" + config.getId() + "]");
         }
@@ -133,12 +154,44 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
     }
 
     /**
+     * Builds a compact JWS (signed JWT) whose payload mirrors the assembled protected
+     * resource metadata claims, as required by RFC 9728 §4.
+     *
+     * @param jwtBuilderId
+     *            the JWT builder configuration ID to use for signing
+     * @param metadata
+     *            the protected resource metadata, which should be complete other than the {@code signed_metadata} entry
+     * @return compact JWS string, or {@code null} if signing fails or {@code jwtBuilderRef} is blank
+     */
+    // package visible for unit testing
+    String createSignedMetadata(String jwtBuilderId, JSONObject metadata) {
+        if (jwtBuilderId == null || jwtBuilderId.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            JwtBuilder builder = JwtBuilder.create(jwtBuilderId);
+            // Copy all entries from the metadata into the JWT as claims
+            @SuppressWarnings("unchecked")
+            Map<String, Object> metadataAsMap = metadata;
+            builder.claim(metadataAsMap);
+
+            JwtToken jwtToken = builder.buildJwt();
+            return jwtToken.compact();
+        } catch (Exception e) {
+            Tr.warning(tc, "PRMD_SIGNED_METADATA_BUILD_FAILURE", jwtBuilderId, e);
+            return null;
+        }
+    }
+
+    /**
      * Returns the authorization server identifier from the OIDC client configuration.
      * Prefers the issuer identifier.
      *
-     * @param config matching OIDC client configuration
+     * @param config
+     *            matching OIDC client configuration
      * @return authorization server URL, or {@code null} if none is configured
      */
+    // package visible for unit testing
     String getAuthorizationServer(OidcClientConfig config) {
         String issuer = config.getIssuerIdentifier();
         if (issuer != null && !issuer.trim().isEmpty()) {
@@ -158,6 +211,7 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
      * from the URI and URL so that {@link OidcClient#getOidcProvider} can match the request
      * against configured auth filters as if it were a real request to the protected resource.
      */
+    // package visible for unit testing
     static class ProtectedResourceRequestWrapper extends HttpServletRequestWrapper {
 
         private final String protectedResourcePath;

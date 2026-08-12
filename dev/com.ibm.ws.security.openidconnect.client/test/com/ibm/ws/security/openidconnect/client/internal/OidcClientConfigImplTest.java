@@ -848,21 +848,28 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, advertisedScopes);
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_JWT_BUILDER_REF, jwtBuilderRef);
 
+            final Configuration jwtBuilderConfig = mock.mock(Configuration.class, "jwtBuilderConfig");
+            final Map<String, Object> jwtBuilderProps = new Hashtable<String, Object>();
+            jwtBuilderProps.put("id", jwtBuilderRef);
             mock.checking(new Expectations() {
                 {
                     one(configAdmin).getConfiguration(authFilterId, null);
                     will(returnValue(config));
                     one(config).getProperties();
                     will(returnValue(adminProps));
+                    one(configAdmin).getConfiguration(jwtBuilderRef, null);
+                    will(returnValue(jwtBuilderConfig));
+                    one(jwtBuilderConfig).getProperties();
+                    will(returnValue(jwtBuilderProps));
                 }
             });
             oidcClientConfig.modify(props);
 
-            // Verify: advertisedScopes and jwtBuilderRef should be set
+            // Verify: advertisedScopes, jwtBuilderRef, and jwtBuilderId should be set
             assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile", "email"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertEquals("jwtBuilderRef should be " + jwtBuilderRef, jwtBuilderRef,
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertEquals("jwtBuilderId should be " + jwtBuilderRef, jwtBuilderRef,
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
@@ -900,8 +907,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
 
             assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertNull("jwtBuilderRef should be null when not configured",
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
@@ -937,8 +944,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
                     oidcClientConfig.getServeProtectedResourceMetadata());
             assertNull("advertisedScopes should be null when not configured",
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertNull("jwtBuilderRef should be null when not configured",
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -975,8 +982,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             // Verify: both fields should be null because beta fencing prevents processing
             assertEquals("advertisedScopes should be null when not in beta mode", null,
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertEquals("jwtBuilderRef should be null when not in beta mode", null,
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertFalse("serveProtectedResourceMetadata should be false when not in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
@@ -1009,8 +1016,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             // Verify: both fields should be null
             assertEquals("advertisedScopes should be null when not configured", null,
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
-            assertEquals("jwtBuilderRef should be null when not configured", null,
-                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertNull("jwtBuilderId should be null when not configured",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertFalse("serveProtectedResourceMetadata should be false when sub-element is not configured",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
