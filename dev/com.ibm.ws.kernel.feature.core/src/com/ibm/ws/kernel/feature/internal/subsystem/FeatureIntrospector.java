@@ -79,6 +79,13 @@ public class FeatureIntrospector implements Introspector {
                 out.println("    Auto Feature: " + proFeatDef.isAutoFeature());
                 out.println("    Singleton: " + proFeatDef.isSingleton());
 
+                String apiPackages = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_API_PACKAGE);
+                out.println("    Api Packages: " + (apiPackages == null || apiPackages.isEmpty() ? "none" : apiPackages));
+                String spiPackages = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_SPI_PACKAGE);
+                out.println("    Spi Packages: " + (spiPackages == null || spiPackages.isEmpty() ? "none" : spiPackages));
+                String apiServices = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_API_SERVICE);
+                out.println("    Api Services: " + (apiServices == null || apiServices.isEmpty() ? "none" : apiServices));
+
                 if (proFeatDef instanceof SubsystemFeatureDefinitionImpl) {
                     SubsystemFeatureDefinitionImpl subSysFeatureDef = (SubsystemFeatureDefinitionImpl) proFeatDef;
                     ProvisioningDetails details = subSysFeatureDef.getProvisioningDetails();
