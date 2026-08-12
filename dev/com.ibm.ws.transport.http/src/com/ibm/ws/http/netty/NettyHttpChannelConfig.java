@@ -214,6 +214,9 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parseH2MaxResetFrames(options.get(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES));
         parseH2ResetFramesWindow(options.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW));
         parseH2MaxStreamsRefused(options.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED));
+        parseH2MaxLowWindowStreams(options.get(HttpConfigConstants.PROPNAME_H2_MAX_LOW_WINDOW_STREAMS));
+        parseH2LowWindowLimit(options.get(HttpConfigConstants.PROPNAME_H2_LOW_WINDOW_LIMIT));
+        parseH2MaxQueuedBytes(options.get(HttpConfigConstants.PROPNAME_H2_MAX_QUEUED_BYTES));
     }
 
     private void parseRemoteIpOptions(Map<String, Object> options) {

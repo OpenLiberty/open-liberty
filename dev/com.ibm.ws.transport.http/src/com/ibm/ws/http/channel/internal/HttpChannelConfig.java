@@ -643,9 +643,9 @@ public class HttpChannelConfig {
         parseH2ResetFramesWindow(props.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW));
         parseH2MaxStreamsRefused(props.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED));
         parseH2MaxHeaderBlockSize(props.get(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE));
-        parseH2MaxLowWindowStreams(props);
-        parseH2LowWindowLimit(props);
-        parseH2MaxQueuedBytes(props);
+        parseH2MaxLowWindowStreams(props.get(HttpConfigConstants.PROPNAME_H2_MAX_LOW_WINDOW_STREAMS));
+        parseH2LowWindowLimit(props.get(HttpConfigConstants.PROPNAME_H2_LOW_WINDOW_LIMIT));
+        parseH2MaxQueuedBytes(props.get(HttpConfigConstants.PROPNAME_H2_MAX_QUEUED_BYTES));
         parseCookiesSameSitePartitioned(props);
         initSameSiteCookiesPatterns();
         parseHeaders(props);
@@ -1021,55 +1021,49 @@ public class HttpChannelConfig {
         }
     }
 
-    private void parseH2MaxLowWindowStreams(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_LOW_WINDOW_STREAMS);
-        if (null != value) {
+    protected void parseH2MaxLowWindowStreams(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2MaxLowWindowStreams = convertInteger(value);
+                this.http2MaxLowWindowStreams = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Max Low Window Streams " + getH2MaxLowWindowStreams());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxLowWindowStreams", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Max Low Window Streams; " + value);
-
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Low Window Streams; " + option);
                 }
             }
         }
     }
 
-    private void parseH2LowWindowLimit(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_LOW_WINDOW_LIMIT);
-        if (null != value) {
+    protected void parseH2LowWindowLimit(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2LowWindowLimit = convertInteger(value);
+                this.http2LowWindowLimit = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Low Window Limit " + getH2LowWindowLimit());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2LowWindowLimit", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Low Window Limit; " + value);
-
+                    Tr.event(tc, "Config: Invalid HTTP/2 Low Window Limit; " + option);
                 }
             }
         }
     }
 
-    private void parseH2MaxQueuedBytes(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_QUEUED_BYTES);
-        if (null != value) {
+    protected void parseH2MaxQueuedBytes(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2MaxQueuedBytes = convertLong(value);
+                this.http2MaxQueuedBytes = convertLong(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Max Queued Bytes " + getH2MaxQueuedBytes());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxQueuedBytes", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Max Queued Bytes; " + value);
-
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Queued Bytes; " + option);
                 }
             }
         }

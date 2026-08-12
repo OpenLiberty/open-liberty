@@ -344,7 +344,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         }
 
         /**
-         * PH71839: arm the deferred-write timeout for a stream, if it does not already have one.
+         * Deferred-write timeout for a stream, if it does not already have one.
          * One timer per stream, not per frame.
          */
         private StreamWriteState scheduleWriteTimeoutIfNeeded(ChannelHandlerContext ctx, int streamId) {
