@@ -11,6 +11,7 @@
 	<classpathentry kind="src" path="test-applications/testParentLibraryInconsistent.war/src"/>
 	<classpathentry kind="src" path="test-applications/testLibPrecedence.war/src"/>
 	<classpathentry kind="src" path="test-applications/testOverrideLib.war/src"/>
+	<classpathentry kind="src" path="test-applications/testLibraryUser.war/src"/>
 	<classpathentry kind="src" path="test-applications/testClient1.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testEjb1.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testEjb2.jar/src"/>
@@ -37,6 +38,7 @@
 	<classpathentry kind="src" path="test-applications/testResourceAdaptor.jar/src"/>
 	<classpathentry kind="src" path="test-resourceadapters/testDummyRA/src"/>
 	<classpathentry kind="src" path="test-bundles/userApiBundle/src"/>
+	<classpathentry kind="src" path="test-bundles/libraryUserBundle/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

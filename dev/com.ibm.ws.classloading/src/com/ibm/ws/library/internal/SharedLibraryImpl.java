@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.internal.ClassLoadingServiceImpl;
+import com.ibm.ws.classloading.internal.providers.WeakLibraryListener;
 import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
@@ -220,14 +221,19 @@ public class SharedLibraryImpl implements Library, SpiLibrary {
         return currentGen == null ? null : currentGen.getContainers();
     }
 
-    void setLibraryServiceProperties(Dictionary<String, Object> svcProps) {
+    boolean setLibraryServiceProperties(Dictionary<String, Object> svcProps) {
+        boolean initialRegistration = false;
         if (deleted) {
-            return;
+            return initialRegistration;
         }
 
         final ServiceRegistration<Library> svcReg;
         if (libraryReg == null) {
             svcReg = libraryReg = this.ctx.registerService(Library.class, this, svcProps);
+            initialRegistration = true;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Initial registration of Library service for: " + id());
+            }
         } else {
             svcReg = libraryReg;
             svcReg.setProperties(svcProps);
@@ -238,9 +244,10 @@ public class SharedLibraryImpl implements Library, SpiLibrary {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "svc prop keys are " + Arrays.toString(svcReg.getReference().getPropertyKeys()));
         }
+        return initialRegistration;
     }
 
-    void notifyListeners() {
+    void notifyListeners(boolean initialRegistration) {
         if (deleted) {
             return;
         }
@@ -269,7 +276,12 @@ public class SharedLibraryImpl implements Library, SpiLibrary {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "notifying listener: " + listener);
                 }
-                listener.libraryNotification();
+                if (!initialRegistration || !(listener instanceof WeakLibraryListener)) {
+                    // Don't call the WeakLibraryListener for initial registration in case someone
+                    // created the class loader synchronously during registration;
+                    // In this case we do not want to flush the class loader out of the store.
+                    listener.libraryNotification();
+                }
             } catch (Exception e) {
                 // Swallow the error so that others may continue
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -376,8 +388,8 @@ public class SharedLibraryImpl implements Library, SpiLibrary {
                 libGen.cancel();
             }
         }
-        setLibraryServiceProperties(libraryGeneration.getProperties());
-        notifyListeners();
+        boolean initialRegistration = setLibraryServiceProperties(libraryGeneration.getProperties());
+        notifyListeners(initialRegistration);
     }
 
 

@@ -38,7 +38,8 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
                 DefaultConfigIdTests.class,
                 CustomConfigIdTests.class,
                 WelcomePageVersionTest.class,
-                HttpVersionTokenTest.class
+                HttpVersionTokenTest.class,
+                HeaderCasingTests.class,
 })
 
 public class FATSuite {

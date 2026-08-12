@@ -40,7 +40,7 @@ import jakarta.interceptor.InvocationContext;
 // @Lock should annotate this interceptor, but won't compile against Java 17.
 // Instead, ConcurrencyExtension.beforeBeanDiscovery adds it dynamically.
 @Interceptor
-@Priority(Interceptor.Priority.PLATFORM_BEFORE + 10) // TODO determine correct value
+@Priority(Interceptor.Priority.PLATFORM_BEFORE + 100)
 public class LockInterceptor implements Serializable {
     private static final long serialVersionUID = 757018268808860939L;
 

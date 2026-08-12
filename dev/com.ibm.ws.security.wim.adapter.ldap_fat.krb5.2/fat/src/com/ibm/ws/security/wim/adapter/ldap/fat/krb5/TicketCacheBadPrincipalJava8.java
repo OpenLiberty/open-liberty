@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,12 @@
 package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeThat;
 
+import componenttest.topology.impl.JavaInfo;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +33,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+import java.io.IOException;
+
 /**
  * Java 8 test where we hit an NPE if the krb5Principal name was not found in the ticketCache
  *
@@ -42,7 +47,11 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
     private static final Class<?> c = TicketCacheBadPrincipalJava8.class;
 
     @BeforeClass
-    public static void setStopMessages() {
+    public static void setStopMessages() throws IOException {
+        if(System.getProperty("os.name").equalsIgnoreCase("OS/400")){
+            JavaInfo ji = JavaInfo.forServer(server);
+            assumeThat(ji.serviceRelease()>8 || ji.fixpack() >= 65, is(true));
+        }
         stopStrings = new String[] { "CWIML4507E", "CWWKS4347E", "CWIML4512E", "CWIML4520E" };
     }
 
