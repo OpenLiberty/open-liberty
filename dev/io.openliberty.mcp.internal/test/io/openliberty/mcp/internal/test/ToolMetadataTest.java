@@ -382,6 +382,67 @@ public class ToolMetadataTest {
         assertNotNull(metadata.outputSchema());
     }
 
+    // ---- outputSchemaFrom tests ----
+
+    @Tool(structuredContent = true, outputSchemaFrom = City.class)
+    public ToolResponse toolResponseWithOutputSchemaFrom() {
+        return ToolResponse.ofStructured(new City("Paris", "France"));
+    }
+
+    @Test
+    public void testToolResponseWithOutputSchemaFromGeneratesSchema() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "toolResponseWithOutputSchemaFrom");
+        assertNotNull(metadata.outputSchema());
+        assertThat("Expected no validation errors", metadata.validationErrors(), empty());
+    }
+
+    // outputSchemaFrom on a plain (non-ToolResponse) return type: ToolMetadata must still
+    // generate an outputSchema using the declared class, not the method's return type.
+    @Tool(structuredContent = true, outputSchemaFrom = City.class)
+    public String plainReturnWithOutputSchemaFrom() {
+        return "{}";
+    }
+
+    @Test
+    public void testOutputSchemaFromOnPlainReturnTypeGeneratesSchema() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "plainReturnWithOutputSchemaFrom");
+        assertNotNull("outputSchemaFrom should produce an outputSchema even on a plain return type", metadata.outputSchema());
+        assertThat("Expected no validation errors", metadata.validationErrors(), empty());
+    }
+
+    // @Schema on the method takes precedence over outputSchemaFrom — the inline schema body wins.
+    @Tool(structuredContent = true, outputSchemaFrom = City.class)
+    @Schema("""
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": { "type": "string" }
+                      }
+                    }
+                    """)
+    public ToolResponse toolResponseWithSchemaAndOutputSchemaFrom() {
+        return ToolResponse.ofStructured(Map.of("message", "hi"));
+    }
+
+    @Test
+    public void testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "toolResponseWithSchemaAndOutputSchemaFrom");
+        // @Schema wins — schema is present and comes from @Schema, not City
+        assertNotNull(metadata.outputSchema());
+        assertThat("Expected no validation errors", metadata.validationErrors(), empty());
+    }
+
+    @Tool(structuredContent = false, outputSchemaFrom = City.class)
+    public ToolResponse toolResponseWithOutputSchemaFromNoStructuredContent() {
+        return ToolResponse.ofText("hello");
+    }
+
+    @Test
+    public void testOutputSchemaFromIgnoredWhenStructuredContentFalse() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "toolResponseWithOutputSchemaFromNoStructuredContent");
+        assertNull(metadata.outputSchema());
+    }
+
     @MetaField(name = "foo", value = "bar")
     @Tool
     public String toolWithOneMeta() {
