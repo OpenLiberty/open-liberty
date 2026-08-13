@@ -28,7 +28,7 @@ import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
 import io.openliberty.mcp.internal.fat.monitor.McpMonitorMXBeanAccessTest;
 import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
-import io.openliberty.mcp.internal.fat.oidc.tests.OidcAuthorizationFlowTests;
+import io.openliberty.mcp.internal.fat.oidc.tests.AuthorizationFlowTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
@@ -149,7 +149,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 // TestContainer Tests
                 ConformanceTests.class,
                 OidcTests.class,
-                OidcAuthorizationFlowTests.class
+                AuthorizationFlowTests.class
 })
 
 public class FATSuite extends TestContainerSuite {
