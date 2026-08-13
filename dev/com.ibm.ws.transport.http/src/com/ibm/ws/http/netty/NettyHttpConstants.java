@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 
 /**
@@ -45,6 +46,7 @@ public final class NettyHttpConstants {
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
     public static final AttributeKey<Socket> SOCKET_HANDLE = AttributeKey.valueOf("SocketHandleKey");
+    public static final AttributeKey<SslHandler> SSL_HANDLER = AttributeKey.valueOf("sslHandler");
 
     //AUTOREAD WORK
     public static final AttributeKey<HttpInputStreamImpl> HTTP_INPUT_STREAM = AttributeKey.valueOf("httpInputStream");

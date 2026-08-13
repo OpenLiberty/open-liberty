@@ -145,6 +145,17 @@ public class NettyBaseMessage implements HttpBaseMessage {
         return new NettyHeader(name, headers);
     }
 
+    private List<HeaderField> getHeaders(AsciiString name) {
+        List<String> values = headers.getAll(name);
+        if (values.isEmpty()) 
+            return Collections.emptyList();   // avoid alloc on miss
+        List<HeaderField> result = new ArrayList<>(values.size());
+        for (String value : values) {
+            result.add(new NettyHeader(name.toString(), value));   // HeaderKeys constructor — no find()
+        }
+        return result;
+    }
+
     @Override
     public List<HeaderField> getHeaders(String name) {
         List<String> values = headers.getAll(name);
@@ -157,7 +168,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public List<HeaderField> getHeaders(byte[] name) {
-        return getHeaders(new String(name, StandardCharsets.UTF_8));
+        // TODO: Should this be a copy?
+        return getHeaders(new AsciiString(name, false));
     }
 
     @Override

@@ -60,10 +60,10 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
     }
 
     private void initializeSSLContext() {
-        SslHandler sslHandler = nettyChannel.pipeline().get(SslHandler.class);
+        SslHandler sslHandler = nettyChannel.attr(NettyHttpConstants.SSL_HANDLER).get();
 
         if (sslHandler != null) {
-            this.sslContext = new NettySSLConnectionContext(nettyChannel, nettyChannel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).get());
+            this.sslContext = new NettySSLConnectionContext(sslHandler, nettyChannel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).get());
         }
     }
 
