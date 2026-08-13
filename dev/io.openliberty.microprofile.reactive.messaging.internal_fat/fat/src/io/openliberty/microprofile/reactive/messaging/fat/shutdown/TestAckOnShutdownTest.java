@@ -13,6 +13,7 @@ package io.openliberty.microprofile.reactive.messaging.fat.shutdown;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static org.junit.Assert.assertFalse;
 
 import java.util.List;
@@ -73,6 +74,7 @@ public class TestAckOnShutdownTest extends FATServletClient {
                         .addAsLibraries(kafkaClientLibs())
                         .addPackage(TestAckOnShutdownServlet.class.getPackage())
                         .addPackage(AbstractReceptionBean.class.getPackage())
+                        .addAsManifestResource(kafkaPermissions(), "permissions.xml")
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
