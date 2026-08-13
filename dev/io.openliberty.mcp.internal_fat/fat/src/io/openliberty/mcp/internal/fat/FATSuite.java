@@ -47,6 +47,7 @@ import io.openliberty.mcp.internal.fat.security.PermitAllTests;
 import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
+import io.openliberty.mcp.internal.fat.statelessMode.StatelessConfigChangeOnRestoreTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
 import io.openliberty.mcp.internal.fat.timeout.ConfigurableAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.timeout.InvalidAsyncTimeoutTest;
@@ -121,6 +122,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
+                StatelessConfigChangeOnRestoreTest.class,
                 StatelessModeTest.class,
                 TelemetryOperationsTest.class,
                 TelemetrySessionsTest.class,
