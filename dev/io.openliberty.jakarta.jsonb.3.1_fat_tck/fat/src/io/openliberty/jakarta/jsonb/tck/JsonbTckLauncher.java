@@ -13,7 +13,6 @@
 package io.openliberty.jakarta.jsonb.tck;
 
 import static componenttest.annotation.SkipIfSysProp.OS_IBMI;
-import static componenttest.annotation.SkipIfSysProp.OS_ISERIES;
 import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 
 import java.util.HashMap;
@@ -46,7 +45,7 @@ import componenttest.topology.utils.tck.TCKRunner;
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 @MaximumJavaLevel(javaLevel = 21) // TODO Fails on Java 23 due to updates to CLDR https://jdk.java.net/23/release-notes#JDK-8319990
-@SkipIfSysProp({ OS_IBMI, OS_ISERIES, OS_ZOS }) // TODO remove once fixed https://github.com/jakartaee/jsonb-api/issues/348
+@SkipIfSysProp({ OS_IBMI, OS_ZOS }) // TODO remove once fixed https://github.com/jakartaee/jsonb-api/issues/348
 public class JsonbTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
