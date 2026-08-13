@@ -218,42 +218,42 @@ cookie.attribute.name.invalid=CWWKT0047E: The [{0}] cookie attribute contains an
 cookie.attribute.name.invalid.explanation=The cookie attribute name cannnot contain any special [\()<>@,;:\\/[]?={} \t] character.
 cookie.attribute.name.invalid.useraction=Correct the cookie attribute name to not use any special character.
 
-endpoint.netty.not.initialized=CWWKT0048E: The HTTP endpoint {0} cannot start because the Netty framework is not initialized.
-endpoint.netty.not.initialized.explanation=The Netty framework service is required but was not available when the endpoint attempted to start.
+endpoint.netty.not.initialized=CWWKT0048E: The {0} HTTP endpoint cannot start because the Netty framework is not initialized.
+endpoint.netty.not.initialized.explanation=The Netty framework service is required, but the service was not available when the endpoint attempted to start.
 endpoint.netty.not.initialized.useraction=Verify the server configuration and ensure that the required Netty framework bundle is active.
 
-endpoint.channel.not.initialized=CWWKT0049E: The HTTP endpoint {0} cannot start because the channel framework is not initialized.
-endpoint.channel.not.initialized.explanation=The channel framework service is required but was not available when the endpoint attempted to start.
+endpoint.channel.not.initialized=CWWKT0049E: The {0} HTTP endpoint cannot start because the channel framework is not initialized.
+endpoint.channel.not.initialized.explanation=The channel framework service is required, but the service was not available when the endpoint attempted to start.
 endpoint.channel.not.initialized.useraction=Verify the server configuration and ensure that the required channel framework bundle is active.
 
-endpoint.executor.not.available=CWWKT0050E: The HTTP endpoint {0} cannot start because the executor service is not available.
-endpoint.executor.not.available.explanation=The executor service is required but was not available when the endpoint attempted to start.
+endpoint.executor.not.available=CWWKT0050E: The {0} HTTP endpoint cannot start because the executor service is not available.
+endpoint.executor.not.available.explanation=The executor service is required, but the service was not available when the endpoint attempted to start.
 endpoint.executor.not.available.useraction=Verify the server configuration and ensure that the required executor service is active.
 
-endpoint.event.not.available=CWWKT0051E: The HTTP endpoint {0} cannot start because the event service is not available.
-endpoint.event.not.available.explanation=The event service is required but was not available when the endpoint attempted to start.
+endpoint.event.not.available=CWWKT0051E: The {0} HTTP endpoint cannot start because the event service is not available.
+endpoint.event.not.available.explanation=The event service is required, but the service was not available when the endpoint attempted to start.
 endpoint.event.not.available.useraction=Verify the server configuration and ensure that the required event service is active.
 
-netty.blocking.write.on.event.loop=CWWKT0052E: A blocking write cannot be invoked on the Netty event loop thread.
-netty.blocking.write.on.event.loop.explanation=Performing a blocking write on the Netty event loop thread would cause a deadlock.
+netty.blocking.write.on.event.loop=CWWKT0052E: A blocking write operation cannot be invoked on the Netty event loop thread.
+netty.blocking.write.on.event.loop.explanation=Performing a blocking write operation on the Netty event loop thread causes a deadlock.
 netty.blocking.write.on.event.loop.useraction=Ensure that blocking write operations are dispatched to a separate thread and are not called from within a Netty event loop handler.
 
-netty.socket.timeout=CWWKT0053E: Socket operation timed out before it could be completed local={0}/{1}:{2} remote={3}/{4}:{5}.
+netty.socket.timeout=CWWKT0053E: A socket operation timed out before the operation is completed. Local: {0}/{1}:{2} Remote: {3}/{4}:{5}
 netty.socket.timeout.explanation=A read operation on the socket did not complete within the configured timeout period.
-netty.socket.timeout.useraction=Check the network connection and consider increasing the read timeout value if the operation requires more time to complete.
+netty.socket.timeout.useraction=Check the network connection or increase the read timeout value if the operation requires more time to complete.
 
-netty.h2.window.ratio.error=CWWKT0054W: An error occurred while attempting to update the HTTP/2 window update ratio: {0}. Continuing with the default window update ratio.
-netty.h2.window.ratio.error.explanation=The HTTP/2 flow control window update ratio could not be set to the configured value. The default window update ratio will be used.
-netty.h2.window.ratio.error.useraction=No action is required. If this warning persists, check the server configuration for any HTTP/2 flow control settings.
+netty.h2.window.ratio.error=CWWKT0054W: The HTTP/2 window update ratio cannot be updated: {0} The server uses the default window update ratio.
+netty.h2.window.ratio.error.explanation=The HTTP/2 flow control window update ratio cannot be set to the configured value. The server uses the default window update ratio.
+netty.h2.window.ratio.error.useraction=No action is required if the default window update ratio is acceptable. If the message persists, verify the HTTP/2 flow control settings in the server configuration.
 
-netty.tls.provider.not.loaded=CWWKT0055E: The TLS provider is not loaded. The HTTPS endpoint cannot be initialized.
+netty.tls.provider.not.loaded=CWWKT0055E: The HTTPS endpoint cannot be initialized because the TLS provider is not loaded.
 netty.tls.provider.not.loaded.explanation=The TLS provider service was not available when the HTTPS endpoint attempted to start.
 netty.tls.provider.not.loaded.useraction=Verify the server configuration and ensure that the required TLS provider bundle is active.
 
-netty.ssl.handler.create.failed=CWWKT0056E: Failed to create the SSL handler for endpoint {0}:{1}.
-netty.ssl.handler.create.failed.explanation=The SSL handler could not be created for the specified endpoint host and port.
-netty.ssl.handler.create.failed.useraction=Check the SSL configuration for the endpoint and verify that the TLS provider is correctly configured.
+netty.ssl.handler.create.failed=CWWKT0056E: The server failed to create the SSL handler for the {0}:{1} endpoint.
+netty.ssl.handler.create.failed.explanation=The SSL handler cannot be created for the specified endpoint host and port.
+netty.ssl.handler.create.failed.useraction=Check the SSL configuration for the endpoint and verify that the TLS provider is configured correctly.
 
-h2.encode.header.failed=CWWKT0057E: Failed to encode an HTTP/2 header. {0}
-h2.encode.header.failed.explanation=An error occurred while encoding an HTTP/2 pseudo-header for the response. The stream will be closed.
+h2.encode.header.failed=CWWKT0057E: The server failed to encode an HTTP/2 header: {0}
+h2.encode.header.failed.explanation=The server failed to encode an HTTP/2 pseudoheader for the response. The server closes the stream.
 h2.encode.header.failed.useraction=Check the server logs for related HTTP/2 errors. If the problem persists, collect diagnostic information and contact IBM Support.

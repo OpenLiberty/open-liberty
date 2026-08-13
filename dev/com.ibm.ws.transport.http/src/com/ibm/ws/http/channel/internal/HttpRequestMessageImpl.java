@@ -631,8 +631,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             encodedHeader = H2Headers.encodeHeader(table, HpackConstants.PATH, this.myURIString, indexType);
             firstLine = putBytes(encodedHeader, firstLine);
         } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to encode H2 request first line: " + e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.error(tc, e.getMessage());
             }
             return null;
         }
