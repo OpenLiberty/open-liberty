@@ -1,11 +1,11 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.org.eclipse.persistence-4.0
+symbolicName=com.ibm.websphere.appserver.org.hibernate-4.0
 singleton=true
 IBM-Process-Types: server, \
  client
 -features=io.openliberty.jakarta.persistence.base-4.0, \
   com.ibm.websphere.appserver.eeCompatible-12.0
--bundles=io.openliberty.persistence.4.0.thirdparty; apiJar=false; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:5.0.0"
+-bundles=io.openliberty.persistence.4.0.thirdparty; apiJar=false; location:=dev/api/third-party/; mavenCoordinates="org.hibernate.orm:hibernate-core:8.0.0.Beta1"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
