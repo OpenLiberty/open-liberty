@@ -239,6 +239,6 @@ maxmessagesize.exceeded=CWWKH0056E: The maxMessageSize for the {0} method exceed
 maxmessagesize.exceeded.explanation=The maxMessageSize OnMessage annotation parameter sets the maximum message size in bytes for a method. maxMessageSize can be set only to a maximum value of Integer.MAX_VALUE.
 maxmessagesize.exceeded.useraction=Reduce the maxMessageSize parameter value to no more than Integer.MAX_VALUE.
 
-client.no.response=CWWKH0057E: No HTTP response was received from the {0} endpoint after the WebSocket upgrade request completed.
-client.no.response.explanation=The outgoing WebSocket upgrade handshake completed but no HTTP response was available to process.
+client.no.response=CWWKH0057E: The client received no HTTP response from the {0} endpoint after the WebSocket upgrade request completed.
+client.no.response.explanation=The outgoing WebSocket upgrade handshake completed, but no HTTP response was available for processing.
 client.no.response.useraction=Verify that the target server is reachable and is responding correctly to WebSocket upgrade requests.

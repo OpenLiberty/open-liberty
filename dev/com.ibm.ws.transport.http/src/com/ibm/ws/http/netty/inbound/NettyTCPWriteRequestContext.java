@@ -297,7 +297,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Write sync called for connection that was closed channel: " + nettyChannel);
                 }
-                throw new IOException("Connection aborted by program");
+                throw new IOException("Broken pipe!");
             }
 
             // Run all the channel operations in the event loop

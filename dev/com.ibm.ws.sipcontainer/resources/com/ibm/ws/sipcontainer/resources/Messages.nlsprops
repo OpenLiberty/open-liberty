@@ -926,6 +926,6 @@ warning.traditional.enabled=CWSCT0441W: The SIP Container does not support the t
 warning.traditional.enabled.explanation=The attribute enableTraditionalPMI is set to true in the server.xml file. The SIP Container does not support the traditional PMI in Liberty.
 warning.traditional.enabled.useraction=Remove the enableTraditionalPMI property from the server.xml file.
 
-missingPorts.endpointDisabled=CWSCT0442W: The SIP endpoint {0} has no configured ports and has been disabled.
+missingPorts.endpointDisabled=CWSCT0442W: The {0} Session Initiation Protocol (SIP) endpoint has no configured ports and is disabled.
 missingPorts.endpointDisabled.explanation=The SIP endpoint configuration specifies no TCP, TLS, or UDP port. The endpoint cannot listen for incoming SIP traffic.
-missingPorts.endpointDisabled.useraction=Configure at least one of sipTCPPort, sipTLSPort, or sipUDPPort for the SIP endpoint in the server.xml file.
+missingPorts.endpointDisabled.useraction=In the server.xml file, configure the sipTCPPort, sipTLSPort, or sipUDPPort attribute for the SIP endpoint.
