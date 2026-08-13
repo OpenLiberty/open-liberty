@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.tcpchannel.SSLConnectionContext;
 
-import io.netty.channel.Channel;
 import io.netty.handler.ssl.SslHandler;
 
 /**
@@ -30,17 +29,17 @@ public class NettySSLConnectionContext implements SSLConnectionContext {
                                                            "SSLChannel",
                                                            "com.ibm.ws.channel.ssl.internal.resources.SSLChannelMessages");
 
-    private final Channel channel;
+    private final SslHandler sslHandler;
     private final boolean isOutbound;
     private String alpnProtocol;
 
-    public NettySSLConnectionContext(Channel channel, boolean isOutbound) {
-        this.channel = channel;
+    public NettySSLConnectionContext(SslHandler sslHandler, boolean isOutbound) {
+        this.sslHandler = sslHandler;
         this.isOutbound = isOutbound;
     }
 
     private SslHandler getSslHandler() {
-        return channel.pipeline().get(SslHandler.class);
+        return sslHandler;
     }
 
     @Override

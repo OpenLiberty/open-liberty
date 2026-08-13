@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import java.net.Socket;
 
@@ -37,6 +38,7 @@ public class NettyHttpConstants {
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
     public static final AttributeKey<Socket> SOCKET_HANDLE = AttributeKey.valueOf("SocketHandleKey");
+    public static final AttributeKey<SslHandler> SSL_HANDLER = AttributeKey.valueOf("sslHandler");
 
     public enum ProtocolName {
         HTTP1("HTTP1"),
