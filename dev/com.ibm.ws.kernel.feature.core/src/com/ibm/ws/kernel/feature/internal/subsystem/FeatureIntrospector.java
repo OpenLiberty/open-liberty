@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
+import com.ibm.ws.kernel.feature.internal.FeatureManager;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -62,14 +63,27 @@ public class FeatureIntrospector implements Introspector {
      */
     @Override
     public void introspect(PrintWriter out) throws Exception {
+        FeatureManager managerContext = ((FeatureManager) this.provisioner);
+        managerContext.getFeatureRepository().init();
+        try {
+            doIntrospect(out, managerContext);
+        } finally {
+            managerContext.getFeatureRepository().dispose();
+        }
+    }
+
+    private void doIntrospect(PrintWriter out, FeatureManager managerContext) {
         Set<String> features = this.provisioner.getInstalledFeatures();
+        // non kernel feature loop
         for (String feature : features) {
             FeatureDefinition featureDef = this.provisioner.getFeatureDefinition(feature);
+            //in another method for feature def
             out.println(featureDef.getFeatureName());
             out.println("    Visibility: " + featureDef.getVisibility());
             out.println("    Version: " + featureDef.getVersion());
             out.println("    Simple Name: " + featureDef.getFeatureName());
             out.println("    Symbolic Name: " + featureDef.getSymbolicName());
+            // another for loop calling same method but for provision feature def
             if (featureDef instanceof ProvisioningFeatureDefinition) {
 
                 ProvisioningFeatureDefinition proFeatDef = (ProvisioningFeatureDefinition) featureDef;
@@ -81,10 +95,10 @@ public class FeatureIntrospector implements Introspector {
 
                 String apiPackages = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_API_PACKAGE);
                 out.println("    Api Packages: " + (apiPackages == null || apiPackages.isEmpty() ? "none" : apiPackages));
-                String spiPackages = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_SPI_PACKAGE);
-                out.println("    Spi Packages: " + (spiPackages == null || spiPackages.isEmpty() ? "none" : spiPackages));
                 String apiServices = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_API_SERVICE);
                 out.println("    Api Services: " + (apiServices == null || apiServices.isEmpty() ? "none" : apiServices));
+                String spiPackages = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_SPI_PACKAGE);
+                out.println("    Spi Packages: " + (spiPackages == null || spiPackages.isEmpty() ? "none" : spiPackages));
 
                 if (proFeatDef instanceof SubsystemFeatureDefinitionImpl) {
                     SubsystemFeatureDefinitionImpl subSysFeatureDef = (SubsystemFeatureDefinitionImpl) proFeatDef;
@@ -124,5 +138,20 @@ public class FeatureIntrospector implements Introspector {
                 }
             }
         }
+        // kernel feature loop
+        Collection<ProvisioningFeatureDefinition> kernelFeatures = managerContext.getKernelFeatures();
+        out.println("Kernel Features:");
+        for (ProvisioningFeatureDefinition kernelFeature : kernelFeatures) {
+            out.println(kernelFeature.getFeatureName());
+
+            String kernelApiPackages = kernelFeature.getHeader(FeatureDefinitionUtils.IBM_API_PACKAGE);
+            out.println("    Kernel Api Packages: " + (kernelApiPackages == null || kernelApiPackages.isEmpty() ? "none" : kernelApiPackages));
+            String kernelApiServices = kernelFeature.getHeader(FeatureDefinitionUtils.IBM_API_SERVICE);
+            out.println("    Kernel Api Services: " + (kernelApiServices == null || kernelApiServices.isEmpty() ? "none" : kernelApiServices));
+            String kernelSpiPackages = kernelFeature.getHeader(FeatureDefinitionUtils.IBM_SPI_PACKAGE);
+            out.println("    Kernel Spi Packages: " + (kernelSpiPackages == null || kernelSpiPackages.isEmpty() ? "none" : kernelSpiPackages));
+
+        }
+
     }
 }
