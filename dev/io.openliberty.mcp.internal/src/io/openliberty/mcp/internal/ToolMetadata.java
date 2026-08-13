@@ -34,6 +34,7 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.WrapBusinessError;
+import io.openliberty.mcp.internal.ToolRegistry.ToolArgumentImpl;
 import io.openliberty.mcp.internal.ToolValidation.ToolValidationError;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
@@ -292,11 +293,11 @@ public record ToolMetadata(String name,
         String defaultValue = argAnnotation != null ? argAnnotation.defaultValue() : "";
 
         result.add(new ToolMethodArgument(param,
-                                          new ToolArgument(argName,
-                                                           description,
-                                                           required,
-                                                           argumentType,
-                                                           defaultValue)));
+                                          new ToolArgumentImpl(argName,
+                                                               description,
+                                                               required,
+                                                               argumentType,
+                                                               defaultValue)));
     }
 
     private static boolean hasUnresolvableTypeVariables(Type baseType, Map<TypeVariable<?>, Type> genericMap) {

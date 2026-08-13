@@ -21,6 +21,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.tools;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -205,14 +206,43 @@ public interface ToolManager extends FeatureManager<ToolInfo> {
 
     /**
      * Information about a tool argument
-     *
-     * @param name the tool name
-     * @param description the tool description
-     * @param required whether the tool argument is required
-     * @param type the argument type
-     * @param defaultValue the default value
      */
-    record ToolArgument(String name, String description, boolean required, java.lang.reflect.Type type, String defaultValue) {}
+    interface ToolArgument {
+        /**
+         * Gets the argument name
+         *
+         * @return the argument name
+         */
+        String name();
+
+        /**
+         * Gets the argument description
+         *
+         * @return the argument description
+         */
+        String description();
+
+        /**
+         * Whether the argument is required
+         *
+         * @return {@code true} if the argument is required
+         */
+        boolean required();
+
+        /**
+         * The argument type
+         *
+         * @return the type of the argument
+         */
+        Type type();
+
+        /**
+         * The default value
+         *
+         * @return the default value, or {@code null} if the argument does not have a default value
+         */
+        String defaultValue();
+    }
 
     /**
      * The <a href="https://modelcontextprotocol.org/specification/2025-11-25/schema#toolannotations">MCP annotations</a> of a tool.
