@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -205,3 +205,41 @@ error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Zaktualiz
 err.unsupported.jmx.operation=CWWKW0059E: Operacja {0} nie jest obs\u0142ugiwana.
 err.unsupported.jmx.operation.explanation=Wykonanie wymaganej operacji nie jest dozwolone.
 err.unsupported.jmx.operation.useraction=Nie uruchamiaj nieobs\u0142ugiwanej operacji.
+
+# webService and webServiceClient config messages
+
+info.no.attributes.webservice=CWWKW0062I: Element konfiguracyjny \u201e webService \u201d jest w\u0142\u0105czony, ale nie ma \u017cadnych atrybut\u00f3w konfiguracyjnych.
+info.no.attributes.webservice.explanation=Element konfiguracyjny ` webService ` zosta\u0142 dodany do pliku ` server.xml `, ale nie zawiera on \u017cadnych atrybut\u00f3w konfiguracyjnych. W przypadku braku atrybut\u00f3w \u017cadne opcje konfiguracyjne pliku ` webService ` nie s\u0105 stosowane, a serwer dzia\u0142a zgodnie z ustawieniami domy\u015blnymi.
+info.no.attributes.webservice.useraction=Dodaj jeden lub wi\u0119cej atrybut\u00f3w konfiguracyjnych do elementu ` webService ` lub usu\u0144 element ` webService ` z pliku ` server.xml `.
+
+info.no.attributes.webserviceclient=CWWKW0063I: Element konfiguracyjny \u201e webServiceClient \u201d jest w\u0142\u0105czony, ale nie ma \u017cadnych atrybut\u00f3w konfiguracyjnych.
+info.no.attributes.webserviceclient.explanation=Element konfiguracyjny ` webServiceClient ` zosta\u0142 dodany do pliku ` server.xml `, ale nie zawiera on \u017cadnych atrybut\u00f3w konfiguracyjnych. W przypadku braku atrybut\u00f3w \u017cadne opcje konfiguracyjne pliku ` webServiceClient ` nie s\u0105 stosowane, a serwer dzia\u0142a zgodnie z ustawieniami domy\u015blnymi.
+info.no.attributes.webserviceclient.useraction=Dodaj jeden lub wi\u0119cej atrybut\u00f3w konfiguracyjnych do elementu ` webServiceClient ` lub usu\u0144 element ` webServiceClient ` z pliku ` server.xml `.
+
+#{0}=serviceName value
+info.ignore.unexpected.elements.client.named=CWWKW0064I: Atrybut \u201e ignoreUnexpectedElements \u201d jest w\u0142\u0105czony w kliencie JAX-WS {0}. Nieznane elementy wyst\u0119puj\u0105ce w otrzymanych odpowiedziach SOAP dla tego klienta s\u0105 ignorowane.
+info.ignore.unexpected.elements.client.named.explanation=W konfiguracji \u201e webServiceClient \u201d ( {0} ) serviceName atrybut \u201e ignoreUnexpectedElements \u201d ma warto\u015b\u0107 \u201etrue\u201d. Podczas rozpakowywania przychodz\u0105cych odpowiedzi SOAP biblioteka JAXB ignoruje nieznane elementy.
+info.ignore.unexpected.elements.client.named.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby wy\u0142\u0105czy\u0107 to zachowanie, nale\u017cy ustawi\u0107 warto\u015b\u0107 parametru \u201e ignoreUnexpectedElements \u201d na \u201efalse\u201d w pliku konfiguracyjnym \u201e webServiceClient \u201d.
+
+#{0}=portName value
+info.ignore.unexpected.elements.provider.named=CWWKW0065I: Atrybut \u201e ignoreUnexpectedElements \u201d jest w\u0142\u0105czony w dostawcy JAX-WS {0}. Nieznane elementy wyst\u0119puj\u0105ce w przychodz\u0105cych \u017c\u0105daniach SOAP skierowanych do tego dostawcy s\u0105 ignorowane.
+info.ignore.unexpected.elements.provider.named.explanation=W konfiguracji \u201e webService \u201d ( {0} ) portName atrybut \u201e ignoreUnexpectedElements \u201d ma warto\u015b\u0107 \u201etrue\u201d. Podczas rozpakowywania przychodz\u0105cych \u017c\u0105da\u0144 SOAP biblioteka JAXB ignoruje nieznane elementy.
+info.ignore.unexpected.elements.provider.named.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby wy\u0142\u0105czy\u0107 to zachowanie, nale\u017cy ustawi\u0107 warto\u015b\u0107 parametru \u201e ignoreUnexpectedElements \u201d na \u201efalse\u201d w pliku konfiguracyjnym \u201e webService \u201d.
+
+info.ignore.unexpected.elements.global=CWWKW0066I: Atrybut \u201e ignoreUnexpectedElements \u201d jest w\u0142\u0105czony. Nieznane elementy wykryte podczas odtwarzania danych s\u0105 ignorowane.
+info.ignore.unexpected.elements.global.explanation=W globalnej konfiguracji webServiceClient lub webService atrybut ignoreUnexpectedElements ma warto\u015b\u0107 \u201etrue\u201d. Podczas rozpakowywania przychodz\u0105cych komunikat\u00f3w SOAP biblioteka JAXB ignoruje nieznane elementy.
+info.ignore.unexpected.elements.global.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby wy\u0142\u0105czy\u0107 to zachowanie, nale\u017cy w pliku konfiguracyjnym ustawi\u0107 warto\u015b\u0107 parametru \u201e ignoreUnexpectedElements \u201d na \u201efalse\u201d.
+
+info.schema.validation.global=CWWKW0067I: Atrybut \u201e enableSchemaValidation \u201d ma warto\u015b\u0107 \u201etrue\u201d. Przychodz\u0105ce komunikaty SOAP s\u0105 sprawdzane pod k\u0105tem zgodno\u015bci ze schematem przed ich przetworzeniem.
+info.schema.validation.global.explanation=W globalnej konfiguracji webServiceClient lub webService warto\u015b\u0107 parametru enableSchemaValidation jest ustawiona na \u201etrue\u201d. Podczas rozpakowywania przychodz\u0105cych komunikat\u00f3w SOAP biblioteka JAXB przeprowadza pe\u0142n\u0105 walidacj\u0119 schematu.
+info.schema.validation.global.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby wy\u0142\u0105czy\u0107 sprawdzanie poprawno\u015bci schematu, nale\u017cy ustawi\u0107 warto\u015b\u0107 parametru \u201e enableSchemaValidation \u201d na \u201efalse\u201d w pliku konfiguracyjnym.
+
+#{0}=serviceName value
+info.schema.validation.client.named=CWWKW0068I: Atrybut \u201e enableSchemaValidation \u201d jest w\u0142\u0105czony w kliencie JAX-WS {0}. Odpowiedzi SOAP przychodz\u0105ce dla tego klienta s\u0105 sprawdzane pod k\u0105tem zgodno\u015bci ze schematem przed ich przetworzeniem.
+info.schema.validation.client.named.explanation=W konfiguracji \u201e webServiceClient \u201d z plikiem \u201e {0} \u201d ( serviceName ) warto\u015b\u0107 parametru \u201e enableSchemaValidation \u201d jest ustawiona na \u201etrue\u201d. Gdy JAXB rozpakowuje przychodz\u0105ce odpowiedzi SOAP dla tego klienta, przeprowadza pe\u0142n\u0105 walidacj\u0119 schematu.
+info.schema.validation.client.named.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby wy\u0142\u0105czy\u0107 sprawdzanie poprawno\u015bci schematu, nale\u017cy ustawi\u0107 warto\u015b\u0107 parametru \u201e enableSchemaValidation \u201d na \u201efalse\u201d w pliku konfiguracyjnym \u201e webServiceClient \u201d.
+
+#{0}=portName value
+info.schema.validation.provider.named=CWWKW0069I: Atrybut \u201e enableSchemaValidation \u201d jest w\u0142\u0105czony w dostawcy JAX-WS {0}. Przychodz\u0105ce \u017c\u0105dania SOAP skierowane do tego dostawcy s\u0105 sprawdzane pod k\u0105tem zgodno\u015bci ze schematem przed ich przetworzeniem.
+info.schema.validation.provider.named.explanation=W konfiguracji \u201e webService \u201d z plikiem \u201e {0} \u201d ( portName ) warto\u015b\u0107 parametru \u201e enableSchemaValidation \u201d jest ustawiona na \u201etrue\u201d. Gdy JAXB rozpakowuje przychodz\u0105ce \u017c\u0105dania SOAP dla tego dostawcy, przeprowadza pe\u0142n\u0105 walidacj\u0119 schematu.
+info.schema.validation.provider.named.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby wy\u0142\u0105czy\u0107 sprawdzanie poprawno\u015bci schematu, nale\u017cy ustawi\u0107 warto\u015b\u0107 parametru \u201e enableSchemaValidation \u201d na \u201efalse\u201d w pliku konfiguracyjnym \u201e webService \u201d.

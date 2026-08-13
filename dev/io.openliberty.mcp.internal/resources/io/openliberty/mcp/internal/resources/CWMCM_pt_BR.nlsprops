@@ -59,11 +59,11 @@ CWMCM0006E.duplicate.special.arguments.explanation=Um ou mais argumentos especia
 CWMCM0006E.duplicate.special.arguments.useraction=Remova as inst\u00e2ncias extras.
 
 # Used for server logging
-# {0} = The fully qualified method name
-# {1} = The parameter type simple name
-CWMCM0007E.invalid.arguments=CWMCM0007E: A ferramenta {0} MCP possui um par\u00e2metro do tipo {1} que n\u00e3o \u00e9 um tipo de argumento especial reconhecido e n\u00e3o possui uma `@ToolArg` anota\u00e7\u00e3o.
-CWMCM0007E.invalid.arguments.explanation=Um ou mais par\u00e2metros n\u00e3o foram anotados como argumentos da ferramenta e n\u00e3o s\u00e3o reconhecidos como tipos de argumentos especiais.
-CWMCM0007E.invalid.arguments.useraction=Verifique se voc\u00ea importou a classe correta para o seu argumento ou se voc\u00ea pretendia incluir @ToolArg.
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: O endpoint do servidor MCP: {0}
+CWMCM0008I.mcp.endpoint.url.explanation=O endpoint do servidor MCP URL para este m\u00f3dulo de aplicativo est\u00e1 dispon\u00edvel no endere\u00e7o especificado URL.
+CWMCM0008I.mcp.endpoint.url.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 # Used as part of a response to a client
 # {0} = Request id
@@ -285,3 +285,59 @@ CWMCM0034W.converter.missing.type.parameter.useraction=Altere a declara\u00e7\u0
 CWMCM0035W.converter.generic.type=CWMCM0035W: A implementa\u00e7\u00e3o de ` {0} ` em ` DefaultValueConverter ` converte para um par\u00e2metro de tipo gen\u00e9rico, em vez de um tipo concreto.
 CWMCM0035W.converter.generic.type.explanation=Uma classe de implementa\u00e7\u00e3o de ` DefaultValueConverter ` foi registrada com um par\u00e2metro de tipo gen\u00e9rico, como `T`, em vez de um tipo concreto.
 CWMCM0035W.converter.generic.type.useraction=Altere a declara\u00e7\u00e3o da classe para implementar a interface ` DefaultValueConverter ` com um par\u00e2metro de tipo concreto. Por exemplo: MyConverterClass implementa DefaultValueConverter<MyType>.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: A chave _meta do {0} n\u00e3o \u00e9 v\u00e1lida. O segmento do nome deve come\u00e7ar e terminar com um caractere alfanum\u00e9rico e pode conter apenas caracteres alfanum\u00e9ricos, h\u00edfens, sublinhados ou pontos entre eles.
+CWMCM0037E.invalid.meta.key.name.explanation=O segmento de nome da chave _meta n\u00e3o segue as regras da especifica\u00e7\u00e3o MCP. O segmento de nome \u00e9 a parte que vem ap\u00f3s a barra opcional do prefixo ou a chave completa, quando n\u00e3o h\u00e1 prefixo.
+CWMCM0037E.invalid.meta.key.name.useraction=Certifique-se de que o segmento de nome da chave _meta comece e termine com um caractere alfanum\u00e9rico.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: A chave _meta do {0} possui um prefixo vazio antes do caractere '/'.
+CWMCM0038E.empty.meta.key.prefix.explanation=A chave _meta cont\u00e9m o caractere '/', mas n\u00e3o possui r\u00f3tulos de prefixo antes dela. O prefixo deve consistir em um ou mais r\u00f3tulos separados por pontos.
+CWMCM0038E.empty.meta.key.prefix.useraction=Adicione um prefixo v\u00e1lido antes do caractere '/' ou remova o caractere '/' caso n\u00e3o seja necess\u00e1rio nenhum prefixo.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: A chave _meta do {0} possui um r\u00f3tulo de prefixo inv\u00e1lido: {1}. Os r\u00f3tulos devem come\u00e7ar com uma letra, terminar com uma letra ou um d\u00edgito e podem conter apenas letras, d\u00edgitos ou h\u00edfens entre eles.
+CWMCM0039E.invalid.meta.key.label.explanation=O segmento de prefixo da chave _meta cont\u00e9m um r\u00f3tulo que n\u00e3o segue as regras da especifica\u00e7\u00e3o MCP.
+CWMCM0039E.invalid.meta.key.label.useraction=Certifique-se de que cada r\u00f3tulo com o prefixo de chave _meta comece com uma letra e termine com uma letra ou um d\u00edgito. Certifique-se de que haja apenas letras, d\u00edgitos ou h\u00edfens entre as letras.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: O prefixo de metadados {0} na anota\u00e7\u00e3o MetaField do m\u00e9todo {1} n\u00e3o \u00e9 v\u00e1lido. Um prefixo v\u00e1lido \u00e9 uma sequ\u00eancia de r\u00f3tulos separados por pontos. Cada r\u00f3tulo deve come\u00e7ar com uma letra, terminar com uma letra ou um d\u00edgito e conter apenas letras, d\u00edgitos ou h\u00edfens no meio.
+CWMCM0040E.invalid.metadata.prefix.explanation=O prefixo de metadados na anota\u00e7\u00e3o ` MetaField ` n\u00e3o atende aos requisitos da especifica\u00e7\u00e3o do Protocolo de Contexto de Modelo (MCP).
+CWMCM0040E.invalid.metadata.prefix.useraction=Atualize o prefixo de metadados na anota\u00e7\u00e3o ` MetaField ` do m\u00e9todo para atender aos requisitos da especifica\u00e7\u00e3o MCP. O prefixo deve ser composto por r\u00f3tulos separados por pontos, seguidos de uma barra. Cada etiqueta deve come\u00e7ar com uma letra e terminar com uma letra ou um algarito. Os caracteres que comp\u00f5em o nome de cada etiqueta podem ser letras, algarismos ou h\u00edfens.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: O nome do metadado ` {0} ` na anota\u00e7\u00e3o ` MetaField ` do m\u00e9todo ` {1} ` n\u00e3o \u00e9 v\u00e1lido. Um nome de metadados v\u00e1lido deve come\u00e7ar e terminar com um caractere alfanum\u00e9rico e pode conter h\u00edfens, sublinhados, pontos e caracteres alfanum\u00e9ricos.
+CWMCM0041E.invalid.metadata.name.explanation=O nome dos metadados na anota\u00e7\u00e3o ` MetaField ` n\u00e3o atende aos requisitos da especifica\u00e7\u00e3o do Protocolo de Contexto de Modelo (MCP).
+CWMCM0041E.invalid.metadata.name.useraction=Atualize o nome dos metadados na anota\u00e7\u00e3o ` MetaField ` do m\u00e9todo para atender aos requisitos da especifica\u00e7\u00e3o MCP. Certifique-se de que o nome comece e termine com um caractere alfanum\u00e9rico e contenha apenas h\u00edfens, sublinhados, pontos e caracteres alfanum\u00e9ricos.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: O valor da chave de metadados ` {0} ` na anota\u00e7\u00e3o ` MetaField ` do m\u00e9todo ` {1} ` n\u00e3o pode ser convertido para o tipo ` {2} `. O erro \u00e9 {3}
+CWMCM0042E.metadata.value.conversion.error.explanation=O valor dos metadados na anota\u00e7\u00e3o ` MetaField ` n\u00e3o pode ser convertido para o tipo especificado na anota\u00e7\u00e3o. O valor pode estar no formato incorreto ou pode ser incompat\u00edvel com o tipo especificado.
+CWMCM0042E.metadata.value.conversion.error.useraction=Analise a mensagem de erro, o arquivo ` message.log ` e os logs do FFDC para identificar a causa da falha na convers\u00e3o. Atualize o valor dos metadados na anota\u00e7\u00e3o ` MetaField ` para que seja compat\u00edvel com o tipo especificado.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: O m\u00e9todo ` {0} ` utiliza a anota\u00e7\u00e3o ` {1} `, que n\u00e3o \u00e9 suportada. Esse m\u00e9todo \u00e9 ignorado.
+CWMCM0043W.unsupported.annotation.explanation=A API Java do Model Context Protocol (MCP) inclui anota\u00e7\u00f5es para recursos que n\u00e3o s\u00e3o suportados por esta implementa\u00e7\u00e3o. Os m\u00e9todos com anota\u00e7\u00f5es n\u00e3o compat\u00edveis s\u00e3o ignorados.
+CWMCM0043W.unsupported.annotation.useraction=Remova a anota\u00e7\u00e3o n\u00e3o compat\u00edvel do m\u00e9todo ou utilize apenas anota\u00e7\u00f5es compat\u00edveis com o Protocolo de Contexto de Modelo (MCP).

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=Eine Gesamtzahl der Elemente ist nicht verf\u00fcgbar
 011.unknown.attr.type=Die Instanz {0} wurde auf eine Weise beschafft, die den Typ des Attributs nicht erkennen l\u00e4sst. Bei statischen Metamodell-Klassen verwenden Sie eine.of-Methode, die auf einem Attribut-Subtyp definiert ist, um die Entit\u00e4tsklasse und den Entit\u00e4tsattributtyp anzugeben.
 012.unknown.decl.type=Die Instanz {0} wurde auf eine Weise erhalten, die die Entit\u00e4tsklasse, die das Attribut deklariert, nicht identifiziert. Bei statischen Metamodell-Klassen verwenden Sie eine.of-Methode, die auf einem Attribut-Subtyp definiert ist, um die Entit\u00e4tsklasse und den Entit\u00e4tsattributtyp anzugeben.
+013.arg.invalid=Das Argument \u201e {0} \u201c darf nicht den Wert \u201e {1} \u201c annehmen.
+014.mode.disallows.offset=Eine Seitenanforderung darf nicht gleichzeitig einen Offset und den Modus \u201e {0} \u201c enthalten.
+015.cursor.uncomputable=Die angeforderte Operation ist nicht verf\u00fcgbar, da aus Sortierkriterien, die einen Ausdruck enthalten, kein Cursor berechnet werden kann.
