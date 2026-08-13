@@ -96,6 +96,10 @@ import com.ibm.ws.jmx.connector.datatypes.ObjectInstanceWrapper;
 import com.ibm.ws.jmx.connector.datatypes.ServerNotificationRegistration;
 import com.ibm.ws.jmx.connector.datatypes.ServerNotificationRegistration.Operation;
 
+import com.ibm.ws.jmx.Java8HelperImpl;
+import com.ibm.ws.jmx.Java9HelperImpl;
+import com.ibm.ws.jmx.connector.client.rest.internal.DeserializationHelper;
+
 /**
  * Class used to convert JSON data for use as input and output to the JMX/REST
  * connector.
@@ -113,6 +117,18 @@ public class JSONConverter {
 
     private static DefaultSerializationHelper defaultHelper = new DefaultSerializationHelper();
     private static SerializationHelper helper = defaultHelper;
+
+    private static boolean isJava8;
+    static {
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
+        int m = Integer.valueOf(versionElements[0]);
+        if (m >= 9) {
+            isJava8 = false;
+        } else {
+            isJava8 = true;
+        }
+    }
 
     // All supported interfaces/classes.
     private static enum TYPE {
@@ -1118,7 +1134,7 @@ public class JSONConverter {
         JSONObject json = parseObject(in);
         MBeanQuery ret = new MBeanQuery();
         ret.objectName = readObjectName(json.get(N_OBJECTNAME));
-        Object queryExp = readSerialized(json.get(N_QUERYEXP));
+        Object queryExp = readSerialized(json.get(N_QUERYEXP), QueryExp.class);
         if (queryExp != null && !(queryExp instanceof QueryExp)) {
             throwConversionException("readMBeanQuery() receives an instance that's not a QueryExp.", json.get(N_QUERYEXP));
         }
@@ -2575,6 +2591,11 @@ public class JSONConverter {
     }
 
     private Object readSerialized(Object in) throws ConversionException, ClassNotFoundException {
+        return readSerialized(in, null);
+    }
+
+
+    private Object readSerialized(Object in, Class type) throws ConversionException, ClassNotFoundException {
         if (in == null) {
             return null;
         }
@@ -2620,7 +2641,23 @@ public class JSONConverter {
             }
         }
 
-        return helper.readObject(in, blen, binary);
+        ObjectInputStream ois = helper.readObject(in, blen, binary);
+        if (type != null) {
+            if (isJava8) {
+                DeserializationHelper deHelper = new Java8HelperImpl();
+                deHelper.addInterfaceFilter(ois, type);
+            } else {
+                DeserializationHelper deHelper = new Java9HelperImpl();
+                deHelper.addInterfaceFilter(ois, type);
+            }
+        }
+        try {
+            return ois.readObject();
+        } catch (IOException e) {
+            throwConversionException(e, in);
+            return null;
+        }
+
     }
 
     public static void setSerializationHelper(SerializationHelper sh) {
@@ -4402,9 +4439,9 @@ public class JSONConverter {
     static class DefaultSerializationHelper implements SerializationHelper {
 
         @Override
-        public Object readObject(Object in, int blen, byte[] binary) throws ClassNotFoundException, ConversionException {
+        public ObjectInputStream readObject(Object in, int blen, byte[] binary) throws ClassNotFoundException, ConversionException {
             try {
-                return new ObjectInputStream(new ByteArrayInputStream(binary, 0, blen)).readObject();
+                return new ObjectInputStream(new ByteArrayInputStream(binary, 0, blen));
             } catch (IOException e) {
                 throwConversionException(e, in);
                 return null;
