@@ -39,16 +39,11 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * A self-contained Keycloak testcontainer used by both {@link OidcTests} and
- * {@link OidcAuthorizationFlowTests}.
+ * {@link AuthorizationFlowTests}.
  *
- * <p>Extending {@link org.testcontainers.containers.GenericContainer} lets the container
- * own its own TLS keypair, realm setup, and Liberty server configuration helpers rather
- * than scattering that state across test classes.
- *
- * <p>Both test classes declare {@link #INSTANCE} as a {@code @ClassRule}.
- * Testcontainers is idempotent: starting an already-running container is a no-op, so the
- * container starts once and is stopped after the last class that holds a reference releases it.
- * When either class runs in isolation the container still starts and stops correctly.
+ * <p>This class owns the Keycloak container lifecycle, realm setup, and the HTTP
+ * client that trusts Keycloak's self-signed certificate. HTTPS certificate helpers
+ * that also trust the Liberty server certificate live in {@link HttpsRequestHelper}.
  */
 @SuppressWarnings("resource")
 public class KeycloakContainer extends org.testcontainers.containers.GenericContainer<KeycloakContainer> {
@@ -60,7 +55,7 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
     static final String LIBERTY_CLIENT_ID = "liberty-mcp-server-conf-client";
     static final String PUBLIC_CLIENT_ID = "mcp-public-client";
 
-    // TLS / HTTP-client state created once, reused across both test classes
+    // Keycloak TLS state — created once during construction
     private KeyStore keycloakKeystore = null;
     private KeyStore keycloakTruststore = null;
     private SSLContext keycloakSslContext = null;
@@ -70,9 +65,8 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
     private String confidentialClientUUID = null;
     private String confidentialClientSecret = null;
     private String publicClientUUID = null;
-    private boolean realmConfigured = false;
 
-    // Constant test user credentials
+    // Test user credentials
     private static final String TEST_ADMIN_USERNAME = "admin@example.com";
     private static final String TEST_USER_USERNAME = "user@example.com";
     private static final String TEST_PASSWORD = "123";
@@ -90,6 +84,7 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
     }
 
     // Constructor
+
     public KeycloakContainer() {
         super(IMAGE);
         withExposedPorts(8080, 8443);
@@ -106,6 +101,7 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
                        .withStartupTimeout(Duration.ofMinutes(2)));
     }
 
+    // Public API
     /**
      * Returns the base HTTPS URL of this Keycloak instance,
      * e.g. {@code https://localhost:44203}.
@@ -121,9 +117,6 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
      * @throws Exception if any {@code kcadm.sh} command fails
      */
     public synchronized void setupRealm() throws Exception {
-        if (realmConfigured) {
-            return;
-        }
 
         // Authenticate kcadm against the master realm
         run("/opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080 " +
@@ -231,7 +224,6 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
             "-s 'config.\"access.token.claim\"=true' " +
             "-s 'config.\"introspection.token.claim\"=true'");
 
-        realmConfigured = true;
     }
 
     /**
@@ -243,7 +235,6 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
      * @throws Exception if the configuration update fails
      */
     public void updateServerConfig(LibertyServer targetServer) throws Exception {
-        // Write the trust store to the server's autoFVT test-files directory
         String trustStoreName = "keycloakTrustStore.p12";
         File file = new File(targetServer.pathToAutoFVTTestFiles + trustStoreName);
         try (FileOutputStream os = new FileOutputStream(file)) {
@@ -275,8 +266,8 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
     }
 
     /**
-     * Returns an {@link HttpClient} configured to trust this Keycloak instance's
-     * self-signed TLS certificate.
+     * Returns a {@link HttpClient} configured to trust this Keycloak instance's
+     * self-signed TLS certificate. Use for all HTTP calls to Keycloak HTTPS endpoints.
      */
     public HttpClient getHttpClient() {
         if (keycloakHttpClient != null) {
@@ -293,13 +284,17 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
         }
     }
 
-    // Package-private helpers (used by OidcTests)
-
     /**
-     * Returns the PKCS12 keystore that Keycloak uses for its HTTPS listener,
-     * wrapped as a {@link Transferable} for {@link #withCopyToContainer}.
-     * Called during construction before the container starts.
+     * Returns the Keycloak truststore so that {@link HttpsRequestHelper} can
+     * combine it with the Liberty certificate when building a combined SSL context.
      */
+    KeyStore getOrCreateTruststore() {
+        createKeyStores();
+        return keycloakTruststore;
+    }
+
+    // Private helpers
+
     private Transferable buildKeycloakKeystore() {
         createKeyStores();
         try {
@@ -311,7 +306,6 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
         }
     }
 
-    // Private helpers
     private void createKeyStores() {
         if (keycloakKeystore != null && keycloakTruststore != null) {
             return;
@@ -334,11 +328,6 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate Keycloak keystores", e);
         }
-    }
-
-    private KeyStore getOrCreateTruststore() {
-        createKeyStores();
-        return keycloakTruststore;
     }
 
     private SSLContext getSslContext() throws Exception {
