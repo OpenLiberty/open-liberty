@@ -1969,10 +1969,8 @@ public class LTPAKeyRotationTests {
 
         // Wait for the ltpa.keys file to be regenerated
         waitForLTPAKeysCreatedMessage();
-
         // Wait for LTPA to be ready after renaming file
-        // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        waitForLTPAConfigurationReadyMessage(2);
+        waitForLTPAConfigurationReadyMessage();
 
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
     }
