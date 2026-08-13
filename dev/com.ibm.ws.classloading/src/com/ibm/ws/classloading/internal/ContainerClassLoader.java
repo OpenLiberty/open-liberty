@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2208,27 +2208,6 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             }
         }
     }
-
-
-    @Override
-    @Trivial
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append("@");
-        sb.append(Integer.toHexString(this.hashCode()));
-        
-        Collection<Collection<URL>> classPath = smartClassPath.getClassPath();
-        int totalURLs = classPath.stream().mapToInt(Collection::size).sum();
-        sb.append(" [classpath-entries=").append(totalURLs).append("]");
- 
-        if (!nativeLibraryContainers.isEmpty()) {
-            sb.append(" [native-libs=").append(nativeLibraryContainers.size()).append("]");
-        }
-        
-        return sb.toString();
-    }
-
 
     @Trivial
     Collection<Collection<URL>> getClassPath() {

@@ -69,6 +69,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     private final ClassLoader cl;
     private volatile BundleLoader bLoader;
     private final CompositeResourceProvider resourceProviders;
+    private final String toStringCache;
 
     static GatewayClassLoader createGatewayClassLoader(Map<Bundle, Set<GatewayClassLoader>> classloaders,
                                                        GatewayConfiguration config,
@@ -88,6 +89,9 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
                     loaders.add(result);
                 }
             }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Created GatewayClassLoader: " + result.toDiagString());
         }
         return result;
     }
@@ -117,6 +121,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
             this.cl = bundleLoader;
         }
         this.resourceProviders = resourceProviders;
+        this.toStringCache = toShortString();
     }
 
     @Override
@@ -272,16 +277,27 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     }
 
     @Override
+    @Trivial
     public Bundle getBundle() {
         return bundle;
     }
 
-    @Override
     @Trivial
-    public String toString() {
+    private String toShortString() {
         StringBuilder sb = new StringBuilder();
         sb.append("GatewayClassLoader@");
         sb.append(Integer.toHexString(this.hashCode()));
+        if (bundle != null) {
+            sb.append(":bundle=[").append(bundle.getSymbolicName());
+            sb.append(":").append(bundle.getVersion()).append("]");
+        }
+        
+        return sb.toString();
+    }
+    
+    @Trivial
+    public String toDiagString() {
+        StringBuilder sb = new StringBuilder(toShortString());
         
         if (config.getApiTypeVisibility() != null) {
             sb.append(":apis=").append(config.getApiTypeVisibility());
@@ -290,12 +306,13 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
             sb.append(":delegateToSystem=true");
         }
         
-        if (bundle != null) {
-            sb.append(":bundle=[").append(bundle.getSymbolicName());
-            sb.append(":").append(bundle.getVersion()).append("]");
-        }
-        
         return sb.toString();
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return toStringCache;
     }
 
 }
