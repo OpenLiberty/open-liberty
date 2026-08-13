@@ -216,6 +216,20 @@ abstract class JaxbPUnit {
      */
     abstract PersistenceUnitTransactionType getTransactionType();
 
+    /**
+     * Returns the {@link PersistenceUnitTransactionType#name()} of this persistence unit's
+     * transaction type, or {@code null} if none is set in persistence.xml.
+     *
+     * <p>This method is used instead of {@link #getTransactionType()} wherever the result is
+     * passed across the class hierarchy into {@link JPAPUnitInfo#setTransactionType(String)},
+     * so that the {@code javax.persistence.spi.PersistenceUnitTransactionType} reference never
+     * crosses the namespace boundary — only a plain {@code String} does.
+     */
+    String getTransactionTypeName() {
+        PersistenceUnitTransactionType type = getTransactionType();
+        return type == null ? null : type.name();
+    }
+
     @Override
     public String toString() {
         return (getClass().getSimpleName() + "(" + getName() + ")@" + Integer.toHexString(hashCode()));

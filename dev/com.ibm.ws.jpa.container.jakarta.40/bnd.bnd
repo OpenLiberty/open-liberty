@@ -1,0 +1,69 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JPA Container Jakarta 4.0
+Bundle-SymbolicName: com.ibm.ws.jpa.container.jakarta.40
+Bundle-Description: Container-managed JPA support for JPA 4.0; version ${bVersion}
+
+javac.source: 21
+javac.target: 21
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+
+WS-TraceGroup: JPA
+
+# Pull every class/resource from the transformed base jar, then overlay only
+# AbstractJPAPUnitInfo.class compiled against the JPA 4.0 API (non-spi import).
+# The later entry wins, replacing the transformer-produced version.
+-includeresource: \
+    @${repo;com.ibm.ws.jpa.container.jakarta;latest}, \
+    com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class=\
+        ${bin}/com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class
+
+# Export the same packages the base jar exports so downstream bundles see no difference.
+Export-Package: \
+    com.ibm.ws.jpa, \
+    com.ibm.ws.jpa.management, \
+    com.ibm.ws.jpa.container.osgi.jndi
+
+Private-Package: \
+    !org.apache.geronimo.*, \
+    *.jpa.*
+
+# The 4.0 API places PersistenceUnitTransactionType in the top-level package (not spi).
+Import-Package: \
+    jakarta.persistence;jpa="4.0";consumer="persistenceService", \
+    jakarta.persistence.criteria;jpa="4.0";consumer="persistenceService", \
+    jakarta.persistence.metamodel;jpa="4.0";consumer="persistenceService", \
+    jakarta.persistence.spi;jpa="4.0";consumer="persistenceService", \
+    !javax.activation, \
+    !javax.xml.bind.*, \
+    *
+
+DynamicImport-Package: \
+    javax.activation, \
+    javax.xml.bind, \
+    javax.xml.bind.annotation, \
+    javax.xml.bind.annotation.adapters, \
+    javax.xml.bind.attachment, \
+    javax.xml.bind.helpers, \
+    javax.xml.bind.util, \
+    org.glassfish.jaxb.*
+
+-buildpath: \
+    com.ibm.ws.jpa.container.jakarta;version=latest, \
+    io.openliberty.jakarta.persistence.4.0;version=latest, \
+    com.ibm.ws.logging.core, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -21,7 +21,7 @@ IBM-App-ForceRestart: uninstall, \
   io.openliberty.jakarta.persistence-4.0, \
   com.ibm.websphere.appserver.transaction-2.1
 -bundles=io.openliberty.jpa.container.4.0, \
- com.ibm.ws.jpa.container.jakarta, \
+ com.ibm.ws.jpa.container.jakarta.40, \
  com.ibm.ws.jpa.container.thirdparty.jakarta
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

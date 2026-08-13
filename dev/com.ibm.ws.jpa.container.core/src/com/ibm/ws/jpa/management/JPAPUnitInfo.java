@@ -43,7 +43,6 @@ import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -59,7 +58,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
 /**
  * Internal representation of a persistence unit in the form of a PersistenceUnitInfo object.
  */
-public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
+public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo implements PersistenceUnitInfo {
     private static final String CLASS_NAME = JPAPUnitInfo.class.getName();
 
     private static final TraceComponent tc = Tr.register(JPAPUnitInfo.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
@@ -74,9 +73,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // Name of this persistence unit.  getModJarName returns an archive name,
     // not a module name.
     protected final JPAPuId ivArchivePuId;
-
-    // Transaction Type, i.e. JTA or ResourceLocal
-    private PersistenceUnitTransactionType ivTxType = null;
 
     // Persistence unit description.
     private String ivDesc = null;
@@ -198,7 +194,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
         ivApplInfo = applInfo;
         ivArchivePuId = puId;
-        ivTxType = PersistenceUnitTransactionType.JTA;
+        initTxType();
         ivQualifierClassNames = new ArrayList<String>();
         ivJarFileURLs = new ArrayList<URL>();
         ivManagedClassNames = new ArrayList<String>();
@@ -245,26 +241,28 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     }
 
     /**
-     * (non-Javadoc)
+     * Translates the version-specific {@code PersistenceUnitTransactionType} enum value into
+     * the boolean form accepted by {@link AbstractJPAPUnitInfo#setTransactionType(boolean, boolean)},
+     * which is safe to call across the javax/jakarta namespace boundary.
      *
-     * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
+     * <p>Kept on JPAPUnitInfo (not the abstract base) so the Jakarta EE transformer rewrites
+     * the {@code javax.persistence.spi.PersistenceUnitTransactionType} reference here without
+     * touching the abstract base class, which the JPA 4.0 overlay replaces entirely.
      */
-    @Override
-    public final PersistenceUnitTransactionType getTransactionType() {
-        return ivTxType;
+    final void setTransactionType(javax.persistence.spi.PersistenceUnitTransactionType newValue) {
+        setTransactionTypeByName(newValue == null ? null : newValue.name(),
+                                 ivApplInfo.getJPAComponent().isServerRuntime());
     }
 
-    final void setTransactionType(PersistenceUnitTransactionType newValue) {
-        if (newValue == null) {
-            // if newValue is not specified, default to PersistenceUnitTransactionType.JTA
-            // if running on the server environment, to PersistenceUnitTransactionType.RESOURCE_LOCAL
-            // if running on the client environment.
-            boolean serverRT = ivApplInfo.getJPAComponent().isServerRuntime();
-
-            ivTxType = (serverRT) ? PersistenceUnitTransactionType.JTA : PersistenceUnitTransactionType.RESOURCE_LOCAL;
-        } else {
-            ivTxType = newValue;
-        }
+    /**
+     * Name-based overload called by {@link JPAPxmlInfo} via
+     * {@link JaxbPUnit#getTransactionTypeName()}.  Accepts the plain enum constant name
+     * ({@code "JTA"}, {@code "RESOURCE_LOCAL"}, or {@code null} for the runtime default)
+     * so that no {@code javax.persistence.spi.PersistenceUnitTransactionType} value is
+     * passed at the call site — safe at JPA 3.x and 4.0.
+     */
+    final void setTransactionType(String name) {
+        setTransactionTypeByName(name, ivApplInfo.getJPAComponent().isServerRuntime());
     }
 
     /**
@@ -1220,7 +1218,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         sbuf.append("\t Archive name         : ").append(ivArchivePuId.getModJarName());
         sbuf.append("\t Application name     : ").append(ivArchivePuId.getApplName());
         sbuf.append("\n Root URL             : ").append(ivPUnitRootURL);
-        sbuf.append("\n Transaction Type     : ").append(ivTxType);
+        sbuf.append("\n Transaction Type     : ").append(getTransactionType());
         sbuf.append("\n Description          : ").append(ivDesc);
         sbuf.append("\n Provider class name  : ").append(ivProviderClassName);
         sbuf.append("\n Scope                : ").append(ivScopeClassName);
