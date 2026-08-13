@@ -32,6 +32,21 @@ WS-TraceGroup: JPA
     com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class=\
         ${bin}/com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class
 
+# The base jar's Service-Component header is not carried forward automatically
+# by bnd's @{repo;...} include — we must re-declare it so the OSGi SCR processes
+# all DS component XMLs from OSGI-INF/ and registers JPAComponentImpl as an
+# ApplicationStateListener (which drives persistence.xml scanning and
+# @PersistenceContext injection).
+Service-Component: \
+    OSGI-INF/com.ibm.ws.jpa.pctxtAttributeAccessor.xml, \
+    OSGI-INF/com.ibm.ws.jpa.jpaRuntime.xml, \
+    OSGI-INF/com.ibm.ws.jpa.serialization.classProvider.xml, \
+    OSGI-INF/com.ibm.ws.jpa.container.osgi.internal.JPAComponentImpl.xml, \
+    OSGI-INF/com.ibm.ws.jpa.container.osgi.internal.JPAPCtxtProcessorProvider.xml, \
+    OSGI-INF/com.ibm.ws.jpa.container.osgi.internal.JPAPUnitProcessorProvider.xml, \
+    OSGI-INF/com.ibm.ws.jpa.container.osgi.internal.url.JPAURLStreamHandler.xml, \
+    OSGI-INF/com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupObjectFactory.xml
+
 # Export the same packages the base jar exports so downstream bundles see no difference.
 Export-Package: \
     com.ibm.ws.jpa, \
