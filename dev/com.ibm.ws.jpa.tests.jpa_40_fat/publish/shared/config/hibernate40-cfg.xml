@@ -1,0 +1,59 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Repeat phase: JPA 4.0 with Hibernate 8 (LITE mode).
+    Uses persistenceContainer-4.0 — no default provider is bundled.
+    Hibernate JARs are supplied via the HibernateLib shared library and
+    wired to the app classloader in JakartaPersistenceTest.createApplication().
+    Included by JakartaPersistenceServer/server.xml via ${env.repeat_phase}.
+-->
+<server>
+    <featureManager>
+        <feature>persistenceContainer-4.0</feature>
+        <feature>servlet-6.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+
+    <!--
+        Mandatory: persistenceContainer-4.0 has no bundled provider.
+        This sets org.hibernate.jpa.HibernatePersistenceProvider as the default
+        for all persistence units that do not declare a <provider> element.
+    -->
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider"/>
+
+    <!--
+        Hibernate 8 JARs placed in ${wlp.user.dir}/shared/resources/jpa_fat_jpa40_hibernate/.
+        The test framework downloads these via Gradle before the FAT runs.
+        Update versions here when upgrading Hibernate.
+    -->
+    <library id="HibernateLib">
+        <fileset dir="${shared.resource.dir}/jpa_fat_jpa40_hibernate" includes="*.jar"/>
+    </library>
+
+    <!-- Java 2 Security: ANTLR runtime requires env-variable access -->
+    <javaPermission className="java.lang.RuntimePermission" name="getenv.TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT"/>
+
+    <!-- START: Hibernate 8 permissions (filenames must match build.gradle dependency versions) -->
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/antlr4-runtime-4.13.2.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/byte-buddy-1.18.10.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/hibernate-core-8.0.0.Beta1.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/hibernate-community-dialects-8.0.0.Beta1.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/hibernate-models-1.2.0.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/hibernate-scan-jandex-8.0.0.Beta1.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/jandex-3.6.0.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/jboss-logging-3.6.3.Final.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/angus-activation-2.0.3.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/istack-commons-runtime-4.1.2.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/jaxb-core-4.0.9.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/jaxb-runtime-4.0.9.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa40_hibernate/txw2-4.0.9.jar"/>
+    <!-- END: Hibernate 8 permissions -->
+
+</server>
