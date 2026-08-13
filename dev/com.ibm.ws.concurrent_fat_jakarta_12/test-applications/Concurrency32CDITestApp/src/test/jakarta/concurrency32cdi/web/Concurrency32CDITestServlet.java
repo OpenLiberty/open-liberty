@@ -33,8 +33,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.inject.Inject;
@@ -48,6 +50,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jakarta.concurrency32cdi.ejb.AsyncWithSchedule;
 
 @ManagedScheduledExecutorDefinition
 /**/ (name = "java:comp/concurrent/cdi/async-3-scheduler",
@@ -75,7 +78,16 @@ public class Concurrency32CDITestServlet extends FATServlet {
     @Resource(lookup = "java:comp/concurrent/cdi/async-3-scheduler")
     ManagedScheduledExecutorService async3Scheduler;
 
+    /**
+     * The method on this bean is intentionally not valid.
+     */
+    @Inject
+    AsyncWithSchedule asyncWithSchedule;
+
     static final AtomicLong initTimeNS = new AtomicLong(0);
+
+    @EJB(beanName = "ScheduleTracker")
+    Function<String, ?> scheduleTracker;
 
     @Inject
     LoopbackBean loopbackBean;
@@ -196,7 +208,8 @@ public class Concurrency32CDITestServlet extends FATServlet {
 
     /**
      * Confirm that a java:comp lookup can be successfully performed from a
-     * scheduled task.
+     * scheduled task. The managed bean with the Schedule method is in a
+     * web module
      */
     @Test
     public void testJavaCompAccessibleFromScheduledTask() throws Exception {
@@ -207,6 +220,30 @@ public class Concurrency32CDITestServlet extends FATServlet {
                                   TimeUnit.MILLISECONDS);
         assertEquals("value3",
                      future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Confirm that a java:module lookup can be successfully performed from a
+     * scheduled task that is defined by a managed bean within an EJB module.
+     */
+    @Test
+    public void testJavaModuleAccessibleFromScheduledTask() //
+                    throws InterruptedException {
+
+        LinkedBlockingQueue<?> queue = (LinkedBlockingQueue<?>) scheduleTracker //
+                        .apply("lookUpEvery4Seconds");
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals("EJB-module-value",
+                     queue.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -390,6 +427,28 @@ public class Concurrency32CDITestServlet extends FATServlet {
             if (x.getMessage() == null ||
             // TODO NLS message prefix can be asserted once added
                 !x.getMessage().contains("alsoAsynchronous") ||
+                !x.getMessage().contains("@Asynchronous") ||
+                !x.getMessage().contains("@Schedule"))
+                throw x;
+            // else expected error
+        }
+    }
+
+    /**
+     * A bean method that is annotated Schedule must raise
+     * UnsupportedOperationException if the bean is annotated
+     * Asynchronous.
+     */
+    @Test
+    public void testRejectAsynchronousOnBeanAndScheduleOnMethod() {
+        try {
+            asyncWithSchedule.runOnAugust12th();
+            fail("Expected UnsupportedOperationException for a method " +
+                 "@Schedule on a bean annotated @Asynchronous.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+            // TODO NLS message prefix can be asserted once added
+                !x.getMessage().contains("runOnAugust12th") ||
                 !x.getMessage().contains("@Asynchronous") ||
                 !x.getMessage().contains("@Schedule"))
                 throw x;

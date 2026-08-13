@@ -25,4 +25,8 @@
     </web>
   </module>
 
+  <module>
+    <ejb>Concurrency32CDITestEJB.jar</ejb>
+  </module>
+
 </application>
