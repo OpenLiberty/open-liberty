@@ -12,6 +12,7 @@ package com.ibm.ws.http.netty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -24,6 +25,8 @@ import io.netty.handler.codec.http.HttpHeaders;
  *
  */
 public class NettyHeaderUtils {
+
+    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
     /**
      * Returns the value of the last occurrence of the given header name.
@@ -100,7 +103,7 @@ public class NettyHeaderUtils {
      * @return an empty String if the given String is null, otherwise a String with all whitespace removed.
      */
     public static String stripWhiteSpace(String string) {
-        return Objects.isNull(string) ? HttpConstants.EMPTY_STRING : string.replaceAll("\\s+", "");
+        return Objects.isNull(string) ? HttpConstants.EMPTY_STRING : WHITESPACE.matcher(string).replaceAll("");
     }
 
 }
