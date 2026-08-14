@@ -228,7 +228,13 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public int getNumberOfHeaderInstances(String header) {
-        return headers.getAll(header).size();
+        int count = 0;
+        for (Map.Entry<String, String> entry : headers) {
+            if (entry.getKey().equalsIgnoreCase(header)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
