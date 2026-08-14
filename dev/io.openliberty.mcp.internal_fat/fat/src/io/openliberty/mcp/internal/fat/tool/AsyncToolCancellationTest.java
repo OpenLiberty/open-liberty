@@ -64,6 +64,8 @@ public class AsyncToolCancellationTest extends FATServletClient {
         server.startServer();
         executor = Executors.newSingleThreadExecutor();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        // Wait for LTPA configuration to be ready
+        server.waitForLTPAConfigReady();
     }
 
     @AfterClass
