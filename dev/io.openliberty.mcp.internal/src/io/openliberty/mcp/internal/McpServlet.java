@@ -126,6 +126,11 @@ public class McpServlet extends HttpServlet {
     @Override
     @FFDCIgnore({ JSONRPCException.class, HttpResponseException.class })
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, JSONRPCException {
+        if (!LocalhostHeaderChecks.validateLocalhostHeaders(req)) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            Tr.info(tc, "CWMCM0044I.localhost.header.rejected");
+            return;
+        }
         McpTransport transport = new McpTransport(req, resp, jsonb, mcpConfig.asyncTimeoutMs());
         McpOperationMetrics metrics = new McpOperationMetrics();
 
