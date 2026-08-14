@@ -56,6 +56,21 @@ public abstract class AbstractJPAPUnitInfo {
     }
 
     /**
+     * Returns {@code true} if the transaction type is JTA.
+     *
+     * <p>Callers that only need the JTA/RESOURCE_LOCAL distinction should use this
+     * method rather than {@link #getTransactionType()} so that no
+     * {@code PersistenceUnitTransactionType} value appears in the caller's method
+     * descriptor.  After the Jakarta EE transformer rewrites {@code javax→jakarta}
+     * the descriptor of this method remains {@code ()Z} and is safe at all JPA
+     * versions including 4.0 where {@code PersistenceUnitTransactionType} moved out
+     * of the {@code spi} package.
+     */
+    public final boolean isJtaTransactionType() {
+        return ivTxType == null || PersistenceUnitTransactionType.JTA == ivTxType;
+    }
+
+    /**
      * Sets the transaction type from the enum constant name so that the call site on
      * {@link JPAPUnitInfo} never has to pass a typed enum value across the class hierarchy.
      * This avoids a {@code NoSuchMethodError} when the 4.0 overlay replaces this class with

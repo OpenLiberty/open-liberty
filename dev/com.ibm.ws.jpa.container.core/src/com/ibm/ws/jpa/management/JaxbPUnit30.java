@@ -324,4 +324,14 @@ public class JaxbPUnit30 extends JaxbPUnit {
         }
         return rtnType;
     }
+
+    /**
+     * Returns the transaction type name by reading directly from the pxml30 JAXB enum,
+     * avoiding any reference to the API-level PersistenceUnitTransactionType in bytecode.
+     */
+    @Override
+    String getTransactionTypeName() {
+        com.ibm.ws.jpa.pxml30.PersistenceUnitTransactionType jaxbType = ivPUnit.getTransactionType();
+        return jaxbType == null ? null : jaxbType.name();
+    }
 }

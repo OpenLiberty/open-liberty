@@ -58,6 +58,14 @@ public abstract class AbstractJPAPUnitInfo {
     }
 
     /**
+     * Returns {@code true} if the transaction type is JTA.
+     * Descriptor is {@code ()Z} — safe across all JPA versions.
+     */
+    public final boolean isJtaTransactionType() {
+        return ivTxType == null || PersistenceUnitTransactionType.JTA == ivTxType;
+    }
+
+    /**
      * Sets the transaction type from the enum constant name so that the call site on
      * {@link JPAPUnitInfo} never has to pass a typed enum value across the class hierarchy.
      *

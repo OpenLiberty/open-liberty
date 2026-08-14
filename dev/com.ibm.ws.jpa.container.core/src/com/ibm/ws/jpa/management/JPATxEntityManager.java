@@ -125,7 +125,7 @@ public class JPATxEntityManager extends JPAEntityManager
         // (top-level enum). Referencing PersistenceUnitTransactionType.JTA statically would
         // trigger loading of jakarta.persistence.spi.PersistenceUnitTransactionType which no
         // longer exists in the JPA 4.0 API bundle.
-        if (!"JTA".equals(puInfo.getTransactionType() == null ? null : puInfo.getTransactionType().name()))
+        if (!puInfo.isJtaTransactionType())
         {
             throw new RuntimeException("See JPA spec 5.5: " + puRefId + " must specify JTA transaction type.");
         }

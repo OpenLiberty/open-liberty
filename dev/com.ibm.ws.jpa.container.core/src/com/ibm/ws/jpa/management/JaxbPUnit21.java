@@ -295,7 +295,7 @@ public class JaxbPUnit21 extends JaxbPUnit {
 
      /**
       * Gets the value of the transactionType property.
-      * 
+      *
       * @return value of the transactionType property.
       */
      public PersistenceUnitTransactionType getTransactionType() {
@@ -313,5 +313,15 @@ public class JaxbPUnit21 extends JaxbPUnit {
                rtnType = PersistenceUnitTransactionType.RESOURCE_LOCAL;
           }
           return rtnType;
+     }
+
+     /**
+      * Returns the transaction type name by reading directly from the pxml21 JAXB enum,
+      * avoiding any reference to the API-level PersistenceUnitTransactionType in bytecode.
+      */
+     @Override
+     String getTransactionTypeName() {
+          com.ibm.ws.jpa.pxml21.PersistenceUnitTransactionType jaxbType = ivPUnit.getTransactionType();
+          return jaxbType == null ? null : jaxbType.name();
      }
 }

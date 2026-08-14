@@ -1218,7 +1218,7 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo implements Persi
         sbuf.append("\t Archive name         : ").append(ivArchivePuId.getModJarName());
         sbuf.append("\t Application name     : ").append(ivArchivePuId.getApplName());
         sbuf.append("\n Root URL             : ").append(ivPUnitRootURL);
-        sbuf.append("\n Transaction Type     : ").append(getTransactionType());
+        sbuf.append("\n Transaction Type     : ").append(isJtaTransactionType() ? "JTA" : "RESOURCE_LOCAL");
         sbuf.append("\n Description          : ").append(ivDesc);
         sbuf.append("\n Provider class name  : ").append(ivProviderClassName);
         sbuf.append("\n Scope                : ").append(ivScopeClassName);

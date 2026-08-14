@@ -30,7 +30,9 @@ WS-TraceGroup: JPA
 -includeresource: \
     @${repo;com.ibm.ws.jpa.container.jakarta;latest}, \
     com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class=\
-        ${bin}/com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class
+        ${bin}/com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class, \
+    com/ibm/ws/jpa/management/JPACompPUnitInfo.class=\
+        ${bin}/com/ibm/ws/jpa/management/JPACompPUnitInfo.class
 
 # The base jar's Service-Component header is not carried forward automatically
 # by bnd's @{repo;...} include — we must re-declare it so the OSGi SCR processes
@@ -81,4 +83,6 @@ DynamicImport-Package: \
     com.ibm.ws.jpa.container.jakarta;version=latest, \
     io.openliberty.jakarta.persistence.4.0;version=latest, \
     com.ibm.ws.logging.core, \
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.ws.container.service;version=latest, \
+    com.ibm.ws.jpa.container.core;version=latest
