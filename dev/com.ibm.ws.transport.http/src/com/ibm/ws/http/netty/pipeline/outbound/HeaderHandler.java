@@ -10,8 +10,6 @@
 package com.ibm.ws.http.netty.pipeline.outbound;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,7 +22,6 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponse;
@@ -81,24 +78,7 @@ public class HeaderHandler {
                 headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), 0);
 
                 //from HttpUtil.setTransferEncodingChunked false case
-                List<String> encodings = headers.getAll(HttpHeaderNames.TRANSFER_ENCODING);
-                if (!encodings.isEmpty()) {
-                    List<CharSequence> values = new ArrayList(encodings);
-                    Iterator<CharSequence> valuesIt = values.iterator();
-
-                    while (valuesIt.hasNext()) {
-                        CharSequence value = valuesIt.next();
-                        if (HttpHeaderValues.CHUNKED.contentEqualsIgnoreCase(value)) {
-                            valuesIt.remove();
-                        }
-                    }
-
-                    if (values.isEmpty()) {
-                        headers.remove(HttpHeaderNames.TRANSFER_ENCODING);
-                    } else {
-                        headers.set(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName(), values);
-                    }
-                }
+                NettyHeaderUtils.removeChunkedTransferEncoding(headers);
             } else {
                 headers.set(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName(), HttpHeaderValues.CHUNKED);
                 headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());

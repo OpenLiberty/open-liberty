@@ -9,12 +9,15 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 
 /**
@@ -61,6 +64,32 @@ public class NettyHeaderUtils {
             }
         } else {
             headers.set(varyName, value);
+        }
+    }
+
+    /**
+     * Removes all "chunked" tokens from the Transfer-Encoding header on the given
+     * headers object. If no Transfer-Encoding values remain after removal, the header
+     * is dropped entirely. This consolidates the identical removal logic that
+     * previously existed in both NettyBaseMessage and HeaderHandler.
+     *
+     * @param headers the response/message headers to update
+     */
+    public static void removeChunkedTransferEncoding(HttpHeaders headers) {
+        List<String> encodings = headers.getAll(HttpHeaderNames.TRANSFER_ENCODING);
+        if (encodings.isEmpty()) {
+            return;
+        }
+        List<CharSequence> filtered = new ArrayList<>(encodings.size());
+        for (String encoding : encodings) {
+            if (!HttpHeaderValues.CHUNKED.contentEqualsIgnoreCase(encoding)) {
+                filtered.add(encoding);
+            }
+        }
+        if (filtered.isEmpty()) {
+            headers.remove(HttpHeaderNames.TRANSFER_ENCODING);
+        } else {
+            headers.set(HttpHeaderNames.TRANSFER_ENCODING, filtered);
         }
     }
 

@@ -650,25 +650,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
     public void setContentLength(long length) {
         if(isChunkedEncodingSet()) {
             //retain HttpUtil.setTransferEncodingChunked false case logic
-            String temp = HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName();
-            List<String> encodings = headers.getAll(temp);
-            if (!encodings.isEmpty()) {
-                List<CharSequence> values = new ArrayList(encodings);
-                Iterator<CharSequence> valuesIt = values.iterator();
-
-                while (valuesIt.hasNext()) {
-                    CharSequence value = valuesIt.next();
-                    if (HttpHeaderValues.CHUNKED.contentEqualsIgnoreCase(value)) {
-                        valuesIt.remove();
-                    }
-                }
-
-                if (values.isEmpty()) {
-                    headers.remove(temp);
-                } else {
-                    headers.set(temp, values);
-                }
-            }
+            NettyHeaderUtils.removeChunkedTransferEncoding(headers);
         }
 
         headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), length);
