@@ -364,7 +364,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate ltpa to non-fips-compatible keys and backup incompatible key
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
             assertFileWasCreated(DEFAULT_KEY_PATH + ".fips");
 
             copyFileToServerResourcesSecurityDir(ALT_FIPS_PRIMARY_KEY_PATH);
@@ -374,7 +374,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate key again
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
 
             // verify version 2 keys was generated
             assertFileWasCreated(DEFAULT_KEY_PATH);
@@ -391,7 +391,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate ltpa to fips-compatible keys and backup incompatible key
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
             assertFileWasCreated(DEFAULT_KEY_PATH + ".nofips");
 
             copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
@@ -401,7 +401,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate key again
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
 
             // verify version 2 keys was generated
             assertFileWasCreated(DEFAULT_KEY_PATH);
