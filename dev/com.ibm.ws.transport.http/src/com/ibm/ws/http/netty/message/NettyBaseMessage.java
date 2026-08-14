@@ -567,15 +567,13 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
         // Iterate through the unparsed cookie header instances
         // in storage and add them to the list to be returned
-        List<HeaderField> headerList = getHeaders(header);
+        List<String> headerList = headers.getAll(header.getName());
         int size = headerList.size();
 
         if(size == 0) {return;}
 
         for (int i = cache.getHeaderIndex(); i < size; i++) {
-            String headerValue = headerList.get(i).asString();
-
-            cache.addParsedCookies(CookieDecoder.decode(headerValue, header));
+            cache.addParsedCookies(CookieDecoder.decode(headerList.get(i), header));
             cache.incrementHeaderIndex();
         }
     }
@@ -986,12 +984,10 @@ public class NettyBaseMessage implements HttpBaseMessage {
             return;
         }
         HttpHeaderKeys header = cache.getHeaderType();
-        List<HeaderField> fields = getHeaders(header);
+        List<String> fields = headers.getAll(header.getName());
         int size = fields.size();
         for(int i = cache.getHeaderIndex(); i < size; i++){
-            String lineValue = fields.get(i).asString();
-            List<HttpCookie> decoded = CookieDecoder.decode(lineValue, header);
-            cache.addParsedCookies(decoded);
+            cache.addParsedCookies(CookieDecoder.decode(fields.get(i), header));
             cache.incrementHeaderIndex();
         }
     }
