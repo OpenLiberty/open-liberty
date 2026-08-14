@@ -64,6 +64,7 @@ Import-Package: \
     jakarta.persistence;jpa="4.0";consumer="persistenceService", \
     jakarta.persistence.criteria;jpa="4.0";consumer="persistenceService", \
     jakarta.persistence.metamodel;jpa="4.0";consumer="persistenceService", \
+    jakarta.persistence.query;jpa="4.0";consumer="persistenceService", \
     jakarta.persistence.spi;jpa="4.0";consumer="persistenceService", \
     !javax.activation, \
     !javax.xml.bind.*, \

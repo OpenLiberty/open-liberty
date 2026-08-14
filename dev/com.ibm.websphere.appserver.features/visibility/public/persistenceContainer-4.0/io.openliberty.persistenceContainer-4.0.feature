@@ -10,7 +10,9 @@ WLP-AlsoKnownAs: jpaContainer-4.0
 IBM-API-Package: jakarta.persistence; type="spec", \
  jakarta.persistence.spi; type="spec", \
  jakarta.persistence.criteria; type="spec", \
- jakarta.persistence.metamodel; type="spec"
+ jakarta.persistence.metamodel; type="spec", \
+ jakarta.persistence.query; type="spec", \
+ jakarta.persistence.sql; type="spec"
 IBM-App-ForceRestart: uninstall, \
  install
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
