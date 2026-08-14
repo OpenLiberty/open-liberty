@@ -90,8 +90,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     private int limitOfTokenSize;
 
-    private Map<String, String> headersMap = new HashMap<>();
-
     public enum MessageType {REQUEST, RESPONSE;}
 
     private MessageType messageType;

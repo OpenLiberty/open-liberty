@@ -74,22 +74,27 @@ public class HeaderValidator {
          *      contains illegal characters, or null name)
          */
         public static String process(String token, FieldType type, HttpChannelConfig config){
-    
+
             if(type == FieldType.NAME && token == null){
                 throw new IllegalArgumentException("Header name must not be null");
             }
-            
+
+            // When validation is disabled, return the token as-is (skip trim and normalization).
+            if(!config.isHeaderValidationEnabled()){
+                return (token == null) ? "" : token;
+            }
+
             // For addHeader (appendHeader), null values should throw IllegalArgumentException
             // to match CHFW behavior - but only when validation is enabled
-            if(type == FieldType.VALUE && token == null && config.isHeaderValidationEnabled()){
+            if(type == FieldType.VALUE && token == null){
                 throw new IllegalArgumentException("Null input provided: " + token);
             }
-            
+
             String normalized = (token == null) ? "": token.trim();
-            
+
             // For header names with validation enabled, we need to call normalizeHeaderName
             // to match CHFW behavior which validates through HttpHeaderKeys.find()
-            if(type == FieldType.NAME && token != null && config.isHeaderValidationEnabled()){
+            if(type == FieldType.NAME && token != null){
                if(token.isEmpty() || normalized.isEmpty()){
                    // Empty or whitespace-only name - validate the original to get CHFW exception
                    // This will throw StringIndexOutOfBoundsException for empty strings
@@ -100,9 +105,9 @@ public class HeaderValidator {
                    normalized = normalizeHeaderName(normalized);
                }
             }
-        
+
             return validate(normalized, type, config);
-    
+
     }
 
     /**
