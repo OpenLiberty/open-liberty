@@ -176,7 +176,6 @@ public class MetricsApiOtelCollectorTest {
         for (int i = 0; i < maxAttempts; i++) {
             String result = client.dumpMetrics();
             if (result != null) {
-                Log.info(c, "waitForApiMetrics", result);
                 Log.info(c, "waitForApiMetrics", "OtelCollectorQueryClient ready within " + i + " seconds.");
                 return;
             }
