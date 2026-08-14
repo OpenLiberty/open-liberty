@@ -71,7 +71,11 @@ public class OidcTests extends FATServletClient {
         keycloakContainer.setupRealm();
         server.startServer();
         keycloakContainer.updateServerConfig(server);
+
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        // Wait for LTPA configuration to be ready
+        server.waitForLTPAConfigReady();
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass
