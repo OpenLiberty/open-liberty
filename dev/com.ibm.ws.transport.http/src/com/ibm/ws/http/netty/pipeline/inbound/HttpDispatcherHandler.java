@@ -31,6 +31,7 @@ import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -64,6 +65,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     private ChannelHandlerContext context;
     private final DefaultFullHttpResponse errorResponse;
     private static final String MAX_STREAMS_REFUSED_MESSAGE = "too many client-initiated streams have been refused; closing the connection";
+    // Encoded once at class load
+    private static final ByteBuf MAX_STREAMS_REFUSED_BUF =
+        Unpooled.unreleasableBuffer(
+            Unpooled.wrappedBuffer(MAX_STREAMS_REFUSED_MESSAGE.getBytes(StandardCharsets.UTF_8)).asReadOnly());
 
     public HttpDispatcherHandler(NettyHttpChannelConfig config) {
         super(false);
@@ -143,7 +148,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                     // Streams refused exceeded the number of configured allowed streams so closing connection
                     // Send go away with enhance your calm
                     handler.goAway(context, connection.remote().lastStreamCreated(), Http2Error.ENHANCE_YOUR_CALM.code(),
-                                   Unpooled.wrappedBuffer(MAX_STREAMS_REFUSED_MESSAGE.getBytes()), context.channel().newPromise());
+                                   MAX_STREAMS_REFUSED_BUF.duplicate(), context.channel().newPromise());
                 } else {
                     // Increment streams refused attribute and let reset happen by codec
                     context.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(streamsRefused);
