@@ -83,16 +83,12 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
 
         String forwardedHeader = request.headers().get(FORWARDED_HEADER);
-        forwardedFor = new ArrayList<String>();
-        forwardedBy = new ArrayList<String>();
+        forwardedFor.clear();
+        forwardedBy.clear();
 
-        if (!Objects.isNull(forwardedHeader)) {
-
+        if (forwardedHeader != null) {
             this.parseForwarded(request);
-
-        }
-
-        else {
+        } else {
             this.parseXForwarded(request);
         }
 
@@ -102,8 +98,8 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
             context.channel().attr(NettyHttpConstants.FORWARDED_PORT_KEY).set(forwardedPort);
             context.channel().attr(NettyHttpConstants.FORWARDED_PROTO_KEY).set(forwardedProto);
 
-            context.channel().attr(NettyHttpConstants.FORWARDED_BY_KEY).set(forwardedBy.toArray(new String[forwardedBy.size()]));
-            context.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).set(forwardedFor.toArray(new String[forwardedFor.size()]));
+            context.channel().attr(NettyHttpConstants.FORWARDED_BY_KEY).set(forwardedBy.toArray(new String[0]));
+            context.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).set(forwardedFor.toArray(new String[0]));
 
             Tr.debug(tc, "channelRead0", this);
 
