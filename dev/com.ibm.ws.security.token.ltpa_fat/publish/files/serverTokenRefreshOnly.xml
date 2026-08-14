@@ -10,7 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="com.ibm.ws.security.token.ltpa.fat.refresh - Token Refresh Test Configuration">
+<server description="com.ibm.ws.security.token.ltpa.fat.refresh - Short Token Expiration Test Configuration">
 
     <featureManager>
         <feature>appSecurity-2.0</feature>
@@ -55,8 +55,7 @@
     
     <httpSession securityIntegrationEnabled="false"/>
 
-    <ltpa expiration="4m"
-          inactivityTimeout="2m"
+    <ltpa expiration="2m"
           refreshThreshold="1m"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
           keysPassword="{xor}Lz4sLCgwLTs="/>

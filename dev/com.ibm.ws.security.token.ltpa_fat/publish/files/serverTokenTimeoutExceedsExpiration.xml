@@ -10,7 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="com.ibm.ws.security.token.ltpa.fat.refresh - Inactivity Timeout Test Configuration">
+<server description="com.ibm.ws.security.token.ltpa.fat.refresh - Timeout Exceeds Expiration Test Configuration">
 
     <featureManager>
         <feature>appSecurity-2.0</feature>
@@ -54,14 +54,9 @@
 
     <httpSession securityIntegrationEnabled="false"/>
 
-    <!-- LTPA configuration for inactivity timeout testing
-         - expiration: 10 minutes - absolute lifetime, kept long so it never interferes
-         - inactivityTimeout: 1 minute - token expires if idle longer than 1 minute
-         - refreshThreshold: not set (0) - no proactive refresh; only hard expiry on idle
-         This config isolates the inactivity expiry path from the proactive-refresh path.
-    -->
-    <ltpa expiration="10m"
-          inactivityTimeout="1m"
+    <ltpa expiration="2m"
+          inactivityTimeout="3m"
+          refreshThreshold="1m"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
           keysPassword="{xor}Lz4sLCgwLTs="/>
 
@@ -72,7 +67,6 @@
     <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
 
-    <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
     <ssl id="defaultSSLConfig" />
 
 </server>
