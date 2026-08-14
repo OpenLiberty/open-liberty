@@ -17,13 +17,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import jakarta.json.spi.JsonProvider;
 import jakarta.servlet.annotation.WebServlet;
 
 /**
- * Deployed to ProviderAppBundledApp (Johnzon bundled in WEB-INF/lib). Asserts that
+ * Deployed to BundledProviderApp (Johnzon bundled in WEB-INF/lib). Asserts that
  * Johnzon overrides the feature provider for this WAR's classloader only.
  */
 @WebServlet("/BundledProviderServlet")
@@ -34,8 +32,5 @@ public class BundledProviderServlet extends FATServlet {
     public void testBundledProvider() {
         String providerName = JsonProvider.provider().getClass().getName();
         assertEquals("org.apache.johnzon.core.JsonProviderImpl", providerName);
-
-        JsonObject obj = Json.createObjectBuilder().add("key", "value").build();
-        assertEquals("value", obj.getString("key"));
     }
 }

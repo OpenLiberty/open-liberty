@@ -37,7 +37,7 @@ public class JSONP21CustomProviderTest extends FATServletClient {
     @Server("jsonp2.1.customProvider.fat")
     @TestServlets({
                     @TestServlet(servlet = FeatureProviderServlet.class, contextRoot = "ProviderFeatureApp"),
-                    @TestServlet(servlet = BundledProviderServlet.class, contextRoot = "ProviderAppBundledApp"),
+                    @TestServlet(servlet = BundledProviderServlet.class, contextRoot = "BundledProviderApp")
     })
     public static LibertyServer server;
 
@@ -46,15 +46,15 @@ public class JSONP21CustomProviderTest extends FATServletClient {
         WebArchive providerFeatureApp = ShrinkWrap.create(WebArchive.class, "ProviderFeatureApp.war")
                         .addClass(FeatureProviderServlet.class);
         ShrinkHelper.exportAppToServer(server, providerFeatureApp);
-        server.addInstalledAppForValidation("ProviderFeatureApp");
 
         String johnzonJarPath = server.getServerSharedPath() + "resources/johnzon/2.1.0/johnzon-core.jar";
-        WebArchive providerAppBundledApp = ShrinkWrap.create(WebArchive.class, "ProviderAppBundledApp.war")
+        WebArchive bundledProviderApp = ShrinkWrap.create(WebArchive.class, "BundledProviderApp.war")
                         .addClass(BundledProviderServlet.class)
                         .addAsLibrary(new File(johnzonJarPath));
-        ShrinkHelper.exportAppToServer(server, providerAppBundledApp);
-        server.addInstalledAppForValidation("ProviderAppBundledApp");
+        ShrinkHelper.exportAppToServer(server, bundledProviderApp);
 
+        server.addInstalledAppForValidation("ProviderFeatureApp");
+        server.addInstalledAppForValidation("BundledProviderApp");
         server.startServer();
     }
 

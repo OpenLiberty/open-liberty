@@ -17,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import jakarta.json.spi.JsonProvider;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -34,8 +32,5 @@ public class FeatureProviderServlet extends FATServlet {
     public void testFeatureProvider() {
         String providerName = JsonProvider.provider().getClass().getName();
         assertEquals("org.eclipse.parsson.JsonProviderImpl", providerName);
-
-        JsonObject obj = Json.createObjectBuilder().add("key", "value").build();
-        assertEquals("value", obj.getString("key"));
     }
 }

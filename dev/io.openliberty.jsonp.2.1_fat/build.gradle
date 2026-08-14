@@ -20,7 +20,7 @@ dependencies {
 
 task addJohnzon21(type: Copy) {
   from configurations.johnzon21
-  into "${buildDir}/autoFVT/publish/shared/resources/johnzon/2.1.0/"
+  into new File(autoFvtDir, 'publish/shared/resources/johnzon/2.1.0/')
   rename "johnzon-core-.*.jar", "johnzon-core.jar"
 }
 
