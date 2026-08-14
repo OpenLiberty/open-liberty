@@ -257,9 +257,9 @@ public class CDIUpgradeHandlerTest {
         logStart(methodName, testName);
 
         performUpgrade();
-        // make sure server side is finished onWritePossible
-        // wait till see this message CDITestWriteListener: onWritePossible: EXIT
+        // make sure server side is finished logging the expected listener callbacks
         LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with [ EXPECTED_LOG2 ]");
 
@@ -268,6 +268,7 @@ public class CDIUpgradeHandlerTest {
         performUpgrade();
 
         LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with  [ EXPECTED_LOG3 ]");
 
