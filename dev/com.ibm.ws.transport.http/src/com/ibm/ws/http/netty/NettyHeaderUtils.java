@@ -52,21 +52,15 @@ public class NettyHeaderUtils {
      */
     public static void setVary(HttpHeaders headers, String value) {
 
-        Objects.nonNull(headers);
-        Objects.nonNull(value);
+        String varyName = HttpHeaderKeys.HDR_VARY.getName();
 
-        String headerValue;
-
-        if (headers.contains(HttpHeaderKeys.HDR_VARY.getName())) {
-            headerValue = headers.get(HttpHeaderKeys.HDR_VARY.getName()).toLowerCase();
-
-            if (!headerValue.isEmpty() && !headerValue.contains(value.toLowerCase())) {
-                headerValue = new StringBuilder().append(headerValue).append(", ").append(value).toString();
-                headers.set(HttpHeaderKeys.HDR_VARY.getName(), headerValue);
-
+        if (headers.contains(varyName)) {
+            String headerValue = headers.get(varyName);
+            if (!headerValue.isEmpty() && !headerValue.toLowerCase().contains(value.toLowerCase())) {
+                headers.set(varyName, headerValue + ", " + value);
             }
         } else {
-            headers.set(HttpHeaderKeys.HDR_VARY.getName(), value);
+            headers.set(varyName, value);
         }
     }
 
