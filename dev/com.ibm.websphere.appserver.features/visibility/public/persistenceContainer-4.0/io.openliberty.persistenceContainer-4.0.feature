@@ -12,7 +12,14 @@ IBM-API-Package: jakarta.persistence; type="spec", \
  jakarta.persistence.criteria; type="spec", \
  jakarta.persistence.metamodel; type="spec", \
  jakarta.persistence.query; type="spec", \
- jakarta.persistence.sql; type="spec"
+ jakarta.persistence.sql; type="spec", \
+ jakarta.activation; type="spec", \
+ jakarta.xml.bind; type="spec", \
+ jakarta.xml.bind.annotation; type="spec", \
+ jakarta.xml.bind.annotation.adapters; type="spec", \
+ jakarta.xml.bind.attachment; type="spec", \
+ jakarta.xml.bind.helpers; type="spec", \
+ jakarta.xml.bind.util; type="spec"
 IBM-App-ForceRestart: uninstall, \
  install
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
