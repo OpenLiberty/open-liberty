@@ -26,6 +26,7 @@ import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.Literals;
 import io.openliberty.mcp.internal.ToolRegistry;
+import io.openliberty.mcp.internal.ToolRegistry.ToolArgumentImpl;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
@@ -73,36 +74,36 @@ public class ToolArgDefaultValueConverterTest {
         testConverterRegistry.addConverter(City.class, new CityConverter());
 
         Tool defaultValueIntArgTestTool = Literals.tool("defaultValueInt", "Default Value Int", "ToolArg with a default value of a integer type");
-        List<ToolArgument> defaultValIntToolArgs = List.of(new ToolArgument("year", "Integer value", false, Integer.class, "2025"));
+        List<ToolArgument> defaultValIntToolArgs = List.of(new ToolArgumentImpl("year", "Integer value", false, Integer.class, "2025"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueIntArgTestTool, defaultValIntToolArgs, Collections.emptyList()));
 
         Tool defaultValueStringArgTestTool = Literals.tool("defaultValueString", "Default Value String", "ToolArg with a default value of a String type");
-        List<ToolArgument> defaultValStringToolArgs = List.of(new ToolArgument("planet", "String value", false, String.class, "Jupiter"));
+        List<ToolArgument> defaultValStringToolArgs = List.of(new ToolArgumentImpl("planet", "String value", false, String.class, "Jupiter"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueStringArgTestTool, defaultValStringToolArgs, Collections.emptyList()));
 
         Tool defaultValueCharArgTestTool = Literals.tool("defaultValueChar", "Default Value Char", "ToolArg with a default value of a Char type");
-        List<ToolArgument> defaultValCharToolArgs = List.of(new ToolArgument("initial", "Char value", false, Character.class, "H"));
+        List<ToolArgument> defaultValCharToolArgs = List.of(new ToolArgumentImpl("initial", "Char value", false, Character.class, "H"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueCharArgTestTool, defaultValCharToolArgs, Collections.emptyList()));
 
         Tool defaultValueInvalidArgTestTool = Literals.tool("defaultValueInvalidChar", "Default Value Invalid Char", "ToolArg with an invalid default value of a Char type");
-        List<ToolArgument> defaultValInvalidToolArgs = List.of(new ToolArgument("initial", "Char value", false, Character.class, "HH"));
+        List<ToolArgument> defaultValInvalidToolArgs = List.of(new ToolArgumentImpl("initial", "Char value", false, Character.class, "HH"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueInvalidArgTestTool, defaultValInvalidToolArgs, Collections.emptyList()));
 
         Tool defaultValueInvalidLongArgTestTool = Literals.tool("defaultValueInvalidLong", "Default Value Invalid Long", "ToolArg with an invalid default value of a Long type");
-        List<ToolArgument> defaultValInvalidLongToolArgs = List.of(new ToolArgument("count", "Long value", false, Long.class, "notANumber"));
+        List<ToolArgument> defaultValInvalidLongToolArgs = List.of(new ToolArgumentImpl("count", "Long value", false, Long.class, "notANumber"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueInvalidLongArgTestTool, defaultValInvalidLongToolArgs, Collections.emptyList()));
 
         Tool defaultValueBoolArgTestTool = Literals.tool("defaultValueBool", "Default Value Bool", "ToolArg with a default value of a Bool type");
-        List<ToolArgument> defaultValBoolToolArgs = List.of(new ToolArgument("bool", "Bool value", false, Boolean.class, "true"));
+        List<ToolArgument> defaultValBoolToolArgs = List.of(new ToolArgumentImpl("bool", "Bool value", false, Boolean.class, "true"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueBoolArgTestTool, defaultValBoolToolArgs, Collections.emptyList()));
 
         Tool defaultValueObjArgWithCustomConverterTestTool = Literals.tool("defaultValueObj", "Default Value Obj", "ToolArg with a default value of a Obj type");
-        List<ToolArgument> defaultValObjToolArgs = List.of(new ToolArgument("city", "City value", false, City.class, "Manchester::England::8000::false"));
+        List<ToolArgument> defaultValObjToolArgs = List.of(new ToolArgumentImpl("city", "City value", false, City.class, "Manchester::England::8000::false"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueObjArgWithCustomConverterTestTool, defaultValObjToolArgs, Collections.emptyList()));
 
         Tool defaultValueObjArgWithoutConverterTestTool = Literals.tool("defaultValueObjWithoutConverter", "Default Value Obj Without Converter",
                                                                         "ToolArg with a default value of a Obj type without a custom converter");
-        List<ToolArgument> defaultValObjWithoutConverterToolArgs = List.of(new ToolArgument("person", "Person value", false, Person.class, "Joe::35"));
+        List<ToolArgument> defaultValObjWithoutConverterToolArgs = List.of(new ToolArgumentImpl("person", "Person value", false, Person.class, "Joe::35"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueObjArgWithoutConverterTestTool, defaultValObjWithoutConverterToolArgs, Collections.emptyList()));
     }
 
