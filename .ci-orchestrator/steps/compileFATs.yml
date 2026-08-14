@@ -9,7 +9,7 @@
     - stepName: Launcher SHA
       awaitOutputProperties: true
   properties:
-    build.stub.target: build.CachedWSCD.CompileFATs
+    build.stub.target: build.CompileFATs
     # Do not create IM buckets in this step because some require an image to compile,
     # so they are built in the Compile Liberty Images step.
     create.im.repo: false

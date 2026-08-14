@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2024, 2025 IBM Corporation and others.
+# Copyright (c) 2024, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ Import-Package: \
   jakarta.ws.rs.*;version="[3.1,5.0)",\
   org.eclipse.microprofile.rest.client.*;version='!',\
   org.jboss.resteasy.*; version="[6.2.0,8.0)",\
+  org.jboss.logging;version="[3.5,3.6)", \
   *
 
 DynamicImport-Package: \
@@ -65,8 +66,8 @@ instrument.ffdc: false
 instrument.disabled: false
 
 Include-Resource:\
-  @\${repo;org.jboss.resteasy.microprofile:microprofile-rest-client-base;${resteasy-version};EXACT}, \
-  @\${repo;org.jboss.resteasy.microprofile:microprofile-rest-client;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy.microprofile:microprofile-rest-client-base;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy.microprofile:microprofile-rest-client;${resteasy-version};EXACT}, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   org/jboss/resteasy/microprofile=${bin}/org/jboss/resteasy/microprofile, \
   META-INF=resources/META-INF
@@ -101,7 +102,7 @@ Include-Resource:\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.ws.logging.core,\
-	com.ibm.ws.org.jboss.logging,\
+	io.openliberty.org.jboss.logging35,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.webcontainer.jakarta;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

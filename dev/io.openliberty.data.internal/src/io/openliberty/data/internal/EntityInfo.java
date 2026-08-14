@@ -67,16 +67,15 @@ public class EntityInfo {
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
 
-    final EntityManagerBuilder builder;
-
     // properly cased/qualified JPQL attribute name --> type of collection
     final Map<String, Class<?>> collectionElementTypes;
 
-    final Class<?> entityClass; // will be a generated class for entity records
+    public final Class<?> entityClass; // will be a generated class for entity records
+    final EntityHandlerFactory factory;
     final Class<?> idType; // type of the id, which could be a JPA IdClass for composite ids
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
-    final boolean isHibernate;
+    public final boolean isHibernate;
     final String name; // entity name to use in query language. If a record, the name will be [RecordName]Entity.
     final Class<?> recordClass; // null if not a record
     final String versionAttributeName; // null if unversioned
@@ -99,9 +98,9 @@ public class EntityInfo {
                SortedMap<String, Member> idClassAttributeAccessors,
                boolean isHibernate,
                String versionAttributeName,
-               EntityManagerBuilder entityManagerBuilder) {
+               EntityHandlerFactory entityHandlerFactory) {
         this.name = entityName;
-        this.builder = entityManagerBuilder;
+        this.factory = entityHandlerFactory;
         this.entityClass = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
@@ -194,7 +193,7 @@ public class EntityInfo {
         writer.println(indent + "  entity class: " + entityClass.getName());
         writer.println(indent + "  record class: " +
                        (recordClass == null ? null : recordClass.getName()));
-        writer.println(indent + "  builder: " + builder);
+        writer.println(indent + "  factory: " + factory);
         writer.println(indent + "  persistence provider is Hibernate? " +
                        isHibernate);
         writer.println(indent + "  idType: " +
@@ -246,6 +245,17 @@ public class EntityInfo {
     }
 
     /**
+     * Indicates if stateless repositories must be simulated by using EntityManager.
+     *
+     * @return whether to simulate stateless repositories with EntityManager.
+     */
+    @Trivial
+    boolean simulateStateless() {
+        // TODO temporarily approximated by assuming only Hibernate has EntityAgent
+        return !isHibernate || !factory.provider.compat.atLeast(1, 1);
+    }
+
+    /**
      * Converts a generated entity back to its record equivalent.
      *
      * @param entity generated entity.
@@ -274,12 +284,12 @@ public class EntityInfo {
     @Trivial
     private void validate() {
         // Unable to validate attribute types when we don't know which are converted
-        if (builder.convertibleTypes == null)
+        if (factory.convertibleTypes == null)
             return;
 
         for (Entry<String, Class<?>> attrTypeEntry : attributeTypes.entrySet()) {
             Class<?> attrType = attrTypeEntry.getValue();
-            if (!builder.convertibleTypes.contains(attrType) &&
+            if (!factory.convertibleTypes.contains(attrType) &&
                 Util.UNSUPPORTED_ATTR_TYPES.contains(attrType))
                 throw exc(MappingException.class,
                           "CWWKD1055.unsupported.entity.attr",

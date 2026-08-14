@@ -82,6 +82,8 @@ public class InMemoryIdentityStoreELWarningTest extends BaseJakartaSecurity40Tes
         ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
         instance.startServer();
+
+        server.waitForLTPAConfigReady();
     }
 
     /**

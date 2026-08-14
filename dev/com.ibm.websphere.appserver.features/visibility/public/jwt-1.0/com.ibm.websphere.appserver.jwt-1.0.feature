@@ -10,7 +10,7 @@ IBM-API-Package: com.ibm.websphere.security.jwt; type="ibm-api", \
   com.ibm.wsspi.security.common.auth.module; type="ibm-api", \
   com.ibm.websphere.security.auth.callback; type="ibm-api"
 Subsystem-Name: JSON Web Token 1.0
--features=io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0,6.1", \
+-features=io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1,4.0,5.0,6.0,6.1,6.2", \
   io.openliberty.webBundleSecurity.internal-1.0, \
   io.openliberty.jwt1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\

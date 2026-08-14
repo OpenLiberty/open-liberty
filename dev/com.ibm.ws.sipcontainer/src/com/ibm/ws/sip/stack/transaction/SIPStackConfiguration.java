@@ -116,6 +116,9 @@ public class SIPStackConfiguration
 	/** Timer B - INVITE client transaction timeout timer */
 	private int m_timerB;
 
+	/** Timer C - INVITE client transaction timeout timer */
+	private int m_timerC;
+
 	/** Timer D - Wait time for INVITE response retransmits */
 	private int m_timerD;
 
@@ -335,6 +338,16 @@ public class SIPStackConfiguration
 		}else{
 			if (s_logger.isInfoEnabled()) {
 				Object[] params = { "Timer B", Integer.valueOf(m_timerB) };
+				s_logger.info("info.sip.stack.timer", Situation.SITUATION_CONFIGURE, params);
+			}
+		}
+		m_timerC = ApplicationProperties.getProperties().getDuration(StackProperties.TIMER_C);
+		if (m_timerC == -1) {
+			m_timerC = StackProperties.TIMER_C_DEFAULT;
+		}
+		if (m_timerC != StackProperties.TIMER_C_DEFAULT) {
+			if (s_logger.isInfoEnabled()) {
+				Object[] params = { "Timer C", Integer.valueOf(m_timerC) };
 				s_logger.info("info.sip.stack.timer", Situation.SITUATION_CONFIGURE, params);
 			}
 		}
@@ -670,6 +683,11 @@ public class SIPStackConfiguration
 	/** @return Timer B - INVITE client transaction timeout timer */
 	public int getTimerB() {
 		return m_timerB;
+	}
+
+	/** @return Timer C - INVITE client transaction timeout timer */
+	public int getTimerC() {
+		return m_timerC;
 	}
 
 	/** @return Timer D - Wait time for INVITE response retransmits */

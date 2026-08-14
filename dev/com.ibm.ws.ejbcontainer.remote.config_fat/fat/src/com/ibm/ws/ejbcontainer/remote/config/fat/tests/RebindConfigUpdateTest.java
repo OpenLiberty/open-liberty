@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,9 @@ package com.ibm.ws.ejbcontainer.remote.config.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,7 +82,61 @@ public class RebindConfigUpdateTest extends FATServletClient {
     private String[] expected_ssl_exceptions = null;
 
     private static int ALL_LOCAL_BINDINGS = 15;
-    private static int ALL_REMOTE_BINDINGS = 12;
+    private static int ALL_REMOTE_BINDINGS = 16;
+
+    // Expected binding location suffixes for all local CNTR0167I messages
+    private static final List<String> EXPECTED_LOCAL_BINDING_LOCATIONS = Arrays.asList(
+            // JavaColonLookupBean - local home only
+            "ejblocal:ConfigTestsTestApp/ConfigTestsEJB.jar/JavaColonLookupBean#com.ibm.ws.ejbcontainer.remote.configtests.ejb.JavaColonLookupLocalHome",
+            "ejblocal:com.ibm.ws.ejbcontainer.remote.configtests.ejb.JavaColonLookupLocalHome",
+            "java:global/ConfigTestsTestApp/ConfigTestsEJB/JavaColonLookupBean!com.ibm.ws.ejbcontainer.remote.configtests.ejb.JavaColonLookupLocalHome",
+            // ConfigTestsTestBean - local home and local business
+            "ejblocal:ConfigTestsTestApp/ConfigTestsEJB.jar/ConfigTestsTestBean#com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsLocalHome",
+            "ejblocal:com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsLocalHome",
+            "java:global/ConfigTestsTestApp/ConfigTestsEJB/ConfigTestsTestBean!com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsLocalHome",
+            "ejblocal:ConfigTestsTestApp/ConfigTestsEJB.jar/ConfigTestsTestBean#com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsLocalBusiness",
+            "ejblocal:com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsLocalBusiness",
+            "java:global/ConfigTestsTestApp/ConfigTestsEJB/ConfigTestsTestBean!com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsLocalBusiness",
+            // ConfigTestsWarTestBean - local home and local business
+            "ejblocal:ConfigTestsTestApp/ConfigTestsWeb.war/ConfigTestsWarTestBean#com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarLocalHome",
+            "ejblocal:com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarLocalHome",
+            "java:global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarLocalHome",
+            "ejblocal:ConfigTestsTestApp/ConfigTestsWeb.war/ConfigTestsWarTestBean#com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarLocalBusiness",
+            "ejblocal:com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarLocalBusiness",
+            "java:global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarLocalBusiness");
+
+    // Expected binding location suffixes for all remote CNTR0167I messages.
+    // For corbaname locations the host:port varies, so only the fragment after '#' is checked.
+    private static final List<String> EXPECTED_REMOTE_BINDING_LOCATIONS = Arrays.asList(
+            // ConfigTestsTestBean - remote home
+            "corbaname::", // verified further by CORBA_REMOTE_BINDING_FRAGMENTS below
+            "ejb/ConfigTestsTestApp/ConfigTestsEJB.jar/ConfigTestsTestBean#com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsRemoteHome",
+            "com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsRemoteHome",
+            "java:global/ConfigTestsTestApp/ConfigTestsEJB/ConfigTestsTestBean!com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsRemoteHome",
+            // ConfigTestsTestBean - remote business
+            "corbaname::",
+            "ejb/ConfigTestsTestApp/ConfigTestsEJB.jar/ConfigTestsTestBean#com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsRemoteBusiness",
+            "com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsRemoteBusiness",
+            "java:global/ConfigTestsTestApp/ConfigTestsEJB/ConfigTestsTestBean!com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsRemoteBusiness",
+            // ConfigTestsWarTestBean - remote home
+            "corbaname::",
+            "ejb/ConfigTestsTestApp/ConfigTestsWeb.war/ConfigTestsWarTestBean#com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarRemoteHome",
+            "com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarRemoteHome",
+            "java:global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarRemoteHome",
+            // ConfigTestsWarTestBean - remote business
+            "corbaname::",
+            "ejb/ConfigTestsTestApp/ConfigTestsWeb.war/ConfigTestsWarTestBean#com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarRemoteBusiness",
+            "com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarRemoteBusiness",
+            "java:global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com.ibm.ws.ejbcontainer.remote.configtests.web.ejb.ConfigTestsWarRemoteBusiness");
+
+    // For corbaname messages, verify the naming fragment after '#' (host:port varies).
+    // These are plain strings matched with contains() — the backslash-dot sequences
+    // are literal characters as they appear in the log message.
+    private static final List<String> EXPECTED_CORBA_NAMING_FRAGMENTS = Arrays.asList(
+            "#ejb/global/ConfigTestsTestApp/ConfigTestsEJB/ConfigTestsTestBean!com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.configtests\\.ejb\\.ConfigTestsRemoteHome",
+            "#ejb/global/ConfigTestsTestApp/ConfigTestsEJB/ConfigTestsTestBean!com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.configtests\\.ejb\\.ConfigTestsRemoteBusiness",
+            "#ejb/global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.configtests\\.web\\.ejb\\.ConfigTestsWarRemoteHome",
+            "#ejb/global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.configtests\\.web\\.ejb\\.ConfigTestsWarRemoteBusiness");
 
     @Server("com.ibm.ws.ejbcontainer.remote.config.fat.server")
     public static LibertyServer server;
@@ -319,7 +375,6 @@ public class RebindConfigUpdateTest extends FATServletClient {
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
     @Test
-    @Ignore("ORB restart not supported on Liberty") //TODO
     public void testRebindAfterEjbContainerUpdated() throws Exception {
         server.startServer();
         verifyBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
@@ -364,9 +419,10 @@ public class RebindConfigUpdateTest extends FATServletClient {
     public void testRebindAfterOrbLateStart() throws Exception {
         List<Element> removed = removeQuickStartConfig();
         server_ssl.startServer();
-        assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
-        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
-        assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
+        // Security service and ORB will not start without QuickStartSecurity
+        assertTrue("Security service reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKS0008I", server_ssl.getDefaultLogFile()).isEmpty());
+        server.waitForLTPAConfigReady();
+        assertTrue("ORB reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKI0001I", server_ssl.getDefaultLogFile()).isEmpty());
         expected_ssl_exceptions = new String[] { "CWWKS9582E", "CWWKS9660E" }; // No user registry
 
         verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, 0);
@@ -389,9 +445,9 @@ public class RebindConfigUpdateTest extends FATServletClient {
     @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
     public void testRebindAfterOrbStoppedStarted() throws Exception {
         server_ssl.startServer();
-        assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
-        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
-        assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
+        assertNotNull("Security service did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS0008I"));
+        server.waitForLTPAConfigReady();
+        assertNotNull("ORB did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKI0001I"));
         expected_ssl_exceptions = new String[] { "CWWKS9582E" }; // ORB did not start in 10 seconds
 
         verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
@@ -407,7 +463,8 @@ public class RebindConfigUpdateTest extends FATServletClient {
     }
 
     /**
-     * Finds the expected enterprise bean binding messages in the log. <p>
+     * Finds the expected enterprise bean binding messages in the log and verifies
+     * the binding location content of each message. <p>
      *
      * This method should be used after waiting for the application started messages, as all
      * binding messages should be present.
@@ -415,6 +472,13 @@ public class RebindConfigUpdateTest extends FATServletClient {
     private void verifyBindings(LibertyServer verifyServer, int expectedLocal, int expectedRemote) throws Exception {
         List<String> bindings = verifyServer.findStringsInLogsUsingMark("CNTR0167I:.*ConfigTestsTestApp", verifyServer.getDefaultLogFile());
         assertEquals("binding messages not found", expectedLocal + expectedRemote, bindings.size());
+        if (expectedLocal > 0) {
+            verifyBindingLocations(bindings, EXPECTED_LOCAL_BINDING_LOCATIONS);
+        }
+        if (expectedRemote > 0) {
+            verifyBindingLocations(bindings, EXPECTED_REMOTE_BINDING_LOCATIONS);
+            verifyCorbaBindingLocations(bindings);
+        }
     }
 
     /**
@@ -426,6 +490,44 @@ public class RebindConfigUpdateTest extends FATServletClient {
     private void waitForBindings(LibertyServer verifyServer, int expectedLocal, int expectedRemote) throws Exception {
         int bindingsFound = verifyServer.waitForMultipleStringsInLogUsingMark(expectedLocal + expectedRemote, "CNTR0167I:.*ConfigTestsTestApp");
         assertEquals("binding messages not found", expectedLocal + expectedRemote, bindingsFound);
+    }
+
+    /**
+     * Verifies that for each expected binding location string, at least one logged
+     * CNTR0167I message contains it.
+     */
+    private void verifyBindingLocations(List<String> bindings, List<String> expectedLocations) {
+        for (String expectedLocation : expectedLocations) {
+            if (expectedLocation.equals("corbaname::")) {
+                continue; // corbaname messages are verified separately in verifyCorbaBindingLocations
+            }
+            boolean found = false;
+            for (String binding : bindings) {
+                if (binding.contains(expectedLocation)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue("No CNTR0167I message found containing binding location: " + expectedLocation, found);
+        }
+    }
+
+    /**
+     * Verifies that for each expected corbaname naming fragment, at least one logged
+     * CNTR0167I message contains a corbaname binding with that fragment after the '#'.
+     * The host:port portion is not verified as it varies by environment.
+     */
+    private void verifyCorbaBindingLocations(List<String> bindings) {
+        for (String fragment : EXPECTED_CORBA_NAMING_FRAGMENTS) {
+            boolean found = false;
+            for (String binding : bindings) {
+                if (binding.contains("corbaname::") && binding.contains(fragment)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue("No CNTR0167I message found containing corbaname fragment: " + fragment, found);
+        }
     }
 
 }

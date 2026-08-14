@@ -41,7 +41,15 @@ def additionalImports = """\
 
 // Key is a property, value is an addition.
 def additionalPropertiesForExports = [
-  "org.jboss.weld.event": "thread-context=true"
+  "org.jboss.weld.event": "thread-context=true"  
+]
+
+// Key is a property, value is the full updated properties string.
+def replacementPropertiesForExports = [
+  "org.jboss.weld.lite.extension.translator.logging": "version=\"${weldVersion}\";uses:=\"org.jboss.weld.exceptions\"",
+  "org.jboss.weld.module.web.logging": "version=\"${weldVersion}\";uses:=\"org.jboss.weld.exceptions,org.jboss.weld.logging,org.jboss.weld.module.web.servlet\"",
+  "org.jboss.weld.logging": "version=\"${weldVersion}\";uses:=\"jakarta.enterprise.context.spi,jakarta.enterprise.inject.spi,javax.naming,org.jboss.weld.contexts,org.jboss.weld.exceptions\"" 
+  
 ]
 
 //////// Modifications end here ////////////////
@@ -96,6 +104,16 @@ task bndMagic {
                 if (split[0].equals(key)) {                  
                     split[0] = split[0] + ";" + additionalPropertiesForExports.get(key)
                     String updatedEntry = String.join(";", split)
+                    upstreamExports.set(i, updatedEntry)
+                }
+            }
+        }
+        
+        for (int i = 0; i < upstreamExports.size(); i++) {
+            for (String key : replacementPropertiesForExports.keySet()) {
+                String[] split = upstreamExports.get(i).split(";")
+                if (split[0].equals(key)) {                  
+                    String updatedEntry = split[0] + ";" + replacementPropertiesForExports.get(key)
                     upstreamExports.set(i, updatedEntry)
                 }
             }

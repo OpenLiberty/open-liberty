@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -80,6 +77,7 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         removeFeatures(JakartaEE11Action.EE11_FEATURE_SET);
+        removeFeatures(JakartaEE12Action.EE12_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }

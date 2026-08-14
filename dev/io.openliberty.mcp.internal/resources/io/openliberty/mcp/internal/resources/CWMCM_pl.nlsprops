@@ -59,11 +59,11 @@ CWMCM0006E.duplicate.special.arguments.explanation=Wyst\u0105pi\u0142o jedno lub
 CWMCM0006E.duplicate.special.arguments.useraction=Usu\u0144 dodatkowe instancje.
 
 # Used for server logging
-# {0} = The fully qualified method name
-# {1} = The parameter type simple name
-CWMCM0007E.invalid.arguments=CWMCM0007E: Narz\u0119dzie {0} MCP posiada parametr typu {1}, kt\u00f3ry nie jest rozpoznawanym specjalnym typem argumentu i nie posiada `@ToolArg` adnotacji.
-CWMCM0007E.invalid.arguments.explanation=Jeden lub wi\u0119cej parametr\u00f3w nie zosta\u0142o oznaczonych jako argumenty narz\u0119dzia i nie s\u0105 one rozpoznawane jako specjalne typy argument\u00f3w.
-CWMCM0007E.invalid.arguments.useraction=Sprawd\u017a, czy zaimportowano w\u0142a\u015bciw\u0105 klas\u0119 dla argumentu, czy te\u017c zamierza\u0142e\u015b do\u0142\u0105czy\u0107 @ToolArg.
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: Punkt ko\u0144cowy serwera MCP: {0}
+CWMCM0008I.mcp.endpoint.url.explanation=Punkt ko\u0144cowy serwera MCP URL dla tego modu\u0142u aplikacji jest dost\u0119pny pod podanym adresem URL.
+CWMCM0008I.mcp.endpoint.url.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 # Used as part of a response to a client
 # {0} = Request id
@@ -271,3 +271,73 @@ CWMCM0032E.duplicate.argument.name.useraction=Nadaj ka\u017cdemu argumentowi nar
 CWMCM0033A.forbidden.error=CWMCM0033A: Niedozwolone \u017c\u0105danie. Metoda= {0} RequestURI={1 } RequestQuery={2 }, Wyj\u0105tek: {3}
 CWMCM0033A.forbidden.error.explanation=Wys\u0142ano \u017c\u0105danie, ale u\u017cytkownik nie ma uprawnie\u0144 do jego wys\u0142ania.
 CWMCM0033A.forbidden.error.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie pochodzi od autoryzowanego u\u017cytkownika.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: W implementacji metody ` {0} ` DefaultValueConverter nale\u017cy okre\u015bli\u0107 parametr typu.
+CWMCM0034W.converter.missing.type.parameter.explanation=Zarejestrowano klas\u0119 implementuj\u0105c\u0105 interfejs ` DefaultValueConverter `, ale brakuje w niej parametru typu, w zwi\u0105zku z czym nie mo\u017cna wykry\u0107 typu, na kt\u00f3ry dokonuje ona konwersji.
+CWMCM0034W.converter.missing.type.parameter.useraction=Zmie\u0144 deklaracj\u0119 klasy tak, aby implementowa\u0142a interfejs ` DefaultValueConverter ` z konkretnym parametrem typu. Na przyk\u0142ad: klasa ` MyConverterClass ` implementuje interfejs ` DefaultValueConverter<MyType> `.
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: W implementacji klasy ` {0} ` ( DefaultValueConverter ) typ ten jest przekszta\u0142cany na parametr typu generycznego zamiast na typ konkretny.
+CWMCM0035W.converter.generic.type.explanation=Klasa implementuj\u0105ca interfejs ` DefaultValueConverter ` zosta\u0142a zarejestrowana z u\u017cyciem generycznego parametru typu, takiego jak `T`, zamiast konkretnego typu.
+CWMCM0035W.converter.generic.type.useraction=Zmie\u0144 deklaracj\u0119 klasy tak, aby implementowa\u0142a interfejs ` DefaultValueConverter ` z konkretnym parametrem typu. Na przyk\u0142ad: klasa ` MyConverterClass ` implementuje interfejs ` DefaultValueConverter<MyType> `.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: Klucz _meta w pliku {0} jest nieprawid\u0142owy. Segment nazwy musi zaczyna\u0107 si\u0119 i ko\u0144czy\u0107 znakiem alfanumerycznym, a w \u015brodku mo\u017ce zawiera\u0107 wy\u0142\u0105cznie znaki alfanumeryczne, \u0142\u0105czniki, podkre\u015blenia lub kropki.
+CWMCM0037E.invalid.meta.key.name.explanation=Segment nazwy klucza _meta nie jest zgodny z zasadami specyfikacji MCP. Segment nazwy to cz\u0119\u015b\u0107 znajduj\u0105ca si\u0119 za opcjonalnym przedrostkiem w postaci uko\u015bnika lub ca\u0142y klucz, je\u015bli przedrostek nie wyst\u0119puje.
+CWMCM0037E.invalid.meta.key.name.useraction=Nale\u017cy upewni\u0107 si\u0119, \u017ce segment nazwy klucza _meta zaczyna si\u0119 i ko\u0144czy znakiem alfanumerycznym.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: Klucz _meta w pliku {0} zawiera pusty prefiks przed znakiem \u201e/\u201d.
+CWMCM0038E.empty.meta.key.prefix.explanation=Klucz _meta zawiera znak \u201e/\u201d, ale przed nim nie ma \u017cadnych etykiet prefiksowych. Przedrostek musi sk\u0142ada\u0107 si\u0119 z jednej lub wi\u0119cej etykiet oddzielonych kropkami.
+CWMCM0038E.empty.meta.key.prefix.useraction=Dodaj prawid\u0142owy przedrostek przed znakiem \u201e/\u201d lub usu\u0144 znak \u201e/\u201d, je\u015bli przedrostek nie jest potrzebny.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: Klucz _meta w pliku {0} zawiera nieprawid\u0142ow\u0105 etykiet\u0119 prefiksu {1}. Etykiety musz\u0105 zaczyna\u0107 si\u0119 od litery, ko\u0144czy\u0107 si\u0119 liter\u0105 lub cyfr\u0105, a w \u015brodku mog\u0105 zawiera\u0107 wy\u0142\u0105cznie litery, cyfry lub \u0142\u0105czniki.
+CWMCM0039E.invalid.meta.key.label.explanation=Segment przedrostka klucza _meta zawiera etykiet\u0119, kt\u00f3ra nie jest zgodna z zasadami specyfikacji MCP.
+CWMCM0039E.invalid.meta.key.label.useraction=Upewnij si\u0119, \u017ce ka\u017cda etykieta w prefiksie klucza _meta zaczyna si\u0119 od litery, a ko\u0144czy si\u0119 liter\u0105 lub cyfr\u0105. Upewnij si\u0119, \u017ce mi\u0119dzy literami znajduj\u0105 si\u0119 wy\u0142\u0105cznie litery, cyfry lub \u0142\u0105czniki.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: Prefiks metadanych \u201e {0} \u201d w adnotacji \u201e MetaField \u201d metody \u201e {1} \u201d jest nieprawid\u0142owy. Prawid\u0142owy prefiks to ci\u0105g etykiet oddzielonych kropkami. Ka\u017cda etykieta musi zaczyna\u0107 si\u0119 od litery, ko\u0144czy\u0107 si\u0119 liter\u0105 lub cyfr\u0105, a w \u015brodku mo\u017ce zawiera\u0107 wy\u0142\u0105cznie litery, cyfry lub \u0142\u0105czniki.
+CWMCM0040E.invalid.metadata.prefix.explanation=Prefiks metadanych w adnotacji \u201e MetaField \u201d nie spe\u0142nia wymaga\u0144 specyfikacji protoko\u0142u Model Context Protocol (MCP).
+CWMCM0040E.invalid.metadata.prefix.useraction=Zaktualizuj prefiks metadanych w adnotacji ` MetaField ` tej metody, aby spe\u0142nia\u0142 wymagania specyfikacji MCP. Prefiks musi sk\u0142ada\u0107 si\u0119 z etykiet oddzielonych kropkami, po kt\u00f3rych nast\u0119puje uko\u015bnik. Ka\u017cda etykieta musi zaczyna\u0107 si\u0119 od litery, a ko\u0144czy\u0107 liter\u0105 lub cyfr\u0105. Znaki wewn\u0105trz ka\u017cdej etykiety mog\u0105 to by\u0107 litery, cyfry lub \u0142\u0105czniki.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: Nazwa metadanych \u201e {0} \u201d w adnotacji \u201e MetaField \u201d metody \u201e {1} \u201d jest nieprawid\u0142owa. Prawid\u0142owa nazwa metadanych musi zaczyna\u0107 si\u0119 i ko\u0144czy\u0107 znakiem alfanumerycznym oraz mo\u017ce zawiera\u0107 \u0142\u0105czniki, podkre\u015blenia, kropki i znaki alfanumeryczne.
+CWMCM0041E.invalid.metadata.name.explanation=Nazwa metadanych w adnotacji \u201e MetaField \u201d nie spe\u0142nia wymaga\u0144 specyfikacji protoko\u0142u MCP (Model Context Protocol).
+CWMCM0041E.invalid.metadata.name.useraction=Zaktualizuj nazw\u0119 metadanych w adnotacji ` MetaField ` tej metody, aby spe\u0142nia\u0142a wymagania specyfikacji MCP. Nale\u017cy upewni\u0107 si\u0119, \u017ce nazwa zaczyna si\u0119 i ko\u0144czy znakiem alfanumerycznym oraz zawiera wy\u0142\u0105cznie \u0142\u0105czniki, znaki podkre\u015blenia, kropki i znaki alfanumeryczne.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: Warto\u015b\u0107 klucza metadanych \u201e {0} \u201d w adnotacji \u201e MetaField \u201d metody \u201e {1} \u201d nie mo\u017ce zosta\u0107 przekonwertowana na typ \u201e {2} \u201d. B\u0142\u0105d: {3}
+CWMCM0042E.metadata.value.conversion.error.explanation=Warto\u015b\u0107 metadanych w adnotacji \u201e MetaField \u201d nie mo\u017ce zosta\u0107 przekonwertowana na typ okre\u015blony w tej adnotacji. Warto\u015b\u0107 mo\u017ce mie\u0107 nieprawid\u0142owy format lub mo\u017ce by\u0107 niezgodna z okre\u015blonym typem.
+CWMCM0042E.metadata.value.conversion.error.useraction=Aby ustali\u0107 przyczyn\u0119 niepowodzenia konwersji, nale\u017cy przeanalizowa\u0107 komunikat o b\u0142\u0119dzie, plik \u201e message.log \u201d oraz logi FFDC. Zaktualizuj warto\u015b\u0107 metadanych w adnotacji \u201e MetaField \u201d, tak aby by\u0142a zgodna z okre\u015blonym typem.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: Metoda ` {0} ` wykorzystuje adnotacj\u0119 ` {1} `, kt\u00f3ra nie jest obs\u0142ugiwana. Ta metoda jest ignorowana.
+CWMCM0043W.unsupported.annotation.explanation=Interfejs API j\u0119zyka Java protoko\u0142u Model Context Protocol (MCP) zawiera adnotacje dotycz\u0105ce funkcji, kt\u00f3re nie s\u0105 obs\u0142ugiwane przez t\u0119 implementacj\u0119. Metody opatrzone adnotacjami, kt\u00f3re nie s\u0105 obs\u0142ugiwane, s\u0105 ignorowane.
+CWMCM0043W.unsupported.annotation.useraction=Nale\u017cy usun\u0105\u0107 z metody adnotacj\u0119, kt\u00f3ra nie jest obs\u0142ugiwana, lub stosowa\u0107 wy\u0142\u0105cznie obs\u0142ugiwane adnotacje protoko\u0142u Model Context Protocol (MCP).

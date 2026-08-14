@@ -90,7 +90,6 @@
     } catch (Exception ex) {
         // If we can't get the product info, use default
         productInfo = "Liberty";
-        ex.printStackTrace(); // Log the error for debugging
     }
 %>
 <!DOCTYPE html>

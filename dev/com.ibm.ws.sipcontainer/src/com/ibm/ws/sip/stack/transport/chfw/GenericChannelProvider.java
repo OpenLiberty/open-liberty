@@ -52,7 +52,7 @@ public class GenericChannelProvider implements ChannelFactoryProvider {
         this.factories = new HashMap<String, Class<? extends ChannelFactory>>();
 		
         bundleContext = context;
-        // Save all the facotries which are used by the Channel Framework implementation 
+        // Save all the factories which are used by the Channel Framework implementation 
         // in stack.
         // They will be later pulled by the ChannelFramework component by getTypes() method
         this.factories.put("SipChannel", SipChannelFactory.class);

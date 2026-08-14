@@ -9,11 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.encoders;
 
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+
 import io.openliberty.mcp.internal.McpCdiExtension;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -30,32 +30,12 @@ public class JsonTextContentEncoder implements ContentEncoder<Object> {
     private McpCdiExtension cdiExtention;
 
     @Override
-    public boolean supports(Class<?> runtimeType) {
-
-        // Skip String - handled by direct conversion
-        if (String.class.equals(runtimeType)) {
-            return false;
-        }
-
-        // Skip Content or ToolResponse - already in the right format
-        if (Content.class.isAssignableFrom(runtimeType) ||
-            ToolResponse.class.isAssignableFrom(runtimeType)) {
-            return false;
-        }
-
-        // Skip primitive wrappers - these convert to String natively
-        if (Number.class.isAssignableFrom(runtimeType) ||
-            Boolean.class.equals(runtimeType) ||
-            Character.class.equals(runtimeType)) {
-            return false;
-        }
-
-        // Support everything else
-        return true;
+    public Class<Object> getType() {
+        return Object.class;
     }
 
     @Override
-    public Content encode(Object value) {
-        return new TextContent(cdiExtention.getJsonb().toJson(value));
+    public ContentBlock encode(Object value) {
+        return TextContent.of(cdiExtention.getJsonb().toJson(value));
     }
 }

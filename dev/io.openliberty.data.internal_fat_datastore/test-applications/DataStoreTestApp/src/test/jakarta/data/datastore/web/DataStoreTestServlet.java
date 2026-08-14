@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,14 +49,16 @@ import test.jakarta.data.datastore.web.lib.WebLibEntity;
 import test.jakarta.data.datastore.web.lib.WebLibRepo;
 
 @DataSourceDefinition(name = "java:app/jdbc/DataSourceDef",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "servletuser1",
-                      password = "servletpwd1",
-                      properties = "createDatabase=create")
+                      password = "servletpwd1")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataStoreTestServlet extends FATServlet {
+
+    @Inject
+    AppJarPersistenceUnitRepo appJarPersistenceUnitRepo;
 
     @Inject
     DefaultDSRepo defaultDSRepo;
@@ -153,7 +155,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("defaultuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM DefDSEntity WHERE id = 25";
+            String sql = "SELECT val FROM DefDSEntity WHERE id = 25";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -172,7 +174,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("defaultuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM DefDSEntity2 WHERE id = 25";
+            String sql = "SELECT val FROM DefDSEntity2 WHERE id = 25";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -293,6 +295,44 @@ public class DataStoreTestServlet extends FATServlet {
             else
                 tx.rollback();
         }
+    }
+
+    /**
+     * Use a repository defined in the web module, but which requires a
+     * persistence unit that is defined in a JAR file of the enterprise
+     * application.
+     */
+    @Test
+    public void testPersistenceUnitInAppJarUsedByWebModule() {
+        // insert data using a different repository
+        ServerDSEntity forty_eight = ServerDSEntity.of("forty-eight", 12);
+        serverDSJNDIRepo.insert(forty_eight);
+
+        assertEquals(true,
+                     appJarPersistenceUnitRepo.quadruple("forty-eight"));
+
+        try (EntityManager em = appJarPersistenceUnitRepo.entityMgr()) {
+
+            String jpql = "FROM ServerDSEntity WHERE id = 'forty-eight'";
+            ServerDSEntity entity = em
+                            .createQuery(jpql, ServerDSEntity.class)
+                            .getSingleResult();
+            assertEquals("forty-eight", entity.id);
+            assertEquals(48, entity.value);
+
+            try {
+                Class<?> c = entity.getClass()
+                                .getClassLoader()
+                                .loadClass(AppJarPersistenceUnitRepo.class.getName());
+                fail("Loaded web module class from the class loader of a" +
+                     " persistence unit for an entity class defined in a" +
+                     " JAR of the application. Loaded: " + c);
+            } catch (ClassNotFoundException x) {
+                // expected
+            }
+        }
+
+        serverDSIdRepo.remove(ServerDSEntity.of("forty-eight", 48));
     }
 
     /**
@@ -441,7 +481,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("serveruser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id = 'eighty-seven'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id = 'eighty-seven'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -471,7 +511,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("serveruser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id = 'forty-one'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id = 'forty-one'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -502,7 +542,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("resrefuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id='ninety-three'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id='ninety-three'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);

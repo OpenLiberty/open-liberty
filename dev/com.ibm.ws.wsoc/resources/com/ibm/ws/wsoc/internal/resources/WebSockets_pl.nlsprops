@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -159,9 +159,9 @@ morethanoneonopen.annotation=CWWKH0036E: Wyst\u0105pi\u0142 wyj\u0105tek podczas
 morethanoneonopen.annotation.explanation=Klasa ServerEndpoint z adnotacjami jest niepoprawna, poniewa\u017c w klasie punktu ko\u0144cowego z adnotacjami zdefiniowano wi\u0119cej ni\u017c jedn\u0105 metod\u0119 @OnOpen. Aplikacja WebSocket nie zosta\u0142a pomy\u015blnie wdro\u017cona.
 morethanoneonopen.annotation.useraction=Popraw klas\u0119 ServerEndpoint z adnotacjami, definiuj\u0105c tylko jedn\u0105 metod\u0119 @OnOpen. Po rozwi\u0105zaniu problemu wdr\u00f3\u017c aplikacj\u0119 ponownie.
 
-invalid.message.toobig=CWWKH0037E: Niepoprawny przychodz\u0105cy komunikat WebSocket w klasie ServerEndpoint {0}. Wielko\u015b\u0107 przychodz\u0105cego komunikatu wynosi {1} i jest wi\u0119ksza ni\u017c warto\u015b\u0107 maxMessageSize {2} zdefiniowana w metodzie adnotacji @OnMessage {3}.
-invalid.message.toobig.explanation=Wielko\u015b\u0107 komunikatu WebSocket nie mo\u017ce przekracza\u0107 warto\u015bci maxMessageSize zdefiniowanej w adnotacji @OnMessage.
-invalid.message.toobig.useraction=Sprawd\u017a klienta i upewnij si\u0119, \u017ce wysy\u0142a komunikaty WebSocket o wielko\u015bci nieprzekraczaj\u0105cej warto\u015bci maxMessageSize zdefiniowanej w @OnMessage, lub zwi\u0119ksz warto\u015b\u0107 maxMessageSize w @OnMessage i wdr\u00f3\u017c aplikacj\u0119 ponownie.
+invalid.message.toobig=CWWKH0037E: Wchodz\u0105ca wiadomo\u015b\u0107 o rozmiarze {0} bajt\u00f3w przekracza maksymalny dozwolony rozmiar wynosz\u0105cy {1} bajt\u00f3w w klasie {2} dla metody {3}.
+invalid.message.toobig.explanation=Wiadomo\u015b\u0107 przekroczy\u0142a skonfigurowany limit rozmiaru. Problem ten mo\u017ce wynika\u0107 z warto\u015bci adnotacji @OnMessage maxMessageSize, rozmiaru bufora sesji ( maxTextMessageBufferSize lub maxBinaryMessageBufferSize ) lub domy\u015blnego limitu, gdy nie istnieje \u017caden modu\u0142 obs\u0142ugi dla danego typu komunikatu.
+invalid.message.toobig.useraction=Nale\u017cy albo zmniejszy\u0107 rozmiar komunikatu klienckiego, albo zwi\u0119kszy\u0107 warto\u015b\u0107 adnotacji ` @OnMessage ` ( maxMessageSize ), albo zwi\u0119kszy\u0107 rozmiar bufora sesji ( setMaxTextMessageBufferSize( ) lub setMaxBinaryMessageBufferSize( ), albo skorzysta\u0107 z opcji konfiguracyjnej ` HTTP ` ( websocketBufferSize, ), albo doda\u0107 odpowiedni handler ` @OnMessage ` dla danego typu komunikatu.
 
 maxidletimeout.closesession=CWWKH0038E: Sesja gniazda WebSocket jest nieaktywna od {0} sek. Zamykanie po\u0142\u0105czenia.
 maxidletimeout.closesession.explanation=Wyst\u0105pi\u0142o przekroczenie limitu czasu sesji gniazda WebSocket. Sesje gniazda WebSocket staj\u0105 si\u0119 nieaktywne, je\u015bli \u017cadne komunikaty nie s\u0105 wysy\u0142ane ani odbierane przez okre\u015blony w sekundach czas podany w ustawieniu maxIdleTimeout.

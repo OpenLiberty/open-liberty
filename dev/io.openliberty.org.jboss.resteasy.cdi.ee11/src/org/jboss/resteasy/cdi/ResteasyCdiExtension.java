@@ -5,15 +5,21 @@
 
 package org.jboss.resteasy.cdi;
 
+import static org.jboss.resteasy.spi.util.Utils.*; // Liberty Change
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.decorator.Decorator;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -35,6 +41,7 @@ import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 import jakarta.enterprise.inject.spi.ProcessSessionBean;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -57,6 +64,7 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
  */
 public class ResteasyCdiExtension implements Extension {
     private static boolean active;
+    private static final String JAKARTA_EJB_STATEFUL = "jakarta.ejb.Stateful";
     private static final String JAKARTA_EJB_STATELESS = "jakarta.ejb.Stateless";
     private static final String JAKARTA_EJB_SINGLETON = "jakarta.ejb.Singleton";
 
@@ -64,10 +72,8 @@ public class ResteasyCdiExtension implements Extension {
     private static final Annotation requestScopedLiteral = new AnnotationLiteral<RequestScoped>() {
         private static final long serialVersionUID = 3381824686081435817L;
     };
-   //Liberty change start:  Changed this field from private to protected so it can be accessed from
-   //LibertyResteasyCdiExtension.   Previously this field was public.
-   protected static final Annotation applicationScopedLiteral = new AnnotationLiteral<ApplicationScoped>() { 
-   //Liberty change end
+
+    protected static final Annotation applicationScopedLiteral = new AnnotationLiteral<ApplicationScoped>() { // Liberty Change - Changed this field from private to protected so it can be accessed from LibertyResteasyCdiExtension
         private static final long serialVersionUID = -8211157243671012820L;
     };
 
@@ -75,7 +81,8 @@ public class ResteasyCdiExtension implements Extension {
         return active;
     }
 
-    private final Map<Class<?>, Type> sessionBeanInterface = new HashMap<>();
+    private final Map<Class<?>, Collection<Type>> sessionBeanInterface = new HashMap<>(); // Liberty Change - support multiple interfaces due to @Local
+    private final Set<Class<?>> beanContainer = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean generateClientBean = true;
     private boolean addContextProducers = true;
     private boolean noApplicationFound = true;
@@ -118,6 +125,11 @@ public class ResteasyCdiExtension implements Extension {
                             .newClient(RegisterBuiltin.getClientInitializedResteasyProviderFactory(getClassLoader())))
                     .disposeWith((client, instance) -> client.close());
         }
+        final Set<Class<?>> resources = Set.copyOf(beanContainer);
+        final ResteasyBeanContainer instance = resources::contains;
+        event.addBean().addType(ResteasyBeanContainer.class)
+                .scope(ApplicationScoped.class)
+                .createWith(ctx -> instance);
     }
 
     /**
@@ -159,6 +171,10 @@ public class ResteasyCdiExtension implements Extension {
             BeanManager beanManager) {
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
+        // Check if this is a stateful bean and consider it not managed by the CDI container. This means we will not add
+        // it to the bean container.
+        final boolean isStatefulBean = isStatefulBean(annotatedType);
+
         if (!annotatedType.getJavaClass().isInterface()
                 && !isSessionBean(annotatedType)
                 && !annotatedType.isAnnotationPresent(Decorator.class)) {
@@ -166,6 +182,11 @@ public class ResteasyCdiExtension implements Extension {
                 LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsResource(annotatedType.getJavaClass()
                         .getCanonicalName()));
                 event.configureAnnotatedType().add(requestScopedLiteral);
+                if (!isStatefulBean) {
+                    beanContainer.add(annotatedType.getJavaClass());
+                }
+            } else if (!isStatefulBean && Utils.isNormalScope(annotatedType, beanManager)) {
+                beanContainer.add(annotatedType.getJavaClass());
             }
         }
     }
@@ -181,6 +202,10 @@ public class ResteasyCdiExtension implements Extension {
             BeanManager beanManager) {
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
+        // Check if this is a stateful bean and consider it not managed by the CDI container. This means we will not add
+        // it to the bean container.
+        final boolean isStatefulBean = isStatefulBean(annotatedType);
+
         if (!annotatedType.getJavaClass().isInterface()
                 && !isSessionBean(annotatedType)
                 && !isUnproxyableClass(annotatedType.getJavaClass())) {
@@ -188,6 +213,11 @@ public class ResteasyCdiExtension implements Extension {
                 LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsProvider(annotatedType.getJavaClass()
                         .getCanonicalName()));
                 event.configureAnnotatedType().add(applicationScopedLiteral);
+                if (!isStatefulBean) {
+                    beanContainer.add(annotatedType.getJavaClass());
+                }
+            } else if (!isStatefulBean && Utils.isNormalScope(annotatedType, beanManager)) {
+                beanContainer.add(annotatedType.getJavaClass());
             }
         }
     }
@@ -201,9 +231,22 @@ public class ResteasyCdiExtension implements Extension {
      */
     public <T extends Application> void observeApplications(@Observes ProcessAnnotatedType<T> event,
             BeanManager beanManager) {
-        noApplicationFound = false;
-        if (!Utils.isScopeDefined(event.getAnnotatedType(), beanManager)) {
-            event.configureAnnotatedType().add(applicationScopedLiteral);
+        final Class<T> applicationClass = event.getAnnotatedType().getJavaClass();
+
+        // Check if this is a stateful bean and consider it not managed by the CDI container. This means we will not add
+        // it to the bean container.
+        final boolean isStatefulBean = isStatefulBean(event.getAnnotatedType());
+
+        if (!Modifier.isAbstract(applicationClass.getModifiers())) {
+            noApplicationFound = false;
+            if (!Utils.isScopeDefined(event.getAnnotatedType(), beanManager)) {
+                event.configureAnnotatedType().add(applicationScopedLiteral);
+                if (!isStatefulBean) {
+                    beanContainer.add(applicationClass);
+                }
+            } else if (!isStatefulBean && Utils.isNormalScope(event.getAnnotatedType(), beanManager)) {
+                beanContainer.add(applicationClass);
+            }
         }
     }
 
@@ -242,21 +285,54 @@ public class ResteasyCdiExtension implements Extension {
     }
 
     private void addSessionBeanInterface(Bean<?> bean) {
-        for (Type type : bean.getTypes()) {
-            if ((type instanceof Class<?>) && ((Class<?>) type).isInterface()) {
-                Class<?> clazz = (Class<?>) type;
-                final Class<?> beanClass = bean.getBeanClass();
-                if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) { // Liberty Change
-                    sessionBeanInterface.put(bean.getBeanClass(), type);
-                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass)); // Liberty Change
-                    return;
+        // Liberty Change Start - lookup @Local interfaces and check them for JAX-RS annotations
+        final Class<?> beanClass = bean.getBeanClass();
+        Class<?>[] localInterfaces = getLocalInterfaces(beanClass);
+        Set<Type> interfaces = new HashSet<>(); // Use Set to avoid duplicates
+        
+        if (localInterfaces != null && localInterfaces.length > 0) {
+            for (Class<?> clazz : localInterfaces) {
+                if (Utils.hasEndpointMethod(clazz)) {
+                    interfaces.add(clazz);
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(clazz, beanClass));
                 }
             }
         }
-        LogMessages.LOGGER.debug(Messages.MESSAGES.noLookupInterface(bean.getBeanClass()));
+        // Liberty Change End
+
+        for (Type type : bean.getTypes()) {
+            if ((type instanceof Class<?>) && ((Class<?>) type).isInterface()) {
+                Class<?> clazz = (Class<?>) type;
+                if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) {
+                    interfaces.add(type); // Set will automatically prevent duplicates
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass));
+                }
+            }
+        }
+
+        // Liberty Change Start
+        if (!interfaces.isEmpty()) {
+            // Always add the bean class itself as a lookup type
+            // This is critical for EJBs where the bean class might not be in bean.getTypes()
+            interfaces.add(beanClass);
+            LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(beanClass, beanClass));
+            
+            // Add all non-interface types from bean.getTypes() as potential lookup types
+            // This is needed for EJBs where other types in the bean's type closure might be injectable
+            for (Type type : bean.getTypes()) {
+                if (!(type instanceof Class<?> && ((Class<?>) type).isInterface())) {
+                    interfaces.add(type);
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass));
+                }
+            }
+            sessionBeanInterface.put(bean.getBeanClass(), interfaces);
+        } else {
+            LogMessages.LOGGER.debug(Messages.MESSAGES.noLookupInterface(beanClass));
+        }
+        // Liberty Change End
     }
 
-    public Map<Class<?>, Type> getSessionBeanInterface() {
+    public Map<Class<?>, Collection<Type>> getSessionBeanInterface() { // Liberty Change
         return sessionBeanInterface;
     }
 
@@ -267,6 +343,16 @@ public class ResteasyCdiExtension implements Extension {
                     || annotationType.getName().equals(JAKARTA_EJB_SINGLETON)) {
                 LogMessages.LOGGER.debug(Messages.MESSAGES.beanIsSLSBOrSingleton(annotatedType.getJavaClass()));
                 return true; // Do not modify scopes of SLSBs and Singletons
+            }
+        }
+        return false;
+    }
+
+    private boolean isStatefulBean(final AnnotatedType<?> annotatedType) {
+        for (Annotation annotation : annotatedType.getAnnotations()) {
+            Class<?> annotationType = annotation.annotationType();
+            if (annotationType.getName().equals(JAKARTA_EJB_STATEFUL)) {
+                return true;
             }
         }
         return false;
@@ -286,7 +372,7 @@ public class ResteasyCdiExtension implements Extension {
         // or have no non-private no-args constructor
         return isFinal(clazz) ||
                 hasNonPrivateNonStaticFinalMethod(clazz) ||
-                hasNoNonPrivateNoArgsConstructor(clazz);
+                !hasValidConstructor(clazz);
     }
 
     private boolean isFinal(Class<?> clazz) {
@@ -305,17 +391,22 @@ public class ResteasyCdiExtension implements Extension {
         return false;
     }
 
-    private boolean hasNoNonPrivateNoArgsConstructor(Class<?> clazz) {
+    private boolean hasValidConstructor(final Class<?> clazz) {
+        // Check if there is a constructor with @Inject or a no-arg constructor
+        for (Constructor<?> c : clazz.getDeclaredConstructors()) {
+            if (c.isAnnotationPresent(Inject.class)) {
+                return true;
+            }
+        }
+        // For a bean to be considered proxyable, the bean must have a non-private constructor with no parameters. If
+        // a method matching those requirements does not exist, we'll not register this component as a CDI bean.
         Constructor<?> constructor;
         try {
-            constructor = clazz.getConstructor();
-        } catch (NoSuchMethodException exception) {
-            return true;
+            constructor = clazz.getDeclaredConstructor();
+        } catch (NoSuchMethodException e) {
+            return false;
         }
-
-        // Note: this probably can only be private if the provider also has
-        // a non-private @Context constructor, which is unlikely but possible.
-        return isPrivate(constructor);
+        return !isPrivate(constructor);
     }
 
     private boolean isFinal(Member member) {

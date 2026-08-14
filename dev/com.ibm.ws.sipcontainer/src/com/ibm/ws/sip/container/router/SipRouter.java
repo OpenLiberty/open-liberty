@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.router;
 
@@ -26,9 +23,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import javax.servlet.sip.Address;
+import javax.servlet.sip.ServletParseException;
 import javax.servlet.sip.SipServletRequest;
 import javax.servlet.sip.SipServletResponse;
 import javax.servlet.sip.SipSession;
@@ -1321,6 +1322,25 @@ public class SipRouter {
         	}
         	
         	if (request.isExternalRoute()) {
+				if (c_logger.isTraceDebugEnabled()) {
+					c_logger.traceDebug(this, "handleRequest", " checking sipProxyAllowList to determine if request " + request.getMethod() + " can be sent outbound");
+				}	
+        		if (!isAllowedExternalRoute(request)) {
+        			if (c_logger.isErrorEnabled()) {
+        				c_logger.error("error.mapping.to.nonexisting.siplet",
+        						Situation.SITUATION_REQUEST, new Object[]{"External route target not in sipProxyAllowList, Method=" +
+        						request.getMethod() + ", callID=" + request.getCallId(), "Unknown"});
+        			}
+        			int errorCode = PropertiesStore.getInstance().getProperties().getInt(CoreProperties.SIP_NO_ROUTE_ERROR_CODE_PROPERTY);
+        			sendErrorResponse(request, errorCode);
+        			return;
+        		}
+				if (c_logger.isTraceDebugEnabled()) {
+					c_logger.traceDebug(this, "handleRequest" , "external destination found in sipProxyAllowList (" 
+						+ PropertiesStore.getInstance().getProperties().getString(CoreProperties.SIP_PROXY_ALLOW_LIST) + 
+						"), continue processing " + request.getMethod() + " with Call-ID = " + request.getCallId());
+				}
+
         		transactionUser = m_transactionUserTable.createTransactionUserWrapper(request, true, sipApplication, (sipApplication != null));
 
         		request.setTransactionUser(transactionUser);
@@ -1907,7 +1927,7 @@ public class SipRouter {
     }
 
     /**
-     * Send the resonse directly to the transport layer bypassing the transaction
+     * Send the response directly to the transport layer, bypassing the transaction
      * Will be used by 2xx retransmission from a UAS downstream through our
      * proxy to the UAC upstream. 
      * @param provider
@@ -1937,11 +1957,12 @@ public class SipRouter {
         
         if(containsOurVia){
 					
-        	// When response is a stray response which received when
-					// Application Acts as a proxy - it has an Via header which represents
-					// this container and should be removed before send. 
+        	// If response is a stray response received when
+			// Application is acting as a proxy - it has a Via header representing
+			// this container - the VIA header should be removed before 
+			// proxying the request. 
         	// If response is a response created by the 
-        	// application it has only the Via header represents UAC 
+        	// application it only has a Via header representing the UAC 
         	// that should receive this response.
 	        
         	//Remove the top via header as it should be ours
@@ -1974,6 +1995,188 @@ public class SipRouter {
             {
                 c_logger.error("error.exception", "Send Failure", null, e);
             }
+        }
+    }
+
+    /**
+     * Checks whether the Request-URI and all Route header URIs of the given external-route
+     * request are present in the {@code sipProxyAllowList} custom property.
+     * <p>
+     * The allow list is a comma-separated string of entries in the form {@code host} or
+     * {@code host:port}. A host-only entry matches any port on that host. When the property
+     * value is empty, <em>all</em> external forwarding is blocked (returns {@code false}).
+     * Any URI (Request-URI or Route) that is not a SIP URI, or whose host:port is not in
+     * the allow list, causes the method to return {@code false}.
+     *
+     * @param request the incoming request to be checked
+     * @return {@code true} if all URIs are permitted, {@code false} otherwise
+     */
+    private boolean isAllowedExternalRoute(SipServletRequestImpl request) {
+        String allowListStr = PropertiesStore.getInstance().getProperties()
+                .getString(CoreProperties.SIP_PROXY_ALLOW_LIST);
+
+        if (allowListStr == null || allowListStr.trim().isEmpty()) {
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "isAllowedExternalRoute",
+                        "sipProxyAllowList is empty – blocking external route for callID=" + request.getCallId());
+            }
+            return false;
+        }
+
+        String[] entries = allowListStr.split(",");
+
+        // Check Request-URI
+        javax.servlet.sip.URI requestUri = request.getRequestURI();
+        if (!isSipUriAllowed(requestUri, entries, "Request-URI")) {
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "isAllowedExternalRoute",
+                        "Request-URI blocked for callID=" + request.getCallId());
+            }
+            return false;
+        }
+
+        // Check all Route headers
+        try {
+            ListIterator<Address> routeHeaders = request.getAddressHeaders("Route");
+            while (routeHeaders != null && routeHeaders.hasNext()) {
+                Address routeAddr = routeHeaders.next();
+				if (c_logger.isTraceDebugEnabled()) {
+					c_logger.traceDebug(this, "isAllowedExternalRoute", " evaluating Route header content against the sipAllowProxyList");
+				}
+                if (!isSipUriAllowed(routeAddr.getURI(), entries, "Route")) {
+                    if (c_logger.isTraceDebugEnabled()) {
+                        c_logger.traceDebug(this, "isAllowedExternalRoute",
+                                "Route header blocked for callID=" + request.getCallId());
+                    }
+                    return false;
+                }
+            }
+        } catch (ServletParseException e) {
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "isAllowedExternalRoute",
+                        "Failed to parse Route headers – blocking external route for callID=" + request.getCallId());
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns {@code true} if the given URI is a {@link SipURI} whose host:port matches
+     * at least one entry in the allow list.
+     * <p>
+     * Both the allow-list entry and the URI host are resolved via {@link InetAddress} so
+     * that hostnames and IP addresses referring to the same machine compare equal
+     * (e.g. {@code localhost} matches {@code 127.0.0.1}). If DNS resolution fails for
+     * either side, the comparison falls back to a case-insensitive string match.
+     *
+     * @param uri      the URI to check
+     * @param entries  allow-list entries (already split on commas)
+     * @param label    label used in trace messages (e.g. "Request-URI" or "Route")
+     */
+    private boolean isSipUriAllowed(javax.servlet.sip.URI uri, String[] entries, String label) {
+        if (!(uri instanceof SipURI)) {
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "isSipUriAllowed",
+                        label + " is not a SIP URI – blocking");
+            }
+            return false;
+        }
+
+        SipURI sipUri = (SipURI) uri;
+        String targetHost = sipUri.getHost();
+        int    targetPort = sipUri.getPort(); // -1 when absent
+
+        if (targetHost == null || targetHost.isEmpty()) {
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "isSipUriAllowed",
+                        label + " SIP URI has no host – blocking");
+            }
+            return false;
+        }
+
+        if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug(this, "isSipUriAllowed",
+                    "Evaluating " + label + " target host='" + targetHost + "' port=" + targetPort);
+        }
+
+        // Resolve the URI host once, outside the loop.
+        InetAddress targetAddr = resolveHost(targetHost);
+
+        for (String entry : entries) {
+            entry = entry.trim();
+            if (entry.isEmpty()) continue;
+
+            int colonIdx = entry.lastIndexOf(':');
+            if (colonIdx > 0) {
+                // entry is "host:port"
+                String allowHost = entry.substring(0, colonIdx).trim();
+                String portStr   = entry.substring(colonIdx + 1).trim();
+                try {
+                    int allowPort = Integer.parseInt(portStr);
+                    int effectiveTarget = (targetPort == -1) ? (sipUri.isSecure() ? 5061 : 5060) : targetPort;
+                    if (hostsMatch(allowHost, targetHost, targetAddr) && allowPort == effectiveTarget) {
+                        return true;
+                    }
+                } catch (NumberFormatException e) {
+                    if (c_logger.isTraceDebugEnabled()) {
+                        c_logger.traceDebug(this, "isSipUriAllowed",
+                                "Skipping malformed sipProxyAllowList entry: " + entry);
+                    }
+                }
+            } else {
+                // entry is "host" only – matches any port
+                if (hostsMatch(entry, targetHost, targetAddr)) {
+                    return true;
+                }
+            }
+        }
+
+        if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug(this, "isSipUriAllowed",
+                    label + " target " + targetHost + ":" + targetPort +
+                    " not found in sipProxyAllowList");
+        }
+        return false;
+    }
+
+    /**
+     * Returns {@code true} if {@code allowHost} refers to the same network address as
+     * {@code targetHost}. Resolves both via DNS; falls back to case-insensitive string
+     * comparison if resolution fails for either side.
+     *
+     * @param allowHost  the host from the allow-list entry
+     * @param targetHost the host from the SIP URI
+     * @param targetAddr pre-resolved {@link InetAddress} for {@code targetHost}, or
+     *                   {@code null} if resolution previously failed
+     */
+    private boolean hostsMatch(String allowHost, String targetHost, InetAddress targetAddr) {
+        if (allowHost.equalsIgnoreCase(targetHost)) {
+            return true;
+        }
+        InetAddress allowAddr = resolveHost(allowHost);
+        if (allowAddr != null && targetAddr != null) {
+            return allowAddr.equals(targetAddr);
+        }
+        return false;
+    }
+
+    /**
+     * Resolves a hostname or IP-address literal to an {@link InetAddress}.
+     * Returns {@code null} and logs a trace message if resolution fails.
+     *
+     * @param host hostname or IP address string
+     */
+    private InetAddress resolveHost(String host) {
+        try {
+            return InetAddress.getByName(host);
+        } catch (UnknownHostException e) {
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "resolveHost",
+                        "Could not resolve host '" + host + "' – will use string comparison");
+            }
+            return null;
         }
     }
 

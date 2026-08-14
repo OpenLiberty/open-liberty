@@ -13,9 +13,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.security.jaspi; type="ibm-spi"
 Subsystem-Name: Jakarta Authentication 3.1
 -features=io.openliberty.xmlBinding.internal-4.0, \
-  io.openliberty.appSecurity-6.0, \
-  com.ibm.websphere.appserver.servlet-6.1, \
-  com.ibm.websphere.appserver.eeCompatible-11.0
+  io.openliberty.appAuthentication3.1.internal.ee-11.0; ibm.tolerates:="12.0"
+  com.ibm.websphere.appserver.eeCompatible-11.0; ibm.tolerates:="12.0"
 -bundles=\
   io.openliberty.security.jaspic.2.0.internal
 -jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
@@ -23,4 +22,4 @@ Subsystem-Name: Jakarta Authentication 3.1
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
-WLP-Platform: jakartaee-11.0
+WLP-Platform: jakartaee-11.0,jakartaee-12.0

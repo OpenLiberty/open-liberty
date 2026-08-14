@@ -70,7 +70,7 @@ public class CertificateLoginOddOIDTest {
         assertNotNull("The application did not report is was started",
                       myServer.waitForStringInLog("CWWKZ0001I"));
         assertNotNull("We need to wait for the SSL port to be open",
-                      myServer.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl"));
+                      myServer.waitForDefaultHTTPEndpointSSLStart(true));
         assertNotNull("Server did not came up",
                       myServer.waitForStringInLog("CWWKF0011I"));
 

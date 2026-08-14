@@ -33,7 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.application.Application;
 
 /**
- * Tracks applications and their mcpServer configurations defined in the server.xml
+ * Tracks applications and their mcp configurations defined in the server.xml
  * The component compares Application service with `McpConfigurationComponent` services to determine
  * which mcp configuration belongs to which application
  * See {@link io.openliberty.microprofile.config.internal.serverxml.AppPropertiesTrackingComponent}
@@ -47,17 +47,17 @@ public class McpServerApplicationTracker {
     private boolean isTracingAndDebugEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
 
     /**
-     * Map from mcpServer PID to its corresponding McpConfigurationComponent. When an application arrives referencing mcpServer PIDs,
+     * Map from mcp PID to its corresponding McpConfigurationComponent. When an application arrives referencing mcp PIDs,
      * we are able to look up the actual configComponent object with this map.
      * Must hold lock on {@code this} to access.
      */
-    private final Map<String, McpConfigurationComponent> mcpServerPidToMcpConfigComponent = new HashMap<>();
+    private final Map<String, McpConfigurationComponent> mcpPidToMcpConfigComponent = new HashMap<>();
 
     /**
-     * A record of the application name and the list of mcpServerPids that application references. Keeps these 2 pieces of
+     * A record of the application name and the list of mcpPids that application references. Keeps these 2 pieces of
      * per-app data co-located and impossible to get out of sync
      */
-    private record AppEntry(String appName, List<String> mcpServerPids) {};
+    private record AppEntry(String appName, List<String> mcpPids) {};
 
     /**
      * Map from an application PID to its AppEntry record
@@ -80,7 +80,7 @@ public class McpServerApplicationTracker {
     @Deactivate
     protected void deactivate() {
         synchronized (this) {
-            mcpServerPidToMcpConfigComponent.clear();
+            mcpPidToMcpConfigComponent.clear();
             appPidToAppEntry.clear();
             appNameToMcpConfigProps.clear();
         }
@@ -91,7 +91,7 @@ public class McpServerApplicationTracker {
                policyOption = ReferencePolicyOption.GREEDY)
     protected void addMcpConfiguration(McpConfigurationComponent config) {
         synchronized (this) {
-            mcpServerPidToMcpConfigComponent.put(config.getServicePid(), config);
+            mcpPidToMcpConfigComponent.put(config.getServicePid(), config);
             updateAppsUsingMcpConfig(config.getServicePid());
         }
     }
@@ -103,10 +103,10 @@ public class McpServerApplicationTracker {
     }
 
     protected void removeMcpConfiguration(McpConfigurationComponent config) {
-        String mcpServerPid = config.getServicePid();
+        String mcpPid = config.getServicePid();
         synchronized (this) {
-            mcpServerPidToMcpConfigComponent.remove(mcpServerPid);
-            updateAppsUsingMcpConfig(mcpServerPid);
+            mcpPidToMcpConfigComponent.remove(mcpPid);
+            updateAppsUsingMcpConfig(mcpPid);
         }
     }
 
@@ -117,20 +117,20 @@ public class McpServerApplicationTracker {
     protected void addApp(Map<String, Object> appProps) {
         String appPid = (String) appProps.get("service.pid");
         String appName = (String) appProps.get("name");
-        String[] mcpServerPids = (String[]) appProps.get("mcpServer");
+        String[] mcpPids = (String[]) appProps.get("mcp");
 
         if (isTracingAndDebugEnabled) {
             Tr.debug(this, tc, "Application added. Name=" + appName + ", PID=" + appPid +
-                               ", mcpServerPIDs=" + Arrays.toString(mcpServerPids));
+                               ", mcpPIDs=" + Arrays.toString(mcpPids));
         }
 
         if (appPid == null && appName == null) {
             return; //We don't ever expect these to be null
         }
         synchronized (this) {
-            List<String> mcpServerPidList = (mcpServerPids != null && mcpServerPids.length > 0) ? Arrays.asList(mcpServerPids) : Collections.emptyList();
-            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpServerPidList));
-            if (!mcpServerPidList.isEmpty()) {
+            List<String> mcpPidList = (mcpPids != null && mcpPids.length > 0) ? Arrays.asList(mcpPids) : Collections.emptyList();
+            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpPidList));
+            if (!mcpPidList.isEmpty()) {
                 updateAppMcpConfigProps(appPid);
             }
         }
@@ -139,11 +139,11 @@ public class McpServerApplicationTracker {
     protected void updatedApp(Map<String, Object> appProps) {
         String appPid = (String) appProps.get("service.pid");
         String appName = (String) appProps.get("name");
-        String[] mcpServerPids = (String[]) appProps.get("mcpServer");
+        String[] mcpPids = (String[]) appProps.get("mcp");
 
         if (isTracingAndDebugEnabled) {
             Tr.debug(this, tc, "Application updated. Name=" + appName + ", PID=" + appPid +
-                               ", mcpServerPIDs=" + Arrays.toString(mcpServerPids));
+                               ", mcpPIDs=" + Arrays.toString(mcpPids));
         }
 
         if (appPid == null && appName == null) {
@@ -154,8 +154,8 @@ public class McpServerApplicationTracker {
             if (oldEntry != null && !oldEntry.appName().equals(appName)) {
                 appNameToMcpConfigProps.remove(oldEntry.appName());
             }
-            List<String> mcpServerPidList = (mcpServerPids != null && mcpServerPids.length > 0) ? Arrays.asList(mcpServerPids) : Collections.emptyList();
-            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpServerPidList));
+            List<String> mcpPidList = (mcpPids != null && mcpPids.length > 0) ? Arrays.asList(mcpPids) : Collections.emptyList();
+            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpPidList));
             updateAppMcpConfigProps(appPid);
         }
     }
@@ -179,13 +179,13 @@ public class McpServerApplicationTracker {
     }
 
     /**
-     * Given an mcpServer PID that was just added or updated, scan all `appEntries` to find applications
+     * Given an mcp PID that was just added or updated, scan all `appEntries` to find applications
      * that reference it and trigger a config rebuild for each, via `updateAppMcpConfigProps()`
      *
      */
-    private void updateAppsUsingMcpConfig(String mcpServerPid) {
+    private void updateAppsUsingMcpConfig(String mcpPid) {
         for (Map.Entry<String, AppEntry> appEntry : appPidToAppEntry.entrySet()) {
-            if (appEntry.getValue().mcpServerPids.contains(mcpServerPid)) {
+            if (appEntry.getValue().mcpPids.contains(mcpPid)) {
                 updateAppMcpConfigProps(appEntry.getKey());
             }
         }
@@ -193,7 +193,7 @@ public class McpServerApplicationTracker {
 
     /**
      * Given an application's PID, looks up its AppEntry, and build a complete list of resolved
-     * {@link McpServerConfigProps} by streaming the {@link mcpServerPids}, map each to its {@link McpConfigurationComponent},
+     * {@link McpServerConfigProps} by streaming the {@code mcpPids}, map each to its {@link McpConfigurationComponent},
      * filter out nulls, then map to {@link McpServerConfigProps}, filter out nulls and collect the resulting
      * list.
      * If the resulting list is empty the appEntry is removed from {@link appNameToMcpConfigProps}, otherwise the new
@@ -209,8 +209,8 @@ public class McpServerApplicationTracker {
         }
         String appName = appEntry.appName();
 
-        List<McpServerConfigProps> newPropsList = appEntry.mcpServerPids().stream()
-                                                          .map(mcpServerPid -> mcpServerPidToMcpConfigComponent.get(mcpServerPid))
+        List<McpServerConfigProps> newPropsList = appEntry.mcpPids().stream()
+                                                          .map(mcpPid -> mcpPidToMcpConfigComponent.get(mcpPid))
                                                           .filter(Objects::nonNull)
                                                           .map(mcpConfigComponent -> mcpConfigComponent.getConfigProps())
                                                           .filter(Objects::nonNull)
@@ -230,28 +230,48 @@ public class McpServerApplicationTracker {
      * be found
      *
      * @param appName The name of the application defined in the server.xml under `<application name="appName" location="app.war">`
-     * @param moduleName The name of the module defined in the server.xml under `<mcpServer moduleName="myModule" path="/mcp"`
-     * @return the McpServerConfigProps for the given application. If no `<mcpServer>` property was set in the server.xml
+     * @param moduleName The name of the module from runtime (may include .war suffix for EAR deployments)
+     * @return the McpServerConfigProps for the given application. If no {@code <mcp>} property was set in the server.xml
      * or if a configuration for particular module could not be found, returns {@link McpServerConfigProps.DEFAULT_CONFIG}
      */
     public McpServerConfigProps getConfigForModule(String appName, String moduleName) {
         List<McpServerConfigProps> configProps = appNameToMcpConfigProps.get(appName);
+
         if (configProps == null || configProps.isEmpty()) {
             return DEFAULT_CONFIG;
         }
+
+        String normalizedModuleName = normalizeModuleName(moduleName);
         McpServerConfigProps result = null;
+
         for (McpServerConfigProps configProp : configProps) {
-            //Exact module name match
-            if (moduleName != null && moduleName.equals(configProp.moduleName())) {
-                result = configProp;
-                break;
+            String configuredModuleName = normalizeModuleName(configProp.moduleName());
+
+            if (normalizedModuleName != null && normalizedModuleName.equals(configuredModuleName)) {
+                return configProp;
             }
-            //no module name specified - use default for all modules
+
+            // no module name specified - use default for all modules
             if (configProp.moduleName() == null) {
                 result = configProp;
             }
         }
+
         return result != null ? result : DEFAULT_CONFIG;
+    }
+
+    /**
+     * Normalizes module names before comparing server.xml configuration with runtime metadata.
+     *
+     * For WAR modules inside an EAR, Liberty runtime metadata can report the module using the archive
+     * name, for example `war1.war`, while the configured mcp moduleName is `war1`.
+     */
+    private String normalizeModuleName(String moduleName) {
+        if (moduleName != null && moduleName.endsWith(".war")) {
+            return moduleName.substring(0, moduleName.length() - ".war".length());
+        }
+
+        return moduleName;
     }
 
 }

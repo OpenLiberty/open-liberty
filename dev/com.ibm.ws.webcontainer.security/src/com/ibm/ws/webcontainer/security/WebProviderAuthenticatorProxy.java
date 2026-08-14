@@ -611,7 +611,6 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         }
 
         setThreadOidcClientId(oidcClientId);
-        setThreadOidcProvider(oidcClientId);
 
         if (oidcResult.getStatus() == AuthResult.REDIRECT_TO_PROVIDER) {
             return new AuthenticationResult(AuthResult.REDIRECT, oidcResult.getRedirectUrl());
@@ -840,13 +839,5 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
     public static void clearThreadOidcClientId() {
         threadOidcClientId.remove();
-    }
-
-    private void setThreadOidcProvider(String oidcProvider) {
-        threadOidcClientId.set(oidcProvider);
-    }
-
-    public static String getThreadOidcProvider() {
-        return threadOidcClientId.get();
     }
 }

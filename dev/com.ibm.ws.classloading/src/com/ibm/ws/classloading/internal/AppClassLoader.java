@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
@@ -46,6 +43,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -172,6 +170,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final ClassGenerator generator;
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     private final LibraryPrecedence libraryPrecedence;
+    private final String toStringCache;
 
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
@@ -202,6 +201,12 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.beforeAppDelegateLoaders = tmpBeforeApp.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(tmpBeforeApp);
         this.afterAppDelegateLoaders = tmpAfterApp.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(tmpAfterApp);
         this.generator = generator;
+        
+        this.toStringCache = toShortString();
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Created AppClassLoader: " + toStaticDiagString());
+        }
     }
 
     /** Provides the before delegate loaders so the {@link ShadowClassLoader} can mimic the structure. */
@@ -275,13 +280,11 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * and strip the / from the resulting URL.
      */
     @Override
-    @Trivial
     public final URL findResource(String name) {
         return findResourceInternal(name, false);
     }
 
     @Override
-    @Trivial
     protected URL delegateFindResource(String name) {
         return findResourceInternal(name, true);
     }
@@ -377,6 +380,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> findClass(String name, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Finding class " + name + " in classloader: " + this);
+        }
+        
         String resourceName = Util.convertClassNameToResourceName(name);
         ByteResourceInformation byteResInfo = findClassBytes(name, resourceName);
         if (byteResInfo == null) {
@@ -518,11 +525,20 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         try {
             clazz = defineClass(name, bytes, 0, bytes.length, pd);
         } finally {
-            final TraceComponent cltc;
-            if (TraceComponent.isAnyTracingEnabled() && (cltc = getClassLoadingTraceComponent(packageName)).isDebugEnabled()) {
-                String loc = byteResourceInformation.getContainerURL().toString();
-                String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";
-                Tr.debug(cltc, String.format("%s: [%s] [%s] [%s]", message, getKey(), loc, name));
+            if (TraceComponent.isAnyTracingEnabled()) {
+                // Resolve which TraceComponent is active: the class-level tc responds to
+                // com.ibm.ws.classloading.internal.*=all; the per-package cltc responds to
+                // com.ibm.ws.class.load.<packageName>=all for finer-grained filtering.
+                // Prefer tc so that the standard classloading trace spec always works,
+                // but fall through to cltc for users who have enabled package-specific tracing.
+                final TraceComponent traceActive = tc.isDebugEnabled()
+                        ? tc : getClassLoadingTraceComponent(packageName);
+                if (traceActive.isDebugEnabled()) {
+                    String loc = byteResourceInformation.getContainerURL().toString();
+                    String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";                    
+                    Tr.debug(traceActive, String.format("%s: class=[%s]; classloader=[%s]; location=[%s]",
+                            message, name, toShortString(), loc));
+                }
             }
         }
         byteResourceInformation.storeInClassCache(clazz, bytes);
@@ -531,24 +547,21 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     private ProtectionDomain getClassSpecificProtectionDomain(final ContainerURL containerUrl) {
+        ProtectionDomain pd;
         if (containerUrl == null) {
             // not expected; there will have been some FFDCs if this is null
-            return config.getProtectionDomain();
-        }
-        ProtectionDomain pd = null;
-        try {
-            pd = AccessController.doPrivileged(new PrivilegedExceptionAction<ProtectionDomain>() {
+            pd = config.getProtectionDomain();
+        } else if (System.getSecurityManager() == null) {
+            pd = getClassSpecificProtectionDomainPrivileged(containerUrl);
+        } else {
+            pd = AccessController.doPrivileged(new PrivilegedAction<ProtectionDomain>() {
                 @Override
                 public ProtectionDomain run() {
                     return getClassSpecificProtectionDomainPrivileged(containerUrl);
                 }
             });
-        } catch (PrivilegedActionException paex) {
-            //auto FFDC
-            pd = config.getProtectionDomain();
         }
         return pd;
-
     }
 
     ProtectionDomain getClassSpecificProtectionDomainPrivileged(ContainerURL containerUrl) {
@@ -931,24 +944,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     public String toDiagString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(config).append(LS);
-
-        sb.append("    API Visibility: ");
-        for (ApiType type : apiAccess.getApiTypeVisibility()) {
-            sb.append(type).append(" ");
-        }
-        sb.append(LS);
-
-        sb.append("    ClassPath: ").append(LS);
-        for (Collection<URL> containerURLs : getClassPath()) {
-            sb.append("      * ");
-            for (URL url : containerURLs) {
-                sb.append(url.toString()).append(" | ");
-            }
-            sb.append(LS);
-        }
-        sb.append(LS);
+        StringBuilder sb = new StringBuilder(toStaticDiagString());
 
         sb.append("    CodeSources: ");
         for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
@@ -959,8 +955,89 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         return sb.toString();
     }
+    
+    /**
+     * Builds the static portion of the diagnostic string — everything except CodeSources,
+     * which is populated lazily as classes are loaded.
+     */
+    private String toStaticDiagString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.toString()).append(LS);
+        sb.append(config).append(LS);
+
+        sb.append("    API Visibility: ");
+        for (ApiType type : apiAccess.getApiTypeVisibility()) {
+            sb.append(type).append(" ");
+        }
+        sb.append(LS);
+
+        // Show parent state
+        sb.append("    Parent: ");
+        if (parent != null) {
+            sb.append(parent.getClass().getSimpleName());
+        } else {
+            sb.append("null");
+        }
+        sb.append(LS);
+
+        sb.append("    ClassPath: ").append(LS);
+        for (Collection<URL> containerURLs : getClassPath()) {
+            sb.append("      * ");
+            Iterator<URL> it = containerURLs.iterator();
+            while (it.hasNext()) {
+                sb.append(it.next().toString());
+                if (it.hasNext()) {
+                    sb.append(" | ");
+                }
+            }
+            sb.append(LS);
+        }
+
+        // Get the container listing
+        sb.append("    Container Listing: ");
+        List<String> containerNames = getContainerNames();
+        if (!containerNames.isEmpty()) {
+            for (int i = 0; i < containerNames.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(containerNames.get(i));
+            }
+        } else {
+            sb.append("empty");
+        }
+        sb.append(LS);
+
+        return sb.toString(); 
+    }
+    
+    @Trivial
+    private String toShortString() {
+        StringBuilder sb = new StringBuilder();
+        
+        // Get the classloader type
+        sb.append(getClass().getSimpleName());
+        sb.append("@");
+        sb.append(Integer.toHexString(this.hashCode()));
+        
+        // Get the application
+        if (config.getId() != null) {
+            ClassLoaderIdentity id = config.getId();
+            sb.append(":").append(id.getDomain());
+            sb.append(":").append(id.getId());
+        }
+
+        // Get the delegation
+        sb.append(":");
+        sb.append(isParentFirst() ? "PF" : "PL");
+        return sb.toString();
+    }
 
     @Override
+    @Trivial
+    public String toString() {
+        return toStringCache;
+    }
+
+
     public Class<?> publicDefineClass(String name, byte[] b, ProtectionDomain protectionDomain) {
         return defineClass(name, b, 0, b.length, protectionDomain);
     }

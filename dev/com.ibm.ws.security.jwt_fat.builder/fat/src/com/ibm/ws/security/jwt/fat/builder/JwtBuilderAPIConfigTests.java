@@ -17,7 +17,6 @@ import java.util.Arrays;
 import javax.json.JsonObject;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -62,7 +61,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipJavaSemeruWithFipsEnabledRule
 public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
@@ -71,7 +69,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
-    @ClassRule
+    @Rule
     public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.jwt_fat.builder");
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();

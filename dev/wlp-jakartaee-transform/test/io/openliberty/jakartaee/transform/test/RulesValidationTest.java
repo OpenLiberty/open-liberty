@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,7 @@ public class RulesValidationTest {
     public void validateEE9Rules() throws Exception {
         StringBuilder errorMessage = new StringBuilder();
         validateSingleVersionRules(errorMessage, "rules/jakarta-versions-ee9.properties",
-                "rules/jakarta-versions-ee10.properties", "rules/jakarta-versions-ee11.properties");
+                "rules/jakarta-versions-ee10.properties", "rules/jakarta-versions-ee11.properties", "rules/jakarta-versions-ee12.properties");
 
         if (errorMessage.length() != 0) {
             Assert.fail("Found transform rules with incorrect values.\n" + errorMessage.toString());
@@ -75,7 +75,18 @@ public class RulesValidationTest {
     public void validateEE10Rules() throws Exception {
         StringBuilder errorMessage = new StringBuilder();
         validateSingleVersionRules(errorMessage, "rules/jakarta-versions-ee10.properties",
-                "rules/jakarta-versions-ee11.properties");
+                "rules/jakarta-versions-ee11.properties", "rules/jakarta-versions-ee12.properties");
+
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found transform rules with incorrect values.\n" + errorMessage.toString());
+        }
+    }
+
+    @Test
+    public void validateEE11Rules() throws Exception {
+        StringBuilder errorMessage = new StringBuilder();
+        validateSingleVersionRules(errorMessage, "rules/jakarta-versions-ee11.properties",
+                "rules/jakarta-versions-ee12.properties");
 
         if (errorMessage.length() != 0) {
             Assert.fail("Found transform rules with incorrect values.\n" + errorMessage.toString());
@@ -86,11 +97,11 @@ public class RulesValidationTest {
     public void validateEE9PlusRules() throws Exception {
         StringBuilder errorMessage = new StringBuilder();
         validateComboRules(errorMessage, "rules/jakarta-versions.properties", "rules/jakarta-versions-ee9.properties",
-                "rules/jakarta-versions-ee11.properties");
+                "rules/jakarta-versions-ee12.properties");
 
         if (errorMessage.length() != 0) {
             Assert.fail(
-                    "Found transform rules with incorrect values.\nError could be in jakarta-versions.properties, ee9, and/or ee11 files\n"
+                    "Found transform rules with incorrect values.\nError could be in jakarta-versions.properties, ee9, and/or ee12 files\n"
                             + errorMessage.toString());
         }
     }
@@ -99,10 +110,22 @@ public class RulesValidationTest {
     public void validateEE10PlusRules() throws Exception {
         StringBuilder errorMessage = new StringBuilder();
         validateComboRules(errorMessage, "rules/jakarta-versions-ee10plus.properties",
-                "rules/jakarta-versions-ee10.properties", "rules/jakarta-versions-ee11.properties");
+                "rules/jakarta-versions-ee10.properties", "rules/jakarta-versions-ee12.properties");
         if (errorMessage.length() != 0) {
             Assert.fail(
-                    "Found transform rules with incorrect values.\nError could be in ee10plus, ee10, and/or ee11 files\n"
+                    "Found transform rules with incorrect values.\nError could be in ee10plus, ee10, and/or ee12 files\n"
+                            + errorMessage.toString());
+        }
+    }
+
+    @Test
+    public void validateEE11PlusRules() throws Exception {
+        StringBuilder errorMessage = new StringBuilder();
+        validateComboRules(errorMessage, "rules/jakarta-versions-ee11plus.properties",
+                "rules/jakarta-versions-ee11.properties", "rules/jakarta-versions-ee12.properties");
+        if (errorMessage.length() != 0) {
+            Assert.fail(
+                    "Found transform rules with incorrect values.\nError could be in ee11plus, ee11, and/or ee12 files\n"
                             + errorMessage.toString());
         }
     }
@@ -115,6 +138,30 @@ public class RulesValidationTest {
         if (errorMessage.length() != 0) {
             Assert.fail(
                     "Found transform rules with incorrect values.\nError could be in ee9and10, ee9, and/or ee10 files\n"
+                            + errorMessage.toString());
+        }
+    }
+
+    @Test
+    public void validateEE10And11Rules() throws Exception {
+        StringBuilder errorMessage = new StringBuilder();
+        validateComboRules(errorMessage, "rules/jakarta-versions-ee10and11.properties",
+                "rules/jakarta-versions-ee10.properties", "rules/jakarta-versions-ee11.properties");
+        if (errorMessage.length() != 0) {
+            Assert.fail(
+                    "Found transform rules with incorrect values.\nError could be in ee10and11, ee10, and/or ee11 files\n"
+                            + errorMessage.toString());
+        }
+    }
+
+    @Test
+    public void validateEE9And10And11Rules() throws Exception {
+        StringBuilder errorMessage = new StringBuilder();
+        validateComboRules(errorMessage, "rules/jakarta-versions-ee9and10and11.properties",
+                "rules/jakarta-versions-ee9.properties", "rules/jakarta-versions-ee11.properties");
+        if (errorMessage.length() != 0) {
+            Assert.fail(
+                    "Found transform rules with incorrect values.\nError could be in ee9and10, ee9, ee10, and/or ee11 files\n"
                             + errorMessage.toString());
         }
     }

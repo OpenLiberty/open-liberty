@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -116,7 +116,7 @@ public class DataStoreSecondServlet extends FATServlet {
             assertEquals("resrefuser2",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id='ninety-two'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id='ninety-two'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -150,7 +150,7 @@ public class DataStoreSecondServlet extends FATServlet {
             assertEquals("defaultuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM DefDSEntityWar2 WHERE id = 25";
+            String sql = "SELECT val FROM DefDSEntityWar2 WHERE id = 25";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);

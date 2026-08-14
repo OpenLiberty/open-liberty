@@ -91,7 +91,7 @@ public class TraceWriter extends StringWriter {
         return (destination.isDebugEnabled());
     }
 
-    private void formatTrace() {
+    protected void formatTrace() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "formatTrace");
 

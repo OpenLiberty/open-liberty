@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=Celkov\u00fd po\u010det prvk\u016f nen\u00ed k dispozici
 011.unknown.attr.type=Instance {0} byla z\u00edsk\u00e1na zp\u016fsobem, kter\u00fd neidentifikuje typ atributu. U statick\u00fdch t\u0159\u00edd metamodelu pou\u017eijte metodu.of, kter\u00e1 je definov\u00e1na na podtypu atributu, pro zad\u00e1n\u00ed t\u0159\u00eddy entity a typu atributu entity.
 012.unknown.decl.type=Instance {0} byla z\u00edsk\u00e1na zp\u016fsobem, kter\u00fd neidentifikuje t\u0159\u00eddu entity, kter\u00e1 atribut deklaruje. U statick\u00fdch t\u0159\u00edd metamodelu pou\u017eijte metodu.of, kter\u00e1 je definov\u00e1na na podtypu atributu, pro zad\u00e1n\u00ed t\u0159\u00eddy entity a typu atributu entity.
+013.arg.invalid=Argument ` {0} ` nesm\u00ed m\u00edt hodnotu ` {1} `.
+014.mode.disallows.offset=\u017d\u00e1dost o str\u00e1nku nem\u016f\u017ee obsahovat sou\u010dasn\u011b offset i re\u017eim \u201e {0} \u201c.
+015.cursor.uncomputable=Po\u017eadovan\u00e1 operace nen\u00ed k dispozici, proto\u017ee z t\u0159\u00eddic\u00edch krit\u00e9ri\u00ed obsahuj\u00edc\u00edch v\u00fdraz nelze vypo\u010d\u00edtat kurzor.

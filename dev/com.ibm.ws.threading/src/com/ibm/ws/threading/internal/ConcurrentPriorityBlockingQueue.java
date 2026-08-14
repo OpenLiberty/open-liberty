@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -714,6 +715,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
      * @return string representing this data structure.
      */
     @Override
+    @Trivial
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append(size.get()).append(' ');

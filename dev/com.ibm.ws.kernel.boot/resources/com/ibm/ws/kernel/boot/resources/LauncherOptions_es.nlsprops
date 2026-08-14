@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -123,7 +123,7 @@ option-key.os=\ \ \ \ --os=valor,valor,...
 option-desc.os=\tEspecifica los sistemas operativos a los que debe dar soporte el servidor.\n\t Proporcione una lista separada por comas. El valor predeterminado es any,    \n\tque indica que el servidor se debe poder desplegar en cualquier sistema   \n\toperativo soportado por el origen.                                      \n\tPara especificar que un sistema operativo no debe estar soportado, anteponga\n\tun signo menos ("-") como prefijo. Para obtener una lista de valores de sistema operativo,\n\tconsulte el sitio web de OSGi Alliance situado en este URL:                  \n\thttp://www.osgi.org/Specifications/Reference#os                      \n\tEsta opci\u00f3n s\u00f3lo es aplicable a la operaci\u00f3n de empaquetado, y solamente \n\tse puede utilizar con la opci\u00f3n --include=minify. Si excluye un sistema operativo,\n\tno puede incluirlo m\u00e1s tarde si repite la operaci\u00f3n minify en el \n\tarchivo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
-option-desc.no-password=\tInhabilitar la generaci\u00f3n de contrase\u00f1a de almac\u00e9n de claves predeterminada
+option-desc.no-password=\tDesactivar la generaci\u00f3n de la contrase\u00f1a predeterminada del almac\u00e9n de claves y de la contrase\u00f1a predeterminada de las claves LTPA.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="carpeta de servidor ra\u00edz del archivador"
 option-desc.package.server-root=\tEspecifica el nombre de la carpeta ra\u00edz del servidor en el archivo de almacenamiento. 

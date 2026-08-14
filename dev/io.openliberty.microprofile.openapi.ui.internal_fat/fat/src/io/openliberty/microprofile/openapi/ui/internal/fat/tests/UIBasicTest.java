@@ -101,7 +101,10 @@ public class UIBasicTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        /*
+         * SRVE8056E: An unexpected exception occurred closing the output stream is generated occasionally during shutdown
+         */
+        server.stopServer("SRVE8056E");
     }
 
     @Before
@@ -125,7 +128,7 @@ public class UIBasicTest {
     public void testHttpsUI() throws Exception {
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         driver.get("https://host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/openapi/ui");
         testUI();

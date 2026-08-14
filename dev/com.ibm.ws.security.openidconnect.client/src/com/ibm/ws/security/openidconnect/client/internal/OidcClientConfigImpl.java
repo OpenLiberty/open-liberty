@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.Key;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
@@ -58,6 +57,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.crypto.HashUtils;
@@ -182,6 +182,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
     public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
     public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
+    public static final String CFG_KEY_PROTECTED_RESOURCE_METADATA = "protectedResourceMetadata";
+    public static final String CFG_KEY_ADVERTISED_SCOPES = "advertisedScopes";
+    public static final String CFG_KEY_JWT_BUILDER_REF = "jwtBuilderRef";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -316,14 +319,17 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean tokenReuse = false;
 
     private List<String> tokenOrderToFetchCallerClaims;
+    private boolean serveProtectedResourceMetadata = false;
+    private List<String> protectedResourceMetadataAdvertisedScopes = null;
+    private String protectedResourceMetadataJwtBuilderRef = null;
+    private String protectedResourceMetadataJwtBuilderId = null;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
     // see defect 218708
     static String firstRandom = OidcUtil.generateRandom(32);
 
-    public OidcClientConfigImpl() {
-    }
+    public OidcClientConfigImpl() {}
 
     @Reference(name = KEY_CONFIGURATION_ADMIN, service = ConfigurationAdmin.class, policy = ReferencePolicy.DYNAMIC)
     protected void setConfigurationAdmin(ServiceReference<ConfigurationAdmin> ref) {
@@ -469,7 +475,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             // 220146
             Tr.warning(tc, "OIDC_CLIENT_NONE_ALG", new Object[] { id, signatureAlgorithm });
         }
-        allowedSignatureAlgorithms = trimIt((String[]) props.get(CFG_KEY_ALLOWED_SIGNATURE_ALGORITHMS ));
+        allowedSignatureAlgorithms = trimIt((String[]) props.get(CFG_KEY_ALLOWED_SIGNATURE_ALGORITHMS));
         clockSkew = (Long) props.get(CFG_KEY_CLOCK_SKEW);
         clockSkewInSeconds = clockSkew / 1000; // Duration types are always in milliseconds, convert to seconds.
         authenticationTimeLimitInSeconds = (Long) props.get(CFG_KEY_AUTHENTICATION_TIME_LIMIT) / 1000;
@@ -567,12 +573,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         accessTokenCacheTimeout = configUtils.getLongConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT, accessTokenCacheTimeout);
         pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
         tokenRequestOriginHeader = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER);
+
+        // Process protectedResourceMetadata sub-element
+        processProtectedResourceMetadata(props);
+
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
 
         // validateAuthzTokenEndpoints(); //TODO: update tests to expect the error if the validation here fails
-        String tokens = configUtils.getConfigAttributeWithDefaultValue(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS, "IDToken");     
+        String tokens = configUtils.getConfigAttributeWithDefaultValue(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS, "IDToken");
         tokenOrderToFetchCallerClaims = split(tokens);
         if (discovery) {
             logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE");
@@ -650,6 +660,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "pkceCodeChallengeMethod:" + pkceCodeChallengeMethod);
             Tr.debug(tc, "tokenRequestOriginHeader:" + tokenRequestOriginHeader);
             Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims);
+            Tr.debug(tc, "serveProtectedResourceMetadata:" + serveProtectedResourceMetadata);
+            Tr.debug(tc, "protectedResourceMetadataAdvertisedScopes:" + protectedResourceMetadataAdvertisedScopes);
+            Tr.debug(tc, "protectedResourceMetadataJwtBuilderRef:" + protectedResourceMetadataJwtBuilderRef);
         }
     }
 
@@ -696,6 +709,88 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      */
     private void logDiscoveryMessage(String key) {
         Tr.info(tc, key, getId(), getDiscoveryEndpointUrl());
+    }
+
+    /**
+     * Process the protectedResourceMetadata sub-element configuration.
+     * Because ibm:flat="true" is set on the AD, the child element properties are
+     * flattened onto the parent props map as "protectedResourceMetadata.0.{childProp}".
+     * This feature is only available in beta mode.
+     *
+     * <p>
+     * Sub-element presence is detected via the Liberty config sentinel key
+     * {@code protectedResourceMetadata.0.config.referenceType}, which is always injected
+     * when the sub-element is present, even when it is empty. We cannot rely solely on
+     * the child property keys ({@code advertisedScopes}, {@code jwtBuilderRef}) for presence
+     * detection because {@code jwtBuilderRef} is an {@code ibm:type="pid"} reference: if no
+     * matching jwtBuilder service exists, the config framework does not inject the flat key,
+     * so both child keys can be absent even when the element is configured.
+     *
+     * @param props
+     *            the configuration properties map
+     */
+    private void processProtectedResourceMetadata(Map<String, Object> props) {
+        serveProtectedResourceMetadata = false;
+        protectedResourceMetadataAdvertisedScopes = null;
+        protectedResourceMetadataJwtBuilderRef = null;
+        protectedResourceMetadataJwtBuilderId = null;
+
+        // Beta fencing: only process if running in beta mode
+        if (!ProductInfo.getBetaEdition()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "protectedResourceMetadata sub-element is only available in beta mode");
+            }
+            return;
+        }
+
+        // Use config.referenceType as the sentinel for sub-element presence.
+        // This key is always injected by the config framework when ibm:flat="true" and
+        // the sub-element exists, regardless of whether any optional child ADs were set.
+        final String flatReferenceTypeKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType";
+        final String flatAdvertisedScopesKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_ADVERTISED_SCOPES;
+        final String flatJwtBuilderRefKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_JWT_BUILDER_REF;
+        if (props.containsKey(flatReferenceTypeKey)) {
+            // Sub-element is present: enable the metadata endpoint unconditionally.
+            serveProtectedResourceMetadata = true;
+
+            String advertisedScopes = configUtils.getConfigAttribute(props, flatAdvertisedScopesKey);
+            protectedResourceMetadataAdvertisedScopes = advertisedScopes == null ? null
+                    : Arrays.stream(advertisedScopes.split(","))
+                            .map(String::trim)
+                            .collect(java.util.stream.Collectors.toList());
+
+            protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttribute(props, flatJwtBuilderRefKey);
+
+            // Resolve the user-facing id for the JWT builder (needed for jwks_uri derivation).
+            // ibm:type="pid" attributes store the OSGi PID (e.g. "com.ibm.ws.security.jwt.builder_0"),
+            // not the user-assigned id. Use ConfigAdmin to look up the human-readable "id" property.
+            if (protectedResourceMetadataJwtBuilderRef != null) {
+                try {
+                    Configuration jwtBuilderConfig = configAdminRef.getService().getConfiguration(protectedResourceMetadataJwtBuilderRef, null);
+                    if (jwtBuilderConfig != null) {
+                        java.util.Dictionary<String, Object> jwtBuilderProps = jwtBuilderConfig.getProperties();
+                        if (jwtBuilderProps != null) {
+                            protectedResourceMetadataJwtBuilderId = trimIt((String) jwtBuilderProps.get("id"));
+                        }
+                    }
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + protectedResourceMetadataJwtBuilderRef + "]: " + e);
+                    }
+                }
+                if (protectedResourceMetadataJwtBuilderId == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + protectedResourceMetadataJwtBuilderRef + "]");
+                    }
+                }
+
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "protectedResourceMetadata configured - advertisedScopes: " + protectedResourceMetadataAdvertisedScopes
+                        + ", jwtBuilderRef: " + protectedResourceMetadataJwtBuilderRef + ", jwtBuilderId: " + protectedResourceMetadataJwtBuilderId);
+            }
+        }
     }
 
     // @Override
@@ -1345,7 +1440,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     @Override
-    public String[] getAllowedSignatureAlgorithms(){
+    public String[] getAllowedSignatureAlgorithms() {
         return allowedSignatureAlgorithms;
     }
 
@@ -1983,20 +2078,35 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     @Override
+    public boolean getServeProtectedResourceMetadata() {
+        return serveProtectedResourceMetadata;
+    }
+
+    @Override
+    public List<String> getProtectedResourceMetadataAdvertisedScopes() {
+        return protectedResourceMetadataAdvertisedScopes;
+    }
+
+    @Override
+    public String getProtectedResourceMetadataJwtBuilderId() {
+        return protectedResourceMetadataJwtBuilderId;
+    }
+
+    @Override
     public List<String> getTokenOrderToFetchCallerClaims() {
         return tokenOrderToFetchCallerClaims;
     }
 
-    List<String> split(String str) {    
+    List<String> split(String str) {
         List<String> rvalue = new ArrayList<String>();
-            if (str.contains(" ")) {
-                StringTokenizer st = new StringTokenizer(str, " ");
-                while (st.hasMoreElements()) {
-                    rvalue.add(st.nextToken());
-                }
-            } else {
-                rvalue.add(str);
+        if (str.contains(" ")) {
+            StringTokenizer st = new StringTokenizer(str, " ");
+            while (st.hasMoreElements()) {
+                rvalue.add(st.nextToken());
             }
+        } else {
+            rvalue.add(str);
+        }
         return rvalue;
     }
 }

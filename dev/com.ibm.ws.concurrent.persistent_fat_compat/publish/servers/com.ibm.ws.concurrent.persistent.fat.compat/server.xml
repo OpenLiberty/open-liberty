@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2014, 2019 IBM Corporation and others.
+    Copyright (c) 2014, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@
 
   <!-- Executor that can execute tasks -->
   <persistentExecutor jndiName="concurrent/myExecutor" taskStoreRef="ExecutorTaskStore" pollInterval="300ms" retryLimit="0"/>
-  <databaseStore id="ExecutorTaskStore" tablePrefix="EXEC" dataSourceRef="myDataSource" keyGenerationStrategy="IDENTITY"/>
+  <databaseStore id="ExecutorTaskStore" tablePrefix="EXEC" dataSourceRef="myDataSource" />
 
   <!-- Executor that schedules tasks only (and captures thread context) -->
   <persistentExecutor jndiName="concurrent/mySchedulerWithContext" taskStoreRef="SchedulerTaskStore" enableTaskExecution="false">
@@ -42,22 +42,22 @@
   	</timerService>
   </ejbContainer>
 
-  <databaseStore id="SchedulerTaskStore" tablePrefix="SCHD" dataSourceRef="myDataSource" keyGenerationStrategy="SEQUENCE"/>
+  <databaseStore id="SchedulerTaskStore" tablePrefix="SCHD" dataSourceRef="myDataSource"/>
 
   <!-- database for tasks -->
   <dataSource id="myDataSource" jndiName="jdbc/myDataSource">
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:persistcompat"/>
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:persistcompat;DB_CLOSE_DELAY=-1"/>
   </dataSource>
-  <library id="DerbyLib">
-    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  <library id="H2Lib">
+    <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
   </library>
 
   <!-- update this when creating versioned .ser files to save -->
   <variable name="version" value="20.0.0.11"/>
   <jndiEntry jndiName="liberty/version" value="${version}"/>
 
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
   <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>

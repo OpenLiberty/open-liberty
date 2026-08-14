@@ -192,20 +192,33 @@ public abstract class AppParentDelegationAbstractTest extends FATServletClient {
         }
 
         public void test(LibertyServer server) throws Exception {
+            // if -Xbootclasspath has been detected then revert to Java 8 behavior testing
+            boolean testJava9Behavior = JavaInfo.JAVA_VERSION >= 9 && !(findXbootclasspathTrace(server));
             if (traceTarget != null) {
                 if (negativeTest) {
-                    checkNegativeTrace(server, this, JavaInfo.JAVA_VERSION >= 9 ? traceMsg9Plus : traceMsg8, traceTarget);
+                    checkNegativeTrace(server, this, testJava9Behavior ? traceMsg9Plus : traceMsg8, traceTarget);
                 } else {
-                    checkTrace(server, this, JavaInfo.JAVA_VERSION >= 9 ? traceMsg9Plus : traceMsg8, traceTarget);
+                    checkTrace(server, this, testJava9Behavior ? traceMsg9Plus : traceMsg8, traceTarget);
                 }
             }
             if (secondaryTarget != null) {
                 if (negativeTest) {
-                    checkNegativeTrace(server, this, JavaInfo.JAVA_VERSION >= 9 ? secondaryMsg9Plus : secondaryMsg8, secondaryTarget);
+                    checkNegativeTrace(server, this, testJava9Behavior ? secondaryMsg9Plus : secondaryMsg8, secondaryTarget);
                 } else {
-                    checkTrace(server, this, JavaInfo.JAVA_VERSION >= 9 ? secondaryMsg9Plus : secondaryMsg8, secondaryTarget);
+                    checkTrace(server, this, testJava9Behavior ? secondaryMsg9Plus : secondaryMsg8, secondaryTarget);
                 }
             }
+        }
+
+        private boolean findXbootclasspathTrace(LibertyServer server) throws Exception {
+            Iterator<String> traceLines = server.findStringsInLogsAndTrace(".*").iterator();
+            while (traceLines.hasNext()) {
+                String line = traceLines.next();
+                if (line.contains("discoverParentPackages: returning null because -Xbootclasspath JVM option is being used.")) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 

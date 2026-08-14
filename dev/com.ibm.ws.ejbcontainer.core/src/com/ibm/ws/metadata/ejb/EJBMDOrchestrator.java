@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2023 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.metadata.ejb;
 
+import static com.ibm.ejs.container.ContainerConfigConstants.deactivateOnQuiesce;
+import static com.ibm.ejs.container.ContainerConfigConstants.destroyOnQuiesce;
 import static com.ibm.ejs.container.ContainerProperties.AllowCachedTimerDataFor;
 import static com.ibm.ejs.container.ContainerProperties.AllowCustomFinderSQLForUpdate;
 import static com.ibm.ejs.container.ContainerProperties.DefaultSessionAccessTimeout;
@@ -117,6 +119,7 @@ import com.ibm.ws.ejbcontainer.runtime.EJBJPAContainer;
 import com.ibm.ws.ejbcontainer.runtime.EJBRuntime;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.javaee.dd.common.DisplayName;
+import com.ibm.ws.javaee.dd.common.EnvEntry;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
 import com.ibm.ws.javaee.dd.common.SecurityRoleRef;
 import com.ibm.ws.javaee.dd.ejb.ApplicationException;
@@ -7222,7 +7225,7 @@ public abstract class EJBMDOrchestrator {
         }
 
         //---------------------------------------------------------
-        // Get the WCCM artifacts relavent to refeference processing
+        // Get the WCCM artifacts relevant to reference processing
         //----------------------------------------------------------
         String displayName = null;
         Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs = new EnumMap<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>>(JNDIEnvironmentRefType.class);
@@ -7318,9 +7321,71 @@ public abstract class EJBMDOrchestrator {
         JNDIEnvironmentRefType.setAllRefs(compNSConfig, allRefs);
         JNDIEnvironmentRefBindingHelper.setAllBndAndExt(compNSConfig, allBindings, envEntryValues, resRefList);
 
+        //-----------------------------------------------------------------------
+        // Save custom env-entry configuration properties if present
+        // ----------------------------------------------------------------------
+
+        // Custom env-entry properties support a value being provided in ejb-jar.xml,
+        // ibm-ejb-jar-bnd.xml, or ejb-jar-bnd in server.xml. An env-entry in ejb-jar.xml
+        // or with the @Resource annotation is not required.
+
+        if (bmd.isSingletonSessionBean()) {
+            // Configuring a singleton bean to destroy on quiesce is done by adding an env-entry value
+            // with the following name: io.openliberty.ejb.destroyOnQuiesce
+            bmd.quiesce = getCustomEnvEntryProperty(destroyOnQuiesce, envEntryValues, compNSConfig);
+        } else if (bmd.isMessageDrivenBean()) {
+            // Configuring a message-driven bean to not deactivate on quiesce is done by adding an env-entry
+            // value with the following name: io.openliberty.ejb.deactivateOnQuiesce
+            bmd.quiesce = getCustomEnvEntryProperty(deactivateOnQuiesce, envEntryValues, compNSConfig);
+        }
+
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "finishBMDInitForReferenceContext: " + compNSConfig.toDumpString());
         return compNSConfig;
+    }
+
+    /**
+     * Returns the configured value for a custom env-entry property. The value may be configured in
+     * the ejb-jar-bnd section of server.xml, ibm-ejb-jar-bnd.xml, or in ejb-jar.xml, with the priority
+     * being in that order (highest to lowest). Null will be returned if the custom property is
+     * not configured.
+     * 
+     * @param property       custom property name
+     * @param envEntryValues configured envy-entry values from ibm-ejb-jar.bnd.xml or ejb-jar-bnd in server.xml
+     * @param compNSConfig   component name space configuration for the current bean
+     * @return custom env-entry property value or null
+     */
+    private Boolean getCustomEnvEntryProperty(String property, Map<String, String> envEntryValues, ComponentNameSpaceConfiguration compNSConfig) {
+        String value = envEntryValues != null ? envEntryValues.get(property) : null;
+        if (value != null) {
+            // binding value found in either ibm-ejb-jar-bnd.xml or ejb-jar-bnd in server.xml
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "found custom property binding value " + property + " : " + value);
+            return Boolean.valueOf(value);
+        } else {
+            // look for an env-entry in ejb-jar.xml
+            List<? extends EnvEntry> envEntries = compNSConfig.getEnvEntries();
+            if (envEntries != null) {
+                for (EnvEntry envEntry : envEntries) {
+                    if (property.equals(envEntry.getName()) && "java.lang.Boolean".equals(envEntry.getTypeName())) {
+                        value = envEntry.getValue();
+                        if (value != null) {
+                            // env-entry-value found in ejb-jar.xml
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(tc, "found custom property env-entry-value " + property + " : " + value);
+                            return Boolean.valueOf(value);
+                        }
+                        // env-entry found in ejb-jar.xml, but no value provided
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "found custom property env-entry " + property + " : null");
+                        return null;
+                    }
+                }
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "custom property env-entry not found : " + property);
+        return null;
     }
 
     // F743-17630CodRv

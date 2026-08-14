@@ -66,7 +66,7 @@ public class WCPartitionedCookieAttributeSecurityTest {
 
         // Start the server and use the class name so we can find logs easily.
         partitionedSecurityServer.startServer(WCPartitionedCookieAttributeSecurityTest.class.getSimpleName() + ".log");
-        partitionedSecurityServer.waitForSSLStart();
+        partitionedSecurityServer.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass
@@ -97,8 +97,7 @@ public class WCPartitionedCookieAttributeSecurityTest {
         String expectedResponse = "Welcome to the SameSiteSecurityServlet!";
 
         // CWWKS4105I: LTPA configuration is ready after x seconds
-        assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      partitionedSecurityServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
+        partitionedSecurityServer.waitForLTPAConfigReady();
 
         // Need to use https since we're testing SameSite=None and that requires a secure connection for the Cookies to be sent.
         String url = "https://" + partitionedSecurityServer.getHostname() + ":" + partitionedSecurityServer.getHttpDefaultSecurePort() + "/" + APP_NAME_SAMESITE_SECURITY

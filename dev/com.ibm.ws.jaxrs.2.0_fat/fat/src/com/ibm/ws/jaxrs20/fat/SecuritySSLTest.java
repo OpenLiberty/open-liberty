@@ -59,8 +59,8 @@ public class SecuritySSLTest {
             assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
             assertNotNull("The Security Service should be ready", server.waitForStringInLog("CWWKS0008I"));
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
-            assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
-            assertNotNull("The defaultHttpEndpoint-ssl endpoint should report it is ready", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl"));
+            assertNotNull("LTPA configuration should report it is ready", server.waitForLTPAConfigReady(true));
+            assertNotNull("The defaultHttpEndpoint-ssl endpoint should report it is ready", server.waitForDefaultHTTPEndpointSSLStart(true));
             // Wait for /security endpoints to be initialized
             assertNotNull("/security com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication was not initialized (SRVE0242I not found)",
                           server.waitForStringInLog("SRVE0242I.*/security.*com.ibm.ws.jaxrs.fat.security.ssl.SSLApplication"));

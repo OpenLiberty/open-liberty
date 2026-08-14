@@ -14,6 +14,7 @@ package jakarta.data.constraint;
 
 import static java.util.Collections.unmodifiableList;
 
+import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +28,11 @@ import jakarta.data.spi.expression.literal.Literal;
  */
 public interface In<V> extends Constraint<V> {
 
+    @Nonnull
     List<Expression<?, V>> expressions();
 
-    static <V> In<V> values(Collection<V> values) {
+    @Nonnull
+    static <V> In<V> values(@Nonnull Collection<V> values) {
 
         Messages.requireNonNull(values, "values");
 
@@ -50,7 +53,8 @@ public interface In<V> extends Constraint<V> {
     }
 
     @SafeVarargs
-    static <V> In<V> expressions(Expression<?, V>... expressions) {
+    @Nonnull
+    static <V> In<V> expressions(@Nonnull Expression<?, V>... expressions) {
 
         Messages.requireNonNull(expressions, "expressions");
 
@@ -67,7 +71,8 @@ public interface In<V> extends Constraint<V> {
         return new InRecord<>(List.of(expressions));
     }
 
-    static <V> In<V> expressions(List<Expression<?, V>> expressions) {
+    @Nonnull
+    static <V> In<V> expressions(@Nonnull List<Expression<?, V>> expressions) {
 
         Messages.requireNonNull(expressions, "expressions");
 
@@ -85,7 +90,8 @@ public interface In<V> extends Constraint<V> {
     }
 
     @SafeVarargs
-    static <V> In<V> values(V... values) {
+    @Nonnull
+    static <V> In<V> values(@Nonnull V... values) {
         Messages.requireNonNull(values, "values");
 
         if (values.length == 0)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -480,6 +480,15 @@ public class Http2Client {
     protected boolean isWaitingForAck() {
         return h2Connection.getWaitingForACK().get();
     }
+    /**
+     * Check if a GOAWAY frame was received from the server
+     *
+     * @return true if a GOAWAY frame was received, false otherwise
+     */
+    public boolean receivedGoAway() {
+        return receivedExpectedGoAway;
+    }
+
 
     public class FATFramesListener implements FramesListener {
 
@@ -649,6 +658,12 @@ public class Http2Client {
                     Thread.sleep(10);
                 } catch (Exception x) {
                 }
+                if (h2Connection.connectionErrorOccurred()) {
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run", "H2 connection is closed, stopping timeout helper!");
+                    }
+                    break;
+                }
             }
             while (lockWaitFor.get() && (System.currentTimeMillis() - startTime) < timeoutToFinishTest && !isTestDone.get()) {
                 try {
@@ -659,11 +674,17 @@ public class Http2Client {
                     Thread.sleep(10);
                 } catch (Exception x) {
                 }
+                if (h2Connection.connectionErrorOccurred()) {
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run", "H2 connection is closed, stopping timeout helper!");
+                    }
+                    break;
+                }
             }
             didTimeout.set(true);
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run",
-                            "Finished looping because timeout: " + ((System.currentTimeMillis() - startTime) >= timeoutToFinishTest) + " isTestDone.get()= " + isTestDone.get());
+                            "Finished looping because timeout: " + ((System.currentTimeMillis() - startTime) >= timeoutToFinishTest) + " isTestDone.get()= " + isTestDone.get() + " connectionErrorOccurred=" + h2Connection.connectionErrorOccurred());
 
             }
             //if the test is not done, make it finish. Otherwise, let the framework handle the end of the test as usual (meaning receivedFrameGoAway() will handle the end of the test).
@@ -676,15 +697,16 @@ public class Http2Client {
                 getReportedExceptions().add(new FATTimeoutException("The test didn't finish. Timeout: " + timeoutToFinishTest));
 
             }
-            h2Connection.close();
-            //On timeout, call countDown() to make the test finish.
-            if (allowFramesAfterEndOfStream)
-                getReportedExceptions().removeIf(e -> e instanceof ReceivedFrameAfterEndOfStream);
-            if (receivedExpectedGoAway)
-                getReportedExceptions().removeIf(e -> e instanceof StreamDidNotReceivedEndOfStreamException);
-            countDownLatch.countDown();
+            try{
+                h2Connection.close();
+            } finally {
+                //On timeout, call countDown() to make the test finish.
+                if (allowFramesAfterEndOfStream)
+                    getReportedExceptions().removeIf(e -> e instanceof ReceivedFrameAfterEndOfStream);
+                if (receivedExpectedGoAway)
+                    getReportedExceptions().removeIf(e -> e instanceof StreamDidNotReceivedEndOfStreamException);
+                countDownLatch.countDown();
+            }
         }
-
     }
-
 }

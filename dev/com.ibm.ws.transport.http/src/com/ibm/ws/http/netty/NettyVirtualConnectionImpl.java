@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,31 +21,27 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 
 public class NettyVirtualConnectionImpl implements VirtualConnection {
     private static final TraceComponent tc = Tr.register(NettyVirtualConnectionImpl.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
-    public static final NettyVirtualConnectionImpl DUMMY_NETTY_VC;
-
-    static {
-        DUMMY_NETTY_VC = new NettyVirtualConnectionImpl();
-        DUMMY_NETTY_VC.init();
-    }
-
     private Map<Object, Object> stateStore = null;
     private boolean inetAddressingValid = false;
     private ConnectionDescriptor connDesc = null;
 
+    //no-op using for complete callback.
+    public static final NettyVirtualConnectionImpl SHARED_NETTY_CALLBACK_VC = new NettyVirtualConnectionImpl(true);
+
     protected NettyVirtualConnectionImpl() {
+        this(false);
+    }
+
+    private NettyVirtualConnectionImpl(boolean sharedCallbackInstance) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "constructor, this [" + this + "], sharedCallbackInstance [" + sharedCallbackInstance + "]");
+        }
+        //Isolate an empty shared request stateStore from normal operation.
+        this.stateStore = sharedCallbackInstance ? Collections.emptyMap() : new HashMap<Object, Object>();
     }
 
     public static NettyVirtualConnectionImpl createVC() {
-        NettyVirtualConnectionImpl vc = new NettyVirtualConnectionImpl();
-        vc.init();
-        return vc;
-    }
-
-    public void init() {
-        this.stateStore = new HashMap<Object, Object>();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "init, this [" + this + "]");
-        }
+        return new NettyVirtualConnectionImpl();
     }
 
     @Override

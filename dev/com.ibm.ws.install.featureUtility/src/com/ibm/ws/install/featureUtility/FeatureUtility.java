@@ -143,17 +143,19 @@ public class FeatureUtility {
 
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
-        for (String key: envMapKeys) {
-        	if (key.equals("FEATURE_REPO_PASSWORD")) {
-		    fine("FEATURE_REPO_PASSWORD: *********");
-        	} else if (key.equals("FEATURE_LOCAL_REPO") && envMap.get("FEATURE_LOCAL_REPO") != null) {
-		    fine(key + ": " + envMap.get(key));
-		    File local_repo = new File((String) envMap.get("FEATURE_LOCAL_REPO"));
-		    this.fromDir = local_repo;
-        	} else {
-		    fine(key + ": " + (envMap.get(key)));
-        	}
-        }
+		for (String key : envMapKeys) {
+			if (key.equals("FEATURE_REPO_PASSWORD")) {
+				fine("FEATURE_REPO_PASSWORD: *********");
+			} else if (key.equals("WLP_AES_ENCRYPTION_KEY")) {
+				fine("WLP_AES_ENCRYPTION_KEY: *********");
+			} else if (key.equals("FEATURE_LOCAL_REPO") && envMap.get("FEATURE_LOCAL_REPO") != null) {
+				fine(key + ": " + envMap.get(key));
+				File local_repo = new File((String) envMap.get("FEATURE_LOCAL_REPO"));
+				this.fromDir = local_repo;
+			} else {
+				fine(key + ": " + (envMap.get(key)));
+			}
+		}
 	map.put(InstallConstants.JSON_PROVIDED, false);
         overrideEnvMapWithProperties();
 	this.verifyOption = getVerifyOption(builder.verifyOption,

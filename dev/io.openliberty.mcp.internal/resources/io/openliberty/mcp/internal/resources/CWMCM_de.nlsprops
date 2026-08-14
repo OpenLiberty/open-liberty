@@ -59,11 +59,11 @@ CWMCM0006E.duplicate.special.arguments.explanation=Ein oder mehrere Sonderargume
 CWMCM0006E.duplicate.special.arguments.useraction=Entfernen Sie die zus\u00e4tzlichen Instanzen.
 
 # Used for server logging
-# {0} = The fully qualified method name
-# {1} = The parameter type simple name
-CWMCM0007E.invalid.arguments=CWMCM0007E: Das {0} MCP-Tool hat einen Parameter vom Typ {1}, der kein anerkannter spezieller Argumenttyp ist und keine `@ToolArg` Anmerkung hat.
-CWMCM0007E.invalid.arguments.explanation=Ein oder mehrere Parameter wurden nicht als Werkzeugargumente kommentiert und werden nicht als spezielle Argumenttypen erkannt.
-CWMCM0007E.invalid.arguments.useraction=\u00dcberpr\u00fcfen Sie, ob Sie die richtige Klasse f\u00fcr Ihr Argument importiert haben oder ob Sie. einf\u00fcgen wollten @ToolArg.
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: Der MCP-Server-Endpunkt: {0}
+CWMCM0008I.mcp.endpoint.url.explanation=Der MCP-Server-Endpunkt URL f\u00fcr dieses Anwendungsmodul ist unter der angegebenen Adresse URL verf\u00fcgbar.
+CWMCM0008I.mcp.endpoint.url.useraction=Es ist keine Aktion erforderlich.
 
 # Used as part of a response to a client
 # {0} = Request id
@@ -271,3 +271,73 @@ CWMCM0032E.duplicate.argument.name.useraction=Geben Sie jedem Tool-Argument eine
 CWMCM0033A.forbidden.error=CWMCM0033A: Unzul\u00e4ssige Anfrage. Methode= {0} RequestURI={1 } RequestQuery={2 }, Ausnahme: {3}
 CWMCM0033A.forbidden.error.explanation=Eine Anfrage wurde gestellt, aber der Benutzer ist nicht dazu berechtigt.
 CWMCM0033A.forbidden.error.useraction=Stellen Sie sicher, dass ein autorisierter Benutzer die Anfrage stellt.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: Bei der Implementierung von ` {0} ` DefaultValueConverter muss ein Typparameter angegeben werden.
+CWMCM0034W.converter.missing.type.parameter.explanation=Eine Implementierungsklasse von ` DefaultValueConverter ` wurde registriert, es fehlt jedoch ein Typparameter, weshalb der Typ, in den sie konvertiert wird, nicht ermittelt werden kann.
+CWMCM0034W.converter.missing.type.parameter.useraction=\u00c4ndern Sie die Klassendeklaration so, dass die Schnittstelle \u201e DefaultValueConverter \u201c mit einem konkreten Typparameter implementiert wird. Beispiel: ` MyConverterClass ` implementiert ` DefaultValueConverter<MyType> `.
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: Die Implementierung von \u201e {0} \u201c unter DefaultValueConverter konvertiert in einen generischen Typparameter anstelle eines konkreten Typs.
+CWMCM0035W.converter.generic.type.explanation=Eine Implementierungsklasse von \u201e DefaultValueConverter \u201c wurde mit einem generischen Typparameter wie T anstelle eines konkreten Typs registriert.
+CWMCM0035W.converter.generic.type.useraction=\u00c4ndern Sie die Klassendeklaration so, dass die Schnittstelle \u201e DefaultValueConverter \u201c mit einem konkreten Typparameter implementiert wird. Beispiel: ` MyConverterClass ` implementiert ` DefaultValueConverter<MyType> `.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: Der _meta-Schl\u00fcssel \u201e {0} \u201c ist ung\u00fcltig. Das Namenssegment muss mit einem alphanumerischen Zeichen beginnen und enden und darf dazwischen nur alphanumerische Zeichen, Bindestriche, Unterstriche oder Punkte enthalten.
+CWMCM0037E.invalid.meta.key.name.explanation=Das Namenssegment des Schl\u00fcssels \u201e_meta\u201c entspricht nicht den Vorgaben der MCP-Spezifikation. Das Namenssegment ist der Teil nach dem optionalen Pr\u00e4fix \u201e/\u201c oder der gesamte Schl\u00fcssel, wenn kein Pr\u00e4fix vorhanden ist.
+CWMCM0037E.invalid.meta.key.name.useraction=Stellen Sie sicher, dass das Namenssegment des Schl\u00fcssels \u201e_meta\u201c mit einem alphanumerischen Zeichen beginnt und endet.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: Der _meta-Schl\u00fcssel \u201e {0} \u201c enth\u00e4lt ein leeres Pr\u00e4fix vor dem Zeichen \u201e/\u201c.
+CWMCM0038E.empty.meta.key.prefix.explanation=Der _meta-Schl\u00fcssel enth\u00e4lt das Zeichen \u201e/\u201c, dem jedoch keine Pr\u00e4fix-Labels vorangestellt sind. Das Pr\u00e4fix muss aus einer oder mehreren durch Punkte getrennten Bezeichnungen bestehen.
+CWMCM0038E.empty.meta.key.prefix.useraction=F\u00fcgen Sie vor dem Zeichen \u201e/\u201c ein g\u00fcltiges Pr\u00e4fix ein oder entfernen Sie das Zeichen \u201e/\u201c, wenn kein Pr\u00e4fix erforderlich ist.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: Der _meta-Schl\u00fcssel \u201e {0} \u201c weist eine ung\u00fcltige Pr\u00e4fixbezeichnung auf: \u201e {1} \u201c. Bezeichnungen m\u00fcssen mit einem Buchstaben beginnen, mit einem Buchstaben oder einer Ziffer enden und d\u00fcrfen dazwischen nur Buchstaben, Ziffern oder Bindestriche enthalten.
+CWMCM0039E.invalid.meta.key.label.explanation=Das Pr\u00e4fixsegment des Schl\u00fcssels \u201e_meta\u201c enth\u00e4lt eine Bezeichnung, die nicht den Regeln der MCP-Spezifikation entspricht.
+CWMCM0039E.invalid.meta.key.label.useraction=Stellen Sie sicher, dass jedes Label im Schl\u00fcsselpr\u00e4fix \u201e_meta\u201c mit einem Buchstaben beginnt und mit einem Buchstaben oder einer Ziffer endet. Achten Sie darauf, dass zwischen den Buchstaben nur Buchstaben, Ziffern oder Bindestriche stehen.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: Das Metadaten-Pr\u00e4fix \u201e {0} \u201c in der Annotation \u201e MetaField \u201c der Methode \u201e {1} \u201c ist ung\u00fcltig. Ein g\u00fcltiges Pr\u00e4fix ist eine Folge von durch Punkte getrennten Bezeichnungen. Jede Bezeichnung muss mit einem Buchstaben beginnen, mit einem Buchstaben oder einer Ziffer enden und darf dazwischen nur Buchstaben, Ziffern oder Bindestriche enthalten.
+CWMCM0040E.invalid.metadata.prefix.explanation=Das Metadaten-Pr\u00e4fix in der Annotation \u201e MetaField \u201c entspricht nicht den Anforderungen der Model Context Protocol (MCP)-Spezifikation.
+CWMCM0040E.invalid.metadata.prefix.useraction=Aktualisieren Sie das Metadaten-Pr\u00e4fix in der Annotation \u201e MetaField \u201c der Methode, um die Anforderungen der MCP-Spezifikation zu erf\u00fcllen. Das Pr\u00e4fix muss aus durch Punkte getrennten Bezeichnungen bestehen, auf die ein Schr\u00e4gstrich folgt. Jede Bezeichnung muss mit einem Buchstaben beginnen und mit einem Buchstaben oder einer Ziffer enden. Die Zeichen im Inneren jedes Labels k\u00f6nnen Buchstaben, Ziffern oder Bindestriche sein.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: Der Metadaten-Name \u201e {0} \u201c in der Annotation \u201e MetaField \u201c der Methode \u201e {1} \u201c ist ung\u00fcltig. Ein g\u00fcltiger Metadaten-Name muss mit einem alphanumerischen Zeichen beginnen und enden und darf Bindestriche, Unterstriche, Punkte sowie alphanumerische Zeichen enthalten.
+CWMCM0041E.invalid.metadata.name.explanation=Der Name der Metadaten in der Annotation \u201e MetaField \u201c entspricht nicht den Anforderungen der Model Context Protocol (MCP)-Spezifikation.
+CWMCM0041E.invalid.metadata.name.useraction=Aktualisieren Sie den Metadaten-Namen in der Annotation \u201e MetaField \u201c der Methode, um die Anforderungen der MCP-Spezifikation zu erf\u00fcllen. Stellen Sie sicher, dass der Name mit einem alphanumerischen Zeichen beginnt und endet und ausschlie\u00dflich Bindestriche, Unterstriche, Punkte sowie alphanumerische Zeichen enth\u00e4lt.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: Der Metadaten-Schl\u00fcsselwert \u201e {0} \u201c in der Annotation \u201e MetaField \u201c der Methode \u201e {1} \u201c kann nicht in den Typ \u201e {2} \u201c konvertiert werden. Der Fehler lautet: \u201e {3} \u201c
+CWMCM0042E.metadata.value.conversion.error.explanation=Der Metadatenwert in der Annotation \u201e MetaField \u201c kann nicht in den in der Annotation angegebenen Typ konvertiert werden. Der Wert hat m\u00f6glicherweise das falsche Format oder ist mit dem angegebenen Typ nicht kompatibel.
+CWMCM0042E.metadata.value.conversion.error.useraction=\u00dcberpr\u00fcfen Sie die Fehlermeldung, die Datei \u201e message.log \u201c und die FFDC-Protokolle, um die Ursache f\u00fcr den Konvertierungsfehler zu ermitteln. Aktualisieren Sie den Metadatenwert in der Annotation \u201e MetaField \u201c, sodass er mit dem angegebenen Typ kompatibel ist.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: Die Methode \u201e {0} \u201c verwendet die Annotation \u201e {1} \u201c, die nicht unterst\u00fctzt wird. Diese Methode wird ignoriert.
+CWMCM0043W.unsupported.annotation.explanation=Die Java-API des Model Context Protocol (MCP) enth\u00e4lt Annotationen f\u00fcr Funktionen, die von dieser Implementierung nicht unterst\u00fctzt werden. Methoden, die mit nicht unterst\u00fctzten Annotationen versehen sind, werden ignoriert.
+CWMCM0043W.unsupported.annotation.useraction=Entfernen Sie die nicht unterst\u00fctzte Annotation aus der Methode oder verwenden Sie ausschlie\u00dflich unterst\u00fctzte Annotationen des Model Context Protocol (MCP).

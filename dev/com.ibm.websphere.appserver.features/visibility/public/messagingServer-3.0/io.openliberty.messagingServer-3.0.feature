@@ -8,8 +8,8 @@ WLP-AlsoKnownAs: wasJmsServer-3.0
 Subsystem-Name: Messaging Server 3.0
 -features=com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.channelfw-1.0, \
-  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
-  com.ibm.websphere.appserver.transaction-2.0
+  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0, 12.0", \
+  io.openliberty.messagingServer3.0.ee-9.0; ibm.tolerates:="12.0"
 -bundles=com.ibm.ws.messaging.comms.server, \
  com.ibm.ws.messaging.msgstore.jakarta, \
  com.ibm.ws.messaging.common, \
@@ -30,4 +30,4 @@ kind=ga
 edition=base
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0
+WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0,jakartaee-12.0

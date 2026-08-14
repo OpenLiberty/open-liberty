@@ -16,7 +16,7 @@
 //
 //public class SIPSecurityThreadLocalStorage {
 //	/**
-//     * Holds the Sip Application Discriptor
+//     * Holds the Sip Application Descriptor
 //     */
 //	private static ThreadLocal _sipAppDesc = new ThreadLocal();
 //	

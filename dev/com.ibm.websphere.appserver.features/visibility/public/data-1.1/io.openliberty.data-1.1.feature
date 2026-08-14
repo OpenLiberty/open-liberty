@@ -28,13 +28,13 @@ IBM-API-Package: \
   jakarta.data.spi.expression.literal; type="spec",\
   jakarta.data.spi.expression.path; type="spec"
 Subsystem-Name: Jakarta Data 1.1
+# TODO: When not tolerating EE 11 any longer will switch from using 
+# io.openliberty.data1.1.internal.ee- based private feature to cdi-5.0 
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-11.0,\
-  io.openliberty.cdi-4.1,\
+  com.ibm.websphere.appserver.eeCompatible-11.0; ibm.tolerates:="12.0",\
+  io.openliberty.data1.1.internal.ee-11.0; ibm.tolerates:="12.0", \
   io.openliberty.jakarta.data-1.1
-# For now, we are forcing data-1.1 to require Java 21:
 -bundles=\
-  io.openliberty.java21.internal,\
   io.openliberty.data; location:="dev/api/ibm/,lib/",\
   io.openliberty.data.internal.beandef
 # TODO add this back in if we GA this feature and include this IBM API

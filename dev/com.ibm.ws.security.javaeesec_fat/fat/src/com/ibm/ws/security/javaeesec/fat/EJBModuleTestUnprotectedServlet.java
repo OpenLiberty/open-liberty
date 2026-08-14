@@ -77,6 +77,8 @@ public class EJBModuleTestUnprotectedServlet extends JavaEESecTestBase {
     @BeforeClass
     public static void setUp() throws Exception {
         Log.info(logClass, "setUp()", "-----setting up test");
+        assumeNotWindowsEe9Plus();
+
         ldapServer = new LocalLdapServer();
         ldapServer.start();
 

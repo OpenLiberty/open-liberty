@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -247,7 +247,7 @@ public class ColocatedDynamicPolicyAttachmentsTest {
     @ExpectedFFDC("jakarta.xml.ws.soap.SOAPFaultException")
     public void testPolicyAttachments_serviceURI_Non_AnnonResponses_JakartaFailure() throws Exception {
         server.setMarkToEndOfLog(server.getDefaultLogFile());
-        commonTest(clientApp1, ClientServlet1, service3, "helloWithPolicy", failureResult);
+        commonTest(clientApp1, ClientServlet1, service4, "helloWithPolicy", failureResult);
 
         assertNotNull("Expected to find " + failureNonAnonymous + " but error not found in logs", server.findStringsInLogsAndTraceUsingMark(failureNonAnonymous));
     }

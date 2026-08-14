@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1000,5 +1000,523 @@ public class PluginGeneratorTest {
         }
         // rename generated file to leave a clean space for the next test, but keep the file for debug
         testfile.renameTo(new File(testClassesDir + "/serverRole-plugin-cfg.xml"));
+    }
+
+    // Test generation of XML file and check values of OutboundInterfacesList and OutboundBindStrict properties
+    @Test
+    public void testOutboundInterfaceProperties() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        // set expectations specific for this test
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        // set config values for this test
+        config.put("outboundInterfacesList", "192.168.1.10,eth0,10.0.0.5");
+        config.put("outboundBindStrict", new Boolean(true));
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        // check that the config file was created
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            // Using factory get an instance of document builder
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            // parse using builder to get DOM representation of the XML file
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            // get a nodelist of Property elements
+            NodeList nl = docEle.getElementsByTagName("Property");
+            
+            boolean foundOutboundInterfacesList = false;
+            boolean foundOutboundBindStrict = false;
+            
+            // iterate through Property elements to find our new properties
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node node = nl.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+                    String name = eElement.getAttribute("Name");
+                    String value = eElement.getAttribute("Value");
+                    
+                    if ("OutboundInterfacesList".equals(name)) {
+                        foundOutboundInterfacesList = true;
+                        assertEquals("192.168.1.10,eth0,10.0.0.5", value);
+                    } else if ("OutboundBindStrict".equals(name)) {
+                        foundOutboundBindStrict = true;
+                        assertEquals("true", value);
+                    }
+                }
+            }
+            
+            assertTrue("OutboundInterfacesList property should be present in XML", foundOutboundInterfacesList);
+            assertTrue("OutboundBindStrict property should be present in XML", foundOutboundBindStrict);
+
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        // rename generated file to leave a clean space for the next test, but keep the file for debug
+        testfile.renameTo(new File(testClassesDir + "/outboundinterface-plugin-cfg.xml"));
+    }
+
+    // Test generation of XML file with default OutboundBindStrict (false) and no OutboundInterfacesList
+    @Test
+    public void testOutboundInterfacePropertiesDefaults() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        // set expectations specific for this test
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        // Do not set outboundInterfacesList or outboundBindStrict to test defaults
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        // check that the config file was created
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            // Using factory get an instance of document builder
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            // parse using builder to get DOM representation of the XML file
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            // get a nodelist of Property elements
+            NodeList nl = docEle.getElementsByTagName("Property");
+            
+            boolean foundOutboundInterfacesList = false;
+            boolean foundOutboundBindStrict = false;
+            
+            // iterate through Property elements to find our new properties
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node node = nl.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+                    String name = eElement.getAttribute("Name");
+                    String value = eElement.getAttribute("Value");
+                    
+                    if ("OutboundInterfacesList".equals(name)) {
+                        foundOutboundInterfacesList = true;
+                    } else if ("OutboundBindStrict".equals(name)) {
+                        foundOutboundBindStrict = true;
+                        // Default should be false
+                        assertEquals("false", value);
+                    }
+                }
+            }
+            
+            assertFalse("OutboundInterfacesList property should not be present when not configured", foundOutboundInterfacesList);
+            assertTrue("OutboundBindStrict property should always be present with default value", foundOutboundBindStrict);
+
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+        testfile.renameTo(new File(testClassesDir + "/outboundinterface-defaults-plugin-cfg.xml"));
+    }
+
+    /*
+     * Test generation of XML file with OutboundInterfacesList set but OutboundBindStrict not set
+     * Verifies that OutboundBindStrict defaults to false when OutboundInterfacesList is configured
+     */
+    @Test
+    public void testOutboundInterfacesListWithDefaultBindStrict() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        /* set expectations specific for this test */
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        /* Set OutboundInterfacesList but do not set OutboundBindStrict to test default */
+        config.put("outboundInterfacesList", "192.168.1.10,eth0,10.0.0.5");
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        /* check that the config file was created */
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            /* Using factory get an instance of document builder */
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            /* parse using builder to get DOM representation of the XML file */
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            /* get a nodelist of Property elements */
+            NodeList nl = docEle.getElementsByTagName("Property");
+        
+            boolean foundOutboundInterfacesList = false;
+            boolean foundOutboundBindStrict = false;
+        
+            /* iterate through Property elements to find our new properties */
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node node = nl.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+                    String name = eElement.getAttribute("Name");
+                    String value = eElement.getAttribute("Value");
+                
+                    if ("OutboundInterfacesList".equals(name)) {
+                        foundOutboundInterfacesList = true;
+                        assertEquals("192.168.1.10,eth0,10.0.0.5", value);
+                    } else if ("OutboundBindStrict".equals(name)) {
+                        foundOutboundBindStrict = true;
+                        /* Should default to false when not explicitly set */
+                        assertEquals("false", value);
+                    }
+                }
+            }
+        
+            assertTrue("OutboundInterfacesList property should be present in XML", foundOutboundInterfacesList);
+            assertTrue("OutboundBindStrict property should be present with default value", foundOutboundBindStrict);
+
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+        testfile.renameTo(new File(testClassesDir + "/outboundinterface-list-default-bind-plugin-cfg.xml"));
+    }
+
+    /*
+     * Test generation of XML file with OutboundBindStrict set to true but OutboundInterfacesList not set
+     * Tests an invalid/edge case configuration scenario
+     */
+    @Test
+    public void testOutboundBindStrictWithoutInterfacesList() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        /* set expectations specific for this test */
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        /* Set OutboundBindStrict to true but do not set OutboundInterfacesList - invalid config scenario */
+        config.put("outboundBindStrict", new Boolean(true));
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        /* check that the config file was created */
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            /* Using factory get an instance of document builder */
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            /* parse using builder to get DOM representation of the XML file */
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            /* get a nodelist of Property elements */
+            NodeList nl = docEle.getElementsByTagName("Property");
+        
+            boolean foundOutboundInterfacesList = false;
+            boolean foundOutboundBindStrict = false;
+        
+            /* iterate through Property elements to find our new properties */
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node node = nl.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) node;
+                    String name = eElement.getAttribute("Name");
+                    String value = eElement.getAttribute("Value");
+                
+                    if ("OutboundInterfacesList".equals(name)) {
+                        foundOutboundInterfacesList = true;
+                    } else if ("OutboundBindStrict".equals(name)) {
+                        foundOutboundBindStrict = true;
+                        /* Should be true as explicitly set, even without OutboundInterfacesList */
+                        assertEquals("true", value);
+                    }
+                }
+            }
+        
+            assertFalse("OutboundInterfacesList property should not be present when not configured", foundOutboundInterfacesList);
+            assertTrue("OutboundBindStrict property should be present with configured value", foundOutboundBindStrict);
+
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+        testfile.renameTo(new File(testClassesDir + "/outboundinterface-bind-only-plugin-cfg.xml"));
+    }
+
+    /*
+     * Test generation of XML file with serverIOTimeoutMarksDown set to true
+     * Verifies that ServerIOTimeout attribute is negative when the flag is enabled
+     */
+    @Test
+    public void testServerIOTimeoutMarksDownTrue() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        /* set expectations specific for this test */
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        /* set config values for this test */
+        config.put("serverIOTimeout", new Long(900));
+        config.put("serverIOTimeoutMarksDown", new Boolean(true));
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        /* check that the config file was created */
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+        /* and that it contains the negative ServerIOTimeout value */
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            /* Using factory get an instance of document builder */
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            /* parse using builder to get DOM representation of the XML file */
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            /* get a nodelist of ServerCluster elements */
+            NodeList nl = docEle.getElementsByTagName("ServerCluster");
+            /* we're only expecting one ServerCluster */
+            assertEquals(1, nl.getLength());
+            Node clusterNode = nl.item(0);
+            Element clusterElement = (Element) clusterNode;
+            /* get Server elements within the ServerCluster */
+            NodeList serverList = clusterElement.getElementsByTagName("Server");
+            assertTrue("Expected at least one Server element", serverList.getLength() > 0);
+            Node serverNode = serverList.item(0);
+            Element serverElement = (Element) serverNode;
+            String value = serverElement.getAttribute("ServerIOTimeout");
+            /* When serverIOTimeoutMarksDown is true, the value should be negative */
+            assertEquals("-900", value);
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+        testfile.renameTo(new File(testClassesDir + "/serverIOTimeoutMarksDown-true-plugin-cfg.xml"));
+    }
+
+    /*
+     * Test generation of XML file with serverIOTimeoutMarksDown set to false
+     * Verifies that ServerIOTimeout attribute is positive when the flag is disabled
+     */
+    @Test
+    public void testServerIOTimeoutMarksDownFalse() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        /* set expectations specific for this test */
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        /* set config values for this test */
+        config.put("serverIOTimeout", new Long(900));
+        config.put("serverIOTimeoutMarksDown", new Boolean(false));
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        /* check that the config file was created */
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+        /* and that it contains the positive ServerIOTimeout value */
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            /* Using factory get an instance of document builder */
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            /* parse using builder to get DOM representation of the XML file */
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            /* get a nodelist of ServerCluster elements */
+            NodeList nl = docEle.getElementsByTagName("ServerCluster");
+            /* we're only expecting one ServerCluster */
+            assertEquals(1, nl.getLength());
+            Node clusterNode = nl.item(0);
+            Element clusterElement = (Element) clusterNode;
+            /* get Server elements within the ServerCluster */
+            NodeList serverList = clusterElement.getElementsByTagName("Server");
+            assertTrue("Expected at least one Server element", serverList.getLength() > 0);
+            Node serverNode = serverList.item(0);
+            Element serverElement = (Element) serverNode;
+            String value = serverElement.getAttribute("ServerIOTimeout");
+            /* When serverIOTimeoutMarksDown is false, the value should be positive */
+            assertEquals("900", value);
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+        testfile.renameTo(new File(testClassesDir + "/serverIOTimeoutMarksDown-false-plugin-cfg.xml"));
+    }
+
+    /*
+     * Test generation of XML file with serverIOTimeoutMarksDown not set (default behavior)
+     * Verifies that ServerIOTimeout attribute is positive by default
+     */
+    @Test
+    public void testServerIOTimeoutMarksDownDefault() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        /* set expectations specific for this test */
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        /* set config values for this test - do NOT set serverIOTimeoutMarksDown to test default */
+        config.put("serverIOTimeout", new Long(900));
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        /* check that the config file was created */
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+        /* and that it contains the positive ServerIOTimeout value (default behavior) */
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            /* Using factory get an instance of document builder */
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            /* parse using builder to get DOM representation of the XML file */
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            /* get a nodelist of ServerCluster elements */
+            NodeList nl = docEle.getElementsByTagName("ServerCluster");
+            /* we're only expecting one ServerCluster */
+            assertEquals(1, nl.getLength());
+            Node clusterNode = nl.item(0);
+            Element clusterElement = (Element) clusterNode;
+            /* get Server elements within the ServerCluster */
+            NodeList serverList = clusterElement.getElementsByTagName("Server");
+            assertTrue("Expected at least one Server element", serverList.getLength() > 0);
+            Node serverNode = serverList.item(0);
+            Element serverElement = (Element) serverNode;
+            String value = serverElement.getAttribute("ServerIOTimeout");
+            /* Default behavior should be positive value */
+            assertEquals("900", value);
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+        testfile.renameTo(new File(testClassesDir + "/serverIOTimeoutMarksDown-default-plugin-cfg.xml"));
     }
 }

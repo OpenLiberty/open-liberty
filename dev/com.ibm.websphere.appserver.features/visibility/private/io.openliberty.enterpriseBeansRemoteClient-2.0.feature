@@ -7,7 +7,7 @@ IBM-API-Package: com.ibm.websphere.ejbcontainer; type="ibm-api", \
   io.openliberty.ejbCore-2.0, \
   io.openliberty.jakarta.interceptor-2.0; ibm.tolerates:="2.1, 2.2", \
   io.openliberty.jakarta.enterpriseBeans-4.0, \
-  com.ibm.websphere.appserver.transaction-2.0
+  com.ibm.websphere.appserver.transaction-2.0; ibm.tolerates:="2.1"
 -bundles=com.ibm.ws.ejbcontainer.remote.client.jakarta, \
  io.openliberty.ejbcontainer.v40.internal, \
  com.ibm.ws.ejbcontainer.remote.jakarta

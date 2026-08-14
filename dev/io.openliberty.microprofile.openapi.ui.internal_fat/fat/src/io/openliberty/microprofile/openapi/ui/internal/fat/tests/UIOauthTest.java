@@ -136,7 +136,10 @@ public class UIOauthTest {
         //close the browser before stopping the server to reduce changes of open connections
         driver.quit();
         try {
-            server.stopServer();
+            /*
+             * SRVE8056E: An unexpected exception occurred closing the output stream is generated occasionally during shutdown
+             */
+            server.stopServer("SRVE8056E");
         } finally {
             // Restore Config to original after test to prevent potential config bleeding between tests
             server.updateServerConfiguration(baseConfig);
@@ -149,7 +152,7 @@ public class UIOauthTest {
         server.addEnvVar(UI_PATH_PROPERTY, UI_PATH_VALUE);
 
         server.startServer();
-        server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl", 60000);
+        server.waitForDefaultHTTPEndpointSSLStart(60000);
         OAuthTest(UI_PATH_VALUE);
 
     }
@@ -167,7 +170,7 @@ public class UIOauthTest {
         server.startServer();
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         OAuthTest(CUSTOM_UI_PATH_VALUE);
     }

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.webcontainer.security.jacc15.fat;
@@ -28,6 +25,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.SSLFormLoginClient;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
@@ -71,6 +69,11 @@ public class FormLoginJSPTest extends CommonFormLoginJSPTest {
                       myServer.waitForStringInLog("CWWKZ0001I"));
         assertNotNull("JACC feature did not report it was starting", myServer.waitForStringInLog("CWWKS2850I"));
         assertNotNull("JACC feature did not report it was ready", myServer.waitForStringInLog("CWWKS2851I"));
+        String currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        if (currentRepeatAction != null && currentRepeatAction.contains("_spec")) {
+            assertNotNull("spec user feature WAB did not start the PolicyFactory", myServer.waitForStringInLog("CWWKS2866I.*PolicyFactory"));
+            assertNotNull("spec user feature WAB did not start the PolicyConfigurationFactory", myServer.waitForStringInLog("CWWKS2866I.*PolicyConfigurationFactory"));
+        }
 
         myClient = new FormLoginJSPClient(myServer, FormLoginClient.DEFAULT_JSP_NAME, FormLoginClient.DEFAULT_JSP_CONTEXT_ROOT);
         mySSLClient = new SSLFormLoginClient(myServer, SSLFormLoginClient.DEFAULT_JSP_NAME, SSLFormLoginClient.DEFAULT_JSP_CONTEXT_ROOT);

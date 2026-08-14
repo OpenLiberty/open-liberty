@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Vy\u0159e\u0161te p\u0159\u00ed\u010dinu chyby.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: Mezipam\u011b\u0165 protokolovan\u00fdch soubor\u016f cookie nebyla schopna zkontrolovat mezipam\u011b\u0165 JCache pro soubor cookie. Chyba je: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=Mezipam\u011b\u0165 protokolovan\u00fdch soubor\u016f cookie zjistila chybu p\u0159i pokusu o kontrolu mezipam\u011bti JCache pro soubor cookie. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Vy\u0159e\u0161te p\u0159\u00ed\u010dinu chyby.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Byly zji\u0161t\u011bny tokeny po odhl\u00e1\u0161en\u00ed ve star\u0161\u00edm form\u00e1tu. Aby byla mezipam\u011b\u0165 pro odhl\u00e1\u0161en\u00e9 u\u017eivatele spr\u00e1vn\u011b sd\u00edlen\u00e1, ujist\u011bte se, \u017ee v\u0161echny servery ve va\u0161em prost\u0159ed\u00ed jsou aktualizov\u00e1ny na nejnov\u011bj\u0161\u00ed verzi.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=Syst\u00e9m zjistil odhl\u00e1\u0161en\u00e9 tokeny, kter\u00e9 maj\u00ed star\u0161\u00ed form\u00e1t. V z\u00e1jmu zv\u00fd\u0161en\u00ed bezpe\u010dnosti a zaji\u0161t\u011bn\u00ed jednotnosti byly tokeny po odhl\u00e1\u0161en\u00ed p\u0159evedeny do nov\u011bj\u0161\u00edho form\u00e1tu.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Aby bylo zaji\u0161t\u011bno, \u017ee odhl\u00e1\u0161en\u00e9 tokeny budou pou\u017e\u00edvat nejnov\u011bj\u0161\u00ed form\u00e1t, aktualizujte v\u0161echny servery ve va\u0161em clusteru nebo prost\u0159ed\u00ed na nejnov\u011bj\u0161\u00ed verzi.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: V mezipam\u011bti souboru cookie pro odhl\u00e1\u0161en\u00ed do\u0161lo k chyb\u011b p\u0159i p\u0159evodu star\u00fdch token\u016f do hashovan\u00fdch verz\u00ed. Chyba je: {0}
+JCACHE_MIGRATION_FAILURE.explanation=V mezipam\u011bti soubor\u016f cookie pro odhl\u00e1\u0161en\u00ed do\u0161lo k chyb\u011b b\u011bhem jednor\u00e1zov\u00e9ho p\u0159evodu star\u00fdch token\u016f pro odhl\u00e1\u0161en\u00ed do nov\u00e9ho form\u00e1tu s hashovou hodnotou.
+JCACHE_MIGRATION_FAILURE.useraction=Projd\u011bte si chybovou zpr\u00e1vu a protokoly serveru, abyste zjistili p\u0159\u00ed\u010dinu selh\u00e1n\u00ed. Migrace bude zopakov\u00e1na p\u0159i p\u0159\u00ed\u0161t\u00edm restartu serveru.

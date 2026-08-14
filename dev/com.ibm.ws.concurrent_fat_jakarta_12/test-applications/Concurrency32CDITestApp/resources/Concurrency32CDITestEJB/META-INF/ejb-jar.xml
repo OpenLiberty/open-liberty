@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<ejb-jar version="4.0" metadata-complete="false"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd">
+
+  <enterprise-beans>
+    <session>
+      <ejb-name>ScheduleTracker</ejb-name>
+      <env-entry>
+        <env-entry-name>java:module/env/TestEntry</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>EJB-module-value</env-entry-value>
+      </env-entry>
+    </session>
+  </enterprise-beans>
+
+</ejb-jar>

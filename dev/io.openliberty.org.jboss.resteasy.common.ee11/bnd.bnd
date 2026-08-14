@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022,2026 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 bVersion=1.0
 
-resteasy-version=7.0.0.Final
+resteasy-version=7.0.2.Final
 resteasy-tracing-api-version=1.1.0.Final
 apache-mime4j-version=0.8.10
 
@@ -34,7 +34,8 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyWriter | \
   META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
   META-INF/services/jakarta.ws.rs.ext.Providers | \
-  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext
+  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext | \
+  META-INF/services/org.jboss.resteasy.spi.Registry
 
 -cdiannotations:
 
@@ -72,7 +73,7 @@ Export-Package: \
   org.jboss.resteasy.client.exception;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.cache;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.engines;version=${resteasy-version}, \
-  org.jboss.resteasy.client.jaxrs.i18n;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.i18n;uses:="jakarta.ws.rs.client,jakarta.ws.rs.core";version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.extractors;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.invocation;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.webtarget;version=${resteasy-version}, \
@@ -87,7 +88,7 @@ Export-Package: \
   org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.registry;version=${resteasy-version}, \
   org.jboss.resteasy.core.request;version=${resteasy-version}, \
-  org.jboss.resteasy.core;version=${resteasy-version}, \
+  org.jboss.resteasy.core;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.microprofile.config;version=${resteasy-version}, \
   org.jboss.resteasy.mock;version=${resteasy-version}, \
   org.jboss.resteasy.plugins.delegates;version=${resteasy-version}, \
@@ -101,7 +102,7 @@ Export-Package: \
   org.jboss.resteasy.plugins.server.servlet;version=${resteasy-version}, \
   org.jboss.resteasy.plugins.server;version=${resteasy-version}, \
   org.jboss.resteasy.plugins.touri;version=${resteasy-version}, \
-  org.jboss.resteasy.resteasy_jaxrs.i18n;version=${resteasy-version}, \
+  org.jboss.resteasy.resteasy_jaxrs.i18n;uses:="jakarta.validation,jakarta.ws.rs.core,org.jboss.resteasy.annotations,org.jboss.resteasy.api.validation";version=${resteasy-version}, \
   org.jboss.resteasy.specimpl;version=${resteasy-version}, \
   org.jboss.resteasy.spi.concurrent;version=${resteasy-version}, \
   org.jboss.resteasy.spi.interception;version=${resteasy-version}, \
@@ -120,6 +121,7 @@ Export-Package: \
   org.jboss.resteasy.util;version=${resteasy-version}
 
 Import-Package: \
+  org.jboss.logging;version="[3.6,3.7)", \
   jakarta.annotation.*;version="[3.0,4.0)", \
   jakarta.ws.rs.*;version="[4.0,5.0)", \
   jakarta.servlet.*;version="[6.1,7)", \
@@ -183,16 +185,16 @@ instrument.classesExcludes: \
   org/jboss/resteasy/util/ThreadLocalStack.class
 
 Include-Resource:\
-  @\${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
-  @\${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
-  @\${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
-  @\${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
-  @\${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
-  @\${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
-  @\${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
-  @\${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
-  @\${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
-  @\${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
+  @${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
+  @${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
   io/openliberty=${bin}/io/openliberty, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   META-INF=resources/META-INF

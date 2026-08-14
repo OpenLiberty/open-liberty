@@ -51,7 +51,7 @@ public class AppBndRolesTests {
         server.addDropinDefaultConfiguration("dropins/app1_noRoles.xml");
 
         server.startServer();
-        assertNotNull(server.waitForStringInLog("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
 
         url = "http://localhost:" + server.getHttpDefaultPort() + "/" + APP_NAME;
 

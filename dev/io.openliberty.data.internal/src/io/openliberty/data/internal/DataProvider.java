@@ -81,7 +81,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.cdi.DataExtension;
-import io.openliberty.data.internal.cdi.FutureEMBuilder;
+import io.openliberty.data.internal.cdi.FutureEHFactory;
 import io.openliberty.data.internal.cdi.RepositoryProducer;
 import io.openliberty.data.internal.metadata.DataComponentMetaData;
 import io.openliberty.data.internal.metadata.DataModuleMetaData;
@@ -191,8 +191,8 @@ public class DataProvider implements //
      * Entries are removed when the application stops,
      * at which point the services are unregistered.
      */
-    public final Map<String, Queue<ServiceRegistration<DDLGenerationParticipant>>> ddlgeneratorsAllApps = //
-                    new ConcurrentHashMap<>();
+    public final Map<String, Queue<ServiceRegistration<DDLGenerationParticipant>>> //
+    ddlgeneratorsAllApps = new ConcurrentHashMap<>();
 
     /**
      * Configured value for dropTables.
@@ -205,23 +205,23 @@ public class DataProvider implements //
     final ExecutorService executor;
 
     /**
-     * EntityManagerBuilder futures for repositories, grouped by application,
+     * EntityHandlerFactory futures for repositories, grouped by application,
      * to complete as the respective application artifact starts.
      * After the application starts, these are kept around for the introspector.
      * The map is cleared on application stop.
      */
-    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuilders = //
+    private final Map<String, Set<FutureEHFactory>> futureEHFactories = //
                     new ConcurrentHashMap<>();
 
     /**
-     * EntityManagerBuilder futures, grouped by application, for EJB modules
+     * EntityHandlerFactory futures, grouped by application, for EJB modules
      * that are triggered to initialize on module starting rather than waiting
      * for application start.
-     * The Set values in this map are subsets of the Set values in futureEMBuilders.
+     * The Set values in this map are subsets of the Set values in futureEHFactories.
      * The entries are removed on application start, which uses the values to avoid
      * duplicated initalization attempts.
      */
-    private final ConcurrentHashMap<String, Set<FutureEMBuilder>> futureEMBuildersInEJB = //
+    private final Map<String, Set<FutureEHFactory>> futureEHFactoriesInEJB = //
                     new ConcurrentHashMap<>();
 
     /**
@@ -336,27 +336,31 @@ public class DataProvider implements //
 
         //Use deployment name but fall back to generated name
         String appName = appInfo.getDeploymentName() == null ? appInfo.getName() : appInfo.getDeploymentName();
-        Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
-        Set<FutureEMBuilder> skip = futureEMBuildersInEJB.remove(appName);
+        Set<FutureEHFactory> futures = futureEHFactories.get(appName);
+        Set<FutureEHFactory> skip = futureEHFactoriesInEJB.remove(appName);
         if (futures != null) {
-            for (FutureEMBuilder futureEMBuilder : futures) {
-                if (skip == null || !skip.contains(futureEMBuilder)) {
-                    // This delays createEMBuilder until restore.
-                    // While this works by avoiding all connections to the data source, it does make restore much slower.
-                    // TODO figure out how to do more work on restore without having to make a connection to the data source
+            for (FutureEHFactory futureEHFactory : futures) {
+                if (skip == null || !skip.contains(futureEHFactory)) {
+                    // This delays createFactory until restore.
+                    // While this works by avoiding all connections to the
+                    // data source, it does make restore much slower.
+                    // TODO figure out how to do more work on restore without
+                    // having to make a connection to the data source
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc,
-                                 "completing futureEMBuilder " + futureEMBuilder,
-                                 futureEMBuilder.jeeName);
+                                 "completing futureEHFactory " + futureEHFactory,
+                                 futureEHFactory.jeeName);
 
-                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+                    CheckpointPhase.onRestore(() -> futureEHFactory //
+                                    .completeAsync(futureEHFactory::createFactory,
+                                                   executor));
 
                 }
                 // Application is ready for DDL generation; register with DDLGen MBean.
                 // Only those using the Persistence Service will participate, but all will
-                // be registered since that is not known until createEMBuilder completes.
+                // be registered since that is not known until createFactory completes.
                 // Those not participating will return a null DDL file name and be skipped.
-                futureEMBuilder.registerDDLGenerationParticipant(appName);
+                futureEHFactory.registerDDLGenerationParticipant(appName);
             }
         }
 
@@ -396,9 +400,9 @@ public class DataProvider implements //
             for (ServiceRegistration<?> reg; (reg = ddlgenRegistrations.poll()) != null;)
                 reg.unregister();
 
-        // TODO also cancel the FutureEMBuilders if not done yet, and for those
+        // TODO also cancel each FutureEHFactory if not done yet, and for those
         // that are done, also cancel each Future in its entityInfoMap ?
-        futureEMBuilders.remove(appName);
+        futureEHFactories.remove(appName);
 
         Map<String, Configuration> configurations = dbStoreConfigAllApps.remove(appName);
         if (configurations != null)
@@ -451,10 +455,10 @@ public class DataProvider implements //
         if (jeeName.getComponent() == null)
             componentMetadatasForModules.put(jeeName, metadata);
 
-        // TODO it would be more direct to map from appName+moduleName -> FutureEMBuilder,
+        // TODO it would be more direct to map from appName+moduleName -> FutureEHFactory,
         // but we would need to take into account the difference in module names
         // including or not including .jar at the end.
-        Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
+        Set<FutureEHFactory> futures = futureEHFactories.get(appName);
 
         if (futures != null && // repositories are defined somewhere in the app
             metadata instanceof IdentifiableComponentMetaData i &&
@@ -463,19 +467,19 @@ public class DataProvider implements //
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, i.getPersistentIdentifier() + " is an EJB");
 
-            Set<FutureEMBuilder> processed = futureEMBuildersInEJB.get(appName);
+            Set<FutureEHFactory> processed = futureEHFactoriesInEJB.get(appName);
 
-            for (FutureEMBuilder futureEMBuilder : futures) {
+            for (FutureEHFactory futureEHFactory : futures) {
                 // only request completion of processing here if the module matches
                 // and if we haven't already requested completion
-                String m = futureEMBuilder.jeeName.getModule();
+                String m = futureEHFactory.jeeName.getModule();
                 if (m != null && m.equals(jeeName.getModule()) &&
-                    (processed == null || !processed.contains(futureEMBuilder))) {
+                    (processed == null || !processed.contains(futureEHFactory))) {
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc,
-                                 "request completion of " + futureEMBuilder,
-                                 futureEMBuilder.jeeName,
+                                 "request completion of " + futureEHFactory,
+                                 futureEHFactory.jeeName,
                                  metadata);
 
                     // Allow CheckpointPhase to override the eager processing and
@@ -483,19 +487,19 @@ public class DataProvider implements //
                     // prior to application start).
                     // TODO This is undesirable because it slows down restore and
                     // makes checkpoint/restore less useful.
-                    CheckpointPhase.onRestore(() -> futureEMBuilder //
-                                    .completeAsync(futureEMBuilder::createEMBuilder,
+                    CheckpointPhase.onRestore(() -> futureEHFactory //
+                                    .completeAsync(futureEHFactory::createFactory,
                                                    executor));
 
                     if (processed == null) {
                         processed = new ConcurrentSkipListSet<>();
-                        Set<FutureEMBuilder> previous = futureEMBuildersInEJB //
+                        Set<FutureEHFactory> previous = futureEHFactoriesInEJB //
                                         .putIfAbsent(appName, processed);
                         if (previous != null)
                             processed = previous;
                     }
 
-                    processed.add(futureEMBuilder);
+                    processed.add(futureEHFactory);
                 }
             }
         }
@@ -672,7 +676,7 @@ public class DataProvider implements //
     public void introspect(PrintWriter writer) {
         List<RepositoryImpl<?>> repositoryImpls = new ArrayList<>();
         Set<QueryInfo> queryInfos = new LinkedHashSet<>();
-        Set<EntityManagerBuilder> builders = new LinkedHashSet<>();
+        Set<EntityHandlerFactory> factories = new LinkedHashSet<>();
 
         Package p = Sort.class.getPackage();
         writer.println("specification: " + p.getSpecificationTitle());
@@ -695,12 +699,12 @@ public class DataProvider implements //
         });
 
         writer.println();
-        writer.println("EntityManager builder futures:");
-        futureEMBuilders.forEach((appName, futureEMBuilders) -> {
+        writer.println("EntityHandlerFactory futures:");
+        futureEHFactories.forEach((appName, futureEHFactories) -> {
             writer.println("  for application " + appName);
-            for (FutureEMBuilder futureEMBuilder : futureEMBuilders) {
-                futureEMBuilder.introspect(writer, "    ") //
-                                .ifPresent(builders::add);
+            for (FutureEHFactory futureEHFactory : futureEHFactories) {
+                futureEHFactory.introspect(writer, "    ") //
+                                .ifPresent(factories::add);
                 writer.println();
             }
         });
@@ -726,12 +730,12 @@ public class DataProvider implements //
         }
 
         writer.println();
-        writer.println("EntityManager builders:");
-        builders.forEach(builder -> {
-            builder.introspect(writer, "  ");
+        writer.println("EntityHandlerFactory instances:");
+        factories.forEach(factory -> {
+            factory.introspect(writer, "  ");
             writer.println();
 
-            builder.entityInfoMap.forEach((userEntityClass, entityInfoFuture) -> {
+            factory.entityInfoMap.forEach((userEntityClass, entityInfoFuture) -> {
                 writer.println("    entity: " + userEntityClass.getName());
 
                 EntityInfo entityInfo = null;
@@ -1038,22 +1042,22 @@ public class DataProvider implements //
     }
 
     /**
-     * Arrange for the specified EntityManagerBuilders to initialize once the
+     * Arrange for each specified EntityHandlerFactory to initialize once the
      * respective application artifact that defines the repository is started.
      *
-     * @param appName  application name.
-     * @param builders list of EntityManagerBuilder.
+     * @param appName   application name.
+     * @param factories list of FutureEHFactory
      */
-    public void onStart(String appName, Set<FutureEMBuilder> builders) {
-        for (Set<FutureEMBuilder> merged = builders, previous; //
-                        null != (previous = futureEMBuilders //
+    public void onStart(String appName, Set<FutureEHFactory> factories) {
+        for (Set<FutureEHFactory> merged = factories, previous; //
+                        null != (previous = futureEHFactories //
                                         .putIfAbsent(appName, merged));) {
             // In the unlikely case this is invoked twice for the same app,
             // merge previous and new into a single set:
-            ConcurrentHashMap<FutureEMBuilder, Boolean> m = new ConcurrentHashMap<>();
-            for (FutureEMBuilder b : previous)
+            ConcurrentHashMap<FutureEHFactory, Boolean> m = new ConcurrentHashMap<>();
+            for (FutureEHFactory b : previous)
                 m.put(b, Boolean.TRUE);
-            for (FutureEMBuilder b : builders)
+            for (FutureEHFactory b : factories)
                 m.put(b, Boolean.TRUE);
             merged = m.keySet();
         }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.collector.Target;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 
@@ -62,7 +63,44 @@ public class TaskImpl extends Task implements Runnable {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Received event ", this, this.config.getSourceName(), event);
                     }
+
                     processEvent(event);
+
+                    // Only check for CWWKT0017I if:
+                    // 1. This task is configured to monitor for it (message source IS configured)
+                    // 2. Server stopping has been initiated (ShutdownSignal.isShutdownRequested())
+
+                    boolean shouldMonitor = getMonitorWebAppRemoval();
+                    boolean shutdownRequested = com.ibm.ws.logging.collector.ShutdownSignal.isShutdownRequested();
+
+                    if (shouldMonitor && shutdownRequested) {
+                        java.lang.reflect.Method getMessageIdMethod = event.getClass().getMethod("getMessageId");
+                        String messageID = (String) getMessageIdMethod.invoke(event);
+
+                        if (messageID != null && messageID.equals(TaskConstants.WEBAPP_REMOVAL_MESSAGE_ID)) {
+                            // Flush the events buffer before shutting down
+                            if (eventsBuffer != null) {
+                                eventsBuffer.flushBuffer();
+                            }
+
+                            // Stop the events buffer
+                            eventsBuffer.stop();
+
+                            // Stop all tasks and close TaskManager
+                            if (formatter instanceof com.ibm.ws.collector.Collector) {
+                                com.ibm.ws.collector.Collector collector = (com.ibm.ws.collector.Collector) formatter;
+                                collector.stopAllTasks();
+
+                                // Close the TaskManager (Target)
+                                Target target = collector.getTarget();
+                                if (target != null) {
+                                    target.close();
+                                }
+                            }
+                            done = true;
+                            break;
+                        }
+                    }
 
                 } catch (IllegalArgumentException exit) {
                     //Exit
@@ -158,7 +196,7 @@ public class TaskImpl extends Task implements Runnable {
         /**
          * Initialize the maximum number of events going through at windowDuration ms
          *
-         * @param maxEvents maximum number of events specified
+         * @param maxEvents      maximum number of events specified
          * @param windowDuration the window time frame in milliseconds for the number of maxEvents specified
          */
         public Throttler(int maxEvents, long windowDuration) {

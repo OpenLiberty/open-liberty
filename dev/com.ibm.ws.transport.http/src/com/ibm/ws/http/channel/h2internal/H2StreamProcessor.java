@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,10 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
@@ -26,6 +30,7 @@ import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.EnhanceYourCalmException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
+import com.ibm.ws.http.channel.h2internal.exceptions.HeaderSizeExceededException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.exceptions.RefusedStreamException;
@@ -104,6 +109,52 @@ public class H2StreamProcessor {
         FIRST_TIME, NO, RESET, GOAWAY, DATA
     };
 
+    /**
+     * Result of a write operation, supporting async/deferred writes
+     */
+    public static enum WriteResult {
+        COMPLETE,
+        DEFERRED,
+        FAILED
+    }
+
+    /**
+     * Holds state for a deferred DATA frame write waiting for flow-control window.
+     */
+    private static class PendingDataWrite {
+        final byte[] dataCopy;
+        final int payloadLength;
+        final boolean endStream;
+        final boolean padded;
+        final int paddingLength;
+        final long startTime;
+        final int writeTimeout;
+
+        PendingDataWrite(FrameData originalFrame, long startTime, int writeTimeout) {
+            this.startTime = startTime;
+            this.writeTimeout = writeTimeout;
+            this.endStream = originalFrame.flagEndStreamSet();
+            this.padded = originalFrame.flagPaddedSet();
+            this.paddingLength = originalFrame.getPaddingLength();
+            this.payloadLength = originalFrame.getPayloadLength();
+            // Create defensive copy of the buffer data using the public accessor due to
+            // buffer reuse after the initial write attempt fails due to flow control.
+            this.dataCopy = originalFrame.getDataBufferCopy();
+        }
+
+        /**
+         * Create a new FrameData from the stored copy for retry.
+         * This ensures we have a fresh frame with our own buffer.
+         */
+        FrameData createFrameForRetry(int streamId) {
+            if (dataCopy != null) {
+                return new FrameData(streamId, dataCopy, paddingLength, endStream, padded, false);
+            } else {
+                return new FrameData(streamId, new byte[0], paddingLength, endStream, padded, false);
+            }
+        }
+    }
+
     // the remote window, which we're keeping track of as a sender
     private long streamWindowUpdateWriteInitialSize;
     private long streamWindowUpdateWriteLimit;
@@ -126,6 +177,11 @@ public class H2StreamProcessor {
 
     // handle maximum size of header block
     private long currentHeaderBlockSize = 0;
+
+    // Queue allows multiple DATA frames to be pending, maintaining write order
+    private final Queue<PendingDataWrite> pendingWriteQueue = new ConcurrentLinkedQueue<PendingDataWrite>();
+    private volatile ScheduledFuture<?> writeTimeoutFuture = null;
+    private final AtomicBoolean retryInProgress = new AtomicBoolean(false);
 
     /**
      * Create a stream processor initialized in idle state
@@ -382,6 +438,23 @@ public class H2StreamProcessor {
                 // This frame type is artificially generated, process it as a headers frame,
                 // as if it had come in off the wire
                 if (frameType == FrameTypes.PUSHPROMISEHEADERS) {
+                    // Check if the stream's initial window size is at or below the low window limit
+                    int streamInitialWindowSize = muxLink.getRemoteConnectionSettings().getInitialWindowSize();
+                    if (streamInitialWindowSize <= muxLink.getH2RateState().getLowWindowLimit()) {
+                        muxLink.getH2RateState().addLowWindowStream(myID);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Push promise stream " + myID + " has low initial window size: " + streamInitialWindowSize + " <= " + muxLink.getH2RateState().getLowWindowLimit());
+                        }
+                        // Check if too many low window streams have been opened
+                        if (muxLink.getH2RateState().tooManyLowWindowStreams()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "processNextFrame: Too many low window streams opened (including push promises); closing connection");
+                            }
+                            addFrame = ADDITIONAL_FRAME.GOAWAY;
+                            addFrameException = new EnhanceYourCalmException("Too many streams with low initial window size have been opened; closing the connection");
+                            continue;
+                        }
+                    }
                     try {
                         getHeadersFromFrame();
                         setHeadersComplete();
@@ -475,18 +548,12 @@ public class H2StreamProcessor {
                 }
                 if (frameType == FrameTypes.RST_STREAM) {
                     processRstFrame();
-                    synchronized (this) {
-                        this.notifyAll();
-                    }
                     return;
                 }
 
                 try {
                     if (frameType == FrameTypes.WINDOW_UPDATE) {
                         processWindowUpdateFrame();
-                        synchronized (this) {
-                            this.notifyAll();
-                        }
                     }
                 } catch (Http2Exception e) {
                     if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
@@ -634,7 +701,7 @@ public class H2StreamProcessor {
         if (currentFrame.getFrameType() == FrameTypes.GOAWAY
             || currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             try {
-                writeFrameSync();
+                attemptFrameWrite();
             } finally {
                 rstStreamSent = true;
                 muxLink.getH2RateState().incrementResetFrameCount();
@@ -689,14 +756,25 @@ public class H2StreamProcessor {
     }
 
     /**
-     * Update the stream state and provide logging, if enabled
+     * Update the stream state and provide logging, if enabled.
+     * Cancels any pending deferred writes when transitioning to CLOSED state.
      *
      * @param state
      */
     private void updateStreamState(StreamState state) {
         this.state = state;
         if (StreamState.CLOSED.equals(state)) {
+            // Cancel any pending writes when closing
+            cancelPendingWrite();
             setCloseTime(System.currentTimeMillis());
+            // Remove this stream from low window tracking if it was being tracked
+            // This happens when the stream finishes (closes) successfully
+            if (muxLink.getH2RateState().removeLowWindowStream(myID)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "updateStreamState: stream " + myID + " closing, removed from low window tracking");
+                }
+            }
+
             muxLink.closeStream(this);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -757,7 +835,7 @@ public class H2StreamProcessor {
                                  + " H2InboundLink hc: " + muxLink.hashCode());
                 }
 
-                writeFrameSync();
+                attemptFrameWrite();
 
             } catch (FlowControlException e) {
                 // FlowControlException cannot occur for FrameTypes.SETTINGS, so do nothing here but debug
@@ -808,26 +886,43 @@ public class H2StreamProcessor {
             // this call does not need to be synchronized, since frame processing per connection is serial at this point in the code flow for the update frame
             muxLink.incrementConnectionWindowUpdateLimit(castFrame.getWindowSizeIncrement());
         } else {
-            // Increment size is 31 bits, max.   make sure adding it to Write Limit does go over 0x7FFFFFFF
-            long temp = streamWindowUpdateWriteLimit + castFrame.getWindowSizeIncrement();
-            temp = temp & Constants.LONG_31BIT_FILTER;
-            if (temp != 0) {
-                // number would be bigger that 2^31 - 1, which it can't be
-                String s = "processWindowUpdateFrame: out of bounds increment, current stream write limit: " + streamWindowUpdateWriteLimit
-                           + " total would have been: " + temp;
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, s);
+            // Synchronize to prevent race condition with SETTINGS frame processing
+            synchronized (this) {
+                // Increment size is 31 bits, max.   make sure adding it to Write Limit does go over 0x7FFFFFFF
+                long temp = streamWindowUpdateWriteLimit + castFrame.getWindowSizeIncrement();
+                temp = temp & Constants.LONG_31BIT_FILTER;
+                if (temp != 0) {
+                    // number would be bigger that 2^31 - 1, which it can't be
+                    String s = "processWindowUpdateFrame: out of bounds increment, current stream write limit: " + streamWindowUpdateWriteLimit
+                               + " total would have been: " + temp;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, s);
+                    }
+                    FlowControlException e = new FlowControlException(s);
+                    // since the ID for this stream is 0, this is a stream error rather than a connection error
+                    e.setConnectionError(false);
+                    throw e;
                 }
-                FlowControlException e = new FlowControlException(s);
-                // since the ID for this stream is 0, this is a stream error rather than a connection error
-                e.setConnectionError(false);
-                throw e;
+
+                streamWindowUpdateWriteLimit += castFrame.getWindowSizeIncrement();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processWindowUpdateFrame: new write limit is: " + streamWindowUpdateWriteLimit);
+                }
             }
 
-            streamWindowUpdateWriteLimit += castFrame.getWindowSizeIncrement();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "processWindowUpdateFrame: new write limit is: " + streamWindowUpdateWriteLimit);
+            // If this stream was tracked as low window and now exceeds the limit, remove it from tracking
+            if (streamWindowUpdateWriteLimit > muxLink.getH2RateState().getLowWindowLimit()) {
+                if (muxLink.getH2RateState().removeLowWindowStream(myID)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "processWindowUpdateFrame: stream " + myID + " window now exceeds low limit (" +
+                                 streamWindowUpdateWriteLimit + " > " + muxLink.getH2RateState().getLowWindowLimit() +
+                                 "), removed from low window tracking");
+                    }
+                }
             }
+
+            // Trigger retry of any deferred writes now that window has opened
+            flushDataWaitingForWindowUpdate();
         }
 
     }
@@ -875,7 +970,7 @@ public class H2StreamProcessor {
                         Frame savedFrame = currentFrame; // save off the current frame
                         if (!currentFrame.flagEndStreamSet()) {
                             currentFrame = new FrameWindowUpdate(myID, windowChange, false);
-                            writeFrameSync();
+                            attemptFrameWrite();
                             streamReadWindowSize += windowChange;
                             currentFrame = savedFrame;
                         }
@@ -890,14 +985,43 @@ public class H2StreamProcessor {
     }
 
     /**
-     * Tell this stream to attempt to start writing out data frames
+     * Tell this stream to attempt to start writing out data frames.
+     * Now schedules async retry for deferred writes instead of just notifying waiting threads.
+     * Uses atomic flag to prevent redundant scheduling when retry is already in progress.
      */
     private void flushDataWaitingForWindowUpdate() {
-        synchronized (this) {
-            this.notifyAll();
+        // Check if writes are pending before triggering a write attempt
+        if (pendingWriteQueue.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushDataWaitingForWindowUpdate: stream: " + myID + " has no data pending to be written.");
+            }
+            return;
+        }
+
+        // Only schedule if no retry is currently in progress
+        // The retry itself will check for more work in its finally block
+        if (retryInProgress.get()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushDataWaitingForWindowUpdate: stream: " + myID + " retry already in progress, will be picked up");
+            }
+            return;
+        }
+
+        // Schedule retry on executor (don't block WINDOW_UPDATE processing)
+        ExecutorService executor = CHFWBundle.getExecutorService();
+        executor.execute(() -> {
+            retryDeferredWrite();
+        });
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "flushDataWaitingForWindowUpdate: stream: " + myID + " scheduled deferred write retry");
         }
     }
 
+    /**
+     * Called when the connection window size is updated.
+     * Triggers retry of any deferred writes on this stream.
+     */
     protected void connectionWindowSizeUpdated() {
         flushDataWaitingForWindowUpdate();
     }
@@ -909,7 +1033,7 @@ public class H2StreamProcessor {
      * @param newSize - new window size
      * @throws FlowControlException
      */
-    protected void updateInitialWindowsUpdateSize(int newSize) throws FlowControlException {
+    protected void updateInitialWindowsUpdateSize(int newSize) throws FlowControlException, Http2Exception {
         // this method should only be called by the thread that came in on processNewFrame.
         // newSize should be treated as an unsigned 32-bit int
 
@@ -922,14 +1046,36 @@ public class H2StreamProcessor {
             Tr.debug(tc, "updateInitialWindowsUpdateSize entry: stream {0} newSize: {1}", myID, newSize);
         }
 
-        long diff = newSize - streamWindowUpdateWriteInitialSize;
+        // Synchronize to prevent race condition with WINDOW_UPDATE frame processing
+        synchronized (this) {
+            long diff = newSize - streamWindowUpdateWriteInitialSize;
 
-        streamWindowUpdateWriteInitialSize = newSize;
-        streamWindowUpdateWriteLimit += diff;
+            streamWindowUpdateWriteInitialSize = newSize;
+            streamWindowUpdateWriteLimit += diff;
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "streamWindowUpdateWriteInitialSize updated to: " + streamWindowUpdateWriteInitialSize);
-            Tr.debug(tc, "streamWindowUpdateWriteLimit updated to: " + streamWindowUpdateWriteLimit);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "streamWindowUpdateWriteInitialSize updated to: " + streamWindowUpdateWriteInitialSize);
+                Tr.debug(tc, "streamWindowUpdateWriteLimit updated to: " + streamWindowUpdateWriteLimit);
+            }
+        }
+
+        // Check if the new window size falls below the low window limit
+        // If so, track this stream and check if we've exceeded the maximum allowed low window streams
+        if (newSize <= muxLink.getH2RateState().getLowWindowLimit()) {
+            boolean wasAdded = muxLink.getH2RateState().addLowWindowStream(myID);
+            if (wasAdded && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "updateInitialWindowsUpdateSize: stream " + myID + " added to low window tracking due to SETTINGS frame. New size: " + newSize + " <= " + muxLink.getH2RateState().getLowWindowLimit());
+            }
+
+            // Check if too many low window streams have been opened
+            if (muxLink.getH2RateState().tooManyLowWindowStreams()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "updateInitialWindowsUpdateSize: Too many low window streams after SETTINGS update; closing connection");
+                }
+                EnhanceYourCalmException eyc = new EnhanceYourCalmException("Too many streams with low initial window size have been opened; closing the connection");
+                eyc.setConnectionError(true);
+                throw eyc;
+            }
         }
 
         // if any data frames were waiting for a window update, write them out now
@@ -977,7 +1123,7 @@ public class H2StreamProcessor {
         currentFrame = new FrameGoAway(0, new byte[0], 0, muxLink.getGoawayPromisedStreamId(), false);
 
         try {
-            writeFrameSync();
+            attemptFrameWrite();
         } catch (FlowControlException e) {
             // FlowControlException cannot occur for FrameTypes.GOAWAY, so do nothing here but debug
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1011,7 +1157,7 @@ public class H2StreamProcessor {
         currentFrame = new FramePing(0, data, false);
         currentFrame.setAckFlag();
         try {
-            writeFrameSync();
+            attemptFrameWrite();
         } catch (FlowControlException e) {
             // FlowControlException cannot occur for FrameTypes.PING, so do nothing here but debug
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1021,13 +1167,16 @@ public class H2StreamProcessor {
     }
 
     /**
-     * Process an incoming RstStream Frame: log the error and close this stream
+     * Process an incoming RstStream Frame: log the error and close this stream.
+     * Also cancels any pending deferred writes.
      */
     private void processRstFrame() {
         int error = ((FrameRstStream) currentFrame).getErrorCode();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processRstFrame: error received from peer: " + utils.getErrorFromCode(error));
         }
+        // Cancel any pending writes before closing
+        cancelPendingWrite();
         this.updateStreamState(StreamState.CLOSED);
     }
 
@@ -1065,6 +1214,25 @@ public class H2StreamProcessor {
 
                 }
 
+                // Check if the stream's initial window size is at or below the low window limit
+                int streamInitialWindowSize = muxLink.getRemoteConnectionSettings().getInitialWindowSize();
+                if (streamInitialWindowSize <= muxLink.getH2RateState().getLowWindowLimit()) {
+                    muxLink.getH2RateState().addLowWindowStream(myID);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Stream " + myID + " has low initial window size: " + streamInitialWindowSize + " <= " + muxLink.getH2RateState().getLowWindowLimit());
+                    }
+
+                    // Check if too many low window streams have been opened
+                    if (muxLink.getH2RateState().tooManyLowWindowStreams()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "processIdle: Too many low window streams opened; closing connection");
+                        }
+                        EnhanceYourCalmException eyc = new EnhanceYourCalmException("Too many streams with low initial window size have been opened; closing the connection");
+                        eyc.setConnectionError(true);
+                        throw eyc;
+                    }
+                }
+
                 processHeadersPriority();
                 getHeadersFromFrame();
 
@@ -1090,7 +1258,7 @@ public class H2StreamProcessor {
             if (frameType == FrameTypes.HEADERS) {
                 updateStreamState(StreamState.OPEN);
             }
-            writeFrameSync();
+            attemptFrameWrite();
         }
     }
 
@@ -1218,10 +1386,19 @@ public class H2StreamProcessor {
                 }
 
             }
-            boolean writeCompleted = writeFrameSync();
-            if (frameType == FrameTypes.DATA && writeCompleted && currentFrame.flagEndStreamSet()) {
-                endStream = true;
-                updateStreamState(StreamState.HALF_CLOSED_LOCAL);
+            WriteResult writeResult = attemptFrameWrite();
+            if (frameType == FrameTypes.DATA && currentFrame.flagEndStreamSet()) {
+                if (writeResult == WriteResult.COMPLETE) {
+                    // Update state immediately for completed writes
+                    endStream = true;
+                    updateStreamState(StreamState.HALF_CLOSED_LOCAL);
+                } else if (writeResult == WriteResult.DEFERRED) {
+                    // State will be updated in retryDeferredWrite() when write completes
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "processOpen: stream: " + myID + " DATA write deferred, state update postponed");
+                    }
+                }
+                // FAILED case: stream already closed or error occurred, no state update needed
             }
         }
     }
@@ -1241,7 +1418,7 @@ public class H2StreamProcessor {
         // contains an END_STREAM flag is received or when either peer sends
         // a RST_STREAM frame.
         if (direction == Direction.WRITING_OUT) {
-            writeFrameSync();
+            attemptFrameWrite();
             if (currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
                 endStream = true;
                 updateStreamState(StreamState.HALF_CLOSED_LOCAL);
@@ -1263,7 +1440,7 @@ public class H2StreamProcessor {
         // frame that contains an END_STREAM flag or when either peer sends a
         // RST_STREAM frame.
         if (direction == Direction.WRITING_OUT) {
-            boolean writeCompleted = writeFrameSync();
+            WriteResult writeResult = attemptFrameWrite();
             if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
                 if (currentFrame.flagEndHeadersSet()) {
                     muxLink.setWriteContinuationExpected(false);
@@ -1271,10 +1448,29 @@ public class H2StreamProcessor {
                     muxLink.setWriteContinuationExpected(true);
                 }
             }
-            if ((currentFrame.getFrameType() == FrameTypes.RST_STREAM || currentFrame.flagEndStreamSet() && !muxLink.isWriteContinuationExpected())
-                && writeCompleted) {
+
+            // Handle state transitions based on frame type and write result
+            if (currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
+                // RST_STREAM always completes immediately (not subject to flow control)
                 endStream = true;
                 updateStreamState(StreamState.CLOSED);
+            } else if (currentFrame.flagEndStreamSet() && !muxLink.isWriteContinuationExpected()) {
+                // END_STREAM flag set - could be DATA or HEADERS
+                if (frameType == FrameTypes.DATA) {
+                    // DATA frames may be deferred
+                    if (writeResult == WriteResult.COMPLETE) {
+                        endStream = true;
+                        updateStreamState(StreamState.CLOSED);
+                    } else if (writeResult == WriteResult.DEFERRED) {
+                        // State will be updated in retryDeferredWrite() when write completes
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "processHalfClosedRemote: stream: " + myID + " DATA write deferred, state update postponed");
+                        }
+                    }
+                } else {
+                    endStream = true;
+                    updateStreamState(StreamState.CLOSED);
+                }
             }
         } else if (currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             endStream = true;
@@ -1306,24 +1502,31 @@ public class H2StreamProcessor {
                     updateStreamState(StreamState.HALF_CLOSED_REMOTE);
                 }
             }
-            writeFrameSync();
+            attemptFrameWrite();
         }
     }
 
     /**
      * Check to see if a writing out a frame will cause the stream or connection window to go exceeded
-     *
+     * Synchronize to prevent race condition with window update operations
      * @return true if the write window would be exceeded by writing the frame
      */
     private boolean isWindowLimitExceeded(FrameData dataFrame) {
-        if (streamWindowUpdateWriteLimit - dataFrame.getPayloadLength() < 0 ||
-            muxLink.getWorkQ().getConnectionWriteLimit() - dataFrame.getPayloadLength() < 0) {
+        return isWindowLimitExceeded(dataFrame.getPayloadLength());
+    }
+
+    /**
+     * Check if writing a frame with the given payload length would exceed flow control windows.
+     */
+    private synchronized boolean isWindowLimitExceeded(int payloadLength) {
+        if (streamWindowUpdateWriteLimit - payloadLength < 0 ||
+            muxLink.getWorkQ().getConnectionWriteLimit() - payloadLength < 0) {
             // would exceed window update limit
             String s = "Cannot write Data Frame because it would exceed the stream window update limit."
                        + "streamWindowUpdateWriteLimit: " + streamWindowUpdateWriteLimit
                        + "\nstreamWindowUpdateWriteInitialSize: " + streamWindowUpdateWriteInitialSize
                        + "\nconnection window size: " + muxLink.getWorkQ().getConnectionWriteLimit()
-                       + "\nframe size: " + dataFrame.getPayloadLength();
+                       + "\nframe size: " + payloadLength;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, s);
             }
@@ -1331,6 +1534,395 @@ public class H2StreamProcessor {
         }
         return false;
     }
+    /**
+     * Defer a DATA write until flow-control window opens.
+     * Adds the write to a queue, allowing multiple pending writes while maintaining order.
+     *
+     * @param data the DATA frame to defer
+     * @return WriteResult.DEFERRED if successfully queued
+     */
+    private WriteResult deferDataWrite(FrameData data) throws Http2Exception{
+        int writeTimeout = muxLink.config.getWriteTimeout();
+        PendingDataWrite pendingWrite = new PendingDataWrite(data, System.currentTimeMillis(), writeTimeout);
+        // Try to increment queued bytes - returns result indicating success or type of failure
+        H2RateState.QueuedBytesResult result = muxLink.getH2RateState().tryIncrementQueuedBytes(pendingWrite.payloadLength);
+
+        switch (result) {
+            case SUCCESS:
+                break;
+            case FIRST_TO_EXCEED:
+                // We're the first thread to exceed the limit - send GOAWAY
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "deferDataWrite: stream: " + myID + " queued bytes limit exceeded, closing connection");
+                }
+                EnhanceYourCalmException up = new EnhanceYourCalmException("Total queued bytes across all streams exceeded limit!");
+                up.setConnectionError(true);
+                throw up;
+            case ALREADY_EXCEEDED:
+                // Limit was already exceeded by another thread - fail without sending GOAWAY
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "deferDataWrite: stream: " + myID + " cannot queue data, connection closing due to queued bytes limit");
+                }
+                Http2Exception error = new Http2Exception("Connection closing due to queued bytes limit exceeded");
+                error.setConnectionError(false);
+                throw error;
+            default:
+                // Should never happen
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "deferDataWrite: stream: " + myID + " had an unexpected result! " + result);
+                }
+                throw new Http2Exception("Error writing data to stream: " + myID);
+        }
+        
+        pendingWriteQueue.offer(pendingWrite);
+        // Schedule timeout for the FIRST pending write only
+        // Subsequent writes will be processed when earlier ones complete
+        synchronized (this) {
+            if (writeTimeoutFuture == null && pendingWriteQueue.size() == 1) {
+                ScheduledExecutorService scheduler = CHFWBundle.getScheduledExecutorService();
+                writeTimeoutFuture = scheduler.schedule(() -> {
+                    handleWriteTimeout();
+                }, writeTimeout, TimeUnit.MILLISECONDS);
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "deferDataWrite: stream: " + myID + " DATA write queued (queue size: " +
+                     pendingWriteQueue.size() + "), timeout in " + writeTimeout + "ms");
+        }
+
+        return WriteResult.DEFERRED;
+    }
+
+    /**
+     * Perform the actual DATA frame write.
+     * Extracts logic from attemptFrameWrite for reuse in both immediate and deferred writes.
+     *
+     * @param data the DATA frame to write
+     * @return WriteResult.COMPLETE if successful, WriteResult.FAILED otherwise
+     * @throws Http2Exception if write fails
+     */
+    private WriteResult performDataWrite(FrameData data) throws Http2Exception {
+        WsByteBuffer[] writeFrameBuffers = null;
+        try {
+            writeFrameBuffers = data.buildFrameArrayForWrite();
+            int writeTimeout = muxLink.config.getWriteTimeout();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "performDataWrite: stream: " + myID + " writing DATA frame with timeout: " + writeTimeout);
+            }
+
+            muxLink.writeSync(null, writeFrameBuffers, data.getWriteFrameLength(),
+                             writeTimeout, data.getFrameType(),
+                             data.getPayloadLength(), myID);
+
+            synchronized (this) {
+                streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "performDataWrite: stream: " + myID + " DATA written, new streamWindowUpdateWriteLimit: " + streamWindowUpdateWriteLimit);
+            }
+
+            return WriteResult.COMPLETE;
+
+        } catch (IOException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "performDataWrite: stream: " + myID + " caught IOException: " + e);
+            }
+
+            // Close connection on IOException, unless it is a timeout
+            if (!(e instanceof SocketTimeoutException)) {
+                updateStreamState(StreamState.CLOSED);
+                muxLink.closeConnectionLink(e, false);
+            }
+
+            Http2Exception up = new Http2Exception(e.getMessage());
+            up.setConnectionError(true);
+            throw up;
+
+        } finally {
+            // Release buffers
+            if (writeFrameBuffers != null) {
+                for (int i = 0; i < writeFrameBuffers.length; i++) {
+                    if (writeFrameBuffers[i] != null) {
+                        // buffer at [1] is allocated by old channel code, it will clean it up
+                        if (i != 1) {
+                            writeFrameBuffers[i].release();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Perform the actual non-DATA frame write.
+     * Extracts logic from attemptFrameWrite for clarity.
+     *
+     * @param frame the frame to write
+     * @return WriteResult.COMPLETE if successful, WriteResult.FAILED otherwise
+     * @throws Http2Exception if write fails
+     */
+    private WriteResult performNonDataWrite(Frame frame) throws Http2Exception {
+        WsByteBuffer writeFrameBuffer = null;
+        try {
+            writeFrameBuffer = frame.buildFrameForWrite();
+            int writeTimeout = muxLink.config.getWriteTimeout();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "performNonDataWrite: stream: " + myID + " writing " + frame.getFrameType() + " frame with timeout: " + writeTimeout);
+            }
+
+            muxLink.writeSync(writeFrameBuffer, null, frame.getWriteFrameLength(), writeTimeout,
+                             frame.getFrameType(), frame.getPayloadLength(), myID);
+
+            return WriteResult.COMPLETE;
+
+        } catch (IOException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "performNonDataWrite: stream: " + myID + " caught IOException: " + e);
+            }
+
+            // Close connection on IOException, unless it is a timeout
+            if (!(e instanceof SocketTimeoutException)) {
+                updateStreamState(StreamState.CLOSED);
+                muxLink.closeConnectionLink(e, false);
+            }
+
+            Http2Exception up = new Http2Exception(e.getMessage());
+            up.setConnectionError(true);
+            throw up;
+
+        } finally {
+            if (writeFrameBuffer != null) {
+                writeFrameBuffer.release();
+            }
+        }
+    }
+
+    /**
+     * Retry deferred writes from the queue (called from executor thread when window opens).
+     * Processes writes in FIFO order, stopping when window is exhausted or queue is empty.
+     * Uses atomic flag to prevent multiple concurrent executions for the same stream.
+     */
+    private void retryDeferredWrite() {
+        // Prevent multiple concurrent retry attempts for the same stream
+        if (!retryInProgress.compareAndSet(false, true)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " already has retry in progress, skipping");
+            }
+            return;
+        }
+
+        try {
+            while (true) {
+            PendingDataWrite pending;
+
+            // Check if stream is still valid
+            if (state.equals(StreamState.CLOSED) || muxLink.checkIfGoAwaySendingOrClosing()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " is closed or connection closing, cancelling all pending writes");
+                }
+                cancelPendingWrite();
+                return;
+            }
+
+            // Peek at the next pending write (don't remove yet)
+            pending = pendingWriteQueue.peek();
+            if (pending == null) {
+                // Queue is empty
+                synchronized (this) {
+                    if (writeTimeoutFuture != null) {
+                        writeTimeoutFuture.cancel(false);
+                        writeTimeoutFuture = null;
+                    }
+                }
+                return;
+            }
+
+            // Check if window is now available for this frame
+            if (isWindowLimitExceeded(pending.payloadLength)) {
+                // Still blocked - leave in queue and wait for next window update
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " still blocked by flow control, " +
+                             pendingWriteQueue.size() + " writes remain queued");
+                }
+                return;
+            }
+
+            // Window is available - remove from queue and write
+            pending = pendingWriteQueue.poll();
+            if (pending == null) {
+                // Race condition - another thread processed it
+                continue;
+            }
+
+            // Decrement queued bytes since we're removing from queue
+            muxLink.getH2RateState().decrementQueuedBytes(pending.payloadLength);
+
+            // Perform write
+            try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " retrying deferred write (" +
+                             pendingWriteQueue.size() + " remaining in queue)");
+                }
+
+                // Create a fresh FrameData from our defensive copy
+                FrameData retryFrame = pending.createFrameForRetry(myID);
+                this.currentFrame = retryFrame;
+                WriteResult result = performDataWrite(retryFrame);
+
+                if (result == WriteResult.COMPLETE) {
+                    // Update stream state if this was the final frame
+                    if (pending.endStream) {
+                        synchronized (this) {
+                            endStream = true;
+                            if (state == StreamState.OPEN) {
+                                updateStreamState(StreamState.HALF_CLOSED_LOCAL);
+                            } else if (state == StreamState.HALF_CLOSED_REMOTE) {
+                                updateStreamState(StreamState.CLOSED);
+                            }
+                        }
+                    }
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " deferred write completed successfully");
+                    }
+
+                    // Continue to process next write in queue if window allows
+                    continue;
+                } else {
+                    // Write failed or was deferred again - stop processing
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " write result: " + result);
+                    }
+                    return;
+                }
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " retry failed: " + e);
+                }
+                // Error already handled in performDataWrite
+                // Continue to next write in queue
+                continue;
+            }
+        }
+        } finally {
+            retryInProgress.set(false);
+            // Check if more work arrived while we were finishing up
+            // This prevents a race where a window update comes in just as we're exiting
+            if (!pendingWriteQueue.isEmpty()) {
+                // Peek at next item to see if window is now available
+                PendingDataWrite pending = pendingWriteQueue.peek();
+                if (pending != null && !isWindowLimitExceeded(pending.payloadLength)) {
+                    // Window opened up while we were exiting - schedule another retry
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " detected window opened during exit, scheduling another retry");
+                    }
+                    ExecutorService executor = CHFWBundle.getExecutorService();
+                    executor.execute(() -> {
+                        retryDeferredWrite();
+                    });
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle write timeout for a deferred write.
+     * Called by scheduled executor when timeout expires.
+     */
+    private void handleWriteTimeout() {
+        PendingDataWrite firstPending = null;
+        long totalBytesCleared = 0;
+        synchronized (this) {
+            // Peek at the first pending write (the one that timed out)
+            firstPending = pendingWriteQueue.peek();
+            if (firstPending == null) {
+                // Already completed
+                return;
+            }
+
+            long elapsed = System.currentTimeMillis() - firstPending.startTime;
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleWriteTimeout: stream: " + myID + " write timeout after " + elapsed + "ms");
+            }
+
+            // Calculate total bytes to clear
+            for (PendingDataWrite pending : pendingWriteQueue) {
+                totalBytesCleared += pending.payloadLength;
+            }
+
+            // Clear the entire queue on timeout
+            pendingWriteQueue.clear();
+            writeTimeoutFuture = null;
+        }
+
+        // Purposely do NOT decrement queued bytes if a write timeout ocurred for the stream
+        // adding an additional layer of security to not let failed writes accumulate forever
+        if (totalBytesCleared > 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleWriteTimeout: stream: " + myID + " cleared " + totalBytesCleared + " queued bytes which will continue to be tracked in the connection.");
+            }
+        }
+
+        // Send RST_STREAM outside synchronized block
+        try {
+            FlowControlException fce = new FlowControlException(
+                "Write failed. Window limit exceeded. Stream will be Reset.");
+            fce.setConnectionError(false);
+
+            FrameRstStream rst = new FrameRstStream(myID, fce.getErrorCode(), false);
+            synchronized (this) {
+                this.currentFrame = rst;
+            }
+            attemptFrameWrite();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleWriteTimeout: stream: " + myID + " sent RST_STREAM due to timeout");
+            }
+
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleWriteTimeout: stream: " + myID + " error sending RST after timeout: " + e);
+            }
+        }
+    }
+
+    /**
+     * Cancel pending write (called on stream close/reset).
+     * Clears the pending write state and cancels the timeout.
+     */
+    void cancelPendingWrite() {
+        long totalBytesCleared = 0;
+        synchronized (this) {
+            if (!pendingWriteQueue.isEmpty()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "cancelPendingWrite: stream: " + myID + " cancelling " +
+                             pendingWriteQueue.size() + " pending write(s)");
+                }
+                // Calculate total bytes to clear
+                for (PendingDataWrite pending : pendingWriteQueue) {
+                    totalBytesCleared += pending.payloadLength;
+                }
+                pendingWriteQueue.clear();
+            }
+            if (writeTimeoutFuture != null) {
+                writeTimeoutFuture.cancel(false);
+                writeTimeoutFuture = null;
+            }
+        }
+        // Decrement queued bytes for all cleared writes
+        if (totalBytesCleared > 0) {
+            muxLink.getH2RateState().decrementQueuedBytes(totalBytesCleared);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "cancelPendingWrite: stream: " + myID + " cleared " + totalBytesCleared + " queued bytes");
+            }
+        }
+    }
+
 
     /**
      * Send an artificially created H2 request from a push_promise up to the WebContainer
@@ -1641,9 +2233,14 @@ public class H2StreamProcessor {
                 isFirstHeaderBlock = buf.position() < firstBlockLength;
                 try {
                     current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock,
-                                                      processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings()));
+                                                      processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings(), limitTokenSize));
                 } catch (Http2Exception e) {
                     buf.release();
+                    if (e instanceof HeaderSizeExceededException) {
+                        CompressionException comp = new CompressionException("Headers on stream: " + myID + " exceed limits configured for the server.");
+                        comp.setConnectionError(true);
+                        throw comp;
+                    }
                     throw e;
                 }
                 if (current == null) {
@@ -1991,125 +2588,59 @@ public class H2StreamProcessor {
      * Write out the frame that's currently set on this stream; first, check to make sure that
      * we're actually writing out a write frame, as we expect.
      *
-     * @return true if a write request was successfully passed on to the underlying link
+     * This method now supports async/deferred writes for DATA frames when flow-control windows
+     * are exhausted, avoiding thread blocking.
+     *
+     * @return WriteResult indicating COMPLETE, DEFERRED, or FAILED
      */
-    private boolean writeFrameSync() throws FlowControlException, Http2Exception {
+    private WriteResult attemptFrameWrite() throws FlowControlException, Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "writeFrameSync entry: stream: " + myID);
+            Tr.debug(tc, "attemptFrameWrite entry: stream: " + myID);
         }
         Frame currentFrame = this.currentFrame;
 
+        // Check if stream is closed
         if (!currentFrame.getFrameType().equals(FrameTypes.GOAWAY) && isStreamClosed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "writeFrameSync exit - stream " + myID + " is closed");
+                Tr.debug(tc, "attemptFrameWrite exit - stream " + myID + " is closed");
             }
-            return false;
+            return WriteResult.FAILED;
         }
+
         if (currentFrame.isWriteFrame() && currentFrame.getInitialized()) {
-            WsByteBuffer writeFrameBuffer = null;
-            WsByteBuffer[] writeFrameBuffers = null;
-            int writeTimeout = muxLink.config.getWriteTimeout();
-            try {
-                if (currentFrame.getFrameType() == FrameTypes.DATA) {
-                    FrameData data = (FrameData) currentFrame;
-                    boolean timedOut = false;
-
-                    // Check to see if the write window is large enough to write this data
-                    // if it's not, wait for at most the configured writeTimeout period (default 60s)
-                    if (isWindowLimitExceeded((FrameData) currentFrame)) {
-                        long startTime = System.currentTimeMillis();
-                        long elapsed = 0;
-                        while (isWindowLimitExceeded((FrameData) currentFrame) && !timedOut) {
-                            synchronized (this) {
-                                this.wait(1000);
-                            }
-                            elapsed = System.currentTimeMillis() - startTime;
-                            if (state.equals(StreamState.CLOSED) || muxLink.checkIfGoAwaySendingOrClosing()) {
-                                return false;
-                            } else if (elapsed >= writeTimeout) {
-                                timedOut = true;
-                            }
-                        }
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "stream: " + myID + " write window wait complete; waited " + elapsed + " ms, timed out = " + timedOut);
-                        }
-                    }
-                    // the flow control window is large enough to write the data frame
-                    if (!timedOut) {
-                        writeFrameBuffers = data.buildFrameArrayForWrite();
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "stream: " + myID + " write with timeout: " + writeTimeout);
-                        }
-                        muxLink.writeSync(null, writeFrameBuffers, data.getWriteFrameLength(), writeTimeout,
-                                          data.getFrameType(), data.getPayloadLength(), myID);
-
-                        streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "stream: " + myID + " Data payload written - new streamWindowUpdateWriteLimit: " + streamWindowUpdateWriteLimit);
-                        }
-
-                    } else {
-                        // timed out waiting for a window update, throw FCE which will cause this stream to be RESET.
-                        FlowControlException up = new FlowControlException("Write failed. Window limit exceeded. Stream will be Reset.");
-                        up.setConnectionError(false);
-                        throw up;
-                    }
-
-                } else {
-                    // this frame is not a data frame, and so it's not subject to flow control and we can write immediately
-                    writeFrameBuffer = currentFrame.buildFrameForWrite();
+            if (currentFrame.getFrameType() == FrameTypes.DATA) {
+                FrameData data = (FrameData) currentFrame;
+                // Check flow control window or if pending writes are present
+                 if (!pendingWriteQueue.isEmpty() || isWindowLimitExceeded(data)) {
+                    // DEFER the write instead of blocking - this is the key change
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "stream: " + myID + " write with timeout: " + writeTimeout);
+                        Tr.debug(tc, "attemptFrameWrite: stream: " + myID + " pending writes found: " + pendingWriteQueue.size() + ", or window limit exceeded. Deferring write");
                     }
-                    muxLink.writeSync(writeFrameBuffer, null, currentFrame.getWriteFrameLength(), writeTimeout,
-                                      currentFrame.getFrameType(), currentFrame.getPayloadLength(), myID);
+                    return deferDataWrite(data);
                 }
-            } catch (IOException e) {
+
+                // Window available and no pending writes - write immediately
+                WriteResult result = performDataWrite(data);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeFrameSync caught an IOException: " + e);
+                    Tr.debug(tc, "attemptFrameWrite exit: stream: " + myID + " DATA write result: " + result);
                 }
+                return result;
 
-                // close connection on IOException, unless it is a timeout, without sending a GOAWAY or RESET
-                // this is mainly to prevent trying to send spuirous goaways during server shutdown
-                if (!(e instanceof SocketTimeoutException)) {
-                    updateStreamState(StreamState.CLOSED);
-                    muxLink.closeConnectionLink(e, false);
-                }
-
-                Http2Exception up = new Http2Exception(e.getMessage());
-                up.setConnectionError(true);
-                throw up;
-
-            } catch (InterruptedException e) {
+            } else {
+                // Non-DATA frames not subject to flow control
+                WriteResult result = performNonDataWrite(currentFrame);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeFrameSync interrupted: " + e);
+                    Tr.debug(tc, "attemptFrameWrite exit: stream: " + myID + " non-DATA write result: " + result);
                 }
-            } finally {
-                // release buffer used to synchronously write the frame
-                if (writeFrameBuffer != null) {
-                    writeFrameBuffer.release();
-                } else if (writeFrameBuffers != null) {
-                    for (int i = 0; i < writeFrameBuffers.length; i++) {
-                        if (writeFrameBuffers[i] != null) {
-                            // buffer at [1] is allocated by old channel code, it will clean it up
-                            // later move this logic to a frame cleanup method that can take care of releasing
-                            if (i != 1) {
-                                writeFrameBuffers[i].release();
-                            }
-                        }
-                    }
-                }
+                return result;
             }
 
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "writeFrameSync internal flow issue - exiting method ");
+                Tr.debug(tc, "attemptFrameWrite internal flow issue - exiting method");
             }
+            return WriteResult.FAILED;
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "writeFrameSync exit: stream-id: " + myID);
-        }
-        return true;
     }
 
     /**

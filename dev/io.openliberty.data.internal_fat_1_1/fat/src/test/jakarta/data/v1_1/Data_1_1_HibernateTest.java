@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.v1_1;
 
+import java.util.Optional;
+
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,6 +29,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -34,7 +37,7 @@ import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.v1_1.web.Data_1_1_Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 21)
+@MinimumJavaLevel(javaLevel = 17)
 @MaximumJavaLevel(javaLevel = 25) // TODO remove once RTC 309096 updates Byte Buddy to a version that supports java 26+
 public class Data_1_1_HibernateTest extends FATServletClient {
     /**
@@ -46,11 +49,19 @@ public class Data_1_1_HibernateTest extends FATServletClient {
                     new String[] {
                                    "CWWKD1054E.*findByIsControlTrueAndNumericValueBetween",
                                    "CWWKD1091E.*countBySurgePriceGreaterThanEqual",
+                                   "DSRA0302E.*XA_RBTIMEOUT", // query timeout
+                                   "DSRA0304E.*", // query timeout
+                                   "DSRA9400E.*", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                                   "J2CA0026E.*", // caused by the above during connection re-association
+                                   "J2CA0027E.*" // query timeout
                     };
+
+    private static final H2Database h2Database = //
+                    H2Database.create("dbuser1", "dbpwd1").withDatabaseName("testdb");
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = //
-                    DatabaseContainerFactory.createLatest();
+                    DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.1.1.hibernate")
     @TestServlets({ @TestServlet(servlet = Data_1_1_Servlet.class,

@@ -578,8 +578,8 @@ class SipResolverTcpTransport implements ConnectionReadyCallback,
 
         //  clear the request queue of all outstanding request.
         //  We can only clear when the object using us tell us to clear,
-        //  ohterwise we risk timing windows whereby we clear out requests
-        //  which were menat for rollover, or we fail to clear out an attempt
+        //  otherwise we risk timing windows whereby we clear out requests
+        //  which were meant for rollover, or we fail to clear out an attempt
         //  that will be retried.. 
         _requestQueue.clear();
 
@@ -600,7 +600,7 @@ class SipResolverTcpTransport implements ConnectionReadyCallback,
 			c_logger.traceEntry(this, "SipResolverTcpTransport: complete: write complete id="+hashCode());
 
 		if (c_logger.isTraceDebugEnabled())
-			c_logger.traceDebug("SipResolverTcpTransport: complete: write completed sucessfully: "+hashCode());
+			c_logger.traceDebug("SipResolverTcpTransport: complete: write completed successfully: "+hashCode());
         
         _connectionFailedCount = 0;
         _transportErrorCount = 0;

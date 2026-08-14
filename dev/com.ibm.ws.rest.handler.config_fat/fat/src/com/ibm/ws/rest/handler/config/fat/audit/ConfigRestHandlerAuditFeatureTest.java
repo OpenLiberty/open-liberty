@@ -88,9 +88,9 @@ public class ConfigRestHandlerAuditFeatureTest extends FATServletClient {
                       server.waitForStringInLogUsingMark(AuditMessageConstants.CWWKS5851I_AUDIT_SERVICE_READY));
         assertNotNull("Audit file handler service did not report it was ready",
                       server.waitForStringInLogUsingMark(AuditMessageConstants.CWWKS5805I_AUDIT_FILEHANDLER_SERVICE_READY));
-        assertNotNull(server.waitForStringInLog("CWWKS4105I")); // CWWKS4105I: LTPA configuration is ready after # seconds.
+        assertNotNull(server.waitForLTPAConfigReady(true));
         assertNotNull(server.waitForStringInLog("CWPKI0803A")); // CWPKI0803A: SSL certificate created in # seconds. SSL key file: ...
-        assertNotNull(server.waitForStringInLog("CWWKO0219I")); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        assertNotNull(server.waitForDefaultHTTPEndpointSSLStart(true));
 
         //Audit-2.0 should not enable ibm/api
         assertTrue((server.waitForStringInLog("CWWKT0016I")) == null); // CWWKT0016I: Web application available (default_host): http://9.10.111.222:8010/ibm/api/

@@ -415,7 +415,35 @@ goto:eof
   if not exist "!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" (
      mkdir "!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs"
   )
-  "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe"  //IS//%SERVER_NAME% --Startup=manual --DisplayName="%SERVER_NAME%" --Description="Open Liberty" ++DependsOn=Tcpip --LogPath="!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" --StdOutput=auto --StdError=auto --StartMode=exe --StartPath="%WLP_INSTALL_DIR%" --StartImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StartParams=start#%SERVER_NAME% --StopMode=exe --StopPath="%WLP_INSTALL_DIR%" --StopImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StopParams=stop#%SERVER_NAME% --ServiceUser=LocalSystem                                                                                                                          
+  @REM Register Windows Service using Apache Commons Daemon (prunsrv)
+  @REM Updates registry at: Computer\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Apache Software Foundation\Procrun 2.0\%SERVER_NAME%\Parameters
+  @REM
+  @REM Start Configuration:
+  @REM   --StartImage: Directly invokes server.bat
+  @REM   ++StartParams: Passes "start <servername>" to server.bat
+  @REM   Note: prunsrv //ES// (start) is ASYNCHRONOUS - returns without waiting for the server to start.
+  @REM         The startWinService subroutine polls for WINDOWS_SERVICE_START_TIMEOUT seconds after prunsrv returns.
+  @REM.        LIMITATION: Since prunsrv is asynchronous (returns almost immediately), the server might not be started when 
+  @REM.                 prunsrv command returns. Windows Services interface (services.msc) always reports that it is started.  
+  @REM                  If server start was invoked from Windows Services, server.bat runs in the background and waits for the
+  @REM                  server to start.  It waits for a hard-coded 30 seconds - not WINDOWS_SERVICE_START_TIMEOUT seconds, but 
+  @REM                  whether it waits the correct amount of time doesn't matter.  The output is not visible and the return 
+  @REM                  value is not checked.  This is a limitation of running prunsrv in exe mode, which is what we have to do
+  @REM                  in order to launch server.bat.               
+  @REM
+  @REM Stop Configuration:
+  @REM   --StopImage: Directly invokes server.bat
+  @REM   ++StopParams: Passes "stop <servername> --timeout <seconds>" to server.bat
+  @REM                 --timeout: Passed to Java process to control how long Java client waits for stop confirmation
+  @REM   --StopTimeout: Maximum seconds prunsrv waits for stop command to complete (should match the --timeout value)
+  @REM         Note: prunsrv //SS// (stop) is SYNCHRONOUS (because we added --StopTimeout option). Prunsrv waits up to 
+  @REM               StopTimeout seconds for server to stop
+  @REM
+  @REM IMPORTANT: Stop timeout value is resolved at registration time, not at runtime.
+  @REM            To change the stop timeout, you must unregister and re-register the service.
+  @REM            Modifying WINDOWS_SERVICE_STOP_TIMEOUT in server.env after registration does not affect the timeout.
+  @REM            WINDOWS_SERVICE_START_TIMEOUT is not used by Windows Services.  It is only used by the startWinService command.
+  "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe"  //IS//%SERVER_NAME% --Startup=manual --DisplayName="%SERVER_NAME%" --Description="Open Liberty" ++DependsOn=Tcpip --LogPath="!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" --StdOutput=auto --StdError=auto --StartMode=exe --StartPath="%WLP_INSTALL_DIR%\bin" --StartImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StartParams=start#%SERVER_NAME% --StopMode=exe --StopPath="%WLP_INSTALL_DIR%\bin" --StopImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StopParams=stop#%SERVER_NAME%#--timeout=%WINDOWS_SERVICE_STOP_TIMEOUT% --StopTimeout=%WINDOWS_SERVICE_STOP_TIMEOUT% --ServiceUser=LocalSystem
   set RC=!errorlevel!
 goto:eof
 
@@ -438,33 +466,45 @@ goto:eof
      "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //ES//%SERVER_NAME%
      set RC=!errorlevel!
 
-     @rem  Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be "running" 
+     @REM  Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be "running"
      call:serverRunning !WINDOWS_SERVICE_START_TIMEOUT! 0
      call:javaCmdResult
-  )   
+  )
 goto:eof
 
 :stopWinService
   if NOT "%OS%" == "Windows_NT" goto:eof
   call:serverEnv
+  
+  @REM KNOWN LIMITATION:
+  @REM If the server is stopped immediately after starting (within ~1-2 seconds - an unlikely scenario), 
+  @REM there is a race condition in the Liberty kernel's FeatureManager that can cause the stop to
+  @REM timeout. This occurs because the stop is requested while features are still being
+  @REM activated, leading to lock contention in FeatureManager.deactivate(). The server
+  @REM will eventually stop successfully after the timeout period.
+  @REM This mainly occurs because Windows Services interface reports the service started before it actually starts.
+  
   call:serverExists true
   if %RC% == 2 goto:eof
+  
+  @REM prunsrv calls the "server stop --timeout %WINDOWS_SERVICE_START_TIMEOUT% command".  See "registerWinService" subroutine.
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //SS//%SERVER_NAME%
-  set RC=!errorlevel!
 
-  @rem Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be 1, meaning stopped.
-  @rem RC=0 indicates the server is running; ie the stop request failed.
-  @rem      Call stopServer directly. Stopping the server should stop the service.
-  @rem RC=1 is what we are expecting, meaning server stopped. 
-  @rem      Change RC to RC=0 to indicate success.
-  call:serverRunning !WINDOWS_SERVICE_STOP_TIMEOUT! 1
+  @REM The prunsrv call is synchronous.
+  @REM Check the final server status.
+  @REM RC=0 indicates the server is running (stop failed).
+  @REM RC=1 indicates the server is stopped (stop succeeded).
+  call:serverRunning 0 1
 
-  if !RC! EQU 0 (
-     @rem The service failed to stop, attempt to stop the server directly.
-     call:stopServer
-  ) else ( 
+  @REM Flip the return code to standard exit code convention:
+  @REM   RC=1 (stopped) --> RC=0 (success)
+  @REM   RC=0 (still running) --> RC=1 (failure)
+  if !RC! EQU 1 (
      set RC=0
+  ) else (
+     set RC=1
   )
+  
 goto:eof
 
 :unregisterWinService
@@ -545,23 +585,70 @@ goto:eof
   @REM set LOG_DIR=
   set LOG_FILE=
 
+  @REM Return if JAVA_HOME already processed 
+  if defined JAVA_HOME_PROCESSED goto:eof
+  set JAVA_HOME_PROCESSED=1
+
   if NOT defined JAVA_HOME (
-    if NOT defined JRE_HOME (
-      if NOT defined WLP_DEFAULT_JAVA_HOME (
-        @REM Use whatever java is on the path
-        set JAVA_CMD_QUOTED="java"
-      ) else (
+    if defined JRE_HOME (
+      set JAVA_HOME=!JRE_HOME!
+      set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+    ) else (
+      if defined WLP_DEFAULT_JAVA_HOME (
         if "!WLP_DEFAULT_JAVA_HOME:~0,17!" == "@WLP_INSTALL_DIR@" (
           set WLP_DEFAULT_JAVA_HOME=!WLP_INSTALL_DIR!!WLP_DEFAULT_JAVA_HOME:~17!
         )
-        set JAVA_CMD_QUOTED="!WLP_DEFAULT_JAVA_HOME!\bin\java"
+        set JAVA_HOME=!WLP_DEFAULT_JAVA_HOME!
+        set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+      ) else (
+        @REM Use whatever java is on the path
+        set JAVA_CMD_QUOTED="java"
       )
-    ) else (
-      set JAVA_CMD_QUOTED="%JRE_HOME%\bin\java"
     )
   ) else (
-    if exist "%JAVA_HOME%\jre\bin\java.exe" set JAVA_HOME=!JAVA_HOME!\jre
+    @REM For older JDKs with separate JRE directory, adjust JAVA_HOME to point to JRE
+    @REM Only append \jre if JAVA_HOME doesn't already end with "jre"
+    for %%i in ("!JAVA_HOME!") do set JAVA_PARENT_NAME=%%~nxi
+    if /I NOT "!JAVA_PARENT_NAME!"=="jre" (
+      if exist "!JAVA_HOME!\jre\bin\java.exe" (
+        set JAVA_HOME=!JAVA_HOME!\jre
+      )
+    )
     set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+  )
+
+  @REM If JAVA_HOME is still not set, attempt to detect it from the java command in PATH
+  if NOT defined JAVA_HOME (
+    @REM Try to find java.exe in PATH and derive JAVA_HOME from it
+    for %%i in (java.exe) do set JAVA_PATH=%%~$PATH:i
+    if defined JAVA_PATH (
+      @REM Get the directory containing java.exe
+      for %%i in ("!JAVA_PATH!") do set JAVA_BIN_DIR=%%~dpi
+      @REM Remove trailing backslash
+      set JAVA_BIN_DIR=!JAVA_BIN_DIR:~0,-1!
+      @REM Get parent directory (should be JAVA_HOME or JAVA_HOME\jre)
+      for %%i in ("!JAVA_BIN_DIR!") do set JAVA_HOME=%%~dpi
+      @REM Remove trailing backslash
+      set JAVA_HOME=!JAVA_HOME:~0,-1!
+      @REM Check if we're in a jre subdirectory and adjust if needed
+      for %%i in ("!JAVA_HOME!") do set JAVA_PARENT_NAME=%%~nxi
+      if /I "!JAVA_PARENT_NAME!" == "jre" (
+        @REM We're in JAVA_HOME\jre\bin, go up one more level
+        for %%i in ("!JAVA_HOME!") do set JAVA_HOME=%%~dpi
+        set JAVA_HOME=!JAVA_HOME:~0,-1!
+      )
+      @REM Validate that JAVA_HOME looks reasonable (has lib directory or release file)
+      if NOT exist "!JAVA_HOME!\lib" (
+        if NOT exist "!JAVA_HOME!\release" (
+          @REM Not a valid JAVA_HOME, unset it
+          set JAVA_HOME=
+        ) else (
+          set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+        )
+      ) else (
+        set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+      )
+    )
   )
 
   @REM Use OPENJ9_JAVA_OPTIONS if defined, otherwise use IBM_JAVA_OPTIONS
@@ -588,9 +675,9 @@ goto:eof
     if "!ADD_SHARE_CLASSES!" == "true" (
       @REM Set -Xscmx
       if "debug" == "%ACTION%" (
-        set XSCMX_VAL="130m"
+        set XSCMX_VAL="165m"
       ) else (
-        set XSCMX_VAL="80m"
+        set XSCMX_VAL="125m"
       )
       set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx!XSCMX_VAL! !SPECIFIED_JAVA_OPTIONS!
     ) else (

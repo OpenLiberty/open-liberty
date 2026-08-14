@@ -15,14 +15,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
+import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
+import jakarta.servlet.http.HttpServletResponse;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.tools.ToolManager.ToolDefinition;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.json.bind.Jsonb;
@@ -70,7 +74,9 @@ public class AsyncBeanMethodHandler extends BeanMethodHandler<CompletionStage<To
                                   if (throwable instanceof CompletionException) {
                                       throwable = throwable.getCause();
                                   }
-                                  if (isBusinessException(throwable)) {
+                                  if (throwable instanceof ToolCallUnauthorizedException) {
+                                      throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, throwable.getMessage());
+                                  } else if (isBusinessException(throwable)) {
                                       return ToolResponses.createBusinessErrorResponse(throwable);
                                   } else {
                                       return ToolResponses.createNonBusinessErrorResponse(throwable, method.name());
@@ -81,7 +87,9 @@ public class AsyncBeanMethodHandler extends BeanMethodHandler<CompletionStage<To
             throw e;
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
-            if (isBusinessException(t)) {
+            if (t instanceof ToolCallUnauthorizedException) {
+                throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, t.getMessage());
+            } else if (isBusinessException(t)) {
                 return CompletableFuture.completedStage(ToolResponses.createBusinessErrorResponse(t));
             } else {
                 return CompletableFuture.completedStage(ToolResponses.createNonBusinessErrorResponse(t, method.name()));

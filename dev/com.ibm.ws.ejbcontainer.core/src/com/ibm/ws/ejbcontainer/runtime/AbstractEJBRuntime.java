@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1038,7 +1038,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
             List<HomeRecord> hrs = ivContainer.getHomeOfHomes().getAllHomeRecords();
 
             for (HomeRecord hr : hrs) {
-                if (hr.bindToContextRoot()) {
+                if (hr.remoteBindingDeferred && hr.bindToContextRoot()) {
                     BeanMetaData bmd = hr.getBeanMetaData();
 
                     if (isTraceOn && tc.isDebugEnabled())
@@ -1054,6 +1054,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
                             bindRemoteInterfaceToContextRoot(binders, hr, remoteInterfaceName, interfaceIndex++);
                         }
                     }
+                    hr.remoteBindingDeferred = false;
                 }
             }
         }

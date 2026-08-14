@@ -10,11 +10,14 @@
 package io.openliberty.mcp.internal.fat.utils;
 
 import java.time.Duration;
+import java.util.Base64;
 
 public class TestConstants {
 
-    public static final Duration POSITIVE_TIMEOUT = Duration.ofMillis(10_000);
-    public static final Duration NEGATIVE_TIMEOUT = Duration.ofMillis(500);
+    public static final int POSITIVE_TIMEOUT_MS = 10_000;
+    public static final int NEGATIVE_TIMEOUT_MS = 500;
+    public static final Duration POSITIVE_TIMEOUT = Duration.ofMillis(POSITIVE_TIMEOUT_MS);
+    public static final Duration NEGATIVE_TIMEOUT = Duration.ofMillis(NEGATIVE_TIMEOUT_MS);
 
     // HTTP header names
     public static final String ACCEPT = "Accept";
@@ -25,4 +28,16 @@ public class TestConstants {
     public static final String VALUE_ACCEPT_DEFAULT = "application/json, text/event-stream";
     public static final String VALUE_APPLICATION_JSON = "application/json";
     public static final String VALUE_MCP_PROTOCOL_VERSION = "2025-11-25";
+
+    // Test example data
+
+    /** 1x1 red png */
+    public static final String TEST_IMAGE_DATA_64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==";
+    /** 1x1 red png */
+    public static final byte[] TEST_IMAGE_DATA = Base64.getDecoder().decode(TEST_IMAGE_DATA_64);
+    /** Minimal wav header */
+    public static final String TEST_AUDIO_DATA_64 = "UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQAAAAA=";
+    /** Minimal wav header */
+    public static final byte[] TEST_AUDIO_DATA = Base64.getDecoder().decode(TEST_AUDIO_DATA_64);
+
 }

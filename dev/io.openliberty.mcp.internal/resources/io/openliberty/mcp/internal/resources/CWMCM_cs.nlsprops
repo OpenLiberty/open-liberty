@@ -59,11 +59,11 @@ CWMCM0006E.duplicate.special.arguments.explanation=Jeden nebo v\u00edce speci\u0
 CWMCM0006E.duplicate.special.arguments.useraction=Odstra\u0148te nadbyte\u010dn\u00e9 instance.
 
 # Used for server logging
-# {0} = The fully qualified method name
-# {1} = The parameter type simple name
-CWMCM0007E.invalid.arguments=CWMCM0007E: N\u00e1stroj {0} MCP m\u00e1 parametr typu, {1} kter\u00fd nen\u00ed rozpoznan\u00fdm speci\u00e1ln\u00edm typem argumentu a nem\u00e1 anotaci `@ToolArg`.
-CWMCM0007E.invalid.arguments.explanation=Jeden nebo v\u00edce parametr\u016f nebylo ozna\u010deno jako argumenty n\u00e1stroje a nejsou rozpozn\u00e1ny jako speci\u00e1ln\u00ed typy argument\u016f.
-CWMCM0007E.invalid.arguments.useraction=Zkontrolujte, zda m\u00e1te pro sv\u016fj argument importovanou spr\u00e1vnou t\u0159\u00eddu, nebo zda jste cht\u011bli zahrnout @ToolArg.
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: Koncov\u00fd bod serveru MCP: {0}
+CWMCM0008I.mcp.endpoint.url.explanation=Koncov\u00fd bod serveru MCP URL pro tento aplika\u010dn\u00ed modul je k dispozici na uveden\u00e9 adrese URL.
+CWMCM0008I.mcp.endpoint.url.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 # Used as part of a response to a client
 # {0} = Request id
@@ -271,3 +271,73 @@ CWMCM0032E.duplicate.argument.name.useraction=Ka\u017ed\u00e9mu argumentu n\u00e
 CWMCM0033A.forbidden.error=CWMCM0033A: Zak\u00e1zan\u00fd po\u017eadavek. Metoda= {0} RequestURI={1 } RequestQuery={2 }, V\u00fdjimka: {3}
 CWMCM0033A.forbidden.error.explanation=Byla pod\u00e1na \u017e\u00e1dost, ale u\u017eivatel nem\u00e1 opr\u00e1vn\u011bn\u00ed ji podat.
 CWMCM0033A.forbidden.error.useraction=Ujist\u011bte se, \u017ee po\u017eadavek vol\u00e1 opr\u00e1vn\u011bn\u00fd u\u017eivatel.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: Implementace metody ` {0} ` DefaultValueConverter mus\u00ed specifikovat typov\u00fd parametr.
+CWMCM0034W.converter.missing.type.parameter.explanation=Byla zaregistrov\u00e1na implementa\u010dn\u00ed t\u0159\u00edda typu ` DefaultValueConverter `, ale chyb\u00ed j\u00ed typov\u00fd parametr, a proto nelze zjistit typ, na kter\u00fd se p\u0159ev\u00e1d\u00ed.
+CWMCM0034W.converter.missing.type.parameter.useraction=Upravte deklaraci t\u0159\u00eddy tak, aby implementovala rozhran\u00ed ` DefaultValueConverter ` s konkr\u00e9tn\u00edm typov\u00fdm parametrem. Nap\u0159\u00edklad: T\u0159\u00edda ` MyConverterClass ` implementuje rozhran\u00ed ` DefaultValueConverter<MyType> `.
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: Implementace v souboru \u201e {0} \u201c ( DefaultValueConverter ) prov\u00e1d\u00ed konverzi na generick\u00fd typov\u00fd parametr nam\u00edsto konkr\u00e9tn\u00edho typu.
+CWMCM0035W.converter.generic.type.explanation=T\u0159\u00edda implementuj\u00edc\u00ed rozhran\u00ed ` DefaultValueConverter ` byla zaregistrov\u00e1na s generick\u00fdm typov\u00fdm parametrem, jako je nap\u0159\u00edklad `T`, nam\u00edsto konkr\u00e9tn\u00edho typu.
+CWMCM0035W.converter.generic.type.useraction=Upravte deklaraci t\u0159\u00eddy tak, aby implementovala rozhran\u00ed ` DefaultValueConverter ` s konkr\u00e9tn\u00edm typov\u00fdm parametrem. Nap\u0159\u00edklad: T\u0159\u00edda ` MyConverterClass ` implementuje rozhran\u00ed ` DefaultValueConverter<MyType> `.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: Kl\u00ed\u010d _meta v souboru {0} nen\u00ed platn\u00fd. Segment jm\u00e9na mus\u00ed za\u010d\u00ednat a kon\u010dit alfanumerick\u00fdm znakem a mezi nimi sm\u00ed obsahovat pouze alfanumerick\u00e9 znaky, poml\u010dky, podtr\u017e\u00edtka nebo te\u010dky.
+CWMCM0037E.invalid.meta.key.name.explanation=Segment n\u00e1zvu kl\u00ed\u010de _meta nespl\u0148uje pravidla specifikace MCP. Segment n\u00e1zvu je \u010d\u00e1st n\u00e1sleduj\u00edc\u00ed za volitelnou p\u0159edponou lom\u00edtko, p\u0159\u00edpadn\u011b cel\u00fd kl\u00ed\u010d, pokud p\u0159edpona nen\u00ed uvedena.
+CWMCM0037E.invalid.meta.key.name.useraction=Ujist\u011bte se, \u017ee segment n\u00e1zvu kl\u00ed\u010de _meta za\u010d\u00edn\u00e1 a kon\u010d\u00ed alfanumerick\u00fdm znakem.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: Kl\u00ed\u010d _meta v souboru {0} m\u00e1 p\u0159ed znakem \u201e/\u201c pr\u00e1zdn\u00fd prefix.
+CWMCM0038E.empty.meta.key.prefix.explanation=Kl\u00ed\u010d _meta obsahuje znak \u201e/\u201c, ale p\u0159ed n\u00edm nejsou \u017e\u00e1dn\u00e9 p\u0159edpony. P\u0159edpona mus\u00ed sest\u00e1vat z jednoho nebo v\u00edce ozna\u010den\u00ed odd\u011blen\u00fdch te\u010dkami.
+CWMCM0038E.empty.meta.key.prefix.useraction=P\u0159ed znak \u201e/\u201c vlo\u017ete platnou p\u0159edponu, nebo znak \u201e/\u201c odstra\u0148te, pokud p\u0159edpona nen\u00ed pot\u0159eba.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: Kl\u00ed\u010d _meta v souboru {0} obsahuje neplatn\u00fd prefix {1}. \u0160t\u00edtky mus\u00ed za\u010d\u00ednat p\u00edsmenem, kon\u010dit p\u00edsmenem nebo \u010d\u00edslic\u00ed a mezi nimi mohou obsahovat pouze p\u00edsmena, \u010d\u00edslice nebo poml\u010dky.
+CWMCM0039E.invalid.meta.key.label.explanation=\u00davodn\u00ed \u010d\u00e1st kl\u00ed\u010de _meta obsahuje ozna\u010den\u00ed, kter\u00e9 nen\u00ed v souladu s pravidly specifikace MCP.
+CWMCM0039E.invalid.meta.key.label.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00fd n\u00e1zev v r\u00e1mci p\u0159edpony kl\u00ed\u010de _meta za\u010d\u00edn\u00e1 p\u00edsmenem a kon\u010d\u00ed p\u00edsmenem nebo \u010d\u00edslic\u00ed. Ujist\u011bte se, \u017ee mezi p\u00edsmeny jsou pouze p\u00edsmena, \u010d\u00edslice nebo poml\u010dky.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: P\u0159edpona metadat \u201e {0} \u201c v anotaci \u201e MetaField \u201c metody \u201e {1} \u201c nen\u00ed platn\u00e1. Platn\u00e1 p\u0159edpona je \u0159ada \u0161t\u00edtk\u016f odd\u011blen\u00fdch te\u010dkami. Ka\u017ed\u00fd n\u00e1zev mus\u00ed za\u010d\u00ednat p\u00edsmenem, kon\u010dit p\u00edsmenem nebo \u010d\u00edslic\u00ed a mezi nimi sm\u00ed obsahovat pouze p\u00edsmena, \u010d\u00edslice nebo poml\u010dky.
+CWMCM0040E.invalid.metadata.prefix.explanation=P\u0159edpona metadat v anotaci \u201e MetaField \u201c nespl\u0148uje po\u017eadavky specifikace Model Context Protocol (MCP).
+CWMCM0040E.invalid.metadata.prefix.useraction=Aktualizujte p\u0159edponu metadat v anotaci ` MetaField ` u dan\u00e9 metody tak, aby spl\u0148ovala po\u017eadavky specifikace MCP. P\u0159edpona mus\u00ed sest\u00e1vat z ozna\u010den\u00ed odd\u011blen\u00fdch te\u010dkami, za nimi\u017e n\u00e1sleduje lom\u00edtko. Ka\u017ed\u00fd n\u00e1zev mus\u00ed za\u010d\u00ednat p\u00edsmenem a kon\u010dit p\u00edsmenem nebo \u010d\u00edslic\u00ed. Znaky uvnit\u0159 ka\u017ed\u00e9ho \u0161t\u00edtku mohou b\u00fdt p\u00edsmena, \u010d\u00edslice nebo poml\u010dky.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: N\u00e1zev metadat \u201e {0} \u201c v anotaci \u201e MetaField \u201c metody \u201e {1} \u201c nen\u00ed platn\u00fd. Platn\u00fd n\u00e1zev metadat mus\u00ed za\u010d\u00ednat a kon\u010dit alfanumerick\u00fdm znakem a m\u016f\u017ee obsahovat poml\u010dky, podtr\u017e\u00edtka, te\u010dky a alfanumerick\u00e9 znaky.
+CWMCM0041E.invalid.metadata.name.explanation=N\u00e1zev metadat v anotaci \u201e MetaField \u201c nespl\u0148uje po\u017eadavky specifikace protokolu MCP (Model Context Protocol).
+CWMCM0041E.invalid.metadata.name.useraction=Aktualizujte n\u00e1zev metadat v anotaci ` MetaField ` u dan\u00e9 metody tak, aby spl\u0148oval po\u017eadavky specifikace MCP. Ujist\u011bte se, \u017ee n\u00e1zev za\u010d\u00edn\u00e1 a kon\u010d\u00ed alfanumerick\u00fdm znakem a obsahuje pouze poml\u010dky, podtr\u017e\u00edtka, te\u010dky a alfanumerick\u00e9 znaky.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: Hodnota kl\u00ed\u010de metadat \u201e {0} \u201c v anotaci \u201e MetaField \u201c metody \u201e {1} \u201c nelze p\u0159ev\u00e9st na typ \u201e {2} \u201c. Chyba je: {3}
+CWMCM0042E.metadata.value.conversion.error.explanation=Hodnotu metadat v anotaci \u201e MetaField \u201c nelze p\u0159ev\u00e9st na typ, kter\u00fd je v t\u00e9to anotaci uveden. Hodnota m\u016f\u017ee m\u00edt nespr\u00e1vn\u00fd form\u00e1t nebo m\u016f\u017ee b\u00fdt nekompatibiln\u00ed se zadan\u00fdm typem.
+CWMCM0042E.metadata.value.conversion.error.useraction=Projd\u011bte si chybovou zpr\u00e1vu, soubor \u201e message.log \u201c a protokoly FFDC, abyste zjistili p\u0159\u00ed\u010dinu selh\u00e1n\u00ed konverze. Aktualizujte hodnotu metadat v anotaci \u201e MetaField \u201c tak, aby byla kompatibiln\u00ed se zadan\u00fdm typem.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: Metoda ` {0} ` vyu\u017e\u00edv\u00e1 anotaci ` {1} `, kter\u00e1 nen\u00ed podporov\u00e1na. Tato metoda se ignoruje.
+CWMCM0043W.unsupported.annotation.explanation=Java API protokolu Model Context Protocol (MCP) obsahuje anotace pro funkce, kter\u00e9 tato implementace nepodporuje. Metody ozna\u010den\u00e9 nepodporovan\u00fdmi anotacemi jsou ignorov\u00e1ny.
+CWMCM0043W.unsupported.annotation.useraction=Odstra\u0148te z metody nepodporovanou anotaci nebo pou\u017e\u00edvejte pouze podporovan\u00e9 anotace protokolu Model Context Protocol (MCP).

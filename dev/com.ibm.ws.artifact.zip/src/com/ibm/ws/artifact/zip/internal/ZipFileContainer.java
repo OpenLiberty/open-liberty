@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011,2025 IBM Corporation and others.
+ * Copyright (c) 2011,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.artifact.zip.internal;
 
@@ -29,10 +26,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.ibm.websphere.ras.Tr;
@@ -40,6 +39,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
+import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.MultiReleaseFileZipEntryData;
 import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
@@ -181,7 +181,6 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     private static enum Timings {
         ARRAY_CREATE_TIME,
-        MAP_CREATE_TIME,
         ARRAY_LOOKUP_TIME,
         MAP_LOOKUP_TIME,
         EXTRACT_TIME;
@@ -199,7 +198,6 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         if ( COLLECT_TIMINGS ) {
             System.out.println("ZFC Timings Key");
             System.out.println("ZFC [ " + Timings.ARRAY_CREATE_TIME + " ] [ Time creating the zip entry data array ]");
-            System.out.println("ZFC [ " + Timings.MAP_CREATE_TIME + " ] [ Time creating zip entry data map ]");
             System.out.println("ZFC [ " + Timings.ARRAY_LOOKUP_TIME + " ] [ Time doing array lookups ]");
             System.out.println("ZFC [ " + Timings.MAP_LOOKUP_TIME + " ] [ Time doing map lookups ]");
             System.out.println("ZFC [ " + Timings.EXTRACT_TIME + " ] [ Time extracting nested containers ]");
@@ -242,11 +240,11 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
     }
 
-    private final String archiveName;
+    final String archiveName;
 
     // Multi-release support ...
 
-    private static final int CURRENT_JAVA_VERSION = JavaInfo.majorVersion();
+    static final int CURRENT_JAVA_VERSION = JavaInfo.majorVersion();
 
     // JDK-defined system property for controlling MR. Possible values: true (default), force, false
 
@@ -264,13 +262,6 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
         JDK_DISABLE_MULTI_RELEASE = "false".equalsIgnoreCase(mrProp);
     }
-
-    // Assign 'isMultiRelease' using double locking ...
-    private static class MultiReleaseLock {
-        // EMPTY
-    }
-    private final MultiReleaseLock multiReleaseLock = new MultiReleaseLock();
-    private volatile Boolean isMultiRelease = null;
 
     /**
      * Create a root zip file type container which is not an enclosed container.
@@ -849,14 +840,23 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
     }
 
+    private static class ZipFileDetails {
+        final ZipEntryData[] zipEntryData;
+        final Map<String, ZipEntryData> zipEntryDataMap;
+
+        ZipFileDetails(ZipEntryData[] zipEntryData, Map<String, ZipEntryData> zipEntryDataMap) {
+            this.zipEntryData = zipEntryData;
+            this.zipEntryDataMap = zipEntryDataMap;
+        }
+    }
+
     //
 
-    private static class ZipEntryDataLock {
+    private static class ZipFileDetailsLock {
         // EMPTY
     }
-    private final ZipEntryDataLock zipEntryDataLock = new ZipEntryDataLock();
-    private volatile ZipEntryData[] zipEntryData;
-    private Map<String, ZipEntryData> zipEntryDataMap;
+    private final ZipFileDetailsLock zipFileDetailsLock = new ZipFileDetailsLock();
+    private volatile ZipFileDetails zipFileDetails;
 
     private String getTimingName() {
         if ( archiveFileLock == null ) {
@@ -867,27 +867,54 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     }
 
     @Trivial
-    private void setZipEntryData() {
-        if ( zipEntryData == null ) {
-            synchronized( zipEntryDataLock ) {
-                if ( zipEntryData == null ) {
+    private void setZipFileDetails() {
+        if ( zipFileDetails == null ) {
+            synchronized( zipFileDetailsLock ) {
+                if ( zipFileDetails == null ) {
                     String timingName = (COLLECT_TIMINGS ? getTimingName() : null);
 
                     long dataStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
-                    ZipEntryData[] useZipEntryData = createZipEntryData();
+                    boolean isMultiRelease;
+                    ZipEntryData[] useZipEntryData;
+                    Map<String, ZipEntryData> zipEntryDataMap;
+
+                    ZipFile useZipFile = openZipFileHandle();
+                    if ( useZipFile == null ) {
+                        isMultiRelease = false;
+                        zipEntryDataMap = null;
+                        useZipEntryData = new ZipEntryData[0];
+                    } else {
+                        try {
+                            isMultiRelease = isMultiRelease(useZipFile);
+                            // Using a LinkedHashMap to have it be in insert order to give the same
+                            // sort characteristics as putting entries into a list.
+                            // The ZipFile Enumeration has things in a better order than random
+                            // hash order from a normal HashMap which makes the sort that is done
+                            // perform much faster.
+                            zipEntryDataMap = new LinkedHashMap<String, ZipEntryData>();
+                            useZipEntryData = ZipFileContainerUtils.collectZipEntries(useZipFile, zipEntryDataMap, isMultiRelease);
+                        } finally {
+                            closeZipFileHandle(); // throws IOException
+                        }
+                    }
+
                     if ( COLLECT_TIMINGS ) {
                         record(Timings.ARRAY_CREATE_TIME, dataStart, System.nanoTime(), timingName, 1);
                     }
 
-                    if ( USE_EXTRA_PATH_CACHE ) {
-                        long mapStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
-                        zipEntryDataMap = ZipFileContainerUtils.setLocations(useZipEntryData);
-                        if ( COLLECT_TIMINGS ) {
-                            record(Timings.MAP_CREATE_TIME, mapStart, System.nanoTime(), timingName, 1);
-                        }
+                    // Need to set the location always since the locatePath uses the location
+                    // integer instead of a ZipEntryData return value
+                    ZipFileContainerUtils.setLocations(useZipEntryData);
+
+                    if ( !USE_EXTRA_PATH_CACHE ) {
+                        zipEntryDataMap = null;
+                    } else {
+                        // convert from a LinkedHashMap to a normal HashMap to 
+                        // not have the extra memory overhead
+                        zipEntryDataMap = new HashMap<>(zipEntryDataMap);
                     }
 
-                    zipEntryData = useZipEntryData; 
+                    zipFileDetails = new ZipFileDetails(useZipEntryData, zipEntryDataMap);
                 }
             }
         }
@@ -900,8 +927,8 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     // And several times from within ZipFileContainer itself.
     @Trivial
     protected ZipEntryData[] getZipEntryData() {
-        setZipEntryData();
-        return zipEntryData;
+        setZipFileDetails();
+        return zipFileDetails.zipEntryData;
     }
 
     /**
@@ -913,8 +940,18 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
      */
     @Trivial
     private ZipEntryData fastGetZipEntryData(String r_path) {
-        setZipEntryData();
-        return zipEntryDataMap.get(r_path);
+        setZipFileDetails();
+        ZipEntryData entryData = zipFileDetails.zipEntryDataMap.get(r_path);
+        if ( entryData != null ) {
+            ZipEntryData multiReleaseData = entryData.getMultiReleaseEntry();
+            if (multiReleaseData != entryData) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, "Found MR path: META-INF/versions/" + ((MultiReleaseFileZipEntryData) entryData).multiReleaseJavaVersion + "/" + r_path);
+                }
+                entryData = multiReleaseData;
+            }
+        }
+        return entryData;
     }
 
     // 'locatePath' is modal, depending on whether 'isMultiRelease' has
@@ -947,24 +984,6 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     @Trivial
     public int locatePath(String r_path) {
-        // If this is an MRJAR, check under /META-INF/versions/n/<r_path>
-        if ( (isMultiRelease != null) && isMultiRelease.booleanValue() ) {
-            int mrLocation = locateMultiReleasePath(r_path);
-            if ( mrLocation >= 0 ) {
-                return mrLocation;
-            }
-        }
-
-        // The direct lookup is not an 'else' case: The multi-release
-        // location is an alternate to the direct location.  If the
-        // multi-release location is not present, fall back to the direct
-        // location.
-
-        return locateDirectPath(r_path);
-    }
-
-    @Trivial
-    private int locateDirectPath(String r_path) { 
         if ( USE_EXTRA_PATH_CACHE ) {
             long mapLookupStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
             ZipEntryData entryData = fastGetZipEntryData(r_path);
@@ -980,30 +999,23 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         // directory entry which is the parent of an entry.
         long lookupStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);        
         int location = ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
+
+        // If this is an MRJAR, check the entry for /META-INF/versions/n/<r_path> location reference
+        if (location >= 0) {
+            ZipEntryData entryData = zipFileDetails.zipEntryData[location];
+            ZipEntryData multiReleaseData = entryData.getMultiReleaseEntry();
+            if (multiReleaseData != entryData) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, "Found MR path: META-INF/versions/" + ((MultiReleaseFileZipEntryData) entryData).multiReleaseJavaVersion + "/" + r_path);
+                }
+                location = multiReleaseData.getOffset();
+            }
+        }
         if ( COLLECT_TIMINGS ) {
             record(Timings.ARRAY_LOOKUP_TIME, lookupStart, System.nanoTime(), null, ARRAY_LOOKUP_FREQUENCY);
         }
+
         return location;
-    }
-
-    @Trivial
-    private int locateMultiReleasePath(String path) {
-        // Multi-release files may be at /com/foo/A.class and /META-INF/versions/9/com/foo/A.class
-        // Since we commonly blindly try-load META-INF and java.* entries, optimize those out
-        if ( (path == null) || path.startsWith("META-INF") || path.startsWith("java/") ) {
-            return -1;
-        }
-
-        for ( int currentVersion = CURRENT_JAVA_VERSION; currentVersion >= 9; currentVersion-- ) {
-            int versionPath = locateDirectPath("META-INF/versions/" + currentVersion + "/" + path);
-            if ( versionPath >= 0 ) {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, "Found MR path: META-INF/versions/" + currentVersion + "/" + path);
-                }
-                return versionPath;
-            }
-        } 
-        return -1;
     }
 
     @Trivial
@@ -1022,29 +1034,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
     }
 
-    @Trivial
-    private ZipEntryData[] createZipEntryData() {
-        ZipFile useZipFile = openZipFileHandle();
-        if ( useZipFile == null ) {
-            return new ZipEntryData[0];
-        }
-
-        try {
-            return ZipFileContainerUtils.collectZipEntries(useZipFile);
-        } finally {
-            closeZipFileHandle(); // throws IOException
-        }
-    }
-
-    private boolean initializeMultiRelease() {
-        if ( isMultiRelease != null ) {
-            return isMultiRelease;
-        }
-
+    private boolean isMultiRelease(ZipFile zipFile) {
         // Multi-Release jars only apply to JDK 9+
         if ( CURRENT_JAVA_VERSION < 9 ) {
-            isMultiRelease = Boolean.FALSE;
-            return isMultiRelease;
+            return false;
         }
 
         // Multi-Release jars can be disabled with JDK system properties
@@ -1052,63 +1045,46 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, "JDK system property set to globally disable multi-release jars");
             }
-           isMultiRelease = Boolean.FALSE;
-           return isMultiRelease;
+           return false;
         }
 
         // Only .jar files can be multi-release (not .war or .ear)
         if ( !archiveName.endsWith(".jar") ) {
-            isMultiRelease = Boolean.FALSE;
-            return isMultiRelease;
+            return false;
         }
 
-        // Only synchronize the expensive check against the manifest file.
-        //
         // The earlier checks are simple and quick and always produce the same
         // assignment.  There is no harm if they are performed multiple times.
         //
         // On the other hand, the manifest check is quite expensive, and must
-        // not be performed more than once.
+        // not be performed more than once.  The locking for setZipFileDetails
+        // guards this method call to avoid doing this logic multiple times.
 
-        synchronized ( multiReleaseLock ) {
-            if ( isMultiRelease != null ) { // Use double-locking.
-                return isMultiRelease;
+        // Multi-release is disabled for this JAR unless
+        // a main attribute 'Multi-Release' is present and is "true".
+
+        ZipEntry mfEntry = zipFile.getEntry("META-INF/MANIFEST.MF");
+        if (mfEntry == null) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, "No MANIFEST.MF found in container. Assuming not multi-release");
             }
+            return false;
+        }
 
-            // Multi-release is disabled for this JAR unless
-            // a main attribute 'Multi-Release' is present and is "true".
-
-            ZipFileEntry mfEntry = getEntry("META-INF/MANIFEST.MF");
-            if ( mfEntry == null ) {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, "No MANIFEST.MF found in container. Assuming not multi-release");
-                }
-                isMultiRelease = Boolean.FALSE;
-                return isMultiRelease;
-
+        try ( InputStream mfStream = zipFile.getInputStream(mfEntry) ) {
+            Manifest mf = new Manifest(mfStream);
+            String isMultiReleaseAttr = mf.getMainAttributes().getValue("Multi-Release");
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, "Raw value for 'Multi-Release' attribute: " + isMultiReleaseAttr);
+            }
+            if ( isMultiReleaseAttr != null ) {
+                return Boolean.parseBoolean( isMultiReleaseAttr.trim() );
             } else {
-                Boolean isMR;
-
-                try ( InputStream mfStream = mfEntry.getInputStream() ) {
-                    Manifest mf = new Manifest(mfStream);
-                    String isMultiReleaseAttr = mf.getMainAttributes().getValue("Multi-Release");
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.debug(tc, "Raw value for 'Multi-Release' attribute: " + isMultiReleaseAttr);
-                    }
-                    if ( isMultiReleaseAttr != null ) {
-                        isMR = Boolean.valueOf( isMultiReleaseAttr.trim() );
-                    } else {
-                        isMR = Boolean.FALSE;
-                    }
-                } catch ( IOException e ) {
-                    // FFDC
-                    isMR = Boolean.FALSE;
-                }
-
-                isMultiRelease = isMR;
+                return false;
             }
-
-            return isMultiRelease;
+        } catch ( IOException e ) {
+            // FFDC
+            return false;
         }
     }
 
@@ -1263,10 +1239,6 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         // The guard on the path is absolutely necessary to avoid
         // infinite recursion.
 
-        if ( (isMultiRelease == null) && !entryPath.startsWith("META-INF") ) {
-            initializeMultiRelease();
-        }
-
         int location = locatePath(r_entryPath);
 
         if ( (location < 0) && !normalized ) {
@@ -1311,7 +1283,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 return null; // There is no next entry; cannot match even partially.
             } else {
                 ZipEntryData nextEntryData = useEntryData[location];
-                if ( !isChildOf(r_entryPath, nextEntryData.r_getPath() ) ) {
+                if ( !isChildOf(r_entryPath, nextEntryData.r_path ) ) {
                      // There is a next entry, but it is not a child of the target.
                     return null;
                 } else {

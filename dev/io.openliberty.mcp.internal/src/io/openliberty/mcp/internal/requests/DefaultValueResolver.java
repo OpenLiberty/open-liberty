@@ -17,6 +17,8 @@ import java.util.Optional;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.mcp.annotations.DefaultValueConverter;
+import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 
@@ -44,17 +46,18 @@ public class DefaultValueResolver {
      * If type is primitive, return primitive default
      * Otherwise return null
      *
+     * @param toolName the name of the tool. Only used to be included in messages
      * @param argMetadata the tool argument metadata
      * @return the default value, converted to the argument type
      * @throws IllegalArgumentException if default value conversion fails
      */
-    public static Object resolveDefaultValue(ToolArgument argMetadata) {
+    public static Object resolveDefaultValue(String toolName, ToolArgument argMetadata, ConverterRegistry converterRegistry) {
         if (!argMetadata.defaultValue().isEmpty()) {
             try {
-                return convertDefaultValue(argMetadata.defaultValue(), argMetadata.name(), argMetadata.type());
+                return convertDefaultValue(toolName, argMetadata.defaultValue(), argMetadata.name(), argMetadata.type(), converterRegistry);
             } catch (Exception e) {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error",
-                                                                    null,
+                                                                    toolName,
                                                                     argMetadata.name(),
                                                                     argMetadata.type(),
                                                                     argMetadata.defaultValue(), e),
@@ -94,14 +97,12 @@ public class DefaultValueResolver {
         return TYPE_DEFAULTS_MAP.get(type);
     }
 
-    private static Object convertDefaultValue(String defaultValue, String argName, Type type) {
+    private static Object convertDefaultValue(String toolName, String defaultValue, String argName, Type type, ConverterRegistry converterRegistry) {
         Type boxedType = TypeUtility.box(type);
-
-        DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(boxedType);
-
+        DefaultValueConverter<?> converter = converterRegistry.getConverter(boxedType).get();
         if (converter == null) {
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter",
-                                                                null,
+                                                                toolName,
                                                                 argName,
                                                                 type));
         }

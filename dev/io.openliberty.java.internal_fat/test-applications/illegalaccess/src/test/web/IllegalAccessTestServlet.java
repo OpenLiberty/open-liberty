@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.InitialDirContext;
 import javax.servlet.annotation.WebServlet;
@@ -40,12 +41,15 @@ public class IllegalAccessTestServlet extends FATServlet {
             // --add-exports
             // jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED
 
-            // Attempt a DNS lookup of the local host name using the underlying machine's DNS config
-            // Intermittently, a javax.naming.CommunicationException is thrown when trying the DNS lookup and that is permissible (seems to vary from platform to platform)
+            // DNS lookup failures occur when trying the lookup and that is permissible 
+            // (varies from platform to platform and DNS configuration). Specifically, across multiple test engines.
+            //  Strict upstream network DNS servers often reject this short format with a 'DNS format error [response code 1]'.
+
             // The purpose of this test is to attempt the DNS connection to ensure the illegalAccessException FFDC is not created, not to ensure the DNS resolution was successful
             Attributes attrs = dirContext.getAttributes("dns:/" + InetAddress.getLocalHost().getHostName());
-        } catch (CommunicationException | NameNotFoundException ex) { // dirContext.getAttributes may also throw a NameNotFoundException and it can also be ignored
-            // Ignore
+        } catch (NamingException ex) { 
+            // Catching NamingException handles CommunicationException, NameNotFoundException, 
+            // and network-specific DNS format errors.
         }
     }
 }

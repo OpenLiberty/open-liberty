@@ -83,9 +83,9 @@ public class SecureTest {
         LS.startServer();
 
         // tests cannot work until ssl is up
-        LS.waitForStringInLog("CWWKS4105I:.*configuration is ready.*");
+        LS.waitForLTPAConfigReady();
         // tests cannot work until ssl is up
-        LS.waitForStringInLog("CWWKO0219I:.*ssl.*");
+        LS.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

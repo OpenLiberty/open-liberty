@@ -311,7 +311,7 @@ public class SipMessageByteBuffer
     }
     
     /**
-     * ensure buffer is large enough to accomodate given number of bytes
+     * ensure buffer is large enough to accommodate given number of bytes
      * in addition to the bytes already stored.
      * @param length number of bytes to be appended to buffer
      */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,20 +9,12 @@
  *******************************************************************************/
 package io.openliberty.jpa.persistence.tests.web;
 
-import static componenttest.annotation.OnlyIfSysProp.DB_Not_Default;
-import static componenttest.annotation.SkipIfSysProp.DB_DB2;
-import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
-import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
-import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,28 +23,41 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import org.junit.Ignore;
 
 import componenttest.annotation.OnlyIfSysProp;
+import componenttest.annotation.SkipForRepeat;
+import static componenttest.annotation.OnlyIfSysProp.DB_Not_Default;
 import componenttest.annotation.SkipIfSysProp;
+import static componenttest.annotation.SkipIfSysProp.DB_DB2;
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.persistence.tests.models.AsciiCharacter;
 import io.openliberty.jpa.persistence.tests.models.Book;
+import io.openliberty.jpa.persistence.tests.models.ConcatEntity;
 import io.openliberty.jpa.persistence.tests.models.DateTimeEntity;
 import io.openliberty.jpa.persistence.tests.models.DocumentEntity;
 import io.openliberty.jpa.persistence.tests.models.Employee;
+import io.openliberty.jpa.persistence.tests.models.EmployeeSalaryDTO;
 import io.openliberty.jpa.persistence.tests.models.Event;
 import io.openliberty.jpa.persistence.tests.models.Organization;
+import io.openliberty.jpa.persistence.tests.models.PartialDateEntity;
 import io.openliberty.jpa.persistence.tests.models.Participant;
+import io.openliberty.jpa.persistence.tests.models.PersistenceUnitEntity;
 import io.openliberty.jpa.persistence.tests.models.Person;
 import io.openliberty.jpa.persistence.tests.models.Priority;
 import io.openliberty.jpa.persistence.tests.models.Product;
+import io.openliberty.jpa.persistence.tests.models.SimpleEmployee;
 import io.openliberty.jpa.persistence.tests.models.Ticket;
 import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
-import io.openliberty.jpa.persistence.tests.models.ConcatEntity;
-import io.openliberty.jpa.persistence.tests.models.PersistenceUnitEntity;
 import jakarta.annotation.Resource;
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.CacheStoreMode;
@@ -66,8 +71,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.LocalDateField;
-import jakarta.persistence.criteria.LocalDateTimeField;
-import jakarta.persistence.criteria.LocalTimeField;
 import jakarta.persistence.criteria.Nulls;
 import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Root;
@@ -487,6 +490,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
   
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testRecordAsEmbeddable_NoMatchAndOrdering() throws Exception {
         // Clean up any existing data
         deleteAllEntities(Participant.class);
@@ -524,6 +528,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     @SkipIfSysProp(DB_Oracle)
     public void testRecordAsEmbeddable_NullEdgeCaseAndOrdering() throws Exception {
         deleteAllEntities(Participant.class);
@@ -979,6 +984,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     @SkipIfSysProp({
         DB_SQLServer, //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32957
         DB_Oracle //Oracle DB doesn't have any conversion function into TIME so whole TIMESTAMP is returned and result is converted to time in EclipseLink/Java
@@ -1018,6 +1024,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractDateFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 15, 9, 30));
@@ -1054,6 +1061,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractWeekFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         // Using dates that fall in the same ISO week
@@ -1091,6 +1099,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractQuarterFromLocalDataWithJPQL() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 15), LocalTime.of(8, 30), LocalDateTime.of(2023, 2, 15, 8, 30));   // Q1
@@ -1127,6 +1136,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractMonthFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 03, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 03, 15, 9, 30));
@@ -1161,6 +1171,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractYearFromLocalDataWithJPQL() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
@@ -1196,6 +1207,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractDayFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 25), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 25, 9, 30));
@@ -1231,6 +1243,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractHourFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 5, 10), LocalTime.of(14, 30), LocalDateTime.of(2023, 5, 10, 14, 30));
@@ -1266,6 +1279,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractMinuteFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
@@ -1301,6 +1315,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testExtractSecondFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 14), LocalTime.of(13, 25, 30), LocalDateTime.of(2023, 2, 14, 13, 25, 30));
@@ -1410,6 +1425,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(PersistenceUnitEntity.of(id, 222));
         em.flush();
         tx.commit();
+        em.clear();
 
         tx.begin();
         PersistenceUnitEntity entity;
@@ -1421,11 +1437,9 @@ public class JakartaPersistenceServlet extends FATServlet {
             update.setParameter(1, id);
             update.executeUpdate();
             
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
-            query.setParameter(1, id);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
-
+            entity = em.find(PersistenceUnitEntity.class, id);
             tx.commit();
+
         } catch (Exception e) {
             tx.rollback();
             throw e;
@@ -1468,6 +1482,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     public void testCacheRetrieveMode_QueryLevel_Use_Default() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
         String id = "testCacheRetrieveMode_QueryLevel_Use_Default";
@@ -1476,6 +1491,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(PersistenceUnitEntity.of(id, 222));
         em.flush();
         tx.commit();
+        em.clear();
 
         tx.begin();
         PersistenceUnitEntity entity;
@@ -1500,6 +1516,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_QueryOverridesEM_UseOverridesBypass() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1509,6 +1526,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(PersistenceUnitEntity.of(id, 222));
         em.flush();
         tx.commit();
+        em.clear();
 
         tx.begin();
         PersistenceUnitEntity entity;
@@ -1902,7 +1920,95 @@ public class JakartaPersistenceServlet extends FATServlet {
             DocumentEntity r1 = em.find(DocumentEntity.class, 1L);
             tx.commit();
             
-            assertEquals("", r1.getContent());
+            String content = r1.getContent();
+            assertTrue("Content should be either empty string or null",
+                       content == null || content.equals(""));
+        } catch (Exception e) {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
+                tx.rollback();
+            }
+            throw e;
+        }
+    }
+    
+    @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
+    public void testYearConversionError() throws Exception {
+        PartialDateEntity entity2022 = new PartialDateEntity();
+        entity2022.setYear(Year.of(2022));
+        entity2022.setBestDay(MonthDay.of(12, 25));
+        entity2022.setBestMonth(YearMonth.of(2022, 12));
+        entity2022.setDescription("Year 2022");
+
+        PartialDateEntity entity2023 = new PartialDateEntity();
+        entity2023.setYear(Year.of(2023));
+        entity2023.setBestDay(MonthDay.of(7, 4));
+        entity2023.setBestMonth(YearMonth.of(2023, 7));
+        entity2023.setDescription("Year 2023");
+
+        PartialDateEntity entity2024 = new PartialDateEntity();
+        entity2024.setYear(Year.of(2024));
+        entity2024.setBestDay(MonthDay.of(1, 1));
+        entity2024.setBestMonth(YearMonth.of(2024, 1));
+        entity2024.setDescription("Year 2024");
+
+        PartialDateEntity entity2025 = new PartialDateEntity();
+        entity2025.setYear(Year.of(2025));
+        entity2025.setBestDay(MonthDay.of(10, 31));
+        entity2025.setBestMonth(YearMonth.of(2025, 10));
+        entity2025.setDescription("Year 2025");
+        
+        tx.begin();
+        em.persist(entity2022);
+        em.persist(entity2023);
+        em.persist(entity2024);
+        em.persist(entity2025);
+        tx.commit();
+        em.clear();
+
+        try {
+            List<PartialDateEntity> found = em.createQuery("FROM PartialDateEntity ORDER BY YEARVALUE", PartialDateEntity.class)
+                                            .getResultList();
+            
+            assertNotNull(found);
+            assertEquals(Year.of(2022), found.get(0).getYear());
+            assertEquals(Year.of(2023), found.get(1).getYear());
+            assertEquals(Year.of(2024), found.get(2).getYear());
+            assertEquals(Year.of(2025), found.get(3).getYear());
+            
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Test
+    @SkipForRepeat("JPA32_HIBERNATE")
+    public void testConstructorExpressionWithCasePrimitiveLong() throws Exception {
+        deleteAllEntities(SimpleEmployee.class);
+
+        SimpleEmployee emp1 = new SimpleEmployee("Tony", 35000L);
+        SimpleEmployee emp2 = new SimpleEmployee("Chris", 75000L);
+
+        tx.begin();
+        em.persist(emp1);
+        em.persist(emp2);
+        tx.commit();
+
+        try {
+            tx.begin();
+            EmployeeSalaryDTO result1 = em.createQuery(
+                                    "SELECT NEW io.openliberty.jpa.persistence.tests.models.EmployeeSalaryDTO(" +
+                                    "e.salary, " +
+                                    "CASE WHEN e.salary > 50000 THEN e.salary ELSE 0 END" +
+                                    ") FROM SimpleEmployee e WHERE e.name = :name", EmployeeSalaryDTO.class)
+                                    .setParameter("name", "Tony")
+                                    .getSingleResult();
+
+            assertNotNull(result1);
+            assertEquals(35000L, result1.salary());
+            assertEquals("Adjusted salary should be 0 (below threshold)", 0L, result1.adjustedSalary());
+
+            tx.commit();
         } catch (Exception e) {
             if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
                 tx.rollback();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1430,7 +1430,7 @@ public class Director extends AbstractDirector {
 
         RepositoryConnectionList li = loginInfo == null ? getResolveDirector().getRepositoryConnectionList(null, null, null,
                                                                                                            this.getClass().getCanonicalName() + ".installAssets") : loginInfo;
-        Map<String, List<List<RepositoryResource>>> installResources = getResolveDirector().resolveMap(assetIds, li, false);
+        Map<String, List<List<RepositoryResource>>> installResources = getResolveDirector().resolveMap(assetIds, new ArrayList<>(), li, false);
         if (isEmpty(installResources)) {
             throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED",
                                              InstallUtils.getShortNames(product.getFeatureDefinitions(), assetIds).toString());
@@ -1810,6 +1810,18 @@ public class Director extends AbstractDirector {
      */
     public void resolve(Collection<String> assetIds, boolean download) throws InstallException {
         getResolveDirector().resolve(assetIds, download);
+    }
+
+    /**
+     * Resolves assetIds and platforms
+     *
+     * @param assetIds Collection of assetIds to resolve
+     * @param platforms Collection of platforms to resolve
+     * @param download If assets should be downloaded
+     * @throws InstallException
+     */
+    public void resolve(Collection<String> assetIds, Collection<String> platforms, boolean download) throws InstallException {
+        getResolveDirector().resolve(assetIds, platforms, download);
     }
 
     /**

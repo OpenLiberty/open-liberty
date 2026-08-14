@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,13 @@ package jakarta.data.restrict;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 class Unrestricted<T> implements CompositeRestriction<T> {
+    @Nonnull
     static final Unrestricted<?> INSTANCE = new Unrestricted<>();
 
     private Unrestricted() {
@@ -29,6 +32,7 @@ class Unrestricted<T> implements CompositeRestriction<T> {
     }
 
     @Override
+    @Nonnull
     public CompositeRestriction<T> negate() {
         @SuppressWarnings("unchecked")
         CompositeRestriction<T> r = (CompositeRestriction<T>) Unmatchable.INSTANCE;
@@ -36,16 +40,19 @@ class Unrestricted<T> implements CompositeRestriction<T> {
     }
 
     @Override
+    @Nonnull
     public List<Restriction<? super T>> restrictions() {
         return List.of();
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "UNRESTRICTED";
     }
 
     @Override
+    @Nonnull
     public Type type() {
         return Type.ALL;
     }

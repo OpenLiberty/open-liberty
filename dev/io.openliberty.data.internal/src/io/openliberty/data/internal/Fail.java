@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 import jakarta.data.Limit;
+import jakarta.data.Sort;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
@@ -35,7 +36,6 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
-import jakarta.data.repository.Query;
 
 /**
  * This class consists of methods that raise exceptions.
@@ -122,6 +122,27 @@ public class Fail {
                       endOfWhereClause,
                       ql.length(),
                       ql);
+    }
+
+    /**
+     * Raises IllegalStateException because the repository bean was disposed.
+     *
+     * @param impl   repository implementation
+     * @param proxy  proxy instance upon which the repository method is invoked
+     * @param method repository method that the application invoked
+     * @throws IllegalStateException
+     */
+    static IllegalStateException disposed(RepositoryImpl<?> impl,
+                                          Object proxy,
+                                          Method method) {
+        throw exc(IllegalStateException.class,
+                  "CWWKD1076.repo.disposed",
+                  method.getName(),
+                  impl.repositoryInterface.getName(),
+                  new StringBuilder("RepositoryImpl@") //
+                                  .append(Integer.toHexString(impl.hashCode())) //
+                                  .append("/(proxy)@") //
+                                  .append(Integer.toHexString(System.identityHashCode(proxy))));
     }
 
     /**
@@ -309,7 +330,7 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   info.specialParamsStartAt,
                   info.method.getParameterTypes()[index].getName(),
-                  info.jpql);
+                  info.ql);
     }
 
     /**
@@ -331,7 +352,29 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   numRequired,
                   numFound,
-                  info.jpql);
+                  info.ql);
+    }
+
+    /**
+     * Raise a new UnsupportedOperationException for the error where some
+     * operations are not available because a Sort expression was used
+     * to request a cursored page.
+     *
+     * @param info query information for the repository method
+     * @param sort the sort criterion
+     * @throws the UnsupportedOperationException
+     */
+    static UnsupportedOperationException incompatibleSort(QueryInfo info,
+                                                          Sort<?> sort) {
+        String attrName = sort.property();
+        throw exc(MappingException.class,
+                  "CWWKD1123.sort.incompat.with.cursor",
+                  info.method.getName(),
+                  info.repositoryInterface.getName(),
+                  attrName == null ? info.getExpression(sort) : attrName,
+                  "Cursor.forKey",
+                  info.entityInfo.getType().getName(),
+                  info.entityInfo.attributeTypes.keySet());
     }
 
     /**
@@ -389,7 +432,7 @@ public class Fail {
                   info.method.getName(),
                   info.repositoryInterface.getName(),
                   all,
-                  info.method.getAnnotation(Query.class).value(),
+                  info.getQueryAnnoValue(),
                   "@Param(\"" + first + "\")",
                   "String " + first);
     }
@@ -399,20 +442,21 @@ public class Fail {
      * annotations that conflict with each other or with the type of the repository
      * method parameter.
      *
-     * @param info       query information for the repository method.
-     * @param errorCode  constant from DataVersionCompatibility that classifies
-     *                       the error.
-     * @param paramIndex index (0-based) of repository method parameter.
-     * @param paramType  Java class of the repository method parameter.
-     * @param paramAnnos annotations on the repository method parameter.
+     * @param info                    query information for the repository method
+     * @param conflictsWithConstraint indicates if he parameter annotation conflicts
+     *                                    with the type of Constraint
+     * @param paramIndex              index (0-based) of repository method parameter
+     * @param paramType               Java class of the repository method parameter
+     * @param paramAnnos              annotations on the repository method parameter
      * @throws the UnsupportedOperationException
      */
-    static UnsupportedOperationException methodParamAnnoConflict(QueryInfo info,
-                                                                 int errorCode,
-                                                                 int paramIndex,
-                                                                 Class<?> paramType,
-                                                                 Annotation[] paramAnnos) {
-        if (errorCode == QueryInfo.PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT)
+    public static UnsupportedOperationException //
+                    methodParamAnnoConflict(QueryInfo info,
+                                            boolean conflictsWithConstraint,
+                                            int paramIndex,
+                                            Class<?> paramType,
+                                            Annotation[] paramAnnos) {
+        if (conflictsWithConstraint)
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1117.anno.constraint.conflict",
                       paramIndex + 1, // switch to 1-based
@@ -420,15 +464,13 @@ public class Fail {
                       info.repositoryInterface.getName(),
                       Arrays.toString(paramAnnos),
                       paramType.getClass().getName());
-        else if (errorCode == QueryInfo.PARAM_ANNOS_CONFLICT)
+        else
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1118.param.anno.conflict",
                       paramIndex + 1, // switch to 1-based
                       info.method.getName(),
                       info.repositoryInterface.getName(),
                       Arrays.toString(paramAnnos));
-        else // internal error
-            throw new IllegalArgumentException("errorCode: " + errorCode);
     }
 
     /**
@@ -581,7 +623,7 @@ public class Fail {
                                                            int methodNPCount) {
         String firstNamedParam = null;
         StringBuilder allNamedParams = new StringBuilder().append('(');
-        for (String name : info.jpqlParamNames) {
+        for (String name : info.qlParamNames) {
             if (firstNamedParam == null)
                 firstNamedParam = name;
             else
@@ -605,10 +647,10 @@ public class Fail {
                   "CWWKD1019.mixed.positional.named",
                   info.method.getName(),
                   info.repositoryInterface.getName(),
-                  info.jpqlParamCount - methodNPCount,
+                  info.qlParamCount - methodNPCount,
                   methodNPCount,
                   allNamedParams,
-                  info.method.getAnnotation(Query.class).value(),
+                  info.getQueryAnnoValue(),
                   ':' + firstNamedParam,
                   "@Param(\"" + firstNamedParam + "\")",
                   firstNamedParamType.getSimpleName() + ' ' + firstNamedParam);
@@ -726,6 +768,9 @@ public class Fail {
     static UnsupportedOperationException orderByAnnoIncompat(QueryInfo info) {
         // disallow on incompatible operations
         if (info.type != FIND && info.type != FIND_AND_DELETE)
+            // TODO need appropriate error for (type == NATIVE) where the
+            // @OrderBy is not allowed on a NativeQuery even if it is a
+            // find operation
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1096.orderby.incompat",
                       info.method.getName(),
@@ -1145,7 +1190,7 @@ public class Fail {
                       info.method.getName(),
                       info.repositoryInterface.getName(),
                       extraParamNames,
-                      info.method.getAnnotation(Query.class).value(),
+                      info.getQueryAnnoValue(),
                       ':' + firstExtraParam);
         else
             throw exc(MappingException.class,
@@ -1154,7 +1199,7 @@ public class Fail {
                       info.repositoryInterface.getName(),
                       extraParamNames,
                       qlParamNames,
-                      info.method.getAnnotation(Query.class).value());
+                      info.getQueryAnnoValue());
     }
 
     /**
@@ -1164,7 +1209,7 @@ public class Fail {
      *                                          a query parameter.
      */
     private static void validateParameterPositions(QueryInfo info) {
-        DataVersionCompatibility compat = info.entityInfo.builder.provider.compat;
+        DataVersionCompatibility compat = info.entityInfo.factory.provider.compat;
 
         Class<?>[] paramTypes = info.method.getParameterTypes();
         Set<Class<?>> specParamTypes = compat.specialParamTypes();

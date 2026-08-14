@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,7 @@ public class EE10Features {
 
     public static Map<String, String> getServletConflicts() {
         Map<String, String> conflicts = new HashMap<>(6);
+        conflicts.put("servlet-6.2", "com.ibm.websphere.appserver.servlet");
         conflicts.put("servlet-6.1", "com.ibm.websphere.appserver.servlet");
         conflicts.put("servlet-6.0", "com.ibm.websphere.appserver.servlet");
         conflicts.put("servlet-5.0", "com.ibm.websphere.appserver.servlet");
@@ -72,6 +73,7 @@ public class EE10Features {
         conflicts.put("cdi-3.0", "io.openliberty.cdi");
         conflicts.put("cdi-4.0", "io.openliberty.cdi");
         conflicts.put("cdi-4.1", "io.openliberty.cdi");
+        conflicts.put("cdi-5.0", "io.openliberty.cdi");
         return conflicts;
     }
 
@@ -316,11 +318,11 @@ public class EE10Features {
 
         features.remove("audit-2.0");
 
-        // springBoot-3.0, nosql-1.0, and mcpServer-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
+        // springBoot-3.0, nosql-1.0, and mcp-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("springBoot-3.0");
             features.remove("nosql-1.0");
-            features.remove("mcpServer-1.0");
+            features.remove("mcp-1.0");
         }
 
         return features;

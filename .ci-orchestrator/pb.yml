@@ -182,6 +182,14 @@ steps:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
 
+- stepName: Cryptographic Algorithms Scan
+  workType: Jenkins
+  projectName: cryptoAlgorithmsScan
+  timeoutInMinutes: 1440
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+
 - stepName: DHE Server Artifacts Check
   workType: Jenkins
   projectName: dheServerCheck

@@ -1,0 +1,12 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>pauseablecomponent-1.0</feature>
+    </featureManager>
+    
+    <testServerPauseable throwException="true" />
+    
+    <include location="../fatTestPorts.xml"/>
+
+</server>

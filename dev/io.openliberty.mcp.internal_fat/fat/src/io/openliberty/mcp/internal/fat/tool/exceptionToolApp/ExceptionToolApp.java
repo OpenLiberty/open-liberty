@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.exceptionToolApp;
 
-import io.openliberty.mcp.annotations.Tool;
+import org.mcpjava.server.tools.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**

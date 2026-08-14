@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,14 @@ public class HealthCheckConstants {
     public static final String HEALTH_SERVER_CONFIG_STARTUP_CHECK_INTERVAL = "startupCheckInterval";
 
     public static final String HEALTH_ENV_CONFIG_STARTUP_CHECK_INTERVAL = "MP_HEALTH_STARTUP_CHECK_INTERVAL";
+
+    public static final String HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS = "enableEndpoints";
+
+    public static final String HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS = "MP_HEALTH_ENABLE_ENDPOINTS";
+
+    public static final String HEALTH_CONTEXT_PATH_VAR_NAME = "healthContextPath";
+
+    public static final String HEALTH_CONTEXT_PATH = "/health";
 
     public static final int DEFAULT_STARTUP_CHECK_INTERVAL_MILLI = 100; //100 milliseconds
     public static final int DEFAULT_CHECK_INTERVAL_MILLI = 10000; //10 seconds

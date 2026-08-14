@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -242,7 +242,8 @@ public class JDBCDrivers {
         // H2 Database JDBC driver
         className = "org.h2.jdbcx.JdbcDataSource";
         classes = new String[] { className, className, className };
-        classNamesByKey.put("H2-", classes);
+        classNamesByPID.put("com.ibm.ws.jdbc.dataSource.properties.h2", classes);
+        classNamesByKey.put("H2", classes);
     }
 
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());

@@ -78,7 +78,7 @@ public class MPAPCounter extends LoadCounterAbs {
 	 *  @see com.ibm.ws.sip.container.load.LoadCounterAbs#reset()
 	 */
 	void reset() {
-		// This couner shoudl be nullified after each timer execution.
+		// This counter should be nullified after each timer execution.
 		_numberOfMsg = 0;
 	}
 

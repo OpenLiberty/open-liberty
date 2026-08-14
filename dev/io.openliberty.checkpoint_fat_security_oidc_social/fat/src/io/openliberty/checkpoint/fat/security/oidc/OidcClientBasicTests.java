@@ -53,7 +53,6 @@ public class OidcClientBasicTests extends CommonTest {
 
     private static final String[] test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
     private static final String test_FinalAction = Constants.LOGIN_USER;
-    private static final String TCP_CHANNEL_STARTED = "CWWKO0219I:.*defaultHttpEndpoint-ssl";
 
     public TestMethod testMethod;
 
@@ -110,7 +109,7 @@ public class OidcClientBasicTests extends CommonTest {
         rpServer.startServer(testMethod + ".log");
         rpServer.checkpointRestore();
 
-        assertNotNull("Expected CWWKO0219I message not found", rpServer.waitForStringInLog(TCP_CHANNEL_STARTED));
+        rpServer.waitForDefaultHTTPEndpointSSLStart();
 
         testSettings.setFlowType(Constants.RP_FLOW);
     }

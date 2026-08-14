@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.annotation.processor;
 
@@ -71,9 +68,9 @@ public class TestServletProcessor {
 
             // For each @TestServlet for this server, add all @Test methods
             for (TestServlet anno : testServlets) {
-                if (JavaInfo.JAVA_VERSION < anno.minJavaLevel()) {
+                if (JavaInfo.BOOTSTRAP_JAVA_VERSION < anno.minJavaLevel()) {
                     Log.info(c, m, "Skipping scan of TestServlet " + anno.servlet()
-                                   + " because the current java level " + JavaInfo.JAVA_VERSION
+                                   + " because the current java level " + JavaInfo.BOOTSTRAP_JAVA_VERSION
                                    + " did not meet the configured minimum " + anno.minJavaLevel());
                     continue;
                 }

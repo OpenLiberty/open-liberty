@@ -1,0 +1,68 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!--
+    RS client configuration used by ResourceMetadata2ServerTests.
+
+    The key properties:
+      inboundPropagation="required" – the RS acts purely as a Bearer-token resource server;
+                                      it does NOT initiate an OAuth/OIDC flow when a token
+                                      is absent.  Instead it returns 401 with WWW-Authenticate.
+      <protectedResourceMetadata>   – enables RFC 9728 Protected Resource Metadata so that
+                                      the WWW-Authenticate 401 response includes the
+                                      resource_metadata parameter (beta-fenced servers only).
+ -->
+<server>
+
+    <authFilter id="myAuthFilter_resourceMetadata">
+        <requestUrl
+            id="myRequestUrl_resourceMetadata"
+            urlPattern="helloworld_resourceMetadata"
+            matchType="contains" />
+    </authFilter>
+
+    <jwtBuilder id="JWTBuilderReferenceID"
+		issuer="client01"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="es384"
+		keyManagementKeyAlgorithm="ECDH-ES"
+		keyManagementKeyAlias="es384"
+		contentEncryptionAlgorithm="A256GCM"/>
+		
+    <openidConnectClient
+        id="client_resourceMetadata"
+        scope="openid profile"
+        clientId="client01"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        sharedKey="secret1234"
+        httpsRequired="false"
+        inboundPropagation="required"
+        redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}/token"
+        validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}/${oAuthOidcRSValidationEndpoint}"
+        userinfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}/userinfo"
+        validationMethod="${oAuthOidcRSValidationType}"
+        issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample},http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}"
+        jwkEndpointUrl="${oidcJWKValidationURL}"
+        signatureAlgorithm="${oidcSignAlg}"
+        authFilterRef="myAuthFilter_resourceMetadata"
+        userInfoEndpointEnabled="true"
+    >
+        <!-- RFC 9728: advertise the RS's well-known metadata URL in WWW-Authenticate 401 responses -->
+        <protectedResourceMetadata
+    			advertisedScopes="toys_browse, toys_search, cart_read, cart_write"
+    			jwtBuilderRef="JWTBuilderReferenceID"/>
+    </openidConnectClient>
+
+</server>

@@ -30,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -338,10 +339,18 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     /**
      * Set the {@link CacheService} for the logged out cookie cache on this {@link WebAppSecurityCollaboratorImpl}.
      *
+     * When the CacheService is set, this method also triggers a one-time migration of any old
+     * logged-out tokens (stored without hashing) to the new hashed format. The migration is
+     * performed directly since the CacheService is ready when this setter is called by OSGi DS.
+     *
      * @param service the {@link CacheService}
      */
     protected void setLoggedOutCookieCacheService(CacheService service) {
-        LoggedOutCookieCacheHelper.setLoggedOutCookieCacheService(new JCacheLoggedOutCookieCache(service));
+        final JCacheLoggedOutCookieCache jCacheLoggedOutCookieCache = new JCacheLoggedOutCookieCache(service);
+        LoggedOutCookieCacheHelper.setLoggedOutCookieCacheService(jCacheLoggedOutCookieCache);
+
+        // Defer migration to restore phase 1, runs AFTER CachingProvider init(rank 0 checkpoint)
+        CheckpointPhase.onRestore(1, jCacheLoggedOutCookieCache::migrateOldTokensToHashedVersions);
     }
 
     /**

@@ -76,7 +76,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
                                       "io.grpc.examples.helloworld");
 
         helloWorldTlsServer.startServer(HelloWorldTlsTest.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not received", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        helloWorldTlsServer.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass
@@ -142,7 +142,7 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
     public void testHelloWorldWithTlsInvalidClientTrustStore() throws Exception {
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
         // grpc.server.tls.invalid.trust.xml will cause the ssl channel to get restarted; we need to wait for it to come back up
-        assertNotNull("CWWKO0219I.*ssl not received", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        helloWorldTlsServer.waitForDefaultHTTPEndpointSSLStart();
         Exception clientException = null;
 
         try {
@@ -151,11 +151,11 @@ public class HelloWorldTlsTest extends HelloWorldBasicTest {
             clientException = e;
             Log.info(c, name.getMethodName(), "exception caught: " + e);
         }
-        assertTrue("An error is expected for this case", clientException != null);
+        assertNotNull("An error is expected for this case", clientException);
 
         // test cleanup: restore a "good" server.xml so that we don't need to wait for the ssl channel restart in another test case
         serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_OUTBOUND_FILTER, clientAppName, LOG);
-        assertNotNull("CWWKO0219I.*ssl not received", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        helloWorldTlsServer.waitForDefaultHTTPEndpointSSLStart();
     }
 
     /**

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc;
 
@@ -159,6 +156,17 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
      */
     @Override
     public void onOpen(Session session, EndpointConfig config) {
+
+        // Auto-sync buffer sizes to match maxMessageSize from @OnMessage handlers
+        // This must be done BEFORE the user's @OnOpen method is called
+        if (onMessageBinary != null) {
+            long maxMessageSize = onMessageBinary.getMethodData().getMaxMessageSize();
+            syncBufferSizeToMaxMessageSize(session, maxMessageSize, true);
+        }
+        if (onMessageText != null) {
+            long maxMessageSize = onMessageText.getMethodData().getMaxMessageSize();
+            syncBufferSizeToMaxMessageSize(session, maxMessageSize, false);
+        }
 
         if (onOpen != null) {
             try {
@@ -1186,6 +1194,35 @@ public class AnnotatedEndpoint extends Endpoint implements Cloneable {
         endpointMethodHelper.getMethodData().setMaxMessageSize(maxMessageSize);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "setMaxMessageSize: maxMessageSize from annotation: " + maxMessageSize);
+        }
+    }
+    
+    /*
+     * Auto-sync session buffer sizes to match maxMessageSize from @OnMessage annotation.
+     * This prevents misconfiguration where maxMessageSize is larger than buffer size.
+     */
+    private void syncBufferSizeToMaxMessageSize(Session session, long maxMessageSize, boolean isBinaryHandler) {
+        // Only sync if maxMessageSize is explicitly set (not -1 for unlimited)
+        if (maxMessageSize > -1 && maxMessageSize <= Integer.MAX_VALUE) {
+            int maxMessageSizeInt = (int) maxMessageSize;
+            
+            if (isBinaryHandler) {
+                // Check if current buffer size is smaller than maxMessageSize
+                if (maxMessageSizeInt > session.getMaxBinaryMessageBufferSize()) {
+                    session.setMaxBinaryMessageBufferSize(maxMessageSizeInt);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Auto-synced binary buffer size to match maxMessageSize: " + maxMessageSizeInt);
+                    }
+                }
+            } else {
+                // Text handler
+                if (maxMessageSizeInt > session.getMaxTextMessageBufferSize()) {
+                    session.setMaxTextMessageBufferSize(maxMessageSizeInt);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Auto-synced text buffer size to match maxMessageSize: " + maxMessageSizeInt);
+                    }
+                }
+            }
         }
     }
 

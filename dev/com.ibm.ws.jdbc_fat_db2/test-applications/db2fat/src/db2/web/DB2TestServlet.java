@@ -354,8 +354,16 @@ public class DB2TestServlet extends FATServlet {
             stmt.execute();
             fail("Should not have been able to create a connection using default serverName.");
         } catch (SQLException e) {
-            //Expect the default to be localhost and for the connection to fail.
-            assertTrue("serverName was not correctly defaulted to localhost", e.getMessage().contains("Error opening socket to server localhost"));
+            if (e.getCause() == null) {
+                throw e; // unexpected
+            }
+
+            if (e.getCause() instanceof java.net.SocketException)
+                return; // expected -- but error message does not contain serverName thus no assertion
+            else if (e.getCause() instanceof java.net.ConnectException)
+                assertTrue("serverName was not correctly defaulted to localhost", e.getMessage().contains("Error opening socket to server localhost"));
+            else
+                throw e; // unexpected
         }
     }
 

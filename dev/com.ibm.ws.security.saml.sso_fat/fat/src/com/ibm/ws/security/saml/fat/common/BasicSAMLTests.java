@@ -62,8 +62,6 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     private static final Class<?> thisClass = BasicSAMLTests.class;
 
-    private static final String MSG_CWWKO0219I_SSL_PORT_READY = "CWWKO0219I:.*ssl.*";
-
     @Rule
     public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.saml.sso-2.0_fat");
 

@@ -9,16 +9,12 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.responses;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
-import io.openliberty.mcp.request.RequestId;
+import io.openliberty.mcp.internal.requests.RequestId;
 
 /**
  *
  */
 public class McpResultResponse extends McpResponse {
-    private static final TraceComponent tc = Tr.register(McpResultResponse.class);
 
     /**
      * @param id
@@ -28,10 +24,14 @@ public class McpResultResponse extends McpResponse {
 
     public McpResultResponse(RequestId id, Object result) {
         super("2.0", id);
-        Object rawId = id.value();
+
+        // Per JSON-RPC 2.0 spec, a success response MUST echo the request id
+        if (id == null) {
+            throw new IllegalArgumentException("id must not be null on a success response");
+        }
 
         // Validate ID is NOT an empty string (numbers are always fine)
-        if (rawId instanceof String s && s.isBlank()) {
+        if (id.value() instanceof String s && s.isBlank()) {
             throw new IllegalArgumentException("id must not be an empty string");
         }
 

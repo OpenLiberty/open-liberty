@@ -14,13 +14,14 @@ package jakarta.data.spi.expression.path;
 
 import java.time.temporal.Temporal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.metamodel.TemporalAttribute;
 
 record TemporalPathRecord<T, U, V extends Temporal & Comparable<? extends Temporal>>(
-                NavigableExpression<T, U> expression,
-                TemporalAttribute<U, V> attribute) implements TemporalPath<T, U, V> {
+                @Nonnull NavigableExpression<T, U> expression,
+                @Nonnull TemporalAttribute<U, V> attribute) implements TemporalPath<T, U, V> {
 
     TemporalPathRecord {
         Messages.requireNonNull(expression, "expression");
@@ -28,6 +29,7 @@ record TemporalPathRecord<T, U, V extends Temporal & Comparable<? extends Tempor
     }
 
     @Override
+    @Nonnull
     public String toString() {
         String exp = expression.toString();
         String name = attribute.name();
@@ -41,6 +43,7 @@ record TemporalPathRecord<T, U, V extends Temporal & Comparable<? extends Tempor
     }
 
     @Override
+    @Nonnull
     public Class<? extends V> type() {
         return attribute.type();
     }

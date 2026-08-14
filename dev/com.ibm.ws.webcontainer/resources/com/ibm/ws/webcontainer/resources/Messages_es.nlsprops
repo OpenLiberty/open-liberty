@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=No se ha podido cargar el archiv
 failed.to.load.converter.properties.useraction=Aseg\u00farese de que el archivo especificado exista y de que tenga el formato correcto de acuerdo con java.utils.Properties.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: Se ha llamado a setBufferSize() tras la primera grabaci\u00f3n en la corriente de salida/grabador
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) se invoca tras la primera escritura o una vez confirmada la respuesta
 setbuffer.size.called.after.write.explanation=Se ha intentado establecer el tama\u00f1o del almacenamiento intermedio de respuesta despu\u00e9s de que se haya comprometido la respuesta. Se trata de un error de aplicaci\u00f3n.
 setbuffer.size.called.after.write.useraction=Elimine la llamada a setBufferSize() o mu\u00e9valo a una posici\u00f3n anterior al compromiso de la respuesta.
 
@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Modifique la l\u00f3gica de la aplica
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: El sendRedirect relativo URL en la aplicaci\u00f3n no se puede convertir en un URL v\u00e1lido.
 sendRedirect.cannot.convert.relative.url.explanation=La direcci\u00f3n relativa URL indicada puede contener caracteres o \u00edndices de recorrido no v\u00e1lidos.
 sendRedirect.cannot.convert.relative.url.useraction=Verifique la ubicaci\u00f3n sendRedirect URL en la aplicaci\u00f3n antes de llamar al m\u00e9todo response.sendRedirect( )
+
+invalid.accept.language.length=CWWWC0013E: El valor del encabezado \u00abAccept-Language\u00bb de la solicitud HTTP es demasiado largo.
+invalid.accept.language.length.explanation=El cliente env\u00eda un encabezado \u00abAccept-Language\u00bb demasiado largo.
+invalid.accept.language.length.useraction=El cliente debe enviar un encabezado \u00abAccept-Language\u00bb con un valor de longitud igual o inferior a 4096 bytes.

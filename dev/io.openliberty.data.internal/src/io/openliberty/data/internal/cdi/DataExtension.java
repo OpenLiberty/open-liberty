@@ -64,7 +64,6 @@ import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Find;
-import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.spi.EntityDefining;
 import jakarta.enterprise.event.Observes;
@@ -137,9 +136,10 @@ public class DataExtension implements Extension {
                             .createAnnotatedType(StatefulPersistenceContext.class));
 
         // Group entities by data access provider and class loader
-        Map<FutureEMBuilder, FutureEMBuilder> entityGroups = new HashMap<>();
+        Map<FutureEHFactory, FutureEHFactory> entityGroups = new HashMap<>();
 
-        for (Iterator<AnnotatedType<?>> it = repositoryAnnos.keySet().iterator(); it.hasNext();) {
+        for (Iterator<AnnotatedType<?>> it = repositoryAnnos.keySet().iterator(); //
+                        it.hasNext();) {
             AnnotatedType<?> repositoryType = it.next();
             it.remove();
 
@@ -156,28 +156,31 @@ public class DataExtension implements Extension {
             // This needs to be done with the correct metadata on the thread,
             // but that might not be available yet.
 
-            FutureEMBuilder futureEMBuilder = new FutureEMBuilder( //
-                            provider, repositoryInterface, loader, dataStore);
+            FutureEHFactory futureEHFactory = new FutureEHFactory( //
+                            provider, //
+                            repositoryInterface, //
+                            loader, //
+                            dataStore);
 
             RepositoryProducer<Object> producer = discoverEntityClasses(repositoryType,
                                                                         provider,
                                                                         beanMgr);
             if (producer != null) {
 
-                FutureEMBuilder previous = entityGroups.putIfAbsent(futureEMBuilder,
-                                                                    futureEMBuilder);
+                FutureEHFactory previous = entityGroups.putIfAbsent(futureEHFactory,
+                                                                    futureEHFactory);
                 if (previous != null) {
-                    futureEMBuilder = previous;
-                    futureEMBuilder.addRepositoryInterface(repositoryInterface);
+                    futureEHFactory = previous;
+                    futureEHFactory.addRepositoryInterface(repositoryInterface);
                 }
 
                 for (Class<?> entityClass : producer.queriesPerEntityClass.keySet())
                     if (!QueryInfo.ENTITY_TBD.equals(entityClass))
-                        futureEMBuilder.addEntity(entityClass);
+                        futureEHFactory.addEntity(entityClass);
 
-                producer.setFutureEMBuilder(futureEMBuilder);
+                producer.setFutureEHFactory(futureEHFactory);
 
-                provider.producerCreated(futureEMBuilder.jeeName.getApplication(),
+                provider.producerCreated(futureEHFactory.jeeName.getApplication(),
                                          producer);
 
                 @SuppressWarnings("unchecked")
@@ -193,16 +196,17 @@ public class DataExtension implements Extension {
     }
 
     /**
-     * Identifies entity classes that are referenced by an interface that is annotated as a Repository
-     * and determines the primary entity class.
+     * Identifies entity classes that are referenced by an interface that is
+     * annotated as a Repository and determines the primary entity class.
      *
-     * Many repository interfaces will inherit from DataRepository or another built-in repository class,
-     * all of which are parameterized with the entity class as the first parameter.
+     * Many repository interfaces will inherit from DataRepository or another
+     * built-in repository class, all of which are parameterized with the
+     * entity class as the first parameter.
      *
      * @param repositoryType the repository interface as an annotated type.
      * @param provider       OSGi service that provides the CDI extension.
      * @param beanMgr        CDI bean manager.
-     * @return a RepositoryProducer instance (with its futureEMBuilder unassigned)
+     * @return a RepositoryProducer instance (with its futureEHFactory unassigned)
      *         if all entity types that appear on the repository interface are
      *         supported. Otherwise null.
      */
@@ -341,7 +345,7 @@ public class DataExtension implements Extension {
                         }
 
                 for (Class<? extends Annotation> queryAnnoType : provider.compat //
-                                .jpqlQueryAnnoTypes())
+                                .queryLanguageAnnoTypes())
                     if (method.getAnnotation(queryAnnoType) != null) {
                         hasQueryAnno = true;
                         break;
@@ -533,7 +537,7 @@ public class DataExtension implements Extension {
             }
 
             if (!queriesWithQueryAnno.isEmpty())
-                queriesPerEntity.put(Query.class, queriesWithQueryAnno);
+                queriesPerEntity.put(QueryInfo.ENTITY_TBD, queriesWithQueryAnno);
 
             producer.setPrimaryEntityClass(primaryEntityClass);
         }

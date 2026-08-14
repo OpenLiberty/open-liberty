@@ -575,21 +575,19 @@ public class SSLConfigManager {
 
         prop = (String) map.get("securityLevel");
         if (null != prop && !prop.isEmpty()) {
-            sslprops.setProperty(Constants.SSLPROP_SECURITY_LEVEL, prop);
+            
+            // Get the SSL config ID for per-config logging
+            String configId = (String) map.get("id");
 
-            if(ProductInfo.getBetaEdition()){
-                // Get the SSL config ID for per-config logging
-                String configId = (String) map.get("id");
-
-                if(prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_HIGH)){
-                    // Check for HIGH cipher specifications and issue an info log once per config
-                    logSecurityLevelInfo(configId);
-                }
-                else if(prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_MEDIUM) || prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_LOW)){
-                    // Check for LOW or MEDIUM cipher specifications and issue warning once per config
-                    weakCipherLogging(configId);
-                }
+            if(prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_HIGH)){
+                // Check for HIGH cipher specifications and issue an info log once per config
+                logSecurityLevelInfo(configId);
             }
+            else if(prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_MEDIUM) || prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_LOW)){
+                // Check for LOW or MEDIUM cipher specifications and issue warning once per config
+                weakCipherLogging(configId);
+            }
+            
         }
 
         prop = (String) map.get("clientKeyAlias");
@@ -610,32 +608,29 @@ public class SSLConfigManager {
 
         prop = (String) map.get("enabledCiphers");
         if (null != prop && !prop.isEmpty()) {
-            if (ProductInfo.getBetaEdition()) {
-                // Beta: Validate that enabledCiphers doesn't mix static entries with filter entries (+/-)
-                if (hasMixedCipherConfiguration(prop)) {
-                    Tr.error(tc, "ssl.enabledCiphers.mixed.mode.error", prop, alias);
+            
+            // Validate that enabledCiphers doesn't mix static entries with filter entries (+/-)
+            if (hasMixedCipherConfiguration(prop)) {
+                Tr.error(tc, "ssl.enabledCiphers.mixed.mode.error", prop, alias);
+                // Leave the value unset so JDK defaults are used
+            } else {
+                // Check for wildcards in + (add) entries
+                String invalidPlusCiphers = getInvalidPlusWildcardCiphers(prop);
+                if (invalidPlusCiphers != null) {
+                    Tr.error(tc, "ssl.enabledCiphers.wildcard.in.plus.error", invalidPlusCiphers, alias);
                     // Leave the value unset so JDK defaults are used
                 } else {
-                    // Check for wildcards in + (add) entries
-                    String invalidPlusCiphers = getInvalidPlusWildcardCiphers(prop);
-                    if (invalidPlusCiphers != null) {
-                        Tr.error(tc, "ssl.enabledCiphers.wildcard.in.plus.error", invalidPlusCiphers, alias);
+                    // Check for wildcards in static entries (no +/- prefix)
+                    String invalidStaticCiphers = getInvalidStaticWildcardCiphers(prop);
+                    if (invalidStaticCiphers != null) {
+                        Tr.error(tc, "ssl.enabledCiphers.wildcard.in.static.error", invalidStaticCiphers, alias);
                         // Leave the value unset so JDK defaults are used
                     } else {
-                        // Check for wildcards in static entries (no +/- prefix)
-                        String invalidStaticCiphers = getInvalidStaticWildcardCiphers(prop);
-                        if (invalidStaticCiphers != null) {
-                            Tr.error(tc, "ssl.enabledCiphers.wildcard.in.static.error", invalidStaticCiphers, alias);
-                            // Leave the value unset so JDK defaults are used
-                        } else {
-                            sslprops.setProperty(Constants.SSLPROP_ENABLED_CIPHERS, prop);
-                        }
+                        sslprops.setProperty(Constants.SSLPROP_ENABLED_CIPHERS, prop);
                     }
                 }
-            } else {
-                // Non-beta: Accept the cipher list as-is (no +/- modifiers supported)
-                sslprops.setProperty(Constants.SSLPROP_ENABLED_CIPHERS, prop);
             }
+            
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1596,24 +1591,10 @@ public class SSLConfigManager {
         String cipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
 
         try {
-            if(ProductInfo.getBetaEdition()){
-                // Use unified logic: adjustSupportedCiphers handles both custom and modifier modes
-                ciphers = Constants.adjustSupportedCiphers(socket.getSupportedCipherSuites(), cipherString);
-            }
-            else{
-                if (cipherString != null) {
-                    ciphers = cipherString.split("[,\\s]+");
-                } else {
-                    String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "securityLevel from properties is " + securityLevel);
-                    if (securityLevel == null)
-                        securityLevel = "HIGH";
-
-                    ciphers = adjustSupportedCiphersToSecurityLevel(socket.getSupportedCipherSuites(), securityLevel);
-
-                }
-            }
+            
+            // Use unified logic: adjustSupportedCiphers handles both custom and modifier modes
+            ciphers = Constants.adjustSupportedCiphers(socket.getSupportedCipherSuites(), cipherString);
+            
         } catch (Exception e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });
@@ -1638,24 +1619,9 @@ public class SSLConfigManager {
         String cipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
 
         try {
-            if(ProductInfo.getBetaEdition()){
+            
             // Use unified logic: adjustSupportedCiphers handles both custom and modifier modes
             ciphers = Constants.adjustSupportedCiphers(socket.getSupportedCipherSuites(), cipherString);
-            }
-            else{
-                if (cipherString != null) {
-                    ciphers = cipherString.split("[,\\s]+");
-                } else {
-                    String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "securityLevel from properties is " + securityLevel);
-                    if (securityLevel == null)
-                        securityLevel = "HIGH";
-
-                    ciphers = adjustSupportedCiphersToSecurityLevel(socket.getSupportedCipherSuites(), securityLevel);
-
-                }
-            }
         } catch (Exception e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });

@@ -135,30 +135,13 @@ public class SSLLinkConfig {
      * @return array of resolved cipher suite names
      */
     private String[] resolveCiphers(SSLEngine sslEngine, String cipherString) {
-        if (ProductInfo.getBetaEdition()) {
-            // Beta: always go through adjustSupportedCiphers
-            return Constants.adjustSupportedCiphers(
-                sslEngine.getSupportedCipherSuites(),
-                cipherString
-            );
-        }
-
-        if (cipherString != null) {
-            // Non-beta: user provided value
-            return CIPHER_SPLIT_PATTERN.split(cipherString);
-        }
-
-        // No custom ciphers - fallback to security level
-        String securityLevel = this.myConfig.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-        if (securityLevel == null) {
-            Tr.debug(tc, "Defaulting to HIGH security level");
-            securityLevel = Constants.SECURITY_LEVEL_HIGH;
-        }
-
-        return Constants.adjustSupportedCiphersToSecurityLevel(
+        
+            
+        return Constants.adjustSupportedCiphers(
             sslEngine.getSupportedCipherSuites(),
-            securityLevel
+            cipherString
         );
+        
     }
     /**
      * Get the SSL protocol for this connection and check to see it correct for setting on a SSLEngine

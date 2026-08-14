@@ -4,13 +4,15 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
+
+import java.util.List;
 
 import com.ibm.ws.security.common.structures.SingleTableCache;
 
@@ -92,5 +94,23 @@ public interface OidcClientConfig extends ConvergedClientConfig {
     public boolean getAccessTokenCacheEnabled();
 
     public long getAccessTokenCacheTimeout();
+
+    public boolean getServeProtectedResourceMetadata();
+
+    /**
+     * Get the advertised scopes for the protected resource metadata.
+     *
+     * @return A list of scopes, or null if not configured
+     */
+    public List<String> getProtectedResourceMetadataAdvertisedScopes();
+
+    /**
+     * Get the user-facing JWT builder id for the protected resource metadata.
+     * This is the {@code id} attribute value from {@code <jwtBuilder id="..."/>},
+     * resolved from the OSGi PID.
+     *
+     * @return The user-facing JWT builder id, or null if not configured or unresolvable
+     */
+    public String getProtectedResourceMetadataJwtBuilderId();
 
 }

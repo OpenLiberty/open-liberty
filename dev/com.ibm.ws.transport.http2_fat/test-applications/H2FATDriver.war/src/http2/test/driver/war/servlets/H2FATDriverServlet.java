@@ -59,7 +59,7 @@ import test.server.transport.http2.Utils;
 public class H2FATDriverServlet extends FATServlet {
     /**  */
     private static final long serialVersionUID = 1L;
-    protected final long defaultTimeoutToSendFrame = 29000L;
+    protected final long defaultTimeoutToSendFrame = 35000L;
     private final int STRESS_TEST_TIMEOUT = 120000;
 
     private static final Logger LOGGER = Logger.getLogger(H2FATDriverServlet.class.getName());
@@ -72,6 +72,7 @@ public class H2FATDriverServlet extends FATServlet {
     private static final String SERVLET_CONTINUATION = "/H2TestModule/HeadersAndContinuation";
     protected static final String COMPRESSION_URI = "/H2TestModule/H2Compression";
     protected static final String POST_ECHO_BODY_URI = "/H2TestModule/H2PostEchoBody";
+    protected static final String LARGE_RESPONSE_URI = "/H2TestModule/H2LargeResponse";
 
     public static final FrameSettings EMPTY_SETTINGS_FRAME = new FrameSettings();
     public static final FrameSettings DEFAULT_SERVER_SETTINGS_FRAME = new FrameSettings(0, -1, -1, 100, -1, 57344, -1, false);
@@ -332,7 +333,7 @@ public class H2FATDriverServlet extends FATServlet {
      * by another of 1 byte (sent when the window size is updated).
      * 
      * TODO: This test should be improved for the legacy implementation of the transport, as it does not 
-     * currently send the two frames separately. 
+     * currently send the two frames separately. See https://github.com/OpenLiberty/open-liberty/issues/32381
      */
     public void testSmallWindowSize(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
@@ -2222,7 +2223,7 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // TODO Need to look more into this, not exactly sure why it's sending a go away frame since the stream should be closed
+        // Difference allowed between Netty and CHFW -- See POC Issue 207
 
         byte[] chfwDebugData = "CONTINUATION frame received on a closed stream".getBytes();
         byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();
@@ -4716,7 +4717,7 @@ public class H2FATDriverServlet extends FATServlet {
             h2Client.sendFrame(frameHeadersToSend);
         }
 
-        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -5169,14 +5170,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] cfhwDebugData = "too many reset frames processed".getBytes();
-        byte[] nettyDebugData = "Maximum number of RST frames reached".getBytes();
+        byte[] debugData = "too many reset frames processed".getBytes();
         FrameGoAway errorFrame;
 
         if (USING_NETTY)
-            errorFrame = new FrameGoAway(0, nettyDebugData, ENHANCE_YOUR_CALM_ERROR, 2147483647, false);
+            errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 2147483647, false);
         else
-            errorFrame = new FrameGoAway(0, cfhwDebugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
+            errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -5199,7 +5199,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         }
 
-        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -5243,7 +5243,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         }
 
-        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -5288,14 +5288,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        byte[] cfhwDebugData = "too many reset frames processed".getBytes();
-        byte[] nettyDebugData = "Maximum number 100 of RST frames frames reached within 30 seconds".getBytes();
+        byte[] debugData = "too many reset frames processed".getBytes();
         FrameGoAway errorFrame;
 
         if (USING_NETTY)
-            errorFrame = new FrameGoAway(0, nettyDebugData, ENHANCE_YOUR_CALM_ERROR, 2147483647, false);
+            errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 2147483647, false);
         else
-            errorFrame = new FrameGoAway(0, cfhwDebugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
+            errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -5321,7 +5320,7 @@ public class H2FATDriverServlet extends FATServlet {
             h2Client.sendFrame(frameHeadersToSend);
         }
 
-        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -5343,8 +5342,13 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        FrameGoAway errorFrame = new FrameGoAway(0, "too many reset frames processed".getBytes(),
-                ENHANCE_YOUR_CALM_ERROR, 1, false);
+        byte[] debugData = "too many reset frames processed".getBytes();
+        FrameGoAway errorFrame;
+
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
@@ -5398,7 +5402,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         }
 
-        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }

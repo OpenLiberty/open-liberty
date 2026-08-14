@@ -108,6 +108,7 @@ public class H2Connection {
     private final FrameSettings ackSettingsFrame;
 
     private final AtomicBoolean closeCalled = new AtomicBoolean(false);
+    private final AtomicBoolean connectionErrorOccurred = new AtomicBoolean(false);
 
     private static String sendBackPriority1 = "SEND.BACK.PRIORITY.1";
     private static String sendBackWinUpdate1 = "SEND.BACK.WINDOW.UPDATE.1";
@@ -135,7 +136,7 @@ public class H2Connection {
 
         readConn.setBuffer(readBuffer);
 
-        h2TcpReadCallback = new H2TCPReadCallback(this);
+        h2TcpReadCallback = new H2TCPReadCallback(this, readConn.getSocket());
         frameReadProcessor = new FrameReadProcessor(null);
         frameReadProcessor.setFrameState(FrameState.INIT);
 
@@ -148,6 +149,12 @@ public class H2Connection {
     }
 
     public synchronized long sendBytesSync(WsByteBuffer[] toSend) {
+        if (isClosedCalled()) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytesSync(WsByteBuffer[])", "Ignoring write attempt because connection was already closed.");
+            }
+            return 0;
+        }
         return (sendBytes(toSend));
     }
 
@@ -176,6 +183,12 @@ public class H2Connection {
     }
 
     public synchronized long sendBytesSync(WsByteBuffer toSend) {
+        if (isClosedCalled()) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytesSync(WsByteBuffer)", "Ignoring write attempt because connection was already closed.");
+            }
+            return 0;
+        }
         return (sendBytes(toSend));
     }
 
@@ -204,6 +217,12 @@ public class H2Connection {
     }
 
     public synchronized long sendBytesSync(byte[] toSend) {
+        if (isClosedCalled()) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytesSync(byte[])", "Ignoring write attempt because connection was already closed.");
+            }
+            return 0;
+        }
         return (sendBytes(toSend));
     }
 
@@ -245,6 +264,13 @@ public class H2Connection {
     public synchronized long sendFrame(Frame writableFrame) {
 
         // synchronized to protect access to at least the pending buffers logic, and maybe other stuff.
+
+        if (isClosedCalled()) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame(Frame)", "Ignoring write attempt because connection was already closed.");
+            }
+            return 0;
+        }
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame", "Sending frame: (connection: " + this + ")");
@@ -345,6 +371,12 @@ public class H2Connection {
 
     // can not do concurrent writes on the same TCP Channel connection, therfore this is synchronized
     public synchronized void syncWrite() {
+        if (isClosedCalled()) {
+            if (LOGGER.isLoggable(Level.FINEST)) {
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "syncWrite()", "Ignoring write attempt because connection was already closed.");
+            }
+            return;
+        }
         WsByteBuffer[] writeBuffers = getBuffList();
         if (null != writeBuffers) {
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -746,7 +778,7 @@ public class H2Connection {
         return frameToConvert;
     }
 
-    public void close() {
+    public synchronized void close() {
         this.closeCalled.set(true);
         if (LOGGER.isLoggable(Level.FINEST))
             LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Connection close() called in connection " + this + ".");
@@ -799,8 +831,16 @@ public class H2Connection {
         this.serverFirstConnectReceived = received;
     }
 
+    public void setConnectionErrorOccurred() {
+        this.connectionErrorOccurred.set(true);
+    }
+
     public boolean isClosedCalled() {
         return this.closeCalled.get();
+    }
+
+    public boolean connectionErrorOccurred() {
+        return this.connectionErrorOccurred.get();
     }
 
     public void addExpectedFrames(ArrayList<Frame> frames) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {

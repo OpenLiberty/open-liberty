@@ -43,6 +43,18 @@ public class Options<T> {
             Functions.singleton(() -> Threshold.of(5L, SizeUnit.MEGABYTE)));
 
     /**
+     * An option for the chunk size of the {@link org.jboss.resteasy.spi.EntityOutputStream} to write to a
+     * file. The entity will be processed and written in chunks to the file. A value of {@code -1} indicates the file
+     * should be directly written to.
+     * <p>
+     * The default is 8192.
+     * </p>
+     */
+    public static final Options<Integer> ENTITY_FILE_BUFFER_SIZE = new Options<>("dev.resteasy.entity.file.buffer.size",
+            Integer.class,
+            Functions.singleton(() -> 8192));
+
+    /**
      * An option for the threshold of the {@link org.jboss.resteasy.spi.EntityOutputStream} to write to a
      * file. A value of {@code -1} indicates no threshold limit.
      * <p>

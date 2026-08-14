@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1550,6 +1550,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
     @Test
     @SkipIfDataSourceProperties({ SYBASE, INFORMIX_JDBC }) // no 4.1 sybase or ifx driver
     @AllowedFFDC({
+                   "java.sql.SQLException", // wraps RollbackException when transaction times out before enlist
                    "javax.resource.ResourceException", // times out before enlistment
                    "javax.transaction.RollbackException", // times out before enlistment
                    "javax.transaction.xa.XAException", "java.lang.NullPointerException", "oracle.jdbc.xa.OracleXAException",

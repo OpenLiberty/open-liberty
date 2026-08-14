@@ -208,7 +208,7 @@ public class MessageContextFactory {
 			c_logger.traceDebug(this, "finishToUseContext", "Message context about to be cleaned and returned to Pool: " + messageContext);
 		}
 
-		// clean and put back to the queue only if poolabe
+		// clean and put back to the queue only if it is poolable
 		messageContext.cleanItself();
 
 		if (messageContext instanceof RequestContext) {

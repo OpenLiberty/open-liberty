@@ -45,13 +45,6 @@ import jakarta.persistence.EntityManager;
 public class Data_1_0 implements DataVersionCompatibility {
 
     /**
-     * Annotations for repository query operations that accept a JPQL query.
-     */
-    private static final Set<Class<? extends Annotation>> JPQL_QUERY_ANNOS = //
-                    // TODO add new Jakarta Persistence anno
-                    Set.of(Query.class);
-
-    /**
      * Annotations that represent lifecycle operations that are allowed for
      * methods of a stateful repository.
      */
@@ -67,6 +60,12 @@ public class Data_1_0 implements DataVersionCompatibility {
                            Insert.class,
                            Update.class,
                            Save.class);
+
+    /**
+     * Annotations for repository query operations that accept a JPQL query.
+     */
+    private static final Set<Class<? extends Annotation>> QUERY_LANGUAGE_ANNOS = //
+                    Set.of(Query.class);
 
     /**
      * Classes that are valid as return types of resource accessor methods for a
@@ -144,6 +143,12 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public Integer getFirstAnnotationValue(Method method) {
+        return null;
+    }
+
+    @Override
+    @Trivial
     public String[] getSelections(AnnotatedElement element) {
         return NO_SELECTIONS;
     }
@@ -167,12 +172,6 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Set<Class<? extends Annotation>> jpqlQueryAnnoTypes() {
-        return JPQL_QUERY_ANNOS;
-    }
-
-    @Override
-    @Trivial
     public Set<Class<? extends Annotation>> lifeCycleAnnoTypes(Boolean stateful) {
         return Boolean.TRUE.equals(stateful) //
                         ? LIFECYCLE_ANNOS_STATEFUL //
@@ -189,6 +188,12 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Trivial
     public String persistenceFeatureName() {
         return "persistence-3.2";
+    }
+
+    @Override
+    @Trivial
+    public Set<Class<? extends Annotation>> queryLanguageAnnoTypes() {
+        return QUERY_LANGUAGE_ANNOS;
     }
 
     @Override

@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -17,7 +17,9 @@
 
 bVersion=1.0
 
-
+-dsannotations: \
+ com.ibm.ws.wsoc.cdi.weld.ServiceManager,\
+ com.ibm.ws.wsoc.cdi.weld.WebSocketInjectionClassListCollaborator
 
 Export-Package: \
   com.ibm.ws.wsoc.cdi.weld
@@ -28,20 +30,6 @@ Import-Package: \
   !com.ibm.ws.wsoc.cdi.weld, \
   ${defaultPackageImport}
 
-Service-Component: \
-  com.ibm.ws.wsoc.manager;\
-    implementation:=com.ibm.ws.wsoc.cdi.weld.ServiceManager; \
-    provide:=com.ibm.ws.wsoc.injection.InjectionService12; \
-    cdiService=com.ibm.ws.cdi.CDIService; \
-    injectionEngine=com.ibm.wsspi.injectionengine.InjectionEngine; \
-    configuration-policy:=ignore;\
-    immediate:=true;\
-    properties:="service.vendor=IBM", \
-  com.ibm.ws.wsoc.injection.class.list.collaborator; \
-     implementation:=com.ibm.ws.wsoc.cdi.weld.WebSocketInjectionClassListCollaborator ; \
-     provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
-     immediate:=true; \
-     properties:="service.vendor=IBM"
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
@@ -56,4 +44,6 @@ Service-Component: \
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

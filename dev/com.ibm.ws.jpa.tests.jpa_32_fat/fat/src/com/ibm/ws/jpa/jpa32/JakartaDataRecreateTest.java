@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,8 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jpa.jpa32;
+
+import java.util.HashSet;
 
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
@@ -20,9 +22,15 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +48,7 @@ import io.openliberty.jpa.data.tests.web.JakartaDataRecreateServlet;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25)  // Hibernate ByteBuddy limitation
 public class JakartaDataRecreateTest {
     public static final String APP_NAME = "jakartadata";
     public static final String SERVLET = "JakartaDataRecreate";
@@ -55,12 +64,19 @@ public class JakartaDataRecreateTest {
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
 
+        server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
+
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
+        int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < (180 * 1000)) {
+            server.setAppStartTimeout(180 * 1000);
+        }
+        
         createApplication(SPECLEVEL);
         server.startServer();
     }
@@ -74,7 +90,25 @@ public class JakartaDataRecreateTest {
         app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
                   "/",
                   Filters.includeAll());
-        ShrinkHelper.exportDropinAppToServer(server, app);
+        ShrinkHelper.exportAppToServer(server, app);
+        
+        Application appRecord = new Application();
+        appRecord.setLocation(APP_NAME + "_" + specLevel + ".war");
+        appRecord.setName(APP_NAME + "_" + specLevel);
+
+        // setup the thirdparty classloader for Hibernate
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        }
+        
+        ServerConfiguration sc = server.getServerConfiguration();
+        sc.getApplications().add(appRecord);
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
+
     }
 
     @AfterClass

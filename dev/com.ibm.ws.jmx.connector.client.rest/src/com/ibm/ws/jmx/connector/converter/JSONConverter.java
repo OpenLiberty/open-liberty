@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -3347,9 +3347,10 @@ public class JSONConverter {
         JSONArray json = (JSONArray) in;
         int size = json.size();
         OpenType<?>[] openTypes = new OpenType[size];
+        Set<Integer> inProgress = new HashSet<Integer>();
         try {
             for (int i = 0; i < size; i++) {
-                readOpenType(json, i, openTypes);
+                readOpenType(json, i, openTypes, inProgress);
             }
         } catch (OpenDataException e) {
             throwConversionException(e, in);
@@ -3358,9 +3359,12 @@ public class JSONConverter {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private OpenType<?> readOpenType(JSONArray json, int i, OpenType<?>[] openTypes) throws ConversionException, ClassNotFoundException, OpenDataException {
+    private OpenType<?> readOpenType(JSONArray json, int i, OpenType<?>[] openTypes, Set<Integer> inProgress) throws ConversionException, ClassNotFoundException, OpenDataException {
         if (openTypes[i] != null) {
             return openTypes[i];
+        }
+        if (!inProgress.add(i)) {
+            throwConversionException("readOpenType() detected a cyclic reference in the openTypes array at index " + i + ".", json.get(i));
         }
         Object o = json.get(i);
         if (o instanceof String) {
@@ -3368,6 +3372,7 @@ public class JSONConverter {
             if (openTypes[i] == null) {
                 throwConversionException("readOpenType() received an unknown simple type name.", o);
             }
+            inProgress.remove(i);
             return openTypes[i];
         }
 
@@ -3382,6 +3387,7 @@ public class JSONConverter {
             if (!(ret instanceof OpenType<?>)) {
                 throwConversionException("readOpenType() expects an OpenType.", serialized);
             }
+            inProgress.remove(i);
             return openTypes[i] = (OpenType<?>) ret;
         }
 
@@ -3392,10 +3398,12 @@ public class JSONConverter {
             if (elementType < 0 || elementType >= openTypes.length) {
                 throwConversionException("readOpenType() receives an out-of-range open type index.", type.get(N_ELEMENTTYPE));
             }
-            OpenType<?> etype = readOpenType(json, elementType, openTypes);
+            OpenType<?> etype = readOpenType(json, elementType, openTypes, inProgress);
             if (etype instanceof SimpleType<?>) {
+                inProgress.remove(i);
                 return openTypes[i] = new ArrayType((SimpleType<?>) etype, PrimitiveArrayTypes.contains(etype.getClassName()));
             } else {
+                inProgress.remove(i);
                 return openTypes[i] = new ArrayType(dimension, etype);
             }
         }
@@ -3427,8 +3435,9 @@ public class JSONConverter {
                 if (itemType < 0 || itemType >= openTypes.length) {
                     throwConversionException("readOpenType() receives an out-of-range open type index.", item.get(N_TYPE));
                 }
-                itemTypes[p] = readOpenType(json, itemType, openTypes);
+                itemTypes[p] = readOpenType(json, itemType, openTypes, inProgress);
             }
+            inProgress.remove(i);
             return openTypes[i] = new CompositeType(typeName, description, itemNames, itemDescriptions, itemTypes);
         }
 
@@ -3440,7 +3449,7 @@ public class JSONConverter {
                 throwConversionException("readOpenType() receives an out-of-range open type index.", type.get(N_ROWTYPE));
             }
 
-            OpenType<?> rtype = readOpenType(json, rowType, openTypes);
+            OpenType<?> rtype = readOpenType(json, rowType, openTypes, inProgress);
             if (!(rtype instanceof CompositeType)) {
                 throwConversionException("readOpenType() expects a CompositeType.", rtype);
             }
@@ -3458,6 +3467,7 @@ public class JSONConverter {
                 // Original code: indexNames[i] = readStringInternal(names.get(p));
                 indexNames[p] = readStringInternal(names.get(p));
             }
+            inProgress.remove(i);
             return openTypes[i] = new TabularType(typeName, description, (CompositeType) rtype, indexNames);
         }
 

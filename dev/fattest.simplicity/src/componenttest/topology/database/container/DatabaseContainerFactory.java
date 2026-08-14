@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Optional;
 
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -27,6 +28,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.depchain.FeatureDependencyProcessor;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.impl.JavaInfo;
 
 /**
@@ -40,7 +42,8 @@ import componenttest.topology.impl.JavaInfo;
  *
  * <br> Container Information: <br>
  * Derby: Uses a derby no-op test container <br>
- * DerbyClient: Uses a derby no-op test container <br>
+ * DerbyClient: Uses a derby proxy test container <br>
+ * H2: Uses an H2 proxy test container <br>
  * DB2: Uses <a href="https://hub.docker.com/repository/docker/kyleaure/db2">Custom DB2 container</a> <br>
  * Oracle: Uses <a href="https://github.com/gvenzl/oci-oracle-free/pkgs/container/oracle-free">Offical Oracle container</a> <br>
  * Postgres: Uses <a href="https://gallery.ecr.aws/docker/library/postgres">Offical Postgres Container</a> <br>
@@ -76,6 +79,26 @@ public class DatabaseContainerFactory {
     }
 
     /**
+     * Used for <b>database rotation testing</b>.
+     *
+     * Reads the {fat.bucket.db.type} system property and
+     * returns a container based on that property.
+     * [Postgres, DB2, Oracle, SQLServer, Derby]
+     *
+     * If {fat.bucket.db.type} is not set with a value,
+     * default to H2.
+     *
+     * @param  h2Database               Optional H2Database instance to configure the H2 container
+     * @return                          JdbcDatabaseContainer - The test container.
+     *
+     * @throws IllegalArgumentException - if databaseRotation is not set on tested.features,
+     *                                      or database type {fat.bucket.db.type} is unsupported.
+     */
+    public static JdbcDatabaseContainer<?> createH2(Optional<H2Database> h2Database) throws IllegalArgumentException {
+        return create(DatabaseContainerType.H2, h2Database);
+    }
+
+    /**
      * @see #create()
      *
      *      Uses the latest version of Derby Embedded
@@ -85,12 +108,36 @@ public class DatabaseContainerFactory {
     }
 
     /**
+     * @see              #create()
+     *
+     *                   Uses the latest version of H2
+     *
+     * @param h2Database Optional H2Database instance to configure the H2 container
+     */
+    public static JdbcDatabaseContainer<?> createLatestH2(Optional<H2Database> h2Database) throws IllegalArgumentException {
+        return create(DatabaseContainerType.H2Java11Plus, h2Database);
+    }
+
+    /**
      * @see #create()
      *
      *      This method let's you specify the default database type if one is not provided.
      *      This should mainly be used if you want to use derby client instead of derby embedded as your default.
      */
     public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType) throws IllegalArgumentException {
+        return create(defaultType, Optional.empty());
+    }
+
+    /**
+     * @see               #create()
+     *
+     *                    This method let's you specify the default database type if one is not provided.
+     *                    This should mainly be used if you want to use derby client instead of derby embedded as your default.
+     *
+     * @param defaultType The default database container type
+     * @param h2Database  Optional H2Database instance to configure the H2 container
+     */
+    public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType, Optional<H2Database> h2Database) throws IllegalArgumentException {
         Path testedFeatures = FeatureDependencyProcessor.getTestedFeaturesMetdataFile().toPath();
         String dbProperty = System.getProperty(databaseRotationDatabaseType, defaultType.name());
 
@@ -119,17 +166,20 @@ public class DatabaseContainerFactory {
             throw new IllegalArgumentException("No database test-container supported for " + dbProperty, e);
         }
 
-        return initContainer(type);
+        return initContainer(type, h2Database);
     }
 
     public static JdbcDatabaseContainer<?> createType(DatabaseContainerType type) throws IllegalArgumentException {
-        Log.info(c, "createType", "Database Container Type is " + type);
+        return createType(type, Optional.empty());
+    }
 
-        return initContainer(type);
+    public static JdbcDatabaseContainer<?> createType(DatabaseContainerType type, Optional<H2Database> h2Database) throws IllegalArgumentException {
+        Log.info(c, "createType", "Database Container Type is " + type);
+        return initContainer(type, h2Database);
     }
 
     //Private Method: used to initialize test container.
-    private static JdbcDatabaseContainer<?> initContainer(DatabaseContainerType dbContainerType) {
+    private static JdbcDatabaseContainer<?> initContainer(DatabaseContainerType dbContainerType, Optional<H2Database> h2Database) {
 
         // Validate state of environment
         if (dbContainerType.getMinJavaLevel() > JavaInfo.JAVA_VERSION) {
@@ -191,6 +241,14 @@ public class DatabaseContainerFactory {
 
                     //Init Script
                     sqlserver.withInitScript("init-sqlserver.sql");
+
+                    break;
+                case H2:
+                case H2Java11Plus:
+                    H2Container h2 = dbContainerType.cast(cont);
+
+                    // Apply custom H2Database configuration if provided
+                    h2Database.ifPresent(h2::withDatabase);
 
                     break;
                 default:

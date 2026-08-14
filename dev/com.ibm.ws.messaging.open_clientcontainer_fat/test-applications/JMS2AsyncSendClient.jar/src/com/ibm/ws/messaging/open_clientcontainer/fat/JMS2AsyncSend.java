@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -463,7 +463,10 @@ public class JMS2AsyncSend extends ClientMain {
     	// commit (onException must NOT be called)
     	producer.send(depthLimitedQueue_, textMessage);
 
-    	boolean conditionMet = completionListener_.waitFor(6, 0);
+     long expectedCompletionCount = 6;
+     long expectedExceptionCount = 0;
+
+    	boolean conditionMet = completionListener_.waitFor(expectedCompletionCount, expectedExceptionCount);
 
     	boolean exceptionOnCommit = false;
     	try {
@@ -486,9 +489,11 @@ public class JMS2AsyncSend extends ClientMain {
     		}
     	}
 
-    	Util.TRACE("completionCount="+completionListener_.completionCount_
-    			+",exceptionCount="+completionListener_.exceptionCount_
-    			);
+    	Util.TRACE("expectedCompletionCount="+ expectedCompletionCount + ", completionCount="+completionListener_.completionCount_
+    			+ ", expectedExceptionCount=" + expectedExceptionCount + ", exceptionCount=" + completionListener_.exceptionCount_);
+
+      Util.TRACE("conditionMet=" + conditionMet + ", exceptionOnCommit=" + exceptionOnCommit);
+
     	if (conditionMet == true && exceptionOnCommit == true ) {
     		reportSuccess();
     	} else {

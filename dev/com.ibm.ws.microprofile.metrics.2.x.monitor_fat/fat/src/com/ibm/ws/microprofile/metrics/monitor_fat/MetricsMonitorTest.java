@@ -35,7 +35,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -51,6 +50,8 @@ public class MetricsMonitorTest {
 
     @Server("MetricsMonitorServer")
     public static LibertyServer server;
+
+    private static int timeout = 60000;
     
     @BeforeClass
     public static void setUp() throws Exception {
@@ -99,10 +100,10 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_monitor.xml");
     	server.startServer();
-        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+        server.waitForLTPAConfigReady(timeout);
+    	server.waitForDefaultHTTPEndpointSSLStart(timeout);
     	Log.info(c, testName, "------- server started -----");
-    	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
+    	Assert.assertNotNull("CWWKT0016I NOT FOUND", server.waitForStringInLogUsingMark("CWWKT0016I"));
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:", "vendor:" }, 
           	new String[] {});
@@ -122,8 +123,8 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-2.0 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_monitor2.xml");
     	server.startServer();
-        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND", server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+        server.waitForLTPAConfigReady(timeout);
+    	server.waitForDefaultHTTPEndpointSSLStart(timeout);
     	Log.info(c, testName, "------- server started -----");
     	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
       	checkStrings(getHttpsServlet("/metrics"), 
@@ -146,8 +147,8 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-2.3 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_monitor2.xml");
     	server.startServer();
-        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND", server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+        server.waitForLTPAConfigReady(timeout);
+    	server.waitForDefaultHTTPEndpointSSLStart(timeout);
     	Log.info(c, testName, "------- server started -----");
     	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
       	checkStrings(getHttpsServlet("/metrics"), 
@@ -170,12 +171,12 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.0 and monitor-1.0: vendor metrics should not be available ------");
     	server.setServerConfigurationFile("server_mpMetric10Monitor10.xml");
     	server.startServer();
-        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND", server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
-        String logMsg = server.waitForStringInLog("SRVE9103I",60000);   
+        server.waitForLTPAConfigReady(timeout);
+    	server.waitForDefaultHTTPEndpointSSLStart(timeout);
+        String logMsg = server.waitForDefaultHTTPEndpointSSLStart(true);
         Log.info(c, testName, logMsg);
         Assert.assertNotNull("No SRVE9103I message", logMsg);    
-        Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
+        Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",timeout));
         Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
@@ -190,10 +191,10 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable microProfile-1.3 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_microProfile13Monitor10.xml");
     	server.startServer();
-        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*",60000));
-    	Log.info(c, testName, server.waitForStringInLog("CWWKS5500I",60000));
-    	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
-    	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog(".*CWWKO0219I.*defaultHttpEndpoint-ssl.*",60000));
+        server.waitForLTPAConfigReady(timeout);
+    	Log.info(c, testName, server.waitForStringInLog("CWWKS5500I",timeout));
+    	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",timeout));
+    	server.waitForDefaultHTTPEndpointSSLStart(timeout);
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"),
           	new String[] { "vendor:" }, 

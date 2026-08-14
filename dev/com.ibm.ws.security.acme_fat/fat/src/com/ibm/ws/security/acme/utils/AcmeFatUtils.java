@@ -556,9 +556,8 @@ public class AcmeFatUtils {
      * @param server
      *            The server to check.
      */
-    public static final void waitForSslEndpoint(LibertyServer server) {
-        assertNotNull("Expected defaultHttpEndpoint-ssl to start.",
-                server.waitForStringInTrace("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started"));
+    public static final void waitForSslEndpoint(LibertyServer server) throws Exception {
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     /**

@@ -72,6 +72,8 @@ public class MultipleHAMCustomTests extends BaseJakartaSecurity40Test {
         ShrinkHelper.exportDropinAppToServer(server, multipleHamApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
+
+        server.waitForLTPAConfigReady();
     }
 
     /*

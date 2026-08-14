@@ -12,8 +12,8 @@ package io.openliberty.mcp.internal;
 import java.util.Arrays;
 import java.util.EnumSet;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.Tool.Annotations;
+import org.mcpjava.server.tools.Tool;
+
 import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
@@ -39,7 +39,7 @@ public class Literals {
         return tool(name, title, description, structuredContent, toolAnnotations(""));
     }
 
-    public static Tool tool(String name, String title, String description, boolean structuredContent, Annotations toolAnntations) {
+    public static Tool tool(String name, String title, String description, boolean structuredContent, Tool.Annotations toolAnntations) {
         return new ToolLiteral() {
             private static final long serialVersionUID = 1L;
 
@@ -67,10 +67,15 @@ public class Literals {
             public Annotations annotations() {
                 return toolAnntations;
             }
+
+            @Override
+            public Class<?> outputSchemaFrom() {
+                return Void.class;
+            }
         };
     }
 
-    private static abstract class ToolAnnotationsLiteral extends AnnotationLiteral<Annotations> implements Annotations {
+    private static abstract class ToolAnnotationsLiteral extends AnnotationLiteral<Tool.Annotations> implements Tool.Annotations {
         private static final long serialVersionUID = 1L;
     }
 
@@ -82,7 +87,7 @@ public class Literals {
      *     default.
      * @return the Tool.Annotations object
      */
-    public static Annotations toolAnnotations(String title, ToolAnnotationHints... hintArgs) {
+    public static Tool.Annotations toolAnnotations(String title, ToolAnnotationHints... hintArgs) {
         EnumSet<ToolAnnotationHints> hints = hintArgs.length == 0 ? EnumSet.noneOf(ToolAnnotationHints.class) : EnumSet.copyOf(Arrays.asList(hintArgs));
         return new ToolAnnotationsLiteral() {
 

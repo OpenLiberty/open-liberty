@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Class-Path: testlib/testLib12.jar ../testLib16.jar doesNotExistFrom_testResourceAdpator.jar

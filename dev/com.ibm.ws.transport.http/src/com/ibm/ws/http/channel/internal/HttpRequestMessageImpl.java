@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -126,6 +126,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         super();
         // for requests, we don't care about the validation
         setHeaderValidation(false);
+        setRejectHeaderLineFolding(true);
         setOwner(null);
         setBinaryParseState(HttpInternalConstants.PARSING_BINARY_VERSION);
     }
@@ -161,6 +162,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     public void init(HttpInboundServiceContext sc) {
         // for requests, we don't care about the validation
         setHeaderValidation(false);
+        setRejectHeaderLineFolding(true);
         setOwner(sc);
         setBinaryParseState(HttpInternalConstants.PARSING_BINARY_VERSION);
     }
@@ -188,6 +190,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     public void init(HttpInboundServiceContext sc, BNFHeaders hdrs) {
         // for requests, we don't care about the validation
         setHeaderValidation(false);
+        setRejectHeaderLineFolding(true);
         setOwner(sc);
         setBinaryParseState(HttpInternalConstants.PARSING_BINARY_VERSION);
         if (null != hdrs) {
@@ -235,27 +238,10 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /*
-     * @see com.ibm.ws.http.channel.internal.HttpBaseMessageImpl#isBodyExpected()
-     */
-    @Override
-    public boolean isBodyExpected() {
-
-        // check basic validation first
-        if (super.isBodyExpected()) {
-            // return whatever is default for this method
-            return this.myMethod.isBodyAllowed();
-        }
-
-        // no body here
-        return false;
-    }
-
-    /*
      * @see com.ibm.ws.http.channel.internal.HttpBaseMessageImpl#isBodyAllowed()
      */
     @Override
     public boolean isBodyAllowed() {
-
         // requests must be delimited by something (not socket closure) so
         // the behavior here is the same as isBodyExpected
         return isBodyExpected();
@@ -388,7 +374,36 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
      */
     @Override
     protected void setParsedThirdToken(byte[] token) throws Exception {
-        setVersion(token);
+        setVersion(parseSupportedRequestVersion(token));
+    }
+
+    private VersionValues parseSupportedRequestVersion(byte[] token) throws Exception {
+        if (token == null || token.length != 8) {
+            throw new MalformedMessageException("Invalid HTTP version");
+        }
+
+        if (token[0] != 'H' || token[1] != 'T' || token[2] != 'T' || token[3] != 'P'
+                || token[4] != '/' || token[6] != '.') {
+            throw new MalformedMessageException("Invalid HTTP version");
+        }
+
+        byte major = token[5];
+        byte minor = token[7];
+
+        if (major < '0' || major > '9' || minor < '0' || minor > '9') {
+            throw new MalformedMessageException("Invalid HTTP version");
+        }
+
+        if (major == '1' && minor == '0') {
+            return VersionValues.V10;
+        }
+
+        if (major == '1' && minor == '1') {
+            return VersionValues.V11;
+        }
+
+        throw new UnsupportedProtocolVersionException(
+                "Unsupported: " + HttpChannelUtils.getEnglishString(token));
     }
 
     /*

@@ -36,5 +36,6 @@
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" clientAuthenticationSupported="true" />
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
     <quickStartSecurity userName="bob" userPassword="mypwd" />
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
 
 </server>

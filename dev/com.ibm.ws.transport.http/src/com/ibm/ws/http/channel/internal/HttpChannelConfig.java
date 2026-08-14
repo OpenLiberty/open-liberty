@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ public class HttpChannelConfig {
     private int incomingHdrBuffSize = 8192;
     /** Size of buffers to use while reading incoming bodies. */
     private int incomingBodyBuffSize = 32768;
+    private int websocketBufferSize = 65536;
     /** Time to wait for additional requests on a socket (milliseconds). */
     private int persistTimeout = 30000;
     /** Time to wait for a read to complete (milliseconds). */
@@ -162,6 +163,9 @@ public class HttpChannelConfig {
     private int http2ResetFramesWindow = 30000;
     private int http2MaxStreamsRefused = 100;
     private long http2MaxHeaderBlockSize = 512000;
+    private int http2MaxLowWindowStreams = 20;
+    private int http2LowWindowLimit = 16384;
+    private long http2MaxQueuedBytes = 2 * 1024 * 1024; // 2 MB
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     protected boolean useRemoteIpOptions = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
@@ -341,6 +345,10 @@ public class HttpChannelConfig {
             }
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE)) {
                 props.put(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE, value);
+                continue;
+            }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_WEBSOCKET_BUFFER_SIZE)) {
+                props.put(HttpConfigConstants.PROPNAME_WEBSOCKET_BUFFER_SIZE, value);
                 continue;
             }
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE)) {
@@ -582,6 +590,7 @@ public class HttpChannelConfig {
         parseOutgoingBufferSize(props.get(HttpConfigConstants.PROPNAME_OUTGOING_HDR_BUFFSIZE));
         parseIncomingHdrBufferSize(props.get(HttpConfigConstants.PROPNAME_INCOMING_HDR_BUFFSIZE));
         parseIncomingBodyBufferSize(props.get(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE));
+        parseWebSocketBufferSize(props.get(HttpConfigConstants.PROPNAME_WEBSOCKET_BUFFER_SIZE));
         parsePersistTimeout(props.get(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT));
         parseReadTimeout(props.get(HttpConfigConstants.PROPNAME_READ_TIMEOUT));
         parseWriteTimeout(props.get(HttpConfigConstants.PROPNAME_WRITE_TIMEOUT));
@@ -630,10 +639,13 @@ public class HttpChannelConfig {
         parseCookiesSameSiteLax(props.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX_INTERNAL));
         parseCookiesSameSiteNone(props.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE_INTERNAL));
         parseCookiesSameSiteStrict(props.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT_INTERNAL));
-        parseH2MaxResetFrames(props);
-        parseH2ResetFramesWindow(props);
-        parseH2MaxStreamsRefused(props);
+        parseH2MaxResetFrames(props.get(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES));
+        parseH2ResetFramesWindow(props.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW));
+        parseH2MaxStreamsRefused(props.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED));
         parseH2MaxHeaderBlockSize(props.get(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE));
+        parseH2MaxLowWindowStreams(props);
+        parseH2LowWindowLimit(props);
+        parseH2MaxQueuedBytes(props);
         parseCookiesSameSitePartitioned(props);
         initSameSiteCookiesPatterns();
         parseHeaders(props);
@@ -831,6 +843,27 @@ public class HttpChannelConfig {
 
     }
 
+    protected void parseWebSocketBufferSize(Object option) {
+        if (Objects.nonNull(option)) {
+            try {
+                this.websocketBufferSize = rangeLimit(convertInteger(option), -1, Integer.MAX_VALUE);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: WebSocket buffer size is " + getWebSocketBufferSize());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseWebSocketBufferSize", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid WebSocket buffer size; " + option);
+                }
+            }
+        }
+
+    }
+
+    public int getWebSocketBufferSize() {
+        return this.websocketBufferSize;
+    }
+
     /**
      * Check the input configuration for the timeout to use in between
      * persistent requests.
@@ -937,54 +970,105 @@ public class HttpChannelConfig {
         }
     }
 
-    private void parseH2MaxResetFrames(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES);
-        if (null != value) {
+    protected void parseH2MaxResetFrames(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2MaxResetFrames = convertInteger(value);
+                this.http2MaxResetFrames = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Max Reset Frames " + getH2MaxResetFrames());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxResetFrames", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Max Reset Frames; " + value);
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Reset Frames; " + option);
 
                 }
             }
         }
     }
 
-    private void parseH2ResetFramesWindow(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW);
-        if (null != value) {
+    protected void parseH2ResetFramesWindow(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2ResetFramesWindow = convertInteger(value);
+                this.http2ResetFramesWindow = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Reset Frames Window " + getH2ResetFramesWindow());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ResetFramesWindow", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Reset Frames Window; " + value);
+                    Tr.event(tc, "Config: Invalid HTTP/2 Reset Frames Window; " + option);
 
                 }
             }
         }
     }
 
-    private void parseH2MaxStreamsRefused(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED);
-        if (null != value) {
+    protected void parseH2MaxStreamsRefused(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2MaxStreamsRefused = convertInteger(value);
+                this.http2MaxStreamsRefused = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Max Streams Refused " + getH2MaxStreamsRefused());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxStreamsRefused", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Max Streams Refused; " + value);
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Streams Refused; " + option);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxLowWindowStreams(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_LOW_WINDOW_STREAMS);
+        if (null != value) {
+            try {
+                this.http2MaxLowWindowStreams = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Low Window Streams " + getH2MaxLowWindowStreams());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxLowWindowStreams", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Low Window Streams; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2LowWindowLimit(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_LOW_WINDOW_LIMIT);
+        if (null != value) {
+            try {
+                this.http2LowWindowLimit = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Low Window Limit " + getH2LowWindowLimit());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2LowWindowLimit", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Low Window Limit; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxQueuedBytes(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_QUEUED_BYTES);
+        if (null != value) {
+            try {
+                this.http2MaxQueuedBytes = convertLong(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Queued Bytes " + getH2MaxQueuedBytes());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxQueuedBytes", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Queued Bytes; " + value);
 
                 }
             }
@@ -2458,6 +2542,18 @@ public class HttpChannelConfig {
 
     public long getH2MaxHeaderBlockSize() {
         return http2MaxHeaderBlockSize;
+    }
+
+    public int getH2MaxLowWindowStreams() {
+        return http2MaxLowWindowStreams;
+    }
+
+    public int getH2LowWindowLimit() {
+        return http2LowWindowLimit;
+    }
+
+    public long getH2MaxQueuedBytes() {
+        return http2MaxQueuedBytes;
     }
 
     /**

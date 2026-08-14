@@ -322,9 +322,13 @@ public class VersionlessTest {
         // Special cases of features that were removed from the platform and from the convenience feature, but are still compatible with later MP / Jakarta
         // versions
         featureToPlatformMapping.get("io.openliberty.enterpriseBeans-4.0").add("jakartaee-11.0");
+        featureToPlatformMapping.get("io.openliberty.enterpriseBeans-4.0").add("jakartaee-12.0");
         featureToPlatformMapping.get("io.openliberty.enterpriseBeansHome-4.0").add("jakartaee-11.0");
+        featureToPlatformMapping.get("io.openliberty.enterpriseBeansHome-4.0").add("jakartaee-12.0");
         featureToPlatformMapping.get("io.openliberty.xmlBinding-4.0").add("jakartaee-11.0");
+        featureToPlatformMapping.get("io.openliberty.xmlBinding-4.0").add("jakartaee-12.0");
         featureToPlatformMapping.get("io.openliberty.xmlWS-4.0").add("jakartaee-11.0");
+        featureToPlatformMapping.get("io.openliberty.xmlWS-4.0").add("jakartaee-12.0");
         featureToPlatformMapping.get("io.openliberty.mpMetrics-5.1").add("microProfile-7.0");
         featureToPlatformMapping.get("io.openliberty.mpMetrics-5.1").add("microProfile-7.1");
 
@@ -334,8 +338,10 @@ public class VersionlessTest {
         featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.1").remove("jakartaee-8.0");
         featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.2").add("jakartaee-8.0");
         featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.2").remove("jakartaee-11.0");
+        featureToPlatformMapping.get("com.ibm.websphere.appserver.jdbc-4.2").remove("jakartaee-12.0");
         Set<String> jdbc43Platform = new HashSet<>();
         jdbc43Platform.add("jakartaee-11.0");
+        jdbc43Platform.add("jakartaee-12.0");
         featureToPlatformMapping.put("com.ibm.websphere.appserver.jdbc-4.3", jdbc43Platform);
 
         // Now that we have a mapping of features to the platform features that they belong to validates that the platform settings in the features

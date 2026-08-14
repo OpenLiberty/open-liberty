@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2025 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -91,3 +91,19 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Verwenden Sie den Befehl secu
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Die Validierungsschl\u00fcssel von {0} m\u00fcssen mit kryptografischen Algorithmen, die nicht FIPS 140-3-zertifiziert sind, neu generiert werden.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Die LTPA-Validierungsschl\u00fcssel, die mit aktiviertem FIPS 140-3 erstellt wurden, schlagen fehl, wenn FIPS 140-3 deaktiviert ist.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Verwenden Sie den Befehl securityUtility createLTPAKeys, um die nicht von FIPS genehmigten Validierungsschl\u00fcssel zu erstellen, wenn FIPS 140-3 deaktiviert ist.
+
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: LTPA-Konfigurationsfehler. Das Attribut \u201e keysPassword \u201c ist f\u00fcr das <ltpa /> Element nicht konfiguriert, die Umgebungsvariable \u201eltpa_keys_password\u201c ist nicht gesetzt und die Umgebungsvariable \u201ekeystore_password\u201c ist nicht gesetzt.
+LTPA_KEYS_PASSWORD_ERROR.explanation=F\u00fcr die LTPA-Konfiguration ist ein Passwort erforderlich, um LTPA-Schl\u00fcssel zu speichern und auszulesen.
+LTPA_KEYS_PASSWORD_ERROR.useraction=Konfigurieren Sie das Attribut \u201e keysPassword \u201c im <ltpa /> Element oder legen Sie die Umgebungsvariablen \u201eltpa_keys_password\u201c oder \u201ekeystore_password\u201c fest, um ein Passwort anzugeben.
+
+LTPA_KEYS_REENCRYPT=CWWKS4119I: Die LTPA-Schl\u00fcssel von \u201e {0} \u201c werden unter Verwendung der Umgebungsvariablen \u201ekeystore_password\u201c neu verschl\u00fcsselt.
+LTPA_KEYS_REENCRYPT.explanation=Die LTPA-Schl\u00fcssel werden unter Verwendung des \u201ekeystore_password\u201c neu verschl\u00fcsselt, da der Standardwert f\u00fcr das LTPA-Attribut \u201e keysPassword \u201c aus Sicherheitsgr\u00fcnden entfernt wurde.
+LTPA_KEYS_REENCRYPT.useraction=Es ist keine Aktion erforderlich.
+
+LTPA_KEYS_REENCRYPT_SUCCESS=CWWKS4120I: Die LTPA-Schl\u00fcssel von {0} wurden mithilfe der Umgebungsvariablen \u201ekeystore_password\u201c erfolgreich neu verschl\u00fcsselt.
+LTPA_KEYS_REENCRYPT_SUCCESS.explanation=Die LTPA-Schl\u00fcssel werden unter Verwendung der Umgebungsvariablen \u201ekeystore_password\u201c neu verschl\u00fcsselt.
+LTPA_KEYS_REENCRYPT_SUCCESS.useraction=Wenn Sie die LTPA-Schl\u00fcssel zwischen Servern an einem gemeinsamen Standort gemeinsam nutzen, m\u00fcssen die anderen Server aktualisiert werden, damit sie diese LTPA-Schl\u00fcssel weiterhin lesen k\u00f6nnen. Setzen Sie das Attribut \u201e keysPassword \u201c im entsprechenden <ltpa /> Element oder das Attribut \u201epassword\u201c im entsprechenden <validationKeys /> Element auf den Wert der Umgebungsvariablen \u201ekeystore_password\u201c dieses Servers. Die Umgebungsvariable \u201ekeystore_password\u201c wird in der Regel in der Datei \u201e server.env \u201c definiert.
+
+LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Die erneute Verschl\u00fcsselung der LTPA-Schl\u00fcssel f\u00fcr \u201e {0} \u201c ist fehlgeschlagen. Ausnahme: {1}
+LTPA_KEYS_REENCRYPT_ERROR.explanation=Die LTPA-Schl\u00fcssel konnten nicht erneut verschl\u00fcsselt werden. Weitere Informationen finden Sie in der Ausnahme in der Nachricht.
+LTPA_KEYS_REENCRYPT_ERROR.useraction=Stellen Sie sicher, dass die LTPA-Schl\u00fcsseldatei und das zugeh\u00f6rige Verzeichnis nicht schreibgesch\u00fctzt sind. Wenn die LTPA-Schl\u00fcsseldatei und das zugeh\u00f6rige Verzeichnis nicht schreibgesch\u00fctzt sind, finden Sie weitere Informationen in der Ausnahme in der Meldung.

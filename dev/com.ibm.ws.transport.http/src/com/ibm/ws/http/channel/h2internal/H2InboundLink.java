@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -225,7 +225,10 @@ public class H2InboundLink extends HttpInboundLink {
         resetFrameWindow = this.config.getH2ResetFramesWindow();
         maxStreamsRefused = this.config.getH2MaxStreamsRefused();
         maxHeaderBlockSize = this.config.getH2MaxHeaderBlockSize();
-        rateState = new H2RateState(maxResetFrames, resetFrameWindow, maxStreamsRefused);
+        int maxLowWindowStreams = this.config.getH2MaxLowWindowStreams();
+        int lowWindowLimit = this.config.getH2LowWindowLimit();
+        long maxQueuedBytes = this.config.getH2MaxQueuedBytes();
+        rateState = new H2RateState(maxResetFrames, resetFrameWindow, maxStreamsRefused, maxLowWindowStreams, lowWindowLimit, maxQueuedBytes);
 
         writeQ = new H2WriteTree();
         writeQ.init(h2MuxTCPWriteContext, h2MuxWriteCallback);
@@ -894,8 +897,9 @@ public class H2InboundLink extends HttpInboundLink {
      *
      * @param int newSize
      * @throws FlowControlException
+     * @throws Http2Exception
      */
-    public synchronized void changeInitialWindowSizeAllStreams(int newSize) throws FlowControlException {
+    public synchronized void changeInitialWindowSizeAllStreams(int newSize) throws FlowControlException, Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "changeInitialWindowSizeAllStreams entry: newSize: " + newSize);
         }
@@ -904,7 +908,9 @@ public class H2InboundLink extends HttpInboundLink {
         H2StreamProcessor stream;
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
-            stream.updateInitialWindowsUpdateSize(newSize);
+            // Update stream window of streams that have not yet closed
+            if (!stream.isStreamClosed())
+                stream.updateInitialWindowsUpdateSize(newSize);
         }
     }
 
@@ -1025,6 +1031,11 @@ public class H2InboundLink extends HttpInboundLink {
                 Tr.debug(tc, "HttpDispatcherLink found: " + hdLink);
             }
             try {
+                if (!hdLink.awaitH2FinishComplete(5, TimeUnit.SECONDS)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "closeConnectionLink: timeout waiting for finish() to complete");
+                    }
+                }
                 hdLink.close(initialVC, exceptionForCloseFromHere);
             } catch (Exception consume) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1073,6 +1084,18 @@ public class H2InboundLink extends HttpInboundLink {
                 linkStatus = LINK_STATUS.CLOSING;
             }
 
+        }
+
+        // Cancel all pending write timeouts on all streams before closing
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "closeConnectionLink: cancel pending write timeouts on all streams :close: H2InboundLink hc: " + this.hashCode());
+        }
+        H2StreamProcessor stream;
+        for (Integer i : streamTable.keySet()) {
+            stream = streamTable.get(i);
+            if (stream != null) {
+                stream.cancelPendingWrite();
+            }
         }
 
         // tell the write tree queue to quit.  wait for the queue to drain, so no writes will be outstanding when closing

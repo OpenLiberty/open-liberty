@@ -25,11 +25,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
 public abstract class ValidationAbstractTests extends AbstractSpringTests {
 
     @BeforeClass

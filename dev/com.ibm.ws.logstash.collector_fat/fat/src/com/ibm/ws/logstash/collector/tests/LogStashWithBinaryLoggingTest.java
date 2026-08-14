@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,10 @@ import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.GenericContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -40,12 +42,27 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class LogStashWithBinaryLoggingTest extends LogstashCollectorTest {
+
+    /*
+     * Current model must acquire server this way, we need server "early" so that the static initialization of the generic container can resolve
+     */
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("LibertyHPELServer");
     private String testName;
     private static Class<?> c = LogstashSSLTest.class;
     public static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
 
     protected static boolean runTest = true;
+
+    @ClassRule
+    public static GenericContainer<?> logstashContainer = createExpLogstashContainer();
+
+    private static GenericContainer<?> createExpLogstashContainer() {
+        try {
+            return prepareServerSSLAndConstructContainer(server);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to setup server and/or container", e);
+        }
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {

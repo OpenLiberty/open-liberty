@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -66,6 +66,11 @@ public class HomeRecord
     // d457053
     private Boolean ivShortDefaultBindingsEnabled = null;
 
+    /**
+     * Remote bindings were deferred until the ORB service is available.
+     */
+    public volatile boolean remoteBindingDeferred;
+
     //LIDB859-4
     public HomeRecord(BeanMetaData bmd,
                       HomeOfHomes homeOfHomes) //d200714
@@ -91,7 +96,7 @@ public class HomeRecord
     /**
      * getAppName returns the <code>String</code> that represents
      * the name of the application that this EJB resides in.
-     * 
+     *
      * @return <code>String</code> representing the name of the Application
      */
     //d390389
@@ -103,9 +108,9 @@ public class HomeRecord
     /**
      * getTargetHome returns the <code>EJSHome</code> associated with the indicated
      * child bean.
-     * 
+     *
      * @param child String representing the child bean to be found.
-     * 
+     *
      * @return <code>EJSHome</code> associated with the child HomeRecord.
      */
     public EJSHome getTargetHome(String child)
@@ -132,7 +137,7 @@ public class HomeRecord
 
     /**
      * getBeanMetaData returns the bean metadata for this <code>HomeRecord</code>.
-     * 
+     *
      * @return <code>BeanMetaData</code> associated with this HomeRecord.
      */
     public BeanMetaData getBeanMetaData() {
@@ -141,7 +146,7 @@ public class HomeRecord
 
     /**
      * getJ2EEName returns the Java EE name of the EJB associated with this <code>HomeRecord</code>.<p>
-     * 
+     *
      * @return <code>J2EEName</code> associated with this HomeRecord.
      */
     public J2EEName getJ2EEName() {
@@ -150,7 +155,7 @@ public class HomeRecord
 
     /**
      * getJndiName returns the jndiname of the EJB associated with this <code>HomeRecord</code>.<p>
-     * 
+     *
      * @return <code>String</code> representing the jndiName associated with this HomeRecord.
      */
     public String getJndiName() {
@@ -160,9 +165,9 @@ public class HomeRecord
     /**
      * getJndiName returns the jndiname of the EJB associated with this <code>HomeRecord</code>.
      * This method is only needed because HomeRecord implements PMHomeInfo. <p>
-     * 
+     *
      * @param pkey <code>Object</code> representing the PrimaryKey... however it is not used.
-     * 
+     *
      * @return <code>String</code> representing the jndiName associated with this HomeRecord.
      */
     public String getJNDIName(Object pkey)
@@ -187,7 +192,7 @@ public class HomeRecord
     /**
      * getHome() is called to return the <code>EJSHome</code> reference
      * stored in this HomeRecord. <p>
-     * 
+     *
      * @return <code>EJSHome</code> associated with this HomeRecord.
      **/
     //199071
@@ -202,7 +207,7 @@ public class HomeRecord
      * of this EJB has been deferred. In that case the EJB initialization will be triggered
      * from this method.
      * <p>
-     * 
+     *
      * @return <code>EJSHome</code> associated with this HomeRecord.
      */
     public EJSHome getHomeAndInitialize() // d648522
@@ -266,7 +271,7 @@ public class HomeRecord
 
     /**
      * Return string representation of this HomeRecord. <p>
-     * 
+     *
      * Overridden to improve trace.
      */
     // d196581.1
@@ -284,12 +289,12 @@ public class HomeRecord
     /**
      * Provides a mechanism for reading the system property for disabling short
      * form default bindings. <p>
-     * 
+     *
      * com.ibm.websphere.ejbcontainer.disableShortDefaultBindings <p>
-     * 
+     *
      * This property can be used to identify applications for which Short form
      * default jndi bindings are to be disabled.
-     * 
+     *
      * @return true if short default interface bindings are enabled, and false
      *         if the property indicated they were to be disabled for
      *         the specified application name.
@@ -320,8 +325,8 @@ public class HomeRecord
         // bind all session beans and named managed beans
         return ((bmd.isSessionBean() &&
                  bmd._moduleMetaData.getEJBApplicationMetaData().isBindToJavaGlobal() && // F743-33812CdRv
-        bmd.enterpriseBeanName.indexOf('/') == -1) || // d724614
-        (bmd.isManagedBean() && !bmd.enterpriseBeanName.startsWith("$")));
+                 bmd.enterpriseBeanName.indexOf('/') == -1) || // d724614
+                (bmd.isManagedBean() && !bmd.enterpriseBeanName.startsWith("$")));
     }
 
     /**
@@ -353,7 +358,7 @@ public class HomeRecord
         // All bean types except managed beans are bound here
         return !bmd.isManagedBean() &&
                (!bmd.isSessionBean() ||
-               bmd._moduleMetaData.getEJBApplicationMetaData().isBindToServerRoot()); // F743-33812CdRv
+                bmd._moduleMetaData.getEJBApplicationMetaData().isBindToServerRoot()); // F743-33812CdRv
     }
 
 } // HomeRecord

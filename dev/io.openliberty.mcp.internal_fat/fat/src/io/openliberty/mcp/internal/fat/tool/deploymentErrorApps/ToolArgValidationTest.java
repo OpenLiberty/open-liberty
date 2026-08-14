@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

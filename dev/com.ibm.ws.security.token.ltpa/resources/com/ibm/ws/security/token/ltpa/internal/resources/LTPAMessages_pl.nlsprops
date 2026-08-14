@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2025 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -91,3 +91,19 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=U\u017cyj polecenia securityU
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Klucze walidacyjne {0} musz\u0105 zosta\u0107 zregenerowane przy u\u017cyciu algorytm\u00f3w kryptograficznych, kt\u00f3re nie posiadaj\u0105 certyfikatu FIPS 140-3.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Klucze walidacji LTPA utworzone z w\u0142\u0105czon\u0105 funkcj\u0105 FIPS 140-3 zawodz\u0105, gdy funkcja FIPS 140-3 jest wy\u0142\u0105czona.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=U\u017cyj polecenia securityUtility createLTPAKeys, aby utworzy\u0107 klucze walidacji niezatwierdzone przez FIPS, gdy FIPS 140-3 jest wy\u0142\u0105czony.
+
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: B\u0142\u0105d konfiguracji\nuwierzytelniania LTPA. W <ltpa /> elemencie nie skonfigurowano atrybutu ` keysPassword `, nie ustawiono zmiennej \u015brodowiskowej `ltpa_keys_password` ani zmiennej \u015brodowiskowej `keystore_password`.
+LTPA_KEYS_PASSWORD_ERROR.explanation=Konfiguracja LTPA wymaga has\u0142a do zapisywania i odczytywania kluczy LTPA.
+LTPA_KEYS_PASSWORD_ERROR.useraction=Aby poda\u0107 has\u0142o, nale\u017cy skonfigurowa\u0107 atrybut ` keysPassword ` w <ltpa /> elemencie lub ustawi\u0107 zmienne \u015brodowiskowe `ltpa_keys_password` lub `keystore_password`.
+
+LTPA_KEYS_REENCRYPT=CWWKS4119I: Klucze LTPA serwera {0} a s\u0105 ponownie szyfrowane przy u\u017cyciu zmiennej \u015brodowiskowej \u201ekeystore_password\u201d.
+LTPA_KEYS_REENCRYPT.explanation=Klucze LTPA s\u0105 ponownie szyfrowane przy u\u017cyciu has\u0142a \u201ekeystore_password\u201d, poniewa\u017c domy\u015blna warto\u015b\u0107 atrybutu \u201e keysPassword \u201d protoko\u0142u LTPA zosta\u0142a usuni\u0119ta w celu zwi\u0119kszenia bezpiecze\u0144stwa.
+LTPA_KEYS_REENCRYPT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+LTPA_KEYS_REENCRYPT_SUCCESS=CWWKS4120I: Uda\u0142o si\u0119 ponownie zaszyfrowa\u0107 klucze LTPA serwisu {0} przy u\u017cyciu zmiennej \u015brodowiskowej \u201ekeystore_password\u201d.
+LTPA_KEYS_REENCRYPT_SUCCESS.explanation=Klucze LTPA s\u0105 ponownie szyfrowane przy u\u017cyciu zmiennej \u015brodowiskowej \u201ekeystore_password\u201d.
+LTPA_KEYS_REENCRYPT_SUCCESS.useraction=Je\u015bli klucze LTPA s\u0105 wsp\u00f3\u0142dzielone mi\u0119dzy serwerami w tej samej lokalizacji, pozosta\u0142e serwery musz\u0105 zosta\u0107 zaktualizowane, aby mog\u0142y nadal odczytywa\u0107 te klucze LTPA. Ustaw atrybut ` keysPassword ` w odpowiednim <ltpa /> elemencie lub atrybut `password` w odpowiednim <validationKeys /> elemencie na warto\u015b\u0107 zmiennej \u015brodowiskowej `keystore_password` z tego serwera. Zmienna \u015brodowiskowa \u201ekeystore_password\u201d jest zazwyczaj definiowana w pliku ` server.env `.
+
+LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Nie uda\u0142o si\u0119 ponownie zaszyfrowa\u0107 kluczy LTPA serwera {0}. Wyj\u0105tek: {1}
+LTPA_KEYS_REENCRYPT_ERROR.explanation=Nie uda\u0142o si\u0119 ponownie zaszyfrowa\u0107 kluczy LTPA. Wi\u0119cej informacji zawiera wyj\u0105tek podany w komunikacie.
+LTPA_KEYS_REENCRYPT_ERROR.useraction=Upewnij si\u0119, \u017ce plik kluczy LTPA i katalog, w kt\u00f3rym si\u0119 znajduje, nie maj\u0105 atrybutu \u201etylko do odczytu\u201d. Je\u015bli plik kluczy LTPA i jego katalog nie s\u0105 tylko do odczytu, zapoznaj si\u0119 z opisem wyj\u0105tku zawartym w komunikacie, aby uzyska\u0107 wi\u0119cej informacji.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
@@ -53,6 +54,12 @@ public class LibraryRefTest {
     @Server("MicrometerPrometheus")
     public static LibertyServer serverMicrometerPrometheus;
 
+    @Server("MicrometerPrometheusv11512SimpleClient")
+    public static LibertyServer serverMicrometerPrometheusv11512SimpleClient;
+
+    @Server("MicrometerPrometheusv11512")
+    public static LibertyServer serverMicrometerPrometheusv11512;
+
     @Server("MicrometerUseless")
     public static LibertyServer serverMicrometerUseless;
 
@@ -91,7 +98,7 @@ public class LibraryRefTest {
     public void after() throws Exception {
         //catch if a server is still running.
         if (server != null && server.isStarted()) {
-            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W", "CWMMC0006E");
         }
     }
 
@@ -120,7 +127,7 @@ public class LibraryRefTest {
     public void nonExistentLibrary() throws Exception {
         server = serverNonExistentLibrary;
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         //CWWKG0033W The value [<value>] specified for the reference attribute [libraryRef] was not found in the configuration.
         Assert.assertNotNull("CWWKG0033W Not found", server.waitForStringInLogUsingMark("CWWKG0033W"));
@@ -137,7 +144,7 @@ public class LibraryRefTest {
     public void noMicrometerCore() throws Exception {
         server = serverNoMicrometerCore;
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         //CWMMC0014I emits that metrics is using libraryRef
         Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
@@ -155,6 +162,7 @@ public class LibraryRefTest {
      * The <library> referenced contains Micrometer Core, Prometheus registry, and its dependencies
      *
      * Note: see build.gradle
+     * Note2: This is using v1.9.3 core with v1.9.3 Prometheus registry
      */
     @Test
     public void externalPrometheusMicrometer() throws Exception {
@@ -165,34 +173,10 @@ public class LibraryRefTest {
         String prometheusLibPath = installRoot + "/usr/shared/resources/prometheusLib";
         String micrometerPath = installRoot + "/usr/shared/resources/micrometercore";
 
-        Log.info(c, "externalPrometheusMicrometer", "Prom library directory: " + prometheusLibPath);
-        Log.info(c, "externalPrometheusMicrometer", "Micrometer library directory: " + micrometerPath);
-        try {
-            File f = new File(prometheusLibPath);
-
-            if (f.isDirectory()) {
-                for (File ff : f.listFiles()) {
-                    Log.info(c, "externalPrometheusMicrometer", "Prom lib files found: " + ff.getName());
-                }
-            } else {
-                Log.info(c, "externalPrometheusMicrometer", "Not a directory: " + prometheusLibPath);
-            }
-
-            File f2 = new File(micrometerPath);
-            if (f.isDirectory()) {
-                for (File ff : f2.listFiles()) {
-                    Log.info(c, "externalPrometheusMicrometer", "Micrometer lib files found: " + ff.getName());
-                }
-            } else {
-                Log.info(c, "externalPrometheusMicrometer", "Not a directory: " + micrometerPath);
-            }
-
-        } catch (Exception e) {
-            Log.info(c, "externalPrometheusMicrometer", "Encountered exception while trying to list files of shared library " + e);
-        }
+        logLibraryFiles("externalPrometheusMicrometer", prometheusLibPath, micrometerPath);
 
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         //CWMMC0014I emits that metrics is using libraryRef
         Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
@@ -201,8 +185,6 @@ public class LibraryRefTest {
         Assert.assertNotNull("CWWKF0011I Not found", server.waitForStringInLogUsingMark("CWWKF0011I"));
 
         server.resetLogMarks();
-
-        Assert.assertNotNull("CWWKO0219I Not found", server.waitForStringInLogUsingMark("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl"));
 
         //Check SR implementation log that Promethues Registry created
         //Note that SR makes THIS explicit log for Prometheus, other meter registries are logged differently following a template
@@ -227,6 +209,104 @@ public class LibraryRefTest {
     }
 
     /*
+     * This externalPrometheusMicrometerv11512SimpleClient is configured to use external Micrometer Libraries (micrometer 1.15.12).
+     * Configured via the libraryRef attribute of mpMetrics.
+     * The <library> referenced contains micrometer-core 1.15.12, micrometer-commons 1.15.12,
+     * micrometer-registry-prometheus-simpleclient 1.15.12, and simpleclient 0.16.0 dependencies.
+     *
+     * Note: see build.gradle
+     */
+    @Test
+    public void externalPrometheusMicrometerv11512SimpleClient() throws Exception {
+
+        server = serverMicrometerPrometheusv11512SimpleClient;
+
+        String installRoot = server.getInstallRoot();
+        String prometheusSimpleClientLibPath = installRoot + "/usr/shared/resources/prometheusSimpleClientLib";
+        String micrometerPath = installRoot + "/usr/shared/resources/micrometercorev1512";
+
+        logLibraryFiles("externalPrometheusMicrometerv11512SimpleClient", prometheusSimpleClientLibPath, micrometerPath);
+
+        server.startServer();
+        server.waitForDefaultHTTPEndpointSSLStart();
+
+        //CWMMC0014I emits that metrics is using libraryRef
+        Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
+
+        //CWWKF0011I server ready
+        Assert.assertNotNull("CWWKF0011I Not found", server.waitForStringInLogUsingMark("CWWKF0011I"));
+
+        server.resetLogMarks();
+
+        //Check SR implementation log that Prometheus Registry created
+        //Note that SR makes THIS explicit log for Prometheus, other meter registries are logged differently following a template
+        String line = server.waitForStringInTrace("Prometheus MeterRegistry created");
+        Assert.assertNotNull("Expected \"Prometheus MeterRegistry created\"", line);
+
+        String exceptionString = null;
+        try {
+            String output = getHttpsServlet("/metrics");
+            Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", output);
+            Assert.assertNotNull("Results of /metrics output should not have been null", output);
+
+            //just do simple check for jvm.uptime metric
+            boolean containsMetrics = output.contains("jvm_uptime_seconds{mp_scope=\"base\",");
+            Assert.assertTrue("Expected to see the always present base metric jvm.uptime from /metrics output", containsMetrics);
+
+        } catch (ConnectException exception) {
+            exceptionString = exception.toString();
+            Log.error(c, "externalPrometheusMicrometerv11512SimpleClient", exception);
+        }
+        Assert.assertNull("Was not expecting ConnectException", exceptionString);
+    }
+
+    /*
+     * This MicrometerPrometheusv11512 is configured to use external Micrometer Libraries (micrometer 1.15.12).
+     * Configured via the libraryRef attribute of mpMetrics.
+     * The <library> referenced contains micrometer-core 1.15.12, micrometer-commons 1.15.12,
+     * and micrometer-registry-prometheus 1.15.12 (NOT simpleclient).
+     * micrometer-registry-prometheus 1.15.12 is incompatible with the Prometheus client bundled
+     * within Liberty, so we expect a CWMMC0006E error and no /metrics output.
+     *
+     * Note: see build.gradle
+     */
+    @Test
+    public void externalPrometheusMicrometerv11512() throws Exception {
+
+        server = serverMicrometerPrometheusv11512;
+
+        String installRoot = server.getInstallRoot();
+        String prometheuslib1512Path = installRoot + "/usr/shared/resources/prometheuslib1512";
+        String micrometerPath = installRoot + "/usr/shared/resources/micrometercorev1512";
+
+        logLibraryFiles("externalPrometheusMicrometerv11512", prometheuslib1512Path, micrometerPath);
+
+        server.startServer();
+        server.waitForDefaultHTTPEndpointSSLStart();
+
+        //CWMMC0014I emits that metrics is using libraryRef
+        Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
+
+        //CWMMC0006E - micrometer-registry-prometheus 1.15.12 is incompatible with the bundled Prometheus client
+        Assert.assertNotNull("CWMMC0006E Not found", server.waitForStringInLogUsingMark("CWMMC0006E"));
+
+        try {
+            String output = getHttpsServlet("/metrics");
+            /*
+             * Expecting File Not Found Exception on account of the runtime not starting because of
+             * CWMMC0006E BECAUSE we do not support micrometer-registry-prometheus ONLY
+             * micrometer-registry-prometheus-simpleclient
+             */
+            Assert.fail("MP Metrics should not be running after a CWMMC0006E");
+
+        } catch (Exception exception) {
+            Log.info(c, "externalPrometheusMicrometerv11512", String.format("Expected : File[NotFoundException] ; Recieved : [%s]", exception));
+            Assert.assertEquals(FileNotFoundException.class, exception.getClass());
+        }
+
+    }
+
+    /*
      * This MicrometerPrometheus is configured to use no external Micrometer Libraries.
      * Albeit the libraryRef is configured and does point to a micrometer core.
      * The Micrometer Core is so that SR can actually initialize so that we can
@@ -239,7 +319,7 @@ public class LibraryRefTest {
     public void externalMicrometerUselessJar() throws Exception {
         server = serverMicrometerUseless;
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         //CWMMC0014I emits that metrics is using libraryRef
         Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
@@ -254,6 +334,32 @@ public class LibraryRefTest {
          */
         String line = server.waitForStringInTrace("created and registered to the Micrometer global registry", 10000);
         Assert.assertNull("Expected not to see \"created and registered to the Micrometer global registry\" in trace.", line);
+    }
+
+    private static void logLibraryFiles(String methodName, String promLibPath, String micrometerLibPath) {
+        Log.info(c, methodName, "Prom library directory: " + promLibPath);
+        Log.info(c, methodName, "Micrometer library directory: " + micrometerLibPath);
+        try {
+            File f1 = new File(promLibPath);
+            if (f1.isDirectory()) {
+                for (File ff : f1.listFiles()) {
+                    Log.info(c, methodName, "Prom lib files found: " + ff.getName());
+                }
+            } else {
+                Log.info(c, methodName, "Not a directory: " + promLibPath);
+            }
+
+            File f2 = new File(micrometerLibPath);
+            if (f2.isDirectory()) {
+                for (File ff : f2.listFiles()) {
+                    Log.info(c, methodName, "Micrometer lib files found: " + ff.getName());
+                }
+            } else {
+                Log.info(c, methodName, "Not a directory: " + micrometerLibPath);
+            }
+        } catch (Exception e) {
+            Assert.fail("Encountered exception while trying to list files of shared library: " + e);
+        }
     }
 
     private static void trustAll() throws Exception {

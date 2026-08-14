@@ -75,7 +75,7 @@ public class BasicTest extends FATServletClient {
         }
 
         remoteAppServer.startServer();
-        remoteAppServer.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8040.
+        remoteAppServer.waitForDefaultHTTPEndpointSSLStart();
 
         ShrinkHelper.defaultDropinApp(server, appName, new DeployOptions[] {DeployOptions.SERVER_ONLY}, "mpRestClient10.basic");
         features = server.getServerConfiguration().getFeatureManager().getFeatures();
@@ -93,7 +93,7 @@ public class BasicTest extends FATServletClient {
         }
 
         server.startServer();
-        server.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        server.waitForDefaultHTTPEndpointSSLStart();
 
     }
 

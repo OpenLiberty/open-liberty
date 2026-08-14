@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Impossibile caricare il file spe
 failed.to.load.converter.properties.useraction=Accertarsi che il file specificato esista e che sia nel formato corretto in base a java.utils.Properties.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: \u00c8 stato chiamato setBufferSize() dopo la prima scrittura al Flusso/Scrittore di output
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) viene chiamato dopo che la prima scrittura o risposta \u00e8 stata confermata
 setbuffer.size.called.after.write.explanation=Si \u00e8 tentato di impostare la dimensione del buffer di risposta dopo che \u00e8 gi\u00e0 stato eseguito il commit della risposta. Questo \u00e8 un errore dell'applicazione.
 setbuffer.size.called.after.write.useraction=Rimuovere la chiamata setBufferSize() o spostarla in modo che venga eseguita prima del commit della risposta.
 
@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Modificare la logica dell'applicazion
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: L'indirizzo sendRedirect relativo a URL nella domanda non pu\u00f2 essere convertito in un indirizzo URL valido.
 sendRedirect.cannot.convert.relative.url.explanation=L'indirizzo relativo URL fornito potrebbe contenere caratteri di attraversamento del percorso o indici non validi.
 sendRedirect.cannot.convert.relative.url.useraction=Verificare la posizione sendRedirect URL nell'applicazione prima di chiamare il metodo response.sendRedirect( )
+
+invalid.accept.language.length=CWWWC0013E: Il valore dell'intestazione Accept-Language della richiesta HTTP \u00e8 troppo lungo.
+invalid.accept.language.length.explanation=Il client invia un'intestazione Accept-Language troppo lunga.
+invalid.accept.language.length.useraction=Il client deve inviare un'intestazione Accept-Language con una lunghezza del valore pari o inferiore a 4096 byte.

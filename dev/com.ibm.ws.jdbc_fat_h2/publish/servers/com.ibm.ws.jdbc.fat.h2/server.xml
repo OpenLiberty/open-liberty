@@ -1,0 +1,60 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>jdbc-4.3</feature>
+    <feature>servlet-6.1</feature>
+    <feature>jndi-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="H2TestApp.war">
+    <classloader commonLibraryRef="H2Lib"/>
+  </application>
+
+  <library id="H2Lib">
+    <file name="${shared.resource.dir}/h2/h2.jar"/>
+  </library>
+
+  <!-- Valid - password attribute -->
+  <dataSource id="h2ds-valid-password" jndiName="jdbc/h2ds-valid-password">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:testdb1" password="secret123"/>
+  </dataSource>
+
+  <!-- Valid - containerAuthData -->
+  <authData id="h2AuthData" user="dbuser" password="secret456"/>
+  <dataSource id="h2ds-valid-authdata" jndiName="jdbc/h2ds-valid-authdata" containerAuthDataRef="h2AuthData">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:testdb2"/>
+  </dataSource>
+
+  <!-- Invalid - PASSWORD in URL (uppercase) -->
+  <dataSource id="h2ds-invalid-password" jndiName="jdbc/h2ds-invalid-password">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:testdb3;PASSWORD=secret789"/>
+  </dataSource>
+
+  <!-- Invalid - password in URL (any case, with or without other parameters) -->
+  <dataSource id="h2ds-invalid-password-mixed" jndiName="jdbc/h2ds-invalid-password-mixed">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:testdb4;DB_CLOSE_DELAY=-1;password=secret012;MODE=MySQL"/>
+  </dataSource>
+
+  <javaPermission codeBase="${shared.resource.dir}/h2/h2.jar"
+                  className="java.security.AllPermission"/>
+
+</server>

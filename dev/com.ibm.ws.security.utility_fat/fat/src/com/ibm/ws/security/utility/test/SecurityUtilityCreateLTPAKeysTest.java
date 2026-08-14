@@ -470,7 +470,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
 
         // Verify startup log contains LTPA initialization
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
+                      ltpaTestServer.waitForLTPAConfigReady(5000, true));
         ltpaTestServer.stopServer();
 
         if (!JavaInfo.forCurrentVM().isCriuSupported() || ltpaTestServer.isJava2SecurityEnabled()) {
@@ -494,7 +494,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
             ltpaTestServer.checkpointRestore();
             // Verify startup log contains LTPA initialization
             assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                    ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
+                    ltpaTestServer.waitForLTPAConfigReady(5000, true));
             ltpaTestServer.stopServer();
         } finally {
             ltpaTestServer.unsetCheckpoint();
@@ -544,7 +544,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
 
         // Verify startup log contains LTPA initialization
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
+                      ltpaTestServer.waitForLTPAConfigReady(5000, true));
         ltpaTestServer.stopServer();
 
         if (!JavaInfo.forCurrentVM().isCriuSupported() || ltpaTestServer.isJava2SecurityEnabled()) {
@@ -568,7 +568,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
             ltpaTestServer.checkpointRestore();
             // Verify startup log contains LTPA initialization
             assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                    ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
+                    ltpaTestServer.waitForLTPAConfigReady(5000, true));
             ltpaTestServer.stopServer();
         } finally {
             ltpaTestServer.unsetCheckpoint();
@@ -606,8 +606,9 @@ public class SecurityUtilityCreateLTPAKeysTest {
 
         // Verify startup log contains LTPA initialization
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
+                ltpaTestServer.waitForLTPAConfigReady(5000, true));
         ltpaTestServer.stopServer("CWWKS1865W"); // Warning for AES passwords without key
+
     }
 
     //--------------------------------------------------------------------------
@@ -809,7 +810,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
 
         // Verify startup log contains LTPA initialization
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
+                      ltpaTestServer.waitForLTPAConfigReady(5000, true));
         ltpaTestServer.stopServer();
     }
     
@@ -845,7 +846,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
 
         // Verify startup log contains LTPA initialization
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
+                      ltpaTestServer.waitForLTPAConfigReady(5000, true));
         ltpaTestServer.stopServer();
     }
 }

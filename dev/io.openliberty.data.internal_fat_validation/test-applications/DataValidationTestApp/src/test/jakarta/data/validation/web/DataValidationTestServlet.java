@@ -41,12 +41,11 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import test.jakarta.data.validation.web.Entitlement.Frequency;
 
-@DataSourceDefinition(name = "java:module/jdbc/DerbyDataSource",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+@DataSourceDefinition(name = "java:module/jdbc/H2DataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "dbuser1",
-                      password = "dbpwd1",
-                      properties = "createDatabase=create")
+                      password = "dbpwd1")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataValidationTestServlet extends FATServlet {

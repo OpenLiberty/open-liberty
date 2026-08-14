@@ -42,7 +42,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.DataProvider;
 import io.openliberty.data.internal.DataVersionCompatibility;
-import io.openliberty.data.internal.EntityManagerBuilder;
+import io.openliberty.data.internal.EntityHandlerFactory;
 import io.openliberty.data.internal.QueryInfo;
 import io.openliberty.data.internal.RepositoryImpl;
 import io.openliberty.data.internal.Util;
@@ -71,7 +71,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     private final static TraceComponent tc = Tr.register(RepositoryProducer.class);
 
     /**
-     * Amount of time in seconds to wait for an EntityManagerBuilder to become
+     * Amount of time in seconds to wait for an EntityHandlerFactory to become
      * available.
      */
     private static final long INIT_TIMEOUT_SEC = TimeUnit.MINUTES.toSeconds(5);
@@ -93,9 +93,9 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     private final Set<Type> beanTypes;
 
     /**
-     * Future for the EntityManagerBuilder.
+     * Future for the EntityHandlerFactory.
      */
-    private FutureEMBuilder futureEMBuilder;
+    private FutureEHFactory futureEHFactory;
 
     /**
      * CDI extension for the Jakarta Data provider.
@@ -143,7 +143,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
 
     /**
      * Construct an instance of RepositoryProducer.
-     * The instance is not usable until setFutureEMBuilder and setPrimaryEntityClass
+     * The instance is not usable until setFutureEHFactory and setPrimaryEntityClass
      * are invoked on it.
      *
      * @param repositoryInterface   the repository interface.
@@ -186,7 +186,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
 
     /**
      * Error handling for a timeout that occurs when attempting to obtain an
-     * EntityManagerBuilder.
+     * EntityHandlerFactory.
      *
      * @param repositoryInterface the repository interface.
      * @param cause               the TimeoutException.
@@ -201,15 +201,15 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
             x = exc(DataException.class,
                     "CWWKD1106.init.timed.out",
                     repositoryInterface.getName(),
-                    futureEMBuilder.dataStore,
-                    futureEMBuilder.jeeName,
+                    futureEHFactory.dataStore,
+                    futureEHFactory.jeeName,
                     INIT_TIMEOUT_SEC);
         } else { // during checkpoint
             ComponentMetaData metadata = ComponentMetaDataAccessorImpl //
                             .getComponentMetaDataAccessor() //
                             .getComponentMetaData();
             J2EEName jeeName = metadata == null //
-                            ? futureEMBuilder.jeeName //
+                            ? futureEHFactory.jeeName //
                             : metadata.getJ2EEName();
 
             x = exc(DataException.class,
@@ -313,8 +313,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         });
 
         writer.println();
-        if (futureEMBuilder != null)
-            futureEMBuilder.introspect(writer, "  " + indent);
+        if (futureEHFactory != null)
+            futureEHFactory.introspect(writer, "  " + indent);
 
         return queryInfos;
     }
@@ -357,15 +357,21 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                             Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                     }
 
-            EntityManagerBuilder builder = futureEMBuilder.get(INIT_TIMEOUT_SEC, //
+            EntityHandlerFactory factory = futureEHFactory.get(INIT_TIMEOUT_SEC, //
                                                                TimeUnit.SECONDS);
 
-            RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, builder, //
-                            repositoryInterface, primaryEntityClass, queriesPerEntityClass);
+            RepositoryImpl<?> handler = new RepositoryImpl<>( //
+                            provider, //
+                            extension, //
+                            factory, //
+                            repositoryInterface, //
+                            primaryEntityClass, //
+                            queriesPerEntityClass);
 
-            R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
-                                                                         new Class<?>[] { repositoryInterface },
-                                                                         handler));
+            R instance = repositoryInterface.cast(Proxy //
+                            .newProxyInstance(repositoryInterface.getClassLoader(),
+                                              new Class<?>[] { repositoryInterface },
+                                              handler));
 
             if (intercept) {
                 R r = interception.createInterceptedInstance(instance);
@@ -420,16 +426,16 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     }
 
     /**
-     * Assigns the FutureEMBuilder for this repository producer.
+     * Assigns the FutureEHFactory for this repository producer.
      *
-     * @param futureEMBuilder future for an EntityManagerBuilder.
+     * @param futureEHFactory future for an EntityHandlerFactory
      */
     @Trivial
-    void setFutureEMBuilder(FutureEMBuilder futureEMBuilder) {
+    void setFutureEHFactory(FutureEHFactory futureEHFactory) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "setFutureEMBuilder", futureEMBuilder);
+            Tr.debug(this, tc, "setFutureEHFactory", futureEHFactory);
 
-        this.futureEMBuilder = futureEMBuilder;
+        this.futureEHFactory = futureEHFactory;
     }
 
     /**

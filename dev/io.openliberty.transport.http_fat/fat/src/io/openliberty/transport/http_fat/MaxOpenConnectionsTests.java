@@ -58,8 +58,7 @@ public class MaxOpenConnectionsTests {
 
         // Go through logs and check if Netty is being used.
         // Wait for the TCP Channel to finish loading and get the TCP Channel started message.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv6) port 8010.
-        String tcpChannelMessage = server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint");
+        String tcpChannelMessage = server.waitForDefaultHTTPEndpointStart();
         LOG.info("Endpoint: " + tcpChannelMessage);
 
         runningNetty = tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);
@@ -229,8 +228,7 @@ public class MaxOpenConnectionsTests {
         assertNotNull("The configured value of maxOpenConnections was not 2!", server.waitForStringInTraceUsingMark("maxOpenConnections: 2"));
 
         // Ensure the TCP Channel has started.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 8010.
-        assertNotNull("The TCP Channel was not started!", server.waitForStringInLogUsingMark("CWWKO0219I: TCP Channel defaultHttpEndpoint"));
+        server.waitForDefaultHTTPEndpointStart();
 
         // Create three Socket connections.
         Socket socket1 = null;
@@ -316,7 +314,7 @@ public class MaxOpenConnectionsTests {
 
         // Ensure the TCP Channel has started.
         // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 8010.
-        assertNotNull("The TCP Channel defaultHttpEndpoint was not started!", server.waitForStringInLogUsingMark("CWWKO0219I: TCP Channel defaultHttpEndpoint"));
+        assertNotNull("The TCP Channel defaultHttpEndpoint was not started!", server.waitForDefaultHTTPEndpointStart());
 
         // Add another httpEndpoint and set its maxOpenConnections to 1.
         HttpEndpoint endpoint2 = new HttpEndpoint();

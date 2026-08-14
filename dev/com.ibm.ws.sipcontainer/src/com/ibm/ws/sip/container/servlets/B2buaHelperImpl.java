@@ -558,7 +558,7 @@ public class B2buaHelperImpl implements B2buaHelper {
 	 * 
 	 * @param headerMap headerMap - a simple map containing header names 
 	 * 		and their values to be overridden in the new request. 
-	 * 		The values can be a Set to accomodate for multi-valued headers 
+	 * 		The values can be a Set to accommodate for multi-valued headers 
 	 * @param outMsg
 	 * @param isToFromAlowed indicate is it allowed to insert To From tags
 	 */

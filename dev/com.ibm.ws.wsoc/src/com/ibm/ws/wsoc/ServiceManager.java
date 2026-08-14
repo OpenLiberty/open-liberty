@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.injectionengine.InjectionEngine;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.ws.managedobject.ManagedObjectService;
 
 /**
  *
@@ -56,6 +57,9 @@ public class ServiceManager {
     private static final AtomicServiceReference<ExecutorService> executorServiceRef =
                     new AtomicServiceReference<ExecutorService>("executorService");
 
+    private static final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef =
+                    new AtomicServiceReference<ManagedObjectService>("managedObjectService");
+
     /**
      * DS method for activating this component.
      * 
@@ -68,6 +72,7 @@ public class ServiceManager {
         injectionService12SRRef.activate(context);
         executorServiceRef.activate(context);
         injectionEngineSRRef.activate(context);
+        managedObjectServiceRef.activate(context);
     }
 
     /**
@@ -82,6 +87,7 @@ public class ServiceManager {
         injectionService12SRRef.deactivate(context);
         executorServiceRef.deactivate(context);
         injectionEngineSRRef.deactivate(context);
+        managedObjectServiceRef.deactivate(context);
     }
 
     /**
@@ -222,6 +228,28 @@ public class ServiceManager {
 
     public static ExecutorService getExecutorThreadService() {
         return executorServiceRef.getService();
+    }
+
+    /**
+     * Declarative Services method for setting the ManagedObjectService reference
+     *
+     * @param ref reference to the service
+     */
+    protected void setManagedObjectService(ServiceReference<ManagedObjectService> ref) {
+        managedObjectServiceRef.setReference(ref);
+    }
+
+    /**
+     * Declarative Services method for unsetting the ManagedObjectService reference
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetManagedObjectService(ServiceReference<ManagedObjectService> ref) {
+        managedObjectServiceRef.unsetReference(ref);
+    }
+
+    public static ManagedObjectService getManagedObjectService() {
+        return managedObjectServiceRef.getService();
     }
 
 }

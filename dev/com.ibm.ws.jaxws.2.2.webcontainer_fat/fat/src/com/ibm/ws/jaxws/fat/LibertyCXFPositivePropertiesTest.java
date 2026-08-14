@@ -93,7 +93,7 @@ public class LibertyCXFPositivePropertiesTest {
 
         server.waitForStringInLog("CWWKF0011I");
 
-        assertNotNull("SSL service needs to be started for tests, but the HTTPS was never started", server.waitForStringInLog("CWWKO0219I.*ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

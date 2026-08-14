@@ -30,12 +30,12 @@
   </data>
 
   <dataSource id="DefaultDataSource" containerAuthDataRef="auth1">
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:defaultdb"/>
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:defaultdb;DB_CLOSE_DELAY=-1"/>
   </dataSource>
 
-  <library id="DerbyLib">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  <library id="H2Lib">
+    <file name="${shared.resource.dir}/h2/h2.jar"/>
   </library>
 
 </server>

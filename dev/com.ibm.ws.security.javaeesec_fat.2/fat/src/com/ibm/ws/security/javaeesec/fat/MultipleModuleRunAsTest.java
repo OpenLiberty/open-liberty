@@ -182,7 +182,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsAllRunAs() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",
@@ -291,7 +291,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     @ExpectedFFDC("javax.naming.AuthenticationException")
     public void testMultipleModuleWarsAllRunAsFallBackToCaller() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",
@@ -402,7 +402,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAs() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",
@@ -523,7 +523,7 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsWithNoJavaEESecWarAllRunAsAppBndXml() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",

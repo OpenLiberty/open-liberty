@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa;
 
+import java.util.Optional;
+
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -64,8 +67,11 @@ public class DataJPATest extends FATServletClient {
 
                     };
 
+    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withDatabaseName("testdb");
+
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.jpa")
     @TestServlets({

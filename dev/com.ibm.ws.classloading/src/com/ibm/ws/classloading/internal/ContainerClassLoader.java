@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1983,6 +1983,29 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
 
     protected void addNativeLibraryContainer(Container container) {
         nativeLibraryContainers.add(new ContainerUniversalContainer(container, hook));
+    }
+
+    // Method to get the list of container names
+    protected List<String> getContainerNames() {
+        List<String> names = new ArrayList<>();
+        if (smartClassPath != null) {
+            Collection<Collection<URL>> classPath = smartClassPath.getClassPath();
+            for (Collection<URL> containerURLs : classPath) {
+                for (URL url : containerURLs) {
+                    String path = url.getPath();
+                    // Note: Only the container names should be captured to keep the logs concise
+                    if (!path.endsWith(".overlay/")) {
+                        int lastSlash = path.lastIndexOf('/');
+                        if (lastSlash >= 0 && lastSlash < path.length() - 1) {
+                            names.add(path.substring(lastSlash + 1));
+                        } else {
+                            names.add(path);
+                        }
+                    }
+                }
+            }
+        }
+        return names;
     }
 
     /**

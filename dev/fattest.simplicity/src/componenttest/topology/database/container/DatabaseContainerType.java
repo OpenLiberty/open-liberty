@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_db2_jcc;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_client;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_h2;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_microsoft_sqlserver;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_oracle;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_postgresql;
@@ -83,6 +84,12 @@ public enum DatabaseContainerType {
               DockerImageName.parse("mcr.microsoft.com/mssql/server:2022-latest")//
                               .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server"), //
               "MSSQLServer"),
+    H2("h2.jar", 8, //
+       Collections.emptyList(), //
+       H2Container.class.getCanonicalName(), //
+       Properties_h2.class, //
+       DockerImageName.parse(""), //
+       "h2"),
     DerbyJava17Plus("derby.jar", 17, //
                     DerbyJava17PlusContainer.supportLibraries, //
                     DerbyJava17PlusContainer.class.getCanonicalName(), //
@@ -93,7 +100,13 @@ public enum DatabaseContainerType {
                           DerbyClientJava17PlusContainer.supportLibraries, //
                           DerbyClientJava17PlusContainer.class.getCanonicalName(), //
                           Properties_derby_client.class, //
-                          DockerImageName.parse(""));
+                          DockerImageName.parse("")),
+    H2Java11Plus("h2.jar", 11, //
+                 Collections.emptyList(), //
+                 H2Container.class.getCanonicalName(), //
+                 Properties_h2.class, //
+                 DockerImageName.parse(""), //
+                 "h2Java11Plus");
 
     private final String driverName;
     private final int minJavaLevel;

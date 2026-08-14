@@ -185,6 +185,10 @@ public abstract class FeatureUtilityToolTest {
     public static void copyFileToMinifiedRoot(String extendedPath, String fileName) throws Exception {
 	LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, fileName);
     }
+
+    public static void deleteFileFromMinifiedRoot(String fileName) throws Exception {
+        LibertyFileManager.deleteLibertyFile(server.getMachine(), minifiedRoot + "/" + fileName);
+    }
     
 
     public static void writeToProps(String remoteFileName, String property, String value) throws Exception {
@@ -505,7 +509,7 @@ public abstract class FeatureUtilityToolTest {
 	String output = po.getStdout();
 
 	    if (errorCode != null) {
-		assertTrue(String.format("Should contain %s", errorCode), output.contains(errorCode));
+		assertTrue(String.format("Should contain %s. Error output: %s", errorCode, output), output.contains(errorCode));
 	    }
 	    if (filesList != null) {
 		assertFilesExist(filesList);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ public class Reminder {
     public MonthDay monthDayCreated;
 
     @Column(nullable = false)
+    @Convert(converter = YearConverter.class)
     @JsonbTypeAdapter(YearAdapter.class)
     public Year yearCreated;
 
@@ -92,7 +93,7 @@ public class Reminder {
 
         @Override
         public LocalDate convertToDatabaseColumn(MonthDay md) {
-            return md.atYear(0);
+            return md.atYear(2000);
         }
 
         @Override
@@ -116,6 +117,26 @@ public class Reminder {
         @Override
         public Integer adaptToJson(Year year) {
             return year.getValue();
+        }
+    }
+
+    // TODO remove once EclipseLink issue https://github.com/OpenLiberty/open-liberty/issues/34694 is fixed
+    static class YearConverter implements AttributeConverter<Year, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(Year year) {
+            if (year == null)
+                return null;
+
+            return year.getValue();
+        }
+
+        @Override
+        public Year convertToEntityAttribute(Integer i) {
+            if (i == null)
+                return null;
+
+            return Year.of(i);
         }
     }
 

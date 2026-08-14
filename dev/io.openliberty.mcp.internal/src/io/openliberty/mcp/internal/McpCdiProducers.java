@@ -9,20 +9,34 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import io.openliberty.mcp.internal.moduleScope.ModuleScoped;
 import io.openliberty.mcp.tools.ToolManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
 /**
- * Provider methods to make MCP components available as CDI beans
+ * Holds provider methods which produce CDI beans for MCP components.
+ *
+ * <p>Each {@code @Produces} method in this class adds a CDI bean. When CDI needs to create
+ * an instance of one of these beans, it invokes the corresponding method.
+ *
+ * <p><b>Lifecycle:</b> The scope annotation on the method defines the scope of the created bean.
+ * CDI beans are created lazily and CDI will only call the method when it needs to create a bean instance.
  */
 @ApplicationScoped
 public class McpCdiProducers {
 
-    @ApplicationScoped
+    /**
+     * Produces the module-scoped {@link ToolManager} for programmatic tool registration.
+     * Invoked lazily on first injection within each module.
+     *
+     * @param extension The CDI extension managing tool registries
+     * @return The ToolManager instance for the current module
+     */
+    @ModuleScoped
     @Produces
     private ToolManager produceToolManager(McpCdiExtension extension) {
-        return extension.getToolRegistry();
+        return extension.getCurrentToolRegistry();
     }
 
 }

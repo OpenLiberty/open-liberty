@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,17 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.annotation.SkipForRepeat;
+import componenttest.rules.repeater.EE6FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat({
+    EE6FeatureReplacementAction.ID,
+    SkipForRepeat.EE8_FEATURES,
+    SkipForRepeat.EE9_FEATURES,
+    SkipForRepeat.EE10_FEATURES
+})
 public class AccessLogRolloverTest {
 
     private static final String ACCESS_LOG_PREFIX = "http_access";

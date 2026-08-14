@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2948,8 +2948,9 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 final String causeMsg = cause.getMessage();
                 final String causeClassName = cause.getClass().getCanonicalName();
                 logger.fine("Next chained JobExecutionEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
-                if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
-                    causeMsg != null &&
+               if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")
+                            || causeClassName.contains("SQLServerException")) &&
+                            causeMsg != null &&
                     (causeMsg.contains("JOBPARAMETER") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.
                     logger.fine("The JOBPARAMETER table does not exist, job execution entity version = 1");
@@ -3015,8 +3016,9 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     final String causeMsg = cause.getMessage();
                     final String causeClassName = cause.getClass().getCanonicalName();
                     logger.fine("Next chained JobInstanceEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
-                    if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
-                        causeMsg != null &&
+                   if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")
+                            || causeClassName.contains("SQLServerException")) &&
+                            causeMsg != null &&
                         (causeMsg.contains("UPDATETIME") || causeMsg.contains("ORA-00942"))) {
                         // The UPDATETIME column isn't there.
                         logger.fine("The UPDATETIME column does not exist, job instance entity version = 1");
@@ -3055,8 +3057,9 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     final String causeMsg = cause.getMessage();
                     final String causeClassName = cause.getClass().getCanonicalName();
                     logger.fine("Next chained JobInstanceEntityV3 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
-                    if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
-                        causeMsg != null &&
+                    if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")
+                            || causeClassName.contains("SQLServerException")) &&
+                            causeMsg != null &&
                         (causeMsg.contains("GROUPASSOCIATION") || causeMsg.contains("GROUPNAMES") || causeMsg.contains("ORA-00942"))) {
                         // The GROUPASSOCIATION support isn't there.
                         logger.fine("The GROUPASSOCIATION table does not exist, job instance entity version = 2");

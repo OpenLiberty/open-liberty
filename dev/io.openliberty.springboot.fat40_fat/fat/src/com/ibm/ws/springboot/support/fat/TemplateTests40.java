@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,15 +29,13 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.utils.LibertyServerUtils;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
-public class TemplateTests40 {
+public class TemplateTests40 extends JavaLevel {
     private static Bootstrap bootstrap;
     private static String installPath;
 

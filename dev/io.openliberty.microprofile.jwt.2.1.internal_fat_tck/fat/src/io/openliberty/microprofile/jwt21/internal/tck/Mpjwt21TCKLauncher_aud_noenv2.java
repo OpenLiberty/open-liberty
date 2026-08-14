@@ -42,7 +42,7 @@ public class Mpjwt21TCKLauncher_aud_noenv2 {
         // PrivHelper looked promising for fine grained java2sec exception management but did not work.
         //PrivHelper.generateCustomPolicy(server, "permission java.net.SocketPermission \"127.0.0.1\", \"resolve\"");
         server.startServer();
-        server.waitForStringInLog("CWWKS4105I", 30000); // wait for ltpa keys to be created and service ready, which can happen after startup.
+        server.waitForLTPAConfigReady(30000); // wait for ltpa keys to be created and service ready, which can happen after startup.
     }
 
     @AfterClass

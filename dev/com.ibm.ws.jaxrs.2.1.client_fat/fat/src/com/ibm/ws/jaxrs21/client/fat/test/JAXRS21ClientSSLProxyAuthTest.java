@@ -98,7 +98,7 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         try {
             Log.info(c, "setup", "Starting Liberty server");
             server.startServer(true);
-            server.waitForSSLStart();
+            server.waitForDefaultHTTPEndpointSSLStart();
         } catch (Exception e) {
             Log.error(c, "setup", e, "Exception while starting server");
         }

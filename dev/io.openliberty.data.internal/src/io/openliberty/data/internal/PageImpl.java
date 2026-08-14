@@ -31,7 +31,6 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Mode;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -44,7 +43,7 @@ public class PageImpl<T> implements Page<T> {
      * Map of JPQL parameter names/indices and values that are added due to
      * repository special parameters. Null indicates none are added.
      */
-    final Map<Object, Object> addedJPQLParams;
+    final Map<Object, Object> requiredJPQLParams;
 
     /**
      * Values that are supplied when invoking the repository method that
@@ -90,23 +89,27 @@ public class PageImpl<T> implements Page<T> {
      * Construct a new Page.
      *
      * @param queryInfo           query information.
-     * @param em                  the entity manager.
+     * @param entityHandler       EntityAgent or EntityManager
      * @param pageRequest         the request for this page.
      * @param args                values that are supplied to the repository method.
      * @param deferredConstraints map of method parameter index to non-Literal
      *                                Constraints that are supplied at execution time.
-     * @param addedJPQLParams     map of JPQL parameter names/indices and values that are
-     *                                added due to repository special parameters.
+     * @param addedJPQLParams     map of JPQL parameter names/indices and values
+     *                                added due to repository special parameters other.
+     *                                than Sort/Order. Null indicates none are added.
+     * @param orderJPQLParams     map of JPQL parameter names/indices and values
+     *                                added for expressions in Sort/Order.
      *                                Null indicates none are added.
      * @throws Exception if an error occurs.
      */
     @Trivial
     PageImpl(QueryInfo queryInfo,
-             EntityManager em,
+             AutoCloseable entityHandler,
              PageRequest pageRequest,
              Object[] args,
              Map<Integer, Object> deferredConstraints,
-             Map<Object, Object> addedJPQLParams) {
+             Map<Object, Object> addedJPQLParams,
+             Map<Object, Object> orderJPQLParams) {
         this(queryInfo, pageRequest, args, deferredConstraints, addedJPQLParams);
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -122,10 +125,14 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.method.getGenericReturnType().getTypeName(),
                       CursoredPage.class.getName());
 
-        @SuppressWarnings("unchecked")
-        TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql,
-                                                             Object.class);
-        queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
+        TypedQuery<T> query = queryInfo.ehCreateTypedQuery(entityHandler,
+                                                           queryInfo.ql,
+                                                           Object.class);
+        queryInfo.setParameters(query,
+                                args,
+                                deferredConstraints,
+                                addedJPQLParams,
+                                orderJPQLParams);
 
         int maxPageSize = pageRequest.size();
         query.setFirstResult(queryInfo.computeOffset(pageRequest));
@@ -147,9 +154,8 @@ public class PageImpl<T> implements Page<T> {
      * @param args                values that are supplied to the repository method.
      * @param deferredConstraints map of method parameter index to non-Literal
      *                                Constraints that are supplied at execution time.
-     * @param addedJPQLParams     map of JPQL parameter names/indices and values that are
-     *                                added due to repository special parameters.
-     *                                Null indicates none are added.
+     * @param requiredJPQLParams  map of JPQL parameter name/index to value for
+     *                                Constraints/Restrictions. Null indicates none
      * @throws Exception if an error occurs.
      */
     @Trivial
@@ -157,8 +163,8 @@ public class PageImpl<T> implements Page<T> {
              PageRequest pageRequest,
              Object[] args,
              Map<Integer, Object> deferredConstraints,
-             Map<Object, Object> addedJPQLParams) {
-        this.addedJPQLParams = addedJPQLParams;
+             Map<Object, Object> requiredJPQLParams) {
+        this.requiredJPQLParams = requiredJPQLParams;
         this.args = args;
         this.deferredConstraints = deferredConstraints;
         this.queryInfo = queryInfo;
@@ -185,7 +191,7 @@ public class PageImpl<T> implements Page<T> {
     /**
      * Query for count of total elements across all pages.
      *
-     * @param jpql count query.
+     * @return the count
      * @throws IllegalStateException if not configured to request a total count of elements.
      */
     @FFDCIgnore(Exception.class)
@@ -209,26 +215,39 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.method.getName(),
                       queryInfo.repositoryInterface.getName(),
                       queryInfo.jpqlCount,
-                      queryInfo.jpql);
+                      queryInfo.ql);
 
-        EntityManagerBuilder builder = queryInfo.entityInfo.builder;
         boolean stateful = queryInfo.producer.stateful();
-        EntityManager em = null;
+        EntityHandlerFactory factory = queryInfo.entityInfo.factory;
+        EntityHandlerFactory.Sync<? extends AutoCloseable> entityHandlerSync = null;
         try {
-            em = builder.getEntityManager(stateful);
+            entityHandlerSync = stateful || queryInfo.entityInfo.simulateStateless() //
+                            ? factory.getEntityManager(stateful) //
+                            : factory.getEntityAgent();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
 
-            TypedQuery<Long> query = em.createQuery(queryInfo.jpqlCount, Long.class);
-            queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
+            TypedQuery<Long> query = queryInfo //
+                            .ehCreateTypedQuery(entityHandlerSync.entityHandler(),
+                                                queryInfo.jpqlCount,
+                                                Long.class);
+            queryInfo.setParameters(query,
+                                    args,
+                                    deferredConstraints,
+                                    requiredJPQLParams,
+                                    null); // count query does not use Sort/Order
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x, builder);
+            throw RepositoryImpl.failure(x, factory);
         } finally {
-            if (!stateful && em != null)
-                em.close();
+            if (entityHandlerSync != null && !entityHandlerSync.automaticallyCloses())
+                try {
+                    entityHandlerSync.entityHandler().close();
+                } catch (Exception x) {
+                    throw RepositoryImpl.failure(x, factory);
+                }
         }
     }
 

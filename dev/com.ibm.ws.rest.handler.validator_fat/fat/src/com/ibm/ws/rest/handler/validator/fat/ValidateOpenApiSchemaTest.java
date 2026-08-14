@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -212,12 +212,12 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         assertTrue(err, json.getBoolean("successful"));
         assertNull(err, json.get("failure"));
         assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
+        assertEquals(err, "H2", json.getString("databaseProductName"));
         assertTrue(err, json.getString("databaseProductVersion").matches(VERSION_REGEX));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
+        assertEquals(err, "H2 JDBC Driver", json.getString("jdbcDriverName"));
         assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
-        assertEquals(err, "DBUSER1", json.getString("schema"));
-        assertEquals(err, "dbuser1", json.getString("user"));
+        assertEquals(err, "PUBLIC", json.getString("schema"));
+        assertEquals(err, "DBUSER1", json.getString("user"));
     }
 
     /**

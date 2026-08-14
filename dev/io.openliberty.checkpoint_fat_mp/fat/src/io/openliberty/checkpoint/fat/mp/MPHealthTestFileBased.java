@@ -38,7 +38,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.checkpoint.fat.utils.HealthFileUtils;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)

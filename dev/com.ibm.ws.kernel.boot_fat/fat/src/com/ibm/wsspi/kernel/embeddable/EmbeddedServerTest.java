@@ -41,6 +41,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -212,6 +213,8 @@ public class EmbeddedServerTest {
     public void testServerDoesNotExist() throws Throwable {
     }
 
+    //Skip on IBM i because extra JARs are on the JVM classpath (db2 JARs)
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI)
     @Test
     public void testBootstrapAccessPlatform() throws Throwable {
     }
@@ -220,12 +223,16 @@ public class EmbeddedServerTest {
     public void testBootstrapAccessDefault() throws Throwable {
     }
 
+    //Skip on IBM i because extra JARs are on the JVM classpath (db2 JARs)
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI)
     @Test
     @MinimumJavaLevel(javaLevel = 11)
     // cannot support configuring parent packages with Java 8
     public void testBootstrapAccessSystemNoPackages() throws Throwable {
     }
 
+    //Skip on IBM i because extra JARs are on the JVM classpath (db2 JARs)
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI)
     @Test
     @MinimumJavaLevel(javaLevel = 11)
     // cannot support configuring parent packages with Java 8

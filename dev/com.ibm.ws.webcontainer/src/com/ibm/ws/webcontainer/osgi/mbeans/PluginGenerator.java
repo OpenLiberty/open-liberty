@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -334,6 +334,20 @@ public class PluginGenerator {
             esiProp5.setAttribute("Value", root);
             rootElement.appendChild(esiProp5);
 
+            // Add OutboundInterfacesList property if configured
+            if (pcd.OutboundInterfacesList != null) {
+                Element outboundInterfacesProp = output.createElement("Property");
+                outboundInterfacesProp.setAttribute("Name", "OutboundInterfacesList");
+                outboundInterfacesProp.setAttribute("Value", pcd.OutboundInterfacesList);
+                rootElement.appendChild(outboundInterfacesProp);
+            }
+
+            // Add OutboundBindStrict property
+            Element outboundBindStrictProp = output.createElement("Property");
+            outboundBindStrictProp.setAttribute("Name", "OutboundBindStrict");
+            outboundBindStrictProp.setAttribute("Value", pcd.OutboundBindStrict.toString());
+            rootElement.appendChild(outboundBindStrictProp);
+
             HttpEndpointInfo httpEndpointInfo;
             httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
 
@@ -497,7 +511,9 @@ public class PluginGenerator {
                     // Set server attributes
                     // Could not find the best match values in liberty now, so just use the default value of metatype
                     serverElem.setAttribute("ConnectTimeout", sd.connectTimeout.toString());
-                    serverElem.setAttribute("ServerIOTimeout", sd.serverIOTimeout.toString());
+                    // A negative ServerIOTimeout allows plugin to mark the server down after timeout
+                    long serverIOTimeoutValue = sd.serverIOTimeoutMarksDown ? -sd.serverIOTimeout : sd.serverIOTimeout;
+                    serverElem.setAttribute("ServerIOTimeout", Long.toString(serverIOTimeoutValue));
                     if (sd.wsServerIOTimeout != null)
                         serverElem.setAttribute("wsServerIOTimeout", sd.wsServerIOTimeout.toString());
                     if (sd.wsServerIdleTimeout != null)
@@ -1754,6 +1770,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected Boolean IPv6Preferred = null;
         protected String httpEndpointPid = null;
         protected Long serverIOTimeout = null;
+        protected Boolean serverIOTimeoutMarksDown = null;
         protected Long wsServerIOTimeout = null; //optional
         protected Long wsServerIdleTimeout = null; //optional
         public Long connectTimeout = null;
@@ -1764,6 +1781,8 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected Hashtable<String, String> extraConfigProperties = new Hashtable<String, String>();
         protected Integer loadBalanceWeight = null;
         protected Role roleKind = null;
+        protected String OutboundInterfacesList = null;
+        protected Boolean OutboundBindStrict = Boolean.FALSE;
 
         protected PluginConfigData() {
             // nothing
@@ -1787,6 +1806,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             ignoreAffinityRequests = (Boolean) config.get("ignoreAffinityRequests");
             httpEndpointPid = (String) config.get("httpEndpointRef");
             serverIOTimeout = (Long) config.get("serverIOTimeout");
+            serverIOTimeoutMarksDown = (Boolean) config.get("serverIOTimeoutMarksDown");
             wsServerIOTimeout = (Long) config.get("wsServerIOTimeout");
             wsServerIdleTimeout = (Long) config.get("wsServerIdleTimeout");
             connectTimeout = (Long) config.get("connectTimeout");
@@ -1815,6 +1835,14 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             String proxyList = (String) config.get("trustedProxyGroup");
             if (proxyList != null) {
                 TrustedProxyGroup = proxyList.split(",");
+            }
+
+            // Initialize new outbound interface properties
+            OutboundInterfacesList = (String) config.get("outboundInterfacesList");
+
+            // Initialize new outbound bind strict property
+            if (config.get("outboundBindStrict") != null) {
+                OutboundBindStrict = (Boolean) config.get("outboundBindStrict");
             }
 
             // populate extra properties map with default values but allow override from user config
@@ -1888,6 +1916,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                 Tr.debug(trace, "   postSizeLimit           : " + postSizeLimit);
                 Tr.debug(trace, "   postBufferSize          : " + postBufferSize);
                 Tr.debug(trace, "   serverIOTimeout         : " + serverIOTimeout);
+                Tr.debug(trace, "   serverIOTimeoutMarksDown: " + serverIOTimeoutMarksDown);
                 Tr.debug(trace, "   wsServerIOTimeout       : " + wsServerIOTimeout);
                 Tr.debug(trace, "   wsServerIdleTimeout     : " + wsServerIdleTimeout);
                 Tr.debug(trace, "   GetDWLMTable            : " + GetDWLMTable);
@@ -2008,6 +2037,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected List<TransportData> transports = new LinkedList<TransportData>();
         protected Long connectTimeout = Long.valueOf(5);
         protected Long serverIOTimeout = Long.valueOf(0);
+        protected Boolean serverIOTimeoutMarksDown = Boolean.FALSE;
         protected Long wsServerIOTimeout = null;//optional
         protected Long wsServerIdleTimeout = null;//optional
         protected Boolean waitForContinue = Boolean.FALSE;
@@ -2032,6 +2062,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             }
             this.nodeName = null;
             this.serverIOTimeout = pcd.serverIOTimeout;
+            this.serverIOTimeoutMarksDown = pcd.serverIOTimeoutMarksDown;
             this.wsServerIOTimeout = pcd.wsServerIOTimeout;
             this.wsServerIdleTimeout = pcd.wsServerIdleTimeout;
             this.connectTimeout = pcd.connectTimeout;

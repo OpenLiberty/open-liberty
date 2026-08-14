@@ -39,8 +39,8 @@
     <user>reader</user>
   </reader-role>
   
-  <library id="Derby">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  <library id="H2">
+    <file name="${shared.resource.dir}/h2Java8/h2.jar"/>
   </library>
   
   <variable name="DB_USER" value="dbuser"/>
@@ -48,40 +48,39 @@
 
   <dataSource id="DataSourceWithoutJDBCDriver" jndiName="jdbc/withoutJDBCDriver" connectionSharing="MatchCurrentState" transactional="false">
     <containerAuthData id="dbuser-auth" user="dbuser" password="{xor}Oz0vPiws"/>
-   	<properties.derby.embedded databaseName="memory:withoutJDBCDriver"/>
+   	<properties.h2 URL="jdbc:h2:mem:withoutJDBCDriver;DB_CLOSE_DELAY=-1"/>
   </dataSource>
 
   <dataSource id="DefaultDataSource" isolationLevel="TRANSACTION_READ_COMMITTED">
-    <jdbcDriver libraryRef="Derby"/>
-    <!-- user/password settings defined in bootstrap.properties -->
-   	<properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create" 
-   	                           user="${DB_USER}" password="${DB_PASS}"/>
+    <jdbcDriver libraryRef="H2"/>
+   	<properties.h2 URL="jdbc:h2:mem:defaultdb;DB_CLOSE_DELAY=-1"
+   	               user="${DB_USER}" password="${DB_PASS}"/>
   </dataSource>
 
   <dataSource id="jdbc/nonexistentdb" jndiName="${id}">
     <connectionManager id="NestedConPool" agedTimeout="1h2m3s" connectionTimeout="0s" maxIdleTime="40m" reapTime="2m30s"/>
-    <jdbcDriver libraryRef="Derby"/>
-   	<properties.derby.embedded databaseName="memory:doesNotExist"/>
+    <jdbcDriver libraryRef="H2"/>
+   	<properties.h2 URL="jdbc:h2:file:./doesNotExist;IFEXISTS=TRUE;DB_CLOSE_DELAY=-1"/>
   </dataSource>
 
   <transaction enableHADBPeerLocking="false">
     <dataSource transactional="false" containerAuthDataRef="auth1">
       <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
-      <jdbcDriver libraryRef="Derby"/>
-   	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create"/>
+      <jdbcDriver libraryRef="H2"/>
+   	  <properties.h2 URL="jdbc:h2:mem:recoverydb;DB_CLOSE_DELAY=-1"/>
     </dataSource>
   </transaction>
 
   <!-- ejbLite and batch features are intentionally disabled -->
   <databaseStore id="unavailableDBStore">
     <dataSource id="unavailableDS">
-      <jdbcDriver libraryRef="Derby"/>
-      <properties.derby.embedded databaseName="memory:unavailabledb"/>
+      <jdbcDriver libraryRef="H2"/>
+      <properties.h2 URL="jdbc:h2:file:./unavailabledb;IFEXISTS=TRUE;DB_CLOSE_DELAY=-1"/>
     </dataSource>
   </databaseStore>
 
   <!-- mongo feature intentionally disabled, so it doesn't matter that we are using an incorrect library -->
-  <mongo id="mongo" libraryRef="DerbyLib"/>
+  <mongo id="mongo" libraryRef="H2Lib"/>
   <mongoDB id="MongoDBNotEnabled" jndiName="mongo/db" mongoRef="mongo" databaseName="db-test" />
   
   <authData id="auth1" user="dbuser" password="dbpass"/>
@@ -89,26 +88,26 @@
   <authData id="auth2" user="dbuser" password="wrong_password"/>
   
   <dataSource jndiName="jdbc/defaultauth" containerAuthDataRef="auth1"> <!-- id omitted for testing -->
-    <connectionManager enableSharingForDirectLookups="false"/>  
-    <jdbcDriver id="NestedDerbyDriver" libraryRef="Derby"
-     javax.sql.DataSource="org.apache.derby.jdbc.EmbeddedDataSource"
-     javax.sql.ConnectionPoolDataSource="org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource"
-     javax.sql.XADataSource="org.apache.derby.jdbc.EmbeddedXADataSource"/>
-    <onConnect>SET CURRENT SCHEMA = APP</onConnect>
-    <onConnect>SET CURRENT SQLID = APP</onConnect>
-    <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
+    <connectionManager enableSharingForDirectLookups="false"/>
+    <jdbcDriver id="NestedH2Driver" libraryRef="H2"
+     javax.sql.DataSource="org.h2.jdbcx.JdbcDataSource"
+     javax.sql.ConnectionPoolDataSource="org.h2.jdbcx.JdbcDataSource"
+     javax.sql.XADataSource="org.h2.jdbcx.JdbcDataSource"/>
+    <onConnect>CREATE SCHEMA IF NOT EXISTS DBUSER</onConnect>
+    <onConnect>DROP TABLE IF EXISTS NON_EXISTENT_TABLE</onConnect>
+    <properties.h2 URL="jdbc:h2:mem:defaultdb;DB_CLOSE_DELAY=-1"/>
   </dataSource>
 
   <dataSource id="WrongDefaultAuth" jndiName="jdbc/wrongdefaultauth"
     connectionManagerRef="pool1" containerAuthDataRef="auth2" commitOrRollbackOnCleanup="rollback"
-    invalidProperty="The property's value." jdbcDriverRef="DerbyDriver" queryTimeout="2m10s"
+    invalidProperty="The property's value." jdbcDriverRef="H2Driver" queryTimeout="2m10s"
     recoveryAuthDataRef="auth2" statementCacheSize="15" validationTimeout="20s">
-    <properties databaseName="memory:defaultdb" createDatabase="create"/>
+    <properties URL="jdbc:h2:mem:defaultdb;DB_CLOSE_DELAY=-1"/>
   </dataSource>
 
   <connectionManager id="pool1" maxPoolSize="10" purgePolicy="ValidateAllConnections"/>
 
-  <jdbcDriver id="DerbyDriver" libraryRef="Derby"/>
+  <jdbcDriver id="H2Driver" libraryRef="H2"/>
   
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 </server>

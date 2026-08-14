@@ -18,27 +18,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import org.mcpjava.server.tools.ToolResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpRequest;
+import io.openliberty.mcp.internal.requests.RequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
 import io.openliberty.mcp.internal.sessions.McpSession;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.internal.sessions.McpSessionStore;
-import io.openliberty.mcp.request.RequestId;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbException;
@@ -61,12 +62,14 @@ public class McpTransport {
     private Writer writer;
     private McpProtocolVersion version;
     private McpSession sessionInfo;
-    private static final AtomicInteger TIMEOUT_SECONDS = new AtomicInteger(30); //Make this configurable
+    private final long asyncTimeoutMs;
+    private String appName;
 
-    public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb) throws IOException {
+    public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb, long asyncTimeoutMs) throws IOException {
         this.req = req;
         this.res = res;
         this.jsonb = jsonb;
+        this.asyncTimeoutMs = asyncTimeoutMs;
         req.setCharacterEncoding(StandardCharsets.UTF_8.name());
         res.setCharacterEncoding(StandardCharsets.UTF_8.name());
         writer = res.getWriter(); // Writer must be acquired after setting response character encoding
@@ -94,6 +97,7 @@ public class McpTransport {
             throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, excpetionMesaage);
         }
         this.mcpRequest = toRequest();
+        this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
 
         if (sessionIdHeader == null) {
@@ -101,7 +105,7 @@ public class McpTransport {
             return;
         }
 
-        McpSession session = sessionStore.getSession(sessionIdHeader);
+        McpSession session = sessionStore.getSession(new McpSessionId(sessionIdHeader));
         if (session == null) {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_FOUND, "Invalid or Expired Session Id");
         }
@@ -265,11 +269,25 @@ public class McpTransport {
      * This method is responsible for sending a JSON-RPC error response.
      * It takes a JSONRPCException as an argument and constructs an McpErrorResponse object.
      * This error response is then serialised to JSON and written to the provided writer.
+     * <p>
+     * Per the JSON-RPC 2.0 specification, notifications (requests with no id) must not be
+     * responded to, including with error responses. If the current request is a notification,
+     * this method returns without sending anything.
      *
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new RequestId("") : mcpRequest.id(), e);
+        // JSON-RPC notifications must not receive a response.
+        if (mcpRequest != null && mcpRequest.id() == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
+            }
+            sendEmptyResponse();
+            return;
+        }
+        RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
+        McpResponse mcpResponse = new McpErrorResponse(id, e);
+
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
@@ -304,25 +322,33 @@ public class McpTransport {
         return version;
     }
 
-    public <T> CompletionStage<Void> sendResultAsync(CompletionStage<T> stage) {
+    public <T> CompletionStage<T> sendResultAsync(CompletionStage<T> stage) {
         AsyncContext asyncContext = req.startAsync();
-        asyncContext.setTimeout(TimeUnit.SECONDS.toMillis(TIMEOUT_SECONDS.get()));
-
+        asyncContext.setTimeout(asyncTimeoutMs);
         return stage.handle((result, throwable) -> {
             try {
                 if (throwable == null) {
                     sendResponse(result);
 
                 } else {
-                    sendError(throwable);
+                    Throwable cause = throwable instanceof java.util.concurrent.CompletionException
+                                      ? throwable.getCause()
+                                      : throwable;
+                    if (cause instanceof JSONRPCException jsonRpcEx) {
+                        sendJsonRpcException(jsonRpcEx);
+                    } else if (cause instanceof HttpResponseException httpEx) {
+                        sendHttpException(httpEx);
+                    } else {
+                        sendError(throwable);
+                    }
                 }
             } catch (Exception e) {
                 Tr.error(tc, "CWMCM0016E.error.sending.response.exception", e);
-                sendResponse(ToolResponse.error(Tr.formatMessage(tc, "internal.server.error")));
+                sendResponse(ToolResponse.ofError(Tr.formatMessage(tc, "internal.server.error")));
             } finally {
                 asyncContext.complete();
             }
-            return null;
+            return result;
         });
     }
 
@@ -346,10 +372,44 @@ public class McpTransport {
     }
 
     /**
+     * Extracts the application name from the component metadata.
+     * This is used to track which application's MBeans should be cleaned up on unload.
+     *
+     * @return the application name, or "unknown-app" if it cannot be determined
+     */
+    private String extractAppName() {
+        ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (componentMetaData != null) {
+            String appName = componentMetaData.getJ2EEName().getApplication();
+            if (appName != null && !appName.isEmpty()) {
+                return appName;
+            }
+        }
+        return "unknown-app";
+    }
+
+    /**
+     * Returns the application name associated with this transport.
+     *
+     * @return the application name
+     */
+    public String getAppName() {
+        return appName;
+    }
+
+    /**
      *
      * @return the user principle injected after authorisation (can be null if authorisation failed)
      */
     public Principal getUser() {
         return req.getUserPrincipal();
     }
+
+    /**
+     * @return the req
+     */
+    public HttpServletRequest getReq() {
+        return req;
+    }
+
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Nem t\u00f6lthet\u0151 be a mega
 failed.to.load.converter.properties.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jl l\u00e9tezik, \u00e9s hogy a java.utils.Properties szerint helyes a form\u00e1tuma.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: A setBufferSize() met\u00f3dus ker\u00fclt megh\u00edv\u00e1sra az els\u0151 \u00edr\u00e1s ut\u00e1n a kimeneti adatfolyamba/\u00edr\u00f3eszk\u00f6zbe
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) az els\u0151 \u00edr\u00e1si m\u0171velet vagy v\u00e1lasz v\u00e9gleges\u00edt\u00e9se ut\u00e1n h\u00edv\u00f3dik meg
 setbuffer.size.called.after.write.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a v\u00e1laszpuffer m\u00e9ret\u00e9nek be\u00e1ll\u00edt\u00e1s\u00e1ra a v\u00e1lasz v\u00e9grehajt\u00e1sa ut\u00e1n. Ez egy alkalmaz\u00e1shiba.
 setbuffer.size.called.after.write.useraction=T\u00e1vol\u00edtsa el a setBufferSize() h\u00edv\u00e1st vagy helyezze \u00e1t a v\u00e1lasz v\u00e9gleges\u00edt\u00e9se el\u0151tti poz\u00edci\u00f3ba.
 
@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: A sendRedirect relat\u00edv URL az alkalmaz\u00e1sban nem alak\u00edthat\u00f3 \u00e1t \u00e9rv\u00e9nyes URL -re.
 sendRedirect.cannot.convert.relative.url.explanation=A megadott relat\u00edv URL tartalmazhat \u00e9rv\u00e9nytelen el\u00e9r\u00e9si \u00fatvonalkeresztez\u0151 karaktereket vagy indexeket.
 sendRedirect.cannot.convert.relative.url.useraction=Ellen\u0151rizze a sendRedirect hely\u00e9t URL az alkalmaz\u00e1sban, miel\u0151tt megh\u00edvja a response.sendRedirect( ) m\u00f3dszert
+
+invalid.accept.language.length=CWWWC0013E: Az HTTP k\u00e9r\u00e9s Accept-Language fejl\u00e9c\u00e9nek \u00e9rt\u00e9ke t\u00fal hossz\u00fa.
+invalid.accept.language.length.explanation=Az \u00fcgyf\u00e9l t\u00fal hossz\u00fa \u201eAccept-Language\u201d fejl\u00e9ceket k\u00fcld.
+invalid.accept.language.length.useraction=Az \u00fcgyf\u00e9lnek olyan Accept-Language fejl\u00e9cet kell elk\u00fcldenie, amelynek \u00e9rt\u00e9ke legfeljebb 4096 b\u00e1jt hossz\u00fas\u00e1g\u00fa.

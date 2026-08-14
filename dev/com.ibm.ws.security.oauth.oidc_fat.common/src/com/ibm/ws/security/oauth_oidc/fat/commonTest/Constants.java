@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PERFORM_LOGIN = "performLogin";
     public static final String PERFORM_ISAM_LOGIN = "performIsamLogin";
     public static final String INVOKE_PROTECTED_RESOURCE = "invokeProtectedResource";
+    public static final String INVOKE_PROTECTED_RESOURCE_METADATA_ENDPOINT = "invokeProtectedResourceMetadataEndpoint";
     public static final String INVOKE_RS_PROTECTED_RESOURCE = "invokeRsProtectedResource";
     public static final String INVOKE_INTROSPECTION_ENDPOINT = "invokeIntrospectionEndpoint";
     public static final String INVOKE_USERINFO_ENDPOINT = "invokeUserinfoEndpoint";
@@ -155,7 +156,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
             PERFORM_ISAM_LOGIN, INVOKE_PROTECTED_RESOURCE, INVOKE_ENDPOINT, INVOKE_INTROSPECTION_ENDPOINT, INVOKE_REVOCATION_ENDPOINT,
             INVOKE_DISCOVERY_ENDPOINT, INVOKE_JWT_ENDPOINT, INVOKE_AUTH_ENDPOINT, INVOKE_AUTH_ENDPOINT_WITH_BASIC_AUTH,
             INVOKE_TOKEN_ENDPOINT, LOGOUT, INVOKE_TOKEN_ENDPOINT_CL_CRED, INVOKE_TOKEN_ENDPOINT_PASSWORD, INVOKE_REFRESH_ENDPOINT,
-            PERFORM_IDP_LOGIN, PERFORM_IDP_LOGIN, INVOKE_ACS, INVOKE_RS_PROTECTED_RESOURCE };
+            PERFORM_IDP_LOGIN, PERFORM_IDP_LOGIN, INVOKE_ACS, INVOKE_RS_PROTECTED_RESOURCE, INVOKE_PROTECTED_RESOURCE_METADATA_ENDPOINT };
 
     public static final String[] BASIC_AUTHENTICATION_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, PERFORM_LOGIN };
     // TODO For now, the actions are the same since we're using the id_token,
@@ -728,6 +729,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String BEARER = "Bearer";
     public static final String AUTHORIZATION = "Authorization";
     public static final String INVALID_GRANT_TYPE_MSG = "unsupported_grant_type";
+    public static final String RESOURCE_METADATA = "resource_metadata";
+    public static final String PROTECTED_RESOURCE_WELL_KNOWN_URI = ".well-known/oauth-protected-resource";
 
     public static final String SAML_CLIENT_APP = "samlclient";
 

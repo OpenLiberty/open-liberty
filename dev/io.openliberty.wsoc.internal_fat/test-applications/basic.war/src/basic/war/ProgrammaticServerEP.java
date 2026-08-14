@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package basic.war;
 
@@ -648,8 +645,8 @@ public abstract class ProgrammaticServerEP extends Endpoint {
                         int maxBinarySize = ses.getMaxBinaryMessageBufferSize();
 
                         try {
-                            ret = ret + "Default, sesion.Text, session.Binary sizes: " + Constants.UNLIMITED_MAX_MSG_SIZE + " , " + maxTextSize + " , " + maxBinarySize;
-                            if (maxTextSize != Constants.UNLIMITED_MAX_MSG_SIZE || maxBinarySize != Constants.UNLIMITED_MAX_MSG_SIZE) {
+                            ret = ret + "Default, sesion.Text, session.Binary sizes: " + 65536 + " , " + maxTextSize + " , " + maxBinarySize;
+                            if (maxTextSize != 65536 || maxBinarySize != 65536) {
                                 ret = ret + " " + Constants.FAILED;
                                 ses.getBasicRemote().sendText(ret);
                             } else {

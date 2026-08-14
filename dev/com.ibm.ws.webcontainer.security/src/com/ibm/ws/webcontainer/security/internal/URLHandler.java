@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -169,11 +169,8 @@ public class URLHandler {
         if (uriName == null || uriName.length() == 0)
             uriName = "/";
 
-        uriName = WSUtil.resolveURI(uriName);
-        int sindex;
-        if ((sindex = uriName.indexOf(";")) != -1) {
-            uriName = uriName.substring(0, sindex);
-        }
+        // resolveAndTruncateURI will truncate the URI at the first ; in the URI Path for us (must match WebContainer)
+        uriName = WSUtil.resolveAndTruncateURI(uriName);
 
         //we need to ensure we are following the java EE spec and handle a colon in the uri
         if (uriName.indexOf(":") >= 0) {

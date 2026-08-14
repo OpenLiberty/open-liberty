@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2025 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,35 @@ public class TestData {
             } catch (Exception ex) {
                 throw new Error(ex);
             }
+        }
+    }
+
+    /**
+     * Sleep for the specified duration with high accuracy across platforms.
+     * Uses System.nanoTime() to compensate for Thread.sleep() inaccuracies.
+     * Handles InterruptedException internally.
+     *
+     * @param millis the duration to sleep in milliseconds
+     */
+    public static void accurateSleep(long millis) {
+        long startTime = System.nanoTime();
+        long endTime = startTime + (millis * 1_000_000L); // Convert ms to ns
+        
+        try {
+            while (System.nanoTime() < endTime) {
+                long remainingNanos = endTime - System.nanoTime();
+                if (remainingNanos <= 0) {
+                    break;
+                }
+                // Sleep in chunks, checking for interruption
+                long sleepMillis = Math.min(remainingNanos / 1_000_000L, 100);
+                if (sleepMillis > 0) {
+                    Thread.sleep(sleepMillis);
+                }
+            }
+        } catch (InterruptedException e) {
+            // This should never happen
+            System.out.println("Thread.sleep failed... severe error.");
         }
     }
 

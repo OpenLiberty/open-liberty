@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.jbatch.test.BatchAppUtils;
+import com.ibm.ws.jbatch.test.BatchRestUtils;
 import com.ibm.ws.jbatch.test.FatUtils;
 
 import batch.fat.util.BatchFATHelper;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
@@ -33,18 +36,21 @@ public class ParallelContextPropagationTest extends BatchFATHelper {
     private static final Class testClass = ParallelContextPropagationTest.class;
 
     @BeforeClass
+    @SuppressWarnings("deprecation")
     public static void setup() throws Exception {
         server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchFATHelper.setConfig(DFLT_SERVER_XML, testClass);
 
+        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.jdbcContainer);
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.jdbcContainer).getDriverName());
+
+        BatchRestUtils.updateDatabaseStoreIfNecessary(server, DatabaseContainerType.valueOf(FATSuite.jdbcContainer));
+
         BatchAppUtils.addDropinsBatchFATWar(server);
-        BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
         BatchFATHelper.startServer(server, testClass);
         FatUtils.waitForSmarterPlanet(server);
-
-        createDefaultRuntimeTables();
     }
 
     @AfterClass

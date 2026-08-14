@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.jpa32;
 
+import java.util.HashSet;
+
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -23,9 +25,14 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -46,6 +53,7 @@ import jpabootstrap.web.TestJPABootstrapServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25)  // Hibernate ByteBuddy limitation
 public class JPABootstrapTest extends FATServletClient {
     public static final String APP_NAME = "jpabootstrap";
     public static final String SERVLET = "TestJPABootstrap";
@@ -63,6 +71,8 @@ public class JPABootstrapTest extends FATServletClient {
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
 
+        server1.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
+        
         //Get driver name
         server1.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -82,7 +92,25 @@ public class JPABootstrapTest extends FATServletClient {
         app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
                   "/",
                   Filters.includeAll());
-        ShrinkHelper.exportDropinAppToServer(server1, app);
+        ShrinkHelper.exportAppToServer(server1, app);
+        
+        Application appRecord = new Application();
+        appRecord.setLocation(APP_NAME + "_" + specLevel + ".war");
+        appRecord.setName(APP_NAME + "_" + specLevel);
+
+        // setup the thirdparty classloader for Hibernate
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        }
+        
+        ServerConfiguration sc = server1.getServerConfiguration();
+        sc.getApplications().add(appRecord);
+        server1.updateServerConfiguration(sc);
+        server1.saveServerConfiguration();
+
     }
 
     @AfterClass

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.topology.impl;
 
@@ -17,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -29,6 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import componenttest.common.apiservices.Bootstrap;
+import componenttest.rules.repeater.FeatureUtilities;
+
 /**
  * A class used for identifying properties of a JDK other
  * than the one that is currently being run.
@@ -37,7 +38,19 @@ public class JavaInfo {
     private static Class<?> c = JavaInfo.class;
     private static Map<String, JavaInfo> cache = new HashMap<String, JavaInfo>();
 
-    public static int JAVA_VERSION = JavaInfo.forCurrentVM().majorVersion();
+    public final static int JAVA_VERSION = JavaInfo.forCurrentVM().majorVersion();
+
+    public final static int BOOTSTRAP_JAVA_VERSION;
+    static {
+        try {
+            BOOTSTRAP_JAVA_VERSION = JavaInfo.forBootstrap(Bootstrap.getInstance()).majorVersion();
+        } catch (Exception ex) {
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException) ex;
+            }
+            throw new RuntimeException(ex);
+        }
+    }
 
     public static JavaInfo forCurrentVM() {
         String javaHome = System.getProperty("java.home");
@@ -67,6 +80,19 @@ public class JavaInfo {
         cache.put(jdkPath, info);
         if (jdkPath.contains("\\"))
             cache.put(jdkPath.replace("\\", "/"), info);
+    }
+
+    /**
+     * Get the JavaInfo for the JDK that will be used for LibertyServer and LibertyClient
+     * from the Bootstrap that is fed to those classes. The Java used to run the tests
+     * can be different than the one to run the client and server when using the
+     * supports.framework.java variable.
+     * </ol>
+     */
+    public static JavaInfo forBootstrap(Bootstrap bootstrap) throws IOException {
+        String bootstrapHostName = bootstrap.getValue("hostName");
+        String bootstrapJava = bootstrap.getValue(bootstrapHostName + ".JavaHome");
+        return fromPath(bootstrapJava);
     }
 
     /**
@@ -376,27 +402,58 @@ public class JavaInfo {
         // Fixpack (IBM JDK specific) = 50
         // Vendor = IBM
 
+        Log.info(c, m, "java file exists " + javaHome + "/bin/java " + new File(javaHome + "/bin/java").exists());
         ProcessBuilder pb = new ProcessBuilder(javaHome + "/bin/java", "-version");
-        Process p = pb.start();
-        try {
-            p.waitFor();
-        } catch (InterruptedException e) {
+        Map<String, String> env = pb.environment();
+        env.put("JAVA_HOME", javaHome);
+
+        // With Java 8 on z/OS things don't work the same so you need to set the LIBPATH
+        // When we drop Java 8 support this logic can be removed.
+        if (FeatureUtilities.isZOS()) {
+            String java8LibPath = javaHome + "/lib/s390x/j9vm:" +
+                                  javaHome + "/lib/s390x:" +
+                                  javaHome + "/lib";
+
+            String existingLibPath = env.get("LIBPATH");
+            if (existingLibPath != null && !existingLibPath.isEmpty()) {
+                env.put("LIBPATH", java8LibPath + ":" + existingLibPath);
+            } else {
+                env.put("LIBPATH", java8LibPath);
+            }
         }
-        InputStreamReader isr = new InputStreamReader(p.getErrorStream());
+
+        Process p = pb.start();
+
+        // Need to consume the stream before calling waitFor.
+        InputStreamReader isr = FeatureUtilities.isZOS() ? new InputStreamReader(p.getErrorStream(), Charset.forName("IBM1047")) : new InputStreamReader(p.getErrorStream());
         BufferedReader br = new BufferedReader(isr);
         String versionInfo = br.readLine(); // 1st line has version info
         String buildInfo = br.readLine(); // 2nd line has service release and fixpack info
-        String vendorInfo = br.readLine().toLowerCase();;
+        String vendorInfo = br.readLine();
+        if (vendorInfo != null) {
+            vendorInfo = vendorInfo.toLowerCase();
+        }
 
         br.close();
         isr.close();
+
+        int returnCode = Integer.MAX_VALUE;
+        try {
+            returnCode = p.waitFor();
+        } catch (InterruptedException e) {
+        }
+        if (returnCode != 0) {
+            Log.info(c, m, "Exit value is " + returnCode);
+        }
 
         Log.info(c, m, versionInfo);
         Log.info(c, m, vendorInfo);
 
         // Parse vendor
         Vendor v;
-        if (vendorInfo.contains("ibm") || vendorInfo.contains("j9")) {
+        if (vendorInfo == null) {
+            v = Vendor.UNKNOWN;
+        } else if (vendorInfo.contains("ibm") || vendorInfo.contains("j9")) {
             v = Vendor.IBM;
         } else if (vendorInfo.contains("oracle") || vendorInfo.contains("hotspot")) {
             v = Vendor.SUN_ORACLE;

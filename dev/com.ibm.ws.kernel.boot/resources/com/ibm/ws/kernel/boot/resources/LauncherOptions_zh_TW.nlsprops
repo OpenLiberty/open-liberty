@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -125,7 +125,7 @@ option-desc.os=\t\u6307\u5b9a\u60a8\u5e0c\u671b\u5957\u88dd\u4f3a\u670d\u5668\u6
     \u914d\u4f7f\u7528\u3002\u5982\u679c\u60a8\u6392\u9664\u67d0\u4f5c\u696d\u7cfb\u7d71\uff0c\n\t\u4e4b\u5f8c\u5982\u679c\u60a8\u5c0d\u4fdd\u5b58\u6a94\u91cd\u8907\u57f7\u884c\u7e2e\u88fd\u4f5c\u696d\uff0c\n\t\u5c31\u7121\u6cd5\u5305\u542b\u8a72\u4f5c\u696d\u7cfb\u7d71\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
-option-desc.no-password=\t\u505c\u7528\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u5bc6\u78bc\u7684\u7522\u751f
+option-desc.no-password=\t\u505c\u7528\u9810\u8a2d\u91d1\u9470\u5eab\u5bc6\u78bc\u53ca\u9810\u8a2d LTPA \u91d1\u9470\u5bc6\u78bc\u7684\u7522\u751f\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="\u4fdd\u5b58\u6a94\u4e2d\u7684\u6839\u4f3a\u670d\u5668\u8cc7\u6599\u593e"
 option-desc.package.server-root=\t\u6307\u5b9a\u5b58\u6a94\u6a94\u6848\u4e2d\u7684\u6839\u4f3a\u670d\u5668\u8cc7\u6599\u593e\u540d\u7a31\u3002 

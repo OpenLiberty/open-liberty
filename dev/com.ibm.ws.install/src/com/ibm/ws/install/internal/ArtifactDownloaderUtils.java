@@ -348,7 +348,7 @@ public class ArtifactDownloaderUtils {
             return;
         }
         if (!PasswordUtil.isEncrypted(pwd)) {
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
+            logger.log(Level.WARNING, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
                                    + InstallUtils.NEWLINE);
         }
         String crypto_algorithm = PasswordUtil.getCryptoAlgorithm(pwd);

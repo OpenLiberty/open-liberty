@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.artifact.zip.internal;
 
@@ -182,6 +179,12 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
             return null;
         }
 
+        // This should never happen, but safeguard against it if it does.  Do the same as what is done
+        // when ZipHandle.getInputStream() gets a non existent entry
+        if (zipEntryData.isPhantom()) {
+            throw new FileNotFoundException("Zip file [ " + rootContainer.archiveName + " ] does not contain entry [ " + zipEntryData.getPath() + " ]");
+        }
+
         final ZipFileHandle zipFileHandle = rootContainer.getZipFileHandle(); // throws IOException
 
         ZipFile zipFile = zipFileHandle.open();
@@ -340,7 +343,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
         if (zipEntryData != null) {
             // If the zip entry data is available always use its source of truth
             // for the relative path within the zip file.
-            String rPath = zipEntryData.r_getPath();
+            String rPath = zipEntryData.r_path;
             if (zipEntryData.isDirectory()) {
                 rPath += "/";
             }

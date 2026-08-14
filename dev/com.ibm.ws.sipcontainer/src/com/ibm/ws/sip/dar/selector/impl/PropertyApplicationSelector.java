@@ -64,10 +64,10 @@ public class PropertyApplicationSelector implements ApplicationSelector{
             c_logger.traceEntry(this, "getNextApplication");
         }
 		
-		// NEW directive start the chain from the beggining
+		// NEW directive, start the chain from the beginning
 		if (directive.equals( SipApplicationRoutingDirective.NEW )){
 			
-			// No request recived 
+			// No request received 
 			if (initialRequest == null) return null;
 
 			StateInfo newStateInfo = new StateInfo();
@@ -110,7 +110,7 @@ public class PropertyApplicationSelector implements ApplicationSelector{
 		// CONTINUE directive, find the next application in the chain
 		if (directive.equals( SipApplicationRoutingDirective.CONTINUE)){
 
-			// No request or state recived 
+			// No request or state received 
 			if (initialRequest == null) 
 			{
 	    		if (c_logger.isTraceDebugEnabled()) {

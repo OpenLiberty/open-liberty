@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -106,7 +106,7 @@ public class InstallUtils {
     private static final int LINE_WRAP_COLUMNS = 72;
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-    public static boolean isOptional = true;
+    public static boolean isOptional = false;
     public static final String SERVER_DIR_NAME = "servers";
     public static final String SERVER_XML = "server.xml";
     public static final List<String> ALL_EDITIONS = Arrays.asList("BASE", "LIBERTY_CORE", "DEVELOPERS", "EXPRESS", "ND",
@@ -764,8 +764,8 @@ public class InstallUtils {
                 Node il = includeList.item(i);
                 Element ilElement = (Element) il;
                 String location = ilElement.getAttribute("location");
-                if (ilElement.getAttribute("optional").equals("false") || ilElement.getAttribute("optional").isEmpty()) {
-                    isOptional = false;
+                if (ilElement.getAttribute("optional").equals("true")) {
+                    isOptional = true;
                 }
                 File f = new File(location);
                 if (!f.isAbsolute()) { // include location is relative
@@ -799,7 +799,7 @@ public class InstallUtils {
             }
         } catch (Exception e) {
             if (isOptional == false) {
-                logger.log(Level.WARNING, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
+                throw new RuntimeException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()), e);
             } else {
                 logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
             }
@@ -813,9 +813,9 @@ public class InstallUtils {
                 features.addAll(fp.getFeatures());
                 platforms.addAll(fp.getPlatforms());
             } else if (isOptional == true) {
-                logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", path));
+                logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", path, "File not found"));
             } else {
-                logger.log(Level.WARNING, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", path));
+                throw new FileNotFoundException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", path, "File not found"));
             }
 
         }

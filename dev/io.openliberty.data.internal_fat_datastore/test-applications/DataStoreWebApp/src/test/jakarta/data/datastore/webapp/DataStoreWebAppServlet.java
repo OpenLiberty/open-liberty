@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class DataStoreWebAppServlet extends FATServlet {
             assertEquals("resrefuser4",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM GlobalLibEntity WHERE id = 122";
+            String sql = "SELECT val FROM GlobalLibEntity WHERE id = 122";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);

@@ -10,7 +10,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.2.12.Final
+nettyVersion=4.2.17.Final
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
@@ -43,10 +43,10 @@ Import-Package: \
   *
 
 -includeresource: \
-  @\${repo;io.netty:netty-transport-native-epoll:jar:linux-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
-  @\${repo;io.netty:netty-transport-native-epoll:jar:linux-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
-  @\${repo;io.netty:netty-transport-native-kqueue:jar:osx-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
-  @\${repo;io.netty:netty-transport-native-kqueue:jar:osx-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*)
+  @${repo;io.netty:netty-transport-native-epoll:jar:linux-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
+  @${repo;io.netty:netty-transport-native-epoll:jar:linux-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
+  @${repo;io.netty:netty-transport-native-kqueue:jar:osx-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
+  @${repo;io.netty:netty-transport-native-kqueue:jar:osx-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*)
 
 Bundle-NativeCode: \
   META-INF/native/libnetty_transport_native_epoll_aarch_64.so; osname=Linux; processor=aarch64,\

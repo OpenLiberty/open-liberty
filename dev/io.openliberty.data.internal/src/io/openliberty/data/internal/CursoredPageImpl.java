@@ -34,11 +34,9 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
-import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -51,25 +49,27 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
     /**
      * Construct a new CursoredPage.
      *
-     * @param queryInfo            query information.
-     * @param em                   the entity manager.
-     * @param pageRequest          the request for this page.
-     * @param args                 values that are supplied to the repository method.
-     * @param deferredConstraints  map of method parameter index to non-Literal
-     *                                 Constraints that are supplied at execution time.
-     * @param constraintJPQLParams map of JPQL parameter names/indices and values that are
-     *                                 added due to Constraints and Restrictions.
-     *                                 Null indicates none are added.
+     * @param queryInfo           query information.
+     * @param entityHandler       EntityAgent or EntityManager
+     * @param pageRequest         the request for this page.
+     * @param args                values that are supplied to the repository method.
+     * @param deferredConstraints map of method parameter index to non-Literal
+     *                                Constraints that are supplied at execution time.
+     * @param requiredJPQLParams  map of JPQL parameter name/index to value for
+     *                                Constraints/Restrictions. Null indicates none
+     * @param orderJPQLParams     map of JPQL parameter name/index to value for
+     *                                expressions in Order/Sort. Null indicates none
      * @throws Exception if an error occurs.
      */
     @Trivial // avoid tracing customer data
     CursoredPageImpl(QueryInfo queryInfo,
-                     EntityManager em,
+                     AutoCloseable entityHandler,
                      PageRequest pageRequest,
                      Object[] args,
                      Map<Integer, Object> deferredConstraints,
-                     Map<Object, Object> constraintJPQLParams) throws Exception {
-        super(queryInfo, pageRequest, args, deferredConstraints, constraintJPQLParams);
+                     Map<Object, Object> requiredJPQLParams,
+                     Map<Object, Object> orderJPQLParams) throws Exception {
+        super(queryInfo, pageRequest, args, deferredConstraints, requiredJPQLParams);
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -78,7 +78,8 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
                      pageRequest,
                      queryInfo.loggable(args),
                      deferredConstraints.keySet(),
-                     constraintJPQLParams == null ? null : constraintJPQLParams.keySet());
+                     requiredJPQLParams == null ? null : requiredJPQLParams.keySet(),
+                     orderJPQLParams == null ? null : orderJPQLParams.keySet());
 
         int maxPageSize = this.pageRequest.size();
         int firstResult = this.pageRequest.mode() == PageRequest.Mode.OFFSET //
@@ -87,25 +88,30 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
 
         String jpql;
         Optional<PageRequest.Cursor> cursor = this.pageRequest.cursor();
-        Map<Object, Object> addedJPQLParams;
+        Map<Object, Object> cursorAndOrderJPQLParams;
 
         if (cursor.isPresent()) {
             jpql = isForward ? queryInfo.jpqlAfterCursor : queryInfo.jpqlBeforeCursor;
 
-            addedJPQLParams = constraintJPQLParams == null //
+            cursorAndOrderJPQLParams = orderJPQLParams == null //
                             ? new LinkedHashMap<>() //
-                            : new LinkedHashMap<>(constraintJPQLParams);
+                            : new LinkedHashMap<>(orderJPQLParams);
 
-            addParametersForCursor(cursor.get(), addedJPQLParams);
+            addParametersForCursor(cursor.get(), cursorAndOrderJPQLParams);
         } else { // no Cursor in PageRequest
-            jpql = queryInfo.jpql;
+            jpql = queryInfo.ql;
 
-            addedJPQLParams = constraintJPQLParams;
+            cursorAndOrderJPQLParams = orderJPQLParams;
         }
 
-        @SuppressWarnings("unchecked")
-        TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, Object.class);
-        queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
+        TypedQuery<T> query = queryInfo.ehCreateTypedQuery(entityHandler,
+                                                           jpql,
+                                                           Object.class);
+        queryInfo.setParameters(query,
+                                args,
+                                deferredConstraints,
+                                requiredJPQLParams,
+                                cursorAndOrderJPQLParams);
 
         query.setFirstResult(firstResult);
         query.setMaxResults(maxPageSize == Integer.MAX_VALUE //
@@ -176,11 +182,11 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
         if (queryInfo.sorts.size() != cursorSize)
             cursorSizeMismatchError(cursor);
 
-        Object[] paramNames = queryInfo.jpqlParamNames.isEmpty() //
+        Object[] paramNames = queryInfo.qlParamNames.isEmpty() //
                         ? null //
-                        : queryInfo.jpqlParamNames.toArray();
+                        : queryInfo.qlParamNames.toArray();
 
-        int paramNum = queryInfo.jpqlParamCount + 1;
+        int paramNum = queryInfo.qlParamCount + 1;
         for (int c = 0; c < cursorSize; c++, paramNum++) {
             Object key = paramNames == null //
                             ? paramNum // positional parameters
@@ -209,19 +215,16 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
         for (int c = 0; c < cursorElements.length; c++)
             try {
                 Sort<?> sort = queryInfo.sorts.get(c);
-                List<Member> accessors = //
-                                entityInfo.attributeAccessors.get(sort.property());
+                String attr = sort.property();
+                List<Member> accessors = attr == null //
+                                ? null //
+                                : entityInfo.attributeAccessors.get(attr);
+                if (accessors == null)
+                    throw Fail.incompatibleSort(queryInfo, sort);
+
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "get cursor element " + accessors);
-                if (accessors == null)
-                    throw exc(MappingException.class,
-                              "CWWKD1123.sort.incompat.with.cursor",
-                              queryInfo.method.getName(),
-                              queryInfo.repositoryInterface.getName(),
-                              sort.property(),
-                              "Cursor.forKey",
-                              entityInfo.getType().getName(),
-                              entityInfo.attributeTypes.keySet());
+
                 Object value = entity;
                 for (Member accessor : accessors)
                     if (accessor instanceof Method)
@@ -250,21 +253,27 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
 
         T entity = results.get(index);
 
-        final Object[] keyElements = new Object[queryInfo.sorts.size()];
+        final Object[] cursorElements = new Object[queryInfo.sorts.size()];
         int k = 0;
-        for (Sort<?> keyInfo : queryInfo.sorts)
+        for (Sort<?> cursorElement : queryInfo.sorts)
             try {
-                List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
+                String attr = cursorElement.property();
+                List<Member> accessors = attr == null //
+                                ? null //
+                                : queryInfo.entityInfo.attributeAccessors.get(attr);
+                if (accessors == null)
+                    throw Fail.incompatibleSort(queryInfo, cursorElement);
+
                 Object value = entity;
                 for (Member accessor : accessors)
                     if (accessor instanceof Method)
                         value = ((Method) accessor).invoke(value);
                     else
                         value = ((Field) accessor).get(value);
-                keyElements[k++] = value;
+                cursorElements[k++] = value;
 
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "key element " + k + ": " +
+                    Tr.debug(this, tc, "cursor element " + k + ": " +
                                        queryInfo.loggable(value));
             } catch (IllegalAccessException | IllegalArgumentException x) {
                 throw new DataException(x);
@@ -272,7 +281,7 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
                 throw new DataException(x.getCause());
             }
 
-        return Cursor.forKey(keyElements);
+        return Cursor.forKey(cursorElements);
     }
 
     /**
@@ -387,10 +396,16 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
                     firstSort = false;
                 else
                     s.append(", ");
-                s.append(sort.property()); //
+                String expression = sort.property();
+                if (expression == null)
+                    expression = queryInfo.getExpression(sort).toString();
+                s.append(expression);
                 s.append(sort.isAscending() //
                                 ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
                                 : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
+                String nullOrdering = queryInfo.getNullOrdering(sort, true);
+                if (nullOrdering != null)
+                    s.append(" NULLS ").append(nullOrdering);
             }
 
         s.append(") @").append(Integer.toHexString(hashCode()));

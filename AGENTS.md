@@ -60,14 +60,13 @@ $ ./gradlew build.example_fat:buildandrun
 **All commits that contain content created by AI must have the git commit message end with the following format:**
 
 ```
-Co-authored-by-AI: <Agent Name> <Agent Version> (<Model Version>)
+Co-authored-by-AI: <Agent Name> <Agent Version>
 ```
 
 ### Format Details
 
 - **Agent Name**: The name of the AI tool
 - **Agent Version**: The version of the AI tool used (e.g., 1.0.0, 1.2.3)
-- **Model Version**: The underlying LLM model and version used by the AI tool (e.g., Claude Sonnet 4.6, GPT-5.4, Llama 3.2 90B). This value is optional but must list all models that were known to be used.
 
 ### Examples
 
@@ -78,7 +77,7 @@ Fix authentication bug in JWT validation
 Updated the token expiration check to properly handle timezone offsets.
 Added unit tests to verify the fix works across different timezones.
 
-Co-authored-by-AI: IBM Bob 1.0.0 (Claude Sonnet 4.6)
+Co-authored-by-AI: IBM Bob 1.0.0
 ```
 
 #### Example 2: Using multiple AI tools
@@ -88,8 +87,8 @@ Add support for Jakarta EE 11 features
 Implemented new Jakarta EE 11 APIs and updated configuration handling.
 Includes backward compatibility for Jakarta EE 10.
 
-Co-authored-by-AI: IBM Bob 1.0.0 (Claude Sonnet 4.6)
-Co-authored-by-AI: GitHub Copilot (GPT-5.4)
+Co-authored-by-AI: IBM Bob 1.0.0
+Co-authored-by-AI: GitHub Copilot
 ```
 
 ### Important Notes
@@ -98,4 +97,31 @@ Co-authored-by-AI: GitHub Copilot (GPT-5.4)
 
 2. **Blank Line**: Include a blank line before the co-authorship attribution if your commit message has a body.
 
-3. **Version Accuracy**: Always use the actual version numbers of the AI tool and the model at the time of code generation.
+3. **Version Accuracy**: Always use the actual version numbers of the AI tool at the time of code generation.
+
+## Creating and updating source code
+
+### Copyright Header
+
+All source code and configuration files must have and maintain a copyright header at the top of the file.
+
+- License Type: Eclipse Public License - v 2.0
+- Format: Use the appropriate comment block for the file type (e.g., `/* ... */` for Java/Gradle, `<!-- ... -->` for XML/HTML, or `# ... #` for bnd/properties).
+- Copyright dates: Include the year of creation and the current year, if different than the current year, delimited by a comma (,).
+- Example:
+
+```java
+/*******************************************************************************
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+```
+

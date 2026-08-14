@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2025 IBM Corporation and others.
+    Copyright (c) 2011, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -213,6 +213,9 @@
         <AD name="%http.decompressionTolerance" description="%http.decompressionTolerance.desc"
             id="decompressionTolerance" required="false" type="Integer" min="0" default="3" />
 
+        <AD name="%http.websocketBufferSize" description="%http.websocketBufferSize.desc"
+            id="websocketBufferSize" required="false" type="Integer" min="-1" default="65536" />
+
         <AD name="%http.ignoreWriteAfterCommit" description="%http.ignoreWriteAfterCommit.desc"
             id="ignoreWriteAfterCommit" required="false" type="Boolean" default="false" />
             
@@ -245,6 +248,15 @@
 
         <AD name="%http2.maxHeaderBlockSize" description="%http2.maxHeaderBlockSize.desc"
             id="maxHeaderBlockSize" required="false" type="Long" min="0" default="512000" />
+
+        <AD name="%http2.maxLowWindowStreams" description="%http2.maxLowWindowStreams.desc"
+            id="maxLowWindowStreams" required="false" type="Integer" min="0" default="20" />
+
+        <AD name="%http2.lowWindowLimit" description="%http2.lowWindowLimit.desc"
+            id="lowWindowLimit" required="false" type="Integer" min="0" default="16384" />
+
+        <AD name="%http2.maxQueuedBytes" description="%http2.maxQueuedBytes.desc"
+            id="maxQueuedBytes" required="false" type="Long" min="0" default="2097152" />
 
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"

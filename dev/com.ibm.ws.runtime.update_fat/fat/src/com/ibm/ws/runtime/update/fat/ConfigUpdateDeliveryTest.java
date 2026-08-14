@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,10 +32,12 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -43,6 +45,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * Tests that applications on the Liberty profile can access the RuntimeUpdateNotificationMBean, register
  * a NotificationListener and receive notifications for updates to the server.xml configuration.
  */
+@RunWith(FATRunner.class)
 public class ConfigUpdateDeliveryTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.runtime.update.fat");

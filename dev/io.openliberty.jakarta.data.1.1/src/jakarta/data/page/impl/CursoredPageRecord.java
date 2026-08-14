@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.data.messages.Messages;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
@@ -25,20 +27,20 @@ import jakarta.data.page.PageRequest.Cursor;
  * Method signatures are copied from Jakarta Data.
  */
 public record CursoredPageRecord<T>(
-                List<T> content,
-                List<Cursor> cursors,
+                @Nonnull List<T> content,
+                @Nonnull List<Cursor> cursors,
                 long totalElements,
-                PageRequest pageRequest,
-                PageRequest nextPageRequest,
-                PageRequest previousPageRequest)
+                @Nonnull PageRequest pageRequest,
+                @Nullable PageRequest nextPageRequest,
+                @Nullable PageRequest previousPageRequest)
                 implements CursoredPage<T> {
 
-    public CursoredPageRecord(List<T> content,
-                              List<Cursor> cursors,
+    public CursoredPageRecord(@Nonnull List<T> content,
+                              @Nonnull List<Cursor> cursors,
                               long totalElements,
-                              PageRequest pageRequest,
-                              PageRequest nextPageRequest,
-                              PageRequest previousPageRequest) {
+                              @Nonnull PageRequest pageRequest,
+                              @Nullable PageRequest nextPageRequest,
+                              @Nullable PageRequest previousPageRequest) {
         this.content = List.copyOf(content);
         this.cursors = List.copyOf(cursors);
         this.nextPageRequest = nextPageRequest;
@@ -47,10 +49,10 @@ public record CursoredPageRecord<T>(
         this.totalElements = totalElements;
     }
 
-    public CursoredPageRecord(List<T> content,
-                              List<PageRequest.Cursor> cursors,
+    public CursoredPageRecord(@Nonnull List<T> content,
+                              @Nonnull List<PageRequest.Cursor> cursors,
                               long totalElements,
-                              PageRequest pageRequest,
+                              @Nonnull PageRequest pageRequest,
                               boolean first,
                               boolean last) {
         this(content, //
@@ -58,17 +60,24 @@ public record CursoredPageRecord<T>(
              totalElements, //
              pageRequest, //
              last ? null : PageRequest.afterCursor(cursors.get(cursors.size() - 1),
-                                                   1L + pageRequest.page(),
+                                                   1L + pageRequest.pageNumber(),
                                                    pageRequest.size(),
                                                    pageRequest.requestTotal()), //
              first ? null : PageRequest.beforeCursor(cursors.get(0),
-                                                     pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
+                                                     pageRequest.pageNumber() == 1 //
+                                                                     ? 1 //
+                                                                     : pageRequest.page() - 1,
                                                      pageRequest.size(),
                                                      pageRequest.requestTotal()));
     }
 
     @Override
+    @Nonnull
     public Cursor cursor(int i) {
+        if (cursors.isEmpty())
+            throw new UnsupportedOperationException(Messages //
+                            .get("015.cursor.uncomputable"));
+
         return cursors.get(i);
     }
 
@@ -93,14 +102,19 @@ public record CursoredPageRecord<T>(
     }
 
     @Override
+    @Nonnull
     public Iterator<T> iterator() {
         return content.iterator();
     }
 
     @Override
+    @Nonnull
     public PageRequest nextPageRequest() {
         if (nextPageRequest == null)
             throw new NoSuchElementException();
+        else if (cursors.isEmpty())
+            throw new UnsupportedOperationException(Messages //
+                            .get("015.cursor.uncomputable"));
         else
             return nextPageRequest;
     }
@@ -111,9 +125,13 @@ public record CursoredPageRecord<T>(
     }
 
     @Override
+    @Nonnull
     public PageRequest previousPageRequest() {
         if (previousPageRequest == null)
             throw new NoSuchElementException();
+        else if (cursors.isEmpty())
+            throw new UnsupportedOperationException(Messages //
+                            .get("015.cursor.uncomputable"));
         else
             return previousPageRequest;
     }

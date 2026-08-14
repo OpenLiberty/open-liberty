@@ -36,7 +36,11 @@ import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 import org.eclipse.microprofile.rest.client.ext.DefaultClientHeadersFactoryImpl;
 import org.jboss.resteasy.cdi.CdiConstructorInjector;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -136,7 +140,19 @@ public class ClientHeaderProviders {
         if (manager != null) {
             Set<Bean<?>> beans = manager.getBeans(factory);
             if (!beans.isEmpty()) {
-                final CdiConstructorInjector injector = new CdiConstructorInjector(factory, (jakarta.enterprise.inject.spi.BeanManager) manager); // Liberty change
+                // Liberty Change Start - Get the no-arg constructor for fallback
+                Constructor<?> constructor = AccessController.doPrivileged((PrivilegedAction<Constructor<?>>) () -> {
+                    try {
+                        Constructor<?> ctor = factory.getDeclaredConstructor();
+                        ctor.setAccessible(true);
+                        return ctor;
+                    } catch (NoSuchMethodException e) {
+                        // No no-arg constructor available, CDI-only mode
+                        return null;
+                    }
+                });
+                final CdiConstructorInjector injector = new CdiConstructorInjector(Collections.singleton(factory), (jakarta.enterprise.inject.spi.BeanManager) manager, constructor);
+                // Liberty Change End
                 // The CdiConstructorInjector does not use the unwrapAsync value using false has no effect
                 return factory.cast(injector.construct(false));
             }

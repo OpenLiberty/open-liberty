@@ -104,9 +104,8 @@ public class MetricsMonitorTest {
                 "------- Enable mpMetrics-4.0 and monitor-1.0: vendor metrics should be available ------");
         server.setServerConfigurationFile("server_monitor40.xml");
         server.startServer();
-        Assert.assertNotNull("LTPA keys are not created/ready within timeout period of " + 60000 + "ms.",
-                server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*", 60000));
-        Assert.assertNotNull("CWWKO0219I NOT FOUND", server.waitForStringInLog("defaultHttpEndpoint-ssl", 60000));
+        server.waitForLTPAConfigReady(60000);
+        server.waitForDefaultHTTPEndpointSSLStart(60000);
         Log.info(c, testName, "------- server started -----");
         Assert.assertNotNull("CWWKT0016I NOT FOUND", server.waitForStringInLogUsingMark("CWWKT0016I"));
         checkStrings(getHttpsServlet("/metrics"), new String[] { "base_", "vendor_" }, new String[] {});

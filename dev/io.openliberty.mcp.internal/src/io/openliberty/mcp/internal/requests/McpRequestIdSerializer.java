@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import io.openliberty.mcp.request.RequestId;
 import jakarta.json.bind.JsonbException;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;

@@ -125,7 +125,7 @@ import com.ibm.ws.sip.container.pmi.PerfUtil;
 		
 		 if(maximumAllowed < 10)
 	        {
-			 // will cahnge the maximum allowed to be 10 as we are working in flying windows
+			 // will change the maximum allowed to be 10, as we are working in flying windows
 			 // which size by default is 10 - makes the stepSize be minimal 1.
 	            if(c_logger.isTraceDebugEnabled())
 	                c_logger.traceDebug(this, "init", "Maximum allowed should not be less then 10 - changing automatically to 10");

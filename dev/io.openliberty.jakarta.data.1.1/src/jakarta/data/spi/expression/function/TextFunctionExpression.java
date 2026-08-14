@@ -14,6 +14,7 @@ package jakarta.data.spi.expression.function;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.messages.Messages;
@@ -34,11 +35,13 @@ public interface TextFunctionExpression<T> extends //
     String UPPER = "UPPER";
 
     @Override
+    @Nonnull
     List<? extends ComparableExpression<? super T, ?>> arguments();
 
-    static <T> TextFunctionExpression<T> of(String name,
-                                            String left,
-                                            TextExpression<? super T> right) {
+    @Nonnull
+    static <T> TextFunctionExpression<T> of(@Nonnull String name,
+                                            @Nonnull String left,
+                                            @Nonnull TextExpression<? super T> right) {
         Messages.requireNonNull(left, "left");
 
         Messages.requireNonNull(right, "right");
@@ -47,8 +50,9 @@ public interface TextFunctionExpression<T> extends //
                         List.of(StringLiteral.of(left), right));
     }
 
-    static <T> TextFunctionExpression<T> of(String name,
-                                            TextExpression<? super T> expression) {
+    @Nonnull
+    static <T> TextFunctionExpression<T> of(@Nonnull String name,
+                                            @Nonnull TextExpression<? super T> expression) {
         Messages.requireNonNull(expression, "expression");
 
         return new TextFunctionExpressionRecord<>(//
@@ -56,8 +60,9 @@ public interface TextFunctionExpression<T> extends //
                         List.of(expression));
     }
 
-    static <T> TextFunctionExpression<T> of(String name,
-                                            TextExpression<? super T> left,
+    @Nonnull
+    static <T> TextFunctionExpression<T> of(@Nonnull String name,
+                                            @Nonnull TextExpression<? super T> left,
                                             int literal) {
         Messages.requireNonNull(left, "left");
 
@@ -66,9 +71,10 @@ public interface TextFunctionExpression<T> extends //
                         List.of(left, NumericLiteral.of(Integer.class, literal)));
     }
 
-    static <T> TextFunctionExpression<T> of(String name,
-                                            TextExpression<? super T> left,
-                                            String right) {
+    @Nonnull
+    static <T> TextFunctionExpression<T> of(@Nonnull String name,
+                                            @Nonnull TextExpression<? super T> left,
+                                            @Nonnull String right) {
         Messages.requireNonNull(left, "left");
 
         Messages.requireNonNull(right, "right");
@@ -78,9 +84,10 @@ public interface TextFunctionExpression<T> extends //
                         List.of(left, StringLiteral.of(right)));
     }
 
-    static <T> TextFunctionExpression<T> of(String name,
-                                            TextExpression<? super T> left,
-                                            TextExpression<? super T> right) {
+    @Nonnull
+    static <T> TextFunctionExpression<T> of(@Nonnull String name,
+                                            @Nonnull TextExpression<? super T> left,
+                                            @Nonnull TextExpression<? super T> right) {
         Messages.requireNonNull(left, "left");
 
         Messages.requireNonNull(right, "right");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,11 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-@MinimumJavaLevel(javaLevel = 17)
 public class MissingServletTests40 extends AbstractSpringTests {
     @Override
     public boolean expectApplicationSuccess() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class, // LITE
                 Http2LiteModeTests.class, // LITE
                 Http2SecureTests.class, // LITE
+                Http2WindowSizeTests.class, // LITE
                 Http2FullModeTests.class, // FULL
                 /** move tests to Http2FullTracingTests to diagnose failures via full tracing */
                 Http2FullTracingTests.class, // FULL

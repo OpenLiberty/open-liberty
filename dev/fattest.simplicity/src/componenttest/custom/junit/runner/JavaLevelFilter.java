@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.custom.junit.runner;
 
@@ -50,10 +47,10 @@ public class JavaLevelFilter extends Filter {
             maximumJavaLevelAnnotation = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(MaximumJavaLevel.class);
         }
         if (maximumJavaLevelAnnotation != null) {
-            if (JavaInfo.JAVA_VERSION > maximumJavaLevelAnnotation.javaLevel()) {
+            if (JavaInfo.BOOTSTRAP_JAVA_VERSION > maximumJavaLevelAnnotation.javaLevel()) {
                 Log.debug(getMyClass(), "Removing test " + desc.getMethodName()
                                         + " from list to run, because its maximum java level is " + maximumJavaLevelAnnotation.javaLevel()
-                                        + " and we are running with " + JavaInfo.JAVA_VERSION);
+                                        + " and we are running with " + JavaInfo.BOOTSTRAP_JAVA_VERSION);
                 return false;
             }
         }
@@ -69,11 +66,11 @@ public class JavaLevelFilter extends Filter {
         }
 
         // If there's a minimum java level annotaton, that sets a global minimum level, so if we don't meet that, don't run tests
-        boolean javaLevelTooLowForAllFeatures = minimumJavaLevelAnnotation != null && JavaInfo.JAVA_VERSION < minimumJavaLevelAnnotation.javaLevel();
+        boolean javaLevelTooLowForAllFeatures = minimumJavaLevelAnnotation != null && JavaInfo.BOOTSTRAP_JAVA_VERSION < minimumJavaLevelAnnotation.javaLevel();
         if (javaLevelTooLowForAllFeatures) {
             Log.debug(getMyClass(), "Removing test " + desc.getMethodName() + " with minimum java level " + minimumJavaLevelAnnotation.javaLevel()
                                     + " from list to run, because it is too high for current java level "
-                                    + JavaInfo.JAVA_VERSION);
+                                    + JavaInfo.BOOTSTRAP_JAVA_VERSION);
             return false;
         }
 

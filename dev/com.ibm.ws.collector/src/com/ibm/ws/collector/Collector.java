@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ public abstract class Collector implements Handler, Formatter {
     private static final TraceComponent tc = Tr.register(Collector.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     /** Events Buffer reference */
-    private volatile EventsBuffer eventsBuffer;
+    protected volatile EventsBuffer eventsBuffer;
     //No of events the buffer will hold before it gets flushed
     private final int maxSize = 10000;
     //Buffer flush time interval
@@ -56,6 +56,9 @@ public abstract class Collector implements Handler, Formatter {
 
     /** Map holding instances of tasks that this class manages */
     private final ConcurrentHashMap<String, Task> taskMap = new ConcurrentHashMap<String, Task>();
+
+    /** Separate task for message source when not configured in taskMap */
+    private Task messageSourceTask = null;
 
     /** Latch to handle a corner case where modified() might get called before init() */
     private final CountDownLatch latch = new CountDownLatch(1);
@@ -201,6 +204,44 @@ public abstract class Collector implements Handler, Formatter {
                 }
             }
         }
+
+        // Check if message source is NOT configured in taskMap, if not present, create a separate task for it
+        if (!taskMap.containsKey(CollectorConstants.MESSAGES_SOURCE + "|" + CollectorConstants.MEMORY)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Message source not configured in taskMap, creating separate task for: " + CollectorConstants.MESSAGES_SOURCE + "|" + CollectorConstants.MEMORY);
+            }
+            messageSourceTask = new TaskImpl();
+            if (messageSourceTask != null) {
+                // Create a default configuration for the message source
+                TaskConfig.Builder builder = new TaskConfig.Builder(CollectorConstants.MESSAGES_SOURCE, CollectorConstants.MEMORY);
+                builder.enabled(true);
+                builder.tags(null);
+                builder.maxEvents(0);
+                builder.maxFieldLength(2048);
+                TaskConfig messageConfig = builder.build();
+
+                messageSourceTask.setHandlerName(getHandlerName());
+                messageSourceTask.setConfig(messageConfig);
+
+                // If collectorMgr is available (mid-run scenario), subscribe to get BufferManager
+                // This will trigger setBufferManager() callback which sets up the task WITHOUT starting it
+                if (collectorMgr != null) {
+                    try {
+                        String sourceId = CollectorConstants.MESSAGES_SOURCE + "|" + CollectorConstants.MEMORY;
+                        List<String> sourceList = new ArrayList<String>();
+                        sourceList.add(sourceId);
+                        collectorMgr.subscribe(this, sourceList);
+                    } catch (Exception e) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Failed to subscribe to message source.", e);
+                        }
+                    }
+                }
+            }
+        } else {
+            // Message source is configured, clear the separate task if it exists
+            messageSourceTask = null;
+        }
     }
 
     /*
@@ -325,6 +366,19 @@ public abstract class Collector implements Handler, Formatter {
             this.collectorMgr = collectorManager;
             //Get the source Ids from the task map and subscribe to relevant sources
             collectorMgr.subscribe(this, new ArrayList<String>(taskMap.keySet()));
+
+            // If we have a separate message source task, try to subscribe to it separately
+            if (messageSourceTask != null) {
+                try {
+                    ArrayList<String> msgSourceList = new ArrayList<String>();
+                    msgSourceList.add(CollectorConstants.MESSAGES_SOURCE + "|" + CollectorConstants.MEMORY);
+                    collectorMgr.subscribe(this, msgSourceList);
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Failed to subscribe to message source.", e.getMessage());
+                    }
+                }
+            }
         } catch (Exception e) {
 
         } finally {
@@ -343,7 +397,25 @@ public abstract class Collector implements Handler, Formatter {
             task.setExecutorService(executorServiceRef.getService());
             task.setEventsBuffer(eventsBuffer);
             task.setFormatter(this);
+
+            // If this is the message source task in taskMap, enable CWWKT0017I monitoring
+            if (sourceId != null && sourceId.startsWith(CollectorConstants.MESSAGES_SOURCE)) {
+                task.setMonitorWebAppRemoval(true);
+            }
+
             task.start();
+        } else if (sourceId != null && sourceId.startsWith(CollectorConstants.MESSAGES_SOURCE) && messageSourceTask != null) {
+            // Handle the separate message source task if it's not in taskMap
+            // Set up the task but DO NOT start it - we only want to read from it, not emit logs
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Setting buffer manager for separate message source task (read-only, not started): " + sourceId);
+            }
+            messageSourceTask.setBufferMgr(bufferMgr);
+            messageSourceTask.setExecutorService(executorServiceRef.getService());
+            messageSourceTask.setEventsBuffer(eventsBuffer);
+            messageSourceTask.setFormatter(this);
+            // Set monitoring flag so the monitoring thread can detect CWWKT0017I during shutdown
+            messageSourceTask.setMonitorWebAppRemoval(true);
         }
     }
 
@@ -355,17 +427,72 @@ public abstract class Collector implements Handler, Formatter {
         Task task = taskMap.get(sourceId);
         if (task != null) {
             task.stop();
+        } else if (CollectorConstants.MESSAGES_SOURCE.equals(sourceId) && messageSourceTask != null) {
+            // Handle the separate message source task if it's not in taskMap
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Un-setting buffer manager for separate message source task: " + sourceId);
+            }
+            messageSourceTask.stop();
         }
     }
 
     public abstract Target getTarget();
 
-    protected void stopAllTasks() {
+    protected EventsBuffer getEventsBuffer() {
+        return eventsBuffer;
+    }
+
+    /**
+     * Check if the next event from the message source contains the specified message ID.
+     * This method reads from the message source without emitting logs.
+     * Works whether message source is in taskMap or as separate task.
+     *
+     * @param messageId The message ID to search for (e.g., "CWWKT0017I")
+     * @return true if the message ID is found, false otherwise
+     */
+    public boolean checkMessageSourceForMessage(String messageId) {
+        // Try separate task first
+        if (messageSourceTask != null) {
+            return messageSourceTask.checkNextEventForMessage(messageId);
+        }
+
+        // Fall back to task in taskMap
+        Task task = taskMap.get(CollectorConstants.MESSAGES_SOURCE + "|" + CollectorConstants.MEMORY);
+        if (task != null) {
+            return task.checkNextEventForMessage(messageId);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the separate message source task should be monitored for CWWKT0017I.
+     * Returns true only if the task exists AND has the monitoring flag set.
+     *
+     * @return true if separate task should be monitored, false otherwise
+     */
+    public boolean shouldMonitorSeparateMessageSourceTask() {
+        boolean hasTask = (messageSourceTask != null);
+        boolean shouldMonitor = hasTask && messageSourceTask.getMonitorWebAppRemoval();
+        return shouldMonitor;
+    }
+
+    public void stopAllTasks() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Stopping all configured tasks...");
         }
         for (Task t : taskMap.values()) {
+
             t.stop();
         }
+
+        //Stop the separate message source task if it exists
+        if (messageSourceTask != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Stopping separate message source task");
+            }
+            messageSourceTask.stop();
+        }
     }
+
 }

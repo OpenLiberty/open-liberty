@@ -50,11 +50,14 @@ import componenttest.topology.utils.HttpRequest;
  */
 public class McpClient extends ExternalResource {
 
+    private static final Class<?> c = McpClient.class;
+
     private final LibertyServer server;
     private final String contextRoot;
     private final StateMode mode;
     private final String username;
     private final String password;
+    private final String bearerToken;
 
     private static final String DEFAULT_MCP_PATH = "/mcp";
     private final String path;
@@ -69,7 +72,7 @@ public class McpClient extends ExternalResource {
     }
 
     public McpClient(LibertyServer server, String contextRoot) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, StateMode.STATEFUL, null, null);
+        this(server, contextRoot, DEFAULT_MCP_PATH, StateMode.STATEFUL, null, null, null);
     }
 
     /**
@@ -78,11 +81,11 @@ public class McpClient extends ExternalResource {
      * @param mode whether to expect the server to be in stateful or stateless mode
      */
     public McpClient(LibertyServer server, String contextRoot, StateMode mode) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, null);
+        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, null, null);
     }
 
     public McpClient(LibertyServer server, String contextRoot, String path) {
-        this(server, contextRoot, path, StateMode.STATEFUL, null, null);
+        this(server, contextRoot, path, StateMode.STATEFUL, null, null, null);
     }
 
     /**
@@ -91,14 +94,21 @@ public class McpClient extends ExternalResource {
      * @param path The full request endpoint path e.g {@code path + "/mcp"}.
      */
     public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode) {
-        this(server, contextRoot, path, mode, null, null);
+        this(server, contextRoot, path, mode, null, null, null);
+    }
+
+    /**
+     * Use this constructor if you have the StateMode and bearerToken
+     */
+    public McpClient(LibertyServer server, String contextRoot, StateMode mode, String bearerToken) {
+        this(server, contextRoot, DEFAULT_MCP_PATH, mode, bearerToken, null, null);
     }
 
     /**
      * Use this constructor if you have the StateMode, username and password
      */
     public McpClient(LibertyServer server, String contextRoot, StateMode mode, String username, String password) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, username, password);
+        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, username, password);
     }
 
     /**
@@ -108,18 +118,36 @@ public class McpClient extends ExternalResource {
      * @param username for basic auth
      * @param password for basic auth
      */
-    public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode, String username, String password) {
+    public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode, String bearerToken, String username, String password) {
         super();
         this.server = server;
         this.contextRoot = contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
         this.path = path.startsWith("/") ? path : "/" + path;
         this.mode = mode;
+        this.bearerToken = bearerToken;
         this.username = username;
         this.password = password;
     }
 
     private String getMcpPath() {
         return contextRoot + path;
+    }
+
+    /**
+     * Initialize the MCP client by sending an initialize request and setting up the session.
+     * This method can be called directly when you need to reinitialize after session deletion.
+     *
+     * @throws Exception if initialization fails
+     */
+    public void initialize() throws Exception {
+        try {
+            before();
+        } catch (Throwable t) {
+            if (t instanceof Exception) {
+                throw (Exception) t;
+            }
+            throw new Exception("Initialization failed", t);
+        }
     }
 
     /** {@inheritDoc} */
@@ -140,7 +168,7 @@ public class McpClient extends ExternalResource {
                               "elicitation": {}
                             },
                             "clientInfo": {
-                              "name": "FAT Test Client",
+                              "name": "fat-test-client",
                               "title": "FAT Test Client",
                               "version": "1.0.0"
                             }
@@ -189,12 +217,18 @@ public class McpClient extends ExternalResource {
         callMCPNotification(notification);
     }
 
+    /**
+     * Indicates that the session should not be deleted when the test completes.
+     * This is useful for tests that explicitly delete the session themselves or
+     * when the application is undeployed before the test completes.
+     */
+    public void skipSessionDeletion() {
+        this.sessionDeleted = true;
+    }
+
     @Override
     protected void after() {
-        if (mode.equals(StateMode.STATEFUL)) {
-            if (sessionDeleted) {
-                return;
-            }
+        if (mode.equals(StateMode.STATEFUL) && !sessionDeleted) {
             try {
                 new HttpRequest(server, getMcpPath()).requestProp(MCP_SESSION_ID, sessionId)
                                                      .method("DELETE")
@@ -209,11 +243,59 @@ public class McpClient extends ExternalResource {
         return this.sessionId;
     }
 
+    /**
+     * Mark the session as deleted without actually deleting it.
+     * This is useful when the session has already been invalidated (e.g., by server config changes)
+     * and you want to prevent the cleanup code from trying to delete it.
+     */
+    public void markSessionDeleted() {
+        this.sessionDeleted = true;
+    }
+
+    /**
+     * Initialize a new session. This is useful when you need to re-establish a session
+     * after it has been invalidated (e.g., by server config changes).
+     */
+    public void initializeSession() throws Exception {
+        try {
+            before();
+        } catch (Throwable t) {
+            if (t instanceof Exception) {
+                throw (Exception) t;
+            } else {
+                throw new RuntimeException(t);
+            }
+        }
+    }
+
+    /**
+     * Clean up the current session. This is useful when you need to manually clean up
+     * a session that was initialized with initializeSession().
+     */
+    public void cleanupSession() {
+        after();
+    }
+
     public void deleteSession() {
         if (mode.equals(StateMode.STATEFUL)) {
             try {
                 new HttpRequest(server, getMcpPath())
                                                      .requestProp(MCP_SESSION_ID, sessionId)
+                                                     .method("DELETE")
+                                                     .run(String.class);
+
+                this.sessionDeleted = true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void deleteSession(String mcpSessionId) {
+        if (mode.equals(StateMode.STATEFUL)) {
+            try {
+                new HttpRequest(server, getMcpPath())
+                                                     .requestProp(MCP_SESSION_ID, mcpSessionId)
                                                      .method("DELETE")
                                                      .run(String.class);
 
@@ -248,6 +330,21 @@ public class McpClient extends ExternalResource {
         return request.run(String.class);
     }
 
+    private String setupAndRunRequest(final HttpRequest request, String jsonRequestBody, String aSessionID) throws Exception {
+        request.requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+               .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+               .jsonBody(jsonRequestBody)
+               .method("POST");
+
+        if (mode.equals(StateMode.STATEFUL)) {
+            if (sessionId == null) {
+                throw new IllegalStateException("In stateful mode but don't have a sessionId, did you forget to use @Rule?");
+            }
+            request.requestProp(MCP_SESSION_ID, aSessionID);
+        }
+        return request.run(String.class);
+    }
+
     /**
      * Call MCP server endpoint with a given JSON-RPC request body and return the response as a string.
      * The request includes required headers: Accept, MCP-Protocol-Version, and Mcp-Session-Id.
@@ -258,9 +355,42 @@ public class McpClient extends ExternalResource {
         return setupAndRunRequest(request, jsonRequestBody);
     }
 
+    public String callMCPWithSessionID(String jsonRequestBody, String aSessionID) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath());
+        return setupAndRunRequest(request, jsonRequestBody, aSessionID);
+    }
+
     public String callMCPwithBasicAuth(String jsonRequestBody, String user, String password) throws Exception {
         final HttpRequest request = new HttpRequest(server, getMcpPath()).basicAuth(user, password);
         return setupAndRunRequest(request, jsonRequestBody);
+    }
+
+    public String callMCPWithBearerToken(String jsonRequestBody) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath())
+                                                                         .requestProp("Authorization", "Bearer " + bearerToken);
+        return setupAndRunRequest(request, jsonRequestBody);
+    }
+
+    /**
+     * Calls MCP without an access token, where authentication is expected.
+     *
+     * Expected response when OIDC bearer authentication is active:
+     * statusCode=401
+     * WWW-Authenticate=Bearer realm="oauth", error="invalid_token", error_description="Check access token"
+     *
+     * @param jsonRequestBody JSON-RPC request body
+     * @return detailed authentication error response including status, headers and body
+     * @throws Exception if the request fails unexpectedly
+     */
+    public McpDetailedAuthResponse callMCP401AuthErrorExpected(String jsonRequestBody) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(401);
+        String responseBody = setupAndRunRequest(request, jsonRequestBody);
+
+        return new McpDetailedAuthResponse(
+                                           request.getResponseCode(),
+                                           request.getResponseHeader("WWW-Authenticate"),
+                                           request.getResponseHeader("Content-Type"),
+                                           responseBody);
     }
 
     public String callMCPAuthorisationErrorExpected(String jsonRequestBody) throws Exception {
@@ -268,9 +398,34 @@ public class McpClient extends ExternalResource {
         return setupAndRunRequest(request, jsonRequestBody);
     }
 
+    /**
+     * Calls the MCP endpoint expecting an HTTP 403 Forbidden response and returns a
+     * {@link McpDetailedAuthResponse} containing the status code, {@code Content-Type} header and
+     * response body. Use this variant when the test needs to assert the exact shape of the 403
+     * response (e.g. plain-text body, no JSON-RPC envelope).
+     *
+     * @param jsonRequestBody JSON-RPC request body
+     * @return detailed response including status, content-type header and body
+     * @throws Exception if the request fails unexpectedly
+     */
+    public McpDetailedAuthResponse callMCPAuthorisationErrorDetailed(String jsonRequestBody) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403);
+        String responseBody = setupAndRunRequest(request, jsonRequestBody);
+        return new McpDetailedAuthResponse(
+                                           request.getResponseCode(),
+                                           request.getResponseHeader("WWW-Authenticate"),
+                                           request.getResponseHeader("Content-Type"),
+                                           responseBody);
+    }
+
     public String callMCPwithBasicAuth_AuthorisationErrorExpected(String jsonRequestBody, String user, String password) throws Exception {
         final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403)
                                                                          .basicAuth(user, password);
+        return setupAndRunRequest(request, jsonRequestBody);
+    }
+
+    public String callMCPWithBearerTokenAuthorisationErrorExpected(String jsonRequestBody) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath()).requestProp("Authorization", "Bearer " + bearerToken).expectCode(403);
         return setupAndRunRequest(request, jsonRequestBody);
     }
 
@@ -400,6 +555,12 @@ public class McpClient extends ExternalResource {
         combinedResponse.put("result", combinedResult);
 
         return combinedResponse.toString();
+    }
+
+    public record McpDetailedAuthResponse(int statusCode, String wwwAuthenticate, String contentType, String body) {}
+
+    public void setSessionDeleted(boolean deleted) {
+        this.sessionDeleted = deleted;
     }
 
 }

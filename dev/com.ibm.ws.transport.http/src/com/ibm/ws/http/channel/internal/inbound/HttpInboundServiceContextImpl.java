@@ -1728,7 +1728,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         // Netty involved so need to just call it complete
         if (Objects.nonNull(this.nettyContext)) {
-            callback.complete(NettyVirtualConnectionImpl.DUMMY_NETTY_VC);
+            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
             return null;
         }
 
@@ -1990,6 +1990,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         // know the chunk sizes.
         if (super.isContentLength()) {
             checkIncomingMessageLimit(super.getContentLength());
+        }
+        if (!getRequest().getMethodValue().isBodyAllowed() && getRequest().isBodyExpected() && getHttpConfig().isRequestSmugglingProtectionEnabled()) {
+            // If there is a body on a request that should not have one, disable persistence
+            setPersistent(false);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Found request with body where method does not allow any. Disabling persistence.");
+            }
+            return;
         }
     }
 

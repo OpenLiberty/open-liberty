@@ -35,12 +35,12 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
-import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 26) //AspectJ LTW is not supported on java 27. Throws out "Unsupported class file major version 71" error.
 public class JPAEclipseLinkWeavingAppTests40 extends JPAAppAbstractTests {
 
     @BeforeClass

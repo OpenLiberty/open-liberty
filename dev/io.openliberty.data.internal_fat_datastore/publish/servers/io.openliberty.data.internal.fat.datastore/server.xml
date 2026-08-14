@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2023,2025 IBM Corporation and others.
+    Copyright (c) 2023,2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -33,20 +33,31 @@
     <logValues>test.jakarta.data.datastore.webapp</logValues>
   </data>
 
-  <application location="DataStoreTestApp.ear">
-    <classloader commonLibraryRef="DerbyLib"/>
+  <!-- This app must start first to initialize H2 database users -->
+  <application id="H2InitApp" location="H2InitApp.war">
+    <classloader commonLibraryRef="H2Lib"/>
   </application>
 
-  <application location="DataStoreWebApp.war">
+  <application id="DataStoreTestApp" location="DataStoreTestApp.ear" startAfter="H2InitApp">
+    <classloader commonLibraryRef="H2Lib"/>
+    <ejb-jar-ext moduleName="DataStoreTestEJB">
+      <session name="StartupSingletonEJB">
+        <!-- force earliest bean metadata initialization -->
+        <start-at-app-start value="true"/>
+      </session>
+    </ejb-jar-ext>
+  </application>
+
+  <application id="DataStoreWebApp" location="DataStoreWebApp.war" startAfter="H2InitApp">
     <!-- implicitly has access to libraries in lib/global -->
   </application>
 
-  <ejbApplication location="DataStoreEJBApp.jar">
-    <classloader commonLibraryRef="DerbyLib"/>
+  <ejbApplication id="DataStoreEJBApp" location="DataStoreEJBApp.jar" startAfter="H2InitApp">
+    <classloader commonLibraryRef="H2Lib"/>
   </ejbApplication>
 
-  <library id="DerbyLib">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  <library id="H2Lib">
+    <file name="${shared.resource.dir}/h2/h2.jar"/>
   </library>
 
   <authData id="ResRefAuth1" user="resrefuser1" password="resrefpwd1"/> <!-- for web module 1 -->
@@ -55,15 +66,17 @@
   <authData id="ResRefAuth4" user="resrefuser4" password="resrefpwd4"/> <!-- for global library -->
 
   <dataSource id="DefaultDataSource">
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:defaultdb" user="defaultuser1" password="defaultpwd1"/>
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:defaultdb;DB_CLOSE_DELAY=-1"
+                   user="defaultuser1"
+                   password="defaultpwd1"/>
   </dataSource>
 
   <dataSource id="ServerDataSource" jndiName="jdbc/ServerDataSource">
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:serverdb" user="serveruser1" password="serverpwd1"/>
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:serverdb;DB_CLOSE_DELAY=-1"
+                   user="serveruser1"
+                   password="serverpwd1"/>
   </dataSource>
-
-  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
 </server>

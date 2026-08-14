@@ -80,8 +80,6 @@ public class AppsecurityTest extends FATServletClient {
 
     private static final String APP_NAME = "appsecurity";
 
-    private static final String TCP_CHANNEL_STARTED = "CWWKO0219I:.*defaultHttpEndpoint-ssl";
-
     private TestMethod testMethod;
 
     @ClassRule
@@ -114,7 +112,7 @@ public class AppsecurityTest extends FATServletClient {
                                  configureBeforeRestore();
                              });
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        assertNotNull("Expected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
+        assertNotNull("Expected CWWKO0219I message not found", server.waitForDefaultHTTPEndpointSSLStart());
     }
 
     private void configureBeforeRestore() {

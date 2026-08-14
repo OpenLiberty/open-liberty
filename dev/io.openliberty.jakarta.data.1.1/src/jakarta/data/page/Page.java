@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.page;
 
+import jakarta.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -21,6 +22,7 @@ import java.util.stream.StreamSupport;
  */
 public interface Page<T> extends Iterable<T> {
 
+    @Nonnull
     List<T> content();
 
     boolean hasContent();
@@ -31,14 +33,18 @@ public interface Page<T> extends Iterable<T> {
 
     boolean hasPrevious();
 
+    @Nonnull
     PageRequest nextPageRequest();
 
     int numberOfElements();
 
+    @Nonnull
     PageRequest pageRequest();
 
+    @Nonnull
     PageRequest previousPageRequest();
 
+    @Nonnull
     default Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
     }

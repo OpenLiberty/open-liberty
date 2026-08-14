@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -223,7 +223,10 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
 
             OAuth20Client client = getOAuth20Client(requestContext, clientId, null, redirectUri, false);
 
-            processPKCEAndUpdateAttributeList(request, client, attributeList);
+            // pkce only applies for the authorization code grant
+            if (OAuth20Constants.RESPONSE_TYPE_CODE.equals(responseType)) {
+                processPKCEAndUpdateAttributeList(request, client, attributeList);
+            }
             // jwtAccessToken
             if (request != null) {
                 String[] resource = (String[]) request.getAttribute(OAuth20Constants.OAUTH20_AUTHEN_PARAM_RESOURCE); // audiences
@@ -512,7 +515,9 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
                     OAuth20Token token = getOAuth20Token(requestContext, key, OAuth20Constants.TOKENTYPE_AUTHORIZATION_GRANT, grantType, true);
                     tokens.add(token);
                 }
-                if (tokens.size() >= 1) {
+
+                // pkce only applies for grant_type=authorization_code
+                if (OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE.equals(grantType) && tokens.size() >= 1) {
                     OAuth20Token code = tokens.get(0);
                     String code_challenge = null;
                     String code_challenge_method = null;

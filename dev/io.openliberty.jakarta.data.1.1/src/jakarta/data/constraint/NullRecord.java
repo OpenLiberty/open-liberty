@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,19 +12,24 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record NullRecord<V>() implements Null<V> {
 
+    @Nonnull
     static final NullRecord<?> INSTANCE = new NullRecord<>();
 
     @Override
+    @Nonnull
     public NotNull<V> negate() {
         return NotNull.instance();
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "IS NULL";
     }

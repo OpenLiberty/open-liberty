@@ -125,7 +125,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
                                                                    new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
     }
@@ -142,7 +142,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "CWPKI0023E"),
                                                                    new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "CWPKI0023E")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, INEXISTENT_ALIAS_SERVER_INFO);
     }
@@ -156,7 +156,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/manager/employPojoService", "403")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, NOT_AUTHORIZED_SERVER_INFO);
     }
@@ -171,7 +171,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("manager", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "From other bean: Hello, manager from SayHelloStatelessService"),
                                                                    new RequestParams("manager", "singleton", SCHEMA, SECURE_PORT, "/manager/employSingletonService", "From other bean: Hello, manager from SayHelloSingletonService")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
     }
@@ -195,7 +195,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("manager", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "Could not send Message"),
                                                                    new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "Could not send Message")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, CERT_NOT_TRUST_SERVER_INFO);
         } else {
@@ -219,7 +219,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
 
                                                                    new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
 
@@ -270,7 +270,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "403"),
                                                                    new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/manager/employSingletonService", "403")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, NOT_AUTHORIZED_SERVER_INFO);
     }
@@ -287,7 +287,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "disableCNCheck"),
                                                                    new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "disableCNCheck")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
     }
@@ -303,7 +303,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("employee", TestMode.DISPATCH, "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
                                                                    new RequestParams("employee", TestMode.DISPATCH, "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
         checkAppUpdate = false;
@@ -335,7 +335,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("employee", TestMode.DISPATCH, "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
                                                                    new RequestParams("employee", TestMode.DISPATCH, "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
         checkAppUpdate = false;
@@ -352,7 +352,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                                                                    new RequestParams("employee", TestMode.DISPATCH, "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
                                                                    new RequestParams("employee", TestMode.DISPATCH, "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -90,7 +90,7 @@ public class MultiClientTest {
                                                                                         .getSession()
                                                                                         .getBasicRemote()
                                                                                         .sendText(textValues[x]);
-                                                                        //java.lang.Thread.sleep(25);
+                                                                        java.lang.Thread.sleep(25);
                                                                     } catch (Exception e) {
                                                                         e.printStackTrace();
                                                                     }

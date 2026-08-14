@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,8 +67,7 @@ public class InactivityTimeoutTests {
 
         // Go through logs and check if Netty is being used.
         // Wait for the TCP Channel to finish loading and get the TCP Channel started message.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv6) port 8010.
-        String tcpChannelMessage = server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint");
+        String tcpChannelMessage = server.waitForDefaultHTTPEndpointStart();
         LOG.info("Endpoint: " + tcpChannelMessage);
 
         runningNetty = tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);
@@ -324,8 +323,7 @@ public class InactivityTimeoutTests {
         assertNotNull("The configured value of inactivityTimeout was not 5000!", server.waitForStringInTraceUsingMark("inactivityTimeout: 5000"));
 
         // Ensure the TCP Channel has started.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 8010.
-        assertNotNull("The TCP Channel was not started!", server.waitForStringInLogUsingMark("CWWKO0219I"));
+        server.waitForDefaultHTTPEndpointStart();
 
         LOG.info("Creating a Socket connection.");
         URL url = HttpUtils.createURL(server, "/InactivityTimeoutServlet");
@@ -374,7 +372,7 @@ public class InactivityTimeoutTests {
                        server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() == 1);
         } else {
             assertTrue("The connection closed message was not found in the trace and should have been!",
-                       server.findStringsInLogsAndTraceUsingMark("connection closed due to idle timeout").size() == 1);
+                       server.findStringsInLogsAndTraceUsingMark("The connection is closing due an idle read timeout").size() == 1);
         }
     }
 
@@ -423,8 +421,7 @@ public class InactivityTimeoutTests {
         assertNotNull("The configured value of inactivityTimeout was not 5000!", server.waitForStringInTraceUsingMark("inactivityTimeout: 5000"));
 
         // Ensure the TCP Channel has started.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 8010.
-        assertNotNull("The TCP Channel was not started!", server.waitForStringInLogUsingMark("CWWKO0219I"));
+        server.waitForDefaultHTTPEndpointStart();
 
         LOG.info("Creating a Socket connection.");
         URL url = HttpUtils.createURL(server, "/InactivityTimeoutServlet");
@@ -520,8 +517,7 @@ public class InactivityTimeoutTests {
         assertNotNull("The configured value of inactivityTimeout was not 5000!", server.waitForStringInTraceUsingMark("inactivityTimeout: 5000"));
 
         // Ensure the TCP Channel has started.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 8010.
-        assertNotNull("The TCP Channel was not started!", server.waitForStringInLogUsingMark("CWWKO0219I"));
+        server.waitForDefaultHTTPEndpointStart();
 
         LOG.info("Creating a Socket connection.");
         URL url = HttpUtils.createURL(server, "/InactivityTimeoutServlet");
@@ -606,8 +602,7 @@ public class InactivityTimeoutTests {
         assertNotNull("The configured value of inactivityTimeout was not 5000!", server.waitForStringInTraceUsingMark("inactivityTimeout: 5000"));
 
         // Ensure the TCP Channel has started.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 8010.
-        assertNotNull("The TCP Channel was not started!", server.waitForStringInLogUsingMark("CWWKO0219I"));
+        server.waitForDefaultHTTPEndpointStart();
 
         LOG.info("Creating a Socket connection.");
         URL url = HttpUtils.createURL(server, "/InactivityTimeoutServlet");
@@ -690,8 +685,7 @@ public class InactivityTimeoutTests {
         assertNotNull("The configured value of inactivityTimeout was not 0!", server.waitForStringInTraceUsingMark("inactivityTimeout: 0"));
 
         // Ensure the TCP Channel has started.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv4) port 8010.
-        assertNotNull("The TCP Channel was not started!", server.waitForStringInLogUsingMark("CWWKO0219I"));
+        server.waitForDefaultHTTPEndpointStart();
 
         LOG.info("Creating a Socket connection.");
         URL url = HttpUtils.createURL(server, "/InactivityTimeoutServlet");

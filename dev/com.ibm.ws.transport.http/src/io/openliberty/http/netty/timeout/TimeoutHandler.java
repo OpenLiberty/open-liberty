@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,51 +9,35 @@
  *******************************************************************************/
 package io.openliberty.http.netty.timeout;
 
+import java.util.concurrent.TimeUnit;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
-import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-
-import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
-import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
-import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
-import io.openliberty.http.netty.timeout.exception.TimeoutException;
-import io.openliberty.http.options.TcpOption;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.TimeUnit;
 
 import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
-import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http2.Http2DataFrame;
 import io.netty.handler.codec.http2.Http2HeadersFrame;
-import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
 import io.netty.util.AsciiString;
-import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
+import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
+import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
+import io.openliberty.http.options.TcpOption;
 
 public class TimeoutHandler extends ChannelDuplexHandler{
 
@@ -116,11 +100,11 @@ public class TimeoutHandler extends ChannelDuplexHandler{
         @Override
         public void handlerAdded(ChannelHandlerContext context){
             this.parentContext = context;
-
+    
             if(streamOnly){
                 return;
             }
-
+    
             if(getProtocol(context)==ProtocolName.HTTP2){
                     arm(context, Phase.H2_IDLE);
                 }else{
@@ -144,23 +128,27 @@ public class TimeoutHandler extends ChannelDuplexHandler{
                 super.channelRead(context, message);
                 return;
             }
-
+    
             if(isRequestStart(message)){
                 cancel();
                 clientRequestedKeepAlive = shouldKeepAliveRequest(context, message);
-            }
-
-
-            switch(phase){
-                case TCP_IDLE:
-                    arm(context, Phase.READ);
-                    break;
-                case READ:
-                    resetRead(context);
-                    break;
-                default:
+                // READ timeout when request starts
+                arm(context, Phase.READ);
+            } else if(message instanceof HttpContent && !(message instanceof LastHttpContent)){
+                // Handle intermediate content (not request start) based on current phase
+                switch(phase){
+                    case TCP_IDLE:
+                        // Transition from TCP_IDLE to READ when data arrives
+                        arm(context, Phase.READ);
+                        break;
+                    case READ:
+                        // Do NOT reset read timeout when intermediate content arrives
+                        // This is to match CHFW behavior
+                        break;
+                    default:
                 }
-
+            }
+    
             super.channelRead(context, message);
     
             if(isRequestEnd(message)){
@@ -226,12 +214,6 @@ public class TimeoutHandler extends ChannelDuplexHandler{
         }
     
     
-        private void resetRead(ChannelHandlerContext context){
-            if(phase == Phase.READ){
-                arm(context, Phase.READ);
-            }
-        }
-    
         private void armPersistIfNeeded(ChannelHandlerContext context){
             if(getProtocol(context) != ProtocolName.WEBSOCKET){
                 arm(context, Phase.PERSIST);
@@ -249,29 +231,26 @@ public class TimeoutHandler extends ChannelDuplexHandler{
         private void onTimeout(ChannelHandlerContext context){
             switch (phase) {
                 case TCP_IDLE:
-                    
                 case READ:
                     if (firstRequest && !readRetried) {
                         readRetried = true;
                         arm(context, Phase.READ);
                         return;
                     }
-                    if(firstRequest){
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "The connection closed due to idle timeout");
-                        }
-                        context.close();
-                    }else{
-                        context.fireExceptionCaught(new ReadTimeoutException(readTimeout, LEGACY_UNIT));
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The connection is closing due an idle read timeout");
                     }
+                    context.fireExceptionCaught(new ReadTimeoutException(readTimeout / 1000, TimeUnit.SECONDS,
+                        context.channel().localAddress(), context.channel().remoteAddress()));
                     break;
                     
                 case PERSIST:
-                    context.fireExceptionCaught(new PersistTimeoutException(persistTimeout, LEGACY_UNIT));
-                    //context.close();
+                    context.fireExceptionCaught(new PersistTimeoutException(persistTimeout / 1000, TimeUnit.SECONDS,
+                        context.channel().localAddress(), context.channel().remoteAddress()));
                     break;
                 case H2_IDLE:
-                    context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout, LEGACY_UNIT));
+                    context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout / 1000, TimeUnit.SECONDS,
+                        context.channel().localAddress(), context.channel().remoteAddress()));
                     break;
                 default:
             }
@@ -282,6 +261,9 @@ public class TimeoutHandler extends ChannelDuplexHandler{
         }
     
         private static boolean isRequestEnd(Object message){
+            if(message instanceof FullHttpRequest){
+                return true;
+            }
             if(message instanceof HttpRequest){
                 HttpRequest req = (HttpRequest) message;
                 boolean hasBody = HttpUtil.isTransferEncodingChunked(req) || HttpUtil.isContentLengthSet(req);

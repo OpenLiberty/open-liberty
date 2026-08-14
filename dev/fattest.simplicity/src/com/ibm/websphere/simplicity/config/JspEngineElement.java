@@ -25,6 +25,7 @@ public class JspEngineElement extends ConfigElement {
     private Boolean keepGenerated;
     private Boolean useJDKCompiler;
     private String prepareJSPs;
+    private Boolean loadTagFilesFromJars;
 
     /**
      * @return the useStringCast
@@ -144,6 +145,18 @@ public class JspEngineElement extends ConfigElement {
         this.prepareJSPs = prepareJSPs;
     }
 
+    /**
+     * @return the loadTagFilesFromJars
+     */
+    public Boolean isLoadTagFilesFromJars() {
+        return loadTagFilesFromJars;
+    }
+
+    @XmlAttribute(name = "loadTagFilesFromJars")
+    public void setLoadTagFilesFromJars(Boolean b) {
+        this.loadTagFilesFromJars = b;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("JspElement{");
@@ -165,8 +178,10 @@ public class JspEngineElement extends ConfigElement {
             buf.append("keepGenerated=\"" + keepGenerated + "\" ");
         if (useJDKCompiler != null)
             buf.append("useJDKCompiler=\"" + useJDKCompiler + "\" ");
-        if (useJDKCompiler != null)
+        if (prepareJSPs != null)
             buf.append("prepareJSPs=\"" + prepareJSPs + "\" ");
+        if (loadTagFilesFromJars != null)
+            buf.append("loadTagFilesFromJars=\"" + loadTagFilesFromJars + "\" ");
 
         buf.append("}");
         return buf.toString();

@@ -51,9 +51,31 @@ Private-Package: \
 instrument.classesExcludes: jakarta/data/*.class
 
 #-includeresource: \
-#  @\${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+#  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 publish.wlp.jar.suffix: dev/api/spec
 
+DynamicImport-Package: \
+  jakarta.persistence,\
+  jakarta.persistence.criteria,\
+  jakarta.persistence.metamodel,\
+  jakarta.persistence.query,\
+  jakarta.persistence.spi,\
+  jakarta.persistence.sql
+
+Import-Package: \
+  !jakarta.persistence,\
+  !jakarta.persistence.criteria,\
+  !jakarta.persistence.metamodel,\
+  !jakarta.persistence.query,\
+  !jakarta.persistence.spi,\
+  !jakarta.persistence.sql,\
+  jakarta.annotation;version="[3.0,4)",\
+  com.ibm.websphere.ras,com.ibm.websphere.ras.annotation,\
+  com.ibm.ws.ras.instrument.annotation;version="[1.0,2)"
+
+#TODO remove persistence and the above import packages
 -buildpath: \
+  io.openliberty.jakarta.annotation.3.0,\
+  io.openliberty.jakarta.persistence.3.2,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

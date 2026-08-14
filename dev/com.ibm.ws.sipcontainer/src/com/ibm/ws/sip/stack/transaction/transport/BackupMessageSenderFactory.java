@@ -131,7 +131,7 @@ public class BackupMessageSenderFactory {
 			 return;
 		 }
 		 if (sender.isPoolable() && s_naptrSenderFound) {
-			 // clean and put back to the queue only if poolabe
+			 // clean and put back to the queue only if poolable
 			sender.cleanItself();
 			s_naptrSenderPool.putBack(sender);
 		}

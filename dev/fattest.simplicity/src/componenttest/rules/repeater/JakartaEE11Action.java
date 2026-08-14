@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -144,6 +144,7 @@ public class JakartaEE11Action extends JakartaEEAction {
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
+        removeFeatures(JakartaEE12Action.EE12_FEATURE_SET);
         forceAddFeatures(false);
         withMinJavaLevel(SEVersion.JAVA17);
         withID(EE11_ACTION_ID);

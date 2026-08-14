@@ -20,14 +20,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
 @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
 @Mode(FULL) // TODO re-enable lite mode once this test is consistently successful in builds
 public class JmsWebAppTests40 extends JmsAbstractTests {
@@ -46,7 +44,7 @@ public class JmsWebAppTests40 extends JmsAbstractTests {
         return "/testName/";
     }
 
-    @ExpectedFFDC({ "jakarta.servlet.ServletException", "java.lang.RuntimeException" })
+    @ExpectedFFDC("jakarta.servlet.ServletException")
     @Test
     @SkipJavaSemeruWithFipsEnabledRule
     public void testJmsWebApplicationWithTransaction() throws Exception {

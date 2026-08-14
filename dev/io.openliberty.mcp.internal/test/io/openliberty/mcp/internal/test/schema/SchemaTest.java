@@ -9,8 +9,13 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.test.schema;
 
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
+
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,19 +24,21 @@ import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+import org.mcpjava.server.tools.ToolResponse;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.ToolMethodArgument;
-import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
+import io.openliberty.mcp.internal.ToolValidation.ToolValidationError;
 import io.openliberty.mcp.internal.schemas.SchemaDirection;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.MockAnnotatedMethod;
+import io.openliberty.mcp.internal.testutils.MockBean;
 import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTransient;
@@ -301,7 +308,7 @@ public class SchemaTest {
     @Test
     public void testToolInputSchema() throws NoSuchMethodException, SecurityException {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "updateWidget");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedSchema = """
                         {
@@ -374,7 +381,7 @@ public class SchemaTest {
     @Test
     public void testToolInputRecursive() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "combineWidgets");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
 
         String expectedSchema = """
@@ -465,7 +472,7 @@ public class SchemaTest {
     @Test
     public void testPersonCheckToolSchema() throws NoSuchMethodException, SecurityException {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "checkPerson");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                         {
@@ -900,7 +907,7 @@ public class SchemaTest {
     @Test
     public void testPersonAddtoListToolInputSchema() throws NoSuchMethodException, SecurityException {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addPersonToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                                 {
@@ -1945,11 +1952,12 @@ public class SchemaTest {
     }
 
     @SuppressWarnings("unused")
-    @Test(expected = GenericArgumentException.class)
+    @Test
     public void testGenericToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
-        String toolInputSchema = registry.getToolInputSchema(arguments).toString();
+        List<ToolValidationError> validationErrors = new ArrayList<>();
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(MockBean.of(SchemaTest.class), toolMethod, Collections.emptyMap(), validationErrors);
+        assertThat("Expected validation errors", validationErrors, not(empty()));
     }
 
     @Tool(name = "addGenericSingleBoundToList", title = "adds generic to generic list", description = "adds person to employee list, returns nothing")
@@ -1963,11 +1971,12 @@ public class SchemaTest {
     }
 
     @SuppressWarnings("unused")
-    @Test(expected = GenericArgumentException.class)
+    @Test
     public void testGenericSingleBoundToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericSingleBoundToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
-        String toolInputSchema = registry.getToolInputSchema(arguments).toString();
+        List<ToolValidationError> validationErrors = new ArrayList<>();
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(MockBean.of(SchemaTest.class), toolMethod, Collections.emptyMap(), validationErrors);
+        assertThat("Expected validation errors", validationErrors, not(empty()));
     }
 
     public static interface NumberRestrictor {
@@ -2046,7 +2055,7 @@ public class SchemaTest {
     @Test
     public void testWildcardToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addWildcardToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                         {
@@ -2085,7 +2094,7 @@ public class SchemaTest {
     @Test
     public void testGenericExtendBoundToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addWildcardExtendBoundToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                     {
@@ -2136,7 +2145,7 @@ public class SchemaTest {
     @Test
     public void testWildcardSuperBoundsToolArg() {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addWildcardSuperBoundsToList");
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, Collections.emptyMap());
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, Collections.emptyMap(), Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                     {
@@ -2200,7 +2209,7 @@ public class SchemaTest {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericToGenericArrayGenericConcrete");
         Map<TypeVariable<?>, Type> genericMap = new HashMap<>();
         genericMap.put((TypeVariable<?>) toolMethod.getJavaMember().getParameters()[2].getParameterizedType(), String.class);
-        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(toolMethod, genericMap);
+        List<ToolMethodArgument> arguments = ToolMetadata.getArguments(null, toolMethod, genericMap, Collections.emptyList());
         String toolInputSchema = registry.getToolInputSchema(arguments).toString();
         String expectedResponseString = """
                                             {
@@ -2270,6 +2279,191 @@ public class SchemaTest {
 
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+
+    // ---- outputSchemaFrom tests ----
+
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    public ToolResponse toolResponseWithOutputSchemaFromWidget() {
+        return ToolResponse.ofStructured(new Widget("cog", 4));
+    }
+
+    @Test
+    public void testOutputSchemaFromOnToolResponseGeneratesWidgetSchema() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromWidget");
+        // The effective output type is Widget, not ToolResponse
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"]
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom on a plain (non-ToolResponse, non-object) return type: String would normally
+    // produce no output schema, but outputSchemaFrom=Widget forces the registry to generate Widget schema.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    public String plainReturnWithOutputSchemaFromWidget() {
+        return "{}";
+    }
+
+    @Test
+    public void testOutputSchemaFromOnPlainReturnTypeGeneratesWidgetSchema() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "plainReturnWithOutputSchemaFromWidget");
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"]
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom on a non-ToolResponse return type: the registry generates the schema for the
+    // declared outputSchemaFrom class (Widget), NOT for the actual return type (CompositeWidget).
+    // CompositeWidget has a "subwidgets" field; Widget does not — NON_EXTENSIBLE catches any extra fields.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    public CompositeWidget toolWithOutputSchemaFromOverride() {
+        return new CompositeWidget("cog", 4, List.of());
+    }
+
+    @Test
+    public void testOutputSchemaFromOverridesReturnType() {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolWithOutputSchemaFromOverride");
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"]
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // When both @Schema (inline JSON on method) and outputSchemaFrom are present, @Schema wins:
+    // the registry uses the method-level @Schema body, ignoring the outputSchemaFrom type.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    @Schema("""
+                    {
+                      "type": "object",
+                      "properties": {
+                        "message": { "type": "string" }
+                      }
+                    }
+                    """)
+    public ToolResponse toolResponseWithSchemaAndOutputSchemaFrom() {
+        return ToolResponse.ofStructured(Map.of("message", "hi"));
+    }
+
+    @Test
+    public void testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithSchemaAndOutputSchemaFrom");
+        // Passing Widget.class as the type, but @Schema on the method overrides — result has "message", not Widget fields
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "message": { "type": "string" }
+                            }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom=Widget with @Schema(description=...) on the tool method:
+    // the generated Widget schema should include the method-level description.
+    @Tool(structuredContent = true, outputSchemaFrom = Widget.class)
+    @Schema(description = "Returns the current state of a widget")
+    public ToolResponse toolResponseWithOutputSchemaFromAndMethodDescription() {
+        return ToolResponse.ofStructured(new Widget("cog", 4));
+    }
+
+    @Test
+    public void testOutputSchemaFromWithDescriptionOnMethod() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromAndMethodDescription");
+        String response = registry.getToolOutputSchema(toolMethod, Widget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"],
+                            "description": "Returns the current state of a widget"
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom=DescribedWidget where the class itself has @Schema(description=...).
+    // The generated schema should include the class-level description.
+    @Schema(description = "A described widget")
+    public record DescribedWidget(String name, int flangeCount) {}
+
+    @Tool(structuredContent = true, outputSchemaFrom = DescribedWidget.class)
+    public ToolResponse toolResponseWithOutputSchemaFromDescribedWidget() {
+        return ToolResponse.ofStructured(new DescribedWidget("cog", 4));
+    }
+
+    @Test
+    public void testOutputSchemaFromWithDescriptionOnClass() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromDescribedWidget");
+        String response = registry.getToolOutputSchema(toolMethod, DescribedWidget.class).toString();
+        String expectedSchema = """
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name":        { "type": "string" },
+                                "flangeCount": { "type": "integer" }
+                            },
+                            "required": ["name", "flangeCount"],
+                            "description": "A described widget"
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    // outputSchemaFrom=Street where Street has @Schema(value="...") with inline JSON.
+    // The inline JSON on the class wins — no auto-generation from Street's fields.
+    @Tool(structuredContent = true, outputSchemaFrom = Street.class)
+    public ToolResponse toolResponseWithOutputSchemaFromInlineSchemaClass() {
+        return ToolResponse.ofStructured(Map.of("streetName", "Main St"));
+    }
+
+    @Test
+    public void testOutputSchemaFromWithInlineSchemaOnClass() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "toolResponseWithOutputSchemaFromInlineSchemaClass");
+        String response = registry.getToolOutputSchema(toolMethod, Street.class).toString();
+        String expectedSchema = """
+                        {
+                            "properties": {
+                                "streetName": { "type": "string" },
+                                "roadType":   { "type": "string" }
+                            },
+                            "required": ["streetName"],
+                            "type": "object"
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedSchema, response, JSONCompareMode.NON_EXTENSIBLE);
     }
 
 }

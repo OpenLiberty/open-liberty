@@ -1,0 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common'),
+               project(':com.ibm.ws.security.oauth.oidc_fat.common'),
+               project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+               project(':com.ibm.ws.org.jose4j'),
+               'jtidy:jtidy:4aug2000r7-dev',
+               'rhino:js:1.6R5'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/*
+ * Configure any auto FVT artifacts.
+ */
+autoFVT.doLast {
+  def servers = [
+    'com.ibm.ws.security.oauth.oidc_fat.common.metadataServer',
+    'com.ibm.ws.security.oauth.oidc_fat.common.metadataServerNonBeta'
+  ]
+  servers.each { server ->
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'fatTestPorts.xml'
+    }
+    copy {
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+  }
+}

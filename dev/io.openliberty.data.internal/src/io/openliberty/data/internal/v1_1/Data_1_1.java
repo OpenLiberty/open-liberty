@@ -43,7 +43,10 @@ import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
+import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.JakartaQuery; // TODO replace with Persistence 4.0 annotation once available
+import jakarta.data.repository.NativeQuery; // TODO replace with Persistence 4.0 annotation once available
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Select;
@@ -60,13 +63,6 @@ import jakarta.persistence.EntityManager;
  * Capability that is specific to the version of Jakarta Data.
  */
 public class Data_1_1 implements DataVersionCompatibility {
-
-    /**
-     * Annotations for repository query operations that accept a JPQL query.
-     */
-    private static final Set<Class<? extends Annotation>> JPQL_QUERY_ANNOS = //
-                    // TODO add new Jakarta Persistence anno
-                    Set.of(Query.class);
 
     /**
      * Annotations that represent lifecycle operations that are allowed for
@@ -96,6 +92,14 @@ public class Data_1_1 implements DataVersionCompatibility {
                     Stream.concat(LIFECYCLE_ANNOS_STATEFUL.stream(),
                                   LIFECYCLE_ANNOS_STATELESS.stream()) //
                                     .toList();
+
+    /**
+     * Annotations for repository query operations that accept a JPQL or SQL query.
+     */
+    private static final Set<Class<? extends Annotation>> QUERY_LANGUAGE_ANNOS = //
+                    Set.of(JakartaQuery.class,
+                           NativeQuery.class,
+                           Query.class);
 
     /**
      * Classes that are valid as return types of resource accessor methods for a
@@ -177,6 +181,13 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public Integer getFirstAnnotationValue(Method method) {
+        First first = method.getAnnotation(First.class);
+        return first == null ? null : first.value();
+    }
+
+    @Override
+    @Trivial
     public String[] getSelections(AnnotatedElement element) {
         Select[] selects = element.getAnnotationsByType(Select.class);
         if (selects.length == 0)
@@ -208,12 +219,6 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Set<Class<? extends Annotation>> jpqlQueryAnnoTypes() {
-        return JPQL_QUERY_ANNOS;
-    }
-
-    @Override
-    @Trivial
     public Collection<Class<? extends Annotation>> lifeCycleAnnoTypes(Boolean stateful) {
         return stateful == null //
                         ? LIFECYCLE_ANNOS //
@@ -238,6 +243,12 @@ public class Data_1_1 implements DataVersionCompatibility {
     @Trivial
     public String persistenceFeatureName() {
         return "persistence-4.0";
+    }
+
+    @Override
+    @Trivial
+    public Set<Class<? extends Annotation>> queryLanguageAnnoTypes() {
+        return QUERY_LANGUAGE_ANNOS;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -249,16 +249,16 @@ public class DataJavaGlobalTest extends FATServletClient {
         found = "found: " + json;
 
         assertEquals(found,
-                     "Apache Derby",
+                     "H2",
                      json.getString("DatabaseProductName"));
 
         assertEquals(found,
-                     "Apache Derby Embedded JDBC Driver",
+                     "H2 JDBC Driver",
                      json.getString("DriverName"));
 
         assertEquals(found,
-                     "dbuser2",
-                     json.getString("UserName"));
+                     "DBUSER2",
+                     json.getString("UserName").toUpperCase());
     }
 
     /**

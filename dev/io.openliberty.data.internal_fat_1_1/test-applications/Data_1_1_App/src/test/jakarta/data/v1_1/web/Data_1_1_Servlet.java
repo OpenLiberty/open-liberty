@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -24,13 +26,19 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -41,6 +49,8 @@ import jakarta.data.constraint.In;
 import jakarta.data.constraint.Like;
 import jakarta.data.constraint.NotBetween;
 import jakarta.data.constraint.NotNull;
+import jakarta.data.exceptions.DataException;
+import jakarta.data.expression.NumericExpression;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
@@ -58,8 +68,11 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
+import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -76,6 +89,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    Sectors sectors; // has security roles that will eventually be enforced
 
     @Inject
     StatefulFractionRepository statefulFractionRepo;
@@ -100,6 +116,56 @@ public class Data_1_1_Servlet extends FATServlet {
                 fractionsToAdd.add(f);
             }
         fractions.supply(fractionsToAdd);
+    }
+
+    /**
+     * Indicates if testing with the DB2 database.
+     *
+     * @return true if testing with the DB2 database.
+     */
+    static final boolean isDB2() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("jcc");
+    }
+
+    /**
+     * Indicates if testing with the Derby database.
+     *
+     * @return true if testing with the Derby database.
+     */
+    static final boolean isDerby() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("derby");
+    }
+
+    /**
+     * Indicates if testing with the Oracle database.
+     *
+     * @return true if testing with the Oracle database.
+     */
+    static final boolean isOracle() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("ojdbc");
+    }
+
+    /**
+     * Indicates if testing with the PostgreSQL database.
+     *
+     * @return true if testing with the PostgreSQL database.
+     */
+    static final boolean isPostgres() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("postgre");
+    }
+
+    /**
+     * Indicates if testing with the SQL Server database.
+     *
+     * @return true if testing with the SQL Server database.
+     */
+    static final boolean isSQLServer() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("mssql");
     }
 
     /**
@@ -321,6 +387,12 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testCastIntegerToDouble() {
 
+        // EclipseLink does not have
+        // CAST (value AS DOUBLE) for postgres and oracle and sqlserver
+        // https://github.com/eclipse-ee4j/eclipselink/issues/2776
+        if (!isHibernatePersistence() && (isPostgres() || isOracle() || isSQLServer()))
+            return;
+
         Restriction<Fraction> within22to34Hundreths = _Fraction.numerator
                         .asDouble()
                         .dividedBy(_Fraction.denominator.asDouble())
@@ -440,6 +512,44 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Request cursor pagination from a repository method that accepts a
+     * Restriction parameter, but specify the unrestricted restriction.
+     * Verify the total count of elements and pages is computed correctly.
+     */
+    @Test
+    public void testCursoredPageCountWithEmptyRestriction() {
+
+        Between<Integer> denominators5to10 = Between.bounds(5, 10);
+
+        Order<Fraction> order = Order.by(_Fraction.denominator.asc(),
+                                         _Fraction.numerator.asc());
+
+        Cursor fourSeventhsCursor = Cursor.forKey(7, 4);
+        PageRequest page3Req = PageRequest.ofSize(5)
+                        .pageNumber(3)
+                        .afterCursor(fourSeventhsCursor);
+
+        CursoredPage<Fraction> page3 = fractions
+                        .fetchCursored(denominators5to10,
+                                       true, // reduced
+                                       Restrict.unrestricted(),
+                                       order,
+                                       page3Req);
+
+        assertEquals(26L,
+                     page3.totalElements());
+
+        assertEquals(List.of("5/7",
+                             "6/7",
+                             "1/8",
+                             "3/8",
+                             "5/8"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
      * Use a stateful repository to find an entity. Use a detach operation to
      * make the entity unmanaged. Make updates to the entity. After committing,
      * verify that updates made after the detach operation are not written to
@@ -486,6 +596,426 @@ public class Data_1_1_Servlet extends FATServlet {
                                   AtMost.max(Integer.MAX_VALUE),
                                   Restrict.unrestricted());
         }
+    }
+
+    /**
+     * Use the QueryOptions annotation on a Find method to supply a load graph
+     * that overrides loading of an ElementCollection to make it eager rather
+     * than lazily loaded.
+     *
+     * Applies scaling due to Oracle stripping trailing 0s
+     */
+    @Test
+    public void testEntityGraphAsQueryOption() {
+        assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
+                             BigDecimal.valueOf(310, 3), // nearest hundreth
+                             BigDecimal.valueOf(313, 3)), // nearest thousandth
+                     fractions.of(5, 16).orElseThrow().rounded
+                                     .stream()
+                                     .map(bd -> bd.setScale(3))
+                                     .toList());
+
+        assertEquals(List.of(BigDecimal.valueOf(900, 3), // nearest tenth
+                             BigDecimal.valueOf(860, 3), // nearest hundreth
+                             BigDecimal.valueOf(857, 3)), // nearest thousandth
+                     fractions.of(6, 7).orElseThrow().rounded
+                                     .stream()
+                                     .map(bd -> bd.setScale(3))
+                                     .toList());
+
+        assertEquals(List.of(BigDecimal.valueOf(600, 3), // nearest tenth
+                             BigDecimal.valueOf(620, 3), // nearest hundreth
+                             BigDecimal.valueOf(615, 3)), // nearest thousandth
+                     fractions.of(8, 13).orElseThrow().rounded
+                                     .stream()
+                                     .map(bd -> bd.setScale(3))
+                                     .toList());
+    }
+
+    /**
+     * Obtain cursored pages for queries with sort criteria that includes
+     * expressions.
+     */
+    @Test
+    public void testExpressionAsCursorElement() {
+        // pages | # | denominator | proximity to 10 | 2nd char | name
+        // 1       1            18                 0          e   Ten Eighteenths
+        // 1       2            18                 1          l   Eleven Eighteenths
+        // 1       3            18                 1          i   Nine Eighteenths
+        // 1       4            18                 2          w   Twelve Eighteenths
+        // 1       5            18                 2          i   Eight Eighteenths
+        // 1       6            18                 3          h   Thirteen Eighteenths
+        // 1       7            18                 3          e   Seven Eighteenths
+        // 1       8            18                 4          o   Fourteen Eighteenths
+        // 1       9            18                 4          i   Six Eighteenths
+        // 1      10            18                 5          i   Fifteen Eighteenths
+        // 2      11            18                 5          i   Five Eighteenths
+        // 2      12            18                 6          o   Four Eighteenths
+        // 2      13            18                 6          i   Sixteen Eighteenths
+        // 2      14            18                 7          h   Three Eighteenths
+        // 2      15            18                 7          e   Seventeen Eighteenths
+        // 2      16            18                 8          w   Two Eighteenths
+        // 2      17            18                 9          n   One Eighteenth
+        // 2 3    18            19                 0          e   Ten Nineteenths
+        // 2 3    19            19                 1          l   Eleven Nineteenths
+        // 2 3    20            19                 1          i   Nine Nineteenths
+        //   3    21            19                 2          w   Twelve Nineteenths
+        //   3    22            19                 2          i   Eight Nineteenths
+        //   3    23            19                 3          h   Thirteen Nineteenths
+        //        24            19                 3          e   Seven Nineteenths
+        //        25            19                 4          o   Fourteen Nineteenths
+        //        26            19                 4          i   Six Nineteenths
+        //        27            19                 5          i   Fifteen Nineteenths
+        //        28            19                 5          i   Five Nineteenths
+        //        29            19                 6          o   Four Nineteenths
+        //        30            19                 6          i   Sixteen Nineteenths
+        //        31            19                 7          h   Three Eighteenths
+        //        32            19                 7          e   Seventeen Nineteenths
+        //        33            19                 8          w   Two Nineteenths
+        //        34            19                 8          i   Eighteen Nineteenths
+        //        35            19                 9          n   One Nineteenths
+
+        Order<Fraction> order = Order // also @OrderBy(_Fraction.DENOMINATOR) on method
+                        .by(_Fraction.numerator.subtractedFrom(10).abs().asc(),
+                            _Fraction.name.left(2).right(1).desc(), // 2nd char of name
+                            _Fraction.name.asc());
+
+        String pattern = "% _i__teenth%"; // Eighteenth(s), Nineteenth(s)
+
+        CursoredPage<Fraction> page1 = fractions.namedLike(pattern,
+                                                           order,
+                                                           PageRequest.ofSize(10));
+
+        assertEquals(List.of("Ten Eighteenths",
+                             "Eleven Eighteenths",
+                             "Nine Eighteenths",
+                             "Twelve Eighteenths",
+                             "Eight Eighteenths",
+                             "Thirteen Eighteenths",
+                             "Seven Eighteenths",
+                             "Fourteen Eighteenths",
+                             "Six Eighteenths",
+                             "Fifteen Eighteenths"),
+                     page1.stream()
+                                     .map(f -> f.name)
+                                     .toList());
+
+        assertEquals(true,
+                     page1.hasNext());
+        assertEquals(true,
+                     page1.hasTotals());
+        assertEquals(35L,
+                     page1.totalElements());
+        assertEquals(4L,
+                     page1.totalPages());
+
+        Fraction lastOnPage = page1.content().get(page1.numberOfElements() - 1);
+        Cursor lastOnPageCursor = Cursor.forKey(lastOnPage.denominator,
+                                                Math.abs(10 - lastOnPage.numerator),
+                                                lastOnPage.name.substring(1, 2),
+                                                lastOnPage.name);
+        PageRequest page2Req = PageRequest.ofSize(10).afterCursor(lastOnPageCursor);
+
+        CursoredPage<Fraction> page2 = fractions.namedLike(pattern,
+                                                           order,
+                                                           page2Req);
+
+        assertEquals(List.of("Five Eighteenths",
+                             "Four Eighteenths",
+                             "Sixteen Eighteenths",
+                             "Three Eighteenths",
+                             "Seventeen Eighteenths",
+                             "Two Eighteenths",
+                             "One Eighteenth",
+                             "Ten Nineteenths",
+                             "Eleven Nineteenths",
+                             "Nine Nineteenths"),
+                     page2.stream()
+                                     .map(f -> f.name)
+                                     .toList());
+
+        assertEquals(true,
+                     page2.hasNext());
+        assertEquals(true,
+                     page2.hasPrevious());
+        assertEquals(true,
+                     page2.hasTotals());
+        assertEquals(35L,
+                     page2.totalElements());
+        assertEquals(4L,
+                     page2.totalPages());
+
+        Cursor sevenNineteenthsCursor = Cursor //
+                        .forKey(19, 3, "e", "Seven Nineteenths");
+        PageRequest page3Req = PageRequest.ofSize(6)
+                        .beforeCursor(sevenNineteenthsCursor);
+
+        CursoredPage<Fraction> page3 = fractions.namedLike(pattern,
+                                                           order,
+                                                           page3Req);
+
+        assertEquals(true,
+                     page3.hasNext());
+        assertEquals(true,
+                     page3.hasPrevious());
+        assertEquals(true,
+                     page3.hasTotals());
+        assertEquals(35L,
+                     page3.totalElements());
+
+        assertEquals(List.of("Ten Nineteenths",
+                             "Eleven Nineteenths",
+                             "Nine Nineteenths",
+                             "Twelve Nineteenths",
+                             "Eight Nineteenths",
+                             "Thirteen Nineteenths"),
+                     page3.stream()
+                                     .map(f -> f.name)
+                                     .toList());
+    }
+
+    /**
+     * Obtain cursored pages for queries with sort criteria that includes
+     * expressions. The repository method also includes a Restriction
+     * with expressions of its own.
+     */
+    @Test
+    public void testExpressionsInCursorElementAndRestrictions() {
+        //             desc     asc      desc   asc
+        // pages | # | type | n * (d-1) | num / denom
+        // 1       1      T           3     1 /  4
+        // 1       2      T           4     1 /  5
+        // 1       3      T           7     1 /  8
+        // 1       4      T           8     2 /  5
+        // 1       5      T           9     1 / 10
+        // 1       6      T          21     3 /  8
+        // 1       7      T          27     3 / 10
+        // 1       8      T          35     5 /  8
+        // 1       9      T          63     7 / 10
+        // 1      10      T         105     7 / 16
+        // 1      11      T         135     9 / 16
+        // 2      12      R           5     1 /  6
+        // 2      13      R           6     1 /  7
+        // 2      14      R           8     1 /  9
+        // 2      15      R          10     1 / 11
+        // 2      16      R          12     2 /  7
+        // 2      17      R          16     2 /  9
+        // 2      18      R          18     3 /  7
+        // 2      19      R          20     2 / 11
+        //        20      R          24     4 /  7
+        //        21      R          30     3 / 11
+        //        22      R          32     4 /  9
+        //        23      R          40     5 /  9
+        // 3      24      R          40     4 / 11
+        // 3      25      R          48     4 / 13
+        // 3      26      R          50     5 / 11
+        // 3      27      R          55     5 / 12
+        // 3      28      R          60     6 / 11
+        // 4      29      R          60     5 / 13
+        // 4      30      R          65     5 / 14
+        // 4      31      R          70     7 / 11
+        // 4      32      R          72     6 / 13
+        // 4      33      R          77     7 / 12
+        // 4      34      R          80     8 / 11
+        // 4      35      R          98     7 / 15
+        // 4      36      R         108     9 / 13
+        // 4      37      R         112     8 / 15
+        //        38      R         112     7 / 17
+        //        39      R         117     9 / 14
+        //        40      R         128     8 / 17
+        //        41      R         162     9 / 19
+
+        Between<Integer> denominator3to10MoreThanNumerator = Between
+                        .bounds(_Fraction.numerator.plus(3),
+                                _Fraction.numerator.plus(10));
+
+        Restriction<Fraction> filter = Restrict
+                        .all(_Fraction.numerator.lessThanEqual(9),
+                             _Fraction.name.length().notEqualTo(17));
+
+        Order<Fraction> order = Order //
+                        .by(_Fraction.decimal_type.desc(),
+                            _Fraction.numerator
+                                            .times(_Fraction.denominator.minus(1))
+                                            .asc(),
+                            _Fraction.numerator.desc());
+
+        Cursor sevenSeventeenthsCursor = Cursor.forKey(Decimal.Type.REPEATING,
+                                                       7 * (17 - 1),
+                                                       7);
+        PageRequest page4Req = PageRequest.beforeCursor(sevenSeventeenthsCursor,
+                                                        4,
+                                                        9,
+                                                        true);
+
+        CursoredPage<Fraction> page4 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       page4Req);
+
+        assertEquals(List.of("5/13",
+                             "5/14",
+                             "7/11",
+                             "6/13",
+                             "7/12",
+                             "8/11",
+                             "7/15",
+                             "9/13",
+                             "8/15"),
+                     page4.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(true,
+                     page4.hasNext());
+        assertEquals(true,
+                     page4.hasPrevious());
+        assertEquals(true,
+                     page4.hasTotals());
+        assertEquals(41L,
+                     page4.totalElements());
+
+        Fraction firstOnPage = page4.content().get(0);
+        Cursor firstOnPageCursor = Cursor
+                        .forKey(firstOnPage.decimal.type(),
+                                firstOnPage.numerator * (firstOnPage.denominator - 1),
+                                firstOnPage.numerator);
+        PageRequest page3Req = PageRequest.ofSize(5).beforeCursor(firstOnPageCursor);
+
+        CursoredPage<Fraction> page3 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       page3Req);
+
+        assertEquals(List.of("4/11",
+                             "4/13",
+                             "5/11",
+                             "5/12",
+                             "6/11"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(true,
+                     page3.hasNext());
+        assertEquals(true,
+                     page3.hasPrevious());
+        assertEquals(true,
+                     page3.hasTotals());
+        assertEquals(41L,
+                     page3.totalElements());
+
+        CursoredPage<Fraction> page1 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       PageRequest.ofSize(11));
+
+        assertEquals(true,
+                     page1.hasNext());
+        assertEquals(true,
+                     page1.hasTotals());
+        assertEquals(41L,
+                     page1.totalElements());
+        assertEquals(4L,
+                     page1.totalPages());
+
+        assertEquals(List.of("1/4",
+                             "1/5",
+                             "1/8",
+                             "2/5",
+                             "1/10",
+                             "3/8",
+                             "3/10",
+                             "5/8",
+                             "7/10",
+                             "7/16",
+                             "9/16"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        Fraction lastOnPage = page1.content().get(page1.numberOfElements() - 1);
+        Cursor lastOnPageCursor = Cursor
+                        .forKey(lastOnPage.decimal.type(),
+                                lastOnPage.numerator * (lastOnPage.denominator - 1),
+                                lastOnPage.numerator);
+        PageRequest page2Req = PageRequest.afterCursor(lastOnPageCursor, 2, 8, false);
+
+        CursoredPage<Fraction> page2 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       page2Req);
+
+        assertEquals(List.of("1/6",
+                             "1/7",
+                             "1/9",
+                             "1/11",
+                             "2/7",
+                             "2/9",
+                             "3/7",
+                             "2/11"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(8,
+                     page2.numberOfElements());
+        assertEquals(false,
+                     page2.hasTotals());
+    }
+
+    /**
+     * Tests a Find method with the First annotation specifying a value
+     * larger than 1.
+     */
+    @Test
+    public void testFindFirst10() {
+
+        Restriction<Fraction> notReduced = _Fraction.reduced.isFalse();
+
+        Order<Fraction> alphabetized = Order.by(_Fraction.name.ascIgnoreCase());
+
+        assertEquals(List.of(8, // Eight
+                             18, // Eighteen
+                             15, // Fifteen
+                             5, // Five
+                             4, // Four
+                             14, // Fourteen
+                             6, // Six
+                             16, // Sixteen
+                             10, // Ten
+                             12), // Twelve
+                     fractions.atMost10Numerators(20,
+                                                  notReduced,
+                                                  alphabetized));
+    }
+
+    /**
+     * Tests a Find method with the First annotation specifying a value
+     * but where there are less results available than requested.
+     */
+    @Test
+    public void testFindFirstReturnsLesserAmount() {
+
+        Restriction<Fraction> firstLetterIsF = _Fraction.name.startsWith("F");
+
+        Order<Fraction> reverseAlphabetized = Order.by(_Fraction.name.desc());
+
+        assertEquals(List.of(14, // Fourteen
+                             4, // Four
+                             5, // Five
+                             15), // Fifteen
+                     fractions.atMost10Numerators(18,
+                                                  firstLetterIsF,
+                                                  reverseAlphabetized));
     }
 
     @Test
@@ -736,7 +1266,7 @@ public class Data_1_1_Servlet extends FATServlet {
 
         PageRequest page2Req = PageRequest.ofSize(5)
                         .afterCursor(threeFifths)
-                        .page(2)
+                        .pageNumber(2)
                         .withoutTotal();
 
         CursoredPage<Fraction> page2 = fractions.namedLike("%fths",
@@ -802,6 +1332,34 @@ public class Data_1_1_Servlet extends FATServlet {
         assertEquals(1L, page4.numberOfElements());
         assertEquals(true, page4.hasPrevious());
         assertEquals(false, page4.hasNext());
+    }
+
+    /**
+     * Use a repository method that is annotated JakartaQuery that has
+     * both Restriction and Order parameters.
+     */
+    @Test
+    public void testJakartaQueryWithRestrictionAndOrder() {
+
+        Restriction<Fraction> ninthsAndTenths = //
+                        Restrict.any(_Fraction.denominator.equalTo(9),
+                                     _Fraction.denominator.equalTo(10));
+
+        assertEquals(List.of("One Ninth",
+                             "Two Ninths",
+                             "Two Tenths",
+                             "Three Ninths",
+                             "Three Tenths",
+                             "Four Ninths",
+                             "Four Tenths"),
+                     fractions.squareRootBetween(0.33,
+                                                 0.67,
+                                                 ninthsAndTenths,
+                                                 Order.by(_Fraction.numerator.asc(),
+                                                          _Fraction.denominator.asc()))
+                                     .stream()
+                                     .map(f -> f.name)
+                                     .toList());
     }
 
     /**
@@ -941,6 +1499,137 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.named(Like.pattern("T% _i_ths"),
                                      Order.by(Sort.desc(_Fraction.NAME)),
                                      Limit.of(4)));
+    }
+
+    /**
+     * Tests a Limit that has an offset from the first result.
+     */
+    @Test
+    public void testLimitAfterOffset() {
+
+        assertEquals(List.of("Thirteen Sixteenths",
+                             "Thirteen Twentieths",
+                             "Three Eighteenths",
+                             "Three Eighths",
+                             "Three Elevenths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(5, 15))); // results 16..20
+
+        assertEquals(List.of("Three Fifteenths",
+                             "Three Fifths",
+                             "Three Fourteenths",
+                             "Three Fourths",
+                             "Three Nineteenths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(5, 20))); // results 21..25
+
+        assertEquals(List.of("Ten Eighteenths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(1, 0))); // first result
+
+        assertEquals(List.of("Two Thirds",
+                             "Two Thirteenths",
+                             "Two Twelfths",
+                             "Two Twentieths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(5, 56))); // results 57..61
+    }
+
+    /**
+     * Use the QueryOptions annotation to establish pessimistic locking and
+     * a query timeout on a repository method annotated JakartaQuery.
+     */
+    // Oracle does not support a query timeout on a statement that is blocked waiting
+    // for a lock. Hibernate only passes accidentally because ORA-02049 fires on its
+    // connections after Oracle's distributed_lock_timeout (default 60s), which
+    // surfaces as a DataException. EclipseLink connections are not classified as
+    // distributed transactions, so ORA-02049 never fires and no DataException is raised.
+    // SQL Server ignores ATTENTION tokens while waiting for a lock, so the query timeout
+    // never fires and the test hangs indefinitely.
+    @SkipIfSysProp({ SkipIfSysProp.DB_Oracle, SkipIfSysProp.DB_SQLServer })
+    @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
+                   "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                   "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
+    @Test
+    public void testLockModeAndQueryTimeoutAsQueryOptions() throws Exception {
+        // Hibernate does not honor the query timeout on native queries with DB2.
+        if (isDB2() && isHibernatePersistence())
+            return;
+
+        // Populate with 18/23.
+        // Ensure deletion in the finally block.
+        fractions.supply(List.of(Fraction.of(18, 23)));
+
+        CountDownLatch locked = new CountDownLatch(1);
+        CountDownLatch blocked = new CountDownLatch(1);
+        CompletableFuture<Fraction> lockDB = CompletableFuture.supplyAsync(() -> {
+            try {
+                tx.setTransactionTimeout((int) TIMEOUT_S * 3);
+                tx.begin();
+                Optional<Fraction> found = //
+                                fractions.withWriteLock("Eighteen Twenty-thirds");
+                System.out.println("Obtained lock on 18/23");
+                locked.countDown();
+                blocked.await(TIMEOUT_S * 2, TimeUnit.SECONDS);
+                System.out.println("Release lock on 18/23");
+                tx.commit();
+                return found.orElseThrow();
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+        });
+        try {
+            assertEquals(true, locked.await(TIMEOUT_S, TimeUnit.SECONDS));
+            // Derby ignores query timeout and the lock timeout ends up applying
+            // instead. Work around this by also setting the lock timeout when
+            // running on Derby:
+            if (isDerby())
+                if (isHibernatePersistence())
+                    statefulFractions.setLockTimeout(5);
+                else
+                    fractions.setLockTimeout(5);
+            tx.begin();
+            try {
+                Optional<Fraction> found = //
+                                fractions.withWriteLock("Eighteen Twenty-thirds");
+                fail("Query timeout on QueryOptions should have caused the" +
+                     " query to time out. Instead found " + found);
+            } catch (DataException x) {
+                // expected for query timeout
+            } finally {
+                tx.rollback();
+            }
+
+            blocked.countDown();
+            tx.begin();
+            Fraction f18_23 = fractions.withWriteLock("Eighteen Twenty-thirds")
+                            .orElseThrow();
+            assertEquals(0.7826,
+                         f18_23.decimal.value(),
+                         0.0001);
+            tx.commit();
+
+            // allow error to be raised if any
+            lockDB.get(TIMEOUT_S, TimeUnit.SECONDS);
+        } finally {
+            locked.countDown();
+            blocked.countDown();
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+            if (isDerby())
+                if (isHibernatePersistence())
+                    statefulFractions.setLockTimeout(60);
+                else
+                    fractions.setLockTimeout(60);
+        }
     }
 
     /**
@@ -1323,6 +2012,246 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a NativeQuery method that performs SQL INSERT, UPDATE, and DELETE
+     * statements.
+     */
+    @Test
+    public void testNativeQueryExecutesStatements() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
+        // Populate with 14/23.
+        // Ensure deletion in the finally block.
+        fractions.create(14,
+                         23,
+                         "Fourteen Twenty-Thirds",
+                         true,
+                         14.0 / 23.0,
+                         23.0 / 14.0,
+                         BigDecimal.valueOf(6090L, 4),
+                         BigDecimal.valueOf(6080L, 4),
+                         Type.REPEATING.ordinal(),
+                         "",
+                         "60869565");
+        try {
+            assertEquals(BigDecimal.valueOf(6090L, 4),
+                         fractions.roundedUp(14, 23)
+                                         .orElseThrow()
+                                         .setScale(4));
+
+            System.out.println("Update 14/23");
+
+            assertEquals(true, fractions.change(BigDecimal.valueOf(6087L, 4),
+                                                BigDecimal.valueOf(6086L, 4),
+                                                14,
+                                                23));
+
+            assertEquals(BigDecimal.valueOf(6087L, 4),
+                         fractions.roundedUp(14, 23)
+                                         .orElseThrow());
+        } finally {
+            // Ensure no fractions with denominator of 23 or more are left around
+            assertEquals(1L,
+                         fractions.destroy(14, "Twenty-Thirds"));
+        }
+    }
+
+    /**
+     * Use a NativeQuery method that returns subsets of entity attributes
+     * as an array of Java records
+     */
+    // @Test // TODO Java record results?
+    public void testNativeQueryReturnsArrayOfRecord() {
+        assertEquals(List.of("1:8",
+                             "2:7",
+                             "3:6",
+                             "4:5",
+                             "5:4",
+                             "6:3",
+                             "7:2",
+                             "8:1"),
+                     Stream.of(fractions.ratioArrayWithDenominator(9))
+                                     .map(Ratio::toString)
+                                     .toList());
+    }
+
+    /**
+     * Use a NativeQuery method that selects the first matching entity.
+     */
+    @Test
+    public void testNativeQueryReturnsFirstEntity() {
+        assertEquals("Seven Twentieths",
+                     fractions.firstValueWithin(0.334, 0.4)
+                                     .orElseThrow().name);
+    }
+
+    /**
+     * Use a NativeQuery method that selects multiple entities as a list.
+     * Also covers a NativeQuery that has no parameters.
+     */
+    @Test
+    public void testNativeQueryReturnsListOfEntities() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
+        assertEquals(List.of("1/2",
+                             "1/3",
+                             "1/4", "2/4",
+                             "1/5", "2/5",
+                             "1/6", "2/6",
+                             "1/7", "2/7",
+                             "1/8", "2/8",
+                             "1/9", "2/9", "3/9"),
+                     fractions.numeratorLTESquareRootOfDenominator(Limit.of(15))
+                                     .stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
+     * Use a NativeQuery method that returns subsets of entity attributes
+     * as a List of Java records
+     */
+    // @Test // TODO Java record results?
+    public void testNativeQueryReturnsListOfRecord() {
+        assertEquals(List.of("1:11",
+                             "2:12",
+                             "3:13",
+                             "4:14",
+                             "5:15",
+                             "6:16",
+                             "7:17",
+                             "8:18",
+                             "9:19"),
+                     fractions.ratioListWithDifferenceOfTerms(10)
+                                     .stream()
+                                     .map(Ratio::toString)
+                                     .toList());
+    }
+
+    /**
+     * Use a NativeQuery method that returns subsets of entity attributes
+     * as a Stream of Java records
+     */
+    // @Test // TODO Java record results?
+    public void testNativeQueryReturnsStreamOfRecord() {
+        assertEquals(List.of("1:7",
+                             "2:6",
+                             "3:5",
+                             "4:4",
+                             "5:3",
+                             "6:2",
+                             "7:1"),
+                     fractions.ratioStreamWithSumOfTerms(8)
+                                     .map(Ratio::toString)
+                                     .toList());
+    }
+
+    /**
+     * Use a NativeQuery method that selects the result of a count operation
+     * as a single value.
+     */
+    @Test
+    public void testNativeQuerySelectsCount() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
+        assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
+                     fractions.numReducedWithDenominatorOf(18, true));
+    }
+
+    /**
+     * Use a NativeQuery method that executes a SQL query with named parameters,
+     * where the named parameter names are implied from the method parameter names.
+     */
+    @Test
+    public void testNativeQueryWithImplicitNamedParameters() {
+        // Relies on optional capability where Hibernate provides named parameters
+        // for SQL queries
+        if (isHibernatePersistence()) {
+            Fraction fiveTwelfths = fractions.ifReduced(true, 5, 12)
+                            .orElseThrow();
+            assertEquals(5,
+                         fiveTwelfths.numerator);
+            assertEquals(12,
+                         fiveTwelfths.denominator);
+            assertEquals("Five Twelfths",
+                         fiveTwelfths.name);
+            assertEquals(true,
+                         fiveTwelfths.reduced);
+            // TODO would require Hibernate support for
+            // @QueryOptions(entityGraph = "EagerlyLoadRoundedValues")
+            // on native queries
+            //assertEquals(List.of(BigDecimal.valueOf(400, 3),
+            //                     BigDecimal.valueOf(420, 3),
+            //                     BigDecimal.valueOf(417, 3)),
+            //             fiveTwelfths.rounded);
+            assertEquals(BigDecimal.valueOf(4167, 4),
+                         fiveTwelfths.decimal.ceiling());
+            assertEquals(BigDecimal.valueOf(4166, 4),
+                         fiveTwelfths.decimal.truncated());
+            assertEquals(5.0 / 12.0,
+                         fiveTwelfths.decimal.value(),
+                         0.0001);
+            assertEquals(2.4,
+                         fiveTwelfths.decimal.inverse(),
+                         0.0001);
+            assertEquals("41",
+                         fiveTwelfths.decimal.digits().nonrepeating());
+            assertEquals("6",
+                         fiveTwelfths.decimal.digits().repeating());
+        }
+    }
+
+    /**
+     * Use a NativeQuery method that executes a SQL query with some method
+     * parameters correponding to named parameters and another being a special
+     * parameter of type Limit.
+     */
+    @Test
+    public void testNativeQueryWithNamedAndSpecialParameters() {
+        // Relies on optional capability where Hibernate provides named parameters
+        // for SQL queries
+        if (isHibernatePersistence())
+            assertEquals(List.of("Eight Elevenths",
+                                 "Eight Fifteenths",
+                                 "Eight Nineteenths",
+                                 "Eight Ninths",
+                                 "Eight Seventeenths",
+                                 "Eight Thirteenths",
+                                 "Eighteen Nineteenths",
+                                 "Eleven Eighteenths",
+                                 "Eleven Fifteenths"),
+                         fractions.alphabetized(true, Limit.of(9)));
+    }
+
+    /**
+     * Use a NativeQuery method that executes a SQL query with named parameters,
+     * where the named parameter names are indicted by the Param annotation of each
+     * method parameter.
+     */
+    @Test
+    public void testNativeQueryWithNamedParameters() {
+        // Relies on optional capability where Hibernate provides named parameters
+        // for SQL queries
+        if (isHibernatePersistence())
+            assertEquals(List.of("Nine Eighteenths",
+                                 "Nine Fifteenths",
+                                 "Nine Fourteenths",
+                                 "Nine Nineteenths",
+                                 "Nine Seventeenths",
+                                 "Nine Sixteenths",
+                                 "Nine Thirteenths"),
+                         Stream.of(fractions.withNamePattern("Nine ",
+                                                             "teenths"))
+                                         .map(f -> f.name)
+                                         .toList());
+    }
+
+    /**
      * Supply a Restriction to a repository method where the Restriction
      * requires navigating through 2 levels of embeddables to compute the
      * expressions that are used in its constraint.
@@ -1371,6 +2300,53 @@ public class Data_1_1_Servlet extends FATServlet {
                                                  Sort.asc(_Fraction.NUMERATOR)) //
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Request offset pagination from a repository method that accepts a
+     * Restriction parameter. Verify the total count of elements and pages
+     * takes into account the given Restriction value.
+     */
+    @Test
+    public void testOffsetPageCountWithRestrictions() {
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page1 = fractions //
+                        .fetchOffsetPage(12,
+                                         _Fraction.reduced.isTrue(),
+                                         PageRequest.ofSize(9),
+                                         _Fraction.name.asc());
+        assertEquals(45,
+                     page1.totalElements());
+        assertEquals(5,
+                     page1.totalPages());
+
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page3 = fractions //
+                        .fetchOffsetPage(12,
+                                         _Fraction.reduced.isTrue(),
+                                         PageRequest.ofSize(9).pageNumber(3),
+                                         _Fraction.name.asc());
+        assertEquals(45,
+                     page3.totalElements());
+        assertEquals(5,
+                     page3.totalPages());
+
+        Restriction<Fraction> restriction = Restrict //
+                        .any(_Fraction.reduced.isTrue(),
+                             _Fraction.numerator.equalTo(3),
+                             _Fraction.name.length().equalTo(10));
+
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page2 = fractions //
+                        .fetchOffsetPage(12,
+                                         restriction,
+                                         PageRequest.ofSize(8).pageNumber(2),
+                                         _Fraction.numerator.asc(),
+                                         _Fraction.denominator.desc());
+        assertEquals(52,
+                     page2.totalElements());
+        assertEquals(7,
+                     page2.totalPages());
     }
 
     /**
@@ -1436,6 +2412,8 @@ public class Data_1_1_Servlet extends FATServlet {
      * Supply plus and divide expressions to a restriction that is
      * supplied to a repository method.
      */
+    // Oracle doesn't do integer division, it always returns a floating point number
+    @SkipIfSysProp(SkipIfSysProp.DB_Oracle)
     @Test
     public void testPlusAndDivide() {
 
@@ -1487,6 +2465,170 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.where(restriction)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Request offset pagination from a query by method name that accepts a
+     * Restriction parameter, and specify a restriction.
+     * Verify the total count of elements and pages is computed correctly.
+     */
+    @Test
+    public void testQueryByMethodNameWithRestriction() {
+        Page<Fraction> page1 = fractions//
+                        .findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+                        (List.of(12, 20, 16),
+                         3,
+                         17,
+                         _Fraction.denominator.desc(),
+                         _Fraction.reduced.isTrue(),
+                         PageRequest.ofSize(6));
+
+        assertEquals(List.of("3/20",
+                             "3/16",
+                             "5/16",
+                             "5/12",
+                             "7/20",
+                             "7/16"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(16L,
+                     page1.totalElements());
+        assertEquals(3L,
+                     page1.totalPages());
+
+        assertEquals(true,
+                     page1.hasNext());
+
+        Page<Fraction> page2 = fractions//
+                        .findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+                        (List.of(12, 20, 16),
+                         3,
+                         17,
+                         _Fraction.denominator.desc(),
+                         _Fraction.reduced.isTrue(),
+                         page1.nextPageRequest());
+
+        assertEquals(List.of("7/12",
+                             "9/20",
+                             "9/16",
+                             "11/20",
+                             "11/16",
+                             "11/12"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(16L,
+                     page2.totalElements());
+        assertEquals(3L,
+                     page2.totalPages());
+
+    }
+
+    /**
+     * Tests a Query method with the First annotation defaulting to a value
+     * of 1.
+     */
+    @Test
+    public void testQueryFirst1() {
+
+        assertEquals("Fifteen Sixteenths",
+                     fractions.greatestLessThan1(16).orElseThrow() //
+                                     .name);
+
+        assertEquals("Seven Eighths",
+                     fractions.greatestLessThan1(8).orElseThrow() //
+                                     .name);
+    }
+
+    /**
+     * Tests a Query method with the First annotation defaulting to a value
+     * of 1.
+     */
+    @Test
+    public void testQueryFirstNoneFound() {
+
+        assertEquals(false,
+                     fractions.greatestLessThan1(0).isPresent());
+    }
+
+    /**
+     * Use the QueryOptions annotation to establish a query timeout on a
+     * repository method annotated NativeQuery.
+     */
+    // Oracle does not support a query timeout on a statement that is blocked waiting
+    // for a lock. Hibernate only passes accidentally because ORA-02049 fires on its
+    // connections after Oracle's distributed_lock_timeout (default 60s), which
+    // surfaces as a DataException. EclipseLink connections are not classified as
+    // distributed transactions, so ORA-02049 never fires and no DataException is raised.
+    // SQL Server ignores ATTENTION tokens while waiting for a lock, so the query timeout
+    // never fires and the test hangs indefinitely.
+    @SkipIfSysProp({ SkipIfSysProp.DB_Oracle, SkipIfSysProp.DB_SQLServer })
+    @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
+                   "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                   "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
+    @Test
+    public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
+        // Derby ignores query timeout and the lock timeout ends up applying instead.
+        // Hibernate does not honor the query timeout on native queries with DB2.
+        if (isDerby() || (isDB2() && isHibernatePersistence()))
+            return;
+
+        CountDownLatch locked = new CountDownLatch(1);
+        CountDownLatch blocked = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> lockDB = CompletableFuture.supplyAsync(() -> {
+            try {
+                tx.setTransactionTimeout((int) TIMEOUT_S * 3);
+                tx.begin();
+                boolean found = fractions.change(BigDecimal.valueOf(1880, 4),
+                                                 BigDecimal.valueOf(1870, 4),
+                                                 3,
+                                                 16);
+                System.out.println("Obtained lock on 3/16");
+                locked.countDown();
+                blocked.await(TIMEOUT_S * 2, TimeUnit.SECONDS);
+                System.out.println("Release lock on 3/16");
+                tx.rollback();
+                return found;
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        try {
+            assertEquals(true, locked.await(TIMEOUT_S, TimeUnit.SECONDS));
+            try {
+                boolean found = fractions.change(BigDecimal.valueOf(1900, 4),
+                                                 BigDecimal.valueOf(1800, 4),
+                                                 3,
+                                                 16);
+                fail("Query timeout on QueryOptions should have caused the" +
+                     " query to time out. Instead found entity? " + found);
+            } catch (DataException x) {
+                // expected for query timeout
+            }
+
+            blocked.countDown();
+
+            // changes must be rolled back and the lock released
+            Fraction f3_16 = fractions.of(3, 16)
+                            .orElseThrow();
+            assertEquals(BigDecimal.valueOf(1875, 4),
+                         f3_16.decimal.ceiling());
+            assertEquals(BigDecimal.valueOf(1875, 4),
+                         f3_16.decimal.truncated());
+
+            // allow error to be raised if any
+            lockDB.get(TIMEOUT_S, TimeUnit.SECONDS);
+        } finally {
+            locked.countDown();
+            blocked.countDown();
+        }
     }
 
     /**
@@ -1809,6 +2951,137 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that includes a Restriction and also has
+     * sorting by expressions.
+     */
+    @Test
+    public void testRestrictionsAndSortByExpressions() {
+
+        Restriction<Fraction> denominator8or9 = //
+                        Restrict.any(_Fraction.denominator.equalTo(8),
+                                     _Fraction.denominator.equalTo(9));
+
+        Sort<Fraction> chars8thThrough3rdFromRightAsc = //
+                        _Fraction.name.right(8).left(6).asc();
+
+        NumericExpression<Fraction, Integer> fifteenTimesInverse = //
+                        _Fraction.denominator.times(15)
+                                        .dividedBy(_Fraction.numerator);
+
+        Sort<Fraction> fifteenTimesInverseDesc = isHibernatePersistence() //
+                        ? fifteenTimesInverse.desc() //
+                        // works around EclipseLink parsing bug:
+                        : fifteenTimesInverse.abs().desc();
+
+        assertEquals(List.of("Three Eighths",
+                             "Five Eighths",
+                             "One Eighth",
+                             "Three Ninths",
+                             "Five Ninths",
+                             "One Ninth"),
+                     fractions.withNameLike("%e %",
+                                            denominator8or9,
+                                            Order.by(chars8thThrough3rdFromRightAsc,
+                                                     fifteenTimesInverseDesc))
+                                     .map(f -> f.name)
+                                     .toList());
+    }
+
+    /**
+     * Annotations from the jakarta.annotation.security package that are
+     * found on a repository interface methods are automatically copied to the
+     * respective method on the repository bean instance/proxy.
+     * Data PR 1507 would like to add class level annotations as well, but
+     * Weld does not preserve them on bean proxies/interceptor proxies.
+     * This test case enforces that the current behavior is not regressed.
+     */
+    @Test
+    public void testSecurityAnnotationsTransferedToBeanMethods() throws Exception {
+
+        // repository bean method: alter(Sector)
+
+        Method alter = sectors.getClass().getMethod("alter", Sector.class);
+        RolesAllowed rolesForMethod = alter.getAnnotation(RolesAllowed.class);
+        assertNotNull("Repository bean method " + alter +
+                      " lacks the RolesAllowed annotation",
+                      rolesForMethod);
+
+        assertEquals(List.of("operator"),
+                     List.of(rolesForMethod.value()));
+
+        for (Annotation anno : alter.getAnnotations())
+            if (RolesAllowed.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !RolesAllowed.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: byLabel(String)
+
+        Method byLabel = sectors.getClass().getMethod("byLabel", String.class);
+        assertNotNull(byLabel.getAnnotation(PermitAll.class));
+
+        for (Annotation anno : byLabel.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !PermitAll.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: create(Sector)
+
+        Method create = sectors.getClass().getMethod("create", Sector.class);
+
+        for (Annotation anno : create.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: destroy(Sector)
+
+        Method destroy = sectors.getClass().getMethod("destroy", Sector.class);
+
+        for (Annotation anno : destroy.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: eraseEverything()
+
+        Method eraseEverything = sectors.getClass().getMethod("eraseEverything");
+        assertNotNull(eraseEverything.getAnnotation(DenyAll.class));
+
+        for (Annotation anno : eraseEverything.getAnnotations())
+            if (DenyAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !DenyAll.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean class
+
+        RolesAllowed rolesForClass = //
+                        sectors.getClass().getAnnotation(RolesAllowed.class);
+        // The Weld proxy for the bean does not include class-level annotations.
+        // Jakarta Security would need to define these annotations as interceptor
+        // bindings to have them to apply to CDI beans.
+        // TODO add test based on changes made during EE 12
+
+        for (Annotation anno : sectors.getClass().getAnnotations())
+            if (RolesAllowed.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !RolesAllowed.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean: " + anno);
+
+    }
+
+    /**
      * Use a repository method that performs a Query consisting of a SELECT
      * clause that uses the NEW keyword to specify the constructor for a
      * Java record.
@@ -1891,6 +3164,93 @@ public class Data_1_1_Servlet extends FATServlet {
                                      .sorted()
                                      .limit(15)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Request sorting of results according to a mixture of
+     * two sort expressions and one entity attribute.
+     */
+    @Test
+    public void testSortByMixtureOfExpressionsAndAttributes() {
+        // EclipseLink generates NULLS FIRST in ORDER BY which SQL Server does not support
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
+        //                                      sort1 sort2 sort3 sort4
+        assertEquals(List.of("Two Sixteenths", //   7     F Two
+                             "Two Fifteenths", //   7     T Two   3
+                             "Ten Seventeenths", // 7     T Ten   588..
+                             "Two Eighteenths", //  8     F Two   1
+                             "Two Fourteenths", //  8     F Two   142..
+                             "Ten Eighteenths", //  8     F Ten   5
+                             "Ten Fourteenths", //  8     F Ten   714..
+                             "Two Nineteenths", //  8     T Two   105..
+                             "Two Thirteenths", //  8     T Two   153..
+                             "Ten Nineteenths", //  8     T Ten   526..
+                             "Ten Thirteenths", //  8     T Ten   769..
+                             "Ten Sixteenths"), //  9     F Ten
+                     fractions.named(Like.pattern("T?? #teenths", '?', '#', '!'),
+                                     Order.by(_Fraction.numerator.times(2)
+                                                     .minus(_Fraction.name.length())
+                                                     .plus(3)
+                                                     .abs()
+                                                     .asc(),
+                                              _Fraction.reduced.asc(),
+                                              _Fraction.name.left(4).desc(),
+                                              _Fraction.decimal.navigate(_Decimal.digits)
+                                                              .navigate(_Digits.repeating)
+                                                              .asc()
+                                                              .nullsFirst()), //For Oracle returning "" as null
+                                     Limit.of(12)));
+    }
+
+    /**
+     * Request sorting of results according to a single sort expression.
+     */
+    @Test
+    public void testSortBySingleExpression() {
+        In<Integer> numeratorExpressions = //
+                        In.expressions(_Fraction.denominator.minus(3),
+                                       NumericLiteral.of(1),
+                                       _Fraction.name.length().dividedBy(2));
+
+        Sort<Fraction> nameLengthDesc = _Fraction.name.length().desc();
+
+        assertEquals(List.of("Seven Twelfths", // length / 2 = 7
+                             "Nine Twelfths", // 12 - 3 = 9
+                             "Six Twelfths", // length / 2 = 6
+                             "One Twelfth"), // literal of 1
+                     fractions.withNumeratorsAndDenominator(numeratorExpressions,
+                                                            12,
+                                                            nameLengthDesc));
+    }
+
+    /**
+     * Request sorting of results according to two sort expressions.
+     */
+    @Test
+    public void testSortByTwoExpressions() {
+
+        Sort<Fraction> numDenomDifferenceAsc = //
+                        _Fraction.denominator.minus(_Fraction.numerator).asc();
+        Sort<Fraction> right4Desc = _Fraction.name.upper().right(4).desc();
+
+        assertEquals(List.of("Three Fourths",
+                             "Two Thirds",
+                             "One Half",
+                             "Four Fifths",
+                             "Two Fourths",
+                             "One Third",
+                             "Three Fifths",
+                             "One Fourth",
+                             "Two Fifths",
+                             "One Fifth"),
+                     fractions.denominatoredUpTo(NotNull.instance(),
+                                                 AtMost.max(5),
+                                                 numDenomDifferenceAsc,
+                                                 right4Desc)
+                                     .map(f -> f.name)
+                                     .toList());
     }
 
     /**
@@ -2011,6 +3371,12 @@ public class Data_1_1_Servlet extends FATServlet {
                                   AtMost.max(Integer.MAX_VALUE),
                                   Restrict.unrestricted());
         }
+    }
+
+    @Test
+    public void testBooleanRestriction() {
+        fractions.where(Restrict.all(_Fraction.name.contains("Four"),
+                                     _Fraction.reduced.isTrue()));
     }
 
 }

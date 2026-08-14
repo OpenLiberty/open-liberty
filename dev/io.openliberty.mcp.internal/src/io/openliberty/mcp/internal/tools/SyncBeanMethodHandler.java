@@ -12,14 +12,18 @@ package io.openliberty.mcp.internal.tools;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
+import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
+import jakarta.servlet.http.HttpServletResponse;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.tools.ToolManager.ToolDefinition;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.json.bind.Jsonb;
@@ -64,7 +68,9 @@ public class SyncBeanMethodHandler extends BeanMethodHandler<ToolResponse> {
             throw e;
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
-            if (isBusinessException(t)) {
+            if (t instanceof ToolCallUnauthorizedException) {
+                throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, t.getMessage());
+            } else if (isBusinessException(t)) {
                 return ToolResponses.createBusinessErrorResponse(e.getCause());
             } else {
                 return ToolResponses.createNonBusinessErrorResponse(t, method.name());

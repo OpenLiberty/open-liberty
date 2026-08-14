@@ -95,7 +95,7 @@ public class SSLConfigTest {
     }
 
     @Test
-    public void getAssociationOptions_clientAuthenticationRequired_highLevel() throws Exception {
+    public void getAssociationOptions_clientAuthenticationRequired() throws Exception {
         Properties props = new Properties();
         props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION, "true");
         props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, "false");
@@ -111,7 +111,7 @@ public class SSLConfigTest {
     }
 
     @Test
-    public void getAssociationOptions_clientAuthenticationSupported_highLevel() throws Exception {
+    public void getAssociationOptions_clientAuthenticationSupported() throws Exception {
         Properties props = new Properties();
         props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION, "false");
         props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, "true");
@@ -124,38 +124,6 @@ public class SSLConfigTest {
         assertEquals("There supported association options must include .", (Integrity.value | Confidentiality.value | EstablishTrustInTarget.value | EstablishTrustInClient.value),
                      options.supports);
         assertEquals("There required association options must include .", (Integrity.value | Confidentiality.value), options.requires);
-    }
-
-    @Test
-    public void getAssociationOptions_clientAuthenticationRequired_lowLevel() throws Exception {
-        Properties props = new Properties();
-        props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION, "true");
-        props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, "false");
-        props.put(Constants.SSLPROP_SECURITY_LEVEL, Constants.SECURITY_LEVEL_LOW);
-        createJSSEHelperGetPropertiesExpectations(props);
-
-        SSLConfig sslConfig = new SSLConfig(jsseHelper);
-
-        OptionsKey options = sslConfig.getAssociationOptions(sslConfigName);
-        assertEquals("There supported association options must include .", (Integrity.value | EstablishTrustInTarget.value | EstablishTrustInClient.value),
-                     options.supports);
-        assertEquals("There required association options must include .", (Integrity.value | EstablishTrustInClient.value), options.requires);
-    }
-
-    @Test
-    public void getAssociationOptions_clientAuthenticationSupported_lowLevel() throws Exception {
-        Properties props = new Properties();
-        props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION, "false");
-        props.put(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, "true");
-        props.put(Constants.SSLPROP_SECURITY_LEVEL, Constants.SECURITY_LEVEL_LOW);
-        createJSSEHelperGetPropertiesExpectations(props);
-
-        SSLConfig sslConfig = new SSLConfig(jsseHelper);
-
-        OptionsKey options = sslConfig.getAssociationOptions(sslConfigName);
-        assertEquals("There supported association options must include .", (Integrity.value | EstablishTrustInTarget.value | EstablishTrustInClient.value),
-                     options.supports);
-        assertEquals("There required association options must include .", (Integrity.value), options.requires);
     }
 
     private void createJSSEHelperExpectations() throws Exception {

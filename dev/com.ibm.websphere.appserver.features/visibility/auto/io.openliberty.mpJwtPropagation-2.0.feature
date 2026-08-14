@@ -5,7 +5,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mpJwt-2.0))"
 IBM-Install-Policy: when-satisfied
 -bundles= \
- com.ibm.ws.security.mp.jwt.propagation, \
- io.openliberty.restfulWS.internal.globalhandler
+ com.ibm.ws.security.mp.jwt.propagation
 kind=ga
 edition=core

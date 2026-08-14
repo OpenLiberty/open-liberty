@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Nie mo\u017cna za\u0142adowa\u01
 failed.to.load.converter.properties.useraction=Sprawd\u017a, czy okre\u015blony plik istnieje oraz czy ma poprawny format zgodny z obiektem java.utils.Properties.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: Wywo\u0142ano metod\u0119 setBufferSize() po uprzednim zapisie do strumienia wyj\u015bciowego/programu zapisuj\u0105cego
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) wywo\u0142ywana po zatwierdzeniu pierwszego zapisu lub odpowiedzi
 setbuffer.size.called.after.write.explanation=Wykonano pr\u00f3b\u0119 ustawienia wielko\u015bci buforu odpowiedzi w momencie, gdy odpowied\u017a by\u0142a ju\u017c zatwierdzona. Jest to b\u0142\u0105d aplikacji.
 setbuffer.size.called.after.write.useraction=Usu\u0144 wywo\u0142anie metody setBufferSize() lub przenie\u015b je w miejsce przed zatwierdzeniem odpowiedzi.
 
@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Zmodyfikuj logik\u0119 aplikacji, aby
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: Wzgl\u0119dny adres sendRedirect URL w aplikacji nie mo\u017ce zosta\u0107 przekonwertowany na prawid\u0142owy adres URL.
 sendRedirect.cannot.convert.relative.url.explanation=Podany wzgl\u0119dny adres URL mo\u017ce zawiera\u0107 nieprawid\u0142owe znaki lub indeksy \u015bcie\u017cek.
 sendRedirect.cannot.convert.relative.url.useraction=Zweryfikuj lokalizacj\u0119 sendRedirect URL w aplikacji przed wywo\u0142aniem metody response.sendRedirect( )
+
+invalid.accept.language.length=CWWWC0013E: Warto\u015b\u0107 nag\u0142\u00f3wka Accept-Language w \u017c\u0105daniu typu \u201e HTTP \u201d jest zbyt d\u0142uga.
+invalid.accept.language.length.explanation=Klient wysy\u0142a nag\u0142\u00f3wek \u201eAccept-Language\u201d, kt\u00f3ry jest zbyt d\u0142ugi.
+invalid.accept.language.length.useraction=Klient musi wys\u0142a\u0107 nag\u0142\u00f3wek \u201eAccept-Language\u201d o d\u0142ugo\u015bci nieprzekraczaj\u0105cej 4096 bajt\u00f3w.
