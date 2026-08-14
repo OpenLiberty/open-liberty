@@ -513,6 +513,7 @@ org.apache.james:apache-mime4j-storage:0.8.10
 org.apache.johnzon:johnzon-core:1.1.5
 org.apache.johnzon:johnzon-core:1.1.8
 org.apache.johnzon:johnzon-core:1.2.18
+org.apache.johnzon:johnzon-core:2.1.0
 org.apache.johnzon:johnzon-jsonb:1.1.5
 org.apache.johnzon:johnzon-jsonb:1.1.8
 org.apache.johnzon:johnzon-jsonb:1.2.18

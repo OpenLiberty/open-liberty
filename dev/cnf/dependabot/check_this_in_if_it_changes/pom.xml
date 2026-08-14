@@ -2588,6 +2588,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-core</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-jsonb</artifactId>
       <version>1.1.5</version>
     </dependency>
