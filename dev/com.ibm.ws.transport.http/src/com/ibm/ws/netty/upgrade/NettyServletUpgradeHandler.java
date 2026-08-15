@@ -11,7 +11,9 @@ package com.ibm.ws.netty.upgrade;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +31,7 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 
@@ -66,19 +69,145 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     private final ReentrantLock readLock = new ReentrantLock();
     private final Condition readCondition = readLock.newCondition();
 
-    private volatile long minBytesToRead = 0;
-    private volatile boolean isReadingAsync = false;
-
     private final AtomicInteger waitingThreads = new AtomicInteger(0);
     private final AtomicBoolean peerClosed = new AtomicBoolean(false);
     private final AtomicBoolean immediateTimeout = new AtomicBoolean(false);
     private final AtomicInteger queuedBytes = new AtomicInteger(0);
     
-    private final AtomicReference<TCPReadCompletedCallback> callback = new AtomicReference<>();
+    private final AtomicReference<AsyncReadGeneration> asyncRead = new AtomicReference<>();
     private VirtualConnection vc;
     private TCPReadRequestContext readContext;
+    private TCPReadCompletedCallback pendingCallback;
 
     private final AtomicBoolean readPending = new AtomicBoolean(false);
+    private final ArrayDeque<CallbackTask> callbackTasks = new ArrayDeque<>();
+    private boolean callbackDispatchScheduled;
+    private boolean callbackDrainRunning;
+
+    private static final class CallbackTask implements Runnable {
+        private final AtomicBoolean delivered = new AtomicBoolean();
+        private final Runnable terminal;
+
+        CallbackTask(Runnable terminal) {
+            this.terminal = terminal;
+        }
+
+        @Override
+        public void run() {
+            if (delivered.compareAndSet(false, true)) {
+                terminal.run();
+            }
+        }
+    }
+
+    private static final class AsyncReadGeneration {
+        final TCPReadCompletedCallback callback;
+        final VirtualConnection vc;
+        final TCPReadRequestContext callbackContext;
+        final WsByteBuffer[] destination;
+        final int minBytes;
+        final AtomicReference<ScheduledFuture<?>> timeout = new AtomicReference<>();
+
+        AsyncReadGeneration(TCPReadCompletedCallback callback,
+                            VirtualConnection vc,
+                            TCPReadRequestContext readContext,
+                            WsByteBuffer[] destination,
+                            long minBytes) {
+            this.callback = callback;
+            this.vc = vc;
+            this.destination = destination;
+            this.callbackContext = new GenerationReadContext(readContext, destination);
+            this.minBytes = (int) Math.max(1L, Math.min(Integer.MAX_VALUE, minBytes));
+        }
+
+        void cancelTimeout() {
+            ScheduledFuture<?> future = timeout.getAndSet(null);
+            if (future != null) {
+                future.cancel(false);
+            }
+        }
+    }
+
+    private static final class GenerationReadContext implements TCPReadRequestContext {
+        private final TCPReadRequestContext delegate;
+        private WsByteBuffer[] buffers;
+
+        GenerationReadContext(TCPReadRequestContext delegate, WsByteBuffer[] buffers) {
+            this.delegate = delegate;
+            this.buffers = buffers;
+        }
+
+        @Override
+        public long read(long numBytes, int timeout) throws IOException {
+            applyBuffers();
+            return delegate.read(numBytes, timeout);
+        }
+
+        @Override
+        public VirtualConnection read(long numBytes,
+                                      TCPReadCompletedCallback callback,
+                                      boolean forceQueue,
+                                      int timeout) {
+            applyBuffers();
+            return delegate.read(numBytes, callback, forceQueue, timeout);
+        }
+
+        @Override
+        public void setJITAllocateSize(int numBytes) {
+            delegate.setJITAllocateSize(numBytes);
+        }
+
+        @Override
+        public boolean getJITAllocateAction() {
+            return delegate.getJITAllocateAction();
+        }
+
+        @Override
+        public TCPConnectionContext getInterface() {
+            return delegate.getInterface();
+        }
+
+        @Override
+        public void clearBuffers() {
+            if (buffers != null) {
+                for (WsByteBuffer buffer : buffers) {
+                    if (buffer == null) {
+                        break;
+                    }
+                    buffer.clear();
+                }
+            }
+        }
+
+        @Override
+        public WsByteBuffer[] getBuffers() {
+            return buffers;
+        }
+
+        @Override
+        public void setBuffers(WsByteBuffer[] buffers) {
+            this.buffers = buffers;
+        }
+
+        @Override
+        public WsByteBuffer getBuffer() {
+            return buffers == null ? null : buffers[0];
+        }
+
+        @Override
+        public void setBuffer(WsByteBuffer buffer) {
+            buffers = buffer == null ? null : new WsByteBuffer[] { buffer };
+        }
+
+        @Override
+        public Socket getSocket() {
+            return delegate.getSocket();
+        }
+
+        private void applyBuffers() {
+            delegate.setBuffers(buffers);
+        }
+    }
 
 
     public NettyServletUpgradeHandler(Channel channel) {
@@ -100,7 +229,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             }
             peerClosed.set(true);
 
-            if (isReadingAsync && callback.get() != null) {
+            if (asyncRead.get() != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "NettyServletUpgradeHandler ChannelInputShutdownEvent reading async found!!");
                 }
@@ -124,11 +253,12 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             queuedBytes.addAndGet(n);
             ReferenceCountUtil.release(buf);
 
-            if (isReadingAsync && queuedBytes.get() >= minBytesToRead) {
+            AsyncReadGeneration generation = asyncRead.get();
+            if (generation != null && queuedBytes.get() >= generation.minBytes) {
                 Tr.debug(tc, "[UPGRADE-ASYNC] async threshold met; firing callback. bytes=" + queuedBytes.get() + 
-                    " minBytesToRead=" + minBytesToRead);
-                fireAsyncReadComplete();
-            } else if (queuedBytes.get() >= minBytesToRead) {
+                    " minBytesToRead=" + generation.minBytes);
+                fireAsyncReadComplete(generation);
+            } else if (generation == null && queuedBytes.get() > 0) {
                 signalReadReady();
             }
             return;
@@ -139,17 +269,14 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext context) throws Exception {
         peerClosed.set(true);
-        if (isReadingAsync && callback.get() != null) {
-            ExecutorService executor = HttpDispatcher.getExecutorService();
-            if (executor == null) {
-                // Dispatcher is already deactivated - nothing to schedule.
-                return;
-            }
-
-            fireAsyncReadError(new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
-                                                channel.localAddress() + " remote=" + channel.remoteAddress()));
+        AsyncReadGeneration generation = claimAsyncRead(asyncRead.get());
+        try {
+            super.channelInactive(context);
+        } finally {
+            if (generation != null) {
+                dispatchError(generation, closedReadFailure());
         }
-        super.channelInactive(context);
+        }
     }
 
     public void immediateTimeout() {
@@ -160,7 +287,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         immediateTimeout.set(true);
         signalReadReady();
 
-        if (isReadingAsync && callback.get() != null) {
+        if (asyncRead.get() != null) {
             fireAsyncReadError(new SocketTimeoutException("Immediate timeout requested"));
         }
         if (context != null) {
@@ -188,14 +315,15 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     private void requestRead(){
+        AsyncReadGeneration generation = asyncRead.get();
         Tr.debug(tc, "[UPGRADE-SYSOUT] NettyServletUpgradeHandler.requestRead autoRead="
             + channel.config().isAutoRead()
             + " active=" + channel.isActive()
             + " peerClosed=" + peerClosed.get()
             + " readPending=" + readPending.get()
             + " waitingThreads=" + waitingThreads.get()
-            + " isReadingAsync=" + isReadingAsync
-            + " minBytesToRead=" + minBytesToRead
+            + " isReadingAsync=" + (generation != null)
+            + " minBytesToRead=" + (generation == null ? 0 : generation.minBytes)
             + " queuedBytes=" + queuedBytes.get());
         if(peerClosed.get()){
             return;
@@ -232,15 +360,16 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     public boolean isAsyncReadArmed(){
-        return isReadingAsync;
+        return asyncRead.get() != null;
     }
 
     public long setToBuffer() {
-        
         if (readContext == null || !containsQueuedData())
             return 0L;
+        return setToBuffers(readContext.getBuffers());
+    }
 
-        final WsByteBuffer[] buffers = readContext.getBuffers();
+    private long setToBuffers(WsByteBuffer[] buffers) {
         if (buffers == null || buffers.length == 0 || buffers[0] == null)
             return 0L;
 
@@ -260,8 +389,9 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             }
 
             ByteBuf chunk = read(toRead, null); 
+            final int removed = chunk.readableBytes();
             try {
-                int remaining = chunk.readableBytes();
+                int remaining = removed;
                 int copied = 0;
 
                 for (WsByteBuffer b : buffers) {
@@ -275,20 +405,20 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                     final int lim = dst.limit();
                     final int pos = dst.position();
                     dst.limit(pos + can);
+                    try {
                     chunk.readBytes(dst);
+                    } finally {
                     dst.limit(lim);
+                    }
 
                     b.position(dst.position());
                     remaining -= can;
                     copied += can;
                 }
 
-            
-                if (copied > 0) {
-                    queuedBytes.addAndGet(-copied);
-                }
                 written.set(copied);
             } finally {
+                queuedBytes.addAndGet(-removed);
                 chunk.release();
             }
         };
@@ -317,16 +447,25 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     @Override
     public void close(ChannelHandlerContext context, ChannelPromise promise) throws Exception {
         peerClosed.set(true);
+        AsyncReadGeneration generation = claimAsyncRead(asyncRead.get());
+        try {
         super.close(context, promise);
+        } finally {
+            if (generation != null) {
+                dispatchError(generation, closedReadFailure());
+            }
+        }
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext context) throws Exception {
         readPending.set(false);
+        AsyncReadGeneration generation = asyncRead.get();
+        int minimum = generation == null ? 1 : generation.minBytes;
         if (!context.channel().config().isAutoRead()
             && !peerClosed.get()
-            && (isReadingAsync || waitingThreads.get() > 0)
-            && queuedDataSize() < minBytesToRead) {
+            && (generation != null || waitingThreads.get() > 0)
+            && queuedDataSize() < minimum) {
             requestRead();
         }
         super.channelReadComplete(context);
@@ -357,13 +496,43 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         return out;
     }
 
-    public void setReadListener(TCPReadCompletedCallback cb) {
-        callback.set(cb);
+    public void setReadListener(TCPReadCompletedCallback callback) {
+        pendingCallback = callback;
     }
 
     public void queueAsyncRead(long minBytesToRead) {
-        this.minBytesToRead = (int) Math.max(1L, minBytesToRead);
-        this.isReadingAsync = true;
+        TCPReadCompletedCallback callback = pendingCallback;
+        pendingCallback = null;
+        queueAsyncRead(callback,
+                       vc,
+                       readContext,
+                       minBytesToRead,
+                       TCPReadRequestContext.NO_TIMEOUT);
+    }
+
+    public void queueAsyncRead(TCPReadCompletedCallback callback,
+                               VirtualConnection vc,
+                               TCPReadRequestContext readContext,
+                               long minBytesToRead,
+                               int timeoutMillis) {
+        WsByteBuffer[] buffers = readContext == null ? null : readContext.getBuffers();
+        if (buffers == null || buffers.length == 0 || buffers[0] == null) {
+            throw new IllegalArgumentException("No destination buffers supplied for upgraded asynchronous read");
+        }
+
+        AsyncReadGeneration generation = new AsyncReadGeneration(callback,
+                                                                 vc,
+                                                                 readContext,
+                                                                 buffers.clone(),
+                                                                 minBytesToRead);
+        if (!asyncRead.compareAndSet(null, generation)) {
+            throw new IllegalStateException("An upgraded asynchronous read is already armed");
+        }
+
+        if (peerClosed.get()) {
+            fireAsyncReadError(generation, closedReadFailure());
+            return;
+        }
 
         Tr.debug(tc, "[UPGRADE-ASYNC] queueAsyncRead : " + 
             "minBytesToRead = " + minBytesToRead + ", " +
@@ -371,56 +540,175 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             "autoRead = " + channel.config().isAutoRead() + ", " +
             "readPending = " + readPending.get() );
 
+        if (timeoutMillis > 0) {
+            ScheduledFuture<?> future = channel.eventLoop().schedule(
+                () -> fireAsyncReadError(generation, new SocketTimeoutException("Read operation timed out")),
+                timeoutMillis,
+                TimeUnit.MILLISECONDS);
+            generation.timeout.set(future);
+            if (asyncRead.get() != generation) {
+                generation.cancelTimeout();
+            }
+        }
+
         requestRead();
 
-        final int q = queuedBytes.get();
-        if (q >= this.minBytesToRead && callback.get() != null) {
-            fireAsyncReadComplete();
+        if (queuedBytes.get() >= generation.minBytes) {
+            if (context != null && !context.executor().inEventLoop()) {
+                context.executor().execute(() -> fireAsyncReadComplete(generation));
+            } else {
+                fireAsyncReadComplete(generation);
+            }
         }
     }
 
-    private void fireAsyncReadComplete() {
-        TCPReadCompletedCallback cb = claimAsyncReadCallback();
-        if (cb == null) {
+    private void fireAsyncReadComplete(AsyncReadGeneration expected) {
+        AsyncReadGeneration generation = claimAsyncRead(expected);
+        if (generation == null) {
             return;
         }
+
+        final long copied;
+        try {
+            copied = setToBuffers(generation.destination);
+        } catch (Throwable failure) {
+            dispatchError(generation, asIOException(failure));
+            return;
+        }
+        if (copied < generation.minBytes) {
+            dispatchError(generation,
+                          new IOException("Upgraded read completed before minimum bytes were copied: copied="
+                                          + copied + " minimum=" + generation.minBytes));
+            return;
+        }
+
         executeAsyncReadCallback(() -> {
             try {
-                cb.complete(vc, readContext);
-            } catch (Throwable t) {
-                try {
-                    cb.error(vc, readContext, (t instanceof IOException) ? (IOException) t : new EOFException(String.valueOf(t)));
-                } catch (Throwable ignore) {
+                generation.callback.complete(generation.vc, generation.callbackContext);
+            } catch (Throwable failure) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Upgraded asynchronous read completion callback failed after terminal success: " + failure);
                 }
             }
         });
     }
 
     private void fireAsyncReadError(IOException error) {
-        TCPReadCompletedCallback cb = claimAsyncReadCallback();
-        if (cb == null) {
-            return;
+        fireAsyncReadError(asyncRead.get(), error);
+    }
+
+    private void fireAsyncReadError(AsyncReadGeneration expected, IOException error) {
+        AsyncReadGeneration generation = claimAsyncRead(expected);
+        if (generation != null) {
+            dispatchError(generation, error);
         }
+    }
+
+    private void dispatchError(AsyncReadGeneration generation, IOException error) {
         executeAsyncReadCallback(() -> {
             try {
-                cb.error(vc, readContext, error);
-            } catch (Exception ignore) {
+                generation.callback.error(generation.vc, generation.callbackContext, error);
+            } catch (Throwable failure) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Upgraded asynchronous read error callback failed after terminal error: " + failure);
+                }
             }
         });
     }
 
-    private TCPReadCompletedCallback claimAsyncReadCallback() {
-        TCPReadCompletedCallback cb = callback.getAndSet(null);
-        if (cb != null) {
-            isReadingAsync = false;
+    private AsyncReadGeneration claimAsyncRead(AsyncReadGeneration expected) {
+        if (expected == null || !asyncRead.compareAndSet(expected, null)) {
+            return null;
         }
-        return cb;
+        expected.cancelTimeout();
+        return expected;
+    }
+
+    private static IOException asIOException(Throwable failure) {
+        return failure instanceof IOException
+               ? (IOException) failure
+               : new IOException("Upgraded asynchronous read failed", failure);
+        }
+
+    private EOFException closedReadFailure() {
+        return new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
+                                channel.localAddress() + " remote=" + channel.remoteAddress());
     }
 
     private void executeAsyncReadCallback(Runnable callbackTask) {
+        CallbackTask terminal = new CallbackTask(callbackTask);
         ExecutorService executor = HttpDispatcher.getExecutorService();
-        if (executor != null) {
-            executor.execute(callbackTask);
+        boolean drainInline = false;
+        boolean submit = false;
+        synchronized (callbackTasks) {
+            callbackTasks.add(terminal);
+            if (!callbackDrainRunning && !callbackDispatchScheduled) {
+                if (executor == null) {
+                    callbackDrainRunning = true;
+                    drainInline = true;
+                } else {
+                    callbackDispatchScheduled = true;
+                    submit = true;
+                }
+            }
+        }
+
+        if (drainInline) {
+            drainOwnedCallbacks();
+        } else if (submit) {
+            try {
+                executor.execute(this::drainAsyncReadCallbacks);
+            } catch (RuntimeException failure) {
+                boolean recover = false;
+                synchronized (callbackTasks) {
+                    if (callbackDispatchScheduled && !callbackDrainRunning) {
+                        callbackDispatchScheduled = false;
+                        callbackDrainRunning = true;
+                        recover = true;
+                    }
+                }
+                if (recover) {
+                    drainOwnedCallbacks();
+                }
+            }
+        }
+    }
+
+    private void drainAsyncReadCallbacks() {
+        synchronized (callbackTasks) {
+            if (callbackDrainRunning || !callbackDispatchScheduled) {
+                return;
+            }
+            callbackDispatchScheduled = false;
+            callbackDrainRunning = true;
+        }
+        drainOwnedCallbacks();
+    }
+
+    private void drainOwnedCallbacks() {
+        while (true) {
+            CallbackTask task;
+            synchronized (callbackTasks) {
+                task = callbackTasks.poll();
+                if (task == null) {
+                    callbackDrainRunning = false;
+                    return;
+                }
+            }
+            runCallbackTask(task);
+        }
+    }
+
+    private void runCallbackTask(CallbackTask task) {
+        if (task == null) {
+            return;
+        }
+        try {
+            task.run();
+        } catch (Throwable failure) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Upgraded asynchronous read terminal callback failed: " + failure);
+            }
         }
     }
 
@@ -429,7 +717,8 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     public TCPReadCompletedCallback getReadListener() {
-        return callback.get();
+        AsyncReadGeneration generation = asyncRead.get();
+        return generation == null ? pendingCallback : generation.callback;
     }
 
     public void setVC(VirtualConnection vc) {
