@@ -344,6 +344,6 @@ CWMCM0043W.unsupported.annotation.useraction=Remove the unsupported annotation f
 
 # Used for server logging
 # Do not translate "MCP", "localhost", or "Origin"
-CWMCM0044I.localhost.header.rejected=CWMCM0044I: A local MCP request was rejected due to an invalid Origin header.
-CWMCM0044I.localhost.header.rejected.explanation=Unsecured HTTP requests from localhost must not have an Origin header containing anything other than localhost or a loopback address to protect against DNS rebinding attacks.
-CWMCM0044I.localhost.header.rejected.useraction=Ensure that requests from localhost do not have an Origin header that indicates anything other than localhost.
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: The server did not process a local MCP request because the Origin header value was not valid.
+CWMCM0044I.localhost.header.rejected.explanation=Unsecured HTTP requests from localhost must either have no Origin header, or have an Origin header that contains only localhost or a loopback address. An Origin header that contains any other value indicates a possible DNS rebinding attack.
+CWMCM0044I.localhost.header.rejected.useraction=Ensure that the Origin header is either not present or contains only localhost.
