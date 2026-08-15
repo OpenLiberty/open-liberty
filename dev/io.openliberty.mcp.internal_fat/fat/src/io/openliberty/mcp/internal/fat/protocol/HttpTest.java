@@ -200,7 +200,7 @@ public class HttpTest {
         server.setMarkToEndOfLog();
         callPing(403, req -> req.requestProp("Origin", "http://evil.example.com"));
         callPing(403, req -> req.requestProp("Origin", "something odd"));
-        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0044I: A local MCP request was rejected due to an invalid Origin header."));
+        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0044I: The server did not process a local MCP request because the Origin header value was not valid."));
     }
 
     @Test
