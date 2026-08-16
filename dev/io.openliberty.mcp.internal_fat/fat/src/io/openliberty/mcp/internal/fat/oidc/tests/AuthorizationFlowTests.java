@@ -112,6 +112,9 @@ public class AuthorizationFlowTests extends FATServletClient {
 
         server.startServer();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        // Wait for LTPA configuration to be ready
+        server.waitForLTPAConfigReady();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         // Build the combined HTTPS client now that key.p12 exists
         // This client trusts both Liberty's auto-generated cert and the Keycloak self-signed cert
