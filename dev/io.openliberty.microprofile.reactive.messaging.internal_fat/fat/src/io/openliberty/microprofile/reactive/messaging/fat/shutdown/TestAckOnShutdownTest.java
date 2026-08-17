@@ -88,6 +88,10 @@ public class TestAckOnShutdownTest extends FATServletClient {
 
         KafkaTestClient kafkaTestClient = new KafkaTestClient(KafkaTests.kafkaContainer.getBootstrapServers());
 
+        // Capture the committed offset before any messages are sent so that the
+        // assertion is relative to this run, not affected by previous test repeats.
+        long baselineOffset = kafkaTestClient.getTopicOffset(APP_NAME, APP_NAME);
+
         Thread sender = new Thread(() -> {
             try (KafkaWriter<String, String> writer = kafkaTestClient.writerFor(APP_NAME)) {
                 int count = 0;
@@ -126,15 +130,16 @@ public class TestAckOnShutdownTest extends FATServletClient {
             }
 
             // Find the last "AckOnShutdown processing message:" line in messages.log and
-            // extract the message number from the payload (e.g. "payload=test message 234"
+            // extract the message number from the messages processed number (e.g. "messages processed=11"
             // -> 234). The Kafka committed offset equals offset+1, and since offset is
-            // zero-based the committed offset equals the 1-based payload message number.
-            List<String> processingLines = server.findStringsInLogs("AckOnShutdown processing message:.*payload=test message \\d+");
+            // zero-based the committed offset equals the 1-based message processed number.
+            List<String> processingLines = server.findStringsInLogs("AckOnShutdown processing message:.*messages processed= \\d+");
             assertFalse("No 'AckOnShutdown processing message' lines found in server log", processingLines.isEmpty());
             String lastLine = processingLines.get(processingLines.size() - 1);
-            String payloadPrefix = "payload=test message ";
-            int payloadIdx = lastLine.lastIndexOf(payloadPrefix);
-            long expectedCommittedOffset = Long.parseLong(lastLine.substring(payloadIdx + payloadPrefix.length()).trim());
+            String prefix = "messages processed= ";
+            int index = lastLine.lastIndexOf(prefix);
+            long messagesProcessed = Long.parseLong(lastLine.substring(index + prefix.length()).trim());
+            long expectedCommittedOffset = baselineOffset + messagesProcessed;
 
             kafkaTestClient.assertTopicOffsetAdvancesTo(expectedCommittedOffset,
                                                         KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT,
@@ -142,6 +147,7 @@ public class TestAckOnShutdownTest extends FATServletClient {
                                                         APP_NAME);
         } finally {
             server.postStopServerArchive();
+            kafkaTestClient.cleanUp();
         }
     }
 

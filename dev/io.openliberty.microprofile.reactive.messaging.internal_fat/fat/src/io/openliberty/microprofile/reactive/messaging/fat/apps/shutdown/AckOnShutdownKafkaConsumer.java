@@ -23,6 +23,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class AckOnShutdownKafkaConsumer extends AbstractReceptionBean<String> {
 
+    int messagesProcessed = 1;
+
     @Incoming("TestAckOnShutdown")
     @Override
     public CompletionStage<Void> receiveMessage(Message<String> message) {
@@ -33,7 +35,10 @@ public class AckOnShutdownKafkaConsumer extends AbstractReceptionBean<String> {
                            + " offset=" + record.offset()
                            + " leaderEpoch=" + record.leaderEpoch().orElse(-1)
                            + " timestamp=" + record.timestamp()
-                           + " payload=" + record.value());
+                           + " payload=" + record.value()
+                           + " messages processed= " + messagesProcessed);
+
+        messagesProcessed++;
         return message.ack();
     }
 
