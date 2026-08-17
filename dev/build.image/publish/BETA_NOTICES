@@ -158,6 +158,7 @@ Joda-Time [joda-time], Kotlin Stdlib [kotlin-stdlib],
 Kotlin Stdlib Common [kotlin-stdlib-common],
 Kotlin Stdlib Jdk7 [kotlin-stdlib-jdk7], Kotlin Stdlib Jdk8 [kotlin-stdlib-jdk8],
 LRA Client [lra-client], LRA Proxy API [lra-proxy-api], LZ4 and xxHash [lz4-java],
+MCP Server API [mcp-server-api],
 MicroProfile Config API [microprofile-config-api],
 MicroProfile Context Propagation [microprofile-context-propagation-api],
 MicroProfile Fault Tolerance API [microprofile-fault-tolerance-api],
@@ -1014,7 +1015,7 @@ Region Digraph [org.eclipse.equinox.region] https://github.com/eclipse-equinox/e
 Yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
 che-lib7.0.0-rc-4.0 [che-lib] https://github.com/eclipse-che/che-lib.git
 jakarta.enterprise.concurrent-api https://github.com/eclipse-ee4j/concurrency-api
-jakarta.json(https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/)
+jakarta.json (https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/)
 jakarta.resource API [jakarta.resource-api] https://github.com/eclipse-ee4j/jca-api
 jakarta.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
 jakarta.ws.rs-api https://github.com/eclipse-ee4j/jaxrs-api
@@ -1022,12 +1023,12 @@ jakarta.xml.soap-api (https://github.com/javaee/javax.xml.soap)
 javax.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
 javax.transaction API [jboss-transaction-api_1.3_spec] https://github.com/eclipse-ee4j
 javax.ws.rs-api [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/jaxrs-api
-javax.ws.rs-api https://www.eclipse.org/org/foundation/
+javax.ws.rs-api (https://www.eclipse.org/org/foundation/)
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] https://github.com/eclipse-ee4j/ejb-api
 jboss-jakarta-jaxrs-api_spec [jboss-jaxrs-api_2.1_spec] http://www.jboss.org
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
-org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
-
+org.eclipse.persistence.jpa.jpql (http://www.eclipse.org/eclipselink)
+org.eclipse.yasson [yasson] (https://projects.eclipse.org/projects/ee4j.yasson)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
@@ -1662,7 +1663,7 @@ hasown (Copyright Jordan Harband and contributors)
 hast-util-parse-selector (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 hastscript (Copyright Titus Wormer) (Copyright Titus Wormer <tituswormer@gmail.com>)
 http2-wrapper (Copyright 2018 Szymon Marczak)
-immutable (Copyright 2014 Facebook, Inc)
+immutable (Copyright 2014 Lee Byron and other contributors)
 imurmurhash (Copyright 2013 Gary Court, Jens Taylor)
 invariant (Copyright 2013 Facebook, Inc)
 is-alphabetical (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
@@ -1714,7 +1715,7 @@ object-assign (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@g
 one-time (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
 p-cancelable (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 parse-entities (Copyright Titus Wormer) (Copyright Titus Wormer <mailto:tituswormer@gmail.com>)
-picomatch (Copyright 2017 Jon Schlinkert) (Copyright 2017 Jon Schlinkert" (https://github.com/jonschlinkert))
+picomatch (Copyright 2017 Jon Schlinkert) (Copyright 2017 Jon Schlinkert" https://github.com/jonschlinkert)
 possible-typed-array-names (Copyright 2024 Jordan Harband)
 process (Copyright 2013 Roman Shtylman <shtylman@gmail.com>)
 prop-types (Copyright 2013 Facebook, Inc)
