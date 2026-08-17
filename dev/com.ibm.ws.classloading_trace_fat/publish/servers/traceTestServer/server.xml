@@ -9,18 +9,19 @@
         <feature>jca-1.7</feature>
     </featureManager>
 
-    <!-- Enable detailed classloading trace -->
-    <logging traceSpecification="*=info:com.ibm.ws.classloading.*=all:com.ibm.ws.classloading.internal.*=all"
+    <!-- ClassLoadingService=all for CLASS LOAD/FAIL trace; SharedLibrary=all for publishGeneration() trace -->
+    <logging traceSpecification="*=info:ClassLoadingService=all:SharedLibrary=all"
              traceFormat="BASIC"
              maxFileSize="100"
              maxFiles="10"/>
 
-    <!-- Test EAR application with multiple modules -->
-    <enterpriseApplication id="traceTestEar" 
-                          location="traceTestEar.ear" 
+    <!-- No <fileset> child: publishGeneration() fires immediately on startup -->
+    <library id="testSharedLibrary"/>
+
+    <enterpriseApplication id="traceTestEar"
+                          location="traceTestEar.ear"
                           name="traceTestEar">
-        <!-- Configure parent-last delegation for the web module to test ParentLastClassLoader -->
-        <classloader delegation="parentLast"/>
+        <classloader commonLibraryRef="testSharedLibrary"/>
     </enterpriseApplication>
 
 </server>
