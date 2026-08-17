@@ -1,4 +1,0 @@
-This directory is intentionally left empty. 
-This TCK does not need a server to run against and therefore no server configuration is provided.
-However, the MvnUtils class uses the server directory to correlate test results to server deployment.
-An empty directory will work for this purpose. 
