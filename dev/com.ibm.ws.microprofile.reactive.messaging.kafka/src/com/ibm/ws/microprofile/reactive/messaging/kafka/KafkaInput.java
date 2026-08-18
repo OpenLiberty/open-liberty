@@ -287,7 +287,7 @@ public abstract class KafkaInput<K, V> implements ConsumerRebalanceListener {
      * so that messages are never dispatched to application code during application startup.
      * The wait is skipped on subsequent calls once {@link #applicationStarted} is {@code true}.
      */
-    @FFDCIgnore({ WakeupException.class, InterruptedException.class })
+    @FFDCIgnore({ WakeupException.class })
     private void executePollActions(CompletableFuture<PublisherBuilder<Message<V>>> result) {
         if (!waitForAppStart(result)) {
             return;

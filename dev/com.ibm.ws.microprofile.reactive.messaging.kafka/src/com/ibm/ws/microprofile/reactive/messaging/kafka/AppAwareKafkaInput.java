@@ -16,6 +16,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
@@ -103,6 +104,7 @@ public class AppAwareKafkaInput<K, V> extends KafkaInput<K, V> {
     }
 
     @Override
+    @FFDCIgnore(InterruptedException.class)
     protected boolean waitForAppStart(CompletableFuture<PublisherBuilder<Message<V>>> result) {
         if (!applicationStarted) {
             try {
