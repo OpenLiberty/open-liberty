@@ -1,0 +1,19 @@
+<server description="Server for testing Jandex index in WEB-INF/classes">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <javaPermission
+    className="java.util.PropertyPermission"
+    name="org.glassfish.web.rfc2109_cookie_names_enforced"
+    actions="read"
+    codebase="${server.config.dir}dropins/TestServlet40.ear"/>
+
+  <!-- Enable jandex so that the jandex index in WEB-INF/classes/META-INF/jandex.idx is read -->
+  <application location="TestServlet40.ear" useJandex="true" readWebInfJandex="true"/>
+  <applicationManager useJandex="true"/>
+
+</server>
