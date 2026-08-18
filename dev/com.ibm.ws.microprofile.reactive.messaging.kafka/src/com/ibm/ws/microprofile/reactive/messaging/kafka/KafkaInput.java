@@ -250,6 +250,36 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         }
     }
 
+    /**
+     * Synchronously commit the offset for the given partition tracker directly on the Kafka consumer.
+     * <p>
+     * Unlike {@link #commitOffsets}, this method does not go via the task queue and does not require
+     * {@link #running} to be {@code true}. It is intended for use during shutdown, after the consumer
+     * has been woken but before it has been closed.
+     * <p>
+     * If the commit fails, the exception is logged as a warning and then rethrown so that the caller
+     * can propagate the failure to any waiting completion stages.
+     *
+     * @param partitionTracker the tracker whose partition offset should be committed
+     * @param offset           the offset to commit
+     * @throws RuntimeException if the underlying Kafka commitSync throws
+     */
+    public void commitOffsetsSync(PartitionTracker partitionTracker, OffsetAndMetadata offset) {
+        Map<TopicPartition, OffsetAndMetadata> offsets = Collections.singletonMap(partitionTracker.getTopicPartition(), offset);
+        this.lock.lock();
+        try {
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Committing offsets synchronously during shutdown", offsets);
+            }
+            this.kafkaConsumer.commitSync(offsets);
+        } catch (RuntimeException t) {
+            Tr.warning(tc, "kafka.read.offsets.commit.warning.CWMRX1001W", t);
+            throw t;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
     private static <T> Void logPollFailure(T result, Throwable t) {
         if (t != null) {
             Tr.error(tc, "kafka.poll.error.CWMRX1002E", t);

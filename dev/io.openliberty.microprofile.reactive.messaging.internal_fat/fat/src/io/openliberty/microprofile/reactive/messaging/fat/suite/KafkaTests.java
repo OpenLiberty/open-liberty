@@ -30,6 +30,7 @@ import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MetricsT
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MultiAppMetricsTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.nack.KafkaNackTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.validation.KafkaValidationTests;
+import io.openliberty.microprofile.reactive.messaging.fat.shutdown.TestAckOnShutdownTest;
 import io.openliberty.microprofile.reactive.messaging.fat.startup.TestMessageOnStartupTest;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTest;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTestWithJAXRS;
@@ -45,7 +46,8 @@ import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMess
                 KafkaEmitterTest.class,
                 KafkaEmitterRestfulTest.class,
                 KafkaEmitterNackRestfulTest.class,
-                TestMessageOnStartupTest.class
+                TestMessageOnStartupTest.class,
+                TestAckOnShutdownTest.class
 })
 public class KafkaTests {
 
