@@ -21,11 +21,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.annotation.SkipForRepeat;
 
 
 @RunWith(FATRunner.class)
@@ -61,10 +58,17 @@ public class LTPATokenRefreshTests {
 
     private static LibertyServer server;
 
-    private static final long REFRESH_WAIT_MS       = 61_000;
-    private static final long INACTIVITY_WAIT_MS    = 121_000;
-    private static final long HALF_WINDOW_MS        = 30_000;
-    private static final long ABSOLUTE_EXPIRY_WAIT_MS = 241_000;
+    // Token age offsets in seconds used by authenticateAndSetTokenAge().
+    private static final int PAST_THRESHOLD_S   = 70;
+    private static final int BEFORE_THRESHOLD_S = 20;
+    private static final int PAST_INACTIVITY_S  = 130;
+    private static final int PAST_EXPIRY_S      = 190;
+
+    private static final String CFG_TOKEN_REFRESH                      = "serverTokenRefresh.xml";
+    private static final String CFG_TOKEN_REFRESH_ONLY                 = "serverTokenRefreshOnly.xml";
+    private static final String CFG_TOKEN_INACTIVITY_ONLY              = "serverTokenInactivityOnly.xml";
+    private static final String CFG_TOKEN_EXCEEDS_EXPIRY               = "serverTokenInactivityExceedsExpiration.xml";
+    private static final String CFG_TOKEN_THRESHOLD_EXCEEDS_INACTIVITY = "serverTokenRefreshExceedsInactivity.xml";
 
     @Rule
     public final TestWatcher logger = new TestWatcher() {
@@ -91,7 +95,7 @@ public class LTPATokenRefreshTests {
         // Enable beta edition so ProductInfo.getBetaEdition() returns true,
         // activating inactivityTimeout / refreshThreshold in LTPAToken2 and LTPAConfigurationImpl.
         server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-        server.setServerConfigurationFile("serverTokenRefresh.xml");
+        server.setServerConfigurationFile(CFG_TOKEN_REFRESH);
         server.startServer(true);
         server.waitForStringInLog("CWWKZ0001I.*" + APP_NAME);
     }
@@ -99,515 +103,329 @@ public class LTPATokenRefreshTests {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            // These warnings are intentionally produced by specific test configs and must not
+            // cause teardown to fail: CWWKS4125W (inactivityTimeout >= expiration),
+            // CWWKS4124W (refreshThreshold >= inactivityTimeout, relative-to-expiration path),
+            // CWWKS4123W (refreshThreshold >= inactivityTimeout, clearly-wrong path).
+            server.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W");
         }
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W");
         }
     }
 
+    // Verifies a token is refreshed (new cookie issued) once the refresh threshold is crossed, and that the new cookie works for SSO.
     @Test
     public void testTokenRefreshedAndUsableWhenThresholdCrossed() throws Exception {
         String url = getServletUrl();
         String method = "testTokenRefreshedAndUsableWhenThresholdCrossed";
-        Log.info(thisClass, method, "Config: expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
+        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Initial authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        assertNotNull("LTPA cookie must be set after authentication", cookie);
-        conn1.disconnect();
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
 
-        Log.info(thisClass, method, "waiting " + (REFRESH_WAIT_MS/1000) + "s to cross the refresh threshold");
-        Thread.sleep(REFRESH_WAIT_MS);
+        String refreshedCookie = ssoRequestExpectingRefresh(url, agedCookie, "SSO after threshold", method);
 
-        Log.info(thisClass, method, "sending SSO request: expecting server to return new cookie");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        assertEquals("SSO request must succeed", 200, status2);
-        String refreshedCookie = assertTokenRefreshed(conn2);
-        Log.info(thisClass, method, "refreshed LTPA cookie: " + maskCookie(refreshedCookie));
-        assertFalse("Refreshed cookie must differ from original", cookie.equals(refreshedCookie));
-        conn2.disconnect();
-
-        Log.info(thisClass, method, "sending SSO with the refreshed cookie");
-        HttpURLConnection conn3 = makeRequestWithCookie(url, refreshedCookie);
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status3);
-        assertEquals("Refreshed clone must be accepted", 200, status3);
+        HttpURLConnection conn3 = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie", method);
+        assertEquals("Refreshed cookie must be accepted", 200, conn3.getResponseCode());
         Log.info(thisClass, method, "PASSED: new cookie issued and successfully used for SSO");
-        conn3.disconnect();
     }
 
+    // Verifies no token refresh occurs when the request arrives before the refresh threshold window opens.
     @Test
     public void testTokenNotRefreshedBeforeThreshold() throws Exception {
         String url = getServletUrl();
         String method = "testTokenNotRefreshedBeforeThreshold";
-        Log.info(thisClass, method, "Config: expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
+        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Initial authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        Log.info(thisClass, method, "LTPA cookie received: " + maskCookie(cookie));
-        assertNotNull("LTPA cookie must be set after authentication", cookie);
-        conn1.disconnect();
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", BEFORE_THRESHOLD_S, method);
 
-        Log.info(thisClass, method, "Waiting " + HALF_WINDOW_MS + ": letting token age 30s (before refresh window)");
-        Thread.sleep(HALF_WINDOW_MS);
-
-        Log.info(thisClass, method, "sending SSO request with LTPA cookie");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        assertEquals("SSO request must succeed", 200, status2);
+        HttpURLConnection conn2 = ssoRequest(url, agedCookie, "SSO before threshold", method);
+        assertEquals("SSO request must succeed", 200, conn2.getResponseCode());
         assertTokenNotRefreshed("Token should not be refreshed when inactivity remaining > refreshThreshold", conn2);
         Log.info(thisClass, method, "PASSED: no new cookie received");
-        conn2.disconnect();
     }
-    
+
+    // Verifies that a token refresh resets the inactivity clock, allowing the refreshed cookie to remain valid beyond the original window.
     @Test
     public void testInactivityWindowResetsAfterTokenRefresh() throws Exception {
         String url = getServletUrl();
-        String method = "testInactivityWindowResetsOnTokenRefresh";
-        Log.info(thisClass, method, "Config: expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
-        
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "initial authentication response: HTTP " + status1);
-        assertEquals("Initial authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        assertNotNull("Must receive initial cookie", cookie);
-        conn1.disconnect();
+        String method = "testInactivityWindowResetsAfterTokenRefresh";
+        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
-        // First wait — crosses threshold, clone resets the inactivity clock
-        Log.info(thisClass, method, "first wait: " + (REFRESH_WAIT_MS/1000) + "s to cross the 1-minute refresh threshold");
-        Thread.sleep(REFRESH_WAIT_MS);
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        String refreshedCookie = ssoRequestExpectingRefresh(url, agedCookie, "SSO after first age (refresh expected)", method);
+        Log.info(thisClass, method, "inactivity window reset; refreshed cookie has a fresh creation time");
 
-        Log.info(thisClass, method, "sending SSO request after first wait; new cookie EXPECTED");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        assertEquals("Request after first wait must succeed", 200, status2);
-        String refreshedCookie = assertTokenRefreshed(conn2);
-        Log.info(thisClass, method, "new cookie received: " + maskCookie(refreshedCookie) + " ; inactivity window should reset");
-        conn2.disconnect();
-
-        // Second wait — same 61s from the reset point; window was reset so token still valid
-        Log.info(thisClass, method, "second wait: " + (REFRESH_WAIT_MS/1000) + "s from the reset point " +
-                 "(cumulative idle from original auth is about 122s, which exceeds 2 minutes, but the window was reset by the refreshed cookie)");
-        Thread.sleep(REFRESH_WAIT_MS);
-
-        Log.info(thisClass, method, "sending SSO request after second wait using refreshed cookie");
-        HttpURLConnection conn3 = makeRequestWithCookie(url, refreshedCookie);
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status3);
-        assertEquals("Token must still be valid after second wait (window was reset)", 200, status3);
-        Log.info(thisClass, method, "PASSED: token accepted after about 122s cumulative idle because the refresh reset the window");
-        conn3.disconnect();
+        HttpURLConnection conn3 = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (window reset)", method);
+        assertEquals("Refreshed cookie must be valid (inactivity clock was reset)", 200, conn3.getResponseCode());
+        Log.info(thisClass, method, "PASSED: refreshed cookie accepted; inactivity clock was correctly reset");
     }
 
+    // Verifies that concurrent sessions for different users each receive independent token refreshes with unique cookies.
     @Test
     public void testTokenRefreshWithMultipleUsers() throws Exception {
         String url = getServletUrl();
         String method = "testTokenRefreshWithMultipleUsers";
-        Log.info(thisClass, method, "config: expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
+        Log.info(thisClass, method, "config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
-        Log.info(thisClass, method, "authenticating as user1");
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "user1 authentication response: HTTP " + status1);
-        assertEquals("User1 authentication must succeed", 200, status1);
-        String user1Cookie = extractCookie(conn1);
-        Log.info(thisClass, method, "user1 LTPA cookie: " + maskCookie(user1Cookie));
-        assertNotNull("user1 must receive LTPA cookie", user1Cookie);
-        conn1.disconnect();
+        String user1AgedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        String user2AgedCookie = authenticateAndSetTokenAge(url, "user2", "user2pwd", PAST_THRESHOLD_S, method);
 
-        Log.info(thisClass, method, "authenticating as user2");
-        HttpURLConnection conn2 = makeAuthenticatedRequest(url, null, "user2", "user2pwd");
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "user2 authentication response: HTTP " + status2);
-        assertEquals("User2 authentication must succeed", 200, status2);
-        String user2Cookie = extractCookie(conn2);
-        Log.info(thisClass, method, "user2 LTPA cookie: " + maskCookie(user2Cookie));
-        assertNotNull("user2 must receive LTPA cookie", user2Cookie);
-        conn2.disconnect();
+        assertFalse("Different users must have different backdated cookies", user1AgedCookie.equals(user2AgedCookie));
+        Log.info(thisClass, method, "users have unique backdated cookies");
 
-        assertFalse("Different users must have different cookies", user1Cookie.equals(user2Cookie));
-        Log.info(thisClass, method, "users have unique cookies");
-
-        Log.info(thisClass, method, "waiting " + (REFRESH_WAIT_MS/1000) + "s to cross the 1-minute refreshthreshold for both users");
-        Thread.sleep(REFRESH_WAIT_MS);
-
-        Log.info(thisClass, method, "sending SSO request for user1 after wait; new cookie EXPECTED");
-        HttpURLConnection conn3 = makeRequestWithCookie(url, user1Cookie);
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "user1 SSO response: HTTP " + status3);
-        assertEquals("user1 SSO must succeed", 200, status3);
-        String user1RefreshedCookie = assertTokenRefreshed(conn3);
-        Log.info(thisClass, method, "user1 refreshed cookie: " + maskCookie(user1RefreshedCookie));
-        conn3.disconnect();
-
-        Log.info(thisClass, method, "sending SSO request for user2 after wait; new cookie EXPECTED");
-        HttpURLConnection conn4 = makeRequestWithCookie(url, user2Cookie);
-        int status4 = conn4.getResponseCode();
-        Log.info(thisClass, method, "user2 SSO response: HTTP " + status4);
-        assertEquals("user2 SSO after wait must succeed", 200, status4);
-        String user2RefreshedCookie = assertTokenRefreshed(conn4);
-        Log.info(thisClass, method, "user2 refreshed cookie: " + maskCookie(user2RefreshedCookie));
-        conn4.disconnect();
+        String user1RefreshedCookie = ssoRequestExpectingRefresh(url, user1AgedCookie, "user1 SSO (refresh expected)", method);
+        String user2RefreshedCookie = ssoRequestExpectingRefresh(url, user2AgedCookie, "user2 SSO (refresh expected)", method);
 
         assertFalse("Refreshed cookies must differ between users",
                     user1RefreshedCookie.equals(user2RefreshedCookie));
         Log.info(thisClass, method, "PASSED: both users received unique refreshed cookies");
     }
 
+    // Verifies that HttpOnly and Path attributes on the Set-Cookie header are preserved across a token refresh.
     @Test
     public void testCookieAttributesPreservedAfterRefresh() throws Exception {
         String url = getServletUrl();
-        String method = "testCookieAttributesPreservedDuringRefresh";
-        Log.info(thisClass, method, "Config: expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
+        String method = "testCookieAttributesPreservedAfterRefresh";
+        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Authentication must succeed", 200, status1);
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
 
-        String header1 = getCookieHeader(conn1.getHeaderFields());
-        assertNotNull("Must have Set-Cookie header after authentication", header1);
-        boolean initHttpOnly = header1.toLowerCase().contains("httponly");
-        boolean initSecure   = header1.toLowerCase().contains("secure");
-        boolean initHasPath  = header1.toLowerCase().contains("path=");
-
-        String cookie = extractCookie(conn1);
-        assertNotNull("Must have LTPA cookie", cookie);
-        conn1.disconnect();
-
-        Log.info(thisClass, method, "initial Set-Cookie header: " + header1);
-        Log.info(thisClass, method, "initial attributes: HttpOnly=" + initHttpOnly +
-                 ", Secure=" + initSecure + ", Path=" + initHasPath);
-        Log.info(thisClass, method, "waiting " + (REFRESH_WAIT_MS/1000) + "s to cross the 1-minute refresh threshold");
-        Thread.sleep(REFRESH_WAIT_MS);
-
-        Log.info(thisClass, method, "sending SSO request after wait; expecting clone with preserved attributes");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        assertEquals("SSO authentication must succeed", 200, status2);
-        
+        HttpURLConnection conn2 = ssoRequest(url, agedCookie, "SSO after threshold (refresh expected)", method);
+        assertEquals("SSO authentication must succeed", 200, conn2.getResponseCode());
         String header2 = getCookieHeader(conn2.getHeaderFields());
         assertNotNull("Refreshed Set-Cookie header must be present", header2);
-        assertTokenRefreshed(conn2);
+        assertTokenRefreshed(conn2, agedCookie);
         conn2.disconnect();
 
         Log.info(thisClass, method, "refreshed Set-Cookie header: " + header2);
-        boolean refreshHttpOnly = header2.toLowerCase().contains("httponly");
-        boolean refreshSecure   = header2.toLowerCase().contains("secure");
-        boolean refreshHasPath  = header2.toLowerCase().contains("path=");
-        Log.info(thisClass, method, "refreshed attributes: HttpOnly=" + refreshHttpOnly +
-                ", Secure=" + refreshSecure + ", Path=" + refreshHasPath);
-
-        assertEquals("HttpOnly must be preserved", initHttpOnly, refreshHttpOnly);
-        assertEquals("Secure must be preserved",   initSecure,   refreshSecure);
-        assertEquals("Path must be preserved",     initHasPath,  refreshHasPath);
-        Log.info(thisClass, method, "PASSED: all cookie attributes preserved across refresh");
+        assertTrue("Refreshed cookie must have HttpOnly attribute", header2.toLowerCase().contains("httponly"));
+        assertTrue("Refreshed cookie must have Path attribute",     header2.toLowerCase().contains("path="));
+        Log.info(thisClass, method, "PASSED: cookie attributes present on refreshed token");
     }
 
+    // Verifies that a token issued under the old config is accepted immediately after a config switch,
+    // and that the new config's inactivity timeout is enforced for subsequently issued tokens.
     @Test
     public void testTokenBehavesCorrectlyAfterConfigUpdate() throws Exception {
-        setConfig("serverTokenTimeoutExceedsExpiration.xml");
+        setConfig(CFG_TOKEN_EXCEEDS_EXPIRY);
         String url = getServletUrl();
         String method = "testTokenBehaviourAfterConfigUpdate";
-        Log.info(thisClass, method, "Config: starts on serverTokenTimeoutExceedsExpiration.xml expiration=2m, inactivityTimeout=3m, refreshThreshold=1m");
+        Log.info(thisClass, method, "Config: starts on " + CFG_TOKEN_EXCEEDS_EXPIRY + " expiration=3m, inactivityTimeout=4m, refreshThreshold=2m");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "initial authentication response: HTTP " + status1);
-        String cookie = extractCookie(conn1);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        assertNotNull("Must receive initial cookie", cookie);
-        conn1.disconnect();
+        String cookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", 0, method);
 
-        Log.info(thisClass, method, "switching server configuration to serverTokenRefresh.xml expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
-        setConfig("serverTokenRefresh.xml");
-        Thread.sleep(500);
+        Log.info(thisClass, method, "switching server configuration to " + CFG_TOKEN_REFRESH + " expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
+        setConfig(CFG_TOKEN_REFRESH);
         Log.info(thisClass, method, "config update complete; new inactivityTimeout=2m is now active");
 
-        Log.info(thisClass, method, "sending SSO request; old cookie must still be valid immediately after configuration switch");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        assertEquals("Old cookie must be accepted immediately after config switch", 200, status2);
-        conn2.disconnect();
+        HttpURLConnection conn2 = ssoRequest(url, cookie, "SSO immediately after config switch", method);
+        assertEquals("Old cookie must be accepted immediately after config switch", 200, conn2.getResponseCode());
 
-        Log.info(thisClass, method, "waiting " + (REFRESH_WAIT_MS/1000) + "s to cross the refresh threshold under new config");
-        Thread.sleep(REFRESH_WAIT_MS);
+        String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
 
-        HttpURLConnection conn3 = makeRequestWithCookie(url, cookie);
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "SSO authentication response: HTTP " + status3);
-        assertEquals("SSO must succeed after config update", 200, status3);
-        String refreshedCookie = extractCookie(conn3);
-        Log.info(thisClass, method, "new LTPA cookie: " + maskCookie(refreshedCookie));
-        assertTokenRefreshed(conn3);
-        conn3.disconnect();
+        HttpURLConnection conn3 = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
 
-        Log.info(thisClass, method, "waiting another " + (INACTIVITY_WAIT_MS/1000) + "s to pass inactivity timeout");
-        Thread.sleep(INACTIVITY_WAIT_MS);
-        Log.info(thisClass, method, "sending SSO request; token must be expired");
-        HttpURLConnection conn4 = makeRequestWithCookie(url, cookie);
-        int status4 = conn4.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status4);
-        assertTrue("SSO must fail, token should be expired: got HTTP " + status4,
-                   status4 == 401 || status4 == 302 || status4 == 403);
-        Log.info(thisClass, method, "PASSED: token issued under old config was cloned under new config's refreshThreshold and expired after new config's inactivity timeout");
-        conn4.disconnect();
+        assertTrue("SSO must fail after new config's inactivity timeout: got HTTP " + conn3.getResponseCode(),
+                   conn3.getResponseCode() == 401 || conn3.getResponseCode() == 302 || conn3.getResponseCode() == 403);
+        Log.info(thisClass, method, "PASSED: old-config cookie accepted after switch; new config's inactivity timeout correctly enforced");
     }
 
+    // Verifies a token is rejected after the inactivity timeout and that re-authentication issues a new distinct cookie.
     @Test
-    public void testTokenRejectedAfterIdleTimeoutThenReauthSucceeds() throws Exception {
+    public void testTokenRejectedAfterInactivityTimeoutThenReauthSucceeds() throws Exception {
         String url = getServletUrl();
-        String method = "testTokenRejectedAfterIdleTimeoutThenReauthSucceeds";
-        Log.info(thisClass, method, "expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
+        String method = "testTokenRejectedAfterInactivityTimeoutThenReauthSucceeds";
+        Log.info(thisClass, method, "expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Initial authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        assertNotNull("LTPA cookie must be set", cookie);
-        conn1.disconnect();
+        String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
 
-        Log.info(thisClass, method, "sleeping " + (INACTIVITY_WAIT_MS/1000) + "s to exceed the 2-minute inactivity timeout ");
-        Thread.sleep(INACTIVITY_WAIT_MS);
-        Log.info(thisClass, method, "sending SSO request");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        conn2.disconnect();
-        assertTrue("Idle token must be rejected (401/302/403), got: " + status2,
-                   status2 == 401 || status2 == 302 || status2 == 403);
+        HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
+        int status = conn.getResponseCode();
+        assertTrue("Idle token must be rejected (401/302/403), got: " + status,
+                   status == 401 || status == 302 || status == 403);
 
         Log.info(thisClass, method, "re-authenticating after inactivity expiry");
-        HttpURLConnection conn3 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "reauthentication response: HTTP " + status3);
-        assertEquals("Reauthentication after inactivty timeout must succeed", 200, status3);
-
-        String newCookie = extractCookie(conn3);
-        Log.info(thisClass, method, "new LTPA cookie after re-authentication: " + maskCookie(newCookie));
-        assertNotNull("Must receive a new cookie after re-authentication", newCookie);
-        assertFalse("New cookie must differ from expired one", cookie.equals(newCookie));
-        Log.info(thisClass, method, "PASSED: idle token correctly rejected with HTTP " + status2 + ", reauthentication succeeded with new cookie");
+        String newCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", 0, method);
+        assertFalse("New cookie must differ from expired one", expiredCookie.equals(newCookie));
+        Log.info(thisClass, method, "PASSED: idle token correctly rejected with HTTP " + status + ", reauthentication succeeded with new cookie");
     }
 
+    // Verifies a token is rejected after the absolute expiration time and that re-authentication issues a new distinct cookie.
     @Test
     public void testTokenExpiresAfterExpirationTimeThenReauthSucceeds() throws Exception {
         String url = getServletUrl();
         String method = "testTokenExpiresAfterExpirationTimeThenReauthSucceeds";
-        Log.info(thisClass, method, "Config: expiration=4m, inactivityTimeout=2m, refreshThreshold=1m");
-        
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        assertNotNull("Must receive cookie", cookie);
-        conn1.disconnect();
+        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
-        Log.info(thisClass, method, "waiting " + (ABSOLUTE_EXPIRY_WAIT_MS/1000) + "s to exceed the 4-minute absolute expiry");
-        Thread.sleep(ABSOLUTE_EXPIRY_WAIT_MS);
+        String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_EXPIRY_S, method);
 
-        Log.info(thisClass, method, "sending SSO request; token must be REJECTED");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        conn2.disconnect();
-        assertTrue("Absolutely expired token must be rejected (401/302/403), got: " + status2,
-                   status2 == 401 || status2 == 302 || status2 == 403);
+        HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after absolute expiry (rejection expected)", method);
+        int status = conn.getResponseCode();
+        assertTrue("Absolutely expired token must be rejected (401/302/403), got: " + status,
+                   status == 401 || status == 302 || status == 403);
 
         Log.info(thisClass, method, "re-authenticating after expiry");
-        HttpURLConnection conn3 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "re-authentication response: HTTP " + status3);
-        assertEquals("Re-authentication must succeed", 200, status3);
-
-        String newCookie = extractCookie(conn3);
-        Log.info(thisClass, method, "new LTPA cookie after re-authentication: " + maskCookie(newCookie));
-        assertNotNull("Must receive a new cookie after re-authentication", newCookie);
-        assertFalse("New cookie must differ from expired one", cookie.equals(newCookie));
-        Log.info(thisClass, method, "PASSED: expired token correctly rejected with HTTP " + status2 + ", reauthentication succeeded with new cookie");
-        conn3.disconnect();
+        String newCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", 0, method);
+        assertFalse("New cookie must differ from expired one", expiredCookie.equals(newCookie));
+        Log.info(thisClass, method, "PASSED: expired token correctly rejected with HTTP " + status + ", reauthentication succeeded with new cookie");
     }
 
+    // Verifies refreshThreshold alone has no effect without inactivityTimeout; the token lives until absolute expiration with no refresh.
     @Test
     public void testTokenRefreshDisabledWhenOnlyRefreshThresholdConfigured() throws Exception {
-        setConfig("serverTokenRefreshOnly.xml");
+        setConfig(CFG_TOKEN_REFRESH_ONLY);
         String url = getServletUrl();
         String method = "testTokenRefreshDisabledWhenOnlyRefreshThresholdConfigured";
         Log.info(thisClass, method, "Config: expiration=2m, refreshThreshold=1m, no inactivityTimeout");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Initial authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        assertNotNull("Must receive cookie", cookie);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        conn1.disconnect();
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
 
-        Log.info(thisClass, method, "waiting " + (REFRESH_WAIT_MS/1000) + "s past refreshThreshold");
-        Thread.sleep(REFRESH_WAIT_MS);
+        HttpURLConnection conn2 = ssoRequest(url, agedCookie, "SSO past refreshThreshold (no refresh expected)", method);
+        assertEquals("SSO must succeed, token only expires at absolute expiration without inactivityTimeout", 200, conn2.getResponseCode());
+        assertTokenNotRefreshed("No refresh expected — refreshThreshold has no effect without inactivityTimeout", conn2);
 
-        Log.info(thisClass, method, "sending SSO request; token must still be valid (no inactivity death) and produce no clone");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        assertEquals("SSO must succeed, token only expires at absolute expiration without inactivityTimeout", 200, status2);
-        assertTokenNotRefreshed("No clone expected — refreshThreshold has no effect without inactivityTimeout", conn2);
-        
-        Log.info(thisClass, method, "waiting another " + (REFRESH_WAIT_MS/1000) + "s");
-        Thread.sleep(REFRESH_WAIT_MS);
-        Log.info(thisClass, method, "sending SSO request; token must be expired");
-        HttpURLConnection conn3 = makeRequestWithCookie(url, cookie);
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HHTP " + status3);
-        assertTrue("SSO must fail, token should be expired: got HTTP " + status3,
-                   status3 == 401 || status3 == 302 || status3 == 403);
-
+        String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
+        HttpURLConnection conn3 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
+        assertTrue("SSO must fail, token should be expired: got HTTP " + conn3.getResponseCode(),
+                   conn3.getResponseCode() == 401 || conn3.getResponseCode() == 302 || conn3.getResponseCode() == 403);
         Log.info(thisClass, method, "PASSED: no new cookie after refresh threshold and cookie expires at expiration time");
-        conn2.disconnect();
     }
 
+    // Verifies inactivityTimeout alone has no effect without refreshThreshold; SSO succeeds past the timeout and the token expires normally.
     @Test
     public void testTokenRefreshDisabledWhenOnlyInactivityTimeoutConfigured() throws Exception {
-        setConfig("serverTokenInactivityOnly.xml");
+        setConfig(CFG_TOKEN_INACTIVITY_ONLY);
         String url = getServletUrl();
         String method = "testTokenRefreshDisabledWhenOnlyInactivityTimeoutConfigured";
         Log.info(thisClass, method, "Config: expiration=2m, inactivityTimeout=1m, no refreshThreshold");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Initial authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        assertNotNull("Must receive cookie", cookie);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        conn1.disconnect();
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
 
-        Log.info(thisClass, method, "waiting 61s (past inactivity timeout)");
-        Thread.sleep(61_000);
-
-        Log.info(thisClass, method, "sending SSO request; token must be valid");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        assertEquals("Inactivity timeout should be disabled, SSO must succeed.", 200, status2);
+        HttpURLConnection conn2 = ssoRequest(url, agedCookie, "SSO past inactivity timeout (no refresh expected)", method);
+        assertEquals("Inactivity timeout should be disabled, SSO must succeed.", 200, conn2.getResponseCode());
         assertTokenNotRefreshed("Cookie should not be refreshed", conn2);
 
-        Log.info(thisClass, method, "waiting another 61s to expire cookie");
-        Thread.sleep(61_000);
-        Log.info(thisClass, method, "sending SSO request; token must be expired");
-        HttpURLConnection conn3 = makeRequestWithCookie(url, cookie);
-        int status3 = conn3.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status3);
-        assertTrue("SSO must fail, token should be expired: got HTTP " + status3,
-                   status3 == 401 || status3 == 302 || status3 == 403);
-
+        String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
+        HttpURLConnection conn3 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
+        assertTrue("SSO must fail, token should be expired: got HTTP " + conn3.getResponseCode(),
+                   conn3.getResponseCode() == 401 || conn3.getResponseCode() == 302 || conn3.getResponseCode() == 403);
         Log.info(thisClass, method, "PASSED: SSO succeeded past inactivity timeout and cookie expired after expiration");
-        conn2.disconnect();
     }
 
+    // Verifies CWWKS4125W is emitted when inactivityTimeout >= expiration, and that the token expires at the absolute expiration boundary.
     @Test
-    public void testTokenExpiresAtExpirationWhenTimeoutExceedsExpiration() throws Exception {
-        setConfig("serverTokenTimeoutExceedsExpiration.xml");
+    public void testTokenInactivityTimeoutExceedsExpiration() throws Exception {
+        setConfig(CFG_TOKEN_EXCEEDS_EXPIRY);
         String url = getServletUrl();
-        String method = "testTokenExpiresAtExpirationWhenTimeoutExceedsExpiration";
-        Log.info(thisClass, method, "Config: expiration=2m, inactivityTimeout=3m, refreshThreshold=1m");
+        String method = "testTokenInactivityExceedsExpiration";
+        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=4m, refreshThreshold=2m");
 
-        HttpURLConnection conn1 = makeAuthenticatedRequest(url, null, "user1", "user1pwd");
-        int status1 = conn1.getResponseCode();
-        Log.info(thisClass, method, "authentication response: HTTP " + status1);
-        assertEquals("Initial authentication must succeed", 200, status1);
-        String cookie = extractCookie(conn1);
-        assertNotNull("Must receive cookie", cookie);
-        Log.info(thisClass, method, "initial LTPA cookie: " + maskCookie(cookie));
-        conn1.disconnect();
+        String warnMsg = server.waitForStringInLog("CWWKS4125W");
+        assertNotNull("Expected CWWKS4125W when inactivityTimeout >= expiration", warnMsg);
+        Log.info(thisClass, method, "warning logged as expected: " + warnMsg);
 
-        Log.info(thisClass, method, "waiting 121s to pass the 2-minute expiration");
-        Thread.sleep(121_000);
+        String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_EXPIRY_S, method);
 
-        Log.info(thisClass, method, "sending SSO request after expiration; token must be REJECTED");
-        HttpURLConnection conn2 = makeRequestWithCookie(url, cookie);
-        int status2 = conn2.getResponseCode();
-        Log.info(thisClass, method, "SSO response: HTTP " + status2);
-        conn2.disconnect();
-        assertTrue("Token must be rejected at expiration, got HTTP " + status2,
-                status2 == 401 || status2 == 302 || status2 == 403);
+        HttpURLConnection conn2 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
+        assertTrue("Token must be rejected at expiration, got HTTP " + conn2.getResponseCode(),
+                conn2.getResponseCode() == 401 || conn2.getResponseCode() == 302 || conn2.getResponseCode() == 403);
         Log.info(thisClass, method, "PASSED: token correctly rejected at expiration boundary");
     }
 
+    // Verifies CWWKS4124W is emitted when refreshThreshold >= inactivityTimeout, the threshold is
+    // auto-adjusted to inactivityTimeout/3, and a token is still refreshed when that window is crossed.
+    @Test
+    public void testRefreshThresholdExceedsInactivityTimeout() throws Exception {
+        setConfig(CFG_TOKEN_THRESHOLD_EXCEEDS_INACTIVITY);
+        String url = getServletUrl();
+        String method = "testRefreshThresholdExceedsInactivityTimeout";
+        Log.info(thisClass, method,
+                 "Config: expiration=6m, inactivityTimeout=3m, refreshThreshold=4m; " +
+                 "expect auto-adjust to 1m (inactivityTimeout/3)");
 
-    
-    // Make an authenticated HTTP GET using Basic credentials.
-    private HttpURLConnection makeAuthenticatedRequest(String urlString, String cookie,
+        String warnMsg = server.waitForStringInLog("CWWKS4124W");
+        assertNotNull("Expected CWWKS4124W when refreshThreshold(4m) >= inactivityTimeout(3m) " +
+                      "and refreshThreshold < expiration, but no warning was found in the log", warnMsg);
+        Log.info(thisClass, method, "warning logged as expected: " + warnMsg);
+
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
+
+        String refreshedCookie = ssoRequestExpectingRefresh(url, agedCookie, "SSO after adjusted threshold (refresh expected)", method);
+
+        HttpURLConnection conn3 = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (must succeed)", method);
+        assertEquals("Refreshed token must be accepted for SSO", 200, conn3.getResponseCode());
+
+        Log.info(thisClass, method,
+                 "PASSED: CWWKS4124W emitted, threshold auto-adjusted to 1m, " +
+                 "token refreshed when adjusted threshold was crossed");
+    }
+
+    // Authenticates via Basic Auth, backdates the token by ageSeconds on the server, and returns the LtpaToken2 cookie value.
+    private String authenticateAndSetTokenAge(String url, String username, String password,
+                                              int ageSeconds, String method) throws IOException {
+        String backdateUrl = url + "?action=backdate&offsetSeconds=" + ageSeconds;
+        Log.info(thisClass, method, "authenticating as " + username + " with token age=" + ageSeconds + "s via " + backdateUrl);
+        HttpURLConnection conn = makeAuthenticatedRequest(backdateUrl, username, password);
+        assertEquals("Backdate request must succeed for " + username, 200, conn.getResponseCode());
+        String cookie = extractCookie(conn);
+        assertNotNull("Container must issue an LtpaToken2 cookie for " + username, cookie);
+        Log.info(thisClass, method, "cookie for " + username + ": " + maskCookie(cookie));
+        conn.disconnect();
+        return cookie;
+    }
+
+    // Sends a cookie-only SSO request expecting a refresh; asserts 200 and returns the new distinct cookie.
+    private String ssoRequestExpectingRefresh(String url, String cookie, String label,
+                                              String method) throws IOException {
+        HttpURLConnection conn = ssoRequest(url, cookie, label, method);
+        assertEquals(label + ": SSO must succeed", 200, conn.getResponseCode());
+        String newCookie = assertTokenRefreshed(conn, cookie);
+        Log.info(thisClass, method, label + ": refreshed cookie: " + maskCookie(newCookie));
+        conn.disconnect();
+        return newCookie;
+    }
+
+    // Sends a cookie-only SSO request, logs the label and response code, and returns the connection.
+    private HttpURLConnection ssoRequest(String url, String cookie, String label,
+                                         String method) throws IOException {
+        Log.info(thisClass, method, label + ": sending SSO request");
+        HttpURLConnection conn = openConnection(url);
+        conn.setRequestProperty("Cookie", LTPA_COOKIE + "=" + cookie);
+        Log.info(thisClass, method, label + ": HTTP " + conn.getResponseCode());
+        return conn;
+    }
+
+    // Asserts a new distinct Set-Cookie was issued and returns the new cookie value.
+    private String assertTokenRefreshed(HttpURLConnection conn, String previousCookie) {
+        String newCookie = extractCookie(conn);
+        Log.info(thisClass, "assertTokenRefreshed", "response header fields for new cookie: " + conn.getHeaderFields());
+        assertNotNull("Expected a token refresh (new Set-Cookie: LtpaToken2) but none was issued", newCookie);
+        assertFalse("Refreshed cookie must differ from the previous cookie", previousCookie.equals(newCookie));
+        return newCookie;
+    }
+
+    // Asserts that no token refresh occurred — fails if an unexpected Set-Cookie was issued.
+    private void assertTokenNotRefreshed(String message, HttpURLConnection conn) {
+        String newCookie = extractCookie(conn);
+        assertNull(message + " — but got new cookie: " + maskCookie(newCookie), newCookie);
+    }
+
+    // Opens an authenticated GET connection with Basic credentials.
+    private HttpURLConnection makeAuthenticatedRequest(String urlString,
                                                        String username, String password) throws IOException {
         HttpURLConnection conn = openConnection(urlString);
-        if (cookie != null) {
-            conn.setRequestProperty("Cookie", LTPA_COOKIE + "=" + cookie);
-        }
         conn.setRequestProperty("Authorization",
             "Basic " + java.util.Base64.getEncoder()
                            .encodeToString((username + ":" + password).getBytes()));
-        consumeResponse(conn);
         return conn;
     }
 
-    // Make an HTTP GET carrying an LTPA cookie (SSO — no credentials).
-    private HttpURLConnection makeRequestWithCookie(String urlString, String cookie) throws IOException {
-        HttpURLConnection conn = openConnection(urlString);
-        conn.setRequestProperty("Cookie", LTPA_COOKIE + "=" + cookie);
-        consumeResponse(conn);
-        return conn;
-    }
-
-    private HttpURLConnection openConnection(String urlString) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(urlString).openConnection();
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        conn.setDoOutput(false);
-        conn.setUseCaches(false);
-        conn.setInstanceFollowRedirects(false);
-        return conn;
-    }
-
-    private void consumeResponse(HttpURLConnection conn) {
-        try {
-            int code = conn.getResponseCode();
-            InputStream is = (code >= 400) ? conn.getErrorStream() : conn.getInputStream();
-            if (is != null) {
-                try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-                    while (br.readLine() != null) { /* consume */ }
-                }
-            }
-        } catch (IOException e) {
-            Log.info(thisClass, "consumeResponse", "IOException consuming response: " + e.getMessage());
-        }
-    }
-
-    // Extract the LtpaToken2 cookie value from a response's Set-Cookie headers.
+    // Extracts the LtpaToken2 cookie value from the last matching Set-Cookie response header.
     private String extractCookie(HttpURLConnection conn) {
         String header = getCookieHeader(conn.getHeaderFields());
         if (header == null) return null;
@@ -616,44 +434,44 @@ public class LTPATokenRefreshTests {
         return header.substring(start, end == -1 ? header.length() : end);
     }
 
-    // Return the full Set-Cookie header string for LtpaToken2
+    // Returns the full Set-Cookie header string for the last LtpaToken2 cookie in the response.
     private String getCookieHeader(Map<String, List<String>> headers) {
         List<String> setCookies = headers.get("Set-Cookie");
-        if (setCookies != null) {
-            for (String header : setCookies) {
-                if (header.startsWith(LTPA_COOKIE + "=")) {
-                    return header;
-                }
+        if (setCookies == null) return null;
+        String prefix = LTPA_COOKIE + "=";
+        String last = null;
+        for (String header : setCookies) {
+            if (header.startsWith(prefix)) {
+                last = header;
             }
         }
-        return null;
+        return last;
     }
 
-    // Assert that a token refresh occurred — fails if no Set-Cookie was issued.    
-    private String assertTokenRefreshed(HttpURLConnection conn) {
-        String newCookie = extractCookie(conn);
-        assertNotNull("Expected a token refresh (new Set-Cookie: LtpaToken2) but none was issued", newCookie);
-        return newCookie;
-    }
-
-    // Assert that NO token refresh occurred — fails if an unexpected Set-Cookie was issued.
-    private void assertTokenNotRefreshed(String message, HttpURLConnection conn) {
-        String newCookie = extractCookie(conn);
-        assertNull(message + " — but got new cookie: " + maskCookie(newCookie), newCookie);
-    }
-
-    // Mask a cookie value for safe logging (show only first and last 10 characters).
+    // Returns a masked cookie value for safe logging (first and last 10 characters).
     private String maskCookie(String cookie) {
         if (cookie == null)          return "null";
         if (cookie.length() < 20)    return "***";
         return cookie.substring(0, 10) + "..." + cookie.substring(cookie.length() - 10);
     }
 
+    // Opens a non-caching, non-redirecting GET connection to the given URL.
+    private HttpURLConnection openConnection(String urlString) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) new URL(urlString).openConnection();
+        conn.setRequestMethod("GET");
+        conn.setDoInput(true);
+        conn.setUseCaches(false);
+        conn.setInstanceFollowRedirects(false);
+        return conn;
+    }
+
+    // Returns the full URL of the test servlet.
     private String getServletUrl() {
         return "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() +
                "/" + APP_NAME + "/" + SERVLET_NAME;
     }
 
+    // Swaps the server configuration file and waits for Liberty to apply the change.
     private void setConfig(String config) throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(config);

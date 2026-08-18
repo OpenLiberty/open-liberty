@@ -57,6 +57,7 @@
 
     <ltpa expiration="2m"
           refreshThreshold="1m"
+          dynamicExpirationValidation="true"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
           keysPassword="{xor}Lz4sLCgwLTs="/>
 

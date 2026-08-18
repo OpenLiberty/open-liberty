@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,13 @@ package com.ibm.ws.security.token.ltpa.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Base64;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
+import javax.security.auth.Subject;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,48 +31,161 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.token.TokenManager;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
+import com.ibm.wsspi.security.token.SingleSignonToken;
 
 @SuppressWarnings("serial")
 public class LTPATestServlet extends HttpServlet {
 
+    private static final String LTPA_COOKIE   = "LtpaToken2";
+    private static final String CREATION_TIME = AttributeNameConstants.WSTOKEN_CREATION_TIME;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PrintWriter writer = response.getWriter();
-        Bundle bundle = FrameworkUtil.getBundle(HttpServlet.class);
-        BundleContext bundleContext = bundle.getBundleContext();
-
-        try {
-//            testGetTokenManager(bundleContext);
-            writer.println("Test Passed");
-        } catch (Throwable e) {
-            e.printStackTrace(writer);
-        }
-
-        writer.flush();
-        writer.close();
-    }
-
-    private void testGetTokenManager(BundleContext ctx) throws Exception {
-        ServiceReference<TokenManager> tokenManagerReference = ctx.getServiceReference(TokenManager.class);
-        TokenManager tm = ctx.getService(tokenManagerReference);
-
-        try {
-            if (tm != null) {
-                Map<String, Object> tokenData = new HashMap<String, Object>();
-                tokenData.put("unique_id", "foo");
-                tm.createToken("Ltpa2", tokenData);
-            }
-        } catch (Exception e) {
-            throw new Exception("Error creating the token: " + e.getMessage());
+        if ("backdate".equals(request.getParameter("action"))) {
+            handleBackdate(request, response);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/plain");
-        PrintWriter pw = resp.getWriter();
-        pw.print("use GET method");
-        resp.setStatus(200);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.getWriter().print("use GET method");
+    }
+
+    // Backdates the LTPA token by offsetSeconds seconds via two coordinated mutations:
+    //   1. Token bytes: appends a backdated WSTOKEN_CREATION_TIME to the SSO token so
+    //      LTPAToken2.checkRefreshNeeded() sees it and sets triggerRefresh=true on the next request.
+    //   2. Cached WSCredential: overwrites creationTime on the live subject in the auth cache so
+    //      shouldRefreshCachedToken() returns true on a cache hit, forcing a JAAS re-run.
+    // Usage: GET /ltpaTest/LTPATestServlet?action=backdate&offsetSeconds=70
+    private void handleBackdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/plain");
+        PrintWriter writer = response.getWriter();
+        try {
+            long offsetMs = parseOffsetMs(request.getParameter("offsetSeconds"));
+            BundleContext ctx = getBundleContext();
+            if (ctx == null) {
+                throw new IllegalStateException("FrameworkUtil.getBundle returned null for HttpServlet.class");
+            }
+
+            ServiceReference<TokenManager> ref = ctx.getServiceReference(TokenManager.class);
+            TokenManager tm = ctx.getService(ref);
+            try {
+                long backdatedCreationTime = System.currentTimeMillis() - offsetMs;
+                SingleSignonToken token = createBackdatedToken(tm, request, backdatedCreationTime, writer);
+                setLtpaCookieHeader(response, token);
+                backdateCachedSubjectCreationTime(backdatedCreationTime, writer);
+                response.setStatus(HttpServletResponse.SC_OK);
+            } finally {
+                ctx.ungetService(ref);
+            }
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            writer.println("ERROR: " + e.getMessage());
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            writer.println("ERROR: " + e.getMessage());
+            e.printStackTrace(writer);
+        } finally {
+            writer.flush();
+            writer.close();
+        }
+    }
+
+    // Parses the offsetSeconds query parameter into milliseconds. Throws IllegalArgumentException on parse failure.
+    private long parseOffsetMs(String offsetParam) {
+        try {
+            return Long.parseLong(offsetParam) * 1000L;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("offsetSeconds must be a number, got: " + offsetParam);
+        }
+    }
+
+    // Creates an SSO token for the authenticated user with creationTime backdated to backdatedCreationTime.
+    //
+    // Strategy:
+    //  1. Call createSSOToken() — Liberty stamps creationTime=now and expire=now+duration.
+    //  2. Append backdated creationTime (second value wins in validateExpiration() and checkRefreshNeeded()).
+    private SingleSignonToken createBackdatedToken(TokenManager tm, HttpServletRequest request,
+                                                   long backdatedCreationTime, PrintWriter writer) throws Exception {
+        String accessId = resolveAccessId(request, writer);
+        writer.println("accessId=" + accessId);
+
+        HashMap<String, Object> tokenData = new HashMap<>();
+        tokenData.put("unique_id", accessId);
+        SingleSignonToken token = tm.createSSOToken(tokenData);
+
+        token.addAttribute(CREATION_TIME, Long.toString(backdatedCreationTime));
+        writer.println("backdatedCreationTime=" + backdatedCreationTime);
+        return token;
+    }
+
+    // Reads the access ID from the caller's WSCredential so the realm is included (e.g. "user:BasicRealm/user1").
+    // Falls back to the servlet principal name when no WSCredential is present, logging a warning in both cases.
+    private String resolveAccessId(HttpServletRequest request, PrintWriter writer) {
+        String accessId = null;
+        try {
+            Subject callerSubject = WSSubject.getCallerSubject();
+            if (callerSubject != null) {
+                for (Object cred : callerSubject.getPublicCredentials()) {
+                    if (cred instanceof WSCredential) {
+                        accessId = ((WSCredential) cred).getAccessId();
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            writer.println("WARN: could not read accessId from WSCredential: " + e.getMessage());
+        }
+        if (accessId == null) {
+            // Fall back: use the principal name without realm (will likely fail token re-auth).
+            accessId = "user:" + (request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "user1");
+            writer.println("WARN: accessId fallback used: " + accessId);
+        }
+        return accessId;
+    }
+
+    // Mutates creationTime on the WSCredential inside the caller subject so the auth cache
+    // returns a backdated creation time, causing shouldRefreshCachedToken() to return true.
+    private void backdateCachedSubjectCreationTime(long backdatedCreationTime, PrintWriter writer) {
+        try {
+            Subject callerSubject = WSSubject.getCallerSubject();
+            if (callerSubject == null) {
+                writer.println("WARN: could not backdate cached subject — caller subject is null");
+                return;
+            }
+            for (Object cred : callerSubject.getPublicCredentials()) {
+                if (cred instanceof WSCredential) {
+                    ((WSCredential) cred).set(CREATION_TIME, backdatedCreationTime);
+                    writer.println("Backdated cached WSCredential creationTime=" + backdatedCreationTime);
+                    return;
+                }
+            }
+            writer.println("WARN: could not backdate cached subject — no WSCredential found in public credentials");
+        } catch (Exception e) {
+            writer.println("WARN: could not backdate cached subject: " + e.getMessage());
+        }
+    }
+
+    // Encodes the token bytes as Base64 and appends an LtpaToken2 cookie to the response.
+    // Using addCookie() (not setHeader) places this cookie after Liberty's own entry, so the
+    // test always reads the last LtpaToken2 value, which is this backdated one.
+    private void setLtpaCookieHeader(HttpServletResponse response, SingleSignonToken token) throws Exception {
+        String value = Base64.getEncoder().encodeToString(token.getBytes());
+        Cookie cookie = new Cookie(LTPA_COOKIE, value);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+    }
+
+    // Returns the OSGi BundleContext via the servlet container bundle, or null if unavailable.
+    private BundleContext getBundleContext() {
+        Bundle bundle = FrameworkUtil.getBundle(HttpServlet.class);
+        return bundle != null ? bundle.getBundleContext() : null;
     }
 }

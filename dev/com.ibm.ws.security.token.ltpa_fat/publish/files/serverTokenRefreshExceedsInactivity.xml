@@ -10,7 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="com.ibm.ws.security.token.ltpa.fat.refresh - Timeout Exceeds Expiration Test Configuration">
+<server description="com.ibm.ws.security.token.ltpa.fat.refresh - refreshThreshold >= inactivityTimeout Test Configuration">
 
     <featureManager>
         <feature>appSecurity-2.0</feature>
@@ -21,6 +21,7 @@
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty -->
 
+    <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
 
     <basicRegistry id="basic" realm="BasicRealm">
@@ -54,9 +55,10 @@
 
     <httpSession securityIntegrationEnabled="false"/>
 
-    <ltpa expiration="2m"
+    <ltpa expiration="6m"
           inactivityTimeout="3m"
-          refreshThreshold="1m"
+          refreshThreshold="4m"
+          dynamicExpirationValidation="true"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
           keysPassword="{xor}Lz4sLCgwLTs="/>
 
@@ -67,6 +69,7 @@
     <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
 
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
     <ssl id="defaultSSLConfig" />
 
 </server>
