@@ -1097,13 +1097,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @Override
     public int getRequestedPort() {
 
-        // Get the requested port: this takes into consideration whether or not we should trust the
-        // contents of Host and $WS* headers..
-        if (HttpDispatcher.usePrivateHeaders(remoteAddress, HttpHeaderKeys.HDR_$WSSP.getName())) {
-            String pluginPort = request.getHeader(HttpHeaderKeys.HDR_$WSSP);
-            if (pluginPort != null)
-                return Integer.parseInt(pluginPort);
-        }
+        // Get the requested port: this assumes that the contents of $WS* headers has been
+        // evaluated while parsing the request. Otherwise the Host header will be used if
+        // available
+        String pluginPort = request.getHeader(HttpHeaderKeys.HDR_$WSSP);
+        if (pluginPort != null)
+            return Integer.parseInt(pluginPort);
+        
 
         int port = request.getVirtualPort();
 
