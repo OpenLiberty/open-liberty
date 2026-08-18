@@ -20,4 +20,16 @@
     <application location="ProviderFeatureApp.war" />
     <application location="BundledProviderApp.war" />
     <include location="../fatTestPorts.xml"/>
+
+    <!-- Johnzon reads org.apache.johnzon.* and unprefixed johnzon.* system properties
+         (e.g. johnzon.max-big-decimal-scale) during static initialization.
+         Grant both patterns so Java 2 Security does not block the bundled johnzon-core.jar. -->
+    <javaPermission codebase="${server.config.dir}/apps/BundledProviderApp.war"
+                    className="java.util.PropertyPermission"
+                    name="org.apache.johnzon.*"
+                    actions="read"/>
+    <javaPermission codebase="${server.config.dir}/apps/BundledProviderApp.war"
+                    className="java.util.PropertyPermission"
+                    name="johnzon.*"
+                    actions="read"/>
 </server>
