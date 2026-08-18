@@ -57,27 +57,27 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     
     //
 
-    private static final boolean HAS_ENABLE_WEB_INF_JANDEX_OVERRIDE =
-        AnnotationCacheServiceImpl_Logging.hasProperty(ENABLE_WEB_INF_JANDEX_PROPERTY_NAME);
+    private static final boolean HAS_READ_WEB_INF_JANDEX_OVERRIDE =
+        AnnotationCacheServiceImpl_Logging.hasProperty(READ_WEB_INF_JANDEX_PROPERTY_NAME);
 
     @Trivial
-    public static boolean getHasJandexEnableWebInfOverride() {
-        return HAS_ENABLE_WEB_INF_JANDEX_OVERRIDE;
+    public static boolean getHasJandexReadWebInfOverride() {
+        return HAS_READ_WEB_INF_JANDEX_OVERRIDE;
     }
 
-    private static final Boolean JANDEX_ENABLE_WEB_INF_OVERRIDE;
+    private static final Boolean JANDEX_READ_WEB_INF_OVERRIDE;
 
     static {
         String override = AnnotationCacheServiceImpl_Logging.getProperty(
             AnnotationCacheServiceImpl_Logging.ANNO_LOGGER,
             CLASS_NAME, "<static init>",
-            ENABLE_WEB_INF_JANDEX_PROPERTY_NAME, null);
-        JANDEX_ENABLE_WEB_INF_OVERRIDE = ( override == null ? null : Boolean.valueOf(override) );
+            READ_WEB_INF_JANDEX_PROPERTY_NAME, null);
+        JANDEX_READ_WEB_INF_OVERRIDE = ( override == null ? null : Boolean.valueOf(override) );
     }
 
     @Trivial
-    public static Boolean getJandexEnableWebInfOverride() {
-        return JANDEX_ENABLE_WEB_INF_OVERRIDE;
+    public static Boolean getJandexReadWebInfOverride() {
+        return JANDEX_READ_WEB_INF_OVERRIDE;
     }
 
     //
@@ -115,13 +115,13 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
             this.jandexPath = JANDEX_PATH_DEFAULT_VALUE;
         }
         
-        if ( getHasJandexEnableWebInfOverride() ) {
-            this.isSetJandexEnableWebInf = true;
-            this.jandexEnableWebInf = getJandexEnableWebInfOverride();
+        if ( getHasJandexReadWebInfOverride() ) {
+            this.isSetJandexReadWebInf = true;
+            this.jandexReadWebInf = getJandexReadWebInfOverride();
         } else {
-            this.isSetJandexEnableWebInf = false;
-            this.jandexEnableWebInf = ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
-        }        
+            this.isSetJandexReadWebInf = false;
+            this.jandexReadWebInf = READ_WEB_INF_JANDEX_DEFAULT_VALUE;
+        }
         
         if ( getHasScanThreadsOverride() ) {
             this.isSetScanThreads = true;
@@ -140,7 +140,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
             "(" +
                 " UseJandex " + useJandex + " - " + USE_JANDEX_OVERRIDE + ", " +
                 " JandexPath " + ('"' + jandexPath + '"' + (isSetJandexPath ? "[Set]" : "[Unset]")) + ", " +
-                " JandexEnableWebInf " + jandexEnableWebInf + " - " + JANDEX_ENABLE_WEB_INF_OVERRIDE + ", " +
+                " JandexEnableWebInf " + jandexReadWebInf + " - " + HAS_READ_WEB_INF_JANDEX_OVERRIDE + ", " +
                 " ScanThreads " + (Integer.toString(scanThreads)+ (isSetScanThreads ? "[Set]" : "[Unset]")) +
             ")";
     }
@@ -220,35 +220,35 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     //
     
     @Override
-    public boolean getJandexEnableWebInfDefault() {
-        return ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
+    public boolean getJandexReadWebInfDefault() {
+        return READ_WEB_INF_JANDEX_DEFAULT_VALUE;
     }
 
-    private boolean isSetJandexEnableWebInf;
-    private boolean jandexEnableWebInf = ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
+    private boolean isSetJandexReadWebInf;
+    private boolean jandexReadWebInf = READ_WEB_INF_JANDEX_DEFAULT_VALUE;
 
     @Override
     @Trivial
-    public boolean getIsSetEnableWebInfJandex() {
-        return isSetJandexEnableWebInf;
+    public boolean getIsSetReadWebInfJandex() {
+        return isSetJandexReadWebInf;
     }
 
     @Override
-    @Trivial    
-    public boolean getEnableWebInfJandex() {
-        return jandexEnableWebInf;
+    @Trivial
+    public boolean getReadWebInfJandex() {
+        return jandexReadWebInf;
     }
 
     @Override
-    public void setEnableWebInfJandex(boolean jandexEnableWebInf) {
-        this.jandexEnableWebInf = jandexEnableWebInf;
-        this.isSetJandexEnableWebInf = true;
+    public void setReadWebInfJandex(boolean jandexReadWebInf) {
+        this.jandexReadWebInf = jandexReadWebInf;
+        this.isSetJandexReadWebInf = true;
     }
 
     @Override
-    public void unsetEnableWebInfJandex() {
-        this.jandexEnableWebInf = ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
-        this.isSetJandexEnableWebInf = false;
+    public void unsetReadWebInfJandex() {
+        this.jandexReadWebInf = READ_WEB_INF_JANDEX_DEFAULT_VALUE;
+        this.isSetJandexReadWebInf = false;
     }
 
     @Override

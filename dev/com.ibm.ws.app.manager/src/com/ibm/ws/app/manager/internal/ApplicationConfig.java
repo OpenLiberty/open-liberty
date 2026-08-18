@@ -212,7 +212,7 @@ public final class ApplicationConfig {
     /**
      * Tell if jandex index files are to be read from
      * <code>WEB-INF/classes/META-INF/jandex.idx</code> when processing
-     * a web module. That is usually supplied by a "enableWebInfJandex"
+     * a web module. That is usually supplied by a "readWebInfJandex"
      * attribute on the application element or the application manager element.
      * 
      * Look for the value from the application element, then on the application
@@ -225,7 +225,7 @@ public final class ApplicationConfig {
      * @return True or false telling if jandex index files are to be
      *     read from the <code>WEB-INF</code> location. The default is false.
      */
-    public boolean getEnableWebInfJandex() {
+    public boolean getReadWebInfJandex() {
         // First try to get the value from the application configuration
         // which overrides the value on the application manager configuration.
         if (_config != null) {
@@ -236,7 +236,7 @@ public final class ApplicationConfig {
         }
 
         // If that fails, try to get the value from the application manager
-        return _applicationManager.getEnableWebInfJandex();
+        return _applicationManager.getReadWebInfJandex();
     }
 
     public String[] getStartAfter() {

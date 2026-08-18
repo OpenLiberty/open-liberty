@@ -52,5 +52,5 @@ public interface ApplicationInfo {
      *
      * Only meaningful when {@link #getUseJandex()} returns true.
      */
-    boolean getEnableWebInfJandex();
+    boolean getReadWebInfJandex();
 }

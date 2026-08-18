@@ -63,8 +63,8 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
     }
 
     @Override
-    public boolean getEnableWebInfJandex() {
-        return applicationInformation != null ? applicationInformation.getEnableWebInfJandex() : false;
+    public boolean getReadWebInfJandex() {
+        return applicationInformation != null ? applicationInformation.getReadWebInfJandex() : false;
     }
 
     @Override

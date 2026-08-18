@@ -83,8 +83,8 @@ public class ApplicationInstallInfo implements ApplicationInformation<Object>, A
 
     /** {@inheritDoc} */
     @Override
-    public boolean getEnableWebInfJandex() {
-        return _config.getEnableWebInfJandex();
+    public boolean getReadWebInfJandex() {
+        return _config.getReadWebInfJandex();
     }
 
     /** {@inheritDoc} */

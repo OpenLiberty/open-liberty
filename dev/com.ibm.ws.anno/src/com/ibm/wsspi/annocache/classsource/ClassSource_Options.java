@@ -60,16 +60,16 @@ public interface ClassSource_Options extends com.ibm.wsspi.anno.classsource.Clas
 
     //
 
-    boolean ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE = false;
-    String ENABLE_WEB_INF_JANDEX_PROPERTY_NAME = "com.ibm.ws.jandex.enable.web.inf";
+    boolean READ_WEB_INF_JANDEX_DEFAULT_VALUE = false;
+    String READ_WEB_INF_JANDEX_PROPERTY_NAME = "com.ibm.ws.jandex.enable.web.inf";
 
-    boolean getJandexEnableWebInfDefault();
+    boolean getJandexReadWebInfDefault();
 
-    boolean getIsSetEnableWebInfJandex();
-    boolean getEnableWebInfJandex();
+    boolean getIsSetReadWebInfJandex();
+    boolean getReadWebInfJandex();
 
-    void setEnableWebInfJandex(boolean enableWebInfJandex);
-    void unsetEnableWebInfJandex();    
+    void setReadWebInfJandex(boolean readWebInfJandex);
+    void unsetReadWebInfJandex();
 
     String JANDEX_PATH_WEB_INF = "WEB-INF/classes" + "/" + JANDEX_PATH_DEFAULT_VALUE;
 

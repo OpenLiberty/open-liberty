@@ -219,7 +219,7 @@ public interface Annotations {
     // (4) Add '@Override' to the JPA AnnotationsImpl.
     //
     // The current implementation is:
-    // com.ibm.ws.container.service.annocache.internal.AnnotationsImpl.getEnableWebInfJandex()
+    // com.ibm.ws.container.service.annocache.internal.AnnotationsImpl.getReadWebInfJandex()
     //
     // The current use is from:
     // com.ibm.ws.container.service.annocache.internal.AnnotationsImpl.createOptions()
@@ -233,7 +233,7 @@ public interface Annotations {
      * @return True or false telling if the extended jandex location
      *     is to be used.
      */
-    // boolean getEnableWebInfJandex();
+    // boolean getReadWebInfJandex();
 
     /**
      * Set if the WEB-INF jandex path is to be used.
@@ -241,10 +241,10 @@ public interface Annotations {
      * This is specifically to enable locating the jandex index under
      * "WEB-INF/classes/META-INF/classes".
      * 
-     * @param enableWebInfJandex True or false telling if the
+     * @param readWebInfJandex True or false telling if the
      *     extended jandex location is to be used.
      */
-    // void setEnableWebInfJandex(boolean enableWebInfJandex);
+    // void setReadWebInfJandex(boolean readWebInfJandex);
 
     //
 

@@ -432,7 +432,7 @@ public class ClassSourceImpl_MappedContainer
 
     @Override
     public boolean getJandexEnableWebInf() {
-        return getOptions().getEnableWebInfJandex();
+        return getOptions().getReadWebInfJandex();
     }
 
     @Override

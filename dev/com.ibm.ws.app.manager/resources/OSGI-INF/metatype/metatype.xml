@@ -37,7 +37,7 @@
     <OCD description="%appmgmt.desc" name="%appmgmt.name" id="com.ibm.ws.app.management" ibm:alias="applicationManager">
         <AD id="autoExpand" name="%appmgmt.autoExpand" description="%appmgmt.autoExpand.desc" required="false" type="Boolean" default="false"/>
         <AD id="useJandex" name="%appmgmt.useJandex" description="%appmgmt.useJandex.desc" required="false" type="Boolean"/>
-        <AD ibm:beta="true" id="enableWebInfJandex" name="%appmgmt.enableWebInfJandex" description="%appmgmt.enableWebInfJandex.desc" required="false" type="Boolean"/>
+        <AD ibm:beta="true" id="readWebInfJandex" name="%appmgmt.readWebInfJandex" description="%appmgmt.readWebInfJandex.desc" required="false" type="Boolean"/>
         <AD id="startTimeout" name="%appmgmt.startTimeout" description="%appmgmt.startTimeout.desc" required="false" type="String" default="30s" ibm:type="duration(s)" />
         <AD id="stopTimeout" name="%appmgmt.stopTimeout" description="%appmgmt.stopTimeout.desc" required="false" type="String" default="30s" ibm:type="duration(s)" />
         <AD id="expandLocation" name="%appmgmt.expandLocation" description="%appmgmt.expandLocation.desc" required="false" type="String" default="${server.config.dir}/apps/expanded/" ibm:type="location(dir)" />
@@ -56,7 +56,7 @@
         <AD id="context-root" name="%appmgr.contextRoot.name" description="%appmgr.contextRoot.desc" type="String" required="false"/>
         <AD id="autoStart" name="%appmgr.autoStart.name" description="%appmgr.autoStart.desc" type="Boolean" required="false" default="true"/>
         <AD id="useJandex" name="%appmgr.useJandex.name" description="%appmgr.useJandex.desc" type="Boolean" required="false"/>
-        <AD ibm:beta="true" id="enableWebInfJandex" name="%appmgr.enableWebInfJandex" description="%appmgr.enableWebInfJandex.desc" required="false" type="Boolean"/>
+        <AD ibm:beta="true" id="readWebInfJandex" name="%appmgr.readWebInfJandex" description="%appmgr.readWebInfJandex.desc" required="false" type="Boolean"/>
         <AD id="startAfter" name="%appmgmt.startAfter" description="%appmgmt.startAfter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.app.manager" cardinality="2147483647"/>
         <AD id="classloader" name="%classloader.name" description="%classloader.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.classloader" cardinality="0"/>
    </OCD>

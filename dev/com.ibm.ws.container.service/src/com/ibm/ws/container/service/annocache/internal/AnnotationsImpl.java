@@ -566,22 +566,22 @@ public abstract class AnnotationsImpl implements Annotations {
         this.useJandex = useJandex;
     }
 
-    private boolean enableWebInfJandex;
+    private boolean readWebInfJandex;
     
     // TODO: '@Override' is temporarily removed, until the API
     // is added to the Annotations interface.
-    // Search for 'getEnableWebInfJandex' in:
+    // Search for 'getReadWebInfJandex' in:
     // com/ibm/ws/container/service/annocache/Annotations.java
 
     // @Override
-    public boolean getEnableWebInfJandex() {
-        return enableWebInfJandex;
+    public boolean getReadWebInfJandex() {
+        return readWebInfJandex;
     }
 
     // @Override
-    public void setEnableWebInfJandex(boolean jandexEnableWebInf) {
-        this.enableWebInfJandex = jandexEnableWebInf;
-    }    
+    public void setReadWebInfJandex(boolean jandexReadWebInf) {
+        this.readWebInfJandex = jandexReadWebInf;
+    }
     
     protected ClassSource_Options createOptions() {
         ClassSource_Factory classSourceFactory = getClassSourceFactory();
@@ -593,7 +593,7 @@ public abstract class AnnotationsImpl implements Annotations {
         
         // TODO:
         //
-        // 'useJandex' and 'enableWebInfJandex' may be overridden by system properties.
+        // 'useJandex' and 'readWebInfJandex' may be overridden by system properties.
         //
         // The override is applied within the options constructor. That location
         // is problematic, leading to the convoluted initialization steps, below.
@@ -613,13 +613,13 @@ public abstract class AnnotationsImpl implements Annotations {
                         " overridden by property setting [ " + options.getUseJandex() + " ]");
         }
 
-        if ( !options.getIsSetEnableWebInfJandex() ) {
-            options.setEnableWebInfJandex( getEnableWebInfJandex() );
+        if ( !options.getIsSetReadWebInfJandex() ) {
+            options.setReadWebInfJandex( getReadWebInfJandex() );
         } else {
             // NLS not done: INFO message for internal property used for testing.
-            Tr.info(tc, "Application jandex WEB-INF enablement [ " + getEnableWebInfJandex() + " ]" +
-                        " overridden by property setting [ " + options.getEnableWebInfJandex() + " ]");
-        }        
+            Tr.info(tc, "Application jandex WEB-INF enablement [ " + getReadWebInfJandex() + " ]" +
+                        " overridden by property setting [ " + options.getReadWebInfJandex() + " ]");
+        }
 
         return options;
     }

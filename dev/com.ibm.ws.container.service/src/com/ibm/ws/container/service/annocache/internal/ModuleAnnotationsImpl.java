@@ -357,15 +357,15 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
     }
 
     /**
-     * Override: Retrieve the 'enableWebInfoJandex' setting from
+     * Override: Retrieve the 'readWebInfJandex' setting from
      * the application information.
      *
      * @return True or false telling if jandex indexes are to
      *         be read from WEB-INF/classes.
      */
     @Override
-    public boolean getEnableWebInfJandex() {
-        return getAppInfo().getEnableWebInfJandex();
+    public boolean getReadWebInfJandex() {
+        return getAppInfo().getReadWebInfJandex();
     }
 
     private ModuleClassesContainerInfo getModuleClassesContainerInfo() {

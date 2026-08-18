@@ -353,7 +353,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      *     path is to be used.
      */    
     public boolean getJandexEnableWebInf() {
-        return getOptions().getIsSetEnableWebInfJandex();
+        return getOptions().getIsSetReadWebInfJandex();
     }
 
     /**

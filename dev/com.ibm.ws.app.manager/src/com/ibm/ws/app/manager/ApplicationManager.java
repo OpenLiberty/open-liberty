@@ -40,7 +40,7 @@ public class ApplicationManager {
 
     private boolean expandApps;
     private boolean useJandex;
-    private boolean enableWebInfJandex;
+    private boolean readWebInfJandex;
     private long startTimeout;
     private long stopTimeout;
     private String expandLocation;
@@ -137,8 +137,8 @@ public class ApplicationManager {
         Boolean useJandexValue = getProperty(properties, "useJandex", false);
         setUseJandex(useJandexValue == null ? false : useJandexValue);
 
-        Boolean enableWebInfJandexValue = getProperty(properties, "enableWebInfJandex", false);
-        setEnableWebInfJandex(enableWebInfJandexValue == null ? false : enableWebInfJandexValue);
+        Boolean readWebInfJandexValue = getProperty(properties, "readWebInfJandex", false);
+        setReadWebInfJandex(readWebInfJandexValue == null ? false : readWebInfJandexValue);
 
         long startTimeoutValue = getProperty(properties, "startTimeout", 30L);
         setStartTimeout(startTimeoutValue);
@@ -209,12 +209,12 @@ public class ApplicationManager {
         this.useJandex = b;
     }
 
-    public boolean getEnableWebInfJandex() {
-        return enableWebInfJandex;
+    public boolean getReadWebInfJandex() {
+        return readWebInfJandex;
     }
     
-    private void setEnableWebInfJandex(boolean b) {
-        this.enableWebInfJandex = b;
+    private void setReadWebInfJandex(boolean b) {
+        this.readWebInfJandex = b;
     }
 
     public long getStartTimeout() {

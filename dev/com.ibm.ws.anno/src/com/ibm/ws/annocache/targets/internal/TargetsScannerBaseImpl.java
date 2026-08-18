@@ -398,7 +398,7 @@ public class TargetsScannerBaseImpl {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "Jandex Path: {0}", nextClassSource.getOptions().getJandexPath());
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "Jandex WEB-INF: {0}", nextClassSource.getOptions().getEnableWebInfJandex());                
+                        "Jandex WEB-INF: {0}", nextClassSource.getOptions().getReadWebInfJandex());                
             }
         }
 
