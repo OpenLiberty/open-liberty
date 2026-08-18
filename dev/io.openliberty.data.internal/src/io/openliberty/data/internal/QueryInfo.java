@@ -76,6 +76,8 @@ import io.openliberty.data.internal.cdi.RepositoryProducer;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.event.PostDeleteEvent;
+import jakarta.data.event.PreDeleteEvent;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
@@ -1341,6 +1343,11 @@ public abstract class QueryInfo {
         if (!entityInfo.getType().isInstance(e))
             throw Fail.entityMismatch(this, e);
 
+        if (producer.lifeCycleEvents != null)
+            producer.lifeCycleEvents //
+                            .select(entityInfo.preDeleteLiteral) //
+                            .fire(new PreDeleteEvent<>(e));
+
         String jpql = ql;
 
         int versionParamIndex = (entityInfo.idClassAttributeAccessors == null //
@@ -1401,6 +1408,11 @@ public abstract class QueryInfo {
             // ought to be unreachable
             throw new DataException("Found " + numDeleted + " matching entities.");
         }
+
+        if (producer.lifeCycleEvents != null)
+            producer.lifeCycleEvents //
+                            .select(entityInfo.postDeleteLiteral) //
+                            .fire(new PostDeleteEvent<>(e));
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "deleteOne", numDeleted);
