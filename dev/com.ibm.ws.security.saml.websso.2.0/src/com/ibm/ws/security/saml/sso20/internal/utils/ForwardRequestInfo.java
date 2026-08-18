@@ -207,12 +207,10 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         }
 
         if (this.cspHeader != null) {
-            String header;
+            String header = this.cspHeader;
             if (this.nonce != null) {
                 header = this.cspHeader.replace(CONTENT_SECURITY_POLICY_NONCE_INSERT, this.nonce);
-            } else {
-                header = this.cspHeader;
-            }
+            } 
             resp.addHeader("Content-Security-Policy", header);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "CSP header=" + header);
