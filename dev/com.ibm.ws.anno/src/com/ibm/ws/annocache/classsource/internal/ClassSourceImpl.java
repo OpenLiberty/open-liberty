@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -353,7 +355,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      *     path is to be used.
      */    
     public boolean getJandexEnableWebInf() {
-        return getOptions().getIsSetReadWebInfJandex();
+        return getOptions().getReadWebInfJandex();
     }
 
     /**
@@ -379,46 +381,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The read Jandex index.
      */
     protected SparseIndex getSparseJandexIndex() {
-        String methodName = "getSparseJandexIndex";
-
-        long startTime = System.nanoTime();
-        
-        String jandexPath = getJandexPath();
-        if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "Default path [ " + jandexPath + " ]");
-        }                
-        SparseIndex jandexIndex = getSparseJandexIndex(jandexPath);
-
-        if ( jandexIndex == null ) {
-            if ( getJandexEnableWebInf() ) {
-                jandexPath = getJandexWebInfPath();                
-                if ( logger.isLoggable(Level.FINER) ) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName, "WEB-INF path [ " + jandexPath + " ]");
-                }                        
-                jandexIndex = getSparseJandexIndex(jandexPath);
-            } else {
-                if ( logger.isLoggable(Level.FINER) ) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Extended path not enabled");
-                }                        
-            }
-        }
-
-        long readTime = System.nanoTime() - startTime;
-        int numClasses;
-        
-        if ( jandexIndex != null ) {
-            setProcessTime(readTime);
-            setProcessCount( numClasses = jandexIndex.getKnownClasses().size() );
-        } else {
-            numClasses = 0;
-        }
-
-        logJandex( methodName,
-                jandexPath,
-                (jandexIndex != null), readTime,
-                numClasses );
-
-        return jandexIndex;
+        return getIndexWithFallacks(s -> getSparseJandexIndex(s));
     }
 
     /**
@@ -794,7 +757,11 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The read Jandex index.
      */
     protected Index getJandexIndex() {
-        String methodName = "getJandexIndex";
+        return getIndexWithFallacks(s -> getJandexIndex(s));
+    }
+    
+    private <RETURN_TYPE> RETURN_TYPE getIndexWithFallacks(Function<String, RETURN_TYPE> indexGetter) {
+        String methodName = "getIndexWithFallacks";
 
         long startTime = System.nanoTime();
         
@@ -802,7 +769,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "Default path [ " + jandexPath + " ]");
         }                
-        Index jandexIndex = getJandexIndex(jandexPath);
+        RETURN_TYPE jandexIndex = indexGetter.apply(jandexPath);
 
         if ( jandexIndex == null ) {
             if ( getJandexEnableWebInf() ) {
@@ -810,7 +777,7 @@ public abstract class ClassSourceImpl implements ClassSource {
                 if ( logger.isLoggable(Level.FINER) ) {
                     logger.logp(Level.FINER, CLASS_NAME, methodName, "WEB-INF path [ " + jandexPath + " ]");
                 }                        
-                jandexIndex = getJandexIndex(jandexPath);
+                jandexIndex = indexGetter.apply(jandexPath);
             } else {
                 if ( logger.isLoggable(Level.FINER) ) {
                     logger.logp(Level.FINER, CLASS_NAME, methodName, "Extended path not enabled");
@@ -823,7 +790,17 @@ public abstract class ClassSourceImpl implements ClassSource {
         
         if ( jandexIndex != null ) {
             setProcessTime(readTime);
-            setProcessCount( numClasses = jandexIndex.getKnownClasses().size() );
+            //This is ugly but these two are the only valid options for this point in the code
+            //And accepting this uglyness lets us avoid duplicating this entire method.
+            if (jandexIndex instanceof SparseIndex)  {
+                SparseIndex index = (SparseIndex) jandexIndex;
+                setProcessCount( numClasses = index.getKnownClasses().size() );
+            } else if (jandexIndex instanceof Index) {
+                Index index = (Index) jandexIndex;
+                setProcessCount( numClasses = index.getKnownClasses().size() );
+            } else {
+                numClasses = 0; //Should be unreachable but required by the compiler.
+            }
         } else {
             numClasses = 0;
         }
@@ -874,7 +851,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      * unreadable because the index format version is not supported,
      * or because the index data is not valid.</p>
      * 
-     * @param A target path.  This is parameterized to enable cases when
+     * @param useJandexPath A target path.  This is parameterized to enable cases when
      *     multiple jandex paths are to be used.
      *
      * @return The JANDEX index for this class source.  This default

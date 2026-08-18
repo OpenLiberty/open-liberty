@@ -69,7 +69,7 @@ public class JandexLogger {
             propertyCase = "from default";
         } else {
             propertyValue = Boolean.parseBoolean(propertyText);
-            propertyCase = "fromProperty";
+            propertyCase = "from property";
         }
 
         if ( doLog() ) {
