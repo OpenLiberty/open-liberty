@@ -259,8 +259,18 @@ public class CDIUpgradeHandlerTest {
         performUpgrade();
         // make sure server side is finished onWritePossible
         // wait till see this message CDITestWriteListener: onWritePossible: EXIT
-        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
-        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
+
+        // Wait for the last server-log event in the upgrade cycle.
+        // onAllDataRead: EXIT is the final step in the async chain:
+        //   init -> setReadListener -> onDataAvailable -> setWriteListener
+        //   -> onWritePossible (closes connection) -> onAllDataRead
+        // All application log entries (including init:Exit, setReadListener:Exit,
+        // onDataAvailable:Exit, onWritePossible:Exit) are guaranteed to be written
+        // before onAllDataRead: EXIT appears in the server log.
+        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onAllDataRead: EXIT");
+
+        //LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+        //LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with [ EXPECTED_LOG2 ]");
 
@@ -268,8 +278,10 @@ public class CDIUpgradeHandlerTest {
 
         performUpgrade();
 
-        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
-        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
+        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onAllDataRead: EXIT");
+
+//        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+//        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with  [ EXPECTED_LOG3 ]");
 
