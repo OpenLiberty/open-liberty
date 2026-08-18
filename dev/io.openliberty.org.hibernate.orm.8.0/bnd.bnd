@@ -1,0 +1,83 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=8.0.0.Beta1
+
+Bundle-Name: Hibernate ORM 8
+Bundle-SymbolicName: io.openliberty.org.hibernate.orm.8.0; singleton:=true
+Bundle-Description: Hibernate ORM implementation of Jakarta Persistence 4.0
+Bundle-Vendor: Hibernate.org
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+app-resources= \
+  META-INF/services/jakarta.persistence.spi.PersistenceProvider | \
+  META-INF/services/org.hibernate.bytecode.spi.BytecodeProvider
+
+Export-Package: \
+  !org.hibernate.models.*, \
+  org.hibernate.*;version="${bVersion}";thread-context=true
+
+Private-Package: \
+  net.bytebuddy.*, \
+  org.antlr.v4.runtime.*, \
+  org.hibernate.models.*, \
+  org.jboss.logging.*
+
+Import-Package: \
+  com.fasterxml.jackson.*;resolution:=optional, \
+  com.sun.jna;resolution:=optional, \
+  jakarta.data.*;resolution:=optional, \
+  jakarta.enterprise.*;resolution:=optional, \
+  jakarta.inject;resolution:=optional, \
+  jakarta.json.bind;resolution:=optional, \
+  jakarta.persistence;jpa="4.0";consumer="persistenceService", \
+  jakarta.persistence.*;jpa="4.0";consumer="persistenceService", \
+  jakarta.transaction;version="[2.0,3)", \
+  jakarta.validation.*;resolution:=optional, \
+  javax.annotation.*;resolution:=optional, \
+  oracle.*;resolution:=optional, \
+  org.apache.log4j;resolution:=optional, \
+  org.apache.logging.log4j.*;resolution:=optional, \
+  org.jboss.logmanager;resolution:=optional, \
+  org.postgresql.util;resolution:=optional, \
+  org.slf4j.*;resolution:=optional, \
+  tools.jackson.*;resolution:=optional, \
+  *
+
+Include-Resource: \
+  @${repo;org.hibernate.orm:hibernate-core;8.0.0.Beta1;EXACT}!/META-INF/services/*
+
+Service-Component: \
+  io.openliberty.org.hibernate.orm_8_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=${app-resources}"
+
+instrument.disabled: true
+instrument.ffdc: false
+publish.wlp.jar.suffix: dev/api/third-party
+
+-buildpath: \
+  org.hibernate.orm:hibernate-core;version=8.0.0.Beta1;strategy=exact, \
+  org.hibernate.models:hibernate-models;version=1.2.0;strategy=exact, \
+  net.bytebuddy:byte-buddy;version=1.18.10;strategy=exact, \
+  org.antlr:antlr4-runtime;version=4.13.2;strategy=exact, \
+  org.jboss.logging:jboss-logging;version=3.6.3.Final;strategy=exact, \
+  io.openliberty.jakarta.persistence.4.0;version=latest, \
+  io.openliberty.jakarta.transaction.2.0;version=latest, \
+  io.openliberty.jakarta.xmlBinding.4.0;version=latest, \
+  com.ibm.ws.container.service;version=latest, \
+  com.ibm.websphere.org.osgi.core;version=latest
