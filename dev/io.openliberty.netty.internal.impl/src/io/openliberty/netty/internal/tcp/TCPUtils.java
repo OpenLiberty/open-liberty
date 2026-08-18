@@ -20,6 +20,7 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -111,6 +112,12 @@ public class TCPUtils {
         final ChannelFuture openFuture = oFuture;
 
         final String newHost = inetHost;
+        
+        // Tracks whether the wildcard-conflict check vetoed an otherwise-successful bind.
+        // Set to true inside the openFuture listener; read by the openListener wrapper so
+        // that NettyChain.channelFutureHandler() is driven as a failure rather than a
+        // success — this is mirroring the legacy TCPChannel.takeDownChain() behavior.
+        final AtomicBoolean wildcardConflict = new AtomicBoolean(false);
 
         openFuture.addListener(future -> {
             if (future.isSuccess()) {
@@ -262,21 +269,27 @@ public class TCPUtils {
         });
 
         if (openListener != null) {
-            openFuture.addListener(generateOpenListenerWrapper(framework, openListener));
+            openFuture.addListener(generateOpenListenerWrapper(framework, openListener, wildcardConflict));
         }
         return openFuture;
     }
 
-    private static ChannelFutureListener generateOpenListenerWrapper(NettyFrameworkImpl framework, ChannelFutureListener listener) {
+    private static ChannelFutureListener generateOpenListenerWrapper(NettyFrameworkImpl framework, ChannelFutureListener listener, AtomicBoolean wildcardConflict) {
         return new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
+                // If a wildcard-conflict was detected in the open listener, substitute a
+                // failed future so that NettyChain.channelFutureHandler() follows the
+                // failure path (handleStartupError + state transition), mirroring the
+                // legacy TCPChannel.takeDownChain() behavior.
+                final ChannelFuture effectiveFuture = wildcardConflict.get() ? future.channel().newFailedFuture(new IOException("Address already in use")) : future;
+                
                 framework.getExecutorService().execute(new Runnable() {
 
                     @Override
                     public void run() {
                         try {
-                            listener.operationComplete(future);
+                            listener.operationComplete(effectiveFuture);
                         } catch (Exception e) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Exception caught running open listener!! Closing channel just in case");
