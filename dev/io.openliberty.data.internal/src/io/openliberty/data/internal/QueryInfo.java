@@ -77,7 +77,11 @@ import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.event.PostDeleteEvent;
+import jakarta.data.event.PostInsertEvent;
+import jakarta.data.event.PostUpsertEvent;
 import jakarta.data.event.PreDeleteEvent;
+import jakarta.data.event.PreInsertEvent;
+import jakarta.data.event.PreUpsertEvent;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
@@ -93,6 +97,7 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Update;
+import jakarta.enterprise.event.Event;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
@@ -4206,50 +4211,62 @@ public abstract class QueryInfo {
      */
     @Trivial
     Object insert(Object arg, AutoCloseable entityHandler) throws Exception {
-        arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().toList() //
-                        : arg;
+        Iterable<?> args;
+        int entityCount = 0;
+        boolean hasSingularEntityParam = false;
+
+        if (entityParamType.isArray()) {
+            entityCount = Array.getLength(arg);
+            List<Object> list = new ArrayList<>(entityCount);
+            for (int i = 0; i < entityCount; i++)
+                list.add(Array.get(arg, i));
+            args = list;
+        } else if (arg instanceof Collection<?> c) {
+            args = c;
+            entityCount = c.size();
+        } else if (arg instanceof Iterable<?> it) {
+            args = it;
+            for (Object e : it)
+                entityCount++;
+        } else if (arg instanceof Stream<?> s) {
+            List<?> list = s.sequential().toList();
+            args = list;
+            entityCount = list.size();
+        } else {
+            args = List.of(arg);
+            entityCount = 1;
+            hasSingularEntityParam = true;
+        }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "insert", loggable(arg));
-
-        boolean resultVoid = void.class.equals(singleType) ||
-                             Void.class.equals(singleType);
-        ArrayList<Object> results;
-
-        boolean hasSingularEntityParam = false;
-        int entityCount = 0;
-        if (entityParamType.isArray()) {
-            int length = Array.getLength(arg);
-            results = resultVoid ? null : new ArrayList<>(length);
-            for (; entityCount < length; entityCount++) {
-                Object entity = toEntity(Array.get(arg, entityCount));
-                ehInsert(entityHandler, entity); // TODO entityAgent.insertMultiple?
-                if (results != null)
-                    results.add(entity);
-            }
-        } else if (arg instanceof Iterable) {
-            results = resultVoid ? null : new ArrayList<>();
-            for (Object e : ((Iterable<?>) arg)) {
-                entityCount++;
-                Object entity = toEntity(e);
-                ehInsert(entityHandler, entity);
-                if (results != null)
-                    results.add(entity);
-            }
-        } else {
-            entityCount = 1;
-            hasSingularEntityParam = true;
-            results = resultVoid ? null : new ArrayList<>(1);
-            Object entity = toEntity(arg);
-            ehInsert(entityHandler, entity);
-            if (results != null)
-                results.add(entity);
-        }
+            Tr.entry(this, tc, "insert", loggable(args));
 
         if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
+
+        // PreInsertEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PreInsertEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.preInsertLiteral);
+            for (Object e : args)
+                event.fire(new PreInsertEvent<>(e));
+        }
+
+        boolean resultVoid = void.class.equals(singleType) ||
+                             Void.class.equals(singleType);
+
+        List<Object> results = resultVoid && producer.lifeCycleEvents == null //
+                        ? null //
+                        : new ArrayList<>(entityCount);
+
+        // insert the entities
+        for (Object e : args) {
+            Object entity = toEntity(e);
+            ehInsert(entityHandler, entity); // TODO entityAgent.insertMultiple?
+            if (results != null)
+                results.add(entity);
+        }
 
         if (entityHandler instanceof EntityManager em) {
             if (trace && tc.isDebugEnabled())
@@ -4257,40 +4274,41 @@ public abstract class QueryInfo {
             em.flush();
         }
 
+        if (results != null && entityInfo.recordClass != null)
+            // Converting from Java record to entity and back to Java record
+            // is important so that any mutations JPA makes to the entity
+            // are included.
+            for (int i = 0; i < results.size(); i++)
+                results.set(i, entityInfo.toRecord(results.get(i)));
+
         Class<?> returnType = method.getReturnType();
         Object returnValue;
         if (resultVoid) {
             returnValue = null;
+        } else if (returnArrayType != null) {
+            Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
+                                                             results.size());
+            returnValue = results.toArray(newArray);
         } else {
-            if (entityInfo.recordClass != null)
-                for (int i = 0; i < results.size(); i++)
-                    results.set(i, entityInfo.toRecord(results.get(i)));
-
-            if (returnArrayType != null) {
-                Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
-                                                                 results.size());
-                returnValue = results.toArray(newArray);
-            } else {
-                if (multiType == null)
-                    if (results.size() == 1)
-                        returnValue = results.get(0);
-                    else if (results.isEmpty())
-                        returnValue = null;
-                    else
-                        throw Fail.resultSizeMismatch(this, "@Insert", results.size(),
-                                                      hasSingularEntityParam);
-                else if (multiType.isInstance(results))
-                    returnValue = results;
-                else if (Stream.class.equals(multiType))
-                    returnValue = results.stream();
-                else if (Iterable.class.isAssignableFrom(multiType))
-                    returnValue = convertToIterable(results, multiType, null, null);
-                else if (Iterator.class.equals(multiType))
-                    returnValue = results.iterator();
+            if (multiType == null)
+                if (results.size() == 1)
+                    returnValue = results.get(0);
+                else if (results.isEmpty())
+                    returnValue = null;
                 else
-                    throw Fail.returnTypeInvalid(this, "Insert", hasSingularEntityParam,
-                                                 null, results.get(0).getClass());
-            }
+                    throw Fail.resultSizeMismatch(this, "@Insert", results.size(),
+                                                  hasSingularEntityParam);
+            else if (multiType.isInstance(results))
+                returnValue = results;
+            else if (Stream.class.equals(multiType))
+                returnValue = results.stream();
+            else if (Iterable.class.isAssignableFrom(multiType))
+                returnValue = convertToIterable(results, multiType, null, null);
+            else if (Iterator.class.equals(multiType))
+                returnValue = results.iterator();
+            else
+                throw Fail.returnTypeInvalid(this, "Insert", hasSingularEntityParam,
+                                             null, results.get(0).getClass());
         }
 
         if (CompletableFuture.class.equals(returnType) ||
@@ -4300,6 +4318,14 @@ public abstract class QueryInfo {
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Insert", hasSingularEntityParam,
                                          null, results.get(0).getClass());
+        }
+
+        // PostInsertEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PostInsertEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.postInsertLiteral);
+            for (Object e : results)
+                event.fire(new PostInsertEvent<>(e));
         }
 
         if (trace && tc.isEntryEnabled())
@@ -5639,47 +5665,61 @@ public abstract class QueryInfo {
      */
     @Trivial // avoid logging customer data
     Object save(Object arg, AutoCloseable entityHandler) throws Exception {
-        arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().toList() //
-                        : arg;
+        Iterable<?> args;
+        int entityCount = 0;
+        boolean hasSingularEntityParam = false;
+
+        if (entityParamType.isArray()) {
+            entityCount = Array.getLength(arg);
+            List<Object> list = new ArrayList<>(entityCount);
+            for (int i = 0; i < entityCount; i++)
+                list.add(Array.get(arg, i));
+            args = list;
+        } else if (arg instanceof Collection<?> c) {
+            args = c;
+            entityCount = c.size();
+        } else if (arg instanceof Iterable<?> it) {
+            args = it;
+            for (Object e : it)
+                entityCount++;
+        } else if (arg instanceof Stream<?> s) {
+            List<?> list = s.sequential().toList();
+            args = list;
+            entityCount = list.size();
+        } else {
+            args = List.of(arg);
+            entityCount = 1;
+            hasSingularEntityParam = true;
+        }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "save", loggable(arg));
-
-        boolean resultVoid = void.class.equals(singleType) ||
-                             Void.class.equals(singleType);
-        List<Object> results;
-
-        boolean hasSingularEntityParam = false;
-        int entityCount = 0;
-        if (entityParamType.isArray()) {
-            results = new ArrayList<>();
-            int length = Array.getLength(arg);
-            for (; entityCount < length; entityCount++)
-                // workaround is not possible when multiple entities
-                results.add(ehUpsert(entityHandler,
-                                     toEntity(Array.get(arg, entityCount))));
-        } else if (Iterable.class.isAssignableFrom(entityParamType)) {
-            results = new ArrayList<>();
-            for (Object e : ((Iterable<?>) arg)) {
-                entityCount++;
-                // workaround is not possible when multiple entities
-                results.add(ehUpsert(entityHandler,
-                                     toEntity(e)));
-            }
-        } else {
-            entityCount = 1;
-            hasSingularEntityParam = true;
-            results = resultVoid ? null : new ArrayList<>(1);
-            Object entity = ehUpsert(entityHandler,
-                                     toEntity(arg));
-            if (results != null)
-                results.add(entity);
-        }
+            Tr.entry(this, tc, "save", loggable(args));
 
         if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
+
+        // PreUpsertEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PreUpsertEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.preUpsertLiteral);
+            for (Object e : args)
+                event.fire(new PreUpsertEvent<>(e));
+        }
+
+        boolean resultVoid = void.class.equals(singleType) ||
+                             Void.class.equals(singleType);
+        List<Object> results = resultVoid && producer.lifeCycleEvents == null //
+                        ? null //
+                        : new ArrayList<>(entityCount);
+
+        // update or insert the entities
+        for (Object e : args) {
+            Object entity = toEntity(e);
+            entity = ehUpsert(entityHandler, entity); // TODO entityAgent.upsertMultiple?
+            if (results != null)
+                results.add(entity);
+        }
 
         if (entityHandler instanceof EntityManager em) {
             if (trace && tc.isDebugEnabled())
@@ -5687,39 +5727,41 @@ public abstract class QueryInfo {
             em.flush();
         }
 
+        if (results != null && entityInfo.recordClass != null)
+            // Converting from Java record to entity and back to Java record
+            // is important so that any mutations JPA makes to the entity
+            // are included.
+            for (int i = 0; i < results.size(); i++)
+                results.set(i, entityInfo.toRecord(results.get(i)));
+
         Class<?> returnType = method.getReturnType();
         Object returnValue;
         if (resultVoid) {
             returnValue = null;
+        } else if (returnArrayType != null) {
+            Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
+                                                             results.size());
+            returnValue = results.toArray(newArray);
         } else {
-            if (entityInfo.recordClass != null)
-                for (int i = 0; i < results.size(); i++)
-                    results.set(i, entityInfo.toRecord(results.get(i)));
-
-            if (returnArrayType != null) {
-                Object[] newArray = (Object[]) Array.newInstance(returnArrayType, results.size());
-                returnValue = results.toArray(newArray);
-            } else {
-                if (multiType == null)
-                    if (results.size() == 1)
-                        returnValue = results.get(0);
-                    else if (results.isEmpty())
-                        returnValue = null;
-                    else
-                        throw Fail.resultSizeMismatch(this, "@Save", results.size(),
-                                                      hasSingularEntityParam);
-                else if (multiType.isInstance(results))
-                    returnValue = results;
-                else if (Stream.class.equals(multiType))
-                    returnValue = results.stream();
-                else if (Iterable.class.isAssignableFrom(multiType))
-                    returnValue = convertToIterable(results, multiType, null, null);
-                else if (Iterator.class.equals(multiType))
-                    returnValue = results.iterator();
+            if (multiType == null)
+                if (results.size() == 1)
+                    returnValue = results.get(0);
+                else if (results.isEmpty())
+                    returnValue = null;
                 else
-                    throw Fail.returnTypeInvalid(this, "Save", hasSingularEntityParam,
-                                                 null, results.get(0).getClass());
-            }
+                    throw Fail.resultSizeMismatch(this, "@Save", results.size(),
+                                                  hasSingularEntityParam);
+            else if (multiType.isInstance(results))
+                returnValue = results;
+            else if (Stream.class.equals(multiType))
+                returnValue = results.stream();
+            else if (Iterable.class.isAssignableFrom(multiType))
+                returnValue = convertToIterable(results, multiType, null, null);
+            else if (Iterator.class.equals(multiType))
+                returnValue = results.iterator();
+            else
+                throw Fail.returnTypeInvalid(this, "Save", hasSingularEntityParam,
+                                             null, results.get(0).getClass());
         }
 
         if (CompletableFuture.class.equals(returnType) ||
@@ -5729,6 +5771,14 @@ public abstract class QueryInfo {
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Save", hasSingularEntityParam,
                                          null, results.get(0).getClass());
+        }
+
+        // PostUpsertEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PostUpsertEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.postUpsertLiteral);
+            for (Object e : results)
+                event.fire(new PostUpsertEvent<>(e));
         }
 
         if (trace && tc.isEntryEnabled())
