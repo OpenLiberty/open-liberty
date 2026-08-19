@@ -75,7 +75,7 @@ public class JNDIEntry {
         Dictionary<String, Object> propertiesForJndiService = new Hashtable<>();
         propertiesForJndiService.put("osgi.jndi.service.name", jndiName);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Registering JNDIEntry " + valueClassName + " with value " + parsedValue + " and JNDI name " + jndiName);
+            Tr.debug(tc, "Registering JNDIEntry with JNDIEntry name" + jndiName);
         }
         this.serviceRegistration = context.registerService(valueClassName, serviceObject, propertiesForJndiService);
     }
