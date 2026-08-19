@@ -59,7 +59,9 @@ import com.ibm.wsspi.security.audit.AuditService;
  * This class is the security audit service. It handles audit config and is also
  * a collector manager Source for audit events.
  */
-@Component(service = { AuditService.class, Source.class }, configurationPid = "com.ibm.ws.security.audit.event", configurationPolicy = ConfigurationPolicy.OPTIONAL,
+@Component(service = { AuditService.class, Source.class },
+           configurationPid = { "com.ibm.ws.security.audit.source", "com.ibm.ws.security.audit.event" },
+           configurationPolicy = ConfigurationPolicy.OPTIONAL,
            property = "service.vendor=IBM", immediate = true)
 
 public class AuditServiceImpl implements AuditService, Source {
@@ -132,7 +134,9 @@ public class AuditServiceImpl implements AuditService, Source {
     private boolean auditServiceStarted = false;
     private boolean emitted1 = false;
     private final boolean emitted2 = false;
-    private boolean emitMsgOnce = true; 
+    private boolean emitMsgOnce = true;
+    private static final String KEY_GENERATE_NEW_SESSION = "generateNewSession";
+    private volatile boolean generateNewSession = true;
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> configuration) {
@@ -151,6 +155,10 @@ public class AuditServiceImpl implements AuditService, Source {
                     setAuditData(value);
                 } else if (key.equals(AuditConstants.OUTCOME)) {
                     setOutcome(value);
+                } else if (key.equals(KEY_GENERATE_NEW_SESSION)) {
+                    if (value instanceof Boolean) {
+                        generateNewSession = (Boolean) value;
+                    }
                 }
             }
         }
@@ -203,7 +211,20 @@ public class AuditServiceImpl implements AuditService, Source {
     }
 
     @Modified
-    protected void modified(Map<String, Object> configuration) {}
+    protected void modified(Map<String, Object> configuration) {
+        if (configuration != null) {
+            Object value = configuration.get(KEY_GENERATE_NEW_SESSION);
+            if (value instanceof Boolean) {
+                generateNewSession = (Boolean) value;
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isGenerateNewSession() {
+        return generateNewSession;
+    }
 
     /*
      * (non-Javadoc)

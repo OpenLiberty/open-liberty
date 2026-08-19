@@ -38,7 +38,6 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 
-
 /**
  * Various and sundry utility methods for auditing.
  */
@@ -72,11 +71,18 @@ public class AuditUtils {
     /**
      * Return the session id if the request has an HttpSession,
      * otherwise return null.
+     * <p>
+     * When {@code generateNewSession} is configured to {@code false} on the
+     * {@code auditSource} element, this method will not create a new HTTP
+     * session if one does not already exist (uses {@code getSession(false)}).
+     * The default behavior (true) creates a new session if none exists.
      *
      * @param req
      * @return session id or null
      */
     public static String getSessionID(HttpServletRequest req) {
+        AuditService svc = auditServiceRef.getService();
+        final boolean createNew = (svc == null) || svc.isGenerateNewSession();
         String sessionID = null;
         final HttpServletRequest f_req = req;
 
@@ -84,7 +90,7 @@ public class AuditUtils {
             sessionID = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                 @Override
                 public String run() throws Exception {
-                    HttpSession session = f_req.getSession();
+                    HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
                     if (session != null) {
                         return session.getId();
                     } else {
@@ -98,7 +104,8 @@ public class AuditUtils {
                     sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
                         @Override
                         public String run() {
-                            return f_req.getSession().getId();
+                            HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
+                            return session != null ? session.getId() : null;
                         }
                     });
                 } else {
@@ -117,7 +124,8 @@ public class AuditUtils {
                     sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
                         @Override
                         public String run() {
-                            return f_req.getSession().getId();
+                            HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
+                            return session != null ? session.getId() : null;
                         }
                     });
                 } else {

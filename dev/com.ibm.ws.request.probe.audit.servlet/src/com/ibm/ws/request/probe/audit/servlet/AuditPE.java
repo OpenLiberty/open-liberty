@@ -335,18 +335,20 @@ public class AuditPE implements ProbeExtension {
 						auditManager.setLocalAddr(req.getLocalAddr());
 						auditManager.setLocalPort(String.valueOf(req.getLocalPort()));
 						String sessionID = null;
-						final HttpServletRequest f_req = req;
-						sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
-							@Override
-							public String run() {
-								HttpSession session = f_req.getSession();
-								if (session != null) {
-									return session.getId();
-								} else {
-									return null;
+							final HttpServletRequest f_req = req;
+							final boolean createNew = auditServiceRef.getService() == null
+									|| auditServiceRef.getService().isGenerateNewSession();
+							sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
+								@Override
+								public String run() {
+									HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
+									if (session != null) {
+										return session.getId();
+									} else {
+										return null;
+									}
 								}
-							}
-						});
+							});
 						if (sessionID != null) {
 							auditManager.setSessionId(sessionID);
 						}
