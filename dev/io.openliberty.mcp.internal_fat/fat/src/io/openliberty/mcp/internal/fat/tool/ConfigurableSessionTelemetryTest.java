@@ -87,11 +87,12 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
     @Test
     public void testCustomSessionTimeoutWithMetrics() throws Exception {
         FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
+        client.callMCP(BASIC_TOOL_REQUEST);
 
         Thread.sleep(1500);
 
         try {
-            client.deleteSession();
+            client.callMCP(BASIC_TOOL_REQUEST);
             fail("Expected session to be timed out, but delete succeeded");
         } catch (Exception e) {
             assertTrue("Expected session not found error",
