@@ -78,9 +78,11 @@ import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.event.PostDeleteEvent;
 import jakarta.data.event.PostInsertEvent;
+import jakarta.data.event.PostUpdateEvent;
 import jakarta.data.event.PostUpsertEvent;
 import jakarta.data.event.PreDeleteEvent;
 import jakarta.data.event.PreInsertEvent;
+import jakarta.data.event.PreUpdateEvent;
 import jakarta.data.event.PreUpsertEvent;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -245,7 +247,7 @@ public abstract class QueryInfo {
     /**
      * Producer for the repository bean.
      */
-    final RepositoryProducer<?> producer;
+    public final RepositoryProducer<?> producer;
 
     /**
      * The query, typically in the JPQL query language.
@@ -1291,38 +1293,63 @@ public abstract class QueryInfo {
      */
     @Trivial
     Object delete(Object arg, AutoCloseable entityHandler) throws Exception {
-        arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().toList() //
-                        : arg;
+        Iterable<?> args;
+        int entityCount = 0;
+
+        if (entityParamType.isArray()) {
+            entityCount = Array.getLength(arg);
+            List<Object> list = new ArrayList<>(entityCount);
+            for (int i = 0; i < entityCount; i++)
+                list.add(Array.get(arg, i));
+            args = list;
+        } else if (arg instanceof Collection<?> c) {
+            args = c;
+            entityCount = c.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            args = iterable;
+            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
+                entityCount++;
+        } else if (arg instanceof Stream<?> s) {
+            List<?> list = s.sequential().toList();
+            args = list;
+            entityCount = list.size();
+        } else {
+            args = List.of(arg);
+            entityCount = 1;
+        }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "delete", loggable(arg));
+            Tr.entry(this, tc, "delete", loggable(args));
 
-        int updateCount = 0;
-        int numExpected = 0;
-
-        if (arg instanceof Iterable) {
-            for (Object e : ((Iterable<?>) arg)) {
-                numExpected++;
-                updateCount += deleteOne(e, entityHandler);
-            }
-        } else if (entityParamType.isArray()) {
-            numExpected = Array.getLength(arg);
-            for (int i = 0; i < numExpected; i++)
-                updateCount += deleteOne(Array.get(arg, i), entityHandler);
-        } else {
-            numExpected = 1;
-            updateCount = deleteOne(arg, entityHandler);
-        }
-
-        if (numExpected == 0)
+        if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
 
-        if (updateCount < numExpected)
-            throw Fail.optimisticLockConflict(this, updateCount, numExpected);
+        // PreDeleteEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PreDeleteEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.preDeleteLiteral);
+            for (Object e : args)
+                event.fire(new PreDeleteEvent<>(e));
+        }
+
+        // delete the entities
+        int updateCount = 0;
+        for (Object e : args)
+            updateCount += deleteOne(e, entityHandler);
+
+        if (updateCount < entityCount)
+            throw Fail.optimisticLockConflict(this, updateCount, entityCount);
 
         Object returnValue = toReturnValue(updateCount, method.getReturnType());
+
+        // PostDeleteEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PostDeleteEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.postDeleteLiteral);
+            for (Object e : args)
+                event.fire(new PostDeleteEvent<>(e));
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "delete", loggable(returnValue));
@@ -1347,11 +1374,6 @@ public abstract class QueryInfo {
 
         if (!entityInfo.getType().isInstance(e))
             throw Fail.entityMismatch(this, e);
-
-        if (producer.lifeCycleEvents != null)
-            producer.lifeCycleEvents //
-                            .select(entityInfo.preDeleteLiteral) //
-                            .fire(new PreDeleteEvent<>(e));
 
         String jpql = ql;
 
@@ -1413,11 +1435,6 @@ public abstract class QueryInfo {
             // ought to be unreachable
             throw new DataException("Found " + numDeleted + " matching entities.");
         }
-
-        if (producer.lifeCycleEvents != null)
-            producer.lifeCycleEvents //
-                            .select(entityInfo.postDeleteLiteral) //
-                            .fire(new PostDeleteEvent<>(e));
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "deleteOne", numDeleted);
@@ -1857,32 +1874,53 @@ public abstract class QueryInfo {
      * @throws Exception                         if an error occurs.
      */
     Object findAndUpdate(Object arg, AutoCloseable entityHandler) throws Exception {
+        Iterable<?> args;
+        int entityCount = 0;
+        boolean hasSingularEntityParam = false;
+
+        if (entityParamType.isArray()) {
+            entityCount = Array.getLength(arg);
+            List<Object> list = new ArrayList<>(entityCount);
+            for (int i = 0; i < entityCount; i++)
+                list.add(Array.get(arg, i));
+            args = list;
+        } else if (arg instanceof Collection<?> c) {
+            args = c;
+            entityCount = c.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            args = iterable;
+            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
+                entityCount++;
+        } else if (arg instanceof Stream<?> s) {
+            List<?> list = s.sequential().toList();
+            args = list;
+            entityCount = list.size();
+        } else {
+            args = List.of(arg);
+            entityCount = 1;
+            hasSingularEntityParam = true;
+        }
+
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "findAndUpdate", loggable(arg));
 
-        List<Object> results;
+        if (entityCount == 0)
+            throw Fail.emptyLifeCycleParam(this);
 
-        boolean hasSingularEntityParam = false;
-        if (entityParamType.isArray()) {
-            int length = Array.getLength(arg);
-            results = new ArrayList<>(length);
-            for (int i = 0; i < length; i++)
-                results.add(findAndUpdateOne(Array.get(arg, i), entityHandler));
-        } else {
-            arg = arg instanceof Stream //
-                            ? ((Stream<?>) arg).sequential().toList() //
-                            : arg;
+        // PreUpdateEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PreUpdateEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.preUpdateLiteral);
+            for (Object e : args)
+                event.fire(new PreUpdateEvent<>(e));
+        }
 
-            results = new ArrayList<>();
-            if (arg instanceof Iterable) {
-                for (Object e : ((Iterable<?>) arg))
-                    results.add(findAndUpdateOne(e, entityHandler));
-            } else {
-                hasSingularEntityParam = true;
-                results = new ArrayList<>(1);
-                results.add(findAndUpdateOne(arg, entityHandler));
-            }
+        List<Object> results = new ArrayList<>(entityCount);
+
+        // find and update the entities
+        for (Object e : args) {
+            results.add(findAndUpdateOne(e, entityHandler));
         }
 
         if (!results.isEmpty() && entityHandler instanceof EntityManager em) {
@@ -1898,17 +1936,19 @@ public abstract class QueryInfo {
         } else if (Util.PRIMITIVE_NUMERIC_TYPES.contains(singleType) ||
                    Number.class.isAssignableFrom(singleType)) {
             returnValue = convert(results.size(), singleType, true);
-        } else if (results.isEmpty()) {
-            throw Fail.emptyLifeCycleParam(this);
         } else if (void.class.equals(returnType) || Void.class.equals(returnType)) {
             returnValue = null;
         } else {
             if (entityInfo.recordClass != null)
+                // Converting from Java record to entity and back to Java record
+                // is important so that any mutations JPA makes to the entity
+                // are included.
                 for (int i = 0; i < results.size(); i++)
                     results.set(i, entityInfo.toRecord(results.get(i)));
 
             if (returnArrayType != null) {
-                Object[] newArray = (Object[]) Array.newInstance(returnArrayType, results.size());
+                Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
+                                                                 results.size());
                 returnValue = results.toArray(newArray);
             } else {
                 if (multiType == null)
@@ -1945,6 +1985,21 @@ public abstract class QueryInfo {
                                    .isAssignableFrom(returnValue.getClass())) {
             throw Fail.returnTypeInvalid(this, "Update", hasSingularEntityParam,
                                          null, results.get(0).getClass());
+        }
+
+        // PostUpdateEvent
+        if (producer.lifeCycleEvents != null) {
+            if (entityInfo.recordClass != null &&
+                (returnValue == null ||
+                 returnValue instanceof Boolean ||
+                 returnValue instanceof Number))
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, entityInfo.toRecord(results.get(i)));
+
+            Event<PostUpdateEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.postUpdateLiteral);
+            for (Object e : results)
+                event.fire(new PostUpdateEvent<>(e));
         }
 
         if (trace && tc.isEntryEnabled())
@@ -4224,9 +4279,9 @@ public abstract class QueryInfo {
         } else if (arg instanceof Collection<?> c) {
             args = c;
             entityCount = c.size();
-        } else if (arg instanceof Iterable<?> it) {
-            args = it;
-            for (Object e : it)
+        } else if (arg instanceof Iterable<?> iterable) {
+            args = iterable;
+            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
                 entityCount++;
         } else if (arg instanceof Stream<?> s) {
             List<?> list = s.sequential().toList();
@@ -5678,9 +5733,9 @@ public abstract class QueryInfo {
         } else if (arg instanceof Collection<?> c) {
             args = c;
             entityCount = c.size();
-        } else if (arg instanceof Iterable<?> it) {
-            args = it;
-            for (Object e : it)
+        } else if (arg instanceof Iterable<?> iterable) {
+            args = iterable;
+            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
                 entityCount++;
         } else if (arg instanceof Stream<?> s) {
             List<?> list = s.sequential().toList();
@@ -6335,30 +6390,50 @@ public abstract class QueryInfo {
      */
     @Trivial
     Object update(Object arg, AutoCloseable entityHandler) throws Exception {
-        arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().toList() //
-                        : arg;
+        Iterable<?> args;
+        int entityCount = 0;
+
+        if (entityParamType.isArray()) {
+            entityCount = Array.getLength(arg);
+            List<Object> list = new ArrayList<>(entityCount);
+            for (int i = 0; i < entityCount; i++)
+                list.add(Array.get(arg, i));
+            args = list;
+        } else if (arg instanceof Collection<?> c) {
+            args = c;
+            entityCount = c.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            args = iterable;
+            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
+                entityCount++;
+        } else if (arg instanceof Stream<?> s) {
+            List<?> list = s.sequential().toList();
+            args = list;
+            entityCount = list.size();
+        } else {
+            args = List.of(arg);
+            entityCount = 1;
+        }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "update", loggable(arg));
+            Tr.entry(this, tc, "update", loggable(args));
 
-        int updateCount = 0;
-        int numExpected = 0;
+        if (entityCount == 0)
+            throw Fail.emptyLifeCycleParam(this);
 
-        if (arg instanceof Iterable) {
-            for (Object e : ((Iterable<?>) arg)) {
-                numExpected++;
-                updateCount += updateOne(e, entityHandler);
-            }
-        } else if (entityParamType.isArray()) {
-            numExpected = Array.getLength(arg);
-            for (int i = 0; i < numExpected; i++)
-                updateCount += updateOne(Array.get(arg, i), entityHandler);
-        } else {
-            numExpected = 1;
-            updateCount = updateOne(arg, entityHandler);
+        // PreUpdateEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PreUpdateEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.preUpdateLiteral);
+            for (Object e : args)
+                event.fire(new PreUpdateEvent<>(e));
         }
+
+        // update the entities
+        int updateCount = 0;
+        for (Object e : args)
+            updateCount += updateOne(e, entityHandler);
 
         if (entityHandler instanceof EntityManager em) {
             if (trace && tc.isDebugEnabled())
@@ -6366,13 +6441,18 @@ public abstract class QueryInfo {
             em.flush();
         }
 
-        if (numExpected == 0)
-            throw Fail.emptyLifeCycleParam(this);
-
-        if (updateCount < numExpected)
-            throw Fail.optimisticLockConflict(this, updateCount, numExpected);
+        if (updateCount < entityCount)
+            throw Fail.optimisticLockConflict(this, updateCount, entityCount);
 
         Object returnValue = toReturnValue(updateCount, method.getReturnType());
+
+        // PostUpdateEvent
+        if (producer.lifeCycleEvents != null) {
+            Event<PostUpdateEvent<Object>> event = producer.lifeCycleEvents //
+                            .select(entityInfo.postUpdateLiteral);
+            for (Object e : args)
+                event.fire(new PostUpdateEvent<>(e));
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "update", loggable(returnValue));
