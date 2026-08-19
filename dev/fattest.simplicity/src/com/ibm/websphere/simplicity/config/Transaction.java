@@ -28,7 +28,6 @@ public class Transaction extends ConfigElement {
     private String lpsHeuristicCompletion;
     private String propogatedOrBMTTranLifetimeTimeout;
     private Boolean recoverOnStartup;
-    private Boolean timeoutGracePeriodEnabled;
     private String totalTranLifetimeTimeout;
     private String transactionLogDirectory;
     private Integer transactionLogSize;
@@ -117,15 +116,6 @@ public class Transaction extends ConfigElement {
 
     public Boolean getRecoverOnStartup() {
         return this.recoverOnStartup;
-    }
-
-    @XmlAttribute(name = "timeoutGracePeriodEnabled")
-    public void setTimeoutGracePeriodEnabled(Boolean timeoutGracePeriodEnabled) {
-        this.timeoutGracePeriodEnabled = timeoutGracePeriodEnabled;
-    }
-
-    public Boolean getTimeoutGracePeriodEnabled() {
-        return this.timeoutGracePeriodEnabled;
     }
 
     @XmlAttribute(name = "totalTranLifetimeTimeout")
@@ -232,8 +222,6 @@ public class Transaction extends ConfigElement {
             buf.append("propogatedOrBMTTranLifetimeTimeout=\"" + propogatedOrBMTTranLifetimeTimeout + "\" ");
         if (recoverOnStartup != null)
             buf.append("recoverOnStartup=\"" + recoverOnStartup + "\" ");
-        if (timeoutGracePeriodEnabled != null)
-            buf.append("timeoutGracePeriodEnabled=\"" + timeoutGracePeriodEnabled + "\" ");
         if (totalTranLifetimeTimeout != null)
             buf.append("totalTranLifetimeTimeout=\"" + totalTranLifetimeTimeout + "\" ");
         if (transactionLogDirectory != null)
