@@ -22,6 +22,7 @@ com.ibm.ws.javax.j2ee:servlet.resources:3.1
 com.ibm.ws.javax.j2ee:servlet:3.0
 com.ibm.ws.javax.j2ee:servlet:3.1
 com.ibm.ws.javax.j2ee:standardtld:1.2
+com.ibm.ws.jmx.connector.client.rest:serialization-helper:1.0.0
 com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
 com.ibm.ws.logstash:logstash:5.5.0
 com.ibm.ws.org.apache.aries.jndi:org.apache.aries.jndi.core:1.1.0.ibm20201007-1
