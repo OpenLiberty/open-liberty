@@ -835,10 +835,11 @@ public class HttpDispatcherTest {
         final String portStr = "1234";
         final HttpRequestImpl mockRequest = context.mock(HttpRequestImpl.class);
 
-        // No dispatcher, no private headers: $WSSP is sensitive and is not read by default.
+        // No dispatcher, no private headers
         context.checking(new Expectations() {
             {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                will(returnValue(null));
 
                 one(mockRequest).getVirtualPort();
                 will(returnValue(1234));
@@ -859,10 +860,11 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // No dispatcher, no private headers: infer the default HTTP port without reading sensitive $WSSP.
+        // No dispatcher, no private headers
         context.checking(new Expectations() {
             {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                will(returnValue(null));
 
                 one(mockRequest).getVirtualPort();
                 will(returnValue(-1));
@@ -882,50 +884,7 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // No dispatcher: $WSSP is sensitive and should not be trusted by default.
-        context.checking(new Expectations() {
-            {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
-
-                one(mockRequest).getVirtualPort();
-                will(returnValue(8010));
-            }
-        });
-
-        try {
-            Assert.assertEquals("No registered dispatcher: sensitive $WSSP should be ignored by default",
-                                8010, link.getRequestedPort());
-        } finally {
-            context.assertIsSatisfied();
-        }
-
-        HttpDispatcher d = new HttpDispatcher();
-        d.activate(buildMap(true, null, "*", "none"));
-
-        // reset the cached value of use private headers for the connection
-        // so it re-calculates
-        linkUsePrivateHeaders.set(link, unknownPrivateHeader);
-
-        // Registered dispatcher, normal private headers trusted but sensitive headers not trusted: $WSSP should be ignored.
-        context.checking(new Expectations() {
-            {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
-
-                one(mockRequest).getVirtualPort();
-                will(returnValue(8010));
-            }
-        });
-
-        try {
-            Assert.assertEquals("Registered dispatcher: $WSSP should require trustedSensitiveHeaderOrigin",
-                                8010, link.getRequestedPort());
-        } finally {
-            context.assertIsSatisfied();
-        }
-
-        d.modified(buildMap(true, null, "none", "*"));
-
-        // Registered dispatcher, sensitive private headers trusted: $WSSP may be used.
+        // No dispatcher: $WSSP: 1234
         context.checking(new Expectations() {
             {
                 one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
@@ -934,17 +893,23 @@ public class HttpDispatcherTest {
         });
 
         try {
-            Assert.assertEquals("Registered dispatcher: trusted sensitive $WSSP should be used",
+            Assert.assertEquals("No registered dispatcher: sensitive $WSSP should be ignored by default",
                                 1234, link.getRequestedPort());
         } finally {
             context.assertIsSatisfied();
         }
 
-        d.modified(buildMap(true, null, "none", "none"));
+        // Registered dispatcher, trust all headers
+        HttpDispatcher d = new HttpDispatcher();
+        d.activate(buildMap(true, null, "none", "none"));
 
+        // reset the cached value of use private headers for the connection
+        // so it re-calculates
+        linkUsePrivateHeaders.set(link, unknownPrivateHeader);
         context.checking(new Expectations() {
             {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                will(returnValue(null));
 
                 one(mockRequest).getVirtualPort();
                 will(returnValue(-1));
@@ -959,7 +924,7 @@ public class HttpDispatcherTest {
         });
 
         try {
-            Assert.assertEquals("Registered dispatcher, no trusted private headers: should infer HTTPS port",
+            Assert.assertEquals("Registered dispatcher, no WSSP should infer HTTPS port",
                                 443, link.getRequestedPort());
         } finally {
             context.assertIsSatisfied();

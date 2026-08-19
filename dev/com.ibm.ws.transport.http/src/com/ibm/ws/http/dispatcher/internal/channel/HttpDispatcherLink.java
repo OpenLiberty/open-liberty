@@ -1100,6 +1100,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // Get the requested port: this assumes that the contents of $WS* headers has been
         // evaluated while parsing the request. Otherwise the Host header will be used if
         // available
+        
         String pluginPort = request.getHeader(HttpHeaderKeys.HDR_$WSSP);
         if (pluginPort != null)
             return Integer.parseInt(pluginPort);
