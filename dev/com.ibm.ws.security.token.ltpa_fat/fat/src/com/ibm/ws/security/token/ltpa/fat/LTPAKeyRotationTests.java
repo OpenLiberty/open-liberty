@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -363,7 +364,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate ltpa to non-fips-compatible keys and backup incompatible key
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
             assertFileWasCreated(DEFAULT_KEY_PATH + ".fips");
 
             copyFileToServerResourcesSecurityDir(ALT_FIPS_PRIMARY_KEY_PATH);
@@ -373,7 +374,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate key again
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
 
             // verify version 2 keys was generated
             assertFileWasCreated(DEFAULT_KEY_PATH);
@@ -390,7 +391,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate ltpa to fips-compatible keys and backup incompatible key
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
             assertFileWasCreated(DEFAULT_KEY_PATH + ".nofips");
 
             copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
@@ -400,7 +401,7 @@ public class LTPAKeyRotationTests {
 
             // should regenerate key again
             waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
+            waitForLTPAConfigurationReadyMessage(2);
 
             // verify version 2 keys was generated
             assertFileWasCreated(DEFAULT_KEY_PATH);
@@ -453,10 +454,8 @@ public class LTPAKeyRotationTests {
         waitForLTPAKeysCreatedMessage();
 
         // Wait for LTPA to be ready after renaming the primary key to validation key
-        waitForLTPAConfigurationReadyMessage();
         // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
-        Thread.sleep(200);
+        waitForLTPAConfigurationReadyMessage(2);
         
         // Assert that a new ltpa.keys file was created
         assertFileWasCreated(DEFAULT_KEY_PATH);
@@ -1970,12 +1969,8 @@ public class LTPAKeyRotationTests {
 
         // Wait for the ltpa.keys file to be regenerated
         waitForLTPAKeysCreatedMessage();
-
         // Wait for LTPA to be ready after renaming file
         waitForLTPAConfigurationReadyMessage();
-        // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
-        Thread.sleep(200);
 
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
     }
@@ -2124,10 +2119,8 @@ public class LTPAKeyRotationTests {
         renameFileIfExists(DEFAULT_KEY_PATH, VALIDATION_KEY1_PATH, false);
 
         // Wait for the LTPA configuration to be ready after renaming file
-        waitForLTPAConfigurationReadyMessage();
         // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
-        Thread.sleep(200);
+        waitForLTPAConfigurationReadyMessage(2);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -2143,10 +2136,8 @@ public class LTPAKeyRotationTests {
         updateConfigDynamically(server, serverConfiguration);
 
         // Wait for the LTPA configuration to be ready after the server configuration change
-        waitForLTPAConfigurationReadyMessage();
         // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
-        Thread.sleep(200);
+        waitForLTPAConfigurationReadyMessage(2);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -2159,10 +2150,8 @@ public class LTPAKeyRotationTests {
         updateConfigDynamically(server, serverConfiguration);
 
         // Wait for the LTPA configuration to be ready after the server configuration change
-        waitForLTPAConfigurationReadyMessage();
         // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
-        Thread.sleep(200);
+        waitForLTPAConfigurationReadyMessage(2);
         
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -2175,10 +2164,8 @@ public class LTPAKeyRotationTests {
         updateConfigDynamically(server, serverConfiguration);
 
         // Wait for the LTPA configuration to be ready after the server configuration change
-        waitForLTPAConfigurationReadyMessage();
         // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
-        Thread.sleep(200);
+        waitForLTPAConfigurationReadyMessage(2);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -2191,10 +2178,8 @@ public class LTPAKeyRotationTests {
         updateConfigDynamically(server, serverConfiguration);
 
         // Wait for the LTPA configuration to be ready after the server configuration change
-        waitForLTPAConfigurationReadyMessage();
         // Need to wait for LTPA to be ready a second time due to re-creation of the primary key
-        // Using thread sleep due to previous call not moving log marker and manually moving the log marker may not always be fast enough
-        Thread.sleep(200);
+        waitForLTPAConfigurationReadyMessage(2);
 
         // Attempt to access the simple servlet again with the same cookie and assert that the server did not need to login again
         flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
@@ -2759,6 +2744,11 @@ public class LTPAKeyRotationTests {
 
     private static void waitForLTPAConfigurationReadyMessage() throws Exception {
         assertNotNull("Expected LTPA configuration ready message not found in the log.", server.waitForLTPAConfigReady(timeoutMillis, true));
+    }
+
+    private static void waitForLTPAConfigurationReadyMessage(int count) throws Exception {
+        int found = server.waitForMultipleStringsInLogUsingMark(count, "CWWKS4105I", timeoutMillis, messagesLogFile);
+        assertEquals("Expected " + count + " LTPA configuration ready message(s) in the log but found " + found + ".", count, found);
     }
 
     /**
