@@ -9,7 +9,7 @@ visibility=private
   com.ibm.websphere.appserver.eeCompatible-12.0, \
   io.openliberty.noShip-1.0
 -bundles=\
- io.openliberty.jakarta.jsonp.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json:jakarta.json-api:2.1.3"
+ io.openliberty.jakarta.jsonp.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.json:jakarta.json-api:2.2.0-SNAPSHOT"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
