@@ -47,9 +47,49 @@
         <AD id="expirationDifferenceAllowed" name="internal" description="internal use only"
             required="false" type="String" ibm:type="duration(ms)" 
             default="3000ms" /> 
-        <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" 
-           	required="false" type="String" 
-            ibm:flat="true" cardinality="2147483647"/>        
+        <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys"
+           	required="false" type="String"
+            ibm:flat="true" cardinality="2147483647"/>
+        <AD id="tokenVersion" name="%tokenVersion" description="%tokenVersion.desc"
+            required="false" type="String"
+            default="2">
+            <Option label="%tokenVersion.v2" value="2"/>
+            <Option label="%tokenVersion.v3" value="3"/>
+        </AD>
+        <AD id="pqcEnabled" name="%pqcEnabled" description="%pqcEnabled.desc"
+            required="false" type="Boolean"
+            default="false"/>
+        <AD id="pqcKeystoreFile" name="%pqcKeystoreFile" description="%pqcKeystoreFile.desc"
+            required="false" type="String" ibm:type="location(file)"
+            default="${server.output.dir}/resources/security/ltpa-pqc.p12"/>
+        <AD id="pqcKeystorePassword" name="%pqcKeystorePassword" description="%pqcKeystorePassword.desc"
+            required="false" type="String" ibm:type="password"/>
+        <AD id="mlkemAlgorithm" name="%mlkemAlgorithm" description="%mlkemAlgorithm.desc"
+            required="false" type="String"
+            default="ML-KEM-768">
+            <Option label="%mlkemAlgorithm.512" value="ML-KEM-512"/>
+            <Option label="%mlkemAlgorithm.768" value="ML-KEM-768"/>
+            <Option label="%mlkemAlgorithm.1024" value="ML-KEM-1024"/>
+        </AD>
+        <AD id="cryptoMode" name="%cryptoMode" description="%cryptoMode.desc"
+            required="false" type="String"
+            default="classical">
+            <Option label="%cryptoMode.classical" value="classical"/>
+            <Option label="%cryptoMode.pqc" value="pqc"/>
+            <Option label="%cryptoMode.hybrid" value="hybrid"/>
+        </AD>
+        <AD id="mldsaAlgorithm" name="%mldsaAlgorithm" description="%mldsaAlgorithm.desc"
+            required="false" type="String"
+            default="ML-DSA-65">
+            <Option label="%mldsaAlgorithm.44" value="ML-DSA-44"/>
+            <Option label="%mldsaAlgorithm.65" value="ML-DSA-65"/>
+            <Option label="%mldsaAlgorithm.87" value="ML-DSA-87"/>
+        </AD>
+        <AD id="mldsaKeystoreFile" name="%mldsaKeystoreFile" description="%mldsaKeystoreFile.desc"
+            required="false" type="String" ibm:type="location(file)"
+            default="${server.output.dir}/resources/security/ltpa-mldsa.p12"/>
+        <AD id="mldsaKeystorePassword" name="%mldsaKeystorePassword" description="%mldsaKeystorePassword.desc"
+            required="false" type="String" ibm:type="password"/>
     </OCD>
 
     <Designate pid="com.ibm.ws.security.token.ltpa.LTPAConfiguration">
