@@ -18,10 +18,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
 import com.ibm.wsspi.http.HttpDateFormat;
+
+
 
 /**
  * After changing from using SimpleDateFormat to DateTimeFormatter, this test was created
@@ -254,5 +259,28 @@ public class HttpDateFormatTest {
                 Thread.sleep(50);
             }
         }
+    }
+
+    @Test
+    public void testRFC1036TwoDigitYearRollover() throws Exception{
+        Instant fixedNow = Instant.parse("2026-08-04T00:00:00Z");
+
+        Date parsed = ((HttpDateFormatImpl) formatter).parseRFC1036Time(
+                "Saturday, 28-Sep-99 16:11:14 GMT");
+
+        Date expected = Date.from(
+                ZonedDateTime.of(1999, 9, 28, 16, 11, 14, 0, ZoneOffset.UTC).toInstant());
+
+        assertEquals(expected, parsed);
+    }
+
+    @Test
+    public void testRFC2109TwoDigitYearRollover() throws Exception {
+        Date parsed = formatter.parseRFC2109Time("Sat, 28-Sep-99 16:11:14 GMT");
+
+        Date expected = Date.from(
+                ZonedDateTime.of(1999, 9, 28, 16, 11, 14, 0, ZoneOffset.UTC).toInstant());
+
+        assertEquals(expected, parsed);
     }
 }
