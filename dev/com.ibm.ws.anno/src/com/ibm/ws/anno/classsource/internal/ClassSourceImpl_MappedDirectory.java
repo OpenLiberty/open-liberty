@@ -241,7 +241,7 @@ public class ClassSourceImpl_MappedDirectory
 
                     boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
 
-                    if ( !didAdd ) {
+                    if ( didAdd ) {
                         incrementClassExclusionCount();
 
                         localScanCounts.increment(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);

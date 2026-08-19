@@ -448,8 +448,8 @@ public abstract class ClassSourceImpl implements ClassSource {
     protected boolean i_maybeAdd(String i_resourceName, Set<String> i_seedClassNamesSet) {
         String methodName = "i_maybeAdd";
 
-        boolean alreadyPresent = i_seedClassNamesSet.contains(i_resourceName);
-        if ( !alreadyPresent ) {
+        boolean didAdd = ! i_seedClassNamesSet.contains(i_resourceName);
+        if ( didAdd ) {
             i_seedClassNamesSet.add(i_resourceName);
         }
 
@@ -459,13 +459,13 @@ public abstract class ClassSourceImpl implements ClassSource {
         // rather bloats the trace.
 
         if ( logger.isLoggable(Level.FINER) ) {
-            String caseText = ( alreadyPresent ? "already present" : "added" );
+            String caseText = ( didAdd ? "added a value" : "value was already present" );
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "[ {0} ] Resource [ {1} ]: [ {2} ]",
                 new Object[] { getHashText(), i_resourceName, caseText });
         }
 
-        return alreadyPresent;
+        return didAdd;
     }
 
     //

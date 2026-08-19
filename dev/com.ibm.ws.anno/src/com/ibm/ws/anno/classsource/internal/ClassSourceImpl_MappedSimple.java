@@ -284,7 +284,7 @@ public class ClassSourceImpl_MappedSimple
                     String i_nextClassName = internClassName(nextClassName);
                     boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
 
-                    if ( !didAdd ) {
+                    if ( didAdd ) {
                         incrementClassExclusionCount();
 
                         markResult(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);
