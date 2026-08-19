@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.security.openidconnect.client;
+package com.ibm.ws.security.openidconnect.clients.common;
 
 import javax.servlet.http.HttpServletRequest;
 

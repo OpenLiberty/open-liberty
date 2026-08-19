@@ -15,6 +15,7 @@ package com.ibm.ws.security.social;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -124,5 +125,55 @@ public interface SocialLoginConfig {
     public long getApiResponseCacheTime();
 
     public String getIntrospectionTokenTypeHint();
+
+    /**
+     * Get whether or not to serve protected resource metadata.
+     * 
+     * @return {@code true} if protected resource metadata is enabled
+     */
+    default boolean getServeProtectedResourceMetadata() {
+        return false;
+    }
+
+    
+    /**
+     * Get the advertised scopes for the protected resource metadata.
+     *
+     * @return A list of scopes, or null if not configured
+     */
+    default List<String> getProtectedResourceMetadataAdvertisedScopes() {
+        return null;
+    }
+
+    /**
+     * Get the JWT builder reference for the protected resource metadata.
+     *
+     * @return The JWT builder reference ID (OSGi PID), or null if not configured
+     */
+    default String getProtectedResourceMetadataJwtBuilderRef() {
+        return null;
+    }
+
+    /**
+     * Get the user-facing JWT builder id for the protected resource metadata.
+     * This is the {@code id} attribute value from {@code <jwtBuilder id="..."/>},
+     * resolved from the OSGi PID stored in {@link #getProtectedResourceMetadataJwtBuilderRef()}.
+     * Use this for constructing the {@code jwks_uri} endpoint URL.
+     *
+     * @return The user-facing JWT builder id, or null if not configured or unresolvable
+     */
+    default String getProtectedResourceMetadataJwtBuilderId() {
+        return null;
+    }
+    
+    /**
+     * Get the authorization server issuer identifier (as described in RFC 8414) to be included
+     * in the protected resource metadata.
+     * 
+     * @return The authorization server issuer identifier.
+     */
+    default String getProtectedResourceMetadataAuthServer() {
+        return null;
+    }
 
 }

@@ -27,6 +27,7 @@ Import-Package: \
   com.ibm.ws.kernel.boot;version=latest, \
   com.ibm.ws.kernel.service;version=latest, \
   com.ibm.ws.security.openidconnect.client;version=latest, \
+  com.ibm.ws.security.openidconnect.clients.common;version=latest, \
   io.openliberty.security.oidcclientcore.internal;version=latest
 
 -testpath: \

@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
-import com.ibm.ws.security.openidconnect.client.OAuthProtectedResourceMetadataService;
+import com.ibm.ws.security.openidconnect.clients.common.OAuthProtectedResourceMetadataService;
+
 import io.openliberty.security.oidcclient.wellknown.common.ServletUtils;
 
 /**

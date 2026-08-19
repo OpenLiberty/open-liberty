@@ -25,6 +25,7 @@ tested.features:\
     appSecurity-6.0, \
     appSecurity-7.0, \
     jsp-2.3, \
+    jsonp-2.0, \
     pages-3.0, \
     pages-3.1, \
     pages-4.0, \

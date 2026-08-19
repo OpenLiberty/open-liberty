@@ -7,6 +7,7 @@ visibility = private
 -bundles=\
   io.openliberty.security.social.internal,\
   io.openliberty.security.openidconnect.internal.clients.common,\
-  io.openliberty.security.oidcclientcore.internal.jakarta
+  io.openliberty.security.oidcclientcore.internal.jakarta,\
+  io.openliberty.security.oidcclient.wellknown.internal.jakarta
 kind=noship
 edition=full
