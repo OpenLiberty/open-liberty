@@ -21,7 +21,6 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -381,7 +380,9 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The read Jandex index.
      */
     protected SparseIndex getSparseJandexIndex() {
-        return getIndexWithFallacks(s -> getSparseJandexIndex(s));
+        return getIndexWithFallacks(
+            indexPath -> getSparseJandexIndex(indexPath),
+            index -> index.getKnownClasses().size() );
     }
 
     /**
@@ -757,10 +758,28 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The read Jandex index.
      */
     protected Index getJandexIndex() {
-        return getIndexWithFallacks(s -> getJandexIndex(s));
+        return getIndexWithFallacks(
+            indexPath -> getJandexIndex(indexPath),
+            index -> index.getKnownClasses().size() );
     }
     
-    private <RETURN_TYPE> RETURN_TYPE getIndexWithFallacks(Function<String, RETURN_TYPE> indexGetter) {
+    /**
+     * Retrieve a jandex index of the specified index type. Wrapper the retrieval
+     * with calls to log time and size data. Answer the index which was retrieved.
+     * Answer null if no index was read. Attempt both the META-INF location and,
+     * if enabled, the WEB-INF/classes/META-INF location.
+     * 
+     * @param <IndexType> The type of the index which is to be retrieved.
+     * 
+     * @param indexGetter Type specific index getter.
+     * @param classCountGetter Type specific class count getter.
+     * 
+     * @return The index which was retrieved. Null if an index is not available.
+     */
+    private <IndexType> IndexType getIndexWithFallacks(
+        Function<String, IndexType> indexGetter,
+        Function<IndexType, Integer> classCountGetter) {
+        
         String methodName = "getIndexWithFallacks";
 
         long startTime = System.nanoTime();
@@ -769,7 +788,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "Default path [ " + jandexPath + " ]");
         }                
-        RETURN_TYPE jandexIndex = indexGetter.apply(jandexPath);
+        IndexType jandexIndex = indexGetter.apply(jandexPath);
 
         if ( jandexIndex == null ) {
             if ( getJandexEnableWebInf() ) {
@@ -780,7 +799,7 @@ public abstract class ClassSourceImpl implements ClassSource {
                 jandexIndex = indexGetter.apply(jandexPath);
             } else {
                 if ( logger.isLoggable(Level.FINER) ) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Extended path not enabled");
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "WEB-INF path not enabled");
                 }                        
             }
         }
@@ -790,17 +809,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         
         if ( jandexIndex != null ) {
             setProcessTime(readTime);
-            //This is ugly but these two are the only valid options for this point in the code
-            //And accepting this uglyness lets us avoid duplicating this entire method.
-            if (jandexIndex instanceof SparseIndex)  {
-                SparseIndex index = (SparseIndex) jandexIndex;
-                setProcessCount( numClasses = index.getKnownClasses().size() );
-            } else if (jandexIndex instanceof Index) {
-                Index index = (Index) jandexIndex;
-                setProcessCount( numClasses = index.getKnownClasses().size() );
-            } else {
-                numClasses = 0; //Should be unreachable but required by the compiler.
-            }
+            setProcessCount( numClasses = classCountGetter.apply(jandexIndex) );
         } else {
             numClasses = 0;
         }
