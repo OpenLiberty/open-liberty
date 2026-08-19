@@ -77,6 +77,7 @@ public class McpSessionStore {
         if (isStateless()) {
             return null;
         }
+        cleanupOldSessions();
         McpSession session = sessions.get(sessionId);
         if (session != null) {
             session.touch();
