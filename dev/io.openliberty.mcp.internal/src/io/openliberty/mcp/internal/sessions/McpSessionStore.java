@@ -93,18 +93,12 @@ public class McpSessionStore {
     }
 
     /**
-     * Checks if the session ID is valid and not expired.
-     * Also removes any expired sessions as a side effect.
-     */
-    public boolean isValid(McpSessionId sessionId) {
-        cleanupOldSessions();
-        return sessionId != null && sessions.containsKey(sessionId);
-    }
-
-    /**
      * Deletes the session associated with the given session ID.
+     *
+     * @return {@code true} if a session was deleted, {@code false} if the session did not exist (maybe expired previously)
      */
-    public void deleteSession(McpSessionId sessionId) {
+    public boolean deleteSession(McpSessionId sessionId) {
+        cleanupOldSessions();
         McpSession session = sessions.remove(sessionId);
 
         if (session != null) {
@@ -115,6 +109,9 @@ public class McpSessionStore {
             if (metrics != null) {
                 McpSessionMetrics.sessionEnded(metrics);
             }
+            return true;
+        } else {
+            return false;
         }
     }
 
