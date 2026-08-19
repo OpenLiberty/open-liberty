@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.time.ZoneOffset;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -505,7 +506,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
-        return d;
+        return correctTwoDigitYear(d);
     }
 
     /*
@@ -520,7 +521,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
-        return d;
+        return correctTwoDigitYear(d);
     }
 
     /*
@@ -571,11 +572,11 @@ public class HttpDateFormatImpl implements HttpDateFormat {
 
         Date parsedDate = attemptParse(c1123Time.formatter, data);
         if (null == parsedDate) {
-            parsedDate = attemptParse(c1036Time.formatter, data);
+            parsedDate = correctTwoDigitYear(attemptParse(c1036Time.formatter, data));
             if (null == parsedDate) {
                 parsedDate = attemptParse(cAsciiTime.formatter, data);
                 if (null == parsedDate) {
-                    parsedDate = attemptParse(c2109Time.formatter, data);
+                    parsedDate = correctTwoDigitYear(attemptParse(c2109Time.formatter, data));
                     if (null == parsedDate) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Time does not match supported formats");
@@ -594,5 +595,22 @@ public class HttpDateFormatImpl implements HttpDateFormat {
     @Override
     public Date parseTime(byte[] inBytes) throws ParseException {
         return parseTime(GenericUtils.getEnglishString(inBytes));
+    }
+
+    private Date correctTwoDigitYear(Date parsed){
+        return correctTwoDigitYear(parsed, Instant.now());
+    }
+
+    Date correctTwoDigitYear(Date parsed, Instant now){
+        if (null == parsed){
+            return null;
+        }
+
+        Instant fiftyYearsOut = now.atZone(ZoneOffset.UTC).plusYears(50).toInstant();
+        if (parsed.toInstant().isAfter(fiftyYearsOut)) {
+            return Date.from(parsed.toInstant().atZone(ZoneOffset.UTC).minusYears(100).toInstant());
+        }
+
+        return parsed;
     }
 }
