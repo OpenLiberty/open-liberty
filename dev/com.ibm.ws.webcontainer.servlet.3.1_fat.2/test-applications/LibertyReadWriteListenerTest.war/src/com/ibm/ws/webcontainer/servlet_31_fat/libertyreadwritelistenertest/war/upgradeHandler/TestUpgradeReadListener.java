@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,8 @@ public class TestUpgradeReadListener implements ReadListener {
     private final LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>();
     private static final Logger LOG = Logger.getLogger(TestUpgradeReadListener.class.getName());
     long dataSize = 0;
+    private static final String COMPLETE_MESSAGE = "Sending Data Complete";
+    private int completeMessageIndex = 0;
     private final String TIMEOUT_OCCURRED = ", A Timeout has been triggered";
     private StringBuilder timeoutStringBuilder;
 
@@ -109,14 +111,21 @@ public class TestUpgradeReadListener implements ReadListener {
                     LOG.info("testUpgradeReadListenerLargeData onDataAvailable, isReady=false");
                 }
 
-                while (input.isReady() && (len = input.read(b)) != -1) {
-                    LOG.info("testUpgradeReadListenerLargeData in onDataAvailable() in TestUpgradeReadListener onDataAvailable, isReady=true , reading data from input stream and measuring its size ");
+                while (!complete && input.isReady() && (len = input.read(b)) != -1) {
                     dataSize += len;
-                    String s = new String(b);
-                    if (s.contains("Sending Data Complete")) {
-                        LOG.info("testUpgradeReadListenerLargeData in onDataAvailable() in TestUpgradeReadListener, complete message found. Test is done");
-                        dataSize -= ("Sending Data Complete").length();
-                        complete = true;
+                    for (int i = 0; i < len; i++) {
+                        if (b[i] == COMPLETE_MESSAGE.charAt(completeMessageIndex)) {
+                            completeMessageIndex++;
+                        } else {
+                            completeMessageIndex = b[i] == COMPLETE_MESSAGE.charAt(0) ? 1 : 0;
+                        }
+                        if (completeMessageIndex == COMPLETE_MESSAGE.length()) {
+                            LOG.info("testUpgradeReadListenerLargeData in onDataAvailable() in TestUpgradeReadListener, complete message found. Test is done");
+                            dataSize -= COMPLETE_MESSAGE.length();
+                            completeMessageIndex = 0;
+                            complete = true;
+                            break;
+                        }
                     }
                 }
 
