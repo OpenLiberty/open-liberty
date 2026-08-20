@@ -12,9 +12,17 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.utils;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPBody;
@@ -375,5 +383,113 @@ public class WSCoorUtil {
     @Trivial
     public static Handler getHandlerService() {
         return handlerService.getService();
+    }
+
+    /**
+     * Creates a WS-AT coordination context as XML string for the current transaction.
+     * This version accepts the Handler as a parameter to avoid race conditions with
+     * OSGi service injection.
+     *
+     * @param wsatHandler the WS-AT Handler service to use
+     * @param recoveryId optional recovery identifier for transaction recovery (can be null)
+     * @return XML string representation of the CoordinationContext
+     * @throws Exception if coordination context creation fails or WS-AT is not available
+     */
+    public static String createCoordinationContextXML(Handler wsatHandler, String recoveryId) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "createCoordinationContextXML", "Creating coordination context for transaction, recoveryId={0}", recoveryId);
+        }
+        
+        // Check if WS-AT handler is available
+        if (wsatHandler == null) {
+            throw new IllegalStateException("WS-AT handler service not available");
+        }
+        
+        // Get WS-AT context for the current transaction
+        com.ibm.ws.wsat.service.WSATContext ctx = wsatHandler.handleClientRequest();
+        if (ctx == null) {
+            throw new IllegalStateException("Unable to get WS-AT context for transaction");
+        }
+        
+        // Create registration endpoint URL
+        WSATConfigService config = getConfigService();
+        if (config == null) {
+            throw new IllegalStateException("WS-AT config service not available");
+        }
+        
+        String regHost = config.getWSATUrl() + "/" + WSCoorConstants.COORDINATION_REGISTRATION_ENDPOINT;
+        
+        // Create endpoint reference for registration with provided recovery ID
+        EndpointReferenceType registrationEPR = com.ibm.ws.wsat.service.WSATUtil.createEpr(regHost, ctx.getId(), recoveryId);
+        
+        // Create coordination context with registration EPR
+        CoordinationContext coordinationContext = createCoordinationContext(ctx, registrationEPR);
+        
+        // Convert to XML string
+        return getCoordinationContextAsXMLString(coordinationContext);
+    }
+
+    /**
+     * Create a WS-AT CoordinationContext for the current transaction and return its XML representation.
+     * This method encapsulates all WS-AT logic and has no CORBA/ORB dependencies, making it
+     * reusable across different transport protocols (IIOP, SOAP, REST, etc.).
+     *
+     * @deprecated Use {@link #createCoordinationContextXML(Handler, String)} instead to avoid
+     *             race conditions with OSGi service injection. This method is retained for
+     *             backward compatibility with existing callers.
+     * @param recoveryId optional recovery identifier for transaction recovery (can be null)
+     * @return XML string representation of the CoordinationContext
+     * @throws Exception if coordination context creation fails or WS-AT is not available
+     */
+    @Deprecated
+    public static String createCoordinationContextXML(String recoveryId) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "createCoordinationContextXML", "Creating coordination context for transaction (deprecated method), recoveryId={0}", recoveryId);
+        }
+        
+        // Delegate to new method with Handler lookup
+        Handler wsatHandler = getHandlerService();
+        return createCoordinationContextXML(wsatHandler, recoveryId);
+    }
+
+    public static CoordinationContext getCoordinationContextForCurrentTransaction() throws Exception {
+    
+        return null;
+    }
+
+    public static String getCoordinationContextAsXMLString(CoordinationContext coordinationContext) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCoordinationContextAsXMLString", "Converting coordination context to XML");
+        }
+        
+        JAXBContext ctx = JAXBContext.newInstance(CoordinationContext.class);
+        Marshaller marshaller = ctx.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(coordinationContext, sw);
+        String xmlString = sw.toString();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCoordinationContextAsXMLString", "XML created successfully");
+        }
+
+        return xmlString;
+    }
+
+    public static CoordinationContext getCoordinationContextFromXMLString(String xmlString) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCoordinationContextFromXMLString", "Converting XML to coordination context");
+        }
+        
+        JAXBContext ctx = JAXBContext.newInstance(CoordinationContext.class);
+        Unmarshaller unmarshaller = ctx.createUnmarshaller();
+        StringReader reader = new StringReader(xmlString);
+        CoordinationContext coordinationContext = (CoordinationContext) unmarshaller.unmarshal(reader);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCoordinationContextFromXMLString", "Coordination context created successfully");
+        }
+
+        return coordinationContext;
     }
 }

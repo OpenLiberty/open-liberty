@@ -32,7 +32,7 @@ import com.ibm.ws.wsat.utils.WSCoorUtil;
  */
 public class WSATCompleteTransInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    final TraceComponent tc = Tr.register(
+    private static final TraceComponent tc = Tr.register(
                                           WSATCompleteTransInterceptor.class, WSCoorConstants.TRACE_GROUP, null);
 
     private final Type busType;

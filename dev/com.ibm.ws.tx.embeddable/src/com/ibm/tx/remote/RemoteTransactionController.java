@@ -61,5 +61,7 @@ public interface RemoteTransactionController {
 
     public DistributableTransaction getTransactionForID(String globalId);
 
+    public DistributableTransaction lookupTransaction(byte[] tid);
+
     public Set<String> getRecoveryIds();
 }

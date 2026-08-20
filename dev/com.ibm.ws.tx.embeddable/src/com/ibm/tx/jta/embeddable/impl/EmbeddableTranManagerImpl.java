@@ -159,4 +159,68 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
             Tr.exit(tc, "synchronized suspend", t);
         return t;
     }
+
+    /**
+     * Atomically resume and add an association for a transaction being imported.
+     * This method delegates to resume() then calls addAssociation() with proper error recovery.
+     */
+    public synchronized void resumeForImport(Transaction tx) throws InvalidTransactionException, IllegalStateException {
+        final boolean traceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (traceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "synchronized resumeForImport", new Object[] { this, tx });
+
+        // Step 1: Resume the transaction (delegates to existing resume method)
+        // This handles all validation, state checks, thread association, and event listeners
+        try {
+            resume(tx);
+            
+            if (traceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Transaction resumed successfully");
+        } catch (InvalidTransactionException | IllegalStateException e) {
+            // Resume failed, nothing to clean up
+            if (traceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "synchronized resumeForImport", e);
+            throw e;
+        }
+
+        // Step 2: Add association (this can throw TRANSACTION_ROLLEDBACK)
+        // Note: Like resume(), we silently handle non-EmbeddableTransactionImpl transactions
+        if (tx instanceof EmbeddableTransactionImpl) {
+            final EmbeddableTransactionImpl t = (EmbeddableTransactionImpl) tx;
+            try {
+                t.addAssociation();
+                
+                if (traceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "Association added successfully");
+                    
+                if (traceOn && tc.isEntryEnabled())
+                    Tr.exit(tc, "synchronized resumeForImport - success");
+            } catch (RuntimeException e) {
+                // addAssociation failed (typically TRANSACTION_ROLLEDBACK) - must suspend to restore state
+                if (traceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "addAssociation failed, suspending transaction to restore state", e);
+                
+                try {
+                    suspend();
+                } catch (Exception suspendEx) {
+                    // Log but don't throw - we're already in error handling
+                    FFDCFilter.processException(suspendEx, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.resumeForImport", "XXX", this);
+                    if (traceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "Failed to suspend after addAssociation failure", suspendEx);
+                }
+                
+                // Re-throw the original exception from addAssociation
+                FFDCFilter.processException(e, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.resumeForImport", "XXX", this);
+                if (traceOn && tc.isEntryEnabled())
+                    Tr.exit(tc, "synchronized resumeForImport", e);
+                throw e;
+            }
+        }
+        // else: tx is null or not EmbeddableTransactionImpl - resume() handled it, we're done
+        // This matches the behavior of resume() which doesn't throw for non-EmbeddableTransactionImpl
+        
+        if (traceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "synchronized resumeForImport");
+    }
 }

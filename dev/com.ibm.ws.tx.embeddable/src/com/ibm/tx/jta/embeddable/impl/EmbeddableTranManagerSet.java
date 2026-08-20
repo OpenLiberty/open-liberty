@@ -12,6 +12,7 @@ package com.ibm.tx.jta.embeddable.impl;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+import javax.transaction.InvalidTransactionException;
 import javax.transaction.RollbackException;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
@@ -102,6 +103,15 @@ public class EmbeddableTranManagerSet extends com.ibm.tx.jta.impl.TranManagerSet
     {
        if (t != null)
           ((EmbeddableTransactionImpl) t).stopInactivityTimer();
+    }
+
+    /**
+     * Atomically resume and add an association for a transaction being imported.
+     * Delegates to the thread-local EmbeddableTranManagerImpl.
+     */
+    @Override
+    public void resumeForImport(Transaction t) throws InvalidTransactionException, IllegalStateException {
+        self().resumeForImport(t);
     }
 
     public void registerCallback(UOWScopeCallback callback)

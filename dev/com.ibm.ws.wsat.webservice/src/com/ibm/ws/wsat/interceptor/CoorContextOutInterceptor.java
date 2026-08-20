@@ -49,7 +49,7 @@ import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContext;
  */
 public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    final TraceComponent tc = Tr.register(
+    private static final TraceComponent tc = Tr.register(
                                           CoorContextOutInterceptor.class, WSCoorConstants.TRACE_GROUP, null);
     private AssertionStatus isOptional;
 

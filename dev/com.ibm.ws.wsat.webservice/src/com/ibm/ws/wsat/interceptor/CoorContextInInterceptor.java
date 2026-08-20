@@ -51,7 +51,7 @@ import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContext;
  */
 public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessage> implements SoapInterceptor {
 
-    final TraceComponent tc = Tr.register(
+    private static final TraceComponent tc = Tr.register(
                                           CoorContextInInterceptor.class, WSCoorConstants.TRACE_GROUP, null);
 
     private String ctxId = null;
