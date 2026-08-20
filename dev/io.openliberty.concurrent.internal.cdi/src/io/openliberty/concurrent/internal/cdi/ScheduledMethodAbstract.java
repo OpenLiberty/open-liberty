@@ -85,9 +85,6 @@ public abstract class ScheduledMethodAbstract implements //
         this.virtualThreadExecutor = managedExecutor //
                         .getNormalPolicyExecutor() //
                         .getVirtualThreadExecutor();
-
-        ConcurrencyExtensionMetadata.scheduledExecutor //
-                        .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
     }
 
     /**
@@ -210,7 +207,7 @@ public abstract class ScheduledMethodAbstract implements //
      * @return nanoseconds until the next execution.
      */
     @Trivial
-    long computeDelayNanos() {
+    public long computeDelayNanos() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "computeDelayNanos");
