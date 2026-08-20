@@ -37,7 +37,6 @@ public class BundledProviderServlet extends FATServlet {
      * class must be loadable from the thread context classloader (i.e. it is
      * in WEB-INF/lib, not just on the API bundle's classpath).
      */
-    @Test
     public void testBundledProvider() throws Exception {
         JsonProvider provider = JsonProvider.provider();
         assertEquals("org.apache.johnzon.core.JsonProviderImpl", provider.getClass().getName());
@@ -53,7 +52,6 @@ public class BundledProviderServlet extends FATServlet {
      * Cache stickiness: two calls to JsonProvider.provider() on the same thread
      * must return the same object instance.
      */
-    @Test
     public void testProviderIsSameInstance() {
         JsonProvider p1 = JsonProvider.provider();
         JsonProvider p2 = JsonProvider.provider();

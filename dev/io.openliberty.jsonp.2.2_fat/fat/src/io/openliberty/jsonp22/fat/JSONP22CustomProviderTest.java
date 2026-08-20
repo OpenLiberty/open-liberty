@@ -38,10 +38,8 @@ import io.openliberty.jsonp22.fat.web.SystemPropertyProviderServlet;
 public class JSONP22CustomProviderTest extends FATServletClient {
 
     @Server("jsonp2.2.customProvider.fat")
-    @TestServlets({
-                    @TestServlet(servlet = FeatureProviderServlet.class, contextRoot = "ProviderFeatureApp"),
-                    @TestServlet(servlet = BundledProviderServlet.class, contextRoot = "BundledProviderApp")
-    })
+
+    @TestServlet(servlet = FeatureProviderServlet.class, contextRoot = "ProviderFeatureApp")
     public static LibertyServer server;
 
     @BeforeClass

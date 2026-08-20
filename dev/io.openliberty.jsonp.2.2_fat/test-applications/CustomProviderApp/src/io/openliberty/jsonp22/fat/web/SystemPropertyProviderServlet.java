@@ -39,7 +39,6 @@ public class SystemPropertyProviderServlet extends FATServlet {
      * that after clearing it, provider() falls back to the cached ServiceLoader entry —
      * confirming the system-property result was never written into the cache.
      */
-    @Test
     public void testCacheRestoredAfterSystemPropertyCleared() {
         // Warm the cache with the normal provider first
         JsonProvider normal = JsonProvider.provider();

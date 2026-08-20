@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -83,14 +82,17 @@ public abstract class JsonProvider {
     private static final Logger LOG = Logger.getLogger(JsonProvider.class.getName());
 
     /**
-     * Cache of discovered providers keyed by the context classloader. Both keys and values are
-     * weakly referenced: weak keys allow the entry to be GC'd when the classloader is no longer
-     * reachable, and weak values break the strong reference cycle that would otherwise exist
-     * because a {@code JsonProvider} instance holds a strong reference back to its loading
-     * classloader (via its {@code Class}).
+     * Cache of discovered providers keyed by the context classloader. Weak keys allow the entry
+     * to be GC'd when the classloader is no longer reachable. Weak values break the strong
+     * reference cycle that would otherwise exist because a {@code JsonProvider} instance holds a
+     * strong reference back to its loading classloader (via its {@code Class}), which would
+     * otherwise prevent the weak key from ever being collected.
+     *
+     * <p>All accesses are guarded by explicit {@code synchronized (CLASSLOADER_CACHE)} blocks in
+     * {@link #provider()}.
      */
     private static final Map<ClassLoader, WeakReference<JsonProvider>> CLASSLOADER_CACHE =
-            Collections.synchronizedMap(new WeakHashMap<>());
+            new WeakHashMap<>();
 
     /**
      * Default constructor.

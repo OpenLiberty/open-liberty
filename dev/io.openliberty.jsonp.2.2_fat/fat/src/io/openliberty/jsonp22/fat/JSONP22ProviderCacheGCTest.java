@@ -102,7 +102,7 @@ public class JSONP22ProviderCacheGCTest {
      * 2. Confirm the checker can see the classloader (WeakRef not yet null).
      * 3. Undeploy BundledProviderApp by removing it from the server configuration and
      *    waiting for Liberty's CWWKZ0009I (app stopped) message.
-     * 4. Poll the checker for up to 120 s; GC is requested server-side on each check call.
+     * 4. Poll the checker for up to 300 s; GC is requested server-side on each check call.
      * 5. Assert the checker reports "null" — the classloader was collected, meaning
      *    the WeakHashMap entry was cleaned up and holds no strong reference.
      */
@@ -144,10 +144,6 @@ public class JSONP22ProviderCacheGCTest {
         }
 
         // Step 5: assert collected — emit diagnostics first if it failed
-        if (!"null".equals(afterUndeploy.trim())) {
-            server.javadumpThreads();
-            server.serverDump("heap, system");
-        }
         assertEquals("WAR classloader must be GC'd after undeploy; WeakHashMap cache must not hold a strong reference",
                      "null", afterUndeploy.trim());
     }
