@@ -1116,7 +1116,7 @@ public class SipUtil {
 				reasonHeaderLength += reasonParam[0].length()+1; // +1 for the ';'
 				
 				for(int j=1 ; j < reasonParam.length ; j++){
-					String [] keyVal = reasonParam[j].split("=");
+					String [] keyVal = reasonParam[j].split("=", 2);
 					// parse the "cause" parameter if exists
 					if(keyVal[0].trim().equals( "cause")){
 						cause = Integer.parseInt(keyVal[1].trim());
