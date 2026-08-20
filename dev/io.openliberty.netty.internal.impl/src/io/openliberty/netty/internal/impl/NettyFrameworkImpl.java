@@ -107,6 +107,22 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     private Map<Channel, ChannelGroup> activeChannelMap = new ConcurrentHashMap<Channel, ChannelGroup>();
 
+    /**
+     * Port-ownership registry for inbound wildcard binds.
+     *
+     * Maps a port number to the string "WILDCARD" when a wildcard ("*" / 0.0.0.0)
+     * bind has been requested for that port.  The entry is written atomically via
+     * {@link ConcurrentHashMap#putIfAbsent} inside the bind callable — before the
+     * async Netty bind is issued — so that a concurrently-running specific-host
+     * callable can detect the conflict with a single lock-free CAS check, without
+     * needing a synchronized block and without waiting for the bind future to complete.
+     *
+     * The entry is removed when the wildcard channel closes, allowing future
+     * reconfiguration to re-use the port.
+     */
+    public static final String WILDCARD_OWNER = "WILDCARD";
+    private final ConcurrentHashMap<Integer, String> wildcardPortOwnership = new ConcurrentHashMap<>();
+    
     private ChannelGroup outboundConnections;
 
     private EventLoopGroup parentGroup;
@@ -717,6 +733,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     public Map<Channel, ChannelGroup> getActiveChannelsMap() {
         return activeChannelMap;
+    }
+    
+    public ConcurrentHashMap<Integer, String> getWildcardPortOwnership() {
+        return wildcardPortOwnership;
     }
 
     public ChannelGroup getOutboundConnections() {
