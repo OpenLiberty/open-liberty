@@ -181,7 +181,7 @@
              <Option label="%tokenOrderToFetchCallerClaims.ACCESSAndIDAndUITokens" value="AccessToken IDToken UserInfo" />
          </AD>
                      
-         <AD id="protectedResourceMetadata" name="%protectedResourceMetadata" description="%protectedResourceMetadata.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.protectedResourceMetadata" ibm:flat="true" cardinality="1" ibm:beta="true"/>
+         <AD id="protectedResourceMetadata" name="%protectedResourceMetadata" description="%protectedResourceMetadata.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.protectedResourceMetadata" ibm:flat="true" cardinality="1"/>
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">
@@ -209,7 +209,7 @@
     </Designate>
 
 	<OCD id="com.ibm.ws.security.openidconnect.client.protectedResourceMetadata.metatype" name="%protectedResourceMetadata" description="%protectedResourceMetadata.desc"
-	        ibmui:localization="OSGI-INF/l10n/metatype" ibm:beta="true">
+	        ibmui:localization="OSGI-INF/l10n/metatype">
 	        <AD id="advertisedScopes" name="%advertisedScopes" description="%advertisedScopes.desc" required="false" type="String"/>
 	        <AD id="jwtBuilderRef" name="%jwtBuilderRef" description="%jwtBuilderRef.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.jwt.builder"/>
 	   </OCD>

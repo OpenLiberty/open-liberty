@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
@@ -29,47 +28,37 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
- * Runs the protected-resource-metadata tests against a beta RS server whose
+ * Runs the protected-resource-metadata tests against a RS server whose
  * {@code openidConnectClient} deliberately omits the
  * {@code <protectedResourceMetadata>} sub-element.
  *
- * <p>Even though the server runs with {@code -Dcom.ibm.ws.beta.edition=true},
- * the absence of the {@code <protectedResourceMetadata>} configuration element
- * means there is nothing to advertise.  Therefore the {@code resource_metadata}
- * parameter MUST NOT appear in any {@code WWW-Authenticate} challenge.
- *
  * <p>This class documents the following behaviour:
  * <ul>
- *   <li>Beta flag on + metadata element absent: {@code resource_metadata} NOT in challenge</li>
+ *   <li>metadata element absent: {@code resource_metadata} NOT in challenge</li>
  * </ul>
  *
- * <p>Server used: {@code com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver_beta}
- * (beta-edition flag active).
- * Config file: {@code server_resourceMetadata_beta_no_metadata_tests.xml}, which imports
+ * <p>Server used: {@code com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver}
+ * Config file: {@code server_resourceMetadata_no_metadata_tests.xml}, which imports
  * {@code oidcClient_RSResourceMetadata_noConfig.xml} (no {@code <protectedResourceMetadata>} element).
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class NoOPNoResourceMetadataBetaRSServerTests extends NoOPResourceMetadataRSServerTests {
+public class NoOPNoResourceMetadataRSServerTests extends NoOPResourceMetadataRSServerBaseTests {
 
-    private static final Class<?> thisClass = NoOPNoResourceMetadataBetaRSServerTests.class;
+    private static final Class<?> thisClass = NoOPNoResourceMetadataRSServerTests.class;
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
         msgUtils.printClassName(thisClass.toString());
-        Log.info(thisClass, "setupBeforeTest", "Prep for test - beta RS server with no protectedResourceMetadata config");
-        // Use the beta RS server with the "no metadata" config (element absent)
-        commonSetupBeforeTest(RSServerNameBeta, "server_resourceMetadata_beta_no_metadata_tests.xml");
+        Log.info(thisClass, "setupBeforeTest", "Prep for test - RS server with no protectedResourceMetadata config");
+        // Use the RS server with the "no metadata" config (element absent)
+        commonSetupBeforeTest(RSServerName, "server_resourceMetadata_no_metadata_tests.xml");
     }
 
     /**
-     * <b>Beta server, no {@code <protectedResourceMetadata>} – no Bearer token – RS must return
+     * <b>No {@code <protectedResourceMetadata>} – no Bearer token – RS must return
      * 401 with {@code WWW-Authenticate} but WITHOUT the RFC 9728 {@code resource_metadata}
      * parameter, because the element is not configured.</b>
-     *
-     * <p>This verifies that the presence of the beta flag alone is not sufficient to produce
-     * a {@code resource_metadata} challenge; the {@code <protectedResourceMetadata>} element
-     * must also be present in the server configuration.
      *
      * <p><b>Expected results:</b>
      * <ol>
@@ -80,8 +69,8 @@ public class NoOPNoResourceMetadataBetaRSServerTests extends NoOPResourceMetadat
      * </ol>
      */
     @Test
-    public void NoOPNoResourceMetadataBeta_noToken_returns401WithoutResourceMetadata() throws Exception {
-        doNoTokenNoMetadata401Test("NoOPNoResourceMetadataBeta_noToken_returns401WithoutResourceMetadata");
+    public void NoOPNoResourceMetadata_noToken_returns401WithoutResourceMetadata() throws Exception {
+        doNoTokenNoMetadata401Test("NoOPNoResourceMetadata_noToken_returns401WithoutResourceMetadata");
     }
 
     /**
@@ -91,7 +80,7 @@ public class NoOPNoResourceMetadataBetaRSServerTests extends NoOPResourceMetadat
      */
     private void doNoTokenNoMetadata401Test(String testName) throws Exception {
         Log.info(thisClass, testName,
-                "Starting test - beta RS (no metadata config) should return 401 without resource_metadata");
+                "Starting test - RS (no metadata config) should return 401 without resource_metadata");
 
         TestSettings updatedTestSettings =
                 rsTools.updateRSProtectedResource(testSettings, "helloworld_noMetadata");
@@ -107,7 +96,7 @@ public class NoOPNoResourceMetadataBetaRSServerTests extends NoOPResourceMetadat
                 "Response did not include a WWW-Authenticate header with Bearer auth-scheme.",
                 null, expectedAuthHeader);
 
-        // Even on a beta server, resource_metadata must be absent when the element is not configured
+        // resource_metadata must be absent when the element is not configured
         addResourceMetadataExpectations(expectations);
 
         Log.info(thisClass, testName, "Invoking RS protected resource without any Bearer token");
@@ -119,13 +108,13 @@ public class NoOPNoResourceMetadataBetaRSServerTests extends NoOPResourceMetadat
     }
 
     /**
-     * On this beta server the {@code <protectedResourceMetadata>} element is absent.
+     * On this server the {@code <protectedResourceMetadata>} element is absent.
      * The {@code resource_metadata} parameter MUST NOT appear in the
-     * {@code WWW-Authenticate} header regardless of the beta flag.
+     * {@code WWW-Authenticate} header.
      */
     @Override
     protected void addResourceMetadataExpectations(List<validationData> expectations) throws Exception {
-        // Even though this is a beta server, the element is not configured.
+        // The element is not configured.
         // Verify the WWW-Authenticate header does not carry any resource_metadata parameter.
         expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE,
                 Constants.RESPONSE_HEADER, Constants.STRING_DOES_NOT_MATCH,

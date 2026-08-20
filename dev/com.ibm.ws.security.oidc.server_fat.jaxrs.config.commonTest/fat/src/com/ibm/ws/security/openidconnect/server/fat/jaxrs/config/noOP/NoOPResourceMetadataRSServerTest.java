@@ -27,8 +27,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 /**
- * Runs the protected-resource-metadata tests against an RS server started with the
- * {@code -Dcom.ibm.ws.beta.edition=true} JVM flag, which activates the beta-fenced
+ * Runs the protected-resource-metadata tests against an RS server with the
  * {@code <protectedResourceMetadata>} configuration element.
  *
  * <p>Per RFC 9728, because {@code <protectedResourceMetadata>} is active, every
@@ -36,26 +35,24 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * MUST include a {@code resource_metadata} parameter in the {@code WWW-Authenticate}
  * header, pointing to the RS's {@code /.well-known/oauth-protected-resource} endpoint.
  *
- * <p>Server used: {@code com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver_beta}
- * (its {@code jvm.options} contains {@code -Dcom.ibm.ws.beta.edition=true}).
- * Config file: {@code server_resourceMetadata_beta_tests.xml}.
+ * <p>Server used: {@code com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver}
+ * Config file: {@code server_resourceMetadata_tests.xml}.
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class NoOPResourceMetadataBetaRSServerTests extends NoOPResourceMetadataRSServerTests {
+public class NoOPResourceMetadataRSServerTest extends NoOPResourceMetadataRSServerBaseTests {
 
-    private static final Class<?> thisClass = NoOPResourceMetadataBetaRSServerTests.class;
+    private static final Class<?> thisClass = NoOPResourceMetadataRSServerTest.class;
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
         msgUtils.printClassName(thisClass.toString());
-        Log.info(thisClass, "setupBeforeTest", "Prep for test - beta RS server");
-        // Use the beta RS server whose jvm.options carries -Dcom.ibm.ws.beta.edition=true
-        commonSetupBeforeTest(RSServerNameBeta, "server_resourceMetadata_beta_tests.xml");
+        Log.info(thisClass, "setupBeforeTest", "Prep for test - RS server");
+        commonSetupBeforeTest(RSServerName, "server_resourceMetadata_tests.xml");
     }
 
     /**
-     * <b>Beta server – no Bearer token – RS must return 401 with {@code WWW-Authenticate}
+     * <b>No Bearer token – RS must return 401 with {@code WWW-Authenticate}
      * including the RFC 9728 {@code resource_metadata} parameter.</b>
      *
      * <p><b>Expected results:</b>
@@ -67,12 +64,12 @@ public class NoOPResourceMetadataBetaRSServerTests extends NoOPResourceMetadataR
      * </ol>
      */
     @Test
-    public void NoOPResourceMetadataBeta_noToken_returns401WithResourceMetadata() throws Exception {
-        doNoToken401Test("NoOPResourceMetadataBeta_noToken_returns401WithResourceMetadata");
+    public void NoOPResourceMetadata_noToken_returns401WithResourceMetadata() throws Exception {
+        doNoToken401Test("NoOPResourceMetadata_noToken_returns401WithResourceMetadata");
     }
 
     /**
-     * <b>Beta server – malformed Bearer token – RS must return 401 with {@code WWW-Authenticate}
+     * <b>Malformed Bearer token – RS must return 401 with {@code WWW-Authenticate}
      * including the RFC 9728 {@code resource_metadata} parameter.</b>
      *
      * <p>RFC 9728 focuses on the missing-token case for the {@code WWW-Authenticate} challenge
@@ -91,12 +88,12 @@ public class NoOPResourceMetadataBetaRSServerTests extends NoOPResourceMetadataR
      */
     @Test
     @AllowedFFDC("org.apache.http.conn.HttpHostConnectException")
-    public void NoOPResourceMetadataBeta_malformedToken_returns401WithResourceMetadata() throws Exception {
-        doMalformedToken401Test("NoOPResourceMetadataBeta_malformedToken_returns401WithResourceMetadata");
+    public void NoOPResourceMetadata_malformedToken_returns401WithResourceMetadata() throws Exception {
+        doMalformedToken401Test("NoOPResourceMetadata_malformedToken_returns401WithResourceMetadata");
     }
     
     /**
-     * On a beta-fenced server with {@code <protectedResourceMetadata>} configured,
+     * On a server with {@code <protectedResourceMetadata>} configured,
      * the {@code WWW-Authenticate} 401 header MUST contain:
      * <ul>
      *   <li>{@code resource_metadata=} – the RFC 9728 parameter</li>
@@ -110,7 +107,7 @@ public class NoOPResourceMetadataBetaRSServerTests extends NoOPResourceMetadataR
         // verified together in a single regex.
         expectations = vData.addExpectation(expectations, Constants.INVOKE_RS_PROTECTED_RESOURCE,
                 Constants.RESPONSE_HEADER, Constants.STRING_MATCHES,
-                "WWW-Authenticate header should contain resource_metadata parameter on a beta server.",
+                "WWW-Authenticate header should contain resource_metadata parameter.",
                 null, Constants.RESPONSE_HEADER_WWWAUTHENTICATE.toUpperCase() + Constants.BEARER + ".*"
                         + Constants.RESOURCE_METADATA + "=\"" + genericTestServer.getHttpsString() + "/"
                         + Constants.PROTECTED_RESOURCE_WELL_KNOWN_URI + "/helloworld/rest/helloworld_resourceMetadata\"");
