@@ -38,17 +38,20 @@ import javax.xml.validation.SchemaFactory;
 import org.w3c.dom.Document;
 
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
-import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.staxutils.StaxUtils;
 
 /**
  * (not thread safe)
  *
+ * JAXP hardening backport commit
+ * https://github.com/apache/cxf/commit/7cfa2fb7ba0bdfe16f149257769ea5e7c6953bf9#diff-cf20a5d9c7a13f4d1bfffac994292c9da1918c0d417ef2d144155092c13643ec 
  */
 public class ExtendedDocumentBuilder {
 
-    private static final Logger LOG = LogUtils.getL7dLogger(ExtendedDocumentBuilder.class);
+    private static final Logger LOG = Logger.getLogger(ExtendedDocumentBuilder.class.getName());
 
     private DocumentBuilderFactory parserFactory;
     private SchemaFactory schemaFactory;
@@ -65,6 +68,28 @@ public class ExtendedDocumentBuilder {
     public void setValidating(boolean validate) {
         if (validate) {
             this.schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            
+            // Liberty Change Begin - JAXP hardening
+            try {
+                schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+            } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
+                LOG.log(Level.WARNING, "The property '" + XMLConstants.FEATURE_SECURE_PROCESSING
+                    + "' is not supported.");
+            }
+
+            try {
+                schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
+                LOG.log(Level.WARNING, "The property '" + XMLConstants.ACCESS_EXTERNAL_DTD + "' is not supported.");
+            }
+
+            try {
+                schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            } catch (SAXNotRecognizedException | SAXNotSupportedException e) {
+                LOG.log(Level.WARNING, "The property '" + XMLConstants.ACCESS_EXTERNAL_SCHEMA + "' is not supported.");
+            }
+            // Liberty Change End - JAXP hardening
+            
             try {
                 this.schema = schemaFactory.newSchema(new StreamSource(getSchemaLocation()));
             } catch (SAXException e) {

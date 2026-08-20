@@ -29,7 +29,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
@@ -40,6 +44,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.xml.sax.Locator;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import com.ctc.wstx.msv.W3CSchema;
 import com.ctc.wstx.shaded.msv_core.grammar.ExpressionPool;
@@ -53,13 +59,18 @@ import com.ctc.wstx.shaded.msv_core.reader.xmlschema.SchemaState;
 import com.ctc.wstx.shaded.msv_core.reader.xmlschema.WSDLGrammarReaderController;
 import com.ctc.wstx.shaded.msv_core.reader.xmlschema.XMLSchemaReader;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 
 /**
- * Legacy implementation for Woostox 5.x. For Woodstox 6.2+, use W3CMultiSchemaFactory in
- * Woodstox itself.
+ * Implementation for Woodstox 6.2+ using the shaded MSV packages bundled with Woodstox.
+ * 
+ * JAXP hardening backport commit
+ * https://github.com/apache/cxf/commit/7cfa2fb7ba0bdfe16f149257769ea5e7c6953bf9#diff-cf20a5d9c7a13f4d1bfffac994292c9da1918c0d417ef2d144155092c13643ec
  */
 public class W3CMultiSchemaFactory {
+    private static final Logger LOG = LogUtils.getL7dLogger(W3CMultiSchemaFactory.class); // Liberty Change - JAXP hardening
+    
 
     private MultiSchemaReader multiSchemaReader;
     private SAXParserFactory parserFactory;
@@ -139,6 +150,19 @@ public class W3CMultiSchemaFactory {
             }
         }
         parserFactory = SAXParserFactory.newInstance();
+        // Liberty Change Begin - JAXP hardening
+        try {
+            parserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
+        } catch (SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
+            LOG.log(Level.WARNING, "The property '" + XMLConstants.FEATURE_SECURE_PROCESSING + "', is not supported.");
+        }
+        try {
+            parserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        } catch (SAXNotRecognizedException | SAXNotSupportedException | ParserConfigurationException e) {
+            LOG.log(Level.WARNING, "The property 'http://apache.org/xml/features/disallow-doctype-decl'"
+                    + " is not supported.");
+        }
+        // Liberty Change End - JAXP hardening
         parserFactory.setNamespaceAware(true);
 
         WSDLGrammarReaderController ctrl = new WSDLGrammarReaderController(null, baseURI, embeddedSources);
@@ -153,7 +177,7 @@ public class W3CMultiSchemaFactory {
             throw new XMLStreamException("Failed to load schemas");
         }
 
-        // Use reflection here to avoid compilation problems with Woodstox 6.2+
+        // Use reflection here to avoid compilation problems with different Woodstox versions
         try {
             return (XMLValidationSchema)w3cSchemaConstructor.newInstance(grammar);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
