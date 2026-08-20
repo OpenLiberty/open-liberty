@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,6 +54,7 @@ public class HttpDispatcherTest {
     static Field linkRemoteAddress;
     final String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
     final String wsraHeader = HttpHeaderKeys.HDR_$WSRA.getName();
+    final String wsspHeader = HttpHeaderKeys.HDR_$WSSP.getName();
     final static String HSTS_SHORTNAME = "addstricttransportsecurityheader";
     final static String HSTS_FULLY_QUALIFIED = "com.ibm.ws.webcontainer.addStrictTransportSecurityHeader";
 
@@ -136,6 +137,7 @@ public class HttpDispatcherTest {
         // the trusted header origin was passed in as null, which should get defaulted to '*'
         Assert.assertTrue("Private headers should be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsprHeader));
         Assert.assertFalse("Sensitive private headers should not be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsraHeader));
+        Assert.assertFalse("$WSSP header should follow restricted header access rules", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
 
         String missing = "missing context";
         map = buildMap(true, missing, "*", "*");
@@ -154,6 +156,7 @@ public class HttpDispatcherTest {
         // both private header lists have been set to "*"; all private headers are allowed
         Assert.assertTrue("Private headers should be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsprHeader));
         Assert.assertTrue("Sensitive private headers should be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsraHeader));
+        Assert.assertTrue("$WSSP header should be accessible when restricted headers are enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
 
         d1.deactivate(map, 0);
         // the static instance value should be set to the newly activated dispatcher instance.
@@ -164,6 +167,13 @@ public class HttpDispatcherTest {
         Assert.assertFalse("Do not show welcome page when there is no dispatcher", HttpDispatcher.isWelcomePageEnabled());
         Assert.assertTrue("Trust private headers by default", HttpDispatcher.usePrivateHeaders(testAddr, wsprHeader));
         Assert.assertFalse("Don't trust sensitive private headers by default", HttpDispatcher.usePrivateHeaders(testAddr, wsraHeader));
+        Assert.assertFalse("$WSSP header should use restricted header defaults", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
+    }
+
+    @Test
+    public void testWSSPHeaderClassification() throws Exception {
+        Assert.assertTrue("$WSSP should be recognized as a WAS private header", HttpHeaderKeys.isWasPrivateHeader(wsspHeader));
+        Assert.assertTrue("$WSSP should be classified under the restricted WAS private header set", HttpHeaderKeys.isSensitivePrivateHeader(wsspHeader));
     }
 
     @Test
@@ -704,17 +714,6 @@ public class HttpDispatcherTest {
         final String host = "a.b.c.d";
         final HttpRequestImpl mockRequest = context.mock(HttpRequestImpl.class);
 
-        // No dispatcher, no private header
-        context.checking(new Expectations() {
-            {
-                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
-                will(returnValue(null));
-
-                one(mockRequest).getVirtualHost();
-                will(returnValue(host));
-            }
-        });
-
         HttpDispatcherLink link = new HttpDispatcherLink();
         linkRequest.set(link, mockRequest);
         linkRemoteContextAddress.set(link, sourceAddr);
@@ -723,6 +722,16 @@ public class HttpDispatcherTest {
 
         final Object unknownPrivateHeader = linkUsePrivateHeaders.get(link);
 
+        // No dispatcher: requested host comes from the request virtual host, not $WSSN.
+        context.checking(new Expectations() {
+            {
+                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+
+                one(mockRequest).getVirtualHost();
+                will(returnValue(host));
+            }
+        });
+
         try {
             Assert.assertSame("No registered dispatcher: should return the result of getVirtualHost",
                               host, link.getRequestedHost());
@@ -730,40 +739,27 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // No dispatcher, $WSSN header
-        context.checking(new Expectations() {
-            {
-                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
-                will(returnValue(host));
-            }
-        });
-
-        try {
-            Assert.assertSame("No registered dispatcher, but $WSSN header present: should return the header value",
-                              host, link.getRequestedHost());
-        } finally {
-            context.assertIsSatisfied();
-        }
-
-        // Registered dispatcher, trust all headers
+        // Registered dispatcher, trust all headers: $WSSN must still not override Host.
         HttpDispatcher d = new HttpDispatcher();
         d.activate(buildMap(true, null, "*", "*"));
 
         context.checking(new Expectations() {
             {
-                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+
+                one(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
         });
 
         try {
-            Assert.assertSame("Registered dispatcher, trusted $WSSN header present: should return the header value",
+            Assert.assertSame("Registered dispatcher, trusted private headers: should still return getVirtualHost for requested host",
                               host, link.getRequestedHost());
         } finally {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust header from non-matching source (no invocation of getHeader)
+        // Registered dispatcher, trust header from non-matching source.
         d.modified(buildMap(true, null, "2.3.4.5", "2.3.4.5"));
 
         // reset the cached value of use private headers for the connection
@@ -772,6 +768,8 @@ public class HttpDispatcherTest {
 
         context.checking(new Expectations() {
             {
+                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+
                 one(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
@@ -784,7 +782,7 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust header from matching source
+        // Registered dispatcher, trust header from matching source: $WSSN is still ignored for requested host.
         d.modified(buildMap(true, null, "1.2.3.4", "*"));
 
         // reset the cached value of use private headers for the connection
@@ -793,19 +791,21 @@ public class HttpDispatcherTest {
 
         context.checking(new Expectations() {
             {
-                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+
+                one(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
         });
 
         try {
-            Assert.assertSame("Registered dispatcher, no trusted headers: should return the value from getVirtualHost",
+            Assert.assertSame("Registered dispatcher, trusted private header source: should still return getVirtualHost",
                               host, link.getRequestedHost());
         } finally {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust no headers
+        // Registered dispatcher, trust no headers.
         d.modified(buildMap(true, null, "none", "none"));
 
         // reset the cached value of use private headers for the connection
@@ -814,6 +814,8 @@ public class HttpDispatcherTest {
 
         context.checking(new Expectations() {
             {
+                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+
                 one(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
@@ -882,7 +884,7 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // No dispatcher, WSSP: 1234
+        // No dispatcher: $WSSP: 1234
         context.checking(new Expectations() {
             {
                 one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
@@ -891,7 +893,7 @@ public class HttpDispatcherTest {
         });
 
         try {
-            Assert.assertEquals("No registered dispatcher, WSSP",
+            Assert.assertEquals("No registered dispatcher: sensitive $WSSP should be ignored by default",
                                 1234, link.getRequestedPort());
         } finally {
             context.assertIsSatisfied();
@@ -904,9 +906,11 @@ public class HttpDispatcherTest {
         // reset the cached value of use private headers for the connection
         // so it re-calculates
         linkUsePrivateHeaders.set(link, unknownPrivateHeader);
-
         context.checking(new Expectations() {
             {
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                will(returnValue(null));
+
                 one(mockRequest).getVirtualPort();
                 will(returnValue(-1));
 
@@ -920,7 +924,7 @@ public class HttpDispatcherTest {
         });
 
         try {
-            Assert.assertEquals("No registered dispatcher, WSSP",
+            Assert.assertEquals("Registered dispatcher, no WSSP should infer HTTPS port",
                                 443, link.getRequestedPort());
         } finally {
             context.assertIsSatisfied();
