@@ -16,7 +16,10 @@ javac.target: 21
 
 src: \
 	fat/src,\
-	test-applications/CustomProviderApp/src
+	test-applications/CustomProviderApp/src,\
+	test-applications/BundledProviderApp/src,\
+	test-applications/CacheCheckerApp/src,\
+	test-applications/GCTestLib/src
 
 fat.project: true
 

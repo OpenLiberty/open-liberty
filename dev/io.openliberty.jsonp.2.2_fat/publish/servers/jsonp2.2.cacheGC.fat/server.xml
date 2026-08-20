@@ -27,8 +27,8 @@
         <classloader commonLibraryRef="gcTestLib"/>
     </application>
 
-    <!-- BundledProviderApp is exported to apps/ by setUp() and deleted mid-test -->
-    <application location="BundledProviderApp.war">
+    <!-- BundledProviderApp is exported to apps/ by setUp() and removed mid-test via server config update -->
+    <application name="BundledProviderApp" location="BundledProviderApp.war">
         <classloader commonLibraryRef="gcTestLib"/>
     </application>
 
