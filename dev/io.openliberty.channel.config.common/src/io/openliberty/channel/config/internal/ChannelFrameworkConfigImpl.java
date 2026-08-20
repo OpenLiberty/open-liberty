@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.kernel.server.ServerElementConfig;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
@@ -37,7 +39,9 @@ import io.openliberty.channel.config.ChannelFrameworkConfig;
 public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
 
     /** Trace service */
-    private static final TraceComponent tc = Tr.register(ChannelFrameworkConfigImpl.class);
+    private static final TraceComponent tc = Tr.register(ChannelFrameworkConfigImpl.class,
+                                                          "ChannelFramework",
+                                                          "io.openliberty.channel.config.internal.resources.ChannelConfigMessages");
 
     /** Property name for the chain restart interval timer */
     public final String PROPERTY_CHAIN_START_RETRY_INTERVAL = "chainStartRetryInterval";
@@ -49,6 +53,9 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
     public final String PROPERTY_MISSING_CONFIG_WARNING = "warningWaitTime";
     /** Alias used in metatype */
     public final String PROPERTY_CONFIG_ALIAS = "channelfw";
+    
+    /** Default chain quiesce timeout value in milliseconds (must match metatype.xml default) */
+    private static final long DEFAULT_CHAIN_QUIESCE_TIMEOUT = 30000L;
 
     /**
      * Custom property configured in the framework for the length of time in
@@ -67,7 +74,30 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
     /** Custom property for timed delay before warning about missing config in milliseconds */
     private long missingConfigWarning = 10000L;
     /** Property for the chain quiescetimeout to default to for various paths in milliseconds */
-    private long chainQuiesceTimeout = 30000L;
+    private long chainQuiesceTimeout = DEFAULT_CHAIN_QUIESCE_TIMEOUT;
+    
+    /** Reference to ServerElementConfig service for accessing server-level quiesceTimeout */
+    private volatile ServerElementConfig serverElementConfig;
+
+    /**
+     * DS method for setting the ServerElementConfig reference.
+     * This is a mandatory reference, so the component won't activate without it.
+     *
+     * @param config the ServerElementConfig service
+     */
+    @Reference
+    protected void setServerElementConfig(ServerElementConfig config) {
+        this.serverElementConfig = config;
+    }
+    
+    /**
+     * DS method for unsetting the ServerElementConfig reference.
+     *
+     * @param config the ServerElementConfig service
+     */
+    protected void unsetServerElementConfig(ServerElementConfig config) {
+        this.serverElementConfig = null;
+    }
 
     /**
      * DS method for activating this component.
@@ -182,16 +212,48 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
             }
         }
     }
-
     /**
      * Set the default chain quiesce timeout property from config.
+     * If quiesceTimeout is explicitly configured on the server element,
+     * it will always override chainQuiesceTimeout. An informational message
+     * is logged only if chainQuiesceTimeout was configured to a value other
+     * than the default. Unfortunately, we cannot easily detect when
+     * chainQuiesceTimeout is explicitly configured. So we compromise by
+     * checking if the default value was changed. In that case we know it
+     * was explicitly configured and we inform the user it is being ignored.
      *
-     * @param value
+     * @param value the configured chainQuiesceTimeout value (null if not configured)
      */
     private void setDefaultChainQuiesceTimeout(Object value) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Setting default chain quiesce timeout [" + value + "]");
         }
+        
+        // Parse the configured value
+        long configuredTimeout = DEFAULT_CHAIN_QUIESCE_TIMEOUT;
+        try {
+            configuredTimeout = MetatypeUtils.parseLong(PROPERTY_CONFIG_ALIAS, PROPERTY_CHAIN_QUIESCETIMEOUT, value, DEFAULT_CHAIN_QUIESCE_TIMEOUT);
+        } catch (NumberFormatException e) {
+            // Use default value
+        }
+        
+        // If quiesceTimeout is explicitly configured on the server element,
+        // it overrides chainQuiesceTimeout
+        if (serverElementConfig != null && serverElementConfig.isQuiesceTimeoutExplicitlyConfigured()) {
+
+            long serverQuiesceTimeout = serverElementConfig.getQuiesceTimeoutMillis();
+
+            // Only emit info message if chainQuiesceTimeout is NOT the default value
+            // AND the configured value differs from the server quiesceTimeout
+            if (configuredTimeout != DEFAULT_CHAIN_QUIESCE_TIMEOUT && configuredTimeout != serverQuiesceTimeout) {
+                Tr.info(tc, "QUIESCE_TIMEOUT_OVERRIDE", configuredTimeout / 1000); //value in seconds
+            }
+            // override
+            chainQuiesceTimeout = serverQuiesceTimeout;
+            return;
+        }
+        
+        // Original logic - use chainQuiesceTimeout if configured, otherwise keep default
         try {
             long num = MetatypeUtils.parseLong(PROPERTY_CONFIG_ALIAS, PROPERTY_CHAIN_QUIESCETIMEOUT, value, chainQuiesceTimeout);
             if (0 < num) {
@@ -205,6 +267,11 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Timeout is not a number");
             }
+        }
+        
+        // Log the final value being used for testing purposes
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.debug(tc, "Final chainQuiesceTimeout value: " + this.chainQuiesceTimeout + "ms");
         }
     }
 
