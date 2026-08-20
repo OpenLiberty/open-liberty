@@ -169,9 +169,10 @@ public abstract class JsonProvider {
             }
         }
 
-        // else no provider found
+        // else no provider found — load the platform default via the spec bundle's own classloader
         LOG.fine("Trying to create the platform default provider");
-        return newInstance(DEFAULT_PROVIDER, cl);
+        ClassLoader specCL = JsonProvider.class.getClassLoader();
+        return newInstance(DEFAULT_PROVIDER, specCL != null ? specCL : cl);
     }
 
     /**
