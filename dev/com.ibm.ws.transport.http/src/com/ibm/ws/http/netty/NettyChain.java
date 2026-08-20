@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,8 @@ public class NettyChain extends HttpChain {
 
     private volatile boolean enabled = false;
     private final Object stopLock = new Object();
-
+    private final Object startLock = new Object();
+    
     /**
      * Netty Http Chain constructor
      *
@@ -110,8 +111,7 @@ public class NettyChain extends HttpChain {
                         Tr.debug(this, tc, "Server Channel found to be null for a state where it should be assigned an object!");
                     }
                     throw new IllegalStateException("Invalid chain state for stop: " + state.get());
-                }
-                else if (serverChannel.isActive()) {
+                } else if (serverChannel.isActive()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "Server Channel is active, attempting to close");
                     }
@@ -242,13 +242,13 @@ public class NettyChain extends HttpChain {
                 tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
 
                 bootstrap = nettyFramework.createTCPBootstrapInbound(tcpOptions);
-                HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this)
-                    .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
-                    .with(ConfigElement.HTTP_OPTIONS, httpOptions)
-                    .with(ConfigElement.HEADERS, owner.getHeadersConfig())
-                    .with(ConfigElement.REMOTE_IP, owner.getRemoteIpConfig()) 
-                    .with(ConfigElement.SAMESITE, owner.getSamesiteConfig())
-                    .with(ConfigElement.TCP_OPTIONS, tcpOptions);
+                HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this).with(ConfigElement.COMPRESSION,
+                                                                                                                                         owner.getCompressionConfig()).with(ConfigElement.HTTP_OPTIONS,
+                                                                                                                                                                            httpOptions).with(ConfigElement.HEADERS,
+                                                                                                                                                                                              owner.getHeadersConfig()).with(ConfigElement.REMOTE_IP,
+                                                                                                                                                                                                                             owner.getRemoteIpConfig()).with(ConfigElement.SAMESITE,
+                                                                                                                                                                                                                                                             owner.getSamesiteConfig()).with(ConfigElement.TCP_OPTIONS,
+                                                                                                                                                                                                                                                                                             tcpOptions);
 
                 // Add SSL options only if the chain is SSL-enabled
                 if (this.isHttps()) {
@@ -263,9 +263,45 @@ public class NettyChain extends HttpChain {
 
                 serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
-                VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
-                String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
-                postEvent(topic, currentConfig, null);
+                // If startInbound() returned null the framework is stopping (or bootstrap.register()
+                // threw) and channelFutureHandler will never be called — notifyAll() will never fire.
+                // Transition to STOPPED immediately so the wait loop below exits right away.
+                if (serverChannel == null) {
+                    state.set(ChainState.STOPPED);
+                    synchronized (startLock) {
+                        startLock.notifyAll();
+                    }
+                }
+
+                // Wait for channelFutureHandler to complete (STARTED or STOPPED/error).
+                // startInbound() submits the bind to the executor asynchronously; without
+                // waiting here the caller (update → nettyResume → verifyResumedChainStates)
+                // would check the chain state before the bind result is known, which causes
+                // a false-success and prevents CWWKE0930E from being raised on bind failure
+                // (e.g. wildcard-conflict detected by TCPUtils).
+                //
+                // IMPORTANT: we must NOT hold the NettyChain monitor (this) while waiting.
+                // channelFutureHandler() needs synchronized(this) to update state and call
+                // notifyAll(). If we wait() on "this" while holding it, the executor thread
+                // running channelFutureHandler cannot enter — deadlock. Use startLock instead.
+                synchronized (startLock) {
+                    while (state.get() == ChainState.STARTING) {
+                        try {
+                            startLock.wait();
+                        } catch (InterruptedException ie) {
+                            // If interrupted, stop waiting; the state will be checked by the caller.
+                            Thread.currentThread().interrupt();
+                            break;
+                        }
+                    }
+                }
+
+                // Only post the started event if the bind actually succeeded.
+                if (state.get() == ChainState.STARTED) {
+                    VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                    String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+                    postEvent(topic, currentConfig, null);
+                }
 
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -283,9 +319,10 @@ public class NettyChain extends HttpChain {
     private void channelFutureHandler(ChannelFuture future) {
         if (state.get() == ChainState.STOPPING || state.get() == ChainState.STOPPED) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get() + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
+                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get()
+                                   + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
             }
-            if(future.channel().isActive()) {
+            if (future.channel().isActive()) {
                 // Found active channel when it should be stopped/stopping
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Found active channel: " + future.channel() + ". Will attempt to stop it.");
@@ -294,7 +331,7 @@ public class NettyChain extends HttpChain {
             }
             return;
         }
-        synchronized (this) {
+        synchronized (startLock) {
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
@@ -314,10 +351,10 @@ public class NettyChain extends HttpChain {
                 }
                 state.set(ChainState.STOPPED);
             }
-            //Register chain for quiesce, NO_OP is passed as the task as there is no special 
+            //Register chain for quiesce, NO_OP is passed as the task as there is no special
             //quiesce action required at this time
             nettyFramework.registerEndpointQuiesce(future.channel(), QuiesceStrategy.NO_OP.getTask());
-            notifyAll();
+            startLock.notifyAll();
         }
     }
 

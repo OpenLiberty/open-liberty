@@ -243,9 +243,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                         Tr.debug(this, tc, "EndpointAction: updating chains " + HttpEndpointImpl.this);
 
                     String resolvedHost = resolvedHostName;
-                    
+
                     getCurrentHttpChain().update(resolvedHost);
-                    
+
                     if (httpsPort >= 0) {
                         if (useNetty && nettyTlsProvider != null) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -274,8 +274,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
                         getCurrentHttpsChain().stop();
                     }
                 }
-                    
-                
+
             }
         }
     };
@@ -307,35 +306,29 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         useNetty = ProductInfo.getBetaEdition() &&
                    MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
 
-
         initializeChains();
 
-
         modified(config);
-        
+
     }
-    
+
     private void initializeChains() {
-        if(useNetty) {
+        if (useNetty) {
             nettyChain.initNettyChain(name, netty);
             nettySecureChain.initNettyChain(name, netty);
-            
-        }else {
+
+        } else {
             httpChain.init(name, cid, chfw);
             httpSecureChain.init(name, cid, chfw);
         }
     }
-    
 
     @Deactivate
     protected void deactivate(ComponentContext ctx, int reason) {
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "deactivate HttpEndpoint " + this + ", reason=" + reason);
         }
-        
-
-        
 
         endpointStarted = false;
         HttpEndpointList.unregisterEndpoint(this);
@@ -351,7 +344,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         sslFactoryProvider.deactivate(ctx);
         sslOptions.deactivate(ctx);
         eventService.deactivate(ctx);
-        
+
     }
 
     private void registerCheckResolvedHostHook(final Map<String, Object> configAtCheckpoint, String cfgDefaultHost) {
@@ -449,11 +442,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
         // Store the configuration
         endpointConfig = config;
-        
+
         boolean newUseNetty = ProductInfo.getBetaEdition() &&
-                        MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
-        
-        if(newUseNetty != useNetty) {
+                              MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
+
+        if (newUseNetty != useNetty) {
             switchChains(newUseNetty);
         }
 
@@ -465,46 +458,45 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             processHttpChainWork(endpointEnabled, false);
         }
     }
-    
+
     private synchronized void switchChains(boolean switchToNetty) {
 
         performChecks();
 
-        if(this.useNetty == switchToNetty) {
+        if (this.useNetty == switchToNetty) {
             return;
         }
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Switching chains from " + (this.useNetty ? "Netty" : "Legacy") + " to " + (switchToNetty ? "Netty" : "Legacy"));
         }
-        
+
         getCurrentHttpChain().stop();
         getCurrentHttpsChain().stop();
-   
+
         this.useNetty = switchToNetty;
-        
-        
-        if(switchToNetty) {
+
+        if (switchToNetty) {
             nettyChain.initNettyChain(name, netty);
             nettySecureChain.initNettyChain(name, netty);
-            
+
         } else {
             httpChain.init(name, cid, chfw);
             httpSecureChain.init(name, cid, chfw);
         }
-        
-        if(httpPort >=0) {
+
+        if (httpPort >= 0) {
             getCurrentHttpChain().enable();
         }
-        
+
         if (httpsPort >= 0 && (useNetty ? nettyTlsProvider != null : sslFactoryProvider.getService() != null)) {
             getCurrentHttpsChain().enable();
         }
-        
-        if(endpointState.get() == ENABLED) {
+
+        if (endpointState.get() == ENABLED) {
             processHttpChainWork(true, false);
         }
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Finished switching chains. New HTTP chain: " + getCurrentHttpChain() + ", New HTTPS chain: " + getCurrentHttpsChain());
         }
@@ -530,14 +522,15 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
             if (httpPort >= 0) {
                 getCurrentHttpChain().enable();
-                
+
             }
             if (httpsPort >= 0) {
                 boolean sslAvailable = useNetty ? (nettyTlsProvider != null) : (sslFactoryProvider.getService() != null);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "SSL availability: useNetty=" + useNetty + ", nettyTlsProvider=" + (nettyTlsProvider != null) + ", sslFactoryProvider=" + (sslFactoryProvider.getService() != null));
+                    Tr.debug(this, tc, "SSL availability: useNetty=" + useNetty + ", nettyTlsProvider=" + (nettyTlsProvider != null) + ", sslFactoryProvider="
+                                       + (sslFactoryProvider.getService() != null));
                 }
-                if(sslAvailable) {
+                if (sslAvailable) {
                     getCurrentHttpsChain().enable();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "HTTPS chain enabled");
@@ -566,28 +559,26 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
             // The endpoint has been disabled-- stop it now
             endpointState.set(DISABLED);
-            
-            
-            
+
             if (!isPause) {
                 performAction(stopAction);
             } else {
                 stopAction.run();
             }
-        } 
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(this, tc, "processHttpChainWork");
         }
-        
+
     }
 
-    private void logChainStates(){
-        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+    private void logChainStates() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             HttpChain httpChain = getCurrentHttpChain();
             HttpChain httpsChain = getCurrentHttpsChain();
 
             Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChain.getChainState())
-                + ", HTTPS: " + ChainState.printState(httpsChain.getChainState()));
+                               + ", HTTPS: " + ChainState.printState(httpsChain.getChainState()));
         }
     }
 
@@ -659,7 +650,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *         or not yet listening
      */
     public int getListeningHttpPort() {
-        return useNetty ? nettyChain.getActivePort(): httpChain.getActivePort();
+        return useNetty ? nettyChain.getActivePort() : httpChain.getActivePort();
     }
 
     /**
@@ -667,7 +658,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
      *         or not yet listening
      */
     public int getListeningSecureHttpPort() {
-        return useNetty ? nettySecureChain.getActivePort(): httpSecureChain.getActivePort();
+        return useNetty ? nettySecureChain.getActivePort() : httpSecureChain.getActivePort();
     }
 
     public String getProtocolVersion() {
@@ -694,7 +685,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             Tr.event(this, tc, "enable ssl support " + ref.getProperty("type"), this);
         }
         sslFactoryProvider.setReference(ref);
-        if(endpointConfig != null) {
+        if (endpointConfig != null) {
             performAction(updateAction);
         }
 
@@ -1040,22 +1031,23 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return netty;
     }
 
-    @Reference(name = "nettyTlsProvider", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, unbind = "unbindTlsProviderService")
+    @Reference(name = "nettyTlsProvider", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY,
+               unbind = "unbindTlsProviderService")
     protected void bindNettyTlsProvider(NettyTlsProvider tlsProvider) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Setting Netty TLS provider: " + tlsProvider);
         }
         this.nettyTlsProvider = tlsProvider;
         // Trigger an update to ensure the SSL chain is initialized
-        if (endpointConfig != null) {             
-            performAction(updateAction);           
+        if (endpointConfig != null) {
+            performAction(updateAction);
         }
 
     }
 
     protected void unbindTlsProviderService(NettyTlsProvider bundle) {
         this.nettyTlsProvider = null;
-        if(endpointConfig != null) {
+        if (endpointConfig != null) {
             performAction(updateAction);
         }
     }
@@ -1326,7 +1318,6 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             // endpoint will no longer be accepted (CWWKO0220I: TCP Channel ***(-ssl) has stopped listening for
             // requests on host ****  (IPv6) port ****.).
             processHttpChainWork(false, true);
-            
 
             // Check the state of the HTTP chains. The expectation is that the HTTP chains' states are NOT STARTED
             // (UNITIALIZED, DESTROYED, QUIESCED or STOPPED).
@@ -1427,8 +1418,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             }
             return;
         }
-    }
 
+        // Bind failed (e.g. wildcard-conflict detected by TCPUtils). Throw so that
+        // PauseableComponentControllerImpl reports CWWKE0930E to the caller, matching
+        // the legacy Channel behavior of TCPChannel.takeDownChain().
+        throw new PauseableComponentException("The request to resume HTTP endpoint " + name + " did not complete successfully. HTTPChain: "
+                                              + httpChain.toString() + ". HTTPSChain: " + httpsChain.toString());
+    }
 
     private void performChecks() throws IllegalStateException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1443,7 +1439,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
         if (executorService.getService() == null) {
             throw new IllegalStateException("Executor service is not available");
-        }   
+        }
         if (eventService.getService() == null) {
             throw new IllegalStateException("Event service is not available");
         }
@@ -1475,7 +1471,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     public boolean isPaused() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "endpoint and chain data: " + HttpEndpointImpl.this, httpChain, httpSecureChain);
-        
+
         int httpChainState = getCurrentHttpChain().getChainState();
         int httpsChainState = getCurrentHttpsChain().getChainState();
 
@@ -1493,13 +1489,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
         return info;
     }
-    
+
     private synchronized HttpChain getCurrentHttpChain() {
-        return useNetty ? nettyChain: httpChain;
-    }
-    private synchronized HttpChain getCurrentHttpsChain() {
-        return useNetty ? nettySecureChain: httpSecureChain;
+        return useNetty ? nettyChain : httpChain;
     }
 
-    
+    private synchronized HttpChain getCurrentHttpsChain() {
+        return useNetty ? nettySecureChain : httpSecureChain;
+    }
+
 }

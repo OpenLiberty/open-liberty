@@ -14,6 +14,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -138,6 +139,22 @@ public class TCPUtils {
                         Tr.error(tc, TCPMessageConstants.BIND_ERROR,
                                  new Object[] { config.getExternalName(), newHost,
                                                 String.valueOf(inetPort), "Address already in use" });
+                        wildcardConflict.set(true);
+                        
+                        // Immediately fire the openListener with a synthetic failed future BEFORE
+                        // returning from this listener. This ensures channelFutureHandler() runs
+                        // on the same IO thread, setting state = STOPPED, so startNettyChannel()'s
+                        // wait() loop sees the definitive failed state before nettyResume() returns.
+                        if (openListener != null) {
+                            ChannelFuture failedFuture = channel.newFailedFuture(new IOException("Address already in use"));
+                            try {
+                                openListener.operationComplete(failedFuture);
+                            } catch (Exception e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Exception calling openListener after wildcard conflict: " + e.getMessage());
+                                }
+                            }
+                        }
                         return;
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -268,38 +285,28 @@ public class TCPUtils {
             }
         });
 
+        // Only register the success-path listener wrapper. 
+        // The failure path (wildcard conflict) has already called openListener directly within the first listener to ensure synchronous
+        // execution before startNettyChannel()'s wait() wakes up.
         if (openListener != null) {
-            openFuture.addListener(generateOpenListenerWrapper(framework, openListener, wildcardConflict));
-        }
-        return openFuture;
-    }
-
-    private static ChannelFutureListener generateOpenListenerWrapper(NettyFrameworkImpl framework, ChannelFutureListener listener, AtomicBoolean wildcardConflict) {
-        return new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                // If a wildcard-conflict was detected in the open listener, substitute a
-                // failed future so that NettyChain.channelFutureHandler() follows the
-                // failure path (handleStartupError + state transition), mirroring the
-                // legacy TCPChannel.takeDownChain() behavior.
-                final ChannelFuture effectiveFuture = wildcardConflict.get() ? future.channel().newFailedFuture(new IOException("Address already in use")) : future;
-                
-                framework.getExecutorService().execute(new Runnable() {
-
-                    @Override
-                    public void run() {
+            openFuture.addListener((ChannelFutureListener) cf -> {
+                // Only dispatch to executor if no wildcard conflict was detected.
+                // The conflict path already called openListener synchronously.
+                if (!wildcardConflict.get()) {
+                    framework.getExecutorService().execute(() -> {
                         try {
-                            listener.operationComplete(effectiveFuture);
+                            openListener.operationComplete(cf);
                         } catch (Exception e) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Exception caught running open listener!! Closing channel just in case");
+                                Tr.debug(tc, "Exception caught running open listener: " + e.getMessage() + " Closing channel just in case");
                             }
-                            future.channel().close();
+                            cf.channel().close();
                         }
-                    }
-                });
-            }
-        };
+                    });
+                }
+            });
+        }
+        return openFuture;
     }
 
     private static Channel startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
@@ -310,6 +317,29 @@ public class TCPUtils {
             }
             return null;
         } else {
+            // Pre-resolve the hostname on the calling thread before queuing the bind task.
+            // InetSocketAddress(String, int) performs a blocking DNS lookup; when called
+            // inside StartTaskRunnable.task.get() it can block setServerStarted()'s
+            // latch.await() indefinitely for hostnames that no longer resolve (e.g. a
+            // DHCP address that has changed). Wildcard ("*"/INADDR_ANY) and loopback
+            // addresses are always resolvable and are skipped.
+            if (config.isInbound() && !inetHost.equals("*") && !NettyConstants.INADDR_ANY.equals(inetHost)) {
+                try {
+                    InetAddress.getByName(inetHost);
+                } catch (UnknownHostException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "startHelper: hostname " + inetHost + " is unresolvable, failing fast: " + e.getMessage());
+                    }
+                    Tr.error(tc, TCPMessageConstants.LOCAL_HOST_UNRESOLVED,
+                             new Object[] { config.getExternalName(), inetHost, String.valueOf(inetPort) });
+                    // Return null here. NettyChain.startNettyChannel() already handles a null
+                    // return from startInbound() by setting state = STOPPED and calling
+                    // notifyAll(), which unblocks its wait() loop and lets the server continue
+                    // with the remaining valid endpoints — matching the legacy TCPChannel
+                    // behavior of skipping bad hostnames at startup.
+                    return null;
+                }
+            }
             try {
                 Channel channel;
                 if (System.getSecurityManager() == null) {
