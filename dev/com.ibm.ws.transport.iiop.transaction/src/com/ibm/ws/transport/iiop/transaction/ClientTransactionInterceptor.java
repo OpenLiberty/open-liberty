@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,169 +15,283 @@
  */
 package com.ibm.ws.transport.iiop.transaction;
 
-import javax.transaction.InvalidTransactionException;
+import static com.ibm.ws.transport.iiop.transaction.TransactionIORConstants.SERVER_INSTANCE_UUID;
+import static com.ibm.ws.transport.iiop.transaction.TransactionIORConstants.TAG_IBM_SERVER_UUID;
+
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 import javax.transaction.SystemException;
-import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
-import org.omg.CORBA.Any;
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.INTERNAL;
 import org.omg.CORBA.LocalObject;
-import org.omg.CosTSInteroperation.TAG_OTS_POLICY;
-import org.omg.CosTransactions.ADAPTS;
-import org.omg.CosTransactions.OTSPolicyValueHelper;
+import org.omg.CORBA.TRANSACTION_ROLLEDBACK;
 import org.omg.IOP.Codec;
 import org.omg.IOP.TaggedComponent;
-import org.omg.IOP.CodecPackage.FormatMismatch;
-import org.omg.IOP.CodecPackage.TypeMismatch;
 import org.omg.PortableInterceptor.ClientRequestInfo;
 import org.omg.PortableInterceptor.ClientRequestInterceptor;
 import org.omg.PortableInterceptor.ForwardRequest;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+import org.omg.CosTSInteroperation.TAG_OTS_POLICY;
+import org.omg.CosTransactions.ADAPTS;
+import org.omg.CosTransactions.OTSPolicyValueHelper;
+import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxTransactionExporter;
+import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
+import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
 
 /**
- * @version $Revision: 502396 $ $Date: 2007-02-01 15:06:06 -0800 (Thu, 01 Feb 2007) $
+ * Client-side IIOP interceptor for transaction propagation (Plan B).
+ *
+ * <p>Protocol selection logic:
+ * <ol>
+ *   <li>If the target IOR carries {@code TAG_IBM_SERVER_UUID} matching this server instance,
+ *       use the NoDTx exporter (local-call optimisation).</li>
+ *   <li>Otherwise iterate registered providers in priority order; the first whose
+ *       {@link TransactionProtocolProvider#handlesIOR(ClientRequestInfo)} returns true
+ *       is used to export the transaction.</li>
+ *   <li>If no provider handles the IOR, fall back to the NoDTx exporter.</li>
+ * </ol>
+ *
+ * <p>The core interceptor has zero knowledge of any protocol's IOR tag format or
+ * payload — all such knowledge lives inside the provider implementations.
  */
 class ClientTransactionInterceptor extends LocalObject implements ClientRequestInterceptor {
-    /**  */
+
     private static final long serialVersionUID = 1L;
-    private static final TraceComponent tc = Tr.register(ClientTransactionInterceptor.class);
+    private static final TraceComponent tc = Tr.register(ClientTransactionInterceptor.class, "IIOP", null);
+
     private final Codec codec;
-    private final ThreadLocal<Transaction> _storedTx = new ThreadLocal<>();
-    private volatile TransactionManager transactionManager;
+    /** Stores the provider that exported the transaction for this thread's current call. */
+    private final ThreadLocal<TransactionProtocolProvider> activeProviders = new ThreadLocal<>();
+    private final NoDTxTransactionExporter noDTxExporter = new NoDTxTransactionExporter();
 
     public ClientTransactionInterceptor(Codec codec) {
         this.codec = codec;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Registered");
+        if (tc.isDebugEnabled()) Tr.debug(tc, "Registered");
+    }
+
+    private TransactionManager getTransactionManager() {
+        return TransactionServiceLocator.getInstance().getContext().getTransactionManager();
+    }
+
+    // -------------------------------------------------------------------------
+    // Reply / exception callbacks
+    // -------------------------------------------------------------------------
+
+    @Override
+    public void receive_exception(ClientRequestInfo ri) throws ForwardRequest {
+        resumeTxOnReply(ri, true);
+        if (ri.reply_status() == SYSTEM_EXCEPTION.value) {
+            setRollbackOnly(false);
+            throw new TRANSACTION_ROLLEDBACK("Transaction rolled back due to system exception");
+        }
     }
 
     @Override
-    public void receive_exception(ClientRequestInfo ri) throws ForwardRequest
-    {
-        resumeTxOnreply();
+    public void receive_other(ClientRequestInfo ri) throws ForwardRequest {
+        resumeTxOnReply(ri, false);
     }
 
     @Override
-    public void receive_other(ClientRequestInfo ri) throws ForwardRequest
-    {
-        resumeTxOnreply();
+    public void receive_reply(ClientRequestInfo ri) {
+        resumeTxOnReply(ri, false);
     }
 
-    @Override
-    public void receive_reply(ClientRequestInfo ri)
-    {
-        resumeTxOnreply();
-    }
+    private void resumeTxOnReply(ClientRequestInfo ri, boolean exceptionOccurred) {
+        TransactionProtocolProvider provider = activeProviders.get();
+        if (provider == null) {
+            if (tc.isDebugEnabled()) Tr.debug(tc, "No active provider for request");
+            return;
+        }
+        activeProviders.remove();
 
-    private void resumeTxOnreply()
-    {
-        Transaction suspendedTx = _storedTx.get();
-        if (suspendedTx != null && transactionManager != null)
-            try {
-                Transaction currentTx = transactionManager.getTransaction();
-                if (currentTx != null)
-                {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "No resume, there is a current transaction " + currentTx + ", the stored transaction is " + suspendedTx);
+        try {
+            if (getTransactionManager().getTransaction() != null) {
+                TransactionHandlerContext context =
+                    TransactionServiceLocator.getInstance().getContext();
+                try {
+                    if (provider == NODTX_SENTINEL) {
+                        noDTxExporter.unexportTransaction(ri, context, exceptionOccurred);
+                    } else {
+                        provider.unexportTransaction(ri, context, exceptionOccurred);
+                    }
+                } catch (com.ibm.tx.remote.TRANSACTION_ROLLEDBACK ibmTrb) {
+                    // IBM-internal unchecked exception from resumeAssociation — translate to CORBA
+                    if (tc.isDebugEnabled()) Tr.debug(tc, "resumeAssociation threw IBM TRANSACTION_ROLLEDBACK", ibmTrb);
+                    FFDCFilter.processException(ibmTrb, getClass().getName(), "resumeTxOnReply", this);
+                    setRollbackOnly(true);
+                    throw new TRANSACTION_ROLLEDBACK(ibmTrb.getMessage());
+                } catch (TRANSACTION_ROLLEDBACK corbaTrb) {
+                    // Provider threw the CORBA version — mark rollback and propagate
+                    setRollbackOnly(true);
+                    throw corbaTrb;
                 }
-                else
-                {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "No current transaction, so resume " + _storedTx);
-                    transactionManager.resume(suspendedTx);
-                }
-            } catch (InvalidTransactionException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Could not resume transaction", e);
-            } catch (IllegalStateException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Could not resume transaction", e);
-            } catch (SystemException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Could not resume transaction", e);
+            } else {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "Provider existed but no current transaction");
             }
-
-        _storedTx.set(null);
+        } catch (SystemException se) {
+            throw (INTERNAL) new INTERNAL().initCause(se);
+        }
     }
 
     @Override
     public void send_poll(ClientRequestInfo ri) {}
 
+    // -------------------------------------------------------------------------
+    // Outbound request
+    // -------------------------------------------------------------------------
+
     @Override
     @FFDCIgnore(BAD_PARAM.class)
     public void send_request(ClientRequestInfo ri) throws ForwardRequest {
-        TaggedComponent taggedComponent = null;
+
+        // Gate on policy presence
+        ClientTransactionPolicy policy =
+            (ClientTransactionPolicy) ri.get_request_policy(ClientTransactionPolicyFactory.POLICY_TYPE);
+        if (policy == null) return;
+
+        TransactionServiceLocator locator = TransactionServiceLocator.getInstance();
+        TransactionHandlerContext context = locator.getContext();
+        TransactionManager tm = context.getTransactionManager();
 
         try {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Checking if target " + ri.operation() + " has a transaction policy");
+            if (tm.getTransaction() == null
+                    || !ri.response_expected()
+                    || "_is_a".equals(ri.operation())
+                    || "_get_handle".equals(ri.operation())
+                    || "resolve".equals(ri.operation())) {
+                return;
+            }
+        } catch (SystemException se) {
+            throw (INTERNAL) new INTERNAL().initCause(se);
+        }
 
-            taggedComponent = ri.get_effective_component(TAG_OTS_POLICY.value);
+        // Check for OTS ADAPTS policy
+        TaggedComponent otsPolicyTag;
+        try {
+            otsPolicyTag = ri.get_effective_component(TAG_OTS_POLICY.value);
         } catch (BAD_PARAM e) {
             return;
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Target has a transaction policy");
+        if (tc.isDebugEnabled()) Tr.debug(tc, "Target has a transaction policy");
 
-        byte[] data = taggedComponent.component_data;
-        Any any = null;
+        org.omg.CORBA.Any any;
         try {
-            any = codec.decode_value(data, OTSPolicyValueHelper.type());
-        } catch (FormatMismatch formatMismatch) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Mismatched format", formatMismatch);
-            throw (INTERNAL) new INTERNAL("Mismatched format").initCause(formatMismatch);
-        } catch (TypeMismatch typeMismatch) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Type mismatch", typeMismatch);
-            throw (INTERNAL) new INTERNAL("Type mismatch").initCause(typeMismatch);
+            any = codec.decode_value(otsPolicyTag.component_data, OTSPolicyValueHelper.type());
+        } catch (Exception e) {
+            throw (INTERNAL) new INTERNAL("OTS policy decode failed").initCause(e);
         }
 
-        short value = OTSPolicyValueHelper.extract(any);
-        if (value == ADAPTS.value) {
-            ClientTransactionPolicy clientTransactionPolicy = (ClientTransactionPolicy) ri.get_request_policy(ClientTransactionPolicyFactory.POLICY_TYPE);
-            if (clientTransactionPolicy == null) {
-                return;
-            }
-            ClientTransactionPolicyConfig clientTransactionPolicyConfig = clientTransactionPolicy.getClientTransactionPolicyConfig();
-            if (clientTransactionPolicyConfig == null)
-                return;
+        if (OTSPolicyValueHelper.extract(any) != ADAPTS.value) return;
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Client has a transaction policy");
-            if (transactionManager == null) {
-                transactionManager = clientTransactionPolicyConfig.getTransactionManager();
+        // Local-server UUID shortcut
+        if (isLocalServerUUID(ri)) {
+            if (tc.isDebugEnabled()) Tr.debug(tc, "Local UUID match — using NoDTx exporter");
+            exportWithNoDTx(ri, context);
+            return;
+        }
+
+        // Try providers in priority order
+        List<TransactionProtocolProvider> providers = locator.getSortedProviders();
+        for (TransactionProtocolProvider provider : providers) {
+            if (provider.handlesIOR(ri)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exporting with provider: {0}", provider.getProtocolName());
+                }
+                provider.exportTransaction(ri, codec, context);
+                activeProviders.set(provider);
+                return;
             }
-            Transaction currentTx = clientTransactionPolicyConfig.exportTransaction(ri, codec);
-            if (currentTx != null) {
-                _storedTx.set(currentTx);
+        }
+
+        // No provider matched — fall back to NoDTx
+        if (tc.isDebugEnabled()) Tr.debug(tc, "No provider handled IOR — falling back to NoDTx");
+        exportWithNoDTx(ri, context);
+    }
+
+    private void exportWithNoDTx(ClientRequestInfo ri, TransactionHandlerContext context) {
+        noDTxExporter.exportTransaction(ri, codec, context);
+        activeProviders.set(NODTX_SENTINEL);
+    }
+
+    /**
+     * Sentinel value stored in the ThreadLocal to indicate NoDTx was used.
+     * Avoids storing the exporter directly since NoDTxTransactionExporter does not
+     * implement TransactionProtocolProvider.
+     */
+    private static final TransactionProtocolProvider NODTX_SENTINEL = new TransactionProtocolProvider() {
+        public String getProtocolName()  { return "NoDTx-sentinel"; }
+        public int    getPriority()      { return Integer.MAX_VALUE; }
+        public int    getIORTagId()      { return 0; }
+        public void   contributeToIOR(org.omg.PortableInterceptor.IORInfo i, Codec c) {}
+        public boolean handlesIOR(ClientRequestInfo r) { return false; }
+        public void   exportTransaction(ClientRequestInfo r, Codec c, TransactionHandlerContext x) {}
+        public void   unexportTransaction(ClientRequestInfo r, TransactionHandlerContext x,
+                                          boolean exceptionOccurred) {}
+        public boolean importTransaction(org.omg.CosTransactions.PropagationContext p, TransactionHandlerContext x) { return false; }
+        public void   unimportTransaction(TransactionHandlerContext x) {}
+    };
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    @FFDCIgnore(BAD_PARAM.class)
+    private boolean isLocalServerUUID(ClientRequestInfo ri) {
+        try {
+            TaggedComponent comp = ri.get_effective_component(TAG_IBM_SERVER_UUID);
+            byte[] data = comp.component_data;
+            if (data != null && data.length >= 19) {
+                ByteBuffer buf = ByteBuffer.wrap(data, 3, 16);
+                UUID remote = new UUID(buf.getLong(), buf.getLong());
+                boolean local = remote.equals(SERVER_INSTANCE_UUID);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "UUID check: remote={0} local={1} match={2}",
+                             remote, SERVER_INSTANCE_UUID, local);
+                }
+                return local;
             }
+        } catch (BAD_PARAM e) {
+            // tag absent
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) Tr.debug(tc, "Error reading TAG_IBM_SERVER_UUID", e);
+        }
+        return false;
+    }
+
+    private void setRollbackOnly(boolean resumeAssociation) {
+        try {
+            EmbeddableTransactionImpl tx =
+                (EmbeddableTransactionImpl) getTransactionManager().getTransaction();
+            if (tx != null) {
+                try {
+                    if (resumeAssociation) tx.resumeAssociation();
+                    tx.setRollbackOnly();
+                } catch (IllegalStateException ise) {
+                    FFDCFilter.processException(ise, getClass().getName(), "setRollbackOnly", this);
+                }
+            }
+        } catch (SystemException se) {
+            throw (INTERNAL) new INTERNAL().initCause(se);
         }
     }
 
     @Override
     public void destroy() {}
 
-    /**
-     * Returns the name of the interceptor.
-     * <p/>
-     * Each Interceptor may have a name that may be used administratively
-     * to order the lists of Interceptors. Only one Interceptor of a given
-     * name can be registered with the ORB for each Interceptor type. An
-     * Interceptor may be anonymous, i.e., have an empty string as the name
-     * attribute. Any number of anonymous Interceptors may be registered with
-     * the ORB.
-     * 
-     * @return the name of the interceptor.
-     */
     @Override
-    public String name() {
-        return getClass().getName();
-    }
+    public String name() { return getClass().getName(); }
 }
+
+// Made with Bob

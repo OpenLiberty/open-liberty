@@ -34,7 +34,7 @@ import com.ibm.ws.wsat.utils.WSCoorUtil;
  */
 public class SSLServerInterceptor extends AbstractPhaseInterceptor<Message> {
 
-    final TraceComponent tc = Tr.register(
+    private static final TraceComponent tc = Tr.register(
                                           SSLServerInterceptor.class, WSCoorConstants.TRACE_GROUP, null);
 
     private static final String PEER_CERTIFICATES = "javax.net.ssl.peer_certificates";

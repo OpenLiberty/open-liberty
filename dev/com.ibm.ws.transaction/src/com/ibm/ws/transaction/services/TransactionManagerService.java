@@ -452,6 +452,16 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
 
     /** {@inheritDoc} */
     @Override
+    public void resumeForImport(Transaction t) throws InvalidTransactionException, IllegalStateException {
+        if (isClient) {
+            throw new IllegalStateException();
+        }
+
+        etm().resumeForImport(t);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void completeTxTimeout() throws TransactionRolledbackException {
         etm().completeTxTimeout();
     }
