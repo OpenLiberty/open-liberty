@@ -62,7 +62,3 @@ quiesce.listeners.not.complete.useraction=No action is required.
 quiesce.waiting.on.threads=CWWKE1107W: A total of {0} threads did not complete during the quiesce period.
 quiesce.waiting.on.threads.explanation=One or more threads that were active before shutting down the server were still active at the end of the quiesce period.
 quiesce.waiting.on.threads.useraction=No action is required.
-
-server.element.config.missing=CWWKE1108W: The ServerElementConfig service is not available. The server uses the default quiesce timeout of 30 seconds. If the quiesceTimeout attribute is configured in the server.xml file, the server does not apply the attribute.
-server.element.config.missing.explanation=The ServerElementConfig service is required to read the quiesceTimeout attribute from the server element in the server.xml file. Without this service, the configured value cannot be retrieved and the server uses the default timeout of 30 seconds.
-server.element.config.missing.useraction=This is an internal error. If the problem persists, check the server logs for bundle activation failures or missing dependencies.

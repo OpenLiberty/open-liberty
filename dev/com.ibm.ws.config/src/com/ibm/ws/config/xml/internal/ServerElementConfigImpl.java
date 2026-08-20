@@ -27,6 +27,7 @@ import com.ibm.websphere.kernel.server.ServerElementConfig;
  */
 @Component(service = ServerElementConfig.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
+           immediate = true,
            property = { "service.vendor=IBM" })
 public class ServerElementConfigImpl implements ServerElementConfig {
 

@@ -104,7 +104,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
     private ExecutorService executorService;
 
-    private ServerElementConfig serverElementConfig;
+    private volatile ServerElementConfig serverElementConfig;
 
     @Activate
     protected void activate(BundleContext ctx) {
@@ -128,8 +128,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
     }
 
     @Reference(service = ServerElementConfig.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC)
+               cardinality = ReferenceCardinality.MANDATORY,
+               policy = ReferencePolicy.DYNAMIC)
     protected void setServerElementConfig(ServerElementConfig config) {
         this.serverElementConfig = config;
     }
@@ -374,7 +374,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         }
         // Notify the executor service that we are quiescing, if available
         boolean quiesceListenerSuccess = quiesceListenerFutures.isComplete(startTime, quiesceTimeout);
-        return quiesceListenerSuccess && (tq != null ? tq.quiesceThreads(quiesceTimeout) : true);
+        // Pass remaining time budget to quiesceThreads so the total wait (listeners + threads)
+        // stays within the configured quiesceTimeout.  Short-circuit &&: if listeners already
+        // timed out, quiesceThreads is not called at all.
+        long remainingTime = Math.max(0L, (startTime + quiesceTimeout) - System.currentTimeMillis());
+        return quiesceListenerSuccess && (tq != null ? tq.quiesceThreads(remainingTime) : true);
     }
 
     /**
@@ -405,13 +409,24 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         ThreadQuiesce tq = (ThreadQuiesce) executorService;
         
         long quiesceTimeout;
-        if (serverElementConfig != null) {
-            quiesceTimeout = serverElementConfig.getQuiesceTimeoutMillis();
+        ServerElementConfig sec = serverElementConfig;
+        if (sec != null) {
+            quiesceTimeout = sec.getQuiesceTimeoutMillis();
         } else {
-            // Fallback: use the hardcoded default (30 seconds) to maintain backward compatibility
-            // This matches the behavior before the configurable quiesceTimeout feature was added
+            // This branch should never execute in normal operation.
+            // quiesceListeners() runs as a SynchronousBundleListener on the system bundle
+            // STOPPING event, which blocks all bundle deactivation until it returns -- so
+            // ServerElementConfigImpl cannot be deactivated while we are here.
+            // The one theoretical exception is a DS dynamic rebind racing on a separate
+            // thread (unset then set): the volatile field and local snapshot make that safe,
+            // but the window between unset and set means null is briefly possible.
+            // If this trace fires it means a DS rebind of ServerElementConfig coincided
+            // exactly with server shutdown -- the default 30s will be used.
             quiesceTimeout = 30000L;
-            Tr.warning(tc, "server.element.config.missing");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ServerElementConfig not available during quiesce; using 30s default. "
+                             + "This may indicate a DS rebind raced with server shutdown.");
+            }
         }
         int quiesceTimeoutSeconds = (int) (quiesceTimeout / 1000L);
 
