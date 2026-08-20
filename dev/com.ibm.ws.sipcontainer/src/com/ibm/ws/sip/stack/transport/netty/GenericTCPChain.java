@@ -35,6 +35,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.openliberty.netty.internal.*;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tcp.TCPConfigConstants;
 import jain.protocol.ip.sip.ListeningPoint;
 
 /**
@@ -200,7 +201,7 @@ public class GenericTCPChain extends GenericChain {
         }
 
         private int getInitialReadTimeoutMillis() {
-            Object value = currentConfig.tcpOptions.get("inactivityTimeout");
+            Object value = currentConfig.tcpOptions.get(TCPConfigConstants.INACTIVITY_TIMEOUT);
             if (value == null) {
                 return 0;
             }
@@ -242,12 +243,6 @@ public class GenericTCPChain extends GenericChain {
                 }
             }
             super.userEventTriggered(ctx, evt);
-        }
-
-        @Override
-        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            removeHandlers(ctx);
-            super.channelInactive(ctx);
         }
 
         private void removeHandlers(ChannelHandlerContext ctx) {
