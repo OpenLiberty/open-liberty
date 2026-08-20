@@ -1314,7 +1314,7 @@ public abstract class QueryInfo {
             args = list;
             entityCount = list.size();
         } else {
-            args = List.of(arg);
+            args = Collections.singletonList(arg);
             entityCount = 1;
         }
 
@@ -1876,7 +1876,6 @@ public abstract class QueryInfo {
     Object findAndUpdate(Object arg, AutoCloseable entityHandler) throws Exception {
         Iterable<?> args;
         int entityCount = 0;
-        boolean hasSingularEntityParam = false;
 
         if (entityParamType.isArray()) {
             entityCount = Array.getLength(arg);
@@ -1896,9 +1895,8 @@ public abstract class QueryInfo {
             args = list;
             entityCount = list.size();
         } else {
-            args = List.of(arg);
+            args = Collections.singletonList(arg);
             entityCount = 1;
-            hasSingularEntityParam = true;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -1967,7 +1965,7 @@ public abstract class QueryInfo {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw Fail.returnTypeInvalid(this, "Update", hasSingularEntityParam,
+                    throw Fail.returnTypeInvalid(this, "Update",
                                                  null, results.get(0).getClass());
             }
         }
@@ -1983,7 +1981,7 @@ public abstract class QueryInfo {
         } else if (returnValue != null &&
                    !Util.wrapperClassIfPrimitive(returnType) //
                                    .isAssignableFrom(returnValue.getClass())) {
-            throw Fail.returnTypeInvalid(this, "Update", hasSingularEntityParam,
+            throw Fail.returnTypeInvalid(this, "Update",
                                          null, results.get(0).getClass());
         }
 
@@ -4268,7 +4266,6 @@ public abstract class QueryInfo {
     Object insert(Object arg, AutoCloseable entityHandler) throws Exception {
         Iterable<?> args;
         int entityCount = 0;
-        boolean hasSingularEntityParam = false;
 
         if (entityParamType.isArray()) {
             entityCount = Array.getLength(arg);
@@ -4288,9 +4285,8 @@ public abstract class QueryInfo {
             args = list;
             entityCount = list.size();
         } else {
-            args = List.of(arg);
+            args = Collections.singletonList(arg);
             entityCount = 1;
-            hasSingularEntityParam = true;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -4351,8 +4347,7 @@ public abstract class QueryInfo {
                 else if (results.isEmpty())
                     returnValue = null;
                 else
-                    throw Fail.resultSizeMismatch(this, "@Insert", results.size(),
-                                                  hasSingularEntityParam);
+                    throw Fail.resultSizeMismatch(this, "@Insert", results.size());
             else if (multiType.isInstance(results))
                 returnValue = results;
             else if (Stream.class.equals(multiType))
@@ -4362,7 +4357,7 @@ public abstract class QueryInfo {
             else if (Iterator.class.equals(multiType))
                 returnValue = results.iterator();
             else
-                throw Fail.returnTypeInvalid(this, "Insert", hasSingularEntityParam,
+                throw Fail.returnTypeInvalid(this, "Insert",
                                              null, results.get(0).getClass());
         }
 
@@ -4371,7 +4366,7 @@ public abstract class QueryInfo {
             // useful for @Asynchronous
             returnValue = CompletableFuture.completedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw Fail.returnTypeInvalid(this, "Insert", hasSingularEntityParam,
+            throw Fail.returnTypeInvalid(this, "Insert",
                                          null, results.get(0).getClass());
         }
 
@@ -4667,7 +4662,6 @@ public abstract class QueryInfo {
                              Void.class.equals(singleType);
         ArrayList<Object> results;
 
-        boolean hasSingularEntityParam = false;
         int count = 0;
         if (entityParamType.isArray()) {
             int length = Array.getLength(arg);
@@ -4687,7 +4681,6 @@ public abstract class QueryInfo {
             }
         } else {
             count = 1;
-            hasSingularEntityParam = true;
             results = resultVoid ? null : new ArrayList<>(1);
             Object merged = em.merge(entityNotNull(arg));
             if (results != null)
@@ -4713,8 +4706,7 @@ public abstract class QueryInfo {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        throw Fail.resultSizeMismatch(this, "@Merge", results.size(),
-                                                      hasSingularEntityParam);
+                        throw Fail.resultSizeMismatch(this, "@Merge", results.size());
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
@@ -4724,7 +4716,7 @@ public abstract class QueryInfo {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw Fail.returnTypeInvalid(this, "Merge", hasSingularEntityParam,
+                    throw Fail.returnTypeInvalid(this, "Merge",
                                                  null, results.get(0).getClass());
             }
         }
@@ -4734,7 +4726,7 @@ public abstract class QueryInfo {
             // useful for @Asynchronous
             returnValue = CompletableFuture.completedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw Fail.returnTypeInvalid(this, "Merge", hasSingularEntityParam,
+            throw Fail.returnTypeInvalid(this, "Merge",
                                          null, results.get(0).getClass());
         }
 
@@ -5722,7 +5714,6 @@ public abstract class QueryInfo {
     Object save(Object arg, AutoCloseable entityHandler) throws Exception {
         Iterable<?> args;
         int entityCount = 0;
-        boolean hasSingularEntityParam = false;
 
         if (entityParamType.isArray()) {
             entityCount = Array.getLength(arg);
@@ -5742,9 +5733,8 @@ public abstract class QueryInfo {
             args = list;
             entityCount = list.size();
         } else {
-            args = List.of(arg);
+            args = Collections.singletonList(arg);
             entityCount = 1;
-            hasSingularEntityParam = true;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -5804,8 +5794,7 @@ public abstract class QueryInfo {
                 else if (results.isEmpty())
                     returnValue = null;
                 else
-                    throw Fail.resultSizeMismatch(this, "@Save", results.size(),
-                                                  hasSingularEntityParam);
+                    throw Fail.resultSizeMismatch(this, "@Save", results.size());
             else if (multiType.isInstance(results))
                 returnValue = results;
             else if (Stream.class.equals(multiType))
@@ -5815,7 +5804,7 @@ public abstract class QueryInfo {
             else if (Iterator.class.equals(multiType))
                 returnValue = results.iterator();
             else
-                throw Fail.returnTypeInvalid(this, "Save", hasSingularEntityParam,
+                throw Fail.returnTypeInvalid(this, "Save",
                                              null, results.get(0).getClass());
         }
 
@@ -5824,7 +5813,7 @@ public abstract class QueryInfo {
             // useful for @Asynchronous
             returnValue = CompletableFuture.completedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw Fail.returnTypeInvalid(this, "Save", hasSingularEntityParam,
+            throw Fail.returnTypeInvalid(this, "Save",
                                          null, results.get(0).getClass());
         }
 
@@ -6411,7 +6400,7 @@ public abstract class QueryInfo {
             args = list;
             entityCount = list.size();
         } else {
-            args = List.of(arg);
+            args = Collections.singletonList(arg);
             entityCount = 1;
         }
 
@@ -6586,7 +6575,7 @@ public abstract class QueryInfo {
              !CompletableFuture.class.equals(multiType) &&
              !CompletionStage.class.equals(multiType)))
 
-            throw Fail.returnTypeInvalid(this, "exists", false, "boolean, Boolean", null);
+            throw Fail.returnTypeInvalid(this, "exists", "boolean, Boolean", null);
     }
 
     /**
