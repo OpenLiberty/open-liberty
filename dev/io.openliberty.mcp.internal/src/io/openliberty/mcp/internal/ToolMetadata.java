@@ -34,6 +34,7 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.WrapBusinessError;
+import io.openliberty.mcp.internal.ToolRegistry.ToolArgumentImpl;
 import io.openliberty.mcp.internal.ToolValidation.ToolValidationError;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
@@ -143,11 +144,18 @@ public record ToolMetadata(String name,
                                            && pt.getActualTypeArguments()[0] instanceof Class<?>)
                                        && ContentBlock.class.isAssignableFrom((Class<?>) pt.getActualTypeArguments()[0]);
 
+        Class<?> outputSchemaFromClass = annotation.outputSchemaFrom();
+        boolean hasOutputSchemaFrom = outputSchemaFromClass != Void.class;
+
         boolean hasOutputSchema = annotation.structuredContent()
                                   && !hasContentListReturn
                                   && !ToolResponse.class.isAssignableFrom(unwrappedOutputClass)
                                   && !ContentBlock.class.isAssignableFrom(unwrappedOutputClass)
                                   && !String.class.isAssignableFrom(unwrappedOutputClass);
+
+        if (!hasOutputSchema && hasOutputSchemaFrom && annotation.structuredContent()) {
+            hasOutputSchema = true;
+        }
 
         if (!hasOutputSchema && ToolResponse.class.isAssignableFrom(unwrappedOutputClass) && annotation.structuredContent()
             && method.isAnnotationPresent(Schema.class)
@@ -158,13 +166,14 @@ public record ToolMetadata(String name,
         if (TypeUtility.hasGenericParams(unwrappedOutputType)) {
             unwrappedOutputType = TypeUtility.createResolvedType(unwrappedOutputType, genericMap);
         }
-        JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method, unwrappedOutputType) : null;
+        Type effectiveOutputType = hasOutputSchemaFrom ? outputSchemaFromClass : unwrappedOutputType;
+        JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method, effectiveOutputType) : null;
 
         outputSchema = (outputSchema == null || outputSchema.isEmpty()) ? null : outputSchema;
 
         if (outputSchema != null && !(method.isAnnotationPresent(Schema.class) && method.getAnnotation(Schema.class).value() != Schema.UNSET)
             && !checkConcreteType(outputSchema).equals("object")) {
-            validationErrors.add(new ToolValidationError("CWMCM0025E.unsupported.output", unwrappedOutputType, ToolMetadata.getToolQualifiedName(bean, method)));
+            validationErrors.add(new ToolValidationError("CWMCM0025E.unsupported.output", effectiveOutputType, ToolMetadata.getToolQualifiedName(bean, method)));
         }
 
         Optional<ToolAnnotations> annotations = readAnnotations(annotation.annotations());
@@ -284,11 +293,11 @@ public record ToolMetadata(String name,
         String defaultValue = argAnnotation != null ? argAnnotation.defaultValue() : "";
 
         result.add(new ToolMethodArgument(param,
-                                          new ToolArgument(argName,
-                                                           description,
-                                                           required,
-                                                           argumentType,
-                                                           defaultValue)));
+                                          new ToolArgumentImpl(argName,
+                                                               description,
+                                                               required,
+                                                               argumentType,
+                                                               defaultValue)));
     }
 
     private static boolean hasUnresolvableTypeVariables(Type baseType, Map<TypeVariable<?>, Type> genericMap) {

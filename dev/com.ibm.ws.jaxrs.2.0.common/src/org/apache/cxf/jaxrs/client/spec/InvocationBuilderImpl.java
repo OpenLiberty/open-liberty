@@ -276,6 +276,9 @@ public class InvocationBuilderImpl implements Invocation.Builder {
         }
         if (value == null) {
             filterProps.remove(name);
+            // Liberty change start - also remove from top-level context so transport layer sees the removal
+            contextProps.remove(name);
+            // Liberty change end
         } else {
             // Liberty change start need to convert proxy password to ProtectedString
             if (JAXRSClientConstants.PROXY_PASSWORD.equals(name) && value != null &&
@@ -283,6 +286,10 @@ public class InvocationBuilderImpl implements Invocation.Builder {
                 value = new ProtectedString(value.toString().toCharArray());
             } // Liberty change end
             filterProps.put(name, value);
+            // Liberty change start - also write to top-level context so transport layer
+            // can find the property via Message.getContextualProperty()
+            contextProps.put(name, value);
+            // Liberty change end
         }
         return this;
     }

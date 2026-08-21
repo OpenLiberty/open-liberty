@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -201,10 +202,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.afterAppDelegateLoaders = tmpAfterApp.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(tmpAfterApp);
         this.generator = generator;
         
-        this.toStringCache = buildToString();
+        this.toStringCache = toShortString();
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Created AppClassLoader: " + this);
+            Tr.debug(tc, "Created AppClassLoader: " + toStaticDiagString());
         }
     }
 
@@ -279,13 +280,11 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * and strip the / from the resulting URL.
      */
     @Override
-    @Trivial
     public final URL findResource(String name) {
         return findResourceInternal(name, false);
     }
 
     @Override
-    @Trivial
     protected URL delegateFindResource(String name) {
         return findResourceInternal(name, true);
     }
@@ -945,6 +944,23 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     public String toDiagString() {
+        StringBuilder sb = new StringBuilder(toStaticDiagString());
+
+        sb.append("    CodeSources: ");
+        for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
+            sb.append(LS).append("      ").append(entry.getKey()).append(" = ")
+            .append(entry.getValue().getCodeSource().getLocation());
+        }
+        sb.append(LS);
+
+        return sb.toString();
+    }
+    
+    /**
+     * Builds the static portion of the diagnostic string — everything except CodeSources,
+     * which is populated lazily as classes are loaded.
+     */
+    private String toStaticDiagString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.toString()).append(LS);
         sb.append(config).append(LS);
@@ -955,24 +971,42 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         }
         sb.append(LS);
 
+        // Show parent state
+        sb.append("    Parent: ");
+        if (parent != null) {
+            sb.append(parent.getClass().getSimpleName());
+        } else {
+            sb.append("null");
+        }
+        sb.append(LS);
+
         sb.append("    ClassPath: ").append(LS);
         for (Collection<URL> containerURLs : getClassPath()) {
             sb.append("      * ");
-            for (URL url : containerURLs) {
-                sb.append(url.toString()).append(" | ");
+            Iterator<URL> it = containerURLs.iterator();
+            while (it.hasNext()) {
+                sb.append(it.next().toString());
+                if (it.hasNext()) {
+                    sb.append(" | ");
+                }
             }
             sb.append(LS);
         }
-        sb.append(LS);
 
-        sb.append("    CodeSources: ");
-        for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
-            sb.append(LS).append("      ").append(entry.getKey()).append(" = ")
-            .append(entry.getValue().getCodeSource().getLocation());
+        // Get the container listing
+        sb.append("    Container Listing: ");
+        List<String> containerNames = getContainerNames();
+        if (!containerNames.isEmpty()) {
+            for (int i = 0; i < containerNames.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(containerNames.get(i));
+            }
+        } else {
+            sb.append("empty");
         }
         sb.append(LS);
 
-        return sb.toString();
+        return sb.toString(); 
     }
     
     @Trivial
@@ -990,37 +1024,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             sb.append(":").append(id.getDomain());
             sb.append(":").append(id.getId());
         }
-        
+
         // Get the delegation
         sb.append(":");
         sb.append(isParentFirst() ? "PF" : "PL");
-        return sb.toString();
-    }
-
-    /**
-     * Build the toString representation once at construction time.
-     * This avoids repeated calculation of container names and string concatenation.
-     */
-    @Trivial
-    private String buildToString() {
-        StringBuilder sb = new StringBuilder(toShortString());
-    
-        // Get the API
-        if (apiAccess.getApiTypeVisibility() != null) {
-            sb.append(":apis=").append(apiAccess.getApiTypeVisibility());
-        }
-        
-        // Get the container listing
-        List<String> containerNames = getContainerNames();
-        if (!containerNames.isEmpty()) {
-            sb.append(":containers=[");
-            for (int i = 0; i < containerNames.size(); i++) {
-                if (i > 0) sb.append(", ");
-                sb.append(containerNames.get(i));
-            }
-            sb.append("]");
-        }
-        
         return sb.toString();
     }
 

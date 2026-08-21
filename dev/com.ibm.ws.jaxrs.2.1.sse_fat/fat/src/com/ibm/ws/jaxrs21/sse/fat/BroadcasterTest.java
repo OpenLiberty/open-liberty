@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,11 @@ public class BroadcasterTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
+        // SRVE8055E/SRVE8056E: Expected when the Liberty server shuts down while SSE
+        // client connections are still open. The webcontainer logs these when it tries
+        // to flush/close response streams that the client has already disconnected from
+        // (Connection reset by peer). This is normal SSE teardown behaviour.
+        server.stopServer("SRVE8055E", "SRVE8056E");
     }
 
 }

@@ -16,12 +16,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 
+import io.openliberty.concurrent.internal.cdi.ConcurrencyExtensionMetadata;
 import io.openliberty.concurrent.internal.cdi.ScheduleCronTrigger;
 import io.openliberty.concurrent.internal.cdi.ScheduledMethodAbstract;
 import jakarta.interceptor.InvocationContext;
@@ -85,6 +87,11 @@ class ScheduledAsyncMethod extends ScheduledMethodAbstract {
 
         this.firstInvocation = firstInvocation;
         this.interceptor = interceptor;
+
+        // Intentionally placed as last line of constructuor to ensure
+        // intialization is complete before the first task execution runs
+        ConcurrencyExtensionMetadata.scheduledExecutor //
+                        .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
     }
 
     /**

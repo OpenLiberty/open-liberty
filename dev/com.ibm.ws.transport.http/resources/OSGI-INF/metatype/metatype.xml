@@ -264,6 +264,9 @@
 
         <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>
+
+        <AD name="internal" description="internal use only"
+            id="desensitizePrivatePortHeader" required="false" type="Boolean" default="false"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.http.options">

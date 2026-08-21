@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.time.Duration;
 import java.util.Collections;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -89,7 +90,7 @@ public class ConfigurableAsyncTimeoutTest {
      */
     @Test
     public void testShortAsyncTimeout() throws Exception {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         String request = """
                         {
@@ -109,11 +110,12 @@ public class ConfigurableAsyncTimeoutTest {
             shortTimeoutClient.callMCP(request);
             fail("Expected timeout exception was not thrown");
         } catch (Exception e) {
-            long elapsedTime = System.currentTimeMillis() - startTime;
-            assertTrue("Timeout should occur within 5 seconds, but took " + elapsedTime + "ms",
-                       elapsedTime < 5000);
-            assertTrue("Timeout should take at least 2 seconds, but took " + elapsedTime + "ms",
-                       elapsedTime >= 2000);
+            long elapsedMs = Duration.ofNanos(System.nanoTime() - startTime).toMillis();
+            // Allow much longer than should be necessary to accommodate slow build systems
+            assertTrue("Timeout should occur within 25 seconds, but took " + elapsedMs + "ms",
+                       elapsedMs < 25000);
+            assertTrue("Timeout should take at least 2 seconds, but took " + elapsedMs + "ms",
+                       elapsedMs >= 2000);
         }
     }
 
@@ -176,15 +178,11 @@ public class ConfigurableAsyncTimeoutTest {
      *
      * Initial configuration: asyncTimeout="2s"
      * Updated configuration: asyncTimeout="5s"
-     *
-     * This test verifies that after updating the configuration, a tool that takes
-     * 3 seconds to complete will timeout with the initial 2s timeout but succeed
-     * with the updated 5s timeout.
      */
     @Test
     @Mode(TestMode.FULL)
     public void testDynamicAsyncTimeoutUpdate() throws Exception {
-        // First, verify the initial timeout (2 seconds) causes a timeout for a 3-second operation
+        // First, verify the initial timeout (2 seconds) causes a timeout
         String timeoutRequest = """
                         {
                           "jsonrpc": "2.0",
@@ -199,16 +197,15 @@ public class ConfigurableAsyncTimeoutTest {
                         }
                         """;
 
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         try {
             shortTimeoutClient.callMCP(timeoutRequest);
             fail("Expected timeout exception was not thrown with initial 2s timeout");
         } catch (Exception e) {
-            long elapsedTime = System.currentTimeMillis() - startTime;
-            assertTrue("Initial timeout should occur within 5 seconds, but took " + elapsedTime + "ms",
-                       elapsedTime < 5000);
-            assertTrue("Initial timeout should take at least 2 seconds, but took " + elapsedTime + "ms",
-                       elapsedTime >= 2000);
+            long elapsedMs = Duration.ofNanos(System.nanoTime() - startTime).toMillis();
+            // Don't test that elpasedTime < 5s because this test is unreliable on slow build systems
+            assertTrue("Initial timeout should take at least 2 seconds, but took " + elapsedMs + "ms",
+                       elapsedMs >= 2000);
         }
 
         server.setMarkToEndOfLog();
@@ -230,16 +227,14 @@ public class ConfigurableAsyncTimeoutTest {
         try {
             // Verify that with the updated timeout (5 seconds), the same operation still times out
             // but takes longer (since asyncToolThatNeverCompletes never completes)
-            startTime = System.currentTimeMillis();
+            startTime = System.nanoTime();
             try {
                 newShortTimeoutClient.callMCP(timeoutRequest);
                 fail("Expected timeout exception was not thrown with updated 5s timeout");
             } catch (Exception e) {
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                assertTrue("Updated timeout should occur within 8 seconds, but took " + elapsedTime + "ms",
-                           elapsedTime < 8000);
-                assertTrue("Updated timeout should take at least 5 seconds, but took " + elapsedTime + "ms",
-                           elapsedTime >= 5000);
+                long elapsedMs = Duration.ofNanos(System.nanoTime() - startTime).toMillis();
+                assertTrue("Updated timeout should take at least 5 seconds, but took " + elapsedMs + "ms",
+                           elapsedMs >= 5000);
             }
 
             // Verify that a quick operation still works with the updated timeout

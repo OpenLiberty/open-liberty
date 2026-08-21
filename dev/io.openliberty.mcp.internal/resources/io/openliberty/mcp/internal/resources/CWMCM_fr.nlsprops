@@ -59,11 +59,11 @@ CWMCM0006E.duplicate.special.arguments.explanation=Un ou plusieurs arguments sp\
 CWMCM0006E.duplicate.special.arguments.useraction=Supprimez les instances suppl\u00e9mentaires.
 
 # Used for server logging
-# {0} = The fully qualified method name
-# {1} = The parameter type simple name
-CWMCM0007E.invalid.arguments=CWMCM0007E: L'outil {0} MCP poss\u00e8de un param\u00e8tre de type {1} qui n'est pas un type d'argument sp\u00e9cial reconnu et ne poss\u00e8de pas `@ToolArg` d'annotation.
-CWMCM0007E.invalid.arguments.explanation=Un ou plusieurs param\u00e8tres n'ont pas \u00e9t\u00e9 annot\u00e9s comme arguments de l'outil et ne sont pas reconnus comme types d'arguments sp\u00e9ciaux.
-CWMCM0007E.invalid.arguments.useraction=V\u00e9rifiez si vous avez import\u00e9 la classe correcte pour votre argument, ou si vous vouliez inclure @ToolArg.
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: Point de terminaison du serveur MCP : {0}
+CWMCM0008I.mcp.endpoint.url.explanation=Le point de terminaison du serveur MCP URL pour ce module d'application est accessible \u00e0 l'adresse indiqu\u00e9e : URL.
+CWMCM0008I.mcp.endpoint.url.useraction=Aucune action n'est requise.
 
 # Used as part of a response to a client
 # {0} = Request id
@@ -285,3 +285,59 @@ CWMCM0034W.converter.missing.type.parameter.useraction=Modifiez la d\u00e9clarat
 CWMCM0035W.converter.generic.type=CWMCM0035W: L'impl\u00e9mentation de ` {0} ` DefaultValueConverter effectue la conversion vers un param\u00e8tre de type g\u00e9n\u00e9rique plut\u00f4t que vers un type concret.
 CWMCM0035W.converter.generic.type.explanation=Une classe d'impl\u00e9mentation de ` DefaultValueConverter ` a \u00e9t\u00e9 enregistr\u00e9e avec un param\u00e8tre de type g\u00e9n\u00e9rique, tel que `T`, au lieu d'un type concret.
 CWMCM0035W.converter.generic.type.useraction=Modifiez la d\u00e9claration de la classe afin qu'elle impl\u00e9mente l'interface ` DefaultValueConverter ` avec un param\u00e8tre de type concret. Par exemple : la classe ` MyConverterClass ` impl\u00e9mente l'interface ` DefaultValueConverter<MyType> `.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: La cl\u00e9 _meta de {0} n'est pas valide. Le segment de nom doit commencer et se terminer par un caract\u00e8re alphanum\u00e9rique et ne peut contenir, entre ces deux caract\u00e8res, que des caract\u00e8res alphanum\u00e9riques, des tirets, des traits de soulignement ou des points.
+CWMCM0037E.invalid.meta.key.name.explanation=Le segment \u00ab name \u00bb de la cl\u00e9 _meta ne respecte pas les r\u00e8gles de la sp\u00e9cification MCP. Le segment \u00ab nom \u00bb correspond \u00e0 la partie situ\u00e9e apr\u00e8s la barre oblique pr\u00e9fixe facultative, ou \u00e0 la cl\u00e9 dans son int\u00e9gralit\u00e9 lorsqu'il n'y a pas de pr\u00e9fixe.
+CWMCM0037E.invalid.meta.key.name.useraction=Assurez-vous que le segment de nom de la cl\u00e9 _meta commence et se termine par un caract\u00e8re alphanum\u00e9rique.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: La cl\u00e9 _meta de {0} comporte un pr\u00e9fixe vide avant le caract\u00e8re \u00ab / \u00bb.
+CWMCM0038E.empty.meta.key.prefix.explanation=La cl\u00e9 _meta contient le caract\u00e8re \u00ab / \u00bb, mais n'est pr\u00e9c\u00e9d\u00e9e d'aucune \u00e9tiquette de pr\u00e9fixe. Le pr\u00e9fixe doit \u00eatre constitu\u00e9 d'un ou plusieurs libell\u00e9s s\u00e9par\u00e9s par des points.
+CWMCM0038E.empty.meta.key.prefix.useraction=Ajoutez un pr\u00e9fixe valide avant le caract\u00e8re \u00ab / \u00bb, ou supprimez ce caract\u00e8re si aucun pr\u00e9fixe n'est n\u00e9cessaire.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: La cl\u00e9 _meta de l' {0} e comporte un pr\u00e9fixe non valide : {1}. Les \u00e9tiquettes doivent commencer par une lettre, se terminer par une lettre ou un chiffre, et ne peuvent contenir entre les deux que des lettres, des chiffres ou des tirets.
+CWMCM0039E.invalid.meta.key.label.explanation=Le segment pr\u00e9fixe de la cl\u00e9 _meta contient une \u00e9tiquette qui ne respecte pas les r\u00e8gles de la sp\u00e9cification MCP.
+CWMCM0039E.invalid.meta.key.label.useraction=Assurez-vous que chaque \u00e9tiquette du pr\u00e9fixe de cl\u00e9 _meta commence par une lettre et se termine par une lettre ou un chiffre. Assurez-vous que seuls des lettres, des chiffres ou des tirets figurent entre les lettres.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: Le pr\u00e9fixe de m\u00e9tadonn\u00e9es \u00ab {0} \u00bb dans l'annotation \u00ab MetaField \u00bb de la m\u00e9thode \u00ab {1} \u00bb n'est pas valide. Un pr\u00e9fixe valide est une suite d'\u00e9tiquettes s\u00e9par\u00e9es par des points. Chaque libell\u00e9 doit commencer par une lettre, se terminer par une lettre ou un chiffre, et ne contenir entre les deux que des lettres, des chiffres ou des tirets.
+CWMCM0040E.invalid.metadata.prefix.explanation=Le pr\u00e9fixe des m\u00e9tadonn\u00e9es dans l'annotation \u00ab MetaField \u00bb ne respecte pas les exigences de la sp\u00e9cification du Model Context Protocol (MCP).
+CWMCM0040E.invalid.metadata.prefix.useraction=Mettez \u00e0 jour le pr\u00e9fixe des m\u00e9tadonn\u00e9es dans l'annotation ` MetaField ` de la m\u00e9thode afin de respecter les exigences de la sp\u00e9cification MCP. Le pr\u00e9fixe doit \u00eatre compos\u00e9 d'\u00e9tiquettes s\u00e9par\u00e9es par des points, suivies d'une barre oblique. Chaque \u00e9tiquette doit commencer par une lettre et se terminer par une lettre ou un chiffre. Les caract\u00e8res composant chaque \u00e9tiquette peuvent \u00eatre des lettres, des chiffres ou des tirets.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: Le nom des m\u00e9tadonn\u00e9es \u00ab {0} \u00bb figurant dans l'annotation \u00ab MetaField \u00bb de la m\u00e9thode \u00ab {1} \u00bb n'est pas valide. Un nom de m\u00e9tadonn\u00e9es valide doit commencer et se terminer par un caract\u00e8re alphanum\u00e9rique et peut contenir des tirets, des traits de soulignement, des points et des caract\u00e8res alphanum\u00e9riques.
+CWMCM0041E.invalid.metadata.name.explanation=Le nom des m\u00e9tadonn\u00e9es figurant dans l'annotation \u00ab MetaField \u00bb ne respecte pas les exigences de la sp\u00e9cification du protocole MCP (Model Context Protocol).
+CWMCM0041E.invalid.metadata.name.useraction=Mettez \u00e0 jour le nom des m\u00e9tadonn\u00e9es dans l'annotation ` MetaField ` de la m\u00e9thode afin de respecter les exigences de la sp\u00e9cification MCP. Assurez-vous que le nom commence et se termine par un caract\u00e8re alphanum\u00e9rique et qu'il ne contient que des tirets, des traits de soulignement, des points et des caract\u00e8res alphanum\u00e9riques.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: La valeur de la cl\u00e9 de m\u00e9tadonn\u00e9es \u00ab {0} \u00bb dans l'annotation \u00ab MetaField \u00bb de la m\u00e9thode \u00ab {1} \u00bb ne peut pas \u00eatre convertie en type \u00ab {2} \u00bb. L'erreur est la suivante : {3}
+CWMCM0042E.metadata.value.conversion.error.explanation=La valeur des m\u00e9tadonn\u00e9es contenue dans l'annotation \u00ab MetaField \u00bb ne peut pas \u00eatre convertie dans le type sp\u00e9cifi\u00e9 dans l'annotation. Il se peut que la valeur soit dans un format incorrect ou qu'elle soit incompatible avec le type sp\u00e9cifi\u00e9.
+CWMCM0042E.metadata.value.conversion.error.useraction=Consultez le message d'erreur, le fichier \u00ab message.log \u00bb et les journaux FFDC afin d'identifier la cause de l'\u00e9chec de la conversion. Mettez \u00e0 jour la valeur des m\u00e9tadonn\u00e9es dans l'annotation \u00ab MetaField \u00bb afin qu'elle soit compatible avec le type sp\u00e9cifi\u00e9.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: La m\u00e9thode ` {0} ` utilise l'annotation ` {1} `, qui n'est pas prise en charge. Cette m\u00e9thode est ignor\u00e9e.
+CWMCM0043W.unsupported.annotation.explanation=L'API Java du Model Context Protocol (MCP) comprend des annotations correspondant \u00e0 des fonctionnalit\u00e9s qui ne sont pas prises en charge par cette impl\u00e9mentation. Les m\u00e9thodes associ\u00e9es \u00e0 des annotations non prises en charge sont ignor\u00e9es.
+CWMCM0043W.unsupported.annotation.useraction=Supprimez l'annotation non prise en charge de la m\u00e9thode, ou utilisez uniquement des annotations MCP (Model Context Protocol) prises en charge.

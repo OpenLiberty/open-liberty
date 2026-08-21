@@ -22,7 +22,8 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                JSONP21Test.class
+                JSONP21Test.class,
+                JSONP21CustomProviderTest.class
 })
 public class FATSuite {
 

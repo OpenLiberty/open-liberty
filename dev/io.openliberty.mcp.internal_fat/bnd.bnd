@@ -57,4 +57,4 @@ tested.features: \
 	io.openliberty.io.opentelemetry.internal.2.1;version=latest,\
 	io.openliberty.org.testcontainers;version=latest
 	
-fat.test.container.images=public.ecr.aws/docker/library/node:20-alpine,quay.io/keycloak/keycloak:26.6.2
+fat.test.container.images=public.ecr.aws/docker/library/node:22-alpine,quay.io/keycloak/keycloak:26.6.2

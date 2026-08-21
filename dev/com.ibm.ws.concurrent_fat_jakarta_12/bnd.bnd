@@ -15,8 +15,8 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/Concurrency32CDITestWeb/src,\
-  test-applications/Concurrency32TestWeb/src,\
+  test-applications/Concurrency32CDITestApp/src,\
+  test-applications/Concurrency32TestApp/src,\
   test-libraries/LocaleContext/src
 
 javac.source: 21
@@ -31,6 +31,6 @@ fat.project: true
   io.openliberty.jakarta.cdi.4.1;version=latest,\
   io.openliberty.jakarta.concurrency.3.2;version=latest,\
   io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
-    io.openliberty.jakarta.interceptor.2.2,\
+  io.openliberty.jakarta.interceptor.2.2,\
   io.openliberty.jakarta.servlet.6.1;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest

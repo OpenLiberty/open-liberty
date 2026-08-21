@@ -26,6 +26,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
@@ -33,6 +35,7 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
     private final static String APP_NAME = "ConfigurableSessionTelemetryTest";
@@ -87,12 +90,15 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
     @Test
     public void testCustomSessionTimeoutWithMetrics() throws Exception {
         FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
+        client.callMCP(BASIC_TOOL_REQUEST);
 
-        Thread.sleep(1500);
+        // Wait long enough for the session to expire
+        // sessionTimeout = 10s in server.xml
+        Thread.sleep(10500);
 
         try {
-            client.deleteSession();
-            fail("Expected session to be timed out, but delete succeeded");
+            client.callMCP(BASIC_TOOL_REQUEST);
+            fail("Expected session to be timed out, but too call succeeded");
         } catch (Exception e) {
             assertTrue("Expected session not found error",
                        e.getMessage().contains("Session not found") ||
