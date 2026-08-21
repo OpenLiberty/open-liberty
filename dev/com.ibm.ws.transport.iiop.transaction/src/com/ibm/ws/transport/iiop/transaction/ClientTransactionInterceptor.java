@@ -90,8 +90,13 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
 
     @Override
     public void receive_exception(ClientRequestInfo ri) throws ForwardRequest {
+        boolean hadActiveTx = activeProviders.get() != null;
         resumeTxOnReply(ri, true);
-        if (ri.reply_status() == SYSTEM_EXCEPTION.value) {
+        // Only roll back if there was actually a transaction in flight on this call.
+        // Without this guard, calls with no client transaction (e.g. MANDATORY EJB
+        // invoked without a tx) would incorrectly get TRANSACTION_ROLLEDBACK instead
+        // of the correctly-mapped EJBTransactionRequiredException from the stub.
+        if (hadActiveTx && ri.reply_status() == SYSTEM_EXCEPTION.value) {
             setRollbackOnly(false);
             throw new TRANSACTION_ROLLEDBACK("Transaction rolled back due to system exception");
         }
