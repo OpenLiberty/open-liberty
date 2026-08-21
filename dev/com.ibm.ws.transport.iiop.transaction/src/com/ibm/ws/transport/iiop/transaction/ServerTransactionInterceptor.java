@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
+import org.omg.CORBA.TypeCodePackage.BadKind;
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.INTERNAL;
 import org.omg.CORBA.INVALID_TRANSACTION;
@@ -133,6 +134,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
         importTransactionInternal(ri, pc, locator);
     }
 
+    @FFDCIgnore(BadKind.class)
     private void importTransactionInternal(ServerRequestInfo ri,
                                            PropagationContext pc,
                                            TransactionServiceLocator locator) {
@@ -162,9 +164,12 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
                 if (pc.implementation_specific_data != null) {
                     isdTypeId = pc.implementation_specific_data.type().id();
                 }
-            } catch (Exception e) {
-                // Leave isdTypeId null — wildcard providers will still be tried
+            } catch (BadKind e) {
+                // Expected for primitive TypeCodes (e.g. tk_boolean from NoDTx) — no repository ID
                 if (tc.isDebugEnabled()) Tr.debug(tc, "Could not read ISD type id: {0}", e);
+            } catch (Exception e) {
+                // Unexpected — FFDC will fire, leave isdTypeId null and continue
+                if (tc.isDebugEnabled()) Tr.debug(tc, "Unexpected exception reading ISD type id: {0}", e);
             }
 
             boolean imported = false;
