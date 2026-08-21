@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -58,6 +59,11 @@ public class ScheduledMethod<T> extends ScheduledMethodAbstract {
 
         this.beanClass = beanClass;
         this.beanQualifierAnnos = beanQualifierAnnos;
+
+        // Intentionally placed as last line of constructuor to ensure
+        // intialization is complete before the first task execution runs
+        ConcurrencyExtensionMetadata.scheduledExecutor //
+                        .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
     }
 
     /**
