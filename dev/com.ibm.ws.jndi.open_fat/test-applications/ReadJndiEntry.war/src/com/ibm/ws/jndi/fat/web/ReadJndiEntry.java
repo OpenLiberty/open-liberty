@@ -41,6 +41,7 @@ public class ReadJndiEntry extends HttpServlet {
         // Get the OSGi bundle context so we can look up the service registrations
         findJndiEntry(String.class, "stringJndiEntry", writer);
         findJndiEntry(Double.class, "doubleJndiEntry", writer);
+        findJndiEntry(String.class, "stringPlainTextJndiEntry", writer);
     }
 
     private void findJndiEntry(Class jndiClass, String jndiName, PrintWriter writer) {

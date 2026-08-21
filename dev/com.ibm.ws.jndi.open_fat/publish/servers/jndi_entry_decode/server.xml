@@ -11,4 +11,6 @@
     <!-- value="12345" (type Integer)-->
     <jndiEntry jndiName="doubleJndiEntry" value="{xor}bm1sa2o=" decode="true"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <jndiEntry jndiName="stringPlainTextJndiEntry" value="not_encrypted_passw0rd" decode="true"/>
+
 </server>
