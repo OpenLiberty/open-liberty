@@ -77,26 +77,11 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
     private long chainQuiesceTimeout = DEFAULT_CHAIN_QUIESCE_TIMEOUT;
 
     /** Reference to ServerElementConfig service for accessing server-level quiesceTimeout */
-    private volatile ServerElementConfig serverElementConfig;
+    private final ServerElementConfig serverElementConfig;
 
-    /**
-     * DS method for setting the ServerElementConfig reference.
-     * This is a mandatory reference, so the component won't activate without it.
-     *
-     * @param config the ServerElementConfig service
-     */
-    @Reference
-    protected void setServerElementConfig(ServerElementConfig config) {
+    @Activate
+    public ChannelFrameworkConfigImpl(@Reference ServerElementConfig config) {
         this.serverElementConfig = config;
-    }
-
-    /**
-     * DS method for unsetting the ServerElementConfig reference.
-     *
-     * @param config the ServerElementConfig service
-     */
-    protected void unsetServerElementConfig(ServerElementConfig config) {
-        this.serverElementConfig = null;
     }
 
     /**
@@ -240,7 +225,7 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
 
         // If quiesceTimeout is explicitly configured on the server element,
         // it overrides chainQuiesceTimeout
-        if (serverElementConfig != null && serverElementConfig.isQuiesceTimeoutExplicitlyConfigured()) {
+        if (serverElementConfig.isQuiesceTimeoutExplicitlyConfigured()) {
 
             long serverQuiesceTimeout = serverElementConfig.getQuiesceTimeoutMillis();
 

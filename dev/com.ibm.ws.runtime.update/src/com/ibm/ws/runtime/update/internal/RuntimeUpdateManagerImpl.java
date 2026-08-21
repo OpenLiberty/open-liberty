@@ -77,14 +77,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         DEFAULT
     }
 
-    private volatile FutureMonitor futureMonitor;
     private final AtomicBoolean normalServerStop = new AtomicBoolean(true);
 
     private final Set<RuntimeUpdateListener> updateListeners = new HashSet<RuntimeUpdateListener>();
 
     private final Map<String, RuntimeUpdateNotification> notifications = new HashMap<String, RuntimeUpdateNotification>();
-
-    private BundleContext bundleCtx;
 
     private final CompletionListener<Boolean> cleanupListener = new CompletionListener<Boolean>() {
         @Override
@@ -98,44 +95,40 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         }
     };
 
-    private WsLocationAdmin locationService;
+    private final BundleContext bundleCtx;
 
-    private LibertyProcess libertyProcess;
+    private final WsLocationAdmin locationService;
 
-    private ExecutorService executorService;
+    private final LibertyProcess libertyProcess;
 
-    private volatile ServerElementConfig serverElementConfig;
+    private final ExecutorService executorService;
+
+    private final ServerElementConfig serverElementConfig;
+
+    private final FutureMonitor futureMonitor;
 
     @Activate
-    protected void activate(BundleContext ctx) {
-        bundleCtx = ctx;
-        bundleCtx.addBundleListener(this);
-    }
-
-    @Reference(service = ExecutorService.class,
-               cardinality = ReferenceCardinality.MANDATORY)
-    protected void setExecutorService(ExecutorService executorService) {
+    public RuntimeUpdateManagerImpl(BundleContext ctx,
+                                    @Reference WsLocationAdmin locationService,
+                                    @Reference LibertyProcess libertyProcess,
+                                    @Reference ExecutorService executorService,
+                                    @Reference ServerElementConfig serverElementConfig,
+                                    @Reference FutureMonitor futureMonitor) {
+        this.bundleCtx = ctx;
+        this.locationService = locationService;
+        this.libertyProcess = libertyProcess;
         this.executorService = executorService;
-    }
-
-    @Reference(service = FutureMonitor.class)
-    protected void setFutureMonitor(FutureMonitor futureMonitor) {
+        this.serverElementConfig = serverElementConfig;
         this.futureMonitor = futureMonitor;
     }
 
-    protected void unsetFutureMonitor(FutureMonitor futureMonitor) {
-        this.futureMonitor = null;
+    @Activate
+    protected void activate() {
+        bundleCtx.addBundleListener(this);
     }
 
-    @Reference(service = ServerElementConfig.class,
-               cardinality = ReferenceCardinality.MANDATORY,
-               policy = ReferencePolicy.DYNAMIC)
-    protected void setServerElementConfig(ServerElementConfig config) {
-        this.serverElementConfig = config;
-    }
-
-    protected void unsetServerElementConfig(ServerElementConfig config) {
-        this.serverElementConfig = null;
+    protected void deactivate() {
+        bundleCtx.removeBundleListener(this);
     }
 
     @Reference(service = RuntimeUpdateListener.class,
@@ -163,20 +156,6 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         synchronized (notifications) {
             this.updateListeners.remove(updateListener);
         }
-    }
-
-    @Reference(service = WsLocationAdmin.class)
-    protected void setLocationAdmin(WsLocationAdmin admin) {
-        this.locationService = admin;
-    }
-
-    protected void unsetLocationAdmin(WsLocationAdmin admin) {
-        this.locationService = null;
-    }
-
-    @Reference(policy = ReferencePolicy.STATIC)
-    protected void setProcess(LibertyProcess process) {
-        this.libertyProcess = process;
     }
 
     protected void cleanupNotifications() {
