@@ -57,7 +57,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.crypto.HashUtils;
@@ -715,7 +714,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      * Process the protectedResourceMetadata sub-element configuration.
      * Because ibm:flat="true" is set on the AD, the child element properties are
      * flattened onto the parent props map as "protectedResourceMetadata.0.{childProp}".
-     * This feature is only available in beta mode.
      *
      * <p>
      * Sub-element presence is detected via the Liberty config sentinel key
@@ -734,14 +732,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         protectedResourceMetadataAdvertisedScopes = null;
         protectedResourceMetadataJwtBuilderRef = null;
         protectedResourceMetadataJwtBuilderId = null;
-
-        // Beta fencing: only process if running in beta mode
-        if (!ProductInfo.getBetaEdition()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "protectedResourceMetadata sub-element is only available in beta mode");
-            }
-            return;
-        }
 
         // Use config.referenceType as the sentinel for sub-element presence.
         // This key is always injected by the config framework when ibm:flat="true" and

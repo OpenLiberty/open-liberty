@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth.protectedresource.metadata.fat;
 
-
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,8 +23,7 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    OAuthProtectedResourceMetadataFATTest.class,
-    OAuthProtectedResourceMetadataNonBetaFATTest.class
+        OAuthProtectedResourceMetadataFATTest.class,
 })
 public class FATSuite {
 

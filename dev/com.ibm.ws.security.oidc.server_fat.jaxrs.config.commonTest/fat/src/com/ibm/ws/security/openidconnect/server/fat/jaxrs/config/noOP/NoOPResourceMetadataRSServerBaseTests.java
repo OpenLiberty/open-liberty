@@ -39,8 +39,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationDa
  *   <li>The {@code WWW-Authenticate} response header carries:
  *       {@code Bearer realm="oauth"[, resource_metadata="https://…/.well-known/oauth-protected-resource"]}
  *       where the {@code resource_metadata} parameter is only present when the
- *       {@code <protectedResourceMetadata>} sub-element is configured <em>and</em> the
- *       server runs with the beta edition flag.</li>
+ *       {@code <protectedResourceMetadata>} sub-element is configured</li>
  * </ol>
  *
  *
@@ -54,14 +53,12 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationDa
  * variant) and delegates execution to the protected helpers defined here.  This keeps test
  * names unique and unambiguous in reports while all shared logic stays in one place.
  *
- * <p>Concrete subclasses: {@link NoOPResourceMetadataBetaRSServerTests},
- * {@link NoOPResourceMetadataBetaNoMetadataRSServerTests},
- * {@link NoOPResourceMetadataNonBetaRSServerTests}.
- * 
+ * <p>Concrete subclasses: {@link NoOPResourceMetadataRSServerTest},
+ * {@link NoOPNoResourceMetadataRSServerTests}.
  */
-public abstract class NoOPResourceMetadataRSServerTests extends CommonTest {
+public abstract class NoOPResourceMetadataRSServerBaseTests extends CommonTest {
 
-    private static final Class<?> thisClass = NoOPResourceMetadataRSServerTests.class;
+    private static final Class<?> thisClass = NoOPResourceMetadataRSServerBaseTests.class;
 
     /**
      * Nominal "OP" server name – only used so that {@code commonSetUp} can complete its
@@ -71,17 +68,9 @@ public abstract class NoOPResourceMetadataRSServerTests extends CommonTest {
     protected static final String OPServerName =
             "com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.OPserver";
 
-    /** Standard (non-beta) RS server. */
+    /** Standard RS server. */
     protected static final String RSServerName =
             "com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver";
-
-    /**
-     * Beta RS server – identical to {@link #RSServerName} but its {@code jvm.options}
-     * carries {@code -Dcom.ibm.ws.beta.edition=true}, enabling beta-fenced features such
-     * as {@code <protectedResourceMetadata>}.
-     */
-    protected static final String RSServerNameBeta =
-            "com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver_beta";
 
     protected static final String WWW_AUTHENTICATE_HEADER = "WWW-Authenticate";
 
@@ -92,15 +81,15 @@ public abstract class NoOPResourceMetadataRSServerTests extends CommonTest {
     protected static String flowType = null;
 
     /**
-     * Shared setup called by both beta and non-beta subclasses.
+     * Shared setup called by all subclasses.
      *
-     * @param rsServerName  Liberty server name for the RS (standard or beta variant)
+     * @param rsServerName  Liberty server name for the RS
      * @param rsConfigFile  RS config file inside {@code publish/servers/<rsServerName>/configs/}
      */
     protected static void commonSetupBeforeTest(String rsServerName, String rsConfigFile) throws Exception {
 
-        msgUtils.printClassName(NoOPResourceMetadataRSServerTests.class.toString());
-        Log.info(NoOPResourceMetadataRSServerTests.class, "commonSetupBeforeTest",
+        msgUtils.printClassName(NoOPResourceMetadataRSServerBaseTests.class.toString());
+        Log.info(NoOPResourceMetadataRSServerBaseTests.class, "commonSetupBeforeTest",
                 "Prep for test - RS server: " + rsServerName + ", config: " + rsConfigFile);
 
         // OP side – we only need the minimal infrastructure, not a running server
@@ -155,7 +144,7 @@ public abstract class NoOPResourceMetadataRSServerTests extends CommonTest {
      * {@code WWW-Authenticate: Bearer} header when no token is presented.  The RS
      * makes the rejection decision <em>locally</em>; {@code CWWKS1726E} in the RS log
      * confirms no round-trip to the OP was made.  The concrete subclass adds the
-     * {@code resource_metadata} expectation appropriate to its beta/non-beta mode via
+     * {@code resource_metadata} expectation appropriate to its configuration via
      * {@link #addResourceMetadataExpectations(List)}.
      */
     protected void doNoToken401Test(String testName) throws Exception {
@@ -176,7 +165,7 @@ public abstract class NoOPResourceMetadataRSServerTests extends CommonTest {
                 "Response did not include a WWW-Authenticate header with Bearer auth-scheme.",
                 null, expectedAuthHeader);
 
-        // RFC 9728: resource_metadata presence/absence depends on beta mode (supplied by subclass)
+        // RFC 9728: resource_metadata presence/absence depends on config (supplied by subclass)
         addResourceMetadataExpectations(expectations);
 
         Log.info(thisClass, testName, "Invoking RS protected resource without any Bearer token");
@@ -233,7 +222,7 @@ public abstract class NoOPResourceMetadataRSServerTests extends CommonTest {
                         + "(expected when the RS fails to reach the OP introspect endpoint).",
                 MessageConstants.CWWKS1727E_ERROR_VALIDATING_ACCESS_TOKEN);
         
-        // RFC 9728: resource_metadata presence/absence depends on beta mode (supplied by subclass)
+        // RFC 9728: resource_metadata presence/absence depends on config (supplied by subclass)
         addResourceMetadataExpectations(expectations);
 
         // Use a syntactically JWT-like but semantically invalid token
@@ -248,8 +237,7 @@ public abstract class NoOPResourceMetadataRSServerTests extends CommonTest {
     }
     
     /**
-     * Appends {@code resource_metadata} expectations that are specific to the beta/non-beta
-     * mode of the concrete subclass.
+     * Appends {@code resource_metadata} expectations that are specific to the subclass.
      *
      * @param expectations mutable list of expectations to augment
      */

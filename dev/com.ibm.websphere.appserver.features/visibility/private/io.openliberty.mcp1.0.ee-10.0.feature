@@ -6,6 +6,6 @@ singleton=true
   io.openliberty.cdi-4.0, \
   io.openliberty.jsonb-3.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
