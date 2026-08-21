@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.kernel.server;
+package com.ibm.ws.runtime.update;
 
 import org.osgi.annotation.versioning.ProviderType;
 

@@ -38,4 +38,5 @@ instrument.classesExcludes: io/openliberty/channel/config/internal/resources/*.c
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
     com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.websphere.appserver.api.kernel.service;version=latest
+    com.ibm.websphere.appserver.api.kernel.service;version=latest,\
+    com.ibm.ws.runtime.update;version=latest

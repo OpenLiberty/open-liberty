@@ -15,7 +15,7 @@ package com.ibm.ws.config.xml.internal;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.websphere.kernel.server.ServerElementConfig;
+import com.ibm.ws.runtime.update.ServerElementConfig;
 
 /**
  * Implementation of ServerElementConfig service.

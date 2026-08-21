@@ -51,10 +51,10 @@ import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
+import com.ibm.ws.runtime.update.ServerElementConfig;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.ws.threading.listeners.CompletionListener;
-import com.ibm.websphere.kernel.server.ServerElementConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -407,7 +407,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             return;
 
         ThreadQuiesce tq = (ThreadQuiesce) executorService;
-        
+
         long quiesceTimeout;
         ServerElementConfig sec = serverElementConfig;
         if (sec != null) {
@@ -549,8 +549,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
         /**
          *
-         * @param startTime        - time now in milliseconds
-         * @param quiesceTimeout   - timeout in milliseconds
+         * @param startTime      - time now in milliseconds
+         * @param quiesceTimeout - timeout in milliseconds
          * @return
          */
         @FFDCIgnore(TimeoutException.class)

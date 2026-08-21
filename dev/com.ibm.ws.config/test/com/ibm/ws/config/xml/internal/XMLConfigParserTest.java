@@ -39,9 +39,7 @@ import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.SymbolRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
-
-import com.ibm.websphere.kernel.server.ServerElementConfig;
-
+import com.ibm.ws.runtime.update.ServerElementConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
