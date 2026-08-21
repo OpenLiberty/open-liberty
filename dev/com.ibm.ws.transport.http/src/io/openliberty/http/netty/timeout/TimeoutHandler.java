@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 
@@ -68,12 +68,12 @@ public class TimeoutHandler extends ChannelDuplexHandler{
         private ScheduledFuture<?> currentTimeout;
     
     
-        public TimeoutHandler(NettyHttpChannelConfig config) {
+        public TimeoutHandler(NettyChannelConfig config) {
             
             this(config, false);
         }
     
-        public TimeoutHandler(NettyHttpChannelConfig config, boolean streamOnly){
+        public TimeoutHandler(NettyChannelConfig config, boolean streamOnly){
             this.readTimeout = config.getReadTimeout();
             this.persistTimeout = config.getPersistTimeout();
             this.h2InactivityTimeout = config.getH2ConnectionIdleTimeout();
@@ -82,7 +82,7 @@ public class TimeoutHandler extends ChannelDuplexHandler{
             this.streamOnly = streamOnly;
         }
     
-        public static TimeoutHandler forH2Stream(NettyHttpChannelConfig config){
+        public static TimeoutHandler forH2Stream(NettyChannelConfig config){
             return new TimeoutHandler(config, true);
         }
     

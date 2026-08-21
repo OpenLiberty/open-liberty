@@ -22,8 +22,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyChain;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig.ConfigElement;
+import com.ibm.ws.http.netty.NettyChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig.ConfigElement;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
@@ -63,7 +63,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private static final TraceComponent tc = Tr.register(HttpPipelineInitializer.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private final NettyChain chain;
-    private final NettyHttpChannelConfig httpConfig;
+    private final NettyChannelConfig httpConfig;
     private final Map<ConfigElement, Map<String, Object>> configOptions;
 
     public static final String NO_UPGRADE_OCURRED_HANDLER_NAME = "upgradeCheckHandler";
@@ -77,7 +77,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     public static final long maxContentLength = Long.MAX_VALUE;
 
-    private HttpPipelineInitializer(NettyChain chain, NettyHttpChannelConfig httpConfig, Map<ConfigElement, Map<String, Object>> configOptions) {
+    private HttpPipelineInitializer(NettyChain chain, NettyChannelConfig httpConfig, Map<ConfigElement, Map<String, Object>> configOptions) {
         this.chain = chain;
         this.httpConfig = httpConfig;
         this.configOptions = configOptions;
@@ -361,7 +361,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         public HttpPipelineInitializer build() {
 
-            NettyHttpChannelConfig.NettyConfigBuilder configBuilder = new NettyHttpChannelConfig.NettyConfigBuilder();
+            NettyChannelConfig.NettyConfigBuilder configBuilder = new NettyChannelConfig.NettyConfigBuilder();
             for (ConfigElement element : ConfigElement.values()) {
 
                 if (activeConfigs.contains(element)) {
@@ -369,7 +369,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
             }
 
-            NettyHttpChannelConfig httpConfig = configBuilder.build();
+            NettyChannelConfig httpConfig = configBuilder.build();
 
 
             return new HttpPipelineInitializer(chain, httpConfig, configOptions);

@@ -30,7 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -74,9 +74,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private int channelTimeout;
 
     private volatile Socket cachedSocket;
-    private NettyHttpChannelConfig config;
+    private NettyChannelConfig config;
 
-    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel, NettyHttpChannelConfig config) {
+    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel, NettyChannelConfig config) {
         this.connectionContext = connectionContext;
         this.nettyChannel = nettyChannel;
         this.config = config;

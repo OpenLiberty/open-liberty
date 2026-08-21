@@ -49,7 +49,7 @@ import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.NettyConnectionLink;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
@@ -203,7 +203,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * Initialize this link for Netty Use.
      *
      */
-    public void init(ChannelHandlerContext context, FullHttpRequest request, NettyHttpChannelConfig config) {
+    public void init(ChannelHandlerContext context, FullHttpRequest request, NettyChannelConfig config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New conn: netty context=" + context);
         }

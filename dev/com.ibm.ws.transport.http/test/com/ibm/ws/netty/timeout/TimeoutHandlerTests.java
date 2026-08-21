@@ -4,7 +4,7 @@
 //  * are made available under the terms of the Eclipse Public License 2.0
 //  * which accompanies this distribution, and is available at
 //  * http://www.eclipse.org/legal/epl-2.0/
-//  * 
+//  *
 //  * SPDX-License-Identifier: EPL-2.0
 //  *******************************************************************************/
 // package com.ibm.ws.netty.timeout;
@@ -35,7 +35,7 @@
 // import static org.mockito.Mockito.*;
 
 // import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-// import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+// import com.ibm.ws.http.netty.NettyChannelConfig;
 // import com.ibm.ws.http.netty.NettyHttpConstants;
 
 // public class TimeoutHandlerTests {
@@ -62,7 +62,7 @@
 
 //     @Test
 //     public void readTimeoutHandlerOnActive(){
-//         NettyHttpChannelConfig config = mock(NettyHttpChannelConfig.class);
+//         NettyChannelConfig config = mock(NettyChannelConfig.class);
 //         when(config.get(TcpOption.INACTIVITY_TIMEOUT)).thenReturn(0);
 //         when(config.getReadTimeout()).thenReturn(1000);
 //         when(config.getPersistTimeout()).thenReturn(1000);
@@ -74,7 +74,7 @@
 
 //     @Test
 //     public void timeoutHandlerSwitchToPersist() throws Exception{
-//         NettyHttpChannelConfig config = mock(NettyHttpChannelConfig.class);
+//         NettyChannelConfig config = mock(NettyChannelConfig.class);
 //         when(config.get(TcpOption.INACTIVITY_TIMEOUT)).thenReturn(0);
 //         when(config.getReadTimeout()).thenReturn(2000);
 //         when(config.getPersistTimeout()).thenReturn(1000);
@@ -85,7 +85,7 @@
 //         ChannelFuture future = channel.writeAndFlush(response);
 //         channel.runPendingTasks();
 //         assertTrue(future.isSuccess());
-        
+
 //         TimeoutType phase = (TimeoutType) getPrivate(handler, "phase");
 //         assertEquals("Expected handler to be in PERSIST phase", TimeoutType.PERSIST, phase);
 //         channel.close();
@@ -93,7 +93,7 @@
 
 //     @Test
 //     public void switchToH2WithAttribute(){
-//         NettyHttpChannelConfig config = mock(NettyHttpChannelConfig.class);
+//         NettyChannelConfig config = mock(NettyChannelConfig.class);
 //         when(config.getReadTimeout()).thenReturn(2000);
 //         when(config.getPersistTimeout()).thenReturn(1000);
 //         when(config.getH2ConnectionIdleTimeout()).thenReturn(5000);
@@ -105,14 +105,12 @@
 //         channel.advanceTimeBy(6000, TimeUnit.MILLISECONDS);
 //         channel.runScheduledPendingTasks();
 
-
 //         Throwable t = extractException(channel);
 //         System.out.println(">>> Exception is: " + t);
 //         assertTrue(t instanceof H2IdleTimeoutException);
 //         channel.close();
-        
-//     }
 
+//     }
 
 //     private static Throwable extractException(EmbeddedChannel channel){
 //         try{
@@ -129,6 +127,5 @@
 //         f.setAccessible(true);
 //         return f.get(object);
 //     }
-
 
 // }

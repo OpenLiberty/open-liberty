@@ -11,7 +11,7 @@ package com.ibm.ws.http.netty.pipeline.http2;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
@@ -39,12 +39,12 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
 
     public static final String NAME = "libertyALPNHandler";
 
-    private final NettyHttpChannelConfig httpConfig;
+    private final NettyChannelConfig httpConfig;
 
     /**
      * Default to HTTP 1.1
      */
-    public LibertyNettyALPNHandler(NettyHttpChannelConfig httpConfig) {
+    public LibertyNettyALPNHandler(NettyChannelConfig httpConfig) {
         super(ApplicationProtocolNames.HTTP_1_1);
         this.httpConfig = httpConfig;
     }

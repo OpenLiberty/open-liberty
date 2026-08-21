@@ -12,7 +12,7 @@ package com.ibm.ws.http.netty.inbound;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.SSLConnectionContext;
@@ -43,9 +43,9 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
     private final VirtualConnection vc;
     private final Channel nettyChannel;
     private SSLConnectionContext sslContext;
-    private NettyHttpChannelConfig config;
+    private NettyChannelConfig config;
 
-    public NettyTCPConnectionContext(Channel channel, VirtualConnection vc, NettyHttpChannelConfig config) {
+    public NettyTCPConnectionContext(Channel channel, VirtualConnection vc, NettyChannelConfig config) {
 
         this.vc = vc;
         this.nettyChannel = channel;

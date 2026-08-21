@@ -35,7 +35,7 @@ import javax.websocket.Extension.Parameter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -110,15 +110,15 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     private final Map<String, List<String>> parameterMap = new HashMap<String, List<String>>();
 
     protected Map<String, Object> httpOptions;
-    protected NettyHttpChannelConfig nettyConfig;
+    protected NettyChannelConfig nettyConfig;
 
     public NettyHttpRequestorWsoc10(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
         this.endpointAddress = endpointAddress;
         this.config = config;
         this.things = things;
         this.httpOptions = WsocOutboundChain.getCurrentHttpOptions();
-        this.nettyConfig = new NettyHttpChannelConfig.NettyConfigBuilder()
-                .with(NettyHttpChannelConfig.ConfigElement.TCP_OPTIONS, WsocOutboundChain.getCurrentTcpOptions())
+        this.nettyConfig = new NettyChannelConfig.NettyConfigBuilder()
+                .with(NettyChannelConfig.ConfigElement.TCP_OPTIONS, WsocOutboundChain.getCurrentTcpOptions())
                 .build();
     }
 

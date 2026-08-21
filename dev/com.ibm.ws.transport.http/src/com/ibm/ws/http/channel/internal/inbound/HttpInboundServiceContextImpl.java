@@ -32,7 +32,7 @@ import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
@@ -120,7 +120,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         init(tsc, link, vc, hcc);
     }
 
-    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc, NettyHttpChannelConfig config) {
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc, NettyChannelConfig config) {
         super();
 
         TCPConnectionContext tsc = new NettyTCPConnectionContext(context.channel(), vc, config);

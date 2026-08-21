@@ -39,7 +39,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
     private static final TraceComponent tc = Tr.register(LibertyHttpObjectAggregator.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private long maxContentLength = Long.MAX_VALUE;
-    private com.ibm.ws.http.netty.NettyHttpChannelConfig config;
+    private com.ibm.ws.http.netty.NettyChannelConfig config;
 
     // AttributeKey to store the current HttpRequest in progress
     private static final AttributeKey<HttpRequest> CURRENT_REQUEST = AttributeKey.valueOf("currentRequest");
@@ -47,7 +47,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
     // AttributeKey to store the current composite content
     private static final AttributeKey<CompositeByteBuf> COMPOSITE_CONTENT = AttributeKey.valueOf("compositeContent");
 
-    public LibertyHttpObjectAggregator(long maxContentLength, com.ibm.ws.http.netty.NettyHttpChannelConfig config) {
+    public LibertyHttpObjectAggregator(long maxContentLength, com.ibm.ws.http.netty.NettyChannelConfig config) {
         if (maxContentLength <= 0) {
             throw new IllegalArgumentException("maxContentLength must be a positive integer.");
         }

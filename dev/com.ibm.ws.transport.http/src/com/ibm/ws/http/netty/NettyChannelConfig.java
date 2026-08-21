@@ -29,10 +29,10 @@ import io.openliberty.transport.config.options.EndpointOption;
 /**
  * Configuration class for Netty-based HTTP channels.
  */
-public class NettyHttpChannelConfig extends HttpChannelConfig {
+public class NettyChannelConfig extends HttpChannelConfig {
 
     /** RAS tracing variable */
-    private static final TraceComponent tc = Tr.register(NettyHttpChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(NettyChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     public enum ConfigElement {
         HTTP_OPTIONS,
@@ -51,11 +51,11 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     Map<EndpointOption, Object> config;
 
     /**
-     * Constructor for NettyHttpChannelConfig.
+     * Constructor for NettyChannelConfig.
      *
      * @param builder The NettyConfigBuilder used to construct this configuration.
      */
-    private NettyHttpChannelConfig(NettyConfigBuilder builder) {
+    private NettyChannelConfig(NettyConfigBuilder builder) {
         Objects.nonNull(builder);
         this.useNetty = Boolean.TRUE;
         this.useCompressionOptions = builder.useCompression;
@@ -297,7 +297,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     }
 
     /**
-     * A builder class for constructing NettyHttpChannelConfig instances with specific configurations.
+     * A builder class for constructing NettyChannelConfig instances with specific configurations.
      */
     public static class NettyConfigBuilder {
 
@@ -406,15 +406,15 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         }
 
         /**
-         * Constructs a NettyHttpChannelConfig instance with the specified configurations.
+         * Constructs a NettyChannelConfig instance with the specified configurations.
          *
-         * @return A NettyHttpChannelConfig instance.
+         * @return A NettyChannelConfig instance.
          */
-        public NettyHttpChannelConfig build() {
+        public NettyChannelConfig build() {
 
             collectOptions();
 
-            return new NettyHttpChannelConfig(this);
+            return new NettyChannelConfig(this);
         }
 
     }

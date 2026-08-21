@@ -24,7 +24,7 @@ import com.ibm.ws.http.internal.HttpChain;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig.ConfigElement;
+import com.ibm.ws.http.netty.NettyChannelConfig.ConfigElement;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
