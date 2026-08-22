@@ -29,6 +29,7 @@ import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpVersionValidationHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 
@@ -236,6 +237,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
 
                 pipeline.addBefore("transportHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                
+                //Adding Version Validator Handler to reject illegal versions
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HttpVersionValidationHandler.NAME, HttpVersionValidationHandler.INSTANCE);
                 ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
                 
                 // Add TimeoutHandler before the aggregator
@@ -244,7 +248,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
                 
                 //TODO: this is a very large number (under https://github.com/OpenLiberty/open-liberty/issues/33114)
-                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
+                pipeline.addAfter(HttpVersionValidationHandler.NAME, HTTP_AGGREGATOR_HANDLER_NAME,
                                   new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit(), httpConfig));
                 pipeline.addAfter(HTTP_AGGREGATOR_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler(httpConfig));
                 ctx.pipeline().remove(this);
@@ -284,7 +288,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private void addPreDispatcherHandlers(ChannelPipeline pipeline, boolean isHttp2) {
 
         if (!isHttp2) {
-            pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HttpVersionValidationHandler.NAME, HttpVersionValidationHandler.INSTANCE);
+            pipeline.addAfter(HttpVersionValidationHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             
             // Add TimeoutHandler before the aggregator
             if (pipeline.get(TimeoutHandler.class) == null) {
