@@ -68,8 +68,26 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
     private static final TraceComponent tc = Tr.register(ServerTransactionInterceptor.class, "IIOP", null);
 
     private final Codec codec;
-    /** Stores the provider (or NoDTx handler) that imported the transaction for this thread. */
-    private final ThreadLocal<Object> activeHandlers = new ThreadLocal<>();
+
+    /**
+     * Holds import state for one inbound transactional request on this thread.
+     * Carries both the handler that imported the transaction and the raw inbound
+     * TransactionService service context bytes so they can be echoed back in the reply.
+     * Echoing the inbound context is how the client interceptor knows the server
+     * successfully processed the transaction — its absence signals "server never saw it".
+     */
+    private static final class ImportState {
+        final Object handler;         // TransactionProtocolProvider or NoDtxTransactionImportHandler
+        final byte[] rawContextBytes; // raw inbound TransactionService context_data
+
+        ImportState(Object handler, byte[] rawContextBytes) {
+            this.handler = handler;
+            this.rawContextBytes = rawContextBytes;
+        }
+    }
+
+    /** Stores the ImportState for the current thread's inbound transactional request. */
+    private final ThreadLocal<ImportState> activeHandlers = new ThreadLocal<>();
 
     private final NoDtxTransactionImportHandler noDtxHandler = new NoDtxTransactionImportHandler();
 
@@ -131,13 +149,14 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
         }
 
         PropagationContext pc = PropagationContextHelper.extract(any);
-        importTransactionInternal(ri, pc, locator);
+        importTransactionInternal(ri, pc, locator, sc.context_data);
     }
 
     @FFDCIgnore(BadKind.class)
     private void importTransactionInternal(ServerRequestInfo ri,
                                            PropagationContext pc,
-                                           TransactionServiceLocator locator) {
+                                           TransactionServiceLocator locator,
+                                           byte[] rawContextBytes) {
         if (tc.isDebugEnabled()) Tr.debug(tc, "importTransactionInternal: pc={0}", pc);
 
         try {
@@ -191,7 +210,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Imported with: {0}", provider.getProtocolName());
                     }
-                    activeHandlers.set(provider);
+                    activeHandlers.set(new ImportState(provider, rawContextBytes));
                     imported = true;
                     break;
                 }
@@ -201,7 +220,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
             if (!imported) {
                 if (noDtxHandler.importTransaction(pc, context)) {
                     if (tc.isDebugEnabled()) Tr.debug(tc, "NoDTx fallback handled context");
-                    activeHandlers.set(noDtxHandler);
+                    activeHandlers.set(new ImportState(noDtxHandler, rawContextBytes));
                 }
             }
 
@@ -221,18 +240,32 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
     private void unimportTransaction(ServerRequestInfo ri) {
         if (tc.isDebugEnabled()) Tr.debug(tc, "unimportTransaction");
 
-        Object handler = activeHandlers.get();
-        if (handler == null) return;
+        ImportState state = activeHandlers.get();
+        if (state == null) return;
         activeHandlers.remove();
+
+        // Echo the inbound TransactionService context back in the reply (or exception reply).
+        // This is the signal the client interceptor uses to distinguish "server processed
+        // the transaction normally" (context present → no spurious rollback) from "server
+        // never saw the transaction" (context absent → roll back).
+        // Matches tWAS TxServerInterceptor.send_reply / send_exception behaviour.
+        if (state.rawContextBytes != null) {
+            try {
+                ServiceContext replyCtx = new ServiceContext(TransactionService.value, state.rawContextBytes);
+                ri.add_reply_service_context(replyCtx, true);
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "Failed to add reply service context: {0}", e);
+            }
+        }
 
         TransactionHandlerContext context =
             TransactionServiceLocator.getInstance().getContext();
 
         try {
-            if (handler instanceof TransactionProtocolProvider) {
-                ((TransactionProtocolProvider) handler).unimportTransaction(context);
-            } else if (handler instanceof NoDtxTransactionImportHandler) {
-                ((NoDtxTransactionImportHandler) handler).unimportTransaction(context);
+            if (state.handler instanceof TransactionProtocolProvider) {
+                ((TransactionProtocolProvider) state.handler).unimportTransaction(context);
+            } else if (state.handler instanceof NoDtxTransactionImportHandler) {
+                ((NoDtxTransactionImportHandler) state.handler).unimportTransaction(context);
             } else {
                 // Defensive — suspend whatever is on the thread
                 context.getTransactionManager().suspend();

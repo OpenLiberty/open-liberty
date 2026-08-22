@@ -31,7 +31,9 @@ import org.omg.CORBA.INTERNAL;
 import org.omg.CORBA.LocalObject;
 import org.omg.CORBA.TRANSACTION_ROLLEDBACK;
 import org.omg.IOP.Codec;
+import org.omg.IOP.ServiceContext;
 import org.omg.IOP.TaggedComponent;
+import org.omg.IOP.TransactionService;
 import org.omg.PortableInterceptor.ClientRequestInfo;
 import org.omg.PortableInterceptor.ClientRequestInterceptor;
 import org.omg.PortableInterceptor.ForwardRequest;
@@ -92,13 +94,39 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
     public void receive_exception(ClientRequestInfo ri) throws ForwardRequest {
         boolean hadActiveTx = activeProviders.get() != null;
         resumeTxOnReply(ri, true);
-        // Only roll back if there was actually a transaction in flight on this call.
-        // Without this guard, calls with no client transaction (e.g. MANDATORY EJB
-        // invoked without a tx) would incorrectly get TRANSACTION_ROLLEDBACK instead
-        // of the correctly-mapped EJBTransactionRequiredException from the stub.
-        if (hadActiveTx && ri.reply_status() == SYSTEM_EXCEPTION.value) {
+        // Only roll back and throw if:
+        //   (a) there was actually a transaction in flight on this call, AND
+        //   (b) the reply contains NO TransactionService service context.
+        //
+        // When the server successfully processed the transaction (even if the EJB or
+        // container then threw a system exception — e.g. ConcurrentAccessException,
+        // EJBTransactionRolledbackException), our ServerTransactionInterceptor echoes
+        // the inbound TransactionService context back in the reply.  Its presence here
+        // means "I imported and handled the transaction correctly — do not roll back on
+        // my behalf."  Its absence means "I never saw the transaction" (ORB-level error,
+        // connection failure, server crashed before receive_request), which is the only
+        // case where we should forcibly roll back.
+        //
+        // This matches tWAS TxClientInterceptor.receive_common's else-if structure.
+        if (hadActiveTx && ri.reply_status() == SYSTEM_EXCEPTION.value
+                && !hasReplyServiceContext(ri)) {
             setRollbackOnly(false);
             throw new TRANSACTION_ROLLEDBACK("Transaction rolled back due to system exception");
+        }
+    }
+
+    /**
+     * Returns true if the reply contains a TransactionService (id=0) service context
+     * with non-null data — indicating the server processed the transaction successfully.
+     * BAD_PARAM means the context is absent.
+     */
+    @FFDCIgnore(BAD_PARAM.class)
+    private boolean hasReplyServiceContext(ClientRequestInfo ri) {
+        try {
+            ServiceContext sc = ri.get_reply_service_context(TransactionService.value);
+            return sc != null && sc.context_data != null;
+        } catch (BAD_PARAM e) {
+            return false;
         }
     }
 
