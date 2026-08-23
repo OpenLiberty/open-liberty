@@ -33,9 +33,10 @@ public interface JaxWsSecurityConfigurationService {
      * Configure the Client SSL configuration.
      * 
      * @param Conduit
+     * @param address
      * @param sslRef
      * @param certAlias
      */
-    void configClientSSL(Conduit Conduit, String sslRef, String certAlias);
+    void configClientSSL(Conduit Conduit, String address, String sslRef, String certAlias);
 
 }
