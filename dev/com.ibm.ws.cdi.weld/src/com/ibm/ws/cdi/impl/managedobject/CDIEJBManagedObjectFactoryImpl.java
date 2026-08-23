@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectException;
@@ -118,7 +119,12 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
                 Tr.debug(tc, "Looking for EJB Bean: " + this.ejbName);
             }
 
-            WebSphereBeanDeploymentArchive bda = super.getCurrentBeanDeploymentArchive();
+            WebSphereBeanDeploymentArchive bda = null;
+            WebSphereCDIDeployment currentDeployment = cdiRuntime.getCurrentDeployment();
+            if (currentDeployment != null) {
+                bda = currentDeployment.getBeanDeploymentArchiveFromClassFavouringEJB(getManagedObjectClass());
+            }
+
             WeldManager beanManager = null;
             if (bda != null) {
                 beanManager = (WeldManager) bda.getBeanManager();
@@ -250,6 +256,11 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
 
     private EjbDescriptor<T> lookUpEjbDescriptor(String ejbName, WebSphereBeanDeploymentArchive bda, WeldManager bm) {
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "Looking for EJB Bean: " + ejbName + " in " + bda.toString() + "for class: " + getManagedObjectClass().getName() + " "
+                         + System.identityHashCode(getManagedObjectClass()));
+        }
+
         EjbDescriptor<T> result = bm.getEjbDescriptor(ejbName);
 
         if (result == null && bda != null) {
@@ -257,6 +268,11 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
             if (descriptors != null) {
                 result = (EjbDescriptor<T>) descriptors.stream().filter(e -> ejbName.equals(e.getEjbName())).findFirst().orElse(null);
             }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "After Looking for EJB Bean: " + ejbName + " in " + bda.toString() + "for class: " + getManagedObjectClass().getName() + " "
+                        + System.identityHashCode(getManagedObjectClass()));
         }
 
         return result;
