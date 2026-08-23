@@ -96,6 +96,7 @@ import io.openliberty.jpa.data.tests.models.Student;
 import io.openliberty.jpa.data.tests.models.TaxPayer;
 import io.openliberty.jpa.data.tests.models.Triangle;
 import io.openliberty.jpa.data.tests.models.Vehicle;
+import io.openliberty.jpa.data.tests.models.ParticipantOrm;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -2169,6 +2170,48 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         assertEquals(1, results.size());
         assertEquals("CountyA", results.get(0).getName());
+    }
+    
+    
+    /**
+     * ORM Configuration file is present in the location:
+     * open-liberty/dev/com.ibm.ws.jpa.tests.jpa_32_fat/build/libs/autoFVT/test-applications/jakartadata/resources/jpa-3.2/web/WEB-INF/classes/META-INF/orm.xml
+     *
+     * @throws Exception
+     */
+    @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
+    public void testOLGH29460WithORM() throws Exception {
+        ParticipantOrm p1 = ParticipantOrm.of("John", "Doe", 1);
+        ParticipantOrm p2 = ParticipantOrm.of("Jane", "Smith", 2);
+        ParticipantOrm p3 = ParticipantOrm.of("Emily", "Doe", 3);
+
+        // Persisting the participants
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
+        tx.commit();
+
+        // Test the JPQL query
+        List<ParticipantOrm> results;
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o FROM ParticipantOrm o WHERE (o.name.last = ?1) ORDER BY o.name.first, o.id",
+                                     ParticipantOrm.class)
+                            .setParameter(1, "Doe")
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        // Verify the results
+        assertEquals(2, results.size());
+        assertEquals("Doe", results.get(0).name.last());
+        assertEquals("Emily", results.get(0).name.first());
+        assertEquals("Doe", results.get(1).name.last());
+        assertEquals("John", results.get(1).name.first());
     }
 
     @Test

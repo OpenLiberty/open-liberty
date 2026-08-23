@@ -19,6 +19,7 @@
         version="3.2">
 
     <persistence-unit name="RecreatePersistenceUnit">
+    	<mapping-file>META-INF/orm.xml</mapping-file>
     	<properties>
    <!-- Drop and recreate the database schema automatically for clean test runs -->
    <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
