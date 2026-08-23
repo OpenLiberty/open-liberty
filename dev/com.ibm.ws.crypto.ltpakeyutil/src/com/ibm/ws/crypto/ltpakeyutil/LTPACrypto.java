@@ -613,7 +613,7 @@ final class LTPACrypto {
      * @throws InvalidKeySpecException
      */
     @Trivial
-    private static SecretKey constructSecretKey(byte[] key, String cipher)
+    private static SecretKey constructSecretKey(byte[] key, String cipher, String overrideProvider)
             throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         SecretKey sKey = null;
         if (cipher.indexOf(CryptoUtils.ENCRYPT_ALGORITHM_AES) != -1) {
@@ -622,9 +622,10 @@ final class LTPACrypto {
         } else {
             DESedeKeySpec kSpec = new DESedeKeySpec(key);
             SecretKeyFactory kFact = null;
-
-            kFact = (provider == null) ? SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE)
-                    : SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE, provider);
+            
+            String providerToUse = (overrideProvider != null) ? overrideProvider : provider;
+            kFact = (providerToUse == null) ? SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE)
+                    : SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_DESEDE, providerToUse);
 
             sKey = kFact.generateSecret(kSpec);
         }
@@ -642,12 +643,13 @@ final class LTPACrypto {
      * @throws InvalidAlgorithmParameterException
      */
     @Trivial
-    private static Cipher createCipher(int cipherMode, byte[] key, String cipher, SecretKey sKey)
+    private static Cipher createCipher(int cipherMode, byte[] key, String cipher, SecretKey sKey, String overrideProvider)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException, NoSuchProviderException {
 
         Cipher ci = null;
-        ci = (provider == null) ? Cipher.getInstance(cipher) : Cipher.getInstance(cipher, provider);
+        String providerToUse = (overrideProvider != null) ? overrideProvider : provider;
+        ci = (providerToUse == null) ? Cipher.getInstance(cipher) : Cipher.getInstance(cipher, providerToUse);
 
         if (cipher.indexOf(CryptoUtils.ENCRYPT_MODE_ECB) == -1) {
             if (cipher.indexOf(CryptoUtils.ENCRYPT_ALGORITHM_AES) != -1) {
@@ -673,8 +675,22 @@ final class LTPACrypto {
      */
     @Trivial
     protected static final byte[] encrypt(byte[] data, byte[] key, String cipher) throws Exception {
-        SecretKey sKey = constructSecretKey(key, cipher);
-        Cipher ci = createCipher(Cipher.ENCRYPT_MODE, key, cipher, sKey);
+        return encrypt(data, key, cipher, null);
+    }
+
+    /**
+     * Encrypt the data with a specific provider.
+     *
+     * @param data   The byte representation of the data
+     * @param key    The key used to encrypt the data
+     * @param cipher The cipher algorithm
+     * @param providerName The security provider to use (null to use default)
+     * @return The encrypted data (ciphertext)
+     */
+    @Trivial
+    protected static final byte[] encrypt(byte[] data, byte[] key, String cipher, String providerName) throws Exception {
+        SecretKey sKey = constructSecretKey(key, cipher, providerName);
+        Cipher ci = createCipher(Cipher.ENCRYPT_MODE, key, cipher, sKey, providerName);
         return ci.doFinal(data);
     }
 
@@ -688,8 +704,22 @@ final class LTPACrypto {
      */
     @Trivial
     protected static final byte[] decrypt(byte[] msg, byte[] key, String cipher) throws Exception {
-        SecretKey sKey = constructSecretKey(key, cipher);
-        Cipher ci = createCipher(Cipher.DECRYPT_MODE, key, cipher, sKey);
+        return decrypt(msg, key, cipher, null);
+    }
+
+    /**
+     * Decrypt the specified msg with a specific provider.
+     *
+     * @param msg    The byte representation of the data
+     * @param key    The key used to decrypt the data
+     * @param cipher The cipher algorithm
+     * @param providerName The security provider to use (null to use default)
+     * @return The decrypted data (plaintext)
+     */
+    @Trivial
+    protected static final byte[] decrypt(byte[] msg, byte[] key, String cipher, String providerName) throws Exception {
+        SecretKey sKey = constructSecretKey(key, cipher, providerName);
+        Cipher ci = createCipher(Cipher.DECRYPT_MODE, key, cipher, sKey, providerName);
         return ci.doFinal(msg);
     }
 
