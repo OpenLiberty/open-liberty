@@ -68,6 +68,13 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
         this.encode = encode;
         this.factory = factory; //Liberty change
         this.annotations = annotations; //Liberty change
+        
+        //Liberty change: Warn about leading/trailing whitespace in parameter names
+        if (header != null && !header.equals(header.trim())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "Parameter annotation '@FormParam(\"" + header + "\")' contains leading or trailing whitespace which may cause parameter matching issues. Consider using '@FormParam(\"" + header.trim() + "\")'.");
+            }
+        }
     }
 
    @SuppressWarnings({ "unchecked", "rawtypes", "serial" })
