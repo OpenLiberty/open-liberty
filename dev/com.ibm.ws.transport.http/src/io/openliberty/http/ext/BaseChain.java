@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.http.internal;
+package io.openliberty.http.ext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,14 +41,55 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
-import io.openliberty.http.ext.BaseChain;
-
 /**
  * Encapsulation of steps for starting/stopping an http chain in a controlled/predictable
  * manner with a minimum of synchronization.
  */
-public class HttpChain extends BaseChain {
-    private static final TraceComponent tc = Tr.register(HttpChain.class);
+public class BaseChain implements ChainEventListener {
+    private static final TraceComponent tc = Tr.register(BaseChain.class);
+
+    public enum ChainState {
+        UNINITIALIZED(0, "UNINITIALIZED"),
+        DESTROYED(1, "DESTROYED"),
+        INITIALIZED(2, "INITIALIZED"),
+        STOPPED(3, "STOPPED"),
+        QUIESCED(4, "QUIESCED"),
+        STARTED(5, "STARTED"),
+        STARTING(6, "STARTING"),
+        STOPPING(7, "STOPPING");
+
+        public final int val;
+        final String name;
+
+        @Trivial
+        ChainState(int val, String name) {
+            this.val = val;
+            this.name = "name";
+        }
+
+        @Trivial
+        public static final String printState(int state) {
+            switch (state) {
+                case 0:
+                    return "UNINITIALIZED";
+                case 1:
+                    return "DESTROYED";
+                case 2:
+                    return "INITIALIZED";
+                case 3:
+                    return "STOPPED";
+                case 4:
+                    return "QUIESCED";
+                case 5:
+                    return "STARTED";
+                case  6:
+                    return "STARTING";
+                case  7:
+                    return "STOPPING";
+            }
+            return "UNKNOWN";
+        }
+    }
 
     protected final StopWait stopWait = new StopWait();
     protected final HttpEndpointImpl owner;
@@ -88,7 +129,7 @@ public class HttpChain extends BaseChain {
      * @param httpEndpointImpl the owning endpoint: used for notifications
      * @param isHttps          true if this is to be an https chain.
      */
-    public HttpChain(HttpEndpointImpl owner, boolean isHttps) {
+    public BaseChain(HttpEndpointImpl owner, boolean isHttps) {
         this.owner = owner;
         this.isHttps = isHttps;
     }
@@ -927,7 +968,7 @@ public class HttpChain extends BaseChain {
         StopWait() {
         }
 
-        public synchronized void waitForStop(long timeout, HttpChain chain) {
+        public synchronized void waitForStop(long timeout, BaseChain chain) {
             // HttpChain parameter helps with debug..
 
             // wait for the configured timeout (the parameter) + a smidgen of time
@@ -942,7 +983,7 @@ public class HttpChain extends BaseChain {
                 long start = System.nanoTime();
                 try {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(HttpChain.this, tc, "Waiting for chain stop", waited, interval);
+                        Tr.debug(BaseChain.this, tc, "Waiting for chain stop", waited, interval);
                     }
                     wait(interval - waited);
                 } catch (InterruptedException ie) {
