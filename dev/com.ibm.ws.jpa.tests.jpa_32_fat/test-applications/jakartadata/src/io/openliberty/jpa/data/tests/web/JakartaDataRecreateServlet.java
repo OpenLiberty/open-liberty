@@ -1819,6 +1819,56 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
     }
 
+    @Test //Original issue: https://github.com/OpenLiberty/open-liberty/issues/29443
+    public void testOLGH29443InstantAfterCasting() throws Exception {
+        deleteAllEntities(DemographicInfo.class);
+
+        ZoneId ET = ZoneId.of("America/New_York");
+        Instant when = ZonedDateTime.of(2022, 4, 29, 12, 0, 0, 0, ET)
+                        .toInstant();
+
+        DemographicInfo US2022 = DemographicInfo.of(2022, 4, 29, 132250000, 6526909395140.41, 23847245116757.60);
+        DemographicInfo US2007 = DemographicInfo.of(2007, 4, 30, 121090000, 3833110332444.19, 5007058051986.64);
+
+        List<BigInteger> results;
+
+        tx.begin();
+        em.persist(US2022);
+        em.persist(US2007);
+        tx.commit();
+
+        List<Error> errors = new ArrayList<>();
+
+        Thread.sleep(Duration.ofSeconds(1).toMillis());
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Executing SELECT query, iteration: " + i);
+
+            tx.begin();
+            results = em
+                            .createQuery("SELECT this.numFullTimeWorkers FROM DemographicInfo WHERE cast(this.collectedOn as timestamp)=cast(:when as timestamp)",
+                                         BigInteger.class)
+                            .setParameter("when", when)
+                            .getResultList();
+            tx.commit();
+
+            try {
+                assertNotNull("Query should not have returned null after iteration " + i, results);
+                // Recreate - an empty list is returned
+                assertFalse("Query should not have returned an empty list after iteration " + i, results.isEmpty());
+                assertEquals("Query should not have returned more than one result after iteration " + i, 1,
+                             results.size());
+                assertEquals(US2022.numFullTimeWorkers, results.get(0));
+            } catch (AssertionError e) {
+                errors.add(e);
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            throw new AssertionError("Executing the same query returned incorrect results " + errors.size() + " out of 10 executions", errors.get(0));
+        }
+    }
+
     @Test
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29893
     public void testOLGH29893() throws Exception {
