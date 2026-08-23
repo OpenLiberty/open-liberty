@@ -518,7 +518,7 @@ implements SipApplicationSession {
 	public void invalidate() {
 		//remove synchronized as it has caused deadlocks
 		//see open-liberty issue #27282
-		//synchronized (getSynchronizer()) {
+		synchronized (getSynchronizer()) {
 			if(m_duringInvalidate) {
 				checkIsSessionValid();
 				return;
@@ -605,7 +605,7 @@ implements SipApplicationSession {
 			if (c_logger.isTraceEntryExitEnabled()) {
 				c_logger.traceExit(this, "invalidate", "AppSessionId: " + getId());
 			}
-		//}
+		}
 	}
 
 	/**
