@@ -129,12 +129,15 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             }
             //let's use liberty SSL configuration
             tlsClientParams.setSSLSocketFactory(sslSocketFactory);
-            // Only set disableCNCheck when BOTH property is set to "true" AND boolean is true
-            // Avoid setting it when null or "false" to prevent Windows-specific(only on Hotspot JVM) CXF behavior
+            // Always set disableCNCheck explicitly to prevent Windows-specific CXF caching issues
+            // where TLSClientParameters objects persist between requests with stale hostname verifiers
             Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
             
             if ("true".equalsIgnoreCase(String.valueOf(disableCNCheckObj))) {
                 tlsClientParams.setDisableCNCheck(disableCNCheck);
+            } else {
+                // Explicitly set to false to clear any cached AllowAllHostnameVerifier
+                tlsClientParams.setDisableCNCheck(false);
             }
 
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
