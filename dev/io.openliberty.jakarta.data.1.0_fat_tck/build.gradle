@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
  apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
@@ -29,7 +26,7 @@ dependencies {
   
   jnosql "org.eclipse.jnosql.databases:jnosql-mongodb:${jnosqlVersion}", withoutJakartaAPI
   
-  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
+  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:3.0.0'
   
   //TODO Configure WLP dependency if doing verification testing, Examples below:
   //wlp 'io.openliberty.beta:openliberty-runtime:24.0.0.5-beta@zip'
