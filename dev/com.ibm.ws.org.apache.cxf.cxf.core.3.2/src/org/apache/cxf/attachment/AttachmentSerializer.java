@@ -168,9 +168,16 @@ public class AttachmentSerializer {
             if (supportSeparateAction) {
                if (LOG.isLoggable(Level.FINE)) {
                   LOG.log(Level.FINE, "Format Content-Type using separate action attribute");
+                  LOG.log(Level.FINE, "ct: " + ct.toString() + " and bodyCtParams: " + bodyCtParams);
 	       }
                if (bodyCtParams != null) {
                    ct.append("\"").append(bodyCtParams);
+               }
+               if (!ct.toString().endsWith("\"")) {
+                   if (LOG.isLoggable(Level.FINE)) {
+                      LOG.log(Level.FINE, "Appending \" character.");
+		   }
+                   ct.append("\"");
                }
 	    }
 	    else { // Liberty Change End
@@ -180,6 +187,10 @@ public class AttachmentSerializer {
                ct.append('"');
 	    }
         }
+
+        if (LOG.isLoggable(Level.FINE)) {
+           LOG.log(Level.FINE, "Final CT: " + ct.toString());
+	}
 
         message.put(Message.CONTENT_TYPE, ct.toString());
 
