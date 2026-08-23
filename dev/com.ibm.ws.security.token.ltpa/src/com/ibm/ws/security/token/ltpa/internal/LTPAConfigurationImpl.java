@@ -248,18 +248,21 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         String keysPassword = sps == null ? null : new String(sps.getChars());
         if (keysPassword != null && !keysPassword.isEmpty()) {
             tryToReEncryptLtpaKeys = false;
+            System.out.println("$JIMMY1: " + keysPassword);
             return keysPassword;
         }
 
         String ltpaKeysPassword = System.getenv("ltpa_keys_password");
         if (ltpaKeysPassword != null && !ltpaKeysPassword.isEmpty()) {
             tryToReEncryptLtpaKeys = false;
+            System.out.println("$JIMMY2: " + ltpaKeysPassword);
             return ltpaKeysPassword;
         }
 
         String keystorePassword = System.getenv("keystore_password");
         if (keystorePassword != null && !keystorePassword.isEmpty()) {
             tryToReEncryptLtpaKeys = true;
+            System.out.println("$JIMMY3: " + keystorePassword);
             return keystorePassword;
         }
 
