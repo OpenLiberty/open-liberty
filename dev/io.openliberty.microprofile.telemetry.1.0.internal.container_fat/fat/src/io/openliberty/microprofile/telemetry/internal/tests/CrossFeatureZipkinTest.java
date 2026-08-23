@@ -86,12 +86,14 @@ public class CrossFeatureZipkinTest {
 
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "zipkin");
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_ZIPKIN_ENDPOINT, zipkinContainer.getApiBaseUrl() + "/spans");
-        telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
+        telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "0"); // Wait no more than 100ms to send traces to the server. lowers the chance that verification races the exporter
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
         telemetryServer.addEnvVar("OTEL_PROPAGATORS", "tracecontext, b3"); // Include the b3 propagation header for Zipkin
         telemetryServer.addEnvVar("IO_OPENLIBERTY_MICROPROFILE_TELEMETRY_INTERNAL_APPS_CROSSFEATURE_TELEMETRY_CROSSFEATURECLIENT_MP_REST_URL", getUrl(opentracingServer));
 
+        telemetryServer.addEnvVar("OTEL_TRACE_export_interval", "500");
+        telemetryServer.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "60000");
         opentracingServer.addEnvVar("zipkinPortName", Integer.toString(zipkinContainer.getHttpPort()));
         opentracingServer.addEnvVar("zipkinHostName", zipkinContainer.getHost());
         opentracingServer.addEnvVar("ZIPKIN_SAMPLER_TYPE", "const"); // Trace every call

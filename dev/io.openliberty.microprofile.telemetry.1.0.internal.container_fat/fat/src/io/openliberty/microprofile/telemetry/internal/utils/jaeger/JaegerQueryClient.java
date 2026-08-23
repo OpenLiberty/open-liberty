@@ -308,8 +308,8 @@ public class JaegerQueryClient implements AutoCloseable {
     private static <T> T runWithRetryAndTimeout(Callable<T> action, Duration timeout){
         int retryCount = 0;
         while (retryCount < 5) {
-            Log.info(c, "runWithRetryandTimeout", "retryCount " + retryCount);
             retryCount += 1;
+            Log.info(c, "runWithRetryandTimeout", "retryCount " + retryCount);
             //get executOR
             ExecutorService e = Executors.newSingleThreadExecutor();
             Future<T> future = e.submit(action);
