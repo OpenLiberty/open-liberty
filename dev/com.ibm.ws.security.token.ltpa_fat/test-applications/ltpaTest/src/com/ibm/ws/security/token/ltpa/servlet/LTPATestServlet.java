@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Set;
-
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -43,13 +41,28 @@ public class LTPATestServlet extends HttpServlet {
     private static final String LTPA_COOKIE   = "LtpaToken2";
     private static final String CREATION_TIME = AttributeNameConstants.WSTOKEN_CREATION_TIME;
 
+    // Dispatches GET requests: ?action=backdate&offsetSeconds=N backdates the caller's LTPA token
+    // (used by LTPATokenRefreshTests); any other GET exercises the TokenManager creation path and
+    // returns "Test Passed" (used by FATTest).
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if ("backdate".equals(request.getParameter("action"))) {
             handleBackdate(request, response);
+        } else {
+            PrintWriter writer = response.getWriter();
+            BundleContext ctx = getBundleContext();
+            try {
+                testGetTokenManager(ctx);
+                writer.println("Test Passed");
+            } catch (Throwable e) {
+                e.printStackTrace(writer);
+            } finally {
+                writer.flush();
+                writer.close();
+            }
         }
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/plain");
@@ -57,11 +70,26 @@ public class LTPATestServlet extends HttpServlet {
         resp.getWriter().print("use GET method");
     }
 
-    // Backdates the LTPA token by offsetSeconds seconds via two coordinated mutations:
-    //   1. Token bytes: appends a backdated WSTOKEN_CREATION_TIME to the SSO token so
-    //      LTPAToken2.checkRefreshNeeded() sees it and sets triggerRefresh=true on the next request.
-    //   2. Cached WSCredential: overwrites creationTime on the live subject in the auth cache so
-    //      shouldRefreshCachedToken() returns true on a cache hit, forcing a JAAS re-run.
+    // Looks up the TokenManager OSGi service and creates a test Ltpa2 token with a dummy
+    // unique_id. This exercises the full token creation path (key loading, encryption, signing)
+    // and triggers generation of the LTPA keys file on disk if it does not yet exist.
+    private void testGetTokenManager(BundleContext ctx) throws Exception {
+        ServiceReference<TokenManager> tokenManagerReference = ctx.getServiceReference(TokenManager.class);
+        TokenManager tm = ctx.getService(tokenManagerReference);
+
+        try {
+            if (tm != null) {
+                HashMap<String, Object> tokenData = new HashMap<>();
+                tokenData.put("unique_id", "foo");
+                tm.createToken("Ltpa2", tokenData);
+            }
+        } catch (Exception e) {
+            throw new Exception("Error creating the token: " + e.getMessage());
+        }
+    }
+
+    // Backdates the LTPA token by offsetSeconds seconds by appending a backdated WSTOKEN_CREATION_TIME
+    // to the SSO token bytes so LTPAToken2.checkRefreshNeeded() and validateExpiration() see the older age.
     // Usage: GET /ltpaTest/LTPATestServlet?action=backdate&offsetSeconds=70
     private void handleBackdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");
@@ -79,7 +107,6 @@ public class LTPATestServlet extends HttpServlet {
                 long backdatedCreationTime = System.currentTimeMillis() - offsetMs;
                 SingleSignonToken token = createBackdatedToken(tm, request, backdatedCreationTime, writer);
                 setLtpaCookieHeader(response, token);
-                backdateCachedSubjectCreationTime(backdatedCreationTime, writer);
                 response.setStatus(HttpServletResponse.SC_OK);
             } finally {
                 ctx.ungetService(ref);
@@ -126,7 +153,7 @@ public class LTPATestServlet extends HttpServlet {
     }
 
     // Reads the access ID from the caller's WSCredential so the realm is included (e.g. "user:BasicRealm/user1").
-    // Falls back to the servlet principal name when no WSCredential is present, logging a warning in both cases.
+    // Falls back to the servlet principal name when no WSCredential is present.
     private String resolveAccessId(HttpServletRequest request, PrintWriter writer) {
         String accessId = null;
         try {
@@ -143,33 +170,10 @@ public class LTPATestServlet extends HttpServlet {
             writer.println("WARN: could not read accessId from WSCredential: " + e.getMessage());
         }
         if (accessId == null) {
-            // Fall back: use the principal name without realm (will likely fail token re-auth).
             accessId = "user:" + (request.getUserPrincipal() != null ? request.getUserPrincipal().getName() : "user1");
             writer.println("WARN: accessId fallback used: " + accessId);
         }
         return accessId;
-    }
-
-    // Mutates creationTime on the WSCredential inside the caller subject so the auth cache
-    // returns a backdated creation time, causing shouldRefreshCachedToken() to return true.
-    private void backdateCachedSubjectCreationTime(long backdatedCreationTime, PrintWriter writer) {
-        try {
-            Subject callerSubject = WSSubject.getCallerSubject();
-            if (callerSubject == null) {
-                writer.println("WARN: could not backdate cached subject — caller subject is null");
-                return;
-            }
-            for (Object cred : callerSubject.getPublicCredentials()) {
-                if (cred instanceof WSCredential) {
-                    ((WSCredential) cred).set(CREATION_TIME, backdatedCreationTime);
-                    writer.println("Backdated cached WSCredential creationTime=" + backdatedCreationTime);
-                    return;
-                }
-            }
-            writer.println("WARN: could not backdate cached subject — no WSCredential found in public credentials");
-        } catch (Exception e) {
-            writer.println("WARN: could not backdate cached subject: " + e.getMessage());
-        }
     }
 
     // Encodes the token bytes as Base64 and appends an LtpaToken2 cookie to the response.
