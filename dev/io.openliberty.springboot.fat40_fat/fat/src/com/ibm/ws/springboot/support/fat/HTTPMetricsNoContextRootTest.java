@@ -12,6 +12,7 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
+import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 
 import org.junit.Test;
@@ -64,6 +65,115 @@ public class HTTPMetricsNoContextRootTest extends HTTPMetricsAbstractTests {
 
         String objectName = "WebSphere:type=HttpServerStats,name=\"method:" + requestMethod + ";status:" + responseStatus + ";httpRoute:" + expectedRoute + "\"";
         Assert.assertTrue("Failed to find expected Mbean: " + objectName, checkMBeanRegistered(objectName));
+    }
+
+    @Test
+    public void testNoContextRootPathPostPutGetJson() throws Exception {
+
+        String postRoute = "/testController/postJson";
+        String responseStatus = "200";
+        int intResponseStatus = Integer.parseInt(responseStatus);
+
+        // Prepare JSON data
+        String jsonData = "{\"message\":\"test\",\"value\":123}";
+
+        // Step 1: POST data
+        HttpURLConnection postConn = HttpUtils.getHttpConnection(
+                                                                 HttpUtils.createURL(server, postRoute),
+                                                                 HttpUtils.DEFAULT_TIMEOUT,
+                                                                 HTTPRequestMethod.POST);
+
+        // Set Content-Type header for JSON
+        postConn.setRequestProperty("Content-Type", "application/json");
+
+        // Write JSON data to request body
+        postConn.getOutputStream().write(jsonData.getBytes("UTF-8"));
+        postConn.getOutputStream().flush();
+
+        // Verify POST response code
+        Assert.assertTrue(
+                          String.format("Expected %d, but got %d", intResponseStatus, postConn.getResponseCode()),
+                          postConn.getResponseCode() == intResponseStatus);
+
+        postConn.disconnect();
+
+        // Step 2: GET data to verify it was stored
+        String getRoute = "/testController/getJson/test";
+        HttpURLConnection getConn = HttpUtils.getHttpConnection(server, getRoute);
+
+        // Verify GET response code
+        Assert.assertTrue(
+                          String.format("Expected %d for GET, but got %d", intResponseStatus, getConn.getResponseCode()),
+                          getConn.getResponseCode() == intResponseStatus);
+
+        // Verify response contains expected data
+        BufferedReader br = HttpUtils.getConnectionStream(getConn);
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            response.append(line);
+        }
+        Assert.assertTrue(
+                          "Response should contain 'test'",
+                          response.toString().contains("test"));
+        Assert.assertTrue(
+                          "Response should contain value 123",
+                          response.toString().contains("123"));
+
+        getConn.disconnect();
+
+        // Step 2: PUT to update the data to value=456
+        String putRoute = "/testController/putJson/test";
+        String updatedJsonData = "{\"message\":\"test\",\"value\":456}";
+
+        HttpURLConnection putConn = HttpUtils.getHttpConnection(
+                                                                HttpUtils.createURL(server, putRoute),
+                                                                HttpUtils.DEFAULT_TIMEOUT,
+                                                                HTTPRequestMethod.PUT);
+        putConn.setRequestProperty("Content-Type", "application/json");
+        putConn.getOutputStream().write(updatedJsonData.getBytes("UTF-8"));
+        putConn.getOutputStream().flush();
+
+        Assert.assertTrue(
+                          String.format("Expected %d for PUT, but got %d", intResponseStatus, putConn.getResponseCode()),
+                          putConn.getResponseCode() == intResponseStatus);
+
+        // Verify PUT response contains updated data
+        BufferedReader putBr = HttpUtils.getConnectionStream(putConn);
+        StringBuilder putResponse = new StringBuilder();
+        String putLine;
+        while ((putLine = putBr.readLine()) != null) {
+            putResponse.append(putLine);
+        }
+        Assert.assertTrue(
+                          "PUT response should contain 'test'",
+                          putResponse.toString().contains("test"));
+        Assert.assertTrue(
+                          "PUT response should contain value 456",
+                          putResponse.toString().contains("456"));
+        putConn.disconnect();
+
+        // Step 3: GET again to verify the update to value=456
+        HttpURLConnection getConn2 = HttpUtils.getHttpConnection(server, getRoute);
+
+        Assert.assertTrue(
+                          String.format("Expected %d for final GET, but got %d", intResponseStatus, getConn2.getResponseCode()),
+                          getConn2.getResponseCode() == intResponseStatus);
+
+        // Verify final GET response contains updated value 456
+        BufferedReader getBr2 = HttpUtils.getConnectionStream(getConn2);
+        StringBuilder getResponse2 = new StringBuilder();
+        String getLine2;
+        while ((getLine2 = getBr2.readLine()) != null) {
+            getResponse2.append(getLine2);
+        }
+        Assert.assertTrue(
+                          "Final GET response should contain 'test'",
+                          getResponse2.toString().contains("test"));
+        Assert.assertTrue(
+                          "Final GET response should contain updated value 456",
+                          getResponse2.toString().contains("456"));
+        getConn2.disconnect();
     }
 
     @Test
