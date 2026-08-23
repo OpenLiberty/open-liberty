@@ -148,7 +148,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithPlusCipherModifierPass() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with '+' cipher modifier (expected to pass) ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_plus_pass.xml", "CWWKF0040E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_plus_pass.xml", 30, "CWWKF0040E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it has started successfully (CWWKF0035I).",
@@ -575,7 +575,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
      */
     private List<String> extractCipherListFromTrace() throws Exception {
 
-        // Use findStringsInCopiedTraceLogs to search for the trace pattern in ssl_trace.log
+        // Use findStringsInCopiedTraceLogs to search for the trace pattern in ssl_trace.log MD5 DES
         List<String> traceLines = testClient.findStringsInCopiedTraceLogs("adjustSupportedCiphers.*","logs/ssl_trace.log");
         
         Log.info(c, "extractCipherListFromTrace", "Found " + traceLines.size() + " trace lines in ssl_trace.log");
@@ -589,7 +589,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
                 "< adjustSupportedCiphers -> \\(\\d+\\)\\s+(.*?)\\s+Exit");
 
         List<String> lastCipherList = new ArrayList<>();
-
+        String MD5_DES = "md5DESTLS";
         for (String line : traceLines) {
             if (!line.contains("Entry")) {  // Skip Entry lines
                 Matcher matcher = pattern.matcher(line);
