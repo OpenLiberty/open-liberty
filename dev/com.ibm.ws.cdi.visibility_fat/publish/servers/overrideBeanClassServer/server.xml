@@ -1,0 +1,33 @@
+<server description="visibility test server">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>cdi-1.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ejb-3.2</feature>
+        <feature>componentTest-1.0</feature>
+    </featureManager>
+    
+   
+    <webApplication location="overrideBeanClass.war">
+    <!-- Use this config to actual test overriding bean classes from jarB with classes form jarA
+        <classloader overrideLibraryRef="jarA" privateLibraryRef="jarB"/>
+    -->
+        <classloader overrideLibraryRef="jarA"/>
+    </webApplication>
+
+    <library id="jarA">
+       <fileset includes="jarA.jar"/>
+    </library>
+
+    <library id="jarB">
+       <fileset includes="jarB.jar"/>
+    </library>
+
+    <library id="visTestCommonLib">
+       <fileset includes="visTestCommonLib.jar"/>
+    </library>
+    
+</server>
