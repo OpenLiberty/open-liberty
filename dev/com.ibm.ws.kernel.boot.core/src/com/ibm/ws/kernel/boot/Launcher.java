@@ -289,6 +289,9 @@ public class Launcher {
             case RESUME_ACTION:
                 rc = new com.ibm.ws.kernel.boot.internal.commands.ProcessControlHelper(bootProps, launchArgs).resume();
                 break;
+            case COMP_STATUS_ACTION:
+                rc = new com.ibm.ws.kernel.boot.internal.commands.ProcessControlHelper(bootProps, launchArgs).compStatus();
+                break;
             case LIST_ACTION:
                 rc = new ListServerHelper(bootProps, launchArgs).listServers();
                 break;

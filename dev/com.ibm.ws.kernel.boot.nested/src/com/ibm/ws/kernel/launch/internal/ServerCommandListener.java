@@ -493,6 +493,16 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
             ReturnCode rc = frameworkManager.resumeListeners(args);
 
             writeResponse(sc, rc.getValue());
+        } else if (command.startsWith(COMP_STATUS_COMMAND)) {
+            String args = null;
+            int index = command.indexOf("#");
+            if (index > 0 && (command.length() > (index + 1))) {
+                args = command.substring(index + 1);
+            }
+
+            String responseText = frameworkManager.compStatusListeners(args);
+
+            writeResponse(sc, responseText);
         } else {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "warning.unrecognized.command", command);
@@ -537,6 +547,15 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
     private void writeResponse(SocketChannel sc, int rc) throws IOException {
         synchronized (responseLock) {
             write(sc, serverUUID + DELIM + rc);
+        }
+    }
+
+    /**
+     * Write a response on a socket channel with response code.
+     */
+    private void writeResponse(SocketChannel sc, String text) throws IOException {
+        synchronized (responseLock) {
+            write(sc, serverUUID + DELIM + text);
         }
     }
 
