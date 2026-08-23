@@ -77,7 +77,16 @@ public class CxfBspTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp.xml");
+            
+            //issue 30353 - Use PKCS12 keystores for IBM JDK 8 to avoid JKS private key access issues
+            String vendorName = System.getProperty("java.vendor");
+            JavaInfo info = JavaInfo.forServer(server);
+            if ((info.majorVersion() == 8) && (vendorName.contains("IBM"))) {
+                Log.info(thisClass, thisMethod, "Using IBM JDK 8 - copying server_bsp_ibmjdk8.xml with PKCS12 keystores");
+                copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp_ibmjdk8.xml");
+            } else {
+                copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp.xml");
+            }
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
