@@ -284,10 +284,10 @@
         </dependency>    
         <dependency>
             <groupId>io.openliberty</groupId>
-            <artifactId>com.ibm.ws.org.jboss.jandex</artifactId>
+            <artifactId>io.openliberty.io.smallrye.jandex3</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${com.ibm.ws.org.jboss.jandex_}</systemPath>
+            <systemPath>${io.openliberty.io.smallrye.jandex3_}</systemPath>
         </dependency>    
         <dependency>
             <groupId>io.openliberty</groupId>
