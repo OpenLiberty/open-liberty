@@ -498,5 +498,17 @@ error.config.root.deleted=CWWKG0110E: A configuration update was detected, but t
 error.config.root.deleted.explanation=The server.xml file was deleted. To cause no disruptions to running apps, no configuration changes are made.
 error.config.root.deleted.useraction=Add the server.xml file back to the server.
 
+# {0} The file that was not written. This file is used internally to cache the server configuration.
+# {1} The message from the exception that occurred when attempting to write the file.
+error.config.cache.write.failure=CWWKG0111E: Server configuration data was not written to the [{0}] file. Exception: {1}. See the associated FFDC for additional exception details.
+error.config.cache.write.failure.explanation=An error occurred while attempting to write server configuration data to an internal cache file. The file might not be writable due to permission problems, or because inadequate storage is available. The failure might corrupt the internal cache, which might lead to error CWWKG0111E.
+error.config.cache.write.failure.useraction=Ensure that sufficient space is available for the target file and ensure that the file is writable. Restart the server with the --clean option to clear and rewrite the server cache data.  In relation to a z/OS zFS, if the problem occurred because no space was available in the file system associated with the target file, consider setting the MOUNT property AGGRGROW for that filesystem location.
+
+# {0} The file that was not read. This file is used internally to cache the server configuration.
+# {1} The message from the exception that occurred when attempting to read the file.
+error.config.cache.read.failure=CWWKG0112E: Server configuration data was not read from the [{0}] file. Exception: {1}. See the associated FFDC for additional exception details.
+error.config.cache.read.failure.explanation=An error occurred while attempting to read server configuration data from an internal cache. That error might be caused by incomplete or corrupt cached data, or might be caused by permission problems. The error might be caused by a prior failure to write the configuration data, which causes error message CWWKG0111E.
+error.config.cache.read.failure.useraction=Ensure that sufficient space is available for the target file and ensure that the file is readable. Restart the server with the --clean option to clear and rewrite the server cache data. In relation to a z/OS zFS, if the problem occurred because no space was available in the file system associated with the target file, consider setting the MOUNT property AGGRGROW for that filesystem location.
+
 # Non-TR message
 error.invalidOCDRef=ERROR: Metatype PID [{0}] specifies non-existent object class definition ID [{1}]

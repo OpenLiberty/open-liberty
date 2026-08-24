@@ -341,11 +341,29 @@ class ConfigurationStore implements Runnable, CheckpointHook {
                 public String getKey(ExtendedConfigurationImpl configuration) {
                     return configuration.getPid(false);
                 }
-            };
+            }; 
+
             try {
                 return ConfigurationStorageHelper.load(configDatas, consumer);
-            } catch (IOException e) {
-                // auto FFDC is fine
+
+            } catch ( IOException e ) {
+                // auto FFDC
+
+                // Error added per issue "33928":
+                // Error messages needed for ConfigurationStore save and load exceptions 
+                //
+                // https://github.com/OpenLiberty/open-liberty/issues/33928
+
+                Tr.error(tc,
+                    "error.config.cache.read.failure",
+                    new Object[] { configDatas.getAbsolutePath(), e.getMessage() } );
+
+                // # {0} The location of the resource which could not be read.  This is a file used internally for caching the server configuration.
+                // # {1} A message obtained from the exception which occurred when attempting the read.
+                // error.config.cache.read.failure=CWWKG0112E: Server configuration data could not be read from the file [{0}].  Exception: {1}.  See the fassociated FFDC for additional exception details.
+                // error.config.cache.read.failure.explanation=An error occurred while attempting to read server configuration data from an internal cache.  That error may be caused by incomplete or corrupt cached data, or because of a problem accessing the target location.  The error may be caused by a prior failure to write the configuration data, which causes error message CWWKG0111E.
+                // error.config.cache.read.failure.useraction=The server cache data should be cleared and re-written by restarting the server with the --clean option.  In relation to a z/OS zFS, if the problem occurred because no space was available in the file system associated with the target location, consider setting the MOUNT property AGGRGROW for that filesystem location.
+
                 return new HashMap<>();
             }
         }
@@ -394,8 +412,24 @@ class ConfigurationStore implements Runnable, CheckpointHook {
     public void run() {
         try {
             saveConfigurationDatas(false);
-        } catch (IOException e) {
-            // Auto-FFDC is fine here
+
+        } catch ( IOException e ) {
+            // Auto-FFDC
+
+            // Error added per issue "33928":
+            // Error messages needed for ConfigurationStore save and load exceptions 
+            //
+            // https://github.com/OpenLiberty/open-liberty/issues/33928
+
+            Tr.error(tc,
+                 "error.config.cache.write.failure",
+                 new Object[] { persistentConfig.getAbsolutePath(), e.getMessage() } );
+
+            // # {0} The location of the resource which could not be written.  This is a file used internally for caching the server configuration.
+            // # {1} A message obtained from the exception which occurred when attempting the write.
+            // error.config.cache.write.failure=CWWKG0111E: Server configuration data could not be written to the file [{0}].  Exception: {1}.  See the associated FFDC for additional exception details.
+            // error.config.cache.write.failure.explanation=An error occurred while attempting to write server configuration data to an internal cache.  The target location may not be writable due to permissions problems, or because inadequate storage is available.  The failure may cause the internal cache to be corrupted, which may lead to error CWWKG0111E.
+            // error.config.cache.write.failure.useraction=The server cache data should be cleared and re-written by restarting the server with the --clean option.  In relation to a z/OS zFS, if the problem occurred because no space was available in the file system associated with the target location, consider setting the MOUNT property AGGRGROW for that filesystem location.
         }
     }
 }
