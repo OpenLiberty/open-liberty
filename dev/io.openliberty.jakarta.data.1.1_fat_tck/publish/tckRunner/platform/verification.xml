@@ -91,6 +91,7 @@
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+			<version>${shrinkwrap.resolver.version}</version>
 		</dependency>
 		
 	</dependencies>
