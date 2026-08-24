@@ -125,8 +125,17 @@ public class TCPUtils {
                 channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInbound());
 
                 // Listener to stop channel on close
-                // This should just log that the channel stopped
-                channel.closeFuture().addListener(innerFuture -> logChannelStopped(innerFuture, channel));
+                // For wildcard inbound channels also release the port-ownership entry so a
+                // future reconfiguration can re-use the port with specific-host channels.
+                channel.closeFuture().addListener(innerFuture -> {
+                    logChannelStopped(innerFuture, channel);
+                    if (config.isInbound() && NettyConstants.INADDR_ANY.equals(newHost)) {
+                        framework.getWildcardPortOwnership().remove(inetPort);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Wildcard bind reservation released for port " + inetPort);
+                        }
+                    }
+                });
 
                 if (config.isInbound()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -293,6 +302,52 @@ public class TCPUtils {
                 framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                     @Override
                     public ChannelFuture call() {
+                        // Replicate Channel framework's CWWKO0221E behaviour: a wildcard ("*")
+                        // bind claims exclusive ownership of a port; any subsequent specific-host
+                        // bind on the same port must be rejected — even when both callables run
+                        // concurrently on different executor threads.
+                        //
+                        // Netty's SO_REUSEADDR lets the OS silently accept both binds, so we
+                        // enforce the rule via wildcardPortOwnership, a ConcurrentHashMap keyed
+                        // by port.  Both the wildcard registration and the conflict check are
+                        // done with a single lock-free putIfAbsent / get, so no synchronized
+                        // block is needed and there is no race window.
+                        final String resolvedHost = inetHost.equals("*") ? NettyConstants.INADDR_ANY : inetHost;
+                        if (config.isInbound()) {
+                            if (resolvedHost.equals(NettyConstants.INADDR_ANY)) {
+                                // Atomically claim the port for the wildcard.
+                                // putIfAbsent returns null if this thread won the slot.
+                                framework.getWildcardPortOwnership().putIfAbsent(inetPort, NettyFrameworkImpl.WILDCARD_OWNER);
+
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Wildcard bind registered for port " + inetPort);
+                                }
+                            } else if (NettyFrameworkImpl.WILDCARD_OWNER.equals(
+                                           framework.getWildcardPortOwnership().get(inetPort))) {
+                                // A wildcard owns this port — reject the specific-host bind.
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Wildcard channel already bound to port " + inetPort
+                                                 + "; rejecting specific-host bind for " + config.getExternalName()
+                                                 + " on host " + resolvedHost);
+                                }
+                                //CWWKO0221E
+                                Tr.error(tc, TCPMessageConstants.BIND_ERROR,
+                                         new Object[] { config.getExternalName(), resolvedHost,
+                                                        String.valueOf(inetPort), "Address already in use" });
+
+                                ChannelFuture failedFuture = channel.newFailedFuture(new java.net.BindException("Address already in use"));
+
+                                if (openListener != null) {
+                                    failedFuture.addListener(generateOpenListenerWrapper(framework, openListener));
+                                }
+                                
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Channel close out and return failedFuture");
+                                }
+                                channel.close();
+                                return failedFuture;
+                            }
+                        }
                         return open(framework, channel, config, inetHost, inetPort, openListener,
                                     config.getPortOpenRetries());
                     }
