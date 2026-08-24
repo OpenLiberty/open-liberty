@@ -54,7 +54,8 @@ Service-Component=com.ibm.ws.config.schemagen.internal; \
 com.ibm.ws.config.xml.internal.ConfigIntrospection, \
 com.ibm.ws.config.xml.internal.ServerXMLConfigurationMBeanImpl, \
 com.ibm.ws.config.schemagen.internal.ServerSchemaGeneratorImpl, \
-com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl
+com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl, \
+com.ibm.ws.config.xml.internal.ServerElementConfigImpl
 
 -includeresource: \
     OSGI-INF/permissions.perm=resources/permissions.perm, \
