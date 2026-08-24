@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.transaction.Synchronization;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -122,7 +121,7 @@ public class JPATxEntityManager extends JPAEntityManager
         // (JPA 5.5 Controlling Transactions)
         // A container-managed entity manager must be a JTA entity manager. JTA entity managers are only specified
         //  for use in Java EE containers.
-        if (puInfo.getTransactionType() != PersistenceUnitTransactionType.JTA)
+        if (!puInfo.isJtaTransactionType())
         {
             throw new RuntimeException("See JPA spec 5.5: " + puRefId + " must specify JTA transaction type.");
         }

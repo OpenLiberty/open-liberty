@@ -7,7 +7,7 @@ IBM-Process-Types: server, \
   com.ibm.websphere.appserver.eeCompatible-12.0, \
   io.openliberty.noShip-1.0
 -bundles=io.openliberty.jakarta.persistence.api.4.0
--jars=io.openliberty.jakarta.persistence.4.0; location:=dev/api/spec/; mavenCoordinates="jakarta.persistence:jakarta.persistence-api:4.0.0"
+-jars=io.openliberty.jakarta.persistence.4.0; location:=dev/api/spec/; mavenCoordinates="jakarta.persistence:jakarta.persistence-api:4.0.0-M6"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.persistence.FetchType;
 import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.PersistenceUnitTransactionType;
@@ -160,6 +161,15 @@ abstract class JaxbPUnit {
      * @return value of the excludeUnlistedClasses property.
      */
     abstract boolean isExcludeUnlistedClasses();
+
+    /**
+     * Gets the default fetch type for to-one associations.
+     *
+     * @return {@link FetchType#EAGER} for persistence descriptor versions before 4.0
+     */
+    FetchType getDefaultToOneFetchType() {
+        return FetchType.EAGER;
+    }
 
     /**
      * Gets the value of the sharedCacheMode property.

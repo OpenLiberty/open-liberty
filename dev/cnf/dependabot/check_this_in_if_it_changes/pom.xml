@@ -1759,7 +1759,7 @@
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
-      <version>4.0.0-M2</version>
+      <version>4.0.0-M6</version>
     </dependency>
     <dependency>
       <groupId>jakarta.resource</groupId>
@@ -2047,6 +2047,11 @@
       <version>1.17.8</version>
     </dependency>
     <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.18.10</version>
+    </dependency>
+    <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
       <version>5.8.0</version>
@@ -2145,6 +2150,11 @@
       <groupId>net.sourceforge.serp</groupId>
       <artifactId>serp</artifactId>
       <version>1.15.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.13.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.ant</groupId>
@@ -3892,9 +3902,19 @@
       <version>5.1.0.Final</version>
     </dependency>
     <dependency>
+      <groupId>org.hibernate.models</groupId>
+      <artifactId>hibernate-models</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>7.0.9.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>8.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -4040,6 +4060,11 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.6.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.6.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.arjunacore</groupId>

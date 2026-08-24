@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.5.0
+ * @version 1.6.0
  */
-@org.osgi.annotation.versioning.Version("1.5.0")
+@org.osgi.annotation.versioning.Version("1.6.0")
 @TraceOptions(traceGroup = "ClassLoadingService", messageBundle = "com.ibm.ws.classloading.internal.resources.ClassLoadingServiceMessages")
 package com.ibm.wsspi.classloading;
 

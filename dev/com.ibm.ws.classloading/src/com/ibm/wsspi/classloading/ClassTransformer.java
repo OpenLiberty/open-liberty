@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.wsspi.classloading;
 
 import java.security.CodeSource;
+import java.security.ProtectionDomain;
 
 /**
  * This interface allows a class to be transformed before it is loaded.
@@ -38,4 +39,25 @@ public interface ClassTransformer {
      *         defineClass(name, classBytes, 0, classBytes.length, cs);
      */
     byte[] transformClass(String name, byte[] bytes, CodeSource source, ClassLoader loader);
+
+    /**
+     * Transform a class definition or redefinition.
+     *
+     * @param name name of the class being defined
+     * @param classBeingRedefined class being redefined, or {@code null} for an initial definition
+     * @param bytes bytecode as loaded from disk
+     * @param protectionDomain protection domain used to define the class
+     * @param loader class loader defining the class
+     * @return transformed bytecode, or the original bytecode when no transformation occurs
+     */
+    default byte[] transformClass(String name,
+                                  Class<?> classBeingRedefined,
+                                  byte[] bytes,
+                                  ProtectionDomain protectionDomain,
+                                  ClassLoader loader) {
+        return transformClass(name,
+                              bytes,
+                              protectionDomain == null ? null : protectionDomain.getCodeSource(),
+                              loader);
+    }
 }

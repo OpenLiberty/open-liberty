@@ -309,6 +309,11 @@ public class JPAIntrospection {
                 }
             }
 
+            final ArrayList<javax.persistence.spi.PersistenceUnitInfo> providerPuInfoList = new ArrayList<javax.persistence.spi.PersistenceUnitInfo>();
+            for (JPAPUnitInfo puInfo : puInfoList) {
+                providerPuInfoList.add(puInfo.getProviderPersistenceUnitInfo());
+            }
+
             if (isIntrospectorDump) {
                 for (Map.Entry<URL, String> ent : puRootURL_pxml_Map.entrySet()) {
                     out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -325,12 +330,12 @@ public class JPAIntrospection {
                 }
 
                 jpaAppl.results = JPAORMDiagnostics.performJPAORMDiagnosticsForIntrospector(
-                                                                                            new ArrayList<javax.persistence.spi.PersistenceUnitInfo>(puInfoList),
+                                                                                            providerPuInfoList,
                                                                                             puRootURL_pxml_Map,
                                                                                             out);
             } else {
                 jpaAppl.results = JPAORMDiagnostics.performJPAORMDiagnosticsForTrace(
-                                                                                     new ArrayList<javax.persistence.spi.PersistenceUnitInfo>(puInfoList),
+                                                                                     providerPuInfoList,
                                                                                      puRootURL_pxml_Map);
             }
 
