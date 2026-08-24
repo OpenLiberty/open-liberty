@@ -15,6 +15,8 @@ package oidc.client.base.servlets;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import jakarta.inject.Inject;
@@ -55,6 +57,17 @@ public class BaseServlet extends HttpServlet {
         if (request.getParameter(Constants.LOGOUT) != null) {
             request.logout();
         }
+
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!In the doGet method!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        ServletLogger.printLine(outputStream, request.toString());
+        ServletLogger.printLine(outputStream, response.toString());
+
+        System.out.println("The request in the base servlet is ::::::::::::" + request);
+        System.out.println("The response in the base servlet is ::::::::::::" + response);
+        System.out.println("The outputStream in the base servlet is ::::::::::::" + outputStream);
+
+       // Log.info(this.getClass(), "doGet", "The request in the base servlet is:::::::::::::::::::::::::" + request);
+       // Log.info(this.getClass(), "doGet", "The response in the base servlet is ::::::::::::" + response);
 
         recordAppInfo(request, response, outputStream);
 
