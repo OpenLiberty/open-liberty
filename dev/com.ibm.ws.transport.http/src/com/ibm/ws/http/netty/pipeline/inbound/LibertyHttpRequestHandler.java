@@ -83,7 +83,7 @@ public class LibertyHttpRequestHandler extends ChannelDuplexHandler {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext context) throws Exception{
+    public void channelInactive(ChannelHandlerContext context) throws Exception {
         FullHttpRequest request;
         while ((request = requestQueue.poll()) != null) {
             ReferenceCountUtil.safeRelease(request);
@@ -175,7 +175,7 @@ public class LibertyHttpRequestHandler extends ChannelDuplexHandler {
             completedRequests++;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Processing next available request in request queue. Completed requests: " + completedRequests + " of max " +
-                                maxRequests + ". Queued requests: " + requestQueue.size());
+                                   maxRequests + ". Queued requests: " + requestQueue.size());
             }
             boolean draining = peerClosedConnection || closeAfterDrain || (hasMaxRequests && completedRequests >= maxRequests);
             if (draining && requestQueue.isEmpty()) {
