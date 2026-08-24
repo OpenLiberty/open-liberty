@@ -67,7 +67,6 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
-import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory.AutoScalingUtilizationMetric;
 import io.netty.util.concurrent.Future;
 
 import io.openliberty.channel.config.ChannelFrameworkConfig;
@@ -168,13 +167,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, factory);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
 
-        if (metricsWindow > 0) {
+        if (metricsWindow > 0 && TraceComponent.isAnyTracingEnabled() && NettyThreadMetrics.tc.isDebugEnabled()) {
             scheduledExecutorService.scheduleAtFixedRate(() -> {
-                StringBuilder sb = new StringBuilder("Getting metrics from MultiThreadIoEventLoopGroup with active threads " + ((MultiThreadIoEventLoopGroup)childGroup).activeExecutorCount() + " : ");
-                for (AutoScalingUtilizationMetric metric : ((MultiThreadIoEventLoopGroup)childGroup).executorUtilizations()) {
-                    sb.append("Thread@" + Integer.toHexString(metric.executor().hashCode()) + " -> " + String.format("%.2f", metric.utilization()*100.0) + "%, ");
-                }
-                Tr.info(tc, sb.toString());
+                NettyThreadMetrics.logMetrics(childGroup);
             }, metricsWindow, metricsWindow, TimeUnit.MILLISECONDS);
         }
     }
