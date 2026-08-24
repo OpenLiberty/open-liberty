@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@
 bVersion=1.0
 
 openTelemetryVersion=1.48.0
+openTelemetryVersion1620=1.62.0
 alphaOpenTelemetryVersion=1.48.0.alpha
 openTelemetryInstrumentationVersion=2.14.0
 alphaOpenTelemetryInstrumentationVersion=2.14.0.alpha
@@ -96,16 +97,16 @@ Service-Component: \
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator;version='${alphaOpenTelemetryInstrumentationVersion}';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version='1.33.6.alpha';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-runtime-telemetry-java8;version='${alphaOpenTelemetryInstrumentationVersion}';strategy=exact,\
-	io.opentelemetry:opentelemetry-api;version='1.62.0';strategy=exact,\
-	io.opentelemetry:opentelemetry-context;version='1.62.0';strategy=exact,\
-	io.opentelemetry:opentelemetry-common;version='1.62.0';strategy=exact,\
+	io.opentelemetry:opentelemetry-api;version='${openTelemetryVersion1620}';strategy=exact,\
+	io.opentelemetry:opentelemetry-context;version='${openTelemetryVersion1620}';strategy=exact,\
+	io.opentelemetry:opentelemetry-common;version='${openTelemetryVersion1620}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-logging;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-otlp-common;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-otlp;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-common;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-sender-okhttp;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-zipkin;version='${openTelemetryVersion}';strategy=exact,\
-	io.opentelemetry:opentelemetry-extension-trace-propagators;version='1.62.0';strategy=exact,\
+	io.opentelemetry:opentelemetry-extension-trace-propagators;version='${openTelemetryVersion1620}';strategy=exact,\
 	io.opentelemetry:opentelemetry-api-incubator;version='${alphaOpenTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-sdk-common;version='${openTelemetryVersion}';strategy=exact,\
