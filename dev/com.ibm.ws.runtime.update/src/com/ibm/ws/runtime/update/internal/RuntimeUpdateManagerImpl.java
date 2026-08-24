@@ -385,28 +385,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         if (preListenerRefs.isEmpty() && defaultListenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
-        ThreadQuiesce tq = (ThreadQuiesce) executorService;
+        long quiesceTimeout = serverElementConfig.getQuiesceTimeoutMillis();
 
-        long quiesceTimeout;
-        ServerElementConfig sec = serverElementConfig;
-        if (sec != null) {
-            quiesceTimeout = sec.getQuiesceTimeoutMillis();
-        } else {
-            // This branch should never execute in normal operation.
-            // quiesceListeners() runs as a SynchronousBundleListener on the system bundle
-            // STOPPING event, which blocks all bundle deactivation until it returns -- so
-            // ServerElementConfigImpl cannot be deactivated while we are here.
-            // The one theoretical exception is a DS dynamic rebind racing on a separate
-            // thread (unset then set): the volatile field and local snapshot make that safe,
-            // but the window between unset and set means null is briefly possible.
-            // If this trace fires it means a DS rebind of ServerElementConfig coincided
-            // exactly with server shutdown -- the default 30s will be used.
-            quiesceTimeout = 30000L;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "ServerElementConfig not available during quiesce; using 30s default. "
-                             + "This may indicate a DS rebind raced with server shutdown.");
-            }
-        }
         int quiesceTimeoutSeconds = (int) (quiesceTimeout / 1000L);
 
         if (isServer())
@@ -456,6 +436,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                 Tr.debug(tc, "Extending timeout for default listeners after pre listeners timed out: " + quiesceTimeout + "ms");
             }
         }
+
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
         boolean defaultListenerSuccess = callQuiesceListeners(startTime, quiesceTimeout, invoking, defaultListenerRefs, tq);
 
         if (preListenerSuccess && defaultListenerSuccess) {
