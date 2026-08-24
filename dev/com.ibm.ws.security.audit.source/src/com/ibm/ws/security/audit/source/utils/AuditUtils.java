@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -244,6 +244,19 @@ public class AuditUtils {
         } catch (Exception ex) {
         }
         return realm;
+    }
+
+    /**
+     * Returns the {@code generateNewSession} configuration value from the audit service.
+     * When the audit service is unavailable, defaults to {@code true} to preserve
+     * existing behavior.
+     *
+     * @return {@code true} if a new session should be created when none exists,
+     *         {@code false} otherwise
+     */
+    public static boolean isGenerateNewSession() {
+        AuditService svc = auditServiceRef != null ? auditServiceRef.getService() : null;
+        return (svc == null) || svc.isGenerateNewSession();
     }
 
 }

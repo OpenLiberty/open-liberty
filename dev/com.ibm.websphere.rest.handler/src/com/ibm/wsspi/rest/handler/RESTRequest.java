@@ -238,7 +238,7 @@ public interface RESTRequest {
      */
     public String getContentType();
 
-    /*
+    /**
      * Gets the session ID of the request
      *
      * @return String sessionID a String specifying the sessionID of the HTTP request
