@@ -20,6 +20,10 @@
         <feature>componentTest-2.0</feature>
     </featureManager>
 
+    <!-- Default port values; overridden by fatTestPorts.xml / testports.properties at runtime -->
+    <variable name="bvt.prop.HTTP_default" defaultValue="8010"/>
+    <variable name="bvt.prop.HTTP_default.secure" defaultValue="8020"/>
+
     <include location="../fatTestPorts.xml"/>
 
     <!-- Fix for GH-29751: generateNewSession=false prevents audit from creating a new JSESSIONID -->
