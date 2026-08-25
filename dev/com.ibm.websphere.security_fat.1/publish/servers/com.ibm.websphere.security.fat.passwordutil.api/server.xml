@@ -17,5 +17,8 @@
 		<feature>passwordUtilities-1.0</feature>
 	</featureManager>
 
+	<variable name="wlp.password.encryption.key" value="myFatPasswordEncryptionKey" />
+	<variable name="wlp.aes.encryption.key" value="prnwy497AdQ8Mr7BFlfxsEz8xOxowwC5sjBvnNXwoaM=" /> <!--pragma: allowlist secret-->
+
 	<include location="../fatTestPorts.xml" />
 </server>
