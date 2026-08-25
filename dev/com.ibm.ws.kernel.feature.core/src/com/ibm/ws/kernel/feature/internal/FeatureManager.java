@@ -2767,4 +2767,12 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
         }
     }
+
+    public FeatureRepository getFeatureRepository() {
+        return featureRepository;
+    }
+
+    public Collection<ProvisioningFeatureDefinition> getKernelFeatures() {
+        return kernelFeaturesHolder.getKernelFeatures();
+    }
 }
