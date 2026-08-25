@@ -68,6 +68,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory.AutoScalingUtilizationMetric;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
 
 import io.openliberty.channel.config.ChannelFrameworkConfig;
@@ -109,7 +110,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     private ChannelGroup outboundConnections;
 
-    private EventLoopGroup parentGroup;
+    /** Maps server channel → its dedicated accept EventLoopGroup (populated on successful bind). */
+    private final Map<Channel, EventLoopGroup> dedicatedAcceptGroups = new ConcurrentHashMap<Channel, EventLoopGroup>();
+    /** Holds dedicated groups before their channel is known (between bootstrap creation and successful bind). */
+    private final Set<EventLoopGroup> pendingDedicatedGroups = ConcurrentHashMap.newKeySet();
+
+    private EventLoopGroup sharedAcceptGroup;
     private EventLoopGroup childGroup;
 
     private volatile boolean isActive = false;
@@ -147,25 +153,19 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             Tr.debug(tc, "useNativeIO set to: " + useNativeIO);
         }
 
-        IoHandlerFactory factory;
-        if (useNativeIO && Epoll.isAvailable()) {
-            factory = EpollIoHandler.newFactory();
-        } else if (useNativeIO && KQueue.isAvailable()) {
-            factory = KQueueIoHandler.newFactory();
-        } else {
-            factory = NioIoHandler.newFactory();
-        }
+        IoHandlerFactory ioFactory = createHandlerFactory();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Created IoHandlerFactory -> " + factory);
+            Tr.debug(tc, "Created IoHandlerFactory -> " + ioFactory);
         }
 
         // Compared to channelfw, quiesce is hit every time because
         // connections are lazy cleaned on deactivate
-        parentGroup = new MultiThreadIoEventLoopGroup(1, factory);
+        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Shared TCPChannel NonBlocking Accept Thread");
+        sharedAcceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
-        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, factory);
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, ioFactory);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
         
         if (metricsWindow > 0) {
@@ -232,6 +232,42 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             // are addressed
             System.setProperty("io.netty.allocator.type", "pooled");
         }
+    }
+
+    private IoHandlerFactory createHandlerFactory() {
+        IoHandlerFactory factory;
+        if (useNativeIO && Epoll.isAvailable()) {
+            factory = EpollIoHandler.newFactory();
+        } else if (useNativeIO && KQueue.isAvailable()) {
+            factory = KQueueIoHandler.newFactory();
+        } else {
+            factory = NioIoHandler.newFactory();
+        }
+        return factory;
+    }
+
+    public MultiThreadIoEventLoopGroup getDedicatedAcceptGroup() {
+        IoHandlerFactory ioFactory = createHandlerFactory();
+        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Dedicated TCPChannel NonBlocking Accept Thread");
+        MultiThreadIoEventLoopGroup acceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
+        // Channel is not yet known at bootstrap creation time; parked in pendingDedicatedGroups
+        // until TCPUtils.open() calls registerDedicatedAcceptGroup() on successful bind.
+        pendingDedicatedGroups.add(acceptGroup);
+        return acceptGroup;
+    }
+
+    /**
+     * Promotes a pending dedicated group to the channel-keyed map once the bound channel
+     * is known. Called by TCPUtils.open() after a successful bind.
+     */
+    public void registerDedicatedAcceptGroup(Channel channel, EventLoopGroup group) {
+        if (pendingDedicatedGroups.remove(group)) {
+            dedicatedAcceptGroups.put(channel, group);
+        }
+    }
+
+    public Map<Channel, EventLoopGroup> getDedicatedAcceptGroups() {
+        return dedicatedAcceptGroups;
     }
 
     /*
@@ -417,13 +453,13 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     private void stopEventLoops() {
-        Future<?> parent = null;
+        Future<?> shared = null;
         Future<?> child = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Gracefully shutting down parentGroup Event Loop " + parentGroup);
+            Tr.debug(tc, "Gracefully shutting down sharedAcceptGroup Event Loop " + sharedAcceptGroup);
         }
-        if (parentGroup != null) {
-            parent = parentGroup.shutdownGracefully();
+        if (sharedAcceptGroup != null) {
+            shared = sharedAcceptGroup.shutdownGracefully();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Gracefully shutting down childGroup Event Loop " + childGroup);
@@ -431,11 +467,19 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (childGroup != null) {
             child = childGroup.shutdownGracefully();
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting for parentGroup Event Loop shutdown...");
+        for (EventLoopGroup dedicatedGroup : pendingDedicatedGroups) {
+            dedicatedGroup.shutdownGracefully();
         }
-        if (parent != null) {
-            parent.awaitUninterruptibly();
+        pendingDedicatedGroups.clear();
+        for (EventLoopGroup dedicatedGroup : dedicatedAcceptGroups.values()) {
+            dedicatedGroup.shutdownGracefully();
+        }
+        dedicatedAcceptGroups.clear();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Waiting for sharedAcceptGroup Event Loop shutdown...");
+        }
+        if (shared != null) {
+            shared.awaitUninterruptibly();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Waiting for childGroup Event Loop shutdown...");
@@ -691,6 +735,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                 }
                 activeChannelMap.remove(channel);
             }
+            // If this channel owned a dedicated accept EventLoopGroup, shut it down now
+            // that the channel is closing.
+            EventLoopGroup dedicatedGroup = dedicatedAcceptGroups.remove(channel);
+            if (dedicatedGroup != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Shutting down dedicated accept EventLoopGroup for stopped channel: " + channel);
+                }
+                dedicatedGroup.shutdownGracefully();
+            }
             return closeFuture;
         }
     }
@@ -739,14 +792,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         buf.append("NettyFrameworkImpl@").append(Integer.toHexString(System.identityHashCode(this)));
         buf.append(": {");
         buf.append("Parent Group: ");
-        buf.append(getParentGroup());
-        if (getParentGroup() != null) {
+        buf.append(getSharedAcceptGroup());
+        if (getSharedAcceptGroup() != null) {
             buf.append(" isShuttingDown? ");
-            buf.append(getParentGroup().isShuttingDown());
+            buf.append(getSharedAcceptGroup().isShuttingDown());
             buf.append(" isShutDown? ");
-            buf.append(getParentGroup().isShutdown());
+            buf.append(getSharedAcceptGroup().isShutdown());
             buf.append(" isTerminated? ");
-            buf.append(getParentGroup().isTerminated());
+            buf.append(getSharedAcceptGroup().isTerminated());
         }
         buf.append(", Child Group: ");
         buf.append(getChildGroup());
@@ -776,8 +829,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         return buf.toString();
     }
 
-    public EventLoopGroup getParentGroup() {
-        return this.parentGroup;
+    public EventLoopGroup getSharedAcceptGroup() {
+        return this.sharedAcceptGroup;
     }
 
     public EventLoopGroup getChildGroup() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -111,16 +111,13 @@ public class NettyChain extends HttpChain {
                     }
                     throw new IllegalStateException("Invalid chain state for stop: " + state.get());
                 }
-                else if (serverChannel.isActive()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Server Channel is active, attempting to close");
-                    }
-                    nettyFramework.stop(serverChannel, -1);
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Server Channel is NOT active while starting/started. Stopping will be left to the open future handler...");
-                    }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Server Channel is " + (serverChannel.isActive() ? "active" : "not yet active") + ", closing via framework");
                 }
+                // Block until the channel is fully closed to ensure channel.isOpen()
+                // transitions to false before stopAndWait() can unblock, preventing a new
+                // bind from racing with a still-open channel's in-flight retry loop.
+                nettyFramework.stop(serverChannel, -1);
                 serverChannel.closeFuture().addListener(future -> {
                     synchronized (stopLock) {
                         if (future.isSuccess()) {
@@ -295,6 +292,19 @@ public class NettyChain extends HttpChain {
             return;
         }
         synchronized (this) {
+            // Check if this callback is for a stale channel that bound the port after
+            // the chain was already restarted.
+            // Close the stale channel so it doesn't hold the port open for the next bind attempt.
+            if (future.channel() != serverChannel) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Stale channel " + future.channel()
+                        + " fired callback but current serverChannel is " + serverChannel + ", closing stale channel...");
+                }
+                if (future.channel().isActive()) {
+                    nettyFramework.stop(future.channel());
+                }
+                return;
+            }
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
