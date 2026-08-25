@@ -6,14 +6,12 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -59,47 +57,87 @@ public class TCKRunnerTest {
     }
 
     // ---------------------------------------------------------------------------
-    // compareJarVersionsReversed
+    // JarVersionComparator.compare()
     // ---------------------------------------------------------------------------
 
     @Test
-    public void compareJarVersionsReversed_higherPatchWins() {
-        // 1.0.117 > 1.0.99 → a should sort before b (reversed = negative result for a>b)
+    public void jarVersionComparator_value() {
         String high = "io.openliberty.jakarta.data.1.1_1.0.117.jar";
-        String low  = "io.openliberty.jakarta.data.1.1_1.0.99.jar";
+        String low = "io.openliberty.jakarta.data.1.1_1.0.99.jar";
 
-        int cmp = TCKRunner.compareJarVersionsReversed(high, low);
-        if (cmp >= 0) {
-            fail("Expected " + high + " to sort before " + low +
-                                     " but compareJarVersionsReversed returned " + cmp);
-        }
+        // 1.0.117 > 1.0.99 → a should sort before b (reversed = negative result for a>b)
+        int cmp = TCKRunner.JarVersionComparator.HIGH_TO_LOW.compare(high, low);
+        assertTrue("Expected " + high + " to sort before " + low +
+                   " but JarVersionComparator.HIGH_TO_LOW returned " + cmp,
+                   cmp < 0);
+
+        // 1.0.99 > 1.0.117 → a should sort before b (reversed = negative result for a>b)
+        cmp = TCKRunner.JarVersionComparator.LOW_TO_HIGH.compare(high, low);
+        assertTrue("Expected " + low + " to sort before " + high +
+                   " but JarVersionComparator.LOW_TO_HIGH returned " + cmp,
+                   cmp > 0);
     }
 
     @Test
-    public void compareJarVersionsReversed_lowerPatchSortsLater() {
+    public void jarVersionComparator_sort() {
         String high = "io.openliberty.jakarta.data.1.1_1.0.117.jar";
-        String low  = "io.openliberty.jakarta.data.1.1_1.0.99.jar";
-        // After sorting with the comparator, high should be first
+        String low = "io.openliberty.jakarta.data.1.1_1.0.99.jar";
+
         List<String> jars = Arrays.asList(low, high);
-        jars.sort(TCKRunner::compareJarVersionsReversed);
+
+        // After sorting with the comparator, high should be first
+        jars.sort(TCKRunner.JarVersionComparator.HIGH_TO_LOW);
         assertEquals(high, jars.get(0));
         assertEquals(low, jars.get(1));
+
+        // After sorting with the comparator, low should be first
+        jars.sort(TCKRunner.JarVersionComparator.LOW_TO_HIGH);
+        assertEquals(low, jars.get(0));
+        assertEquals(high, jars.get(1));
     }
 
     @Test
-    public void compareJarVersionsReversed_sameVersionEqual() {
+    public void jarVersionComparator_equal() {
         String jar = "artifact_1.0.5.jar";
-        assertEquals(0, TCKRunner.compareJarVersionsReversed(jar, jar));
+        assertEquals(0, TCKRunner.JarVersionComparator.HIGH_TO_LOW.compare(jar, jar));
+        assertEquals(0, TCKRunner.JarVersionComparator.LOW_TO_HIGH.compare(jar, jar));
     }
 
     @Test
-    public void compareJarVersionsReversed_majorVersionDifference() {
+    public void jarVersionComparator_major() {
         String v2 = "artifact_2.0.0.jar";
         String v1 = "artifact_1.9.9.jar";
         List<String> jars = Arrays.asList(v1, v2);
-        jars.sort(TCKRunner::compareJarVersionsReversed);
+
+        jars.sort(TCKRunner.JarVersionComparator.HIGH_TO_LOW);
         assertEquals(v2, jars.get(0));
         assertEquals(v1, jars.get(1));
+
+        jars.sort(TCKRunner.JarVersionComparator.LOW_TO_HIGH);
+        assertEquals(v1, jars.get(0));
+        assertEquals(v2, jars.get(1));
+    }
+
+    @Test
+    public void jarVersionComparator_exceptionally() {
+        String threeParts = "artifact_1.0.0.jar";
+        String fourParts = "artifact_1.0.0.0.jar";
+
+        try {
+            TCKRunner.JarVersionComparator.HIGH_TO_LOW.compare(threeParts, fourParts);
+            fail("Should have thrown IllegalStateException since versions had different number of parts.");
+        } catch (IllegalArgumentException e) {
+            //pass
+        }
+
+        String nonIntPart = "artifact_1.0.a.jar";
+
+        try {
+            TCKRunner.JarVersionComparator.HIGH_TO_LOW.compare(threeParts, nonIntPart);
+            fail("Should have thrown NumberFormatException when parsing a string which is not an integer.");
+        } catch (NumberFormatException e) {
+            //pass
+        }
     }
 
     // ---------------------------------------------------------------------------

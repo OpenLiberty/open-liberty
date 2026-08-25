@@ -1073,7 +1073,7 @@ public class TCKRunner {
         result = Arrays.asList(files)
                         .stream()
                         .filter(file -> p.matcher(file).matches())
-                        .sorted(TCKRunner::compareJarVersionsReversed)
+                        .sorted(JarVersionComparator.HIGH_TO_LOW)
                         .findFirst()
                         .orElse(null);
 
@@ -1087,39 +1087,46 @@ public class TCKRunner {
     }
 
     /**
-     * Comparator (reversed) for jar file names that compares version segments numerically.
+     * Comparators for jar file names that compares version segments numerically.
      * Jar file names are expected to contain a version suffix after the last '_', e.g.
      * {@code io.openliberty.jakarta.data.1.1_1.0.117.jar}. Each dot-separated segment is
-     * compared as an integer so that {@code 117 > 99}.  Falls back to lexicographic order
+     * compared as an integer so that {@code 117 > 99}. Falls back to lexicographic order
      * for segments that are not purely numeric.
      */
-    static int compareJarVersionsReversed(String a, String b) {
-        String verA = versionSuffix(a);
-        String verB = versionSuffix(b);
+    static class JarVersionComparator implements Comparator<String> {
+        public static final Comparator<String> LOW_TO_HIGH = new JarVersionComparator();
+        public static final Comparator<String> HIGH_TO_LOW = new JarVersionComparator().reversed();
 
-        String[] partsA = verA.split("\\.");
-        String[] partsB = verB.split("\\.");
+        @Override
+        public int compare(String a, String b) {
+            String verA = versionSuffix(a);
+            String verB = versionSuffix(b);
 
-        int len = Math.max(partsA.length, partsB.length);
-        for (int i = 0; i < len; i++) {
-            String pa = i < partsA.length ? partsA[i] : "0";
-            String pb = i < partsB.length ? partsB[i] : "0";
-            int cmp;
-            try {
-                cmp = Integer.compare(Integer.parseInt(pa), Integer.parseInt(pb));
-            } catch (NumberFormatException e) {
-                cmp = pa.compareTo(pb);
+            String[] partsA = verA.split("\\.");
+            String[] partsB = verB.split("\\.");
+
+            if (partsA.length != partsB.length) {
+                throw new IllegalArgumentException("Could not compare " + a + " to " + b +
+                                                   " because the version suffix had a different number of parts");
             }
-            if (cmp != 0) {
-                return -cmp; // reversed: higher version first
+
+            for (int i = 0; i < partsA.length; i++) {
+                String pa = partsA[i];
+                String pb = partsB[i];
+                int cmp = Integer.compare(Integer.parseInt(pa), Integer.parseInt(pb));
+                if (cmp != 0) {
+                    return cmp;
+                }
             }
+
+            return 0; // versions where the same
         }
-        return b.compareTo(a); // tie-break: reversed lexicographic on full name
     }
 
     /**
      * Extracts the version suffix from a jar filename: the portion after the last {@code '_'}
-     * and before the trailing {@code ".jar"}.  Returns an empty string if no {@code '_'} is found.
+     * and before the trailing {@code ".jar"}.
+     * Returns {@code jarFileName} with {@code ".jar"} removed if no {@code '_'} is found.
      * <p>
      * Example: {@code io.openliberty.jakarta.data.1.1_1.0.117.jar} → {@code "1.0.117"}
      */
@@ -1129,8 +1136,6 @@ public class TCKRunner {
         int underscore = name.lastIndexOf('_');
         return underscore >= 0 ? name.substring(underscore + 1) : name;
     }
-
-
 
     private static Map<String, String> getMvnEnv(File mavenUserHome) throws IOException, InterruptedException {
         Map<String, String> mvnEnv = new HashMap<>();
