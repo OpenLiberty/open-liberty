@@ -18,6 +18,9 @@ import java.util.Map;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.SynchronizationType;
+import jakarta.persistence.spi.ClassTransformer;
+import jakarta.persistence.spi.PersistenceProvider;
+import jakarta.persistence.spi.PersistenceUnitInfo;
 
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
@@ -63,6 +66,11 @@ public class JPA40Runtime extends JPA20Runtime implements JPARuntime {
     @Override
     public EntityManagerFactory createJPAEMFactory(JPAPuId puId, J2EEName j2eeName, EntityManagerFactory emf) {
         return new JPAEMFactoryV40(puId, j2eeName, emf);
+    }
+
+    @Override
+    public PersistenceUnitInfo createPersistenceUnitInfo(JPAPUnitInfo puInfo, J2EEName j2eeName) {
+        return new PersistenceUnitInfoAdapter40(puInfo, j2eeName);
     }
 
     @Override
@@ -126,5 +134,12 @@ public class JPA40Runtime extends JPA20Runtime implements JPARuntime {
     @Override
     public boolean isIgnoreDataSourceErrors(Boolean ignoreDataSource) {
         return ignoreDataSource != null ? ignoreDataSource : false;
+    }
+
+    @Override
+    public ClassTransformer getClassTransformer(PersistenceProvider provider,
+                                                PersistenceUnitInfo puInfo,
+                                                Map<?, ?> properties) {
+        return provider.getClassTransformer(puInfo, properties);
     }
 }

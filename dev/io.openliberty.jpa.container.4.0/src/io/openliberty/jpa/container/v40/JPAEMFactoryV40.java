@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2026 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@ package io.openliberty.jpa.container.v40;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import jakarta.persistence.EntityAgent;
 import jakarta.persistence.EntityGraph;
@@ -71,13 +71,13 @@ public class JPAEMFactoryV40 extends JPAEMFactory{
     }
 
     @Override
-    public EntityAgent createEntityAgent() {
-        return ivFactory.createEntityAgent();
+    public EntityAgent createEntityAgent(EntityAgent.CreationOption... options) {
+        return ivFactory.createEntityAgent(options);
     }
 
     @Override
-    public EntityManager createEntityManager(SynchronizationType arg0) {
-        return ivFactory.createEntityManager(arg0);
+    public EntityManager createEntityManager(EntityManager.CreationOption... options) {
+        return ivFactory.createEntityManager(options);
     }
 
     @Override

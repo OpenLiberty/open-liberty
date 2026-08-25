@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.ClassTransformer;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.Transaction.UOWCoordinator;
@@ -40,6 +43,11 @@ public class JPA20Runtime implements JPARuntime {
     @Override
     public EntityManagerFactory createJPAEMFactory(JPAPuId puId, J2EEName j2eeName, EntityManagerFactory emf) {
         return new JPAEMFactory(puId, j2eeName, emf);
+    }
+
+    @Override
+    public PersistenceUnitInfo createPersistenceUnitInfo(JPAPUnitInfo puInfo, J2EEName j2eeName) {
+        return new JPACompPUnitInfo(puInfo.getIvArchivePuId(), puInfo, j2eeName);
     }
 
     @Override
@@ -85,6 +93,13 @@ public class JPA20Runtime implements JPARuntime {
     @Override
     public String processJEE7JTADataSource(String jtaDataSource, String nonJtaDataSource) {
         return jtaDataSource;
+    }
+
+    @Override
+    public ClassTransformer getClassTransformer(PersistenceProvider provider,
+                                                PersistenceUnitInfo puInfo,
+                                                Map<?, ?> properties) {
+        return null;
     }
 
 }

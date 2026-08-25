@@ -520,10 +520,10 @@ public abstract class AbstractJPAComponent
                                 if (modName != null) {
                                     String modUnitName = unitInfo.getIvArchivePuId().getModJarName();
                                     if (modUnitName != null && modName.equals(modName)) {
-                                        matchedUnits.add(unitInfo);
+                                        matchedUnits.add(unitInfo.getProviderPersistenceUnitInfo());
                                     }
                                 } else {
-                                    matchedUnits.add(unitInfo);
+                                    matchedUnits.add(unitInfo.getProviderPersistenceUnitInfo());
                                 }
                             }
                         }
@@ -545,7 +545,10 @@ public abstract class AbstractJPAComponent
      */
     @Override
     public EntityManagerFactory getEntityManagerFactory(J2EEName j2eeName, PersistenceUnitInfo persistenceUnitInfo) {
-        return ((JPAPUnitInfo) persistenceUnitInfo).getEntityManagerFactory(j2eeName);
+        if (!(persistenceUnitInfo instanceof PersistenceUnitInfoDelegate)) {
+            throw new IllegalArgumentException("PersistenceUnitInfo was not created by this JPA container: " + persistenceUnitInfo);
+        }
+        return ((PersistenceUnitInfoDelegate) persistenceUnitInfo).getPersistenceUnitState().getEntityManagerFactory(j2eeName);
     }
 
     /**

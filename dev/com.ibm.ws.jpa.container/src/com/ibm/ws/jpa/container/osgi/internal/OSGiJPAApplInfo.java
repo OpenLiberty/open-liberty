@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,9 @@
 package com.ibm.ws.jpa.container.osgi.internal;
 
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.ws.container.service.app.deploy.ApplicationClassesContainerInfo;
@@ -31,9 +33,12 @@ import com.ibm.ws.jpa.management.JPAScopeInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 
 public class OSGiJPAApplInfo extends JPAApplInfo {
     private final ApplicationInfo appInfo;
+    private final Map<ClassLoader, PersistenceClassTransformerCoordinator> transformerCoordinators =
+                    new IdentityHashMap<ClassLoader, PersistenceClassTransformerCoordinator>();
 
     OSGiJPAApplInfo(AbstractJPAComponent jpaComponent, String name, ApplicationInfo appInfo) {
         super(jpaComponent, name);
@@ -42,7 +47,7 @@ public class OSGiJPAApplInfo extends JPAApplInfo {
 
     @Override
     protected JPAPUnitInfo createJPAPUnitInfo(JPAPuId puId, JPAPXml pxml, JPAScopeInfo scopeInfo) {
-        return new OSGiJPAPUnitInfo(this, puId, pxml.getClassLoader(), scopeInfo);
+        return new OSGiJPAPUnitInfo(this, puId, pxml.getClassLoader(), scopeInfo, (OSGiJPAPXml) pxml);
     }
 
     void introspect() {
@@ -52,6 +57,49 @@ public class OSGiJPAApplInfo extends JPAApplInfo {
 
     Container getContainer() {
         return appInfo.getContainer();
+    }
+
+    boolean getUseJandex() {
+        return appInfo.getUseJandex();
+    }
+
+    synchronized boolean registerContainerManagedTransformer(ClassLoadingService service,
+                                                              ClassLoader classLoader,
+                                                              OSGiJPAPUnitInfo persistenceUnitInfo) {
+        PersistenceClassTransformerCoordinator coordinator = transformerCoordinators.get(classLoader);
+        if (coordinator != null) {
+            coordinator.add(persistenceUnitInfo, persistenceUnitInfo.getAllClassNames(), persistenceUnitInfo);
+            return true;
+        }
+
+        coordinator = new PersistenceClassTransformerCoordinator();
+        coordinator.add(persistenceUnitInfo, persistenceUnitInfo.getAllClassNames(), persistenceUnitInfo);
+        if (!service.registerTransformer(coordinator, classLoader)) {
+            return false;
+        }
+
+        transformerCoordinators.put(classLoader, coordinator);
+        return true;
+    }
+
+    synchronized boolean unregisterContainerManagedTransformer(ClassLoadingService service,
+                                                                ClassLoader classLoader,
+                                                                OSGiJPAPUnitInfo persistenceUnitInfo) {
+        PersistenceClassTransformerCoordinator coordinator = transformerCoordinators.get(classLoader);
+        if (coordinator == null) {
+            return false;
+        }
+
+        coordinator.remove(persistenceUnitInfo);
+        if (!coordinator.isEmpty()) {
+            return true;
+        }
+
+        boolean unregistered = service.unregisterTransformer(coordinator, classLoader);
+        if (unregistered) {
+            transformerCoordinators.remove(classLoader);
+        }
+        return unregistered;
     }
 
     private Set<String> introspectionIdentifyApplicationModules() {

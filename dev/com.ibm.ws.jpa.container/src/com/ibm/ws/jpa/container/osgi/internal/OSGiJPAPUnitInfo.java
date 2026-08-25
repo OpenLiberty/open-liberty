@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.container.osgi.internal;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -88,10 +91,17 @@ public class OSGiJPAPUnitInfo extends JPAPUnitInfo implements ClassTransformer {
     }
 
     private final JPAScopeInfo scopeInfo;
+    private final PersistenceUnitModelDiscovery.Source rootSource;
+    private final List<PersistenceUnitModelDiscovery.Source> referencedSources = new ArrayList<PersistenceUnitModelDiscovery.Source>();
 
-    OSGiJPAPUnitInfo(OSGiJPAApplInfo applInfo, JPAPuId puId, ClassLoader classLoader, JPAScopeInfo scopeInfo) {
+    OSGiJPAPUnitInfo(OSGiJPAApplInfo applInfo,
+                     JPAPuId puId,
+                     ClassLoader classLoader,
+                     JPAScopeInfo scopeInfo,
+                     OSGiJPAPXml pxml) {
         super(applInfo, puId, classLoader);
         this.scopeInfo = scopeInfo;
+        this.rootSource = pxml.getRootSource();
     }
 
     @Override
@@ -101,6 +111,7 @@ public class OSGiJPAPUnitInfo extends JPAPUnitInfo implements ClassTransformer {
 
     @Override
     protected boolean addJarFileUrls(String jarPath, JPAPXml xml) {
+        String diagnosticPath = jarPath;
         OSGiJPAPXml osgiPXml = (OSGiJPAPXml) xml;
         Container puBase = osgiPXml.getPuRootContainer();
         if (scopeInfo.getScopeType() == JPAPuScope.Web_Scope) {
@@ -201,12 +212,43 @@ public class OSGiJPAPUnitInfo extends JPAPUnitInfo implements ClassTransformer {
         try {
             jarContainer = path.adapt(Container.class);
             addContainerUrls(jarContainer);
+            referencedSources.add(new PersistenceUnitModelDiscovery.Source(jarContainer, null, diagnosticPath));
         } catch (Exception e) {
             e.getClass(); // findbugs
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    protected void discoverAllClassNames() {
+        if (!"4.0".equals(getPersistenceXMLSchemaVersion())) {
+            return;
+        }
+
+        final OSGiJPAApplInfo applInfo = (OSGiJPAApplInfo) ivApplInfo;
+        PersistenceUnitModelDiscovery.Context context = new PersistenceUnitModelDiscovery.Context(
+                        ivArchivePuId.getApplName(),
+                        ivArchivePuId.getModJarName(),
+                        getPersistenceUnitName(),
+                        rootSource,
+                        !excludeUnlistedClasses(),
+                        referencedSources,
+                        getManagedClassNames(),
+                        getMappingFileNames(),
+                        new PersistenceUnitModelDiscovery.MappingResourceAccess() {
+                            @Override
+                            public InputStream open(String resourceName) {
+                                String normalizedName = resourceName.startsWith("/") ? resourceName.substring(1) : resourceName;
+                                return ivClassLoader.getResourceAsStream(normalizedName);
+                            }
+                        },
+                        ivClassLoader,
+                        applInfo.getUseJandex());
+
+        PersistenceUnitModelDiscovery.Result result = new LibertyPersistenceUnitModelDiscovery().discover(context);
+        setAllClassNames(result.getAllClassNames());
     }
 
     private Container getContainerLocation(Container base, String location) {
@@ -258,11 +300,15 @@ public class OSGiJPAPUnitInfo extends JPAPUnitInfo implements ClassTransformer {
             ClassLoadingService service = ctx.getService(reference);
 
             if (service != null) {
-                // Register "this" object plugin to the appl/module ClassLoader hierarchy.
-                // When class is loaded by this ClassLoader, the transformClass method of this
-                // plug-in will be invoked. This allows the persistence providers registered to this
-                // PUnitInfo object a chance to class tranform the POJO entities.
-                transformerRegistered = service.registerTransformer(this, classLoader);
+                if (usesContainerManagedClassTransformer()) {
+                    transformerRegistered = ((OSGiJPAApplInfo) ivApplInfo).registerContainerManagedTransformer(service, classLoader, this);
+                } else {
+                    // Register "this" object plugin to the appl/module ClassLoader hierarchy.
+                    // When class is loaded by this ClassLoader, the transformClass method of this
+                    // plug-in will be invoked. This allows the persistence providers registered to this
+                    // PUnitInfo object a chance to class tranform the POJO entities.
+                    transformerRegistered = service.registerTransformer(this, classLoader);
+                }
 
                 ctx.ungetService(reference);
             }
@@ -279,11 +325,16 @@ public class OSGiJPAPUnitInfo extends JPAPUnitInfo implements ClassTransformer {
             ClassLoadingService service = ctx.getService(reference);
 
             if (service != null) {
-                // Unregister "this" object plugin from the appl/module ClassLoader hierarchy.
-                // When class is loaded by this ClassLoader, the transformClass method of this
-                // plug-in will be invoked. This allows the persistence providers registered to this
-                // PUnitInfo object a chance to class tranform the POJO entities.
-                boolean transformerUnregistered = service.unregisterTransformer(this, classLoader);
+                boolean transformerUnregistered;
+                if (usesContainerManagedClassTransformer()) {
+                    transformerUnregistered = ((OSGiJPAApplInfo) ivApplInfo).unregisterContainerManagedTransformer(service, classLoader, this);
+                } else {
+                    // Unregister "this" object plugin from the appl/module ClassLoader hierarchy.
+                    // When class is loaded by this ClassLoader, the transformClass method of this
+                    // plug-in will be invoked. This allows the persistence providers registered to this
+                    // PUnitInfo object a chance to class tranform the POJO entities.
+                    transformerUnregistered = service.unregisterTransformer(this, classLoader);
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && transformerUnregistered)
                     Tr.debug(tc, "transformer unregistered from " + ivClassLoader);
 

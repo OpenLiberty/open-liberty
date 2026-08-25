@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,15 +39,34 @@ public class OSGiJPAPXml extends JPAPXml {
     private static final TraceComponent tc = Tr.register(OSGiJPAPXml.class);
 
     private final Entry ivPxml;
+    private final PersistenceUnitModelDiscovery.Source rootSource;
 
     /**
-     * @param pxmlUrl
+     * Create persistence descriptor metadata while retaining its authoritative
+     * Liberty deployment source for Jakarta Persistence 4 model discovery.
+     *
+     * @param applInfo application persistence metadata
+     * @param archiveName persistence-unit archive name
+     * @param puScope persistence-unit scope
+     * @param puRoot provider-facing persistence-unit root URL
+     * @param classloader persistence-unit class loader
+     * @param pxml persistence descriptor entry
+     * @param rootContainer root deployment container
+     * @param rootEntryPrefix optional root prefix within the container
      */
-    OSGiJPAPXml(JPAApplInfo applInfo, String archiveName, JPAPuScope puScope, URL puRoot, ClassLoader classloader, Entry pxml) {
+    OSGiJPAPXml(JPAApplInfo applInfo,
+                String archiveName,
+                JPAPuScope puScope,
+                URL puRoot,
+                ClassLoader classloader,
+                Entry pxml,
+                Container rootContainer,
+                String rootEntryPrefix) {
         super(applInfo, archiveName, puScope, puRoot, classloader);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "<init> : " + pxml);
         ivPxml = pxml;
+        rootSource = new PersistenceUnitModelDiscovery.Source(rootContainer, rootEntryPrefix, archiveName);
     }
 
     /** {@inheritDoc} */
@@ -87,5 +106,9 @@ public class OSGiJPAPXml extends JPAPXml {
      */
     Container getPuRootContainer() {
         return ivPxml.getEnclosingContainer();
+    }
+
+    PersistenceUnitModelDiscovery.Source getRootSource() {
+        return rootSource;
     }
 }
