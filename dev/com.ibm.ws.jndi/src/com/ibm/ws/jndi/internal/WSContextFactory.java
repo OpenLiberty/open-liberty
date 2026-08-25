@@ -42,6 +42,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jndi.internal.JNDIServiceBinderManager.JNDIServiceBinderHolder;
 
@@ -79,6 +80,7 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory, A
         userContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getBundleContext().removeServiceListener(this);
     }
 
+    @Sensitive
     Object getService(final ServiceReference<?> ref) {
         return cache.computeIfAbsent(ref, (r) -> AccessController.doPrivileged((PrivilegedAction<Object>) () -> userContext.getService(r)));
     }

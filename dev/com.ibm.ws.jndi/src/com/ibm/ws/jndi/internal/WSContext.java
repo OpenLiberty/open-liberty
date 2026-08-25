@@ -105,7 +105,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
      */
     @FFDCIgnore({ NamingException.class })
     @Sensitive
-    Object resolveObject(Object o, WSName subname) throws NamingException {
+    Object resolveObject(@Sensitive Object o, WSName subname) throws NamingException {
         ServiceReference<?> ref = null;
         try {
             if (o instanceof ContextNode)
@@ -145,7 +145,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
 
                 Object origin = ref.getProperty(JNDIServiceBinder.OSGI_JNDI_SERVICE_ORIGIN);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Retrieved service from registry", o,
+                    Tr.debug(tc, "Retrieved service from registry",
                              JNDIServiceBinder.OSGI_JNDI_SERVICE_ORIGIN + "=" + origin,
                              Constants.OBJECTCLASS + "=" + Arrays.toString((String[]) ref.getProperty(Constants.OBJECTCLASS)));
                 getObjectInstance = JNDIServiceBinder.OSGI_JNDI_SERVICE_ORIGIN_VALUE.equals(origin) ||
@@ -508,6 +508,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
     }
 
     @Override
+    @Sensitive
     public Reference getReference() throws NamingException {
         return WSContextFactory.makeReference(this);
     }
@@ -518,6 +519,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
         return "" + myNode;
     }
 
+    @Sensitive
     private Object getReference(ServiceReference<?> ref) {
         return creatingFactory.getService(ref);
     }

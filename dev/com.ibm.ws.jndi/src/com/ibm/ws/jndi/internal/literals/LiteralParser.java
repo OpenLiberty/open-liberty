@@ -23,8 +23,6 @@ public enum LiteralParser {
         for (LiteralType type : LiteralType.values())
             if (type.matches(s))
                 return type.parse(s);
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "String did not match any known types", s);
         return s;
     }
 }

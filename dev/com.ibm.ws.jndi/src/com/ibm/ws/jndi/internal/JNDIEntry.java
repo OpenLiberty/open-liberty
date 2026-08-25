@@ -29,6 +29,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jndi.internal.literals.LiteralParser;
+import com.ibm.websphere.ras.annotation.Sensitive;
 
 /**
  * <p>
@@ -56,7 +57,7 @@ public class JNDIEntry {
      * @param context
      * @param props The properties containing values for <code>"jndiName"</code> and <code>"value"</code>
      */
-    protected synchronized void activate(BundleContext context, Map<String, Object> props) {
+    protected synchronized void activate(BundleContext context, @Sensitive Map<String, Object> props) {
 
         String jndiName = (String) props.get("jndiName");
         String originalValue = (String) props.get("value");
@@ -85,7 +86,8 @@ public class JNDIEntry {
      * @param decode if true, val is decoded if it's encrypted, otherwise val is parsed directly.
      * @return the parsed literal value
      */
-    static Object parseLiteral(String val, boolean decode) {
+    @Sensitive
+      static Object parseLiteral(@Sensitive String val, boolean decode) {
         String decodedVal = val;
         if (decode && PasswordUtil.isEncrypted(val)) {
             try {
@@ -117,19 +119,20 @@ public class JNDIEntry {
      */
     private static class Decode implements ServiceFactory<Object> {
 
-        private final String value;
+     @Sensitive private final String value;
 
-        public Decode(String value) {
+        public Decode(@Sensitive String value) {
             this.value = value;
         }
 
         @Override
+        @Sensitive
         public Object getService(Bundle bundle, ServiceRegistration<Object> registration) {
             return parseLiteral(value, true);
         }
 
         @Override
-        public void ungetService(Bundle bundle, ServiceRegistration<Object> registration, Object service) {}
+        public void ungetService(Bundle bundle, ServiceRegistration<Object> registration, @Sensitive Object service) {}
 
     }
 
