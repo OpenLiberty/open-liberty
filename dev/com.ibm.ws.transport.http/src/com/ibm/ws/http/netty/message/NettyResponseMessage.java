@@ -75,17 +75,25 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
         this.trailers = new DefaultHttpHeaders().clear();
-        this.nettyTrailerWrapper = new NettyTrailers(this.trailers);
-
-        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-            String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-            nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
-
-        }
+        this.nettyTrailerWrapper = new NettyTrailers(this.trailers, new Runnable() {
+            @Override
+            public void run() {
+                forceChunkedEncodingForTrailers();
+            }
+        });
 
         if (isc instanceof HttpInboundServiceContextImpl) {
-            incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());
-            this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
+            HttpInboundServiceContextImpl inbound = (HttpInboundServiceContextImpl) isc;
+            incoming(inbound.isInboundConnection());
+            this.config = inbound.getHttpConfig();
+            // Response STREAM_ID is owned by validated request provenance, never by a
+            // client-supplied request header alone.
+            final CharSequence streamIdHeader = HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text();
+            if (inbound.isNettyHttp2Request()) {
+                nettyResponse.headers().set(streamIdHeader, inbound.getNettyHttp2StreamId());
+            } else {
+                nettyResponse.headers().remove(streamIdHeader);
+            }
         }
 
         super.init(response, context, config);
@@ -201,6 +209,20 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public boolean isChunkedEncodingSet() {
         return HttpUtil.isTransferEncodingChunked(nettyResponse);
+    }
+
+    @Override
+    public void setContentLength(long length) {
+        if (isChunkedEncodingSet() || nettyTrailerWrapper.hasTrailersToSend()) {
+            forceChunkedEncodingForTrailers();
+            return;
+        }
+        super.setContentLength(length);
+    }
+
+    void forceChunkedEncodingForTrailers() {
+        HttpUtil.setTransferEncodingChunked(nettyResponse, true);
+        headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
     }
 
     @Override

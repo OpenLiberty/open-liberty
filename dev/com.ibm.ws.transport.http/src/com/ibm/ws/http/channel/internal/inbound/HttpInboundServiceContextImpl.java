@@ -9,9 +9,11 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.inbound;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
+import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -38,6 +41,7 @@ import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -63,6 +67,7 @@ import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
+import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.logging.DebugLog;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
@@ -70,6 +75,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
+
 
 /**
  * Service context specific to an inbound HTTP message.
@@ -1726,10 +1732,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.entry(tc, "getRequestBodyBuffer(async) hc: " + this.hashCode());
         }
 
-        // Netty involved so need to just call it complete
         if (Objects.nonNull(this.nettyContext)) {
-            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
-            return null;
+            return getNettyRequestBodyBuffer(callback, bForce);
         }
 
         boolean isError = false;
@@ -1810,6 +1814,73 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         } finally {
             countDownFirstReadLatch(isError);
         }
+    }
+
+    private VirtualConnection getNettyRequestBodyBuffer(InterChannelCallback callback, boolean bForce){
+        HttpInputStreamImpl body = this.nettyContext.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
+        if (body == null){
+            VirtualConnection vc = getVC();
+            if (vc != null && vc.getStateMap() != null){
+                Object stream = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
+                if (stream instanceof HttpInputStreamImpl){
+                    body = (HttpInputStreamImpl) stream;
+                }
+            }
+        }
+
+        if (body instanceof HttpInputStreamEE7 && body.isStreamingNetty()){
+            HttpInputStreamEE7 nettyBody = (HttpInputStreamEE7) body;
+            try{
+                if (nettyBody.asyncCheckStreamingNettyBuffers(callback)){
+                    if (bForce){
+                        dispatchNettyRequestBodyCallback(() -> completeNettyRequestBodyWhenReady(nettyBody, callback));
+                        return null;
+                    }
+                    return NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC;
+                }
+            } catch (IOException ioe){
+                callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
+            }
+            return null;
+        }
+        armNettyRequestBodyCallback(callback);
+        return null;
+    }
+
+    private void completeNettyRequestBodyWhenReady(HttpInputStreamEE7 body, InterChannelCallback callback) {
+        try {
+            if (body.asyncCheckStreamingNettyBuffers(callback)) {
+                callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+            }
+        } catch (IOException ioe) {
+            callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
+        }
+    }
+
+    private void dispatchNettyRequestBodyCallback(Runnable pending) {
+        AsyncReadDispatchState.forChannel(this.nettyContext.channel())
+                        .submitReady(pending, null);
+    }
+
+    private void armNettyRequestBodyCallback(InterChannelCallback callback) {
+        AtomicBoolean delivered = new AtomicBoolean();
+        AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(this.nettyContext.channel());
+        Runnable success = () -> {
+            if (!delivered.compareAndSet(false, true)) {
+                return;
+            }
+            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+        };
+        Runnable error = () -> {
+            if (!delivered.compareAndSet(false, true)) {
+                return;
+        }
+        callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, 
+               new EOFException("Peer input shutdown before request body completed."));
+        };
+
+        state.arm(success, error);
+        ReadFlowHandler.setBodyReadWanted(this.nettyContext, true);
     }
 
     public void countDownFirstReadLatch(boolean force) {
