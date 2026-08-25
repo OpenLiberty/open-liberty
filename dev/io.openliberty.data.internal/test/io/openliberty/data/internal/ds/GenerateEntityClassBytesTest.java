@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.data.internal.service;
+package io.openliberty.data.internal.ds;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.CheckClassAdapter;
 
+import io.openliberty.data.internal.ds.ClassDefiner;
+import io.openliberty.data.internal.ds.RecordTransformer;
 import io.openliberty.data.internal.models.Ambiguous;
 import io.openliberty.data.internal.models.Boxed;
 import io.openliberty.data.internal.models.Empty;
@@ -32,8 +34,6 @@ import io.openliberty.data.internal.models.GenericInfer;
 import io.openliberty.data.internal.models.Naming;
 import io.openliberty.data.internal.models.Primitive;
 import io.openliberty.data.internal.models.Special;
-import io.openliberty.data.internal.service.ClassDefiner;
-import io.openliberty.data.internal.service.RecordTransformer;
 import jakarta.data.exceptions.DataException;
 
 /**

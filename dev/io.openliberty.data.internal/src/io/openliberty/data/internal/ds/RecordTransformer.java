@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.data.internal.service;
+package io.openliberty.data.internal.ds;
 
 import static io.openliberty.data.internal.EntityHandlerFactory.getClassNames;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
