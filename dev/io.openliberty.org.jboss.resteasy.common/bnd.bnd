@@ -27,7 +27,7 @@ src: src, resources
 
 app-resources= \
   META-INF/services/javax.ws.rs.client.ClientBuilder | \
-  META-INF/services/javax.ws.rs.sse.SseEventSource\$Builder | \
+  META-INF/services/javax.ws.rs.sse.SseEventSource$Builder | \
   META-INF/services/javax.ws.rs.sse.SseEventSource.Builder | \
   META-INF/services/javax.ws.rs.ext.RuntimeDelegate | \
   META-INF/services/javax.ws.rs.ext.Providers

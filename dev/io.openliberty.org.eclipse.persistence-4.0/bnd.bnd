@@ -31,7 +31,7 @@ Export-Package: jakarta.persistence.*; jpa=4.0; consumer=persistenceService; man
 Private-Package: io.openliberty.jakarta.persistence.internal
 
 Include-Resource: \
-   @\${repo;jakarta.persistence:jakarta.persistence-api;4.0}!/about.html
+   @${repo;jakarta.persistence:jakarta.persistence-api;4.0}!/about.html
 
 instrument.disabled: true
 

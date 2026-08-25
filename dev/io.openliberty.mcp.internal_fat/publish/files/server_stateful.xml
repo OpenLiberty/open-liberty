@@ -1,0 +1,15 @@
+<server description="Stateful checkpoint Liberty server after restore">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcp-1.0</feature>
+  </featureManager>
+  
+  <application location="statelessConfigChangeTest.war">
+  	<mcp stateless="false"/>
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+  
+</server>
