@@ -722,150 +722,80 @@ public class XMLConfigParserTest {
 
     @Test
     public void testQuiesceTimeoutDefault() throws Exception {
-        try {
-            // Enable beta mode for this test
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        changeLocationSettings("default");
 
-            changeLocationSettings("default");
+        // Parse server.xml without quiesceTimeout attribute - should use default
+        ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server><foo bar=\"test\"/></server>"));
 
-            // Parse server.xml without quiesceTimeout attribute - should use default
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server><foo bar=\"test\"/></server>"));
-
-            // Value should be default 30 since no quiesceTimeout attribute was present
-            assertEquals(30000, config.getQuiesceTimeoutMillis());
-        } finally {
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
+        // Value should be default 30 since no quiesceTimeout attribute was present
+        assertEquals(30000, config.getQuiesceTimeoutMillis());
     }
 
     @Test
     public void testQuiesceTimeoutValid() throws Exception {
-        try {
-            // Enable beta mode for this test
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        changeLocationSettings("default");
 
-            changeLocationSettings("default");
+        // Parse server.xml with valid quiesceTimeout attribute
+        ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"45\"><foo bar=\"test\"/></server>"));
 
-            // Parse server.xml with valid quiesceTimeout attribute
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"45\"><foo bar=\"test\"/></server>"));
-
-            assertEquals(45000, config.getQuiesceTimeoutMillis());
-        } finally {
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
+        assertEquals(45000, config.getQuiesceTimeoutMillis());
     }
 
     @Test
     public void testQuiesceTimeoutBelowMinimum() throws Exception {
-        try {
-            // Enable beta mode for this test
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        changeLocationSettings("default");
 
-            changeLocationSettings("default");
+        // Parse server.xml with quiesceTimeout below minimum
+        ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"15\"><foo bar=\"test\"/></server>"));
 
-            // Parse server.xml with quiesceTimeout below minimum
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"15\"><foo bar=\"test\"/></server>"));
-
-            // Verify warning is issued
-            assertTrue("A warning should be issued for quiesceTimeout below minimum", outputMgr.checkForMessages("CWWKG0111W.*"));
-            // Verify parser set value to 30 (default) due to below minimum value
-            assertEquals(30000, config.getQuiesceTimeoutMillis());
-        } finally {
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
+        // Verify warning is issued
+        assertTrue("A warning should be issued for quiesceTimeout below minimum", outputMgr.checkForMessages("CWWKG0111W.*"));
+        // Verify parser set value to 30 (default) due to below minimum value
+        assertEquals(30000, config.getQuiesceTimeoutMillis());
     }
 
     @Test
     public void testQuiesceTimeoutNotValid() throws Exception {
-        try {
-            // Enable beta mode for this test
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        changeLocationSettings("default");
 
-            changeLocationSettings("default");
+        // Parse server.xml with not valid (non-numeric) quiesceTimeout
+        ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"notValid\"><foo bar=\"test\"/></server>"));
 
-            // Parse server.xml with not valid (non-numeric) quiesceTimeout
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"notValid\"><foo bar=\"test\"/></server>"));
-
-            // Verify warning is issued
-            assertTrue("A warning should be issued for not valid quiesceTimeout", outputMgr.checkForMessages("CWWKG0111W.*"));
-            // Verify parser set value to 30 (default) due to garbage input
-            assertEquals(30000, config.getQuiesceTimeoutMillis());
-        } finally {
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
+        // Verify warning is issued
+        assertTrue("A warning should be issued for not valid quiesceTimeout", outputMgr.checkForMessages("CWWKG0111W.*"));
+        // Verify parser set value to 30 (default) due to garbage input
+        assertEquals(30000, config.getQuiesceTimeoutMillis());
     }
 
     @Test
     public void testQuiesceTimeoutAtMinimum() throws Exception {
-        try {
-            // Enable beta mode for this test
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        changeLocationSettings("default");
 
-            changeLocationSettings("default");
+        // Parse server.xml with quiesceTimeout at minimum (30 seconds)
+        ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"30\"><foo bar=\"test\"/></server>"));
+        // Verify parser set value to 30
+        assertEquals(30000, config.getQuiesceTimeoutMillis());
 
-            // Parse server.xml with quiesceTimeout at minimum (30 seconds)
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"30\"><foo bar=\"test\"/></server>"));
-            // Verify parser set value to 30
-            assertEquals(30000, config.getQuiesceTimeoutMillis());
-
-            // Verify no warning is issued
-            assertTrue("No warning should be issued for valid minimum timeout", !outputMgr.checkForMessages("CWWKG0111W.*"));
-        } finally {
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
+        // Verify no warning is issued
+        assertTrue("No warning should be issued for valid minimum timeout", !outputMgr.checkForMessages("CWWKG0111W.*"));
     }
 
     @Test
     public void testQuiesceTimeoutLargeValue() throws Exception {
-        try {
-            // Enable beta mode for this test
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        changeLocationSettings("default");
 
-            changeLocationSettings("default");
-
-            // Parse server.xml with large quiesceTimeout value
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"400\"><foo bar=\"test\"/></server>"));
-            assertEquals(400000, config.getQuiesceTimeoutMillis());
-        } finally {
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
+        // Parse server.xml with large quiesceTimeout value
+        ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"400\"><foo bar=\"test\"/></server>"));
+        assertEquals(400000, config.getQuiesceTimeoutMillis());
     }
-    
+
     @Test
     public void testQuiesceTimeoutWithDurationSyntax() throws Exception {
-        try {
-            // Enable beta mode for this test
-            System.setProperty("com.ibm.ws.beta.edition", "true");
+        changeLocationSettings("default");
 
-            changeLocationSettings("default");
-
-            // Parse server.xml with duration syntax (1m30s = 90 seconds)
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"1m30s\"><foo bar=\"test\"/></server>"));
-            assertEquals(90000, config.getQuiesceTimeoutMillis());
-        } finally {
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
-    }
-
-    @Test
-    public void testQuiesceTimeoutIgnoredInNonBetaMode() throws Exception {
-        // Ensure beta mode is NOT enabled (system property not set)
-        System.clearProperty("com.ibm.ws.beta.edition");
-
-        try {
-            changeLocationSettings("default");
-
-            // Parse server.xml with quiesceTimeout attribute in non-beta mode
-            // The attribute should be completely ignored and default of 30 seconds used
-            ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"90\"><foo bar=\"test\"/></server>"));
-
-            // Verify the timeout is still the default 30 seconds, not 90
-            assertEquals("In non-beta mode, quiesceTimeout attribute should be ignored and default 30s used",
-                         30000, config.getQuiesceTimeoutMillis());
-        } finally {
-            // Ensure property is cleared even if test fails
-            System.clearProperty("com.ibm.ws.beta.edition");
-        }
+        // Parse server.xml with duration syntax (1m30s = 90 seconds)
+        ServerConfiguration config = configParser.parseServerConfiguration(new StringReader("<server quiesceTimeout=\"1m30s\"><foo bar=\"test\"/></server>"));
+        assertEquals(90000, config.getQuiesceTimeoutMillis());
     }
 }
 

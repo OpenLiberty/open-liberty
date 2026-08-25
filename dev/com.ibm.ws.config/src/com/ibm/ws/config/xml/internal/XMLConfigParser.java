@@ -321,7 +321,6 @@ public class XMLConfigParser {
 
     /**
      * Parse and process the quiesceTimeout attribute from the server element.
-     * This is a beta-only feature that sets the server quiesce timeout.
      *
      * <p><b>Important Note on <server> Element Attribute Processing:</b></p>
      * The <server> element is the root element in server.xml and is parsed directly here in
@@ -345,11 +344,9 @@ public class XMLConfigParser {
     @FFDCIgnore(IllegalArgumentException.class)
     private void parseQuiesceTimeout(DepthAwareXMLStreamReader parser, BaseConfiguration config) {
 
-        boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-        String quiesceTimeoutValue = (isBeta) ? getAttributeValue(parser, "quiesceTimeout") : null;
+        String quiesceTimeoutValue = getAttributeValue(parser, "quiesceTimeout");
 
         if (quiesceTimeoutValue != null) {
-            // Beta mode with quiesceTimeout attribute present
             try {
                 Long timeout;
                 // Check if value contains a unit suffix (letters), or did they just specify a number.
@@ -367,13 +364,13 @@ public class XMLConfigParser {
                     Long timeoutSeconds = KernelUtils.evaluateDuration(quiesceTimeoutValue, TimeUnit.SECONDS);
                     timeout = (timeoutSeconds != null) ? timeoutSeconds * 1000L : null;
                 }
-                
+
                 if (timeout == null) {
                     setQuiesceTimeoutFromMetatype(config);
                     Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
                     return;
                 }
-                
+
                 boolean isValid = config.setQuiesceTimeoutMillis(timeout);
                 if (!isValid) {
                     Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
@@ -383,8 +380,8 @@ public class XMLConfigParser {
                 setQuiesceTimeoutFromMetatype(config);
                 Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
             }
-        } else if (isBeta) {
-            // Beta mode, parsing server.xml, but no quiesceTimeout attribute - use metatype default
+        } else {
+            // No quiesceTimeout attribute - use metatype default
             setQuiesceTimeoutFromMetatype(config);
         }
     }
