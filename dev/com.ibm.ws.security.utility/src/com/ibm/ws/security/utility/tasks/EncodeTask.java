@@ -29,6 +29,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.crypto.InvalidPasswordEncodingException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
+import com.ibm.ws.crypto.util.AESKeyManager;
 import com.ibm.ws.crypto.util.PasswordCipherUtil;
 import com.ibm.ws.crypto.util.UnsupportedConfigurationException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
@@ -140,12 +141,13 @@ public class EncodeTask extends BaseCommandTask {
                 boolean hasKey = argMap.containsKey(BaseCommandTask.ARG_KEY) ||
                                 argMap.containsKey(BaseCommandTask.ARG_BASE64_KEY) ||
                                 argMap.containsKey(BaseCommandTask.ARG_AES_CONFIG_FILE);
-                
-                // On z/OS, the keyring parameter could be used instead
+
+                // On z/OS, keyring or CKDS (--keyringType=CKDS --keyLabel=...) can be used instead
                 if (isZOS()) {
-                    hasKey = hasKey || argMap.containsKey(BaseCommandTask.ARG_KEYRING);
+                    hasKey = hasKey || argMap.containsKey(BaseCommandTask.ARG_KEYRING)
+                             || "CKDS".equalsIgnoreCase(argMap.get(BaseCommandTask.ARG_KEYRING_TYPE));
                 }
-                
+
                 if (!hasKey) {
                     throw new IllegalArgumentException(getMessage("encode.aesKeyRequired"));
                 }
@@ -158,10 +160,16 @@ public class EncodeTask extends BaseCommandTask {
                 //Not z/OS just make sure Z specific parameters are not used
                 checkForZArgs(props);
             }
-            if (!!!argMap.containsKey(BaseCommandTask.ARG_PASSWORD)) {
-                stdout.println(encode(stderr, promptForText(stdin, stdout), encoding, props));
-            } else {
-                stdout.println(encode(stderr, argMap.get(BaseCommandTask.ARG_PASSWORD), encoding, props));
+            try {
+                if (!!!argMap.containsKey(BaseCommandTask.ARG_PASSWORD)) {
+                    stdout.println(encode(stderr, promptForText(stdin, stdout), encoding, props));
+                } else {
+                    stdout.println(encode(stderr, argMap.get(BaseCommandTask.ARG_PASSWORD), encoding, props));
+                }
+            } finally {
+                // Clear any CKDS SecretKeyResolver installed by getKeyIfSAF().
+                // No-op when the CKDS path was not taken.
+                AESKeyManager.setSecretKeyResolver(null);
             }
         }
 
@@ -201,16 +209,24 @@ public class EncodeTask extends BaseCommandTask {
     private Map<String, String> getKeyIfSAF(String encoding, Map<String, String> props) throws Exception {
 
         Map<String, String> p = props;
-        String cryptoKey = null;
 
         String keyring = props.get(PasswordUtil.PROPERTY_KEYRING);
-        String type = props.get(PasswordUtil.PROPERTY_KEYRING_TYPE);
-        String label = props.get(PasswordUtil.PROPERTY_KEY_LABEL);
+        String type    = props.get(PasswordUtil.PROPERTY_KEYRING_TYPE);
+        String label   = props.get(PasswordUtil.PROPERTY_KEY_LABEL);
 
         if (encoding != null && encoding.trim().equalsIgnoreCase("aes")) {
+
+            // CKDS path: type=CKDS + label only, no keyring needed.
+            // encipher_internal() consults AESKeyManager.getSecretKeyResolver() and uses AES_V2 automatically.
+            if ("CKDS".equalsIgnoreCase(type) && label != null && !label.isEmpty()) {
+                AESKeyManager.setSecretKeyResolver(new ICSFSecretKeyResolver(label));
+                return p;
+            }
+
+            // Existing SAF/RACF path — all three required (unchanged)
             if ((keyring != null && !keyring.isEmpty()) && (type != null && !type.isEmpty()) && (label != null && !label.isEmpty())) {
                 SAFEncryptionKey ek = new SAFEncryptionKey(keyring, type, label);
-                cryptoKey = ek.getKey();
+                String cryptoKey = ek.getKey();
                 p.put(PasswordUtil.PROPERTY_CRYPTO_KEY, cryptoKey);
             }
         } else {
@@ -221,6 +237,32 @@ public class EncodeTask extends BaseCommandTask {
         }
 
         return p;
+    }
+
+    /**
+     * SecretKeyResolver for ICSF/CKDS, used by securityUtility encode when running on z/OS.
+     * Mirrors the runtime ICSFSecretKeyResolver in KeyStringResolverImpl — kept separate
+     * to avoid a build dependency from security.utility onto zos.password.encryption.key.
+     */
+    private static final class ICSFSecretKeyResolver implements com.ibm.wsspi.security.crypto.SecretKeyResolver {
+
+        private static final String IBMJCECCA_PROVIDER = "IBMJCECCA";
+        private static final String KEY_LABEL_KEY_SPEC_CLASS = "com.ibm.crypto.hdwrCCA.provider.KeyLabelKeySpec";
+
+        private final String label;
+
+        ICSFSecretKeyResolver(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public java.security.Key getKey() throws Exception {
+            Class<?> keyLabelKeySpecClass = Class.forName(KEY_LABEL_KEY_SPEC_CLASS);
+            java.lang.reflect.Constructor<?> ctor = keyLabelKeySpecClass.getConstructor(String.class);
+            java.security.spec.KeySpec keySpec = (java.security.spec.KeySpec) ctor.newInstance(label);
+            javax.crypto.SecretKeyFactory factory = javax.crypto.SecretKeyFactory.getInstance("AES", IBMJCECCA_PROVIDER);
+            return factory.generateSecret(keySpec);
+        }
     }
 
     /**

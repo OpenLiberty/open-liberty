@@ -120,12 +120,16 @@ encode.option-desc.keyring=\
 encode.option-key.keyringType=\
 \ \ \ \ --keyringType=[keyringType]
 encode.option-desc.keyringType=\
-\tSpecify the SAF keyring type of the keyring where the AES encryption\n\
-\tis located.
+\tSpecify the key storage type. Use JCERACFKS, JCECCARACFKS, or\n\
+\tJCEHYBRIDRACFKS for a SAF keyring. Use CKDS to use a hardware\n\
+\tAES key from the ICSF Cryptographic Key Data Set; in this case\n\
+\t--keyring is not required.
 encode.option-key.keyLabel=\
 \ \ \ \ --keyLabel=[keyLabel]
 encode.option-desc.keyLabel=\
-\tSpecify the label of the SAF certificate of the AES encryption key.
+\tFor SAF keyring types, specify the label of the certificate within\n\
+\tthe keyring. For CKDS, specify the label of the AES key in the\n\
+\tICSF Cryptographic Key Data Set.
 
 
 
@@ -304,6 +308,25 @@ createLTPAKeys.option-desc.aesConfigFile=\
 \tvalues respectively. Both variables cannot be specified in the same file.\n\
 \tIf --aesConfigFile is specified then --passwordBase64Key and --passwordKey\n\
 \tcannot be specified.
+createLTPAKeys.option-key.keyring=\
+\ \ \ \ --keyring=[keyring]
+createLTPAKeys.option-desc.keyring=\
+\t(z/OS only) The SAF keyring URL where the AES encryption key is located.\n\
+\tNot required when --keyringType=CKDS is specified.
+createLTPAKeys.option-key.keyringType=\
+\ \ \ \ --keyringType=[keyringType]
+createLTPAKeys.option-desc.keyringType=\
+\t(z/OS only) The key storage type. Use JCERACFKS, JCECCARACFKS, or\n\
+\tJCEHYBRIDRACFKS for a SAF keyring. Use CKDS to protect the LTPA\n\
+\tkey material using a hardware AES key from the ICSF Cryptographic\n\
+\tKey Data Set; in this case --keyring and --password are not required\n\
+\tand useEncryptionKey="true" will be set in the server.xml snippet.
+createLTPAKeys.option-key.keyLabel=\
+\ \ \ \ --keyLabel=[keyLabel]
+createLTPAKeys.option-desc.keyLabel=\
+\t(z/OS only) For SAF keyring types, specify the label of the\n\
+\tcertificate within the keyring. For CKDS, specify the label of the\n\
+\tAES key in the ICSF Cryptographic Key Data Set.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -411,6 +434,53 @@ configureFIPS.option-desc.4.disable=\
 \tenabled.
 
 
+
+# -------- RE-ENCRYPT LTPA KEYS OPTIONS -------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+# Note to translator: 'LTPA' and 'ltpa.keys' should not be translated
+reEncryptLTPAKeys.desc=\
+\tDecrypt an existing LTPA keys file and re-encrypt the same key material,\n\
+\twriting the result to a new file. The current file and new file may be\n\
+\tthe same path for an in-place update.\n\
+\tExactly two of --currentPassword, --newPassword, and --ckdsLabel must be\n\
+\tspecified.
+#Note to translator the word "reEncryptLTPAKeys" should not be translated
+reEncryptLTPAKeys.usage.options=\
+\t{0} reEncryptLTPAKeys --currentFile=inputFile --newFile=outputFile\n\
+\t(--currentPassword=password --newPassword=password |\n\
+\t --currentPassword=password --ckdsLabel=label |\n\
+\t --ckdsLabel=label --newPassword=password)
+reEncryptLTPAKeys.required-key.currentFile=\
+\ \ \ \ --currentFile=inputFile
+reEncryptLTPAKeys.required-desc.currentFile=\
+\tThe existing LTPA keys file to decrypt and re-encrypt.
+reEncryptLTPAKeys.required-key.newFile=\
+\ \ \ \ --newFile=outputFile
+reEncryptLTPAKeys.required-desc.newFile=\
+\tThe file to write the re-encrypted LTPA keys to.\n\
+\tMay be the same path as --currentFile for an in-place update.
+reEncryptLTPAKeys.option-key.currentPassword=\
+\ \ \ \ --currentPassword=password
+reEncryptLTPAKeys.option-desc.currentPassword=\
+\tThe plaintext password used to decrypt the current LTPA keys file.\n\
+\tRequired unless --ckdsLabel is used as the source (decryption) key.
+reEncryptLTPAKeys.option-key.newPassword=\
+\ \ \ \ --newPassword=password
+reEncryptLTPAKeys.option-desc.newPassword=\
+\tThe plaintext password used to encrypt the new LTPA keys file.\n\
+\tRequired unless --ckdsLabel is used as the target (encryption) key.
+reEncryptLTPAKeys.option-key.ckdsLabel=\
+\ \ \ \ --ckdsLabel=label
+reEncryptLTPAKeys.option-desc.ckdsLabel=\
+\tThe ICSF Cryptographic Key Data Set (CKDS) label of a hardware AES key.\n\
+\tUsed as the source (decryption) key when --currentPassword is omitted,\n\
+\tor as the target (encryption) key when --newPassword is omitted.\n\
+\tCannot be specified together with both --currentPassword and --newPassword.
 
 # -------- Generate AES-256 KEY OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

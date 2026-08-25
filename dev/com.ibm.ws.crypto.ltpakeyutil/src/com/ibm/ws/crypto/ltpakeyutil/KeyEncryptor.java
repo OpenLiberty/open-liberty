@@ -20,7 +20,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * A package local class for performing encryption and decryption of keys based
  * on admin's password
  */
-public class KeyEncryptor {
+public class KeyEncryptor implements LTPAKeyEncryptor {
 
 	private static final boolean fipsEnabled = CryptoUtils.isFips140_3Enabled();
 	private static final int size = (fipsEnabled ? 32 : 24);

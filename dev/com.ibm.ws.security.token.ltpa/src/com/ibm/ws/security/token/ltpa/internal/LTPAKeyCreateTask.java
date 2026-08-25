@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.token.ltpa.internal;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -24,13 +25,18 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
+import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
+import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAValidationKeysInfo;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
+import com.ibm.wsspi.security.crypto.SecretKeyResolver;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
 /**
@@ -52,13 +58,48 @@ class LTPAKeyCreateTask implements Runnable {
         return PasswordUtil.passwordDecode(config.getPrimaryKeyPassword()).getBytes();
     }
 
+    @Sensitive
+    LTPAKeyEncryptor buildEncryptor() throws Exception {
+        if (config.isUseEncryptionKey()) {
+            // Determine which AES key version is active and build the appropriate encryptor.
+            // Log an informational message so administrators can confirm which key source
+            // is protecting the LTPA key material.
+            if (AESKeyManager.isKeyConfigured(KeyVersion.AES_V2)) {
+                SecretKeyResolver skr = AESKeyManager.getSecretKeyResolver();
+                if (skr != null) {
+                    // A hardware SecretKeyResolver is registered — this is the ICSF/CKDS path.
+                    // getDescription() on ICSFSecretKeyResolver returns the ICSF key label.
+                    Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_ICSF", skr.getDescription());
+                } else {
+                    // AES_V2 is configured via the wlp.aes.encryption.key system property.
+                    Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_PROPERTY", AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY);
+                }
+                return new AesKeyEncryptor(AESKeyManager.getKeyViaResolver(KeyVersion.AES_V2));
+            } else {
+                // AES_V1 is configured via the wlp.password.encryption.key system property.
+                Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_PROPERTY", AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY);
+                return new AesKeyEncryptor(AESKeyManager.getKeyViaResolver(KeyVersion.AES_V1));
+            }
+        } else {
+            return new KeyEncryptor(getKeyPasswordBytes());
+        }
+    }
+
     private LTPAKeyInfoManager getPreparedLtpaKeyInfoManager() throws Exception {
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
-        keyInfoManager.prepareLTPAKeyInfo(locService,
-                                          config.getPrimaryKeyFile(),
-                                          getKeyPasswordBytes(),
-                                          config.getValidationKeys(),
-                                          config.getTryToReEncryptLtpaKeys());
+        if (config.isUseEncryptionKey()) {
+            keyInfoManager.prepareLTPAKeyInfo(locService,
+                                              config.getPrimaryKeyFile(),
+                                              buildEncryptor(),
+                                              config.getValidationKeys(),
+                                              config.getTryToReEncryptLtpaKeys());
+        } else {
+            keyInfoManager.prepareLTPAKeyInfo(locService,
+                                              config.getPrimaryKeyFile(),
+                                              getKeyPasswordBytes(),
+                                              config.getValidationKeys(),
+                                              config.getTryToReEncryptLtpaKeys());
+        }
         return keyInfoManager;
     }
 
