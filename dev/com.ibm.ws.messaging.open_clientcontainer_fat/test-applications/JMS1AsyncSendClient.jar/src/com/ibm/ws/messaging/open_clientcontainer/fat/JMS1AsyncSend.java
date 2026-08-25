@@ -116,7 +116,7 @@ public class JMS1AsyncSend extends ClientMain {
             // Take a copy of the message details in case we have to output it in an Exception message later
             String sentMessageString = sentMessage.toString();
             
-            Util.LOG("Sending Message with CompletionListener");
+            Util.LOG("Sending Message with CompletionListener: " + completionListener.toString());
             producer.send(sentMessage, completionListener);
             
             Util.LOG("Message sent. Waiting for CompletionListener to be invoked");
