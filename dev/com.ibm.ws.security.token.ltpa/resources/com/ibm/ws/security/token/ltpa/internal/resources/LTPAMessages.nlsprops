@@ -107,3 +107,19 @@ LTPA_KEYS_REENCRYPT_SUCCESS.useraction=If you are sharing the LTPA keys between 
 LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Failed to re-encrypt the {0} LTPA keys. Exception: {1}
 LTPA_KEYS_REENCRYPT_ERROR.explanation=The LTPA keys could not be re-encrypted. For more information, see the exception in the message.
 LTPA_KEYS_REENCRYPT_ERROR.useraction=Ensure that the LTPA keys file and its directory are not read-only. If the LTPA keys file and its directory are not read-only, then see the exception in the message for more information.
+
+LTPA_AES_ENCRYPTION_KEY_NOT_CONFIGURED=CWWKS4122E: LTPA configuration error. The useEncryptionKey attribute is set to true, but neither the wlp.aes.encryption.key nor the wlp.password.encryption.key AES key is configured. Configure at least one of these properties before enabling useEncryptionKey.
+LTPA_AES_ENCRYPTION_KEY_NOT_CONFIGURED.explanation=The useEncryptionKey attribute requires either the wlp.aes.encryption.key or the wlp.password.encryption.key system property to be set to a valid AES key.
+LTPA_AES_ENCRYPTION_KEY_NOT_CONFIGURED.useraction=Set the wlp.aes.encryption.key system property to a valid base64-encoded 256-bit AES key, or set the wlp.password.encryption.key system property to a passphrase from which an AES key will be derived.
+
+LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY=CWWKS4123W: The keysPassword attribute is set on the <ltpa /> element, but the useEncryptionKey attribute is also set to true. The keysPassword value is ignored; LTPA key material will be encrypted and decrypted using the configured AES key.
+LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY.explanation=When useEncryptionKey is set to true, the AES key configured via the wlp.aes.encryption.key or wlp.password.encryption.key system property is used to protect LTPA key material. Any value specified for the keysPassword attribute has no effect.
+LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY.useraction=Remove the keysPassword attribute from the <ltpa /> element to avoid confusion, or set useEncryptionKey to false to use password-based encryption instead.
+
+LTPA_AES_ENCRYPTION_KEY_ICSF=CWWKS4124I: LTPA key material is protected using the ICSF CKDS hardware key with label {0}.
+LTPA_AES_ENCRYPTION_KEY_ICSF.explanation=The useEncryptionKey attribute is set to true and the AES key is resolved from the ICSF Cryptographic Key Data Set (CKDS) via the IBMJCECCA provider. The specified label identifies the key stored in the ICSF hardware.
+LTPA_AES_ENCRYPTION_KEY_ICSF.useraction=No action is required.
+
+LTPA_AES_ENCRYPTION_KEY_PROPERTY=CWWKS4125I: LTPA key material is protected using the AES key resolved from the {0} system property.
+LTPA_AES_ENCRYPTION_KEY_PROPERTY.explanation=The useEncryptionKey attribute is set to true and the AES key is resolved from the specified system property. The wlp.aes.encryption.key property holds a base64-encoded 256-bit AES key. The wlp.password.encryption.key property holds a passphrase from which an AES key is derived.
+LTPA_AES_ENCRYPTION_KEY_PROPERTY.useraction=No action is required.
