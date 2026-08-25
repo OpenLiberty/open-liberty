@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.security.openidconnect.client.OAuthProtectedResourceMetadataService;
 import com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver;
@@ -33,6 +35,8 @@ import io.openliberty.security.oidcclient.wellknown.common.ServletUtils;
 public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    private static final TraceComponent tc = Tr.register(OAuthProtectedResourceMetadataServlet.class);
 
     private static final ServiceCaller<OAuthProtectedResourceMetadataService> resolverCaller = new ServiceCaller<>(OAuthProtectedResourceMetadataServlet.class, OAuthProtectedResourceMetadataService.class);
 
@@ -54,11 +58,22 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
         String protectedResourcePath = toProtectedResourcePath(request.getPathInfo());
         String resourceUrl = ServletUtils.buildResourceUrl(request.getScheme(), request.getServerName(), request.getServerPort(), protectedResourcePath);
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "doGet: resolving metadata for protected resource path [" + protectedResourcePath + "], resource URL [" + resourceUrl + "]");
+        }
+
         String metadataJson = resolverCaller.run(r -> r.resolveMetadataJson(request, protectedResourcePath, resourceUrl)).orElse(null);
 
         if (metadataJson == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "doGet: no metadata resolved for path [" + protectedResourcePath + "], returning 404 - check that <protectedResourceMetadata> is configured and authFilterRef covers this path");
+            }
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "doGet: returning 200 with metadata JSON for resource [" + resourceUrl + "]");
         }
 
         response.setContentType("application/json");
