@@ -1255,3 +1255,11 @@ CWWKD1123.sort.incompat.with.cursor.explanation=To automatically \
 CWWKD1123.sort.incompat.with.cursor.useraction=Supply a cursor that is consistent \
  with the sort criteria. Alternatively, switch to offset-based pagination or \
  modify the sort criteria to only sort by entity attributes.
+
+CWWKD1124.resource.unavailable=CWWKD1124W: One or more repositories ({0}) are \
+ waiting to initialize because the {1} resource did not become available within \
+ {2} seconds. Repository initialization will continue waiting up to {3} seconds.
+CWWKD1124.resource.unavailable.explanation=A resource that the repositories \
+ require did not become available.
+CWWKD1124.resource.unavailable.useraction=Verify the configuration of resources \
+ that the repositories use.

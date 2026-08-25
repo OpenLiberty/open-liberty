@@ -83,8 +83,20 @@ import jakarta.persistence.EntityManager;
  * It uses a PersistenceServiceUnit from the persistence service to create
  * EntityAgent and EntityManager instances.
  */
-public class DBStoreEHFactory extends EntityHandlerFactory implements DDLGenerationParticipant {
-    private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
+public class DBStoreEHFactory extends EntityHandlerFactory //
+                implements DDLGenerationParticipant {
+
+    /**
+     * Time (in nanoseconds) after which to raise an error and stop retrying when
+     * the databaseStore for the repository is still not available.
+     */
+    private static final long DBSTORE_WAIT_MAX_NS = TimeUnit.MINUTES.toNanos(3);
+
+    /**
+     * Time (in nanoseconds) after which to log a warning that the databaseStore
+     * for the repository is not available.
+     */
+    private static final long DBSTORE_WAIT_WARN_NS = TimeUnit.MINUTES.toNanos(1);
 
     private static final TraceComponent tc = Tr.register(DBStoreEHFactory.class);
 
@@ -324,6 +336,7 @@ public class DBStoreEHFactory extends EntityHandlerFactory implements DDLGenerat
         databaseStoreId = dbStoreId;
 
         ServiceReference<DatabaseStore> ref = null;
+        boolean warned = false;
         for (long start = System.nanoTime(), poll_ms = 125L; //
                         ref == null; //
                         poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
@@ -331,10 +344,20 @@ public class DBStoreEHFactory extends EntityHandlerFactory implements DDLGenerat
             Collection<ServiceReference<DatabaseStore>> refs = //
                             bc.getServiceReferences(DatabaseStore.class, filter);
             if (refs.isEmpty()) {
-                if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
+                long waited_ns = System.nanoTime() - start;
+                if (waited_ns < DBSTORE_WAIT_MAX_NS) {
+                    if (!warned && waited_ns > DBSTORE_WAIT_WARN_NS) {
+                        Tr.warning(tc, "CWWKD1124.resource.unavailable",
+                                   Util.names(repositoryInterfaces),
+                                   dataStore,
+                                   TimeUnit.NANOSECONDS.toSeconds(DBSTORE_WAIT_WARN_NS),
+                                   TimeUnit.NANOSECONDS.toSeconds(DBSTORE_WAIT_MAX_NS));
+                        warned = true;
+                    }
+
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Wait " + poll_ms +
-                                           " ms for service reference to become available...");
+                        Tr.debug(this, tc, "Wait " + poll_ms + " ms for " + filter +
+                                           " to become available...");
                     TimeUnit.MILLISECONDS.sleep(poll_ms);
 
                     abortIfStopping(bc, application, repositoryInterfaces);
@@ -342,8 +365,8 @@ public class DBStoreEHFactory extends EntityHandlerFactory implements DDLGenerat
                     throw exc(IllegalStateException.class,
                               "CWWKD1116.resource.unavailable",
                               Util.names(repositoryInterfaces),
-                              configDisplayId,
-                              TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS));
+                              dataStore,
+                              TimeUnit.NANOSECONDS.toSeconds(DBSTORE_WAIT_MAX_NS));
                 }
             } else {
                 ref = refs.iterator().next();
