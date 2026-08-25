@@ -50,6 +50,7 @@ import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.Bean;
@@ -110,6 +111,13 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     private final Map<R, R> intercepted = new ConcurrentHashMap<>();
 
     /**
+     * CDI Event proxy for firing types of LifecycleEvent, such as PreDeleteEvent,
+     * in response to beginning or end of the respective life cycle operation.
+     * Null in Data 1.0.
+     */
+    public final Event<Object> lifeCycleEvents;
+
+    /**
      * Primary entity class, if any, for the repository.
      */
     private Class<?> primaryEntityClass;
@@ -161,6 +169,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         this.beanMgr = beanMgr;
         this.beanTypes = Set.of(repositoryInterface);
         this.extension = extension;
+        this.lifeCycleEvents = provider.compat.atLeast(1, 1) //
+                        ? beanMgr.getEvent() : null;
         this.provider = provider;
         this.queriesPerEntityClass = queriesPerEntityClass;
         this.repositoryInterface = repositoryInterface;
