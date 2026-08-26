@@ -32,6 +32,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
@@ -332,7 +333,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "java.security.InvalidKeyException", "org.apache.xml.security.signature.XMLSignatureException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "java.security.InvalidKeyException", "org.apache.xml.security.signature.XMLSignatureException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID,JakartaEE11Action.ID})
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfFips140_3Enabled.class)
     public void testKeyAlias_MultipleCertsInKeystore_KeyAliasIsWrongCert() throws Exception {

@@ -101,6 +101,6 @@ public class FATSuite extends CommonRemoteLDAPServerSuite {
      *
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats(null, null, REMOVE, INSERT);
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEERepeats(null, null, null, REMOVE, INSERT);
 
 }

@@ -43,6 +43,6 @@ public class FATSuite {
      *
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10SamlRepeats();
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEESamlRepeats();
 
 }

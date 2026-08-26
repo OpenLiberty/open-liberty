@@ -61,6 +61,6 @@ public class FATSuite extends CommonAltRemoteLDAPServerSuite {
      *
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats("servlet-5.0", "servlet-6.0");
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEERepeats("servlet-5.0", "servlet-6.0", "servlet-6.1");
 
 }

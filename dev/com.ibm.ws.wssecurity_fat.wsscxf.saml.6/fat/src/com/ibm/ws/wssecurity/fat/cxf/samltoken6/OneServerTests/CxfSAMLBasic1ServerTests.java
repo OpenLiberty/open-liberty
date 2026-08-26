@@ -15,6 +15,7 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken6.OneServerTests;
 
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,7 +134,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
 
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     //issue 23060
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
     @Test
@@ -179,7 +180,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
     
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     //issue 23060
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
     @Test
@@ -247,7 +248,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
  
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     //issue 23060
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
     @Test
@@ -293,7 +294,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
      
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     //issue 23060
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
     @Test

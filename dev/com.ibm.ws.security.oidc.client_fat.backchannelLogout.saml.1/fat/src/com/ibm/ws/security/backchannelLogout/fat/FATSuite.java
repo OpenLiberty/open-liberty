@@ -25,11 +25,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-        AlwaysPassesTest.class,
-        // HttpMethodsTests.class,  doesn't need to run with SAML as this is a client only test
-        // LogoutTokenValidationTests.class,  doesn't need to run with SAML as this is a client only test
-        BasicBCLTests.class
+@SuiteClasses({ AlwaysPassesTest.class,
+		// HttpMethodsTests.class, doesn't need to run with SAML as this is a client
+		// only test
+		// LogoutTokenValidationTests.class, doesn't need to run with SAML as this is a
+		// client only test
+		BasicBCLTests.class
 
 })
 /**
@@ -37,16 +38,14 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class FATSuite extends CommonLocalLDAPServerSuite {
 
-    /*
-     * On Windows, always run the default/empty/EE7/EE8 tests.
-     * On other Platforms:
-     * - if Java 8, run default/empty/EE7/EE8 tests.
-     * - All other Java versions
-     * -- If LITE mode, run EE9
-     * -- If FULL mode, run EE10
-     *
-     */
-    @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10SamlRepeats("servlet-5.0", "servlet-6.0");
+	/*
+	 * On Windows, always run the default/empty/EE7/EE8 tests. On other Platforms: -
+	 * if Java 8, run default/empty/EE7/EE8 tests. - All other Java versions -- If
+	 * LITE mode, run EE9 -- If FULL mode, run EE10
+	 *
+	 */
+	@ClassRule
+	public static RepeatTests repeat = LargeProjectRepeatActions.createEESamlRepeats("servlet-5.0", "servlet-6.0",
+			"servlet-6.1");
 
 }

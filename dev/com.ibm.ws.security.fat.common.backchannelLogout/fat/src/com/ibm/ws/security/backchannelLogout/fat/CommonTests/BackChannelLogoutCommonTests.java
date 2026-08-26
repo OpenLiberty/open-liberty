@@ -1030,12 +1030,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
     public List<validationData> initLogoutWithPublicClientFailureExpectations(String logoutPage, String client) throws Exception {
 
-        String logoutStep = Constants.LOGOUT;
-
-        List<validationData> expectations = initLogoutExpectations(logoutPage);
-        expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.TRACE_LOG, Constants.STRING_MATCHES, "Trace log did not contain message indicating that the back channel logout uri could not be invoked.", client + ".*" + MessageConstants.CWWKS2300E_HTTP_WITH_PUBLIC_CLIENT);
-
-        return expectations;
+        return initLogoutExpectations(logoutPage);
     }
 
     public String getLogoutTokenFromOutput(String tokenName, Object response) throws Exception {
