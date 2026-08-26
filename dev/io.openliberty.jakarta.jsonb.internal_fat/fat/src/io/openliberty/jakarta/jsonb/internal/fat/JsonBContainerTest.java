@@ -49,7 +49,7 @@ public class JsonBContainerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        RemoteFile yasson = server.getFileFromLibertySharedDir("resources/yasson/3.0.4/yasson.jar");
+        RemoteFile yasson = server.getFileFromLibertySharedDir("resources/yasson/3.0.5/yasson.jar");
 
         JavaArchive fake_json_b = ShrinkWrap.create(ZipImporter.class, "fake-json-b.jar")
                         .importFrom(new File(yasson.getAbsolutePath()))
