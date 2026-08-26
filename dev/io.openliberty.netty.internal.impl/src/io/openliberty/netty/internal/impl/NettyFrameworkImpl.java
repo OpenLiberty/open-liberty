@@ -162,10 +162,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
         // Compared to channelfw, quiesce is hit every time because
         // connections are lazy cleaned on deactivate
-        parentGroup = new MultiThreadIoEventLoopGroup(1, factory);
+        parentGroup = new MultiThreadIoEventLoopGroup(1,executorService, factory);
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
-        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, factory);
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, executorService, scaler, factory);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
         
         if (metricsWindow > 0) {
@@ -294,6 +294,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      */
     @Reference(service = ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setExecutorService(ExecutorService executorService) {
+        System.out.println("PMDINH, NettyFrameworkImpl, setExecutorService [" + executorService +"] toString [" + executorService.toString() +"]");
         this.executorService = executorService;
     }
 
