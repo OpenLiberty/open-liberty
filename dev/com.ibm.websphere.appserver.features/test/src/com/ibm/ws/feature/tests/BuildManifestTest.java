@@ -63,6 +63,9 @@ public class BuildManifestTest {
 
         // Skip gracefully on local builds that have not run createFeatureResources.
         Assume.assumeTrue(featuresDir.toFile().isDirectory());
+
+        boolean isIfixbuild = !(System.getProperty("ifix.version.base") == null);
+        Assume.assumeTrue(!isIfixbuild);
     }
 
     // -------------------------------------------------------------------------
