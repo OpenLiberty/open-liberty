@@ -41,6 +41,11 @@ public class MessageRouterImpl implements MessageRouter {
      */
     private final ConcurrentMap<String, Set<String>> msgIdToLogHandlerIds = new ConcurrentHashMap<String, Set<String>>();
 
+    /*
+     * Does not contain the wild card - it is the prefix we want to match with.
+     */
+    protected final ConcurrentMap<String, Set<String>> wildCardMsgIdToLogHandlerIds = new ConcurrentHashMap<String, Set<String>>();
+    
     /**
      * CTOR, protected.
      */
@@ -88,6 +93,26 @@ public class MessageRouterImpl implements MessageRouter {
         return logHandlerIdSet;
     }
 
+    /**
+     * @return The set of LogHandlerId's associated with the given msgId.
+     *         If the set doesn't exist in the map, it is created.
+     */
+    protected Set<String> getOrCreateWildCardLogHandlerIdSet(String msgId) {
+
+        Set<String> wildCardLogHandlerIdSet = wildCardMsgIdToLogHandlerIds.get(msgId);
+
+        if (wildCardLogHandlerIdSet == null) {
+            wildCardLogHandlerIdSet = new CopyOnWriteArraySet<String>();
+            wildCardMsgIdToLogHandlerIds.put(msgId, wildCardLogHandlerIdSet);
+
+            // Every msg gets the default by default. The only way to remove
+            // the default is to specify "-DEFAULT" in the prop.
+            wildCardLogHandlerIdSet.add("DEFAULT");
+        }
+
+        return wildCardLogHandlerIdSet;
+    }
+    
     /**
      * @return s.split(delim), with null checking.
      */
@@ -170,8 +195,16 @@ public class MessageRouterImpl implements MessageRouter {
      * Add the specified log handler to the message ID's routing list.
      */
     protected void addMsgToLogHandler(String msgId, String handlerId) {
-        Set<String> logHandlerIdSet = getOrCreateLogHandlerIdSet(msgId);
-        logHandlerIdSet.add(handlerId);
+    	
+		//wildcard route;
+    	if (msgId.length() > 1 && msgId.charAt(msgId.length() - 1)  == '*') {
+    		String stripWildCardMsgId = msgId.substring(0, msgId.length() - 1);
+            Set<String> wcLogHandlerIdSet = getOrCreateWildCardLogHandlerIdSet(stripWildCardMsgId);
+            wcLogHandlerIdSet.add(handlerId);
+    	} else {
+            Set<String> logHandlerIdSet = getOrCreateLogHandlerIdSet(msgId);
+            logHandlerIdSet.add(handlerId);
+    	}
     }
 
     /**
@@ -218,6 +251,10 @@ public class MessageRouterImpl implements MessageRouter {
         if (msgId == null)
             return null;
 
+        
+        //Need to account for wildcards.
+        //if ends with star, need to check new map.
+        
         return msgIdToLogHandlerIds.get(msgId);
     }
 

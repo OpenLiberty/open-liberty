@@ -169,6 +169,17 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
                 routeToAll(routedMessage, routeAllMsgsToTheseLogHandlers, messageHidden);
             }
             Set<String> logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
+            
+            if (wildCardMsgIdToLogHandlerIds.size() > 0){
+                //todo: logic about matching and adding to handelr set.
+            	
+            	for (String wildCardMsgId : wildCardMsgIdToLogHandlerIds.keySet()) {
+            		if (routedMessage.getFormattedMsg().startsWith(wildCardMsgId)){
+            			logHandlerIds.addAll(wildCardMsgIdToLogHandlerIds.get(wildCardMsgId));
+            		}
+            	}
+            }
+
             if (logHandlerIds == null) {
                 // There are no routing requirements for this msgId.
                 // Return true to tell the caller to log the msg normally.
