@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -477,18 +477,24 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 if (webConnectionObject != null) {
                     if (webConnectionObject instanceof TransportConnectionAccess) {
                         TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
-                        try {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "NettyServletUpgradeHandler close attempting to close TransportConnectionAccess.");
-                            }
-                            tWebConn.close();
-                        } catch (Exception webConnectionCloseException) {
-                            //continue closing other resources
-                            //I don't believe the close operation should fail - but record trace if it does
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Failed to close WebConnection {0}", webConnectionCloseException);
-                            }
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "NettyServletUpgradeHandler close attempting to close TransportConnectionAccess.");
                         }
+
+                        // close() needs to run on a managed thread rather than the Netty I/O event loop thread.
+                        // This is necessary for environments such as CICS where the I/O eventloop thread is not a CICS-enabled thread.
+                        HttpDispatcher.getExecutorService().execute(() -> {
+                            try {
+                                tWebConn.close();
+                            } catch (Exception webConnectionCloseException) {
+                                //continue closing other resources
+                                //I don't believe the close operation should fail - but record trace if it does
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "NettyServletUpgradeHandler Failed to close WebConnection {0}", webConnectionCloseException);
+                                }
+                            }
+                        });
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "call application destroy if not done yet");
