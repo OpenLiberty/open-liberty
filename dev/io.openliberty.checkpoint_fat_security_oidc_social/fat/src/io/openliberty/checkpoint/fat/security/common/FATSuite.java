@@ -32,6 +32,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.fat.security.jaspic.JASPIBasicAuthenticationTest;
 import io.openliberty.checkpoint.fat.security.oidc.OidcClientBasicTests;
+import io.openliberty.checkpoint.fat.security.oidc.ProtectedResourceMetadataInstantOnTests;
 import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_usingSocialConfig;
 
 @RunWith(Suite.class)
@@ -39,6 +40,7 @@ import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_
                 AlwaysPassesTest.class,
                 LibertyOP_BasicTests_oauth_usingSocialConfig.class,
                 OidcClientBasicTests.class,
+                ProtectedResourceMetadataInstantOnTests.class,
                 JASPIBasicAuthenticationTest.class
 })
 

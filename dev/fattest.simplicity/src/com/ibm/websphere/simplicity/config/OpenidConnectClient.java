@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -84,6 +84,7 @@ public class OpenidConnectClient extends ConfigElement {
     private String validationEndpointUrl;
     private String validationMethod;
     private TokenParameter tokenParameter;
+    private ProtectedResourceMetadata protectedResourceMetadata;
     // TODO authzParameter
 
     /**
@@ -821,6 +822,15 @@ public class OpenidConnectClient extends ConfigElement {
         this.tokenParameter = tokenParameter;
     }
 
+    public ProtectedResourceMetadata getProtectedResourceMetadata() {
+        return protectedResourceMetadata;
+    }
+
+    @XmlElement(name = "protectedResourceMetadata")
+    public void setProtectedResourceMetadata(ProtectedResourceMetadata protectedResourceMetadata) {
+        this.protectedResourceMetadata = protectedResourceMetadata;
+    }
+
     /**
      * @return the tokenReuse
      */
@@ -1138,6 +1148,9 @@ public class OpenidConnectClient extends ConfigElement {
         }
         if (tokenParameter != null) {
             sb.append("tokenParameter=\"").append(tokenParameter).append("\" ");
+        }
+        if (protectedResourceMetadata != null) {
+            sb.append("protectedResourceMetadata=\"").append(protectedResourceMetadata).append("\" ");
         }
         if (tokenReuse != null) {
             sb.append("tokenReuse=\"").append(tokenReuse).append("\" ");
