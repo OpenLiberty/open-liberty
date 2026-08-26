@@ -128,22 +128,10 @@ task dependabotGenerate() {
 def pluginsProject = project(':wlp-bndPlugins')
 
 task updatePluginClasses(type: Copy) {
-    def currentProject = project
     dependsOn ':wlp-bndPlugins:jar'
     dependsOn dependabotGenerate
-    from zipTree(bnd.get('build.bnd.plugins.jar'))
+    from zipTree(tasks.getByPath(':wlp-bndPlugins:jar').archiveFile.get().asFile)
     into project.file('bndplugins/classes')
-    doLast {
-        println 'Refresh bnd Projects after building bnd plugins in ' + currentProject.name
-        bnd.project.refresh()
-        bnd.project.clear()
-        parent.subprojects {
-            if (currentProject != pluginsProject) {
-                bnd.project.refresh()
-                bnd.project.clear()
-            }
-        }
-    }
 }
 
 
@@ -156,10 +144,27 @@ task cleanPublishedOutputs(type: Delete) {
 
 task cleanRepos(type: Delete) {
     doLast {
+        // cnf/release is only ever populated by Gradle, so delete it entirely.
         project.delete('release')
         delete 'release.mvn'
-        project.delete('local')
+
+        // cnf/local may contain Eclipse-built artifacts (identified by the .eclipse
+        // suffix) that are expensive to rebuild. Delete only the non-Eclipse files
+        // so that Eclipse-built artifacts survive a cnf:initialize.
+        if (project.file('local').exists()) {
+            fileTree('local') { exclude '**/*.eclipse' }.each { project.delete(it) }
+            // Collect all directories then sort deepest-first so children are
+            // removed before parents, avoiding FileNotFoundException on missing dirs.
+            def dirs = []
+            project.file('local').eachDirRecurse { dirs << it }
+            dirs << project.file('local')
+            dirs.sort { a, b -> b.absolutePath <=> a.absolutePath }.each { dir ->
+                def contents = dir.exists() ? dir.list() : null
+                if (contents != null && contents.length == 0) project.delete(dir)
+            }
+        }
         delete 'local.mvn'
+
         delete fileTree('mavenlibs')
     }
 }

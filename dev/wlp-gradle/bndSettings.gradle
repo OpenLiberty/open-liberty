@@ -77,6 +77,20 @@ Workspace.addGestalt(Constants.GESTALT_BATCH, null)
 Workspace workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
 gradle.bndWorkspaceConfigure(workspace)
 
+// Set build.bnd.plugins.path to a plain filesystem path immediately after workspace
+// construction, before any project prepares. This prevents bnd from evaluating the
+// ${repo;...} macro in build.bnd.plugins.path at jar-task time on Processor contexts
+// that have no _repo() method, which caused intermittent "null, for cmd: repo" errors.
+// We resolve org.apache.aries:org.apache.aries.util:1.1.3 here using the buildscript
+// repositories (Artifactory when available, otherwise Maven Central) since project
+// repositories are not yet configured at settings time.
+def ariesUtilConfig = buildscript.configurations.detachedConfiguration(
+    buildscript.dependencies.create('org.apache.aries:org.apache.aries.util:1.1.3')
+)
+def bndPluginsPath = new File(rootDir, 'cnf/bndplugins/classes').absolutePath +
+    ',' + ariesUtilConfig.files.join(',')
+workspace.setProperty('build.bnd.plugins.path', bndPluginsPath)
+
 // Add cnf project to the graph
 include bnd_cnf
 
