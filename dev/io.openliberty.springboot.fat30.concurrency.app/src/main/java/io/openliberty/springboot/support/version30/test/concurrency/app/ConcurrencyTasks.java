@@ -21,14 +21,18 @@ import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Configuration(proxyBeanMethods = false)
 @EnableAsync
 public class ConcurrencyTasks {
-
+	
 	@Async
 	public CompletableFuture<String> task1(String message) throws Exception {
 		System.out.println("Async Task 1: " + Thread.currentThread().getName());
@@ -52,4 +56,5 @@ public class ConcurrencyTasks {
 		AppRunner.assertManagedThread(message + ": Async Task 3");
 		return CompletableFuture.completedFuture("Async Task 3 passed");
 	}
+	
 }
