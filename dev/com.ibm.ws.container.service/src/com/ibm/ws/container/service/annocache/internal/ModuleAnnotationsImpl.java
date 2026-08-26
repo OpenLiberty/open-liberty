@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2026 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -138,7 +138,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
     // cache is:
     //   com.ibm.ws.app.manager.ear.internal.EARDeployedAppInfo.
     //      hasAnnotations(Container, Collection<String>)
-    //
+    // 
     // Curiously, that location already uses the application name!
 
     // Issue 30315:
@@ -168,9 +168,9 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         }
 
         // System.out.println(methodName +
-        //     ": ApplicationInfo [ " + appInfo + " ]" +
-        //     " [ " + appInfo.getClass().getName() + " ]" +
-        //     " [ " + appName + " ] [ " + appDepName + " ]");
+	//     ": ApplicationInfo [ " + appInfo + " ]" +
+	//     " [ " + appInfo.getClass().getName() + " ]" +
+	//     " [ " + appName + " ] [ " + appDepName + " ]");
 
         return appName; // Issue 30315
     }
@@ -354,18 +354,6 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
     @Override
     public boolean getUseJandex() {
         return getAppInfo().getUseJandex();
-    }
-
-    /**
-     * Override: Retrieve the 'readWebInfJandex' setting from
-     * the application information.
-     *
-     * @return True or false telling if jandex indexes are to
-     *         be read from WEB-INF/classes.
-     */
-    @Override
-    public boolean getReadWebInfJandex() {
-        return getAppInfo().getReadWebInfJandex();
     }
 
     private ModuleClassesContainerInfo getModuleClassesContainerInfo() {

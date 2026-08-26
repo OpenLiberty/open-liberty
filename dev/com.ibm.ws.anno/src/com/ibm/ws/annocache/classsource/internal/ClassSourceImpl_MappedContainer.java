@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2026 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -431,43 +431,32 @@ public class ClassSourceImpl_MappedContainer
     //
 
     @Override
-    public boolean getJandexEnableWebInf() {
-        return getOptions().getReadWebInfJandex();
-    }
-
-    @Override
-    public String getJandexWebInfPath() {
-        return getOptions().getJandexWebInfPath();
-    }
-    
-    //
-    
-    @Override
-    protected boolean hasJandexIndex(String jandexPath) {
-        return ( getRootContainer().getEntry(jandexPath) != null );
+    protected boolean basicHasJandexIndex() {
+        return ( getRootContainer().getEntry( getJandexIndexPath() ) != null );
     }
 
     @SuppressWarnings("deprecation")
     @Override
     @Trivial
-    protected Index getJandexIndex(String jandexPath) {
-        String methodName = "getJandexIndex";
+    protected Index basicGetJandexIndex() {
+        String methodName = "basicGetJandexIndex";
+
+        String useJandexIndexPath = getJandexIndexPath();
 
         if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
-                    new Object[] {  getHashText(), jandexPath, getContainer().getPhysicalPath() } );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
+                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } );
         }
 
         InputStream jandexStream;
 
         try {
-            jandexStream = openRootResourceStream(null, jandexPath, JANDEX_BUFFER_SIZE); // throws ClassSource_Exception
+            jandexStream = openRootResourceStream(null, useJandexIndexPath, JANDEX_BUFFER_SIZE); // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
             // CWWKC0066E: An exception occurred while attempting to open Jandex index file [ {0} ].
             // The identifier for the class source is [ {1} ].
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_OPEN_EXCEPTION",
-                new Object[] { jandexPath, getCanonicalName() });
+                new Object[] { useJandexIndexPath, getCanonicalName() });
             return null;
         }
 
@@ -488,7 +477,7 @@ public class ClassSourceImpl_MappedContainer
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]",
                     new Object[] {  getHashText(),
-                                    jandexPath,
+                                    useJandexIndexPath,
                                     getCanonicalName(),
                                     Integer.toString(jandexIndex.getKnownClasses().size()) } );
             }
@@ -497,32 +486,33 @@ public class ClassSourceImpl_MappedContainer
         } catch ( Throwable th ) {
             // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_READ_EXCEPTION",
-                new Object[] { jandexPath, getCanonicalName() });
+                new Object[] { useJandexIndexPath, getCanonicalName() });
             return null;
 
         } finally {
-            closeRootResourceStream(null,  jandexPath, jandexStream);
+            closeRootResourceStream(null,  useJandexIndexPath, jandexStream);
         }
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    protected SparseIndex getSparseJandexIndex(String jandexPath) {
-        String methodName = "getSparseJandexIndex";
+    protected SparseIndex basicGetSparseJandexIndex() {
+        String methodName = "basicGetSparseJandexIndex";
 
+        String useJandexIndexPath = getJandexIndexPath();
+    
         if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
-                    new Object[] {  getHashText(), jandexPath, getRootContainer().getPhysicalPath() } );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
+                    new Object[] {  getHashText(), useJandexIndexPath, getRootContainer().getPhysicalPath() } );
         }
 
         InputStream jandexStream;
         try {
-            jandexStream = openRootResourceStream(null, jandexPath, JANDEX_BUFFER_SIZE); // throws ClassSource_Exception
+            jandexStream = openRootResourceStream(null, useJandexIndexPath, JANDEX_BUFFER_SIZE); // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
             // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_READ_EXCEPTION",
-                new Object[] { jandexPath, getCanonicalName() });
+                new Object[] { useJandexIndexPath, getCanonicalName() });
             return null;
         }
     
@@ -543,7 +533,7 @@ public class ClassSourceImpl_MappedContainer
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]",
                     new Object[] {  getHashText(),
-                                    jandexPath,
+                                    useJandexIndexPath,
                                     getCanonicalName(),
                                     Integer.toString(jandexIndex.getKnownClasses().size()) } );
             }
@@ -552,14 +542,14 @@ public class ClassSourceImpl_MappedContainer
         } catch ( Throwable th ) {
             // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_READ_EXCEPTION",
-                new Object[] { jandexPath, getCanonicalName() });
+                new Object[] { useJandexIndexPath, getCanonicalName() });
             return null;
     
         } finally {
-            closeRootResourceStream(null,  jandexPath, jandexStream);
+            closeRootResourceStream(null,  useJandexIndexPath, jandexStream);
         }
     }
-    
+
     //
 
     public InputStream openRootResourceStream(String className, String resourceName, int bufferSize)

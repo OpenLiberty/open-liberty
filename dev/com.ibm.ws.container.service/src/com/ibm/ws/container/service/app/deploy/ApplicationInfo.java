@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2026 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import com.ibm.wsspi.adaptable.module.Container;
  * Contains information about a JEE application
  */
 public interface ApplicationInfo {
+
     /**
      * Returns the unique application name. This will normally be the name
      * specified in the deployment descriptor (or the URI base name) unless
@@ -27,7 +28,8 @@ public interface ApplicationInfo {
     String getName();
 
     /**
-     * Returns the Container object associated with this application.
+     * Returns the Container object associated with this application
+     *
      */
     Container getContainer();
 
@@ -38,19 +40,16 @@ public interface ApplicationInfo {
 
     /**
      * Returns an instance of NestedConfigHelper that can be used to obtain
-     * application properties.
+     * application properties
+     *
      */
     NestedConfigHelper getConfigHelper();
 
     /**
-     * Return whether Jandex indices are to be used.
+     * This indicates whether Jandex annotation indexes supplied in the application are to be used.
+     *
+     * @return
      */
     boolean getUseJandex();
 
-    /**
-     * Return whether Jandex indices are found at <code>WEB-INF/classes/META-INF/jandex.idx</code>.
-     *
-     * Only meaningful when {@link #getUseJandex()} returns true.
-     */
-    boolean getReadWebInfJandex();
 }

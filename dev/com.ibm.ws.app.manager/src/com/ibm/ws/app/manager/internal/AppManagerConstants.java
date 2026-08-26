@@ -31,7 +31,6 @@ public interface AppManagerConstants {
     public static final String SHARED_APPS_DIR = WsLocationConstants.SYMBOL_SHARED_APPS_DIR;
     public static final String AUTO_INSTALL_PROP = ".installedByDropins";
     public static final String USE_JANDEX = "useJandex";
-    public static final String ENABLE_WEB_INF_JANDEX = "readWebInfJandex";
     public static final String ANNOTATION_SCAN_LIBRARY = "annotationScanLibrary";
     public static final String XML_SUFFIX = ".xml";
     public static final String START_AFTER = "startAfter";
