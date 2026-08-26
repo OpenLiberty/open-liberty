@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,14 +32,19 @@ public interface ClassSource_Options extends com.ibm.wsspi.anno.classsource.Clas
     boolean USE_JANDEX_DEFAULT_VALUE = false;
     String USE_JANDEX_PROPERTY_NAME = "com.ibm.ws.jandex.enable";
 
+    @Override
     boolean getUseJandexDefault();
 
+    @Override    
     boolean getIsSetUseJandex();
+    @Override    
     boolean getUseJandex();
 
+    @Override    
     void setUseJandex(boolean useJandex);
+    @Override    
     void unsetUseJandex();
-
+    
     //
 
     String JANDEX_PATH_DEFAULT_VALUE = "META-INF/jandex.idx";
@@ -52,6 +57,23 @@ public interface ClassSource_Options extends com.ibm.wsspi.anno.classsource.Clas
 
     void setJandexPath(String jandexPath);
     void unsetJandexPath();
+
+    //
+
+    boolean READ_WEB_INF_JANDEX_DEFAULT_VALUE = false;
+    String READ_WEB_INF_JANDEX_PROPERTY_NAME = "com.ibm.ws.jandex.enable.web.inf";
+
+    boolean getJandexReadWebInfDefault();
+
+    boolean getIsSetReadWebInfJandex();
+    boolean getReadWebInfJandex();
+
+    void setReadWebInfJandex(boolean readWebInfJandex);
+    void unsetReadWebInfJandex();
+
+    String JANDEX_PATH_WEB_INF = "WEB-INF/classes" + "/" + JANDEX_PATH_DEFAULT_VALUE;
+
+    String getJandexWebInfPath();
 
     //
 
