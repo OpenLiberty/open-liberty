@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,19 +62,21 @@ public class JandexLogger {
 
         String propertyText = getProperty(propertyName);
 
-        boolean propertyValue;
-        boolean propertyDefaulted;
-        if ( propertyDefaulted = (propertyText == null) ) {
+        boolean propertyValue;        
+        String propertyCase;
+        if ( propertyText == null ) {
             propertyValue = propertyDefaultValue;
+            propertyCase = "from default";
         } else {
             propertyValue = Boolean.parseBoolean(propertyText);
+            propertyCase = "from property";
         }
 
         if ( doLog() ) {
             String debugText =
                 "Property [ " + propertyName + " ]" +
                 " [ " + propertyValue + " ]" +
-                " (" + (propertyDefaulted ? "from default" : "from property") + ")";
+                " (" + propertyCase + ")";
             log(sourceClass, sourceMethod, debugText);
         }
 
