@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ public class ApplicationManager {
 
     private boolean expandApps;
     private boolean useJandex;
+    private boolean readWebInfJandex;
     private long startTimeout;
     private long stopTimeout;
     private String expandLocation;
@@ -135,7 +136,9 @@ public class ApplicationManager {
 
         Boolean useJandexValue = getProperty(properties, "useJandex", false);
         setUseJandex(useJandexValue == null ? false : useJandexValue);
-        //System.setProperty("com.ibm.ws.jandex.enable", useJandexValue.toString()); // Temporary -- REMOVE THIS LATER ////
+
+        Boolean readWebInfJandexValue = getProperty(properties, "readWebInfJandex", false);
+        setReadWebInfJandex(readWebInfJandexValue == null ? false : readWebInfJandexValue);
 
         long startTimeoutValue = getProperty(properties, "startTimeout", 30L);
         setStartTimeout(startTimeoutValue);
@@ -190,80 +193,58 @@ public class ApplicationManager {
         return result;
     }
 
-    /**
-     * @return
-     */
     public boolean getExpandApps() {
         return this.expandApps;
     }
 
-    /**
-     * @param b
-     */
     private void setExpandApps(boolean b) {
         this.expandApps = b;
     }
 
-    /**
-     * @return
-     */
     public boolean getUseJandex() {
         return this.useJandex;
     }
 
-    /**
-     * @param b
-     */
     private void setUseJandex(boolean b) {
         this.useJandex = b;
     }
 
-    /**
-     * @return
-     */
+    public boolean getReadWebInfJandex() {
+        return readWebInfJandex;
+    }
+    
+    private void setReadWebInfJandex(boolean b) {
+        this.readWebInfJandex = b;
+    }
+
     public long getStartTimeout() {
         return this.startTimeout;
     }
 
-    /**
-     * @param b
-     */
     private void setStartTimeout(long b) {
         this.startTimeout = b;
     }
 
-    /**
-     * @return
-     */
     public long getStopTimeout() {
         return this.stopTimeout;
     }
 
-    /**
-     * @param b
-     */
     private void setStopTimeout(long b) {
         this.stopTimeout = b;
     }
 
-    /**
-     * @param b
-     */
     private void setExpandLocation(String b) {
         this.expandLocation = b;
     }
 
-    /**
-     * @return
-     */
     public String getExpandLocation() {
         return this.expandLocation;
     }
 
-    private static class ExtractedLogData {
-        private final String id;
-        private final long lastUpdated;
-        private final long size;
+    protected static class ExtractedLogData {
+        protected final String id;
+        protected final long lastUpdated;
+        protected final long size;
 
         public ExtractedLogData(String id, long updated, long size) {
             this.id = id;
