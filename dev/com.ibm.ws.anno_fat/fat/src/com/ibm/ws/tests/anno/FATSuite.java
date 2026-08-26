@@ -34,7 +34,6 @@ import com.ibm.ws.tests.anno.jandex.JandexAppFalseAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppFalseAppMgrTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrTrueTest;
-import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
 
 /**
  * Servlet 4.0 Tests
@@ -65,7 +64,6 @@ import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
     JandexAppFalseAppMgrTrueTest.class,
     JandexAppTrueAppMgrFalseTest.class,
     JandexAppTrueAppMgrTrueTest.class,
-    JandexWebInfClassesTest.class,
 
     // Annotation caching tests
     CacheEnablementTest.class,

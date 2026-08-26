@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2026 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -396,9 +396,7 @@ public class TargetsScannerBaseImpl {
                     "Location {0}: Classes {1}: Scan type {2}",
                     new Object[] { nextClassSource.getCanonicalName(), nextClassCount, scanType });
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "Jandex Path: {0}", nextClassSource.getOptions().getJandexPath());
-                logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "Jandex WEB-INF: {0}", nextClassSource.getOptions().getReadWebInfJandex());                
+			        "Jandex Path: {0}", nextClassSource.getOptions().getJandexPath());
             }
         }
 
@@ -417,14 +415,12 @@ public class TargetsScannerBaseImpl {
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                "Scan results: Application {0} module {1}:" +
-                " Overall: {2} locations with {3} classes;" +
-                " Jandex: {4} locations with {5} classes; " +
-                " Internal Cache: {6} locations with {7} classes",
-                new Object[] { appName, modName,
-                    sourceCount, classCount,
-                    jandexSourceCount, jandexClassCount,
-                    cacheSourceCount, cacheClassCount } );
+                "Cache coverage for module {0} in application {1}:" +
+                " {2} of {3} module locations were read from cache;" +
+                " {4} of {5} module classes were read from cache.",
+                new Object[] { modName, appName,
+                    cacheSourceCount, sourceCount,
+                    cacheClassCount, classCount });
         }
     }
 

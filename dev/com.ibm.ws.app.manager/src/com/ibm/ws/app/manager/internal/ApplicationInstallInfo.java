@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2026 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,9 @@ import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
+/**
+ *
+ */
 @Component(service = { ApplicationInfoForContainer.class }, immediate = true)
 public class ApplicationInstallInfo implements ApplicationInformation<Object>, ApplicationInfoForContainer {
     private final ApplicationConfig _config;
@@ -46,7 +49,7 @@ public class ApplicationInstallInfo implements ApplicationInformation<Object>, A
         _resolvedLocation.set(resolvedLocation);
         _handler = handler;
         _updateHandler = updateHandler;
-
+        /* put jandex configuration into overlay cache */
         try {
             NonPersistentCache cache = container.adapt(NonPersistentCache.class);
             cache.addToCache(ApplicationInfoForContainer.class, this);
@@ -79,12 +82,6 @@ public class ApplicationInstallInfo implements ApplicationInformation<Object>, A
     @Override
     public boolean getUseJandex() {
         return _config.getUseJandex();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean getReadWebInfJandex() {
-        return _config.getReadWebInfJandex();
     }
 
     /** {@inheritDoc} */
