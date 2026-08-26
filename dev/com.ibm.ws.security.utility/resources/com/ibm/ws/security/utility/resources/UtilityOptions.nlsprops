@@ -128,8 +128,7 @@ encode.option-key.keyLabel=\
 \ \ \ \ --keyLabel=[keyLabel]
 encode.option-desc.keyLabel=\
 \tFor SAF keyring types, specify the label of the certificate within\n\
-\tthe keyring. For CKDS, specify the label of the AES key in the\n\
-\tICSF Cryptographic Key Data Set.
+\tthe keyring. For ICSF, specify the label in the CKDS.
 
 
 
@@ -312,7 +311,7 @@ createLTPAKeys.option-key.keyring=\
 \ \ \ \ --keyring=[keyring]
 createLTPAKeys.option-desc.keyring=\
 \t(z/OS only) The SAF keyring URL where the AES encryption key is located.\n\
-\tNot required when --keyringType=CKDS is specified.
+\tNot required when --keyringType=ICSF is specified.
 createLTPAKeys.option-key.keyringType=\
 \ \ \ \ --keyringType=[keyringType]
 createLTPAKeys.option-desc.keyringType=\
@@ -325,8 +324,7 @@ createLTPAKeys.option-key.keyLabel=\
 \ \ \ \ --keyLabel=[keyLabel]
 createLTPAKeys.option-desc.keyLabel=\
 \t(z/OS only) For SAF keyring types, specify the label of the\n\
-\tcertificate within the keyring. For CKDS, specify the label of the\n\
-\tAES key in the ICSF Cryptographic Key Data Set.
+\tcertificate within the keyring. For ICSF, specify the label in the CKDS.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

@@ -44,7 +44,7 @@ encode.entriesDidNotMatch=Entries did not match.
 encode.mutuallyExclusiveArgError=The input file cannot specify both the {0} and {1} properties.
 encode.aesConfigFileEncryptionAmbiguous=ERROR: The input file cannot be used if it contains both the {0} and {1} variables.
 encode.aesConfigFileMissingEncryptionVariables=Cannot encode password; either the input file does not contain the {0} or {1} variables, or the input file is malformed.
-encode.aesKeyRequired=When using AES encoding, one of the following arguments must be specified: --key, --base64Key, --aesConfigFile, --keyring, or --keyringType=CKDS with --keyLabel.
+encode.aesKeyRequired=When using AES encoding, one of the following arguments must be specified: --key, --base64Key, --aesConfigFile, --keyring, or --keyringType=ICSF with --keyLabel.
 
 password.enterText=Enter password:
 password.reenterText=Re-enter password:
