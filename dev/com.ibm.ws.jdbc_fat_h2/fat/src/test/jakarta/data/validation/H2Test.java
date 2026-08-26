@@ -136,7 +136,7 @@ public class H2Test extends FATServletClient {
                          0, unfilteredContent.size());
         } finally {
             // Stop server and expect errors from URL validation tests
-            server.stopServer("DSRA8070E", "CWWKE0701E");
+            server.stopServer("DSRA8020E", "DSRA8070E", "CWWKE0701E");
         }
     }
 
