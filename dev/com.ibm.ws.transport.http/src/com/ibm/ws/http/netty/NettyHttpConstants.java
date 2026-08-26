@@ -9,6 +9,15 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
+import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
+
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.AttributeKey;
 import java.net.Socket;
 
@@ -16,6 +25,32 @@ import java.net.Socket;
  *
  */
 public class NettyHttpConstants {
+
+    /**
+     * TODO: temp, create exception class
+     * Unchecked signal that trusted HTTP/2 stream metadata failed validation.
+     * Must not be an {@link IllegalArgumentException}: that class is intentionally
+     * ignored by {@code HttpDispatcherHandler.exceptionCaught} for codec preludes.
+     */
+    public static final class InvalidHttp2StreamMetadataException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public InvalidHttp2StreamMetadataException(String message) {
+            super(message);
+        }
+
+        public InvalidHttp2StreamMetadataException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    /**
+     * Returns whether the server-owned HTTP/2 connection handler is installed.
+     * Request and response headers are deliberately not protocol authority.
+     */
+    public static boolean isHttp2Pipeline(Channel channel) {
+        return channel != null && channel.pipeline().get(HttpToHttp2ConnectionHandler.class) != null;
+    }
 
     public static final AttributeKey<String> FORWARDED_PROTO_KEY = AttributeKey.valueOf("forwardedProto");
     public static final AttributeKey<String> FORWARDED_HOST_KEY = AttributeKey.valueOf("forwardedHost");
@@ -38,6 +73,28 @@ public class NettyHttpConstants {
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
     public static final AttributeKey<Socket> SOCKET_HANDLE = AttributeKey.valueOf("SocketHandleKey");
 
+    //AUTOREAD WORK
+    public static final AttributeKey<HttpInputStreamImpl> HTTP_INPUT_STREAM = AttributeKey.valueOf("httpInputStream");
+    public static final AttributeKey<Runnable> ASYNC_READ_CALLBACK = AttributeKey.valueOf("asyncReadCallback");
+    public static final AttributeKey<Boolean> UPGRADED = AttributeKey.valueOf("httpUpgraded");
+    public static final AttributeKey<HttpChannelConfig> HTTP_CONFIG = AttributeKey.valueOf("httpConfig");
+    public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE = AttributeKey.valueOf("upgradeReadyPromise");
+    public static final AttributeKey<Boolean> QUIESCING = AttributeKey.valueOf("quiescing");
+    public static final AttributeKey<Boolean> INPUT_SHUTDOWN_PENDING = AttributeKey.valueOf("shutdownPending");
+    public static final AttributeKey<Boolean> RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE =
+        AttributeKey.valueOf("responseCloseBeforeRequestBodyComplete");
+    public static final AttributeKey<Boolean> ASYNC_STREAM_READ =
+        AttributeKey.valueOf("httpAsyncStreamRead");
+    public static final AttributeKey<AtomicBoolean> ASYNC_READ_DISPATCHED =
+        AttributeKey.valueOf("httpAsyncReadDispatched");
+    public static final AttributeKey<Boolean> ASYNC_READ_PENDING_SIGNAL =
+        AttributeKey.valueOf("httpAsyncReadPendingSignal");
+    public static final AttributeKey<Runnable> ASYNC_READ_ERROR_CALLBACK =
+        AttributeKey.valueOf("httpAsyncReadErrorCallback");
+    
+    public static final String VC_HTTP_INPUT_STREAM = "nettyInputStream";
+    public static final String VC_HTTP2_STREAM_ID = "http2StreamId";
+    
     public enum ProtocolName {
         HTTP1("HTTP1"),
         HTTP2("HTTP2"),

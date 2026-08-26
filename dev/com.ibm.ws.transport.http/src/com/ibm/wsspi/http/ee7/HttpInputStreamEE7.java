@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,21 @@
  *******************************************************************************/
 package com.ibm.wsspi.http.ee7;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -43,9 +49,9 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         super(context);
     }
 
-    public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
-        super(context, request);
-    }
+    // public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
+    //     super(context, request);
+    // }
 
     /*
      * (non-Javadoc)
@@ -83,6 +89,16 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
 
     @FFDCIgnore(BodyCompleteException.class)
     public boolean asyncCheckBuffers(InterChannelCallback callback) {
+        // Prefer streaming buffer first
+        try {
+            if (streaming) {
+                return asyncCheckStreamingNettyBuffers(callback);
+            }
+        } catch (IOException ioe) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "asyncCheckBuffers(streaming) checkBuffer exception: " + ioe);
+            }
+        }
 
         try {
             VirtualConnection vc = isc.getRequestBodyBuffer(callback, false);
@@ -108,6 +124,97 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         return false;
     }
 
+    public boolean asyncCheckStreamingNettyBuffers(InterChannelCallback callback) throws IOException {
+        if (!streaming) {
+            return false;
+        }
+        if (isStreamingReadReady()){
+            return true;
+        }
+        return armStreamingReadCallback(callback);
+    }
+
+    private boolean armStreamingReadCallback(InterChannelCallback callback) throws IOException{
+        if (context == null || callback == null){
+            return false;
+        }
+
+        AtomicBoolean delivered = new AtomicBoolean();
+        AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(context.channel());
+        Runnable[] successRef = new Runnable[1];
+        Runnable[] errorRef = new Runnable[1];
+        successRef[0] = () -> {
+            if (delivered.get()) {
+                return;
+            }
+            AsyncReadDispatchState.Registration rearmed = null;
+            try {
+                if (!isStreamingReadReady()){
+                    rearmed = state.arm(successRef[0], errorRef[0]);
+                    if (!isStreamingReadReady()) {
+                        ReadFlowHandler.setBodyReadWanted(context, true);
+                        return;
+                    }
+                }
+                if (delivered.compareAndSet(false, true)) {
+                    state.clear(rearmed);
+                    callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+                }
+            } catch (IOException ioe) {
+                state.clear(rearmed);
+                if (delivered.compareAndSet(false, true)) {
+                    callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
+                }
+            } catch (RuntimeException rte) {
+                state.clear(rearmed);
+               if (delivered.compareAndSet(false, true)){
+                    callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, rte);
+                }
+                throw rte; 
+            } catch (Error error) {
+                state.clear(rearmed);
+                throw error;
+            }
+        };
+        errorRef[0] = () -> {
+            if (!delivered.compareAndSet(false, true)) {
+                return;
+            }
+                callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, 
+                    new EOFException("Peer input shutdown before request body completed"));
+        };
+        AsyncReadDispatchState.Registration registration = state.arm(successRef[0], errorRef[0]);
+        
+        try {
+        if (isStreamingReadReady()){
+            if (delivered.compareAndSet(false, true)){
+                    state.clear(registration);
+                return true;
+            }
+            return false;
+        }
+        ReadFlowHandler.setBodyReadWanted(context, true);
+        return false;
+        } catch (IOException | RuntimeException | Error failure) {
+            state.clear(registration);
+            throw failure;
+        }
+    }
+
+    private boolean isStreamingReadReady() throws IOException {
+        if (isStreamingReadCompleteForCallback()) {
+            return true;
+        }
+        if (isMultiReadOfPostDataEnabled()) {
+            return checkMultiReadBufferIfAvailable();
+        }
+        return isStreamingReadReadyForCallback();
+    }
+
+    private boolean isStreamingReadCompleteForCallback() throws IOException {
+        return streaming && readChannelComplete && available() <= 0 && isStreamingEndReadyForCallback();
+    }
+
     public boolean isFinished() {
         boolean isFinished = false;
 
@@ -120,6 +227,34 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
             if (isClosed()) {
                 return true;
             }
+            if (streaming) {
+                // If we still have buffered bytes, we are not finished.
+                if (available() > 0) {
+                    return false;
+                }
+                if (isStreamingEndReadyForCallback()) {
+                    this.readChannelComplete = true;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "isFinished(streaming): queue EOS and no buffered data; returning true");
+                    }
+                    return true;
+                }
+                if (readChannelComplete) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "isFinished(streaming): EOS reached and no buffered data; returning true");
+                    }
+                    return true;
+                }
+                if (!autoRead && queue != null && queue.wantsInput() && context != null) {
+                    context.channel().read();
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "isFinished(streaming): more input expected; returning false");
+                }
+                return false;
+            }
+
+
             if (available() <= 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "There is no data currently available in the buffer");
