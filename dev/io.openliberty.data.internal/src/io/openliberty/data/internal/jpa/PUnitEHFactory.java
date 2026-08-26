@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.data.internal.provider;
+package io.openliberty.data.internal.jpa;
 
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 

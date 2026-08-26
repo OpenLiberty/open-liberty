@@ -15,6 +15,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "data", messageBundle = "io.openliberty.data.internal.resources.CWWKDMessages")
-package io.openliberty.data.internal.service;
+package io.openliberty.data.internal.ds;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
