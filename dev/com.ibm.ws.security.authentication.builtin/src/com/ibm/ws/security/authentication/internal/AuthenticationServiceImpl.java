@@ -461,10 +461,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return false;
         }
 
-        // Early-exit: if inactivity timeout is not configured the feature is inactive;
-        // avoid the ltpaConfigurationRef.getService() call on every request.
+        // Early-exit: both inactivityTimeout and refreshThreshold must be positive for the
+        // feature to be active — mirrors the guard in LTPAToken2.checkRefreshNeeded().
         LTPAConfiguration ltpaConfig = ltpaConfigurationRef.getService();
-        if (ltpaConfig == null || ltpaConfig.getInactivityTimeout() <= 0) {
+        if (ltpaConfig == null
+                || ltpaConfig.getInactivityTimeout() <= 0
+                || ltpaConfig.getRefreshThreshold() <= 0) {
             return false;
         }
 
@@ -497,17 +499,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // Get creation time from WSCredential
             Object creationTimeObj = wsCredential.get(AttributeNameConstants.WSTOKEN_CREATION_TIME);
             if (!(creationTimeObj instanceof Long)) {
-                // No creationTime — fall back to the stored expiration for the absolute-expiry check only.
-                long storedExpiration = wsCredential.getExpiration();
-                if (currentTime >= storedExpiration) {
-                    if (isDebugEnabled()) {
-                        Tr.debug(tc, "Token is expired (no creationTime): current=" + currentTime +
-                                     ", storedExpiration=" + storedExpiration);
-                    }
-                    return true;
-                }
+                // No creationTime — cannot check inactivity; let LTPA validation handle expiry.
                 if (isDebugEnabled()) {
-                    Tr.debug(tc, "Creation time not found in WSCredential, skipping inactivity timeout check");
+                    Tr.debug(tc, "Creation time not found in WSCredential, skipping refresh check");
                 }
                 return false;
             }
@@ -525,19 +519,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 effectiveExpiration = wsCredential.getExpiration();
             }
 
-            // Check if token has exceeded absolute expiration
+            // Check if token has exceeded absolute expiration — expired, not refreshable;
+            // let the JAAS login path reject it properly.
             if (currentTime >= effectiveExpiration) {
                 if (isDebugEnabled()) {
                     Tr.debug(tc, "Token is expired: current=" + currentTime + ", absoluteExpiration=" + effectiveExpiration);
                 }
-                return true;
+                return false;
             }
 
-            // Compute the inactivity expiration and cap it at the absolute deadline.
+            // Compute the inactivity expiration (only reached when both inactivityTimeout
+            // and refreshThreshold are positive — guarded by early-exit above).
+            // Cap at the absolute deadline, matching the cap in LTPAToken2.getInactivityTimeout().
             long inactivityExpiration = creationTime + (inactivityTimeoutInMinutes * MILLIS_PER_MINUTE);
-//            if (inactivityExpiration > effectiveExpiration) {
-//                inactivityExpiration = effectiveExpiration;
-//            }
+            if (inactivityExpiration > effectiveExpiration) {
+                inactivityExpiration = effectiveExpiration;
+            }
 
             if (isDebugEnabled()) {
                 Tr.debug(tc, "Inactivity timeout check: creationTime=" + creationTime +
@@ -546,38 +543,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                              ", currentTime=" + currentTime);
             }
 
-            // Check if token has exceeded inactivity timeout
+            // Check if token has exceeded inactivity timeout — expired, not refreshable
             if (currentTime >= inactivityExpiration) {
                 if (isDebugEnabled()) {
                     Tr.debug(tc, "Token exceeded inactivity timeout");
                 }
-                return true;
+                return false;
             }
 
             // Check if within refresh threshold of inactivity expiration
-            if (refreshThresholdInMinutes > 0) {
-                long refreshThresholdInMillis = refreshThresholdInMinutes * MILLIS_PER_MINUTE;
-                long timeRemainingUntilInactivity = inactivityExpiration - currentTime;
+            long refreshThresholdInMillis = refreshThresholdInMinutes * MILLIS_PER_MINUTE;
+            long timeRemainingUntilInactivity = inactivityExpiration - currentTime;
 
-                if (timeRemainingUntilInactivity <= refreshThresholdInMillis) {
-                    if (isDebugEnabled()) {
-                        Tr.debug(tc, "Token needs refresh: time until inactivity expiration (" +
-                                     timeRemainingUntilInactivity + "ms) <= threshold (" +
-                                     refreshThresholdInMillis + "ms)");
-                    }
-                    return true;
+            if (timeRemainingUntilInactivity <= refreshThresholdInMillis) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Token needs refresh: time until inactivity expiration (" +
+                                 timeRemainingUntilInactivity + "ms) <= threshold (" +
+                                 refreshThresholdInMillis + "ms)");
                 }
+                return true;
             }
 
             return false;
 
-        } catch (SecurityException se) {
-            // Security exceptions should be logged at warning level
-            Tr.warning(tc, "Security exception while checking token refresh: " + se.getMessage());
-            throw se;
         } catch (Exception e) {
-            // Log other exceptions at warning level instead of just debug
-            Tr.warning(tc, "Error checking if cached token needs refresh: " + e.getMessage());
             if (isDebugEnabled()) {
                 Tr.debug(tc, "Error checking if cached token needs refresh", e);
             }

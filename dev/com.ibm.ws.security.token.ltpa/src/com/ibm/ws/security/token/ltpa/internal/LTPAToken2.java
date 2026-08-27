@@ -186,10 +186,12 @@ public class LTPAToken2 implements Token, Serializable {
         this.inactivityTimeoutInMinutes = inactivityTimeoutInMinutes;
         this.dynamicExpirationValidation = dynamicExpirationValidation;
         setCreationTime();
-        // When dynamicExpirationValidation is enabled, store creationTime + inactivityTimeout
-        // as the token expiration so the recipient sees the inactivity window deadline.
-        // During validation the server ignores this value and recomputes from the config expiration.
-        if (dynamicExpirationValidation && inactivityTimeoutInMinutes > 0) {
+        // When dynamicExpirationValidation is enabled AND both inactivityTimeout and
+        // refreshThreshold are configured, store creationTime + inactivityTimeout as the
+        // token expiration so the recipient sees the inactivity window deadline.
+        // Without refreshThreshold the sliding window is disabled so we fall back to
+        // the absolute expiration, matching the behaviour of validateExpiration().
+        if (dynamicExpirationValidation && inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) {
             setExpiration(inactivityTimeoutInMinutes);
         } else {
             setExpiration(expirationInMinutes);
@@ -239,11 +241,11 @@ public class LTPAToken2 implements Token, Serializable {
         this.inactivityTimeoutInMinutes = inactivityTimeoutInMinutes;
         this.dynamicExpirationValidation = dynamicExpirationValidation;
         setCreationTime();
-        // When dynamicExpirationValidation=true the clone() method passes 0L as a sentinel.
-        // We must recompute the stored expiration from the new creationTime (just set above)
-        // plus the inactivity window — exactly as the creation constructor does.
-        // When dynamicExpirationValidation=false we preserve the original absolute deadline.
-        if (dynamicExpirationValidation && inactivityTimeoutInMinutes > 0) {
+        // When dynamicExpirationValidation=true AND both inactivityTimeout and refreshThreshold
+        // are configured, recompute the stored expiration from the new creationTime plus the
+        // inactivity window — exactly as the creation constructor does.
+        // Without refreshThreshold the sliding window is disabled; preserve the original deadline.
+        if (dynamicExpirationValidation && inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) {
             setExpiration(inactivityTimeoutInMinutes);
         } else if (originalExpirationInMillis > 0) {
             setExpirationFromMilliseconds(originalExpirationInMillis);
@@ -474,8 +476,10 @@ public class LTPAToken2 implements Token, Serializable {
             throw new TokenExpiredException(effectiveExpiration, msg);
         }
 
-        // Check inactivity timeout (if configured)
-        if (inactivityTimeoutInMinutes > 0) {
+        // Check inactivity timeout only when both inactivityTimeout and refreshThreshold are
+        // configured. Without refreshThreshold the sliding window is disabled and the token
+        // falls back to absolute-expiration-only behaviour.
+        if (inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) {
             // Get creation time from token
             String[] creationTimeArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
             if (creationTimeArray != null && creationTimeArray[creationTimeArray.length - 1] != null) {
@@ -543,10 +547,16 @@ public class LTPAToken2 implements Token, Serializable {
             return;
         }
 
-        // Only check refresh when inactivity timeout is configured
+        // Only check refresh when both inactivityTimeout and refreshThreshold are configured
         if (inactivityTimeoutInMinutes <= 0) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Inactivity timeout not configured, refresh not applicable");
+            }
+            return;
+        }
+        if (refreshThresholdInMinutes <= 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Refresh threshold not configured, refresh not applicable");
             }
             return;
         }
