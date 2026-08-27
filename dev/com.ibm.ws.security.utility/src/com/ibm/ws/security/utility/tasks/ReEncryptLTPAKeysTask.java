@@ -13,19 +13,16 @@
 package com.ibm.ws.security.utility.tasks;
 
 import java.io.PrintStream;
-import java.lang.reflect.Constructor;
 import java.security.Key;
-import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.crypto.SecretKeyFactory;
 
 import com.ibm.ws.crypto.ltpakeyutil.AesLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
+import com.ibm.ws.crypto.util.ICSFSecretKeyResolver;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 
@@ -50,9 +47,6 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
     static final String ARG_CURRENT_PASSWORD = "--currentPassword";
     static final String ARG_NEW_PASSWORD     = "--newPassword";
     static final String ARG_CKDS_LABEL       = "--ckdsLabel";
-
-    private static final String IBMJCECCA_PROVIDER     = "IBMJCECCA";
-    private static final String KEY_LABEL_KEY_SPEC_CLASS = "com.ibm.crypto.hdwrCCA.provider.KeyLabelKeySpec";
 
     private final LTPAKeyFileUtility ltpaKeyFileUtil;
 
@@ -186,20 +180,13 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
 
     /**
      * Builds an {@link LTPAKeyEncryptor} backed by a CKDS hardware key.
-     * Uses reflective loading of {@code KeyLabelKeySpec} to avoid a compile-time
-     * dependency on the z/OS-only IBMJCECCA provider jar, identical to the pattern
-     * used by {@code EncodeTask.ICSFSecretKeyResolver}.
      *
      * @param label the CKDS key label
      * @return an {@link AesLTPAKeyEncryptor} backed by the CKDS key
      * @throws Exception if the IBMJCECCA provider or key label is not available
      */
     private LTPAKeyEncryptor buildCkdsEncryptor(String label) throws Exception {
-        Class<?> keyLabelKeySpecClass = Class.forName(KEY_LABEL_KEY_SPEC_CLASS);
-        Constructor<?> ctor = keyLabelKeySpecClass.getConstructor(String.class);
-        KeySpec spec = (KeySpec) ctor.newInstance(label);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("AES", IBMJCECCA_PROVIDER);
-        Key key = factory.generateSecret(spec);
+        Key key = new ICSFSecretKeyResolver(label).getKey();
         return new AesLTPAKeyEncryptor(key);
     }
 

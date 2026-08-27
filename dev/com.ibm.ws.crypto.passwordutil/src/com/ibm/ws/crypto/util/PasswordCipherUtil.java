@@ -324,14 +324,7 @@ public class PasswordCipherUtil {
     private static byte[] aesDecipherCommon(String cipher, SecretKeyResolver resolver,
                                             AlgorithmParameterSpec ps, byte[] cipherText, int start,
                                             int len) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        Key key;
-        try {
-            key = resolver.getKey();
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new InvalidKeySpecException("Failed to obtain key", e);
-        }
+        Key key = resolver.getKey();
         return aesDecipherCommon(cipher, key, ps, cipherText, start, len);
     }
 
@@ -769,14 +762,7 @@ public class PasswordCipherUtil {
             Cipher c = Cipher.getInstance(CryptoUtils.AES_GCM_CIPHER);
             // 128 is the GCM tag length. 128 is the MAX.
             GCMParameterSpec ps = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, rand.generateSeed(c.getBlockSize()));
-            Key resolvedKey;
-            try {
-                resolvedKey = resolver.getKey();
-            } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new InvalidKeySpecException("Failed to obtain key for " + version, e);
-            }
+            Key resolvedKey = resolver.getKey();
             c.init(Cipher.ENCRYPT_MODE, resolvedKey, ps);
             byte[] encrypted_bytes = c.doFinal(preEncrypted);
             if (encrypted_bytes != null) {
@@ -801,8 +787,6 @@ public class PasswordCipherUtil {
         } catch (BadPaddingException e) {
             throw (UnsupportedCryptoAlgorithmException) new UnsupportedCryptoAlgorithmException().initCause(e);
         } catch (InvalidAlgorithmParameterException e) {
-            throw (InvalidPasswordCipherException) new InvalidPasswordCipherException().initCause(e);
-        } catch (Exception e) {
             throw (InvalidPasswordCipherException) new InvalidPasswordCipherException().initCause(e);
         }
         return info;

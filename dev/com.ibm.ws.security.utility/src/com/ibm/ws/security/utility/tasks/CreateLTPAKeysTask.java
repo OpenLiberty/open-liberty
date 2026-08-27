@@ -28,6 +28,7 @@ import com.ibm.ws.crypto.ltpakeyutil.AesLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.ICSFSecretKeyResolver;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -155,13 +156,13 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
 
         validateArgumentList(args, Arrays.asList(new String[] { ARG_PASSWORD }));
 
-        String path       = getArgumentValue(ARG_FILE, args, DEFAULT_LTPA_KEY_FILE);
+        String path = getArgumentValue(ARG_FILE, args, DEFAULT_LTPA_KEY_FILE);
         String serverName = getArgumentValue(ARG_SERVER, args, null);
 
         // Resolve z/OS SAF/ICSF arguments (non-z/OS systems error if these are supplied)
-        String keyring     = getArgumentValue(BaseCommandTask.ARG_KEYRING, args, null);
+        String keyring = getArgumentValue(BaseCommandTask.ARG_KEYRING, args, null);
         String keyringType = getArgumentValue(BaseCommandTask.ARG_KEYRING_TYPE, args, null);
-        String keyLabel    = getArgumentValue(BaseCommandTask.ARG_KEY_LABEL, args, null);
+        String keyLabel = getArgumentValue(BaseCommandTask.ARG_KEY_LABEL, args, null);
 
         if (!isZOS()) {
             // On non-z/OS, reject the SAF/ICSF arguments early with a clear message
@@ -221,7 +222,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
      * {@code useEncryptionKey="true"} and a companion {@code <zosPasswordEncryptionKey>}.
      */
     private SecurityUtilityReturnCodes handleICSFPath(String path, String serverName,
-                                                       String keyLabel) throws Exception {
+                                                      String keyLabel) throws Exception {
         try {
             AESKeyManager.setSecretKeyResolver(new ICSFSecretKeyResolver(keyLabel));
             java.security.Key aesKey = AESKeyManager.getKeyViaResolver(AESKeyManager.KeyVersion.AES_V2);
@@ -249,8 +250,8 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
      * The SAF private key bytes drive AES encoding of the keysPassword for server.xml.
      */
     private SecurityUtilityReturnCodes handleSAFPath(String path, String serverName,
-                                                      String keyring, String keyringType, String keyLabel,
-                                                      String[] args) throws Exception {
+                                                     String keyring, String keyringType, String keyLabel,
+                                                     String[] args) throws Exception {
         SAFEncryptionKey ek = new SAFEncryptionKey(keyring, keyringType, keyLabel);
         String cryptoKey = ek.getKey();
 
@@ -258,8 +259,8 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
         argMap.put(BaseCommandTask.ARG_PASSWORD_KEY, cryptoKey);
         Map<String, String> props = BaseCommandTask.convertToProperties(argMap, stdout);
 
-        String password       = getArgumentValue(ARG_PASSWORD, args, null);
-        String encoding       = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, "aes");
+        String password = getArgumentValue(ARG_PASSWORD, args, null);
+        String encoding = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, "aes");
         String encodedPassword = PasswordUtil.encode(password, encoding, props);
 
         ltpaKeyFileUtil.createLTPAKeysFile(path, password.getBytes());
@@ -278,18 +279,18 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
      * Standard path: LTPA keys encrypted with a plaintext password.
      */
     private SecurityUtilityReturnCodes handlePasswordPath(String path, String serverName,
-                                                           String[] args) throws Exception {
+                                                          String[] args) throws Exception {
         Map<String, String> argMap = new HashMap<>();
-        String password      = getArgumentValue(ARG_PASSWORD, args, null);
-        String encoding      = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, PasswordUtil.getDefaultEncoding());
-        String key           = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
+        String password = getArgumentValue(ARG_PASSWORD, args, null);
+        String encoding = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, PasswordUtil.getDefaultEncoding());
+        String key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
         argMap.put(BaseCommandTask.ARG_PASSWORD_KEY, key);
-        String base64Key     = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
+        String base64Key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
         argMap.put(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, base64Key);
         String aesConfigFile = getArgumentValue(BaseCommandTask.ARG_AES_CONFIG_FILE, args, null);
         argMap.put(BaseCommandTask.ARG_AES_CONFIG_FILE, aesConfigFile);
-        Map<String, String> props  = BaseCommandTask.convertToProperties(argMap, stdout);
-        String encodedPassword     = PasswordUtil.encode(password, encoding, props);
+        Map<String, String> props = BaseCommandTask.convertToProperties(argMap, stdout);
+        String encodedPassword = PasswordUtil.encode(password, encoding, props);
 
         String xmlSnippet;
         if (serverName != null) {
@@ -308,31 +309,6 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     private boolean isZOS() {
         String osName = System.getProperty("os.name");
         return osName != null && (osName.contains("OS/390") || osName.contains("z/OS"));
-    }
-
-    /**
-     * SecretKeyResolver for ICSF, used when creating LTPA keys on z/OS with
-     * {@code --keyringType=ICSF}. Mirrors the identical inner class in
-     * {@code KeyStringResolverImpl} and {@code EncodeTask} — kept separate to avoid
-     * a build dependency from security.utility onto zos.password.encryption.key.
-     */
-    private static final class ICSFSecretKeyResolver implements com.ibm.wsspi.security.crypto.SecretKeyResolver {
-        private static final String IBMJCECCA_PROVIDER = "IBMJCECCA";
-        private static final String KEY_LABEL_KEY_SPEC_CLASS = "com.ibm.crypto.hdwrCCA.provider.KeyLabelKeySpec";
-        private final String label;
-
-        ICSFSecretKeyResolver(String label) {
-            this.label = label;
-        }
-
-        @Override
-        public java.security.Key getKey() throws Exception {
-            Class<?> cls = Class.forName(KEY_LABEL_KEY_SPEC_CLASS);
-            java.lang.reflect.Constructor<?> ctor = cls.getConstructor(String.class);
-            java.security.spec.KeySpec spec = (java.security.spec.KeySpec) ctor.newInstance(label);
-            javax.crypto.SecretKeyFactory factory = javax.crypto.SecretKeyFactory.getInstance("AES", IBMJCECCA_PROVIDER);
-            return factory.generateSecret(spec);
-        }
     }
 
     @Override

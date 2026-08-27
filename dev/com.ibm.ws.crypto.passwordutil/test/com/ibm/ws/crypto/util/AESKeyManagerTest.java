@@ -167,7 +167,7 @@ public class AESKeyManagerTest {
     public void testIsKeyConfigured_V2_hardwareResolver() {
         AESKeyManager.setSecretKeyResolver(new SecretKeyResolver() {
             @Override
-            public Key getKey() throws Exception {
+            public Key getKey() {
                 throw new UnsupportedOperationException("hardware key — never decoded");
             }
         });
@@ -212,7 +212,9 @@ public class AESKeyManagerTest {
         };
         AESKeyManager.setSecretKeyResolver(new SecretKeyResolver() {
             @Override
-            public Key getKey() { return sentinel; }
+            public Key getKey() {
+                return sentinel;
+            }
         });
         Key k = AESKeyManager.getKeyViaResolver(KeyVersion.AES_V2);
         assertSame("getKeyViaResolver(V2) with hardware resolver must return the resolver's Key", sentinel, k);

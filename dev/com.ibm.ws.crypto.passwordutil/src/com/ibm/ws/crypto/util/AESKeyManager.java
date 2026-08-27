@@ -285,9 +285,10 @@ public class AESKeyManager {
      *
      * @param version the key version whose resolver should be invoked
      * @return the resolved {@link java.security.Key}
-     * @throws Exception if the resolver fails to produce a key
+     * @throws NoSuchAlgorithmException if the required algorithm is not available
+     * @throws InvalidKeySpecException  if the key material is invalid or improperly encoded
      */
-    public static java.security.Key getKeyViaResolver(KeyVersion version) throws Exception {
+    public static java.security.Key getKeyViaResolver(KeyVersion version) throws NoSuchAlgorithmException, InvalidKeySpecException {
         return version.resolver.get().getKey();
     }
 
