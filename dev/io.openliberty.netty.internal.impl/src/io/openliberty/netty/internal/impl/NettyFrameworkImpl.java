@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +29,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -44,6 +44,7 @@ import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -68,6 +69,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.ThreadPerTaskExecutor;
 import io.openliberty.channel.config.ChannelFrameworkConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
@@ -98,14 +100,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     private ExecutorService executorService = null;
 
     /**
-     * Optional reference to the Liberty thread factory used by the Default Executor.
-     * When CICS (or another product) registers a custom ThreadFactory with property
-     * "com.ibm.ws.threading.defaultExecutorThreadFactory=true", this field is set so
-     * that the Netty event-loop threads are created by the same factory. This makes
-     * those threads CICS-domain-accessible, which is required for CICS to accept work
-     * submitted to the Liberty executor from a Netty I/O callback.
+     * Optional reference to a domain-context ThreadFactory injected by an external product
+     * (e.g. CICS) via OSGi property "com.ibm.ws.threading.defaultExecutorThreadFactory=true".
+     * When present, both the Netty event-loop threads and the Liberty default executor use
+     * this factory, making all threads domain-accessible. Without it, a Netty I/O thread
+     * submitting work to the Liberty executor would originate from a non-domain thread,
+     * causing domain-aware products (e.g. CICS) to reject the call.
      */
-    private volatile ThreadFactory libertyThreadFactory = null;
+    private volatile ThreadFactory domainThreadFactory = null;
 
     /** server started logic borrowed from CHFWBundle */
     private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
@@ -179,7 +181,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // "Failure making domain call, this thread cannot access CICS".
         // The two thread pools remain separate: Netty I/O threads (this group) and the Liberty
         // application threads (HttpDispatcher.getExecutorService()).
-        ThreadFactory tf = libertyThreadFactory;
+        ThreadFactory tf = domainThreadFactory;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "ThreadFactory -> " + (tf != null ? "Domain ThreadFactory" : "DefaultThreadFactory"));
+        }
+
         if (tf != null) {
             sharedAcceptGroup = new MultiThreadIoEventLoopGroup(1, new ThreadPerTaskExecutor(tf), ioFactory);
         } else {
@@ -187,6 +194,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         }
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
+
         if (tf != null) {
             childGroup = new MultiThreadIoEventLoopGroup(maxThreads, new ThreadPerTaskExecutor(tf), scaler, ioFactory);
         } else {
@@ -389,7 +397,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     /**
-     * DS method for setting an optional Liberty-compatible ThreadFactory reference.
+     * DS method for setting an optional domain-context ThreadFactory reference.
      * When a product such as CICS registers a ThreadFactory with OSGi property
      * {@code com.ibm.ws.threading.defaultExecutorThreadFactory=true}, this method
      * captures it so that the Netty event-loop groups can be created with the same
@@ -402,17 +410,17 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY,
                target = "(com.ibm.ws.threading.defaultExecutorThreadFactory=true)")
-    protected void setLibertyThreadFactory(ThreadFactory threadFactory) {
-        this.libertyThreadFactory = threadFactory;
+    protected void setDomainThreadFactory(ThreadFactory threadFactory) {
+        this.domainThreadFactory = threadFactory;
     }
 
     /**
-     * DS method for clearing the optional Liberty thread factory reference.
+     * DS method for clearing the optional domain-context ThreadFactory reference.
      *
      * @param threadFactory the service instance to clear
      */
-    protected void unsetLibertyThreadFactory(ThreadFactory threadFactory) {
-        this.libertyThreadFactory = null;
+    protected void unsetDomainThreadFactory(ThreadFactory threadFactory) {
+        this.domainThreadFactory = null;
     }
 
     /**
