@@ -52,6 +52,241 @@ public class TestUtils {
         findLibrary = m;
         findLibraryException = t;
     }
+
+    // Classloader type substrings expected inside classloader=[...]
+    public static final String APP_CL = "AppClassLoader";
+    public static final String PL_CL  = "ParentLastClassLoader";
+
+    // Delegation mode strings
+    public static final String PF = "PF"; // parent-first
+    public static final String PL = "PL"; // parent-last
+
+    // Domain strings embedded in each hop of the delegation path.
+    // A hop has the form: AppClassLoader@<hex>:<domain>:<id>:<mode>
+    // For GatewayClassLoader the hop has the form: GatewayClassLoader@<hex>:bundle=[<bundle-name>:0.0.0]
+    public static final String DOMAIN_WEB_MODULE    = "WebModule";
+    public static final String DOMAIN_EAR           = "EARApplication";
+    public static final String DOMAIN_SHARED_LIB    = "Shared Library";
+    public static final String DOMAIN_GATEWAY       = "GatewayClassLoader";
+
+    // Trace message prefixes
+    public static final String TRACE_CLASS_LOAD_PRFIX  = "CLASS LOAD:";
+    public static final String TRACE_CLASS_FAIL_PREFIX = "CLASS FAIL:";
+
+    // Field tokens used in trace verification
+    private static final String FIELD_CLASS           = "class=[";
+    private static final String FIELD_CLASSLOADER     = "classloader=[";
+    private static final String FIELD_LOCATION        = "location=[";
+    public  static final String FIELD_DELEGATION_PATH = "delegation path=[";
+
+    /**
+     * Verifies a {@code CLASS LOAD} trace line.
+     * The format is:
+     * {@code CLASS LOAD: class=[<name>]; classloader=[<type>@<hex>:...]; location=[<url>]}
+     *
+     * <p>For {@value #APP_CL} and {@value #PL_CL}, the delegation mode is inferred automatically
+     * ({@value #APP_CL} → {@value #PF}, {@value #PL_CL} → {@value #PL}) and the full
+     * {@code classloader} field is validated via {@link #checkClassLoaderField}.
+     * For any other classloader type (e.g. {@code EquinoxClassLoader}, {@code GatewayClassLoader})
+     * only a simple {@code contains} check is performed on the classloader field.
+     *
+     * @param traceLine   raw trace line containing the {@code CLASS LOAD:} prefix
+     * @param className   expected binary class name
+     * @param classLoader classloader type substring, e.g. {@value #APP_CL}, {@value #PL_CL},
+     *                    or {@code "EquinoxClassLoader"}
+     * @param location    substring expected inside {@code location=[...]}
+     */
+    public static void checkClassLoadTrace(String traceLine, String className,
+                                           String classLoader, String location) {
+        assertNotNull("Expected CLASS LOAD trace for " + className + " not found", traceLine);
+
+        String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_LOAD_PRFIX) + TRACE_CLASS_LOAD_PRFIX.length());
+        String[] traceElements = traceMsg.split(";");
+
+        checkTraceElements(className, classLoader, location, traceElements);
+    }
+
+    private static void checkTraceElements(String className, String classLoader, String location, String[] traceElements) {
+        assertTrue("First element should contain " + FIELD_CLASS, traceElements[0].contains(FIELD_CLASS));
+        assertTrue("First element should contain class name " + className,
+                   traceElements[0].contains(className));
+
+        assertTrue("Second element should contain " + FIELD_CLASSLOADER,
+                   traceElements[1].contains(FIELD_CLASSLOADER));
+        if (classLoader.equals(APP_CL) || classLoader.equals(PL_CL)) {
+            String delegationMode = classLoader.equals(PL_CL) ? PL : PF;
+            checkClassLoaderField(traceElements[1], classLoader, delegationMode);
+        } else {
+            assertTrue("Second element should identify as " + classLoader,
+                       traceElements[1].contains(classLoader));
+        }
+
+        assertTrue("Third element should contain " + FIELD_LOCATION, traceElements[2].contains(FIELD_LOCATION));
+        assertTrue("Third element should reference location " + location,
+                   traceElements[2].contains(location));
+    }
+
+    /**
+     * Verifies a CLASS FAIL trace line produced when defineClass() throws ClassFormatError.
+     * The format is:
+     * {@code CLASS FAIL: class=[<name>]; classloader=[<type>@<hex>:...]; location=[<url>]}
+     */
+    public static void checkClassFailTrace(String traceLine, String className, String classLoader, String location) {
+        assertNotNull("Expected CLASS FAIL trace for " + className + " not found", traceLine);
+
+        String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_FAIL_PREFIX) + TRACE_CLASS_FAIL_PREFIX.length());
+        String[] traceElements = traceMsg.split(";");
+
+        checkTraceElements(className, classLoader, location, traceElements);
+    }
+
+    /**
+     * Verifies the {@code classloader=[...]} field produced by {@code AppClassLoader} or
+     * {@code ParentLastClassLoader}.
+     * The format is:
+     * {@code classloader=[<type>@<hex>:EARApplication:traceTestEar:PF|PL]}
+     *
+     * @param traceElement   semicolon-delimited segment containing {@code classloader=[...]}
+     * @param classLoader    classloader type substring, e.g. {@value #APP_CL} or {@value #PL_CL}
+     * @param delegationMode delegation mode, e.g. {@value #PF} or {@value #PL}
+     */
+    public static void checkClassLoaderField(String traceElement, String classLoader, String delegationMode) {
+        String[] parts = traceElement.split(":");
+        assertTrue("classloader field should identify " + classLoader,
+                   parts[0].contains(classLoader));
+        assertTrue("classloader field should contain domain EARApplication",
+                   parts[1].contains("EARApplication"));
+        assertTrue("classloader field should contain app traceTestEar",
+                   parts[2].contains("traceTestEar"));
+        assertTrue("classloader field should contain delegation mode " + delegationMode,
+                   parts[3].contains(delegationMode));
+    }
+
+    /**
+     * Verifies a {@code getResource()} trace line emitted by any classloader.
+     *
+     * <p>The actual format depends on where the resource was found:
+     * <ul>
+     *   <li><b>AppClassLoader / ParentLastClassLoader — found on local classpath:</b><br>
+     *       {@code Resource=[<name>] found at location=[<url>] on the local classpath;
+     *       classloader=[<cl>]; delegation path=[<path>]}</li>
+     *   <li><b>AppClassLoader / ParentLastClassLoader — found via non-AppClassLoader parent:</b><br>
+     *       {@code Resource=[<name>] found at location=[<url>] by parent classloader=[<cl>];
+     *       delegation path=[<path>]}</li>
+     *   <li><b>AppClassLoader / ParentLastClassLoader — not found:</b><br>
+     *       {@code Resource=[<name>] not found; classloader=[<cl>]}</li>
+     *   <li><b>GatewayClassLoader — found:</b><br>
+     *       {@code Resource=[<name>] found at location=[<url>] from liberty API packages
+     *       by classloader=[<cl>]}</li>
+     *   <li><b>GatewayClassLoader — not found:</b><br>
+     *       {@code Resource=[<name>] was not found by classloader=[<cl>]}</li>
+     * </ul>
+     *
+     * @param traceLine    raw trace line; must not be {@code null}
+     * @param resourceName substring expected inside {@code Resource=[...]}
+     * @param classLoader  classloader type substring, e.g. {@value #APP_CL}, {@value #PL_CL},
+     *                     or {@code "GatewayClassLoader"}
+     * @param expectFound  if {@code true} asserts a {@code location=[...]} field is present and
+     *                     non-null; if {@code false} asserts "not found" appears and no location field
+     */
+    public static void checkResourceTrace(String traceLine,
+                                          String resourceName, String classLoader, boolean expectFound) {
+        assertNotNull("Expected resource trace for " + resourceName + " not found", traceLine);
+        assertTrue("Trace should reference resource name " + resourceName, traceLine.contains(resourceName));
+        assertTrue("Trace should reference classloader type " + classLoader, traceLine.contains(classLoader));
+        if (expectFound) {
+            assertTrue("Trace should contain 'found at location='", traceLine.contains("found at location=["));
+            assertTrue("Trace should contain a non-null location", !traceLine.contains("location=[null]"));
+        } else {
+            assertTrue("Trace should indicate resource was not found", traceLine.contains("not found"));
+        }
+        if (classLoader.equals(APP_CL) || classLoader.equals(PL_CL)) {
+            String delegationMode = classLoader.equals(PL_CL) ? PL : PF;
+            assertTrue("Trace should reference delegation mode " + delegationMode, traceLine.contains(delegationMode));
+        }
+    }
+
+    /**
+     * Verifies a {@code getResources()} trace line emitted by any classloader.
+     *
+     * <p>The actual format depends on where the resources were found:
+     * <ul>
+     *   <li><b>AppClassLoader / ParentLastClassLoader — found on local classpath:</b><br>
+     *       {@code Resources=[<name>] found at locations=<list> on the local classpath;
+     *       classloader=[<cl>]; delegation path=[<path>]}</li>
+     *   <li><b>AppClassLoader / ParentLastClassLoader — not found:</b><br>
+     *       {@code Resources=[<name>] not found by classloader=[<cl>]}</li>
+     *   <li><b>GatewayClassLoader — found:</b><br>
+     *       {@code Resources=[<name>] found at locations=<list> from liberty API packages
+     *       by classloader=[<cl>]}</li>
+     *   <li><b>GatewayClassLoader — not found:</b><br>
+     *       {@code Resources=[<name>] not found; classloader=[<cl>]}</li>
+     * </ul>
+     *
+     * @param traceLine    raw trace line; must not be {@code null}
+     * @param resourceName substring expected inside {@code Resources=[...]}
+     * @param classLoader  classloader type substring, e.g. {@value #APP_CL}, {@value #PL_CL},
+     *                     or {@code "GatewayClassLoader"}
+     * @param expectFound  if {@code true} asserts a non-empty {@code locations=} list is present;
+     *                     if {@code false} asserts "not found" appears and locations list is empty
+     */
+    public static void checkResourcesTrace(String traceLine,
+                                           String resourceName, String classLoader, boolean expectFound) {
+        assertNotNull("Expected resources trace for " + resourceName + " not found", traceLine);
+        assertTrue("Trace should reference resource name " + resourceName, traceLine.contains(resourceName));
+        assertTrue("Trace should reference classloader type " + classLoader, traceLine.contains(classLoader));
+        if (expectFound) {
+            assertTrue("Trace should contain 'found at locations='", traceLine.contains("found at locations="));
+            int locIdx = traceLine.indexOf("locations=") + "locations=".length();
+            assertTrue("locations list should not be empty for a found resource",
+                       !traceLine.substring(locIdx).startsWith("[]"));
+        } else {
+            assertTrue("Trace should indicate resources were not found", traceLine.contains("not found"));
+        }
+        if (classLoader.equals(APP_CL) || classLoader.equals(PL_CL)) {
+            String delegationMode = classLoader.equals(PL_CL) ? PL : PF;
+            assertTrue("Trace should reference delegation mode " + delegationMode, traceLine.contains(delegationMode));
+        }
+    }
+
+    /**
+     * Verifies that a resource trace line contains a {@code delegation path=[...]} field
+     * whose hops match the supplied domain segments in order.
+     *
+     * <p>The delegation path format is:
+     * <pre>
+     * delegation path=[AppClassLoader@&lt;hex&gt;:&lt;domain&gt;:&lt;id&gt;:&lt;mode&gt; -> ...]
+     * </pre>
+     * Each {@code hopDomain} argument is matched against the corresponding hop in the path.
+     * For example, to assert the path traverses WAR → EAR → Shared Library:
+     * <pre>
+     * checkDelegationPath(traceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR, DOMAIN_SHARED_LIB);
+     * </pre>
+     * To assert a two-hop WAR → EAR path (resource found on EAR local classpath):
+     * <pre>
+     * checkDelegationPath(traceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR);
+     * </pre>
+     *
+     * @param traceLine  raw trace line containing {@code delegation path=[}
+     * @param hopDomains expected domain substrings for each hop, in order
+     */
+    public static void checkDelegationPath(String traceLine, String... hopDomains) {
+        assertNotNull("Trace line must not be null when checking delegation path", traceLine);
+        int idx = traceLine.indexOf(FIELD_DELEGATION_PATH);
+        assertTrue("Trace line should contain '" + FIELD_DELEGATION_PATH + "': " + traceLine, idx >= 0);
+        String pathValue = traceLine.substring(idx + FIELD_DELEGATION_PATH.length(),
+                                               traceLine.indexOf(']', idx + FIELD_DELEGATION_PATH.length()));
+
+        String[] hops = pathValue.split(" -> ");
+        assertEquals("delegation path should have " + hopDomains.length + " hop(s) but was: [" + pathValue + "]",
+                     hopDomains.length, hops.length);
+        for (int i = 0; i < hopDomains.length; i++) {
+            assertTrue("delegation path hop " + i + " should contain '" + hopDomains[i]
+                       + "' but was: [" + hops[i] + "]",
+                       hops[i].contains(hopDomains[i]));
+        }
+    }
+
     /**
      * @param resource
      * @param testClassPath1App
