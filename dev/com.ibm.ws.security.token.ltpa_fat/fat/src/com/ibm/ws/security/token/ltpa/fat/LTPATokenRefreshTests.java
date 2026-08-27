@@ -109,15 +109,17 @@ public class LTPATokenRefreshTests {
             // These warnings are intentionally produced by specific test configs and must not
             // cause teardown to fail: CWWKS4125W (inactivityTimeout >= expiration),
             // CWWKS4124W (refreshThreshold >= inactivityTimeout, relative-to-expiration path),
-            // CWWKS4123W (refreshThreshold >= inactivityTimeout, clearly-wrong path).
-            server.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W");
+            // CWWKS4123W (refreshThreshold >= inactivityTimeout, clearly-wrong path),
+            // CWWKS4126W (inactivityTimeout set without refreshThreshold),
+            // CWWKS4127W (refreshThreshold set without inactivityTimeout).
+            server.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W", "CWWKS4126W", "CWWKS4127W");
         }
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W");
+            server.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W", "CWWKS4126W", "CWWKS4127W");
         }
     }
 
@@ -132,8 +134,8 @@ public class LTPATokenRefreshTests {
 
         String refreshedCookie = ssoRequestExpectingRefresh(url, agedCookie, "SSO after threshold", method);
 
-        HttpURLConnection conn3 = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie", method);
-        assertEquals("Refreshed cookie must be accepted", 200, conn3.getResponseCode());
+        HttpURLConnection conn = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie", method);
+        assertEquals("Refreshed cookie must be accepted", 200, conn.getResponseCode());
         Log.info(thisClass, method, "PASSED: new cookie issued and successfully used for SSO");
     }
 
@@ -163,8 +165,8 @@ public class LTPATokenRefreshTests {
         String refreshedCookie = ssoRequestExpectingRefresh(url, agedCookie, "SSO after first age (refresh expected)", method);
         Log.info(thisClass, method, "inactivity window reset; refreshed cookie has a fresh creation time");
 
-        HttpURLConnection conn3 = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (window reset)", method);
-        assertEquals("Refreshed cookie must be valid (inactivity clock was reset)", 200, conn3.getResponseCode());
+        HttpURLConnection conn = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (window reset)", method);
+        assertEquals("Refreshed cookie must be valid (inactivity clock was reset)", 200, conn.getResponseCode());
         Log.info(thisClass, method, "PASSED: refreshed cookie accepted; inactivity clock was correctly reset");
     }
 
@@ -198,16 +200,16 @@ public class LTPATokenRefreshTests {
 
         String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
 
-        HttpURLConnection conn2 = ssoRequest(url, agedCookie, "SSO after threshold (refresh expected)", method);
-        assertEquals("SSO authentication must succeed", 200, conn2.getResponseCode());
-        String header2 = getCookieHeader(conn2.getHeaderFields());
-        assertNotNull("Refreshed Set-Cookie header must be present", header2);
-        assertTokenRefreshed(conn2, agedCookie);
-        conn2.disconnect();
+        HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO after threshold (refresh expected)", method);
+        assertEquals("SSO authentication must succeed", 200, conn.getResponseCode());
+        String header = getCookieHeader(conn.getHeaderFields());
+        assertNotNull("Refreshed Set-Cookie header must be present", header);
+        assertTokenRefreshed(conn, agedCookie);
+        conn.disconnect();
 
-        Log.info(thisClass, method, "refreshed Set-Cookie header: " + header2);
-        assertTrue("Refreshed cookie must have HttpOnly attribute", header2.toLowerCase().contains("httponly"));
-        assertTrue("Refreshed cookie must have Path attribute",     header2.toLowerCase().contains("path="));
+        Log.info(thisClass, method, "refreshed Set-Cookie header: " + header);
+        assertTrue("Refreshed cookie must have HttpOnly attribute", header.toLowerCase().contains("httponly"));
+        assertTrue("Refreshed cookie must have Path attribute",     header.toLowerCase().contains("path="));
         Log.info(thisClass, method, "PASSED: cookie attributes present on refreshed token");
     }
 
@@ -217,7 +219,7 @@ public class LTPATokenRefreshTests {
     public void testTokenBehavesCorrectlyAfterConfigUpdate() throws Exception {
         setConfig(CFG_TOKEN_EXCEEDS_EXPIRY);
         String url = getServletUrl();
-        String method = "testTokenBehaviourAfterConfigUpdate";
+        String method = "testTokenBehavesCorrectlyAfterConfigUpdate";
         Log.info(thisClass, method, "Config: starts on " + CFG_TOKEN_EXCEEDS_EXPIRY + " expiration=3m, inactivityTimeout=4m, refreshThreshold=2m");
 
         String cookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", 0, method);
@@ -226,59 +228,52 @@ public class LTPATokenRefreshTests {
         setConfig(CFG_TOKEN_REFRESH);
         Log.info(thisClass, method, "config update complete; new inactivityTimeout=2m is now active");
 
-        HttpURLConnection conn2 = ssoRequest(url, cookie, "SSO immediately after config switch", method);
-        assertEquals("Old cookie must be accepted immediately after config switch", 200, conn2.getResponseCode());
+        HttpURLConnection conn = ssoRequest(url, cookie, "SSO immediately after config switch", method);
+        assertEquals("Old cookie must be accepted immediately after config switch", 200, conn.getResponseCode());
 
         String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
 
-        HttpURLConnection conn3 = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
-
-        assertTrue("SSO must fail after new config's inactivity timeout: got HTTP " + conn3.getResponseCode(),
-                   conn3.getResponseCode() == 401 || conn3.getResponseCode() == 302 || conn3.getResponseCode() == 403);
+        HttpURLConnection conn2 = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
+        int status = conn2.getResponseCode();
+        assertEquals("SSO must fail after new config's inactivity timeout: got HTTP " + status,
+                     401, status);
         Log.info(thisClass, method, "PASSED: old-config cookie accepted after switch; new config's inactivity timeout correctly enforced");
     }
 
     // Verifies a token is rejected after the inactivity timeout and that re-authentication issues a new distinct cookie.
     @Test
-    public void testTokenRejectedAfterInactivityTimeoutThenReauthSucceeds() throws Exception {
+    public void testTokenRejectedAfterInactivityTimeout() throws Exception {
         String url = getServletUrl();
-        String method = "testTokenRejectedAfterInactivityTimeoutThenReauthSucceeds";
+        String method = "testTokenRejectedAfterInactivityTimeout";
         Log.info(thisClass, method, "expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
         String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
 
         HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
         int status = conn.getResponseCode();
-        assertTrue("Idle token must be rejected (401/302/403), got: " + status,
-                   status == 401 || status == 302 || status == 403);
+        assertEquals("Idle token must be rejected with 401, got: " + status, 401, status);
 
-        Log.info(thisClass, method, "re-authenticating after inactivity expiry");
-        String newCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", 0, method);
-        assertFalse("New cookie must differ from expired one", expiredCookie.equals(newCookie));
-        Log.info(thisClass, method, "PASSED: idle token correctly rejected with HTTP " + status + ", reauthentication succeeded with new cookie");
+        Log.info(thisClass, method, "PASSED: idle token correctly rejected with HTTP " + status);
     }
 
     // Verifies a token is rejected after the absolute expiration time and that re-authentication issues a new distinct cookie.
     @Test
-    public void testTokenExpiresAfterExpirationTimeThenReauthSucceeds() throws Exception {
+    public void testTokenExpiresAfterExpirationTime() throws Exception {
         String url = getServletUrl();
-        String method = "testTokenExpiresAfterExpirationTimeThenReauthSucceeds";
+        String method = "testTokenExpiresAfterExpirationTime";
         Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
 
         String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_EXPIRY_S, method);
 
         HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after absolute expiry (rejection expected)", method);
         int status = conn.getResponseCode();
-        assertTrue("Absolutely expired token must be rejected (401/302/403), got: " + status,
-                   status == 401 || status == 302 || status == 403);
+        assertEquals("Absolutely expired token must be rejected with 401, got: " + status, 401, status);
 
-        Log.info(thisClass, method, "re-authenticating after expiry");
-        String newCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", 0, method);
-        assertFalse("New cookie must differ from expired one", expiredCookie.equals(newCookie));
-        Log.info(thisClass, method, "PASSED: expired token correctly rejected with HTTP " + status + ", reauthentication succeeded with new cookie");
+        Log.info(thisClass, method, "PASSED: expired token correctly rejected with HTTP " + status);
     }
 
     // Verifies refreshThreshold alone has no effect without inactivityTimeout; the token lives until absolute expiration with no refresh.
+    // Also verifies CWWKS4127W is emitted when refreshThreshold is set without inactivityTimeout.
     @Test
     public void testTokenRefreshDisabledWhenOnlyRefreshThresholdConfigured() throws Exception {
         setConfig(CFG_TOKEN_REFRESH_ONLY);
@@ -286,20 +281,24 @@ public class LTPATokenRefreshTests {
         String method = "testTokenRefreshDisabledWhenOnlyRefreshThresholdConfigured";
         Log.info(thisClass, method, "Config: expiration=2m, refreshThreshold=1m, no inactivityTimeout");
 
+        assertWarningLogged("CWWKS4127W", "refreshThreshold is set without inactivityTimeout", method);
+
         String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
 
-        HttpURLConnection conn2 = ssoRequest(url, agedCookie, "SSO past refreshThreshold (no refresh expected)", method);
-        assertEquals("SSO must succeed, token only expires at absolute expiration without inactivityTimeout", 200, conn2.getResponseCode());
-        assertTokenNotRefreshed("No refresh expected — refreshThreshold has no effect without inactivityTimeout", conn2);
+        HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO past refreshThreshold (no refresh expected)", method);
+        assertEquals("SSO must succeed, token only expires at absolute expiration without inactivityTimeout", 200, conn.getResponseCode());
+        assertTokenNotRefreshed("No refresh expected — refreshThreshold has no effect without inactivityTimeout", conn);
 
         String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
-        HttpURLConnection conn3 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
-        assertTrue("SSO must fail, token should be expired: got HTTP " + conn3.getResponseCode(),
-                   conn3.getResponseCode() == 401 || conn3.getResponseCode() == 302 || conn3.getResponseCode() == 403);
+        HttpURLConnection conn2 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
+        int status = conn2.getResponseCode();
+        assertEquals("SSO must fail, token should be expired: got HTTP " + status,
+                     401, status);
         Log.info(thisClass, method, "PASSED: no new cookie after refresh threshold and cookie expires at expiration time");
     }
 
     // Verifies inactivityTimeout alone has no effect without refreshThreshold; SSO succeeds past the timeout and the token expires normally.
+    // Also verifies CWWKS4126W is emitted when inactivityTimeout is set without refreshThreshold.
     @Test
     public void testTokenRefreshDisabledWhenOnlyInactivityTimeoutConfigured() throws Exception {
         setConfig(CFG_TOKEN_INACTIVITY_ONLY);
@@ -307,16 +306,19 @@ public class LTPATokenRefreshTests {
         String method = "testTokenRefreshDisabledWhenOnlyInactivityTimeoutConfigured";
         Log.info(thisClass, method, "Config: expiration=2m, inactivityTimeout=1m, no refreshThreshold");
 
+        assertWarningLogged("CWWKS4126W", "inactivityTimeout is set without refreshThreshold", method);
+
         String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
 
-        HttpURLConnection conn2 = ssoRequest(url, agedCookie, "SSO past inactivity timeout (no refresh expected)", method);
-        assertEquals("Inactivity timeout should be disabled, SSO must succeed.", 200, conn2.getResponseCode());
-        assertTokenNotRefreshed("Cookie should not be refreshed", conn2);
+        HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO past inactivity timeout (no refresh expected)", method);
+        assertEquals("Inactivity timeout should be disabled, SSO must succeed.", 200, conn.getResponseCode());
+        assertTokenNotRefreshed("Cookie should not be refreshed", conn);
 
         String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
-        HttpURLConnection conn3 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
-        assertTrue("SSO must fail, token should be expired: got HTTP " + conn3.getResponseCode(),
-                   conn3.getResponseCode() == 401 || conn3.getResponseCode() == 302 || conn3.getResponseCode() == 403);
+        HttpURLConnection conn2 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
+        int status = conn2.getResponseCode();
+        assertEquals("SSO must fail, token should be expired: got HTTP " + status,
+                     401, status);
         Log.info(thisClass, method, "PASSED: SSO succeeded past inactivity timeout and cookie expired after expiration");
     }
 
@@ -328,15 +330,14 @@ public class LTPATokenRefreshTests {
         String method = "testTokenInactivityExceedsExpiration";
         Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=4m, refreshThreshold=2m");
 
-        String warnMsg = server.waitForStringInLog("CWWKS4125W");
-        assertNotNull("Expected CWWKS4125W when inactivityTimeout >= expiration", warnMsg);
-        Log.info(thisClass, method, "warning logged as expected: " + warnMsg);
+        assertWarningLogged("CWWKS4125W", "inactivityTimeout >= expiration", method);
 
         String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_EXPIRY_S, method);
 
-        HttpURLConnection conn2 = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
-        assertTrue("Token must be rejected at expiration, got HTTP " + conn2.getResponseCode(),
-                conn2.getResponseCode() == 401 || conn2.getResponseCode() == 302 || conn2.getResponseCode() == 403);
+        HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
+        int status = conn.getResponseCode();
+        assertEquals("Token must be rejected at expiration, got HTTP " + status,
+                     401, status);
         Log.info(thisClass, method, "PASSED: token correctly rejected at expiration boundary");
     }
 
@@ -351,17 +352,14 @@ public class LTPATokenRefreshTests {
                  "Config: expiration=6m, inactivityTimeout=3m, refreshThreshold=4m; " +
                  "expect auto-adjust to 1m (inactivityTimeout/3)");
 
-        String warnMsg = server.waitForStringInLog("CWWKS4124W");
-        assertNotNull("Expected CWWKS4124W when refreshThreshold(4m) >= inactivityTimeout(3m) " +
-                      "and refreshThreshold < expiration, but no warning was found in the log", warnMsg);
-        Log.info(thisClass, method, "warning logged as expected: " + warnMsg);
+        assertWarningLogged("CWWKS4124W", "refreshThreshold(4m) >= inactivityTimeout(3m) and refreshThreshold < expiration", method);
 
         String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
 
         String refreshedCookie = ssoRequestExpectingRefresh(url, agedCookie, "SSO after adjusted threshold (refresh expected)", method);
 
-        HttpURLConnection conn3 = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (must succeed)", method);
-        assertEquals("Refreshed token must be accepted for SSO", 200, conn3.getResponseCode());
+        HttpURLConnection conn = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (must succeed)", method);
+        assertEquals("Refreshed token must be accepted for SSO", 200, conn.getResponseCode());
 
         Log.info(thisClass, method,
                  "PASSED: CWWKS4124W emitted, threshold auto-adjusted to 1m, " +
@@ -479,5 +477,13 @@ public class LTPATokenRefreshTests {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(config);
         server.waitForConfigUpdateInLogUsingMark(null);
+    }
+
+    // Waits for a warning message ID to appear in the server log, asserts it was found,
+    // and logs it. Fails the test with a descriptive message if the warning is not found.
+    private void assertWarningLogged(String messageId, String context, String method) {
+        String warnMsg = server.waitForStringInLog(messageId);
+        assertNotNull("Expected " + messageId + " when " + context + ", but no warning was found in the log", warnMsg);
+        Log.info(thisClass, method, "warning logged as expected: " + warnMsg);
     }
 }
