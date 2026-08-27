@@ -72,6 +72,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     private VirtualConnection vc;
     private int streamID = -1;
+    private LastHttpContent finalWrite;
 
     public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
@@ -212,6 +213,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         this.prefixQueue.add(object);
     }
 
+    public void setLastWrite(LastHttpContent ending) {
+        this.finalWrite = ending;
+    }
+
     private void awaitChannelFuture(ChannelPromise future, String failureMsg)
         throws IOException, InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
@@ -300,14 +305,34 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                 throw new IOException("Broken pipe!");
             }
 
+            // Capture finalWrite at submission time so this Runnable uses only the
+            // value that was current when it was queued — not a later mutation of
+            // the shared instance field (e.g. from a subsequent setLastWrite call).
+            final LastHttpContent capturedFinalWrite = this.finalWrite;
             // Run all the channel operations in the event loop
             nettyChannel.eventLoop().execute(new Runnable() {
                 @Override
                 public void run() {
-                    for(Object writeBuffer : writeQueue){
-                        nettyChannel.write(writeBuffer);
+                    if (writeQueue.isEmpty()) {
+                        // Nothing to write; complete the promise immediately and flush
+                        writePromise.setSuccess();
+                        nettyChannel.flush();
+                        return;
                     }
-                    nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER, writePromise);
+                    final int size = writeQueue.size();
+                    int i = 0;
+                    for (Object writeBuffer : writeQueue) {
+                        i++;
+                        if (capturedFinalWrite == null && i == size) {
+                            nettyChannel.write(writeBuffer, writePromise);
+                        } else {
+                            nettyChannel.write(writeBuffer);
+                        }
+                    }
+                    if (capturedFinalWrite != null){
+                        nettyChannel.write(capturedFinalWrite, writePromise);
+                    }
+                    nettyChannel.flush();
                 }
             });
             awaitChannelFuture(writePromise, "Flush operation timed out!");
@@ -381,14 +406,34 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     }
                 }
             }
+            // Capture finalWrite at submission time so this Runnable uses only the
+            // value that was current when it was queued — not a later mutation of
+            // the shared instance field (e.g. from a subsequent setLastWrite call).
+            final LastHttpContent capturedFinalWrite = this.finalWrite;
             // Run all channel operations in the event loop
             nettyChannel.eventLoop().execute(new Runnable() {
                 @Override
                 public void run() {
-                    for(Object writeBuffer : writeQueue){
-                        nettyChannel.write(writeBuffer);
+                    if (writeQueue.isEmpty()) {
+                        // Nothing to write; complete the promise immediately and flush
+                        writePromise.setSuccess();
+                        nettyChannel.flush();
+                        return;
                     }
-                    nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER, writePromise);
+                    final int size = writeQueue.size();
+                    int i = 0;
+                    for (Object writeBuffer : writeQueue) {
+                        i++;
+                        if (capturedFinalWrite == null && i == size) {
+                            nettyChannel.write(writeBuffer, writePromise);
+                        } else {
+                            nettyChannel.write(writeBuffer);
+                        }
+                    }
+                    if (capturedFinalWrite != null){
+                        nettyChannel.write(capturedFinalWrite, writePromise);
+                    }
+                    nettyChannel.flush();
                 }
             });
 

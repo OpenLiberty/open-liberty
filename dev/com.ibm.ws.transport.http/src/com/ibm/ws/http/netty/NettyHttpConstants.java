@@ -12,6 +12,8 @@ package com.ibm.ws.http.netty;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -50,14 +52,19 @@ public class NettyHttpConstants {
 
         ProtocolName(String protocol) { this.protocol = protocol; }
 
+        private static final Map<String, ProtocolName> PROTOCOLS;
+        static {
+            PROTOCOLS = new HashMap<>(8);
+            for (ProtocolName p : values())
+                PROTOCOLS.put(p.protocol, p);
+        }
+
         /** Reverse-lookup from the string stored on the channel. */
         public static ProtocolName from(String protocol) {
             if (protocol == null)
                 return UNKNOWN;
-            for (ProtocolName p : values())
-                if (p.protocol.equals(protocol))
-                    return p;
-            return UNKNOWN;
+            ProtocolName result = PROTOCOLS.get(protocol);
+            return result != null ? result : UNKNOWN;
         }
     }
 }

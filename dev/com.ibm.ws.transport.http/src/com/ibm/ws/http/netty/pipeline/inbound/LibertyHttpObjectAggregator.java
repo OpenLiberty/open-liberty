@@ -130,7 +130,8 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
                 if (msg instanceof LastHttpContent) {
                     HttpRequest request = ctx.channel().attr(CURRENT_REQUEST).get();
-                    FullHttpRequest fullRequest = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri(), content, request.headers(), ((LastHttpContent) msg).trailingHeaders());
+                    // Request line validation disabled because validation at this point is not needed
+                    FullHttpRequest fullRequest = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri(), content, request.headers(), ((LastHttpContent) msg).trailingHeaders(), false);
                     fullRequest.setDecoderResult(httpContent.decoderResult());
 
                     ctx.fireChannelRead(fullRequest);
