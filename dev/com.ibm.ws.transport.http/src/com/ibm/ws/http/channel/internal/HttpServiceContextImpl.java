@@ -3827,6 +3827,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // Set prefix object on Netty Write Request Context
                 ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).queuePrefixObject(nettyResponse);
             }
+            if(finalWrite) {
+                // Set last write object on Netty Write Request Context
+                NettyResponseMessage resp = (NettyResponseMessage) getResponse();
+                ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).setLastWrite(new LastStreamSpecificHttpContent(resp.getStreamId(), resp.getNettyTrailers()));
+            }
 
             bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
@@ -3839,7 +3844,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // 457369 - disconnect write buffers in TCP when done
                 getTSC().getWriteInterface().setBuffers(null);
             }
-
+            return;
         }
         else if (sendHeaders) {
             sendNettyHeaders();

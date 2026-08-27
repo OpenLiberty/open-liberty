@@ -10,6 +10,8 @@
 package com.ibm.ws.http.netty;
 
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -80,14 +82,19 @@ public final class NettyHttpConstants {
 
         ProtocolName(String protocol) { this.protocol = protocol; }
 
+        private static final Map<String, ProtocolName> PROTOCOLS;
+        static {
+            PROTOCOLS = new HashMap<>(8);
+            for (ProtocolName p : values())
+                PROTOCOLS.put(p.protocol, p);
+        }
+
         /** Reverse-lookup from the string stored on the channel. */
         public static ProtocolName from(String protocol) {
             if (protocol == null)
                 return UNKNOWN;
-            for (ProtocolName p : values())
-                if (p.protocol.equals(protocol))
-                    return p;
-            return UNKNOWN;
+            ProtocolName result = PROTOCOLS.get(protocol);
+            return result != null ? result : UNKNOWN;
         }
     }
 
