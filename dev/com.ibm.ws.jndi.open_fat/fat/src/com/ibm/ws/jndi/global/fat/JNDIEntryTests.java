@@ -134,8 +134,8 @@ public class JNDIEntryTests extends FATServletClient {
              * Use a fairly short time out as we've already waited for the app to start
              * so this should already have appeared.
              */
-            assertEquals("No debug message in the trace.log saying  a jndi entry defined in the server.xml was registered", 1,
-                         jndi_entry_decode_server.waitForMultipleStringsInLog(1, ".*Registering JNDIEntry", 10000, jndi_entry_decode_server.getMatchingLogFile("trace.log")));
+            assertEquals("No debug message in the trace.log saying  a jndi entry defined in the server.xml was registered", 3,
+                         jndi_entry_decode_server.waitForMultipleStringsInLog(3, ".*Registering JNDIEntry", 10000, jndi_entry_decode_server.getMatchingLogFile("trace.log")));
 
             String decryptedStringValue = "foobar";
             String decryptedIntValue = "12345";

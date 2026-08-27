@@ -85,6 +85,7 @@ public class JNDIEntry {
      * @param val the value to parse
      * @param decode if true, val is decoded if it's encrypted, otherwise val is parsed directly.
      * @return the parsed literal value
+     * package-protected to allow access from JNDIEntryTest
      */
     @Sensitive
       static Object parseLiteral(@Sensitive String val, boolean decode) {
