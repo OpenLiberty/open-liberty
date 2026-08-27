@@ -35,6 +35,7 @@ import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.internal.netty.RequestMetadata;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
@@ -135,6 +136,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         this.setHeadersParsed();
         setVC(vc);
+    }
+
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc,
+                                         NettyHttpChannelConfig config, RequestMetadata requestMetadata) {
+        this(context, vc, config);
+        initializeRequestMetadata(requestMetadata);
     }
 
     /**

@@ -31,8 +31,11 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
+import com.ibm.ws.http.internal.netty.RequestMetadata;
+import com.ibm.ws.http.internal.netty.exception.InvalidRequestMetadataException;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -258,6 +261,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             streamingInitialized = false;
             aggregatedBodyEnqueued = false;
 
+            // Metadata capture precedes queue, link, VC, and application publication.
+            RequestMetadata requestMetadata = RequestMetadata.capture(ctx.channel(), req);
+
             queue = new BodyQueue(ctx.alloc());
             earlyContents.clear();
             earlyUpgradeBytes.clear();
@@ -279,7 +285,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
             }
 
-            beginStreamingRequest(ctx, req);
+            beginStreamingRequest(ctx, req, requestMetadata);
 
             if (!upgradingNow && !(req instanceof FullHttpRequest)) {
                 drainEarlyHttpContentToBodyQueue(ctx);
@@ -360,23 +366,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         return io.netty.util.AsciiString.containsIgnoreCase(conn, "upgrade");
     }
 
-    private static boolean isH2(HttpRequest req) {
-        return req.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-    }
-
-    private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request) {
+    private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request,
+                                       RequestMetadata requestMetadata) {
          ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
 
         final CharSequence ae = request.headers().get(HttpHeaderNames.ACCEPT_ENCODING);
         if (ae != null)
             ctx.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).set(ae.toString());
 
-        // protocol tag on channel
-        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
-        } else {
-            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(request.protocolVersion().equals(HttpVersion.HTTP_1_0) ? "HTTP10" : "http");
-        }
         if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
             ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
         }
@@ -410,11 +407,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             context.writeAndFlush(continueResponse);
         }
 
-        link.initStreaming(ctx, request, config, isFullRequest);
+        link.initStreaming(ctx, request, config, isFullRequest, requestMetadata);
 
         final HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
         final HttpInputStreamImpl body = req.getBody();
-        String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+        String streamId = requestMetadata.isHttp2() ? Integer.toString(requestMetadata.streamId()) : null;
         try {
             if (this.link.getVirtualConnection() != null) {
                 VirtualConnection v = this.link.getVirtualConnection();
@@ -448,7 +445,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         
 
-        if (upg && !isH2(request)) {
+        if (upg && !requestMetadata.isHttp2()) {
             //upgradingNow = true;
             if(commitScheduled.compareAndSet(false, true)){
                HttpDispatcher.getExecutorService().execute(() -> link.ready()); 
@@ -586,6 +583,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
             ctx.channel().attr(NettyHttpConstants.UPGRADED).set(Boolean.TRUE);
             ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
+            if (Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).getAndSet(null))) {
+                ProtocolState.establish(ctx.channel(), NettyHttpConstants.ProtocolName.WEBSOCKET,
+                                        ProtocolState.ProtocolSource.WEBSOCKET_UPGRADE);
+            }
             try {
                 if (this.link != null && this.link.getVirtualConnection() != null) {
                     this.link.getVirtualConnection().getStateMap().put(com.ibm.ws.transport.access.TransportConstants.UPGRADED_CONNECTION, "true");
@@ -595,9 +596,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
             firePendingAsyncRead(ctx);
 
-            String protocol = ctx.channel().attr(NettyHttpConstants.PROTOCOL).get();
-            //System.out.println(">>> Protocol was : " + protocol);
-            if ("WebSocket".equalsIgnoreCase(protocol)){
+            if (ProtocolState.current(ctx.channel()) == NettyHttpConstants.ProtocolName.WEBSOCKET) {
                 if (!ctx.channel().config().isAutoRead()){
                     Tr.debug(tc, "[UPGRADE-SYSOUT]: enable auto read for websoc");
                     ctx.channel().config().setAutoRead(true);
@@ -659,6 +658,23 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     s.close();
                 return;
             }
+        } else if (cause instanceof InvalidRequestMetadataException) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Closing channel after invalid request metadata: " + cause);
+            }
+            clearHalfInitializedRequestState();
+            HttpToHttp2ConnectionHandler handler = ctx.pipeline().get(HttpToHttp2ConnectionHandler.class);
+            if (handler != null) {
+                try {
+                    handler.goAway(ctx, 0, Http2Error.PROTOCOL_ERROR.code(), Unpooled.EMPTY_BUFFER, ctx.newPromise());
+                } catch (Throwable t) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "GOAWAY failed after invalid request metadata; closing channel", t);
+                    }
+                }
+            }
+            ctx.close();
+            return;
         } else if (cause instanceof IllegalArgumentException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Ignoring exceptionCaught while decoding request of IllegalArgumentException: " + cause);
@@ -689,6 +705,26 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
 
         ctx.close();
+    }
+
+    private void clearHalfInitializedRequestState() {
+        streamingInitialized = false;
+        link = null;
+        if (queue != null) {
+            ByteBuf buf;
+            while ((buf = queue.poll()) != null) {
+                buf.release();
+            }
+            queue = null;
+        }
+        HttpContent early;
+        while ((early = earlyContents.poll()) != null) {
+            early.release();
+        }
+        ByteBuf raw;
+        while ((raw = earlyUpgradeBytes.poll()) != null) {
+            raw.release();
+        }
     }
 
     private void sendErrorMessage(StatusCodes code, Throwable cause) {
@@ -757,11 +793,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     public void newRequest(ChannelHandlerContext ctx, FullHttpRequest request) {
-        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
-        } else {
-            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(request.protocolVersion().equals(HttpVersion.HTTP_1_0) ? "HTTP10" : "http");
-        }
+        RequestMetadata requestMetadata = RequestMetadata.capture(ctx.channel(), request);
 
         HttpDispatcherLink link = new HttpDispatcherLink();
         if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
@@ -769,7 +801,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         int num = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
         ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(num + 1);
-        link.init(ctx, request, config);
+        link.init(ctx, request, config, requestMetadata);
         link.ready();
     }
 

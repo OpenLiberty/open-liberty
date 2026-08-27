@@ -49,6 +49,7 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
+import com.ibm.ws.http.internal.netty.RequestMetadata;
 import com.ibm.ws.http.netty.NettyConnectionLink;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
@@ -96,7 +97,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
@@ -214,11 +214,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     }
 
-    /**
-     * Initialize this link for Netty Use.
-     *
-     */
-    public void init(ChannelHandlerContext context, FullHttpRequest request, NettyHttpChannelConfig config) {
+
+    public void init(ChannelHandlerContext context, FullHttpRequest request, NettyHttpChannelConfig config,
+                     RequestMetadata requestMetadata) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New conn: netty context=" + context);
         }
@@ -227,14 +225,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         final boolean expect100 = HttpUtil.is100ContinueExpected(request);
 
         if(!chunked && cl <= 0 && !expect100){
-            initStreaming(context, request, config, true);
+            initStreaming(context, request, config, true, requestMetadata);
             ReferenceCountUtil.release(request);
             return;
         }
 
         NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
         nettyContext = context;
-        this.isc = new HttpInboundServiceContextImpl(context, nettyVc, config);
+        this.isc = new HttpInboundServiceContextImpl(context, nettyVc, config, requestMetadata);
         this.isc.setStartTime();
 
         nettyRequest = request;
@@ -249,17 +247,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         super.init(nettyVc);
     }
 
+
     public void initStreaming(ChannelHandlerContext ctx,
                               io.netty.handler.codec.http.HttpRequest headers,
                               NettyHttpChannelConfig config,
-                              boolean fullHttpRequest) {
+                              boolean fullHttpRequest,
+                              RequestMetadata requestMetadata) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New conn(streaming): netty context=" + ctx);
         }
 
         NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
         this.nettyContext = ctx;
-        this.isc = new HttpInboundServiceContextImpl(ctx, nettyVc, config);
+        this.isc = new HttpInboundServiceContextImpl(ctx, nettyVc, config, requestMetadata);
         //this.isc.setHttpConfig(config);
         this.isc.setStartTime();
 
@@ -346,8 +346,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
-        final FullHttpRequest requestReference = (this.nettyRequest !=null) ? this.nettyRequest:this.nettyHeaderOnly;
-        if (requestReference !=null && requestReference.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (this.isc != null && this.isc.isNettyHttp2Request()) {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=FATAL_UPGRADE_CLOSE"
         + " link=" + System.identityHashCode(this)
         + " ch=" + qpNettyChannelId());
@@ -450,6 +449,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             + " ch=" + qpNettyChannelId()
             + " quiescing=" + quiescing);
 
+        final FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
         boolean requestTrailersRequireClose = requestTrailersRequireClose(requestReference);
         if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing || requestTrailersRequireClose) {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=NO_KEEPALIVE_CLOSE_CHANNEL"
@@ -2100,7 +2100,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void setBodyComplete(){
         if (this.isc != null) {
             this.isc.setBodyComplete();
-            ReadFlowHandler.markRequestConsumed(nettyContext);
+            // HTTP/1 read-flow state is not authority for trusted HTTP/2 streams.
+            if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
+                ReadFlowHandler.markRequestConsumed(nettyContext);
+            }
             if (deferClear.compareAndSet(true, false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Body complete; performing deferred ISC.clear() for keep-alive.");

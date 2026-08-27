@@ -81,12 +81,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
             }
         });
 
-        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-            String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-            nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
-
-        }
-
         if (isc instanceof HttpInboundServiceContextImpl) {
             incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());
             this.config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();

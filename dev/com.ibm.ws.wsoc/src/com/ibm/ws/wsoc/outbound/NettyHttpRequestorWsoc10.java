@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.wsoc.Constants;
@@ -278,37 +279,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         if (resp == null) {
             throw new IOException("Don't have a response yet!");
         }
-        if (StatusCodes.SWITCHING_PROTOCOLS.getIntCode() != resp.status().code()) {
-            String msg = Tr.formatMessage(tc, "client.invalid.returncode", resp.status().code(),
-                                          endpointAddress.getURI().toString());
-            Tr.error(tc, "client.invalid.returncode", resp.status().code(),
-                     endpointAddress.getURI().toString());
-            throw new IOException(msg);
-        }
-
-        String acceptKey;
-        try {
-            acceptKey = Utils.makeAcceptResponseHeaderValue(websocketKey);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IOException(e);
-        }
-
-        String key = resp.headers().get(Constants.MC_HEADER_NAME_SEC_WEBSOCKET_ACCEPT);
-        if (key != null) {
-            if (!key.equals(acceptKey)) {
-                String msg = Tr.formatMessage(tc, "client.invalid.acceptkey", resp.status().code(),
-                                              endpointAddress.getURI().toString());
-                Tr.error(tc, "client.invalid.acceptkey", resp.status().code(),
-                         endpointAddress.getURI().toString());
-                throw new IOException(msg);
-            }
-        } else {
-            String msg = Tr.formatMessage(tc, "client.invalid.acceptkey", resp.status().code(),
-                                          endpointAddress.getURI().toString());
-            Tr.error(tc, "client.invalid.acceptkey", resp.status().code(),
-                     endpointAddress.getURI().toString());
-            throw new IOException(msg);
-        }
+        validateUpgradeResponse(resp);
 
         if (config != null) {
             Collection<String> names = resp.headers().names();
@@ -355,6 +326,32 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
 
         // Assuming no data left here to parse
         return null;
+    }
+
+    private void validateUpgradeResponse(FullHttpResponse response) throws IOException {
+        if (StatusCodes.SWITCHING_PROTOCOLS.getIntCode() != response.status().code()) {
+            String msg = Tr.formatMessage(tc, "client.invalid.returncode", response.status().code(),
+                                          endpointAddress.getURI().toString());
+            Tr.error(tc, "client.invalid.returncode", response.status().code(),
+                     endpointAddress.getURI().toString());
+            throw new IOException(msg);
+        }
+
+        final String acceptKey;
+        try {
+            acceptKey = Utils.makeAcceptResponseHeaderValue(websocketKey);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        }
+
+        String key = response.headers().get(Constants.MC_HEADER_NAME_SEC_WEBSOCKET_ACCEPT);
+        if (!acceptKey.equals(key)) {
+            String msg = Tr.formatMessage(tc, "client.invalid.acceptkey", response.status().code(),
+                                          endpointAddress.getURI().toString());
+            Tr.error(tc, "client.invalid.acceptkey", response.status().code(),
+                     endpointAddress.getURI().toString());
+            throw new IOException(msg);
+        }
     }
 
     private void updatePipelineToWebsocket() {
@@ -421,7 +418,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 pipeline.addFirst("SSLHandler", handler);
 
             }
-            ch.attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
+            ProtocolState.establish(ch, NettyHttpConstants.ProtocolName.HTTP1,
+                                    ProtocolState.ProtocolSource.OUTBOUND_HTTP1_HANDSHAKE);
             ch.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(true);
             // ADD HTTP CODEC for first upgrade request
             pipeline.addLast(new HttpClientCodec());
@@ -431,9 +429,16 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 @Override
                 protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse res) throws Exception {
                     requestor.resp = res;
-                    ctx.pipeline().remove(this);
-                    requestor.updatePipelineToWebsocket();
-                    requestor.responsePromise.setSuccess();
+                    try {
+                        requestor.validateUpgradeResponse(res);
+                        ctx.pipeline().remove(this);
+                        requestor.updatePipelineToWebsocket();
+                        ProtocolState.establish(ctx.channel(), NettyHttpConstants.ProtocolName.WEBSOCKET,
+                                                ProtocolState.ProtocolSource.WEBSOCKET_UPGRADE);
+                        requestor.responsePromise.setSuccess();
+                    } catch (IOException e) {
+                        requestor.responsePromise.setSuccess();
+                    }
                 }
 
                 public void channelActive(ChannelHandlerContext ctx) throws Exception {

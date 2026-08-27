@@ -28,6 +28,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
+import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -259,7 +261,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
       
         long writtenBytes = 0L;
         // If using HTTP2 chunk logic or something else, keep the relevant parts.
-        final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
+        final ProtocolName protocol = ProtocolState.current(nettyChannel);
 
         // A write queue to run all the write events inside the eventloop to improve performance
         // Maybe we should see if this writequeue should belong to the class to improve performance?
@@ -267,9 +269,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         final Queue<Object> writeQueue = new LinkedList<Object>();
         final ChannelPromise writePromise = nettyChannel.newPromise();
       
-        final boolean isHttp10 = "HTTP10".equals(protocol);
-        final boolean isWsoc = "WebSocket".equals(protocol);
-        final boolean isH2 = "HTTP2".equals(protocol);
+        final boolean isHttp10 = protocol == ProtocolName.HTTP10;
+        final boolean isWsoc = protocol == ProtocolName.WEBSOCKET;
+        final boolean isH2 = protocol == ProtocolName.HTTP2;
         final boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH)
                                          && nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get() != null;
         
@@ -360,13 +362,13 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         final Queue<Object> writeQueue = new LinkedList<Object>();
         final ChannelPromise writePromise = nettyChannel.newPromise();
         //check if wsoc
-        final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
+        final ProtocolName protocol = ProtocolState.current(nettyChannel);
 
-        final boolean isHttp10 = "HTTP10".equals(protocol);
+        final boolean isHttp10 = protocol == ProtocolName.HTTP10;
 
-        final boolean isWsoc = "WebSocket".equals(protocol);
+        final boolean isWsoc = protocol == ProtocolName.WEBSOCKET;
 
-        final boolean isH2 = "HTTP2".equals(protocol);
+        final boolean isH2 = protocol == ProtocolName.HTTP2;
 
         if (Objects.isNull(buffers)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

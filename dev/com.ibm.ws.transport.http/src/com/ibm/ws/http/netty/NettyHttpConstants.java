@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.net.Socket;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -17,12 +18,14 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 
 import io.netty.util.AttributeKey;
-import java.net.Socket;
 
 /**
  *
  */
-public class NettyHttpConstants {
+public final class NettyHttpConstants {
+
+    private NettyHttpConstants() {
+    }
 
     public static final AttributeKey<String> FORWARDED_PROTO_KEY = AttributeKey.valueOf("forwardedProto");
     public static final AttributeKey<String> FORWARDED_HOST_KEY = AttributeKey.valueOf("forwardedHost");
@@ -37,7 +40,6 @@ public class NettyHttpConstants {
     public static final AttributeKey<String> COMPRESSION_ENCODING = AttributeKey.valueOf("compressionEncoding");
     public static final AttributeKey<Long> CONTENT_LENGTH = AttributeKey.valueOf("contentLength");
     public static final AttributeKey<Boolean> IS_OUTBOUND_KEY = AttributeKey.valueOf("isOutbound");
-    public static final AttributeKey<String> PROTOCOL = AttributeKey.valueOf("protocol");
     public static final AttributeKey<String> ENDPOINT_PID = AttributeKey.valueOf("endpointPID");
     public static final AttributeKey<Boolean> HANDLING_REQUEST = AttributeKey.valueOf("handlingRequest");
     public static final AttributeKey<Boolean> THROW_FFDC = AttributeKey.valueOf("throwFFDC");
@@ -51,6 +53,7 @@ public class NettyHttpConstants {
     public static final AttributeKey<Boolean> UPGRADED = AttributeKey.valueOf("httpUpgraded");
     public static final AttributeKey<HttpChannelConfig> HTTP_CONFIG = AttributeKey.valueOf("httpConfig");
     public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE = AttributeKey.valueOf("upgradeReadyPromise");
+    public static final AttributeKey<Boolean> WEBSOCKET_UPGRADE_REQUEST = AttributeKey.valueOf("websocketUpgradeRequest");
     public static final AttributeKey<Boolean> QUIESCING = AttributeKey.valueOf("quiescing");
     public static final AttributeKey<Boolean> INPUT_SHUTDOWN_PENDING = AttributeKey.valueOf("shutdownPending");
     public static final AttributeKey<Boolean> RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE =
@@ -63,11 +66,12 @@ public class NettyHttpConstants {
         AttributeKey.valueOf("httpAsyncReadPendingSignal");
     public static final AttributeKey<Runnable> ASYNC_READ_ERROR_CALLBACK =
         AttributeKey.valueOf("httpAsyncReadErrorCallback");
-    
+
     public static final String VC_HTTP_INPUT_STREAM = "nettyInputStream";
     public static final String VC_HTTP2_STREAM_ID = "http2StreamId";
-    
+
     public enum ProtocolName {
+        HTTP10("HTTP10"),
         HTTP1("HTTP1"),
         HTTP2("HTTP2"),
         WEBSOCKET("WebSocket"),
@@ -87,4 +91,5 @@ public class NettyHttpConstants {
             return UNKNOWN;
         }
     }
+
 }
