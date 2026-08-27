@@ -58,6 +58,26 @@ import io.openliberty.jpa.persistence.tests.models.SimpleEmployee;
 import io.openliberty.jpa.persistence.tests.models.Ticket;
 import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
+import io.openliberty.jpa.persistence.tests.models.auto.IntegerAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.IntegerPrimitiveAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.LongAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.LongPrimitiveAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.StringAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.auto.UUIDAutoIdEntity;
+import io.openliberty.jpa.persistence.tests.models.identity.IntegerIdentityIdEntity;
+import io.openliberty.jpa.persistence.tests.models.identity.IntegerPrimitiveIdentityIdEntity;
+import io.openliberty.jpa.persistence.tests.models.identity.LongIdentityIdEntity;
+import io.openliberty.jpa.persistence.tests.models.identity.LongPrimitiveIdentityIdEntity;
+import io.openliberty.jpa.persistence.tests.models.sequence.IntegerPrimitiveSequenceIdEntity;
+import io.openliberty.jpa.persistence.tests.models.sequence.IntegerSequenceIdEntity;
+import io.openliberty.jpa.persistence.tests.models.sequence.LongPrimitiveSequenceIdEntity;
+import io.openliberty.jpa.persistence.tests.models.sequence.LongSequenceIdEntity;
+import io.openliberty.jpa.persistence.tests.models.table.IntegerPrimitiveTableIdEntity;
+import io.openliberty.jpa.persistence.tests.models.table.IntegerTableIdEntity;
+import io.openliberty.jpa.persistence.tests.models.table.LongPrimitiveTableIdEntity;
+import io.openliberty.jpa.persistence.tests.models.table.LongTableIdEntity;
+import io.openliberty.jpa.persistence.tests.models.uuid.StringUUIDIdEntity;
+import io.openliberty.jpa.persistence.tests.models.uuid.UUIDUUIDIdEntity;
 import jakarta.annotation.Resource;
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.CacheStoreMode;
@@ -2015,6 +2035,292 @@ public class JakartaPersistenceServlet extends FATServlet {
             }
             throw e;
         }
+    }
+
+    /**
+     * tests the use of primary key of type type java.lang.Long, java.lang.Integer, long, or int with GenerationType.TABLE
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testTableIdGenerationType() throws Exception {
+        final String actualName = "Test Entity 1";
+
+        // test persist with primary key type java.lang.Integer & GenerationType TABLE
+        IntegerTableIdEntity integerTableIdEntity = IntegerTableIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerTableIdEntity);
+        tx.commit();
+        assertNotNull(integerTableIdEntity.getId());
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT t.name FROM IntegerTableIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerTableIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type int & GenerationType TABLE
+        IntegerPrimitiveTableIdEntity integerPrimitiveTableIdEntity = IntegerPrimitiveTableIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerPrimitiveTableIdEntity);
+        tx.commit();
+        assertNotNull(integerPrimitiveTableIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM IntegerPrimitiveTableIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerPrimitiveTableIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key java.lang.Long int & GenerationType TABLE
+        LongTableIdEntity longTableIdEntity = LongTableIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longTableIdEntity);
+        tx.commit();
+        assertNotNull(longTableIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongTableIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longTableIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type long & GenerationType TABLE
+        LongPrimitiveTableIdEntity longPrimitiveTableIdEntity = LongPrimitiveTableIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longPrimitiveTableIdEntity);
+        tx.commit();
+        assertNotNull(longPrimitiveTableIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveTableIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longPrimitiveTableIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+    }
+
+    /**
+     * tests the use of primary key of type type java.lang.Long, java.lang.Integer, long, or int with GenerationType.SEQUENCE
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSequenceIdGenerationType() throws Exception {
+        final String actualName = "integer Sequence Id Generation Type Entity 1";
+        
+        // test persist with primary key type Integer & GenerationType Sequence
+        IntegerSequenceIdEntity integerSequenceIdEntity = IntegerSequenceIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerSequenceIdEntity);
+        tx.commit();
+        assertNotNull(integerSequenceIdEntity.getId());
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT t.name FROM IntegerSequenceIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerSequenceIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        IntegerPrimitiveSequenceIdEntity integerPrimitiveSequenceIdEntity = IntegerPrimitiveSequenceIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerPrimitiveSequenceIdEntity);
+        tx.commit();
+        assertNotNull(integerPrimitiveSequenceIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM IntegerPrimitiveSequenceIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerPrimitiveSequenceIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type Long & GenerationType Sequence
+        LongSequenceIdEntity longSequenceIdEntity = LongSequenceIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longSequenceIdEntity);
+        tx.commit();
+        assertNotNull(longSequenceIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongSequenceIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longSequenceIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type long & GenerationType Sequence
+        LongPrimitiveSequenceIdEntity longPrimitiveSequenceIdEntity = LongPrimitiveSequenceIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longPrimitiveSequenceIdEntity);
+        tx.commit();
+        assertNotNull(longPrimitiveSequenceIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveSequenceIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longPrimitiveSequenceIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+    }
+
+     /**
+     * Confirms the use of primary key of type 'java.lang.String' With GenerationType.UUID
+     * The UUID value indicates that the persistence provider should assign an RFC 4122 Universally Unique IDentifier.
+     * A UUID generator may be used to generate values for a primary key property or field of type java.util.UUID or java.lang.String.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testUUIDGenerationType() throws Exception {
+        final String actualName = "UUID Test Entity 1";
+        // test persist with primary key type UUID & GenerationType UUID
+        UUIDUUIDIdEntity uuidEntity = UUIDUUIDIdEntity.of(actualName);
+        tx.begin();
+        em.persist(uuidEntity);
+        tx.commit();
+        assertNotNull(uuidEntity.getId());
+
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT u.name FROM UUIDUUIDIdEntity u WHERE u.id = :id", String.class)
+                        .setParameter("id", uuidEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type String & GenerationType UUID
+        StringUUIDIdEntity stringUUIDIdEntity = StringUUIDIdEntity.of(actualName);
+        tx.begin();
+        em.persist(stringUUIDIdEntity);
+        tx.commit();
+        assertNotNull(stringUUIDIdEntity.getId());
+
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT u.name FROM StringUUIDIdEntity u WHERE u.id = :id", String.class)
+                        .setParameter("id", stringUUIDIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+    }
+
+    @Test
+    public void testIdentityGenerationType() throws Exception {
+        final String actualName = "Identity Generation Entity 1";
+        // test persist with primary key type Integer & GenerationType IDENTITY
+        IntegerIdentityIdEntity integerIdentityIdEntity = IntegerIdentityIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerIdentityIdEntity);
+        tx.commit();
+        assertNotNull(integerIdentityIdEntity.getId());
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT t.name FROM IntegerIdentityIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerIdentityIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+   
+        // test persist with primary key type int & GenerationType IDENTITY
+        IntegerPrimitiveIdentityIdEntity integerPrimitiveIdentityIdEntity = IntegerPrimitiveIdentityIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerPrimitiveIdentityIdEntity);
+        tx.commit();
+        assertNotNull(integerPrimitiveIdentityIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM IntegerPrimitiveIdentityIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerPrimitiveIdentityIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type int & GenerationType IDENTITY
+        LongIdentityIdEntity longIdentityIdEntity = LongIdentityIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longIdentityIdEntity);
+        tx.commit();
+        assertNotNull(longIdentityIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongIdentityIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longIdentityIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type int & GenerationType IDENTITY
+        LongPrimitiveIdentityIdEntity longPrimitiveIdentityIdEntity = LongPrimitiveIdentityIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longPrimitiveIdentityIdEntity);
+        tx.commit();
+        assertNotNull(longPrimitiveIdentityIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveIdentityIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longPrimitiveIdentityIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+    }
+
+    /**
+     * Tests the use of primary key With GenerationType.AUTO
+     * In the case of a field or property of type java.lang.Long, java.lang.Integer, long, or int, the AUTO strategy may select between TABLE, SEQUENCE, or IDENTITY.
+     * In the case of a field or property of type java.util.UUID or java.lang.String, the AUTO strategy is equivalent to UUID.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testWithAutoGenerationType() throws Exception {
+        final String actualName = "integer Auto Id Generation Type Entity 1";
+        // test persist with primary key type Integer & GenerationType IDENTITY
+        IntegerAutoIdEntity integerAutoIdEntity = IntegerAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerAutoIdEntity);
+        tx.commit();
+        assertNotNull(integerAutoIdEntity.getId());
+        // Query with ID and validate the result
+        String queriedNameById = em.createQuery("SELECT t.name FROM IntegerAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type int & GenerationType IDENTITY
+        IntegerPrimitiveAutoIdEntity integerPrimitiveAutoIdEntity = IntegerPrimitiveAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(integerPrimitiveAutoIdEntity);
+        tx.commit();
+        assertNotNull(integerPrimitiveAutoIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM IntegerPrimitiveAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", integerPrimitiveAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type Long & GenerationType IDENTITY
+        LongAutoIdEntity longAutoIdEntity = LongAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longAutoIdEntity);
+        tx.commit();
+        assertNotNull(longAutoIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type long & GenerationType IDENTITY
+        LongPrimitiveAutoIdEntity longPrimitiveAutoIdEntity = LongPrimitiveAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(longPrimitiveAutoIdEntity);
+        tx.commit();
+        assertNotNull(longPrimitiveAutoIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT t.name FROM LongPrimitiveAutoIdEntity t WHERE t.id = :id", String.class)
+                        .setParameter("id", longPrimitiveAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        UUIDAutoIdEntity uuidEntity = UUIDAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(uuidEntity);
+        tx.commit();
+        assertNotNull(uuidEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT u.name FROM UUIDAutoIdEntity u WHERE u.id = :id", String.class)
+                        .setParameter("id", uuidEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
+
+        // test persist with primary key type String & GenerationType Auto
+        StringAutoIdEntity stringAutoIdEntity = StringAutoIdEntity.of(actualName);
+        tx.begin();
+        em.persist(stringAutoIdEntity);
+        tx.commit();
+        assertNotNull(stringAutoIdEntity.getId());
+        // Query with ID and validate the result
+        queriedNameById = em.createQuery("SELECT u.name FROM StringAutoIdEntity u WHERE u.id = :id", String.class)
+                        .setParameter("id", stringAutoIdEntity.getId())
+                        .getSingleResult();
+        assertEquals(actualName, queriedNameById);
     }
 
     /**
