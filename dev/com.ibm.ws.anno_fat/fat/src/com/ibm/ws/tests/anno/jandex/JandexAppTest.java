@@ -12,12 +12,15 @@
  *******************************************************************************/
 package com.ibm.ws.tests.anno.jandex;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -39,9 +42,9 @@ import testservlet40.jar.jandex_v35.ComputeIntEncloser;
  */
 public abstract class JandexAppTest extends LoggingTest {
 	
-	private final static String JAR_NAME = "TestServlet40.jar";
-	private final static String WAR_NAME = "TestServlet40.war";
-	private final static String EAR_NAME = "TestServlet40.ear";
+	protected final static String JAR_NAME = "TestServlet40.jar";
+	protected final static String WAR_NAME = "TestServlet40.war";
+	protected final static String EAR_NAME = "TestServlet40.ear";
 	
     /**
      * Answer the server used by this test.
@@ -201,13 +204,25 @@ public abstract class JandexAppTest extends LoggingTest {
         // {5} of {4} module classes were read from Jandex indexes.
 
     	// [5/11/19 21:52:18:428 EDT] 00000070 com.ibm.ws.annocache
-    	// I CWWKC0093I: Jandex coverage for of module /TestServlet40.war in application TestServlet40:
-    	// 1 of 2 module locations had Jandex indexes;
-    	// 2 of 2 module classes were read from Jandex indexes.
+    	// CWWKC0093I: Jandex coverage of module TestServlet40 in application TestServlet40_WebInf: Jandex indexes were read for 1 out of 2 module locations; Jandex indexes provided 19 out of 37 module classes.
+
         List<String> selectedMessages = getSharedServer().getLibertyServer().findStringsInLogs("CWWKC009");
 
         if ( expectJandex ) {
             assertFalse("Did not find CWWKC0092I or CWWKC0093I, which indicates the use of jandex indexes.", selectedMessages.isEmpty());
+
+            selectedMessages = getSharedServer().getLibertyServer().findStringsInLogs("Jandex indexes were read for .*odule locations");
+            for (int i = 0; i < selectedMessages.size(); i++) {
+                String msg = selectedMessages.get(i);
+                Matcher m = Pattern
+                    .compile("(\\d+) out of (\\d+) module locations")
+                    .matcher(msg);
+                assertTrue("Could not parse location counts from message [ " + msg + " ] at index " + i, m.find());
+                int jandexLocations = Integer.parseInt(m.group(1));
+                int totalLocations  = Integer.parseInt(m.group(2));
+                assertEquals("Not all module locations had Jandex indexes [ " + msg + " ] at index " + i,
+                    totalLocations, jandexLocations);
+            }
         } else {
             assertTrue("Found CWWKC0092I or CWWKC0093I, which indicates the use of jandex indexes", selectedMessages.isEmpty());
         }
