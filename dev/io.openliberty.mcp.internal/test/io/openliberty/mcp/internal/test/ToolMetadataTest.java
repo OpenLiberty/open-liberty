@@ -39,6 +39,7 @@ import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.TestUtils;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
@@ -441,6 +442,18 @@ public class ToolMetadataTest {
     public void testOutputSchemaFromIgnoredWhenStructuredContentFalse() {
         ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "toolResponseWithOutputSchemaFromNoStructuredContent");
         assertNull(metadata.outputSchema());
+    }
+
+    @Tool
+    public String toolWithNoDefaultValue(@ToolArg(name = "value") String value) {
+        return value;
+    }
+
+    @Test
+    public void testAnnotationArgWithNoDefaultValueIsNormalisedToNull() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "toolWithNoDefaultValue");
+        ToolArgument arg = metadata.arguments().get(0);
+        assertNull("defaultValue should be null when @ToolArg has no defaultValue set", arg.defaultValue());
     }
 
     @MetaField(name = "foo", value = "bar")
