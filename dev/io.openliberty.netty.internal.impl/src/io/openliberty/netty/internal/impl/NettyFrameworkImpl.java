@@ -16,9 +16,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,7 +30,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -43,12 +44,11 @@ import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
-import io.netty.channel.Channel;
-import io.netty.channel.IoHandlerFactory;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.IoHandlerFactory;
 import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
@@ -68,8 +68,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import io.netty.util.concurrent.Future;
-
+import io.netty.util.concurrent.ThreadPerTaskExecutor;
 import io.openliberty.channel.config.ChannelFrameworkConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -77,12 +76,11 @@ import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tcp.LibertyNioServerSocketChannel;
+import io.openliberty.netty.internal.tcp.LibertyNioSocketChannel;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
-
-import io.openliberty.netty.internal.tcp.LibertyNioServerSocketChannel;
-import io.openliberty.netty.internal.tcp.LibertyNioSocketChannel;
 
 /**
  * Liberty NettyFramework implementation bundle
@@ -98,6 +96,16 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
+
+    /**
+     * Optional reference to the Liberty thread factory used by the Default Executor.
+     * When CICS (or another product) registers a custom ThreadFactory with property
+     * "com.ibm.ws.threading.defaultExecutorThreadFactory=true", this field is set so
+     * that the Netty event-loop threads are created by the same factory. This makes
+     * those threads CICS-domain-accessible, which is required for CICS to accept work
+     * submitted to the Liberty executor from a Netty I/O callback.
+     */
+    private volatile ThreadFactory libertyThreadFactory = null;
 
     /** server started logic borrowed from CHFWBundle */
     private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
@@ -138,10 +146,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // the system properties if set
         int maxThreads = Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, (Integer) config.get(NettyConstants.SCALER_MAX_THREADS_PROPERTY));
         long metricsWindow = Long.getLong(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, (Long) config.get(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY));
-        useNativeIO = (Boolean)config.get(NettyConstants.USE_NATIVE_TRANSPORT);
+        useNativeIO = (Boolean) config.get(NettyConstants.USE_NATIVE_TRANSPORT);
 
         String systemProperty_useNativeIO = System.getProperty("io.openliberty.netty.internal.useNativeIO", "true");
-        if(systemProperty_useNativeIO.equalsIgnoreCase("false")) {
+        if (systemProperty_useNativeIO.equalsIgnoreCase("false")) {
             useNativeIO = false;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "io.openliberty.netty.internal.useNativeIO system property is set to false, NOT enabling native transport.");
@@ -161,10 +169,30 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // Compared to channelfw, quiesce is hit every time because
         // connections are lazy cleaned on deactivate
         DefaultThreadFactory threadFactory = new DefaultThreadFactory("Shared TCPChannel NonBlocking Accept Thread");
-        sharedAcceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
+
+        //
+        // If a Liberty-compatible ThreadFactory is available (e.g. CICS's CICSPooledThreadFactory),
+        // use it when creating the Netty event-loop groups so that those I/O threads are
+        // domain-accessible to CICS.  Without this, a Netty I/O thread calling
+        // HttpDispatcher.getExecutorService().execute() would submit work from a non-CICS thread,
+        // causing CICSTaskWrapper.buildTransaction() to throw
+        // "Failure making domain call, this thread cannot access CICS".
+        // The two thread pools remain separate: Netty I/O threads (this group) and the Liberty
+        // application threads (HttpDispatcher.getExecutorService()).
+        ThreadFactory tf = libertyThreadFactory;
+        if (tf != null) {
+            sharedAcceptGroup = new MultiThreadIoEventLoopGroup(1, new ThreadPerTaskExecutor(tf), ioFactory);
+        } else {
+            sharedAcceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
+        }
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
-        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, ioFactory);
+        if (tf != null) {
+            childGroup = new MultiThreadIoEventLoopGroup(maxThreads, new ThreadPerTaskExecutor(tf), scaler, ioFactory);
+        } else {
+            childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, ioFactory);
+        }
+
         outboundConnections = new DefaultChannelGroup(childGroup.next());
 
         if (metricsWindow > 0 && TraceComponent.isAnyTracingEnabled() && NettyThreadMetrics.tc.isDebugEnabled()) {
@@ -183,26 +211,27 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         int minThreads = Integer.getInteger(NettyConstants.SCALER_MIN_THREADS_PROPERTY, (Integer) config.get(NettyConstants.SCALER_MIN_THREADS_PROPERTY));
         int maxThreads = Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, (Integer) config.get(NettyConstants.SCALER_MAX_THREADS_PROPERTY));
         long windowSize = Long.getLong(NettyConstants.SCALER_WINDOW_PROPERTY, (Long) config.get(NettyConstants.SCALER_WINDOW_PROPERTY));
-        double downThreshold = parseDouble(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY,(Double) config.get(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY));
+        double downThreshold = parseDouble(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, (Double) config.get(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY));
         double upThreshold = parseDouble(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, (Double) config.get(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY));
         int upStep = Integer.getInteger(NettyConstants.SCALER_UP_STEP_PROPERTY, (Integer) config.get(NettyConstants.SCALER_UP_STEP_PROPERTY));
         int downStep = Integer.getInteger(NettyConstants.SCALER_DOWN_STEP_PROPERTY, (Integer) config.get(NettyConstants.SCALER_DOWN_STEP_PROPERTY));
         int cycles = Integer.getInteger(NettyConstants.SCALER_CYCLES_PROPERTY, (Integer) config.get(NettyConstants.SCALER_CYCLES_PROPERTY));
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Creating AutoScaler with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
+            Tr.debug(tc, "Creating AutoScaler with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold
+                         + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
         }
         return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles);
     }
 
     private Double parseDouble(String property, double defaultValue) {
         String parsedProperty = System.getProperty(property);
-        if(parsedProperty == null) {
+        if (parsedProperty == null) {
             return defaultValue;
         }
         try {
             return Double.parseDouble(parsedProperty);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return defaultValue;
         }
     }
@@ -267,9 +296,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      * Used for server sockets - based on platform.
      */
     public Class getServerSocketChannelClass() {
-        if(useNativeIO && Epoll.isAvailable()){
+        if (useNativeIO && Epoll.isAvailable()) {
             return EpollServerSocketChannel.class;
-        } else if (useNativeIO && KQueue.isAvailable()){
+        } else if (useNativeIO && KQueue.isAvailable()) {
             return KQueueServerSocketChannel.class;
         } else {
             return LibertyNioServerSocketChannel.class;
@@ -280,9 +309,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      * Used for client sockets - based on platform.
      */
     public Class getSocketChannelClass() {
-        if(useNativeIO && Epoll.isAvailable()){
+        if (useNativeIO && Epoll.isAvailable()) {
             return EpollSocketChannel.class;
-        } else if (useNativeIO && KQueue.isAvailable()){
+        } else if (useNativeIO && KQueue.isAvailable()) {
             return KQueueSocketChannel.class;
         } else {
             return LibertyNioSocketChannel.class;
@@ -357,6 +386,33 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     public ExecutorService getExecutorService() {
         return this.executorService;
+    }
+
+    /**
+     * DS method for setting an optional Liberty-compatible ThreadFactory reference.
+     * When a product such as CICS registers a ThreadFactory with OSGi property
+     * {@code com.ibm.ws.threading.defaultExecutorThreadFactory=true}, this method
+     * captures it so that the Netty event-loop groups can be created with the same
+     * factory, making those threads accessible to the CICS domain.
+     *
+     * @param threadFactory the {@link ThreadFactory} to use for Netty event-loop threads
+     */
+    @Reference(service = ThreadFactory.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
+               target = "(com.ibm.ws.threading.defaultExecutorThreadFactory=true)")
+    protected void setLibertyThreadFactory(ThreadFactory threadFactory) {
+        this.libertyThreadFactory = threadFactory;
+    }
+
+    /**
+     * DS method for clearing the optional Liberty thread factory reference.
+     *
+     * @param threadFactory the service instance to clear
+     */
+    protected void unsetLibertyThreadFactory(ThreadFactory threadFactory) {
+        this.libertyThreadFactory = null;
     }
 
     /**
