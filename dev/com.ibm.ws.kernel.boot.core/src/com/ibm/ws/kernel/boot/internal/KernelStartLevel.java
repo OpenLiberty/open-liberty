@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,8 +16,10 @@ public enum KernelStartLevel {
     /** WAS Server start levels: 0 (stopped), and 1 have special meaning w/ OSGi */
     OSGI_INIT(1),
     BOOTSTRAP(2),
-    KERNEL_CONFIG(3),
-    KERNEL(4),
+    // start SCR in its own phase to avoid timing issues with parallel bundle events while it is setting up its listeners
+    SCR(3),
+    KERNEL_CONFIG(4),
+    KERNEL(5),
     KERNEL_LATE(6),
     FEATURE_PREPARE(7),
     ACTIVE(20),
