@@ -10,6 +10,7 @@
 package io.openliberty.netty.internal.tcp;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -33,7 +34,7 @@ public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
 
     private final AtomicInteger connections = new AtomicInteger();
     private final int maxConnections;
-    private long lastConnExceededTime = 0L;
+    private final AtomicLong lastConnExceededTime = new AtomicLong(0L);
 
     public MaxOpenConnectionsHandler(int maxConnectionCount) {
         maxConnections = maxConnectionCount;
@@ -48,7 +49,8 @@ public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
             ctx.close();
             // notify every 10 minutes if max concurrent conns was hit
             long currentTime = System.currentTimeMillis();
-            if (currentTime > (lastConnExceededTime + 600000L)) {
+            long last = lastConnExceededTime.get();
+            if (currentTime > (last + 600000L) && lastConnExceededTime.compareAndSet(last, currentTime)) {
                 String channelName = ctx.channel().attr(ConfigConstants.NAME_KEY).get();
 
                 // If the channelName is null check the parent for a name.
@@ -60,7 +62,6 @@ public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
                 }
 
                 Tr.warning(tc, TCPMessageConstants.MAX_CONNS_EXCEEDED, channelName, maxConnections);
-                lastConnExceededTime = currentTime;
             }
         }
     }
