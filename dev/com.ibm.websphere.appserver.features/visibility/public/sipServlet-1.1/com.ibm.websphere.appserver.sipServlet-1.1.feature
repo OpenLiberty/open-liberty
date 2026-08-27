@@ -27,7 +27,6 @@ Subsystem-Name: SIP Servlet 1.1
   com.ibm.ws.sipcontainer, \
   com.ibm.ws.app.manager.sar, \
   io.openliberty.transport.config.internal, \
-  io.openliberty.endpoint, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.impl, \
   io.openliberty.io.netty
