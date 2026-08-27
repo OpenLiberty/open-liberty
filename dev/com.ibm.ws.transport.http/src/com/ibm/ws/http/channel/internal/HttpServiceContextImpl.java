@@ -63,6 +63,7 @@ import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -3800,7 +3801,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     }
 
     private void prepareNettyCloseForIncompleteRequestBody(boolean finalWrite) {
-        if (!finalWrite || isBodyComplete() || nettyResponse == null) {
+        if (!finalWrite || !hasUnconsumedNettyRequestBody() || nettyResponse == null) {
             return;
         }
         if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
@@ -3813,6 +3814,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
         setPersistent(false);
         nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+    }
+
+    /**
+     * Determines whether an HTTP/1.x response must close because request entity
+     * bytes may still be unread. Protocol completion remains owned by
+     * {@code LastHttpContent}; consuming the declared fixed-length entity is
+     * sufficient only for this response-close decision.
+     */
+    private boolean hasUnconsumedNettyRequestBody() {
+        return !isBodyComplete() && !ReadFlowHandler.state(nettyContext).isRequestConsumed();
     }
 
     private void sendNettyFinalContent() {
@@ -3830,9 +3841,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                                         && (!isPersistent()
                                             || resp.getResponse().headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
                                             || !trailers.isEmpty()
-                                            || !isBodyComplete());
+                                            || hasUnconsumedNettyRequestBody());
 
-        if (closeAfterFinalContent && !isBodyComplete()) {
+        if (closeAfterFinalContent && hasUnconsumedNettyRequestBody()) {
             this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
             setPersistent(false);
             resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
