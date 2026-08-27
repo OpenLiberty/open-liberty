@@ -13,6 +13,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
+import com.ibm.ws.http.netty.ProtocolState;
+import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
@@ -70,9 +72,9 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
 
                 ctx.pipeline().addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, h);
-                h.markProtocol(ctx.pipeline(), ProtocolName.HTTP2);
-
             }
+            // The H2 topology is installed before the protocol state is published.
+            ProtocolState.establish(ctx.channel(), ProtocolName.HTTP2, ProtocolSource.ALPN_HTTP2);
 
             QuiesceHandler quiesceHandler = ctx.pipeline().get(QuiesceHandler.class);
             if (quiesceHandler != null) {
@@ -103,9 +105,9 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
 
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, h);
-                h.markProtocol(ctx.pipeline(), ProtocolName.HTTP1);
-
-            }   
+            }
+            // HTTP/1 codec/read topology is installed before application dispatch can observe it.
+            ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.ALPN_HTTP1);
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
             
             if(ctx.pipeline().get(FlowControlHandler.class) == null){

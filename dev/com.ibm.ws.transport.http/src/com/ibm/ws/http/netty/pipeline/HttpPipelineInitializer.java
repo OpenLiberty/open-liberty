@@ -26,6 +26,8 @@ import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.ConfigElement;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
+import com.ibm.ws.http.netty.ProtocolState;
+import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
@@ -40,6 +42,7 @@ import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
@@ -75,6 +78,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_AGGREGATOR_HANDLER_NAME = "objectAggregator";
     public static final String HTTP_REQUEST_HANDLER_NAME = "requestHandler";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "h2cUpgradeHandler";
+    public static final String HTTP1_PROTOCOL_HANDLER_NAME = "http1ProtocolHandler";
     public static final String WRITE_TIMEOUT_HANDER_NAME = "writeTimeoutHandler";
 
     public static final long maxContentLength = Long.MAX_VALUE;
@@ -223,6 +227,13 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, false);
+        pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP1_PROTOCOL_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
+            @Override
+            protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
+                establishHttp1Protocol(ctx, msg, Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.IS_SECURE).get()));
+                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
+            }
+        });
         // Turn off auto read for HTTP/1.1
         pipeline.channel().config().setAutoRead(false);
     }
@@ -241,7 +252,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addBefore(HttpDispatcherHandler.NAME, NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-                if ("HTTP2".equals(ctx.pipeline().channel().attr(NettyHttpConstants.PROTOCOL).get())) {
+                if (ProtocolState.current(ctx.channel()) == ProtocolName.HTTP2) {
 
                     ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
                     return;
@@ -252,9 +263,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 ctx.channel().config().setAutoRead(false);
 
                 TimeoutHandler timeoutHandler = pipeline.get(TimeoutHandler.class);
-                if(timeoutHandler != null){
-                    timeoutHandler.markProtocol(pipeline, ProtocolName.HTTP1);
-                }
 
                 // Add H1 handlers
                 // TODO we should decide if the TimeoutHandler is optional or not for this check
@@ -265,7 +273,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                     pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 }
 
-                ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
+                establishHttp1Protocol(ctx, msg, false);
       
 
                 Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
@@ -295,11 +303,23 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             @Override
             public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
                 if (evt instanceof PriorKnowledgeUpgradeEvent) {
+                    // Netty recognizes prior knowledge and installs H2 before emitting this event.
+                    ProtocolState.establish(ctx.channel(), ProtocolName.HTTP2,
+                                            ProtocolSource.H2C_PRIOR_KNOWLEDGE);
                     ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
                 }
                 super.userEventTriggered(ctx, evt);
             }
         });
+    }
+
+    private static void establishHttp1Protocol(ChannelHandlerContext context, HttpMessage message, boolean secure) {
+        ProtocolName protocol = message.protocolVersion().equals(HttpVersion.HTTP_1_0)
+                        ? ProtocolName.HTTP10 : ProtocolName.HTTP1;
+        ProtocolSource source = protocol == ProtocolName.HTTP10
+                        ? (secure ? ProtocolSource.TLS_HTTP10 : ProtocolSource.CLEARTEXT_HTTP10)
+                        : (secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1);
+        ProtocolState.establish(context.channel(), protocol, source);
     }
 
     /**

@@ -111,8 +111,8 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             if(queuedDataSize() > 0){
                 signalReadReady();
             }
-            super.userEventTriggered(context, event);
         }
+        super.userEventTriggered(context, event);
     }
 
     @Override
