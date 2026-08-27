@@ -83,7 +83,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 Tr.debug(this, tc, "Configuring pipeline with HTTP 1.1 for incoming connection " + ctx.channel());
             }
             ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC,
-                                    new HttpServerCodec(8192, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize()));
+                                    new HttpServerCodec(httpConfig.getLimitOfFieldSize(), httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders()));
 
             if(ctx.pipeline().get(TimeoutHandler.class)==null){
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
