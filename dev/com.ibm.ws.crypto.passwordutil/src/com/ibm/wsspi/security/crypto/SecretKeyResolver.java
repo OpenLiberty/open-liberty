@@ -13,6 +13,8 @@
 package com.ibm.wsspi.security.crypto;
 
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * Interface for resolving an opaque hardware-backed AES key (e.g. from ICSF/CKDS
@@ -27,9 +29,10 @@ public interface SecretKeyResolver {
      * Returns the hardware-backed {@link Key} to be used directly with a {@link javax.crypto.Cipher}.
      *
      * @return the Key reference
-     * @throws Exception if the key cannot be retrieved
+     * @throws NoSuchAlgorithmException if the required algorithm is not available
+     * @throws InvalidKeySpecException  if the key material is invalid or improperly encoded
      */
-    Key getKey() throws Exception;
+    Key getKey() throws NoSuchAlgorithmException, InvalidKeySpecException;
 
     /**
      * Returns a human-readable description of this resolver suitable for log messages.

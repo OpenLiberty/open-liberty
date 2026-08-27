@@ -30,6 +30,7 @@ import com.ibm.websphere.crypto.InvalidPasswordEncodingException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.ICSFSecretKeyResolver;
 import com.ibm.ws.crypto.util.PasswordCipherUtil;
 import com.ibm.ws.crypto.util.UnsupportedConfigurationException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
@@ -237,32 +238,6 @@ public class EncodeTask extends BaseCommandTask {
         }
 
         return p;
-    }
-
-    /**
-     * SecretKeyResolver for ICSF/CKDS, used by securityUtility encode when running on z/OS.
-     * Mirrors the runtime ICSFSecretKeyResolver in KeyStringResolverImpl — kept separate
-     * to avoid a build dependency from security.utility onto zos.password.encryption.key.
-     */
-    private static final class ICSFSecretKeyResolver implements com.ibm.wsspi.security.crypto.SecretKeyResolver {
-
-        private static final String IBMJCECCA_PROVIDER = "IBMJCECCA";
-        private static final String KEY_LABEL_KEY_SPEC_CLASS = "com.ibm.crypto.hdwrCCA.provider.KeyLabelKeySpec";
-
-        private final String label;
-
-        ICSFSecretKeyResolver(String label) {
-            this.label = label;
-        }
-
-        @Override
-        public java.security.Key getKey() throws Exception {
-            Class<?> keyLabelKeySpecClass = Class.forName(KEY_LABEL_KEY_SPEC_CLASS);
-            java.lang.reflect.Constructor<?> ctor = keyLabelKeySpecClass.getConstructor(String.class);
-            java.security.spec.KeySpec keySpec = (java.security.spec.KeySpec) ctor.newInstance(label);
-            javax.crypto.SecretKeyFactory factory = javax.crypto.SecretKeyFactory.getInstance("AES", IBMJCECCA_PROVIDER);
-            return factory.generateSecret(keySpec);
-        }
     }
 
     /**
