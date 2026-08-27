@@ -89,7 +89,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 maxLineLength = (int)httpConfig.getMessageSizeLimit();
             }
             ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC,
-                                    new HttpServerCodec(maxLineLength, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize()));
+                                    new HttpServerCodec(httpConfig.getLimitOfFieldSize(), httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders()));
 
             if(ctx.pipeline().get(ReadFlowHandler.class) == null) {
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
@@ -97,7 +97,6 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
 
             if(ctx.pipeline().get(TimeoutHandler.class)==null){
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
-
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, h);
             }
             // HTTP/1 codec/read topology is installed before application dispatch can observe it.
