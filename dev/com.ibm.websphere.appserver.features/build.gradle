@@ -435,4 +435,8 @@ if (isAutomatedBuild) {
 
 test {
   dependsOn createFeatureResources
+  def ifixVersionBase = rootProject.userProps.getProperty('ifix.version.base')
+  if (ifixVersionBase != null) {
+    systemProperty 'ifix.version.base', ifixVersionBase
+  }
 }
