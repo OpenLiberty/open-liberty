@@ -270,6 +270,9 @@ public class EE9Features {
 
             features.remove("heritageAPIs-1.0");
             features.remove("heritageAPIs-1.1");
+
+            // iiopTransactionPropagation-1.0 is the javax (EE8) version; not applicable to Jakarta EE 9
+            features.remove("iiopTransactionPropagation-1.0");
         }
 
         // Test features may or may not be compatible,
