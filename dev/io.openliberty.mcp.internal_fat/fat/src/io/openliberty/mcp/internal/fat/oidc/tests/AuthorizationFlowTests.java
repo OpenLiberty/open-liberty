@@ -15,8 +15,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -43,8 +41,14 @@ import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
  * Tests the end-to-end MCP OAuth 2.0 authorization discovery flow as described
  * by the MCP Authorization specification (RFC 9728).
  *
- * <p>Each scenario is exercised twice — once over plain HTTP (using {@link McpClient})
- * and once over HTTPS (the {@code _Https} variants).
+ * <p>Each scenario is exercised twice — once over plain HTTP and once over HTTPS.
+ * Both paths share the same scenario helper methods; the only difference is the
+ * {@link McpClient} instance passed in:
+ * <ul>
+ * <li>{@link #httpClient} — plain HTTP client with a Keycloak-trusting discovery client attached</li>
+ * <li>{@link #httpsClient} — HTTPS client built with a combined Liberty + Keycloak
+ * {@link javax.net.ssl.SSLContext}</li>
+ * </ul>
  *
  * <p>The full flow under test is:
  * <ol>
@@ -52,18 +56,10 @@ import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
  * <li>Receive 401 with a {@code WWW-Authenticate} header containing a {@code resource_metadata} URL</li>
  * <li>Fetch the Protected Resource Metadata from the discovered URL</li>
  * <li>Read the {@code authorization_servers} field to find the Authorization Server</li>
- * <li>Fetch the Authorization Server Metadata ({@code /.well-known/openId-configuration})</li>
+ * <li>Fetch the Authorization Server Metadata ({@code /.well-known/openid-configuration})</li>
  * <li>Complete the OAuth 2.0 ROPC login against the discovered {@code token_endpoint}</li>
  * <li>Call the protected tool with the obtained access token and verify the response</li>
  * </ol>
- *
- * <p><b>Helper classes:</b>
- * <ul>
- * <li>{@link HttpRequestHelper} — shared utilities: {@code toolCallRequest},
- * {@code extractResourceMetadataUrl}, {@code fetchJson}, {@code fetchAccessToken}</li>
- * <li>{@link HttpsRequestHelper} — HTTPS utilities: {@code buildLibertyAndKeycloakHttpClient},
- * {@code postMcpHttps}, {@code fetchJsonHttps}, {@code discoverTokenEndpointHttps}</li>
- * </ul>
  *
  * <p>This class deploys its own war ({@code oidcAuthFlowTests.war}) against the
  * {@code mcp-server-oidc} Liberty server. The {@code @ClassRule} Keycloak container is
@@ -73,7 +69,8 @@ import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 public class AuthorizationFlowTests extends FATServletClient {
 
     private static final String CONTEXT_ROOT = "/oidcAuthFlowTests";
-    private static final String MCP_PATH = CONTEXT_ROOT + "/mcp";
+
+    private static final String AS_METADATA_SUFFIX = "/.well-known/openid-configuration";
 
     // Credentials used by the Keycloak test users
     private static final String TEST_ADMIN_USERNAME = KeycloakContainer.getTestAdminUsername();
@@ -87,12 +84,14 @@ public class AuthorizationFlowTests extends FATServletClient {
     @Server("mcp-server-oidc")
     public static LibertyServer server;
 
+    /** Plain HTTP client for MCP calls; carries a Keycloak-trusting discovery client. */
+    private static McpClient httpClient;
+
     /**
-     * A {@link HttpClient} that trusts both the Liberty and Keycloak TLS certificates.
+     * HTTPS client — trusts both the Liberty and Keycloak TLS certificates.
      * Built in {@link #setup()} after the server starts and {@code key.p12} exists on disk.
-     * Used by all {@code _Https} test variants via {@link HttpsRequestHelper}.
      */
-    private static HttpClient libertyAndKeycloakHttpClient;
+    private static McpClient httpsClient;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -103,7 +102,6 @@ public class AuthorizationFlowTests extends FATServletClient {
                                                         "web.xml");
         ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
 
-        // // Creates the realm, clients, users, and groups inside Keycloak.
         keycloakContainer.setupRealm();
 
         // Write the live Keycloak coordinates into server.xml BEFORE starting the server
@@ -116,9 +114,18 @@ public class AuthorizationFlowTests extends FATServletClient {
         server.waitForLTPAConfigReady();
         server.waitForDefaultHTTPEndpointSSLStart();
 
-        // Build the combined HTTPS client now that key.p12 exists
-        // This client trusts both Liberty's auto-generated cert and the Keycloak self-signed cert
-        libertyAndKeycloakHttpClient = HttpsRequestHelper.buildLibertyAndKeycloakHttpClient(keycloakContainer, server);
+        // Plain HTTP client for MCP calls.
+        // The Keycloak discovery client is attached so that fetchJson/fetchAccessToken can
+        // follow HTTPS discovery URLs (Keycloak AS metadata, token endpoint) even though
+        // the MCP calls themselves go over plain HTTP.
+        httpClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS)
+                        .withDiscoveryClient(keycloakContainer.getHttpClient());
+
+        // HTTPS client — built now that key.p12 exists on disk.
+        // This SSLContext trusts both Liberty's auto-generated cert and the Keycloak self-signed cert,
+        // so it handles every URL in the discovery chain over TLS.
+        httpsClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
+                                    HttpsRequestHelper.buildCombinedSslContext(keycloakContainer, server));
     }
 
     @AfterClass
@@ -127,16 +134,92 @@ public class AuthorizationFlowTests extends FATServletClient {
     }
 
     // HTTP tests
+
+    @Test
+    public void testUnauthenticatedRequestReturns401WithResourceMetadataInWwwAuthenticate() throws Exception {
+        assertUnauthenticated401WithResourceMetadata(httpClient, "adminTool");
+    }
+
+    @Test
+    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader() throws Exception {
+        assertProtectedResourceMetadataDiscoverable(httpClient, "adminTool");
+    }
+
+    @Test
+    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata() throws Exception {
+        assertAuthorizationServerMetadataDiscoverable(httpClient, "adminTool");
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall() throws Exception {
+        assertFullFlowAllowsToolCall(httpClient, "adminTool", TEST_ADMIN_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
+                                     """);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsUserToolCall() throws Exception {
+        assertFullFlowAllowsToolCall(httpClient, "userTool", TEST_USER_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
+                                     """);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool() throws Exception {
+        assertFullFlowDeniesUserAccessToAdminTool(httpClient);
+    }
+
+    // HTTPS tests
+
+    @Test
+    public void testUnauthenticatedRequestReturns401WithResourceMetadataInWwwAuthenticate_Https() throws Exception {
+        assertUnauthenticated401WithResourceMetadata(httpsClient, "adminTool");
+    }
+
+    @Test
+    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader_Https() throws Exception {
+        assertProtectedResourceMetadataDiscoverable(httpsClient, "adminTool");
+    }
+
+    @Test
+    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata_Https() throws Exception {
+        assertAuthorizationServerMetadataDiscoverable(httpsClient, "adminTool");
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall_Https() throws Exception {
+        assertFullFlowAllowsToolCall(httpsClient, "adminTool", TEST_ADMIN_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
+                                     """);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsUserToolCall_Https() throws Exception {
+        assertFullFlowAllowsToolCall(httpsClient, "userTool", TEST_USER_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
+                                     """);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool_Https() throws Exception {
+        assertFullFlowDeniesUserAccessToAdminTool(httpsClient);
+    }
+
+    // -------------------------------------------------------------------------
+    // Shared scenario helpers
+    // -------------------------------------------------------------------------
+
     /**
      * An unauthenticated tool call must return 401 with a
      * {@code WWW-Authenticate} header that contains a {@code resource_metadata} URL
      * (RFC 9728 §3).
      */
-    @Test
-    public void testUnauthenticatedRequestReturns401WithResourceMetadataInWwwAuthenticate() throws Exception {
-        McpClient client = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS);
-
-        McpDetailedAuthResponse response = client.callMCP401AuthErrorExpected(HttpRequestHelper.toolCallRequest("adminTool"));
+    private static void assertUnauthenticated401WithResourceMetadata(McpClient client, String toolName) throws Exception {
+        McpDetailedAuthResponse response = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
 
         assertEquals("Expected HTTP 401 for unauthenticated call", 401, response.statusCode());
 
@@ -152,17 +235,14 @@ public class AuthorizationFlowTests extends FATServletClient {
      * Read the {@code resource_metadata} URL from the 401 response,
      * fetch the Protected Resource Metadata document, and validate its structure.
      */
-    @Test
-    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader() throws Exception {
-        McpClient client = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS);
-
-        McpDetailedAuthResponse authResponse = client.callMCP401AuthErrorExpected(HttpRequestHelper.toolCallRequest("adminTool"));
+    private static void assertProtectedResourceMetadataDiscoverable(McpClient client, String toolName) throws Exception {
+        McpDetailedAuthResponse authResponse = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
         assertEquals(401, authResponse.statusCode());
 
-        String resourceMetadataUrl = HttpRequestHelper.extractResourceMetadataUrl(authResponse.wwwAuthenticate());
+        String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
-        JSONObject metadata = HttpRequestHelper.fetchJson(resourceMetadataUrl, keycloakContainer);
+        JSONObject metadata = client.fetchJson(resourceMetadataUrl);
         assertNotNull("Protected Resource Metadata must contain 'resource' field",
                       metadata.optString("resource", null));
         assertTrue("Protected Resource Metadata must contain a non-empty 'authorization_servers' array",
@@ -173,212 +253,101 @@ public class AuthorizationFlowTests extends FATServletClient {
      * Follow the discovery chain from the 401 response all the way to
      * the Authorization Server Metadata document.
      */
-    @Test
-    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata() throws Exception {
-        McpClient client = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS);
-
-        McpDetailedAuthResponse authResponse = client.callMCP401AuthErrorExpected(HttpRequestHelper.toolCallRequest("adminTool"));
-        String resourceMetadataUrl = HttpRequestHelper.extractResourceMetadataUrl(authResponse.wwwAuthenticate());
+    private static void assertAuthorizationServerMetadataDiscoverable(McpClient client, String toolName) throws Exception {
+        McpDetailedAuthResponse authResponse = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
+        String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
-        JSONObject resourceMetadata = HttpRequestHelper.fetchJson(resourceMetadataUrl, keycloakContainer);
+        JSONObject resourceMetadata = client.fetchJson(resourceMetadataUrl);
         String authorizationServerUrl = resourceMetadata.getJSONArray("authorization_servers").getString(0);
         assertNotNull("authorization_servers[0] must not be null", authorizationServerUrl);
-        System.out.println("[OidcAuthorizationFlowTests] authorization_servers[0] = " + authorizationServerUrl);
 
-        JSONObject asMetadata = HttpRequestHelper.fetchJson(authorizationServerUrl + HttpRequestHelper.AS_METADATA_SUFFIX, keycloakContainer);
+        JSONObject asMetadata = client.fetchJson(authorizationServerUrl + AS_METADATA_SUFFIX);
         assertNotNull("AS metadata must contain 'issuer'", asMetadata.optString("issuer", null));
         assertNotNull("AS metadata must contain 'token_endpoint'", asMetadata.optString("token_endpoint", null));
         assertNotNull("AS metadata must contain 'jwks_uri'", asMetadata.optString("jwks_uri", null));
     }
 
     /**
-     * Steps 1-7 (full flow, admin) — Complete end-to-end OAuth 2.0 discovery flow over HTTP:
-     * unauthenticated call → discover endpoints → obtain admin token → call admin tool.
+     * Full end-to-end OAuth 2.0 discovery flow:
+     * unauthenticated call → discover endpoints → obtain token → call tool → verify response.
      */
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall() throws Exception {
-        String tokenEndpoint = discoverTokenEndpoint("adminTool");
-
-        String accessToken = HttpRequestHelper.fetchAccessToken(tokenEndpoint, TEST_ADMIN_USERNAME, TEST_PASSWORD, keycloakContainer);
+    private void assertFullFlowAllowsToolCall(McpClient unauthClient, String toolName,
+                                              String username, String expectedResponse) throws Exception {
+        String tokenEndpoint = discoverTokenEndpoint(unauthClient, toolName);
+        String accessToken = unauthClient.fetchAccessToken(tokenEndpoint, KeycloakContainer.PUBLIC_CLIENT_ID,
+                                                           username, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
-        McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS, accessToken);
-        String response = authenticatedClient.callMCPWithBearerToken(HttpRequestHelper.toolCallRequest("adminTool"));
+        McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
+                                                      accessToken, unauthClient.getSslContext());
+        String response = authenticatedClient.callMCPWithBearerToken(toolCallRequest(toolName));
 
-        JSONAssert.assertEquals("""
-                        {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
-                        """,
-                                response, true);
+        JSONAssert.assertEquals(expectedResponse, response, true);
     }
 
     /**
-     * Steps 1-7 (full flow, user) — Same discovery chain for a regular user calling a
-     * user-role tool over HTTP.
+     * A token obtained for a regular user must not grant access to an admin-only tool (403 Forbidden).
      */
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsUserToolCall() throws Exception {
-        String tokenEndpoint = discoverTokenEndpoint("userTool");
-
-        String accessToken = HttpRequestHelper.fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD, keycloakContainer);
+    private void assertFullFlowDeniesUserAccessToAdminTool(McpClient unauthClient) throws Exception {
+        String tokenEndpoint = discoverTokenEndpoint(unauthClient, "adminTool");
+        String accessToken = unauthClient.fetchAccessToken(tokenEndpoint, KeycloakContainer.PUBLIC_CLIENT_ID,
+                                                           TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
-        McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS, accessToken);
-        String response = authenticatedClient.callMCPWithBearerToken(HttpRequestHelper.toolCallRequest("userTool"));
-
-        JSONAssert.assertEquals("""
-                        {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
-                        """,
-                                response, true);
+        McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
+                                                      accessToken, unauthClient.getSslContext());
+        authenticatedClient.callMCPWithBearerTokenAuthorisationErrorExpected(toolCallRequest("adminTool"));
     }
 
-    /**
-     * Steps 1-7 (full flow, negative) — A token obtained for a regular user must not
-     * grant access to an admin-only tool (403 Forbidden) over HTTP.
-     */
-    @Test
-    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool() throws Exception {
-        String tokenEndpoint = discoverTokenEndpoint("adminTool");
-
-        String accessToken = HttpRequestHelper.fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD, keycloakContainer);
-        assertNotNull("Access token must not be null", accessToken);
-
-        McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS, accessToken);
-        authenticatedClient.callMCPWithBearerTokenAuthorisationErrorExpected(HttpRequestHelper.toolCallRequest("adminTool"));
-    }
-
-    // HTTPS tests
-    // All HTTPS helpers delegate to KeycloakHttpsContainer.
+    // Private helpers
 
     /**
-     * HTTPS — unauthenticated tool call must return 401 with a
-     * {@code WWW-Authenticate} header containing a {@code resource_metadata} URL.
+     * Runs the full discovery flow and returns the {@code token_endpoint} URL.
      */
-    @Test
-    public void testUnauthenticatedRequestReturns401WithResourceMetadataInWwwAuthenticate_Https() throws Exception {
-        HttpResponse<String> response = HttpsRequestHelper.postMcpHttps(server, MCP_PATH, libertyAndKeycloakHttpClient, ("adminTool"), null, 401);
-
-        String wwwAuthenticate = response.headers().firstValue("WWW-Authenticate").orElse(null);
-        assertNotNull("WWW-Authenticate header must be present on 401 HTTPS response", wwwAuthenticate);
-        assertTrue("WWW-Authenticate must use Bearer scheme", wwwAuthenticate.contains("Bearer"));
-        assertTrue("WWW-Authenticate must include realm", wwwAuthenticate.contains("realm="));
-        assertTrue("WWW-Authenticate must include resource_metadata URL (RFC 9728)", wwwAuthenticate.contains("resource_metadata="));
-    }
-
-    /**
-     * HTTPS — fetches the Protected Resource Metadata document over HTTPS
-     * and validates its structure.
-     */
-    @Test
-    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader_Https() throws Exception {
-        HttpResponse<String> challengeResponse = HttpsRequestHelper.postMcpHttps(server, MCP_PATH, libertyAndKeycloakHttpClient, HttpRequestHelper.toolCallRequest("adminTool"),
-                                                                                 null, 401);
-
-        String resourceMetadataUrl = HttpRequestHelper.extractResourceMetadataUrl(challengeResponse.headers().firstValue("WWW-Authenticate").orElse(null));
-        assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
-
-        JSONObject metadata = HttpsRequestHelper.fetchJsonHttps(resourceMetadataUrl, libertyAndKeycloakHttpClient);
-        assertNotNull("Protected Resource Metadata must contain 'resource' field", metadata.optString("resource", null));
-        assertTrue("Protected Resource Metadata must contain a non-empty 'authorization_servers' array",
-                   metadata.has("authorization_servers") && metadata.getJSONArray("authorization_servers").length() > 0);
-    }
-
-    /**
-     * HTTPS — follows the full discovery chain from the 401 response to
-     * the Authorization Server Metadata document, all over HTTPS.
-     */
-    @Test
-    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata_Https() throws Exception {
-        HttpResponse<String> challengeResponse = HttpsRequestHelper.postMcpHttps(server, MCP_PATH, libertyAndKeycloakHttpClient, HttpRequestHelper.toolCallRequest("adminTool"),
-                                                                                 null, 401);
-
-        String resourceMetadataUrl = HttpRequestHelper.extractResourceMetadataUrl(challengeResponse.headers().firstValue("WWW-Authenticate").orElse(null));
-        assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
-
-        JSONObject resourceMetadata = HttpsRequestHelper.fetchJsonHttps(resourceMetadataUrl, libertyAndKeycloakHttpClient);
-        String authorizationServerUrl = resourceMetadata.getJSONArray("authorization_servers").getString(0);
-        assertNotNull("authorization_servers[0] must not be null", authorizationServerUrl);
-        System.out.println("[OidcAuthorizationFlowTests] HTTPS: authorization_servers[0] = " + authorizationServerUrl);
-
-        JSONObject asMetadata = HttpsRequestHelper.fetchJsonHttps(authorizationServerUrl + HttpRequestHelper.AS_METADATA_SUFFIX, libertyAndKeycloakHttpClient);
-        assertNotNull("AS metadata must contain 'issuer'", asMetadata.optString("issuer", null));
-        assertNotNull("AS metadata must contain 'token_endpoint'", asMetadata.optString("token_endpoint", null));
-        assertNotNull("AS metadata must contain 'jwks_uri'", asMetadata.optString("jwks_uri", null));
-    }
-
-    /**
-     * HTTPS — full end-to-end OAuth 2.0 discovery flow over TLS for an admin user.
-     */
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall_Https() throws Exception {
-        String tokenEndpoint = HttpsRequestHelper.discoverTokenEndpointHttps("adminTool", server, MCP_PATH, libertyAndKeycloakHttpClient);
-
-        String accessToken = HttpRequestHelper.fetchAccessToken(tokenEndpoint, TEST_ADMIN_USERNAME, TEST_PASSWORD, keycloakContainer);
-        assertNotNull("Access token must not be null", accessToken);
-
-        HttpResponse<String> response = HttpsRequestHelper.postMcpHttps(server, MCP_PATH, libertyAndKeycloakHttpClient, HttpRequestHelper.toolCallRequest("adminTool"), accessToken,
-                                                                        200);
-
-        JSONAssert.assertEquals(
-                                """
-                                                {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
-                                                """,
-                                response.body(), true);
-    }
-
-    /**
-     * HTTPS — full end-to-end OAuth 2.0 discovery flow over TLS for a regular user.
-     */
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsUserToolCall_Https() throws Exception {
-        String tokenEndpoint = HttpsRequestHelper.discoverTokenEndpointHttps("userTool", server, MCP_PATH, libertyAndKeycloakHttpClient);
-
-        String accessToken = HttpRequestHelper.fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD, keycloakContainer);
-        assertNotNull("Access token must not be null", accessToken);
-
-        HttpResponse<String> response = HttpsRequestHelper.postMcpHttps(server, MCP_PATH, libertyAndKeycloakHttpClient, HttpRequestHelper.toolCallRequest("userTool"), accessToken,
-                                                                        200);
-
-        JSONAssert.assertEquals(
-                                """
-                                                {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
-                                                """,
-                                response.body(), true);
-    }
-
-    /**
-     * HTTPS — a regular-user token must not grant access to an admin-only tool (403 Forbidden).
-     */
-    @Test
-    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool_Https() throws Exception {
-        String tokenEndpoint = HttpsRequestHelper.discoverTokenEndpointHttps("adminTool", server, MCP_PATH, libertyAndKeycloakHttpClient);
-
-        String accessToken = HttpRequestHelper.fetchAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD, keycloakContainer);
-        assertNotNull("Access token must not be null", accessToken);
-
-        HttpsRequestHelper.postMcpHttps(server, MCP_PATH, libertyAndKeycloakHttpClient, HttpRequestHelper.toolCallRequest("adminTool"), accessToken, 403);
-    }
-
-    // HTTP helper methods
-
-    /**
-     * Runs the full HTTP discovery flow and returns the {@code token_endpoint} URL.
-     */
-    private String discoverTokenEndpoint(String toolName) throws Exception {
-        McpClient unauthClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS);
-        McpDetailedAuthResponse authChallenge = unauthClient.callMCP401AuthErrorExpected(HttpRequestHelper.toolCallRequest(toolName));
+    private static String discoverTokenEndpoint(McpClient client, String toolName) throws Exception {
+        McpDetailedAuthResponse authChallenge = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
         assertEquals("Unauthenticated request must return 401", 401, authChallenge.statusCode());
 
-        String resourceMetadataUrl = HttpRequestHelper.extractResourceMetadataUrl(authChallenge.wwwAuthenticate());
+        String resourceMetadataUrl = extractResourceMetadataUrl(authChallenge.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
-        JSONObject resourceMetadata = HttpRequestHelper.fetchJson(resourceMetadataUrl, keycloakContainer);
+        JSONObject resourceMetadata = client.fetchJson(resourceMetadataUrl);
         String authorizationServerUrl = resourceMetadata.getJSONArray("authorization_servers").getString(0);
 
-        JSONObject asMetadata = HttpRequestHelper.fetchJson(
-                                                            authorizationServerUrl + HttpRequestHelper.AS_METADATA_SUFFIX, keycloakContainer);
+        JSONObject asMetadata = client.fetchJson(authorizationServerUrl + AS_METADATA_SUFFIX);
         String tokenEndpoint = asMetadata.getString("token_endpoint");
         assertNotNull("token_endpoint must be present in AS metadata", tokenEndpoint);
         return tokenEndpoint;
+    }
+
+    /**
+     * Builds a JSON-RPC {@code tools/call} request body for the given tool name.
+     */
+    private static String toolCallRequest(String toolName) {
+        return String.format("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "%s",
+                            "arguments": {}
+                          }
+                        }
+                        """, toolName);
+    }
+
+    /**
+     * Parses the {@code resource_metadata="<url>"} parameter from a {@code WWW-Authenticate} header.
+     */
+    private static String extractResourceMetadataUrl(String wwwAuthenticate) {
+        if (wwwAuthenticate == null) {
+            return null;
+        }
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                        .compile("resource_metadata=\"([^\"]+)\"")
+                        .matcher(wwwAuthenticate);
+        return matcher.find() ? matcher.group(1) : null;
     }
 }

@@ -15,15 +15,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.Builder;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -62,6 +53,9 @@ public class OidcTests extends FATServletClient {
     @ClassRule
     public static KeycloakContainer keycloakContainer = new KeycloakContainer();
 
+    /** Client used to obtain tokens from Keycloak via {@link McpClient#fetchAccessToken}. */
+    private static McpClient tokenFetcher;
+
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "oidcTests.war")
@@ -76,6 +70,12 @@ public class OidcTests extends FATServletClient {
         // Wait for LTPA configuration to be ready
         server.waitForLTPAConfigReady();
         server.waitForDefaultHTTPEndpointSSLStart();
+
+        // Plain HTTP client used only for token requests (Keycloak HTTPS endpoint).
+        // withDiscoveryClient attaches the Keycloak-trusting HttpClient so that fetchAccessToken
+        // can reach the Keycloak token endpoint over its self-signed TLS certificate.
+        tokenFetcher = new McpClient(server, "/oidcTests", StateMode.STATELESS)
+                        .withDiscoveryClient(keycloakContainer.getHttpClient());
     }
 
     @AfterClass
@@ -217,49 +217,12 @@ public class OidcTests extends FATServletClient {
         client.callMCPWithBearerTokenAuthorisationErrorExpected(request);
     }
 
+    /**
+     * Obtains an access token from Keycloak for the given user via the ROPC grant.
+     */
     private String getAccessToken(String username, String password) throws Exception {
-        Pattern accessTokenPattern = Pattern.compile("\"access_token\"\\s*:\\s*\"([^\"]+)\"");
-
         String tokenEndpoint = keycloakContainer.getBaseUrl()
                                + "/realms/" + KeycloakContainer.REALM + "/protocol/openid-connect/token";
-
-        String formData = String.join("&",
-                                      "client_id=" + encode(KeycloakContainer.PUBLIC_CLIENT_ID),
-                                      "username=" + encode(username),
-                                      "password=" + encode(password),
-                                      "grant_type=password");
-
-        Builder requestBuilder = HttpRequest.newBuilder()
-                                            .uri(URI.create(tokenEndpoint))
-                                            .header("Content-Type", "application/x-www-form-urlencoded")
-                                            .POST(HttpRequest.BodyPublishers.ofString(formData));
-
-        HttpResponse<String> response = keycloakContainer.getHttpClient().send(requestBuilder.build(), BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Failed to get access token. Status: " + response.statusCode()
-                                       + "\nBody: " + response.body());
-        }
-
-        Matcher matcher = accessTokenPattern.matcher(response.body());
-        if (!matcher.find()) {
-            throw new RuntimeException("No access_token found in Keycloak response: " + response.body());
-        }
-
-        return matcher.group(1);
-    }
-
-    /**
-     * URL encodes a string value using UTF-8 encoding.
-     *
-     * This makes values safe to put inside that form body. Without encoding, special characters could break the request.
-     *
-     * For example, encode("user@example.com") becomes user%40example.com.
-     *
-     * @param value the string to be URL encoded
-     * @return the URL encoded string
-     */
-    private static String encode(String value) {
-        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+        return tokenFetcher.fetchAccessToken(tokenEndpoint, KeycloakContainer.PUBLIC_CLIENT_ID, username, password);
     }
 }
