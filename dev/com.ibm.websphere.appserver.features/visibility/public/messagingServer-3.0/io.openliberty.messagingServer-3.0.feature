@@ -9,7 +9,8 @@ Subsystem-Name: Messaging Server 3.0
 -features=com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.channelfw-1.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0, 12.0", \
-  io.openliberty.messagingServer3.0.ee-9.0; ibm.tolerates:="12.0"
+  io.openliberty.messagingServer3.0.ee-9.0; ibm.tolerates:="12.0", \
+  io.openliberty.netty.internal-1.0
 -bundles=com.ibm.ws.messaging.comms.server, \
  com.ibm.ws.messaging.msgstore.jakarta, \
  com.ibm.ws.messaging.common, \
@@ -19,10 +20,6 @@ Subsystem-Name: Messaging Server 3.0
  com.ibm.ws.messaging.comms.client, \
  com.ibm.websphere.security, \
  io.openliberty.transport.config.internal, \
- io.openliberty.io.netty, \
- io.openliberty.io.netty.ssl, \
- io.openliberty.netty.internal, \
- io.openliberty.netty.internal.impl, \
  io.openliberty.endpoint
 -jars=com.ibm.websphere.appserver.api.messaging; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip
