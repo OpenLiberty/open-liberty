@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2022 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1575,6 +1575,17 @@ CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Remove the jakarta.enterprise.concurre
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: The {0} business interface contains a jakarta.enterprise.concurrent.Asynchronous annotation. Asynchronous annotations are not valid on any interface, and the Jakarta Enterprise Beans container ignores them.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=The jakarta.enterprise.concurrent.Asynchronous annotation must not be used with Jakarta Enterprise Beans. The Jakarta Enterprise Beans container ignores these annotations on interfaces. Unless the methods are declared asynchronous in the ejb-jar.xml deployment descriptor or the jakarta.ejb.Asynchronous annotation is specified on the bean class or a bean class method, the bean methods run synchronously.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Remove any jakarta.enterprise.concurrent.Asynchronous annotation from the specified business interface and verify that the jakarta.ejb.Asynchronous annotation is specified correctly in the bean class.
+
+CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: The {0} bean in the {1} module of \
+ the {2} application has one or more methods with the \
+ jakarta.enterprise.concurrent.Schedule annotation, which must not be used on \
+ enterprise beans.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=The Jakarta Concurrency \
+ specification does not allow the jakarta.enterprise.concurrent.Schedule \
+ annotation to be used on Jakarta Enterprise Beans.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.useraction=Remove the \
+ jakarta.enterprise.concurrent.Asynchronous annotation from the method. Use the \
+ jakarta.ejb.Schedule annotation to identify timeout methods on enterprise beans.
 
 #-------------------------------------------------------------------------------
 #
