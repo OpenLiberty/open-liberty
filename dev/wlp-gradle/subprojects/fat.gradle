@@ -110,7 +110,7 @@ dependencies {
 
   jakartaTransformerJava17Plus('biz.aQute.bnd:biz.aQute.bnd.transform') {
                          version {
-                            strictly '7.0.0'
+                            strictly '7.4.0'
                          }
                      }
 
