@@ -12,8 +12,7 @@ Subsystem-Name: Jakarta WebSocket 2.0
 -features=io.openliberty.jakarta.websocket-2.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.servlet.internal-5.0, \
-  com.ibm.websphere.appserver.eeCompatible-9.0, \
-  io.openliberty.netty.internal-1.0
+  com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=com.ibm.ws.wsoc.jakarta, \
  com.ibm.ws.wsoc.2.0.jakarta, \
  io.openliberty.wsoc.ssl.internal,\
