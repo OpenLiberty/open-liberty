@@ -186,3 +186,11 @@ DEFAULT_OPTIONS_ERROR_UDP.useraction=Review the exception for information on how
 channel.shared.warning=CWWKO0039W: Non-shareable channel {0} is being shared between multiple regions.
 channel.shared.warning.explanation=The channel has been configured to be a non-shareable channel. However the channel is being shared between multiple regions.
 channel.shared.warning.useraction=Review the configuration of the channel and its usage.
+
+netty.dynamic.config.not.supported=CWWKO0040W: Dynamic configuration changes to the Netty framework are not supported. Changes to scalerMinThreads, scalerMaxThreads, scalerWindowSize, scalerDownThreshold, scalerUpThreshold, scalerDownStep, scalerUpStep, scalerCycles, scalerMetricsWindowSize, useNativeIO, and other options will not take effect until the server is restarted.
+netty.dynamic.config.not.supported.explanation=The core Netty infrastructure, including event loop groups, I/O handlers, and thread pools, cannot be reconfigured without a full server restart.
+netty.dynamic.config.not.supported.useraction=Restart the server for any Netty framework configuration changes to take effect.
+
+netty.quiesce.channel.not.endpoint=CWWKO0041W: An attempt was made to add a quiesce task to a channel that is not a registered endpoint. The quiesce task will not be added and will be ignored.
+netty.quiesce.channel.not.endpoint.explanation=Quiesce tasks can only be registered against channels that are active registered endpoints in the Netty framework.
+netty.quiesce.channel.not.endpoint.useraction=Ensure that the channel is started and registered as an endpoint before registering a quiesce task.
