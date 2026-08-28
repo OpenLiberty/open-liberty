@@ -25,7 +25,7 @@
     <include location="../fatTestPorts.xml"/>
 
     <!-- Default: generateNewSession=true means audit may create a new JSESSIONID -->
-    <auditSource generateNewSession="true"/>
+    <audit generateNewSession="true"/>
 
     <auditFileHandler>
         <events eventName="SECURITY_AUTHN" outcome="SUCCESS"/>

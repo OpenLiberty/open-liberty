@@ -27,7 +27,7 @@
     <include location="../fatTestPorts.xml"/>
 
     <!-- Fix for GH-29751: generateNewSession=false prevents audit from creating a new JSESSIONID -->
-    <auditSource generateNewSession="false"/>
+    <audit generateNewSession="false"/>
 
     <auditFileHandler>
         <events eventName="SECURITY_AUTHN" outcome="SUCCESS"/>

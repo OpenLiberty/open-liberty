@@ -15,7 +15,11 @@ package io.openliberty.security.audit.internal.fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -63,6 +67,8 @@ public class AuditGenerateNewSessionTest {
 
     private static final int CONN_TIMEOUT = 10;
     private static final String SESSION_ENDPOINT = "/session";
+    /** JSON key written by the audit service for the HTTP session ID */
+    private static final String AUDIT_SESSION_KEY = "\"target.session\"";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -127,20 +133,51 @@ public class AuditGenerateNewSessionTest {
     }
 
     // -----------------------------------------------------------------------
+    // Audit log helper
+    // -----------------------------------------------------------------------
+
+    /**
+     * Reads every line of the audit log written since {@code auditLogStartOffset}
+     * and returns {@code true} if any line contains {@code searchString}.
+     */
+    private boolean auditLogContains(long auditLogStartOffset, String searchString) throws Exception {
+        String auditLogPath = server.getLogsRoot() + "/audit.log";
+        try (BufferedReader reader = new BufferedReader(new FileReader(auditLogPath))) {
+            reader.skip(auditLogStartOffset);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(searchString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the current length of the audit log, used as a start offset so
+     * subsequent reads only examine records written during the current test.
+     */
+    private long auditLogOffset() {
+        java.io.File f = new java.io.File(server.getLogsRoot() + "/audit.log");
+        return f.exists() ? f.length() : 0L;
+    }
+
+    // -----------------------------------------------------------------------
     // Tests
     // -----------------------------------------------------------------------
 
     /**
      * Default behaviour: {@code generateNewSession=true}.
-     * The audit subsystem is allowed to create a new session, so a JSESSIONID
-     * Set-Cookie header MAY appear. We simply verify the endpoint is reachable
-     * and the server is stable — we do not assert on cookie presence because
-     * the legacy behaviour is preserved deliberately.
+     * The audit subsystem is allowed to create a new session, so the audit
+     * record must contain a non-null session ID — the audit code created one.
      */
     @Test
     public void testDefaultGenerateNewSession_endpointReachable() throws Exception {
         Log.info(c, "testDefaultGenerateNewSession_endpointReachable",
                 "Calling REST endpoint with generateNewSession=true (default)");
+
+        long offset = auditLogOffset();
 
         URL url = new URL(restEndpointUrl());
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
@@ -150,14 +187,24 @@ public class AuditGenerateNewSessionTest {
         } finally {
             con.disconnect();
         }
+
+        // With generateNewSession=true the audit code calls getSession() which creates
+        // a session, so the audit record must contain a target.session entry.
+        assertTrue("With generateNewSession=true the audit record must contain a session ID ("
+                + AUDIT_SESSION_KEY + " must appear in audit.log)",
+                auditLogContains(offset, AUDIT_SESSION_KEY));
+
         Log.info(c, "testDefaultGenerateNewSession_endpointReachable", "PASSED");
     }
 
     /**
      * Fix verification: {@code generateNewSession=false}.
-     * The audit subsystem must NOT create a new HTTP session. No JSESSIONID
-     * Set-Cookie header should appear in the response from a session-free REST
-     * endpoint.
+     * The audit subsystem must NOT create a new HTTP session. Asserts:
+     * <ol>
+     *   <li>No JSESSIONID Set-Cookie header in the response.</li>
+     *   <li>The audit record does not contain a session ID
+     *       ({@code "target.session"} must be absent from the new audit log lines).</li>
+     * </ol>
      */
     @Test
     public void testGenerateNewSessionFalse_noJSessionIdCookie() throws Exception {
@@ -166,23 +213,29 @@ public class AuditGenerateNewSessionTest {
 
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(SERVER_XML_NO_NEW_SESSION);
-        // Wait for config update to take effect
         server.waitForConfigUpdateInLogUsingMark(null);
 
         try {
+            long offset = auditLogOffset();
+
             Log.info(c, "testGenerateNewSessionFalse_noJSessionIdCookie",
                     "Calling REST endpoint — expecting no JSESSIONID Set-Cookie header");
 
             String jsessionCookie = getSetCookieHeader();
 
+            // Assert 1: no cookie sent to client
             assertNull("With generateNewSession=false the audit service must not create a new HTTP session. "
                     + "Unexpected JSESSIONID Set-Cookie header found: " + jsessionCookie,
                     jsessionCookie);
 
+            // Assert 2: audit record must not contain a session ID
+            assertFalse("With generateNewSession=false and a session-free endpoint, "
+                    + AUDIT_SESSION_KEY + " must not appear in the audit record",
+                    auditLogContains(offset, AUDIT_SESSION_KEY));
+
             Log.info(c, "testGenerateNewSessionFalse_noJSessionIdCookie",
-                    "PASSED — no JSESSIONID cookie returned");
+                    "PASSED — no JSESSIONID cookie and no session ID in audit record");
         } finally {
-            // Restore the original server configuration for subsequent tests
             server.setMarkToEndOfLog();
             server.restoreServerConfiguration();
             server.waitForConfigUpdateInLogUsingMark(null);
@@ -217,6 +270,7 @@ public class AuditGenerateNewSessionTest {
         server.waitForConfigUpdateInLogUsingMark(null);
 
         try {
+            long offset = auditLogOffset();
             URL url = new URL(sessionEndpointUrl());
             HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
             String sessionIdFromResponse = null;
@@ -249,13 +303,19 @@ public class AuditGenerateNewSessionTest {
                 con.disconnect();
             }
 
-            // Assert 2: the audit log must contain the session ID — not null
+            // Assert 2: the audit log must contain the session ID — not null.
+            // We look for the JSON key AND the actual session ID value together,
+            // confirming the audit record captured the application-created session.
             assertNotNull("Session ID from application must not be null or empty", sessionIdFromResponse);
-            assertNotNull("Audit log must contain the application-created session ID: " + sessionIdFromResponse,
-                    server.waitForStringInLog(sessionIdFromResponse));
+            assertTrue("With generateNewSession=false but an application-created session, "
+                    + "the audit record must contain the session ID. "
+                    + "Expected " + AUDIT_SESSION_KEY + " with value " + sessionIdFromResponse
+                    + " in audit.log",
+                    auditLogContains(offset, AUDIT_SESSION_KEY)
+                    && auditLogContains(offset, sessionIdFromResponse));
 
             Log.info(c, "testGenerateNewSessionFalse_appCreatesSession_auditRecordsSessionId",
-                    "PASSED — JSESSIONID cookie present and audit log contains session ID");
+                    "PASSED — JSESSIONID cookie present and audit record contains session ID");
         } finally {
             server.setMarkToEndOfLog();
             server.restoreServerConfiguration();

@@ -17,7 +17,7 @@
 
 
 <!-- Global audit source configuration -->
-<OCD id="com.ibm.ws.security.audit.source.metatype" name="%auditSource.name" description="%auditSource.desc" ibm:alias="auditSource">
+<OCD id="com.ibm.ws.security.audit.source.metatype" name="%audit.name" description="%audit.desc" ibm:alias="audit">
    <AD id="generateNewSession" name="%generateNewSession.name" description="%generateNewSession.desc" required="false" type="Boolean" default="true"/>
 </OCD>
 

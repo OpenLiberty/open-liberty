@@ -13,5 +13,5 @@
 
 <!-- Override: generateNewSession=false prevents audit from creating a new JSESSIONID -->
 <server>
-    <auditSource generateNewSession="false"/>
+    <audit generateNewSession="false"/>
 </server>
