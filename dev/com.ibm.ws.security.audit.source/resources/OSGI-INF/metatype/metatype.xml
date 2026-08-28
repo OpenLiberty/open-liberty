@@ -17,12 +17,12 @@
 
 
 <!-- Global audit source configuration -->
-<OCD id="com.ibm.ws.security.audit.source.metatype" name="%audit.name" description="%audit.desc" ibm:alias="audit">
+<OCD id="com.ibm.ws.security.audit.metatype" name="%audit.name" description="%audit.desc" ibm:alias="audit">
    <AD id="generateNewSession" name="%generateNewSession.name" description="%generateNewSession.desc" required="false" type="Boolean" default="true"/>
 </OCD>
 
 <Designate pid="com.ibm.ws.security.audit.source">
-   <Object ocdref="com.ibm.ws.security.audit.source.metatype"/>
+   <Object ocdref="com.ibm.ws.security.audit.metatype"/>
 </Designate>
 
 <OCD id="com.ibm.ws.security.audit.event.metatype" name="%auditEvent.name" description="%auditEvent.desc" ibm:alias="auditEvent">

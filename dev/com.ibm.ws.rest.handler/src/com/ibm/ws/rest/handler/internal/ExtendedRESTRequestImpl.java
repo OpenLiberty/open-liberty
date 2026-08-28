@@ -23,13 +23,14 @@ import java.util.Map;
 import javax.servlet.ServletException;
 
 import com.ibm.ws.rest.handler.helper.LibertyServletRESTRequest;
+import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
- * Implementation that wraps a {@link LibertyServletRESTRequest} and adds extended support, such as path variables.
+ * Implementation that extends another RESTRequest object and adds extended support, such as path variables.
  */
-public class ExtendedRESTRequestImpl implements LibertyServletRESTRequest {
+public class ExtendedRESTRequestImpl implements RESTRequest {
 
-    private final LibertyServletRESTRequest request;
+    private final RESTRequest request;
     private final Map<String, String> pathVariables;
 
     /**
@@ -38,9 +39,9 @@ public class ExtendedRESTRequestImpl implements LibertyServletRESTRequest {
      * replace the underlying mechanism some day to make the handler
      * lighter-weight.
      *
-     * @param request The request to wrap.
+     * @param response The request to wrap.
      */
-    public ExtendedRESTRequestImpl(LibertyServletRESTRequest request, Map<String, String> pathVariables) {
+    public ExtendedRESTRequestImpl(RESTRequest request, Map<String, String> pathVariables) {
         this.request = request;
         this.pathVariables = pathVariables;
     }
@@ -209,14 +210,19 @@ public class ExtendedRESTRequestImpl implements LibertyServletRESTRequest {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * Delegates to the wrapped request's {@code getSessionForAudit()} so no
-     * new session is created when one does not already exist.
+     * Returns the session ID for audit purposes without creating a new session,
+     * if the wrapped request implements {@link LibertyServletRESTRequest}.
+     * Otherwise falls back to {@link #getSessionId()} to preserve the original
+     * behaviour for non-Liberty request implementations.
+     *
+     * @return the session ID, or {@code null} if no session exists and the
+     *         wrapped request is a {@link LibertyServletRESTRequest}
      */
-    @Override
     public String getSessionForAudit() {
-        return request.getSessionForAudit();
+        if (request instanceof LibertyServletRESTRequest) {
+            return ((LibertyServletRESTRequest) request).getSessionForAudit();
+        }
+        return request.getSessionId();
     }
 
 }
