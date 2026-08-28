@@ -19,6 +19,11 @@ src: \
 
 fat.project: true
 
+javac.source: 11
+javac.target: 11
+
+fat.minimum.java.level: 11
+
 -buildpath: \
     com.ibm.ws.componenttest.2.0,\
     io.openliberty.jakarta.restfulWS.3.1;version=latest,\
