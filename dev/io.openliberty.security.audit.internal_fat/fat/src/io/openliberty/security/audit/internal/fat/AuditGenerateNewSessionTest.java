@@ -169,8 +169,13 @@ public class AuditGenerateNewSessionTest {
 
     /**
      * Default behaviour: {@code generateNewSession=true}.
-     * The audit subsystem is allowed to create a new session, so the audit
-     * record must contain a non-null session ID — the audit code created one.
+     * The audit code calls {@code getSession()} which creates a new session.
+     * Asserts:
+     * <ol>
+     *   <li>The response contains a {@code Set-Cookie: JSESSIONID} header.</li>
+     *   <li>The audit record contains a session ID ({@code "target.session"} present).</li>
+     *   <li>The session ID in the audit record matches the one in the cookie.</li>
+     * </ol>
      */
     @Test
     public void testDefaultGenerateNewSession_endpointReachable() throws Exception {
@@ -181,18 +186,41 @@ public class AuditGenerateNewSessionTest {
 
         URL url = new URL(restEndpointUrl());
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+        String jsessionCookie = null;
         try {
             assertEquals("REST endpoint should return HTTP 200", HttpURLConnection.HTTP_OK,
                     con.getResponseCode());
+
+            // Assert 1: JSESSIONID cookie must be present — audit code created the session
+            for (Map.Entry<String, List<String>> entry : con.getHeaderFields().entrySet()) {
+                if ("Set-Cookie".equalsIgnoreCase(entry.getKey())) {
+                    for (String cookieValue : entry.getValue()) {
+                        if (cookieValue != null && cookieValue.toUpperCase().startsWith("JSESSIONID")) {
+                            jsessionCookie = cookieValue;
+                        }
+                    }
+                }
+            }
+            assertNotNull("With generateNewSession=true the audit code must create a new session — "
+                    + "expected a Set-Cookie: JSESSIONID header", jsessionCookie);
+            Log.info(c, "testDefaultGenerateNewSession_endpointReachable",
+                    "JSESSIONID cookie: " + jsessionCookie);
         } finally {
             con.disconnect();
         }
 
-        // With generateNewSession=true the audit code calls getSession() which creates
-        // a session, so the audit record must contain a target.session entry.
+        // Extract the raw session ID from the cookie value (JSESSIONID=<id>; Path=...)
+        String sessionIdFromCookie = jsessionCookie.split(";")[0].split("=", 2)[1].trim();
+
+        // Assert 2: audit record must contain a target.session entry
         assertTrue("With generateNewSession=true the audit record must contain a session ID ("
                 + AUDIT_SESSION_KEY + " must appear in audit.log)",
                 auditLogContains(offset, AUDIT_SESSION_KEY));
+
+        // Assert 3: the session ID in the audit record must match the cookie
+        assertTrue("The session ID in the audit record must match the JSESSIONID cookie value: "
+                + sessionIdFromCookie,
+                auditLogContains(offset, sessionIdFromCookie));
 
         Log.info(c, "testDefaultGenerateNewSession_endpointReachable", "PASSED");
     }

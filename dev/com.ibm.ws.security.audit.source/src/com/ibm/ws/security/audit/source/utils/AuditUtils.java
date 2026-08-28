@@ -82,8 +82,7 @@ public class AuditUtils {
      * @return session id or null
      */
     public static String getSessionID(HttpServletRequest req) {
-        AuditService svc = auditServiceRef.getService();
-        final boolean createNew = (svc == null) || !(svc instanceof AuditServiceImpl) || ((AuditServiceImpl) svc).isGenerateNewSession();
+        final boolean createNew = isGenerateNewSession();
         String sessionID = null;
         final HttpServletRequest f_req = req;
 

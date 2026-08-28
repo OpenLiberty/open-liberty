@@ -35,6 +35,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.rest.handler.helper.LibertyServletRESTRequest;
 import com.ibm.ws.rest.handler.internal.ExtendedRESTRequestImpl;
 import com.ibm.ws.rest.handler.internal.helper.HandlerPath;
 import com.ibm.ws.security.audit.Audit;
@@ -558,7 +559,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
                 //If we matched a path that had variables, extended the request to contain the resolved variables
                 if (handlerInfo != null && handlerInfo.path != null && handlerInfo.path.containsVariable()) {
                     //When mapping variables we don't include the context root
-                    request = new ExtendedRESTRequestImpl(request, handlerInfo.path.mapVariables(requestURL));
+                    request = new ExtendedRESTRequestImpl((LibertyServletRESTRequest) request, handlerInfo.path.mapVariables(requestURL));
                 }
 
                 //Routing special code

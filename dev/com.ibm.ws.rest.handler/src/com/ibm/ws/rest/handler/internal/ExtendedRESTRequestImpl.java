@@ -23,14 +23,13 @@ import java.util.Map;
 import javax.servlet.ServletException;
 
 import com.ibm.ws.rest.handler.helper.LibertyServletRESTRequest;
-import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
- * Implementation that extends another RESTRequest object and adds extended support, such as path variables.
+ * Implementation that wraps a {@link LibertyServletRESTRequest} and adds extended support, such as path variables.
  */
 public class ExtendedRESTRequestImpl implements LibertyServletRESTRequest {
 
-    private final RESTRequest request;
+    private final LibertyServletRESTRequest request;
     private final Map<String, String> pathVariables;
 
     /**
@@ -39,9 +38,9 @@ public class ExtendedRESTRequestImpl implements LibertyServletRESTRequest {
      * replace the underlying mechanism some day to make the handler
      * lighter-weight.
      *
-     * @param response The request to wrap.
+     * @param request The request to wrap.
      */
-    public ExtendedRESTRequestImpl(RESTRequest request, Map<String, String> pathVariables) {
+    public ExtendedRESTRequestImpl(LibertyServletRESTRequest request, Map<String, String> pathVariables) {
         this.request = request;
         this.pathVariables = pathVariables;
     }
@@ -217,10 +216,7 @@ public class ExtendedRESTRequestImpl implements LibertyServletRESTRequest {
      */
     @Override
     public String getSessionForAudit() {
-        if (request instanceof LibertyServletRESTRequest) {
-            return ((LibertyServletRESTRequest) request).getSessionForAudit();
-        }
-        return null;
+        return request.getSessionForAudit();
     }
 
 }
