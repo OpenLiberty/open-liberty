@@ -25,6 +25,7 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
                 AccessListsTests.class,
                 InactivityTimeoutTests.class,
                 MaxOpenConnectionsTests.class,
+                NettyConfigurationTests.class,
                 PortOpenRetriesTests.class,
                 RequestSocketTest.class,
                 SoLingerTests.class,
