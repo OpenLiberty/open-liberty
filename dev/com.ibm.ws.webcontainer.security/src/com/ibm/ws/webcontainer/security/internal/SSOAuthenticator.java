@@ -60,8 +60,6 @@ public class SSOAuthenticator implements WebAuthenticator {
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
     private static final TraceComponent tc = Tr.register(SSOAuthenticator.class);
-    private static final int MIN_TOKEN_LENGTH = 10; // Minimum reasonable token length
-    private static final int MAX_TOKEN_LENGTH = 8192; // Maximum reasonable token length
 
     private final AuthenticationService authenticationService;
     private final WebAppSecurityConfig webAppSecurityConfig;
@@ -181,7 +179,6 @@ public class SSOAuthenticator implements WebAuthenticator {
             }
         }
 
-//        if (tokenValue != null && isValidTokenString(tokenValue)) {
         if (tokenValue != null) {
             try {
                 return Base64Coder.base64DecodeString(tokenValue);
@@ -217,7 +214,7 @@ public class SSOAuthenticator implements WebAuthenticator {
      * the LTPA token was refreshed (cloned) during this request.
      *
      * @param originalTokenBytes the original LTPA token bytes from the request cookie
-     * @param newTokenBytes      the new LTPA token bytes from the authenticated subject
+     * @param newTokenBytes the new LTPA token bytes from the authenticated subject
      * @return true if the bytes changed (token was refreshed), false otherwise
      */
     private boolean hasTokenBeenRefreshed(byte[] originalTokenBytes, byte[] newTokenBytes) {
@@ -240,28 +237,6 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         return false;
-    }
-
-    /**
-     * Validates that a token string has reasonable length and format.
-     *
-     * @param tokenValue the token string to validate
-     * @return true if the token appears valid, false otherwise
-     */
-    private boolean isValidTokenString(String tokenValue) {
-        if (tokenValue == null || tokenValue.isEmpty()) {
-            return false;
-        }
-
-        int length = tokenValue.length();
-        if (length < MIN_TOKEN_LENGTH || length > MAX_TOKEN_LENGTH) {
-            if (isDebugEnabled()) {
-                Tr.debug(tc, "Token length out of valid range: " + length);
-            }
-            return false;
-        }
-
-        return true;
     }
 
     /**

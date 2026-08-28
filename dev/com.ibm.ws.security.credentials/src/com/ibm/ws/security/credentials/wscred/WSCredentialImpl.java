@@ -255,6 +255,8 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
     /** {@inheritDoc} */
     @Override
     public String toString() {
+        Object creationTimeObj = hashTable.get("creationTime");
+        String creationTimeStr = (creationTimeObj instanceof Long) ? new Date((Long) creationTimeObj).toString() : "N/A";
         return super.toString() +
                ",realmName=" + realmName +
                ",securityName=" + securityName +
@@ -263,6 +265,7 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
                ",primaryGroupId=" + primaryGroupId +
                ",accessId=" + accessId +
                ",groupIds=" + groupIds +
+               ",creationTime=" + creationTimeStr +
                ",expiration=" + new Date(expiration);
     }
 
