@@ -220,8 +220,6 @@ public class AuditServiceImpl implements AuditService, Source {
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
     public boolean isGenerateNewSession() {
         return generateNewSession;
     }

@@ -50,16 +50,6 @@ public interface AuditService {
     String getServerID();
 
     /**
-     * Returns whether the audit service is configured to generate a new HTTP session
-     * when retrieving a session ID for audit events.
-     * When false, getSession(false) is used so no new session is created.
-     * Default is true to preserve existing behavior.
-     *
-     * @return true if a new session should be created when none exists, false otherwise
-     */
-    boolean isGenerateNewSession();
-
-    /**
      * @param configuredEvents
      * @return
      */

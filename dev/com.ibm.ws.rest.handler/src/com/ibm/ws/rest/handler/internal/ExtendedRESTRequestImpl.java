@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,12 +22,13 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import com.ibm.ws.rest.handler.helper.LibertyServletRESTRequest;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
  * Implementation that extends another RESTRequest object and adds extended support, such as path variables.
  */
-public class ExtendedRESTRequestImpl implements RESTRequest {
+public class ExtendedRESTRequestImpl implements LibertyServletRESTRequest {
 
     private final RESTRequest request;
     private final Map<String, String> pathVariables;
@@ -206,6 +207,20 @@ public class ExtendedRESTRequestImpl implements RESTRequest {
     @Override
     public String getSessionId() {
         return request.getSessionId();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Delegates to the wrapped request's {@code getSessionForAudit()} so no
+     * new session is created when one does not already exist.
+     */
+    @Override
+    public String getSessionForAudit() {
+        if (request instanceof LibertyServletRESTRequest) {
+            return ((LibertyServletRESTRequest) request).getSessionForAudit();
+        }
+        return null;
     }
 
 }

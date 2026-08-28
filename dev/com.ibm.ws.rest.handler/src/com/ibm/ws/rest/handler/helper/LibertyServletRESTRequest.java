@@ -12,22 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.helper;
 
-import javax.servlet.http.HttpSession;
-
 import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
- * Liberty-internal extension of RESTRequest that exposes HttpSession access
- * methods needed by the audit subsystem.
+ * Liberty-internal extension of RESTRequest that exposes session access
+ * needed by the audit subsystem without creating a new session.
  */
 public interface LibertyServletRESTRequest extends RESTRequest {
-
-    /**
-     * Returns the current HttpSession, creating one if necessary.
-     *
-     * @return the current HttpSession
-     */
-    public HttpSession getSession();
 
     /**
      * Returns the session ID for audit purposes without creating a new session.

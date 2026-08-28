@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.UserRegistry;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.security.audit.source.AuditServiceImpl;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditService;
@@ -82,7 +83,7 @@ public class AuditUtils {
      */
     public static String getSessionID(HttpServletRequest req) {
         AuditService svc = auditServiceRef.getService();
-        final boolean createNew = (svc == null) || svc.isGenerateNewSession();
+        final boolean createNew = (svc == null) || !(svc instanceof AuditServiceImpl) || ((AuditServiceImpl) svc).isGenerateNewSession();
         String sessionID = null;
         final HttpServletRequest f_req = req;
 
@@ -256,7 +257,7 @@ public class AuditUtils {
      */
     public static boolean isGenerateNewSession() {
         AuditService svc = auditServiceRef != null ? auditServiceRef.getService() : null;
-        return (svc == null) || svc.isGenerateNewSession();
+        return (svc == null) || !(svc instanceof AuditServiceImpl) || ((AuditServiceImpl) svc).isGenerateNewSession();
     }
 
 }

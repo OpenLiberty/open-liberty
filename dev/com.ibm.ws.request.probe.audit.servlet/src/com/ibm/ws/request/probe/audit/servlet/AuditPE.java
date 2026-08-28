@@ -46,6 +46,7 @@ import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.security.audit.Audit;
+import com.ibm.ws.security.audit.source.utils.AuditUtils;
 import com.ibm.ws.security.audit.event.ApiAuthnEvent;
 import com.ibm.ws.security.audit.event.ApiAuthnTerminateEvent;
 import com.ibm.ws.security.audit.event.ApplicationPasswordTokenEvent;
@@ -336,8 +337,7 @@ public class AuditPE implements ProbeExtension {
 						auditManager.setLocalPort(String.valueOf(req.getLocalPort()));
 						String sessionID = null;
 							final HttpServletRequest f_req = req;
-							final boolean createNew = auditServiceRef.getService() == null
-									|| auditServiceRef.getService().isGenerateNewSession();
+							final boolean createNew = AuditUtils.isGenerateNewSession();
 							sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
 								@Override
 								public String run() {
