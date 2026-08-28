@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,15 +42,16 @@ public class JWKProvider {
     public static final String RS256 = "RS256";
     public static final String HS256 = "HS256";
 
-    private int JWKS_TO_GENERATE = 1;
     private static final int DEFAULT_KEY_SIZE = 2048;
     private static final long DEFAULT_ROTATION_TIME = 12 * 60 * 60 * 1000; //12 hours
+    private static final int DEFAULT_MAX_KEYS = 2;
 
     protected String alg = null;
     protected String use = null;
     protected int size = DEFAULT_KEY_SIZE;
     protected Timer timer;
     protected long rotationTimeInMilliseconds = DEFAULT_ROTATION_TIME;
+    protected int maxKeys = DEFAULT_MAX_KEYS;
 
     protected PublicKey publicKey = null;
     protected PrivateKey privateKey = null;
@@ -62,6 +63,10 @@ public class JWKProvider {
     }
 
     public JWKProvider(int keySize, String alg, long rotationTimeMs) {
+        this(keySize, alg, rotationTimeMs, DEFAULT_MAX_KEYS);
+    }
+
+    public JWKProvider(int keySize, String alg, long rotationTimeMs, int maxKeys) {
         if (keySize < 0) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Specified key size " + keySize + " < 0. Setting key size to the default (" + DEFAULT_KEY_SIZE + ") instead");
@@ -69,7 +74,6 @@ public class JWKProvider {
             keySize = DEFAULT_KEY_SIZE;
         }
         this.size = keySize;
-        JWKS_TO_GENERATE = 2;
         this.alg = alg;
         if (rotationTimeMs < 0) {
             if (tc.isDebugEnabled()) {
@@ -78,6 +82,13 @@ public class JWKProvider {
             rotationTimeMs = DEFAULT_ROTATION_TIME;
         }
         this.rotationTimeInMilliseconds = rotationTimeMs;
+        if (maxKeys < 1) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Specified max keys " + maxKeys + " < 1. Setting max keys to the default (" + DEFAULT_MAX_KEYS + ") instead");
+            }
+            maxKeys = DEFAULT_MAX_KEYS;
+        }
+        this.maxKeys = maxKeys;
 
         // A rotation time of 0ms means do not rotate
         if (rotationTimeInMilliseconds != 0) {
@@ -101,6 +112,7 @@ public class JWKProvider {
             rotationTimeMs = DEFAULT_ROTATION_TIME;
         }
         this.rotationTimeInMilliseconds = rotationTimeMs;
+        this.maxKeys = 1; // There is only one key when a keystore is used for the JWKs
 
         this.publicKey = publicKey;
         this.privateKey = privateKey;
@@ -117,16 +129,16 @@ public class JWKProvider {
 
     public JSONWebKey getJWK() {
         JWK jwk = null;
-        while (jwks.size() < JWKS_TO_GENERATE) {
+        if (jwks.isEmpty()) {
             generateJWKs();
         }
-        jwk = jwks.get(JWKS_TO_GENERATE - 1);
+        jwk = jwks.get(jwks.size() - 1);
         return jwk;
     }
 
     protected void generateJWKs() {
         JWK jwk = null;
-        while (jwks.size() < JWKS_TO_GENERATE) {
+        if (jwks.isEmpty()) {
             jwk = generateJWK(alg, size);
             jwks.add(jwk);
         }
@@ -199,9 +211,9 @@ public class JWKProvider {
     }
 
     public String getJwkSetString() {
-        if (jwks.size() < JWKS_TO_GENERATE) {
+        if (jwks.isEmpty()) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Generate JWKs:" + jwks.size());
+                Tr.debug(tc, "Generate initial JWK");
             }
             generateJWKs();
         }
@@ -219,11 +231,9 @@ public class JWKProvider {
     }
 
     protected void rotateKeys() {
-        while (jwks.size() < (JWKS_TO_GENERATE + 1)) {
-            JWK jwk = generateJWK(alg, size);
-            jwks.add(jwk);
-        }
-        if (jwks.size() > JWKS_TO_GENERATE) {
+        JWK newJwk = generateJWK(alg, size);
+        jwks.add(newJwk);
+        if (jwks.size() > maxKeys) {
             jwks.remove(0);
         }
     }
