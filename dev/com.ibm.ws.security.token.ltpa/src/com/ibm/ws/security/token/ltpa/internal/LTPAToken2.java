@@ -476,10 +476,10 @@ public class LTPAToken2 implements Token, Serializable {
             throw new TokenExpiredException(effectiveExpiration, msg);
         }
 
-        // Check inactivity timeout only when both inactivityTimeout and refreshThreshold are
-        // configured. Without refreshThreshold the sliding window is disabled and the token
-        // falls back to absolute-expiration-only behaviour.
-        if (inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) {
+        // Check inactivity timeout only when the refresh feature is fully configured
+        // (both inactivityTimeout and refreshThreshold positive). Without both, the
+        // token falls back to absolute-expiration-only behaviour.
+        if (inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) { // mirrors LTPAConfiguration.isTokenRefreshEnabled()
             // Get creation time from token
             String[] creationTimeArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
             if (creationTimeArray != null && creationTimeArray[creationTimeArray.length - 1] != null) {
@@ -547,16 +547,12 @@ public class LTPAToken2 implements Token, Serializable {
             return;
         }
 
-        // Only check refresh when both inactivityTimeout and refreshThreshold are configured
-        if (inactivityTimeoutInMinutes <= 0) {
+        // Only refresh when both inactivityTimeout and refreshThreshold are configured
+        // — mirrors LTPAConfiguration.isTokenRefreshEnabled().
+        if (inactivityTimeoutInMinutes <= 0 || refreshThresholdInMinutes <= 0) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Inactivity timeout not configured, refresh not applicable");
-            }
-            return;
-        }
-        if (refreshThresholdInMinutes <= 0) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Refresh threshold not configured, refresh not applicable");
+                Tr.debug(tc, "Token refresh not enabled (inactivityTimeout=" + inactivityTimeoutInMinutes +
+                             ", refreshThreshold=" + refreshThresholdInMinutes + ")");
             }
             return;
         }
