@@ -7349,9 +7349,12 @@ public abstract class EJBMDOrchestrator {
      * the ejb-jar-bnd section of server.xml, ibm-ejb-jar-bnd.xml, or in ejb-jar.xml, with the priority
      * being in that order (highest to lowest). Null will be returned if the custom property is
      * not configured.
-     * 
+     * <p>
+     * If a non-boolean value is supplied in ibm-ejb-jar-bnd.xml or server.xml, CNTR0120W is logged
+     * and false is returned. For ejb-jar.xml, CWNEN0014W is already logged by the injection component.
+     *
      * @param property       custom property name
-     * @param envEntryValues configured envy-entry values from ibm-ejb-jar.bnd.xml or ejb-jar-bnd in server.xml
+     * @param envEntryValues configured env-entry values from ibm-ejb-jar-bnd.xml or ejb-jar-bnd in server.xml
      * @param compNSConfig   component name space configuration for the current bean
      * @return custom env-entry property value or null
      */
@@ -7361,7 +7364,11 @@ public abstract class EJBMDOrchestrator {
             // binding value found in either ibm-ejb-jar-bnd.xml or ejb-jar-bnd in server.xml
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "found custom property binding value " + property + " : " + value);
-            return Boolean.valueOf(value);
+            Boolean result = Boolean.valueOf(value);
+            if (!result && !value.equalsIgnoreCase("false")) {
+                Tr.warning(tc, "INVALID_BOOLEAN_FORMAT_CNTR0120W", property, value);
+            }
+            return result;
         } else {
             // look for an env-entry in ejb-jar.xml
             List<? extends EnvEntry> envEntries = compNSConfig.getEnvEntries();
