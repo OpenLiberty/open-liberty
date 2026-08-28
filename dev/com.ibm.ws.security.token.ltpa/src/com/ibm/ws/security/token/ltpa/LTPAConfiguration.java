@@ -152,6 +152,20 @@ public interface LTPAConfiguration {
     long getInactivityTimeout();
 
     /**
+     * Returns whether the LTPA token refresh feature is enabled.
+     * Both {@code inactivityTimeout} and {@code refreshThreshold} must be
+     * configured with positive values for token refresh to be active.
+     * <p>
+     * This is a beta feature and is only available when running in beta mode.
+     *
+     * @return {@code true} if both inactivityTimeout and refreshThreshold are positive
+     * @ibm-api
+     */
+    default boolean isTokenRefreshEnabled() {
+        return getInactivityTimeout() > 0 && getRefreshThreshold() > 0;
+    }
+
+    /**
      * Returns whether dynamic expiration validation is enabled.
      * <p>
      * When {@code true}:

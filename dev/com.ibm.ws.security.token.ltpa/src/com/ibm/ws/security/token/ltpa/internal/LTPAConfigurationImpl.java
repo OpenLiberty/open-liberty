@@ -233,11 +233,11 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                            inactivityTimeout, keyTokenExpiration);
             }
 
-            // Warn when inactivityTimeout is configured without refreshThreshold — the sliding
-            // window will enforce expiration but tokens will never be proactively refreshed,
-            // so the inactivity window cannot slide on each request.
+            // Warn when only one of the pair is configured — both are required together.
             if (inactivityTimeout > 0 && refreshThreshold == 0) {
                 Tr.warning(tc, "LTPA_INACTIVITY_TIMEOUT_WITHOUT_REFRESH_THRESHOLD", inactivityTimeout);
+            } else if (refreshThreshold > 0 && inactivityTimeout == 0) {
+                Tr.warning(tc, "LTPA_REFRESH_THRESHOLD_WITHOUT_INACTIVITY_TIMEOUT", refreshThreshold);
             }
 
             // Validate that refreshThreshold is less than inactivityTimeout (if both configured)

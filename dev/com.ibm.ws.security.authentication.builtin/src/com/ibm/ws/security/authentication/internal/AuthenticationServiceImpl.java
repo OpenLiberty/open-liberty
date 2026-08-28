@@ -461,12 +461,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return false;
         }
 
-        // Early-exit: both inactivityTimeout and refreshThreshold must be positive for the
-        // feature to be active — mirrors the guard in LTPAToken2.checkRefreshNeeded().
+        // Early-exit: both inactivityTimeout and refreshThreshold must be positive.
         LTPAConfiguration ltpaConfig = ltpaConfigurationRef.getService();
-        if (ltpaConfig == null
-                || ltpaConfig.getInactivityTimeout() <= 0
-                || ltpaConfig.getRefreshThreshold() <= 0) {
+        if (ltpaConfig == null || !ltpaConfig.isTokenRefreshEnabled()) {
             return false;
         }
 
