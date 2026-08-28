@@ -418,7 +418,7 @@ public class CryptoUtils {
         if (isEnhancedSecurityChecked) {
             return isEnhancedSecurity;
         } else {
-            isEnhancedSecurity = isRunningBetaMode() && Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false"));
+            isEnhancedSecurity = Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false")) &&  isRunningBetaMode() ;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isEnhancedSecurity: " + (isEnhancedSecurity ? "enabled" : "disabled"));
             }
