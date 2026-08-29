@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.osgi.service.component.annotations.Deactivate;
 
@@ -66,6 +68,9 @@ public class RequestProbeService {
 	/** Active running requests **/
 	private static FastList<RequestContext> activeRequests = new FastList<RequestContext>();
 
+	/** Map for maximum active requests with request type (key) and long count (value) **/
+	public final static ConcurrentHashMap<String, AtomicLong> maxActiveMap = new ConcurrentHashMap<String, AtomicLong>();
+
 	public final static ThreadLocalStringExtension requestIDExtension;
 	private final static String REQUEST_ID_EXTENSION_NAME = "requestID";
 
@@ -112,6 +117,7 @@ public class RequestProbeService {
 		requestIDExtension.remove(); // Removing the extension from threadlocal
 		probeExtensions = Collections.unmodifiableList(new ArrayList<ProbeExtension>());
 		activeRequests.clear();
+		maxActiveMap.clear();
 	}
 
 	/**
@@ -126,7 +132,16 @@ public class RequestProbeService {
 	public static void processAllEntryProbeExtensions(Event event, RequestContext requestContext) {
 		if (event == requestContext.getRootEvent()) {
 			// Add the request to Active Request list
-			requestContext.setRequestContextIndex(activeRequests.add(requestContext)); 
+			requestContext.setRequestContextIndex(activeRequests.add(requestContext));
+			for (RequestContext requestcontext : getActiveRequests()) {
+				String requestType = requestcontext.getRootEvent().getType();
+				maxActiveMap.putIfAbsent(requestType, new AtomicLong());
+				long activeCount = getActiveRequestsByType(requestType);
+				long maxCount = getMaxActiveRequestsByType(requestType);
+				if (maxCount < activeCount) {
+					maxActiveMap.get(requestType).set(activeCount);
+				}
+			}
 		}
 
 		List<ProbeExtension> probeExtnList = RequestProbeService.getProbeExtensions();
@@ -251,6 +266,37 @@ public class RequestProbeService {
 	public static List<ProbeExtension> getProbeExtensions() {
 		//return new ArrayList<ProbeExtension>(probeExtensions);
 		return probeExtensions;
+	}
+	
+	/**
+	 * Iterates through the activeRequests map and counts the number of request
+	 * specified by the String type parameter.
+	 * 
+	 * @param type
+	 *            the request to be filtered by
+	 * @return long activeRequestCounts: the current active requests for the type
+	 */
+	public static long getActiveRequestsByType(String type) {
+		AtomicLong activeRequestCounts = new AtomicLong();
+		for (RequestContext requestcontext : getActiveRequests()) {
+			if (requestcontext.getRootEvent().getType().contains(type)) {
+				activeRequestCounts.getAndIncrement();
+			}
+		}
+		return activeRequestCounts.get();
+		
+	}
+	
+	/**
+	 * Iterates through the maxActiveRequests map and counts the number of request
+	 * specified by the String type parameter.
+	 * 
+	 * @param type
+	 *            the request to be filtered by
+	 * @return long maxeRequestCounts: the maximum active requests for the type
+	 */
+	public static long getMaxActiveRequestsByType(String type) {
+		return maxActiveMap.get(type).get();
 	}
 
 }
