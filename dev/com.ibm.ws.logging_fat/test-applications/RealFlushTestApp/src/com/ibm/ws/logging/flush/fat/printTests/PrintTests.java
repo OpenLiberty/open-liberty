@@ -12,21 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.logging.flush.fat.printTests;
 
-import java.util.Set;
-import java.util.SortedMap;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.json.JsonObject;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.enterprise.inject.Produces;
-
-import com.ibm.websphere.filetransfer.FileServiceMXBean.MetaData;
-import com.ibm.websphere.logging.hpel.LogRecordContext;
-
 
 @ApplicationScoped
 @Path("/printTests")
@@ -36,9 +26,9 @@ public class PrintTests {
 
     private String make8193() {
         String starter = "";
-    	String string = "R";
-    	for(int i=0; i < 8193; i++) {
-    		starter = starter + string;
+        String string = "R";
+        for (int i = 0; i < 8193; i++) {
+            starter = starter + string;
         }
         return starter;
     }
@@ -51,40 +41,40 @@ public class PrintTests {
         }
         return starter;
     }
-    
+
     @GET
     @Path("/printFalse")
     public String printFalse() {
-    	
-    	System.out.print(false);
-    	
+
+        System.out.print(false);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printTrue")
     public String printTrue() {
-    	
-    	System.out.print(true);
-    	
+
+        System.out.print(true);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnFalse")
     public String printlnFalse() {
-    	
-    	System.out.println(false);
-    	
+
+        System.out.println(false);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnTrue")
     public String printlnTrue() {
-    	
-    	System.out.println(true);
-    	
+
+        System.out.println(true);
+
         return "---- DONE ----";
     }
 
@@ -131,149 +121,150 @@ public class PrintTests {
     @GET
     @Path("/printCharArraySmall")
     public String printCharArraySmall() {
-    	
-    	char[] str = "smallStr".toCharArray();
-    	System.out.print(str);
-    	
+
+        char[] str = "smallStr".toCharArray();
+        System.out.print(str);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnCharArraySmall")
     public String printlnCharArraySmall() {
-    	
-    	char[] str = "smallStr".toCharArray();
-    	System.out.println(str);
-    	
+
+        char[] str = "smallStr".toCharArray();
+        System.out.println(str);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printChar")
     public String printChar() {
-    	
-    	char c = 'z';
-    	System.out.println(c);
-    	
+
+        char c = 'z';
+        System.out.println(c);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnChar")
     public String printlnChar() {
-    	
-    	char c = 'z';
-    	System.out.println(c);
-    	
+
+        char c = 'z';
+        System.out.println(c);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printDouble")
     public String printDoubleSmall() {
-    	
-    	double num = 222222222;
-    	System.out.print(num);
-    	
+
+        double num = 222222222;
+        System.out.print(num);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnDouble")
     public String printlnDoubleSmall() {
-    	
-    	double num = 222222222;
-    	System.out.println(num);
-    	
+
+        double num = 222222222;
+        System.out.println(num);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printFloat")
     public String printFloat() {
-    	
-    	float num = 222222222;
-    	System.out.print(num);
-    	
+
+        float num = 222222222;
+        System.out.print(num);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnFloat")
     public String printlnFloat() {
-    	
-    	float num = 222222222;
-    	System.out.println(num);
-    	
+
+        float num = 222222222;
+        System.out.println(num);
+
         return "---- DONE ----";
     }
+
     @GET
     @Path("/printInt")
     public String printInt() {
-    	
-    	int num = 222222222;
-    	System.out.print(num);
-    	
+
+        int num = 222222222;
+        System.out.print(num);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnInt")
     public String printlnInt() {
-    	
-    	int num = 222222222;
-    	System.out.println(num);
-    	
+
+        int num = 222222222;
+        System.out.println(num);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printLong")
     public String printLong() {
-    	
-    	long num = 222222222;
-    	System.out.print(num);
-    	
+
+        long num = 222222222;
+        System.out.print(num);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnLong")
     public String printlnLong() {
-    	
-    	long num = 222222222;
-    	System.out.println(num);
-    	
+
+        long num = 222222222;
+        System.out.println(num);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnObject8193")
     public String printlnObject8193() {
-    	
-    	DummyObject obj = new DummyObject();
-    	System.out.println(obj.toString8193());
-    	
+
+        DummyObject obj = new DummyObject();
+        System.out.println(obj.toString8193());
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printObject8193")
     public String printObject8193() {
-    	
-    	DummyObject obj = new DummyObject();
-    	System.out.print(obj.toString8193());
-    	
+
+        DummyObject obj = new DummyObject();
+        System.out.print(obj.toString8193());
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printObject8192")
     public String printObject8192() {
-    	
-    	DummyObject obj = new DummyObject();
-    	System.out.print(obj.toString8192());
-    	
+
+        DummyObject obj = new DummyObject();
+        System.out.print(obj.toString8192());
+
         return "---- DONE ----";
     }
 
@@ -290,40 +281,40 @@ public class PrintTests {
     @GET
     @Path("/printlnObjectSmall")
     public String printlnObjectSmall() {
-    	
-    	DummyObject obj = new DummyObject();
-    	System.out.println(obj.toStringSmall());
-    	
+
+        DummyObject obj = new DummyObject();
+        System.out.println(obj.toStringSmall());
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printObjectSmall")
     public String printObjectSmall() {
-    	
-    	DummyObject obj = new DummyObject();
-    	System.out.print(obj.toStringSmall());
-    	
+
+        DummyObject obj = new DummyObject();
+        System.out.print(obj.toStringSmall());
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printString8193")
     public String printString8193() {
-        
+
         String starter = make8193();
-    	System.out.print(starter);
-    	
+        System.out.print(starter);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnString8193")
     public String printlnString8193() {
-    	
-    	String starter = make8193();
-    	System.out.println(starter);
-    	
+
+        String starter = make8193();
+        System.out.println(starter);
+
         return "---- DONE ----";
     }
 
@@ -350,20 +341,20 @@ public class PrintTests {
     @GET
     @Path("/printStringSmall")
     public String printStringSmall() {
-    	
-    	String str = "smallStr";
-    	System.out.print(str);
-    	
+
+        String str = "smallStr";
+        System.out.print(str);
+
         return "---- DONE ----";
     }
 
     @GET
     @Path("/printlnStringSmall")
     public String printlnStringSmall() {
-    	
-    	String str = "smallStr";
-    	System.out.println(str);
-    	
+
+        String str = "smallStr";
+        System.out.println(str);
+
         return "---- DONE ----";
     }
 }
