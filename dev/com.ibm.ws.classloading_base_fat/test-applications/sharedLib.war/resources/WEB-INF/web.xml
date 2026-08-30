@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="WebApp_ID">
+  <display-name>SharedLib</display-name>
+  <description>This is a servlet designed to test Shared Libraries.</description>
+
+  <servlet id="Default">
+    <servlet-name>SharedLib Servlet</servlet-name>
+    <display-name>SharedLib Servlet</display-name>
+    <description>Shared Library test suite</description>
+    <servlet-class>web.SharedLibraryServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>SharedLib Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+</web-app>
