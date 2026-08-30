@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2024, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: Library Listener
+Bundle-SymbolicName: library.listener; singleton:=true
+Bundle-Description: This bundle provides a library listener for testing; version=${bVersion}
+
+#optional, should match the trace group used by Tr components (see sample package-info.java)
+WS-TraceGroup: LibraryListener
+
+# don't need to export any packages
+Export-Package:
+  
+# include the implementation packages
+Private-Package: library.*
+
+# use the annotations to describe the services
+-dsannotations: library.listener.LibraryTracker

@@ -1,0 +1,68 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.0</feature>
+        <feature>classloadingfatlibertytestfeature-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- 
+        These are the things that can vary:
+        - apiTypeVisibility can be explicit or default on class loader
+        - apiTypeVisibility can be explicit or default on shared library
+        - app can use private library ref (all library apiTypeVisibility can be ignored - no clashes)
+        - app can use common library ref with same  APIs
+        - app can use common library ref with fewer  APIs
+        - app can use common library ref with more  APIs
+        - app can use common library ref with different  APIs  
+
+        So let's use these API collections:
+        - default: leave unspecified ("spec, ibm-api", "api")
+        - none: no allowed api types ("")
+        - all: "spec, ibm-api, api, third-party"
+        - few: "spec"
+        - some: "spec, third-party"
+        - same: "spec, ibm-api", "api" (to match default)
+    -->
+    <!-- Define some filesets -->
+    <fileset id="A" dir="${server.config.dir}/SharedLibraryA" includes="*.jar" scanInterval="5s"/>
+    <fileset id="B" dir="${server.config.dir}/SharedLibraryB" includes="*.jar" scanInterval="5s"/>
+    <fileset id="C" dir="${server.config.dir}/SharedLibraryC" includes="*.jar" scanInterval="5s"/>
+    <!-- Set up some libraries with different api types: libDflt, libNone, libSome, libAll -->
+    <library id="libDflt" filesetRef="A" />
+    <library id="libNone" filesetRef="B" apiTypeVisibility="" />
+    <library id="libAll_" filesetRef="C" apiTypeVisibility="spec, ibm-api, api, third-party" />
+    <library id="libSome" filesetRef="C" apiTypeVisibility="spec, third-party" />
+    <library id="libSame" filesetRef="C" apiTypeVisibility="spec, ibm-api, api" />
+
+    <!-- So that gives us this test matrix: -->
+    <!--  1 ) appDflt_libPriv -> default app + private libraries  -->
+    <application id="appDflt_libPriv" name="appDflt_libPriv" location="sharedLib.war"><classloader privateLibraryRef="libDflt, libNone, libAll_" /></application>
+    <!--  2 ) appDflt_libDflt -> default app + libs with same APIs            -->
+    <application id="appDflt_libDflt" name="appDflt_libDflt" location="sharedLib.war"><classloader commonLibraryRef="libDflt" /></application>
+    <!--  2a) appDflt_libSame -> default app + libs with same APIs (explicit) -->
+    <application id="appDflt_libSame" name="appDflt_libSame" location="sharedLib.war"><classloader commonLibraryRef="libSame" /></application>
+    <!--  3 ) appDflt_libNone -> default app + libs with fewer APIs           -->
+    <application id="appDflt_libNone" name="appDflt_libNone" location="sharedLib.war"><classloader commonLibraryRef="libNone" /></application>
+    <!--  4 ) appDflt_libAll_ -> default app + libs with more APIs            -->
+    <application id="appDflt_libAll_" name="appDflt_libAll_" location="sharedLib.war"><classloader commonLibraryRef="libAll_" /></application>
+    <!--  5 ) appDflt_libSome -> default app + libs with different APIs       -->
+    <application id="appDflt_libSome" name="appDflt_libSome" location="sharedLib.war"><classloader commonLibraryRef="libSome" /></application>
+    <!--  6 ) appSome_libPriv -> explicit app + private libraries             -->
+    <application id="appSome_libPriv" name="appSome_libPriv" location="sharedLib.war"><classloader privateLibraryRef="libDflt, libNone, libAll_" apiTypeVisibility="spec, third-party" /></application>
+    <!--  7 ) appNone_libNone -> explicit app + libs with same APIs (none)    -->
+    <application id="appNone_libNone" name="appNone_libNone" location="sharedLib.war"><classloader commonLibraryRef="libNone" apiTypeVisibility="" /></application>
+    <!--  7a) appSome_libSome -> explicit app + libs with same APIs           -->
+    <application id="appSome_libSome" name="appSome_libSome" location="sharedLib.war"><classloader commonLibraryRef="libSome" apiTypeVisibility="spec, third-party" /></application>
+    <!--  7b) appSame_libDflt -> explicit app + libs with same APIs (default) -->
+    <application id="appSame_libDflt" name="appSame_libDflt" location="sharedLib.war"><classloader commonLibraryRef="libDflt" apiTypeVisibility="spec, ibm-api, api" /></application>
+    <!--  8 ) appAll__libSome -> explicit app + libs with fewer APIs          -->
+    <application id="appAll__libSome" name="appAll__libSome" location="sharedLib.war"><classloader commonLibraryRef="libSome" apiTypeVisibility="spec, ibm-api, api, third-party" /></application>
+    <!--  9 ) appFew__libSome -> explicit app + libs with more APIs           -->
+    <application id="appFew__libSome" name="appFew__libSome" location="sharedLib.war"><classloader commonLibraryRef="libSome" apiTypeVisibility="spec" /></application>
+    <!-- 10 ) appSome_libDflt -> explicit app + libs with different APIs      -->
+    <application id="appSome_libDflt" name="appSome_libDflt" location="sharedLib.war"><classloader commonLibraryRef="libDflt" apiTypeVisibility="spec, third-party" /></application>
+    
+    <!-- 11 ) app with no shared lib, no classloader config, global lib present, not used. -->
+    <application id="appSame_libPriv" name="appSame_libPriv" location="sharedLib.war"></application>
+</server>
