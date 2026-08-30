@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>io.openliberty.enterpriseBeansRemote-4.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+    
+    <enterpriseApplication id="PLGenStub" name="PLGenStub" location="PLGenStub.ear" >
+        <classloader delegation="parentLast"/>             
+    </enterpriseApplication>
+    
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader" actions="*"/>    
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+    
+    <webContainer deferServletLoad="false"/>
+
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <keyStore id="defaultKeyStore" password="password"/>
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="bob" password="password"/>
+    </basicRegistry>
+    <!-- Test to see that stub generation in classloader parentLast delegation is correct -->
+</server>

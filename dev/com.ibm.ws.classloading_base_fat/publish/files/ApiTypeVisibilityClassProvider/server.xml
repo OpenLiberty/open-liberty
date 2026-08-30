@@ -1,0 +1,82 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>classloadingfatlibertytestfeature-1.0</feature>
+        <feature>mock.jca-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        These are the things that can vary:
+        - apiTypeVisibility can be explicit or default on class loader
+        - apiTypeVisibility can be explicit or default on class provider
+        - app can use common library ref with same APIs
+        - app can use common library ref with fewer APIs
+        - app can use common library ref with more APIs
+        - app can use common library ref with different APIs
+
+        So let's use these API collections:
+        - DEFAULTS: leave unspecified ("spec, ibm-api", "api")
+        - EMPTYSET: no allowed api types ("")
+        - ALLTYPES: "spec, ibm-api, api, third-party" filesetRef="A"
+        - SPECONLY: "spec"
+        - SPEC_3RD: "spec, third-party"
+        - EXPLICIT: "spec, ibm-api", "api" (to match default)
+    -->
+    <!-- Define some filesets -->
+    <fileset id="A" dir="${server.config.dir}/SharedLibraryA" includes="*.jar" scanInterval="5s"/>
+    <fileset id="B" dir="${server.config.dir}/SharedLibraryB" includes="*.jar" scanInterval="5s"/>
+    <fileset id="C" dir="${server.config.dir}/SharedLibraryC" includes="*.jar" scanInterval="5s"/>
+    <!-- Set up some libraries with different api types: libDEFAULTS, libEMPTYSET, libSPEC_3RD, libAll -->
+    <library id="libDEFAULTS" filesetRef="A" />
+    <library id="libEMPTYSET" filesetRef="B" apiTypeVisibility="" />
+    <library id="libALLTYPES" filesetRef="C" apiTypeVisibility="spec, ibm-api, api, third-party" />
+    <library id="libSPEC_3RD" filesetRef="C" apiTypeVisibility="spec, third-party" />
+    <library id="libEXPLICIT" filesetRef="C" apiTypeVisibility="spec, ibm-api, api" />
+    <!-- Set up some mock resource adapters with different api types -->
+    <mockResourceAdapter id="raDEFAULTS" libraryRef="libDEFAULTS" />
+    <mockResourceAdapter id="raEMPTYSET" libraryRef="libEMPTYSET" />
+    <mockResourceAdapter id="raALLTYPES" libraryRef="libALLTYPES" />
+    <mockResourceAdapter id="raSPEC_3RD" libraryRef="libSPEC_3RD" />
+    <mockResourceAdapter id="raEXPLICIT" libraryRef="libEXPLICIT" />
+
+    <!-- So that gives us this test matrix (numbers in step with equivalent library tests): -->
+
+    <!--  2 ) appDEFAULTS_raDEFAULTS -> default app + libs with same APIs            -->
+    <application id="appDEFAULTS_raDEFAULTS" name="appDEFAULTS_raDEFAULTS" location="sharedLib.war"><classloader classProviderRef="raDEFAULTS" /></application>
+    <!--  2a) appDEFAULTS_raEXPLICIT -> default app + libs with same APIs (explicit) -->
+    <application id="appDEFAULTS_raEXPLICIT" name="appDEFAULTS_raEXPLICIT" location="sharedLib.war"><classloader classProviderRef="raEXPLICIT" /></application>
+    <!--  3 ) appDEFAULTS_raEMPTYSET -> default app + libs with fewer APIs           -->
+    <application id="appDEFAULTS_raEMPTYSET" name="appDEFAULTS_raEMPTYSET" location="sharedLib.war"><classloader classProviderRef="raEMPTYSET" /></application>
+    <!--  4 ) appDEFAULTS_raALLTYPES -> default app + libs with more APIs            -->
+    <application id="appDEFAULTS_raALLTYPES" name="appDEFAULTS_raALLTYPES" location="sharedLib.war"><classloader classProviderRef="raALLTYPES" /></application>
+    <!--  5 ) appDEFAULTS_raSPEC_3RD -> default app + libs with different APIs       -->
+    <application id="appDEFAULTS_raSPEC_3RD" name="appDEFAULTS_raSPEC_3RD" location="sharedLib.war"><classloader classProviderRef="raSPEC_3RD" /></application>
+
+    <!--  7 ) appEMPTYSET_raEMPTYSET -> explicit app + libs with same APIs (none)    -->
+    <application id="appEMPTYSET_raEMPTYSET" name="appEMPTYSET_raEMPTYSET" location="sharedLib.war"><classloader classProviderRef="raEMPTYSET" apiTypeVisibility="" /></application>
+    <!--  7a) appSPEC_3RD_raSPEC_3RD -> explicit app + libs with same APIs           -->
+    <application id="appSPEC_3RD_raSPEC_3RD" name="appSPEC_3RD_raSPEC_3RD" location="sharedLib.war"><classloader classProviderRef="raSPEC_3RD" apiTypeVisibility="spec, third-party" /></application>
+    <!--  7b) appEXPLICIT_raDEFAULTS -> explicit app + libs with same APIs (default) -->
+    <application id="appEXPLICIT_raDEFAULTS" name="appEXPLICIT_raDEFAULTS" location="sharedLib.war"><classloader classProviderRef="raDEFAULTS" apiTypeVisibility="spec, ibm-api, api" /></application>
+    <!--  8 ) appALLTYPES_raSPEC_3RD -> explicit app + libs with fewer APIs          -->
+    <application id="appALLTYPES_raSPEC_3RD" name="appALLTYPES_raSPEC_3RD" location="sharedLib.war"><classloader classProviderRef="raSPEC_3RD" apiTypeVisibility="spec, ibm-api, api, third-party" /></application>
+    <!--  9 ) appSPECONLY_raSPEC_3RD -> explicit app + libs with more APIs           -->
+    <application id="appSPECONLY_raSPEC_3RD" name="appSPECONLY_raSPEC_3RD" location="sharedLib.war"><classloader classProviderRef="raSPEC_3RD" apiTypeVisibility="spec" /></application>
+    <!-- 10 ) appSPEC_3RD_raDEFAULTS -> explicit app + libs with different APIs      -->
+    <application id="appSPEC_3RD_raDEFAULTS" name="appSPEC_3RD_raDEFAULTS" location="sharedLib.war"><classloader classProviderRef="raDEFAULTS" apiTypeVisibility="spec, third-party" /></application>
+
+</server>
