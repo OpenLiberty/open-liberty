@@ -1,0 +1,70 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>classloadingfatlibertyinternals-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <application type="war" id="sharedLib" name="sharedLib" location="sharedLib.war">
+        <classloader privateLibraryRef="AppSharedLibraryA, AppSharedLibraryB, AppSharedLibraryC" />
+    </application>
+
+    <!-- This app is not used by the test but is here to test two apps can share references to the same library -->
+    <application type="war" id="sharedLib2" name="sharedLib2" location="sharedLib.war">
+        <classloader privateLibraryRef="AppSharedLibraryA, AppSharedLibraryB, AppSharedLibraryC" />
+    </application>
+
+    <!-- Fileset that will be used to test the dynamic file change works -->
+
+    <library id="testFilesetChange">
+        <fileset dir="${server.config.dir}/testData/testFilesetChange" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <fileset id="testFilesetChange" dir="${server.config.dir}/testDataRef/testFilesetChange" includes="*.jar" scanInterval="5s"/>
+    <library id="testFilesetChangeRef" filesetRef="testFilesetChange"/>
+
+    <!-- Top level test to see that classloaders pick up any fileset changes -->
+
+    <library id="testClassLoaderChange">
+        <fileset dir="${server.config.dir}/testData/testClassLoaderChange" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <fileset id="testClassLoaderChange" dir="${server.config.dir}/testDataRef/testClassLoaderChange" includes="*.jar" scanInterval="5s"/>
+    <library id="testClassLoaderChangeRef" filesetRef="testClassLoaderChange"/>
+
+    <!-- Top level test to see that classloaders pick up any config changes -->
+
+    <library id="testConfigChange">
+        <fileset dir="${server.config.dir}/testData/testConfigChange" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <fileset id="testConfigChange" dir="${server.config.dir}/testDataRef/testConfigChange" includes="*.jar" scanInterval="5s"/>
+    <library id="testConfigChangeRef" filesetRef="testConfigChange"/>
+
+    <!-- Application classloader test -->
+
+    <library id="AppSharedLibraryA">
+        <fileset dir="${server.config.dir}/SharedLibraryA" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <library id="AppSharedLibraryB">
+        <fileset dir="${server.config.dir}/SharedLibraryB" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <library id="AppSharedLibraryC">
+        <fileset dir="${server.config.dir}/SharedLibraryC" includes="*.jar" scanInterval="5s"/>
+    </library>
+</server>
