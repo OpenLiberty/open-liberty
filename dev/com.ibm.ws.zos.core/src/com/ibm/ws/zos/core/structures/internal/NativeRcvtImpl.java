@@ -1,0 +1,102 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.zos.core.structures.internal;
+
+import java.util.Map;
+
+import com.ibm.ws.zos.core.structures.NativeCvt;
+import com.ibm.ws.zos.core.structures.NativeRcvt;
+import com.ibm.ws.zos.core.utils.DirectBufferHelper;
+import com.ibm.ws.zos.jni.NativeMethodUtils;
+
+/**
+ * Provides access to the System Resources Manager Control Table (RMCT)
+ */
+public class NativeRcvtImpl implements NativeRcvt {
+
+    /**
+     * CVT Object
+     */
+    private NativeCvt nativeCvt = null;
+
+    /**
+     * Direct Buffer Helper object reference
+     */
+    private DirectBufferHelper directBufferHelper = null;
+
+    /**
+     * Default constructor to enable extension in test and needed for OSGi instantiation
+     */
+    public NativeRcvtImpl() {
+    }
+
+    /**
+     * DS method to activate this component.
+     *
+     * @param properties
+     *
+     * @throws Exception
+     */
+    protected void activate(Map<String, Object> properties) throws Exception {
+    }
+
+    /**
+     * DS method to deactivate this component.
+     *
+     * @param reason The representation of reason the component is stopping
+     */
+    protected void deactivate() {
+    }
+
+    /**
+     * Sets the NativeCvt object reference.
+     *
+     * @param nativeCvt The NativeCvt reference.
+     */
+    protected void setNativeCvt(NativeCvt nativeCvt) {
+        this.nativeCvt = nativeCvt;
+    }
+
+    /**
+     * Unsets the NativeCvt object reference.
+     *
+     * @param nativeCvt The NativeCvt reference.
+     */
+    protected void unsetNativeCvt(NativeCvt nativeCvt) {
+        if (this.nativeCvt == nativeCvt) {
+            this.nativeCvt = null;
+        }
+    }
+
+    /**
+     * Sets the DirectBufferHelper object reference
+     *
+     * @param directBufferHelper The DirectBufferHelper reference
+     */
+    protected void setDirectBufferHelper(DirectBufferHelper directBufferHelper) {
+        this.directBufferHelper = directBufferHelper;
+    }
+
+    protected void unsetDirectBufferHelper(DirectBufferHelper directBufferHelper) {
+        if (this.directBufferHelper == directBufferHelper) {
+            this.directBufferHelper = null;
+        }
+    }
+
+    @Override
+
+    public String getRCVTID() {
+        byte[] ID = new byte[4];
+        directBufferHelper.get(nativeCvt.getCVTRAC(), ID);
+        return NativeMethodUtils.convertToASCII(ID);
+    }
+
+}

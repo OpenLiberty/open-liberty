@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: La routine nativa ({0}) ha ricevuto un codice di errore ({1}) da Comunicazione locale.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=Il server ha eseguito un metodo nativo che ha chiamato il servizio  Comunicazione locale di riferimento.  Nel codice di errore ricevuto dal servizio Comunicazione locale viene indicato il motivo dell'errore.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Utilizzare il codice di errore di Comunicazione locale per determinare il motivo dell'errore.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: La routine nativa ha avuto esito negativo, servizio di WebSphere Application Server ({0}) RC({1}), servizio Comunicazione locale ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Il server ha eseguito un metodo nativo che ha avuto esito negativo.  Vengono forniti il servizio WebSphere Application Server di destinazione e il codice di ritorno.  Inoltre, vengono forniti il servizio Comunicazione locale di destinazione con i codici di errore e di ritorno.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Utilizzare i codici di errore e di ritorno per determinare il motivo dell'errore.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: La routine nativa ({0}) ha ricevuto un codice di ritorno imprevisto ({1}) dal relativo servizio PC autorizzato.
+NATIVE_SERVICE_PC.explanation=Il server ha utilizzato un metodo nativo per eseguire una chiamata di servizio autorizzata.  Ha ricevuto un codice di ritorno diverso da zero dalla PC (Program Call-Chiamata programma) autorizzata.
+NATIVE_SERVICE_PC.useraction=Esaminare i log del server e l'ambiente di runtime per determinare la causa dell'errore del codice nativo.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: Comunicazione locale ha ricevuto un tipo di richiesta nativa sconosciuto ({0}).
+INVALID_NATIVE_REQUESTTYPE.explanation=\u00c8 stata ricevuta una richiesta di comunicazione locale con un tipo sconosciuto.  La richiesta verr\u00e0 ignorata.
+INVALID_NATIVE_REQUESTTYPE.useraction=Abilitare la traccia native per determinare la causa per il tipo di richiesta sconosciuto.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: Il processo angel su questo sistema non \u00e8 compatibile con il servizio di comunicazione locale. La versione angel corrente \u00e8 {0}, ma quella richiesta \u00e8 {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=Viene utilizzato il servizio di comunicazione locale per comunicare con i client in esecuzione sullo stesso sistema di questa istanza server.  Il processo angel deve essere eseguito a un livello minimo richiesto per il servizio di comunicazione locale.  Il livello minimo richiesto \u00e8 visualizzato nel messaggio.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Esaminare il JCL utilizzato per avviare il processo angel per vedere da quale directory \u00e8 caricato.  La versione del prodotto in tale directory deve essere allo stesso livello di PTF, o successivo, del livello PTF di questa istanza server.

@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.saf/resources/com/ibm/ws/security/registry/saf/internal/resources/SAFRegistryMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Registry
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2930 - CWWKS2959
+
+PENALTY_BOX_FALLBACK=CWWKS2930W: Pokus o ov\u011b\u0159en\u00ed SAF prost\u0159ednictv\u00edm autorizovan\u00fdch slu\u017eeb SAF byl odm\u00edtnut, proto\u017ee server nem\u00e1 autorizaci pro p\u0159\u00edstup k APPL-ID {0}. Ov\u011b\u0159en\u00ed bude pokra\u010dovat prost\u0159ednictv\u00edm neautorizovan\u00fdch slu\u017eeb SAF.
+PENALTY_BOX_FALLBACK.explanation=Server se pokusil o pou\u017eit\u00ed autorizovan\u00fdch slu\u017eeb SAF k proveden\u00ed ov\u011b\u0159en\u00ed. Tento pokus v\u0161ak nebyl \u00fasp\u011b\u0161n\u00fd, proto\u017ee server nem\u00e1 podle dom\u00e9ny WZSSAD (WLP z/OS System Security Access Domain) opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup k uveden\u00e9mu prost\u0159edku APPL-ID. Server se pro \u00fa\u010dely proveden\u00ed ov\u011b\u0159en\u00ed vr\u00e1t\u00ed k pou\u017eit\u00ed neautorizovan\u00fdch slu\u017eeb SAF, je\u017e jsou poskytov\u00e1ny slu\u017ebami syst\u00e9mu Unix.
+PENALTY_BOX_FALLBACK.useraction=Je-li zapot\u0159eb\u00ed pou\u017eit\u00ed autorizovan\u00fdch slu\u017eeb SAF, ud\u011blte u\u017eivateli, kter\u00fd je p\u0159idru\u017een k serveru, vhodn\u00e9 opr\u00e1vn\u011bn\u00ed k prost\u0159edku APPL-ID v dom\u00e9n\u011b WZSSAD (WLP z/OS System Security Access Domain). Dal\u0161\u00ed informace o dom\u00e9n\u011b WZSSAD naleznete v Informa\u010dn\u00edm centru. Nen\u00ed-li pou\u017eit\u00ed autorizovan\u00fdch slu\u017eeb SAF zapot\u0159eb\u00ed, nakonfigurujte server k pou\u017eit\u00ed registru neautorizovan\u00fdch slu\u017eeb SAF tak, aby nepou\u017e\u00edval autorizovan\u00fd registr SAF. Podrobnosti naleznete v Informa\u010dn\u00edm centru.
+
+PENALTY_BOX_RECOVERY=CWWKS2931I: Server m\u00e1 nyn\u00ed opr\u00e1vn\u011bn\u00ed p\u0159istupovat k prost\u0159edku APPL-ID {0}. Ov\u011b\u0159en\u00ed bude pokra\u010dovat s pou\u017eit\u00edm autorizovan\u00fdch slu\u017eeb SAF.
+PENALTY_BOX_RECOVERY.explanation=P\u0159edchoz\u00ed pokus o ov\u011b\u0159en\u00ed se nezda\u0159il, proto\u017ee server nem\u011bl opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup k uveden\u00e9mu prost\u0159edku APPL-ID (viz zpr\u00e1va CWWKS2930W). Nicm\u00e9n\u011b nyn\u00ed server m\u00e1 opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup k prost\u0159edku APPL-ID. Dal\u0161\u00ed pokusy o ov\u011b\u0159en\u00ed se budou prov\u00e1d\u011bt s pou\u017eit\u00edm autorizovan\u00fdch slu\u017eeb SAF.
+PENALTY_BOX_RECOVERY.useraction=Nen\u00ed.
+
+ACTIVATION_MESSAGE=CWWKS2932I: Verze {0} registru u\u017eivatel\u016f SAF je aktivov\u00e1na. Ov\u011b\u0159en\u00ed bude pokra\u010dovat s pou\u017eit\u00edm nativn\u00edch slu\u017eeb {0}.
+ACTIVATION_MESSAGE.explanation=Zpr\u00e1va ozna\u010duje, kter\u00e1 verze registru u\u017eivatel\u016f SAF se pou\u017e\u00edv\u00e1. \
+Existuj\u00ed dv\u011b verze: (1) neautorizovan\u00e1 verze, kter\u00e1 pou\u017e\u00edv\u00e1 neautorizovan\u00e9 syst\u00e9mov\u00e9 slu\u017eby UNIX, nap\u0159. __passwd; (2) autorizovan\u00e1 verze, kter\u00e1 pou\u017e\u00edv\u00e1 autorizovan\u00e9 slu\u017eby SAF, nap\u0159. initACEE. 
+ACTIVATION_MESSAGE.useraction=Server mus\u00ed m\u00edt p\u0159\u00edstup k autorizovan\u00fdm prost\u0159edk\u016fm SAFCRED a dom\u00e9n\u011b WLP z/OS System Security Access Domain, abyste mohli pou\u017e\u00edvat autorizovanou verzi registru SAF.
+ 
+DAEMON_LOGIN_ERROR=CWWKS2933E: Jm\u00e9no u\u017eivatele a heslo nelze zkontrolovat, proto\u017ee profil BPX.DAEMON je aktivn\u00ed a adresn\u00ed prostor nen\u00ed pod kontrolou programu.
+DAEMON_LOGIN_ERROR.explanation=Pou\u017eit\u00ed neautorizovan\u00e9 verze registru SAF v syst\u00e9mu, kde je BPX.DAEMON aktivn\u00ed, vy\u017eaduje, aby v\u0161echny knihovny pou\u017e\u00edvan\u00e9 v profilu Liberty byly pod kontrolou programu. Alternativou je pou\u017eit\u00ed autorizovan\u00e9 verze registru SAF.
+DAEMON_LOGIN_ERROR.useraction=Jestli\u017ee z\u00e1m\u011brem bylo pou\u017e\u00edt autorizovanou verzi registru SAF, vyhledejte p\u0159\u00edpadn\u00e9 d\u0159\u00edv\u011bj\u0161\u00ed chybov\u00e9 zpr\u00e1vy v souboru message.log t\u00fdkaj\u00edc\u00ed se mo\u017en\u00e9ho nespu\u0161t\u011bn\u00ed autorizovan\u00e9ho registru. Jinak zva\u017ete zak\u00e1z\u00e1n\u00ed profilu BPX.DAEMON, nebo zajist\u011bte, aby v\u0161echny knihovny byly pod kontrolou programu.
+
+ENABLE_FAILOVER_MESSAGE=CWWKS2934E: Server nem\u016f\u017ee pou\u017e\u00edt autorizovan\u00fd registr SAF.
+ENABLE_FAILOVER_MESSAGE.explanation=Server nem\u016f\u017ee pou\u017e\u00edt autorizovan\u00fd registr SAF. Hodnota enableFailover br\u00e1n\u00ed serveru v pou\u017eit\u00ed neautorizovan\u00e9ho registru SAF. V\u0161echny budouc\u00ed pokusy o ov\u011b\u0159en\u00ed se nezda\u0159\u00ed.
+ENABLE_FAILOVER_MESSAGE.useraction=Pokud byl z\u00e1m\u011br pro server pou\u017e\u00edt autorizovan\u00fd registr SAF, zkontrolujte, \u017ee je spu\u0161t\u011bn\u00fd proces typu angel a \u017ee server m\u00e1 p\u0159\u00edstup k nezbytn\u00fdm profil\u016fm SAF pro pou\u017eit\u00ed autorizovan\u00e9ho registru SAF. Pokud byl z\u00e1m\u011br pro server pou\u017e\u00edt neautorizovan\u00fd registr SAF, mus\u00ed b\u00fdt nastaven\u00ed enableFailover zm\u011bn\u011bno na hodnotu true, co\u017e je v\u00fdchoz\u00ed hodnota.
+
+UNAUTH_INCLUDE_SAF=CWWKS2935W: Atribut includeSafGroups serveru je povolen, ale server nem\u00e1 p\u0159\u00edstup k po\u017eadovan\u00fdm autorizovan\u00fdm funkc\u00edm.
+UNAUTH_INCLUDE_SAF.explanation=Atribut k z\u00edsk\u00e1n\u00ed skupin jin\u00fdch ne\u017e OMVS je povolen, ale server nem\u00e1 p\u0159\u00edstup k autorizovan\u00fdm funkc\u00edm a nem\u016f\u017ee z\u00edskat skupiny SAF.
+UNAUTH_INCLUDE_SAF.useraction=U\u017eivatel by m\u011bl povolit autorizovan\u00e9 funkce pro p\u0159\u00edstup ke skupin\u00e1m jin\u00fdm ne\u017e OMVS. 

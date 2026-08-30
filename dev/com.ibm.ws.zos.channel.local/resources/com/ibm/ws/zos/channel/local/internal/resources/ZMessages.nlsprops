@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: Native routine ({0}) received a failing reason code ({1}) from Local Communication.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=The server has driven a native method that called the referenced Local Communication service.  The reason code from the Local Communication service indicates the reason for the failure.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Use the Local Communication reason code to determine the reason for the failure.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: Native routine failed, WebSphere Application Server service ({0}) RC({1}), Local Communication service ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=The server has driven a native method that failed.  The target WebSphere Application Server service and return code are provided.  The target Local Communication service with return and reason codes are also provided.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Use the return and reason codes to determine the reason for the failure.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: Native routine ({0}) received an unexpected return code ({1}) from its authorized PC service.
+NATIVE_SERVICE_PC.explanation=The server has driven a native method to perform an authorized service call.  It received a non-zero return code from the authorized Program Call (PC).
+NATIVE_SERVICE_PC.useraction=Examine the server logs and runtime environment to determine the reason for the native code failure.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: Local Communication received an unknown native request type ({0}).
+INVALID_NATIVE_REQUESTTYPE.explanation=A local communication request was received with an unknown request type.  The request will be ignored.
+INVALID_NATIVE_REQUESTTYPE.useraction=Enable native tracing to determine the cause for the unknown request type.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: The angel process on this system is not compatible with the local communication service. The current angel version is {0}, but the required angel version is {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=The local communication service is used to communicate with clients running on the same system as this server instance.  The angel process must run at a minimum required level for the local communication service.  The minimum required level is displayed in the message.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Examine the JCL that you used to start the angel process to see which directory it is being loaded from.  The version of the product at that directory must be at the same PTF level, or higher, than the PTF level of this server instance.

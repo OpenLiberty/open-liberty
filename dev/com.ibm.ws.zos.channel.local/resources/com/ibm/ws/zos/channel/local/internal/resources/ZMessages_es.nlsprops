@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: La rutina nativa ({0}) ha recibido un c\u00f3digo de raz\u00f3n de error ({1}) de la comunicaci\u00f3n local.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=El servidor ha impulsado un m\u00e9todo nativo que ha llamado al servicio de comunicaci\u00f3n local referenciado.  El c\u00f3digo de raz\u00f3n del servicio de comunicaci\u00f3n local indica la raz\u00f3n del error.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Utilice el c\u00f3digo de raz\u00f3n de la comunicaci\u00f3n local para determinar la raz\u00f3n del error.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: Ha fallado la rutina nativa, servicio de WebSphere Application Server ({0}) RC({1}), Servicio de comunicaci\u00f3n local ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=El servidor ha impulsado un m\u00e9todo nativo que ha fallado.  Se han proporcionado el servicio de WebSphere Application Server de destino y el c\u00f3digo de retorno.  El servicio de comunicaci\u00f3n local de destino con los c\u00f3digos de retorno y raz\u00f3n tambi\u00e9n se proporcionan.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Utilice los c\u00f3digos de retorno y de raz\u00f3n para determinar la causa del error.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: La rutina nativa ({0}) ha recibido un c\u00f3digo de retorno inesperado ({1}) de su servicio PC autorizado.
+NATIVE_SERVICE_PC.explanation=El servidor ha impulsado un m\u00e9todo nativo para realizar una llamada de servicio autorizado.  Ha recibido un c\u00f3digo de retorno distinto de cero de la llamada a programa (PC) autorizado.
+NATIVE_SERVICE_PC.useraction=Examine los registros de servidor y el entorno de ejecuci\u00f3n para determinar el motivo del error del c\u00f3digo nativo.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: La comunicaci\u00f3n local ha recibido un tipo de solicitud nativa desconocido ({0}).
+INVALID_NATIVE_REQUESTTYPE.explanation=Se ha recibido una solicitud de comunicaci\u00f3n local con un tipo de solicitud desconocido.  Se ignorar\u00e1 la solicitud.
+INVALID_NATIVE_REQUESTTYPE.useraction=Habilite el rastreo nativo para determinar la causa del tipo de solicitud desconocido.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: El proceso \u00e1ngel de este sistema no es compatible con el servicio de comunicaci\u00f3n local. La versi\u00f3n de \u00e1ngel actual es {0}, pero la versi\u00f3n de \u00e1ngel necesaria es {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=El servicio de comunicaci\u00f3n local se utiliza para comunicarse con clientes que se ejecuten en el mismo sistema que esta instancia de servidor. El proceso \u00e1ngel debe ejecutarse en el nivel m\u00ednimo necesario para el servicio de comunicaciones local. El nivel m\u00ednimo necesario se muestra en este mensaje.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Examine la JCL que ha utilizado para iniciar el proceso \u00e1ngel para ver desde qu\u00e9 directorio se est\u00e1 cargando. La versi\u00f3n del producto de dicho directorio debe estar al mismo nivel de PTF, o superior, que el nivel de PTF de esta instancia de servidor.

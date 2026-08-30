@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: z/OS WLM Services for EJBs
+Bundle-SymbolicName: com.ibm.ws.zos.wlm.ejb
+Bundle-Description: z/OS WLM Services for EJBs; version=${bVersion}
+
+WS-TraceGroup: \
+  zOSWLMServices
+
+Private-Package: \
+  com.ibm.ws.zos.wlm.ejb.mdb.internal*, \
+  com.ibm.ws.zos.wlm.ejb.internal*
+
+-dsannotations: \
+  com.ibm.ws.zos.wlm.ejb.mdb.internal.MDBClassifierImpl
+
+-buildpath: \
+    com.ibm.ws.ejbcontainer.core;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.zos.core;version=latest,\
+    com.ibm.ws.zos.wlm;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.cm;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest

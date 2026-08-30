@@ -1,0 +1,17 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere Request Logging User Data API
+Bundle-Description: WebSphere Request Logging User Data API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.zosRequestLogging
+
+Import-Package: com.ibm.websphere.zos.request.logging
+
+Export-Package: com.ibm.websphere.zos.request.logging
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.zosRequestLogging/pom.xml=com.ibm.websphere.appserver.api.zosRequestLogging.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+	com.ibm.websphere.zos.request.logging

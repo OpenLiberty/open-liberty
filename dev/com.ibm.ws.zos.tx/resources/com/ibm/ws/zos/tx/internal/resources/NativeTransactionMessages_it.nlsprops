@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: Il servizio di sistema {0} ha avuto esito negativo con codice di ritorno {1}. Informazioni relative al servizio: {2}
+INVALID_RRS_SERVICE_RC.explanation=La chiamata del servizio indicato ha avuto esito negativo. Il codice di ritorno \u00e8 un numero intero esadecimale.
+INVALID_RRS_SERVICE_RC.useraction=Per ulteriori informazioni sul codice di ritorno, consultare il manuale MVS Programming: Resource Recovery. Se il problema persiste, rivolgersi al livello di supporto successivo.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: Il gestore risorse denominato {0}, con identificativo token {1} non era registrato sul sistema. Erano presenti {2} transazioni in sospeso mentre il gestore risorse non era registrato. Queste transazioni hanno i seguenti ID transazione globale: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=Erano presenti delle transazioni in sospeso mentre il gestore risorse non era registrato. Tutte le risorse in sospeso verranno sottoposte al processo di ripristino al successivo riavvio del server.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Verificare che tutte le impostazioni richieste per eseguire il lavoro di transazione con le risorse compatibili con RRS siano implementate. Per ulteriori informazioni, esaminare i log del server. Se il problema persiste, rivolgersi al livello di supporto successivo.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: Il gestore risorse {0} con ID token corrispondente {1} \u00e8 stato riavviato correttamente con RRS (Resource Recovery Services). Numero di unit\u00e0 di ripristino non risolte: {2}
+RM_RESTART_COMPLETE.explanation=Il gestore risorse specificato \u00e8 stato riavviato con RRS. Tutte le unit\u00e0 di ripristino non risolte riportate verranno sottoposte a ripristino.
+RM_RESTART_COMPLETE.useraction=Non \u00e8 richiesta alcuna azione.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: L''elaborazione del ripristino per il gestore risorse {0} con ID token corrispondente {1} \u00e8 stata completata.
+RM_RECOVERY_COMPLETE.explanation=L'elaborazione del ripristino per il gestore risorse specificato \u00e8 stata completata. Tutte le unit\u00e0 di ripristino non risolte riportate sono state ripristinate.
+RM_RECOVERY_COMPLETE.useraction=Non \u00e8 richiesta alcuna azione.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: Il gestore del contesto nativo RRS \u00e8 in attesa che il token del contesto sospeso {0} completi la seguente unit\u00e0 di lavoro: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=Il gestore del contesto nativo RRS \u00e8 in fase di arresto.  Il gestore del contesto \u00e8 in attesa che vengano completate tutte le unit\u00e0 di lavoro a cui \u00e8 associato un contesto nativo.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=Non \u00e8 richiesta alcuna azione.  Il gestore del contesto nativo RRS proceder\u00e0 con l'arresto una volta completate tutte le unit\u00e0 di lavoro.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: Il gestore del contesto nativo RRS \u00e8 in attesa che il token del contesto {0} sul thread {1} completi la seguente unit\u00e0 di lavoro attiva: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=Il gestore del contesto nativo RRS \u00e8 in fase di arresto.  Il gestore del contesto \u00e8 in attesa che vengano completate tutte le unit\u00e0 di lavoro a cui \u00e8 associato un contesto nativo.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=Non \u00e8 richiesta alcuna azione.  Il gestore del contesto nativo RRS proceder\u00e0 con l'arresto una volta completate tutte le unit\u00e0 di lavoro.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: Il gestore del contesto nativo RRS sta terminando il token del contesto {0} attualmente associato alla seguente unit\u00e0 di lavoro: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=Il gestore del contesto nativo RRS \u00e8 in fase di arresto, dopo avere atteso il quiesce dell'unit\u00e0 di lavoro attiva.  Il gestore del contesto sta terminando il contesto identificato in questo messaggio.  Il contesto \u00e8 associato ad un'unit\u00e0 di lavoro e quest'ultima verr\u00e0 ritirata.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=Non \u00e8 richiesta alcuna azione.  Uno o pi\u00f9 gestori code potrebbero riportare un errore, se stavano eseguendo un lavoro quando \u00e8 terminato il contesto.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: Il gestore risorse {0} \u00e8 in attesa del completamento di {1} transazioni.  Attender\u00e0 per un massimo di {2} millisecondi.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=Il gestore risorse nativo RRS \u00e8 in fase di arresto.  Vi sono ancora delle transazioni attive che stanno utilizzando le risorse RRS native, ad esempio le connessioni al database di tipo 2.  Il gestore risorse nativo attender\u00e0 il completamento di queste transazioni prima di eseguire l'arresto.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=Non \u00e8 richiesta alcuna azione.  Il gestore risorse riprender\u00e0 l'arresto una volta completate le transazioni o allo scadere del tempo di attesa specificato.  Se il tempo di attesa massimo \u00e8 scaduto, il messaggio CWLIB0102W indicher\u00e0 le transazioni ancora attive.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: Il ramo della transazione rappresentato dall''URID RRS {0} non pu\u00f2 essere risolto, perch\u00e9 l''istanza NativeTransactionManager che ha creato il ramo \u00e8 stata disattivata.  Il server deve essere riavviato per consentire il completamento di questa transazione.  L''Xid del ramo della transazione \u00e8 il seguente: {1}
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=Il servizio del gestore transazioni nativo RRS \u00e8 stato arrestato e non \u00e8 pi\u00f9 connesso ad RRS.  Il ramo della transazione non pu\u00f2 essere completato, perch\u00e9 non \u00e8 possibile notificare ad RRS il risultato.  Il server deve essere riavviato per consentire al gestore transazioni di risincronizzarsi con RRS e risolvere la transazione.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Riavviare il server.
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: L''unit\u00e0 di lavoro {0} sta terminando e l''unit\u00e0 di ripristino RSS associata, che opera nel token del contesto {1}, presenta interessi della risorsa non risolti. Viene eseguito il rollback dell''unit\u00e0 di ripristino RRS.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=\u00c8 stato rilevato che un'unit\u00e0 di ripristino RRS presentava interessi della risorsa in sospeso al termine dell'unit\u00e0 di lavoro.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Verificare che le risorse compatibili con RRS utilizzate non operino al di fuori dell'ambito di una transazione. Se il problema persiste, rivolgersi al livello di supporto successivo.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: Il prefisso di {0} del gestore risorse configurato non \u00e8 valido. Viene utilizzato il prefisso predefinito del gestore risorse.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=Il prefisso del gestore risorse configurato deve avere una lunghezza compresa tra 1 e 8 caratteri e pu\u00f2 contenere solo caratteri alfanumerici (a-z,A-Z,0-9) e nazionali (@,$,#).
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Verificare che il prefisso del gestore risorse configurato corrisponda ai requisiti di lunghezza e carattere. Se il problema persiste, rivolgersi al livello di supporto successivo.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: L''aggiornamento della configurazione per impostare il prefisso del gestore risorse configurato su {0} non \u00e8 ammesso al runtime. L''aggiornamento viene ignorato.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=L'aggiornamento della configurazione per impostare il prefisso del gestore risorse al runtime viene ignorato.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=Configurare il prefisso del gestore risorse prima dell'avvio del server o prima della configurazione della funzione zosTransaction-1.0. Se il problema persiste, rivolgersi al livello di supporto successivo.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: Il controllo dell''autorizzazione che convalida i privilegi dell''utente con il nome del prefisso del gestore risorse configurato {0} non \u00e8 riuscito. INTERNAL_RC: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=Il controllo dell'autorizzazione che convalida i privilegi dell'utente con il nome del prefisso del gestore risorse configurato non \u00e8 riuscito con i codici di ritorno indicati.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Verificare che il prefisso del gestore risorse configurato corrisponda ai requisiti di nome, lunghezza e carattere. Verificare che il nome del prefisso non sia stato configurato erroneamente. Verificare che all'utente siano stati concessi i privilegi appropriati per utilizzare il nome del prefisso. Se il problema persiste, rivolgersi al livello di supporto successivo.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W: Thread {0} in fase di conclusione. L''unit\u00e0 di ripristino RRS associata al token di contesto {1} ha interessi sulla risorsa non risolti. Il gestore contesto nativo sta arrestando il contesto.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=Il thread specificato \u00e8 in fase di conclusione e l'unit\u00e0 di ripristino RRS associata al contesto ha interessi non risolti. I tentativi di eseguire il rollback dell'unit\u00e0 di ripristino RRS hanno avuto esito negativo.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Verificare che i gestori risorse che supportano RRS utilizzati non operino al di fuori dell'ambito di una transazione. Uno o pi\u00f9 gestori risorse potrebbero riportare un errore, se stavano eseguendo un lavoro quando \u00e8 terminato il contesto. Se il problema persiste, rivolgersi al livello di supporto successivo.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: Thread {0} in fase di conclusione. L''unit\u00e0 di ripristino RRS associata al token di contesto {1} ha interessi sulla risorsa non risolti. Viene eseguito il rollback dell''unit\u00e0 di ripristino RRS e il token di contesto viene riutilizzato.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=Il thread specificato \u00e8 in fase di chiusura e per l'unit\u00e0 di ripristino RRS sono stati trovati interessi sulla risorsa in sospeso.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Verificare che i gestori risorse che supportano RRS utilizzati non operino al di fuori dell'ambito di una transazione. Uno o pi\u00f9 gestori risorse potrebbero riportare un errore, se stavano eseguendo un lavoro quando l'unit\u00e0 di ripristino \u00e8 stata sottoposta a rollback. Se il problema persiste, rivolgersi al livello di supporto successivo.

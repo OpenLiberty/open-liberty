@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector id="Connector_ID" version="1.5" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/connector_1_5.xsd"> 
+	<description>Optimized Local Adapters for WebSphere Application Server for z/OS</description>
+	<display-name>WebSphere Optimized Local Adapter</display-name>
+ 	<vendor-name>IBM</vendor-name>
+  	<eis-type>WOLA</eis-type>
+  	<resourceadapter-version>2.1</resourceadapter-version>
+  	<license>
+  		<description>No License required to run this resource adapter inside WebSphere for z/OS</description>
+  		<license-required>false</license-required>
+  	</license>
+  	<resourceadapter>
+  		<resourceadapter-class>com.ibm.ws390.ola.ResourceAdapterImpl</resourceadapter-class>
+  		<outbound-resourceadapter>
+  			<connection-definition>
+  				<managedconnectionfactory-class>com.ibm.ws390.ola.ManagedConnectionFactoryImpl</managedconnectionfactory-class>
+  				<config-property>
+  					<description>Turn on OLA resource adapter debug tracing to SYSOUT</description>
+  					<config-property-name>DebugMode</config-property-name>
+  					<config-property-type>java.lang.Boolean</config-property-type>
+  					<config-property-value>false</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>Register name used by connections created from this connection factory</description>
+  					<config-property-name>RegisterName</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using OLA over OTMA, default OLA over OTMA target IMS XCF Group name</description>
+  					<config-property-name>OTMAGroupID</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using OLA over OTMA, default OLA over OTMA target IMS Target Partner/Server Name</description>
+  					<config-property-name>OTMAServerName</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>OTMA client name for Liberty instance</description>
+  					<config-property-name>OTMAClientName</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  					<config-property-value>DEFAULT</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using OLA over OTMA, default OLA over OTMA Sync Level (0=NONE | 1=CONFIRM)</description>
+  					<config-property-name>OTMASyncLevel</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  					<config-property-value>0</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using OLA over OTMA, default OLA over OTMA Maximum Segments</description>
+  					<config-property-name>OTMAMaxSegments</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>1</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using OLA over OTMA, default OTMA Maximum Receive Message Size</description>
+  					<config-property-name>OTMAMaxRecvSize</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>32768</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using OLA over OTMA, set request / input message format to LLZZ</description>
+  					<config-property-name>OTMARequestLLZZ</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>1</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using OLA over OTMA, set response / output message format to LLZZ</description>
+  					<config-property-name>OTMAResponseLLZZ</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>0</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using the OLA proxy EJB, specifies the hostname where the OLA proxy EJB is installed.</description>
+  					<config-property-name>RemoteHostname</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the OLA proxy EJB, specifies the port number on the remote host name where the JNDI lookup of the OLA proxy EJB will be directed.</description>
+  					<config-property-name>RemotePort</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>0</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using the OLA proxy EJB, specifies the JNDI name on the remote host where the OLA proxy EJB is bound.</description>
+  					<config-property-name>RemoteJNDIName</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>Specifies an MVS user ID which used to send requests to a registration which is running with security enabled.  If no user ID is specified, the user ID of the calling component is used.</description>
+  					<config-property-name>Username</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>Specifies the password for the MVS user ID specified in the Username property.</description>
+  					<config-property-name>Password</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the OLA proxy EJB, specifies the username which is used to obtain the JNDI initial context on the remote system.</description>
+  					<config-property-name>RemoteJNDIUsername</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the OLA proxy EJB, specifies the password to be used with the RemoteJNDIUsername.</description>
+  					<config-property-name>RemoteJNDIPassword</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the OLA proxy EJB, specifies the security realm to use with the RemoteJNDIUsername.</description>
+  					<config-property-name>RemoteJNDIRealm</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the CICS Link Server, specifies the name Link task transaction ID.</description>
+  					<config-property-name>LinkTaskTranID</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the CICS Link Server, specifies that the request and response data are to be in Containers.</description>
+  					<config-property-name>UseCICSContainer</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>0</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using the CICS Link Server, specifies the name of the request, or input, container.</description>
+  					<config-property-name>LinkTaskReqContID</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the CICS Link Server, specifies the type of the request container (BIT|CHAR).</description>
+  					<config-property-name>LinkTaskReqContType</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>0</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>When using the CICS Link Server, specifies the name of the response, or output, container.</description>
+  					<config-property-name>LinkTaskRspContID</config-property-name>
+  					<config-property-type>java.lang.String</config-property-type>
+  				</config-property>
+  				<config-property>
+  					<description>When using the CICS Link Server, specifies the type of the response container (BIT|CHAR).</description>
+  					<config-property-name>LinkTaskRspContType</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>0</config-property-value>
+  				</config-property>
+				<config-property>
+					<description>When using the CICS Link Server, specifies the name of the channel to use.</description>
+					<config-property-name>LinkTaskChanID</config-property-name>
+					<config-property-type>java.lang.String</config-property-type>
+				</config-property>
+				<config-property>
+					<description>When using the CICS Link Server, specifies the type of containers in the target channel (BIT|CHAR).</description>
+					<config-property-name>LinkTaskChanType</config-property-name>
+					<config-property-type>java.lang.Integer</config-property-type>
+					<config-property-value>0</config-property-value>
+				</config-property>
+  				<config-property>
+  					<description>Time to wait in seconds for a matching client connection for the current Register name.</description>
+  					<config-property-name>ConnectionWaitTimeout</config-property-name>
+  					<config-property-type>java.lang.Integer</config-property-type>
+  					<config-property-value>30</config-property-value>
+  				</config-property>
+  				<config-property>
+  					<description>RRS transactions enabled for connections.</description>
+  					<config-property-name>RRSTransactional</config-property-name>
+  					<config-property-type>java.lang.Boolean</config-property-type>
+  					<config-property-value>false</config-property-value>
+  				</config-property>
+  				<connectionfactory-interface>javax.resource.cci.ConnectionFactory</connectionfactory-interface>
+  				<connectionfactory-impl-class>com.ibm.ws390.ola.jca.ConnectionFactoryImpl</connectionfactory-impl-class>
+  				<connection-interface>javax.resource.cci.Connection</connection-interface>
+  				<connection-impl-class>com.ibm.ws390.ola.jca.ConnectionImpl</connection-impl-class>
+  			</connection-definition>
+  			<transaction-support>XATransaction</transaction-support>
+  			<reauthentication-support>false</reauthentication-support>
+  		</outbound-resourceadapter>
+  	</resourceadapter>
+</connector>

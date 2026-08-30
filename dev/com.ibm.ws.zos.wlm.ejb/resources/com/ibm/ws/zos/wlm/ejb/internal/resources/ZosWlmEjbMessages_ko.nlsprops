@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm.ejb/resources/com.ibm.ws.zos.wlm.ejb.internal.resources/ZosWlmEjbMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB  z/OS WLM EJB (MDB) classification
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0701-0750 z/OS WLM EJB (MDB) classification
+# -------------------------------------------------------------------------------------------------
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0701W: \uad6c\uc131 \uc694\uc18c mdbClassification\uc758 \ud65c\uc131\ud654 \uc2a4\ud399 {1}\uacfc(\uc640) \uc5f0\uad00\ub41c {0}\uc758 transactionClass \uc18d\uc131 \uac12\uc774 {2} \uac12\uc73c\ub85c \uc798\ub838\uc2b5\ub2c8\ub2e4. \ud5c8\uc6a9\ub41c \ucd5c\ub300 \ud06c\uae30 {3}\uc790\ub97c \ucd08\uacfc\ud558\ubbc0\ub85c \uac12\uc774 \uc798\ub838\uc2b5\ub2c8\ub2e4.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=\uad6c\uc131 \uc694\uc18c mdbClassification\uc5d0\uc11c \uad6c\uc131\ub41c \uc774 transactionClass \uc18d\uc131 \uac12\uc774 \ud5c8\uc6a9\ub41c \ucd5c\ub300 \ubb38\uc790 \uae38\uc774\uc5d0 \ub9de\ucdb0 \uc798\ub838\uc2b5\ub2c8\ub2e4. \ucc38\uace0: \ud45c\uc2dc\ub41c \ud65c\uc131\ud654 \uc2a4\ud399\uc774 \uc640\uc77c\ub4dc\uce74\ub4dc\uc778 \uacbd\uc6b0 \uc774\uc640 \uac19\uc774 \uc9c0\uc815\ub418\uac70\ub098, \uc9c0\uc815\ub418\uc9c0 \uc54a\uace0 \uae30\ubcf8\uac12\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=mdbClassification \uad6c\uc131 \uc694\uc18c\uc758 transactionClass \uc18d\uc131\uc5d0 \ucd5c\ub300 \uae38\uc774\ub97c \ucd08\uacfc\ud558\ub294 \uac12\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+MDB_CONFIG_INVALID_ACTIVATION_SPEC=CWWKB0702W: \uad6c\uc131 \uc694\uc18c mdbClassification\uc758 \ud2b8\ub79c\uc7ad\uc158 \ud074\ub798\uc2a4({1})\uc640 \uc5f0\uad00\ub41c jmsActivationSpec \uc18d\uc131 \uac12({0})\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. mdbClassification \uc694\uc18c\uac00 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.explanation=\uad6c\uc131 \uc694\uc18c mdbClassification\uc5d0\uc11c \uad6c\uc131\ub41c \uc774 jmsActivationSpec \uc18d\uc131 \uac12\uc740 \ube44\uc5b4 \uc788\ub294 \ubb38\uc790\uc5f4\uc774\uac70\ub098 \uc5f0\uc18d\uc801\uc778 \uacf5\ubc31\uc774 \ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ucc38\uace0: \ud45c\uc2dc\ub41c \ud2b8\ub79c\uc7ad\uc158 \ud074\ub798\uc2a4\uac00 \ube44\uc5b4 \uc788\ub294 \ubb38\uc790\uc5f4\uc778 \uacbd\uc6b0 \uc774\uc640 \uac19\uc774 \uc9c0\uc815\ub418\uac70\ub098, \uc9c0\uc815\ub418\uc9c0 \uc54a\uace0 \uae30\ubcf8\uac12\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.useraction=mdbClassification \uad6c\uc131 \uc694\uc18c\uc758 jmsActivationSpec \uc18d\uc131\uc5d0 \uc62c\ubc14\ub978 \uac12\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

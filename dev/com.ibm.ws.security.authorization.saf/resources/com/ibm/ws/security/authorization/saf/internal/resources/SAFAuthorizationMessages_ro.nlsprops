@@ -1,0 +1,26 @@
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.saf/resources/com/ibm/ws/security/authorization/saf/internal/resources/SAFAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2960 - CWWKS2999
+
+UNABLE_TO_CREATE_DEFAULT_CRED=CWWKS2960W: Nu se poate crea acreditarea implicit\u0103 pentru autorizarea SAF a utilizatorilor neautentifica\u0163i. Toate verific\u0103rile de autoriza\u0163ie pentru utilizatori neautentifica\u0163i vor e\u015fua. Acreditarea implicit\u0103 nu a putut fi creat\u0103 datorit\u0103 urm\u0103toarei erori: {0}
+UNABLE_TO_CREATE_DEFAULT_CRED.explanation=Serverul nu poate crea acreditarea implicit\u0103 ce reprezint\u0103 utilizatorul neautentificat SAF. Utilizatorul neautentificat SAF este specificat de atributul unauthenticatedUser din configura\u0163ia serverului. Serverul nu poate realiza verific\u0103ri de autoriza\u0163ie pentru utilizatori neautentifica\u0163i; de aceea orice astfel de \u00eencerc\u0103ri de autoriza\u0163ie vor e\u015fua.
+UNABLE_TO_CREATE_DEFAULT_CRED.useraction=Adresa\u0163i eroarea descris\u0103 \u00een mesaj.
+
+CANNOT_READ_APPLDATA=CWWKS2961E: Nu s-a putut citi APPLDATA din profilul SAF EJBROLE {0} din cauza urm\u0103toarei erori: {1}
+CANNOT_READ_APPLDATA.explanation=Serverul a e\u015fuat la citirea c\u00e2mpului APPLDATA din profilul SAF EJBROLE dat.  C\u00e2mpul APPLDATA con\u0163ine utilizatorul RunAs pentru delegarea SAF.
+CANNOT_READ_APPLDATA.useraction=Mesajul de eroare include returnarea SAF \u015fi codurile motiv care identific\u0103 motivul e\u015fecului.

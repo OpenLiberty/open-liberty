@@ -1,0 +1,101 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Command Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: command processing
+# -------------------------------------------------------------------------------------------------
+
+STOP_COMMAND_RECEIVED=CWWKB0001I: Le\u00e1ll\u00edt\u00e1si parancs \u00e9rkezett a(z) {0} kiszolg\u00e1l\u00f3hoz.
+STOP_COMMAND_RECEIVED.explanation=A kiszolg\u00e1l\u00f3 egy le\u00e1ll\u00edt\u00e1si (stop) parancsot kapott.  A kiszolg\u00e1l\u00f3 elkezd le\u00e1llni.
+STOP_COMMAND_RECEIVED.useraction=Nincs teend\u0151. 
+
+#{0} is target command
+#{1} is completion status
+MODIFY_COMMAND_COMPLETED=CWWKB0002I: A(Z) {0} PARANCS M\u00d3DOS\u00cdT\u00c1SA BEFEJEZ\u0150D\u00d6TT {1}.
+MODIFY_COMMAND_COMPLETED.explanation=A kiszolg\u00e1l\u00f3 befejezte a megjel\u00f6lt parancs feldolgoz\u00e1s\u00e1t. Ha a parancs sikertelen\u00fcl fejez\u0151d\u00f6tt be, akkor az el\u0151z\u0151 \u00fczenetek jelzik az okot.
+MODIFY_COMMAND_COMPLETED.useraction=Nincs teend\u0151. 
+
+#{0} is native error code
+NATIVE_ERROR_COMMAND_RECEIVED=CWWKB0003E: A parancsfeldolgoz\u00e1s {0} hibak\u00f3dot kapott egy nat\u00edv h\u00edv\u00e1st\u00f3l.
+NATIVE_ERROR_COMMAND_RECEIVED.explanation=A kiszolg\u00e1l\u00f3 nat\u00edv k\u00f3dot h\u00edvott meg egy parancsfeldolgoz\u00e1ssal kapcsolatos szolg\u00e1ltat\u00e1shoz.  A nat\u00edv k\u00f3d a megjelen\u00edtett hibak\u00f3dban meghat\u00e1rozott probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt.
+NATIVE_ERROR_COMMAND_RECEIVED.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat a nat\u00edv k\u00f3d hiba ok\u00e1nak kider\u00edt\u00e9se \u00e9rdek\u00e9ben.
+
+#{0} is command response from the command handler
+MODIFY_COMMAND_HANDLER_MSG=CWWKB0004I: {0}
+MODIFY_COMMAND_HANDLER_MSG.explanation=A kiszolg\u00e1l\u00f3 egy m\u00f3dos\u00edt\u00e1si parancsot kapott feldolgoz\u00e1sra.  Ez a parancs v\u00e1lasz\u00fczenete a parancskezel\u0151t\u0151l.  A CWWKB0005I \u00fczenet a parancskezel\u0151t azonos\u00edtja.
+MODIFY_COMMAND_HANDLER_MSG.useraction=Nincs teend\u0151. 
+
+#{0} is the command handler completion status
+#{1} is the modify command handler name
+MODIFY_COMMAND_HANDLER_DONE=CWWKB0005I: PARANCS V\u00c1LASZOK BEFEJEZVE {0} \u00c1LLAPOTTAL A(Z) {1} PARANCSKEZEL\u0150T\u0150L.
+MODIFY_COMMAND_HANDLER_DONE.explanation=A kiszolg\u00e1l\u00f3 egy m\u00f3dos\u00edt\u00e1si parancsot kapott feldolgoz\u00e1sra.  Ez az \u00fczenet azt jelzi, hogy a parancskezel\u0151 befejezte a parancs feldolgoz\u00e1s\u00e1t.
+MODIFY_COMMAND_HANDLER_DONE.useraction=Nincs teend\u0151. 
+
+#{0} is target command
+MODIFY_COMMAND_UNKNOWN=CWWKB0006W: A(Z) {0} M\u00d3DOS\u00cdT\u00c1SI PARANCS ISMERETLEN AZ \u00d6SSZES AKT\u00cdV PARANCSKEZEL\u0150 SZ\u00c1M\u00c1RA
+MODIFY_COMMAND_UNKNOWN.explanation=A kiszolg\u00e1l\u00f3 befejezte a megjel\u00f6lt parancs feldolgoz\u00e1s\u00e1t.  Egyetlen akt\u00edv parancskezel\u0151 sem jelentette a parancs feldolgoz\u00e1s\u00e1t. 
+MODIFY_COMMAND_UNKNOWN.useraction=Ellen\u0151rizze a parancs szintaxis\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg annak helyess\u00e9g\u00e9r\u0151l, majd adja ki \u00fajra a parancsot.
+
+#{0} is the modify command handler name
+MODIFY_HANDLER_ERROR=CWWKB0007E: A RENDSZER HIB\u00c1T FOGADOTT A(Z) {0} PARANCSKEZEL\u0150T\u0150L.
+MODIFY_HANDLER_ERROR.explanation=A kiszolg\u00e1l\u00f3 egy m\u00f3dos\u00edt\u00e1si parancsot kapott feldolgoz\u00e1sra.  Ez az \u00fczenet azt jelzi, hogy a parancskezel\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt a parancs feldolgoz\u00e1sakor.
+MODIFY_HANDLER_ERROR.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat a parancskezel\u0151 hiba ok\u00e1nak kider\u00edt\u00e9se \u00e9rdek\u00e9ben.
+
+#{0} is command response related message 
+MODIFY_NLSBUILDMSG_FAILED=CWWKB0008E: {0}.
+MODIFY_NLSBUILDMSG_FAILED.explanation=A kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lt kiadni egy parancs v\u00e1lasz \u00fczenetet.  Nem tudta feloldani az \u00fczenetet az \u00fczenet k\u00f6teg\u00e9vel.  
+MODIFY_NLSBUILDMSG_FAILED.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat a kapcsol\u00f3d\u00f3 parancskezel\u0151 hiba ok\u00e1nak kider\u00edt\u00e9se \u00e9rdek\u00e9ben.
+
+
+MESSAGE_TRANSLATE_ERROR=CWWKB0009E: A PARANCS V\u00c1LASZT NEM LEHETETT LEHETETT LEFORD\u00cdTANI NAT\u00cdV K\u00d3DOL\u00c1SRA.
+MESSAGE_TRANSLATE_ERROR.explanation=A kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lt kiadni egy parancs v\u00e1lasz \u00fczenetet.  Nem tudta leford\u00edtani az \u00fczenet v\u00e1laszt a nat\u00edv k\u00f3dol\u00e1sra ("Cp1047").
+MESSAGE_TRANSLATE_ERROR.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat a hiba ok\u00e1nak kider\u00edt\u00e9se \u00e9rdek\u00e9ben.
+
+COMMAND_TRANSLATE_ERROR=CWWKB0010E: A kapott m\u00f3dos\u00edt\u00e1si parancs form\u00e1tuma helytelen. 
+COMMAND_TRANSLATE_ERROR.explanation=A kiszolg\u00e1l\u00f3 egy m\u00f3dos\u00edt\u00e1si parancsot kapott.  Nem tudta leford\u00edtani parancs sz\u00f6veg\u00e9t a nat\u00edv k\u00f3dol\u00e1sr\u00f3l ("Cp1047").
+COMMAND_TRANSLATE_ERROR.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat a hiba ok\u00e1nak kider\u00edt\u00e9se \u00e9rdek\u00e9ben.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_HDR=CWWKB0011I: S\u00daG\u00d3INFORM\u00c1CI\u00d3K IND\u00cdT\u00c1SA A K\u00d6VETKEZ\u0150T\u0150L: {0}.
+MODIFY_COMMAND_HANDLER_HELP_HDR.explanation=Ez az \u00fczenet a megjel\u00f6lt parancskezel\u0151 s\u00fag\u00f3inform\u00e1ci\u00f3inak kezdet\u00e9t jelzi.
+MODIFY_COMMAND_HANDLER_HELP_HDR.useraction=Nincs teend\u0151. 
+
+#{0} is the help text from a command handler
+MODIFY_COMMAND_HANDLER_HELP_TXT=CWWKB0012I: {0}
+MODIFY_COMMAND_HANDLER_HELP_TXT.explanation=Megjelennek a s\u00fag\u00f3inform\u00e1ci\u00f3k a megjel\u00f6lt parancskezel\u0151t\u0151l.
+MODIFY_COMMAND_HANDLER_HELP_TXT.useraction=Nincs teend\u0151. 
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_END=CWWKB0013I: S\u00daG\u00d3INFORM\u00c1CI\u00d3K V\u00c9GE A K\u00d6VETKEZ\u0150T\u0150L: {0}.
+MODIFY_COMMAND_HANDLER_HELP_END.explanation=Ez az \u00fczenet a megjel\u00f6lt parancskezel\u0151 s\u00fag\u00f3inform\u00e1ci\u00f3inak v\u00e9g\u00e9t jelzi.
+MODIFY_COMMAND_HANDLER_HELP_END.useraction=Nincs teend\u0151. 
+
+FILE_DELETE_UNSUCCESSFUL=CWWKB0014W: PID F\u00c1JL NEM T\u00d6R\u00d6LHET\u0150.
+FILE_DELETE_UNSUCCESSFUL.explanation=A kiszolg\u00e1l\u00f3 megk\u00eds\u00e9relte a pid f\u00e1jl t\u00f6rl\u00e9s\u00e9t kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s sor\u00e1n.  Nem tudta t\u00f6r\u00f6lni a(z) {0} \u00e1ltal megadott pid f\u00e1jlt.
+FILE_DELETE_UNSUCCESSFUL.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat, ha a kiszolg\u00e1l\u00f3 megfelel\u0151en \u00e1llt le.

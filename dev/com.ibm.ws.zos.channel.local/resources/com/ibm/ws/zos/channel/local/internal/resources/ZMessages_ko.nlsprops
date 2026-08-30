@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: \uc6d0\uc2dc \ub8e8\ud2f4({0})\uc774 Local Communication\uc5d0\uc11c \uc2e4\ud328 \uc774\uc720 \ucf54\ub4dc({1})\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=\uc11c\ubc84\uac00 \ucc38\uc870\ub41c Local Communication \uc11c\ube44\uc2a4\ub97c \ud638\ucd9c\ud55c \uc6d0\uc2dc \uba54\uc18c\ub4dc\ub97c \uad6c\ub3d9\ud588\uc2b5\ub2c8\ub2e4.  Local Communication \uc11c\ube44\uc2a4\uc5d0\uc11c \ubcf4\ub0b8 \uc774\uc720 \ucf54\ub4dc\ub294 \uc2e4\ud328\uc758 \uc774\uc720\ub97c \ub098\ud0c0\ub0c5\ub2c8\ub2e4.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Local Communication \uc774\uc720 \ucf54\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc2e4\ud328\uc758 \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: \uc6d0\uc2dc \ub8e8\ud2f4\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. WebSphere Application Server \uc11c\ube44\uc2a4({0}) RC({1}), Local Communication \uc11c\ube44\uc2a4({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=\uc11c\ubc84\uac00 \uc2e4\ud328\ud55c \uc6d0\uc2dc \uba54\uc18c\ub4dc\ub97c \uad6c\ub3d9\ud588\uc2b5\ub2c8\ub2e4. \ub300\uc0c1 WebSphere Application Server \uc11c\ube44\uc2a4 \ubc0f \ub9ac\ud134 \ucf54\ub4dc\uac00 \uc81c\uacf5\ub429\ub2c8\ub2e4. \ub300\uc0c1 Local Communication \uc11c\ube44\uc2a4\uc758 \ub9ac\ud134\uacfc \uc774\uc720 \ucf54\ub4dc\ub3c4 \uc81c\uacf5\ub429\ub2c8\ub2e4.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=\ub9ac\ud134 \ubc0f \uc774\uc720 \ucf54\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc2e4\ud328 \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: \uc6d0\uc2dc \ub8e8\ud2f4({0})\uc774 \uad8c\ud55c \ubd80\uc5ec\ub41c PC \uc11c\ube44\uc2a4\uc5d0\uc11c \uc608\uc0c1\uce58 \uc54a\uc740 \ub9ac\ud134 \ucf54\ub4dc({1})\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4.
+NATIVE_SERVICE_PC.explanation=\uc11c\ubc84\uac00 \uad8c\ud55c \ubd80\uc5ec\ub41c \uc11c\ube44\uc2a4 \ud638\ucd9c\uc744 \uc218\ud589\ud560 \uc6d0\uc2dc \uba54\uc18c\ub4dc\ub97c \uad6c\ub3d9\ud588\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uad8c\ud55c \ubd80\uc5ec\ub41c \ud504\ub85c\uadf8\ub7a8 \ud638\ucd9c(PC)\uc5d0\uc11c 0\uc774 \uc544\ub2cc \ub9ac\ud134 \ucf54\ub4dc\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4.
+NATIVE_SERVICE_PC.useraction=\uc11c\ubc84 \ub85c\uadf8\uc640 \ub7f0\ud0c0\uc784 \ud658\uacbd\uc744 \uc870\uc0ac\ud558\uc5ec \uc6d0\uc2dc \ucf54\ub4dc \uc2e4\ud328\uc758 \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: Local Communication\uc774 \uc54c \uc218 \uc5c6\ub294 \uc6d0\uc2dc \uc694\uccad \uc720\ud615({0})\uc744 \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4.
+INVALID_NATIVE_REQUESTTYPE.explanation=\ub85c\uceec \ud1b5\uc2e0 \uc694\uccad\uc774 \uc54c \uc218 \uc5c6\ub294 \uc720\ud615\uc73c\ub85c \uc218\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.  \uc694\uccad\uc774 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
+INVALID_NATIVE_REQUESTTYPE.useraction=\uc6d0\uc2dc \ucd94\uc801\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc54c \uc218 \uc5c6\ub294 \uc694\uccad \uc720\ud615\uc758 \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: \uc774 \uc2dc\uc2a4\ud15c\uc758 Angel \ud504\ub85c\uc138\uc2a4\uac00 \ub85c\uceec \ud1b5\uc2e0 \uc11c\ube44\uc2a4\uc640 \ud638\ud658 \uac00\ub2a5\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ud604\uc7ac Angel \ubc84\uc804\uc740 {0}\uc774\uc9c0\ub9cc \ud544\uc694\ud55c Angel \ubc84\uc804\uc740 {1}\uc785\ub2c8\ub2e4.
+ANGEL_VERSION_INCOMPATIBLE.explanation=\ub85c\uceec \ud1b5\uc2e0 \uc11c\ube44\uc2a4\ub294 \uc774 \uc11c\ubc84 \uc778\uc2a4\ud134\uc2a4\uc640 \ub3d9\uc77c\ud55c \uc2dc\uc2a4\ud15c\uc5d0\uc11c \uc2e4\ud589 \uc911\uc778 \ud074\ub77c\uc774\uc5b8\ud2b8\uc640 \ud1b5\uc2e0\ud558\ub294 \ub370 \uc0ac\uc6a9\ub429\ub2c8\ub2e4. Angel \ud504\ub85c\uc138\uc2a4\ub294 \ub85c\uceec \ud1b5\uc2e0 \uc11c\ube44\uc2a4\uc5d0 \ud544\uc694\ud55c \ucd5c\uc18c \ub808\ubca8\uc5d0\uc11c \uc2e4\ud589\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4. \ud544\uc694\ud55c \ucd5c\uc18c \ub808\ubca8\uc740 \uba54\uc2dc\uc9c0\uc5d0 \ud45c\uc2dc\ub429\ub2c8\ub2e4.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Angel \ud504\ub85c\uc138\uc2a4\ub97c \uc2dc\uc791\ud558\ub294 \ub370 \uc0ac\uc6a9\ud55c JCL\uc744 \uc870\uc0ac\ud558\uc5ec \ub85c\ub4dc\ub41c \uc18c\uc2a4 \ub514\ub809\ud1a0\ub9ac\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ud574\ub2f9 \ub514\ub809\ud1a0\ub9ac\uc758 \uc81c\ud488 \ubc84\uc804\uc740 \uc774 \uc11c\ubc84 \uc778\uc2a4\ud134\uc2a4\uc758 PTF \ub808\ubca8 \uc774\uc0c1\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.

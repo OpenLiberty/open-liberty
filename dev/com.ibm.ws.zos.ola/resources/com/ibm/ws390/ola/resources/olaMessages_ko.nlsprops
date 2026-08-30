@@ -1,0 +1,305 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# DISCLAIMER OF WARRANTIES:  The following [enclosed] code is sample
+# code created by IBM Corporation.  This sample code is not part of
+# any standard or IBM product and is provided to you solely for the
+# purpose of assisting you in the development of your applications.
+# The code is provided "AS IS", without warranty of any kind.  IBM
+# shall not be liable for any damages arising out of your use of the
+# sample code, even if they have been advised of the possibility of
+# such damages.
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+# 4) %%SERVICETEXT%% - (Is substitued by a text description which  
+#        is done by the book generation tool) 
+#    - for the complete text description see: include/private/bborabnd.mac 
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+#-----------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.zos.ola/resources/com/ibm/ws390/ola/resources/olaMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0351-0400: WOLA Resource Adapter
+# -------------------------------------------------------------------------------------------------
+
+# Messages for DISPLAY,ADAPTER command.
+
+#{0} is the registration type, a single character.
+#{1} is the job name of the Liberty server, a text string between 1-8 characters
+#{2} is the registration name of the Liberty server, a text string between 1-12 characters
+CWWKB0351I=CWWKB0351I: \uc720\ud615: {0} \uc791\uc5c5 \uc774\ub984: {1} \uc774\ub984: {2}
+CWWKB0351I.explanation=\uc138\ubd80 \ub4f1\ub85d \ubaa9\ub85d \uba85\ub839\uc5d0 \ub300\ud55c \uccab \ubc88\uc9f8 \ud589 \uc751\ub2f5\uc785\ub2c8\ub2e4.
+CWWKB0351I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+
+#{0} is the job number corresponding to the registration which is being described
+#{1} is either 'true' or 'false'
+#{2} is a number >= 0.
+CWWKB0352I=CWWKB0352I:  \uc791\uc5c5 \ubc88\ud638: {0} \ud65c\uc131: {1} \ud65c\uc131 \uc5f0\uacb0: {2}
+CWWKB0352I.explanation=\uc138\ubd80 \ub4f1\ub85d \ubaa9\ub85d \uba85\ub839\uc5d0 \ub300\ud55c \ub450 \ubc88\uc9f8 \ud589 \uc751\ub2f5\uc785\ub2c8\ub2e4.
+CWWKB0352I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+
+#{0} is a number >= 0.
+#{1} is a number >= 0.
+#{2} is a number >= 0 (representing the state of the registration)
+#{3} is a number >= 0
+CWWKB0353I=CWWKB0353I: \ucd5c\uc18c \uc5f0\uacb0: {0} \ucd5c\ub300 \uc5f0\uacb0: {1} \uc0c1\ud0dc: {2} \ucd94\uc801 \ub808\ubca8: {3}
+CWWKB0353I.explanation=\uc138\ubd80 \ub4f1\ub85d \ubaa9\ub85d \uba85\ub839\uc5d0 \ub300\ud55c \uc138 \ubc88\uc9f8 \ud589 \uc751\ub2f5\uc785\ub2c8\ub2e4.
+CWWKB0353I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+
+CWWKB0354I=CWWKB0354I: \uc774\ub984         \uc791\uc5c5 \uc774\ub984  SWT TL \ucd5c\uc18c \ucd5c\ub300 \ud65c\uc131 \uc0c1\ud0dc
+CWWKB0354I.explanation=\ud14c\uc774\ube14\ub85c \ud45c\uc2dc\ub41c \ub4f1\ub85d \ubaa9\ub85d \uba85\ub839\uc758 \ud5e4\ub354 \uc751\ub2f5\uc785\ub2c8\ub2e4.
+CWWKB0354I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+
+#{0} is a string, corresponding to 'Name' in message CWWKB0354I
+#{1} is a string, corresponding to 'Jobname' in message CWWKB0354I
+#{2} is a three digit number, corresponding to "SWT" in message CWWKB0354I
+#{3} is a two digit number, corresponding to "TL" in message CWWKB0354I
+#{4} is a number, corresponding to 'Min' in message CWWKB0354I
+#{5} is a number, corresponding to 'Max' in message CWWKB0354I
+#{6} is a number, corresponding to 'Active'	in message CWWKB0354I
+#{7} is a number, corresponding to 'State' in message CWWKB0354I
+CWWKB0355I=CWWKB0355I: {0} {1} {2} {3} {4} {5} {6} {7}
+CWWKB0355I.explanation=\ud14c\uc774\ube14\ub85c \ud45c\uc2dc\ub41c \ub2e4\uc74c \uba85\ub839\uc758 RGE \ud589 \uc751\ub2f5: MODIFY, DISPLAY, ADAPTER, RGE, *
+CWWKB0355I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+
+#{0} is a number
+#{1} is a number >= 0
+#{2} is a string from 1-8 characters.
+CWWKB0356I=CWWKB0356I: \uc0c1\ud0dc: \ubc84\uc804:{0} \ucd5c\ub300 \uc5f0\uacb0:{1} WOLA \uadf8\ub8f9 \uc774\ub984:{2}
+CWWKB0356I.explanation=\ub2e4\uc74c \uba85\ub839\uc5d0 \ub300\ud55c \uc751\ub2f5: MODIFY DISPLAY, ADAPTER, STATUS
+CWWKB0356I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0357I=CWWKB0357I: \uc11c\ubc84\uc5d0 \ub300\ud55c \ub4f1\ub85d \ud45c\uc2dc:
+CWWKB0357I.explanation=\ub2e4\uc74c \uba85\ub839\uc5d0 \ub300\ud55c \uc751\ub2f5: MODIFY DISPLAY, ADAPTER, REGISTRATIONS
+CWWKB0357I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0358I=CWWKB0358I: WOLA \uadf8\ub8f9\uc5d0 \ub300\ud55c \ub4f1\ub85d \ud45c\uc2dc:
+CWWKB0358I.explanation=\ub2e4\uc74c \uba85\ub839\uc5d0 \ub300\ud55c \uc751\ub2f5: MODIFY DISPLAY, ADAPTER, GROUPRGES
+CWWKB0358I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0359I=CWWKB0359I: \uc5b4\ub311\ud130\uc5d0 \ub300\ud574 \uac00\ub2a5\ud55c \uba85\ub839: (\uc608: DISPLAY,ADAPTER,STATUS)
+CWWKB0359I.explanation=\uc54c \uc218 \uc5c6\ub294 ADAPTER \uba85\ub839 \ub610\ub294 HELP \uba85\ub839\uc5d0 \ub300\ud55c \uc751\ub2f5\uc785\ub2c8\ub2e4.
+CWWKB0359I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string (an option name)
+#{1} is a description (of the option in #0)
+CWWKB0360I=CWWKB0360I: {0} - {1}
+CWWKB0360I.explanation=\uba85\ub839 \ub610\ub294 \uac80\uc0c9 \uc635\uc158\uacfc \ud574\ub2f9 \uc124\uba85\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0360I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string which the user supplied
+CWWKB0361I=CWWKB0361I: \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc635\uc158 \ub610\ub294 \ud1a0\ud070: {0}
+CWWKB0361I.explanation=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc635\uc158 \ub610\ub294 \ud1a0\ud070\uc5d0 \ub300\ud55c \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0361I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0362I=CWWKB0362I: \uc124\uba85: \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ubd80\uc6b8 \uac12: TRUE/FALSE \ub610\ub294 0/1\uc774 \uc608\uc0c1\ub428
+CWWKB0362I.explanation=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ubd80\uc6b8 \uac12\uc5d0 \ub300\ud55c \uc624\ub958\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0362I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0363I=CWWKB0363I: \uc124\uba85: \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc22b\uc790 \uac12
+CWWKB0363I.explanation=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc22b\uc790 \uac12\uc5d0 \ub300\ud55c \uc624\ub958\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0363I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0364I=CWWKB0364I: \uc124\uba85: \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc18d\uc131 \uc774\ub984
+CWWKB0364I.explanation=\uac80\uc0c9 \uc2dc \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc18d\uc131 \uc774\ub984\uc5d0 \ub300\ud55c \uc624\ub958\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0364I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0365I=CWWKB0365I: \uc124\uba85: \ub458 \uc774\uc0c1\uc758 =\ub97c \ud3ec\ud568\ud574\uc11c\ub294 \uc548\ub428
+CWWKB0365I.explanation=\ub458 \uc774\uc0c1\uc758 = \ubd80\ud638\ub97c \ud3ec\ud568\ud558\ub294 \uac80\uc0c9 \uc635\uc158\uc5d0 \ub300\ud55c \uc624\ub958\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0365I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0366I=CWWKB0366I: \uc62c\ubc14\ub978 \uac80\uc0c9 \uc635\uc158:
+CWWKB0366I.explanation=\uc62c\ubc14\ub978 \uac80\uc0c9 \uc635\uc158 \ubc0f \ud574\ub2f9 \uc720\ud615 \ubaa9\ub85d\uc758 \ud5e4\ub354\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0366I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0367I=CWWKB0367I: {0}
+CWWKB0367I.explanation=\uac80\uc0c9 \uc635\uc158 \ubc0f \ud574\ub2f9 \uc720\ud615\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0367I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0368I=CWWKB0368I: {0}\uc740(\ub294) OLA \uc0c1\ud0dc\ub97c \ud45c\uc2dc\ud568
+CWWKB0368I.explanation=STATUS \uba85\ub839\uc5d0 \ub300\ud55c \uc124\uba85\uc785\ub2c8\ub2e4.
+CWWKB0368I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0369I=CWWKB0369I: {0}\uc740(\ub294) \ud604\uc7ac \uc11c\ubc84\uc5d0 \ub300\ud55c \ub4f1\ub85d\uc744 \ud45c\uc2dc\ud568
+CWWKB0369I.explanation=STATUS \uba85\ub839\uc5d0 \ub300\ud55c \uc124\uba85\uc785\ub2c8\ub2e4.
+CWWKB0369I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0370I=CWWKB0370I: {0}\uc740(\ub294) \uc9c0\uc815\ub41c \uc11c\ubc84 \uc774\ub984\uc5d0 \ub300\ud55c \ub4f1\ub85d\uc744 \ud45c\uc2dc\ud568
+CWWKB0370I.explanation=STATUS \uba85\ub839\uc5d0 \ub300\ud55c \uc124\uba85\uc785\ub2c8\ub2e4.
+CWWKB0370I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0371I=CWWKB0371I: {0}\uc740(\ub294) WOLA \uadf8\ub8f9\uc5d0 \ub300\ud55c \ub4f1\ub85d\uc744 \ud45c\uc2dc\ud568
+CWWKB0371I.explanation=STATUS \uba85\ub839\uc5d0 \ub300\ud55c \uc124\uba85\uc785\ub2c8\ub2e4.
+CWWKB0371I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0372I=CWWKB0372I: {0} \uc815\ubcf4\ub294 DISPLAY, ADAPTER, SEARCHRGES, HELP \ucc38\uc870
+CWWKB0372I.explanation=STATUS \uba85\ub839\uc5d0 \ub300\ud55c \uc124\uba85\uc785\ub2c8\ub2e4.
+CWWKB0372I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string (a server name supplied by the user)
+CWWKB0373I=CWWKB0373I: \uc774\ub984\uc774 {0}\uc778 \uc11c\ubc84\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c
+CWWKB0373I.explanation=DISPLAY, ADAPTER, REGISTRATIONS, servername \uba85\ub839\uc5d0 \ub300\ud55c \uc624\ub958 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+CWWKB0373I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0374I=CWWKB0374I: \uc774 \ub4f1\ub85d\uc5d0 \uc5f0\uacb0 \ud578\ub4e4\uc774 \uc5c6\uc74c
+CWWKB0374I.explanation=\uc5f0\uacb0 \ud578\ub4e4\uc774 \uc5c6\ub294 \uacbd\uc6b0 \uc790\uc138\ud55c RGE \ubcf4\uae30\uc5d0 \ud45c\uc2dc\ub418\ub294 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+CWWKB0374I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0375I=CWWKB0375I: ID                  LSCB        \uc0c1\ud0dc
+CWWKB0375I.explanation=\uc5f0\uacb0 \ud578\ub4e4\uc758 \ud14c\uc774\ube14 \ud615\uc2dd \ud45c\uc2dc\uc5d0 \ub300\ud55c \ud5e4\ub354\uc785\ub2c8\ub2e4.
+CWWKB0375I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a hexidecimal integer, corresponding to "ID" in message CWWKB0375I
+#{1} is a hexidecimal integer, corresponding to "LSCB" in message CWWKB0375I
+#{2} is a string describing connection state, corresponding to "State" in message CWWKB0375I
+CWWKB0376I=CWWKB0376I: {0} {1} {2}
+CWWKB0376I.explanation=\ub4f1\ub85d\uc5d0 \ub300\ud55c \uc5f0\uacb0 \ud578\ub4e4\uc758 \ud45c\uc2dc \ud589\uc785\ub2c8\ub2e4.
+CWWKB0376I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0377I=CWWKB0377I: 
+CWWKB0377I.explanation=\uacf5\ubc31 \ud589\uc785\ub2c8\ub2e4.
+CWWKB0377I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} Is a string
+CWWKB0378I=CWWKB0378I: \uc804\uccb4 \uba85\ub839 \ub2e4\uc74c\uc758 {0}\uc740(\ub294) \ud655\uc7a5 \uc815\ubcf4\ub97c \ud45c\uc2dc
+CWWKB0378I.explanation=DETAILS \uba85\ub839\uc5d0 \ub300\ud55c \uc124\uba85\uc785\ub2c8\ub2e4.
+CWWKB0378I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0379I=CWWKB0379I: \uc774 \uc11c\ubc84\uc5d0\uc11c \uc0ac\uc6a9\ub418\ub294 OLA(Optimized Local Adapter) RAR \ud30c\uc77c\uc744 \uc5c5\ub370\uc774\ud2b8\ud574\uc57c \ud568
+CWWKB0379I.explanation=WebSphere Application Server for z/OS\uc758 OLA(Optimized Local Adapter) \uae30\ub2a5\uc774 \uc5c5\ub370\uc774\ud2b8\ub41c RAR \ud30c\uc77c\uc774 \uc774 \uc11c\ube44\uc2a4 \ud329\uacfc \ud568\uaed8 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud604\uc7ac \uc124\uce58\ub41c \ubc84\uc804\uc774 \uc774 \uc11c\ube44\uc2a4 \ud329\uacfc \ud638\ud658\ub418\uc9c0 \uc54a\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+CWWKB0379I.useraction=\uc774 \uc11c\ubc84 \uc778\uc2a4\ud134\uc2a4\uc5d0 \uc124\uce58\ub41c OLA(Optimized Local Adapter) RAR \ud30c\uc77c\uc744 \ud604\uc7ac \uc124\uce58\ub41c WebSphere Application Server for z/OS \uc11c\ube44\uc2a4 \ub808\ubca8\uc5d0\uc11c \uc81c\uacf5\ud558\ub294 \ud30c\uc77c\ub85c \ubc14\uafb8\uc2ed\uc2dc\uc624. \uc124\uce58 \uc9c0\uc2dc\uc0ac\ud56d\uc740 WebSphere Applicatin Server for z/OS Information Center\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
+#-----------------------------------------------------------------------
+CWWKB0380E=CWWKB0380E: {0} OLA \ub4f1\ub85d\uacfc \ud2b8\ub79c\uc7ad\uc158 \uc7ac\ub3d9\uae30\ud654\ub97c \uc218\ud589\ud558\ub294 \uc911 \uc624\ub958 \ubc1c\uc0dd 
+CWWKB0380E.explanation=WebSphere Application Server for z/OS\uac00 \uba54\uc2dc\uc9c0\uc5d0\uc11c \uc2dd\ubcc4\ub41c OLA(Optimized Local Adapter) \ub4f1\ub85d \uc774\ub984\uacfc \ud2b8\ub79c\uc7ad\uc158 \uc7ac\ub3d9\uae30\ud654\ub97c \uc694\uccad\ud558\ub294 \uc911\uc785\ub2c8\ub2e4. \uc608\uc678 \ub54c\ubb38\uc5d0 \uc7ac\ub3d9\uae30\ud654 \ud504\ub85c\uc138\uc2a4\uac00 \uc644\ub8cc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CWWKB0380E.useraction=CICS\uc640 \uc7ac\ub3d9\uae30\ud654 \uc2dc \ub4f1\ub85d \uc774\ub984\uc5d0 \ud574\ub2f9\ud558\ub294 OLA(Optimized Local Adapter) \ub9c1\ud06c \uc11c\ubc84\uac00 \uc2dc\uc791\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc774 \uc7ac\ub3d9\uae30\ud654 \uc870\uc791\uacfc \uad00\ub828\ub41c \uc608\uc678\ub294 WebSphere Application Server for z/OS \ub85c\uadf8 \ubc0f FFDC\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \ubb38\uc81c\uc810\uc774 \uc9c0\uc18d\ub418\uba74 \ub2e4\uc74c \ub808\ubca8\uc758 \uc9c0\uc6d0 \ub2f4\ub2f9\uc790\uc5d0\uac8c \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+CWWKB0381E=CWWKB0381E: {1} OLA \ub4f1\ub85d\uacfc {0} \ud2b8\ub79c\uc7ad\uc158 \uc2dc \uc608\uc678\uac00 \ubc1c\uc0dd
+CWWKB0381E.explanation=WebSphere Application Server for z/OS\uc5d0\uc11c 2\ub2e8\uacc4 \ucee4\ubbf8\ud2b8 \ud2b8\ub79c\uc7ad\uc158\uc744 \uc644\ub8cc\ud558\ub824\uace0 \uc2dc\ub3c4\ud588\uc73c\uba70 OLA(Optimized Local Adapter) \ub4f1\ub85d\uacfc \ud1b5\uc2e0\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub3d9\uc77c\ud55c \ub4f1\ub85d\uc5d0 \ub300\ud574 \ubc18\ubcf5\uc801\uc73c\ub85c \uc624\ub958\uac00 \ubc1c\uc0dd\ud558\uba74 \uc774 \uba54\uc2dc\uc9c0\uac00 \uc5b5\uc81c\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+CWWKB0381E.useraction=\uba54\uc2dc\uc9c0\uc5d0 \uc788\ub294 \uc774\ub984 \uc9c0\uc815\ub41c OLA(Optimized Local Adapter) \ub4f1\ub85d\uc774 \uc2dc\uc791\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc11c\ubc84 \uc2dc\uc791 \uc2dc \uc7ac\ub3d9\uae30\ud654\ub418\ub294 \ub3d9\uc548 2\ub2e8\uacc4 \ucee4\ubbf8\ud2b8 \ubc0f \ucd94\uc815 \uc911\ub2e8 \ud504\ub85c\ud1a0\ucf5c\uc758 \uc18d\uc131 \ub54c\ubb38\uc5d0 \uc774 \uba54\uc2dc\uc9c0\uac00 \ubc18\ub4dc\uc2dc \uc2e4\ud328\uac00 \ubc1c\uc0dd\ud588\uc74c\uc744 \ub098\ud0c0\ub0b4\uc9c0\ub294 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0 \ubc1c\ud589\uc758 \uc6d0\uc778\uc774 \ub41c \uc608\uc678\uc758 \uad00\ub828 \uc138\ubd80\uc0ac\ud56d\uc740 WebSphere Application Server for z/OS \ub85c\uadf8 \ubc0f FFDC\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc608\uc678\uc5d0 \uc2e4\ud328\ud55c \ud2b9\uc815 \ud2b8\ub79c\uc7ad\uc158 \ubc0f \uc870\uc791\uc744 \uc2dd\ubcc4\ud558\ub294 \ud2b8\ub79c\uc7ad\uc158 XID\uac00 \ud3ec\ud568\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ubb38\uc81c\uc810\uc774 \uc9c0\uc18d\ub418\uba74 \ub2e4\uc74c \ub808\ubca8\uc758 \uc9c0\uc6d0 \ub2f4\ub2f9\uc790\uc5d0\uac8c \ubb38\uc758\ud558\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+#{0} Is a string representing an IMS OTMA XCF group ID
+#{1} Is a string representing an IMS OTMA XCF server name
+CWWKB0382I=CWWKB0382I: IMS {0} / {1}\uc758 \uc138\ubd80\uc0ac\ud56d
+CWWKB0382I.explanation=WebSphere Application Server for z/OS\uac00 \uc5f0\uacb0\ub418\ub294 IMS \uc2dc\uc2a4\ud15c\uc5d0 \ub300\ud574 OTMA\uc5d0\uc11c \uc0ac\uc6a9\ub418\ub294 XCF \uadf8\ub8f9 ID \ubc0f XCF \uc11c\ubc84 \uc774\ub984\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4. \uac1c\ubcc4 \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc740 CWWKB0383I \uba54\uc2dc\uc9c0\uc5d0 \uc774\uc5b4 \ub098\uc635\ub2c8\ub2e4.
+CWWKB0382I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} Is a string representing a Liberty server name
+#{1} Is a string representing an IMS OTMA client name
+CWWKB0383I=CWWKB0383I: {0} {1}
+CWWKB0383I.explanation=WebSphere Application Server for z/OS  \uc11c\ubc84 \uc774\ub984 \ubc0f \uc120\ud589 CWWKB0382I \uba54\uc2dc\uc9c0\uc5d0 \uc758\ud574 \uc2dd\ubcc4\ub41c IMS \uc2dc\uc2a4\ud15c\uacfc\uc758 \uc5f0\uacb0\uc5d0 \uc0ac\uc6a9\ub418\ub294 OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0383I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0384I=CWWKB0384I: OTMA \uc774\ub984 \ud480\uc774 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CWWKB0384I.explanation=\uc774 \uc2dc\uc2a4\ud15c\uc5d0 \ub300\ud55c OTMA \uc774\ub984 \ud480\uc774 \uc544\uc9c1 \uc791\uc131\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c display \uba85\ub839\uc73c\ub85c \ud45c\uc2dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKB0384I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0385I=CWWKB0385I: {0}\uc740(\ub294) OTMA \uc774\ub984 \ud480\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0385I.explanation=OTMANAMES \uba85\ub839\uc5d0 \ub300\ud55c \uc124\uba85\uc785\ub2c8\ub2e4.
+CWWKB0385I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} Is a number >= 0
+CWWKB0386I=CWWKB0386I: IMS {0} \ub2f9 \ucd5c\ub300 \uc774\ub984
+CWWKB0386I.explanation=WebSphere Application Server for z/OS\uc5d0\uc11c \uac01 IMS \uc2dc\uc2a4\ud15c\uc5d0 \uc5f0\uacb0\ud558\ub294 \ub370 \uc0ac\uc6a9\ud560 \uc218 \uc788\ub294 \ucd5c\ub300 OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984 \uc218\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.
+CWWKB0386I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+#{0} Is a string
+#{1} is a hexidecimal number (a timestamp in STCK format)
+CWWKB0387I=CWWKB0387I: {1}\uc5d0 {0}\uc774(\uac00) \uc124\uc815
+CWWKB0387I.explanation=\ucd5c\ub300 OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984 \uc218\ub97c \uc124\uc815\ud558\ub294 WebSphere Application Server for z/OS \ub514\uba3c \uadf8\ub8f9 \uc774\ub984\uc744 \ud45c\uc2dc\ud569\ub2c8\ub2e4. OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc744 \uc0ac\uc6a9\ud558\uc5ec WebSphere Application Server for z/OS \uc778\uc2a4\ud134\uc2a4\uac00 \uc5f0\uacb0\ub418\ub294 IMS \uc2dc\uc2a4\ud15c\uc744 \ud655\uc778\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ucd5c\ub300 OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984 \uc218\uac00 \uc124\uc815\ub41c \uc2dc\uac04(STCK \ud615\uc2dd)\ub3c4 \ud45c\uc2dc\ub429\ub2c8\ub2e4. \ucd5c\ub300 OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984 \uc218\ub294 CWWKB0386I \uba54\uc2dc\uc9c0\ub97c \uc0ac\uc6a9\ud558\uc5ec \ud45c\uc2dc\ub429\ub2c8\ub2e4.
+CWWKB0387I.useraction=\uc5c6\uc74c
+#-----------------------------------------------------------------------
+CWWKB0388W=CWWKB0388W: Optimized Local Adapters RAR\uc774 \ud504\ub85d\uc2dc \ubaa8\ub4dc\uc5d0\uc11c \uc791\ub3d9\ud558\uace0 \uc788\uc73c\uba70 \ub85c\uceec \ub610\ub294 \uae00\ub85c\ubc8c \ud2b8\ub79c\uc7ad\uc158\uc5d0 \ucc38\uc5ec\ud558\uc9c0 \uc54a\uc744 \uac83\uc785\ub2c8\ub2e4.
+CWWKB0388W.explanation=Optimized Local Adapters RAR\uc774 z/OS \uc774\uc678\uc758 \ud50c\ub7ab\ud3fc\uc5d0 \uc124\uce58\ub41c \uacbd\uc6b0 \ud504\ub85d\uc2dc EJB\uac00 \uc124\uce58\ub41c WebSphere Application Server\uc640 \ud1b5\uc2e0\ud558\uba70 \ud504\ub85d\uc2dc \ubaa8\ub4dc\ub85c \uc791\ub3d9\ud569\ub2c8\ub2e4. \uc774 \ubaa8\ub4dc\ub85c \uc2e4\ud589 \uc911\uc778 \uacbd\uc6b0 \ud2b8\ub79c\uc7ad\uc158\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc790\uc6d0 \uc5b4\ub311\ud130\ub294 \uc218\uc2e0\ub418\ub294 \ubaa8\ub4e0 \ud2b8\ub79c\uc7ad\uc158 \ud504\ub85c\ud1a0\ucf5c \uba54\uc2dc\uc9c0\ub97c \ubb34\uc2dc\ud560 \uac83\uc785\ub2c8\ub2e4.
+CWWKB0388W.useraction=\uc5c6\uc74c. \uc774 \uba54\uc2dc\uc9c0\ub294 \ud504\ub85d\uc2dc \ubaa8\ub4dc\uc5d0\uc11c \uc790\uc6d0 \uc5b4\ub311\ud130\uac00 \ucc98\uc74c\uc73c\ub85c \ud2b8\ub79c\uc7ad\uc158\uc5d0 \ub4f1\ub85d\ud558\ub824\uace0 \uc2dc\ub3c4\ud560 \ub54c \ubc1c\ud589\ub429\ub2c8\ub2e4.
+#-----------------------------------------------------------------------
+CWWKB0389E=CWWKB0389E: {0} JNDI \uc774\ub984\uc73c\ub85c \uc2dd\ubcc4\ub41c Enterprise Java Bean \ub300\uc0c1\uc5d0\uc11c WOLA(WebSphere Optimized Local Adapter) \uc6d0\uaca9 \uc791\uc5c5 \uc694\uccad\uc744 \ucc98\ub9ac\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ubc1c\uc0dd\ud55c \uc608\uc678\ub294 {1}\uc785\ub2c8\ub2e4.
+CWWKB0389E.explanation=\uc6d0\uaca9 Enterprise Java Bean \ub300\uc0c1\uc5d0\uc11c WOLA(WebSphere Optimized Local Adapter) \uc6d0\uaca9 \uc791\uc5c5 \uc694\uccad\uc744 \ucc98\ub9ac\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CWWKB0389E.useraction=\uc81c\uacf5\ub41c JNDI(Java Naming and Directory Interface) \uc774\ub984\uc774 \uc815\ud655\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. Enterprise Java Bean \ub300\uc0c1\uc774 \ud638\ucd9c\uc790\uac00 \ubcf4\uace0 \ub3c4\ub2ec\ud560 \uc218 \uc788\ub294 \ubc94\uc704 \ub0b4\uc5d0 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. WebSphere Application Server for z/OS \ub85c\uadf8 \ubc0f FFDC(First Failure Data Capture)\uc5d0\uc11c \uc6d0\uaca9 Enterprise Java Bean \ud638\ucd9c\uacfc \uc5f0\uad00\ub41c \uc608\uc678\ub97c \ucc3e\uc73c\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+#{0} is a string representing a transaction identifier (XID)
+CWWKB0390E=CWWKB0390E: \uc2e4\ud328\ud55c \uc694\uccad\uc758 \ud2b8\ub79c\uc7ad\uc158 XID: {0}
+CWWKB0390E.explanation=WebSphere Application Server for z/OS\uac00 CWWKB0381E \uba54\uc2dc\uc9c0\uc5d0\uc11c \uc2e4\ud328\ud55c WOLA(WebSphere Optimized Local Adapters) \ud2b8\ub79c\uc7ad\uc158 \ud574\uacb0 \uc694\uccad\uc744 \ubcf4\uace0\ud588\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \uc2e4\ud328\ud55c \uc694\uccad\uc5d0 \ub300\ud55c \ud2b8\ub79c\uc7ad\uc158 ID\ub97c \ud3ec\ud568\ud569\ub2c8\ub2e4.
+CWWKB0390E.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\uc758 \uc815\ubcf4\ub294 CWWKB0381E \uba54\uc2dc\uc9c0\uc5d0\uc11c \ubcf4\uace0\ub41c \uc7a5\uc560\ub97c \ud574\uacb0\ud558\ub294 \ub370 \uc720\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+#-----------------------------------------------------------------------
+#{0} is a string representing a registration name
+CWWKB0391E=CWWKB0391E: \uc694\uccad\ub41c \ub4f1\ub85d \uc774\ub984 {0}\uc758 \uc704\uce58\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c
+CWWKB0391E.explanation=\uc790\uc6d0 \uc5b4\ub311\ud130\uac00 \uc694\uccad\ub41c \ub4f1\ub85d \uc774\ub984\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKB0391E.useraction=ConnectionFactory \ud2b9\uc131 \ub610\ub294 getConnection\uc5d0 \uc81c\uacf5\ub41c ConnectionSpecImpl\uc5d0 \ub4f1\ub85d \uc774\ub984\uc774 \uc815\ud655\ud558\uac8c \uc785\ub825\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+CWWKB0392W=CWWKB0392W: OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CWWKB0392W.explanation=OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc774 ConnectionSpec \ub610\ub294 server.xml\uc5d0 \uc9c0\uc815\ub418\uc5b4 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CWWKB0392W.useraction=OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc774 ConnectionSpecImpl.setOTMAClientName()\uc744 \ud1b5\ud574 ConnectionSpec\uc5d0 \uc124\uc815\ub418\uc5c8\uac70\ub098 server.xml\uc5d0 \uc124\uc815\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+#{0} is a string representing the name of an OTMA Client
+#{1} is a integer representing the maximum allowable length of an OTMA name
+CWWKB0393W=CWWKB0393W: \uc9c0\uc815\ub41c OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984({0})\uc774 \uacf5\ubc31\uc774\uac70\ub098 {1}\uc790 \uae38\uc774\ub97c \ucd08\uacfc\ud558\uac70\ub098 A-Z, 0-9, @, \# \ubc0f $ \uc774\uc678\uc758 \ubb38\uc790\ub97c \ud3ec\ud568\ud569\ub2c8\ub2e4.
+CWWKB0393W.explanation=OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984 \uae38\uc774\ub294 1\uacfc \uba54\uc2dc\uc9c0\uc5d0 \ud45c\uc2dc\ub41c \uae38\uc774 \uc0ac\uc774\uc5ec\uc57c \ud558\uba70 \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc740  A-Z, 0-9, @, \# \ub610\ub294 $ \ubb38\uc790\ub9cc\uc73c\ub85c \uad6c\uc131\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CWWKB0393W.useraction=\ud5c8\uc6a9\ub41c \ubb38\uc790\ub9cc \uc0ac\uc6a9\ud558\uace0 \ud55c\uacc4 \ub0b4\uc758 \uae38\uc774\ub97c \uac16\ub294 OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA Client name
+CWWKB0394I=CWWKB0394I: OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984({0})\uc774 \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+CWWKB0394I.explanation=\uc9c0\uc815\ub41c OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc774 OTMA \ud074\ub77c\uc774\uc5b8\ud2b8 \uc774\ub984\uc73c\ub85c \uc0ac\uc6a9\ub429\ub2c8\ub2e4. \uc774\ub294 server.xml \ub610\ub294 ConnectionSpec\uc5d0\uc11c \uc81c\uacf5\ub418\uc5c8\uac70\ub098 \uae30\ubcf8\uac12\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+CWWKB0394I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA name type, Server, or Group
+#{1} is a string representing the name of an OTMA Server, or OTMA Group
+#{2} is an integer representing the maximum allowable length of an OTMA name
+CWWKB0395E=CWWKB0395E: \uc9c0\uc815\ub41c OTMA {0} \uc774\ub984({1})\uc774 \uacf5\ubc31\uc774\uac70\ub098 {2}\uc790 \uae38\uc774\ub97c \ucd08\uacfc\ud558\uac70\ub098 A-Z, 0-9, @, \# \ubc0f $ \uc774\uc678\uc758 \ubb38\uc790\ub97c \ud3ec\ud568\ud569\ub2c8\ub2e4.
+CWWKB0395E.explanation=\ud45c\uc2dc\ub41c OTMA \uc774\ub984 \uae38\uc774\ub294 1\uacfc \uba54\uc2dc\uc9c0\uc5d0 \uc9c0\uc815\ub41c \uae38\uc774 \uc0ac\uc774\uc5ec\uc57c \ud558\uba70 \uc774\ub984\uc740 A-Z, 0-9, @, \# \ub610\ub294 $\ub85c\ub9cc \uad6c\uc131\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CWWKB0395E.useraction=\ud5c8\uc6a9\ub41c \ubb38\uc790\ub9cc \uc0ac\uc6a9\ud558\uace0 \ud55c\uacc4 \ub0b4\uc758 \uae38\uc774\ub97c \uac16\ub294 OTMA \uc774\ub984\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+CWWKB0396E=CWWKB0396E: OTMA \uadf8\ub8f9 \uc774\ub984 \ubc0f OTMA \uc11c\ubc84 \uc774\ub984\uc774 ConnectionFactory \ub610\ub294 ConnectionSpec\uc5d0 \uc9c0\uc815\ub418\uc5b4 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+CWWKB0396E.explanation=OTMA \uadf8\ub8f9 \uc774\ub984\uc774\ub098 OTMA \uc11c\ubc84 \uc774\ub984 \ub610\ub294 \ub458 \ub2e4\uc5d0 \ub300\ud574 \uac12\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CWWKB0396E.useraction=OTMA \uadf8\ub8f9 \uc774\ub984 \ubc0f OTMA \uc11c\ubc84 \uc774\ub984\uc774 ConnectionFactory \ub610\ub294 ConnectionSpec\uc5d0 \uc9c0\uc815\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+#-----------------------------------------------------------------------
+#{0} is a string representing the Maximum configured Receive Message size
+#{1} is a string representing the Max Number of segments configured
+#{2} is a string representing the Reconfigured maximum receive message size 
+CWWKB0397W=CWWKB0397W: \uc9c0\uc815\ub41c OTMA \ucd5c\ub300 \uad6c\uc131 \uc218\uc2e0 \ud06c\uae30 {0}\uc774(\uac00) \uad6c\uc131\ub41c \ucd5c\ub300 \uc138\uadf8\uba3c\ud2b8 {1}\uc5d0 \ub300\ud574 \ud5c8\uc6a9\ub418\ub294 \ucd5c\ub300 \uba54\uc2dc\uc9c0 \ud06c\uae30\ubcf4\ub2e4 \ud07d\ub2c8\ub2e4. \ucd5c\ub300 \uc218\uc2e0 \uba54\uc2dc\uc9c0 \ud06c\uae30\uac00 {2}(\uc73c)\ub85c \ubcc0\uacbd\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWWKB0397W.explanation=\uad6c\uc131\ub41c \ucd5c\ub300 \uc218\uc2e0 \uba54\uc2dc\uc9c0 \ud06c\uae30\uac00 \uad6c\uc131\ub41c \ucd5c\ub300 \uc138\uadf8\uba3c\ud2b8 \uc218\uc5d0\uc11c \ucc98\ub9ac\ud560 \uc218 \uc788\ub294 \uba54\uc2dc\uc9c0\uc758 \ud06c\uae30\ubcf4\ub2e4 \ud07d\ub2c8\ub2e4. \uac01 \uc138\uadf8\uba3c\ud2b8\ub294 32k\uc758 \ub370\uc774\ud130\ub9cc \uc804\ub2ec\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. 
+CWWKB0397W.useraction=\uad6c\uc131\uc744 \uac80\ud1a0\ud558\uace0 \ucd5c\ub300 \uba54\uc2dc\uc9c0 \uae38\uc774 \ubc0f \ucd5c\ub300 \uc138\uadf8\uba3c\ud2b8 \uc218\uac00 \uc62c\ubc14\ub974\uac8c \uad6c\uc131\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. 

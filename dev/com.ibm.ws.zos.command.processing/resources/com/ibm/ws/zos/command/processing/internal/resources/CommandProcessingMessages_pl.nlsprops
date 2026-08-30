@@ -1,0 +1,101 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Command Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: command processing
+# -------------------------------------------------------------------------------------------------
+
+STOP_COMMAND_RECEIVED=CWWKB0001I: Odebrano komend\u0119 zatrzymania dla serwera {0}.
+STOP_COMMAND_RECEIVED.explanation=Serwer odebra\u0142 komend\u0119 zatrzymania.  Serwer rozpocznie wy\u0142\u0105czanie.
+STOP_COMMAND_RECEIVED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is target command
+#{1} is completion status
+MODIFY_COMMAND_COMPLETED=CWWKB0002I: Komenda modyfikowania {0} zosta\u0142a zako\u0144czona ze statusem {1}.
+MODIFY_COMMAND_COMPLETED.explanation=Serwer zako\u0144czy\u0142 przetwarzanie wskazanej komendy. Je\u015bli komenda nie zostanie zako\u0144czona pomy\u015blnie, wcze\u015bniejsze komunikaty b\u0119d\u0105 zawiera\u0142y informacje o przyczynie.
+MODIFY_COMMAND_COMPLETED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is native error code
+NATIVE_ERROR_COMMAND_RECEIVED=CWWKB0003E: Przetwarzanie komend odebra\u0142o kod b\u0142\u0119du {0} od wywo\u0142ania rodzimego.
+NATIVE_ERROR_COMMAND_RECEIVED.explanation=Serwer wywo\u0142a\u0142 kod rodzimy w zwi\u0105zku z us\u0142ug\u0105 powi\u0105zan\u0105 z przetwarzaniem komend.  Kod rodzimy napotka\u0142 problem zidentyfikowany przez wy\u015bwietlony kod b\u0142\u0119du.
+NATIVE_ERROR_COMMAND_RECEIVED.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia dotycz\u0105cego kodu rodzimego.
+
+#{0} is command response from the command handler
+MODIFY_COMMAND_HANDLER_MSG=CWWKB0004I: {0}
+MODIFY_COMMAND_HANDLER_MSG.explanation=Serwer odebra\u0142 komend\u0119 modyfikowania w celu jej przetworzenia.  To jest komunikat odpowiedzi na komend\u0119 pochodz\u0105cy z procedury obs\u0142ugi komend.  Komunikat CWWKB0005I identyfikuje procedur\u0119 obs\u0142ugi komend.
+MODIFY_COMMAND_HANDLER_MSG.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is the command handler completion status
+#{1} is the modify command handler name
+MODIFY_COMMAND_HANDLER_DONE=CWWKB0005I: Odpowiedzi komend zosta\u0142y zako\u0144czone ze statusem {0} (procedura obs\u0142ugi: {1}).
+MODIFY_COMMAND_HANDLER_DONE.explanation=Serwer odebra\u0142 komend\u0119 modyfikowania w celu jej przetworzenia.  Ten komunikat wskazuje, \u017ce procedura obs\u0142ugi komend zako\u0144czy\u0142a przetwarzanie komendy.
+MODIFY_COMMAND_HANDLER_DONE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is target command
+MODIFY_COMMAND_UNKNOWN=CWWKB0006W: Komenda modyfikowania {0} nie jest znana dla \u017cadnej aktywnej procedury obs\u0142ugi komend.
+MODIFY_COMMAND_UNKNOWN.explanation=Serwer zako\u0144czy\u0142 przetwarzanie wskazanej komendy.  \u017badna z aktywnych procedur obs\u0142ugi komend nie zg\u0142osi\u0142a przetwarzania komendy. 
+MODIFY_COMMAND_UNKNOWN.useraction=Sprawd\u017a sk\u0142adni\u0119 komendy, aby si\u0119 upewni\u0107, \u017ce jest poprawna, i wprowad\u017a ponownie komend\u0119.
+
+#{0} is the modify command handler name
+MODIFY_HANDLER_ERROR=CWWKB0007E: Odebrano b\u0142\u0105d z procedury obs\u0142ugi komend {0}.
+MODIFY_HANDLER_ERROR.explanation=Serwer odebra\u0142 komend\u0119 modyfikowania w celu jej przetworzenia.  Ten komunikat wskazuje, \u017ce podczas przetwarzania komendy procedura obs\u0142ugi komend napotka\u0142a b\u0142\u0105d.
+MODIFY_HANDLER_ERROR.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 przyczyn\u0119 b\u0142\u0119du dotycz\u0105cego procedury obs\u0142ugi komend.
+
+#{0} is command response related message 
+MODIFY_NLSBUILDMSG_FAILED=CWWKB0008E: {0}.
+MODIFY_NLSBUILDMSG_FAILED.explanation=Serwer podj\u0105\u0142 pr\u00f3b\u0119 wys\u0142ania komunikatu odpowiedzi na komend\u0119.  Nie mo\u017cna rozstrzygn\u0105\u0107 komunikatu przy pomocy pakunku komunikatu.  
+MODIFY_NLSBUILDMSG_FAILED.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 przyczyn\u0119 pokrewnego b\u0142\u0119du dotycz\u0105cego procedury obs\u0142ugi komend.
+
+
+MESSAGE_TRANSLATE_ERROR=CWWKB0009E: Odpowiedzi komendy nie mo\u017cna przet\u0142umaczy\u0107 na kodowanie rodzime.
+MESSAGE_TRANSLATE_ERROR.explanation=Serwer podj\u0105\u0142 pr\u00f3b\u0119 wys\u0142ania komunikatu odpowiedzi na komend\u0119.  Serwer nie m\u00f3g\u0142 przet\u0142umaczy\u0107 komunikatu odpowiedzi na kodowanie rodzime (Cp1047).
+MESSAGE_TRANSLATE_ERROR.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 przyczyn\u0119 b\u0142\u0119du.
+
+COMMAND_TRANSLATE_ERROR=CWWKB0010E: Niepoprawny format odebranej komendy modyfikowania. 
+COMMAND_TRANSLATE_ERROR.explanation=Serwer odebra\u0142 komend\u0119 modyfikowania.  Serwer nie m\u00f3g\u0142 przet\u0142umaczy\u0107 tekstu komendy z kodowania rodzimego (Cp1047).
+COMMAND_TRANSLATE_ERROR.useraction=Przejrzyj dzienniki serwera, aby okre\u015bli\u0107 przyczyn\u0119 b\u0142\u0119du.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_HDR=CWWKB0011I: POCZ\u0104TEK INFORMACJI POMOCY Z PROCEDURY {0}.
+MODIFY_COMMAND_HANDLER_HELP_HDR.explanation=Komunikat reprezentuje pocz\u0105tek informacji pomocniczej ze wskazanej procedury obs\u0142ugi komend.
+MODIFY_COMMAND_HANDLER_HELP_HDR.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is the help text from a command handler
+MODIFY_COMMAND_HANDLER_HELP_TXT=CWWKB0012I: {0}
+MODIFY_COMMAND_HANDLER_HELP_TXT.explanation=Zostan\u0105 wy\u015bwietlone informacje pomocy ze wskazanej procedury obs\u0142ugi komend.
+MODIFY_COMMAND_HANDLER_HELP_TXT.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_END=CWWKB0013I: KONIEC INFORMACJI POMOCY Z PROCEDURY {0}.
+MODIFY_COMMAND_HANDLER_HELP_END.explanation=Komunikat reprezentuje koniec informacji pomocniczej ze wskazanej procedury obs\u0142ugi komend.
+MODIFY_COMMAND_HANDLER_HELP_END.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+FILE_DELETE_UNSUCCESSFUL=CWWKB0014W: NIE MO\u017bNA USUN\u0104\u0106 PLIKU PID.
+FILE_DELETE_UNSUCCESSFUL.explanation=Serwer pr\u00f3bowa\u0142 usun\u0105\u0107 plik pid podczas zatrzymywania serwera.  Nie m\u00f3g\u0142 usun\u0105\u0107 pliku pid okre\u015blonego przez element {0}.
+FILE_DELETE_UNSUCCESSFUL.useraction=Sprawd\u017a w dziennikach serwera, czy serwer zosta\u0142 zatrzymany poprawnie.

@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm.ejb/resources/com.ibm.ws.zos.wlm.ejb.internal.resources/ZosWlmEjbMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB  z/OS WLM EJB (MDB) classification
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0701-0750 z/OS WLM EJB (MDB) classification
+# -------------------------------------------------------------------------------------------------
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0701W: Warto\u015b\u0107 atrybutu transactionClass {0} powi\u0105zana ze specyfikacj\u0105 aktywowania {1} w elemencie konfiguracji mdbClassification zosta\u0142a obci\u0119ta do warto\u015bci {2}. Warto\u015b\u0107 zosta\u0142a obci\u0119ta, poniewa\u017c przekracza maksymaln\u0105 dozwolon\u0105 liczb\u0119 znak\u00f3w, kt\u00f3ra wynosi {3}.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=Warto\u015b\u0107 wspomnianego skonfigurowanego atrybutu transactionClass w elemencie konfiguracji mdbClassification zosta\u0142a obci\u0119ta do maksymalnej dozwolonej d\u0142ugo\u015bci znak\u00f3w. Je\u015bli wy\u015bwietlana specyfikacja aktywowania jest znakiem wieloznacznym, zosta\u0142a okre\u015blona w takiej postaci b\u0105d\u017a nie zosta\u0142a okre\u015blona i zosta\u0142a u\u017cyta warto\u015b\u0107 domy\u015blna.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Sprawd\u017a, czy atrybut transactionClass w elemencie konfiguracji mdbClassification zawiera warto\u015b\u0107, kt\u00f3ra nie przekracza maksymalnej d\u0142ugo\u015bci.
+
+MDB_CONFIG_INVALID_ACTIVATION_SPEC=CWWKB0702W: Warto\u015b\u0107 atrybutu jmsActivationSpec {0} powi\u0105zanego z klas\u0105 transakcji {1} w elemencie konfiguracji mdbClassification jest niepoprawna. Element mdbClassification zosta\u0142 zignorowany.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.explanation=Warto\u015b\u0107 wspomnianego skonfigurowanego atrybutu jmsActivationSpec w elemencie konfiguracji mdbClassification nie mo\u017ce by\u0107 pustym \u0142a\u0144cuchem ani sekwencj\u0105 spacji. Je\u015bli wy\u015bwietlana klasa transakcji jest pustym \u0142a\u0144cuchem, zosta\u0142a okre\u015blona w takiej postaci b\u0105d\u017a nie zosta\u0142a okre\u015blona i zosta\u0142a u\u017cyta warto\u015b\u0107 domy\u015blna.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.useraction=Sprawd\u017a, czy atrybut jmsActivationSpec w elemencie konfiguracji mdbClassification zawiera poprawn\u0105 warto\u015b\u0107.

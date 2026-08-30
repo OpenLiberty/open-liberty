@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.connect/resources/com.ibm.ws.zos.connect.internal.resources/ZosConnectMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Connect
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0601-0650: CWWKB: z/OS WLM asynchronous servlet context propagation.
+# ------------------------------------------------------------------------------------------------- 
+
+DEACTIVATE_ENCLAVE_DELETED=CWWKB0601W: \ud65c\uc131 \ube44\ub3d9\uae30 \uc791\uc5c5\uc774 \uacc4\uc18d \uc9c4\ud589\ub418\ub294 \ub3d9\uc548 \ube44\ub3d9\uae30 \uc11c\ube14\ub9bf\uc5d0 \ub300\ud55c \ucee8\ud14d\uc2a4\ud2b8 \uc804\ud30c \uc11c\ube44\uc2a4\uac00 \uc885\ub8cc \uc911\uc785\ub2c8\ub2e4. {0}\uc758 ID \ud1a0\ud070\uc744 \uc0ac\uc6a9\ud55c WLM \uace0\ub9bd \uc601\uc5ed\uc774 \uc0ad\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DEACTIVATE_ENCLAVE_DELETED.explanation= WLM \uae30\ub2a5, \uc11c\ube14\ub9bf \uae30\ub2a5 \ub610\ub294 \ub450 \uae30\ub2a5\uc774 \uc0ac\uc6a9 \ubd88\uac00\ub2a5\ud558\uae30 \ub54c\ubb38\uc5d0 \ube44\ub3d9\uae30 \uc11c\ube14\ub9bf\uc5d0 \ub300\ud55c \ucee8\ud14d\uc2a4\ud2b8 \uc804\ud30c \uc11c\ube44\uc2a4\uac00 \uc885\ub8cc \uc911\uc785\ub2c8\ub2e4.
+DEACTIVATE_ENCLAVE_DELETED.useraction=\uc791\uc5c5\uc774 \uacc4\uc18d \uc9c4\ud589\ub418\ub294 \ub3d9\uc548 WLM \uae30\ub2a5, \uc11c\ube14\ub9bf \uae30\ub2a5 \ub610\ub294 \ub450 \uae30\ub2a5\uc774 \uad6c\uc131 \ud30c\uc77c\uc5d0\uc11c \uc81c\uac70\ub418\uc9c0 \uc54a\uc558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

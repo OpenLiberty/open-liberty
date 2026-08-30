@@ -1,0 +1,116 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.wola/resources/com.ibm.ws.zos.channel.wola.internal.resources/ZWOLAChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0501-0550: WOLA Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_REGISTERED=CWWKB0501I: A WebSphere WebSphere Optimized Local Adapter csatorna regisztr\u00e1lva van a Liberty profilkiszolg\u00e1l\u00f3val, a k\u00f6vetkez\u0151 n\u00e9ven: {0} {1} {2}
+WOLA_SERVER_REGISTERED.explanation=A Liberty profilkiszolg\u00e1l\u00f3 regisztr\u00e1lta a WebSphere WebSphere Optimized Local Adapter elemet. Most m\u00e1r ind\u00edthat\u00f3k h\u00edv\u00e1sok a helyi nyelv\u0171 alkalmaz\u00e1sok \u00e9s a helyi Liberty profilkiszolg\u00e1l\u00f3-k\u00f6rnyezet k\u00f6z\u00f6tt.
+WOLA_SERVER_REGISTERED.useraction=Nincs teend\u0151.
+
+#{0} the key for part of the WOLA group name, for which the value contains at least one lowercase character
+#{1} the value for the part of the WOLA group name referred to by {0}, as given, containing at least one lowercase character
+#{2} the correct value referred to by {1}, now all uppercase
+WOLA_LOWERCASE_GROUP_NAME=CWWKB0502W: A WebSphere \u00e1ltal optimaliz\u00e1lt helyi adaptercsoport nev\u00e9nek {0} r\u00e9sze a zosLocalAdapters konfigur\u00e1ci\u00f3ban {1} \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, ami legal\u00e1bb egy kisbet\u0171s karaktert tartalmaz. Az \u00e9rt\u00e9k a k\u00f6vetkez\u0151re lesz m\u00f3dos\u00edtva: {2}.
+WOLA_LOWERCASE_GROUP_NAME.explanation=A z/OS biztons\u00e1gi alrendszer a kisbet\u0171s karaktereket nagybet\u0171sre alak\u00edtja, ami a konfigur\u00e1ci\u00f3j\u00e1nak elt\u00e9r\u00e9seit okozhatja.
+WOLA_LOWERCASE_GROUP_NAME.useraction=Ne haszn\u00e1ljon kisbet\u0171s karaktereket a wolaGroup, wolaName2 \u00e9s wolaName3 \u00e9rt\u00e9keiben a zosLocalAdapters konfigur\u00e1ci\u00f3ban. Az elnevez\u00e9si meg\u00e1llapod\u00e1sokr\u00f3l tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tanulm\u00e1nyozza a Rendszerjogosults\u00e1gi szolg\u00e1ltat\u00e1s (SAF) dokument\u00e1ci\u00f3t.
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_UNAVAILABLE=CWWKB0503E: A WebSphere(R) optimaliz\u00e1lt helyi adaptercsatorn\u00e1ja, amely a(z) {0} {1} {2} nevet haszn\u00e1lja, nem volt el\u00e9rhet\u0151 a Liberty kiszolg\u00e1l\u00f3val t\u00f6rt\u00e9n\u0151 haszn\u00e1lat c\u00e9lj\u00e1b\u00f3l. Ellen\u0151rizze, hogy m\u00e1s Liberty kiszolg\u00e1l\u00f3 nem haszn\u00e1lja az ezen a kiszolg\u00e1l\u00f3n alkalmazottal megegyez\u0151 zosLocalAdapters konfigur\u00e1ci\u00f3t.
+WOLA_SERVER_UNAVAILABLE.explanation=A Liberty kiszolg\u00e1l\u00f3 nem tudta haszn\u00e1lni a zosLocalAdapters konfigur\u00e1ci\u00f3ban megadott nevet a WebSphere optimaliz\u00e1lt helyi adaptereinek bejegyz\u00e9s\u00e9hez. El\u0151fordulhat, hogy egy m\u00e1sik Liberty kiszolg\u00e1l\u00f3 is ugyanezt a nevet haszn\u00e1lja.
+WOLA_SERVER_UNAVAILABLE.useraction=A k\u00f6rnyezet ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy m\u00e1s Liberty kiszolg\u00e1l\u00f3k nem haszn\u00e1lj\u00e1k az ezen a kiszolg\u00e1l\u00f3n alkalmazottal megegyez\u0151 zosLocalAdapters konfigur\u00e1ci\u00f3t. 
+
+# ------------------------------------------------------------------------------------------------
+# OTMA Message Parsing section for WOLA
+# ------------------------------------------------------------------------------------------------
+
+#{0} The segment number in question
+OTMA_RESP_MSG_PARSE_ERR=CWWKB0504E: Az OTMA v\u00e1lasz\u00fczenet {0} szegmens\u00e9hez megadott szegmenshossz nem felel meg a szegmens t\u00e9nyleges m\u00e9ret\u00e9nek.
+OTMA_RESP_MSG_PARSE_ERR.explanation=Hiba t\u00f6rt\u00e9nt az IMS kiszolg\u00e1l\u00f3t\u00f3l kapott OTMA v\u00e1lasz\u00fczenet \u00e9rtelmez\u00e9sekor. A fejl\u00e9cben jelzett m\u00e9ret nem felel meg az \u00fczenetadatok t\u00e9nyleges m\u00e9ret\u00e9nek.
+OTMA_RESP_MSG_PARSE_ERR.useraction=Ellen\u0151rizze az alkalmaz\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e9rv\u00e9nyes OTMA form\u00e1tum\u00fa \u00fczeneteket \u00e1ll\u00edt el\u0151.
+
+#{0} is the Total Message Length identified by headers
+#{1] is the actual header message length
+OTMA_RESP_HEADER_SHORT=CWWKB0505E: A(z) {0} \u00e1ltal megadott OTMA v\u00e1lasz\u00fczenet hossz kevesebb, mint a t\u00e9nyleges \u00fczenet {1} pufferhossza.
+OTMA_RESP_HEADER_SHORT.explanation=Hiba t\u00f6rt\u00e9nt az IMS kiszolg\u00e1l\u00f3t\u00f3l kapott OTMA v\u00e1lasz\u00fczenet \u00e9rtelmez\u00e9sekor. A fejl\u00e9cben jelzett m\u00e9ret nem felel meg az \u00fczenetadatok t\u00e9nyleges m\u00e9ret\u00e9nek.
+OTMA_RESP_HEADER_SHORT.useraction=Ellen\u0151rizze az alkalmaz\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00fczenet szegmens fejl\u00e9chossz megegyezik az \u00fczenetadatok hossz\u00e1val.
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number in this message
+OTMA_REQ_HEADER_INVALID=CWWKB0506E: A(z) {1} sz\u00e1m\u00fa szegmens eset\u00e9n az OTMA k\u00e9r\u00e9s szegmens {0} hossza \u00e9rv\u00e9nytelen.
+OTMA_REQ_HEADER_INVALID.explanation=Hiba t\u00f6rt\u00e9nt egy OTMA v\u00e1lasz\u00fczenet \u00e9rtelmez\u00e9sekor. Az \u00fczenet szegmens fejl\u00e9cben megadott \u00fczenethossz nagyobb, mint 32768, vagy kisebb, mint az \u00fczenet minim\u00e1lis hossza. 
+OTMA_REQ_HEADER_INVALID.useraction=Ellen\u0151rizze az alkalmaz\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00fczenet fejl\u00e9chosszok \u00e9rv\u00e9nyesek. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy az OTMA v\u00e1lasz\u00fczenet hossza megegyezik a fejl\u00e9chosszban megadott byte-ok teljes sz\u00e1m\u00e1val.
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the actual number of bytes left in the buffer
+#{2} is the segment number being processed
+OTMA_REQ_HEADER_SHORT=CWWKB0507E: A(z) {0} OTMA k\u00e9r\u00e9s szegmens fejl\u00e9chossz meghaladja a fennmarad\u00f3 {1} pufferhosszt a(z) {2} szegmens eset\u00e9n.
+OTMA_REQ_HEADER_SHORT.explanation=Hiba t\u00f6rt\u00e9nt egy OTMA v\u00e1lasz\u00fczenet \u00e9rtelmez\u00e9sekor. A szegmens fejl\u00e9cben megadott hossz nagyobb, mint az adatpufferben fennmaradt byte-ok sz\u00e1ma. 
+OTMA_REQ_HEADER_SHORT.useraction=Ellen\u0151rizze az alkalmaz\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00fczenet fejl\u00e9chosszok \u00e9rv\u00e9nyesek. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy az OTMA v\u00e1lasz\u00fczenet hossza megegyezik a fejl\u00e9chosszban megadott byte-ok teljes sz\u00e1m\u00e1val.
+ 
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number being processed
+OTMA_RESP_MSG_SEG_SMALL=CWWKB0508E: A megadott {0} OTMA v\u00e1lsz fejl\u00e9chossz meghaladja a bemeneti puffer m\u00e9ret\u00e9t a(z) {1} \u00fczenet szegmens eset\u00e9n. 
+OTMA_RESP_MSG_SEG_SMALL.explanation=A v\u00e1lasz szegmenshez megadott fejl\u00e9c nagyobb, mint az \u00fczenetpufferben megmaradt byte-ok sz\u00e1ma. 
+OTMA_RESP_MSG_SEG_SMALL.useraction=Ellen\u0151rizze az alkalmaz\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetfejl\u00e9c-hosszok megfelelnek a pufferm\u00e9retnek.
+
+#{0} is the segment count from the segment header array
+#{1} is the number of elements in the header array
+OTMA_RESP_COUNT_INVALID=CWWKB0509E: Az OTMA \u00fczenetv\u00e1lasz sz\u00e1m \u00e1ltal megadott {0} nem egyezik a szegmensek t\u00e9nyleges sz\u00e1m\u00e1val ({1}). 
+OTMA_RESP_COUNT_INVALID.explanation=A v\u00e1lasz szegmenshez megadott fejl\u00e9c nagyobb, mint az \u00fczenetpufferben megmaradt byte-ok sz\u00e1ma. 
+OTMA_RESP_COUNT_INVALID.useraction=Ellen\u0151rizze az alkalmaz\u00e1st, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetfejl\u00e9c-hosszok megfelelnek a pufferm\u00e9retnek.
+
+
+#{0} is the segment count from the segment header array
+#{1} is the max number of segments configured for the connection
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED=CWWKB0510E: A(z) {0} OTMA k\u00e9r\u00e9s szegmenssz\u00e1ma t\u00fall\u00e9pi a szegmensek maxim\u00e1lisan megengedett sz\u00e1m\u00e1t: {1} . 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.explanation=A k\u00e9r\u00e9sszegmensek sz\u00e1ma nagyobb, mint a szegmensek jelenleg be\u00e1ll\u00edtott maxim\u00e1lisan megengedett sz\u00e1ma. 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.useraction=Ellen\u0151rizze a csatlakoz\u00e1s specifik\u00e1ci\u00f3j\u00e1nak konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gondoskodjon a szegmensek maxim\u00e1lis sz\u00e1m\u00e1nak megfelel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l.
+
+#{0} is the 3rd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS actually returned
+#{1} is the 2nd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS wanted to return
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED=CWWKB0511E: Az OTMA v\u00e1laszszegmensek sz\u00e1ma ({0}) t\u00fall\u00e9pi a szegmensek maxim\u00e1lisan megengedett sz\u00e1m\u00e1t: {1}.
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.explanation=A v\u00e1laszszegmensek sz\u00e1ma nagyobb, mint a szegmensek jelenleg be\u00e1ll\u00edtott maxim\u00e1lisan megengedett sz\u00e1ma. Az IMS visszak\u00fcldi a szegmensek maxim\u00e1lis sz\u00e1m\u00e1t, \u00e9s a v\u00e9gs\u0151 szegmensben \u00f6sszef\u0171zi a megengedett maximumot meghalad\u00f3 v\u00e1laszszegmenseket. 
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.useraction=Ellen\u0151rizze a csatlakoz\u00e1s specifik\u00e1ci\u00f3j\u00e1nak konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gondoskodjon a szegmensek maxim\u00e1lis sz\u00e1m\u00e1nak megfelel\u0151 be\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l.
+
+# ------------------------------------------------------------------------------------------------
+# OK back to generic WOLA messages
+# ------------------------------------------------------------------------------------------------
+
+#{0} is the WOLA group name, a string of length 1-8
+#{1} is a registration count, an integer >= 500
+WOLA_GROUP_REGISTRATION_COUNT=CWWKB0512I: A(z) {0} WOLA csoport {1} regisztr\u00e1ci\u00f3t tartalmaz.
+WOLA_GROUP_REGISTRATION_COUNT.explanation=T\u00f6bb, mint 500 regisztr\u00e1ci\u00f3 van a WOLA csoportban. A regisztr\u00e1ci\u00f3k sz\u00e1ma megjelen\u00edt\u00e9sre ker\u00fcl az \u00fczenetben.
+WOLA_GROUP_REGISTRATION_COUNT.useraction=Nincs teend\u0151.

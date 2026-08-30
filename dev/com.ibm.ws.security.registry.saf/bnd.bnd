@@ -1,0 +1,62 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere SAF User Registry
+Bundle-SymbolicName: com.ibm.ws.security.registry.saf
+Bundle-Description: WebSphere SAF User Registry; version=${bVersion}
+
+WS-TraceGroup: UserRegistry
+
+Export-Package: com.ibm.wsspi.security.registry.saf;provide:=true
+
+Private-Package: \
+    com.ibm.ws.security.registry.saf.internal.*
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+    
+-dsannotations: com.ibm.ws.security.registry.saf.internal.SAFDelegatingUserRegistry,\
+				com.ibm.ws.security.registry.saf.internal.SAFPasswordUtilityImpl
+
+-metatypeannotations: com.ibm.ws.security.registry.saf.internal.SAFRegistryConfig
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
+	com.ibm.ws.security.credentials.saf;version=latest,\
+	com.ibm.ws.zos.core;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.bnd.annotations;version=latest
+
+instrument.classesExcludes: com/ibm/ws/security/registry/saf/internal/resources/SAFRegistryMessages*.class
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	cglib:cglib-nodep;version=3.3.0, \
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.credentials;version=latest,\
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.jmock:jmock-legacy;version=2.5.0
+	
