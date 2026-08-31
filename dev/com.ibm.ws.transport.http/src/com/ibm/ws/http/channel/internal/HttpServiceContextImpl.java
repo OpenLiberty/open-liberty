@@ -373,6 +373,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         return metadata == null ? -1 : metadata.streamId();
     }
 
+    private void bindNettyRequestVersion(TCPWriteRequestContext writeInterface) {
+        if (writeInterface instanceof NettyTCPWriteRequestContext) {
+            RequestMetadata metadata = nettyRequestMetadata;
+            ((NettyTCPWriteRequestContext) writeInterface).setHttp10Request(metadata != null
+                            && metadata.protocol() == NettyHttpConstants.ProtocolName.HTTP10);
+        }
+    }
+
     public void setNettyResponse(io.netty.handler.codec.http.HttpResponse response) {
         this.nettyResponse = response;
     }
@@ -3677,6 +3685,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing (async) " + writeBuffers.length + " buffers.");
             }
+            bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             return getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, callback, isForceAsync(), getWriteTimeout());
         }
@@ -3709,6 +3718,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Writing (sync) " + writeBuffers.length + " buffers.");
             }
 
+            bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             try {
                 getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, getWriteTimeout());
@@ -3795,6 +3805,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).queuePrefixObject(nettyResponse);
             }
 
+            bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             try {
                 if(!nettyContext.channel().isOpen()){

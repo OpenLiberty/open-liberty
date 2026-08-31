@@ -230,7 +230,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP1_PROTOCOL_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-                establishHttp1Protocol(ctx, msg, Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.IS_SECURE).get()));
+                establishHttp1Protocol(ctx, Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.IS_SECURE).get()));
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
             }
         });
@@ -273,7 +273,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                     pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 }
 
-                establishHttp1Protocol(ctx, msg, false);
+                establishHttp1Protocol(ctx, false);
       
 
                 Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
@@ -313,13 +313,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         });
     }
 
-    private static void establishHttp1Protocol(ChannelHandlerContext context, HttpMessage message, boolean secure) {
-        ProtocolName protocol = message.protocolVersion().equals(HttpVersion.HTTP_1_0)
-                        ? ProtocolName.HTTP10 : ProtocolName.HTTP1;
-        ProtocolSource source = protocol == ProtocolName.HTTP10
-                        ? (secure ? ProtocolSource.TLS_HTTP10 : ProtocolSource.CLEARTEXT_HTTP10)
-                        : (secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1);
-        ProtocolState.establish(context.channel(), protocol, source);
+    private static void establishHttp1Protocol(ChannelHandlerContext context, boolean secure) {
+        ProtocolSource source = secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1;
+        ProtocolState.establish(context.channel(), ProtocolName.HTTP1, source);
     }
 
     /**
