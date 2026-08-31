@@ -65,6 +65,7 @@ public class LTPATokenRefreshTests {
     private static final int PAST_EXPIRY_S      = 190;
 
     private static final String CFG_TOKEN_REFRESH                      = "serverTokenRefresh.xml";
+    private static final String CFG_TOKEN_OLD_CONFIG                   = "serverTokenOldConfig.xml";
     private static final String CFG_TOKEN_REFRESH_ONLY                 = "serverTokenRefreshOnly.xml";
     private static final String CFG_TOKEN_INACTIVITY_ONLY              = "serverTokenInactivityOnly.xml";
     private static final String CFG_TOKEN_EXCEEDS_EXPIRY               = "serverTokenInactivityExceedsExpiration.xml";
@@ -213,31 +214,31 @@ public class LTPATokenRefreshTests {
         Log.info(thisClass, method, "PASSED: cookie attributes present on refreshed token");
     }
 
-    // Verifies that a token issued under the old config is accepted immediately after a config switch,
-    // and that the new config's inactivity timeout is enforced for subsequently issued tokens.
+    // Verifies that when the server starts with no inactivityTimeout/refreshThreshold configured,
+    // switching to a config that enables both activates refresh and inactivity enforcement immediately.
     @Test
     public void testTokenBehavesCorrectlyAfterConfigUpdate() throws Exception {
-        setConfig(CFG_TOKEN_EXCEEDS_EXPIRY);
+        setConfig(CFG_TOKEN_OLD_CONFIG);
         String url = getServletUrl();
         String method = "testTokenBehavesCorrectlyAfterConfigUpdate";
-        Log.info(thisClass, method, "Config: starts on " + CFG_TOKEN_EXCEEDS_EXPIRY + " expiration=3m, inactivityTimeout=4m, refreshThreshold=2m");
+        Log.info(thisClass, method, "initial config: " + CFG_TOKEN_OLD_CONFIG + " (expiration=2m, no inactivityTimeout, no refreshThreshold)");
 
         String cookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", 0, method);
 
-        Log.info(thisClass, method, "switching server configuration to " + CFG_TOKEN_REFRESH + " expiration=3m, inactivityTimeout=2m, refreshThreshold=1m");
+        Log.info(thisClass, method, "switching to " + CFG_TOKEN_REFRESH + " (expiration=3m, inactivityTimeout=2m, refreshThreshold=1m)");
         setConfig(CFG_TOKEN_REFRESH);
-        Log.info(thisClass, method, "config update complete; new inactivityTimeout=2m is now active");
+        Log.info(thisClass, method, "config update complete; refresh and inactivity are now active");
 
-        HttpURLConnection conn = ssoRequest(url, cookie, "SSO immediately after config switch", method);
-        assertEquals("Old cookie must be accepted immediately after config switch", 200, conn.getResponseCode());
+        // Feature is ON: a past-threshold token must be refreshed.
+        String agedCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        ssoRequestExpectingRefresh(url, agedCookie, "SSO past threshold after feature enabled (refresh expected)", method);
 
+        // Feature is ON: a past-inactivity token must be rejected.
         String expiredCookie = authenticateAndSetTokenAge(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
-
-        HttpURLConnection conn2 = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
-        int status = conn2.getResponseCode();
-        assertEquals("SSO must fail after new config's inactivity timeout: got HTTP " + status,
-                     401, status);
-        Log.info(thisClass, method, "PASSED: old-config cookie accepted after switch; new config's inactivity timeout correctly enforced");
+        HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO past inactivity after feature enabled (rejection expected)", method);
+        int status = conn.getResponseCode();
+        assertEquals("SSO must fail after inactivity timeout once feature is enabled: got HTTP " + status, 401, status);
+        Log.info(thisClass, method, "PASSED: feature inactive before config switch, refresh and inactivity enforced after switch");
     }
 
     // Verifies a token is rejected after the inactivity timeout and that re-authentication issues a new distinct cookie.
@@ -404,7 +405,6 @@ public class LTPATokenRefreshTests {
     // Asserts a new distinct Set-Cookie was issued and returns the new cookie value.
     private String assertTokenRefreshed(HttpURLConnection conn, String previousCookie) {
         String newCookie = extractCookie(conn);
-        Log.info(thisClass, "assertTokenRefreshed", "response header fields for new cookie: " + conn.getHeaderFields());
         assertNotNull("Expected a token refresh (new Set-Cookie: LtpaToken2) but none was issued", newCookie);
         assertFalse("Refreshed cookie must differ from the previous cookie", previousCookie.equals(newCookie));
         return newCookie;
