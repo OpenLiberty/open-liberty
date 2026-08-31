@@ -12,11 +12,11 @@
  -->
 
 <!--
-    RS client configuration used by NoOPResourceMetadataBetaNoMetadataRSServerTests.
+    RS client configuration used by NoOPNoResourceMetadataRSServerTests.
 
     Intentionally omits the <protectedResourceMetadata> sub-element so that we can
-    verify that, even on a beta-edition server, the resource_metadata parameter is
-    NOT included in the WWW-Authenticate 401 response when the element is absent.
+    verify that the resource_metadata parameter is NOT included in the WWW-Authenticate 401
+    response when the element is absent.
 
     The key properties:
       inboundPropagation="required" – the RS acts purely as a Bearer-token resource server;

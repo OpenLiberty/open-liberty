@@ -15,14 +15,20 @@ package io.openliberty.concurrent.internal.cdi;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
+import org.osgi.framework.InvalidSyntaxException;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
@@ -44,6 +50,7 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
@@ -54,6 +61,8 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 
 /**
@@ -76,6 +85,11 @@ public class ConcurrencyExtension implements Extension {
      * to force context capture to occur.
      */
     private boolean producedDefaultMTF;
+
+    /**
+     * Collects the bean classes that have methods directly annotated Schedule.
+     */
+    final List<AnnotatedType<?>> beanClassesWithScheduleMethods = new ArrayList<>();
 
     /**
      * Register interceptors before bean discovery.
@@ -122,16 +136,30 @@ public class ConcurrencyExtension implements Extension {
     }
 
     /**
+     * Collect a list of bean classes that have methods directly annotated Schedule.
+     *
+     * @param <T>   bean class
+     * @param event the event
+     */
+    public <T> void addAnnotatedType//
+    (
+     @Observes @WithAnnotations(Schedule.class) ProcessAnnotatedType<T> event) {
+        beanClassesWithScheduleMethods.add(event.getAnnotatedType());
+    }
+
+    /**
      * Register beans for default instances and qualified instances of concurrency
      * resources after bean discovery.
      *
-     * @param event
-     * @param beanManager
+     * Arranges for methods annotated Schedule to be scheduled upon application
+     * start.
+     *
+     * @param event the event
      */
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event,
-                                   BeanManager beanManager) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event) {
 
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl //
+                        .getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd == null)
             throw new IllegalStateException(); // should be unreachable
 
@@ -172,6 +200,35 @@ public class ConcurrencyExtension implements Extension {
             List<Map<List<String>, QualifiedResourceFactory>> listFromApp = extSvc.removeAll(jeeName.getApplication());
             if (listFromApp != null)
                 addBeans(event, listFromApp, extSvc);
+
+            // For bean classes with a method annotated @Schedule, group by the
+            // module that provides the bean class
+            // Group bean classes by module
+            if (!beanClassesWithScheduleMethods.isEmpty()) {
+                Map<J2EEName, List<AnnotatedType<?>>> perModule = new HashMap<>();
+                CDIService cdiSvc = extSvc.cdiServiceRef.getServiceWithException();
+                for (AnnotatedType<?> beanType : beanClassesWithScheduleMethods) {
+                    Optional<J2EEName> jeeNameOptional = cdiSvc //
+                                    .getModuleNameForClass(beanType.getJavaClass());
+                    if (jeeNameOptional.isEmpty()) {
+                        // TODO NLS error message
+                        throw new UnsupportedOperationException //
+                        (beanType.getJavaClass().getName() +
+                         " has one or more methods annotated Schedule" +
+                         " but the bean class is not associated with a" +
+                         " Jakarta EE application module.");
+                    }
+                    perModule.computeIfAbsent(jeeNameOptional.get(),
+                                              ConcurrencyExtension::newList) //
+                                    .add(beanType);
+                }
+                beanClassesWithScheduleMethods.clear();
+
+                // Arrange for methods with Schedule annotations to be scheduled when
+                // the application starts
+                if (!perModule.isEmpty())
+                    extSvc.scheduleOnAppStart(jeeName.getApplication(), perModule);
+            }
         });
 
         if (!successState) {
@@ -269,11 +326,12 @@ public class ConcurrencyExtension implements Extension {
      * Force context to be initialized for the default ManagedThreadFactory instance
      * if we were able to produce one.
      *
-     * @param event
-     * @param beanManager
+     * @param event the event
      */
-    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event,
-                                          BeanManager beanManager) {
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event) //
+                    throws InvalidSyntaxException {
+
+        // Default ManagedThreadFactory bean
         if (producedDefaultMTF) {
             CDI<Object> cdi = CDI.current();
             Instance<ManagedThreadFactory> instance = //
@@ -283,6 +341,18 @@ public class ConcurrencyExtension implements Extension {
             // Force instantiation of the bean in order to cause context to be captured
             mtf.toString();
         }
+    }
+
+    /**
+     * Constructs a new modifiable list.
+     *
+     * @param <T>    type of list elements
+     * @param ignore ignored value
+     * @return a new modifiable list.
+     */
+    @Trivial
+    private static final <T> ArrayList<T> newList(Object ignore) {
+        return new ArrayList<T>();
     }
 
     /**

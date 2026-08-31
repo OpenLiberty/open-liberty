@@ -9,12 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
@@ -128,6 +126,8 @@ public class OAuthProtectedResourceMetadataResolverTest {
                 will(returnValue(null));
                 allowing(mockConfig).getIssuerIdentifier();
                 will(returnValue("https://issuer.example.com"));
+                allowing(mockConfig).getProtectedResourceMetadataJwtBuilderId();
+                will(returnValue(null));
                 allowing(mockConfig).getId();
                 will(returnValue("providerA"));
             }
@@ -171,8 +171,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
 
     @Test
     public void wrapperGetRequestURIReturnsProtectedResourcePath() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("/myApp/protected", wrapper.getRequestURI());
     }
@@ -186,8 +185,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
             }
         });
 
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("https://localhost:9443/myApp/protected", wrapper.getRequestURL().toString());
     }
@@ -201,34 +199,50 @@ public class OAuthProtectedResourceMetadataResolverTest {
             }
         });
 
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("https://localhost:9443/myApp/protected", wrapper.getRequestURL().toString());
     }
 
     @Test
     public void wrapperGetServletPathReturnsProtectedResourcePath() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("/myApp/protected", wrapper.getServletPath());
     }
 
     @Test
     public void wrapperGetContextPathReturnsEmpty() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertEquals("", wrapper.getContextPath());
     }
 
     @Test
     public void wrapperGetPathInfoReturnsNull() {
-        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
-                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper = new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
 
         assertNull(wrapper.getPathInfo());
+    }
+
+    // ---- createSignedMetadata null/blank guard ------------------------------
+
+    @Test
+    public void createSignedMetadataReturnsNullWhenBuilderIdIsNull() {
+        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+
+        String result = resolver.createSignedMetadata(null, null);
+
+        assertNull("Expected null when jwtBuilderRef is null", result);
+    }
+
+    @Test
+    public void createSignedMetadataReturnsNullWhenBuilderIdIsBlank() {
+        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+
+        String result = resolver.createSignedMetadata("  ", null);
+
+        assertNull("Expected null when jwtBuilderRef is blank", result);
     }
 
     // ---- createMetadataJson (existing) --------------------------------------
@@ -241,7 +255,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
         config.id = "client1";
         config.issuerIdentifier = "https://issuer.example.com";
 
-        String metadata = resolver.createMetadataJson(config, "https://localhost:9443/mcp");
+        String metadata = resolver.createMetadataJson(config, "https://localhost:9443/mcp", mockRequest);
 
         assertEquals("{\"resource\":\"https:\\/\\/localhost:9443\\/mcp\",\"authorization_servers\":[\"https:\\/\\/issuer.example.com\"]}", metadata);
     }
@@ -253,13 +267,50 @@ public class OAuthProtectedResourceMetadataResolverTest {
         TestOidcClientConfig config = new TestOidcClientConfig(null);
         config.id = "client1";
 
-        String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected");
+        String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected", mockRequest);
 
         JSONObject metadata = JSONObject.parse(metadataJson);
 
         assertEquals("https://localhost:9443/myApp/protected", metadata.get("resource"));
         assertFalse(metadata.containsKey("authorization_servers"));
     }
+
+    // ---- createMetadataJson with jwtBuilderRef ------------------------------
+
+    @Test
+    public void createMetadataJsonIncludesSignedMetadataWhenJwtBuilderRefIsConfigured() throws Exception {
+        TestResolver resolver = new TestResolver();
+        TestOidcClientConfig config = new TestOidcClientConfig("https://issuer.example.com", "myBuilder");
+        config.id = "client1";
+
+        String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected", mockRequest);
+
+        JSONObject metadata = JSONObject.parse(metadataJson);
+        assertEquals("test.signed.jwt", metadata.get("signed_metadata"));
+    }
+
+    @Test
+    public void createMetadataJsonOmitsSignedMetadataWhenJwtBuilderRefIsNull() throws Exception {
+        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        TestOidcClientConfig config = new TestOidcClientConfig(null);
+        config.id = "client1";
+
+        String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected", mockRequest);
+
+        JSONObject metadata = JSONObject.parse(metadataJson);
+        assertFalse("signed_metadata should be absent when jwtBuilderRef is null", metadata.containsKey("signed_metadata"));
+    }
+
+    // ---- TestResolver -------------------------------------------------------
+
+    private static class TestResolver extends OAuthProtectedResourceMetadataResolver {
+        @Override
+        String createSignedMetadata(String jwtBuilderRef, JSONObject metadata) {
+            return "test.signed.jwt";
+        }
+    }
+
+    // ---- TestOidcClientConfig -----------------------------------------------
 
     private static class TestOidcClientConfig implements OidcClientConfig {
         String id;
@@ -268,16 +319,19 @@ public class OAuthProtectedResourceMetadataResolverTest {
         String issuerIdentifier;
         String discoveryEndpointUrl;
         String authorizationEndpointUrl;
+        String jwtBuilderId;
 
         private TestOidcClientConfig() {
             // Default constructor for existing tests.
         }
 
-        /**
-         * @param object
-         */
         private TestOidcClientConfig(String issuerIdentifier) {
             this.issuerIdentifier = issuerIdentifier;
+        }
+
+        private TestOidcClientConfig(String issuerIdentifier, String jwtBuilderId) {
+            this.issuerIdentifier = issuerIdentifier;
+            this.jwtBuilderId = jwtBuilderId;
         }
 
         @Override
@@ -816,8 +870,8 @@ public class OAuthProtectedResourceMetadataResolverTest {
         }
 
         @Override
-        public String getProtectedResourceMetadataJwtBuilderRef() {
-            return null;
+        public String getProtectedResourceMetadataJwtBuilderId() {
+            return jwtBuilderId;
         }
 
     }

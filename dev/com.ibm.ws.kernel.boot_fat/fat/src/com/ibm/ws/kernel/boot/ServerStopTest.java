@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -263,7 +263,7 @@ public class ServerStopTest {
     ///////  BEGIN QUIESE TESTS
 
     /**
-     * Test - Quiesce NOT configured.
+     * Test - Quiesce NOT configured on server element.
      * Ensure default quiesce timeout is used when quiesceTimeout not configured.
      * Starts & Stops the server and verifies that the expected timeout value is in
      * the quiesce message in the logs.
@@ -272,57 +272,93 @@ public class ServerStopTest {
     public void testQuiesceTimeDefault() throws Exception {
         final String METHOD_NAME = "testQuiesceTimeDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        assertTrue("", runQuiesceTest("30"));
+        assertTrue("Default quiesce timeout should be 30 seconds", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
-     * Test - Quiesce configured but NOT valid.
-     * Ensure default quiesce timeout is used when quiesceTimeout when the configured
-     * timeout value is NOT valid.
-     * Starts & Stops the server and verifies that the expected timeout value is in
-     * the quiesce message in the logs.
+     * Test - Quiesce configured on server element but NOT valid.
+     * Ensure default quiesce timeout is used when quiesceTimeout value is NOT valid.
      */
-    @ExpectedFFDC("java.lang.NumberFormatException")
     @Test
     public void testQuiesceTimeNotValid() throws Exception {
         final String METHOD_NAME = "testQuiesceTimeNotValid()";
         Log.info(c, METHOD_NAME, ENTERING);
-
         Utils.createFile(serverXmlFilePath, getServerXmlContents("XXXXX"));
-        assertTrue("", runQuiesceTest("30"));
+        assertTrue("Quiesce timeout not valid. Should use default 30 seconds", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
-     * Test - Quiesce configured but LESS than default.
-     * Ensure default quiesce timeout is used when quiesceTimeout when the configured
-     * timeout value is LESS than the default.
-     * Starts & Stops the server and verifies that the expected timeout value is in
-     * the quiesce message in the logs.
+     * Test - Quiesce configured on server element but LESS than minimum.
+     * Ensure default quiesce timeout is used when quiesceTimeout value is LESS than minimum (30).
      */
     @Test
-    public void testQuiesceTimeValueLessThanDefault() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeValueLessThanDefault()";
+    public void testQuiesceTimeValueLessThanMinimum() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeValueLessThanMinimum()";
         Log.info(c, METHOD_NAME, ENTERING);
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("29s"));
-        assertTrue("", runQuiesceTest("30"));
+        Utils.createFile(serverXmlFilePath, getServerXmlContents("15"));
+        assertTrue("Quiesce timeout below minimum should use default 30 seconds", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
-     * Test - Quiesce configured and is GREATER than default.
-     * Ensure the configured quiesce timeout is used when quiesceTimeout when the configured
-     * timeout value is GREATER than the default.
-     * Starts & Stops the server and verifies that the expected timeout value is in
-     * the quiesce message in the logs.
+     * Test - Quiesce configured on server element and is GREATER than default.
+     * Ensure the configured quiesce timeout is used when quiesceTimeout value is valid and GREATER than default.
      */
     @Test
     public void testQuiesceTimeValueGreaterThanDefault() throws Exception {
         final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
         Utils.createFile(serverXmlFilePath, getServerXmlContents("1m30s"));
-        assertTrue("", runQuiesceTest("90"));
+        assertTrue("Valid quiesce timeout should be used (90 seconds)", runQuiesceTest("90"));
+        Log.info(c, METHOD_NAME, EXITING);
+    }
+
+    /**
+     * Test - Dynamic update of quiesceTimeout value.
+     * Starts the server with one quiesceTimeout value, dynamically updates it to a different value,
+     * then stops the server and verifies the new value was used.
+     */
+    @Test
+    public void testQuiesceTimeDynamicUpdate() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeDynamicUpdate()";
+        Log.info(c, METHOD_NAME, ENTERING);
+
+        // Start with initial timeout value of 47 seconds
+        Utils.createFile(serverXmlFilePath, getServerXmlContents("47s"));
+        startServer();
+        
+        // Wait for server to be fully started
+        assertNotNull("Server should have started", server.waitForStringInLog("CWWKF0011I"));
+        
+        // Dynamically update the quiesceTimeout to 60 seconds
+        Log.info(c, METHOD_NAME, "Updating quiesceTimeout from 47s to 60s");
+        server.setMarkToEndOfLog();
+        Utils.createFile(serverXmlFilePath, getServerXmlContents("60s"));
+        
+        // Wait for config update to complete
+        assertNotNull("Config update should complete", server.waitForStringInLog("CWWKG0017I|CWWKG0018I"));
+        
+        // Now stop the server and verify the new timeout value (60 seconds) is used
+        stopServer();
+        
+        // Verify the quiesce message shows 60 seconds (the updated value)
+        RemoteFile consoleLog = server.getConsoleLogFile();
+        List<String> matches = server.findStringsInLogs("CWWKE1100I", consoleLog);
+        
+        String lastMatch = null;
+        for (String s : matches) {
+            Log.info(c, METHOD_NAME, "Found quiesce message: [" + s + "]");
+            lastMatch = s;
+        }
+        
+        assertNotNull("Quiesce message should be found", lastMatch);
+        String actualTimeout = extractTimeValue(lastMatch);
+        Log.info(c, METHOD_NAME, "Extracted timeout value: [" + actualTimeout + "]");
+        assertTrue("Dynamic update should use new timeout value of 60 seconds, but got: " + actualTimeout,
+                   "60".equals(actualTimeout));
+        
         Log.info(c, METHOD_NAME, EXITING);
     }
 
@@ -368,12 +404,11 @@ public class ServerStopTest {
         return false;
     }
 
-    ///////  END QUIESE TESTS
+    ///////  END SERVER ELEMENT QUIESCE TESTS
 
     public String getServerXmlContents(String timeout) {
-        return "<server>\n" +
+        return "<server quiesceTimeout=\"" + timeout + "\">\n" +
                "    <include location=\"../fatTestPorts.xml\"/>\n" +
-               "    <executor quiesceTimeout=\"" + timeout + "\"/>\n" +
                "</server>";
     }
 

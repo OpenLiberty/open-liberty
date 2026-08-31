@@ -14,6 +14,7 @@ package test.jakarta.concurrency32;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,6 +35,8 @@ import test.jakarta.concurrency32cdi.web.Concurrency32CDITestServlet;
 public class Concurrency32WithCDITest extends FATServletClient {
 
     public static final String APP_NAME = "Concurrency32CDITestApp";
+    public static final String APP_RESOURCES = //
+                    "test-applications/" + APP_NAME + "/resources";
 
     @Server("com.ibm.ws.concurrent.fat.jakarta.ee12.cdi")
     @TestServlet(servlet = Concurrency32CDITestServlet.class,
@@ -47,14 +50,21 @@ public class Concurrency32WithCDITest extends FATServletClient {
                         .buildDefaultApp("Concurrency32CDITestWeb",
                                          "test.jakarta.concurrency32cdi.web");
         ShrinkHelper.addDirectory(concurrency32CDITestWeb,
-                                  "test-applications/Concurrency32CDITestWeb/resources");
+                                  APP_RESOURCES + "/Concurrency32CDITestWeb");
+
+        JavaArchive concurrency32CDITestEJB = ShrinkHelper
+                        .buildJavaArchive("Concurrency32CDITestEJB",
+                                          "test.jakarta.concurrency32cdi.ejb");
+        ShrinkHelper.addDirectory(concurrency32CDITestEJB,
+                                  APP_RESOURCES + "/Concurrency32CDITestEJB");
 
         EnterpriseArchive concurrency32CDITestApp = ShrinkWrap
                         .create(EnterpriseArchive.class,
-                                "Concurrency32CDITestApp.ear");
+                                APP_NAME + ".ear");
         concurrency32CDITestApp.addAsModule(concurrency32CDITestWeb);
+        concurrency32CDITestApp.addAsModule(concurrency32CDITestEJB);
         ShrinkHelper.addDirectory(concurrency32CDITestApp,
-                                  "test-applications/Concurrency32CDITestApp/resources");
+                                  APP_RESOURCES);
         ShrinkHelper.exportAppToServer(server,
                                        concurrency32CDITestApp);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1206,6 +1206,8 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
         }
 
         // both inbound and outbound
+        Tr.debug(tc, ACCEPT_THREAD + ": " + getAcceptThread());
+        Tr.debug(tc, WAIT_TO_ACCEPT + ": " + getWaitToAccept());
         Tr.debug(tc, REUSE_ADDR + ": " + getSoReuseAddress());
         Tr.debug(tc, INACTIVITY_TIMEOUT + ": " + getInactivityTimeout());
         Tr.debug(tc, GROUPNAME + ": " + getWorkGroupName());

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=Ca\u0142kowita liczba element\u00f3w nie jest dost\u0119pna
 011.unknown.attr.type=Instancja {0} zosta\u0142a uzyskana w spos\u00f3b, kt\u00f3ry nie identyfikuje typu atrybutu. W przypadku statycznych klas metamodelu nale\u017cy u\u017cy\u0107 metody.of zdefiniowanej na podtypie atrybutu, aby poda\u0107 klas\u0119 encji i typ atrybutu encji.
 012.unknown.decl.type=Instancja {0} zosta\u0142a uzyskana w spos\u00f3b, kt\u00f3ry nie identyfikuje klasy encji deklaruj\u0105cej atrybut. W przypadku statycznych klas metamodelu nale\u017cy u\u017cy\u0107 metody.of zdefiniowanej na podtypie atrybutu, aby poda\u0107 klas\u0119 encji i typ atrybutu encji.
+013.arg.invalid=Argument \u201e {0} \u201d nie mo\u017ce przyjmowa\u0107 warto\u015bci \u201e {1} \u201d.
+014.mode.disallows.offset=\u017b\u0105danie strony nie mo\u017ce zawiera\u0107 jednocze\u015bnie offsetu i trybu \u201e {0} \u201d.
+015.cursor.uncomputable=\u017b\u0105dana operacja jest niedost\u0119pna, poniewa\u017c nie mo\u017cna obliczy\u0107 kursora na podstawie kryteri\u00f3w sortowania zawieraj\u0105cych wyra\u017cenie.

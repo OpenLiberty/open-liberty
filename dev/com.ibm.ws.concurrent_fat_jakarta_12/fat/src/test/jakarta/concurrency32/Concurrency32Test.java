@@ -37,6 +37,8 @@ import test.jakarta.concurrency32.web.Concurrency32TestServlet;
 public class Concurrency32Test extends FATServletClient {
 
     public static final String APP_NAME = "Concurrency32TestApp";
+    public static final String APP_RESOURCES = //
+                    "test-applications/" + APP_NAME + "/resources";
 
     @Server("com.ibm.ws.concurrent.fat.jakarta.ee12")
     @TestServlet(servlet = Concurrency32TestServlet.class, contextRoot = APP_NAME)
@@ -50,14 +52,14 @@ public class Concurrency32Test extends FATServletClient {
                         .buildDefaultApp("Concurrency32TestWeb",
                                          "test.jakarta.concurrency32.web");
         ShrinkHelper.addDirectory(concurrency32TestWeb,
-                                  "test-applications/Concurrency32TestWeb/resources");
+                                  APP_RESOURCES + "/Concurrency32TestWeb");
 
         EnterpriseArchive concurrency32TestApp = ShrinkWrap
                         .create(EnterpriseArchive.class,
                                 "Concurrency32TestApp.ear");
         concurrency32TestApp.addAsModule(concurrency32TestWeb);
         ShrinkHelper.addDirectory(concurrency32TestApp,
-                                  "test-applications/Concurrency32TestApp/resources");
+                                  APP_RESOURCES);
         ShrinkHelper.exportAppToServer(server,
                                        concurrency32TestApp);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,14 +17,19 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @ApplicationPath("/")
@@ -107,5 +112,52 @@ public class Resource extends Application {
                                  @QueryParam("status") String status) { 
         _log.info("redirecthop3 testing status = " + status);
         return Response.status(Integer.valueOf(status)).header("Location", "http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/redirectecho?param=" + param).build();
+    }
+
+    /**
+     * Returns the Content-Type header value received, or "none" if absent.
+     * Used to verify whether Liberty sends Content-Type for empty-body requests.
+     * Shared by DELETE, POST (no body), PUT (no body), HEAD, and OPTIONS tests.
+     */
+    @DELETE
+    @Path("/contentTypeCheck")
+    public Response deleteContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    @POST
+    @Path("/contentTypeCheck")
+    public Response postContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    @PUT
+    @Path("/contentTypeCheck")
+    public Response putContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    @HEAD
+    @Path("/contentTypeCheck")
+    public Response headContentTypeCheck() {
+        // HEAD responses must not include a body; return Content-Type value as a custom header
+        String ct = httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
+        boolean absent = (ct == null || ct.isEmpty() || "null".equals(ct));
+        String value = absent ? "none" : ct;
+        return Response.ok().header("X-Received-Content-Type", value).build();
+    }
+
+    @OPTIONS
+    @Path("/contentTypeCheck")
+    public Response optionsContentTypeCheck() {
+        return contentTypeCheckResponse();
+    }
+
+    private Response contentTypeCheckResponse() {
+        String ct = httpHeaders.getHeaderString(HttpHeaders.CONTENT_TYPE);
+        // treat null, empty string, and the literal "null" as absent
+        boolean absent = (ct == null || ct.isEmpty() || "null".equals(ct));
+        String body = absent ? "none" : ct;
+        return Response.ok(body, MediaType.TEXT_PLAIN_TYPE).build();
     }
 }

@@ -1,0 +1,218 @@
+/*******************************************************************************
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Define Ant tasks to use for subprojects.
+ *
+ * Classpath paths are computed lazily in Gradle using task outputs (for local
+ * project jars) and Gradle configurations (for Maven GAV dependencies).
+ * This avoids putting ${repo;...} macros in the bnd property space, which
+ * previously caused intermittent failures in parallel builds because bnd would
+ * evaluate those macros during project prepare() before the referenced artifacts
+ * had been published to cnf/local.
+ *
+ * Ant tasks created:
+ *   instrumentForTrace,
+ *   instrumentWithFFDC,
+ *   com/ibm/mantis/nls/antlib.xml,
+ *   portSelector,
+ *   com/ibm/ws/wlp/feature/tasks/default.properties,
+ *   com/ibm/ws/wlp/repository/default.properties,
+ *   com/ibm/ws/repository/generator/default.properties,
+ *   com/ibm/ws/wlp/mavenFeatures/default.properties
+ */
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+// Return the jar file produced by a local bnd project.
+// Uses archiveFile (Gradle 6+) rather than the removed archivePath property.
+def localJar = { String projectName ->
+    tasks.getByPath(":${projectName}:jar").archiveFile.get().asFile
+}
+
+// Resolve a list of Maven GAV coordinates to a classpath string via a
+// detached Gradle configuration. Resolved eagerly at configuration time
+// (not inside a task action) to satisfy Gradle 9's configuration resolution
+// locking rules.
+def mavenClasspath = { List<String> gavs ->
+    def deps = gavs.collect { rootProject.dependencies.create(it) { transitive = false } }
+    def config = rootProject.configurations.detachedConfiguration(deps as org.gradle.api.artifacts.Dependency[])
+    config.files.join(File.pathSeparator)
+}
+
+// ---------------------------------------------------------------------------
+// Classpath definitions — mirroring anttaskdefs.bnd.
+// Maven GAV classpaths are resolved eagerly at configuration time (safe because
+// the artifacts have fixed external versions). Local project jar paths are
+// resolved lazily via closures since archiveFile is only finalised after the
+// jar task runs.
+// ---------------------------------------------------------------------------
+
+// Maven-only classpaths — resolved once at configuration time
+def nlsTasksClasspath       = mavenClasspath([
+    'commons-io:commons-io:2.19.0',
+    'commons-lang:commons-lang:2.4',
+    'org.apache.commons:commons-math:2.2',
+    'com.ibm.ws.componenttest:mantis-collections:2.5.0',
+    'com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0',
+])
+
+def portSelectorClasspath   = mavenClasspath([
+    'com.ibm.ws.componenttest:infra.buildtasks-core:7.0.2',
+])
+
+def featureMavenClasspath   = mavenClasspath([
+    "biz.aQute.bnd:biz.aQute.bnd:${bnd_plugin.split(':')[2]}",
+    'com.ibm.ws.componenttest:infra.buildtasks-core:7.0.2',
+    'org.jsoup:jsoup:1.7.2',
+    'org.apache.aries:org.apache.aries.util:1.1.3',
+    'org.osgi:org.osgi.core:6.0.0',
+])
+
+def repoContentMavenClasspath = mavenClasspath([
+    'org.jsoup:jsoup:1.7.2',
+    'org.apache.aries:org.apache.aries.util:1.1.3',
+    'org.osgi:org.osgi.core:6.0.0',
+])
+
+def repoGeneratorMavenClasspath = mavenClasspath([
+    'javax.json:javax.json-api:1.1.2',
+    'org.glassfish:javax.json:1.1.2',
+    'org.jsoup:jsoup:1.7.2',
+    'org.apache.aries:org.apache.aries.util:1.1.3',
+    'org.osgi:org.osgi.core:6.0.0',
+])
+
+def mavenRepoMavenClasspath = mavenClasspath([
+    'commons-io:commons-io:2.19.0',
+    'commons-lang:commons-lang:2.4',
+    'javax.json:javax.json-api:1.1.2',
+    'org.glassfish:javax.json:1.1.2',
+    'org.apache.maven:maven-model:3.5.0',
+    'org.apache.aries:org.apache.aries.util:1.1.3',
+    'org.codehaus.plexus:plexus-utils:3.0.24',
+])
+
+// Mixed classpaths — local jars resolved lazily at task execution time,
+// combined with already-resolved Maven strings.
+def rasInstrumentationClasspath = {
+    localJar('wlp-rasInstrumentation').absolutePath
+}
+
+def generateChecksumsClasspath = {
+    [
+        localJar('wlp-generateChecksums'),
+        localJar('com.ibm.ws.kernel.boot.core'),
+        localJar('com.ibm.ws.org.apache.ant'),
+        localJar('com.ibm.ws.org.apache.aries.util'),
+        localJar('com.ibm.websphere.org.osgi.core'),
+    ]*.absolutePath.join(File.pathSeparator)
+}
+
+def featureTasksClasspath = {
+    [
+        localJar('wlp-featureTasks'),
+        localJar('com.ibm.ws.kernel.boot.core'),
+        localJar('com.ibm.ws.logging.core'),
+        localJar('com.ibm.ws.org.apache.ant'),
+    ]*.absolutePath.join(File.pathSeparator) + File.pathSeparator + featureMavenClasspath
+}
+
+def generateRepositoryContentClasspath = {
+    [
+        localJar('wlp-generateRepositoryContent'),
+        localJar('com.ibm.json4j'),
+        localJar('com.ibm.ws.kernel.boot.core'),
+        localJar('com.ibm.ws.kernel.feature.core'),
+        localJar('com.ibm.ws.logging.core'),
+        localJar('wlp-generateChecksums'),
+        localJar('com.ibm.ws.org.apache.ant'),
+    ]*.absolutePath.join(File.pathSeparator) + File.pathSeparator + repoContentMavenClasspath
+}
+
+def repositoryGeneratorClasspath = {
+    [
+        localJar('com.ibm.ws.repository.generator'),
+        localJar('com.ibm.ws.repository'),
+        localJar('com.ibm.ws.repository.parsers'),
+        localJar('com.ibm.ws.kernel.boot.core'),
+        localJar('com.ibm.ws.kernel.feature.core'),
+        localJar('com.ibm.ws.logging.core'),
+        localJar('com.ibm.ws.org.apache.ant'),
+    ]*.absolutePath.join(File.pathSeparator) + File.pathSeparator + repoGeneratorMavenClasspath
+}
+
+def mavenRepoTasksClasspath = {
+    [
+        localJar('wlp-mavenRepoTasks'),
+        localJar('com.ibm.ws.org.apache.ant'),
+    ]*.absolutePath.join(File.pathSeparator) + File.pathSeparator + mavenRepoMavenClasspath
+}
+
+// ---------------------------------------------------------------------------
+// Ant task definition closures — called at task execution time
+// ---------------------------------------------------------------------------
+
+rootProject.ext.rasInstrumentationInputFiles = { tasks.getByPath(':wlp-rasInstrumentation:jar') }
+rootProject.ext.rasInstrumentationTaskdef = { ant ->
+    ant.taskdef(name: 'instrumentForTrace', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentForTrace',
+                classpath: rasInstrumentationClasspath())
+    ant.taskdef(name: 'instrumentWithFFDC', classname: 'com.ibm.ws.ras.instrument.internal.buildtasks.InstrumentWithFFDC',
+                classpath: rasInstrumentationClasspath())
+}
+
+rootProject.ext.generateChecksums = { ant ->
+    ant.taskdef(name: 'calcChecksums', classname: 'com.ibm.ws.wlp.cs.GenerateChecksums',
+                classpath: generateChecksumsClasspath())
+}
+
+rootProject.ext.generateZipChecksums = { ant ->
+    ant.taskdef(name: 'calcZipChecksums', classname: 'com.ibm.ws.wlp.cs.GenerateZipChecksums',
+                classpath: generateChecksumsClasspath())
+}
+
+rootProject.ext.nlsTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/mantis/nls/antlib.xml',
+                classpath: nlsTasksClasspath)
+}
+
+rootProject.ext.portSelectorTaskdef = { ant ->
+    ant.taskdef(name: 'portSelector', classname: 'com.ibm.aries.buildtasks.PortSelector',
+                classpath: portSelectorClasspath)
+}
+
+rootProject.ext.featureBndTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/wlp/feature/tasks/default.properties',
+                classpath: featureTasksClasspath())
+}
+
+rootProject.ext.repositoryContentTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties',
+                classpath: generateRepositoryContentClasspath())
+}
+
+rootProject.ext.repositoryGeneratorTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/repository/generator/default.properties',
+                classpath: repositoryGeneratorClasspath())
+}
+
+rootProject.ext.mavenRepoTaskdef = { ant ->
+    ant.taskdef(resource: 'com/ibm/ws/wlp/mavenFeatures/default.properties',
+                classpath: mavenRepoTasksClasspath())
+}
+
+rootProject.ext.junitReportTaskClasspath = {
+    localJar('com.ibm.ws.org.apache.ant-junit').absolutePath
+}

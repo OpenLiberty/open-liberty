@@ -28,6 +28,7 @@ import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
 import io.openliberty.mcp.internal.fat.monitor.McpMonitorMXBeanAccessTest;
 import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
+import io.openliberty.mcp.internal.fat.oidc.tests.AuthorizationFlowTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
@@ -46,6 +47,7 @@ import io.openliberty.mcp.internal.fat.security.PermitAllTests;
 import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
+import io.openliberty.mcp.internal.fat.statelessMode.StatelessConfigChangeOnRestoreTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
 import io.openliberty.mcp.internal.fat.timeout.ConfigurableAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.timeout.InvalidAsyncTimeoutTest;
@@ -120,6 +122,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
+                StatelessConfigChangeOnRestoreTest.class,
                 StatelessModeTest.class,
                 TelemetryOperationsTest.class,
                 TelemetrySessionsTest.class,
@@ -147,7 +150,8 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 ToolTest.class,
                 // TestContainer Tests
                 ConformanceTests.class,
-                OidcTests.class
+                OidcTests.class,
+                AuthorizationFlowTests.class
 })
 
 public class FATSuite extends TestContainerSuite {

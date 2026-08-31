@@ -175,11 +175,11 @@ public class FATSuite {
             server.addEnvVar("JSONP_JAR", "fake-json-p.jar");
 
             //TODO replace with a third party implementation when one is developed
-            server.addEnvVar("JSONB_PATH", "yasson/3.0.4/");
+            server.addEnvVar("JSONB_PATH", "yasson/3.0.5/");
             server.addEnvVar("JSONB_JAR", "yasson.jar");
             server.addEnvVar("JSONB_ALT_JAR", "yasson.jar");
 
-            server.addEnvVar("YASSON_PATH", "yasson/3.0.4/");
+            server.addEnvVar("YASSON_PATH", "yasson/3.0.5/");
             server.addEnvVar("YASSON_JAR", "yasson.jar");
         } else if (JakartaEEAction.isEE9Active()) {
             server.addEnvVar("JSONP_PATH", "johnzon/1.2.18/jakarta/");

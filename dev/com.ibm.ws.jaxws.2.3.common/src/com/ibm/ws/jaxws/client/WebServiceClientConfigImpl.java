@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,16 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
         propertiesToRemove.add(WebServiceConfigConstants.SERVICE_NAME_PROP);
     }
     
-    // Flag tells us if the message for a call to a beta method has been issued
+    /** Ensures the beta-edition info message is logged only once per class. */
     private static boolean issuedBetaMessage = false;
-    
+
+    /**
+     * Guards all lifecycle methods against invocation outside of a beta Liberty edition.
+     * Throws {@link UnsupportedOperationException} on non-beta builds; logs a one-time
+     * debug message on beta builds.
+     *
+     * @throws UnsupportedOperationException if not running a beta edition
+     */
     private void betaFenceCheck() throws UnsupportedOperationException {
         // Not running beta edition, throw exception
         if (!ProductInfo.getBetaEdition()) { 
@@ -61,6 +68,14 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
 
     
     
+    /**
+     * OSGi DS activation constructor. Called when a {@code <webServiceClient>} element
+     * is added to the server.xml. Validates the properties, filters them to only the
+     * recognised config attributes, and registers them with {@link WebServicesClientConfigHolder}
+     * keyed by serviceName (or the global default key if no serviceName is specified).
+     *
+     * @param properties the component properties supplied by OSGi config admin
+     */
     @Deprecated
     @Activate
     public WebServiceClientConfigImpl(Map<String, Object> properties) {
@@ -76,14 +91,26 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
         
         String serviceName = getServiceName(properties); // find serviceName
         
-        // Add config for serviceName
-        WebServicesClientConfigHolder.addConfig(this.toString(), serviceName,
-                                                filterProps(properties));
+        // Add info message for config without any attribute set
+        Map<String, Object> filteredProperties = filterProps(properties);
+        if (filteredProperties.isEmpty()) {
+            Tr.info(tc, "info.no.attributes.webserviceclient");
+        }
+
+         // Add config for serviceName
+        WebServicesClientConfigHolder.addConfig(this.toString(), serviceName, filteredProperties);
     }
     
+    /**
+     * OSGi DS modification callback. Called when an existing {@code <webServiceClient>}
+     * element in the server.xml is changed. Removes the previous registration and
+     * re-registers with the updated properties.
+     *
+     * @param properties the updated component properties supplied by OSGi config admin
+     */
     @Deprecated
     @Modified
-    protected void modified(Map<String, Object> properties) {        
+    protected void modified(Map<String, Object> properties) {
 
         betaFenceCheck();
         
@@ -99,10 +126,22 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
         
         // Re-add modfied config
         String serviceName = getServiceName(properties);
-        WebServicesClientConfigHolder.addConfig(this.toString(), serviceName,
-                                                filterProps(properties));
+
+        // Add info message for config without any attribute set
+        Map<String, Object> filteredProperties = filterProps(properties);
+        if (filteredProperties.isEmpty()) {
+            Tr.info(tc, "info.no.attributes.webserviceclient");
+        }
+
+         // Add config for serviceName
+        WebServicesClientConfigHolder.addConfig(this.toString(), serviceName, filteredProperties);
     }
 
+    /**
+     * OSGi DS deactivation callback. Called when the {@code <webServiceClient>} element
+     * is removed from the server.xml. Removes the registration from
+     * {@link WebServicesClientConfigHolder}.
+     */
     @Deprecated
     @Deactivate
     protected void deactivate() {
@@ -176,7 +215,12 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
         }
     }
 
-    // For test purposes
+    /**
+     * Returns whether any webServiceClient configuration has been registered.
+     * Exposed for unit test use only.
+     *
+     * @return {@code true} if at least one configuration entry exists
+     */
     protected boolean isConfigExists() {
         return WebServicesClientConfigHolder.isConfigExists();
     }

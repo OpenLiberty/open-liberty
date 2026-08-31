@@ -22,9 +22,8 @@ import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonAltRemoteLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPAudiences1ServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPEncryptionRSServerTests;
-import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPNoResourceMetadataBetaRSServerTests;
-import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPResourceMetadataBetaRSServerTests;
-import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPResourceMetadataNonBetaRSServerTests;
+import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPNoResourceMetadataRSServerTests;
+import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPResourceMetadataRSServerTest;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPSignatureRSServerTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -44,9 +43,8 @@ import componenttest.rules.repeater.RepeatTests;
         NoOPEncryptionRSServerTests.class,
         
         // RFC 9728 Protected Resource Metadata
-        NoOPResourceMetadataBetaRSServerTests.class,
-        NoOPResourceMetadataNonBetaRSServerTests.class,
-        NoOPNoResourceMetadataBetaRSServerTests.class
+        NoOPResourceMetadataRSServerTest.class,
+        NoOPNoResourceMetadataRSServerTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

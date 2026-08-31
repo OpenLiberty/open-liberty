@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -205,3 +205,41 @@ error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Actualiza
 err.unsupported.jmx.operation=CWWKW0059E: Opera\u0163ia {0} nu este suportat\u0103.
 err.unsupported.jmx.operation.explanation=Opera\u0163ia cerut\u0103 nu este permis\u0103 s\u0103 se realizeze.
 err.unsupported.jmx.operation.useraction=Nu rula\u0163i opera\u0163ia nesuportat\u0103.
+
+# webService and webServiceClient config messages
+
+info.no.attributes.webservice=CWWKW0062I: Elementul de configurare \u201e webService \u201d este activat, dar nu are atribute de configurare.
+info.no.attributes.webservice.explanation=Elementul de configurare \u201e webService \u201d a fost ad\u0103ugat \u00een fi\u0219ierul \u201e server.xml \u201d, dar nu con\u021bine niciun atribut de configurare. \u00cen absen\u021ba atributelor, niciuna dintre op\u021biunile de configurare de la webService nu se aplic\u0103, iar serverul utilizeaz\u0103 comportamentul implicit.
+info.no.attributes.webservice.useraction=Ad\u0103uga\u021bi unul sau mai multe atribute de configurare la elementul ` webService ` sau elimina\u021bi elementul ` webService ` din fi\u0219ierul ` server.xml `.
+
+info.no.attributes.webserviceclient=CWWKW0063I: Elementul de configurare \u201e webServiceClient \u201d este activat, dar nu are atribute de configurare.
+info.no.attributes.webserviceclient.explanation=Elementul de configurare \u201e webServiceClient \u201d a fost ad\u0103ugat \u00een fi\u0219ierul \u201e server.xml \u201d, dar nu con\u021bine niciun atribut de configurare. \u00cen absen\u021ba atributelor, niciuna dintre op\u021biunile de configurare de la webServiceClient nu se aplic\u0103, iar serverul utilizeaz\u0103 comportamentul implicit.
+info.no.attributes.webserviceclient.useraction=Ad\u0103uga\u021bi unul sau mai multe atribute de configurare la elementul ` webServiceClient ` sau elimina\u021bi elementul ` webServiceClient ` din fi\u0219ierul ` server.xml `.
+
+#{0}=serviceName value
+info.ignore.unexpected.elements.client.named=CWWKW0064I: Atributul \u201e ignoreUnexpectedElements \u201d este activat pe clientul JAX-WS \u201e {0} \u201d. Elementele necunoscute care apar \u00een r\u0103spunsurile SOAP primite pentru acest client sunt ignorate.
+info.ignore.unexpected.elements.client.named.explanation=Configura\u021bia \u201e webServiceClient \u201d (Sistem de gestionare a con\u021binutului) cu \u201e {0} \u201d () serviceName are atributul \u201e ignoreUnexpectedElements \u201d setat la \u201etrue\u201d. Atunci c\u00e2nd JAXB decodific\u0103 r\u0103spunsurile SOAP primite, JAXB ignor\u0103 elementele necunoscute.
+info.ignore.unexpected.elements.client.named.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Pentru a dezactiva acest comportament, seta\u021bi valoarea \u201e ignoreUnexpectedElements \u201d la \u201efalse\u201d \u00een fi\u0219ierul de configurare \u201e webServiceClient \u201d.
+
+#{0}=portName value
+info.ignore.unexpected.elements.provider.named=CWWKW0065I: Atributul \u201e ignoreUnexpectedElements \u201d este activat \u00een cadrul furnizorului JAX-WS \u201e {0} \u201d. Elementele necunoscute identificate \u00een cererile SOAP primite pentru acest furnizor sunt ignorate.
+info.ignore.unexpected.elements.provider.named.explanation=Configura\u021bia \u201e webService \u201d (Sistem de gestionare a con\u021binutului) cu \u201e {0} \u201d () portName are atributul \u201e ignoreUnexpectedElements \u201d setat la \u201etrue\u201d. Atunci c\u00e2nd JAXB decodific\u0103 cererile SOAP primite, JAXB ignor\u0103 elementele necunoscute.
+info.ignore.unexpected.elements.provider.named.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Pentru a dezactiva acest comportament, seta\u021bi valoarea \u201e ignoreUnexpectedElements \u201d la \u201efalse\u201d \u00een fi\u0219ierul de configurare \u201e webService \u201d.
+
+info.ignore.unexpected.elements.global=CWWKW0066I: Atributul \u201e ignoreUnexpectedElements \u201d este activat. Elementele necunoscute identificate \u00een timpul procesului de demarshalling sunt ignorate.
+info.ignore.unexpected.elements.global.explanation=O configura\u021bie global\u0103 de tip \u201e webServiceClient \u201d sau \u201e webService \u201d are atributul \u201e ignoreUnexpectedElements \u201d setat la \u201etrue\u201d. Atunci c\u00e2nd JAXB decodific\u0103 mesajele SOAP primite, JAXB ignor\u0103 elementele necunoscute.
+info.ignore.unexpected.elements.global.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Pentru a dezactiva acest comportament, seta\u021bi \u201e ignoreUnexpectedElements \u201d la \u201efalse\u201d \u00een fi\u0219ierul de configurare.
+
+info.schema.validation.global=CWWKW0067I: Atributul \u201e enableSchemaValidation \u201d este setat la \u201etrue\u201d. Mesajele SOAP primite sunt validate \u00een raport cu schema \u00eenainte de a fi procesate.
+info.schema.validation.global.explanation=\u00centr-o configura\u021bie global\u0103 de tip \u201e webServiceClient \u201d sau \u201e webService \u201d, parametrii \u201e enableSchemaValidation \u201d sunt seta\u021bi la \u201etrue\u201d. Atunci c\u00e2nd JAXB decodific\u0103 mesajele SOAP primite, JAXB efectueaz\u0103 o validare complet\u0103 a schemei.
+info.schema.validation.global.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Pentru a dezactiva validarea schemei, seta\u021bi valoarea \u201e enableSchemaValidation \u201d la \u201efalse\u201d \u00een fi\u0219ierul de configurare.
+
+#{0}=serviceName value
+info.schema.validation.client.named=CWWKW0068I: Atributul \u201e enableSchemaValidation \u201d este activat pe clientul JAX-WS \u201e {0} \u201d. R\u0103spunsurile SOAP primite pentru acest client sunt validate \u00een raport cu schema \u00eenainte de a fi procesate.
+info.schema.validation.client.named.explanation=Configura\u021bia \u201e webServiceClient \u201d (Re\u021bea de tip \u201e {0} \u201d) serviceName are op\u021biunea \u201e enableSchemaValidation \u201d setat\u0103 la \u201etrue\u201d. Atunci c\u00e2nd JAXB decodific\u0103 r\u0103spunsurile SOAP primite pentru acest client, JAXB efectueaz\u0103 o validare complet\u0103 a schemei.
+info.schema.validation.client.named.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Pentru a dezactiva validarea schemei, seta\u021bi valoarea \u201e enableSchemaValidation \u201d la \u201efalse\u201d \u00een fi\u0219ierul de configurare \u201e webServiceClient \u201d.
+
+#{0}=portName value
+info.schema.validation.provider.named=CWWKW0069I: Atributul \u201e enableSchemaValidation \u201d este activat \u00een cadrul furnizorului JAX-WS \u201e {0} \u201d. Solicit\u0103rile SOAP primite pentru acest furnizor sunt validate \u00een raport cu schema \u00eenainte de a fi procesate.
+info.schema.validation.provider.named.explanation=Configura\u021bia \u201e webService \u201d (Re\u021bea de tip \u201e {0} \u201d) portName are op\u021biunea \u201e enableSchemaValidation \u201d setat\u0103 la \u201etrue\u201d. Atunci c\u00e2nd JAXB decodific\u0103 cererile SOAP primite pentru acest furnizor, JAXB efectueaz\u0103 o validare complet\u0103 a schemei.
+info.schema.validation.provider.named.useraction=Nu este necesar\u0103 nicio ac\u0163iune. Pentru a dezactiva validarea schemei, seta\u021bi valoarea \u201e enableSchemaValidation \u201d la \u201efalse\u201d \u00een fi\u0219ierul de configurare \u201e webService \u201d.

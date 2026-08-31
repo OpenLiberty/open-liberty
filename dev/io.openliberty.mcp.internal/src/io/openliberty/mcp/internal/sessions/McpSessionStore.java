@@ -58,6 +58,9 @@ public class McpSessionStore {
             return null;
         }
 
+        // Convenient place to check for expired sessions so that it runs regularly but not too often
+        cleanupOldSessions();
+
         McpSessionId sessionId = new McpSessionId(UUID.randomUUID().toString());
         McpSession mcpSession = new McpSession(sessionId, userId, metrics, clientInfo, clientCapabilies);
         sessions.put(sessionId, mcpSession);
@@ -79,35 +82,36 @@ public class McpSessionStore {
         }
         McpSession session = sessions.get(sessionId);
         if (session != null) {
-            session.touch();
-            return session;
+            if (!isExpired(session, Instant.now(), mcpConfig.sessionTimeout())) {
+                session.touch();
+                return session;
+            } else {
+                removeExpiredSession(sessionId);
+            }
         }
         return null;
     }
 
     /**
-     * Checks if the session ID is valid and not expired.
-     * Also removes any expired sessions as a side effect.
-     */
-    public boolean isValid(McpSessionId sessionId) {
-        cleanupOldSessions();
-        return sessionId != null && sessions.containsKey(sessionId);
-    }
-
-    /**
      * Deletes the session associated with the given session ID.
+     *
+     * @return {@code true} if a session was deleted, {@code false} if the session did not exist (maybe expired previously)
      */
-    public void deleteSession(McpSessionId sessionId) {
+    public boolean deleteSession(McpSessionId sessionId) {
+        cleanupOldSessions();
         McpSession session = sessions.remove(sessionId);
 
         if (session != null) {
-            requestTracker.cancelSessionRequests(session.getSessionId());
+            requestTracker.endSession(session.getSessionId());
 
             // Record session end metrics
             McpSessionMetrics metrics = session.getMetrics();
             if (metrics != null) {
                 McpSessionMetrics.sessionEnded(metrics);
             }
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -121,8 +125,7 @@ public class McpSessionStore {
         // Collect expired session IDs
         List<McpSessionId> expiredSessionIds = new ArrayList<>();
         for (var entry : sessions.entrySet()) {
-            boolean expired = Duration.between(entry.getValue().getLastAccessed(), now)
-                                      .compareTo(sessionTimeout) > 0;
+            boolean expired = isExpired(entry.getValue(), now, sessionTimeout);
             if (expired) {
                 expiredSessionIds.add(entry.getKey());
             }
@@ -130,15 +133,40 @@ public class McpSessionStore {
 
         // Remove expired sessions and record metrics
         for (McpSessionId sessionId : expiredSessionIds) {
-            McpSession session = sessions.remove(sessionId);
-            if (session != null) {
-                McpSessionMetrics metrics = session.getMetrics();
-                if (metrics != null) {
-                    metrics.setErrorType("timeout");
-                    McpSessionMetrics.sessionEnded(metrics);
-                }
+            removeExpiredSession(sessionId);
+        }
+    }
+
+    /**
+     * Removes an expired session and performs metric recording and cleanup
+     *
+     * @param sessionId the Id of the expired session
+     */
+    private void removeExpiredSession(McpSessionId sessionId) {
+        McpSession session = sessions.remove(sessionId);
+        if (session != null) {
+            // Although an expired session shouldn't have running requests,
+            // the requestTracker also needs to know it doesn't care about this session any more
+            requestTracker.endSession(sessionId);
+            McpSessionMetrics metrics = session.getMetrics();
+            if (metrics != null) {
+                metrics.setErrorType("timeout");
+                McpSessionMetrics.sessionEnded(metrics);
             }
         }
+    }
+
+    /**
+     * Checks whether a session is expired
+     *
+     * @param session the session
+     * @param now the current time
+     * @param sessionTimeout the configured timeout
+     * @return {@code true} if {@code session} is expired
+     */
+    private boolean isExpired(McpSession session, Instant now, Duration sessionTimeout) {
+        return Duration.between(session.getLastAccessed(), now)
+                       .compareTo(sessionTimeout) > 0;
     }
 
     /**

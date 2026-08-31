@@ -22,6 +22,7 @@ configurations {
     app24
     app25
     app26
+    app27
     requiredLibs {
         transitive = false
     }
@@ -38,6 +39,7 @@ configurations {
     app24 'io.openliberty:java-apps:24.1.0'
     app25 'io.openliberty:java-apps:25.1.0'
     app26 'io.openliberty:java-apps:26.1.0'
+    app27 'io.openliberty:java-apps:27.2.0'
     requiredLibs project(':com.ibm.ws.kernel.service')
  }
 
@@ -113,6 +115,12 @@ task copyApp26(type: Copy) {
   rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_26.war'
 }
 
+task copyApp27(type: Copy) {
+  from configurations.app27
+  into new File(autoFvtDir, 'publish/servers/java27-server/apps/')
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_27.war'
+}
+
 addRequiredLibraries.dependsOn copyApp17A
 addRequiredLibraries.dependsOn copyApp17B
 addRequiredLibraries.dependsOn copyApp18A
@@ -125,3 +133,4 @@ addRequiredLibraries.dependsOn copyApp23
 addRequiredLibraries.dependsOn copyApp24
 addRequiredLibraries.dependsOn copyApp25
 addRequiredLibraries.dependsOn copyApp26
+addRequiredLibraries.dependsOn copyApp27

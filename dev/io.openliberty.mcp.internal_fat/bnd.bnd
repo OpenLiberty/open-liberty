@@ -29,7 +29,8 @@ tested.features: \
     servlet-6.1,\
     pages-3.1,\
     pages-4.0,\
-    checkpoint
+    checkpoint,\
+    mcp-1.0
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0;version=latest,\
@@ -55,6 +56,7 @@ tested.features: \
 	io.openliberty.mpTelemetry.2.0.thirdparty,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	io.openliberty.io.opentelemetry.internal.2.1;version=latest,\
-	io.openliberty.org.testcontainers;version=latest
+	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.websphere.appserver.features;version=latest
 	
-fat.test.container.images=public.ecr.aws/docker/library/node:20-alpine,quay.io/keycloak/keycloak:26.6.2
+fat.test.container.images=public.ecr.aws/docker/library/node:22-alpine,quay.io/keycloak/keycloak:26.6.2

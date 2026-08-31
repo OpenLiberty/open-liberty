@@ -250,6 +250,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private long incomingMsgSize = 0L;
     /** Saved chunk length if we run out of buffer data while parsing */
     private int savedChunkLength = HeaderStorage.NOTSET;
+    /** Number of hex digits parsed so far for the current chunk length */
+    private int savedChunkDigitCount = 0; 
     /** Keep track of the previous limit value */
     private int oldLimit = 0;
     /** Starting buffer position during the parsing of bodies */
@@ -1193,6 +1195,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.numBytesWritten = 0L;
         this.incomingMsgSize = 0L;
         this.savedChunkLength = HeaderStorage.NOTSET;
+        this.savedChunkDigitCount = 0;
         this.oldLimit = 0;
         this.shouldModify = true;
         clearPendingByteBuffers();
@@ -5273,6 +5276,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             throw new IllegalHttpBodyException("Illegal chunk length digit: " + ch);
         }
+        if (length > 0x07FFFFFF){
+            throw new MessageTooLargeException("Chunk size overflow" );
+        }
         length <<= 4;
         length += mod;
         return length;
@@ -5313,6 +5319,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         // default to whatever might be saved (-1 if no previous data)
         int length = getSavedChunkLength();
+        int digitCount = this.savedChunkDigitCount; //resume digit count across buffers
         int position = buff.position();
         int limit = buff.limit();
         byte ch = 0;
@@ -5338,6 +5345,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     // treat whitespace as the end-length marker too
                     setChunkLengthParsingState(HttpInternalConstants.PARSING_CHUNK_EXTENSION);
                     break;
+                }
+                // reject before the shift overflows
+                if (++digitCount > 8) {                  
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Client sent a chunk size that exceeds the maximum allowed value");
+                    }
+                    throw new MessageTooLargeException("Chunk size exceeds maximum allowed value");
                 }
                 length = convertCharToLength(ch, length);
             }
@@ -5386,6 +5400,16 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
                     setChunkLengthParsingState(GenericConstants.PARSING_NOTHING);
                     setSavedChunkLength(HeaderStorage.NOTSET);
+                    this.savedChunkDigitCount = 0;  //reset on successful parse
+
+                    // Verify chunk size does not exceed the configured message size limit
+                    long msgSizeLimit = getHttpConfig().getMessageSizeLimit();
+                    if (msgSizeLimit != HttpConfigConstants.UNLIMITED && length > msgSizeLimit) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Chunk size " + length + " exceeds configured message size limit " + msgSizeLimit);
+                        }
+                        throw new IllegalHttpBodyException("Chunk size exceeds configured message size limit");
+                    }
                     return length;
                 }
             }
@@ -5399,6 +5423,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (position < limit) {
                 setChunkLengthParsingState(GenericConstants.PARSING_NOTHING);
                 setSavedChunkLength(HeaderStorage.NOTSET);
+                this.savedChunkDigitCount = 0; //reset on successful parse
                 return length;
             }
             // if data is not available then go to the layer below us to see if
@@ -5412,6 +5437,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "readChunkLength: Not enough data, storing [" + length + "]");
         }
         setSavedChunkLength(length);
+        this.savedChunkDigitCount = digitCount; //persist across buffer boundary 
         return NOT_ENOUGH_DATA;
     }
 
