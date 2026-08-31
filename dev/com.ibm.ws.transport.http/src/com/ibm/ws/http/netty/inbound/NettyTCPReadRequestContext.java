@@ -442,77 +442,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             return null;
         }
 
-        final long need = Math.max(1L, numBytes); 
-
-        final io.netty.util.concurrent.EventExecutor el = nettyChannel.eventLoop();
-        final java.util.concurrent.atomic.AtomicReference<io.netty.util.concurrent.ScheduledFuture<?>> toRef = new java.util.concurrent.atomic.AtomicReference<>(null);
-        final AtomicBoolean delivered = new AtomicBoolean(false);
-
-        final TCPReadCompletedCallback wrapped = new TCPReadCompletedCallback() {
-            
-            @Override
-            public void complete(VirtualConnection v, TCPReadRequestContext ctx) {
-                if (!delivered.compareAndSet(false, true)) {
-                    return;
-                }
-
-                io.netty.util.concurrent.ScheduledFuture<?> f = toRef.getAndSet(null);
-                if (f != null){
-                    try {
-                        f.cancel(false);
-                    } catch (Throwable ignore) {
-                    }
-                }
-                    
-                h.setToBuffer();
-                if (callback != null) {
-                    HttpDispatcher.getExecutorService().execute(() -> {
-                            try {
-                                callback.complete(v, ctx);
-                            } catch (Throwable ignore) {
-                            }
-                    });
-                }
-            }
-
-            @Override
-            public void error(VirtualConnection v, TCPReadRequestContext ctx, java.io.IOException e) {
-                if (!delivered.compareAndSet(false, true)) {
-                    return;
-                }
-                io.netty.util.concurrent.ScheduledFuture<?> f = toRef.getAndSet(null);
-                if (f != null)
-                    try {
-                        f.cancel(false);
-                    } catch (Throwable ignore) {
-                    }
-                    if (callback != null) {
-                        HttpDispatcher.getExecutorService().execute(() -> {
-                            try {
-                                callback.error(v, ctx, e);
-                            } catch (Throwable ignore) {
-                            }
-                        });
-                    }
-            }
-        };
-
-        h.setReadListener((callback!=null) ? wrapped : null);
-
-
-        h.queueAsyncRead(need);
-
-        final int t = normalizeTimeout(timeout);
-        if (t != NO_TIMEOUT) {
-            toRef.set(el.schedule(() -> {
-                if (h.isAsyncReadArmed() && nettyChannel.isActive()) {
-                    try {
-                        wrapped.error(vc, this, new SocketTimeoutException("Read operation timed out"));
-                    } catch (Throwable ignore) {
-                    }
-                }
-            }, t, TimeUnit.MILLISECONDS));
-        }
+        h.queueAsyncRead(callback,
+                         vc,
+                         this,
+                         Math.max(1L, numBytes),
+                         normalizeTimeout(timeout));
         return null;
     }
 
