@@ -35,6 +35,7 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
+import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.http.HttpInputStream;
@@ -521,6 +522,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 upgrade = p.get(NettyServletUpgradeHandler.class);
             }
 
+            VirtualConnection upgradeConnection = this.link == null ? null : this.link.getVirtualConnection();
+            if (upgrade != null && upgradeConnection != null){
+                upgrade.setVC(upgradeConnection);
+            }
+
             final ChannelHandlerContext upgCtx = p.context(NettyServletUpgradeHandler.class);
             if (upgCtx != null && upgrade != null) {
 
@@ -559,8 +565,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             ctx.channel().attr(NettyHttpConstants.UPGRADED).set(Boolean.TRUE);
             ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
             try {
-                if (this.link != null && this.link.getVirtualConnection() != null) {
-                    this.link.getVirtualConnection().getStateMap().put(com.ibm.ws.transport.access.TransportConstants.UPGRADED_CONNECTION, "true");
+                if (upgradeConnection != null) {
+                    upgradeConnection.getStateMap().put(TransportConstants.UPGRADED_CONNECTION, "true");
                 }
             } catch (Throwable ignore) {
             }

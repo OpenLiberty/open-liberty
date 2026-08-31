@@ -252,7 +252,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                     break;
                 capacity += Math.max(0, b.remaining());
             }
-<<<<<<< HEAD
             final int available = queuedBytes.get();
             final int toRead = Math.min(capacity, available);
             if (toRead <= 0) {
@@ -260,7 +259,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 return;
             }
 
-            ByteBuf chunk = read(toRead, null); 
+            ByteBuf chunk = read(toRead, null);
             try {
                 int remaining = chunk.readableBytes();
                 int copied = 0;
@@ -282,9 +281,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                     b.position(dst.position());
                     remaining -= can;
                     copied += can;
-=======
-            
->>>>>>> integration
                 }
 
             
