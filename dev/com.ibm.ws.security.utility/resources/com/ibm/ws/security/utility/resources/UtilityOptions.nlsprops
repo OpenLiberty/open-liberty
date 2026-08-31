@@ -121,14 +121,14 @@ encode.option-key.keyringType=\
 \ \ \ \ --keyringType=[keyringType]
 encode.option-desc.keyringType=\
 \tSpecify the key storage type. Use JCERACFKS, JCECCARACFKS, or\n\
-\tJCEHYBRIDRACFKS for a SAF keyring. Use CKDS to use a hardware\n\
+\tJCEHYBRIDRACFKS for a SAF keyring. Use ICSF to use a hardware\n\
 \tAES key from the ICSF Cryptographic Key Data Set; in this case\n\
 \t--keyring is not required.
 encode.option-key.keyLabel=\
 \ \ \ \ --keyLabel=[keyLabel]
 encode.option-desc.keyLabel=\
 \tFor SAF keyring types, specify the label of the certificate within\n\
-\tthe keyring. For ICSF, specify the label in the CKDS.
+\tthe keyring. For ICSF, specify the ICSF key label.
 
 
 
@@ -329,7 +329,7 @@ createLTPAKeys.option-key.keyringType=\
 \ \ \ \ --keyringType=[keyringType]
 createLTPAKeys.option-desc.keyringType=\
 \t(z/OS only) The key storage type. Use JCERACFKS, JCECCARACFKS, or\n\
-\tJCEHYBRIDRACFKS for a SAF keyring. Use CKDS to protect the LTPA\n\
+\tJCEHYBRIDRACFKS for a SAF keyring. Use ICSF to protect the LTPA\n\
 \tkey material using a hardware AES key from the ICSF Cryptographic\n\
 \tKey Data Set; in this case --keyring and --password are not required\n\
 \tand useEncryptionKey="true" will be set in the server.xml snippet.
@@ -337,7 +337,7 @@ createLTPAKeys.option-key.keyLabel=\
 \ \ \ \ --keyLabel=[keyLabel]
 createLTPAKeys.option-desc.keyLabel=\
 \t(z/OS only) For SAF keyring types, specify the label of the\n\
-\tcertificate within the keyring. For ICSF, specify the label in the CKDS.
+\tcertificate within the keyring. For ICSF, specify the ICSF key label.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
