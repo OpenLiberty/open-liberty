@@ -24,9 +24,12 @@ import static com.ibm.ws.classloading.internal.Util.list;
 import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.ClassGenerator;
 import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
@@ -64,23 +67,117 @@ class ParentLastClassLoader extends AppClassLoader {
     @Override
     @Trivial
     public URL getResource(String name) {
-        URL result = findResourceCommonLibraryClassLoaders(name, beforeApp);
-        if (result == null) {
-            result = findResource(name);
+        boolean traceEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+        // path is null when trace is off — avoids string allocation on the hot path.
+        return getResourceInternal(name, traceEnabled ? this.toString() : null);
+    }
+
+    /**
+     * Overrides parent-first search order to implement parent-last, emitting trace
+     * at the point of discovery.
+     *
+     * Search order (parent-last):
+     * 1. beforeApp library delegates
+     * 2. local classpath + afterApp library delegates
+     * 3. parent classloader
+     *
+     * @param name The resource name.
+     * @param path The delegation path so far, or null if trace is disabled.
+     * @return The URL of the resource, or null if not found.
+     */
+    @Override
+    @Trivial
+    URL getResourceInternal(String name, String path) {
+        // 1. beforeApp library delegates
+        URL url = findResourceCommonLibraryClassLoaders(name, beforeApp, path);
+        if (url != null) {
+            return url;
         }
-        if (result == null) {
-            result = parent.getResource(name);
+
+        // 2. local classpath + afterApp library delegates
+        url = findResourceInternal(name, false, path);
+        if (url != null) {
+            return url;
         }
-        return result;
+
+        // 3. parent classloader (searched last — parent-last order)
+        String parentPath = path != null ? path + " -> " + parent : null;
+        if (parent instanceof AppClassLoader) {
+            // Thread path into the parent so the full chain is visible in its trace.
+            url = ((AppClassLoader) parent).getResourceInternal(name, parentPath);
+        } else {
+            url = parent.getResource(name);
+            if (url != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, String.format("Resource=[%s] found at location=[%s] by parent classloader=[%s]; delegation path=[%s]",
+                        name, url, parent, parentPath));
+            }
+        }
+        if (url != null) {
+            return url;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, String.format("Resource=[%s] not found; classloader=[%s]", name, this));
+        }
+        return null;
     }
 
     @Override
     @Trivial
     public Enumeration<URL> getResources(String resName) throws IOException {
-        // search order: 1) beforeApp common libraries 2)  my class path and afterApp common libraries 3) parent loader
-        return findResourcesCommonLibraryClassLoaders(resName, new CompositeEnumeration<>(), beforeApp) //
-                        .add(this.findResources(resName)) //
-                        .add(this.parent.getResources(resName));
+        boolean traceEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+        // path is null when trace is off — avoids string allocation on the hot path.
+        return getResourcesInternal(resName, traceEnabled ? this.toString() : null);
+    }
+
+    /**
+     * Overrides parent-first search order to implement parent-last.
+     *
+     * Search order (parent-last):
+     * 1. beforeApp library delegates
+     * 2. local classpath + afterApp library delegates
+     * 3. parent classloader
+     *
+     * @param name The resource name.
+     * @param path The delegation path so far, or null if trace is disabled.
+     * @return An enumeration of all matching URLs.
+     */
+    @Override
+    @Trivial
+    Enumeration<URL> getResourcesInternal(String resName, String path) throws IOException {
+        // 1. beforeApp library delegates
+        CompositeEnumeration<URL> results = findResourcesCommonLibraryClassLoaders(resName, new CompositeEnumeration<>(), beforeApp, path);
+
+        // 2. local classpath + afterApp library delegates
+        results.add(findResourcesInternal(resName, false, path));
+
+        // 3. parent classloader (searched last — parent-last order)
+        String parentPath = path != null ? path + " -> " + parent : null;
+        Enumeration<URL> parentResults;
+        if (parent instanceof AppClassLoader) {
+            // Thread path into the parent so the full chain is visible in its trace.
+            parentResults = ((AppClassLoader) parent).getResourcesInternal(resName, parentPath);
+        } else {
+            parentResults = this.parent.getResources(resName);
+            if (path != null) {
+                List<URL> urls = Collections.list(parentResults);
+                if (!urls.isEmpty()) {
+                    Tr.debug(tc, String.format("Resources=[%s] found at locations=%s from parent classloader=[%s]; delegation path=[%s]",
+                            resName, urls, parent, parentPath));
+                }
+                parentResults = Collections.enumeration(urls);
+            }
+        }
+        results.add(parentResults);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            List<URL> all = Collections.list(results);
+            if (all.isEmpty()) {
+                Tr.debug(tc, String.format("Resources=[%s] not found; classloader=[%s]", resName, this));
+            }
+            return Collections.enumeration(all);
+        }
+        return results;
     }
 
     @FFDCIgnore(ClassNotFoundException.class)

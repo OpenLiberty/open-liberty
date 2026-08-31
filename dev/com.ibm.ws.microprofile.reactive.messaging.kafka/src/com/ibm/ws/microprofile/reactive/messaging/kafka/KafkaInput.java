@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMCont
  * @param V
  *            the value type
  */
-public class KafkaInput<K, V> implements ConsumerRebalanceListener {
+public abstract class KafkaInput<K, V> implements ConsumerRebalanceListener {
 
     private static final TraceComponent tc = Tr.register(KafkaInput.class);
     private static final Duration FOREVER = Duration.ofMillis(Long.MAX_VALUE);
@@ -192,12 +192,18 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         return null;
     }
 
+    protected abstract void countDownAppStartedLatch();
+
     public void shutdown() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Shutting down Kafka connection");
         }
 
         this.running = false;
+        // Unlock the application-started latch so threads
+        // can observe running == false and exit cleanly.
+        countDownAppStartedLatch();
+
         this.kafkaConsumer.wakeup();
         this.lock.lock();
         try {
@@ -211,8 +217,11 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         }
     }
 
+    protected abstract boolean isAppStarted();
+
     @FFDCIgnore({ WakeupException.class, RejectedExecutionException.class })
     private CompletionStage<PublisherBuilder<Message<V>>> pollKafkaAsync() {
+
         if (!this.subscribed) {
             this.lock.lock();
             try {
@@ -235,7 +244,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
 
         ConsumerRecords<K, V> records = null;
 
-        while (this.lock.tryLock()) {
+        while (isAppStarted() && this.lock.tryLock()) {
             try {
                 records = this.kafkaConsumer.poll(ZERO);
                 break;
@@ -269,11 +278,20 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         return result;
     }
 
+    protected abstract boolean waitForAppStart(CompletableFuture<PublisherBuilder<Message<V>>> result);
+
     /**
      * Run any pending actions and then poll Kafka for messages.
+     * <p>
+     * Waits until the owning application has fully started before entering the poll loop,
+     * so that messages are never dispatched to application code during application startup.
+     * The wait is skipped on subsequent calls once {@link #applicationStarted} is {@code true}.
      */
-    @FFDCIgnore(WakeupException.class)
+    @FFDCIgnore({ WakeupException.class })
     private void executePollActions(CompletableFuture<PublisherBuilder<Message<V>>> result) {
+        if (!waitForAppStart(result)) {
+            return;
+        }
         this.lock.lock();
         try {
             while (this.running) {

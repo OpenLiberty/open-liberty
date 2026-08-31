@@ -59,11 +59,11 @@ CWMCM0006E.duplicate.special.arguments.explanation=Au ap\u0103rut unul sau mai m
 CWMCM0006E.duplicate.special.arguments.useraction=Elimina\u021bi instan\u021bele suplimentare.
 
 # Used for server logging
-# {0} = The fully qualified method name
-# {1} = The parameter type simple name
-CWMCM0007E.invalid.arguments=CWMCM0007E: Instrumentul {0} MCP are un parametru de tip {1} care nu este un tip de argument special recunoscut \u0219i nu are o `@ToolArg` adnotare.
-CWMCM0007E.invalid.arguments.explanation=Unul sau mai mul\u021bi parametri nu au fost adnota\u021bi ca argumente ale instrumentului \u0219i nu sunt recunoscu\u021bi ca tipuri speciale de argumente.
-CWMCM0007E.invalid.arguments.useraction=Verifica\u021bi dac\u0103 a\u021bi importat clasa corect\u0103 pentru argumentul dvs. sau dac\u0103 a\u021bi inten\u021bionat s\u0103 include\u021bi @ToolArg.
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: Punctul final al serverului MCP: {0}
+CWMCM0008I.mcp.endpoint.url.explanation=Punctul final al serverului MCP URL pentru acest modul de aplica\u021bie este disponibil la adresa specificat\u0103 URL.
+CWMCM0008I.mcp.endpoint.url.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 # Used as part of a response to a client
 # {0} = Request id
@@ -285,3 +285,59 @@ CWMCM0034W.converter.missing.type.parameter.useraction=Modifica\u021bi declara\u
 CWMCM0035W.converter.generic.type=CWMCM0035W: Implementarea ` {0} ` DefaultValueConverter converte\u0219te \u00eentr-un parametru de tip generic, \u00een loc de un tip concret.
 CWMCM0035W.converter.generic.type.explanation=O clas\u0103 de implementare de tip \u201e DefaultValueConverter \u201d a fost \u00eenregistrat\u0103 cu un parametru de tip generic, cum ar fi T, \u00een loc de un tip concret.
 CWMCM0035W.converter.generic.type.useraction=Modifica\u021bi declara\u021bia clasei astfel \u00eenc\u00e2t s\u0103 implementeze interfa\u021ba ` DefaultValueConverter ` cu un parametru de tip concret. De exemplu: clasa ` MyConverterClass ` implementeaz\u0103 interfa\u021ba ` DefaultValueConverter<MyType> `.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: Cheia _meta din {0} nu este valid\u0103. Segmentul de nume trebuie s\u0103 \u00eenceap\u0103 \u0219i s\u0103 se termine cu un caracter alfanumeric \u0219i poate con\u021bine \u00eentre acestea doar caractere alfanumerice, cratime, linii de subliniere sau puncte.
+CWMCM0037E.invalid.meta.key.name.explanation=Segmentul de nume al cheii _meta nu respect\u0103 regulile specifica\u021biei MCP. Segmentul de nume este partea care urmeaz\u0103 dup\u0103 prefixul op\u021bional \u201e/\u201d, sau \u00eentreaga cheie atunci c\u00e2nd nu exist\u0103 niciun prefix.
+CWMCM0037E.invalid.meta.key.name.useraction=Asigura\u021bi-v\u0103 c\u0103 segmentul de nume al cheii _meta \u00eencepe \u0219i se termin\u0103 cu un caracter alfanumeric.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: Cheia _meta din fi\u0219ierul \u201e {0} \u201d are un prefix gol \u00eenaintea caracterului \u201e/\u201d.
+CWMCM0038E.empty.meta.key.prefix.explanation=Cheia _meta con\u021bine caracterul \u201e/\u201d, dar nu are nicio etichet\u0103 prefix \u00eenaintea acestuia. Prefixul trebuie s\u0103 fie format din una sau mai multe etichete separate prin punct.
+CWMCM0038E.empty.meta.key.prefix.useraction=Ad\u0103uga\u021bi un prefix valid \u00eenaintea caracterului \u201e/\u201d sau elimina\u021bi caracterul \u201e/\u201d dac\u0103 nu este necesar niciun prefix.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: Cheia _meta din \u201e {0} \u201d are o etichet\u0103 de prefix nevalid\u0103: {1}. Etichetele trebuie s\u0103 \u00eenceap\u0103 cu o liter\u0103, s\u0103 se termine cu o liter\u0103 sau o cifr\u0103 \u0219i pot con\u021bine \u00eentre ele doar litere, cifre sau cratime.
+CWMCM0039E.invalid.meta.key.label.explanation=Segmentul prefix al cheii _meta con\u021bine o etichet\u0103 care nu respect\u0103 regulile specifica\u021biei MCP.
+CWMCM0039E.invalid.meta.key.label.useraction=Asigur\u0103-te c\u0103 fiecare etichet\u0103 din prefixul cheii _meta \u00eencepe cu o liter\u0103 \u0219i se termin\u0103 cu o liter\u0103 sau o cifr\u0103. Asigura\u021bi-v\u0103 c\u0103 \u00eentre litere se afl\u0103 doar litere, cifre sau cratime.
+
+# Used for server logging
+# {0} = The invalid metadata prefix
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0040E.invalid.metadata.prefix=CWMCM0040E: Prefixul de metadate \u201e {0} \u201d din adnotarea \u201e MetaField \u201d a metodei \u201e {1} \u201d nu este valid. Un prefix valid este o serie de etichete separate prin punct. Fiecare etichet\u0103 trebuie s\u0103 \u00eenceap\u0103 cu o liter\u0103, s\u0103 se termine cu o liter\u0103 sau o cifr\u0103 \u0219i s\u0103 con\u021bin\u0103 \u00eentre acestea doar litere, cifre sau cratime.
+CWMCM0040E.invalid.metadata.prefix.explanation=Prefixul metadatelor din adnotarea \u201e MetaField \u201d nu \u00eendepline\u0219te cerin\u021bele specifica\u021biei Protocolului de context al modelului (MCP).
+CWMCM0040E.invalid.metadata.prefix.useraction=Actualiza\u021bi prefixul metadatelor din adnotarea \u201e MetaField \u201d a metodei, pentru a respecta cerin\u021bele specifica\u021biei MCP. Prefixul trebuie s\u0103 fie format din etichete separate prin punct, urmate de o bar\u0103 oblic\u0103. Fiecare etichet\u0103 trebuie s\u0103 \u00eenceap\u0103 cu o liter\u0103 \u0219i s\u0103 se termine cu o liter\u0103 sau o cifr\u0103. Caracterele din interiorul fiec\u0103rei etichete pot fi litere, cifre sau cratime.
+
+# Used for server logging
+# {0} = The invalid metadata name
+# {1} = The annotated method
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0041E.invalid.metadata.name=CWMCM0041E: Numele metadatelor \u201e {0} \u201d din adnotarea \u201e MetaField \u201d a metodei \u201e {1} \u201d nu este valid. Un nume valid de metadate trebuie s\u0103 \u00eenceap\u0103 \u0219i s\u0103 se termine cu un caracter alfanumeric \u0219i poate con\u021bine cratime, linii de subliniere, puncte \u0219i caractere alfanumerice.
+CWMCM0041E.invalid.metadata.name.explanation=Numele metadatelor din adnotarea \u201e MetaField \u201d nu respect\u0103 cerin\u021bele specifica\u021biei Protocolului de context al modelului (MCP).
+CWMCM0041E.invalid.metadata.name.useraction=Actualiza\u021bi numele metadatelor din adnotarea \u201e MetaField \u201d a metodei, pentru a respecta cerin\u021bele specifica\u021biei MCP. Asigura\u021bi-v\u0103 c\u0103 numele \u00eencepe \u0219i se termin\u0103 cu un caracter alfanumeric \u0219i con\u021bine doar cratime, linii de subliniere, puncte \u0219i caractere alfanumerice.
+
+# Used for server logging
+# {0} = The key of the metadata entry with an invalid value
+# {1} = The annotated method
+# {2} = The requested type
+# {3} = The error message
+# Do not translate "Model Context Protocol", "MCP", "MetaField"
+CWMCM0042E.metadata.value.conversion.error=CWMCM0042E: Valoarea cheii de metadate \u201e {0} \u201d din adnotarea \u201e MetaField \u201d a metodei \u201e {1} \u201d nu poate fi convertit\u0103 \u00een tipul \u201e {2} \u201d. Eroarea este \u201e {3} \u201d
+CWMCM0042E.metadata.value.conversion.error.explanation=Valoarea metadatelor din adnotarea \u201e MetaField \u201d nu poate fi convertit\u0103 \u00een tipul specificat \u00een adnotare. Este posibil ca valoarea s\u0103 fie \u00eentr-un format incorect sau s\u0103 fie incompatibil\u0103 cu tipul specificat.
+CWMCM0042E.metadata.value.conversion.error.useraction=Verifica\u021bi mesajul de eroare, fi\u0219ierul \u201e message.log \u201d \u0219i jurnalele FFDC pentru a identifica cauza e\u0219ecului conversiei. Actualiza\u021bi valoarea metadatelor din adnotarea \u201e MetaField \u201d astfel \u00eenc\u00e2t aceasta s\u0103 fie compatibil\u0103 cu tipul specificat.
+
+# Used for server logging
+# {0} = The annotated method
+# {1} = The annotation simple name
+# Do not translate "Model Context Protocol", "MCP"
+CWMCM0043W.unsupported.annotation=CWMCM0043W: Metoda \u201e {0} \u201d utilizeaz\u0103 adnotarea \u201e {1} \u201d, care nu este acceptat\u0103. Aceast\u0103 metod\u0103 este ignorat\u0103.
+CWMCM0043W.unsupported.annotation.explanation=API-ul Java al Protocolului de Context al Modelului (MCP) include adnot\u0103ri pentru func\u021bionalit\u0103\u021bi care nu sunt acceptate de aceast\u0103 implementare. Metodele care con\u021bin adnot\u0103ri neacceptate sunt ignorate.
+CWMCM0043W.unsupported.annotation.useraction=Elimina\u021bi adnotarea neacceptat\u0103 din metod\u0103 sau utiliza\u021bi numai adnot\u0103rile acceptate de Protocolul de context al modelului (MCP).

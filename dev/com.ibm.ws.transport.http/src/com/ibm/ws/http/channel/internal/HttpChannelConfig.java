@@ -124,6 +124,8 @@ public class HttpChannelConfig {
     private boolean v0CookieDateRFC1123compat = true;
     /** PI31734 - Prevent multiple Set-Cookies with the same name */
     private boolean doNotAllowDuplicateSetCookies = false;
+    /** Force to treat $WSSP header as non sensitive */
+    private boolean desensitizePrivatePortHeader = false;
     /**
      * PI33453 - Wait for end of message data, if not immediately available, after the first CRLF
      * sequence following the 0 byte chunk.
@@ -650,6 +652,7 @@ public class HttpChannelConfig {
         initSameSiteCookiesPatterns();
         parseHeaders(props);
         parseIgnoreWriteAfterCommit(props.get(HttpConfigConstants.PROPNAME_IGNORE_WRITE_AFTER_COMMIT));
+        parseDesensitizePrivatePortHeader(props.get(HttpConfigConstants.PROPNAME_DESENSITIZE_PRIVATE_PORT_HEADER));
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -2403,6 +2406,21 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Check the configuration map for if we should swallow inbound connections IOEs
+     *
+     * @ param props
+     */
+    protected void parseDesensitizePrivatePortHeader(Object option) {
+        //PI57542
+        if (Objects.nonNull(option)) {
+            this.desensitizePrivatePortHeader = convertBoolean(option);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Config: desensitizePrivatePortHeader is " + desensitizePrivatePortHeader());
+            }
+        }
+    }
+
+    /**
      * Check the configuration if we should purge the remaining response data
      * This is a JVM custom property as it's intended for outbound scenarios
      *
@@ -3041,6 +3059,15 @@ public class HttpChannelConfig {
 
         return ((IOEForInboundConnectionsBehavior != null) ? IOEForInboundConnectionsBehavior : Boolean.FALSE);
 
+    }
+
+    /**
+     * Query whether or not the HTTP Channel should treat $WSSP as non sensitive
+     *
+     * @return boolean
+     */
+    public boolean desensitizePrivatePortHeader() {
+        return this.desensitizePrivatePortHeader;
     }
 
     /**

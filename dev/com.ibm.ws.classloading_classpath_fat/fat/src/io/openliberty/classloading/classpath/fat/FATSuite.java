@@ -56,6 +56,7 @@ import io.openliberty.classloading.classpath.util.TestUtils;
 import io.openliberty.classloading.feature.message.test.app.ParentLastFeatureMessageTestServlet;
 import io.openliberty.classloading.lib.path.test.app.LibPathTestServlet;
 import io.openliberty.classloading.library.precedence.test.app.LibPrecedenceBeforeAppTestServlet;
+import io.openliberty.classloading.library.test.app.LibraryUserTestServlet;
 import io.openliberty.classloading.libs.util.CodeSourceUtil;
 import io.openliberty.classloading.parent.library.inconsistent.test.app.ParentLibraryInconsistentTestServlet;
 import io.openliberty.classloading.platform.delegation.test.app.PlatformDelegationTestServlet;
@@ -106,7 +107,8 @@ import test.bundle.api4.c.API_C4;
     OverrideLibraryTests.class,
     LibraryPrecedenceBeforeAppTests.class,
     LibraryPrecedenceAfterAppTests.class,
-    NativeLibraryTest.class
+    NativeLibraryTest.class,
+    LibraryServiceTests.class
 })
 public class FATSuite {
     static final String CLASSPATH_TEST_WAR_LOADER_SERVER = "classpathTestWarLoader";
@@ -125,6 +127,7 @@ public class FATSuite {
     static final String LIB_PRECEDENCE_BEFORE_APP_SERVER = "libPrecedenceBeforeAppTest";
     static final String LIB_PRECEDENCE_AFTER_APP_SERVER = "libPrecedenceAfterAppTest";
     static final String OVERRIDE_LIB_WAR_TEST_SERVER = "overrideLibWarTest";
+    static final String LIBRARY_USER_TEST_SERVER = "libraryUserTest";
 
     // ##### ARCHIVE NAMES #####
     // WAR archive names
@@ -136,8 +139,9 @@ public class FATSuite {
     public static final String TEST_NATIVE_LIBRARY_APP = "testNativeLibrary";
     public static final String TEST_PARENT_LAST_LIBRARY_FEATURE_APP = "testParentLastLibraryFeature";
     public static final String TEST_PARENT_LIBRARY_INCONSISTENT_APP = "testParentLibraryInconsistent";
-    public static final String TEST_LIB_PRECECENCE_APP = "testLibPrecedence";
+    public static final String TEST_LIB_PRECEDENCE_APP = "testLibPrecedence";
     public static final String TEST_OVERRIDE_LIB_APP = "testOverrideLib";
+    public static final String TEST_LIBRARY_USER_APP = "testLibraryUser";
 
     // EJB archive names
     public static final String TEST_EJB1 = "testEjb1";
@@ -220,7 +224,8 @@ public class FATSuite {
     static final WebArchive TEST_PARENT_LAST_LIBRARY_FEATURE_WAR;
     static final WebArchive TEST_LIB_DELEGATION_PARENT_INCONSISTENT_WAR;
     static final WebArchive TEST_OVERRIDE_LIB_WAR;
-    static final WebArchive TEST_LIB_PRECENCENC_WAR;
+    static final WebArchive TEST_LIB_PRECEDENCE_WAR;
+    static final WebArchive TEST_LIBRARY_USER_WAR;
 
     // EJB archives
     static final JavaArchive TEST_EJB1_JAR;
@@ -362,9 +367,12 @@ public class FATSuite {
                                                                    GOverride.class.getPackage().getName(), //
                                                                    HOverride.class.getPackage().getName() );
 
-            TEST_LIB_PRECENCENC_WAR = ShrinkHelper.buildDefaultApp(TEST_LIB_PRECECENCE_APP + ".war",
+            TEST_LIB_PRECEDENCE_WAR = ShrinkHelper.buildDefaultApp(TEST_LIB_PRECEDENCE_APP + ".war",
                                                                    LibPrecedenceBeforeAppTestServlet.class.getPackage().getName(), //
                                                                    TestUtils.class.getPackage().getName());
+
+            TEST_LIBRARY_USER_WAR = ShrinkHelper.buildDefaultApp(TEST_LIBRARY_USER_APP + ".war",
+                                                                   LibraryUserTestServlet.class.getPackage().getName());
 
             TEST_RESOURCE_ADAPTOR_JAR = ShrinkHelper.buildJavaArchive(TEST_RESOURCE_ADAPTOR + ".jar",
                                                                       TestResourceAdapter.class.getPackage().getName()).

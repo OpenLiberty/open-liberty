@@ -136,7 +136,10 @@ public class H2Test extends FATServletClient {
                          0, unfilteredContent.size());
         } finally {
             // Stop server and expect errors from URL validation tests
-            server.stopServer("DSRA8070E", "CWWKE0701E");
+            server.stopServer(
+                "DSRA8020E.*URL", // DSRA8020E: Warning: The property 'URL' does not exist on the DataSource class -- Occurs on IBMi where the DataSources that produce this error are skipped.
+                "DSRA8070E", 
+                "CWWKE0701E");
         }
     }
 

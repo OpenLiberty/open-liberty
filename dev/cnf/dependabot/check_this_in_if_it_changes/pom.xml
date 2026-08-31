@@ -19,7 +19,7 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.annotation</artifactId>
-      <version>7.0.0</version>
+      <version>7.4.0</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.transform</artifactId>
-      <version>7.0.0</version>
+      <version>7.4.0</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd</artifactId>
-      <version>7.0.0</version>
+      <version>7.4.0</version>
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
@@ -584,72 +584,72 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-base</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-compression</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-classes-epoll</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-classes-kqueue</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-epoll</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -664,7 +664,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-kqueue</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -679,12 +679,12 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-unix-common</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.2.15.Final</version>
+      <version>4.2.17.Final</version>
     </dependency>
     <dependency>
       <groupId>io.openliberty.arquillian</groupId>
@@ -878,6 +878,16 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.62.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-common</artifactId>
+      <version>1.62.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-context</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -895,6 +905,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-context</artifactId>
       <version>1.48.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-context</artifactId>
+      <version>1.62.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -1040,6 +1055,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-extension-trace-propagators</artifactId>
       <version>1.48.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-extension-trace-propagators</artifactId>
+      <version>1.62.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -1755,6 +1775,11 @@
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
       <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>4.0.0-M2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.resource</groupId>
@@ -2583,6 +2608,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-core</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
       <artifactId>johnzon-jsonb</artifactId>
       <version>1.1.5</version>
     </dependency>
@@ -2839,27 +2869,32 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpg-jdk18on</artifactId>
-      <version>1.82</version>
+      <version>1.84</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpg-jdk18on</artifactId>
+      <version>1.85</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpg-jdk18on</artifactId>
+      <version>1.85</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
       <version>1.84</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk18on</artifactId>
-      <version>1.82</version>
+      <version>1.85</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk18on</artifactId>
-      <version>1.84</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk18on</artifactId>
-      <version>1.82</version>
+      <version>1.85</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -2868,13 +2903,28 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcutil-jdk18on</artifactId>
-      <version>1.82</version>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.85</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.85</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcutil-jdk18on</artifactId>
       <version>1.84</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <version>1.85</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <version>1.85</version>
     </dependency>
     <dependency>
       <groupId>org.brotli</groupId>
@@ -3617,6 +3667,11 @@
       <version>0.5.0</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.yasson</groupId>
+      <artifactId>yasson</artifactId>
+      <version>3.0.5</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
       <version>1.0.11</version>
@@ -3625,11 +3680,6 @@
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
       <version>2.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse</groupId>
-      <artifactId>yasson</artifactId>
-      <version>3.0.4</version>
     </dependency>
     <dependency>
       <groupId>org.ehcache</groupId>
@@ -5295,6 +5345,11 @@
       <groupId>software.amazon.jdbc</groupId>
       <artifactId>aws-advanced-jdbc-wrapper</artifactId>
       <version>2.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>sorg.bouncycastle</groupId>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <version>1.84</version>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>

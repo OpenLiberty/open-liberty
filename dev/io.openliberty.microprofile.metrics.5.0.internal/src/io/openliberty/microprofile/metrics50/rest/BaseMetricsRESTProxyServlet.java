@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,8 +87,14 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
                 throw new ServletException("OSGi service RESTHandlerContainer is not available.");
             } else {
                 REST_HANDLER_CONTAINER = ctxt.getService(ref);
-                // generate initial session metrics
-                request.getSession();
+                // generate initial session metrics - guard against an already-invalidated
+                // session on the triggering request (the container has been successfully
+                // initialised above so we must not let this throw)
+                try {
+                    request.getSession();
+                } catch (IllegalStateException e) {
+                    // session was invalidated before we could use it; safe to ignore
+                }
             }
         }
     }

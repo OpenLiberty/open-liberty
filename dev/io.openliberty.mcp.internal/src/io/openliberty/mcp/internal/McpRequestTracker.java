@@ -73,12 +73,12 @@ public class McpRequestTracker {
     }
 
     /**
-     * Cancels all ongoing requests associated with the given session.
+     * Cancels all ongoing requests associated with the given session and stops tracking the session.
      * <p>
      * Will skip cancellation if the server is in stateless mode.
      * request is cancelled with a fixed reason: {@code "Session cancelled"}
      */
-    public void cancelSessionRequests(McpSessionId sessionId) {
+    public void endSession(McpSessionId sessionId) {
         if (mcpConfig.stateless()) {
             return;
         }

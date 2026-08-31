@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -60,14 +60,14 @@ public class JSONSerializationHelper implements SerializationHelper {
     }
 
     @Override
-    public Object readObject(Object in, int blen, byte[] binary) throws ClassNotFoundException, ConversionException {
+    public ObjectInputStream readObject(Object in, int blen, byte[] binary) throws ClassNotFoundException, ConversionException {
 
         SerializationService ss = serializationServiceRef.getService();
         if (null != ss && null != _context) {
             try {
                 ClassLoader bundleCL = _context.getBundleContext().getClass().getClassLoader();
                 ObjectInputStream objectInputStream = ss.createObjectInputStream(new ByteArrayInputStream(binary, 0, blen), bundleCL);
-                return objectInputStream.readObject();
+                return objectInputStream;
             } catch (IOException ioe) {
                 if (ioe.getCause() instanceof ClassNotFoundException) {
                     throw (ClassNotFoundException) ioe.getCause();

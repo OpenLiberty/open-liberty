@@ -20,6 +20,7 @@ import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -69,6 +70,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     private final ClassLoader cl;
     private volatile BundleLoader bLoader;
     private final CompositeResourceProvider resourceProviders;
+    private final String toStringCache;
 
     static GatewayClassLoader createGatewayClassLoader(Map<Bundle, Set<GatewayClassLoader>> classloaders,
                                                        GatewayConfiguration config,
@@ -88,6 +90,9 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
                     loaders.add(result);
                 }
             }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Created GatewayClassLoader: " + result.toDiagString());
         }
         return result;
     }
@@ -117,6 +122,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
             this.cl = bundleLoader;
         }
         this.resourceProviders = resourceProviders;
+        this.toStringCache = toShortString();
     }
 
     @Override
@@ -127,7 +133,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Search order:
      * 1. Searches the bundles
      * 2. Searches the system resources
@@ -136,9 +142,31 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     @Trivial
     public URL getResource(String resName) {
         // Do bundle first resource loading
-        URL result = this.findResource(resName);
+        URL result = this.findResource(resName);        
+        if (result != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, String.format("Resource=[%s] found at location=[%s] from liberty API packages; classloader=[%s]",
+                        resName, result, this));
+            }
+            return result;
+        }
+        
         // second check the system loader
-        return result == null ? jvmPackages.getResource(resName) : result;
+        result = jvmPackages.getResource(resName);
+        if (result != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, String.format("Resource=[%s] found at location=[%s] from JVM packages; classloader=[%s]",
+                        resName, result, this));
+            }
+            return result;
+        } 
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, String.format("Resource=[%s] not found; classloader=[%s]",
+                                       resName, this));
+        }      
+        return null;
+        
     }
 
     /**
@@ -149,6 +177,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
      * 2. Searches the resource provider
      */
     @Override
+    @Trivial
     protected URL findResource(String name) {
         URL result = null;
         // Only check the parent bundle loader if the request is outside of "" or "/"
@@ -161,6 +190,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
                 result = current == null ? null : current.findResource(name);
             }
         }
+        
         // This doesn't have access to ALL split packages (it just gets one) so it's augmented with a resource provider  
         return result == null ? resourceProviders.findResource(name) : result;
     }
@@ -169,10 +199,31 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     @Trivial
     public Enumeration<URL> getResources(String resName) throws IOException {
         // First check for the bundles' resources then check the system loader
-        return findResources(resName).add(jvmPackages.getResources(resName));
+        CompositeEnumeration<URL> bundleResources = findResources(resName);
+        Enumeration<URL> systemResources = jvmPackages.getResources(resName);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            List<URL> bundleUrls = Collections.list(bundleResources);
+            List<URL> jvmUrls = Collections.list(systemResources);
+            if (!bundleUrls.isEmpty()) {
+                Tr.debug(tc, String.format("Resources=[%s] found at locations=%s from liberty API packages; classloader=[%s]",
+                        resName, bundleUrls, this));
+            }
+            if (!jvmUrls.isEmpty()) {
+                Tr.debug(tc, String.format("Resources=[%s] found at locations=%s from JVM packages; classloader=[%s]",
+                        resName, jvmUrls, this));
+            }
+            if (bundleUrls.isEmpty() && jvmUrls.isEmpty()) {
+                Tr.debug(tc, String.format("Resources=[%s] not found; classloader=[%s]",
+                        resName, this));
+            }
+            bundleUrls.addAll(jvmUrls);
+            return Collections.enumeration(bundleUrls);
+        }
+        return bundleResources.add(systemResources);
     }
 
     @Override
+    @Trivial
     protected CompositeEnumeration<URL> findResources(String name) throws IOException {
         CompositeEnumeration<URL> result = new CompositeEnumeration<URL>();
 
@@ -272,16 +323,27 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     }
 
     @Override
+    @Trivial
     public Bundle getBundle() {
         return bundle;
     }
 
-    @Override
     @Trivial
-    public String toString() {
+    private String toShortString() {
         StringBuilder sb = new StringBuilder();
         sb.append("GatewayClassLoader@");
         sb.append(Integer.toHexString(this.hashCode()));
+        if (bundle != null) {
+            sb.append(":bundle=[").append(bundle.getSymbolicName());
+            sb.append(":").append(bundle.getVersion()).append("]");
+        }
+        
+        return sb.toString();
+    }
+    
+    @Trivial
+    public String toDiagString() {
+        StringBuilder sb = new StringBuilder(toShortString());
         
         if (config.getApiTypeVisibility() != null) {
             sb.append(":apis=").append(config.getApiTypeVisibility());
@@ -290,12 +352,13 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
             sb.append(":delegateToSystem=true");
         }
         
-        if (bundle != null) {
-            sb.append(":bundle=[").append(bundle.getSymbolicName());
-            sb.append(":").append(bundle.getVersion()).append("]");
-        }
-        
         return sb.toString();
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return toStringCache;
     }
 
 }

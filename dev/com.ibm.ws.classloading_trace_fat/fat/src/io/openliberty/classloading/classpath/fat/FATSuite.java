@@ -31,12 +31,14 @@ import io.openliberty.classloading.classpath.test.lib1.Lib1;
 import io.openliberty.classloading.classpath.test.lib12.Lib12;
 import io.openliberty.classloading.classpath.test.lib17.Lib17;
 import io.openliberty.classloading.classpath.test.lib2.Lib2;
+import io.openliberty.classloading.classpath.test.lib3.Lib3;
 import io.openliberty.classloading.classpath.test.rar1.TestResourceAdapter;
 import io.openliberty.classloading.libs.util.CodeSourceUtil;
 import io.openliberty.classloading.trace.fat.AppClassLoaderTraceTest;
 import io.openliberty.classloading.trace.fat.GatewayClassLoaderTraceTest;
 import io.openliberty.classloading.trace.fat.LibraryClassLoadingTraceTest;
 import io.openliberty.classloading.trace.fat.ClassLoaderToStringTraceTest;
+import io.openliberty.classloading.trace.fat.ParentLastClassLoaderTraceTest;
 import io.openliberty.classloading.trace.lib.TestLibraryClass;
 import io.openliberty.classloading.trace.war.TraceTestServlet;
 import junit.framework.AssertionFailedError;
@@ -52,7 +54,8 @@ import test.bundle.api2.c.API_C2;
     LibraryClassLoadingTraceTest.class,
     ClassLoaderToStringTraceTest.class,
     AppClassLoaderTraceTest.class,
-    GatewayClassLoaderTraceTest.class
+    GatewayClassLoaderTraceTest.class,
+    ParentLastClassLoaderTraceTest.class,
 })
 public class FATSuite {
 
@@ -68,6 +71,7 @@ public class FATSuite {
     // Library archive names
     public static final String TEST_LIB1 = "testLib1";
     public static final String TEST_LIB2 = "testLib2";
+    public static final String TEST_LIB3 = "testLib3";
     public static final String TEST_LIB12 = "testLib12";
     public static final String TEST_LIB17 = "testLib17";
 
@@ -110,6 +114,8 @@ public class FATSuite {
     // Library archives
     static final JavaArchive TEST_LIB1_JAR;
     static final JavaArchive TEST_LIB2_JAR;
+    /** Contains {@code lib3.properties}; used exclusively as a {@code commonLibraryRef} delegate. */
+    public static final JavaArchive TEST_LIB3_JAR;
     static final JavaArchive TEST_LIB12_JAR;
     static final JavaArchive TEST_LIB17_JAR;
 
@@ -139,6 +145,7 @@ public class FATSuite {
                                                           API_A2.class.getPackage().getName(), //
                                                           API_B2.class.getPackage().getName(), //
                                                           API_C2.class.getPackage().getName());
+            TEST_LIB3_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB3 + ".jar", Lib3.class.getPackage().getName());
             TEST_LIB12_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB12 + ".jar", Lib12.class.getPackage().getName());
             TEST_LIB17_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB17 + ".jar", Lib17.class.getPackage().getName());
 

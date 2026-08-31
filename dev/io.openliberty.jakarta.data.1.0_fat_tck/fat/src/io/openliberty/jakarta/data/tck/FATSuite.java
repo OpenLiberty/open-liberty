@@ -62,7 +62,7 @@ public class FATSuite extends TestContainerSuite {
         String reason = "";
 
         try {
-            if (TestModeFilter.shouldRun(TestMode.FULL)) {
+            if (!TestModeFilter.shouldRun(TestMode.FULL)) {
                 reason = "Signature test is not run in " + TestModeFilter.FRAMEWORK_TEST_MODE + " mode.";
                 return result = false;
             }

@@ -14,8 +14,16 @@ package io.openliberty.classloading.trace.fat;
 
 import static io.openliberty.classloading.classpath.fat.FATSuite.TRACE_TEST_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TRACE_TEST_EAR;
+import static io.openliberty.classloading.classpath.util.TestUtils.APP_CL;
+import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_EAR;
+import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_GATEWAY;
+import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_WEB_MODULE;
+import static io.openliberty.classloading.classpath.util.TestUtils.TRACE_CLASS_LOAD_PRFIX;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkClassLoadTrace;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkDelegationPath;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkResourceTrace;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkResourcesTrace;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
@@ -32,19 +40,14 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Verifies that {@code GatewayClassLoader} emits a {@code CLASS LOAD} trace line
- * when it resolves a class from an OSGi bundle that is wired to the application.
+ * Verifies that {@code GatewayClassLoader} emits {@code CLASS LOAD} and resource
+ * loading trace lines when it resolves classes and resources from OSGi bundles
+ * wired to the application.
  */
 @RunWith(FATRunner.class)
 public class GatewayClassLoaderTraceTest extends FATServletClient {
 
     private static final String SERVER_NAME = "GatewayClassLoaderTraceTestServer";
-
-    // Field tokens present in every trace line
-    private static final String TRACE_CLASS_LOAD_PRFIX  = "CLASS LOAD:";
-    private static final String FIELD_CLASS = "class=[";
-    private static final String FIELD_CLASSLOADER = "classloader=[";
-    private static final String FIELD_LOCATION= "location=[";
 
     // Classloader type that appear inside classloader=[...]
     private static final String GATEWAY_CL = "GatewayClassLoader";
@@ -94,39 +97,6 @@ public class GatewayClassLoaderTraceTest extends FATServletClient {
     }
 
     /**
-     * Verifies a {@code CLASS LOAD} trace line produced by {@code GatewayClassLoader} when it
-     * resolves a class from an OSGi bundle.
-     * The format is:
-     * {@code CLASS LOAD: class=[<name>]; classloader=[<ClassLoaderName@hex>:...]; location=[<url>]}
-     *
-     * @param traceLine   the raw trace line containing the {@code CLASS LOAD:} prefix
-     * @param className   the expected binary class name
-     * @param classLoader substring expected inside {@code classloader=[...]} (e.g. "GatewayClassLoader")
-     * @param location  substring expected inside {@code location=[...]} (e.g. "test.bundle.api.jar")
-     */
-    private void checkTrace(String traceLine, String className, String classLoader, String location) {
-        assertNotNull("Expected CLASS LOAD trace for " + className + " not found", traceLine);
-
-        String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_LOAD_PRFIX) + TRACE_CLASS_LOAD_PRFIX.length());
-        String[] traceElements = traceMsg.split(";");
-
-        assertTrue("First element of the trace should contain the string " + FIELD_CLASS,
-                   traceElements[0].contains(FIELD_CLASS));
-        assertTrue("First element of the trace " + traceElements[0] + " should contain class name: " + className,
-                   traceElements[0].contains(className));
-
-        assertTrue("Second element of the trace should contain the string " + FIELD_CLASSLOADER,
-                   traceElements[1].contains(FIELD_CLASSLOADER));
-        assertTrue("Second element of the trace " + traceElements[1] + " should identify as " + classLoader,
-                   traceElements[1].contains(classLoader));
-
-        assertTrue("Third element of the trace should contain the string " + FIELD_LOCATION,
-                   traceElements[2].contains(FIELD_LOCATION));
-        assertTrue("Third element of the trace " + traceElements[2] + " should reference the location "+ location ,
-                   traceElements[2].contains(location));
-    }
-
-    /**
      * Verifies that {@code GatewayClassLoader} emits a {@code CLASS LOAD} trace line when a
      * class is resolved from an OSGi bundle wired to the application gateway.
      *
@@ -150,7 +120,129 @@ public class GatewayClassLoaderTraceTest extends FATServletClient {
         //CLASS LOAD: class=[test.bundle.api1.a.API_A1];
         //           classloader=[org.eclipse.osgi.internal.loader.EquinoxClassLoader@38832d62[test.bundle.api:1.0.116.202607101434(id=155)]];
         //           location=[file:<path>/wlp/lib/test.bundle.api.jar]
-        checkTrace(traceLine, className, EQUINOX_CL, sourceLoc);
+        checkClassLoadTrace(traceLine, className, EQUINOX_CL, sourceLoc);
+    }
+
+    /**
+     * Verifies that {@code GatewayClassLoader} emits a resource-found and a resource-not-found
+     * trace line from its {@code getResource()} method, and that the {@code AppClassLoader}
+     * emits a {@code "by parent classloader"} trace with the full delegation path.
+     *
+     * <p>For the not-found case, both {@code GatewayClassLoader} and {@code AppClassLoader}
+     * emit a not-found trace for the same resource name.  The {@code waitForStringInTrace}
+     * pattern therefore anchors on {@code GatewayClassLoader} to avoid matching the
+     * {@code AppClassLoader} line.
+     *
+     * <p>Example traces emitted:
+     * <pre>
+     * // GatewayClassLoader's own found trace:
+     * Resource=[test/bundle/api1/a/api_a1.txt] found at location=[bundleresource://...]
+     *   from liberty API packages by classloader=[GatewayClassLoader@...]
+     *
+     * // AppClassLoader's "by parent classloader" trace (emitted at EAR level):
+     * Resource=[test/bundle/api1/a/api_a1.txt] found at location=[bundleresource://...]
+     *   by parent classloader=[GatewayClassLoader@...];
+     *   delegation path=[AppClassLoader@...WebModule... -> AppClassLoader@...EARApplication... -> GatewayClassLoader@...]
+     *
+     * Resource=[io/openliberty/.../NoSuchResource.txt] was not found
+     *   by classloader=[GatewayClassLoader@...]
+     * </pre>
+     */
+    @Test
+    public void testGatewayClassLoaderGetResourceTrace() throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+
+        // FOUND — api_a1.txt lives inside the test.bundle.api OSGi bundle.
+        // The WAR AppClassLoader delegates parent-first to the EAR AppClassLoader, which in turn
+        // delegates to the GatewayClassLoader (a non-AppClassLoader parent). The GatewayClassLoader
+        // finds the resource and emits its own "from liberty API packages" trace. The EAR-level
+        // AppClassLoader then emits the "by parent classloader" trace with the full delegation path.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetBundleResourceFound");
+
+        // Assert the GatewayClassLoader's own found trace.
+        // The "from liberty API packages" phrase uniquely identifies the GatewayClassLoader's own
+        // trace line and avoids matching the AppClassLoader's "by parent classloader" line, which
+        // also references GATEWAY_CL at the end of the delegation path.
+        checkResourceTrace(
+                server.waitForStringInTrace("Resource=\\[.*api_a1\\.txt.*\\] found at location=.*from liberty API packages.*" + GATEWAY_CL),
+                "test/bundle/api1/a/api_a1.txt", GATEWAY_CL, true);
+
+        // Assert the AppClassLoader's "by parent classloader" trace with the three-hop delegation path:
+        // WebModule -> EARApplication -> GatewayClassLoader
+        String parentClTraceLine = server.waitForStringInTrace(
+                "Resource=\\[.*api_a1\\.txt.*\\] found at location=.*by parent classloader=\\[" + GATEWAY_CL);
+        checkResourceTrace(parentClTraceLine, "test/bundle/api1/a/api_a1.txt", APP_CL, true);
+        checkDelegationPath(parentClTraceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR, DOMAIN_GATEWAY);
+
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+
+        // NOT FOUND — both GatewayClassLoader and AppClassLoader emit a not-found trace;
+        // anchor on GatewayClassLoader to match only the gateway line.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourceNotFound");
+        checkResourceTrace(
+                server.waitForStringInTrace("Resource=\\[.*NoSuchResource\\.txt.*\\].*not found.*" + GATEWAY_CL),
+                "io/openliberty/classloading/nonexistent/NoSuchResource.txt", GATEWAY_CL, false);
+    }
+
+    /**
+     * Verifies that {@code GatewayClassLoader} emits a resources-found and a resources-not-found
+     * trace line from its {@code getResources()} method, and that the {@code AppClassLoader}
+     * emits a {@code "by parent classloader"} trace with the full delegation path.
+     *
+     * <p>For the not-found case, both {@code GatewayClassLoader} and {@code AppClassLoader}
+     * emit a not-found trace for the same resource name.  The {@code waitForStringInTrace}
+     * pattern therefore anchors on {@code GatewayClassLoader} to avoid matching the
+     * {@code AppClassLoader} line.
+     *
+     * <p>Example traces emitted:
+     * <pre>
+     * // GatewayClassLoader's own found trace:
+     * Resources=[test/bundle/api1/a/api_a1.txt] found at locations=[bundleresource://...]
+     *   from liberty API packages by classloader=[GatewayClassLoader@...]
+     *
+     * // AppClassLoader's "by parent classloader" trace (emitted at EAR level):
+     * Resources=[test/bundle/api1/a/api_a1.txt] found at locations=[bundleresource://...]
+     *   by parent classloader=[GatewayClassLoader@...];
+     *   delegation path=[AppClassLoader@...WebModule... -> AppClassLoader@...EARApplication... -> GatewayClassLoader@...]
+     *
+     * Resources=[io/openliberty/.../NoSuchResource.txt] not found;
+     *   classloader=[GatewayClassLoader@...]
+     * </pre>
+     */
+    @Test
+    public void testGatewayClassLoaderGetResourcesTrace() throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+
+        // FOUND — api_a1.txt lives inside the test.bundle.api OSGi bundle.
+        // The WAR AppClassLoader delegates parent-first to the EAR AppClassLoader, which in turn
+        // delegates to the GatewayClassLoader (a non-AppClassLoader parent). The GatewayClassLoader
+        // finds the resource and emits its own "from liberty API packages" trace. The EAR-level
+        // AppClassLoader then emits the "by parent classloader" trace with the full delegation path.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetBundleResourcesFound");
+
+        // Assert the GatewayClassLoader's own found trace.
+        // The "from liberty API packages" phrase uniquely identifies the GatewayClassLoader's own
+        // trace line and avoids matching the AppClassLoader's "by parent classloader" line, which
+        // also references GATEWAY_CL at the end of the delegation path.
+        checkResourcesTrace(
+                server.waitForStringInTrace("Resources=\\[.*api_a1\\.txt.*\\] found at locations=.*from liberty API packages.*" + GATEWAY_CL),
+                "test/bundle/api1/a/api_a1.txt", GATEWAY_CL, true);
+
+        // Assert the AppClassLoader's "by parent classloader" trace with the three-hop delegation path:
+        // WebModule -> EARApplication -> GatewayClassLoader
+        String parentClTraceLine = server.waitForStringInTrace(
+                "Resources=\\[.*api_a1\\.txt.*\\] found at locations=.*by parent classloader=\\[" + GATEWAY_CL);
+        checkResourcesTrace(parentClTraceLine, "test/bundle/api1/a/api_a1.txt", APP_CL, true);
+        checkDelegationPath(parentClTraceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR, DOMAIN_GATEWAY);
+
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+
+        // NOT FOUND — both GatewayClassLoader and AppClassLoader emit a not-found trace;
+        // anchor on GatewayClassLoader to match only the gateway line.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourcesNotFound");
+        checkResourcesTrace(
+                server.waitForStringInTrace("Resources=\\[.*NoSuchResource\\.txt.*\\].*not found.*" + GATEWAY_CL),
+                "io/openliberty/classloading/nonexistent/NoSuchResource.txt", GATEWAY_CL, false);
     }
 
 }

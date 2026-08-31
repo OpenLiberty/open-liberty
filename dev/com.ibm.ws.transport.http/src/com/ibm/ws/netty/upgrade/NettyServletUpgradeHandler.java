@@ -259,7 +259,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 return;
             }
 
-            ByteBuf chunk = read(toRead, null); 
+            ByteBuf chunk = read(toRead, null);
             try {
                 int remaining = chunk.readableBytes();
                 int copied = 0;
@@ -316,6 +316,44 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     @Override
     public void close(ChannelHandlerContext context, ChannelPromise promise) throws Exception {
+        if (vc != null){
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                Tr.debug(this, tc, "NettyServletUpgradeHandler close verifying Virtual Connection maps");
+            }
+
+            String upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
+            if ("true".equalsIgnoreCase(upgraded)) {
+                Object webConnectionObject = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
+                if (webConnectionObject != null) {
+                    if (webConnectionObject instanceof TransportConnectionAccess) {
+                        TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "NettyServletUpgradeHandler close attempting to close TransportConnectionAccess.");
+                        }
+
+                        // close() needs to run on a managed thread rather than the Netty I/O event loop thread.
+                        // This is necessary for environments such as CICS where the I/O eventloop thread is not a CICS-enabled thread.
+                        HttpDispatcher.getExecutorService().execute(() -> {
+                            try {
+                                tWebConn.close();
+                            } catch (Exception webConnectionCloseException) {
+                                //continue closing other resources
+                                //I don't believe the close operation should fail - but record trace if it does
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "NettyServletUpgradeHandler Failed to close WebConnection {0}", webConnectionCloseException);
+                                }
+                            }
+                        });
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "call application destroy if not done yet");
+                        }
+                    }
+                } 
+            }
+        }
+
         peerClosed.set(true);
         super.close(context, promise);
     }

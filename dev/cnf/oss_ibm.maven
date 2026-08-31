@@ -22,6 +22,7 @@ com.ibm.ws.javax.j2ee:servlet.resources:3.1
 com.ibm.ws.javax.j2ee:servlet:3.0
 com.ibm.ws.javax.j2ee:servlet:3.1
 com.ibm.ws.javax.j2ee:standardtld:1.2
+com.ibm.ws.jmx.connector.client.rest:serialization-helper:1.0.0
 com.ibm.ws.lars:larsServer-memoryBackend:war:1.0.1
 com.ibm.ws.logstash:logstash:5.5.0
 com.ibm.ws.org.apache.aries.jndi:org.apache.aries.jndi.core:1.1.0.ibm20201007-1
@@ -98,6 +99,7 @@ io.openliberty:java-apps:23.1.0
 io.openliberty:java-apps:24.1.0
 io.openliberty:java-apps:25.1.0
 io.openliberty:java-apps:26.1.0
+io.openliberty:java-apps:27.2.0
 net.sf.jtidy:jtidy:9.3.8
 org.apache.aries.blueprint:org.apache.aries.blueprint:1.3.0-ibm-s20170710-0926
 org.apache.geronimo.specs:geronimo-ejb_3.1_spec-alt:1.0.0

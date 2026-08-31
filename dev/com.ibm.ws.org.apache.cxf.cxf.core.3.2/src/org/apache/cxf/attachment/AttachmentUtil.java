@@ -66,6 +66,9 @@ import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.model.EndpointInfo;
+
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 import org.apache.cxf.common.logging.LogUtils;  // Liberty Change
 
 // Liberty Change - Backport https://github.com/apache/cxf/pull/960
@@ -205,7 +208,7 @@ public final class AttachmentUtil {
         return COMMAND_MAP;
     }
 
-    public static boolean isMtomEnabled(Message message) {
+    public static boolean isMtomEnabled(@Sensitive Message message) { // Liberty Change
 	// Liberty Change Start
         boolean mtomEnabled = false;	
         // return MessageUtils.getContextualBoolean(message, Message.MTOM_ENABLED, false);
@@ -217,7 +220,7 @@ public final class AttachmentUtil {
         //Liberty Change End
     }
 
-    public static void setStreamedAttachmentProperties(Message message, CachedOutputStream bos)
+    public static void setStreamedAttachmentProperties(@Sensitive Message message, CachedOutputStream bos) // Liberty Change
         throws IOException {
         // Liberty change begin
         Object directory = getAttachmentProperty(message, AttachmentDeserializer.ATTACHMENT_DIRECTORY);
@@ -244,17 +247,29 @@ public final class AttachmentUtil {
             bos.setThreshold(AttachmentDeserializer.THRESHOLD);
         }
 
-        // Liberty change begin
+        // Liberty Change Start - CXF #3188
         Object maxSize = getAttachmentProperty(message, AttachmentDeserializer.ATTACHMENT_MAX_SIZE);
-
-        //Liberty Change End
-        if (maxSize != null) {
-            if (maxSize instanceof Long) {
-                bos.setMaxSize((Long) maxSize);
-            } else {
-                bos.setMaxSize(Long.parseLong((String)maxSize));
-            }
+        if (maxSize == null) {
+            maxSize = AttachmentDeserializer.DEFAULT_ATTACHMENT_MAX_SIZE;
         }
+        if (maxSize instanceof Number) {
+            long size = ((Number) maxSize).longValue();
+            if (size >= 0) {
+                bos.setMaxSize(size);
+            } else {
+                LOG.warning("The max size value is set to unlimited.");
+            }
+        } else if (maxSize instanceof String) {
+            try {
+                bos.setMaxSize(Long.parseLong((String) maxSize));
+            } catch (NumberFormatException e) {
+                throw new IOException("Provided max size String is not a number", e);
+            }
+        } else {
+            throw new IOException("The value set as " + AttachmentDeserializer.ATTACHMENT_MAX_SIZE
+                    + " should be either an instance of Number or String");
+        }
+        //Liberty Change End
     }
 
     public static String createContentID(String ns) throws UnsupportedEncodingException {
@@ -724,11 +739,13 @@ public final class AttachmentUtil {
         }
         return propertyValue;
     }
-    
+
+    @Sensitive // Liberty Change
     public static void holdTempFiles(Message message) throws IOException {
         attachmentOperation(message, attachmentAction.HOLD);
     }
 
+    @Sensitive // Liberty Change
     public static void releaseTempFileHold(Message message) throws IOException {
         attachmentOperation(message, attachmentAction.RELEASE);
     }
@@ -736,6 +753,7 @@ public final class AttachmentUtil {
     /*
      * Operate on each attachment separately to hold and release
      */
+    @Sensitive // Liberty Change
     private static void attachmentOperation(Message message, attachmentAction action) throws IOException        {
         Collection<Attachment> attachments = message.getAttachments();
         if (attachments != null) {
@@ -770,12 +788,14 @@ public final class AttachmentUtil {
             }
         }
     }
-    
-    public static boolean isHoldTempFilesPropertyTrue(org.apache.cxf.message.Message message) {
+
+    @Sensitive // Liberty Change
+    public static boolean isHoldTempFilesPropertyTrue(Message message) {
         Object propertyFromEndPointInfo = getPropertyFromEndPointInfo(message, HOLD_TEMP_FILES);
         return PropertyUtils.isTrue(propertyFromEndPointInfo);
     }
-    
+
+    @Sensitive // Liberty Change
     private static Object getAttachmentProperty(Message message, String propertyName)     {
         Object propertyValue = message.getContextualProperty(propertyName);
         // Liberty change begin
