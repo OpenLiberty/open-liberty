@@ -19,7 +19,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE11Action;
 
 public class RepeatWithJPA32Hibernate extends JakartaEE11Action {
-    public static final String ID = "JPA32_HIBERNATE";
+    public static final String ID = "JPA32_HIBERNATE7";
 
     /**
      * Restrict Hibernate tests to run on FULL mode
