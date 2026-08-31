@@ -143,10 +143,10 @@ public class EncodeTask extends BaseCommandTask {
                                 argMap.containsKey(BaseCommandTask.ARG_BASE64_KEY) ||
                                 argMap.containsKey(BaseCommandTask.ARG_AES_CONFIG_FILE);
 
-                // On z/OS, keyring or CKDS (--keyringType=CKDS --keyLabel=...) can be used instead
+                // On z/OS, keyring or ICSF (--keyringType=ICSF --keyLabel=...) can be used instead
                 if (isZOS()) {
                     hasKey = hasKey || argMap.containsKey(BaseCommandTask.ARG_KEYRING)
-                             || "CKDS".equalsIgnoreCase(argMap.get(BaseCommandTask.ARG_KEYRING_TYPE));
+                             || "ICSF".equalsIgnoreCase(argMap.get(BaseCommandTask.ARG_KEYRING_TYPE));
                 }
 
                 if (!hasKey) {
@@ -168,8 +168,8 @@ public class EncodeTask extends BaseCommandTask {
                     stdout.println(encode(stderr, argMap.get(BaseCommandTask.ARG_PASSWORD), encoding, props));
                 }
             } finally {
-                // Clear any CKDS SecretKeyResolver installed by getKeyIfSAF().
-                // No-op when the CKDS path was not taken.
+                // Clear any ICSF SecretKeyResolver installed by getKeyIfSAF().
+                // No-op when the ICSF path was not taken.
                 AESKeyManager.setSecretKeyResolver(null);
             }
         }
@@ -217,9 +217,9 @@ public class EncodeTask extends BaseCommandTask {
 
         if (encoding != null && encoding.trim().equalsIgnoreCase("aes")) {
 
-            // CKDS path: type=CKDS + label only, no keyring needed.
+            // ICSF path: type=ICSF + label only, no keyring needed.
             // encipher_internal() consults AESKeyManager.getSecretKeyResolver() and uses AES_V2 automatically.
-            if ("CKDS".equalsIgnoreCase(type) && label != null && !label.isEmpty()) {
+            if ("ICSF".equalsIgnoreCase(type) && label != null && !label.isEmpty()) {
                 AESKeyManager.setSecretKeyResolver(new ICSFSecretKeyResolver(label));
                 return p;
             }
