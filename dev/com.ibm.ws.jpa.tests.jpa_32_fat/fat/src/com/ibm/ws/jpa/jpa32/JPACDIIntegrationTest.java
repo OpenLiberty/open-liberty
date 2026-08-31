@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,13 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jpa.FATSuite;
+import com.ibm.ws.jpa.RepeatWithJPA32Hibernate;
+import com.ibm.ws.jpa.RepeatWithJPA40Hibernate;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -36,12 +39,13 @@ import io.openliberty.jpa.jpacdiintegration.tests.models.TestEntity;
 import io.openliberty.jpa.jpacdiintegration.tests.web.JPACDIIntegrationServlet;
 
 /**
- * Testing latest features of Jakarta Persistence 3.2 ,EclipseLink
+ * Testing latest features of Jakarta Persistence 3.2 with EclipseLink.
  */
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
-@MaximumJavaLevel(javaLevel = 25)  // Hibernate ByteBuddy limitation
+@MaximumJavaLevel(javaLevel = 25) 
+@SkipForRepeat({ RepeatWithJPA32Hibernate.ID, RepeatWithJPA40Hibernate.ID })
 public class JPACDIIntegrationTest {
     public static final String APP_NAME = "jpacdiintegration";
     public static final String SERVLET = "JPACDI32";
