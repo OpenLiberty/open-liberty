@@ -84,6 +84,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     private VirtualConnection vc;
     private String streamID = "-1";
+    private boolean http10Request;
 
     //autoread design, will cleanup later
     private static final AttributeKey<Boolean> UPGRADE_COMMIT_EVENT_FIRED = 
@@ -116,6 +117,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     public void setStreamId(String streamId) {
         this.streamID = streamId;
+    }
+
+    public void setHttp10Request(boolean http10Request) {
+        this.http10Request = http10Request;
     }
 
     @Override
@@ -269,7 +274,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         final Queue<Object> writeQueue = new LinkedList<Object>();
         final ChannelPromise writePromise = nettyChannel.newPromise();
       
-        final boolean isHttp10 = protocol == ProtocolName.HTTP10;
+        final boolean isHttp10 = http10Request;
         final boolean isWsoc = protocol == ProtocolName.WEBSOCKET;
         final boolean isH2 = protocol == ProtocolName.HTTP2;
         final boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH)
@@ -364,7 +369,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         //check if wsoc
         final ProtocolName protocol = ProtocolState.current(nettyChannel);
 
-        final boolean isHttp10 = protocol == ProtocolName.HTTP10;
+        final boolean isHttp10 = http10Request;
 
         final boolean isWsoc = protocol == ProtocolName.WEBSOCKET;
 

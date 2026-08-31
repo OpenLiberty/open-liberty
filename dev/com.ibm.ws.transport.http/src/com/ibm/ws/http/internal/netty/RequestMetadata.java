@@ -17,6 +17,7 @@ import com.ibm.ws.http.netty.ProtocolState;
 
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpVersion;
 
 import io.netty.handler.codec.http2.HttpConversionUtil;
 
@@ -36,13 +37,15 @@ public final class RequestMetadata {
      * request wrappers and request-owned state are created.
      */
     public static RequestMetadata capture(Channel channel, HttpRequest request) {
-        ProtocolName protocol = ProtocolState.current(channel);
-        if (protocol == ProtocolName.HTTP10 || protocol == ProtocolName.HTTP1) {
+        ProtocolName connectionProtocol = ProtocolState.current(channel);
+        if (connectionProtocol == ProtocolName.HTTP10 || connectionProtocol == ProtocolName.HTTP1) {
             request.headers().remove(STREAM_ID);
-            return new RequestMetadata(protocol, -1);
+            ProtocolName requestProtocol = request.protocolVersion().equals(HttpVersion.HTTP_1_0)
+                            ? ProtocolName.HTTP10 : ProtocolName.HTTP1;
+            return new RequestMetadata(requestProtocol, -1);
         }
-        if (protocol != ProtocolName.HTTP2) {
-            throw new InvalidRequestMetadataException("Request received before the connection protocol was established: " + protocol);
+        if (connectionProtocol != ProtocolName.HTTP2) {
+            throw new InvalidRequestMetadataException("Request received before the connection protocol was established: " + connectionProtocol);
         }
 
         List<String> values = request.headers().getAll(STREAM_ID);
@@ -60,7 +63,7 @@ public final class RequestMetadata {
         if (streamId <= 0) {
             throw new InvalidRequestMetadataException("HTTP/2 request has a nonpositive stream ID: " + streamId);
         }
-        return new RequestMetadata(protocol, streamId);
+        return new RequestMetadata(connectionProtocol, streamId);
     }
 
     public ProtocolName protocol() {
