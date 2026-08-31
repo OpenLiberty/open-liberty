@@ -391,7 +391,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Original issue: https://github.com/OpenLiberty/open-liberty/issues/28920
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat("JPA32_HIBERNATE7")
     @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28874")
     public void testOLGH28920() throws Exception {
         Rebate r1 = Rebate.of(10.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.SUBMITTED,
@@ -683,7 +683,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     // "Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30093"
     public void testOLGH30093() throws Exception {
         deleteAllEntities(Prime.class); // Cleanup any left over entities
@@ -736,7 +736,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     @SkipIfSysProp(DB_Oracle) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testOLGH28545_1() throws Exception {
         deleteAllEntities(Package.class); // Cleanup any left over entities
@@ -786,7 +786,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     @SkipIfSysProp(DB_Oracle) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testOLGH28545_2() throws Exception {
         deleteAllEntities(Package.class); // Cleanup any left over entities
@@ -838,7 +838,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     //Reference issue : https://github.com/OpenLiberty/open-liberty/issues/30444
     public void testOLGH30444() throws Exception {
         deleteAllEntities(Package.class);
@@ -871,7 +871,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     @SkipIfSysProp({ DB_Postgres, DB_Oracle })
     public void testOLGH28545_3() throws Exception {
         deleteAllEntities(Prime.class);
@@ -934,7 +934,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat("JPA32_HIBERNATE7")
     // @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
     public void testOLGH29073() throws Exception {
         
@@ -976,7 +976,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat("JPA32_HIBERNATE7")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073
     public void testOLGH29073_WHERECLAUSE() throws Exception {
         
@@ -1320,7 +1320,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28737
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     @SkipIfSysProp({ DB_Postgres, DB_SQLServer })
     public void testOLGH28737() throws Exception {
         deleteAllEntities(Box.class);
@@ -1361,7 +1361,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28289
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     @SkipIfSysProp({ DB_Oracle })
     // DB2 resolved (Oracle outstanding): https://github.com/eclipse-ee4j/eclipselink/issues/2282
     public void testOLGH28289() throws Exception {
@@ -1661,7 +1661,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29440
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat("JPA32_HIBERNATE7")
     @SkipIfSysProp({ DB_Postgres, DB_Oracle })
     public void testOLGH29440() throws Exception {
         deleteAllEntities(DemographicInfo.class);
@@ -1937,7 +1937,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475 .This test includes issues in ElementCollection
     public void test_29475_ElementCollection() throws Exception {
         ECEntity e1 = new ECEntity();
@@ -2105,7 +2105,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testOLGH29460() throws Exception {
         // Setup test data using the factory method
         Participant p1 = Participant.of("John", "Doe", 1);
@@ -2354,7 +2354,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31558
     public void testOLGH31558() throws Exception {
         deleteCollectionTable("ShippingAddress_RECIPIENTINFO");
@@ -2544,7 +2544,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32867
     public void testOLGH32867() throws Exception {
         deleteAllEntities(Showtime.class);
