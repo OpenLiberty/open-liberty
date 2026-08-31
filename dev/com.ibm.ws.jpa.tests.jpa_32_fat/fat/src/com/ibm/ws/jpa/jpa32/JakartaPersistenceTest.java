@@ -10,12 +10,13 @@
 
 package com.ibm.ws.jpa.jpa32;
 
-import java.util.HashSet;
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -81,14 +82,25 @@ public class JakartaPersistenceTest {
     }
 
     private static void createApplication(String specLevel) throws Exception {
-        final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + specLevel + "/web/";
+        WebArchive app;
 
-        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + "_" + specLevel + ".war");
-        app.addPackage("io.openliberty.jpa.persistence.tests.models");
-        app.addPackage("io.openliberty.jpa.persistence.tests.web");
-        app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
-                  "/",
-                  Filters.includeAll());
+        if ("hibernate40-cfg.xml".equals(FATSuite.repeatPhase)) {
+            // Recompiled against JPA 4.0 API 
+            // The jakartapersistence servlet uses createQuery(String) which changed return type
+            // in JPA 4.0, causing NoSuchMethodError if deployed as a 3.2-compiled WAR.
+            File war40 = new File("publish/shared/jpa40war/jakartapersistence_jpa40compiled.war");
+            app = ShrinkWrap.create(ZipImporter.class, APP_NAME + "_" + specLevel + ".war")
+                            .importFrom(war40)
+                            .as(WebArchive.class);
+        } else {
+            final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + specLevel + "/web/";
+            app = ShrinkWrap.create(WebArchive.class, APP_NAME + "_" + specLevel + ".war");
+            app.addPackage("io.openliberty.jpa.persistence.tests.models");
+            app.addPackage("io.openliberty.jpa.persistence.tests.web");
+            app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
+                      "/",
+                      Filters.includeAll());
+        }
         ShrinkHelper.exportAppToServer(server, app);
         
         Application appRecord = new Application();
