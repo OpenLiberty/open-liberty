@@ -25,6 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -66,15 +67,12 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     private final ReentrantLock readLock = new ReentrantLock();
     private final Condition readCondition = readLock.newCondition();
 
-    private volatile long minBytesToRead = 0;
-    private volatile boolean isReadingAsync = false;
-
     private final AtomicInteger waitingThreads = new AtomicInteger(0);
     private final AtomicBoolean peerClosed = new AtomicBoolean(false);
     private final AtomicBoolean immediateTimeout = new AtomicBoolean(false);
     private final AtomicInteger queuedBytes = new AtomicInteger(0);
     
-    private final AtomicReference<TCPReadCompletedCallback> callback = new AtomicReference<>();
+    private final AtomicReference<UpgradeReadOperation> asyncRead = new AtomicReference<>();
     private VirtualConnection vc;
     private TCPReadRequestContext readContext;
 
@@ -100,11 +98,13 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             }
             peerClosed.set(true);
 
-            if (isReadingAsync && callback.get() != null) {
+            UpgradeReadOperation operation = asyncRead.get();
+            if (operation != null && operation.callback != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "NettyServletUpgradeHandler ChannelInputShutdownEvent reading async found!!");
                 }
-                fireAsyncReadError(new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
+                fireAsyncReadError(operation,
+                                   new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
                                                     channel.localAddress() + " remote=" + channel.remoteAddress()));
                 return;
             }
@@ -124,11 +124,12 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             queuedBytes.addAndGet(n);
             ReferenceCountUtil.release(buf);
 
-            if (isReadingAsync && queuedBytes.get() >= minBytesToRead) {
-                Tr.debug(tc, "[UPGRADE-ASYNC] async threshold met; firing callback. bytes=" + queuedBytes.get() + 
-                    " minBytesToRead=" + minBytesToRead);
-                fireAsyncReadComplete();
-            } else if (queuedBytes.get() >= minBytesToRead) {
+            UpgradeReadOperation operation = asyncRead.get();
+            if (operation != null && operation.callback != null && queuedBytes.get() >= operation.minimumBytes) {
+                Tr.debug(tc, "[UPGRADE-ASYNC] async threshold met; firing callback. bytes=" + queuedBytes.get() +
+                    " minBytesToRead=" + operation.minimumBytes);
+                fireAsyncReadComplete(operation);
+            } else if (operation == null && queuedBytes.get() > 0) {
                 signalReadReady();
             }
             return;
@@ -139,14 +140,16 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     @Override
     public void channelInactive(ChannelHandlerContext context) throws Exception {
         peerClosed.set(true);
-        if (isReadingAsync && callback.get() != null) {
+        UpgradeReadOperation operation = asyncRead.get();
+        if (operation != null && operation.callback != null) {
             ExecutorService executor = HttpDispatcher.getExecutorService();
             if (executor == null) {
                 // Dispatcher is already deactivated - nothing to schedule.
                 return;
             }
 
-            fireAsyncReadError(new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
+            fireAsyncReadError(operation,
+                               new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
                                                 channel.localAddress() + " remote=" + channel.remoteAddress()));
         }
         super.channelInactive(context);
@@ -160,8 +163,9 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         immediateTimeout.set(true);
         signalReadReady();
 
-        if (isReadingAsync && callback.get() != null) {
-            fireAsyncReadError(new SocketTimeoutException("Immediate timeout requested"));
+        UpgradeReadOperation operation = asyncRead.get();
+        if (operation != null && operation.callback != null) {
+            fireAsyncReadError(operation, new SocketTimeoutException("Immediate timeout requested"));
         }
         if (context != null) {
             context.executor().execute(() -> immediateTimeout.set(false));
@@ -194,8 +198,8 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             + " peerClosed=" + peerClosed.get()
             + " readPending=" + readPending.get()
             + " waitingThreads=" + waitingThreads.get()
-            + " isReadingAsync=" + isReadingAsync
-            + " minBytesToRead=" + minBytesToRead
+            + " isReadingAsync=" + isAsyncReadArmed()
+            + " minBytesToRead=" + minimumBytesToRead()
             + " queuedBytes=" + queuedBytes.get());
         if(peerClosed.get()){
             return;
@@ -232,15 +236,17 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     public boolean isAsyncReadArmed(){
-        return isReadingAsync;
+        return asyncRead.get() != null;
     }
 
     public long setToBuffer() {
-        
         if (readContext == null || !containsQueuedData())
             return 0L;
 
-        final WsByteBuffer[] buffers = readContext.getBuffers();
+        return setToBuffers(readContext.getBuffers());
+    }
+
+    private long setToBuffers(WsByteBuffer[] buffers) {
         if (buffers == null || buffers.length == 0 || buffers[0] == null)
             return 0L;
 
@@ -361,10 +367,12 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     @Override
     public void channelReadComplete(ChannelHandlerContext context) throws Exception {
         readPending.set(false);
+        UpgradeReadOperation operation = asyncRead.get();
+        int minimumBytes = operation == null ? 1 : operation.minimumBytes;
         if (!context.channel().config().isAutoRead()
             && !peerClosed.get()
-            && (isReadingAsync || waitingThreads.get() > 0)
-            && queuedDataSize() < minBytesToRead) {
+            && (operation != null || waitingThreads.get() > 0)
+            && queuedDataSize() < minimumBytes) {
             requestRead();
         }
         super.channelReadComplete(context);
@@ -395,71 +403,114 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         return out;
     }
 
-    public void setReadListener(TCPReadCompletedCallback cb) {
-        callback.set(cb);
-    }
+    public void queueAsyncRead(TCPReadCompletedCallback callback,
+                               VirtualConnection virtualConnection,
+                               TCPReadRequestContext readContext,
+                               long minimumBytes,
+                               int timeoutMillis) {
+        UpgradeReadOperation operation = new UpgradeReadOperation(callback,
+                                                                  virtualConnection,
+                                                                  readContext,
+                                                                  minimumBytes);
+        if (!asyncRead.compareAndSet(null, operation)) {
+            throw new IllegalStateException("An upgraded asynchronous read is already pending");
+        }
 
-    public void queueAsyncRead(long minBytesToRead) {
-        this.minBytesToRead = (int) Math.max(1L, minBytesToRead);
-        this.isReadingAsync = true;
+        if (peerClosed.get() || !channel.isActive()) {
+            fireAsyncReadError(operation,
+                               new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
+                                                channel.localAddress() + " remote=" + channel.remoteAddress()));
+            return;
+        }
 
-        Tr.debug(tc, "[UPGRADE-ASYNC] queueAsyncRead : " + 
-            "minBytesToRead = " + minBytesToRead + ", " +
+        Tr.debug(tc, "[UPGRADE-ASYNC] queueAsyncRead : " +
+            "minBytesToRead = " + operation.minimumBytes + ", " +
             "queuedBytes = " + queuedBytes.get() + ", " +
             "autoRead = " + channel.config().isAutoRead() + ", " +
             "readPending = " + readPending.get() );
 
+        if (timeoutMillis > 0) {
+            ScheduledFuture<?> timeout = channel.eventLoop().schedule(
+                            () -> fireAsyncReadError(operation, new SocketTimeoutException("Read operation timed out")),
+                            timeoutMillis,
+                            TimeUnit.MILLISECONDS);
+            operation.setTimeout(timeout);
+            if (asyncRead.get() != operation) {
+                operation.cancelTimeout();
+            }
+        }
+
         requestRead();
 
-        final int q = queuedBytes.get();
-        if (q >= this.minBytesToRead && callback.get() != null) {
-            fireAsyncReadComplete();
+        if (operation.callback != null && queuedBytes.get() >= operation.minimumBytes) {
+            fireAsyncReadComplete(operation);
         }
     }
 
-    private void fireAsyncReadComplete() {
-        TCPReadCompletedCallback cb = claimAsyncReadCallback();
-        if (cb == null) {
+    private void fireAsyncReadComplete(UpgradeReadOperation expected) {
+        if (context != null && !context.executor().inEventLoop()) {
+            context.executor().execute(() -> fireAsyncReadComplete(expected));
             return;
         }
+
+        if (queuedBytes.get() < expected.minimumBytes) {
+            return;
+        }
+
+        UpgradeReadOperation operation = claimAsyncRead(expected);
+        if (operation == null) {
+            return;
+        }
+
+        setToBuffers(operation.buffers);
         executeAsyncReadCallback(() -> {
+            operation.restoreReadContext();
             try {
-                cb.complete(vc, readContext);
+                operation.callback.complete(operation.virtualConnection, operation.readContext);
             } catch (Throwable t) {
                 try {
-                    cb.error(vc, readContext, (t instanceof IOException) ? (IOException) t : new EOFException(String.valueOf(t)));
+                    operation.restoreReadContext();
+                    operation.callback.error(operation.virtualConnection,
+                                             operation.readContext,
+                                             (t instanceof IOException) ? (IOException) t : new EOFException(String.valueOf(t)));
                 } catch (Throwable ignore) {
                 }
             }
         });
     }
 
-    private void fireAsyncReadError(IOException error) {
-        TCPReadCompletedCallback cb = claimAsyncReadCallback();
-        if (cb == null) {
+    private void fireAsyncReadError(UpgradeReadOperation expected, IOException error) {
+        UpgradeReadOperation operation = claimAsyncRead(expected);
+        if (operation == null || operation.callback == null) {
             return;
         }
         executeAsyncReadCallback(() -> {
+            operation.restoreReadContext();
             try {
-                cb.error(vc, readContext, error);
+                operation.callback.error(operation.virtualConnection, operation.readContext, error);
             } catch (Exception ignore) {
             }
         });
     }
 
-    private TCPReadCompletedCallback claimAsyncReadCallback() {
-        TCPReadCompletedCallback cb = callback.getAndSet(null);
-        if (cb != null) {
-            isReadingAsync = false;
+    private UpgradeReadOperation claimAsyncRead(UpgradeReadOperation expected) {
+        if (expected != null && asyncRead.compareAndSet(expected, null)) {
+            expected.cancelTimeout();
+            return expected;
         }
-        return cb;
+        return null;
     }
 
     private void executeAsyncReadCallback(Runnable callbackTask) {
         ExecutorService executor = HttpDispatcher.getExecutorService();
         if (executor != null) {
-            executor.execute(callbackTask);
+            AsyncReadDispatchState.forChannel(channel).submitReady(callbackTask, null);
         }
+    }
+
+    private int minimumBytesToRead() {
+        UpgradeReadOperation operation = asyncRead.get();
+        return operation == null ? 1 : operation.minimumBytes;
     }
 
     public boolean peerClosedConnection() {
@@ -467,7 +518,8 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     public TCPReadCompletedCallback getReadListener() {
-        return callback.get();
+        UpgradeReadOperation operation = asyncRead.get();
+        return operation == null ? null : operation.callback;
     }
 
     public void setVC(VirtualConnection vc) {
