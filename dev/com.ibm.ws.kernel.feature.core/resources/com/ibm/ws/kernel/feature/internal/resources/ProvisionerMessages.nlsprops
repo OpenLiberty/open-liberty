@@ -274,7 +274,7 @@ NO_RESOLVED_PLATFORM.explanation=Each type of versionless feature is required to
 NO_RESOLVED_PLATFORM.useraction=Either add a platform element, a versioned feature, or an environment variable.
 
 # CWWKF0056E {0} = the feature file
-FEATURES_ERROR_READING_FEATURE=CWWKF0056E: The following error occurred while reading the {0} feature definition file: {1}
+FEATURES_ERROR_READING_FEATURE=CWWKF0056E: The {0} feature definition file could not be read. The error is: {1}
 FEATURES_ERROR_READING_FEATURE.explanation=An error occurred while reading a feature definition file. This error will prevent the feature from loading correctly.
 FEATURES_ERROR_READING_FEATURE.useraction=Reinstall the feature that caused the error.
 
