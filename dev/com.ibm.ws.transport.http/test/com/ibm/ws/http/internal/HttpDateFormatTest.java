@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,18 +15,16 @@ import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.Year;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 
 import org.junit.Test;
 
 import com.ibm.wsspi.http.HttpDateFormat;
-
-
 
 /**
  * After changing from using SimpleDateFormat to DateTimeFormatter, this test was created
@@ -261,26 +259,88 @@ public class HttpDateFormatTest {
         }
     }
 
+    /**
+     * RFC 7231 §7.1.1.1: a 2-digit year that appears more than 50 years in the
+     * future must be interpreted as the most recent past year with the same digits.
+     */
     @Test
-    public void testRFC1036TwoDigitYearRollover() throws Exception{
-        Instant fixedNow = Instant.parse("2026-08-04T00:00:00Z");
+    public void testRFC1036TwoDigitYearRollover() throws Exception {
+        Date oneMinuteAgo = new Date(Instant.now().minusSeconds(60).toEpochMilli());
+        assertTwoDigitYearWindow((String input) -> formatter.parseRFC1036Time(input),
+                                 getSubstituteYearString(formatter.getRFC1036Time(oneMinuteAgo)), false);
 
-        Date parsed = ((HttpDateFormatImpl) formatter).parseRFC1036Time(
-                "Saturday, 28-Sep-99 16:11:14 GMT");
+        Date oneMinuteFromNow = new Date(Instant.now().plusSeconds(60).toEpochMilli());
+        assertTwoDigitYearWindow((String input) -> formatter.parseRFC1036Time(input),
+                                 getSubstituteYearString(formatter.getRFC1036Time(oneMinuteFromNow)), true);
+    }
 
-        Date expected = Date.from(
-                ZonedDateTime.of(1999, 9, 28, 16, 11, 14, 0, ZoneOffset.UTC).toInstant());
-
-        assertEquals(expected, parsed);
+    /**
+     * Converts an actual two digit Data string to use %s for the year so the
+     * year can be substituted.
+     */
+    private String getSubstituteYearString(String actualFormattedString) {
+        int hyphenIndex = actualFormattedString.lastIndexOf('-');
+        int spaceIndex = actualFormattedString.indexOf(' ', hyphenIndex);
+        assertEquals(3, spaceIndex - hyphenIndex);
+        String returnString = actualFormattedString.substring(0, hyphenIndex + 1) + "%s" + actualFormattedString.substring(spaceIndex);
+        assertEquals(actualFormattedString,
+                     String.format(returnString, String.format("%02d", Integer.parseInt(actualFormattedString.substring(hyphenIndex + 1, spaceIndex)))));
+        return returnString;
     }
 
     @Test
     public void testRFC2109TwoDigitYearRollover() throws Exception {
-        Date parsed = formatter.parseRFC2109Time("Sat, 28-Sep-99 16:11:14 GMT");
+        Date oneMinuteAgo = new Date(Instant.now().minusSeconds(60).toEpochMilli());
+        assertTwoDigitYearWindow((String input) -> formatter.parseRFC2109Time(input),
+                                 getSubstituteYearString(formatter.getRFC2109Time(oneMinuteAgo)), false);
 
-        Date expected = Date.from(
-                ZonedDateTime.of(1999, 9, 28, 16, 11, 14, 0, ZoneOffset.UTC).toInstant());
+        Date oneMinuteFromNow = new Date(Instant.now().plusSeconds(60).toEpochMilli());
+        assertTwoDigitYearWindow((String input) -> formatter.parseRFC2109Time(input),
+                                 getSubstituteYearString(formatter.getRFC2109Time(oneMinuteFromNow)), true);
+    }
 
-        assertEquals(expected, parsed);
+    /**
+     * Verifies the full RFC 7231 §7.1.1.1 window for a 2-digit-year parser.
+     * The formatter base is (currentYear - 49), giving the window [currentYear-49, currentYear+50].
+     * RFC 7231 requires roll-back only for dates *more than* 50 years in the future (strict),
+     * so exactly 50 years out must NOT roll back.
+     * Iterates all 100 possible 2-digit values and checks each maps to the correct full year.
+     */
+    private void assertTwoDigitYearWindow(ParseFunction parser, String inputTemplate, boolean isFuture) throws Exception {
+        int fullCurrentYear = Year.now().getValue();
+        // If isFuture is true, we need to treat it like it is next year because it is more than 50 years since the date
+        // is already in the future from now.
+        int baseYear = fullCurrentYear - (isFuture ? 50 : 49); // formatter base: window is [currentYear-49, currentYear+50]
+
+        for (int i = 0; i < 100; ++i) {
+            int twoDigitValue = (fullCurrentYear + i) % 100; // wraps at 100
+            int expectedYear = baseYear + ((twoDigitValue - (baseYear % 100) + 100) % 100);
+            String input = String.format(inputTemplate, String.format("%02d", twoDigitValue));
+            Date parsed = parser.parse(input);
+            assertEquals("Mismatch for 2-digit year " + String.format("%02d", twoDigitValue), expectedYear, parsed.toInstant().atZone(ZoneId.of("GMT")).getYear());
+        }
+
+        // Explicit boundary checks per RFC 7231 §7.1.1.1:
+        // exactly 50 years out must NOT roll back; 51 years out must roll back.
+        int twoDigitAt49 = (fullCurrentYear + 49) % 100;
+        int twoDigitAt50 = (fullCurrentYear + 50) % 100;
+        int twoDigitAt51 = (fullCurrentYear + 51) % 100;
+
+        Date parsedAt49 = parser.parse(String.format(inputTemplate, String.format("%02d", twoDigitAt49)));
+        assertEquals("Exactly 49 / 50 years out must not roll back", fullCurrentYear + 49, parsedAt49.toInstant().atZone(ZoneId.of("GMT")).getYear());
+
+        Date parsedAt50 = parser.parse(String.format(inputTemplate, String.format("%02d", twoDigitAt50)));
+        // If isFuture is true, we need to treat it like it is next year because it is more than 50 years since the date
+        // is already in the future from now.
+        int expectedYear = isFuture ? fullCurrentYear - 50 : fullCurrentYear + 50;
+        assertEquals("Exactly 50 / 51 years out must not roll back or rollback depending on time", expectedYear, parsedAt50.toInstant().atZone(ZoneId.of("GMT")).getYear());
+
+        Date parsedAt51 = parser.parse(String.format(inputTemplate, String.format("%02d", twoDigitAt51)));
+        assertEquals("Exactly 51 / 52 years out must not roll back", fullCurrentYear - 49, parsedAt51.toInstant().atZone(ZoneId.of("GMT")).getYear());
+    }
+
+    @FunctionalInterface
+    private interface ParseFunction {
+        Date parse(String input) throws Exception;
     }
 }
