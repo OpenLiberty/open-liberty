@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -231,6 +231,27 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "Setting hibernate.enhancer.enableDirtyTracking to false.");
                     props.put("hibernate.enhancer.enableDirtyTracking", "false");
+                }
+            }
+            /*
+             * Hibernate 8 calls connection.getWarnings() / connection.clearWarnings() during
+             * session close (SqlExceptionHelper.logAndClearWarnings) even when the session is
+             * being closed from a Liberty LTC synchronization afterCompletion callback.  At
+             * that point the LTC has already ended, so Liberty's WSJdbcConnection throws
+             * IllegalStateException when it tries to re-enlist the connection (J2CA0026E /
+             * DSRA9400E in the server log).  Hibernate 7 and earlier did not trigger this path.
+             *
+             * Disabling hibernate.jdbc.log.warnings (JdbcSettings.LOG_JDBC_WARNINGS) prevents
+             * Hibernate from calling getWarnings()/clearWarnings() on the connection at all,
+             * cutting off the problem at its source. 
+             */
+            if (jpaVersion.greaterThanOrEquals(JPAVersion.JPA40)) {
+                Properties properties = puInfo.getProperties();
+                if (null != properties && !properties.containsKey("hibernate.jdbc.log.warnings")) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Setting hibernate.jdbc.log.warnings to false to prevent "
+                                         + "connection re-enlistment after LTC completion (J2CA0026E).");
+                    props.put("hibernate.jdbc.log.warnings", "false");
                 }
             }
         }
