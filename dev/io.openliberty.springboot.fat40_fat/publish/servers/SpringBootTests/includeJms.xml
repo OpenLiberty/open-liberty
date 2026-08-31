@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2025 IBM Corporation and others.
+    Copyright (c) 2025, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -11,18 +11,19 @@
         IBM Corporation - initial API and implementation
  -->
 <server description="Spring JMS Test Configuration">
-	<resourceAdapter id="mqJms" location="${shared.resource.dir}/mq/wmq.jakarta.jmsra.rar" />
-	<jmsQueueConnectionFactory jndiName="jms/XA_CF1" resourceAdapterRef="mqJms">
-    	<properties.mqJms
-        	transportType="CLIENT"
-        	hostName="${mq_host}"
-        	port="${mq_port}"
-        	channel="DEV.ADMIN.SVRCONN"
-        	queueManager="QM1"
-        	username="admin"
-        	password="passw0rd"/>
-	</jmsQueueConnectionFactory>
-    
+    <resourceAdapter id="mqJms" location="${shared.resource.dir}/mq/wmq.jakarta.jmsra.rar" />
+    <jmsQueueConnectionFactory jndiName="jms/XA_CF1" resourceAdapterRef="mqJms">
+        <properties.mqJms
+            transportType="CLIENT"
+            hostName="${mq_host}"
+            port="${mq_port}"
+            channel="DEV.ADMIN.SVRCONN"
+            queueManager="QM1"
+            username="admin"
+            password="passw0rd"
+            sslCipherSuite="TLS_AES_256_GCM_SHA384"/>
+    </jmsQueueConnectionFactory>
+
     <library id="DerbyLib">
         <file name="${shared.resource.dir}/derby/derby.jar"/>
     </library>
