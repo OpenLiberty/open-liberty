@@ -93,8 +93,13 @@ public class H2StreamResult {
         //we need to process frames sent before the server receives the RST_STREAM... but we don't have a way to know
         //which of this frames where sent before the server got the RST_STREAM
 
-        //We can receive PRIORITY on a closed stream
-        if (!(frame.getFrameType() == FrameTypes.PRIORITY))
+        // We can receive PRIORITY on a closed stream. Some negative-path tests also
+        // expect the peer to account for a terminal RST_STREAM that races after an
+        // END_STREAM frame; record that RST_STREAM so expected-frame matching can
+        // decide whether it is valid instead of reporting it as both missing and
+        // unexpected. An unrequested reset remains an unexpected post-EOS frame.
+        boolean expectedTerminalReset = frame.getFrameType() == FrameTypes.RST_STREAM && !rstStreamReceived && isExpectedFrameType(frame);
+        if (!(frame.getFrameType() == FrameTypes.PRIORITY || expectedTerminalReset))
             if (rstStreamReceived || (endOfStreamFlagReceived && !continuationExpected))
                 throw new ReceivedFrameAfterEndOfStream("The following frame was received on streamId = " + streamId + " after an end of stream flag was received: " + frame);
             else if (endOfHeadersFlagReceived && frame.getFrameType() == FrameTypes.HEADERS)
