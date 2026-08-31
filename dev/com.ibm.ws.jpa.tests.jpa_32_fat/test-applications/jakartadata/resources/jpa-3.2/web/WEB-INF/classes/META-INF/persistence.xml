@@ -19,19 +19,19 @@
         version="3.2">
 
     <persistence-unit name="RecreatePersistenceUnit">
-    	<properties>
-   <!-- Drop and recreate the database schema automatically for clean test runs -->
-   <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
-			<property name="eclipselink.logging.parameters" value="true"/>
-			<property name="hibernate.show_sql" value="true"/>
-		</properties>
+        <properties>
+            <!-- Drop and recreate the database schema automatically for clean test runs -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
     </persistence-unit>
-    
+
     <persistence-unit name="RecreatePersistenceUnitH2">
         <jta-data-source>jdbc/H2DataSource</jta-data-source>
-    	<properties>
-    	       <!-- Drop and recreate the database schema automatically for clean test runs -->
-    	       <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+        <properties>
+            <!-- Drop and recreate the database schema automatically for clean test runs -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.logging.parameters" value="true"/>
         </properties>
     </persistence-unit>
