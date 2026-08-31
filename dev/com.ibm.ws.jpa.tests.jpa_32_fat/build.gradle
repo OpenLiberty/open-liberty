@@ -109,28 +109,21 @@ task addhibernateJPA40(type: Copy) {
 }
 
 // ---------------------------------------------------------------------------
-// JPA32_HIBERNATE40 repeat phase — recompile the jakartapersistence test app
-// against the JPA 4.0 API and package it as a separate WAR.
+// JPA40_HIBERNATE8 repeat phase — recompile the jakartapersistence and
+// jakartadata test apps against the JPA 4.0 API and package as separate WARs.
 //
-// The jakartapersistence servlet is source-compatible with JPA 4.0 (all its
-// createQuery(String) call sites assign the result to Query, and
-// StatementOrTypedQuery — the 4.0 return type — extends Query).  The problem
-// is purely bytecode: compiled against JPA 3.2 the call descriptor is
-// (String)→Query; the JPA 4.0 runtime only has (String)→StatementOrTypedQuery
-// on EntityHandler, so the JVM throws NoSuchMethodError.  Recompiling the
-// same sources against the 4.0 API fixes the descriptors without any source
-// changes.
+// Both servlets use createQuery(String) which moved to the EntityHandler
+// superinterface with a different return type (StatementOrTypedQuery) in
+// JPA 4.0.  Compiled against JPA 3.2 the call descriptor is (String)→Query;
+// the JPA 4.0 runtime only has (String)→StatementOrTypedQuery, so the JVM
+// throws NoSuchMethodError.  Recompiling against the 4.0 API fixes the
+// descriptors without any source changes.
 // ---------------------------------------------------------------------------
 task compileJPA40TestApp(type: JavaCompile) {
-  dependsOn jar   // ensure the main bnd jar (which puts classes on the build classpath) is done first
+  dependsOn jar
 
-  // Recompile only the jakartapersistence test-application sources.
   source = fileTree('test-applications/jakartapersistence/src')
 
-  // Take the compile classpath from the main compileJava task (which bnd populates
-  // from -buildpath), drop the 3.2 persistence jar, and add the 4.0 one.
-  // The 4.0 jar is resolved from the build image dev/api/spec directory — that is the
-  // same location the 3.2 jar comes from and is guaranteed to exist after a normal build.
   classpath = (compileJava.classpath
       .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') }
       + fileTree(dir: "${rootDir}/build.image/wlp/dev/api/spec", include: 'io.openliberty.jakarta.persistence.4.0_*.jar'))
@@ -140,16 +133,40 @@ task compileJPA40TestApp(type: JavaCompile) {
 }
 
 task packageJPA40TestWar(type: Jar, dependsOn: compileJPA40TestApp) {
-  // Package the 4.0-compiled classes plus the jpa-3.2 web resources into a WAR.
-  // The persistence.xml from jpa-3.2 is valid in a JPA 4.0 container (schema 3.2
-  // is accepted), and the JCache L2 cache config works with hibernate-jcache 8.x.
   archiveFileName = 'jakartapersistence_jpa40compiled.war'
   destinationDirectory = file("${autoFvtDir}/publish/shared/jpa40war")
 
   from("${buildDir}/jpa40AppClasses") {
     into 'WEB-INF/classes'
   }
-  from('test-applications/jakartapersistence/resources/jpa-3.2/web') {
+  // Use jpa-4.0 resources which carry explicit <class> listings required by Hibernate 8
+  from('test-applications/jakartapersistence/resources/jpa-4.0/web') {
+    into '/'
+  }
+}
+
+task compileJPA40DataTestApp(type: JavaCompile) {
+  dependsOn jar
+
+  source = fileTree('test-applications/jakartadata/src')
+
+  classpath = (compileJava.classpath
+      .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') }
+      + fileTree(dir: "${rootDir}/build.image/wlp/dev/api/spec", include: 'io.openliberty.jakarta.persistence.4.0_*.jar'))
+
+  destinationDirectory = file("${buildDir}/jpa40DataAppClasses")
+  options.release = 17
+}
+
+task packageJPA40DataTestWar(type: Jar, dependsOn: compileJPA40DataTestApp) {
+  archiveFileName = 'jakartadata_jpa40compiled.war'
+  destinationDirectory = file("${autoFvtDir}/publish/shared/jpa40war")
+
+  from("${buildDir}/jpa40DataAppClasses") {
+    into 'WEB-INF/classes'
+  }
+  // Use jpa-4.0 resources which carry explicit <class> listings required by Hibernate 8
+  from('test-applications/jakartadata/resources/jpa-4.0/web') {
     into '/'
   }
 }
@@ -161,6 +178,7 @@ addRequiredLibraries {
   dependsOn addhibernateJPA32
   dependsOn addhibernateJPA40
   dependsOn packageJPA40TestWar
+  dependsOn packageJPA40DataTestWar
   dependsOn addJakartaTransformer
   dependsOn copyTestContainers
 }
