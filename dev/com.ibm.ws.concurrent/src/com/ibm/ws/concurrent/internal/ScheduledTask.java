@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -155,6 +155,11 @@ public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTas
     }
 
     /**
+     * Name of the application that schedules or provides the task. Null if unknown.
+     */
+    final String appName;
+
+    /**
      * Fixed delay between executions of the task. Only available if using fixed delay.
      */
     private final Long fixedDelay;
@@ -277,6 +282,8 @@ public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTas
             }
         }
 
+        this.appName = managedExecSvc.concurrencySvc.findAppName(task.getClass());
+
         // Cap the maximum delay at what is supported by ScheduledThreadPoolExecutor, upon which Liberty ScheduledExecutorService is built
         Duration delay = Duration.of(initialDelay, unit);
         if (delay.compareTo(MAX_DELAY) > 0)
@@ -348,6 +355,8 @@ public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTas
                 throw new RejectedExecutionException(x);
             }
         }
+
+        this.appName = managedExecSvc.concurrencySvc.findAppName(task.getClass());
 
         try {
             nextExecutionTime = triggerSvc.getNextRunTime(null, taskScheduledTime, trigger);

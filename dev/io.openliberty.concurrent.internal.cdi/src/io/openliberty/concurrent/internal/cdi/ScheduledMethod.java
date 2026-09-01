@@ -62,8 +62,10 @@ public class ScheduledMethod<T> extends ScheduledMethodAbstract {
 
         // Intentionally placed as last line of constructuor to ensure
         // intialization is complete before the first task execution runs
-        ConcurrencyExtensionMetadata.scheduledExecutor //
-                        .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
+        nextExecutionFuture.set(ConcurrencyExtensionMetadata //
+                        .scheduledExecutor.schedule(this,
+                                                    computeDelayNanos(),
+                                                    TimeUnit.NANOSECONDS));
     }
 
     /**
