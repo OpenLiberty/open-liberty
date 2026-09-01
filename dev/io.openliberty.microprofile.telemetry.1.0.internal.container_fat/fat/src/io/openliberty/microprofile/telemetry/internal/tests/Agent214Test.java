@@ -28,6 +28,8 @@ import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+
+import java.time.Duration;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -99,6 +101,11 @@ public class Agent214Test {
     @BeforeClass
     public static void setUp() throws Exception {
         client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
+
+        // Co-authored-by: Bob
+        // Wait for the Jaeger OTLP gRPC endpoint to be ready before starting servers
+        // to prevent span export timeouts during startup (see issue #35296)
+        jaegerContainer.waitForOtlpGrpcReady(Duration.ofSeconds(30));
 
         server.copyFileToLibertyServerRoot("agent-214/opentelemetry-javaagent.jar");
 

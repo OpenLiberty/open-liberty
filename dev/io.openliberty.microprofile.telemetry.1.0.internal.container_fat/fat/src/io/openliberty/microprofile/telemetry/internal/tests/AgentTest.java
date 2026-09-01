@@ -32,6 +32,8 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
+import java.time.Duration;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
@@ -101,6 +103,11 @@ public class AgentTest {
     public static void setUp() throws Exception {
 
         client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
+
+        // Co-authored-by: Bob
+        // Wait for the Jaeger OTLP gRPC endpoint to be ready before starting servers
+        // to prevent span export timeouts during startup (see issue #35296)
+        jaegerContainer.waitForOtlpGrpcReady(Duration.ofSeconds(30));
 
         server.copyFileToLibertyServerRoot("agent-119/opentelemetry-javaagent.jar");
 

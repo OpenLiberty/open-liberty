@@ -14,6 +14,8 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
+import java.time.Duration;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -58,6 +60,11 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
     @BeforeClass
     public static void setUp() throws Exception {
         client = new JaegerQueryClient(jaegerContainer, jaegerClientKeyPairs.getCertificate());
+
+        // Co-authored-by: Bob
+        // Wait for the Jaeger OTLP gRPC endpoint to be ready before starting servers
+        // to prevent span export timeouts during startup (see issue #35296)
+        jaegerContainer.waitForOtlpGrpcReady(Duration.ofSeconds(30));
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getSecureOtlpGrpcUrl());

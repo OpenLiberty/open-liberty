@@ -13,12 +13,17 @@
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
 import java.io.File;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import io.grpc.ConnectivityState;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 
 /**
@@ -203,5 +208,32 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
      */
     public int getQueryGrpcPort() {
         return getMappedPort(GRPC_QUERY_PORT);
+    }
+
+    public void waitForOtlpGrpcReady(Duration timeout) throws Exception {
+        long endTime = System.currentTimeMillis() + timeout.toMillis();
+        
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                // Attempt a test connection to OTLP gRPC endpoint
+                ManagedChannel channel = ManagedChannelBuilder
+                    .forTarget(getOtlpGrpcUrl())
+                    .usePlaintext()
+                    .build();
+                
+                // Try to create a stub and verify connection
+                channel.getState(true); // Force connection attempt
+                
+                if (channel.getState(false) == ConnectivityState.READY) {
+                    channel.shutdown();
+                    return; // Success
+                }
+                channel.shutdown();
+            } catch (Exception e) {
+                // Not ready yet, continue waiting
+            }
+            Thread.sleep(500);
+        }
+        throw new TimeoutException("Jaeger OTLP gRPC endpoint not ready within timeout");
     }
 }

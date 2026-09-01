@@ -21,6 +21,7 @@ import static io.opentelemetry.semconv.resource.attributes.ResourceAttributes.TE
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -90,6 +91,11 @@ public class CrossFeatureJaegerTest {
     public static void setUp() throws Exception {
 
         client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
+
+        // Co-authored-by: Bob
+        // Wait for the Jaeger OTLP gRPC endpoint to be ready before starting servers
+        // to prevent span export timeouts during startup (see issue #35296)
+        jaegerContainer.waitForOtlpGrpcReady(Duration.ofSeconds(30));
 
         // Inform the test framework that opentracingServer is configured to use the secondary HTTP ports
         opentracingServer.useSecondaryHTTPPort();
