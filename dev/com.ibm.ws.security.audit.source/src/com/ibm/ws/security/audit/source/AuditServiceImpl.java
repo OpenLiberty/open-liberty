@@ -60,7 +60,7 @@ import com.ibm.wsspi.security.audit.AuditService;
  * a collector manager Source for audit events.
  */
 @Component(service = { AuditService.class, Source.class },
-           configurationPid = { "com.ibm.ws.security.audit.source", "com.ibm.ws.security.audit.event" },
+           configurationPid = { "com.ibm.ws.security.audit", "com.ibm.ws.security.audit.event" },
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            property = "service.vendor=IBM", immediate = true)
 

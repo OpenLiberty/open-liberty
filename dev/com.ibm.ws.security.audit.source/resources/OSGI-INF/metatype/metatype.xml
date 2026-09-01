@@ -21,7 +21,7 @@
    <AD id="generateNewSession" name="%generateNewSession.name" description="%generateNewSession.desc" required="false" type="Boolean" default="true"/>
 </OCD>
 
-<Designate pid="com.ibm.ws.security.audit.source">
+<Designate pid="com.ibm.ws.security.audit">
    <Object ocdref="com.ibm.ws.security.audit.metatype"/>
 </Designate>
 
