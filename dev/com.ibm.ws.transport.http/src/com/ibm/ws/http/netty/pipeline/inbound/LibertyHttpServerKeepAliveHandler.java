@@ -26,7 +26,7 @@ import io.netty.util.ReferenceCountUtil;
 
 /**
  * This is a subclass of HttpServerKeepAliveHandler that gates
- * inbound requests against the HTTP/1.x version whitelist (HTTP/1.0 and
+ * inbound requests against the HTTP/1.x version allowing (HTTP/1.0 and
  * HTTP/1.1) before delegating to the keep-alive logic.
  *
  * Any HttpRequest whose protocol version is not HTTP/1.0 or HTTP/1.1
