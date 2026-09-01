@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,11 +39,18 @@ public class NettyTrailers implements HttpTrailers {
      */
     private transient Map<String, HttpTrailerGenerator> knownTGs = new HashMap<String, HttpTrailerGenerator>();
 
+    private final Runnable deferredTrailerRegistrationCallback;
+
     /**
      *
      */
     public NettyTrailers(HttpHeaders trailers) {
+        this(trailers, null);
+    }
+
+    NettyTrailers(HttpHeaders trailers, Runnable deferredTrailerRegistrationCallback) {
         this.trailers = trailers;
+        this.deferredTrailerRegistrationCallback = deferredTrailerRegistrationCallback;
     }
 
     @Override
@@ -383,6 +390,8 @@ public class NettyTrailers implements HttpTrailers {
         if (Objects.isNull(hdr) || Objects.isNull(htg))
             throw new IllegalArgumentException("Null input provided");
         this.knownTGs.put(hdr.getName(), htg);
+        if (deferredTrailerRegistrationCallback != null)
+            deferredTrailerRegistrationCallback.run();
     }
 
     @Override
@@ -390,6 +399,8 @@ public class NettyTrailers implements HttpTrailers {
         if (Objects.isNull(hdr) || Objects.isNull(htg))
             throw new IllegalArgumentException("Null input provided");
         this.knownTGs.put(hdr, htg);
+        if (deferredTrailerRegistrationCallback != null)
+            deferredTrailerRegistrationCallback.run();
     }
 
     @Override
@@ -413,6 +424,10 @@ public class NettyTrailers implements HttpTrailers {
             String key = knowns.next();
             setHeader(key, new String(this.knownTGs.get(key).generateTrailerValue(key, this)));
         }
+    }
+
+    boolean hasTrailersToSend() {
+        return !this.trailers.isEmpty() || !this.knownTGs.isEmpty();
     }
 
     @Override
