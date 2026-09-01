@@ -15,6 +15,7 @@ package com.ibm.ws.ejbcontainer.quiesce.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -61,10 +62,14 @@ public class MdbQuiesceTest extends FATServletClient {
         mdbServer.addInstalledAppForValidation("MdbQuiesceApp");
     }
 
+    // CNTR0120W: invalid boolean value in server.xml (MdbQuiesceInvalidServer)
+    // CWNEN0014W: invalid boolean value in ejb-jar.xml (MdbQuiesceInvalid)
+    private static final String[] MDB_EXPECTED_WARNINGS = { "CNTR0120W", "CWNEN0014W" };
+
     @AfterClass
     public static void cleanUp() throws Exception {
         if (mdbServer != null && mdbServer.isStarted()) {
-            mdbServer.stopServer();
+            mdbServer.stopServer(MDB_EXPECTED_WARNINGS);
         }
     }
 
@@ -77,6 +82,15 @@ public class MdbQuiesceTest extends FATServletClient {
         try {
             mdbServer.startServer();
 
+            // Verify that invalid boolean values in binding files produce the expected warnings,
+            // each with a distinct invalid value to confirm the correct configuration was read:
+            // - CNTR0120W for MdbQuiesceInvalidServer (server.xml, value=notABooleanServer)
+            // - CWNEN0014W for MdbQuiesceInvalid (ejb-jar.xml, value=notABooleanDD)
+            assertNotNull("CNTR0120W not logged for invalid boolean in server.xml (notABooleanServer)",
+                          mdbServer.waitForStringInLog("CNTR0120W.*notABooleanServer"));
+            assertNotNull("CWNEN0014W not logged for invalid boolean in ejb-jar.xml (notABooleanDD)",
+                          mdbServer.waitForStringInLog("CWNEN0014W.*notABooleanDD"));
+
             // Wait for all MDBs to be bound to their activation specifications
             assertNotNull("MDB MdbQuiesceDefault in MdbQuiesceEjb not bound to activation specification",
                           mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceDefault.*MdbQuiesceEjb"));
@@ -84,6 +98,10 @@ public class MdbQuiesceTest extends FATServletClient {
                           mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceBnd.*MdbQuiesceEjb"));
             assertNotNull("MDB MdbQuiesceServer in MdbQuiesceEjb not bound to activation specification",
                           mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceServer.*MdbQuiesceEjb"));
+            assertNotNull("MDB MdbQuiesceInvalid in MdbQuiesceEjb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceInvalid.*MdbQuiesceEjb"));
+            assertNotNull("MDB MdbQuiesceInvalidServer in MdbQuiesceEjb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceInvalidServer.*MdbQuiesceEjb"));
             assertNotNull("MDB MdbQuiesceDefault in MdbQuiesceWeb not bound to activation specification",
                           mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceDefault.*MdbQuiesceWeb"));
             assertNotNull("MDB MdbQuiesceBnd in MdbQuiesceWeb not bound to activation specification",
@@ -98,6 +116,10 @@ public class MdbQuiesceTest extends FATServletClient {
                           mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceEjb.*MdbQuiesceBnd"));
             assertNotNull("MDB MdbQuiesceServer in MdbQuiesceEjb did not activate",
                           mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceEjb.*MdbQuiesceServer"));
+            assertNotNull("MDB MdbQuiesceInvalid in MdbQuiesceEjb did not activate",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceEjb.*MdbQuiesceInvalid"));
+            assertNotNull("MDB MdbQuiesceInvalidServer in MdbQuiesceEjb did not activate",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceEjb.*MdbQuiesceInvalidServer"));
             assertNotNull("MDB MdbQuiesceDefault in MdbQuiesceWeb did not activate",
                           mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceWeb.*MdbQuiesceDefault"));
             assertNotNull("MDB MdbQuiesceBnd in MdbQuiesceWeb did not activate",
@@ -135,22 +157,31 @@ public class MdbQuiesceTest extends FATServletClient {
                           mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceDefault:"));
             assertNotNull("MDB MdbQuiesceBnd in MdbQuiesceWeb did not call PostConstruct",
                           mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceBnd:"));
+            assertNotNull("MDB MdbQuiesceInvalid in MdbQuiesceEjb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceInvalid:"));
+            assertNotNull("MDB MdbQuiesceInvalidServer in MdbQuiesceEjb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceInvalidServer:"));
             assertNotNull("MDB MdbQuiesceServer in MdbQuiesceWeb did not call PostConstruct",
                           mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceServer:"));
 
             mdbServer.setMarkToEndOfLog();
-            mdbServer.stopServer(false);
+            mdbServer.stopServer(false, MDB_EXPECTED_WARNINGS);
 
             // Make sure stop has completed
             assertNotNull("Server " + mdbServer.getServerName() + " FAILED to stop", mdbServer.waitForStringInLog("CWWKE0036I"));
 
             // Expected JCA deactivation messages (common + J2CA8804I)
+            // MdbQuiesceDefault (both modules) deactivates during quiesce.
+            // MdbQuiesceInvalid (ejb-jar.xml) and MdbQuiesceInvalidServer (server.xml) have invalid
+            // deactivateOnQuiesce values which are treated as false, so they are deferred to app stop.
             List<String> expectedJcaDeactivation = Arrays.asList //
             ("CWWKE1100I", // waiting for server quiesce
-             "J2CA8804I:", // JCA deactivation
-             "J2CA8804I:", // JCA deactivation
+             "J2CA8804I:", // JCA deactivation - MdbQuiesceDefault (EJB module)
+             "J2CA8804I:", // JCA deactivation - MdbQuiesceDefault (Web module)
              "CWWKE1101I", // server quiesce complete
              // Order varies after this point
+             "J2CA8804I:", // JCA deactivation
+             "J2CA8804I:", // JCA deactivation
              "J2CA8804I:", // JCA deactivation
              "J2CA8804I:", // JCA deactivation
              "J2CA8804I:", // JCA deactivation
@@ -158,6 +189,7 @@ public class MdbQuiesceTest extends FATServletClient {
              "CWWKZ0009I"); // application stopped
 
             // Expected EJB deactivation messages (common + CNTR4014I)
+            // MdbQuiesceInvalid and MdbQuiesceInvalidServer are deferred to app stop (invalid = false)
             List<String> expectedEjbDeactivation = Arrays.asList //
             ("CWWKE1100I", // waiting for server quiesce
              "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
@@ -166,6 +198,8 @@ public class MdbQuiesceTest extends FATServletClient {
              // Order varies after this point
              "CNTR4014I: The message endpoint for the MdbQuiesceServer",
              "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
+             "CNTR4014I: The message endpoint for the MdbQuiesceInvalid",
+             "CNTR4014I: The message endpoint for the MdbQuiesceInvalidServer",
              "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
              "CNTR4014I: The message endpoint for the MdbQuiesceServer",
              "CWWKZ0009I"); // application stopped
@@ -184,6 +218,8 @@ public class MdbQuiesceTest extends FATServletClient {
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceDefault:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceServer:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceBnd:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceInvalid:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceInvalidServer:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceBnd:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceServer:",
              "CWWKZ0009I"); // application stopped
@@ -201,13 +237,120 @@ public class MdbQuiesceTest extends FATServletClient {
                                                                                  mdbServer.getDefaultLogFile());
 
             // Verify all three message sequences are present in order
+            // The ordered prefix is 4 entries: CWWKE1100I + 2 quiesce-time Default deactivations + CWWKE1101I
             verifyMessagesInOrder(expectedJcaDeactivation, actualJcaDeactivation, "JCA Deactivation", 4);
             verifyMessagesInOrder(expectedEjbDeactivation, actualEjbDeactivation, "EJB Deactivation", 4);
             verifyMessagesInOrder(expectedPreDestroy, actualPreDestroy, "PreDestroy", 7);
 
         } finally {
             if (mdbServer.isStarted()) {
-                mdbServer.stopServer();
+                mdbServer.stopServer(MDB_EXPECTED_WARNINGS);
+            } else {
+                mdbServer.postStopServerArchive();
+            }
+        }
+    }
+
+    /**
+     * Test that MDB message endpoints and singleton beans are properly handled at application stop
+     * when the server is stopped with --force (skipping quiesce). Verifies that:
+     * - All @PreDestroy methods are still called
+     * - MDB endpoints configured with deactivateOnQuiesce=false are NOT deactivated during quiesce
+     *   (quiesce was skipped) — they are deactivated at application stop along with all others
+     * - The quiesce phase messages (CWWKE1100I, CWWKE1101I) are absent from the log
+     */
+    @Test
+    public void testMdbQuiesceForceStopInEar() throws Exception {
+        try {
+            mdbServer.startServer();
+
+            // Verify that invalid boolean values in binding files produce the expected warnings,
+            // each with a distinct invalid value to confirm the correct configuration was read:
+            // - CNTR0120W for MdbQuiesceInvalidServer (server.xml, value=notABooleanServer)
+            // - CWNEN0014W for MdbQuiesceInvalid (ejb-jar.xml, value=notABooleanDD)
+            assertNotNull("CNTR0120W not logged for invalid boolean in server.xml (notABooleanServer)",
+                          mdbServer.waitForStringInLog("CNTR0120W.*notABooleanServer"));
+            assertNotNull("CWNEN0014W not logged for invalid boolean in ejb-jar.xml (notABooleanDD)",
+                          mdbServer.waitForStringInLog("CWNEN0014W.*notABooleanDD"));
+
+            // Wait for all MDBs to be bound to their activation specifications
+            assertNotNull("MDB MdbQuiesceDefault in MdbQuiesceEjb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceDefault.*MdbQuiesceEjb"));
+            assertNotNull("MDB MdbQuiesceBnd in MdbQuiesceEjb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceBnd.*MdbQuiesceEjb"));
+            assertNotNull("MDB MdbQuiesceServer in MdbQuiesceEjb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceServer.*MdbQuiesceEjb"));
+            assertNotNull("MDB MdbQuiesceInvalid in MdbQuiesceEjb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceInvalid.*MdbQuiesceEjb"));
+            assertNotNull("MDB MdbQuiesceDefault in MdbQuiesceWeb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceDefault.*MdbQuiesceWeb"));
+            assertNotNull("MDB MdbQuiesceBnd in MdbQuiesceWeb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceBnd.*MdbQuiesceWeb"));
+            assertNotNull("MDB MdbQuiesceServer in MdbQuiesceWeb not bound to activation specification",
+                          mdbServer.waitForStringInLog("CNTR0180I.*MdbQuiesceServer.*MdbQuiesceWeb"));
+
+            // Send messages to all MDB queues to ensure all MDB instances are live
+            mdbServer.setMarkToEndOfLog();
+            runTest(mdbServer, "MdbQuiesceWeb/MdbQuiesceServlet", "sendMessages");
+            assertNotNull("MDB MdbQuiesceDefault in MdbQuiesceEjb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceDefault:"));
+            assertNotNull("MDB MdbQuiesceBnd in MdbQuiesceEjb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceBnd:"));
+            assertNotNull("MDB MdbQuiesceServer in MdbQuiesceEjb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceServer:"));
+            assertNotNull("MDB MdbQuiesceInvalid in MdbQuiesceEjb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceInvalid:"));
+            assertNotNull("MDB MdbQuiesceDefault in MdbQuiesceWeb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceDefault:"));
+            assertNotNull("MDB MdbQuiesceBnd in MdbQuiesceWeb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceBnd:"));
+            assertNotNull("MDB MdbQuiesceServer in MdbQuiesceWeb did not call PostConstruct",
+                          mdbServer.waitForStringInLog("PostConstruct:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceServer:"));
+
+            mdbServer.setMarkToEndOfLog();
+            // Stop with --force: quiesce phase is skipped entirely
+            mdbServer.stopServer(false, true, MDB_EXPECTED_WARNINGS);
+
+            // Make sure stop has completed
+            assertNotNull("Server " + mdbServer.getServerName() + " FAILED to stop", mdbServer.waitForStringInLog("CWWKE0036I"));
+
+            // Quiesce phase must NOT have started - these messages must be absent
+            assertNull("CWWKE1100I (quiesce start) should not appear after --force stop",
+                       mdbServer.verifyStringNotInLogUsingMark("CWWKE1100I", 0));
+            assertNull("CWWKE1101I (quiesce complete) should not appear after --force stop",
+                       mdbServer.verifyStringNotInLogUsingMark("CWWKE1101I", 0));
+
+            // All MDB endpoints must still be deactivated and all @PreDestroy methods called,
+            // regardless of deactivateOnQuiesce/destroyOnQuiesce configuration.
+            // With --force, there is no quiesce phase, so all deactivations happen at app stop.
+            List<String> allPreDestroys = Arrays.asList //
+            ("PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:StartupSingletonQuiesceBnd:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:StartupSingletonQuiesceDefault:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceDefault:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceBnd:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceServer:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceInvalid:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceInvalidServer:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:StartupSingletonQuiesceBnd:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:StartupSingletonQuiesceDefault:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceDefault:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceBnd:",
+             "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceServer:");
+
+            List<String> actualPreDestroys = mdbServer.findStringsInLogsUsingMark(".*PreDestroy:MdbQuiesceApp.*",
+                                                                                  mdbServer.getDefaultLogFile());
+
+            // Verify all PreDestroy messages are present (order is not guaranteed without quiesce)
+            for (String expected : allPreDestroys) {
+                assertTrue("Expected PreDestroy message not found: " + expected,
+                           actualPreDestroys.stream().anyMatch(msg -> msg.contains(expected)));
+            }
+            assertEquals("Expected " + allPreDestroys.size() + " PreDestroy messages but found " + actualPreDestroys.size(),
+                         allPreDestroys.size(), actualPreDestroys.size());
+
+        } finally {
+            if (mdbServer.isStarted()) {
+                mdbServer.stopServer(MDB_EXPECTED_WARNINGS);
             } else {
                 mdbServer.postStopServerArchive();
             }
