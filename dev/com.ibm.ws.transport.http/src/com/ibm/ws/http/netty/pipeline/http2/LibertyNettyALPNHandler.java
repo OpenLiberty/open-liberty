@@ -15,13 +15,13 @@ import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpKeepAliveHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.ssl.ApplicationProtocolNames;
 import io.netty.handler.ssl.ApplicationProtocolNegotiationHandler;
@@ -93,7 +93,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
 
             }   
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, CRLFValidationHandler.NAME, CRLFValidationHandler.INSTANCE);
-            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpKeepAliveHandler(httpConfig));
             //TODO: this is a very large number, check best practice
             ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, HttpPipelineInitializer.HTTP_AGGREGATOR_HANDLER_NAME,
                                     new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? HttpPipelineInitializer.maxContentLength : httpConfig.getMessageSizeLimit(), httpConfig));
