@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.persistence.api.4.0
-Require-Bundle: io.openliberty.org.eclipse.persistence-4.0
+Require-Bundle: io.openliberty.org.hibernate-4.0
 -exportcontents: \
  jakarta.persistence; \
  jakarta.persistence.criteria; \
