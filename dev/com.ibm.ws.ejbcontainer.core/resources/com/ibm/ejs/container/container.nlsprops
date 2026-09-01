@@ -1578,8 +1578,8 @@ CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Remove any jakarta.enterpris
 
 CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: The {0} bean in the {1} module of \
  the {2} application has one or more methods with the \
- jakarta.enterprise.concurrent.Schedule annotation, which must not be used on \
- enterprise beans.
+ jakarta.enterprise.concurrent.Schedule annotation. This annotation cannot be \
+ used on enterprise beans.
 CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=The Jakarta Concurrency \
  specification does not allow the jakarta.enterprise.concurrent.Schedule \
  annotation to be used on Jakarta Enterprise Beans.
