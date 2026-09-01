@@ -628,6 +628,41 @@ public class ToolManagerTest extends FATServletClient {
     }
 
     /**
+     * A dynamically registered tool with a non-required
+     * argument that has no default value (null) must succeed when called without supplying
+     * that argument
+     * <p>
+     * Tool defined in {@link ToolManagerStartupTestBean#createNullDefaultValueTool}
+     *
+     * @throws Exception on error
+     */
+    @Test
+    public void testCallToolWithNullDefaultArgOmitted() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 20,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "tool-with-null-default",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+        String expected = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 20,
+                          "result": {
+                            "content": [{"type": "text", "text": "null"}],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expected, client.callMCP(request), STRICT);
+    }
+
+    /**
      * Calls tools/list and returns all the tools from the server as a map.
      *
      * @return a map from tool name to the JSON descriptor for the tool

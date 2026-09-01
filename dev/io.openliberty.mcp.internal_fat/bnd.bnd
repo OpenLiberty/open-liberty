@@ -56,7 +56,6 @@ tested.features: \
 	io.openliberty.mpTelemetry.2.0.thirdparty,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	io.openliberty.io.opentelemetry.internal.2.1;version=latest,\
-	io.openliberty.org.testcontainers;version=latest,\
-	com.ibm.websphere.appserver.features;version=latest
+	io.openliberty.org.testcontainers;version=latest
 	
 fat.test.container.images=public.ecr.aws/docker/library/node:22-alpine,quay.io/keycloak/keycloak:26.6.2

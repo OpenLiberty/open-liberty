@@ -190,6 +190,7 @@ Include-Resource:\
   @${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
   @${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
   @${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
+  org/jboss/resteasy=-build/classes/resteasy-injected/org/jboss/resteasy, \
   io/openliberty=${bin}/io/openliberty, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   META-INF=resources/META-INF

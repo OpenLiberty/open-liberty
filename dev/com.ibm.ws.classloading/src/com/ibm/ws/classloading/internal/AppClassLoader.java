@@ -258,15 +258,58 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     @Override
+    @Trivial
     public URL getResource(String name) {
-        URL result = findResourceCommonLibraryClassLoaders(name, beforeApp);
-        if (result == null) {
-            result = parent.getResource(name);
+        // path is null when trace is off — avoids string allocation on the hot path.
+        return getResourceInternal(name, (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) ? this.toString() : null);
+    }
+
+    /**
+     * Internal entry point that threads the delegation path through the {@code AppClassLoader} chain.
+     *
+     * Search order (parent-first):
+     * 1. beforeApp library delegates
+     * 2. parent classloader
+     * 3. local classpath + afterApp library delegates
+     *
+     * @param name The resource name.
+     * @param path The delegation path so far, or null if trace is disabled.
+     * @return The URL of the resource, or null if not found.
+     */
+    @Trivial
+    URL getResourceInternal(String name, String path) {
+        // 1. beforeApp library delegates
+        URL url = findResourceCommonLibraryClassLoaders(name, beforeApp, path);
+        if (url != null) {
+            return url;
         }
-        if (result == null) {
-            result = findResource(name);
+
+        // 2. parent classloader
+        String parentPath = path != null ? path + " -> " + parent : null;
+        if (parent instanceof AppClassLoader) {
+            // Thread path into the parent so the full chain is visible in its trace.
+            url = ((AppClassLoader) parent).getResourceInternal(name, parentPath);
+        } else {
+            url = parent.getResource(name);
+            if (url != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, String.format("Resource=[%s] found at location=[%s] by parent classloader=[%s]; delegation path=[%s]",
+                        name, url, parent, parentPath));
+            }
         }
-        return result;
+        if (url != null) {
+            return url;
+        }
+
+        // 3. local classpath + afterApp library delegates
+        url = findResourceInternal(name, false, path);
+        if (url != null) {
+            return url;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, String.format("Resource=[%s] not found; classloader=[%s]", name, this));
+        }
+        return null;
     }
 
     /**
@@ -280,32 +323,50 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      * and strip the / from the resulting URL.
      */
     @Override
+    @Trivial
     public final URL findResource(String name) {
-        return findResourceInternal(name, false);
+        return findResourceInternal(name, false, null);
     }
 
     @Override
     protected URL delegateFindResource(String name) {
-        return findResourceInternal(name, true);
+        return findResourceInternal(name, true, null);
     }
 
-    private URL findResourceInternal(String name, boolean delegate) {
-        URL result = null;
+    /**
+     * Searches this classloader's local classpath and library delegates for the named resource.
+     *
+     * @param name     The resource name.
+     * @param delegate If true, called as a library delegate — only searches beforeApp libraries.
+     *                 If false, searches the local classpath then afterApp library delegates.
+     * @param path     The delegation path so far, or null if trace is disabled.
+     * @return The URL of the resource, or null if not found.
+     */
+    @Trivial
+    protected final URL findResourceInternal(String name, boolean delegate, String path) {
         Object token = ThreadIdentityManager.runAsServer();
+        URL url = null;
         try {
             if (delegate) {
-                result = findResourceCommonLibraryClassLoaders(name, beforeApp);
+                url = findResourceCommonLibraryClassLoaders(name, beforeApp, path);
+                if (url != null) {
+                    return url;
+                }
             }
-            if (result == null) {
-                result = super.findResource(name);
+
+            url = super.findResource(name);
+            if (url != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, String.format("Resource=[%s] found at location=[%s] on the local classpath; classloader=[%s]; delegation path=[%s]",
+                            name, url, this, path));
+                }
+                return url;
             }
-            if (result == null) {
-                result = findResourceCommonLibraryClassLoaders(name, afterApp);
-            }
+
+            return findResourceCommonLibraryClassLoaders(name, afterApp, path);
         } finally {
             ThreadIdentityManager.reset(token);
         }
-        return result;
     }
 
     /**
@@ -320,23 +381,47 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Override
     @Trivial
     public CompositeEnumeration<URL> findResources(String name) throws IOException {
-        return findResourcesInternal(name, false);
+        return findResourcesInternal(name, false, null);
     }
 
     @Override
     protected Enumeration<URL> delegateFindResources(String name) throws IOException {
-        return findResourcesInternal(name, true);
+        return findResourcesInternal(name, true, null);
     }
+
+    /**
+     * Searches this classloader's local classpath and library delegates for all matching resources.
+     *
+     * @param name     The resource name.
+     * @param delegate If true, called as a library delegate — only searches beforeApp libraries.
+     *                 If false, searches the local classpath then afterApp library delegates.
+     * @param path     The delegation path so far, or null if trace is disabled.
+     * @return A CompositeEnumeration of all matching URLs.
+     */
     @Trivial
-    private CompositeEnumeration<URL> findResourcesInternal(String name, boolean delegate) throws IOException {
+    protected CompositeEnumeration<URL> findResourcesInternal(String name, boolean delegate, String path) throws IOException {
         Object token = ThreadIdentityManager.runAsServer();
         try {
             CompositeEnumeration<URL> enumerations = new CompositeEnumeration<URL>();
             if (delegate) {
-                findResourcesCommonLibraryClassLoaders(name, enumerations, beforeApp);
+                // Called as a library delegate — only expose beforeApp libraries.
+                findResourcesCommonLibraryClassLoaders(name, enumerations, beforeApp, path);
             }
-            enumerations.add(super.findResources(name));
-            return findResourcesCommonLibraryClassLoaders(name, enumerations, afterApp);
+
+            // Search this classloader's own containers.
+            Enumeration<URL> localResults = super.findResources(name);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                List<URL> urls = Collections.list(localResults);
+                if (!urls.isEmpty()) {
+                    Tr.debug(tc, String.format("Resources=[%s] found at locations=%s on the local classpath; classloader=[%s]; delegation path=[%s]",
+                            name, urls, this, path));
+                }
+                localResults = Collections.enumeration(urls);
+            }
+            enumerations.add(localResults);
+
+            // Fall through to afterApp library delegates.
+            return findResourcesCommonLibraryClassLoaders(name, enumerations, afterApp, path);
         } finally {
             ThreadIdentityManager.reset(token);
         }
@@ -348,9 +433,57 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Override
     @Trivial
     public Enumeration<URL> getResources(String name) throws IOException {
-        return findResourcesCommonLibraryClassLoaders(name, new CompositeEnumeration<>(), beforeApp) //
-                        .add(this.parent.getResources(name)) //
-                        .add(this.findResources(name));
+        // path is null when trace is off — avoids string allocation on the hot path.
+        return getResourcesInternal(name, (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) ? this.toString() : null);
+    }
+
+    /**
+     * Internal entry point that threads the delegation path through the {@code AppClassLoader} chain.
+     *
+     * Search order (parent-first):
+     * 1. beforeApp library delegates
+     * 2. parent classloader
+     * 3. local classpath + afterApp library delegates
+     *
+     * @param name The resource name.
+     * @param path The delegation path so far, or null if trace is disabled.
+     * @return An enumeration of all matching URLs.
+     */
+    @Trivial
+    Enumeration<URL> getResourcesInternal(String name, String path) throws IOException {
+        // 1. beforeApp library delegates
+        CompositeEnumeration<URL> results = findResourcesCommonLibraryClassLoaders(name, new CompositeEnumeration<>(), beforeApp, path);
+
+        // 2. parent classloader
+        String parentPath = path != null ? path + " -> " + parent : null;
+        Enumeration<URL> parentResults;
+        if (parent instanceof AppClassLoader) {
+            // Thread path into the parent so the full chain is visible in its trace.
+            parentResults = ((AppClassLoader) parent).getResourcesInternal(name, parentPath);
+        } else {
+            parentResults = this.parent.getResources(name);
+            if (path != null) {
+                List<URL> urls = Collections.list(parentResults);
+                if (!urls.isEmpty()) {
+                    Tr.debug(tc, String.format("Resources=[%s] found at locations=%s by parent classloader=[%s]; delegation path=[%s]",
+                            name, urls, parent, parentPath));
+                }
+                parentResults = Collections.enumeration(urls);
+            }
+        }
+        results.add(parentResults);
+
+        // 3. local classpath + afterApp library delegates
+        results.add(findResourcesInternal(name, false, path));
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            List<URL> all = Collections.list(results);
+            if (all.isEmpty()) {
+                Tr.debug(tc, String.format("Resources=[%s] not found by classloader=[%s]", name, this));
+            }
+            return Collections.enumeration(all);
+        }
+        return results;
     }
 
     /** Returns the Bundle of the Top Level class loader */
@@ -807,33 +940,51 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     /**
      * Search for the resource using the common library classloaders.
      *
-     * @param name The resource name.
-     *
-     * @return The resource, if found. Otherwise null.
+     * @param name       The resource name.
+     * @param precedence Whether to search beforeApp or afterApp delegates.
+     * @param path       The delegation path so far, or null if trace is disabled.
+     * @return The URL of the resource, or null if not found.
      */
-    protected URL findResourceCommonLibraryClassLoaders(String name, LibraryPrecedence precedence) {
+    @Trivial
+    protected URL findResourceCommonLibraryClassLoaders(String name, LibraryPrecedence precedence, String path) {
         for (LibertyLoader cl : getDelegates(precedence)) {
             URL url = cl.delegateFindResource(name);
             if (url != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, String.format("Resource=[%s] found at location=[%s] by common library loader; classloader=[%s]; delegation path=[%s]",
+                            name, url, cl, path != null ? path + " -> " + cl : null));
+                }
                 return url;
             }
         }
-        // If we reached here, then the resource was not found.
         return null;
     }
 
     /**
      * Search for the resources using the common library classloaders.
      *
-     * @param name The resource name.
-     * @param enumerations A CompositeEnumeration<URL>, which is populated by this method.
-     *
-     * @return The enumerations parameter is populated by this method and returned. It contains
-     *         all the resources found under all the common library classloaders.
+     * @param name         The resource name.
+     * @param enumerations A CompositeEnumeration&lt;URL&gt; to populate.
+     * @param precedence   Whether to search beforeApp or afterApp delegates.
+     * @param path         The delegation path so far, or null if trace is disabled.
+     * @return The enumerations parameter, populated with all matching URLs.
      */
-    protected CompositeEnumeration<URL> findResourcesCommonLibraryClassLoaders(String name, CompositeEnumeration<URL> enumerations, LibraryPrecedence precedence) throws IOException {
+    @Trivial
+    protected CompositeEnumeration<URL> findResourcesCommonLibraryClassLoaders(String name, CompositeEnumeration<URL> enumerations, LibraryPrecedence precedence, String path) throws IOException {
         for (LibertyLoader cl : getDelegates(precedence)) {
-            enumerations.add(cl.delegateFindResources(name));
+            // For afterApp delegates that are AppClassLoaders, call findResourcesInternal directly
+            // with delegate=false so the library's own local classpath is searched.
+            // For beforeApp delegates, keep delegate=true via delegateFindResources to prevent cycles.
+            Enumeration<URL> clResults = cl.delegateFindResources(name);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                List<URL> urls = Collections.list(clResults);
+                if (!urls.isEmpty()) {
+                    Tr.debug(tc, String.format("Resources=[%s] found at locations=%s by common library loader; classloader=[%s]; delegation path=[%s]",
+                            name, urls, cl, path != null ? path + " -> " + cl : null));
+                }
+                clResults = Collections.enumeration(urls);
+            }
+            enumerations.add(clResults);
         }
         return enumerations;
     }
@@ -1041,4 +1192,5 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     public Class<?> publicDefineClass(String name, byte[] b, ProtectionDomain protectionDomain) {
         return defineClass(name, b, 0, b.length, protectionDomain);
     }
+
 }

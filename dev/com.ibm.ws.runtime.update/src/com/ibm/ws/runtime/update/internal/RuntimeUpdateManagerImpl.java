@@ -51,6 +51,7 @@ import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
+import com.ibm.ws.runtime.update.ServerElementConfig;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.ws.threading.listeners.CompletionListener;
@@ -76,14 +77,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         DEFAULT
     }
 
-    private volatile FutureMonitor futureMonitor;
     private final AtomicBoolean normalServerStop = new AtomicBoolean(true);
 
     private final Set<RuntimeUpdateListener> updateListeners = new HashSet<RuntimeUpdateListener>();
 
     private final Map<String, RuntimeUpdateNotification> notifications = new HashMap<String, RuntimeUpdateNotification>();
-
-    private BundleContext bundleCtx;
 
     private final CompletionListener<Boolean> cleanupListener = new CompletionListener<Boolean>() {
         @Override
@@ -97,31 +95,40 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         }
     };
 
-    private WsLocationAdmin locationService;
+    private final BundleContext bundleCtx;
 
-    private LibertyProcess libertyProcess;
+    private final WsLocationAdmin locationService;
 
-    private ExecutorService executorService;
+    private final LibertyProcess libertyProcess;
+
+    private final ExecutorService executorService;
+
+    private final ServerElementConfig serverElementConfig;
+
+    private final FutureMonitor futureMonitor;
 
     @Activate
-    protected void activate(BundleContext ctx) {
-        bundleCtx = ctx;
-        bundleCtx.addBundleListener(this);
-    }
-
-    @Reference(service = ExecutorService.class,
-               cardinality = ReferenceCardinality.MANDATORY)
-    protected void setExecutorService(ExecutorService executorService) {
+    public RuntimeUpdateManagerImpl(BundleContext ctx,
+                                    @Reference WsLocationAdmin locationService,
+                                    @Reference LibertyProcess libertyProcess,
+                                    @Reference ExecutorService executorService,
+                                    @Reference ServerElementConfig serverElementConfig,
+                                    @Reference FutureMonitor futureMonitor) {
+        this.bundleCtx = ctx;
+        this.locationService = locationService;
+        this.libertyProcess = libertyProcess;
         this.executorService = executorService;
-    }
-
-    @Reference(service = FutureMonitor.class)
-    protected void setFutureMonitor(FutureMonitor futureMonitor) {
+        this.serverElementConfig = serverElementConfig;
         this.futureMonitor = futureMonitor;
     }
 
-    protected void unsetFutureMonitor(FutureMonitor futureMonitor) {
-        this.futureMonitor = null;
+    @Activate
+    protected void activate() {
+        bundleCtx.addBundleListener(this);
+    }
+
+    protected void deactivate() {
+        bundleCtx.removeBundleListener(this);
     }
 
     @Reference(service = RuntimeUpdateListener.class,
@@ -149,20 +156,6 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         synchronized (notifications) {
             this.updateListeners.remove(updateListener);
         }
-    }
-
-    @Reference(service = WsLocationAdmin.class)
-    protected void setLocationAdmin(WsLocationAdmin admin) {
-        this.locationService = admin;
-    }
-
-    protected void unsetLocationAdmin(WsLocationAdmin admin) {
-        this.locationService = null;
-    }
-
-    @Reference(policy = ReferencePolicy.STATIC)
-    protected void setProcess(LibertyProcess process) {
-        this.libertyProcess = process;
     }
 
     protected void cleanupNotifications() {
@@ -255,7 +248,10 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                         return;
                     }
                 } catch (InterruptedException e) {
-                    e.getCause();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Interrupted while waiting for notification completion: " + name);
+                    }
+                    // Continue waiting - interrupt is intentionally ignored
                 }
             }
         }
@@ -326,7 +322,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         }
     }
 
-    private boolean callQuiesceListeners(long startTime, int quiesceTimeout, final ConcurrentLinkedQueue<Object> invoking,
+    private boolean callQuiesceListeners(long startTime, long quiesceTimeout, final ConcurrentLinkedQueue<Object> invoking,
                                          Collection<ServiceReference<ServerQuiesceListener>> listenerRefs, ThreadQuiesce tq) {
         FutureCollection quiesceListenerFutures = new FutureCollection();
         // Queue the notification of each hook (unbounded queue)
@@ -357,7 +353,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         }
         // Notify the executor service that we are quiescing, if available
         boolean quiesceListenerSuccess = quiesceListenerFutures.isComplete(startTime, quiesceTimeout);
-        return quiesceListenerSuccess && (tq != null ? tq.quiesceThreads(startTime) : true);
+        // Pass remaining time budget to quiesceThreads so the total wait (listeners + threads)
+        // stays within the configured quiesceTimeout.  Short-circuit &&: if listeners already
+        // timed out, quiesceThreads is not called at all.
+        long remainingTime = Math.max(0L, (startTime + quiesceTimeout) - System.currentTimeMillis());
+        return quiesceListenerSuccess && (tq != null ? tq.quiesceThreads(remainingTime) : true);
     }
 
     /**
@@ -385,13 +385,14 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         if (preListenerRefs.isEmpty() && defaultListenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
-        ThreadQuiesce tq = (ThreadQuiesce) executorService;
-        int quiesceTimeout = tq.getQuiesceTimeout();
+        long quiesceTimeout = serverElementConfig.getQuiesceTimeoutMillis();
+
+        int quiesceTimeoutSeconds = (int) (quiesceTimeout / 1000L);
 
         if (isServer())
-            Tr.audit(tc, "quiesce.begin", quiesceTimeout);
+            Tr.audit(tc, "quiesce.begin", quiesceTimeoutSeconds);
         else
-            Tr.audit(tc, "client.quiesce.begin", quiesceTimeout);
+            Tr.audit(tc, "client.quiesce.begin", quiesceTimeoutSeconds);
 
         // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
@@ -415,12 +416,13 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
         final ConcurrentLinkedQueue<Object> invoking = new ConcurrentLinkedQueue<>();
         long startTime = System.currentTimeMillis();
+
         // now call the listeners
         boolean preListenerSuccess = callQuiesceListeners(startTime, quiesceTimeout, invoking, preListenerRefs, null);
         long currentTime = System.currentTimeMillis();
-        long preQuiesceTime = (currentTime - startTime) / 1000;
+        long preQuiesceTime = currentTime - startTime;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Done calling pre-quiesce listeners, time taken: " + preQuiesceTime);
+            Tr.debug(tc, "Done calling pre-quiesce listeners, time taken: " + preQuiesceTime + "ms");
         }
 
         // check if pre listener time took more than half the configured timeout
@@ -431,9 +433,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             startTime = currentTime;
             quiesceTimeout = quiesceTimeout / 2;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Extending timeout for default listeners after pre listeners timed out: " + quiesceTimeout);
+                Tr.debug(tc, "Extending timeout for default listeners after pre listeners timed out: " + quiesceTimeout + "ms");
             }
         }
+
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
         boolean defaultListenerSuccess = callQuiesceListeners(startTime, quiesceTimeout, invoking, defaultListenerRefs, tq);
 
         if (preListenerSuccess && defaultListenerSuccess) {
@@ -507,14 +511,13 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         /**
          *
          * @param startTime      - time now in milliseconds
-         * @param quiesceTimeout - timeout in seconds
+         * @param quiesceTimeout - timeout in milliseconds
          * @return
          */
         @FFDCIgnore(TimeoutException.class)
-        boolean isComplete(long startTime, int quiesceTimeout) {
-            // We will wait quiesceTimeout seconds past the start time for tasks to complete
-            // Configured in the <executor> element of server.xml.  Default 30 seconds.
-            long endTime = startTime + quiesceTimeout * 1000;
+        boolean isComplete(long startTime, long quiesceTimeout) {
+            // We will wait quiesceTimeout past the start time for tasks to complete
+            long endTime = startTime + quiesceTimeout;
 
             for (Future<?> f : quiesceListenerFutures) {
                 long waitTime = endTime - System.currentTimeMillis();
