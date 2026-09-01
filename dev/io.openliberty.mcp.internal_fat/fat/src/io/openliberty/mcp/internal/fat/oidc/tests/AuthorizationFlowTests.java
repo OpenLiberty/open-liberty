@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.URI;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -133,7 +134,9 @@ public class AuthorizationFlowTests extends FATServletClient {
         server.stopServer("CWWKZ0014W");
     }
 
-    // HTTP tests
+    // Test Scenarios (HTTP & HTTPS) and their Shared Helpers
+
+    // Unauthenticated Request Returns 401 with Resource Metadata in WWW-Authenticate
 
     @Test
     public void testUnauthenticatedRequestReturns401WithResourceMetadataInWwwAuthenticate() throws Exception {
@@ -141,77 +144,9 @@ public class AuthorizationFlowTests extends FATServletClient {
     }
 
     @Test
-    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader() throws Exception {
-        assertProtectedResourceMetadataDiscoverable(httpClient, "adminTool");
-    }
-
-    @Test
-    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata() throws Exception {
-        assertAuthorizationServerMetadataDiscoverable(httpClient, "adminTool");
-    }
-
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall() throws Exception {
-        assertFullFlowAllowsToolCall(httpClient, "adminTool", TEST_ADMIN_USERNAME,
-                                     """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
-                                     """);
-    }
-
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsUserToolCall() throws Exception {
-        assertFullFlowAllowsToolCall(httpClient, "userTool", TEST_USER_USERNAME,
-                                     """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
-                                     """);
-    }
-
-    @Test
-    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool() throws Exception {
-        assertFullFlowDeniesUserAccessToAdminTool(httpClient);
-    }
-
-    // HTTPS tests
-
-    @Test
     public void testUnauthenticatedRequestReturns401WithResourceMetadataInWwwAuthenticate_Https() throws Exception {
         assertUnauthenticated401WithResourceMetadata(httpsClient, "adminTool");
     }
-
-    @Test
-    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader_Https() throws Exception {
-        assertProtectedResourceMetadataDiscoverable(httpsClient, "adminTool");
-    }
-
-    @Test
-    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata_Https() throws Exception {
-        assertAuthorizationServerMetadataDiscoverable(httpsClient, "adminTool");
-    }
-
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall_Https() throws Exception {
-        assertFullFlowAllowsToolCall(httpsClient, "adminTool", TEST_ADMIN_USERNAME,
-                                     """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
-                                     """);
-    }
-
-    @Test
-    public void testFullOAuthDiscoveryFlowAllowsUserToolCall_Https() throws Exception {
-        assertFullFlowAllowsToolCall(httpsClient, "userTool", TEST_USER_USERNAME,
-                                     """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
-                                     """);
-    }
-
-    @Test
-    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool_Https() throws Exception {
-        assertFullFlowDeniesUserAccessToAdminTool(httpsClient);
-    }
-
-    // -------------------------------------------------------------------------
-    // Shared scenario helpers
-    // -------------------------------------------------------------------------
 
     /**
      * An unauthenticated tool call must return 401 with a
@@ -231,6 +166,18 @@ public class AuthorizationFlowTests extends FATServletClient {
                    wwwAuthenticate.contains("resource_metadata="));
     }
 
+    // Protected Resource Metadata is Discoverable from WWW-Authenticate Header
+
+    @Test
+    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader() throws Exception {
+        assertProtectedResourceMetadataDiscoverable(httpClient, "adminTool");
+    }
+
+    @Test
+    public void testProtectedResourceMetadataIsDiscoverableFromWwwAuthenticateHeader_Https() throws Exception {
+        assertProtectedResourceMetadataDiscoverable(httpsClient, "adminTool");
+    }
+
     /**
      * Read the {@code resource_metadata} URL from the 401 response,
      * fetch the Protected Resource Metadata document, and validate its structure.
@@ -242,11 +189,23 @@ public class AuthorizationFlowTests extends FATServletClient {
         String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
-        JSONObject metadata = client.fetchJson(resourceMetadataUrl);
+        JSONObject metadata = fetchJson(client, resourceMetadataUrl);
         assertNotNull("Protected Resource Metadata must contain 'resource' field",
                       metadata.optString("resource", null));
         assertTrue("Protected Resource Metadata must contain a non-empty 'authorization_servers' array",
                    metadata.has("authorization_servers") && metadata.getJSONArray("authorization_servers").length() > 0);
+    }
+
+    // Authorization Server Metadata is Discoverable from Protected Resource Metadata
+
+    @Test
+    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata() throws Exception {
+        assertAuthorizationServerMetadataDiscoverable(httpClient, "adminTool");
+    }
+
+    @Test
+    public void testAuthorizationServerMetadataIsDiscoverableFromProtectedResourceMetadata_Https() throws Exception {
+        assertAuthorizationServerMetadataDiscoverable(httpsClient, "adminTool");
     }
 
     /**
@@ -258,14 +217,48 @@ public class AuthorizationFlowTests extends FATServletClient {
         String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
-        JSONObject resourceMetadata = client.fetchJson(resourceMetadataUrl);
+        JSONObject resourceMetadata = fetchJson(client, resourceMetadataUrl);
         String authorizationServerUrl = resourceMetadata.getJSONArray("authorization_servers").getString(0);
         assertNotNull("authorization_servers[0] must not be null", authorizationServerUrl);
 
-        JSONObject asMetadata = client.fetchJson(authorizationServerUrl + AS_METADATA_SUFFIX);
+        JSONObject asMetadata = fetchJson(client, authorizationServerUrl + AS_METADATA_SUFFIX);
         assertNotNull("AS metadata must contain 'issuer'", asMetadata.optString("issuer", null));
         assertNotNull("AS metadata must contain 'token_endpoint'", asMetadata.optString("token_endpoint", null));
         assertNotNull("AS metadata must contain 'jwks_uri'", asMetadata.optString("jwks_uri", null));
+    }
+
+    // Full OAuth Discovery Flow Allows Tool Call (Admin & User)
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall() throws Exception {
+        assertFullFlowAllowsToolCall(httpClient, "adminTool", TEST_ADMIN_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
+                                     """);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsAdminToolCall_Https() throws Exception {
+        assertFullFlowAllowsToolCall(httpsClient, "adminTool", TEST_ADMIN_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
+                                     """);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsUserToolCall() throws Exception {
+        assertFullFlowAllowsToolCall(httpClient, "userTool", TEST_USER_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
+                                     """);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowAllowsUserToolCall_Https() throws Exception {
+        assertFullFlowAllowsToolCall(httpsClient, "userTool", TEST_USER_USERNAME,
+                                     """
+                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
+                                     """);
     }
 
     /**
@@ -275,8 +268,7 @@ public class AuthorizationFlowTests extends FATServletClient {
     private void assertFullFlowAllowsToolCall(McpClient unauthClient, String toolName,
                                               String username, String expectedResponse) throws Exception {
         String tokenEndpoint = discoverTokenEndpoint(unauthClient, toolName);
-        String accessToken = unauthClient.fetchAccessToken(tokenEndpoint, KeycloakContainer.PUBLIC_CLIENT_ID,
-                                                           username, TEST_PASSWORD);
+        String accessToken = keycloakContainer.obtainAccessToken(tokenEndpoint, username, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
         McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
@@ -286,13 +278,24 @@ public class AuthorizationFlowTests extends FATServletClient {
         JSONAssert.assertEquals(expectedResponse, response, true);
     }
 
+    // Full OAuth Discovery Flow Denies User Access to Admin Tool
+
+    @Test
+    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool() throws Exception {
+        assertFullFlowDeniesUserAccessToAdminTool(httpClient);
+    }
+
+    @Test
+    public void testFullOAuthDiscoveryFlowDeniesUserAccessToAdminTool_Https() throws Exception {
+        assertFullFlowDeniesUserAccessToAdminTool(httpsClient);
+    }
+
     /**
      * A token obtained for a regular user must not grant access to an admin-only tool (403 Forbidden).
      */
     private void assertFullFlowDeniesUserAccessToAdminTool(McpClient unauthClient) throws Exception {
         String tokenEndpoint = discoverTokenEndpoint(unauthClient, "adminTool");
-        String accessToken = unauthClient.fetchAccessToken(tokenEndpoint, KeycloakContainer.PUBLIC_CLIENT_ID,
-                                                           TEST_USER_USERNAME, TEST_PASSWORD);
+        String accessToken = keycloakContainer.obtainAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
         McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
@@ -312,10 +315,10 @@ public class AuthorizationFlowTests extends FATServletClient {
         String resourceMetadataUrl = extractResourceMetadataUrl(authChallenge.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
-        JSONObject resourceMetadata = client.fetchJson(resourceMetadataUrl);
+        JSONObject resourceMetadata = fetchJson(client, resourceMetadataUrl);
         String authorizationServerUrl = resourceMetadata.getJSONArray("authorization_servers").getString(0);
 
-        JSONObject asMetadata = client.fetchJson(authorizationServerUrl + AS_METADATA_SUFFIX);
+        JSONObject asMetadata = fetchJson(client, authorizationServerUrl + AS_METADATA_SUFFIX);
         String tokenEndpoint = asMetadata.getString("token_endpoint");
         assertNotNull("token_endpoint must be present in AS metadata", tokenEndpoint);
         return tokenEndpoint;
@@ -349,5 +352,24 @@ public class AuthorizationFlowTests extends FATServletClient {
                         .compile("resource_metadata=\"([^\"]+)\"")
                         .matcher(wwwAuthenticate);
         return matcher.find() ? matcher.group(1) : null;
+    }
+
+    /**
+     * GETs a JSON document from the given URL using the client's discovery HTTP client.
+     */
+    private static JSONObject fetchJson(McpClient client, String url) throws Exception {
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .header("Accept", "application/json")
+                        .GET()
+                        .build();
+
+        java.net.http.HttpResponse<String> response = client.getDiscoveryHttpClient().send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            System.out.println("[AuthorizationFlowTests] fetchJson(" + url + ") -> HTTP "
+                               + response.statusCode() + "\nBody: " + response.body());
+        }
+        assertEquals("Expected HTTP 200 from " + url, 200, response.statusCode());
+        return new JSONObject(response.body());
     }
 }

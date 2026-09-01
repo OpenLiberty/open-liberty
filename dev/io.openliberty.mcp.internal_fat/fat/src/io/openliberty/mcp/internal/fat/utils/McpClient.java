@@ -27,8 +27,6 @@ import java.net.URLEncoder;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
 
@@ -229,8 +227,7 @@ public class McpClient extends ExternalResource {
     }
 
     /**
-     * Sets a fallback {@link java.net.http.HttpClient} used for {@link #fetchJson} and
-     * {@link #fetchAccessToken} when this client has no {@link SSLContext}.
+     * Sets a fallback {@link java.net.http.HttpClient} used for discovery requests when this client has no {@link SSLContext}.
      *
      * <p>This is useful when MCP calls go over plain HTTP but the discovery chain includes
      * HTTPS endpoints (e.g. a Keycloak token server). By supplying a client that trusts
@@ -672,76 +669,6 @@ public class McpClient extends ExternalResource {
         setupAndRunRequest(request, jsonRequestBody);
     }
 
-    // Discovery / token helpers (used by auth-flow tests)
-
-    /**
-     * GETs a JSON document from the given URL.
-     *
-     * <p>When this client is secure (HTTPS), the underlying {@link java.net.http.HttpClient}
-     * is used. For plain-HTTP clients, if a {@link #withDiscoveryClient discovery client} has
-     * been set it is used (allowing HTTPS discovery URLs to be followed). Otherwise a plain
-     * default client is used.
-     *
-     * @param url the URL to fetch
-     * @return the parsed JSON response body
-     * @throws Exception if the request fails or the response status is not 200
-     */
-    public JSONObject fetchJson(String url) throws Exception {
-        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                        .uri(URI.create(url))
-                        .header("Accept", VALUE_APPLICATION_JSON)
-                        .GET()
-                        .build();
-
-        HttpResponse<String> response = resolveDiscoveryClient().send(request, BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            System.out.println("[McpClient] fetchJson(" + url + ") -> HTTP "
-                               + response.statusCode() + "\nBody: " + response.body());
-        }
-        assertEquals("Expected HTTP 200 from " + url, 200, response.statusCode());
-        return new JSONObject(response.body());
-    }
-
-    /**
-     * Performs an OAuth 2.0 Resource Owner Password Credentials grant and returns the
-     * access token string.
-     *
-     * <p>Uses the same client resolution as {@link #fetchJson} — the secure client when
-     * present, or the discovery client if set, or a plain default client.
-     *
-     * @param tokenEndpoint the full URL of the token endpoint
-     * @param clientId      the OAuth client id
-     * @param username      the resource owner username
-     * @param password      the resource owner password
-     * @return the access token string
-     * @throws Exception if the token request fails or the response does not contain a token
-     */
-    public String fetchAccessToken(String tokenEndpoint, String clientId, String username, String password) throws Exception {
-        String formData = String.join("&",
-                                      "client_id=" + urlEncode(clientId),
-                                      "username=" + urlEncode(username),
-                                      "password=" + urlEncode(password),
-                                      "grant_type=password");
-
-        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                        .uri(URI.create(tokenEndpoint))
-                        .header("Content-Type", "application/x-www-form-urlencoded")
-                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(formData))
-                        .build();
-
-        HttpResponse<String> response = resolveDiscoveryClient().send(request, BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Token request failed. Status: " + response.statusCode()
-                                       + "\nBody: " + response.body());
-        }
-
-        Matcher matcher = Pattern.compile("\"access_token\"\\s*:\\s*\"([^\"]+)\"").matcher(response.body());
-        if (!matcher.find()) {
-            throw new RuntimeException("No access_token in token response: " + response.body());
-        }
-        return matcher.group(1);
-    }
-
     /**
      * Returns the list of all tools. Takes the multiple paginated responses and combines them into a single
      * tools list response.
@@ -811,17 +738,16 @@ public class McpClient extends ExternalResource {
 
 
     /**
-     * Returns the appropriate {@link java.net.http.HttpClient} for discovery requests
-     * ({@link #fetchJson} and {@link #fetchAccessToken}).
+     * Returns the appropriate {@link java.net.http.HttpClient} for discovery requests.
      *
-     * <p>Priority: secure client (HTTPS) > discovery client > plain default client.
+     * <p>Priority: discovery client > secure client (HTTPS) > plain default client.
      */
-    private java.net.http.HttpClient resolveDiscoveryClient() {
-        if (secureHttpClient != null) {
-            return secureHttpClient;
-        }
+    public java.net.http.HttpClient getDiscoveryHttpClient() {
         if (discoveryHttpClient != null) {
             return discoveryHttpClient;
+        }
+        if (secureHttpClient != null) {
+            return secureHttpClient;
         }
         return java.net.http.HttpClient.newHttpClient();
     }

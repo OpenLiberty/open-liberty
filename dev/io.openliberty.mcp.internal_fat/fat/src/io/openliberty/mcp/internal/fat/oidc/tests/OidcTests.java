@@ -53,9 +53,6 @@ public class OidcTests extends FATServletClient {
     @ClassRule
     public static KeycloakContainer keycloakContainer = new KeycloakContainer();
 
-    /** Client used to obtain tokens from Keycloak via {@link McpClient#fetchAccessToken}. */
-    private static McpClient tokenFetcher;
-
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "oidcTests.war")
@@ -70,12 +67,6 @@ public class OidcTests extends FATServletClient {
         // Wait for LTPA configuration to be ready
         server.waitForLTPAConfigReady();
         server.waitForDefaultHTTPEndpointSSLStart();
-
-        // Plain HTTP client used only for token requests (Keycloak HTTPS endpoint).
-        // withDiscoveryClient attaches the Keycloak-trusting HttpClient so that fetchAccessToken
-        // can reach the Keycloak token endpoint over its self-signed TLS certificate.
-        tokenFetcher = new McpClient(server, "/oidcTests", StateMode.STATELESS)
-                        .withDiscoveryClient(keycloakContainer.getHttpClient());
     }
 
     @AfterClass
@@ -221,8 +212,6 @@ public class OidcTests extends FATServletClient {
      * Obtains an access token from Keycloak for the given user via the ROPC grant.
      */
     private String getAccessToken(String username, String password) throws Exception {
-        String tokenEndpoint = keycloakContainer.getBaseUrl()
-                               + "/realms/" + KeycloakContainer.REALM + "/protocol/openid-connect/token";
-        return tokenFetcher.fetchAccessToken(tokenEndpoint, KeycloakContainer.PUBLIC_CLIENT_ID, username, password);
+        return keycloakContainer.obtainAccessToken(username, password);
     }
 }
