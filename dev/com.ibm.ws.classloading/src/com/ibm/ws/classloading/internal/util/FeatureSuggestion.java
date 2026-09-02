@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public class FeatureSuggestion {
@@ -96,6 +97,7 @@ public class FeatureSuggestion {
         pkgToFeature.put("javax.xml.ws.wsaddressing", FEAUTRE_JAXWS);
     }
     
+    @Trivial
     public static ClassNotFoundException getExceptionWithSuggestion(ClassNotFoundException original, String className, boolean returnNull) {
         String failingClassName = original == null ? className : original.getMessage();
         String suggestedFeature = getFeatureSuggestion(failingClassName);

@@ -35,10 +35,11 @@ import io.openliberty.classloading.classpath.test.lib3.Lib3;
 import io.openliberty.classloading.classpath.test.rar1.TestResourceAdapter;
 import io.openliberty.classloading.libs.util.CodeSourceUtil;
 import io.openliberty.classloading.trace.fat.AppClassLoaderTraceTest;
+import io.openliberty.classloading.trace.fat.ClassLoaderToStringTraceTest;
 import io.openliberty.classloading.trace.fat.GatewayClassLoaderTraceTest;
 import io.openliberty.classloading.trace.fat.LibraryClassLoadingTraceTest;
 import io.openliberty.classloading.trace.fat.LibraryGenerationToStringTest;
-import io.openliberty.classloading.trace.fat.ClassLoaderToStringTraceTest;
+import io.openliberty.classloading.trace.fat.PackageSpecificTraceTest;
 import io.openliberty.classloading.trace.fat.ParentLastClassLoaderTraceTest;
 import io.openliberty.classloading.trace.lib.TestLibraryClass;
 import io.openliberty.classloading.trace.war.TraceTestServlet;
@@ -56,6 +57,7 @@ import test.bundle.api2.c.API_C2;
     LibraryGenerationToStringTest.class,
     ClassLoaderToStringTraceTest.class,
     AppClassLoaderTraceTest.class,
+    PackageSpecificTraceTest.class,
     GatewayClassLoaderTraceTest.class,
     ParentLastClassLoaderTraceTest.class,
 })

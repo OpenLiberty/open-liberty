@@ -179,13 +179,13 @@ class ParentLastClassLoader extends AppClassLoader {
         }
         return results;
     }
-
-    @FFDCIgnore(ClassNotFoundException.class)
+    
     @Override
     @Trivial
-    protected Class<?> findOrDelegateLoadClass(String className, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+    @FFDCIgnore(ClassNotFoundException.class)
+    protected Class<?> findOrDelegateLoadClass(String className, DelegatePolicy delegatePolicy, boolean returnNull, String path) throws ClassNotFoundException {
         final boolean RETURN_NULL_FOR_NO_CLASS = true;
-        Class<?> beforeAppLoad = findClassCommonLibraryClassLoaders(className, RETURN_NULL_FOR_NO_CLASS, beforeApp, delegatePolicy);
+        Class<?> beforeAppLoad = findClassCommonLibraryClassLoaders(className, RETURN_NULL_FOR_NO_CLASS, beforeApp, delegatePolicy, path);
         if (beforeAppLoad != null) {
             return beforeAppLoad;
         }
@@ -200,7 +200,7 @@ class ParentLastClassLoader extends AppClassLoader {
             if (rc == null) {
                 // first check our classpath
                 try {
-                    rc = findClass(className, delegatePolicy, returnNull);
+                    rc = findClassInternal(className, delegatePolicy, returnNull, path);
                 } catch (ClassNotFoundException cnfe) {
                     findClassException = cnfe;
                 }
@@ -224,8 +224,23 @@ class ParentLastClassLoader extends AppClassLoader {
             throw findClassException;
         }
 
+        // Extend the delegation path to the parent before delegating (searched last — parent-last order).
+        String parentPath = path != null ? path + " -> " + parent : null;
+        if (this.parent instanceof AppClassLoader) {
+            // Thread path into the parent so the full chain is visible in its trace.
+            rc = ((AppClassLoader) this.parent).loadClassInternal(className, false, includeParent, returnNull, parentPath);
+            return rc;
+        }
+
         if (this.parent instanceof NoClassNotFoundLoader) {
             rc = ((NoClassNotFoundLoader) this.parent).loadClassNoException(className);
+            if (rc != null) {
+                TraceComponent t = activeTraceComponentIfEnabled(className);
+                if (t != null) {
+                    Tr.debug(t, String.format("Class=[%s] loaded by parent classloader=[%s]; delegation path=[%s]",
+                            className, parent, parentPath));
+                }
+            }
             if (rc != null || returnNull) {
                 return rc;
             }
@@ -234,13 +249,29 @@ class ParentLastClassLoader extends AppClassLoader {
 
         if (returnNull) {
             try {
-                return this.parent.loadClass(className);
+                rc = this.parent.loadClass(className);
+                if (rc != null) {
+                    TraceComponent t = activeTraceComponentIfEnabled(className);
+                    if (t != null) {
+                        Tr.debug(t, String.format("Class=[%s] loaded by parent classloader=[%s]; delegation path=[%s]",
+                                className, parent, parentPath));
+                    }
+                }
+                return rc;
             } catch (ClassNotFoundException cnfe) {
                 return null;
             }
         }
-        
-        return this.parent.loadClass(className);
+
+        rc = this.parent.loadClass(className);
+        if (rc != null) {
+            TraceComponent t = activeTraceComponentIfEnabled(className);
+            if (t != null) {
+                Tr.debug(t, String.format("Class=[%s] loaded by parent classloader=[%s]; delegation path=[%s]",
+                        className, parent, parentPath));
+            }
+        }
+        return rc;
     }
 
     @Override
