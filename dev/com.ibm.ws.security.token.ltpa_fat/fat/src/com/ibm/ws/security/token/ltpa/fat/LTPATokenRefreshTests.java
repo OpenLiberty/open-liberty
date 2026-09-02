@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -474,10 +475,13 @@ public class LTPATokenRefreshTests {
 
     // Swaps the server configuration file and waits for Liberty to apply the change.
     private void setConfig(String config) throws Exception {
+        
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(config);
-        server.waitForConfigUpdateInLogUsingMark(null);
-    }
+        String ltpaReady = server.waitForStringInLog("CWWKS4105I", 30000);
+        if (ltpaReady == null) {
+            throw new Exception("Timeout waiting for LTPA configuration");
+        }    }
 
     // Waits for a warning message ID to appear in the server log, asserts it was found,
     // and logs it. Fails the test with a descriptive message if the warning is not found.
