@@ -411,16 +411,15 @@ public class MaxMessageSizeLimitTests {
 
     /**
      * Verify that a chunk body whose size exceeds the configured messageSizeLimit
-     * is rejected with HTTP 400.
+     * is rejected with HTTP 413.
      *
      * <p>A single complete chunk of 401 bytes is sent against a messageSizeLimit of 400.
-     * The LibertyHttpObjectAggregator detects the overrun once the actual body bytes
-     * arrive and throws IllegalHttpBodyException, which HttpDispatcherHandler maps to 400.
      *
      * <p>Note: do NOT call socket.shutdownOutput() before reading the response.
      * Sending a TCP FIN before the server writes its reply causes Netty to fire
      * ChannelInputShutdownEvent, which closes the channel immediately — the server
-     * never gets a chance to write the error response.
+     * never gets a chance to write the error response. In Legacy it causes the server
+     * to fail with a timeout doing a 400 respose.
      */
     @Test
     @AllowedFFDC({ "com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException" })
