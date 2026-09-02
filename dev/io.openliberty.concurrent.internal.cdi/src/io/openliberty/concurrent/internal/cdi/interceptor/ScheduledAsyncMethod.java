@@ -90,10 +90,13 @@ class ScheduledAsyncMethod extends ScheduledMethodAbstract {
 
         // Intentionally placed as last line of constructuor to ensure
         // intialization is complete before the first task execution runs
-        nextExecutionFuture.set(ConcurrencyExtensionMetadata //
+        ScheduledFuture<?> nextExec = ConcurrencyExtensionMetadata //
                         .scheduledExecutor.schedule(this,
                                                     computeDelayNanos(),
-                                                    TimeUnit.NANOSECONDS));
+                                                    TimeUnit.NANOSECONDS);
+        nextExecutionFuture.set(nextExec);
+        if (future.isCancelled())
+            nextExec.cancel(true);
     }
 
     /**
