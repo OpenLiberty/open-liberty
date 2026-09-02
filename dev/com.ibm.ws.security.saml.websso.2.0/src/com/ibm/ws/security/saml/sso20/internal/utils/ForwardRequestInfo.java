@@ -447,11 +447,14 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
             // Form-submit script: uses the same nonce as the cookie script above.
             // This replaces the former <BODY onload="document.forms[0].submit()">
             // inline event handler, which CSP nonces cannot cover.
+            // window.onload defers execution until the load event fires, matching
+            // the original <BODY onload=...> timing so that fragment cookies set by
+            // handleFragmentCookiesAndNonce are committed before form submission.
             sb.append("<SCRIPT type=\"TEXT/JAVASCRIPT\"");
             if (this.nonce != null) {
                 sb.append(" nonce=\"" + this.nonce + "\"");
             }
-            sb.append(">document.forms[0].submit();</SCRIPT>");
+            sb.append(">window.onload=function(){document.forms[0].submit();};</SCRIPT>");
             sb.append("</BODY></HTML>");
         } catch (Exception e) {
             // This should not happen

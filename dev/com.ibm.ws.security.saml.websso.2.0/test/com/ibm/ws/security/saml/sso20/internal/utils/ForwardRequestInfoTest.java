@@ -188,8 +188,11 @@ public class ForwardRequestInfoTest {
         fri.setParameter("SAMLResponse", new String[] { "dummyValue" });
 
         String html = fri.buildRedirectHtml(response);
+        // The <BODY> tag itself must have no onload attribute.
+        // The page now contains window.onload= inside a <SCRIPT> block, so a plain
+        // contains("onload=") check would false-positive; match only an onload on <BODY>.
         assertFalse("BODY tag must not carry an onload attribute after the CSP fix",
-                    html.toLowerCase().contains("onload="));
+                    html.toLowerCase().matches("(?s).*<body[^>]*\\bonload\\b[^>]*>.*"));
     }
 
     /**
@@ -281,7 +284,7 @@ public class ForwardRequestInfoTest {
 
         String html = fri.buildRedirectHtml(response);
         assertFalse("BODY tag must not carry an onload attribute when no CSP header is configured",
-                    html.toLowerCase().contains("onload="));
+                    html.toLowerCase().matches("(?s).*<body[^>]*\\bonload\\b[^>]*>.*"));
         assertTrue("form-submit script call must still be present even without a CSP header",
                    html.contains("document.forms[0].submit()"));
     }
