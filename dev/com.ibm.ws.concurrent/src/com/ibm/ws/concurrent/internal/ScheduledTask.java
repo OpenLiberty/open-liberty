@@ -282,7 +282,12 @@ public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTas
             }
         }
 
-        this.appName = managedExecSvc.concurrencySvc.findAppName(task.getClass());
+        // Ideally, we would always cancel scheduled methods when the application
+        // stops. However, this could possibly break an application, so it is done
+        // only at the Jakarta EE 12 (Concurrency 3.2) version and above.
+        this.appName = managedExecSvc.eeVersion >= 12 //
+                        ? managedExecSvc.concurrencySvc.findAppName(task.getClass()) //
+                        : null;
 
         // Cap the maximum delay at what is supported by ScheduledThreadPoolExecutor, upon which Liberty ScheduledExecutorService is built
         Duration delay = Duration.of(initialDelay, unit);
@@ -356,7 +361,12 @@ public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTas
             }
         }
 
-        this.appName = managedExecSvc.concurrencySvc.findAppName(task.getClass());
+        // Ideally, we would always cancel scheduled methods when the application
+        // stops. However, this could possibly break an application, so it is done
+        // only at the Jakarta EE 12 (Concurrency 3.2) version and above.
+        this.appName = managedExecSvc.eeVersion >= 12 //
+                        ? managedExecSvc.concurrencySvc.findAppName(task.getClass()) //
+                        : null;
 
         try {
             nextExecutionTime = triggerSvc.getNextRunTime(null, taskScheduledTime, trigger);
