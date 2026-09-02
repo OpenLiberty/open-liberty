@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -23,6 +24,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -54,7 +56,9 @@ public class EncoderTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+          "CWMCM0019E" // encoder excepetion
+        ); 
     }
 
     @Test
@@ -607,5 +611,61 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    /**
+     * Tests that when a ContentEncoder throws an exception, CWMCM0019E is logged
+     * (not the generic CWMCM0010E "tool method threw unexpected exception").
+     */
+    @Test
+    @AllowedFFDC("io.openliberty.mcp.internal.fat.tool.encoderToolApp.EncoderTools$SimulatedEncoderFailureException")
+    public void testThrowingContentEncoderLogsCorrectError() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testThrowingContentEncoder",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(request);
+
+        assertTrue("Expected CWMCM0019E to be logged when ContentEncoder throws",
+                   !server.findStringsInLogs("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder").isEmpty());
+
+        assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
+                   server.findStringsInLogs("CWMCM0010E.*testThrowingContentEncoder").isEmpty());
+    }
+
+    /**
+     * Tests that when a ToolResponseEncoder throws an exception, CWMCM0019E is logged
+     * (not the generic CWMCM0010E "tool method threw unexpected exception").
+     */
+    @Test
+    @AllowedFFDC("io.openliberty.mcp.internal.fat.tool.encoderToolApp.EncoderTools$SimulatedEncoderFailureException")
+    public void testThrowingToolResponseEncoderLogsCorrectError() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testThrowingToolResponseEncoder",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(request);
+
+        assertTrue("Expected CWMCM0019E to be logged when ToolResponseEncoder throws",
+                   !server.findStringsInLogs("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder").isEmpty());
+
+        assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
+                   server.findStringsInLogs("CWMCM0010E.*testThrowingToolResponseEncoder").isEmpty());
     }
 }
