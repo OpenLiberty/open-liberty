@@ -137,7 +137,13 @@ public class McpServlet extends HttpServlet {
         try {
             transport.init(sessionStores.getCurrent());
 
-            RequestMethod method = transport.getMcpRequest().getRequestMethod();
+            metrics.setTransport(transport);
+            McpRequest mcpRequest = transport.getMcpRequest();
+            if (mcpRequest != null && mcpRequest.method() != null) {
+                metrics.setMethodName(mcpRequest.method());
+            }
+
+            RequestMethod method = mcpRequest.getRequestMethod();
 
             if (!isServerStateless() && method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
                 McpSession session = transport.getSession();
@@ -146,8 +152,6 @@ public class McpServlet extends HttpServlet {
                                                     "Missing Mcp-Session-Id header");
                 }
             }
-
-            metrics.setTransport(transport);
 
             callRequest(transport, metrics);
         } catch (JSONRPCException e) {
@@ -162,6 +166,12 @@ public class McpServlet extends HttpServlet {
 
             traceEvent("The following error was returned to the user: '" + jsonRpcErrorMsg + "'");
 
+            // JSONRPCExceptions are sent as HTTP 200, so HTTP metrics will not record errors.
+            // Use "_OTHER" as the method name fallback when the method could not be determined
+            // (e.g. PARSE_ERROR, INVALID_REQUEST) so the MCP metric is always emitted.
+            if (metrics.getMethodName() == null) {
+                metrics.setMethodName("_OTHER");
+            }
             metrics.setOutcome("error", e.getErrorCode().name());
             McpOperationMetrics.operationEnded(metrics);
 
@@ -244,6 +254,7 @@ public class McpServlet extends HttpServlet {
         if (sessionStores.getCurrent().deleteSession(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
+            traceEvent("DELETE request received for unknown or already-expired session: " + sessionIdStr);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
         }
     }

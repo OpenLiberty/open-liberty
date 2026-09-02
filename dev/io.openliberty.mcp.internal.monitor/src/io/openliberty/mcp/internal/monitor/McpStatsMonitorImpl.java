@@ -389,35 +389,24 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 
         McpSessionStatAttributes.Builder builder = McpSessionStatAttributes.builder();
 
-        if (metrics.getTransport() != null) {
-            try {
-                if (metrics.getTransport().getMcpRequest() != null) {
-                    String jsonrpcVersion = metrics.getTransport().getMcpRequest().jsonrpc();
-                    if (jsonrpcVersion != null) {
-                        builder.withJsonrpcProtocolVersion(jsonrpcVersion);
-                    }
-                }
+        if (metrics.getJsonrpcProtocolVersion() != null) {
+            builder.withJsonrpcProtocolVersion(metrics.getJsonrpcProtocolVersion());
+        }
 
-                if (metrics.getTransport().getProtocolVersion() != null) {
-                    builder.withMcpProtocolVersion(metrics.getTransport().getProtocolVersion().getVersion());
-                }
+        if (metrics.getMcpProtocolVersion() != null) {
+            builder.withMcpProtocolVersion(metrics.getMcpProtocolVersion());
+        }
 
-                String protocol = metrics.getProtocol();
-                if (protocol != null) {
-                    String[] protocolParts = protocol.split("/");
-                    if (protocolParts.length >= 2) {
-                        builder.withNetworkProtocolName(protocolParts[0]);
-                        builder.withNetworkProtocolVersion(protocolParts[1]);
-                    }
-                }
-
-                builder.withNetworkTransport("tcp");
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Error extracting transport information: " + e.getMessage());
-                }
+        String protocol = metrics.getProtocol();
+        if (protocol != null) {
+            String[] protocolParts = protocol.split("/");
+            if (protocolParts.length >= 2) {
+                builder.withNetworkProtocolName(protocolParts[0]);
+                builder.withNetworkProtocolVersion(protocolParts[1]);
             }
         }
+
+        builder.withNetworkTransport("tcp");
 
         long elapsedNanos = metrics.getDurationNanos();
         Duration duration = Duration.ofNanos(elapsedNanos);
