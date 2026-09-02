@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,16 @@ import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.netty.handler.stream.ChunkedInput;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 
+
+//auto read design, will organize later
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import java.util.concurrent.CompletableFuture;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.util.AsciiString;
+import io.netty.util.AttributeKey;
+
 /**
  *
  */
@@ -72,6 +82,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     private VirtualConnection vc;
     private String streamID = "-1";
+
+    //autoread design, will cleanup later
+    private static final AttributeKey<Boolean> UPGRADE_COMMIT_EVENT_FIRED = 
+                AttributeKey.valueOf("upgradeCommitFired");
 
     public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
@@ -263,6 +277,17 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             writeQueue.add(prefixQueue.poll());
         }
 
+        //auto read design changes
+        final boolean upgrade101 = writeQueueContainsUpgrade(writeQueue);
+        if(upgrade101){
+            ensureUpgradePromise();
+            writePromise.addListener((ChannelFutureListener) future -> {
+                if(future.isSuccess()){
+                    fireUpgradeCommitted();
+                }
+            });
+        }
+
         try {
             for (WsByteBuffer buffer : buffers) {
                 if (buffer == null || buffer.remaining() <= 0) {
@@ -355,6 +380,17 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             writeQueue.add(prefixQueue.poll());
         }
 
+        //auto read design changes
+        final boolean upgrade101 = writeQueueContainsUpgrade(writeQueue);
+        if(upgrade101){
+            ensureUpgradePromise();
+            writePromise.addListener((ChannelFutureListener) future -> {
+                if(future.isSuccess()){
+                    fireUpgradeCommitted();
+                }
+            });
+        }
+
         try {
             for (WsByteBuffer buffer : buffers) {
                 if (buffer != null && buffer.hasRemaining()) { // Check if buffer is not null and has data
@@ -440,25 +476,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                         }
                         // Everything was written, if forceQueue need to do callback on another thread
                         if (forceQueue) {
-                            HttpDispatcher.getExecutorService().submit(() -> {
-                                if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null) {
-                                    // Check if the connection was closed by the peer here to do an error callback
-                                    if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class).peerClosedConnection()) {
-                                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                            Tr.debug(this, tc, "Listener called on done async promise for connection that was closed by peer for channel: " + nettyChannel);
-                                        }
-                                        callback.error(vc, null, new IOException("Broken pipe!"));
-                                        return;
-                                    }
-                                }
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(this, tc, "Calling callback in asynchronous thread for channel: " + nettyChannel);
-                                }
-                                callback.complete(vc, this);
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(this, tc, "Finished callback in asynchronous thread for channel: " + nettyChannel);
-                                }
-                            });
+                            HttpDispatcher.getExecutorService().submit(() -> completeWriteCallback(writePromise, callback));
                             return null;
                         }
                         return vc;
@@ -467,27 +485,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                         Tr.debug(this, tc, "Went async, found writePromise to be running on channel: " + nettyChannel);
                     }
                     writePromise.addListener((ChannelFutureListener) future -> {
-                        boolean succeeded = future.isSuccess();
-                        HttpDispatcher.getExecutorService().submit(() -> {
-                            if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null) {
-                                // Check if the connection was closed by the peer here to do an error callback
-                                if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class).peerClosedConnection()) {
-                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                        Tr.debug(this, tc, "Listener called on connection that was closed by peer for channel: " + nettyChannel);
-                                    }
-                                    callback.error(vc, null, new IOException("Broken pipe!"));
-                                    return;
-                                }
-                            }
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "Listener called with success? " + succeeded +" for channel: " + nettyChannel);
-                            }
-                            if(succeeded){
-                                callback.complete(vc, this);
-                            } else {
-                                callback.error(vc, this, (future.cause() instanceof IOException) ? ((IOException)future.cause()) : new IOException(future.cause()));
-                            }
-                        });
+                        HttpDispatcher.getExecutorService().submit(() -> completeWriteCallback(future, callback));
                     });
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -513,5 +511,82 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             callback.error(vc, null, new IOException(e));
         }
         return null; // Return null as the write operation is queued or forced to queue
+    }
+
+    private void completeWriteCallback(ChannelFuture future, TCPWriteCompletedCallback callback) {
+        boolean succeeded = future.isSuccess();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Listener called with success? " + succeeded + " for channel: " + nettyChannel);
+        }
+        if (succeeded) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Calling callback in asynchronous thread for channel: " + nettyChannel);
+            }
+            callback.complete(vc, this);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Finished callback in asynchronous thread for channel: " + nettyChannel);
+            }
+        } else {
+            callback.error(vc, this, getWriteFailure(future));
+        }
+    }
+
+    private IOException getWriteFailure(ChannelFuture future) {
+        NettyServletUpgradeHandler upgradeHandler = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
+        if (upgradeHandler != null && upgradeHandler.peerClosedConnection()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Listener called on connection that was closed by peer for channel: " + nettyChannel);
+            }
+            return new IOException("Broken pipe!");
+        }
+
+        Throwable cause = future.cause();
+        if (cause instanceof IOException) {
+            return (IOException) cause;
+        }
+        return new IOException(cause);
+    }
+
+    private static boolean isUpgrade101(Object object){
+        if(!(object instanceof HttpResponse)){
+            return false;
+        }
+        HttpResponse response = (HttpResponse) object;
+        if(!response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)){
+            return false;
+        }
+
+        CharSequence connection = response.headers().get(HttpHeaderNames.CONNECTION);
+        CharSequence upgrade = response.headers().get(HttpHeaderNames.UPGRADE);
+        if(connection == null || upgrade == null || upgrade.length() == 0){
+            return false;
+        }
+        return AsciiString.containsIgnoreCase(connection, "upgrade");
+    }
+
+    private boolean writeQueueContainsUpgrade(Queue<Object> writeQueue){
+        for(Object obj: writeQueue){
+            if(isUpgrade101(obj)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void ensureUpgradePromise(){
+        CompletableFuture<Void> promise = nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if(promise == null){
+            nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(new CompletableFuture<>());
+        }
+    }
+
+    private void fireUpgradeCommitted(){
+        Tr.debug(tc,"[NettyTCPWriteRequestContext.fireUpgradeCommitted");
+        Boolean fired = nettyChannel.attr(UPGRADE_COMMIT_EVENT_FIRED).get();
+        if(Boolean.TRUE.equals(fired)){
+            return;
+        }
+        nettyChannel.attr(UPGRADE_COMMIT_EVENT_FIRED).set(Boolean.TRUE);
+        nettyChannel.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
     }
 }
