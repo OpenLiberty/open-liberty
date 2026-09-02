@@ -154,7 +154,7 @@ public class ConcurrencyService implements //
     @Trivial
     public void applicationStopped(ApplicationInfo appInfo) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "applicationStoppied " + appInfo.getDeploymentName() +
+            Tr.debug(this, tc, "applicationStopped " + appInfo.getDeploymentName() +
                                " (" + appInfo.getName() + ')');
     }
 
