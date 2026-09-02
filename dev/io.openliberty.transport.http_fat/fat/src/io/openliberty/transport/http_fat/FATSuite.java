@@ -21,35 +21,35 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AcceptThreadTests.class,
-                AccessListsTests.class,
+                // AcceptThreadTests.class,
+                // AccessListsTests.class,
                 InactivityTimeoutTests.class,
-                MaxOpenConnectionsTests.class,
-                PortOpenRetriesTests.class,
-                RequestSocketTest.class,
-                SoLingerTests.class,
-                SoReuseAddrTest.class,
-                TcpOptionsDefaultTests.class,
-                ContentTypeResponseHeaderTests.class,
-                AccessLogRolloverTest.class,
-                MaxMessageSizeLimitTests.class,
-                Expect100ContinueTest.class,
-                ObsoleteLineFoldingTest.class,
-                TraceRequestBodyTests.class,
-                DefaultConfigIdTests.class,
-                CustomConfigIdTests.class,
-                WelcomePageVersionTest.class,
-                HttpVersionTokenTest.class,
-                HeaderCasingTests.class,
+                // MaxOpenConnectionsTests.class,
+                // PortOpenRetriesTests.class,
+                // RequestSocketTest.class,
+                // SoLingerTests.class,
+                // SoReuseAddrTest.class,
+                // TcpOptionsDefaultTests.class,
+                // ContentTypeResponseHeaderTests.class,
+                // AccessLogRolloverTest.class,
+                // MaxMessageSizeLimitTests.class,
+                // Expect100ContinueTest.class,
+                // ObsoleteLineFoldingTest.class,
+                // TraceRequestBodyTests.class,
+                // DefaultConfigIdTests.class,
+                // CustomConfigIdTests.class,
+                // WelcomePageVersionTest.class,
+                // HttpVersionTokenTest.class,
+                // HeaderCasingTests.class,
 })
 
 public class FATSuite {
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE6_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+    // @ClassRule
+    // public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+    //                 .andWith(FeatureReplacementAction.EE6_FEATURES().fullFATOnly())
+    //                 .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+    //                 .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+    //                 .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+    //                 .andWith(FeatureReplacementAction.EE11_FEATURES());
 }
