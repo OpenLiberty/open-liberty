@@ -463,8 +463,8 @@ public class MaxMessageSizeLimitTests {
 
             String responseStr = drainResponse(socket);
             LOG.info("HTTP/1.1 response Received: " + responseStr);
-            assertTrue("Expected HTTP 400 when chunk body exceeds messageSizeLimit",
-                    responseStr.contains("HTTP/1.1 400"));
+            assertTrue("Expected HTTP 413 when chunk body exceeds messageSizeLimit",
+                    responseStr.contains("HTTP/1.1 413"));
         }
     }
 
