@@ -31,9 +31,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-
-import java.time.Duration;
-
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;

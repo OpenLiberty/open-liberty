@@ -18,8 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
-import java.time.Duration;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
