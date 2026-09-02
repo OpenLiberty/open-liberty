@@ -84,11 +84,6 @@ public class TracingNotEnabledTest {
 
         client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
-        // Co-authored-by: Bob
-        // Wait for the Jaeger OTLP gRPC endpoint to be ready before starting servers
-        // to prevent span export timeouts during startup (see issue #35296)
-        jaegerContainer.waitForOtlpGrpcReady(Duration.ofSeconds(30));
-
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
 

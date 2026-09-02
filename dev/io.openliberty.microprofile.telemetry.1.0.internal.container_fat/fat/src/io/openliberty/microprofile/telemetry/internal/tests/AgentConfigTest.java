@@ -100,11 +100,6 @@ public class AgentConfigTest {
     public static void setup() throws Exception {
         client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
-        // Co-authored-by: Bob
-        // Wait for the Jaeger OTLP gRPC endpoint to be ready before starting servers
-        // to prevent span export timeouts during startup (see issue #35296)
-        jaegerContainer.waitForOtlpGrpcReady(Duration.ofSeconds(30));
-
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             server.copyFileToLibertyServerRoot("agent-119/opentelemetry-javaagent.jar");
         } 
