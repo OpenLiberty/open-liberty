@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -58,6 +61,11 @@ public class AuditGenerateNewSessionTest {
 
     public static final String APP_NAME = "AuditSessionApp";
     public static final String SERVER_NAME = "AuditSessionServer";
+
+    /** Run all tests once with audit-1.0 (default) and once with audit-2.0. */
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+            .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers(SERVER_NAME));
 
     /** Config snippet that sets generateNewSession=false */
     private static final String SERVER_XML_NO_NEW_SESSION = "generateNewSession_false.xml";

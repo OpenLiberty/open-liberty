@@ -18,6 +18,7 @@ fat.project: true
 
 tested.features: \
     audit-1.0,\
+    audit-2.0,\
     restfulWS-3.1,\
     expressionLanguage-5.0,\
     appSecurity-5.0,\
