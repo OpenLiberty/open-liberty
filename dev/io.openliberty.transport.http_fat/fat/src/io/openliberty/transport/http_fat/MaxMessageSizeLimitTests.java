@@ -410,16 +410,24 @@ public class MaxMessageSizeLimitTests {
     }
 
     /**
-     * Verify that a chunk-size within 8 hex digits but exceeding the
-     * configured messageSizeLimit is also rejected (hardening check).
+     * Verify that a chunk body whose size exceeds the configured messageSizeLimit
+     * is rejected with HTTP 400.
+     *
+     * <p>A single complete chunk of 401 bytes is sent against a messageSizeLimit of 400.
+     * The LibertyHttpObjectAggregator detects the overrun once the actual body bytes
+     * arrive and throws IllegalHttpBodyException, which HttpDispatcherHandler maps to 400.
+     *
+     * <p>Note: do NOT call socket.shutdownOutput() before reading the response.
+     * Sending a TCP FIN before the server writes its reply causes Netty to fire
+     * ChannelInputShutdownEvent, which closes the channel immediately — the server
+     * never gets a chance to write the error response.
      */
     @Test
     @AllowedFFDC({ "com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException" })
-
     public void testChunkSizeExceedingMessageSizeLimitIsRejected() throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
-        httpEndpoint.getHttpOptions().setMessageSizeLimit(400); // 100 bytes limit
+        httpEndpoint.getHttpOptions().setMessageSizeLimit(400); // limit is 400 bytes
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
@@ -429,22 +437,33 @@ public class MaxMessageSizeLimitTests {
             socket.setSoTimeout(5000);
             OutputStream out = socket.getOutputStream();
 
-            // chunk-size 0x1000 = 4096 bytes — valid 4 digits, but exceeds messageSizeLimit
-            // of 100
+            // Send a single complete chunk whose body is 401 bytes (> messageSizeLimit 400).
+            // hex(401) = 191.  The aggregator rejects it once bytes exceed the limit.
+            String text = "A";
+            int count = 401;
+            StringBuilder sb = new StringBuilder(text.length() * count);
+            for (int i = 0; i < count; i++) {
+                sb.append(text);
+            }
+            String chunkBody = sb.toString();
+
+            String chunkSizeHex = Integer.toHexString(chunkBody.length()); // "191"
+
             String payload = "POST /FileUpload/ChunkSizeTestServlet?readBody=true HTTP/1.1\r\n" +
                     "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
                     "Transfer-Encoding: chunked\r\n" +
                     "Connection: close\r\n" +
                     "\r\n" +
-                    "400\r\n";
+                    chunkSizeHex + "\r\n" +
+                    chunkBody + "\r\n" +
+                    "0\r\n\r\n";
 
             out.write(payload.getBytes(StandardCharsets.US_ASCII));
             out.flush();
-            socket.shutdownOutput();
 
             String responseStr = drainResponse(socket);
             LOG.info("HTTP/1.1 response Received: " + responseStr);
-            assertTrue("Expected 400 Bad Request when chunk-size exceeds messageSizeLimit",
+            assertTrue("Expected HTTP 400 when chunk body exceeds messageSizeLimit",
                     responseStr.contains("HTTP/1.1 400"));
         }
     }
