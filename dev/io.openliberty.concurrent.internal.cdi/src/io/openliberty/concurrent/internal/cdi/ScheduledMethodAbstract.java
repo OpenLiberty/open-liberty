@@ -117,11 +117,13 @@ public abstract class ScheduledMethodAbstract implements //
                                ChronoUnit.SECONDS);
         if (secondsLate > nextExecutionSkipIfLateBySeconds) {
             try {
-                long delayNanos = computeDelayNanos();
-                nextExecutionFuture.set(ConcurrencyExtensionMetadata //
+                Future<?> nextExecFuture = ConcurrencyExtensionMetadata //
                                 .scheduledExecutor.schedule(this, //
-                                                            delayNanos, //
-                                                            TimeUnit.NANOSECONDS));
+                                                            computeDelayNanos(), //
+                                                            TimeUnit.NANOSECONDS);
+                nextExecutionFuture.set(nextExecFuture);
+                if (future.isCancelled())
+                    nextExecFuture.cancel(true);
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "call: skip because late by " + secondsLate +
                                       " seconds");
@@ -175,10 +177,13 @@ public abstract class ScheduledMethodAbstract implements //
         if (!future.isDone())
             if (cs == null)
                 try { // reschedule next execution
-                    nextExecutionFuture.set(ConcurrencyExtensionMetadata //
+                    Future<?> nextExecFuture = ConcurrencyExtensionMetadata //
                                     .scheduledExecutor.schedule(this, //
                                                                 computeDelayNanos(), //
-                                                                TimeUnit.NANOSECONDS));
+                                                                TimeUnit.NANOSECONDS);
+                    nextExecutionFuture.set(nextExecFuture);
+                    if (future.isCancelled())
+                        nextExecFuture.cancel(true);
                 } catch (Exception x) {
                     future.completeExceptionally(x);
                 }
