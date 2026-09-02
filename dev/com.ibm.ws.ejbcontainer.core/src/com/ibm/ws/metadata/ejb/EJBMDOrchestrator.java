@@ -1302,11 +1302,13 @@ public abstract class EJBMDOrchestrator {
                                                                               asynchMethodFlags,
                                                                               methodInterface); //d599046
 
-            //If any business methods or classes contain the concurrent asynchronous annotation then this call WILL throw an EJBConfigurationException
-            MethodAttribUtils.verifyNoConcurrentAsynchronousMethods(ejbMethods,
-                                                                    bmd.j2eeName.getComponent(),
-                                                                    bmd.j2eeName.getModule(),
-                                                                    bmd.j2eeName.getApplication());
+            // If any business methods or classes contain a Jakarta Concurrency
+            // annotation that is not permitted, then this call WILL throw an
+            // EJBConfigurationException
+            MethodAttribUtils.rejectInvalidConcurrencyAnnos(ejbMethods,
+                                                            bmd.j2eeName.getComponent(),
+                                                            bmd.j2eeName.getModule(),
+                                                            bmd.j2eeName.getApplication());
         }
 
         // F743-1752.1 start

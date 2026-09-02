@@ -12,22 +12,32 @@
  *******************************************************************************/
 package test.jakarta.concurrency32;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import test.jakarta.concurrency32cdi.ejb.error.ScheduleMethodBean;
 import test.jakarta.concurrency32cdi.web.Concurrency32CDITestServlet;
 
 @RunWith(FATRunner.class)
@@ -74,6 +84,49 @@ public class Concurrency32WithCDITest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted())
-            server.stopServer();
+            server.stopServer("CNTR0344E", // @Schedule on EJB method
+                              "CNTR4006E" // @Schedule on EJB method
+            );
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException",
+                   "com.ibm.wsspi.injectionengine.InjectionException",
+                   "jakarta.ejb.EJBException",
+                   "jakarta.servlet.UnavailableException",
+                   "org.jboss.weld.exceptions.CreationException"
+    })
+    public void testScheduleOnEJBMethodFailsToInstall() throws Exception {
+        JavaArchive scheduleOnEJBErrorEJB = ShrinkWrap
+                        .create(JavaArchive.class, "ScheduleOnEJBErrorEJB.jar")
+                        .addClass(ScheduleMethodBean.class);
+
+        EnterpriseArchive scheduleOnEJBErrorApp = ShrinkWrap
+                        .create(EnterpriseArchive.class, "ScheduleOnEJBError.ear")
+                        .addAsModule(scheduleOnEJBErrorEJB);
+
+        server.setTraceMarkToEndOfDefaultTrace();
+        ShrinkHelper.exportDropinAppToServer(server,
+                                             scheduleOnEJBErrorApp,
+                                             DeployOptions.DISABLE_VALIDATION);
+
+        boolean testRan = false;
+        try {
+            runTest(server, APP_NAME, "testMethod");
+            testRan = true;
+        } catch (AssertionError e) {
+            // Expected: application should not have deployed
+        }
+
+        assertEquals("Test application should not have been installed and allowed to run.",
+                     false,
+                     testRan);
+
+        // EJB container should have rejected the @Schedule annotation
+        // Also wait for FFDC so it doen't interfere with subsequent tests
+        server.waitForStringsInLogUsingMark(List.of("CNTR0344E",
+                                                    "CNTR4006E",
+                                                    "FFDC1015I.*WELD-000079"));
     }
 }

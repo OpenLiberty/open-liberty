@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2019 IBM Corporation and others.
+ * Copyright (c) 1998, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -346,9 +346,10 @@ public class MethodAttribUtils {
     } // getAsynchronousMethods
 
     /**
-     * <code>verifyNoConcurrentAsynchronousMethods<code> checks all beanMethods to determine
-     * if any beans are annotated with the Jakarta Concurrent Asynchronous annotation.
-     * Will return if no annotation is found, otherwise exception is thrown.
+     * {@code rejectInvalidConcurrencyAnnos} checks all beanMethods to determine
+     * if any beans are annotated with the Jakarta Concurrency Asynchronous or
+     * Schedule annotations, which must not be used on enterprise beans.
+     * Will return if no such annotations are found, otherwise an exception is thrown.
      *
      * @param beanMethods Input array of Method objects representing the methods of this EJB.
      * @param component   Name of the component
@@ -357,14 +358,17 @@ public class MethodAttribUtils {
      *
      * @throws EJBConfigurationException
      */
-    public static void verifyNoConcurrentAsynchronousMethods(Method[] beanMethods, //
-                                                             String component, String module, String app) throws EJBConfigurationException {
+    public static void rejectInvalidConcurrencyAnnos(Method[] beanMethods,
+                                                     String component,
+                                                     String module,
+                                                     String app) //
+                    throws EJBConfigurationException {
         if (beanMethods == null || beanMethods.length == 0) {
             return; //Nothing to check
         }
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        final String m = "verifyNoConcurrentAsynchronousMethods";
+        final String m = "rejectInvalidConcurrencyAnnos";
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, m, Arrays.asList(beanMethods).toString());
@@ -377,53 +381,52 @@ public class MethodAttribUtils {
             Set<Class<?>> classesToCheck = new HashSet<Class<?>>();
 
             //Check method level annotations
-            Annotation[] asynchMethodAnnotations = null;
             for (Method beanMethod : beanMethods) {
 
                 if (beanMethod == null)
                     continue; //onto next method
 
-                //First compile a list of classes to check
+                // First compile a list of classes to check for @Asynchronous
                 Class<?> beanClass = beanMethod.getDeclaringClass();
                 if (beanClass != null) {
                     classesToCheck.add(beanClass);
                 }
 
-                asynchMethodAnnotations = beanMethod.getAnnotations();
-
-                if (asynchMethodAnnotations == null)
-                    continue; //onto next method
-
-                for (Annotation beanAnno : asynchMethodAnnotations) {
-                    if ("jakarta.enterprise.concurrent.Asynchronous".equals(beanAnno.annotationType().getName())) {
+                for (Annotation beanAnno : beanMethod.getAnnotations()) {
+                    String annoName = beanAnno.annotationType().getName();
+                    if ("jakarta.enterprise.concurrent.Asynchronous".equals(annoName)) {
                         // Concurrent Asynch annotations are not allowed on EJBs
                         Tr.error(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
-                                 new Object[] { component, module, app });
+                                 component, module, app);
 
                         throw new EJBConfigurationException( //
                                         Tr.formatMessage(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
-                                                         new Object[] { component, module, app }));
+                                                         component, module, app));
+                    }
+                    if ("jakarta.enterprise.concurrent.Schedule".equals(annoName)) {
+                        // Concurrent Schedule annotations are not allowed on EJBs
+                        Tr.error(tc, "CNTR0344E_INCORRECT_SCHEDULE_ANNO",
+                                 component, module, app);
+
+                        throw new EJBConfigurationException( //
+                                        Tr.formatMessage(tc, "CNTR0344E_INCORRECT_SCHEDULE_ANNO",
+                                                         component, module, app));
                     }
                 }
             }
 
-            //Check class level annotations
-            Annotation[] asynchClassAnnotations = null;
+            // Check class level annotations for @Asynchronous
+            // (@Schedule targets methods only)
             for (Class<?> beanClass : classesToCheck) {
-                asynchClassAnnotations = beanClass.getAnnotations();
-
-                if (asynchClassAnnotations == null)
-                    continue; //onto next beanClass
-
-                for (Annotation classAnno : asynchClassAnnotations) {
+                for (Annotation classAnno : beanClass.getAnnotations()) {
                     if ("jakarta.enterprise.concurrent.Asynchronous".equals(classAnno.annotationType().getName())) {
                         // Concurrent Asynch annotations are not allowed on EJBs
                         Tr.error(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
-                                 new Object[] { component, module, app });
+                                 component, module, app);
 
                         throw new EJBConfigurationException( //
                                         Tr.formatMessage(tc, "CNTR0342E_INCORRECT_ASYNC_ANNO",
-                                                         new Object[] { component, module, app }));
+                                                         component, module, app));
                     }
                 }
             }
@@ -433,7 +436,7 @@ public class MethodAttribUtils {
             }
         }
 
-    } // verifyNoConcurrentAsynchronousMethods
+    } // verifyNoConcurrentAnnotations
 
     /**
      * Check all methods for method-level Security annotations. Specifically
