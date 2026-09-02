@@ -188,15 +188,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause);
                 return;
             }
-        } else if (cause instanceof IllegalHttpBodyException) {
+        } else if(cause instanceof TooLongFrameException || cause instanceof IllegalHttpBodyException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "exceptionCaught encountered an IllegalHttpBodyException : " + cause);
-            }
-            sendErrorMessage(cause);
-            return;
-        } else if(cause instanceof TooLongFrameException) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
+                Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException/IllegalHttpBodyException : " + cause);
             }
             sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE, cause);
             return;
