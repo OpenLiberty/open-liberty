@@ -45,9 +45,9 @@ public abstract class TimeoutException extends IOException {
         this.duration = duration;
         this.unit = unit;
         
-        if (warningCode != HttpGenerics.NO_WARNING_CODE_SET) {
+        if (warningCode != HttpGenerics.NO_WARNING_CODE_SET && tc.isDebugEnabled()) {
             String message = formatMessage(duration, unit, localAddress, remoteAddress);
-            Tr.warning(tc, warningCode, message);
+            Tr.debug(tc, message);
         }
     }
 
