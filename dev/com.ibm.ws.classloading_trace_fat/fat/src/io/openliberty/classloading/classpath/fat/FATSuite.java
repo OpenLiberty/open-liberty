@@ -37,6 +37,7 @@ import io.openliberty.classloading.libs.util.CodeSourceUtil;
 import io.openliberty.classloading.trace.fat.AppClassLoaderTraceTest;
 import io.openliberty.classloading.trace.fat.GatewayClassLoaderTraceTest;
 import io.openliberty.classloading.trace.fat.LibraryClassLoadingTraceTest;
+import io.openliberty.classloading.trace.fat.LibraryGenerationToStringTest;
 import io.openliberty.classloading.trace.fat.ClassLoaderToStringTraceTest;
 import io.openliberty.classloading.trace.fat.ParentLastClassLoaderTraceTest;
 import io.openliberty.classloading.trace.lib.TestLibraryClass;
@@ -52,6 +53,7 @@ import test.bundle.api2.c.API_C2;
 @RunWith(Suite.class)
 @SuiteClasses({
     LibraryClassLoadingTraceTest.class,
+    LibraryGenerationToStringTest.class,
     ClassLoaderToStringTraceTest.class,
     AppClassLoaderTraceTest.class,
     GatewayClassLoaderTraceTest.class,
