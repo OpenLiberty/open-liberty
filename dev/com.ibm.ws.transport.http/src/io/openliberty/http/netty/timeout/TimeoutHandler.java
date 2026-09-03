@@ -14,10 +14,24 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 
+import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
+import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
+import io.openliberty.http.netty.timeout.exception.TimeoutException;
+import io.openliberty.http.options.TcpOption;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.TimeUnit;
+
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -33,299 +47,324 @@ import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http2.Http2DataFrame;
 import io.netty.handler.codec.http2.Http2HeadersFrame;
 import io.netty.util.AsciiString;
+import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
 import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
 import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
 import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.options.TcpOption;
 
-public class TimeoutHandler extends ChannelDuplexHandler{
+public class TimeoutHandler extends ChannelDuplexHandler {
 
     private static final TraceComponent tc = Tr.register(TimeoutHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     public static String NAME = "timeoutHandler";
 
-    private enum Phase {OFF, TCP_IDLE, READ, PERSIST, H2_IDLE}
-    private Phase phase = Phase.OFF;
+    private enum Phase {
+        OFF, TCP_IDLE, READ, PERSIST, H2_IDLE
+    }
 
+    private Phase phase = Phase.OFF;
 
     private static final TimeUnit LEGACY_UNIT = TimeUnit.MILLISECONDS;
     private ChannelHandlerContext parentContext;
 
-    private  int readTimeout;
-    private  int persistTimeout;
-    private  int inactivityTimeout;
-    private  int h2InactivityTimeout;
+    private int readTimeout;
+    private int persistTimeout;
+    private int inactivityTimeout;
+    private int h2InactivityTimeout;
     private final boolean streamOnly;
 
     private final boolean useKeepAlive;
     private boolean clientRequestedKeepAlive = false;
     private boolean serverKeepAlive = false;
-    
-        private boolean firstRequest = true;
-        private boolean readRetried = false;
-    
-        private ScheduledFuture<?> currentTimeout;
-    
-    
-        public TimeoutHandler(NettyHttpChannelConfig config) {
-            
-            this(config, false);
+
+    private boolean firstRequest = true;
+    private boolean readRetried = false;
+
+    private ScheduledFuture<?> currentTimeout;
+
+    private static final AttributeKey<AtomicBoolean> READ_OP_TIMED = AttributeKey.valueOf("readOpTimed");
+    private static final AttributeKey<ScheduledFuture<?>> READ_OP_FUTURE = AttributeKey.valueOf("readOpFuture");
+    private static final AttributeKey<Runnable> READ_OP_CALLBACK = AttributeKey.valueOf("readOpCallback");
+
+    public TimeoutHandler(NettyHttpChannelConfig config) {
+        this(config, false);
+    }
+
+    public TimeoutHandler(NettyHttpChannelConfig config, boolean streamOnly) {
+        this.readTimeout = config.getReadTimeout();
+        this.persistTimeout = config.getPersistTimeout();
+        this.h2InactivityTimeout = config.getH2ConnectionIdleTimeout();
+        this.inactivityTimeout = (int) config.get(TcpOption.INACTIVITY_TIMEOUT);
+        this.useKeepAlive = config.isKeepAliveEnabled();
+        this.streamOnly = streamOnly;
+    }
+
+    public static TimeoutHandler forH2Stream(NettyHttpChannelConfig config) {
+        return new TimeoutHandler(config, true);
+    }
+
+    private int timeoutForPhase(Phase p) {
+        switch (p) {
+            case TCP_IDLE:
+                return inactivityTimeout;
+            case READ:
+                return readTimeout > 0 ? readTimeout : inactivityTimeout;
+            case PERSIST:
+                return persistTimeout > 0 ? persistTimeout : inactivityTimeout;
+            case H2_IDLE:
+                return h2InactivityTimeout;
+            default:
+                return 0;
+
         }
-    
-        public TimeoutHandler(NettyHttpChannelConfig config, boolean streamOnly){
-            this.readTimeout = config.getReadTimeout();
-            this.persistTimeout = config.getPersistTimeout();
-            this.h2InactivityTimeout = config.getH2ConnectionIdleTimeout();
-            this.inactivityTimeout = (int) config.get(TcpOption.INACTIVITY_TIMEOUT);
-            this.useKeepAlive = config.isKeepAliveEnabled();
-            this.streamOnly = streamOnly;
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext context) {
+        this.parentContext = context;
+
+        if (streamOnly) {
+            return;
         }
-    
-        public static TimeoutHandler forH2Stream(NettyHttpChannelConfig config){
-            return new TimeoutHandler(config, true);
+
+        if (getProtocol(context) == ProtocolName.HTTP2) {
+            arm(context, Phase.H2_IDLE);
+        } else {
+            arm(context, Phase.TCP_IDLE);
         }
-    
-        private int timeoutForPhase(Phase p){
-            switch(p){
-                case TCP_IDLE:  return inactivityTimeout;
-                case READ: return readTimeout > 0 ? readTimeout:inactivityTimeout;
-                case PERSIST: return persistTimeout > 0 ? persistTimeout: inactivityTimeout;
-                case H2_IDLE: return h2InactivityTimeout;
-                default: return 0;
-    
+
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext context) throws Exception {
+        cancel();
+        super.handlerRemoved(context);
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
+        if (getProtocol(context) == ProtocolName.HTTP2 && !streamOnly) {
+            if (phase == Phase.H2_IDLE && h2InactivityTimeout > 0) {
+                arm(context, Phase.H2_IDLE);
             }
-        }
-    
-        @Override
-        public void handlerAdded(ChannelHandlerContext context){
-            this.parentContext = context;
-    
-            if(streamOnly){
-                return;
-            }
-    
-            if(getProtocol(context)==ProtocolName.HTTP2){
-                    arm(context, Phase.H2_IDLE);
-                }else{
-                    arm(context, Phase.TCP_IDLE);
-                }
-            
-        }
-    
-        @Override
-        public void handlerRemoved(ChannelHandlerContext context) throws Exception {
-            cancel();
-            super.handlerRemoved(context);
-        }
-    
-        @Override
-        public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
-            if(getProtocol(context) == ProtocolName.HTTP2 && !streamOnly){
-                if(phase == Phase.H2_IDLE && h2InactivityTimeout>0){
-                    arm(context, Phase.H2_IDLE);
-                }
-                super.channelRead(context, message);
-                return;
-            }
-    
-            if(isRequestStart(message)){
-                cancel();
-                clientRequestedKeepAlive = shouldKeepAliveRequest(context, message);
-                // READ timeout when request starts
-                arm(context, Phase.READ);
-            } else if(message instanceof HttpContent && !(message instanceof LastHttpContent)){
-                // Handle intermediate content (not request start) based on current phase
-                switch(phase){
-                    case TCP_IDLE:
-                        // Transition from TCP_IDLE to READ when data arrives
-                        arm(context, Phase.READ);
-                        break;
-                    case READ:
-                        // Do NOT reset read timeout when intermediate content arrives
-                        // This is to match CHFW behavior
-                        break;
-                    default:
-                }
-            }
-    
             super.channelRead(context, message);
-    
-            if(isRequestEnd(message)){
-                cancel();
-                firstRequest = false;
-            }
+            return;
         }
-    
-        @Override
-        public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
-            
-            if(message instanceof HttpResponse && ((HttpResponse)message).status().code() == 101 ){
-                CharSequence upgrade = ((HttpResponse) message).headers().get(HttpHeaderNames.UPGRADE);
-                if(upgrade != null){
-                    AsciiString up = AsciiString.of(upgrade).toLowerCase();
-                    if(AsciiString.contains(up, "websocket")){
-                        markProtocol(context.pipeline(), ProtocolName.WEBSOCKET);
-                        context.channel().pipeline().remove(this);
-                        super.write(context, message, promise);
-                        promise.addListener(future -> {
-                            if(future.isSuccess()){
-                                context.executor().execute(() -> {
-                                    if (context.pipeline().context(this) != null){
-                                        context.pipeline().remove(this);
-                                    }
-                                });
-                            }
-                        
-                        });
-                        return;
-                    }
-                    if(AsciiString.contains(up, "h2c")){
-                        markProtocol(context.pipeline(), ProtocolName.HTTP2);
-                        cancel();
-                    }
-                }
-            } else if(message instanceof HttpResponse){
-                serverKeepAlive = shouldKeepAliveResponse(context, message);
-            }
-            super.write(context, message, promise);
-    
-            promise.addListener(future -> {
-                if(future.isSuccess() && isResponseEnd(message) && !streamOnly){
-                    if(!serverKeepAlive){
-                        context.close();
-                    }else{
-                        armPersistIfNeeded(context);
-                    }
-                }
-            });
-            
-        }
-    
-        private void arm(ChannelHandlerContext context, Phase newPhase){
-            int timeout = timeoutForPhase(newPhase);
-            if(timeout <=0){
-                phase = Phase.OFF;
-                return;
-            }
+
+        if (isRequestStart(message)) {
             cancel();
-            phase = newPhase;
-            currentTimeout = context.executor().schedule(() -> onTimeout(context), timeout, TimeUnit.MILLISECONDS);
-        }
-    
-    
-        private void armPersistIfNeeded(ChannelHandlerContext context){
-            if(getProtocol(context) != ProtocolName.WEBSOCKET){
-                arm(context, Phase.PERSIST);
+            clientRequestedKeepAlive = shouldKeepAliveRequest(context, message);
+            if(!isRequestEnd(message)){
+                arm(context, Phase.READ);
             }
+        } else if(phase == Phase.READ){
+            resetRead(context);
         }
+        
+        
+        //else{
 
-        private void cancel(){
-            if(currentTimeout != null){
-                currentTimeout.cancel(false);
-                currentTimeout = null;
-            }
-            phase = Phase.OFF;
-        }
-    
-        private void onTimeout(ChannelHandlerContext context){
-            switch (phase) {
-                case TCP_IDLE:
-                case READ:
-                    if (firstRequest && !readRetried) {
-                        readRetried = true;
-                        arm(context, Phase.READ);
-                        return;
-                    }
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "The connection is closing due an idle read timeout");
-                    }
-                    context.fireExceptionCaught(new ReadTimeoutException(readTimeout / 1000, TimeUnit.SECONDS,
-                        context.channel().localAddress(), context.channel().remoteAddress()));
-                    break;
-                    
-                case PERSIST:
-                    context.fireExceptionCaught(new PersistTimeoutException(persistTimeout / 1000, TimeUnit.SECONDS,
-                        context.channel().localAddress(), context.channel().remoteAddress()));
-                    break;
-                case H2_IDLE:
-                    context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout / 1000, TimeUnit.SECONDS,
-                        context.channel().localAddress(), context.channel().remoteAddress()));
-                    break;
-                default:
-            }
-        }
-    
-        private static boolean isRequestStart(Object message){
-                return (message instanceof HttpRequest) || (message instanceof Http2HeadersFrame); 
-        }
-    
-        private static boolean isRequestEnd(Object message){
-            if(message instanceof FullHttpRequest){
-                return true;
-            }
-            if(message instanceof HttpRequest){
-                HttpRequest req = (HttpRequest) message;
-                boolean hasBody = HttpUtil.isTransferEncodingChunked(req) || HttpUtil.isContentLengthSet(req);
-                return !hasBody;
-            }
-            if(message instanceof LastHttpContent){
-                return true;
-            }
-            if(message instanceof Http2DataFrame){
-                return ((Http2DataFrame)message).isEndStream();
-            }
-            if(message instanceof Http2HeadersFrame){
-                return ((Http2HeadersFrame)message).isEndStream();
-            }
-            return false;
-        } 
-    
-        private static boolean isResponseEnd(Object message){
-            return message instanceof LastHttpContent
-                || (message instanceof Http2DataFrame && ((Http2DataFrame)message).isEndStream())
-                || (message instanceof Http2HeadersFrame && ((Http2HeadersFrame)message).isEndStream());
-        }
-    
-        private boolean shouldKeepAliveRequest(ChannelHandlerContext context, Object request){
-            ProtocolName proto = NettyHttpConstants.ProtocolName.from(context.channel().attr(NettyHttpConstants.PROTOCOL).get());
-            if(proto == ProtocolName.HTTP2){
-                return false;
-            }
-            if(request instanceof HttpRequest){
-                return HttpUtil.isKeepAlive((HttpRequest)request);
-            }
-            return false;
-        }
-    
-        private boolean shouldKeepAliveResponse(ChannelHandlerContext context, Object response){
-            ProtocolName proto = getProtocol(context);
-            if(proto == ProtocolName.WEBSOCKET){
-                return true;
-            }
-            if(proto == ProtocolName.HTTP2){
-                return true;
-            }
+        //     switch (phase) {
+        //         case TCP_IDLE:
+        //             arm(context, Phase.READ);
+        //             break;
+        //         case READ:
+        //             resetRead(context);
+        //             break;
+        //         default:
+        //     }
+        // }
 
-            if (!clientRequestedKeepAlive) {
-                return false;
+        super.channelRead(context, message);
+
+        if (isRequestEnd(message)) {
+          //  cancel();
+            
+            if (phase == Phase.READ){
+                cancel();
             }
-            if(response instanceof HttpResponse){
-                HttpResponse r = (HttpResponse) response;
-                if(HttpHeaderValues.CLOSE.contentEqualsIgnoreCase(r.headers().get(HttpHeaderNames.CONNECTION))){
-                    return false;
+            firstRequest = false;
+        }
+    }
+
+    @Override
+    public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
+
+        if (message instanceof HttpResponse && ((HttpResponse) message).status().code() == 101) {
+            CharSequence upgrade = ((HttpResponse) message).headers().get(HttpHeaderNames.UPGRADE);
+            if (upgrade != null) {
+                AsciiString up = AsciiString.of(upgrade).toLowerCase();
+                if (AsciiString.contains(up, "websocket")) {
+                    markProtocol(context.pipeline(), ProtocolName.WEBSOCKET);
+                    context.channel().pipeline().remove(this);
+                    super.write(context, message, promise);
+                    promise.addListener(future -> {
+                        if (future.isSuccess()) {
+                            context.executor().execute(() -> {
+                                if (context.pipeline().context(this) != null) {
+                                    context.pipeline().remove(this);
+                                }
+                            });
+                        }
+
+                    });
+                    return;
                 }
-                return useKeepAlive;
-                
+                if (AsciiString.contains(up, "h2c")) {
+                    markProtocol(context.pipeline(), ProtocolName.HTTP2);
+                    cancel();
+                }
+            }
+        } else if (message instanceof HttpResponse) {
+            serverKeepAlive = shouldKeepAliveResponse(context, message);
+        }
+        super.write(context, message, promise);
+
+        promise.addListener(future -> {
+            if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
+                if (!serverKeepAlive) {
+                    context.close();
+                } else {
+                    armPersistIfNeeded(context);
+                }
+            }
+        }); //-> TODO: move over to keep-alive handler when implemented
+
+    }
+
+    private void arm(ChannelHandlerContext context, Phase newPhase) {
+        int timeout = timeoutForPhase(newPhase);
+        if (timeout <= 0) {
+            phase = Phase.OFF;
+            return;
+        }
+        cancel();
+        phase = newPhase;
+        currentTimeout = context.executor().schedule(() -> onTimeout(context), timeout, TimeUnit.MILLISECONDS);
+    }
+
+    private void resetRead(ChannelHandlerContext context) {
+        if (phase == Phase.READ) {
+            arm(context, Phase.READ);
+        }
+    }
+
+    private void armPersistIfNeeded(ChannelHandlerContext context) {
+        if (getProtocol(context) != ProtocolName.WEBSOCKET) {
+            arm(context, Phase.PERSIST);
+        }
+    }
+
+    private void cancel() {
+        if (currentTimeout != null) {
+            currentTimeout.cancel(false);
+            currentTimeout = null;
+        }
+        phase = Phase.OFF;
+    }
+
+    private void onTimeout(ChannelHandlerContext context) {
+        switch (phase) {
+            case TCP_IDLE:
+
+            case READ:
+                if (firstRequest && !readRetried) {
+                    readRetried = true;
+                    arm(context, Phase.READ);
+                    return;
+                }
+                if (firstRequest) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The connection closed due to idle timeout");
+                    }
+                    context.close();
+                } else {
+                    context.fireExceptionCaught(new ReadTimeoutException(readTimeout, LEGACY_UNIT));
+                }
+                break;
+
+            case PERSIST:
+                context.fireExceptionCaught(new PersistTimeoutException(persistTimeout, LEGACY_UNIT));
+                //context.close();
+                break;
+            case H2_IDLE:
+                context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout, LEGACY_UNIT));
+                break;
+            default:
+        }
+    }
+
+    private static boolean isRequestStart(Object message) {
+        return (message instanceof HttpRequest) || (message instanceof Http2HeadersFrame);
+    }
+
+    private static boolean isRequestEnd(Object message) {
+        if(message instanceof LastHttpContent){
+                return true;
+        }
+
+        if (message instanceof HttpRequest) {
+            
+            HttpRequest req = (HttpRequest) message;
+            boolean hasBody = HttpUtil.isTransferEncodingChunked(req) || HttpUtil.isContentLengthSet(req);
+            return !hasBody;
+        }
+        if (message instanceof Http2DataFrame) {
+            return ((Http2DataFrame) message).isEndStream();
+        }
+        if (message instanceof Http2HeadersFrame) {
+            return ((Http2HeadersFrame) message).isEndStream();
         }
         return false;
     }
 
-    private void switchToH2Idle(){
-        if(streamOnly || parentContext == null){
+    private static boolean isResponseEnd(Object message) {
+        return message instanceof LastHttpContent
+               || (message instanceof Http2DataFrame && ((Http2DataFrame) message).isEndStream())
+               || (message instanceof Http2HeadersFrame && ((Http2HeadersFrame) message).isEndStream());
+    }
+
+    private boolean shouldKeepAliveRequest(ChannelHandlerContext context, Object request) {
+        ProtocolName proto = NettyHttpConstants.ProtocolName.from(context.channel().attr(NettyHttpConstants.PROTOCOL).get());
+        if (proto == ProtocolName.HTTP2) {
+            return false;
+        }
+        if (request instanceof HttpRequest) {
+            return HttpUtil.isKeepAlive((HttpRequest) request);
+        }
+        return false;
+    }
+
+    private boolean shouldKeepAliveResponse(ChannelHandlerContext context, Object response) {
+        ProtocolName proto = getProtocol(context);
+        if (proto == ProtocolName.WEBSOCKET) {
+            return true;
+        }
+        if (proto == ProtocolName.HTTP2) {
+            return true;
+        }
+
+        if (!clientRequestedKeepAlive) {
+            return false;
+        }
+        if (response instanceof HttpResponse) {
+            HttpResponse r = (HttpResponse) response;
+            if (HttpHeaderValues.CLOSE.contentEqualsIgnoreCase(r.headers().get(HttpHeaderNames.CONNECTION))) {
+                return false;
+            }
+            return useKeepAlive;
+
+        }
+        return false;
+    }
+
+    private void switchToH2Idle() {
+        if (streamOnly || parentContext == null) {
             return;
         }
-        if(h2InactivityTimeout == 0){
+        if (h2InactivityTimeout == 0) {
             cancel();
             return;
         }
@@ -333,18 +372,122 @@ public class TimeoutHandler extends ChannelDuplexHandler{
         arm(parentContext, Phase.H2_IDLE);
     }
 
-
-    public void markProtocol(ChannelPipeline p, ProtocolName proto){
+    public void markProtocol(ChannelPipeline p, ProtocolName proto) {
         p.channel().attr(NettyHttpConstants.PROTOCOL).set(proto.name());
-        if(proto == ProtocolName.HTTP2){
+        if (proto == ProtocolName.HTTP2) {
             switchToH2Idle();
-        } else if(proto == ProtocolName.WEBSOCKET){
+        } else if (proto == ProtocolName.WEBSOCKET) {
             cancel();
         }
     }
 
-    private static ProtocolName getProtocol(ChannelHandlerContext context){
+    private static ProtocolName getProtocol(ChannelHandlerContext context) {
         String protocol = context.channel().attr(NettyHttpConstants.PROTOCOL).get();
         return ProtocolName.from(protocol);
     }
+
+    public static void armPersistTimeout(Channel channel){
+        TimeoutHandler handler = channel.pipeline().get(TimeoutHandler.class);
+        if(handler == null || handler.streamOnly){
+            return;
+        }
+        ChannelHandlerContext context = handler.parentContext;
+        if(context == null){
+            return;
+        }
+
+
+        handler.armPersistIfNeeded(context);
+    }
+
+    public static ReadOpToken armReadOp(Channel channel, int timeout, Runnable callback){
+        TimeoutHandler handler = channel.pipeline().get(TimeoutHandler.class);
+        if (handler == null || timeout <=0)
+            return new ReadOpToken(channel);
+
+        AtomicBoolean flag = channel.attr(READ_OP_TIMED).get();
+        if (flag==null){
+            flag = new AtomicBoolean(false);
+            channel.attr(READ_OP_TIMED).set(flag);
+        } else {
+            flag.set(false);
+        }
+
+        channel.attr(READ_OP_CALLBACK).set(callback);
+
+        ScheduledFuture<?> previous = channel.attr(READ_OP_FUTURE).getAndSet(null);
+        if (previous != null)
+            previous.cancel(false);
+
+        ScheduledFuture<?> future = handler.parentContext.executor().schedule( () -> {
+            channel.attr(READ_OP_TIMED).get().set(true);
+            Runnable cb = channel.attr(READ_OP_CALLBACK).get();
+            if(cb!=null){
+                HttpDispatcher.getExecutorService().execute( () -> {
+                    try{
+                        cb.run();
+                    }catch(Throwable ignore){}
+                });
+            }
+            handler.parentContext.fireExceptionCaught(new ReadTimeoutException(timeout, LEGACY_UNIT));
+        }, timeout, TimeUnit.MILLISECONDS);
+
+        channel.attr(READ_OP_FUTURE).set(future);
+        return new ReadOpToken(channel);
+    }
+
+    public static void cancelReadOp(Channel channel){
+        ScheduledFuture<?> future = channel.attr(READ_OP_FUTURE).getAndSet(null);
+        if(future != null){
+            future.cancel(false);
+        }
+        AtomicBoolean flag = channel.attr(READ_OP_TIMED).get();
+        if (flag != null){
+            flag.set(false);
+        } 
+        channel.attr(READ_OP_CALLBACK).set(null);
+    }
+
+    public static boolean readOpTimedOut(Channel channel){
+        AtomicBoolean flag = channel.attr(READ_OP_TIMED).get();
+        return flag != null && flag.get();
+    }
+
+    public static void triggerReadOpTimeout(Channel channel){
+        ScheduledFuture<?> future = channel.attr(READ_OP_FUTURE).getAndSet(null);
+        if (future != null)
+            future.cancel(false);
+        
+        AtomicBoolean flag = channel.attr(READ_OP_TIMED).get();
+        if (flag == null){
+            flag = new AtomicBoolean(true);
+            channel.attr(READ_OP_TIMED).set(flag);
+        } else {
+            flag.set(true);
+        }
+        Runnable callback = channel.attr(READ_OP_CALLBACK).get();
+        if (callback != null){
+            HttpDispatcher.getExecutorService().execute( ()-> {
+                try{
+                    callback.run();
+                }catch (Throwable ignore){}
+            });
+        }
+        ChannelHandlerContext context = channel.pipeline().firstContext();
+        if (context != null)
+            context.fireExceptionCaught(new ReadTimeoutException(0, LEGACY_UNIT));
+    }
+
+    public static final class ReadOpToken implements AutoCloseable {
+        private final Channel channel;
+        ReadOpToken(Channel channel){
+            this.channel = channel;
+        }
+
+        @Override
+        public void close(){
+            TimeoutHandler.cancelReadOp(channel);
+        }
+    }
+
 }

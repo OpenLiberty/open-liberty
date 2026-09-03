@@ -432,7 +432,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     for (Channel channel : activeChannelMap.keySet()) {
                         // Fire custom user event to let know that the endpoint is being stopped
                         channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+
+                        ChannelGroup group = activeChannelMap.get(channel);
+                        if (group != null) {
+                            for (Channel child : group) {
+                                child.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+                            }
+                        }
                     }
+                    
 
                     // Schedule quiesce tasks
                     quiesce.startTasks();

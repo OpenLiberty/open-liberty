@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -120,6 +122,7 @@ import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -132,6 +135,8 @@ import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
 import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.openliberty.http.constants.HttpGenerics;
+import io.netty.util.AsciiString;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -3413,6 +3418,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             sendNettyFinalContent();
         }
+        // if (isNettyUpgrade101()) {
+        //     triggerNettyUpgradeEvent();
+        // }
         setMessageSent();
     }
 
@@ -3752,6 +3760,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if(!(getTSC().getWriteInterface() instanceof NettyTCPWriteRequestContext))
             throw new RuntimeException("Writing on Netty requires a NettyTCPWriteRequestContext");
 
+        prepareNettyCloseForIncompleteRequestBody(finalWrite);
+
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing " + writeBuffers.length + " buffers on netty channel.");
@@ -3789,6 +3799,22 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
+    private void prepareNettyCloseForIncompleteRequestBody(boolean finalWrite) {
+        if (!finalWrite || isBodyComplete() || nettyResponse == null) {
+            return;
+        }
+        if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            return;
+        }
+
+        // A finalized response cannot safely leave an HTTP/1.x connection reusable while
+        // unread request-body bytes may still be on the wire. Mark the response state as
+        // close-delimited before the write path so close cleanup does not block draining.
+        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
+        setPersistent(false);
+        nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+    }
+
     private void sendNettyFinalContent() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
@@ -3800,9 +3826,25 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
 
         DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
+        boolean closeAfterFinalContent = "-1".equals(streamId)
+                                        && (!isPersistent()
+                                            || resp.getResponse().headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
+                                            || !trailers.isEmpty()
+                                            || !isBodyComplete());
+
+        if (closeAfterFinalContent && !isBodyComplete()) {
+            this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
+            setPersistent(false);
+            resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        }
 
         // Sending last http content since all data was written
-        this.nettyContext.channel().eventLoop().execute(() -> nettyContext.channel().writeAndFlush(lastContent));
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture future = nettyContext.channel().writeAndFlush(lastContent);
+            if (closeAfterFinalContent) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
+        });
     }
 
     /**
@@ -3810,7 +3852,42 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      */
     private void sendNettyHeaders() {
-        this.nettyContext.channel().eventLoop().execute(() -> nettyContext.channel().writeAndFlush(nettyResponse));
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture future = nettyContext.channel().writeAndFlush(nettyResponse);
+            if (nettyResponse.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code()) {
+                String connection = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
+                String upgrade = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
+                boolean isUpgrade = (connection != null && connection.toLowerCase().contains("upgrade")) &&
+                        (upgrade != null && !upgrade.isEmpty());
+                        
+                if(isUpgrade) {
+                    Object upgPromise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+                    if(!(upgPromise instanceof CompletableFuture<?>)) {
+                        CompletableFuture<Void> promise = new CompletableFuture<>();
+                        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+                    }
+
+                    Tr.debug(tc,"UPGRADE LOG -> sendNettyHeaders detected 101, attaching event to listener");
+
+                    future.addListener(f -> {
+                        if(f.isSuccess()){
+                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush success, firing event. Autoread = " 
+                                + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
+                            
+                            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+                        } else {
+                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush failed: " + String.valueOf(f.cause()));
+                        }
+                        
+                    });
+                
+                } else {
+                    Tr.debug(tc," UPGRADE LOG -> status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
+                }
+            }
+        });
+
+        
     }
 
     /**
@@ -6444,4 +6521,80 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         return ret;
     }
 
+    private boolean isNettyUpgrade101() {
+        if (nettyResponse == null || nettyContext == null) {
+            return false;
+        }
+
+        if (!nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
+            return false;
+        }
+
+        // Check Connection: Upgrade and Upgrade: <token>
+        final CharSequence conn = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
+        final CharSequence upg = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
+        if (conn == null || upg == null || upg.length() == 0) {
+            return false;
+        }
+
+        return AsciiString.containsIgnoreCase(conn, "upgrade");
+    }
+
+    private void triggerNettyUpgradeEvent() {
+        if (nettyContext == null) {
+            return;
+        }
+        CompletableFuture<Void> promise = getUpgradeReadyPromise();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "triggerNettyUpgradeEvent: firing 101 Event");
+        }
+
+        if(nettyContext.executor().inEventLoop()) {
+            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+        } else {
+            nettyContext.executor().execute(() ->
+                nettyContext.pipeline().fireUserEventTriggered(
+                    HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
+        }
+
+        //TODO: discuss what if we want to set a task to timeout installing the upgrade handler
+        // and log the promise as failed
+        // final ScheduledFuture<?> upgradeInstallTimeout = nettyContext.executor().schedule(() -> {
+        //     if(!promise.isDone()){
+        //         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //             Tr.debug(tc, "triggerNettyUpgradeEvent: timed out waiting for upgrade handler installation");
+        //         }
+        //         promise.completeExceptionally(new IOException("Upgrade failed: Upgrade handler not installed"));
+        //     }
+        // }, 1000, TimeUnit.MILLISECONDS);
+        // promise.whenComplete((v, t) -> upgradeInstallTimeout.cancel(false));
+    }
+    
+    /**
+     * Prepares the channel upgrade promise. This promise is completed by the 
+     * {@link HttpDispatcherHandler} after the pipeline handlers are changed to handle 
+     * the upgraded connection.
+     * 
+     * @return the channel upgrade promise
+     */
+    private CompletableFuture<Void> getUpgradeReadyPromise() {
+        CompletableFuture<Void> promise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise != null) {
+            return promise;
+        }
+
+        promise = new CompletableFuture<>();
+        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        
+        //If channel closes before the upgrade handler is installed, fail this promise
+        final CompletableFuture<Void> finalPromise = promise;
+        nettyContext.channel().closeFuture().addListener(f -> {
+            if (!finalPromise.isDone()) {
+                finalPromise.completeExceptionally(new IllegalStateException("Channel closed before upgrade handler was installed"));
+            }
+        });
+
+        return promise;
+    }
 }
