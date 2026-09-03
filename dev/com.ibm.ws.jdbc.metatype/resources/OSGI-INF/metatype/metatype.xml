@@ -1208,12 +1208,15 @@
   </AD>
   <AD id="applicationName"                    ibmui:group="Advanced" required="false" type="String"  name="%applicationName" description="%applicationName.desc"/>
   <AD id="authentication"                     ibmui:group="Advanced" required="false" type="String"  name="%authentication" description="%authentication.desc">
-   <Option value="ActiveDirectoryDefault"    label="ActiveDirectoryDefault"/>
-   <Option value="ActiveDirectoryMSI"        label="ActiveDirectoryMSI"/>
-   <Option value="ActiveDirectoryIntegrated" label="ActiveDirectoryIntegrated"/>
-   <Option value="ActiveDirectoryPassword"   label="ActiveDirectoryPassword"/>
-   <Option value="SqlPassword"               label="SqlPassword"/>
-   <Option value="NotSpecified"              label="NotSpecified"/>
+   <Option value="ActiveDirectoryInteractive"                 label="ActiveDirectoryInteractive"/>
+   <Option value="ActiveDirectoryServicePrincipal"            label="ActiveDirectoryServicePrincipal"/>
+   <Option value="ActiveDirectoryServicePrincipalCertificate" label="ActiveDirectoryServicePrincipalCertificate"/>
+   <Option value="ActiveDirectoryDefault"                     label="ActiveDirectoryDefault"/>
+   <Option value="ActiveDirectoryMSI"                         label="ActiveDirectoryMSI"/>
+   <Option value="ActiveDirectoryIntegrated"                  label="ActiveDirectoryIntegrated"/>
+   <Option value="ActiveDirectoryPassword"                    label="ActiveDirectoryPassword"/>
+   <Option value="SqlPassword"                                label="SqlPassword"/>
+   <Option value="NotSpecified"                               label="NotSpecified"/>
   </AD>
   <AD id="authenticationScheme"               ibmui:group="Advanced" required="false" type="String"  name="%authenticationScheme" description="%authenticationScheme.desc">
    <Option value="JavaKerberos"         label="JavaKerberos"/>
