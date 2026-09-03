@@ -276,7 +276,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
             throw new SocketTimeoutException(e1.getMessage());
         }
         if (resp == null) {
-            throw new IOException("Don't have a response yet!");
+            Tr.error(tc, "client.no.response", endpointAddress.getURI().toString());
+            throw new IOException(Tr.formatMessage(tc, "client.no.response", endpointAddress.getURI().toString()));
         }
         if (StatusCodes.SWITCHING_PROTOCOLS.getIntCode() != resp.status().code()) {
             String msg = Tr.formatMessage(tc, "client.invalid.returncode", resp.status().code(),
