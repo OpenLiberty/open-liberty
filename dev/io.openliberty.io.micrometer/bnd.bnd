@@ -24,9 +24,9 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 
 Import-Package: \
-    io.micrometer.core.*;version=1.15.12,\
-    io.micrometer.common.*;version=1.15.12,\
-    io.micrometer.prometheus.*;version=1.15.12,\
+    io.micrometer.core.*;version=1.16.7,\
+    io.micrometer.common.*;version=1.16.7,\
+    io.micrometer.prometheus.*;version=1.16.7,\
     org.LatencyUtils;version=2.0.3,\
     org.HdrHistogram.*;version=2.1.12,\
     io.prometheus.*;version=0.16.0,\
@@ -35,9 +35,9 @@ Import-Package: \
 
 
 Export-Package: \
-    io.micrometer.prometheus;version=1.15.12,\
-    io.micrometer.core.*;version=1.15.12,\
-    io.micrometer.common.*;version=1.15.12,\
+    io.micrometer.prometheus;version=1.16.7,\
+    io.micrometer.core.*;version=1.16.7,\
+    io.micrometer.common.*;version=1.16.7,\
     org.LatencyUtils;version=2.0.3,\
     org.HdrHistogram.*;version=2.1.12,\
     io.prometheus.*;version=0.16.0
@@ -51,9 +51,9 @@ publish.wlp.jar.suffix: lib
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.container.service.compat;version=latest,\
     com.ibm.ws.container.service;version=latest,\
-    io.micrometer:micrometer-core;version=1.15.12,\
-    io.micrometer:micrometer-commons;version=1.15.12,\
-    io.micrometer:micrometer-registry-prometheus-simpleclient;version=1.15.12,\
+    io.micrometer:micrometer-core;version=1.16.7,\
+    io.micrometer:micrometer-commons;version=1.16.7,\
+    io.micrometer:micrometer-registry-prometheus-simpleclient;version=1.16.7,\
     org.hdrhistogram:HdrHistogram;version=2.1.12,\
     org.latencyutils:LatencyUtils;version=2.0.3,\
     io.prometheus:simpleclient_common;version=0.16.0,\

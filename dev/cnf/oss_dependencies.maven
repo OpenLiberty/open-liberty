@@ -107,9 +107,12 @@ io.jaegertracing:jaeger-thrift:1.6.0
 io.jaegertracing:jaeger-tracerresolver:0.34.0
 io.jaegertracing:jaeger-tracerresolver:1.6.0
 io.micrometer:micrometer-commons:1.15.12
+io.micrometer:micrometer-commons:1.16.7
 io.micrometer:micrometer-core:1.15.12
+io.micrometer:micrometer-core:1.16.7
 io.micrometer:micrometer-core:1.9.3
 io.micrometer:micrometer-registry-prometheus-simpleclient:1.15.12
+io.micrometer:micrometer-registry-prometheus-simpleclient:1.16.7
 io.micrometer:micrometer-registry-prometheus:1.15.12
 io.micrometer:micrometer-registry-prometheus:1.9.3
 io.netty:netty-buffer:4.2.17.Final
