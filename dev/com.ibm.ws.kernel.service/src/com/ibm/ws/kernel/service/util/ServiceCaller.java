@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -149,15 +149,15 @@ public class ServiceCaller<S> {
      * }
      * </pre>
      *
-     * @param caller a class from the bundle that will use service
+     * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param consumer the consumer of the OSGi service
-     * @param <S> the OSGi service type to look up
+     * @param consumer    the consumer of the OSGi service
+     * @param <S>         the OSGi service type to look up
      * @return true if the OSGi service was located and called successfully, false
      *         otherwise
-     * @throws NullPointerException if any of the parameters are {@code null}
+     * @throws NullPointerException  if any of the parameters are {@code null}
      * @throws IllegalStateException if the bundle associated with the caller class
-     *             cannot be determined
+     *                                   cannot be determined
      */
     public static <S> boolean callOnce(Class<?> caller, Class<S> serviceType, Consumer<S> consumer) {
         return callOnce(caller, serviceType, null, consumer);
@@ -166,16 +166,16 @@ public class ServiceCaller<S> {
     /**
      * As {@link #callOnce(Class, Class, Consumer)} with an additional OSGi filter.
      *
-     * @param caller a class from the bundle that will use service
+     * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param consumer the consumer of the OSGi service
-     * @param filter an OSGi filter to restrict the services found
-     * @param <S> the OSGi service type to look up
+     * @param consumer    the consumer of the OSGi service
+     * @param filter      an OSGi filter to restrict the services found
+     * @param <S>         the OSGi service type to look up
      * @return true if the OSGi service was located and called successfully, false
      *         otherwise
-     * @throws NullPointerException if any of the parameters except filter are {@code null}
+     * @throws NullPointerException  if any of the parameters except filter are {@code null}
      * @throws IllegalStateException if the bundle associated with the caller class
-     *             cannot be determined
+     *                                   cannot be determined
      */
     public static <S> boolean callOnce(Class<?> caller, Class<S> serviceType, String filter, Consumer<S> consumer) {
         return new ServiceCaller<>(caller, serviceType, filter).getCurrent().map(r -> {
@@ -191,15 +191,15 @@ public class ServiceCaller<S> {
     /**
      * As {@link #callOnce(Class, Class, Consumer)} but replaces the Consumer with a Function that returns a value.
      *
-     * @param caller a class from the bundle that will use service
+     * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param function a function that consumes the OSGi service and retrns a value
-     * @param <S> the OSGi service type to look up
-     * @param <R> the type returned by calling the method on the service
+     * @param function    a function that consumes the OSGi service and retrns a value
+     * @param <S>         the OSGi service type to look up
+     * @param <R>         the type returned by calling the method on the service
      * @return an Optional containing the object returned by function, or null if it failed to return a value
-     * @throws NullPointerException if any of the parameters are {@code null}
+     * @throws NullPointerException  if any of the parameters are {@code null}
      * @throws IllegalStateException if the bundle associated with the caller class
-     *             cannot be determined
+     *                                   cannot be determined
      */
     public static <S, R> Optional<R> runOnce(Class<?> caller, Class<S> serviceType, Function<S, R> function) {
         ServiceCaller<S> sc = new ServiceCaller<>(caller, serviceType);
@@ -211,18 +211,18 @@ public class ServiceCaller<S> {
     }
 
     /**
-     * As {@link #runOnce(Class, Class, Function)} but with an additional OSGi filter.
+     * Call ServiceCaller dynamically and get a property from the resulting service.
      *
-     * @param caller a class from the bundle that will use service
+     * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param function a function that consumes the OSGi service and retrns a value
-     * @param filter an OSGi filter to restrict the services found
-     * @param <S> the OSGi service type to look up
-     * @param <R> the type returned by calling the method on the service
+     * @param function    a function that consumes the OSGi service and retrns a value
+     * @param filter      an OSGi filter to restrict the services found
+     * @param <S>         the OSGi service type to look up
+     * @param <R>         the type returned by calling the method on the service
      * @return an Optional containing the object returned by function, or null if it failed to return a value
-     * @throws NullPointerException if any of the parameters except filter are {@code null}
+     * @throws NullPointerException  if any of the parameters except filter are {@code null}
      * @throws IllegalStateException if the bundle associated with the caller class
-     *             cannot be determined
+     *                                   cannot be determined
      */
     public static <S, R> Optional<R> runOnce(Class<?> caller, Class<S> serviceType, String filter, Function<S, R> function) {
         ServiceCaller<S> sc = new ServiceCaller<>(caller, serviceType, filter);
@@ -239,6 +239,46 @@ public class ServiceCaller<S> {
             return ((Integer) rank).intValue();
         }
         return 0;
+    }
+
+    /**
+     * As {@link #runOnce(Class, Class, Function)} but with an additional OSGi filter.
+     *
+     * @param caller      a class from the bundle that will use service
+     * @param serviceType the OSGi service type to look up
+     * @param function    a function that consumes the OSGi service and retrns a value
+     * @param filter      an OSGi filter to restrict the services found
+     * @param <S>         the OSGi service type to look up
+     * @return an Optional containing the property value, or null if it failed to return a value
+     * @throws NullPointerException  if any of the parameters except filter are {@code null}
+     * @throws IllegalStateException if the bundle associated with the caller class
+     *                                   cannot be determined
+     */
+    //TODO ask Tom Watson what name he wants
+    public static <S> Optional<Object> currentProperty(Class<?> caller, Class<S> serviceType, String property) {
+        return currentProperty(caller, serviceType, property, null);
+    }
+
+    /**
+     * As {@link #runOnce(Class, Class, Function)} but with an additional OSGi filter.
+     *
+     * @param caller      a class from the bundle that will use service
+     * @param serviceType the OSGi service type to look up
+     * @param function    a function that consumes the OSGi service and retrns a value
+     * @param filter      an OSGi filter to restrict the services found
+     * @param <S>         the OSGi service type to look up
+     * @return an Optional containing the property value, or null if it failed to return a value
+     * @throws NullPointerException  if any of the parameters except filter are {@code null}
+     * @throws IllegalStateException if the bundle associated with the caller class
+     *                                   cannot be determined
+     */
+    public static <S> Optional<Object> currentProperty(Class<?> caller, Class<S> serviceType, String property, String filter) {
+        ServiceCaller<S> sc = new ServiceCaller<>(caller, serviceType, filter);
+        try {
+            return sc.currentProperty(property);
+        } finally {
+            sc.unget();
+        }
     }
 
     private class ReferenceAndService implements SynchronousBundleListener, ServiceListener {
@@ -367,7 +407,7 @@ public class ServiceCaller<S> {
      * Creates a {@code ServiceCaller} instance for invoking an OSGi service many
      * times with a consumer function.
      *
-     * @param caller a class from the bundle that will consume the service
+     * @param caller      a class from the bundle that will consume the service
      * @param serviceType the OSGi service type to look up
      * @throws NullPointerException if any of the parameters are {@code null}
      */
@@ -379,10 +419,10 @@ public class ServiceCaller<S> {
      * Creates a {@code ServiceCaller} instance for invoking an OSGi service many
      * times with a consumer function.
      *
-     * @param caller a class from the bundle that will consume the service
+     * @param caller      a class from the bundle that will consume the service
      * @param serviceType the OSGi service type to look up
-     * @param filter the service filter used to look up the service. May be
-     *            {@code null}.
+     * @param filter      the service filter used to look up the service. May be
+     *                        {@code null}.
      * @throws NullPointerException if any of the parameters are {@code null}
      */
     public ServiceCaller(Class<?> caller, Class<S> serviceType, String filter) {
@@ -434,7 +474,7 @@ public class ServiceCaller<S> {
      * @return true if the OSGi service was located and called successfully, false
      *         otherwise
      * @throws IllegalStateException if the bundle associated with the caller class
-     *             cannot be determined
+     *                                   cannot be determined
      */
     public boolean call(Consumer<S> consumer) {
         return trackCurrent().map(r -> {
@@ -446,11 +486,11 @@ public class ServiceCaller<S> {
     /**
      * As {@link #call(Consumer)} but replaces the Consumer with a Function that returns a value.
      *
-     * @param <R> the type returned by calling the method on the service
+     * @param <R>      the type returned by calling the method on the service
      * @param function A function that calls a method on the OSGi service and returns its output
      * @return an Optional containing the object returned by function, or null if it failed to return a value
      * @throws IllegalStateException if the bundle associated with the caller class
-     *             cannot be determined
+     *                                   cannot be determined
      */
     public <R> Optional<R> run(Function<S, R> function) {
         return Optional.ofNullable(trackCurrent().map(r -> {
@@ -464,7 +504,7 @@ public class ServiceCaller<S> {
      * @return the currently available service or empty if the service cannot be
      *         found.
      * @throws IllegalStateException if the bundle associated with the caller class
-     *             cannot be determined
+     *                                   cannot be determined
      */
     public Optional<S> current() {
         return trackCurrent().map(r -> r.instance);
@@ -535,5 +575,22 @@ public class ServiceCaller<S> {
         if (current != null) {
             current.unget();
         }
+    }
+
+    /**
+     * Gets a property from the current service
+     *
+     * @param property the property to pull
+     * @return an Optional containing the property's value (or null if the property was not found)
+     */
+    public Optional<Object> currentProperty(String property) {
+        Optional<ReferenceAndService> refAndServiceOptional = getCurrent();
+
+        if (refAndServiceOptional.isPresent()) {
+            ReferenceAndService refAndService = refAndServiceOptional.get();
+            return Optional.ofNullable(refAndService.ref.getProperty(property));
+        }
+
+        return Optional.empty();
     }
 }
