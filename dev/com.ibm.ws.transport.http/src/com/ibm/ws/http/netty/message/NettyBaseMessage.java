@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
+import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
 import com.ibm.wsspi.genericbnf.BNFHeaders;
@@ -89,8 +90,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
     private HttpServiceContext serviceContext;
 
     private int limitOfTokenSize;
-
-    private Map<String, String> headersMap = new HashMap<>();
 
     public enum MessageType {REQUEST, RESPONSE;}
 
@@ -230,7 +229,13 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public int getNumberOfHeaderInstances(String header) {
-        return headers.getAll(header).size();
+        int count = 0;
+        for (Map.Entry<String, String> entry : headers) {
+            if (entry.getKey().equalsIgnoreCase(header)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
@@ -563,15 +568,13 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
         // Iterate through the unparsed cookie header instances
         // in storage and add them to the list to be returned
-        List<HeaderField> headerList = getHeaders(header);
+        List<String> headerList = headers.getAll(header.getName());
         int size = headerList.size();
 
         if(size == 0) {return;}
 
         for (int i = cache.getHeaderIndex(); i < size; i++) {
-            String headerValue = headerList.get(i).asString();
-
-            cache.addParsedCookies(CookieDecoder.decode(headerValue, header));
+            cache.addParsedCookies(CookieDecoder.decode(headerList.get(i), header));
             cache.incrementHeaderIndex();
         }
     }
@@ -648,25 +651,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
     public void setContentLength(long length) {
         if(isChunkedEncodingSet()) {
             //retain HttpUtil.setTransferEncodingChunked false case logic
-            String temp = HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName();
-            List<String> encodings = headers.getAll(temp);
-            if (!encodings.isEmpty()) {
-                List<CharSequence> values = new ArrayList(encodings);
-                Iterator<CharSequence> valuesIt = values.iterator();
-
-                while (valuesIt.hasNext()) {
-                    CharSequence value = valuesIt.next();
-                    if (HttpHeaderValues.CHUNKED.contentEqualsIgnoreCase(value)) {
-                        valuesIt.remove();
-                    }
-                }
-
-                if (values.isEmpty()) {
-                    headers.remove(temp);
-                } else {
-                    headers.set(temp, values);
-                }
-            }
+            NettyHeaderUtils.removeChunkedTransferEncoding(headers);
         }
 
         headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), length);
@@ -982,12 +967,10 @@ public class NettyBaseMessage implements HttpBaseMessage {
             return;
         }
         HttpHeaderKeys header = cache.getHeaderType();
-        List<HeaderField> fields = getHeaders(header);
+        List<String> fields = headers.getAll(header.getName());
         int size = fields.size();
         for(int i = cache.getHeaderIndex(); i < size; i++){
-            String lineValue = fields.get(i).asString();
-            List<HttpCookie> decoded = CookieDecoder.decode(lineValue, header);
-            cache.addParsedCookies(decoded);
+            cache.addParsedCookies(CookieDecoder.decode(fields.get(i), header));
             cache.incrementHeaderIndex();
         }
     }

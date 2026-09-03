@@ -46,6 +46,9 @@ public class LibertyHttpRequestHandler extends ChannelDuplexHandler {
     private boolean peerClosedConnection = false;
     private ChannelHandlerContext requestHandlerContext;
 
+    // Single reusable instance 
+    private final ChannelFutureListener closeOnComplete = future -> requestHandlerContext.close();
+
     private final int maxRequests;
     private final int maxQueuedRequests;
     private final boolean hasMaxRequests;
@@ -182,12 +185,7 @@ public class LibertyHttpRequestHandler extends ChannelDuplexHandler {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Closing connection: " + requestHandlerContext.channel() + " because peer ended the connection and we have finished processing.");
                 }
-                writeFuture.addListener(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        requestHandlerContext.close();
-                    }
-                });
+                writeFuture.addListener(closeOnComplete);
                 return;
             }
 
@@ -198,27 +196,17 @@ public class LibertyHttpRequestHandler extends ChannelDuplexHandler {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "No additional requests remaining. Closing channel.");
                     }
-                    writeFuture.addListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete(ChannelFuture future) throws Exception {
-                            requestHandlerContext.close();
-                        }
-                    });
-                } else if(!context.channel().config().isAutoRead()){
-                    resumeReading(context);                                                      
+                    writeFuture.addListener(closeOnComplete);
+                } else if (!context.channel().config().isAutoRead()) {
+                    resumeReading(context);
                 }
                 return;
-            }    
-            else if(!draining && !context.channel().config().isAutoRead() && requestQueue.remainingCapacity()>0){
+            }
+            else if (!draining && !context.channel().config().isAutoRead() && requestQueue.remainingCapacity() > 0) {
                 resumeReading(context);
             }
             handlingRequest = true;
-            writeFuture.addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    requestHandlerContext.fireChannelRead(nextRequest);
-                }
-            });
+            writeFuture.addListener(future -> requestHandlerContext.fireChannelRead(nextRequest));
         }
     }
 

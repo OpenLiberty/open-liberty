@@ -9,8 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound;
 
-import java.nio.charset.StandardCharsets;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -91,9 +89,8 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
                 // Add Date header to match the original implementation in HttpDispatcherHandler
                 if (config != null) {
-                    byte[] date = HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange());
                     continueResponse.headers().set(HttpHeaderKeys.HDR_DATE.getName(),
-                                    new String(date, StandardCharsets.UTF_8));
+                                    HttpDispatcher.getDateFormatter().getRFC1123Time(config.getDateHeaderRange()));
                 }
 
                 ctx.writeAndFlush(continueResponse);

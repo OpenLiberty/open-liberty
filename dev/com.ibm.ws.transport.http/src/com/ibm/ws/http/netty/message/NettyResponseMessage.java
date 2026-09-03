@@ -205,7 +205,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setCurrentDate() {
-        String date = new String(HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(this.config.getDateHeaderRange()), StandardCharsets.UTF_8);
+        String date = HttpDispatcher.getDateFormatter().getRFC1123Time(this.config.getDateHeaderRange());
         setHeader(HttpHeaderKeys.HDR_DATE, date);
     }
 

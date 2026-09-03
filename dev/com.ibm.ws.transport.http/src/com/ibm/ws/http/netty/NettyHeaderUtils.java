@@ -9,18 +9,24 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  *
  */
 public class NettyHeaderUtils {
+
+    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
 
     /**
      * Returns the value of the last occurrence of the given header name.
@@ -52,21 +58,41 @@ public class NettyHeaderUtils {
      */
     public static void setVary(HttpHeaders headers, String value) {
 
-        Objects.nonNull(headers);
-        Objects.nonNull(value);
+        String varyName = HttpHeaderKeys.HDR_VARY.getName();
 
-        String headerValue;
-
-        if (headers.contains(HttpHeaderKeys.HDR_VARY.getName())) {
-            headerValue = headers.get(HttpHeaderKeys.HDR_VARY.getName()).toLowerCase();
-
-            if (!headerValue.isEmpty() && !headerValue.contains(value.toLowerCase())) {
-                headerValue = new StringBuilder().append(headerValue).append(", ").append(value).toString();
-                headers.set(HttpHeaderKeys.HDR_VARY.getName(), headerValue);
-
+        if (headers.contains(varyName)) {
+            String headerValue = headers.get(varyName);
+            if (!headerValue.isEmpty() && !headerValue.toLowerCase().contains(value.toLowerCase())) {
+                headers.set(varyName, headerValue + ", " + value);
             }
         } else {
-            headers.set(HttpHeaderKeys.HDR_VARY.getName(), value);
+            headers.set(varyName, value);
+        }
+    }
+
+    /**
+     * Removes all "chunked" tokens from the Transfer-Encoding header on the given
+     * headers object. If no Transfer-Encoding values remain after removal, the header
+     * is dropped entirely. This consolidates the identical removal logic that
+     * previously existed in both NettyBaseMessage and HeaderHandler.
+     *
+     * @param headers the response/message headers to update
+     */
+    public static void removeChunkedTransferEncoding(HttpHeaders headers) {
+        List<String> encodings = headers.getAll(HttpHeaderNames.TRANSFER_ENCODING);
+        if (encodings.isEmpty()) {
+            return;
+        }
+        List<CharSequence> filtered = new ArrayList<>(encodings.size());
+        for (String encoding : encodings) {
+            if (!HttpHeaderValues.CHUNKED.contentEqualsIgnoreCase(encoding)) {
+                filtered.add(encoding);
+            }
+        }
+        if (filtered.isEmpty()) {
+            headers.remove(HttpHeaderNames.TRANSFER_ENCODING);
+        } else {
+            headers.set(HttpHeaderNames.TRANSFER_ENCODING, filtered);
         }
     }
 
@@ -77,7 +103,7 @@ public class NettyHeaderUtils {
      * @return an empty String if the given String is null, otherwise a String with all whitespace removed.
      */
     public static String stripWhiteSpace(String string) {
-        return Objects.isNull(string) ? HttpConstants.EMPTY_STRING : string.replaceAll("\\s+", "");
+        return Objects.isNull(string) ? HttpConstants.EMPTY_STRING : WHITESPACE.matcher(string).replaceAll("");
     }
 
 }
