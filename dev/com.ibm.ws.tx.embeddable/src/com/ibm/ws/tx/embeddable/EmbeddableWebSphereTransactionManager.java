@@ -1,4 +1,3 @@
-package com.ibm.ws.tx.embeddable;
 /*******************************************************************************
  * Copyright (c) 2009, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -11,6 +10,7 @@ package com.ibm.ws.tx.embeddable;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.tx.embeddable;
 
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
