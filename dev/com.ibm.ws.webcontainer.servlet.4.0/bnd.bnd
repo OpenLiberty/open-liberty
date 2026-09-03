@@ -87,5 +87,6 @@ Import-Package: \
     com.ibm.ws.channelfw;version=latest,\
     com.ibm.ws.anno;version=latest,\
     com.ibm.ws.threading;version=latest,\
-    com.ibm.ws.kernel.boot.common;version=latest
+    com.ibm.ws.kernel.boot.common;version=latest,\
+    io.openliberty.io.netty;version=latest
 

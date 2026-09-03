@@ -253,7 +253,7 @@ public class HttpHeaderKeys extends HeaderKeys {
      */
     private HttpHeaderKeys(String name) {
         super(name, generateNextOrdinal());
-        asciiName = new AsciiString(getByteArray(), false);
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
             allKeys.add(this);
             myMatcher.add(this);
@@ -270,7 +270,7 @@ public class HttpHeaderKeys extends HeaderKeys {
     private HttpHeaderKeys(String name, boolean undefined) {
         super(name, generateNextOrdinal());
         setUndefined(undefined);
-        asciiName = new AsciiString(getByteArray(), false);
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
             allKeys.add(this);
             myMatcher.add(this);
@@ -289,7 +289,7 @@ public class HttpHeaderKeys extends HeaderKeys {
         super(name, generateNextOrdinal());
         super.setShouldLogValue(shouldLog);
         super.setUseFilters(shouldFilter);
-        asciiName = new AsciiString(getByteArray(), false);
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
             allKeys.add(this);
             myMatcher.add(this);
