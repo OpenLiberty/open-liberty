@@ -14,7 +14,9 @@
 package com.ibm.ws.webcontainer.security.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
@@ -198,7 +200,7 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
      * @param res
      * @throws IOException
      */
-    private void handleError(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    private void handleError(HttpServletRequest req, HttpServletResponse res) throws IOException, RuntimeException {
         res.setStatus(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
         if (getErrorPage(req, res) != null) {
             res.sendRedirect(res.encodeURL(getErrorPage(req, res)));
@@ -314,29 +316,58 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
      *
      */
     private String getErrorPage(HttpServletRequest req, HttpServletResponse res) {
-        boolean bCtx = true;
+
+        // error_page request parameter
         String loginErrorPage = getCustomErrorPage(req);
-        if (loginErrorPage == null || loginErrorPage.length() == 0) {
-            bCtx = false;
-            loginErrorPage = getCustomReloginErrorPage(req);
+        if (loginErrorPage != null && loginErrorPage.length() > 0) {
+            return validateErrorPageRedirect(req, setUpAFullUrl(req, loginErrorPage, true));
         }
 
-        if (loginErrorPage == null || loginErrorPage.length() == 0) {
-            bCtx = true;
-            // still nothing?
-            loginErrorPage = getErrorPageFromWebXml();
+        // WASReloginURL cookie
+        loginErrorPage = getCustomReloginErrorPage(req);
+        if (loginErrorPage != null && loginErrorPage.length() > 0) {
+            return setUpAFullUrl(req, loginErrorPage, false);
         }
-        // look for global error page.
-        if (loginErrorPage == null || loginErrorPage.length() == 0) {
-            bCtx = false;
-            loginErrorPage = webAppSecConfig.getLoginErrorURL();
-        }
-        if (loginErrorPage != null) {
 
-            return setUpAFullUrl(req, loginErrorPage, bCtx);
+        // web.xml
+        loginErrorPage = getErrorPageFromWebXml();
+        if (loginErrorPage != null && loginErrorPage.length() > 0) {
+            return setUpAFullUrl(req, loginErrorPage, true);
+        }
+
+        // look for global error page defined in server.xml
+        loginErrorPage = webAppSecConfig.getLoginErrorURL();
+        if (loginErrorPage != null && loginErrorPage.length() > 0) {
+            return validateErrorPageRedirect(req, setUpAFullUrl(req, loginErrorPage, false));
         }
 
         return null;
+    }
+
+    /**
+     * Validates a fully-expanded error page URL against a merged domain list.
+     *
+     * @param req                    the current HTTP request
+     * @param fullUrl                the fully-expanded error page URL
+     * @param useWasReqUrlDomainList true to also include WASReqURLRedirectDomainNames (CVE/error_page path);
+     *                               false for hardening path (relogin/web.xml/global) which skips
+     *                               validation entirely when no domain lists are configured
+     * @return fullUrl if valid, null if blocked
+     */
+    private String validateErrorPageRedirect(HttpServletRequest req, String fullUrl) {
+        try {
+            ReferrerURLCookieHandler.isReferrerHostValid(
+                    PasswordNullifier.nullifyParams(req.getRequestURL().toString()),
+                    PasswordNullifier.nullifyParams(fullUrl),
+                    webAppSecConfig.getLoginErrorURLRedirectDomainNames());
+            } catch (RuntimeException e) {
+                Tr.error(tc, "SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED", fullUrl, webAppSecConfig.getLoginErrorURLRedirectDomainNames());
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "validateErrorPageRedirect caught exception", e);
+                }
+                return null;
+            }
+        return fullUrl;
     }
 
     /**
@@ -374,8 +405,11 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
         LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();
         if (loginConfig != null) {
             formLoginConfig = loginConfig.getFormLoginConfiguration();
-            if (formLoginConfig != null)
+            if (formLoginConfig != null) {
                 loginErrorPage = formLoginConfig.getErrorPage();
+                if (loginErrorPage != null && !loginErrorPage.isEmpty() && !loginErrorPage.startsWith("/"))
+                    loginErrorPage = "/" + loginErrorPage;
+            }
         }
         return loginErrorPage;
     }
