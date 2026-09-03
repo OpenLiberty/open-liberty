@@ -11,6 +11,7 @@
 package io.openliberty.transport.http_fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -203,6 +204,41 @@ public class AccessLogRolloverTest {
         assertTrue("Expected at most " + maxFiles + " log files, but found " + logCount + ": " +
                    (logs != null ? Arrays.toString(logs) : "No logs found"),
                    logCount == maxFiles);
+    }
+
+    /*
+     * Tests no NPE when enabled="false" and rolloverInterval is set.
+     * Verifies no NullPointerException in logs and no rolled log files are created.
+     */
+    @Test
+    @Mode(FULL)
+    public void testNoNPEWhenAccessLoggingDisabledWithRolloverInterval() throws Exception {
+        LOG.info("Applying test-specific server configuration for disabled access logging with rolloverInterval.");
+        serverXml.setServerConfigurationFile("accessLogging/server-rollover-disabled.xml");
+        serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
+
+        // Avoid timing issues near the top of a minute
+        avoidTopOfMinute();
+
+        // Wait for one full rollover interval (1 minute) plus padding so the timer would have fired
+        Calendar cal = getNextRolloverTime(0, 1);
+        long timeToRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+        if (timeToRollover > 0) {
+            Thread.sleep(timeToRollover + FILE_WAIT_SECONDS_PADDING);
+        }
+
+        // No NullPointerException should appear in the logs
+        List<String> npeLines = serverInUse.findStringsInLogs("NullPointerException");
+        assertTrue("NullPointerException found in logs when access logging is disabled: " + npeLines,
+                   npeLines.isEmpty());
+
+        // No rolled access log backup files should exist since logging is disabled.
+        // Backup files have a timestamp suffix matching: http_access_yy.MM.dd_HH.mm.ss.log
+        File logsDir = new File(getLogsDirPath());
+        String[] rolledLogs = logsDir.list((dir, name) -> name.matches(ACCESS_LOG_PREFIX + "_\\d{2}\\.\\d{2}\\.\\d{2}_\\d{2}\\.\\d{2}\\.\\d{2}" + LOG_EXT));
+        int rolledCount = (rolledLogs != null) ? rolledLogs.length : 0;
+        assertFalse("Rolled access log files were created even though access logging is disabled: "
+                    + Arrays.toString(rolledLogs), rolledCount > 0);
     }
 
     private static String getLogsDirPath() throws Exception {
