@@ -11,6 +11,7 @@
 package io.openliberty.jpa.container.v40;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.CacheStoreMode;
@@ -264,6 +265,16 @@ public class JPATxEmInvocationV40 extends JPATxEmInvocation{
     @Override
     public void setCacheStoreMode(CacheStoreMode cacheStoreMode) {
         ivEm.setCacheStoreMode(cacheStoreMode);
+    }
+
+    @Override
+    public void addOption(EntityManager.Option option) {
+        ivEm.addOption(option);
+    }
+
+    @Override
+    public Set<EntityManager.Option> getOptions() {
+        return ivEm.getOptions();
     }
 
 }
