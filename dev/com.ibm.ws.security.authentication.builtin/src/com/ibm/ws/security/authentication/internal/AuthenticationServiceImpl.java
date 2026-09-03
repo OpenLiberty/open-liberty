@@ -535,10 +535,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             if (isDebugEnabled()) {
                 Tr.debug(tc, "Inactivity timeout check:\n" +
-                             "  creationTime=" + new Date(creationTime) + "\n" +
-                             "  inactivityExpiration=" + new Date(inactivityExpiration) + "\n" +
-                             "  absoluteExpiration=" + new Date(effectiveExpiration) + "\n" +
-                             "  currentTime=" + new Date(currentTime));
+                             "          creationTime =         " + new Date(creationTime) + "\n" +
+                             "          inactivityExpiration = " + new Date(inactivityExpiration) + "\n" +
+                             "          absoluteExpiration =   " + new Date(effectiveExpiration) + "\n" +
+                             "          currentTime =          " + new Date(currentTime));
             }
 
             // Check if token has exceeded inactivity timeout — expired, not refreshable
