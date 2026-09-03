@@ -47,8 +47,13 @@ public final class AccessIdUtil {
     // The original pattern p splits the same string as
     // "group", "https:", "/test.com/group1".
     static final Pattern ph = Pattern.compile("([^:]+):([^:]+://[^/]+)/(.+)");
-    // handles realms with a single leading slash (e.g. "/idbroker"); /[^/]+ rejects "//".
-    static final Pattern ps = Pattern.compile("([^:]+):(/[^/]+)/(.+)");
+    // Handles any leading-slash realm, including multi-segment paths (e.g. "/myrealm",
+    // "/a/b/c").  The realm group (/[^/:][^/]*...) is greedy so it captures everything
+    // up to the LAST slash, and the uniqueId group ([^/]+) captures the final segment.
+    // The second character must not be '/' or ':' so that "//host" (handled by ph) and
+    // bare strings without a "type:" prefix are not incorrectly matched.
+    // Rejects "//host" style, empty uniqueId, and plain realms (handled by p).
+    static final Pattern ps = Pattern.compile("([^:]+):(/[^/:].*)/([^/]+)");
 
     public static final String TYPE_SERVER = "server";
     public static final String TYPE_USER = "user";

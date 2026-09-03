@@ -257,6 +257,84 @@ public class AccessIdUtilLeadingSlashRealmTest {
         }
     }
 
+    // --- Gap fix: multi-segment unregistered leading-slash realms ---
+    // ps was "(/[^/]+)/(.+)" which only matched ONE segment after the leading slash.
+    // The new ps "(/.*)/([^/]+)" is greedy on the realm and treats the LAST slash as
+    // the separator, so "/a/b" is the realm and "alice" is the uniqueId — correct.
+
+    // Two-segment unregistered leading-slash realm resolves with last segment as uniqueId.
+    @Test
+    public void unregistered_twoSegmentLeadingSlashRealm_parsedCorrectly() {
+        accessIdUtil.unsetSecurityService(securityServiceRef);
+        try {
+            assertTrue(AccessIdUtil.isUserAccessId("user:/a/b/alice"));
+            assertEquals("/a/b", AccessIdUtil.getRealm("user:/a/b/alice"));
+            assertEquals("alice", AccessIdUtil.getUniqueId("user:/a/b/alice"));
+        } finally {
+            accessIdUtil.setSecurityService(securityServiceRef);
+        }
+    }
+
+    // Three-segment unregistered leading-slash realm: last segment is always the uniqueId.
+    @Test
+    public void unregistered_threeSegmentLeadingSlashRealm_parsedCorrectly() {
+        accessIdUtil.unsetSecurityService(securityServiceRef);
+        try {
+            assertTrue(AccessIdUtil.isUserAccessId("user:/a/b/c/alice"));
+            assertEquals("/a/b/c", AccessIdUtil.getRealm("user:/a/b/c/alice"));
+            assertEquals("alice", AccessIdUtil.getUniqueId("user:/a/b/c/alice"));
+        } finally {
+            accessIdUtil.setSecurityService(securityServiceRef);
+        }
+    }
+
+    // Single-segment case is unchanged: /myrealm still works as before.
+    @Test
+    public void unregistered_singleSegmentLeadingSlashRealm_unchanged() {
+        accessIdUtil.unsetSecurityService(securityServiceRef);
+        try {
+            assertTrue(AccessIdUtil.isUserAccessId("user:/myrealm/testuser"));
+            assertEquals("/myrealm", AccessIdUtil.getRealm("user:/myrealm/testuser"));
+            assertEquals("testuser", AccessIdUtil.getUniqueId("user:/myrealm/testuser"));
+        } finally {
+            accessIdUtil.setSecurityService(securityServiceRef);
+        }
+    }
+
+    // Empty uniqueId must still be rejected — the new ps requires at least one non-slash char
+    // after the last slash, so "user:/a/b/" has no match.
+    @Test
+    public void unregistered_multiSegmentLeadingSlashRealm_emptyUniqueId_returnsFalse() {
+        accessIdUtil.unsetSecurityService(securityServiceRef);
+        try {
+            assertFalse(AccessIdUtil.isAccessId("user:/a/b/"));
+        } finally {
+            accessIdUtil.setSecurityService(securityServiceRef);
+        }
+    }
+
+    // Round-trip: createAccessId + parse for a multi-segment leading-slash realm.
+    @Test
+    public void unregistered_multiSegmentLeadingSlashRealm_roundTrip() {
+        accessIdUtil.unsetSecurityService(securityServiceRef);
+        try {
+            String created = AccessIdUtil.createAccessId("user", "/a/b", "alice");
+            assertEquals("user:/a/b/alice", created);
+            assertTrue(AccessIdUtil.isUserAccessId(created));
+            assertEquals("/a/b", AccessIdUtil.getRealm(created));
+            assertEquals("alice", AccessIdUtil.getUniqueId(created));
+        } finally {
+            accessIdUtil.setSecurityService(securityServiceRef);
+        }
+    }
+
+    // getUniqueId(accessId, realm) with an unregistered multi-segment realm uses the
+    // on-demand compiled pattern and must not fall back to ps.
+    @Test
+    public void unregistered_multiSegmentLeadingSlashRealm_getUniqueIdWithRealm() {
+        assertEquals("alice", AccessIdUtil.getUniqueId("user:/a/b/alice", "/a/b"));
+    }
+
     // Multi-segment slash realm registered in the holder resolves correctly.
     @Test
     public void subpathRealm_matcherNonNull_and_partsCorrect() {
