@@ -216,7 +216,7 @@ public class ToolRegistry implements ToolManager {
                     }
                     case CONVERSION_ERROR -> {
                         String msg = Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error",
-                                                      this.name, arg.name(), arg.type().getTypeName(), arg.defaultValue(), error.exception().toString());
+                                                      this.name, arg.name(), arg.type().getTypeName(), arg.defaultValue(), error.exception());
                         throw new IllegalArgumentException(msg, error.exception());
                     }
                     // This case should not occur here, but switch is required to cover all cases
