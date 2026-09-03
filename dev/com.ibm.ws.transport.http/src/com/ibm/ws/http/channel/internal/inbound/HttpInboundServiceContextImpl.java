@@ -185,7 +185,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.nettyRequest = request;
         super.setNettyRequest(request);
 
-        boolean isSecure = nettyContext.channel().hasAttr(NettyHttpConstants.IS_SECURE);
+        boolean isSecure = Boolean.TRUE.equals(nettyContext.channel().attr(NettyHttpConstants.IS_SECURE).get());
         if (isSecure) {
             getRequest().setScheme(SchemeValues.HTTPS);
         } else {
