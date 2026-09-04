@@ -369,6 +369,40 @@ public class TelemetryOperationsTest extends FATServletClient {
         FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testAsyncFailedStageToolMetrics");
     }
 
+    @Test
+    public void testParseErrorMetrics() throws Exception {
+        // Send a request with invalid JSON body
+        client.callMCP("this is not json");
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testParseErrorMetrics");
+    }
+
+    @Test
+    public void testInvalidRequestMetrics() throws Exception {
+        // Send valid JSON but invalid JSON-RPC
+        client.callMCP("""
+                        {
+                          "jsonrpc": "1.0",
+                          "id": 99,
+                          "method": "tools/list"
+                        }
+                        """);
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testInvalidRequestMetrics");
+    }
+
+    @Test
+    public void testMethodNotFoundMetrics() throws Exception {
+        // Send a valid JSON-RPC request for an unknown method
+        client.callMCP("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 100,
+                          "method": "unknown/method",
+                          "params": {}
+                        }
+                        """);
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testMethodNotFoundMetrics");
+    }
+
     /**
      * Call McpMetricDurationServlet and get the recorded total duration for executions of a tool
      */

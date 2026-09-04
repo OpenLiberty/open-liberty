@@ -244,6 +244,50 @@ public class McpOperationMetricServlet extends FATServlet {
                         .runCompareAgainst(capturedMetricData);
     }
 
+    public void testParseErrorMetrics() {
+        HistogramPointData point = reader.getOperationPoint("_OTHER");
+
+        Attributes attributes = point.getAttributes();
+        assertEquals("_OTHER", getStringAttribute(attributes, "mcp.method.name"));
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertEquals("PARSE_ERROR", getStringAttribute(attributes, "error.type"));
+    }
+
+    public void testInvalidRequestMetrics() {
+        // INVALID_REQUEST and PARSE_ERROR both use "_OTHER" 
+        Optional<MetricData> metric = reader.getMetricData("mcp.server.operation.duration");
+        assertTrue("mcp.server.operation.duration metric not found", metric.isPresent());
+
+        List<HistogramPointData> points = metric.get()
+                                                .getHistogramData()
+                                                .getPoints()
+                                                .stream()
+                                                .filter(p -> "_OTHER".equals(getStringAttribute(p.getAttributes(), "mcp.method.name")))
+                                                .filter(p -> "INVALID_REQUEST".equals(getStringAttribute(p.getAttributes(), "error.type")))
+                                                .toList();
+
+        assertTrue("Expected at least one _OTHER/INVALID_REQUEST metric point", !points.isEmpty());
+        HistogramPointData point = points.get(0);
+        assertEquals("error", getStringAttribute(point.getAttributes(), "rpc.response.status_code"));
+    }
+
+    public void testMethodNotFoundMetrics() {
+        Optional<MetricData> metric = reader.getMetricData("mcp.server.operation.duration");
+        assertTrue("mcp.server.operation.duration metric not found", metric.isPresent());
+
+        List<HistogramPointData> points = metric.get()
+                                                .getHistogramData()
+                                                .getPoints()
+                                                .stream()
+                                                .filter(p -> "_OTHER".equals(getStringAttribute(p.getAttributes(), "mcp.method.name"))
+                                                             && "METHOD_NOT_FOUND".equals(getStringAttribute(p.getAttributes(), "error.type")))
+                                                .toList();
+
+        assertTrue("Expected at least one metric point for METHOD_NOT_FOUND", !points.isEmpty());
+        HistogramPointData point = points.get(0);
+        assertEquals("error", getStringAttribute(point.getAttributes(), "rpc.response.status_code"));
+    }
+
     public void captureOperationDurationMetrics() {
         capturedMetricData = reader.getMetricData("mcp.server.operation.duration").get();
     }
