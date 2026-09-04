@@ -1,0 +1,27 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>enterpriseBeansLite-4.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <enterpriseApplication type="ear" id="myEJBEAR" name="myEJBEAR" location="sharedLibEJB.ear">
+        <classloader delegation="parentLast">
+            <commonLibrary id="myDefaultSharedLib">
+                <fileset dir="${server.config.dir}/SharedLibraryBase" includes="sharedLibraryBase2.jar"></fileset>
+            </commonLibrary>
+        </classloader>
+    </enterpriseApplication>
+</server>

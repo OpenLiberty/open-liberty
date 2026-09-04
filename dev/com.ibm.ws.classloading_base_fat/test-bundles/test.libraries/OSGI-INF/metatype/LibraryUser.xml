@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+
+  <OCD name="Library User" description="Test element to use a library."
+       id="test.library.user"
+       ibm:alias="libraryUser">
+    
+    <AD name="library reference" description="A reference to a library."  
+        id="libraryRef" 
+        required="true" 
+        type="String"    
+        cardinality="1"  
+        ibm:type="pid" 
+        ibm:reference="com.ibm.ws.classloading.sharedlibrary"
+    />
+    
+    <AD id="library.target"                   
+        name="internal"      
+        description="internal use only"  
+        required="false" 
+        type="String"  
+        ibm:final="true" 
+        default="(service.pid=${libraryRef})" 
+    />
+    
+  </OCD>
+  
+  <Designate factoryPid="test.library.user">
+      <Object ocdref="test.library.user"/>
+  </Designate>
+  
+</metatype:MetaData>
