@@ -25,6 +25,7 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -105,7 +106,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
             ctx.channel().attr(COMPOSITE_CONTENT).set(content);
 
             //If POST, check for integer content-length; fail-fast if CL is long which is not supported at this time.
-            String value = request.method().name().equals("POST") ? request.headers().get(io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH) : null;
+            String value = HttpMethod.POST.equals(request.method()) ? request.headers().get(io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH) : null;
             if (value != null) {
                 try {
                     Integer.parseInt(value);
@@ -129,7 +130,8 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
                 if (msg instanceof LastHttpContent) {
                     HttpRequest request = ctx.channel().attr(CURRENT_REQUEST).get();
-                    FullHttpRequest fullRequest = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri(), content, request.headers(), ((LastHttpContent) msg).trailingHeaders());
+                    // Request line validation disabled because validation at this point is not needed
+                    FullHttpRequest fullRequest = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri(), content, request.headers(), ((LastHttpContent) msg).trailingHeaders(), false);
                     fullRequest.setDecoderResult(httpContent.decoderResult());
 
                     ctx.fireChannelRead(fullRequest);

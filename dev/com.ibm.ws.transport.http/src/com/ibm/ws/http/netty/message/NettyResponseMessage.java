@@ -48,6 +48,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.openliberty.http.constants.HttpGenerics;
 import io.openliberty.http.netty.channel.utils.HeaderValidator;
 import io.openliberty.http.netty.channel.utils.HeaderValidator.FieldType;
 import io.openliberty.http.netty.cookie.CookieEncoder;
@@ -67,20 +68,20 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     HttpInboundServiceContext context;
     HttpChannelConfig config;
 
-    public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc, HttpRequest request) {
+    public NettyResponseMessage(HttpResponse response, HttpInboundServiceContext isc, HttpRequest request, int streamId) {
         Objects.requireNonNull(isc);
         Objects.requireNonNull(response);
 
         this.context = isc;
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
-        this.trailers = new DefaultHttpHeaders().clear();
+        this.trailers = new DefaultHttpHeaders();
         this.nettyTrailerWrapper = new NettyTrailers(this.trailers);
 
-        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-            String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-            nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
-
+        // For a matching request, a matching header must be set for stream id in HTTP 2.0
+        if(streamId != -1) {
+            this.streamId = streamId;
+            nettyResponse.headers().setInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
         }
 
         if (isc instanceof HttpInboundServiceContextImpl) {
@@ -344,28 +345,12 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
-    public void removeHeader(byte[] header) {
-        removeHeader(new String(header, StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public void removeHeader(HeaderKeys header) {
-        removeHeader(header.getName());
-    }
-
-    @Override
-    public void removeHeader(String header) {
-        headers.remove(header);
-    }
-
-    @Override
-    public void removeAllHeaders() {
-        headers.clear();
-    }
-
-    @Override
-    public void setHeader(HeaderKeys header, String value) {
-        setHeader(header.getName(), value);
+    public void setHeader(String header, String value) {
+        // String name: always invalidate — avoids equalsIgnoreCase on every header write.
+        cachedContentLength = HttpGenerics.NOT_SET;
+        String normalizedName = HeaderValidator.process(header, FieldType.NAME, config);
+        String normalizedValue = HeaderValidator.process(value, FieldType.VALUE, config);
+        headers.set(normalizedName, normalizedValue);
     }
 
     @Override
@@ -379,13 +364,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
             headers.set(normalizedName, normalizedValue);
         }
         return null;
-    }
-
-    @Override
-    public void setHeader(String header, String value) {
-        String normalizedName = HeaderValidator.process(header, FieldType.NAME, config);
-        String normalizedValue = HeaderValidator.process(value, FieldType.VALUE, config);
-        headers.set(normalizedName, normalizedValue);
     }
 
     @Override

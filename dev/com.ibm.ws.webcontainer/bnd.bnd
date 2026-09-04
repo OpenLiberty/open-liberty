@@ -217,4 +217,5 @@ instrument.disabled: true
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     cglib:cglib;version=3.3.0, \
     com.ibm.ws.org.objectweb.asm;version=latest, \
-    com.ibm.ws.kernel.boot;version=latest
+    com.ibm.ws.kernel.boot;version=latest, \
+    io.openliberty.io.netty;version=latest

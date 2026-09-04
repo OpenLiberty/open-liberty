@@ -205,4 +205,5 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
 	com.ibm.ws.injection.core;version=latest,\
 	io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
 	io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
-	io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest
+	io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest,\
+  io.openliberty.io.netty;version=latest

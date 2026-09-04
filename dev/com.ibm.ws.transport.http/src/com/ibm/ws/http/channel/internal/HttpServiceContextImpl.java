@@ -2324,7 +2324,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
         ((NettyResponseMessage) getResponse()).processCookies();
-        HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
+        HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response, (((NettyResponseMessage) getResponse()).getStreamId() != -1));
         headerHandler.complianceCheck();
         String closeNonUpgraded = (String) (this.myVC.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
         // Shouldn't close upgraded requests
@@ -2336,8 +2336,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
         }
-        if (HttpUtil.isContentLengthSet(response)) {
-            this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
+        if (getResponse().getContentLength() != HttpGenerics.NOT_SET) {
+            this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(getResponse().getContentLength());
         }
         final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
 
@@ -3043,7 +3043,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyResponseMessage)msg).update(nettyResponse);
             }
             prepareNettyHeadersToSend();
-            if (getResponse().containsHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString())) {
+            if ((((NettyResponseMessage) getResponse()).getStreamId() != -1)) {
                 nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
                 if (Objects.isNull(handler)) {
@@ -3073,11 +3073,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            HeaderField streamIdField = getResponse().getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-            String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
-
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
-                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
+                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(((NettyResponseMessage) getResponse()).getStreamId());
             }
 
             nettyWrite(sendHeaders, false);
@@ -3368,7 +3365,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyResponseMessage)msg).update(nettyResponse);
             }
             prepareNettyHeadersToSend();
-            if (msg.containsHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString())) {
+            if (((NettyResponseMessage) getResponse()).getStreamId() != -1) {
 
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
                 if (Objects.isNull(handler)) {
@@ -3398,11 +3395,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            HeaderField streamIdField = getResponse().getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-            String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
-
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
-                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
+                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(((NettyResponseMessage) getResponse()).getStreamId());
             }
 
             nettyWrite(sendHeaders, true);
@@ -3762,6 +3756,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // Set prefix object on Netty Write Request Context
                 ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).queuePrefixObject(nettyResponse);
             }
+            if(finalWrite) {
+                // Set last write object on Netty Write Request Context
+                NettyResponseMessage resp = (NettyResponseMessage) getResponse();
+                ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).setLastWrite(new LastStreamSpecificHttpContent(resp.getStreamId(), resp.getNettyTrailers()));
+            }
 
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             try {
@@ -3773,7 +3772,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // 457369 - disconnect write buffers in TCP when done
                 getTSC().getWriteInterface().setBuffers(null);
             }
-
+            return;
         }
         else if (sendHeaders) {
             sendNettyHeaders();
@@ -3794,12 +3793,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
         }
         NettyResponseMessage resp = (NettyResponseMessage) getResponse();
-        HttpHeaders trailers = resp.getNettyTrailers();
-
-        HeaderField streamIdField = resp.getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-        String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
-
-        DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
+        DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(resp.getStreamId(), resp.getNettyTrailers());
 
         // Sending last http content since all data was written
         this.nettyContext.channel().eventLoop().execute(() -> nettyContext.channel().writeAndFlush(lastContent));

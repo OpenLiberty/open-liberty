@@ -173,7 +173,11 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
                 .setMaxInitialLineLength(maxInitialLineLength)
                 .setMaxChunkSize(maxChunkSize)
                 .setLimitFieldSize(limitFieldSize)
-                .setLimitNumHeaders(limitNumHeaders));
+                .setLimitNumHeaders(limitNumHeaders)
+                .setHeadersFactory(DefaultHttpHeadersFactory.headersFactory()
+                    .withValueValidation(false))   // matches CHFW: no value char check
+                    // name validation remains ON // matches CHFW: isValidTchar enforced
+            );
     }
 
     /**
