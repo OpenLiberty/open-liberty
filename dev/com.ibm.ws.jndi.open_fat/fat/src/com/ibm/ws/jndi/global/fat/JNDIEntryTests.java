@@ -17,18 +17,27 @@ package com.ibm.ws.jndi.global.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+
+import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
+import componenttest.vulnerability.LeakedPasswordChecker;
 
 /**
  * Test to make sure that JNDIEntry registers the correct services
@@ -47,13 +56,28 @@ public class JNDIEntryTests extends FATServletClient {
 
     @Server("jndi_entry_dynamic_update")
     public static LibertyServer jndi_entry_dynamic_update_server;
+    private static List<LibertyServer> testServers;
+
+    @Rule
+    public TestRule passwordChecker = new LeakedPasswordChecker(jndi_entry_decode_server);
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+
+        testServers = Arrays.asList(jndi_entry_fat_server, jndi_entry_decode_server, jndi_entry_id_update_server, jndi_entry_dynamic_update_server);
+
         ShrinkHelper.exportDropinAppToServer(jndi_entry_fat_server, FATSuite.READ_JNDI_ENTRY_WAR);
         ShrinkHelper.exportDropinAppToServer(jndi_entry_decode_server, FATSuite.READ_JNDI_ENTRY_WAR);
         ShrinkHelper.exportDropinAppToServer(jndi_entry_id_update_server, FATSuite.READ_JNDI_ENTRY_WAR);
         ShrinkHelper.exportDropinAppToServer(jndi_entry_dynamic_update_server, FATSuite.READ_JNDI_ENTRY_WAR);
+    }
+   @After
+    public void stopAllServers() throws Exception {
+        for (LibertyServer server : testServers) {
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+        }
     }
 
     /**
@@ -65,7 +89,7 @@ public class JNDIEntryTests extends FATServletClient {
     public void testJNDIEntry() throws Exception {
         // Grab the server
         jndi_entry_fat_server.startServer();
-        try {
+
             /*
              * Wait for two debug level messages saying that the JNDI entries are registered.
              * Use a fairly short time out as we've already waited for the app to start
@@ -96,34 +120,33 @@ public class JNDIEntryTests extends FATServletClient {
             HttpUtils.findStringInUrl(jndi_entry_fat_server, "/ReadJndiEntry/ReadJndiEntry",
                                       "javax.naming.NameNotFoundException: stringJndiEntry",
                                       "javax.naming.NameNotFoundException: doubleJndiEntry");
-        } finally {
-            jndi_entry_fat_server.stopServer();
-        }
+
     }
 
     @Test
+    @CheckForLeakedPasswords("not_encrypted_passw0rd")
     public void testJNDIDecode() throws Exception {
         // Grab the server
         jndi_entry_decode_server.startServer();
-        try {
+    
             /*
              * Wait for a debug level message saying that the JNDI entry is registered.
              * Use a fairly short time out as we've already waited for the app to start
              * so this should already have appeared.
              */
-            assertEquals("No debug message in the trace.log saying  a jndi entry defined in the server.xml was registered", 1,
-                         jndi_entry_decode_server.waitForMultipleStringsInLog(1, ".*Registering JNDIEntry", 10000, jndi_entry_decode_server.getMatchingLogFile("trace.log")));
+            assertEquals("No debug message in the trace.log saying  a jndi entry defined in the server.xml was registered", 3,
+                         jndi_entry_decode_server.waitForMultipleStringsInLog(3, ".*Registering JNDIEntry", 10000, jndi_entry_decode_server.getMatchingLogFile("trace.log")));
 
             String decryptedStringValue = "foobar";
             String decryptedIntValue = "12345";
+            String plainTextJndiEntry = "not_encrypted_passw0rd";
             // Check to make sure the decrypted JndiEntry value for "{xor}OTAwPT4t" is returned
             HttpUtils.findStringInUrl(jndi_entry_decode_server, "/ReadJndiEntry/ReadJndiEntry",
                                       "JNDI Entry found for stringJndiEntry", "Value of JNDI Entry is: " + decryptedStringValue);
             HttpUtils.findStringInUrl(jndi_entry_decode_server, "/ReadJndiEntry/ReadJndiEntry",
                                       "JNDI Entry found for stringJndiEntry", "Value of JNDI Entry is: " + decryptedIntValue);
-        } finally {
-            jndi_entry_decode_server.stopServer();
-        }
+            HttpUtils.findStringInUrl(jndi_entry_decode_server, "/ReadJndiEntry/ReadJndiEntry",
+                                      "JNDI Entry found for stringPlainTextJndiEntry", "Value of JNDI Entry is: " + plainTextJndiEntry);
     }
 
 //    /**
@@ -135,7 +158,7 @@ public class JNDIEntryTests extends FATServletClient {
     public void testJNDIEntryIDUpate() throws Exception {
         // Grab the server
         jndi_entry_id_update_server.startServer();
-        try {
+       
             /*
              * Wait for two debug level messages saying that the JNDI entries are registered.
              * Use a fairly short time out as we've already waited for the app to start
@@ -162,10 +185,7 @@ public class JNDIEntryTests extends FATServletClient {
             HttpUtils.findStringInUrl(jndi_entry_id_update_server, "/ReadJndiEntry/ReadJndiEntry",
                                       "JNDI Entry found for stringJndiEntry", "Value of JNDI Entry is: 2.0",
                                       "JNDI Entry found for doubleJndiEntry", "Value of JNDI Entry is: String Value");
-
-        } finally {
-            jndi_entry_id_update_server.stopServer();
-        }
+    
     }
 
     /**
@@ -177,7 +197,7 @@ public class JNDIEntryTests extends FATServletClient {
     public void testDynamicJNDIEntryUpdate() throws Exception {
         // Grab the server
         jndi_entry_dynamic_update_server.startServer();
-        try {
+
             /*
              * Wait for two debug level messages saying that the JNDI entries are registered.
              * Use a fairly short time out as we've already waited for the app to start
@@ -205,9 +225,6 @@ public class JNDIEntryTests extends FATServletClient {
             HttpUtils.findStringInUrl(jndi_entry_dynamic_update_server, "/ReadJndiEntry/ReadJndiEntry",
                                       "JNDI Entry found for stringJndiEntry", "Value of JNDI Entry is: 2.0",
                                       "JNDI Entry found for doubleJndiEntry", "Value of JNDI Entry is: String Value");
-
-        } finally {
-            jndi_entry_dynamic_update_server.stopServer();
-        }
+                         
     }
 }

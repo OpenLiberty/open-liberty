@@ -1,6 +1,6 @@
 /*
  * =============================================================================
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ public class ReadJndiEntry extends HttpServlet {
         // Get the OSGi bundle context so we can look up the service registrations
         findJndiEntry(String.class, "stringJndiEntry", writer);
         findJndiEntry(Double.class, "doubleJndiEntry", writer);
+        findJndiEntry(String.class, "stringPlainTextJndiEntry", writer);
     }
 
     private void findJndiEntry(Class jndiClass, String jndiName, PrintWriter writer) {
