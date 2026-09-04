@@ -52,7 +52,7 @@ import componenttest.rules.repeater.JakartaEEAction;
  * 
  */
 // No need to run against cdi-2.0 since these tests don't use CDI at all.
-@Mode(TestMode.FULL)
+// @Mode(TestMode.FULL)
 @SkipForRepeat({ "CDI-2.0" })
 @RunWith(FATRunner.class)
 public class JSPChannelTest {
@@ -96,46 +96,84 @@ public class JSPChannelTest {
     public void testIgnoreWriteAfterCommitTrue() throws Exception {
         Socket socket = null;
         try {
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Setting ignoreWriteAfterCommit=true");
             updateHTTPOptions(true);
 
             String address = server.getHostname() + ":" + server.getHttpDefaultPort();
 
             // sendRedirect changed in EE11, so we'll request a slightly different page
             String page = JakartaEEAction.isEE11OrLaterActive() ? "indexEE11.jsp" : "index.jsp";
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Using page: " + page);
 
+            // Request 1: index.jsp — triggers sendRedirect + post-commit footer write (MSE).
+            // Keep-alive is the default for HTTP/1.1; do NOT send Connection: close here so the
+            // connection stays open after the 302 response.
             String request = "GET /" + APP_NAME + "/" + page + " HTTP/1.1\r\n" +
                              "Host: " + address + "\r\n" +
-                             "Keep-Alive: timeout=5, max=200\r\n" +
                              "\r\n";
 
-            String redirect_request = "GET /" + APP_NAME + "/page2.jsp " + "HTTP/1.1\r\n" +
+            // Request 2: page2.jsp — the actual redirect destination, sent after the 302 is received.
+            // Connection: close tells the server this is the last request on the socket.
+            String redirect_request = "GET /" + APP_NAME + "/page2.jsp HTTP/1.1\r\n" +
                                       "Host: " + address + "\r\n" +
                                       "Connection: close\r\n" +
                                       "\r\n";
 
             socket = new Socket(server.getHostname(), server.getHttpDefaultPort());
-            socket.setKeepAlive(true);
+            socket.setSoTimeout(10000); // 10s read timeout so we don't block forever
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Socket connected to " + address);
 
             BufferedReader bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             OutputStream os = socket.getOutputStream();
 
+            // Send request 1 and wait for the complete 302 response before sending request 2.
+            // This ensures HttpServerKeepAliveHandler processes the 302 first, keeping
+            // persistentConnection=true, and only learns about Connection: close from request 2
+            // after the 302 has already been counted.
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Sending request 1 (index.jsp)...");
             os.write(request.getBytes());
-            Thread.sleep(500); // time in-between requests
-            os.write(redirect_request.getBytes());
+            os.flush();
 
-            // Wait a few seconds to let the connection close if an error occurs
-            Thread.sleep(3000);
-
-            // Read the responses:
-            boolean containsMessage = false;
+            // Drain the first response (302 redirect) completely before sending request 2.
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Reading first response (expect 302)...");
+            boolean got302 = false;
             String line;
+            StringBuilder firstResponse = new StringBuilder();
             while ((line = bReader.readLine()) != null) {
-                LOG.info(line);
-                if (line.contains("Successfully redirected!")) {
-                    containsMessage = true;
+                LOG.info("[testIgnoreWriteAfterCommitTrue] Response1 line: " + line);
+                firstResponse.append(line).append("\n");
+                if (line.startsWith("HTTP/") && line.contains("302")) {
+                    got302 = true;
+                }
+                // HTTP/1.1 responses with Content-Length: 0 end after the empty line after headers
+                if (line.isEmpty() && got302) {
+                    LOG.info("[testIgnoreWriteAfterCommitTrue] Empty line after 302 headers — response complete");
+                    break;
                 }
             }
-            Assert.assertTrue("The redirect failed!", containsMessage);
+            LOG.info("[testIgnoreWriteAfterCommitTrue] First response done. got302=" + got302);
+            Assert.assertTrue("Expected a 302 redirect response for request 1", got302);
+
+            // Now send request 2 on the same socket — connection must still be open
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Sending request 2 (page2.jsp) on the same socket...");
+            os.write(redirect_request.getBytes());
+            os.flush();
+
+            // Read the second response and look for the success marker
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Reading second response (expect 200 with success message)...");
+            boolean containsMessage = false;
+            while ((line = bReader.readLine()) != null) {
+                LOG.info("[testIgnoreWriteAfterCommitTrue] Response2 line: " + line);
+                if (line.contains("Successfully redirected!")) {
+                    containsMessage = true;
+                    LOG.info("[testIgnoreWriteAfterCommitTrue] Found 'Successfully redirected!' in response");
+                }
+            }
+            LOG.info("[testIgnoreWriteAfterCommitTrue] Done reading. containsMessage=" + containsMessage);
+            Assert.assertTrue("The redirect failed! Expected 'Successfully redirected!' in response but connection may have been closed. "
+                    + "Check server logs for [DEBUG nettyClose] and [DEBUG handleMSE] output.", containsMessage);
+        } catch (java.net.SocketTimeoutException e) {
+            Assert.fail("Socket timed out waiting for response — connection may have been closed prematurely: " + e.getMessage());
         } finally {
             if (socket != null) {
                 socket.close();
@@ -392,17 +430,24 @@ public class JSPChannelTest {
     private void updateHTTPOptions(Boolean persistValue) throws Exception {
         ServerConfiguration c = server.getServerConfiguration();
         ConfigElementList<HttpEndpoint> h = c.getHttpEndpoints();
-        boolean serverXMLChanged = false; 
+        boolean serverXMLChanged = false;
         for (HttpEndpoint httpEndpoint : h) {
             LOG.info("Using httpEndpoint: " + h);
-            if(httpEndpoint.getHttpOptions().isIgnoreWriteAfterCommit() != persistValue){
+            if (httpEndpoint.getHttpOptions().isIgnoreWriteAfterCommit() != persistValue) {
                 serverXMLChanged = true;
                 httpEndpoint.getHttpOptions().setIgnoreWriteAfterCommit(persistValue);
             }
         }
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(c);
-        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet(), serverXMLChanged ? "CWWKT0016I:.*WriteAfterRedirect.*" : "");
+        // Always wait for CWWKO0219I (TCP channel started and listening on the HTTP port)
+        // so that the next connection attempt does not get a "Connection refused".
+        // The httpOptions change cycles the TCP endpoint: the port stops and restarts.
+        // CWWKT0016I (app available) can fire before the OS has finished binding the port,
+        // so we wait for the TCP-ready message which is the authoritative signal.
+        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet(),
+                                                 serverXMLChanged ? "CWWKT0016I:.*WriteAfterRedirect.*" : "");
+        server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint.*");
         server.resetLogMarks();
     }
 
