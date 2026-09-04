@@ -16,6 +16,15 @@
                    localization="OSGI-INF/l10n/metatype">
 
 
+<!-- Global audit source configuration -->
+<OCD id="com.ibm.ws.security.audit.metatype" name="%audit.name" description="%audit.desc" ibm:alias="audit">
+   <AD id="generateNewSession" name="%generateNewSession.name" description="%generateNewSession.desc" required="false" type="Boolean" default="true"/>
+</OCD>
+
+<Designate pid="com.ibm.ws.security.audit">
+   <Object ocdref="com.ibm.ws.security.audit.metatype"/>
+</Designate>
+
 <OCD id="com.ibm.ws.security.audit.event.metatype" name="%auditEvent.name" description="%auditEvent.desc" ibm:alias="auditEvent">
    <AD id="eventName" name="%eventName.name" description="%eventName.desc" required="false" type="String">
             <Option label="%securityAuditMgmt.desc" value="SECURITY_AUDIT_MGMT"/>  
