@@ -83,6 +83,7 @@ public class CDITestHttpUpgradeHandler implements HttpUpgradeHandler {
 
     protected void logBeanActivity(String className, String methodName, String text) {
         String activityText = ":" + className + ":" + methodName + ":" + text + ":";
+        LOG.info(className + " logBeanActivity, add to applicationLog [" + activityText + "]");
         applicationLog.addLine(activityText);
     }
 
