@@ -279,13 +279,13 @@ public class McpOperationMetricServlet extends FATServlet {
                                                 .getHistogramData()
                                                 .getPoints()
                                                 .stream()
-                                                .filter(p -> "unknown/method".equals(getStringAttribute(p.getAttributes(), "mcp.method.name")))
+                                                .filter(p -> "_OTHER".equals(getStringAttribute(p.getAttributes(), "mcp.method.name"))
+                                                             && "METHOD_NOT_FOUND".equals(getStringAttribute(p.getAttributes(), "error.type")))
                                                 .toList();
 
-        assertTrue("Expected at least one metric point for unknown/method", !points.isEmpty());
+        assertTrue("Expected at least one metric point for METHOD_NOT_FOUND", !points.isEmpty());
         HistogramPointData point = points.get(0);
         assertEquals("error", getStringAttribute(point.getAttributes(), "rpc.response.status_code"));
-        assertEquals("METHOD_NOT_FOUND", getStringAttribute(point.getAttributes(), "error.type"));
     }
 
     public void captureOperationDurationMetrics() {

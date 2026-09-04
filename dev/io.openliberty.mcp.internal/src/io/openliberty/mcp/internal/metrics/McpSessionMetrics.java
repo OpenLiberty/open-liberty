@@ -88,8 +88,8 @@ public final class McpSessionMetrics {
     public void setTransport(McpTransport transport) {
         if (transport != null) {
             this.appName = transport.getAppName();
-            // Extract all required info now the transport holds HttpServletRequest/Response
-            // which must not be retained for the session lifetime to avoid a memory leak
+            // Extract all required info eagerly since there is no need to hold onto the
+            // transport for the session lifetime
             this.protocol = transport.getReq().getProtocol();
             if (transport.getMcpRequest() != null) {
                 this.jsonrpcProtocolVersion = transport.getMcpRequest().jsonrpc();

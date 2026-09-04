@@ -139,11 +139,8 @@ public class McpServlet extends HttpServlet {
 
             metrics.setTransport(transport);
             McpRequest mcpRequest = transport.getMcpRequest();
-            if (mcpRequest != null && mcpRequest.method() != null) {
-                metrics.setMethodName(mcpRequest.method());
-            }
-
             RequestMethod method = mcpRequest.getRequestMethod();
+            metrics.setMethodName(method.getMethodName());
 
             if (!isServerStateless() && method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
                 McpSession session = transport.getSession();
