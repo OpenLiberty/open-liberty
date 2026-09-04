@@ -26,6 +26,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,6 +49,16 @@ public class IntrospectorMultiAppTest {
 
     private static final String BASIC_TOOLS = "BasicTools";
     private static final String INTROSPECTOR_TESTAPP = "IntrospectorTestapp";
+    private static final String ROOT_CONTEXT_APP = "RootContextApp";
+
+    private static final String IBM_WEB_EXT_ROOT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                                                    + "<web-ext xmlns=\"http://websphere.ibm.com/xml/ns/javaee\""
+                                                    + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                                                    + " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee"
+                                                    + " http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_1.xsd\""
+                                                    + " version=\"1.1\">"
+                                                    + "<context-root uri=\"/\"/>"
+                                                    + "</web-ext>";
 
     @Server("mcp-server")
     public static LibertyServer server;
@@ -77,21 +88,21 @@ public class IntrospectorMultiAppTest {
         // Dump and verify both applications appear
         String introspection1 = getIntrospectorDumpContents();
 
-        assertFalse("Did NOT expect any application to be named 'unknown-app'",
-                    introspection1.contains("Application: unknown-app"));
+        assertFalse("Did NOT expect any context path to be listed as 'unknown-app'",
+                    introspection1.contains("Context path: unknown-app"));
         // Check for expected applications
         assertTrue("Expected BasicIntroSpector application to be listed",
-                   introspection1.contains("Application: BasicTools"));
+                   introspection1.contains("Context path: BasicTools"));
 
         assertTrue("Expected Testapp application to be listed",
-                   introspection1.contains("Application: IntrospectorTestapp"));
+                   introspection1.contains("Context path: IntrospectorTestapp"));
 
         // Check for at least one tool per application
         assertTrue("Expected tool 'IntrospectTool' from IntrospectorTestTools",
-                   introspection1.contains("Application: IntrospectorTestapp") && introspection1.contains("Tool: IntrospectTool"));
+                   introspection1.contains("Context path: IntrospectorTestapp") && introspection1.contains("Tool: IntrospectTool"));
 
         assertTrue("Expected at least one tool from BasicTools",
-                   introspection1.contains("Application: BasicTools") && introspection1.contains("Tool:"));
+                   introspection1.contains("Context path: BasicTools") && introspection1.contains("Tool:"));
 
         // Undeploy Testapp manually
         Path testAppPath = Paths.get(server.getServerRoot(), "dropins", "Testapp.war");
@@ -105,14 +116,41 @@ public class IntrospectorMultiAppTest {
         String introspection2 = getIntrospectorDumpContents();
 
         assertTrue("Expected BasicIntroSpector to still be listed",
-                   introspection2.contains("Application: " + BASIC_TOOLS));
+                   introspection2.contains("Context path: " + BASIC_TOOLS));
 
         assertFalse("Did NOT expect Testapp after undeploy",
-                    introspection2.contains("Application: " + INTROSPECTOR_TESTAPP));
+                    introspection2.contains("Context path: " + INTROSPECTOR_TESTAPP));
 
         assertFalse("Did NOT expect tool 'IntrospectTool' after undeploy",
                     introspection2.contains("Tool: helloFromTestApp"));
 
+    }
+
+    /**
+     * Verifies that a web module deployed at context root {@code /} appears in the introspection output
+     * as {@code Context path: /} and is never labelled {@code unknown-app}.
+     */
+    @Test
+    public void testRootContextPathAppIsNotLabelledUnknownApp() throws Exception {
+        WebArchive rootWar = ShrinkWrap.create(WebArchive.class, ROOT_CONTEXT_APP + ".war")
+                                       .addClasses(IntrospectorTestTools.class)
+                                       .addAsWebInfResource(new StringAsset(IBM_WEB_EXT_ROOT), "ibm-web-ext.xml");
+
+        ShrinkHelper.exportDropinAppToServer(server, rootWar, SERVER_ONLY);
+        server.addInstalledAppForValidation(ROOT_CONTEXT_APP);
+
+        try {
+            String introspection = getIntrospectorDumpContents();
+
+            assertFalse("Did NOT expect context path '/' to be labelled 'unknown-app'",
+                        introspection.contains("Context path: unknown-app"));
+
+            assertTrue("Expected root context path app to appear as 'Context path: /'",
+                       introspection.contains("Context path: /"));
+        } finally {
+            server.deleteFileFromLibertyServerRoot("dropins/" + ROOT_CONTEXT_APP + ".war");
+            server.removeInstalledAppForValidation(ROOT_CONTEXT_APP);
+        }
     }
 
     /**
