@@ -729,10 +729,9 @@ public class PasswordCipherUtil {
 
     /**
      * @param decrypted_bytes
-     * @param rand
      * @return
      */
-    private static byte[] aesSetSeed(byte[] decrypted_bytes, SecureRandom rand) {
+    private static byte[] aesSetSeed(byte[] decrypted_bytes) {
 
         byte seedSize = 64;
         byte[] seed = CryptoUtils.generateRandomBytes(seedSize);
@@ -756,12 +755,12 @@ public class PasswordCipherUtil {
                                                    AESKeyManager.KeyVersion version,
                                                    SecretKeyResolver resolver) throws InvalidKeySpecException, UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
         EncryptedInfo info = null;
-        SecureRandom rand = new SecureRandom();
-        byte[] preEncrypted = aesSetSeed(decrypted_bytes, rand);
+        byte[] preEncrypted = aesSetSeed(decrypted_bytes);
         try {
             Cipher c = Cipher.getInstance(CryptoUtils.AES_GCM_CIPHER);
             // 128 is the GCM tag length. 128 is the MAX.
-            GCMParameterSpec ps = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, rand.generateSeed(c.getBlockSize()));
+            // Use CryptoUtils.generateRandomBytes to avoid UnsupportedOperationException on hardware crypto providers (e.g. IBMJCECCA) that do not implement generateSeed.
+            GCMParameterSpec ps = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, CryptoUtils.generateRandomBytes(c.getBlockSize()));
             Key resolvedKey = resolver.getKey();
             c.init(Cipher.ENCRYPT_MODE, resolvedKey, ps);
             byte[] encrypted_bytes = c.doFinal(preEncrypted);
