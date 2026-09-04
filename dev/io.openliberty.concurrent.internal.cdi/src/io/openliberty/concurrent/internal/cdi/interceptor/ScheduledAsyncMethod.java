@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
@@ -90,8 +91,13 @@ class ScheduledAsyncMethod extends ScheduledMethodAbstract {
 
         // Intentionally placed as last line of constructuor to ensure
         // intialization is complete before the first task execution runs
-        ConcurrencyExtensionMetadata.scheduledExecutor //
-                        .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
+        ScheduledFuture<?> nextExec = ConcurrencyExtensionMetadata //
+                        .scheduledExecutor.schedule(this,
+                                                    computeDelayNanos(),
+                                                    TimeUnit.NANOSECONDS);
+        nextExecutionFuture.set(nextExec);
+        if (future.isCancelled())
+            nextExec.cancel(true);
     }
 
     /**

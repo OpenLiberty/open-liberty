@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.concurrent.internal;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -135,6 +136,14 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     };
 
     /**
+     * Name of the application that provides a scheduled method for which the
+     * completion of all execution is represented by this completable future.
+     * Null if the application is unknown or this completable future does not
+     * represent a scheduled method.
+     */
+    final String appName;
+
+    /**
      * For the Java SE 8 implementation, the real completable future to which meaningful operations are delegated.
      * For greater than Java SE 8, this value must be NULL.
      */
@@ -148,9 +157,10 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     final Executor defaultExecutor;
 
     /**
-     * Reference to the policy executor Future (if any) upon which the action runs.
-     * Reference is null when the action cannot be async.
-     * Value is null when an async action has not yet been submitted.
+     * Reference to the policy executor Future upon which the action runs (or,
+     * in the case of a scheduled method, to a Liberty scheduled executor future).
+     * The reference is null when the action cannot be async.
+     * The value is null when an async action has not yet been submitted.
      */
     final AtomicReference<Future<?>> futureRef;
 
@@ -222,6 +232,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
 
+        this.appName = null;
         this.completableFuture = completableFuture;
         this.defaultExecutor = managedExecutor;
         this.futureRef = futureRef;
@@ -249,12 +260,33 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     ManagedCompletableFuture(Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
 
+        this.appName = null;
         this.completableFuture = null;
         this.defaultExecutor = managedExecutor;
         this.futureRef = futureRef;
 
         if (futureRef != null)
             futureRef.cancellableStage.set(this);
+    }
+
+    /**
+     * Construct a completable future that represents the completion of all
+     * executions of a scheduled method.
+     *
+     * @param managedExecutor the managed scheduled executor
+     * @param method          the scheduled method
+     * @param nextExecFuture  reference to the future for the next execution
+     *                            of the scheduled method
+     */
+    ManagedCompletableFuture(ManagedExecutorServiceImpl managedExecutor,
+                             Method method,
+                             AtomicReference<Future<?>> nextExecFuture) {
+        this.appName = managedExecutor.concurrencySvc //
+                        .findAppName(method.getDeclaringClass());
+        this.completableFuture = null;
+        this.defaultExecutor = managedExecutor;
+        this.futureRef = nextExecFuture;
+        managedExecutor.trackFuture(this);
     }
 
     // static method equivalents for CompletableFuture, plus other static methods for ManagedExecutorImpl to use
@@ -1087,27 +1119,39 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletableFuture#isCancelled()
      */
     @Override
+    @Trivial
     public boolean isCancelled() {
-        return JAVA8 ? completableFuture.isCancelled() : //
+        boolean cancelled = JAVA8 ? completableFuture.isCancelled() : //
                         super.isCancelled();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isCancelled? " + cancelled);
+        return cancelled;
     }
 
     /**
      * @see java.util.concurrent.CompletableFuture#isCompletedExceptionally()
      */
     @Override
+    @Trivial
     public boolean isCompletedExceptionally() {
-        return JAVA8 ? completableFuture.isCompletedExceptionally() : //
+        boolean xcomplete = JAVA8 ? completableFuture.isCompletedExceptionally() : //
                         super.isCompletedExceptionally();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isCompletedExceptionally? " + xcomplete);
+        return xcomplete;
     }
 
     /**
      * @see java.util.concurrent.CompletableFuture#isDone()
      */
     @Override
+    @Trivial
     public boolean isDone() {
-        return JAVA8 ? completableFuture.isDone() : //
+        boolean done = JAVA8 ? completableFuture.isDone() : //
                         super.isDone();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isDone? " + done);
+        return done;
     }
 
     /**
