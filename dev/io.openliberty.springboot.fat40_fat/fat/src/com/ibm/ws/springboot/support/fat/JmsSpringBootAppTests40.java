@@ -23,7 +23,6 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
 @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
@@ -41,7 +40,6 @@ public class JmsSpringBootAppTests40 extends JmsAbstractTests {
 
     @ExpectedFFDC("jakarta.servlet.ServletException")
     @Test
-    @SkipJavaSemeruWithFipsEnabledRule
     public void testJmsSpringBootApplicationWithTransaction() throws Exception {
         testJmsWithTransaction();
     }

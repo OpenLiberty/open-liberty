@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -30,6 +31,8 @@ import org.testcontainers.utility.MountableFile;
 import com.ibm.websphere.simplicity.config.IncludeElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.containers.KeystoreBuilder;
+import componenttest.containers.KeystoreBuilder.STORE_TYPE;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
@@ -40,6 +43,15 @@ public abstract class JmsAbstractTests extends AbstractSpringTests {
 
     private static final String mqVersion = "9.4.5.0-r2";
     private static final int MQ_LISTENER_PORT = 1414;
+
+    // Paths inside the MQ container used when configuring TLS
+    private static final String MQ_KEY_DB      = "/var/mqm/qmgrs/QM1/ssl/key";
+    private static final String MQ_CERT_LABEL  = "ibmwebspheremqqm1";
+    private static final String MQ_CERT_PEM    = "/var/mqm/qmgrs/QM1/ssl/mq-cert.pem";
+    private static final String MQ_KEY_PW      = "passw0rd";
+
+    // Name of the Liberty truststore written at test setup
+    private static final String MQ_TRUSTSTORE  = "mq-truststore";
 
     @SuppressWarnings("resource")
     @ClassRule
@@ -57,10 +69,56 @@ public abstract class JmsAbstractTests extends AbstractSpringTests {
 
     @BeforeClass
     public static void setupJms() throws Exception {
+        // Create a CMS key database and self-signed cert inside the MQ container,
+        // then point the queue manager's SSLKEYR at it so TLS handshakes succeed
+        // when Liberty connects using sslCipherSuite=TLS_AES_256_GCM_SHA384.
+        container.execInContainer("mkdir", "-p", "/var/mqm/qmgrs/QM1/ssl");
+        container.execInContainer("runmqakm", "-keydb", "-create",
+                                  "-db", MQ_KEY_DB + ".kdb",
+                                  "-pw", MQ_KEY_PW,
+                                  "-type", "cms",
+                                  "-stash");
+        container.execInContainer("runmqakm", "-cert", "-create",
+                                  "-db", MQ_KEY_DB + ".kdb",
+                                  "-pw", MQ_KEY_PW,
+                                  "-label", MQ_CERT_LABEL,
+                                  "-dn", "CN=QM1,O=IBM,C=GB",
+                                  "-size", "2048",
+                                  "-sig_alg", "SHA256WithRSA");
+        container.execInContainer("runmqakm", "-cert", "-extract",
+                                  "-db", MQ_KEY_DB + ".kdb",
+                                  "-pw", MQ_KEY_PW,
+                                  "-label", MQ_CERT_LABEL,
+                                  "-target", MQ_CERT_PEM,
+                                  "-format", "ascii");
+        container.execInContainer("bash", "-c",
+                                  "echo \"ALTER QMGR SSLKEYR('" + MQ_KEY_DB + "') CERTLABL('" + MQ_CERT_LABEL + "')\" | runmqsc QM1 && " +
+                                  "echo \"REFRESH SECURITY(*) TYPE(SSL)\" | runmqsc QM1");
+
+        // Build a PKCS12 truststore containing the MQ server cert for Liberty to use
+        String securityDir = server.getServerRoot() + "/resources/security";
+        File truststore = KeystoreBuilder.of(server, container)
+                        .withCertificate(MQ_CERT_LABEL, MQ_CERT_PEM)
+                        .withDirectory(securityDir)
+                        .withFilename(MQ_TRUSTSTORE)
+                        .withStoreType(STORE_TYPE.PKCS12)
+                        .withPassword(MQ_KEY_PW)
+                        .export();
+
+        // Pass the truststore to the JVM so the MQ JCA adapter's SSL socket factory
+        // finds and trusts the MQ server certificate. The adapter uses the JVM's
+        // javax.net.ssl.trustStore rather than Liberty's <ssl> configuration.
+        Map<String, String> jvmOpts = server.getJvmOptionsAsMap();
+        jvmOpts.put("-Djavax.net.ssl.trustStore", truststore.getAbsolutePath());
+        jvmOpts.put("-Djavax.net.ssl.trustStorePassword", MQ_KEY_PW);
+        jvmOpts.put("-Djavax.net.ssl.trustStoreType", "PKCS12");
+        server.setJvmOptions(jvmOpts);
+
         ServerConfiguration config = server.getServerConfiguration();
         IncludeElement includeJms = new IncludeElement();
         includeJms.setLocation("${server.config.dir}/includeJms.xml");
         config.getIncludes().add(includeJms);
+
         server.updateServerConfiguration(config);
         setupHostAndPort();
     }
