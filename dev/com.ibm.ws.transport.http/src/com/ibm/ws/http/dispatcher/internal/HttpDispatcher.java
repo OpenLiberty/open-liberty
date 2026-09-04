@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,9 @@ public class HttpDispatcher {
 
     //Servlet 6.1 (EE11)
     private static volatile boolean isEE11 = false;
+
+    private static final String WSSP_HTTP_PORT  = "80";
+    private static final String WSSP_HTTPS_PORT = "443";
 
     static final String CONFIG_ALIAS = "httpDispatcher";
 
@@ -367,6 +370,42 @@ public class HttpDispatcher {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Determines whether a specific WAS private header instance should be trusted and
+     * passed through to the application. This is the single shared admission check used
+     * by both the legacy channel and Netty transport paths
+     *
+     * @param addr  the remote peer address or null if unknown
+     * @param headerName  the header name (e.g. "$WSSP"})
+     * @param value the header value
+     * @param desensitizePrivatePortHeader when code true, $WSSP is evaluated
+     *                                    against the non-sensitive trust list
+     * @return  true if this header instance should be trusted
+     */
+    public static boolean isPrivateHeaderTrusted(InetAddress addr, String headerName,
+                                                 String value, boolean desensitizePrivatePortHeader) {
+        // Fast path: if the source is already trusted for this header, nothing more to check.
+        if (usePrivateHeaders(addr, headerName)) {
+            return true;
+        }
+
+        // Source is not trusted via the normal check. Apply $WSSP-specific rules.
+        if (HttpHeaderKeys.HDR_$WSSP.getName().equalsIgnoreCase(headerName)) {
+            // Config flag: treat $WSSP as non-sensitive; re-check against trustedHeaderOrigin.
+            if (desensitizePrivatePortHeader) {
+                return usePrivateHeaders(addr);
+            }
+            // Default HTTP/HTTPS ports are safe to pass through from any source.
+            if(value != null && (WSSP_HTTP_PORT.equals(value) || WSSP_HTTPS_PORT.equals(value))) {
+                return true;
+            }
+        }
+        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "isPrivateHeaderTrusted: "+ headerName + "is not trusted" + (addr != null ? " for host " + addr.getHostAddress() : " for this host"));
+        }
+        return false;
     }
 
     /**
