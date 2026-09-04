@@ -11,6 +11,8 @@ package io.openliberty.mcp.internal.fat.tool.encoderToolApp;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import org.mcpjava.server.ContentEncoder;
 import org.mcpjava.server.content.ContentBlock;
@@ -536,5 +538,21 @@ public class EncoderTools {
           description = "tool whose ToolResponseEncoder always throws, to verify CWMCM0019E is logged")
     public ThrowingResponseEncoderTestType testThrowingToolResponseEncoder() {
         return new ThrowingResponseEncoderTestType("trigger");
+    }
+
+    /*******************************************************************************
+     * Async variants - verify CWMCM0019E is also logged on the async path
+     *******************************************************************************/
+
+    @Tool(name = "testAsyncThrowingContentEncoder",
+          description = "async tool whose ContentEncoder always throws, to verify CWMCM0019E is logged on async path")
+    public CompletionStage<ThrowingEncoderTestType> testAsyncThrowingContentEncoder() {
+        return CompletableFuture.completedStage(new ThrowingEncoderTestType("trigger"));
+    }
+
+    @Tool(name = "testAsyncThrowingToolResponseEncoder",
+          description = "async tool whose ToolResponseEncoder always throws, to verify CWMCM0019E is logged on async path")
+    public CompletionStage<ThrowingResponseEncoderTestType> testAsyncThrowingToolResponseEncoder() {
+        return CompletableFuture.completedStage(new ThrowingResponseEncoderTestType("trigger"));
     }
 }

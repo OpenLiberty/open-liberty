@@ -139,27 +139,28 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
             return ToolResponse.ofText(Objects.toString(result));
         }
 
-        var encoderOpt = encoderRegistry.findToolResponseEncoder(result);
-        if (encoderOpt.isPresent()) {
-            var encoder = encoderOpt.get();
-            try {
-                return encoder.encode(result);
-            } catch (Exception e) {
-                Tr.error(tc, "CWMCM0019E.error.encoding.element", encoder.getClass().getName(), method.name(), e);
-                throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, null);
-            }
-        }
+        var response = encoderRegistry.findToolResponseEncoder(result)
+                                      .map(encoder -> {
+                                          try {
+                                              return encoder.encode(result);
+                                          } catch (Exception e) {
+                                              Tr.error(tc, "CWMCM0019E.error.encoding.element", encoder.getClass().getName(), method.name(), e);
+                                              throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, null);
+                                          }
+                                      })
+                                      .orElse(null);
 
-        ToolResponse response;
-        if (result instanceof List<?> resultList) {
-            var responseBuilder = ToolResponse.builder();
-            resultList.stream()
-                      .map(o -> encodeAsContent(o, encoderRegistry))
-                      .forEach(responseBuilder::addContent);
-            response = responseBuilder.build();
-        } else {
-            ContentBlock content = encodeAsContent(result, encoderRegistry);
-            response = ToolResponse.builder().addContent(content).build();
+        if (response == null) {
+            if (result instanceof List<?> resultList) {
+                var responseBuilder = ToolResponse.builder();
+                resultList.stream()
+                          .map(o -> encodeAsContent(o, encoderRegistry))
+                          .forEach(responseBuilder::addContent);
+                response = responseBuilder.build();
+            } else {
+                ContentBlock content = encodeAsContent(result, encoderRegistry);
+                response = ToolResponse.builder().addContent(content).build();
+            }
         }
 
         return response;
@@ -171,17 +172,16 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
      * @return
      */
     private <T> ContentBlock encodeAsContent(T o, EncoderRegistry encoderRegistry) {
-        var encoderOpt = encoderRegistry.findContentEncoder(o);
-        if (encoderOpt.isPresent()) {
-            var encoder = encoderOpt.get();
-            try {
-                return encoder.encode(o);
-            } catch (Exception e) {
-                Tr.error(tc, "CWMCM0019E.error.encoding.element", encoder.getClass().getName(), method.name(), e);
-                throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, null);
-            }
-        }
-        return TextContent.of(Objects.toString(o));
+        return encoderRegistry.findContentEncoder(o)
+                              .map(encoder -> {
+                                  try {
+                                      return encoder.encode(o);
+                                  } catch (Exception e) {
+                                      Tr.error(tc, "CWMCM0019E.error.encoding.element", encoder.getClass().getName(), method.name(), e);
+                                      throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, null);
+                                  }
+                              })
+                              .orElseGet(() -> TextContent.of(Objects.toString(o)));
     }
 
     public ToolResponse encode(ContentEncoder<?> encoder) {

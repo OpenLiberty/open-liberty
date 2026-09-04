@@ -618,7 +618,6 @@ public class EncoderTest extends FATServletClient {
      * (not the generic CWMCM0010E "tool method threw unexpected exception").
      */
     @Test
-    @AllowedFFDC("io.openliberty.mcp.internal.fat.tool.encoderToolApp.EncoderTools$SimulatedEncoderFailureException")
     public void testThrowingContentEncoderLogsCorrectError() throws Exception {
         String request = """
                           {
@@ -634,8 +633,8 @@ public class EncoderTest extends FATServletClient {
 
         client.callMCP(request);
 
-        assertTrue("Expected CWMCM0019E to be logged when ContentEncoder throws",
-                   !server.findStringsInLogs("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder").isEmpty());
+        assertNotNull("Expected CWMCM0019E to be logged when ContentEncoder throws",
+                      server.waitForStringInLog("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
                    server.findStringsInLogs("CWMCM0010E.*testThrowingContentEncoder").isEmpty());
@@ -646,7 +645,6 @@ public class EncoderTest extends FATServletClient {
      * (not the generic CWMCM0010E "tool method threw unexpected exception").
      */
     @Test
-    @AllowedFFDC("io.openliberty.mcp.internal.fat.tool.encoderToolApp.EncoderTools$SimulatedEncoderFailureException")
     public void testThrowingToolResponseEncoderLogsCorrectError() throws Exception {
         String request = """
                           {
@@ -662,10 +660,62 @@ public class EncoderTest extends FATServletClient {
 
         client.callMCP(request);
 
-        assertTrue("Expected CWMCM0019E to be logged when ToolResponseEncoder throws",
-                   !server.findStringsInLogs("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder").isEmpty());
+        assertNotNull("Expected CWMCM0019E to be logged when ToolResponseEncoder throws",
+                      server.waitForStringInLog("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
                    server.findStringsInLogs("CWMCM0010E.*testThrowingToolResponseEncoder").isEmpty());
+    }
+
+    /**
+     * Tests that when an async tool's ContentEncoder throws, CWMCM0019E is logged on the async path.
+     */
+    @Test
+    public void testAsyncThrowingContentEncoderLogsCorrectError() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testAsyncThrowingContentEncoder",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(request);
+
+        assertNotNull("Expected CWMCM0019E to be logged when async ContentEncoder throws",
+                      server.waitForStringInLog("CWMCM0019E.*ThrowingContentEncoder.*testAsyncThrowingContentEncoder"));
+
+        assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
+                   server.findStringsInLogs("CWMCM0010E.*testAsyncThrowingContentEncoder").isEmpty());
+    }
+
+    /**
+     * Tests that when an async tool's ToolResponseEncoder throws, CWMCM0019E is logged on the async path.
+     */
+    @Test
+    public void testAsyncThrowingToolResponseEncoderLogsCorrectError() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testAsyncThrowingToolResponseEncoder",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(request);
+
+        assertNotNull("Expected CWMCM0019E to be logged when async ToolResponseEncoder throws",
+                      server.waitForStringInLog("CWMCM0019E.*ThrowingToolResponseEncoder.*testAsyncThrowingToolResponseEncoder"));
+
+        assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
+                   server.findStringsInLogs("CWMCM0010E.*testAsyncThrowingToolResponseEncoder").isEmpty());
     }
 }
