@@ -62,7 +62,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     private static final TraceComponent tc = Tr.register(NettyResponseMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     HttpResponse nettyResponse;
-    HttpHeaders headers;
     HttpHeaders trailers;
     NettyTrailers nettyTrailerWrapper;
     HttpInboundServiceContext context;
@@ -74,7 +73,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
         this.context = isc;
         this.nettyResponse = response;
-        this.headers = nettyResponse.headers();
         this.trailers = new DefaultHttpHeaders();
         this.nettyTrailerWrapper = new NettyTrailers(this.trailers);
 
