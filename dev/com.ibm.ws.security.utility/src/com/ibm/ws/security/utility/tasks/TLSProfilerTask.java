@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -86,69 +86,80 @@ public class TLSProfilerTask extends BaseCommandTask {
 
         List<String> disabledList = new ArrayList<String>();
 
-        if (Security.getProperty("jdk.tls.disabledAlgorithms") != null) {
-            disabledList = Arrays.asList((Security.getProperty("jdk.tls.disabledAlgorithms")).split(","));
-        }
+        String savedDisabledAlgorithms = Security.getProperty("jdk.tls.disabledAlgorithms");
+        String savedCertpathAlgorithms = Security.getProperty("jdk.certpath.disabledAlgorithms");
 
-        Security.setProperty("jdk.tls.disabledAlgorithms", "");
-        Security.setProperty("jdk.certpath.disabledAlgorithms", "");
+        if (savedDisabledAlgorithms != null) {
+            disabledList = Arrays.asList(savedDisabledAlgorithms.split(","));
+        }
 
         List<TlsProfilerResult> results = new ArrayList<TlsProfilerResult>();
         List<String> safeProtocols = new ArrayList<String>();
         List<String> unsafeProtocols = new ArrayList<String>();
 
-        //grab the protocols and then remove SSLv2 stuff, because on Oracle it's included but doesn't actually work
-        List<String> protocols = new ArrayList<String>();
+        // attempt to profile by clearing disabledAlgs and trying a handshake with all algs and cipher suites
+        try {
+            Security.setProperty("jdk.tls.disabledAlgorithms", "");
+            Security.setProperty("jdk.certpath.disabledAlgorithms", "");
 
-        for (String protocol : Arrays.asList(SSLContext.getDefault().getDefaultSSLParameters().getProtocols())) {
-            if (protocol.contains(("SSLv3")) || protocol.contains("TLS"))
-                protocols.add(protocol);
-        }
+            //grab the protocols and then remove SSLv2 stuff, because on Oracle it's included but doesn't actually work
+            List<String> protocols = new ArrayList<String>();
 
-        //loop through each of the protocols
-        for (String protocol : protocols) {
-
-            SSLContext sc = SSLContext.getInstance(protocol);
-            sc.init(null, null, null);
-            String[] ciphersuites = sc.getSupportedSSLParameters().getCipherSuites();
-            //loop through each of the ciphersuites available for the given protocol to the runtime.
-            for (String ciphersuite : ciphersuites) {
-                TlsProfilerResult result = new TlsProfilerResult();
-                for (String disabledString : disabledList) {
-                    if (protocol.contains(disabledString)) {
-                        result.setVulnerable(true);
-                    }
-                }
-                if (result.isVulnerable() && !unsafeProtocols.contains(protocol)) {
-                    unsafeProtocols.add(protocol);
-                } else if (!result.isVulnerable() && !safeProtocols.contains(protocol)) {
-                    safeProtocols.add(protocol);
-                }
-                result.setProtocol(protocol);
-                result.setCiphersuite(ciphersuite);
-                for (String disabledString : disabledList) {
-                    if (ciphersuite.contains(disabledString)) {
-                        result.setVulnerable(true);
-                    }
-                }
-                SSLParameters sp = sc.getDefaultSSLParameters();
-                sp.setCipherSuites(new String[] { ciphersuite });
-                SSLSocket socket = (SSLSocket) sc.getSocketFactory().createSocket(host, port);
-                socket.setSSLParameters(sp);
-                try {
-                    socket.startHandshake();
-                    if (protocol.equals(socket.getSession().getProtocol()) && ciphersuite.equals(socket.getSession().getCipherSuite())) {
-                        result.setSuccessful(true);
-                        results.add(result);
-                    } else {
-                        results.add(result);
-                    }
-                } catch (Exception e) {
-                    results.add(result);
-                    //e.printStackTrace();
-                }
-                socket.close();
+            for (String protocol : Arrays.asList(SSLContext.getDefault().getDefaultSSLParameters().getProtocols())) {
+                if (protocol.contains(("SSLv3")) || protocol.contains("TLS"))
+                    protocols.add(protocol);
             }
+
+            //loop through each of the protocols
+            for (String protocol : protocols) {
+
+                SSLContext sc = SSLContext.getInstance(protocol);
+                sc.init(null, null, null);
+                String[] ciphersuites = sc.getSupportedSSLParameters().getCipherSuites();
+                //loop through each of the ciphersuites available for the given protocol to the runtime.
+                for (String ciphersuite : ciphersuites) {
+                    TlsProfilerResult result = new TlsProfilerResult();
+                    for (String disabledString : disabledList) {
+                        if (protocol.contains(disabledString)) {
+                            result.setVulnerable(true);
+                        }
+                    }
+                    if (result.isVulnerable() && !unsafeProtocols.contains(protocol)) {
+                        unsafeProtocols.add(protocol);
+                    } else if (!result.isVulnerable() && !safeProtocols.contains(protocol)) {
+                        safeProtocols.add(protocol);
+                    }
+                    result.setProtocol(protocol);
+                    result.setCiphersuite(ciphersuite);
+                    for (String disabledString : disabledList) {
+                        if (ciphersuite.contains(disabledString)) {
+                            result.setVulnerable(true);
+                        }
+                    }
+                    SSLParameters sp = sc.getDefaultSSLParameters();
+                    sp.setCipherSuites(new String[] { ciphersuite });
+                    SSLSocket socket = (SSLSocket) sc.getSocketFactory().createSocket(host, port);
+                    socket.setSSLParameters(sp);
+                    try {
+                        socket.startHandshake();
+                        if (protocol.equals(socket.getSession().getProtocol()) && ciphersuite.equals(socket.getSession().getCipherSuite())) {
+                            result.setSuccessful(true);
+                            results.add(result);
+                        } else {
+                            results.add(result);
+                        }
+                    } catch (Exception e) {
+                        results.add(result);
+                        //e.printStackTrace();
+                    } finally {
+                        socket.close();
+                    }
+                }
+            }
+        } finally {
+            // restore security properties regardless of outcome to ensure jdk encryption algs remain intact
+            Security.setProperty("jdk.tls.disabledAlgorithms", savedDisabledAlgorithms != null ? savedDisabledAlgorithms : "");
+            Security.setProperty("jdk.certpath.disabledAlgorithms", savedCertpathAlgorithms != null ? savedCertpathAlgorithms : "");
         }
 
         boolean headerPrinted = false;

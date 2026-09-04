@@ -11,6 +11,7 @@ package com.ibm.ws.netty.upgrade;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -25,6 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -55,7 +57,9 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
-    private static final TraceComponent tc = Tr.register(NettyServletUpgradeHandler.class);
+    private static final TraceComponent tc = Tr.register(NettyServletUpgradeHandler.class,
+                                                         HttpMessages.HTTP_TRACE_NAME,
+                                                         HttpMessages.HTTP_BUNDLE);
 
     public static final String NAME = "NettyServletUpgradeHandler";
 
@@ -161,13 +165,21 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         signalReadReady();
 
         if (isReadingAsync && callback.get() != null) {
-            fireAsyncReadError(new SocketTimeoutException("Immediate timeout requested"));
+            fireAsyncReadError(createSocketTimeoutException());
         }
         if (context != null) {
             context.executor().execute(() -> immediateTimeout.set(false));
         } else {
             immediateTimeout.set(false);
         }
+    }
+
+    SocketTimeoutException createSocketTimeoutException() {
+        InetSocketAddress local = (InetSocketAddress) channel.localAddress();
+        InetSocketAddress remote = (InetSocketAddress) channel.remoteAddress();
+        return new SocketTimeoutException(Tr.formatMessage(tc, "netty.socket.timeout",
+                                            local.getHostName(), local.getAddress().getHostAddress(), local.getPort(),
+                                            remote.getHostName(), remote.getAddress().getHostAddress(), remote.getPort()));
     }
 
     private void signalReadReady() {

@@ -25,7 +25,8 @@ import io.openliberty.netty.internal.impl.NettyConstants;
  */
 public abstract class TimeoutException extends IOException {
 
-    private static final TraceComponent tc = Tr.register(TimeoutException.class, NettyConstants.NETTY_TRACE_NAME, NettyConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(TimeoutException.class, NettyConstants.TCP_TRACE_NAME,
+                                                         NettyConstants.TCP_BUNDLE);
     private static final long serialVersionUID = 1L;
 
     private final String code;

@@ -258,6 +258,25 @@ public class TraceTestServlet extends FATServlet {
     }
 
     /**
+     * Triggers a load of {@code Lib3}, which exists only in {@code testLib3.jar} wired as an
+     * {@code afterApp} common library delegate.  The EAR classloader cannot find it locally and
+     * delegates to the common library loader, which emits:
+     *   Class=[io.openliberty.classloading.classpath.test.lib3.Lib3] loaded by common library loader;
+     *   classloader=[<libCL>]; delegation path=[<warCL> -> <earCL> -> <libCL>]
+     */
+    public void testLoadCommonLibClass() {
+        try {
+            Class<?> lib3Class = Class.forName("io.openliberty.classloading.classpath.test.lib3.Lib3",
+                                               false, getClass().getClassLoader());
+            if (lib3Class == null) {
+                throw new RuntimeException("Expected Lib3 to be found via common library loader but Class.forName() returned null");
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Expected Lib3 to be found via common library loader but got ClassNotFoundException", e);
+        }
+    }
+
+    /**
      * Test method that attempts to load a class whose bytes are intentionally
      * corrupt (not a valid class file). AppClassLoader.defineClass() will throw
      * ClassFormatError, which triggers the "CLASS FAIL" trace line.
@@ -273,6 +292,23 @@ public class TraceTestServlet extends FATServlet {
         } catch (ClassFormatError expected) {
             // Expected: corrupted bytes cause ClassFormatError
             // A "CLASS FAIL" trace line should have been emitted.
+        }
+    }
+
+    /**
+     * Attempts to load a class that does not exist anywhere on the delegation chain.
+     * AppClassLoader.loadClassInternal() will exhaust all delegates and emit:
+     *   Class=[com.example.nonexistent.NoSuchClass] failed to load; classloader=[...]
+     *
+     * The ClassNotFoundException is caught so the servlet returns HTTP 200
+     * and the FAT test can inspect the trace.
+     */
+    public void testLoadNonExistentClass() {
+        try {
+            Class.forName("com.example.nonexistent.NoSuchClass", false, getClass().getClassLoader());
+        } catch (ClassNotFoundException expected) {
+            // Expected: class does not exist anywhere on the delegation chain.
+            // A "failed to load" trace line should have been emitted.
         }
     }
 }

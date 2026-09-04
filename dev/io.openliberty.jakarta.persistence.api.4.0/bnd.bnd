@@ -17,7 +17,9 @@ Require-Bundle: io.openliberty.org.eclipse.persistence-4.0
  jakarta.persistence; \
  jakarta.persistence.criteria; \
  jakarta.persistence.metamodel; \
+ jakarta.persistence.query; \
  jakarta.persistence.spi; \
+ jakarta.persistence.sql; \
    jpa="4.0"; version="4.0.0"
 
 javac.source: 21

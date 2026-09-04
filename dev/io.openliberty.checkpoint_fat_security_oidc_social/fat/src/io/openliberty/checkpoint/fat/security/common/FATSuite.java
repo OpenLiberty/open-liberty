@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.fat.security.jaspic.JASPIBasicAuthenticationTest;
 import io.openliberty.checkpoint.fat.security.oidc.OidcClientBasicTests;
+import io.openliberty.checkpoint.fat.security.oidc.ProtectedResourceMetadataInstantOnTests;
 import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_usingSocialConfig;
 
 @RunWith(Suite.class)
@@ -39,6 +40,7 @@ import io.openliberty.checkpoint.fat.security.social.LibertyOP_BasicTests_oauth_
                 AlwaysPassesTest.class,
                 LibertyOP_BasicTests_oauth_usingSocialConfig.class,
                 OidcClientBasicTests.class,
+                ProtectedResourceMetadataInstantOnTests.class,
                 JASPIBasicAuthenticationTest.class
 })
 

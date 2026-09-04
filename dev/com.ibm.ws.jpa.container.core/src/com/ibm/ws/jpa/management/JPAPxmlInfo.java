@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2024 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -142,6 +142,9 @@ class JPAPxmlInfo {
 
             // Set <validataion-mode> (mapped by JaxbPUnit abstraction)  // F743-8705 F1879-16302
             puInfo.setValidationMode(pu.getValidationMode());
+
+            // Set <default-to-one-fetch-type> (JPA 4.0+, returns null for earlier schema versions)
+            puInfo.setDefaultToOneFetchType(pu.getDefaultToOneFetchType());
 
             // Set <exclude-unlisted-classes>
             puInfo.setExcludeUnlistedClasses(pu.isExcludeUnlistedClasses());

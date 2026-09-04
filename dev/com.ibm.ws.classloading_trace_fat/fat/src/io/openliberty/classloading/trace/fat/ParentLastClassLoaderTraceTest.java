@@ -14,10 +14,15 @@ package io.openliberty.classloading.trace.fat;
 
 import static io.openliberty.classloading.classpath.fat.FATSuite.TRACE_TEST_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TRACE_TEST_EAR;
+import static io.openliberty.classloading.classpath.util.TestUtils.CLASS_REGEX;
 import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_EAR;
 import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_WEB_MODULE;
 import static io.openliberty.classloading.classpath.util.TestUtils.PL_CL;
-import static io.openliberty.classloading.classpath.util.TestUtils.TRACE_CLASS_LOAD_PRFIX;
+import static io.openliberty.classloading.classpath.util.TestUtils.RESOURCES_REGEX;
+import static io.openliberty.classloading.classpath.util.TestUtils.RESOURCE_REGEX;
+import static io.openliberty.classloading.classpath.util.TestUtils.TRACE_CLASS_DEFINE_SUCCESS;
+import static io.openliberty.classloading.classpath.util.TestUtils.TRACE_LOCAL_CLASSPATH;
+import static io.openliberty.classloading.classpath.util.TestUtils.TRACE_NOT_FOUND;
 import static io.openliberty.classloading.classpath.util.TestUtils.checkClassLoadTrace;
 import static io.openliberty.classloading.classpath.util.TestUtils.checkDelegationPath;
 import static io.openliberty.classloading.classpath.util.TestUtils.checkResourceTrace;
@@ -37,11 +42,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * FAT tests that verify {@code ParentLastClassLoader} emits correctly structured
- * {@code CLASS LOAD} and resource trace lines.
- *
- * <p>The server has {@code delegation="parentLast"} baked into its {@code server.xml},
- * so no per-test configuration updates are needed.
+ * FAT tests that verify {@code ParentLastClassLoader} emits correctly structured trace
+ * lines under parent-last classloading and resource-lookup scenarios.
  */
 @RunWith(FATRunner.class)
 public class ParentLastClassLoaderTraceTest extends FATServletClient {
@@ -65,30 +67,37 @@ public class ParentLastClassLoaderTraceTest extends FATServletClient {
     }
 
     /**
-     * Verifies that {@code ParentLastClassLoader} emits a {@code CLASS LOAD} trace line
-     * when a class is loaded from an EAR shared library JAR ({@code testLib1.jar}).
+     * Verifies that {@code ParentLastClassLoader} emits the expected trace lines when a class
+     * is loaded with parent-last delegation.
      *
-     * <p>Example trace:
-     * <pre>
-     * CLASS LOAD: class=[io.openliberty.classloading.classpath.test.lib1.Lib1];
-     *             classloader=[ParentLastClassLoader@hex:EARApplication:traceTestEar:PL];
-     *             location=[file:.../testLib1.jar]
-     * </pre>
+     * <p>{@code Lib1} lives in {@code testLib1.jar} which is on the EAR classloader's classpath,
+     * not the WAR's.  With parent-last delegation the WAR {@code ParentLastClassLoader} checks
+     * itself first (misses), then delegates to the EAR {@code ParentLastClassLoader} which finds
+     * the class on its local classpath and defines it.
+     *
+     * <p>Expected trace sequence:
+     * <ol>
+     *   <li>{@code Class=[...Lib1] found on the local classpath;
+     *       classloader=[ParentLastClassLoader@&lt;EAR&gt;:PL];
+     *       delegation path=[ParentLastClassLoader@&lt;WAR&gt; -&gt; ParentLastClassLoader@&lt;EAR&gt;]}</li>
+     *   <li>{@code Class=[...Lib1] was successfully defined;
+     *       classloader=[ParentLastClassLoader@&lt;EAR&gt;:PL];
+     *       location=[file:&lt;path&gt;/testLib1.jar]}</li>
+     * </ol>
      */
     @Test
     public void testParentLastClassLoaderTraceForClassLoad() throws Exception {
+        String className = "io.openliberty.classloading.classpath.test.lib1.Lib1";
+        String sourceLoc = "testLib1.jar";
         server.setMarkToEndOfLog(server.getDefaultTraceFile());
-
         runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testLoadLib1Classes");
 
-        String className = "io.openliberty.classloading.classpath.test.lib1.Lib1";
-        String traceLine = server.waitForStringInTrace(TRACE_CLASS_LOAD_PRFIX + ".*" + className);
+        String localCpTrace = server.waitForStringInTrace(CLASS_REGEX + className + TRACE_LOCAL_CLASSPATH);
+        checkClassLoadTrace(localCpTrace, className, PL_CL, null);
+        checkDelegationPath(localCpTrace, DOMAIN_WEB_MODULE, DOMAIN_EAR);
 
-        // Trace looks as follows:
-        // CLASS LOAD: class=[io.openliberty.classloading.classpath.test.lib1.Lib1];
-        //             classloader=[ParentLastClassLoader@<hex>:EARApplication:traceTestEar:PL];
-        //             location=[file:<path>/testLib1.jar]
-        checkClassLoadTrace(traceLine, className, PL_CL, "testLib1.jar");
+        String defineSuccessTrace = server.waitForStringInTrace(CLASS_REGEX + className + TRACE_CLASS_DEFINE_SUCCESS);
+        checkClassLoadTrace(defineSuccessTrace, className, PL_CL, sourceLoc);
     }
 
     /**
@@ -117,6 +126,7 @@ public class ParentLastClassLoaderTraceTest extends FATServletClient {
      */
     @Test
     public void testParentLastClassLoaderGetResourceTrace() throws Exception {
+        String resourceName = "io/openliberty/classloading/test/resources/lib1.properties";
         server.setMarkToEndOfLog(server.getDefaultTraceFile());
 
         // FOUND — lib1.properties is in testLib1.jar on the EAR's classpath, not the WAR's.
@@ -124,9 +134,8 @@ public class ParentLastClassLoaderTraceTest extends FATServletClient {
         // ParentLastClassLoader which finds it on its local classpath.
         // The trace is emitted by the EAR-level ParentLastClassLoader.
         runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourceFound");
-        String foundTraceLine = server.waitForStringInTrace(
-                "Resource=\\[.*lib1\\.properties.*on the local classpath; classloader=\\[" + PL_CL);
-        checkResourceTrace(foundTraceLine, "io/openliberty/classloading/test/resources/lib1.properties", PL_CL, true);
+        String foundTraceLine = server.waitForStringInTrace(RESOURCE_REGEX + resourceName + TRACE_LOCAL_CLASSPATH);
+        checkResourceTrace(foundTraceLine, resourceName , PL_CL, true);
         // Two-hop path: WAR ParentLastClassLoader delegated to EAR ParentLastClassLoader.
         checkDelegationPath(foundTraceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR);
 
@@ -134,10 +143,11 @@ public class ParentLastClassLoaderTraceTest extends FATServletClient {
 
         // NOT FOUND — GatewayClassLoader also emits a not-found trace for the same name;
         // anchor on ParentLastClassLoader to match only the PL line.
+        resourceName = "NoSuchResource.txt";
         runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourceNotFound");
         checkResourceTrace(
-                server.waitForStringInTrace("Resource=\\[.*NoSuchResource\\.txt.*\\] not found.*classloader=\\[" + PL_CL),
-                "io/openliberty/classloading/nonexistent/NoSuchResource.txt", PL_CL, false);
+                server.waitForStringInTrace(RESOURCE_REGEX + resourceName + TRACE_NOT_FOUND + PL_CL),
+                resourceName, PL_CL, false);
     }
 
     /**
@@ -161,6 +171,7 @@ public class ParentLastClassLoaderTraceTest extends FATServletClient {
      */
     @Test
     public void testParentLastClassLoaderGetResourcesTrace() throws Exception {
+        String resourceName = "META-INF/MANIFEST.MF";
         server.setMarkToEndOfLog(server.getDefaultTraceFile());
 
         // FOUND — META-INF/MANIFEST.MF exists in multiple JARs; the first match is on the EAR's
@@ -168,9 +179,8 @@ public class ParentLastClassLoaderTraceTest extends FATServletClient {
         // then delegates to the EAR ParentLastClassLoader which finds it on its local classpath.
         // Anchor the wait pattern on ParentLastClassLoader to skip GatewayClassLoader's own trace.
         runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourcesFound");
-        String foundTraceLine = server.waitForStringInTrace(
-                "Resources=\\[META-INF/MANIFEST\\.MF\\].*on the local classpath; classloader=\\[" + PL_CL);
-        checkResourcesTrace(foundTraceLine, "META-INF/MANIFEST.MF", PL_CL, true);
+        String foundTraceLine = server.waitForStringInTrace(RESOURCES_REGEX + resourceName + TRACE_LOCAL_CLASSPATH  + PL_CL);
+        checkResourcesTrace(foundTraceLine, resourceName, PL_CL, true);
         // Two-hop path: WAR ParentLastClassLoader delegated to EAR ParentLastClassLoader.
         checkDelegationPath(foundTraceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR);
 
@@ -178,9 +188,10 @@ public class ParentLastClassLoaderTraceTest extends FATServletClient {
 
         // NOT FOUND — GatewayClassLoader also emits a not-found trace for the same name;
         // anchor on ParentLastClassLoader to match only the PL line.
+        resourceName = "NoSuchResource.txt";
         runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourcesNotFound");
         checkResourcesTrace(
-                server.waitForStringInTrace("Resources=\\[.*NoSuchResource\\.txt.*\\] not found.*classloader=\\[" + PL_CL),
-                "io/openliberty/classloading/nonexistent/NoSuchResource.txt", PL_CL, false);
+                server.waitForStringInTrace(RESOURCES_REGEX + resourceName + TRACE_NOT_FOUND  + PL_CL),
+                resourceName, PL_CL, false);
     }
 }

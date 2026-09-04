@@ -226,9 +226,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                 try {
                     ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(connection.connectionStream(), 0.9999f);
                 } catch (Http2Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
-                        Tr.error(tc, "Encountered error while attempting to update window ratio: " + e.getMessage() + ". Continuing with default window update ratio.", e);
-                    }
+                    Tr.warning(tc, "netty.h2.window.ratio.error", e.getMessage());
                 }
             });
         }

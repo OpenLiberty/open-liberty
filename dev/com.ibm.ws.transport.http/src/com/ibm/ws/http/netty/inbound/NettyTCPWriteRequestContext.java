@@ -259,7 +259,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     public long write(long numBytes, int timeout) throws IOException {
         if (nettyChannel.eventLoop().inEventLoop()) {
 
-            throw new IllegalStateException("Cannot invoke a blocking write on the Netty event loop thread.");
+            throw new IllegalStateException(Tr.formatMessage(tc, "netty.blocking.write.on.event.loop"));
         }
 
         verifyTimeout(timeout);
@@ -342,7 +342,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER, writePromise);
                 }
             });
-            awaitChannelFuture(writePromise, "Flush operation timed out!");
+            awaitChannelFuture(writePromise, "Flush operation failed.");
 
 
         } catch (InterruptedException e) {

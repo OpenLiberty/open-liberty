@@ -297,8 +297,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             requestRead();
 
             if (deadlineNs != Long.MAX_VALUE && System.nanoTime() > deadlineNs) {
-                throw new SocketTimeoutException("sync timeout; delivered=" + delivered
-                                                     + " need=" + numBytes + " bufRemain=" + remaining(buffers));
+                throw createSocketTimeoutException();
             }
             LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(1));            
         } 
@@ -331,7 +330,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             while (nettyChannel.isActive()) {
                 final long now = System.nanoTime();
                 if (deadlineNs != Long.MAX_VALUE && now >= deadlineNs) {
-                    throw new SocketTimeoutException("Failed to read data within the specified timeout.");
+                    throw createSocketTimeoutException();
                 }
                 final long remainingMs = (deadlineNs == Long.MAX_VALUE) ? 250L : Math.max(1L, TimeUnit.NANOSECONDS.toMillis(deadlineNs - now));
                 try {
@@ -507,7 +506,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             toRef.set(el.schedule(() -> {
                 if (h.isAsyncReadArmed() && nettyChannel.isActive()) {
                     try {
-                        wrapped.error(vc, this, new SocketTimeoutException("Read operation timed out"));
+                        wrapped.error(vc, this, createSocketTimeoutException());
                     } catch (Throwable ignore) {
                     }
                 }
@@ -554,6 +553,14 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     public void setVC(VirtualConnection vc) {
         this.vc = vc;
+    }
+
+    SocketTimeoutException createSocketTimeoutException() {
+        InetSocketAddress local = (InetSocketAddress) nettyChannel.localAddress();
+        InetSocketAddress remote = (InetSocketAddress) nettyChannel.remoteAddress();
+        return new SocketTimeoutException(Tr.formatMessage(tc, "netty.socket.timeout",
+                                            local.getHostName(), local.getAddress().getHostAddress(), local.getPort(),
+                                            remote.getHostName(), remote.getAddress().getHostAddress(), remote.getPort()));
     }
 
     private int normalizeTimeout(int timeout) {
