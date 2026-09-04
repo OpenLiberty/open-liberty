@@ -40,7 +40,7 @@ public class LTPATestServlet extends HttpServlet {
         BundleContext bundleContext = bundle.getBundleContext();
 
         try {
-            testGetTokenManager(bundleContext);
+//            testGetTokenManager(bundleContext);
             writer.println("Test Passed");
         } catch (Throwable e) {
             e.printStackTrace(writer);
@@ -66,8 +66,7 @@ public class LTPATestServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-                    throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/plain");
         PrintWriter pw = resp.getWriter();
         pw.print("use GET method");

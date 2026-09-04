@@ -163,10 +163,18 @@ public class LTPAToken2SerializationTest {
         sharedKey = encodedSharedKey.getBytes();
 
         /*
-         * Create LTPAToken2
+         * Create LTPAToken2 with new constructor parameters:
+         * - expDiffAllowed: 1L
+         * - inactivityTimeout: 60 minutes (1 hour)
+         * - refreshThreshold: 30 minutes
+         * - expirationInMinutes: 120 minutes (2 hours)
          */
         LTPAToken2 object = null;
-        object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, 1L);
+        long expDiffAllowed = 1L;
+        long inactivityTimeout = 60; // 1 hour
+        long refreshThreshold = 30; // 30 minutes
+        long expirationInMinutes = 120; // 2 hours
+        object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, expDiffAllowed, expirationInMinutes, inactivityTimeout, refreshThreshold, false);
 
         /*
          * Set expiration via reflection so we don't need to update this test constantly for the token verification to pass. If the test fails validation, there may be something

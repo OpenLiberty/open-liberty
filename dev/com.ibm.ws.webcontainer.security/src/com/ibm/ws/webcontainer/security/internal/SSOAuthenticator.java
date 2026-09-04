@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditEvent;
+import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
@@ -58,11 +60,21 @@ public class SSOAuthenticator implements WebAuthenticator {
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
     private static final TraceComponent tc = Tr.register(SSOAuthenticator.class);
+
     private final AuthenticationService authenticationService;
     private final WebAppSecurityConfig webAppSecurityConfig;
     private final SSOCookieHelper ssoCookieHelper;
     private final String challengeType;
     private final AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
+
+    /**
+     * Helper method to check if debug tracing is enabled.
+     *
+     * @return true if debug tracing is enabled, false otherwise
+     */
+    private boolean isDebugEnabled() {
+        return TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+    }
 
     /**
      * @param authenticationServ
@@ -89,17 +101,142 @@ public class SSOAuthenticator implements WebAuthenticator {
     }
 
     /**
-     * @param webRequest
-     * @return AuthenticationResult
+     * Authenticates a web request using SSO cookies. If authentication succeeds and the LTPA token
+     * was refreshed (based on expiration threshold), the new token is added to the response cookies.
+     *
+     * @param webRequest the web request to authenticate
+     * @param webAppSecConfig the web application security configuration
+     * @return AuthenticationResult containing the authentication status and subject
      */
     public AuthenticationResult authenticate(WebRequest webRequest, WebAppSecurityConfig webAppSecConfig) {
         HttpServletRequest req = webRequest.getHttpServletRequest();
         HttpServletResponse res = webRequest.getHttpServletResponse();
+
         AuthenticationResult authResult = handleSSO(req, res);
         if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
+            // Add JWT SSO cookies if present
             ssoCookieHelper.addJwtSsoCookiesToResponse(authResult.getSubject(), req, res, null);
+
+            // Beta guard: Check if LTPA token was refreshed and update cookie if needed
+            // Token refresh is only available in beta edition
+            if (ProductInfo.getBetaEdition() && shouldUpdateSSOCookie(req, authResult.getSubject())) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "LTPA token was refreshed, adding new SSO cookie to response");
+                }
+                ssoCookieHelper.addSSOCookiesToResponse(authResult.getSubject(), req, res, null);
+            }
         }
         return authResult;
+    }
+
+    /**
+     * Determines if the SSO cookie should be updated by comparing the original and new LTPA tokens.
+     *
+     * @param req the HTTP servlet request
+     * @param subject the authenticated subject
+     * @return true if the token was refreshed and cookie should be updated, false otherwise
+     */
+    private boolean shouldUpdateSSOCookie(HttpServletRequest req, Subject subject) {
+        byte[] originalTokenBytes = getOriginalLtpaTokenBytesFromRequest(req);
+        byte[] newTokenBytes = getNewLtpaTokenBytesFromSubject(subject);
+
+        boolean tokenRefreshed = hasTokenBeenRefreshed(originalTokenBytes, newTokenBytes);
+
+        if (!tokenRefreshed && isDebugEnabled()) {
+            Tr.debug(tc, "LTPA token was not refreshed, skipping cookie update");
+        }
+
+        return tokenRefreshed;
+    }
+
+    /**
+     * Get the original LTPA token bytes from the request cookies.
+     * Optimized to search for both custom and default cookie names in a single pass.
+     *
+     * @param req the HTTP servlet request
+     * @return the LTPA token bytes, or null if not found or invalid
+     */
+    private byte[] getOriginalLtpaTokenBytesFromRequest(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+
+        String customCookieName = ssoCookieHelper.getSSOCookiename();
+        boolean useOnlyCustomCookieName = webAppSecurityConfig != null && webAppSecurityConfig.isUseOnlyCustomCookieName();
+        boolean searchDefaultCookie = !DEFAULT_SSO_COOKIE_NAME.equalsIgnoreCase(customCookieName) && !useOnlyCustomCookieName;
+
+        // Single pass through cookies looking for both names if needed
+        String tokenValue = null;
+        for (Cookie cookie : cookies) {
+            String cookieName = cookie.getName();
+            if (customCookieName.equals(cookieName)) {
+                tokenValue = cookie.getValue();
+                break;
+            } else if (searchDefaultCookie && DEFAULT_SSO_COOKIE_NAME.equals(cookieName)) {
+                tokenValue = cookie.getValue();
+                // Don't break - keep looking for custom cookie name which takes precedence
+            }
+        }
+
+        if (tokenValue != null) {
+            try {
+                return Base64Coder.base64DecodeString(tokenValue);
+            } catch (Exception e) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to decode original LTPA token", e);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the new LTPA token bytes from the authenticated subject.
+     *
+     * @param subject the authenticated subject
+     * @return the LTPA token bytes, or null if not found
+     */
+    private byte[] getNewLtpaTokenBytesFromSubject(Subject subject) {
+        if (subject == null) {
+            return null;
+        }
+
+        com.ibm.wsspi.security.token.SingleSignonToken ssoToken = ssoCookieHelper.getDefaultSSOTokenFromSubject(subject);
+        if (ssoToken != null) {
+            return ssoToken.getBytes();
+        }
+        return null;
+    }
+
+    /**
+     * Returns {@code true} if the two token byte arrays differ, indicating that
+     * the LTPA token was refreshed (cloned) during this request.
+     *
+     * @param originalTokenBytes the original LTPA token bytes from the request cookie
+     * @param newTokenBytes the new LTPA token bytes from the authenticated subject
+     * @return true if the bytes changed (token was refreshed), false otherwise
+     */
+    private boolean hasTokenBeenRefreshed(byte[] originalTokenBytes, byte[] newTokenBytes) {
+        // If either token is null or empty, consider it not refreshed
+        if (originalTokenBytes == null || newTokenBytes == null ||
+            originalTokenBytes.length == 0 || newTokenBytes.length == 0) {
+            return false;
+        }
+
+        // If lengths differ, tokens are different
+        if (originalTokenBytes.length != newTokenBytes.length) {
+            return true;
+        }
+
+        // Compare byte arrays
+        for (int i = 0; i < originalTokenBytes.length; i++) {
+            if (originalTokenBytes[i] != newTokenBytes[i]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

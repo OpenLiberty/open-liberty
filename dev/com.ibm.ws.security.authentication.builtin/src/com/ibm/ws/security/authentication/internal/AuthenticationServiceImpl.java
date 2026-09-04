@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,10 @@
 package com.ibm.ws.security.authentication.internal;
 
 import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.security.auth.Subject;
@@ -30,8 +32,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
@@ -53,8 +57,10 @@ import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
+
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @TraceOptions(messageBundle = "com.ibm.ws.security.authentication.internal.resources.AuthenticationMessages")
@@ -70,14 +76,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
     static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
+    static final String KEY_LTPA_CONFIGURATION = "ltpaConfiguration";
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
+    private static final long MILLIS_PER_MINUTE = 60 * 1000;
 
     private final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
     private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
     private final AtomicServiceReference<DelegationProvider> delegationProviderRef = new AtomicServiceReference<DelegationProvider>(KEY_DELEGATION_PROVIDER);
     private final AtomicServiceReference<DefaultDelegationProvider> defaultDelegationProviderRef = new AtomicServiceReference<DefaultDelegationProvider>(KEY_DEFAULT_DELEGATION_PROVIDER);
     private final AtomicServiceReference<CredentialsService> credentialsServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIALS_SERVICE);
+    private final AtomicServiceReference<LTPAConfiguration> ltpaConfigurationRef = new AtomicServiceReference<LTPAConfiguration>(KEY_LTPA_CONFIGURATION);
     private JAASService jaasService;
     private ComponentContext cc;
     private boolean cacheEnabled = true;
@@ -87,6 +96,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private String invalidDelegationUser = "";
 
     private final AuthenticationGuard authenticationGuard = new AuthenticationGuard();
+
+    /**
+     * Helper method to check if debug tracing is enabled.
+     *
+     * @return true if debug tracing is enabled, false otherwise
+     */
+    private boolean isDebugEnabled() {
+        return TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+    }
 
     protected void setJaasService(JAASService jaasService) {
         this.jaasService = jaasService;
@@ -142,6 +160,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         credentialsServiceRef.unsetReference(reference);
     }
 
+    protected void setLtpaConfiguration(ServiceReference<LTPAConfiguration> reference) {
+        ltpaConfigurationRef.setReference(reference);
+    }
+
+    protected void unsetLtpaConfiguration(ServiceReference<LTPAConfiguration> reference) {
+        ltpaConfigurationRef.unsetReference(reference);
+    }
+
     /**
      * Based on the configuration properties, the auth cache should either
      * be active or not.
@@ -176,7 +202,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (useDisplayNameForSecurityNameState != null) {
             useDisplayNameForSecurityName = useDisplayNameForSecurityNameState;
         }
-	
+
         Boolean ignoreCustomCacheKeyState = (Boolean) props.get(CFG_IGNORE_CUSTOM_CACHE_KEY);
         if (ignoreCustomCacheKeyState != null) {
             ignoreCustomCacheKey = ignoreCustomCacheKeyState;
@@ -190,6 +216,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         delegationProviderRef.activate(cc);
         defaultDelegationProviderRef.activate(cc);
         credentialsServiceRef.activate(cc);
+        ltpaConfigurationRef.activate(cc);
         updateCacheState(props);
     }
 
@@ -203,6 +230,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         delegationProviderRef.deactivate(cc);
         defaultDelegationProviderRef.deactivate(cc);
         credentialsServiceRef.deactivate(cc);
+        ltpaConfigurationRef.deactivate(cc);
         if (jaasService instanceof JAASServiceImpl) {
             ((JAASServiceImpl) jaasService).unsetAuthenticationService(this);
         }
@@ -401,8 +429,149 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     }
                 }
             }
+
+            // Check if the cached subject's LTPA token needs refresh
+            if (subject != null && shouldRefreshCachedToken(subject)) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Cached subject's LTPA token needs refresh, returning null to force validation LTPA token and then refresh it");
+                }
+                return null;
+            }
         }
         return subject;
+    }
+
+    /**
+     * Checks if the LTPA token in the cached Subject needs to be refreshed based on
+     * refreshThreshold and inactivityTimeout settings.
+     *
+     * <p>When {@code dynamicExpirationValidation} is enabled the expiration stored in the
+     * token (and therefore in {@code WSCredential}) is {@code creationTime + inactivityTimeout},
+     * not the absolute configured expiration. This method accounts for that: the absolute
+     * deadline is recomputed as {@code creationTime + configuredExpiration} when
+     * {@code dynamicExpirationValidation=true}, mirroring the logic in
+     * {@link com.ibm.ws.security.token.ltpa.internal.LTPAToken2#validateExpiration}.
+     *
+     * @param subject The Subject retrieved from auth cache
+     * @return true if token needs refresh, false otherwise
+     */
+    private boolean shouldRefreshCachedToken(Subject subject) {
+        // Beta guard: Token refresh is only available in beta edition
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        }
+
+        LTPAConfiguration ltpaConfig = ltpaConfigurationRef.getService();
+        if (ltpaConfig == null || !ltpaConfig.isTokenRefreshEnabled()) {
+            return false;
+        }
+
+        try {
+            // Extract WSCredential from Subject
+            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+            if (wsCredentials == null || wsCredentials.isEmpty()) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "No WSCredential found in subject");
+                }
+                return false;
+            }
+
+            WSCredential wsCredential = wsCredentials.iterator().next();
+            if (wsCredential == null) {
+                return false;
+            }
+
+            long currentTime = System.currentTimeMillis();
+            long inactivityTimeoutInMinutes = ltpaConfig.getInactivityTimeout();
+            long refreshThresholdInMinutes = ltpaConfig.getRefreshThreshold();
+            boolean dynamicExpirationValidation = ltpaConfig.isDynamicExpirationValidation();
+
+            if (isDebugEnabled()) {
+                Tr.debug(tc, "ltpaConfig inactivityTimeout=" + inactivityTimeoutInMinutes +
+                             ", refreshThreshold=" + refreshThresholdInMinutes +
+                             ", dynamicExpirationValidation=" + dynamicExpirationValidation);
+            }
+
+            // Get creation time from WSCredential
+            Object creationTimeObj = wsCredential.get(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+            if (!(creationTimeObj instanceof Long)) {
+                // No creationTime — cannot check inactivity; let LTPA validation handle expiry.
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Creation time not found in WSCredential, skipping refresh check");
+                }
+                return false;
+            }
+
+            long creationTime = (Long) creationTimeObj;
+
+            // Compute the effective expiration.
+            // With dynamicExpirationValidation=true the stored expiration is
+            // creationTime + inactivityTimeout, not the absolute deadline.
+            // Recompute from creationTime + configured expiration, matching LTPAToken2.validateExpiration.
+            final long effectiveExpiration;
+            if (dynamicExpirationValidation) {
+                effectiveExpiration = creationTime + (ltpaConfig.getTokenExpiration() * MILLIS_PER_MINUTE);
+            } else {
+                effectiveExpiration = wsCredential.getExpiration();
+            }
+
+            // Check if token has exceeded absolute expiration — expired, not refreshable;
+            // let the JAAS login path reject it properly.
+            if (currentTime >= effectiveExpiration) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Token is expired: current=" + new Date(currentTime) +
+                                 ", absoluteExpiration=" + new Date(effectiveExpiration));
+                }
+                return false;
+            }
+
+            // Compute the inactivity expiration (only reached when both inactivityTimeout
+            // and refreshThreshold are positive — guarded by early-exit above).
+            // Cap at the absolute deadline, matching the cap in LTPAToken2.getInactivityTimeout().
+            long inactivityExpiration = creationTime + (inactivityTimeoutInMinutes * MILLIS_PER_MINUTE);
+            if (inactivityExpiration > effectiveExpiration) {
+                inactivityExpiration = effectiveExpiration;
+            }
+
+            if (isDebugEnabled()) {
+                Tr.debug(tc, "Inactivity timeout check:\n" +
+                             "          creationTime =         " + new Date(creationTime) + "\n" +
+                             "          inactivityExpiration = " + new Date(inactivityExpiration) + "\n" +
+                             "          absoluteExpiration =   " + new Date(effectiveExpiration) + "\n" +
+                             "          currentTime =          " + new Date(currentTime));
+            }
+
+            // Check if token has exceeded inactivity timeout — expired, not refreshable
+            if (currentTime >= inactivityExpiration) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Token exceeded inactivity timeout");
+                }
+                return false;
+            }
+
+            // Check if within refresh threshold of inactivity expiration
+            long refreshThresholdInMillis = refreshThresholdInMinutes * MILLIS_PER_MINUTE;
+            long timeRemainingUntilInactivity = inactivityExpiration - currentTime;
+
+            if (timeRemainingUntilInactivity <= refreshThresholdInMillis) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Token needs refresh: time until inactivity expiration (" +
+                                 timeRemainingUntilInactivity + "ms) <= threshold (" +
+                                 refreshThresholdInMillis + "ms)" +
+                                 ", inactivityExpiration=" + new Date(inactivityExpiration) +
+                                 ", currentTime=" + new Date(currentTime));
+                }
+                return true;
+            }
+
+            return false;
+
+        } catch (Exception e) {
+            if (isDebugEnabled()) {
+                Tr.debug(tc, "Error checking if cached token needs refresh", e);
+            }
+            return false;
+        }
     }
 
     private Subject findSubjectByX509Cert(AuthCacheService authCacheService, X509Certificate[] certChain) {
@@ -410,13 +579,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return authCacheService.getSubject(certHash);
     }
 
-
     /**
      * Finds a Subject based on the provided token contents.
      *
-     * @param authCacheService The authentication cache service used to retrieve subjects.
-     * @param token The token string to search for in the cache.
-     * @param ssoTokenBytes The byte array representation of the Single Sign-On (SSO) token.
+     * @param authCacheService   The authentication cache service used to retrieve subjects.
+     * @param token              The token string to search for in the cache.
+     * @param ssoTokenBytes      The byte array representation of the Single Sign-On (SSO) token.
      * @param authenticationData The authentication data containing the authentication mechanism OID.
      * @return The Subject associated with the provided token, or null if not found.
      * @throws AuthenticationException If the token is invalid or the custom cache key is missing.
@@ -454,14 +622,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);
                 if (subject == null) {
-		    if (ignoreCustomCacheKey()) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			    Tr.debug(tc, "ignoreCustomCacheKey is set to true. Continue authentication without re-challenging");
-			}			
-		    }
-		    else {
-			throw new AuthenticationException("Custom cache key missed authentication cache. Need to re-challenge the user to login again.");			
-		    }
+                    if (ignoreCustomCacheKey()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "ignoreCustomCacheKey is set to true. Continue authentication without re-challenging");
+                        }
+                    } else {
+                        throw new AuthenticationException("Custom cache key missed authentication cache. Need to re-challenge the user to login again.");
+                    }
                 }
             }
         }
@@ -471,7 +638,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectByUseridAndPassword(AuthCacheService authCacheService, String userid, @Sensitive String password) {
         return authCacheService.getSubject(BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password));
     }
-
 
 /*
  * We only create cache key (CustomCacheKeyProvider.java) for hashtable login so there is no need to
@@ -614,8 +780,64 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 if (authenticationData.get(authenticationData.CERTCHAIN) != null) {
                     authCacheService.insert(authenticatedSubject, (X509Certificate[]) authenticationData.get(AuthenticationData.CERTCHAIN));
                 } else {
+                    // If the token was cloned (refreshed), the new subject's SSO token bytes differ
+                    // from the incoming request's bytes. Remove the stale old-bytes cache entry so
+                    // subsequent requests carrying the old cookie don't keep hitting it and triggering
+                    // unnecessary refresh cycles.
+                    evictStaleTokenCacheEntry(authCacheService, authenticationData, authenticatedSubject);
                     authCacheService.insert(authenticatedSubject);
                 }
+            }
+        }
+    }
+
+    /**
+     * If a token clone occurred during this JAAS login, the authenticated subject contains
+     * new SSO token bytes while the incoming authenticationData still carries the old bytes.
+     * Remove the old-bytes cache entry to prevent stale cache hits on subsequent requests.
+     *
+     * @param authCacheService     the auth cache service
+     * @param authenticationData   the original authentication data from the request
+     * @param authenticatedSubject the freshly authenticated subject (may contain cloned token)
+     */
+    private void evictStaleTokenCacheEntry(AuthCacheService authCacheService,
+                                           AuthenticationData authenticationData,
+                                           Subject authenticatedSubject) {
+        try {
+            // Derive the old cache key from the incoming request's token bytes
+            String oldCacheKey = null;
+            String ssoToken64 = (String) authenticationData.get(AuthenticationData.TOKEN64);
+            if (ssoToken64 != null) {
+                oldCacheKey = ssoToken64;
+            } else {
+                byte[] ssoTokenBytes = (byte[]) authenticationData.get(AuthenticationData.TOKEN);
+                if (ssoTokenBytes != null) {
+                    oldCacheKey = Base64Coder.toString(Base64Coder.base64Encode(ssoTokenBytes));
+                }
+            }
+
+            if (oldCacheKey == null) {
+                return; // Not a token-based login — nothing to evict
+            }
+
+            // Derive the new cache key from the authenticated subject's SSO token
+            com.ibm.wsspi.security.token.SingleSignonToken newSsoToken = SSOTokenHelper.getSSOToken(authenticatedSubject);
+            if (newSsoToken == null) {
+                return;
+            }
+            String newCacheKey = Base64Coder.toString(Base64Coder.base64Encode(newSsoToken.getBytes()));
+
+            // Only remove the old entry if the bytes actually changed (i.e. a clone occurred)
+            if (!oldCacheKey.equals(newCacheKey)) {
+                if (isDebugEnabled()) {
+                    Tr.debug(tc, "Token was cloned during refresh — evicting stale cache entry for old token bytes");
+                }
+                authCacheService.remove(oldCacheKey);
+            }
+        } catch (Exception e) {
+            // Non-fatal: stale entry will be evicted by the generational cache timer
+            if (isDebugEnabled()) {
+                Tr.debug(tc, "Could not evict stale token cache entry after clone", e);
             }
         }
     }
