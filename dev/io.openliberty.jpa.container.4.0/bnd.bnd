@@ -29,6 +29,8 @@ WS-TraceGroup: JPA
 Import-Package: \
   jakarta.persistence;jpa="4.0";consumer="persistenceService", \
   jakarta.persistence.criteria;jpa="4.0";consumer="persistenceService", \
+  jakarta.persistence.metamodel;jpa="4.0";consumer="persistenceService", \
+  jakarta.persistence.query;jpa="4.0";consumer="persistenceService", \
   jakarta.persistence.sql;jpa="4.0";consumer="persistenceService", \
   *
 
@@ -36,7 +38,7 @@ Private-Package: \
   io.openliberty.jpa.container.v40.*
 
 -buildpath: \
-	com.ibm.ws.jpa.container.jakarta;version=latest,\
+	com.ibm.ws.jpa.container.jakarta.40;version=latest,\
 	io.openliberty.jakarta.persistence.4.0;version=latest,\
 	com.ibm.wsspi.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

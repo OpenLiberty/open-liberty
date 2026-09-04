@@ -10,7 +10,16 @@ WLP-AlsoKnownAs: jpaContainer-4.0
 IBM-API-Package: jakarta.persistence; type="spec", \
  jakarta.persistence.spi; type="spec", \
  jakarta.persistence.criteria; type="spec", \
- jakarta.persistence.metamodel; type="spec"
+ jakarta.persistence.metamodel; type="spec", \
+ jakarta.persistence.query; type="spec", \
+ jakarta.persistence.sql; type="spec", \
+ jakarta.activation; type="spec", \
+ jakarta.xml.bind; type="spec", \
+ jakarta.xml.bind.annotation; type="spec", \
+ jakarta.xml.bind.annotation.adapters; type="spec", \
+ jakarta.xml.bind.attachment; type="spec", \
+ jakarta.xml.bind.helpers; type="spec", \
+ jakarta.xml.bind.util; type="spec"
 IBM-App-ForceRestart: uninstall, \
  install
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
@@ -21,7 +30,7 @@ IBM-App-ForceRestart: uninstall, \
   io.openliberty.jakarta.persistence-4.0, \
   com.ibm.websphere.appserver.transaction-2.1
 -bundles=io.openliberty.jpa.container.4.0, \
- com.ibm.ws.jpa.container.jakarta, \
+ com.ibm.ws.jpa.container.jakarta.40, \
  com.ibm.ws.jpa.container.thirdparty.jakarta
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

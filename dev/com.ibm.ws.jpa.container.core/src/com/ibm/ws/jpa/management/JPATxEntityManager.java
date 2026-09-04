@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2015 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.transaction.Synchronization;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -122,7 +121,11 @@ public class JPATxEntityManager extends JPAEntityManager
         // (JPA 5.5 Controlling Transactions)
         // A container-managed entity manager must be a JTA entity manager. JTA entity managers are only specified
         //  for use in Java EE containers.
-        if (puInfo.getTransactionType() != PersistenceUnitTransactionType.JTA)
+        // Compare by name so this check works at both JPA 3.x (spi enum) and JPA 4.0
+        // (top-level enum). Referencing PersistenceUnitTransactionType.JTA statically would
+        // trigger loading of jakarta.persistence.spi.PersistenceUnitTransactionType which no
+        // longer exists in the JPA 4.0 API bundle.
+        if (!puInfo.isJtaTransactionType())
         {
             throw new RuntimeException("See JPA spec 5.5: " + puRefId + " must specify JTA transaction type.");
         }
