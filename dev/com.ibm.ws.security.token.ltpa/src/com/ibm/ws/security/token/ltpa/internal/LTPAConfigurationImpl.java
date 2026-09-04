@@ -40,6 +40,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.nester.Nester;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
@@ -90,6 +91,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private String primaryKeyPassword;
     private boolean tryToReEncryptLtpaKeys;
     private long keyTokenExpiration;
+    private long refreshThreshold;
+    private long inactivityTimeout;
+    private volatile boolean dynamicExpirationValidation;
     private long monitorInterval;
     private LTPAFileMonitor ltpaFileMonitor;
     private ServiceRegistration<FileMonitor> ltpaFileMonitorRegistration;
@@ -168,6 +172,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     protected void modified(Map<String, Object> props) {
         String oldKeyImportFile = primaryKeyImportFile;
         Long oldKeyTokenExpiration = keyTokenExpiration;
+        Long oldRefreshThreshold = refreshThreshold;
+        Long oldInactivityTimeout = inactivityTimeout;
+        boolean oldDynamicExpirationValidation = dynamicExpirationValidation;
         Long oldMonitorInterval = monitorInterval;
         Long oldExpirationDifferenceAllowed = expirationDifferenceAllowed;
         boolean oldMonitorValidationKeysDir = monitorValidationKeysDir;
@@ -182,7 +189,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         try {
             loadConfig(props);
 
-            if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
+            if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldRefreshThreshold, oldInactivityTimeout,
+                                    oldDynamicExpirationValidation, oldExpirationDifferenceAllowed,
+                                    oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
                 unsetFileMonitorRegistration();
                 Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
                 setupRuntimeLTPAInfrastructure();
@@ -201,6 +210,62 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         primaryKeyImportFile = (String) props.get(CFG_KEY_IMPORT_FILE);
         primaryKeyPassword = resolvePrimaryKeyPassword(props);
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
+
+        // Beta guard: refreshThreshold and inactivityTimeout are only available in beta edition
+        if (ProductInfo.getBetaEdition()) {
+            Long refreshThresholdValue = (Long) props.get(CFG_KEY_REFRESH_THRESHOLD);
+            refreshThreshold = (refreshThresholdValue != null) ? refreshThresholdValue : 0L;
+
+            Long inactivityTimeoutValue = (Long) props.get(CFG_KEY_INACTIVITY_TIMEOUT);
+            inactivityTimeout = (inactivityTimeoutValue != null) ? inactivityTimeoutValue : 0L;
+
+            dynamicExpirationValidation = (Boolean) props.get(CFG_KEY_DYNAMIC_EXPIRATION_VALIDATION);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "refreshThreshold: " + refreshThreshold + " minutes");
+                Tr.debug(tc, "inactivityTimeout: " + inactivityTimeout + " minutes");
+                Tr.debug(tc, "dynamicExpirationValidation: " + dynamicExpirationValidation);
+            }
+
+            // Validate that inactivityTimeout is less than expiration (if configured)
+            if (inactivityTimeout > 0 && inactivityTimeout >= keyTokenExpiration) {
+                Tr.warning(tc, "LTPA_INACTIVITY_TIMEOUT_GREATER_THAN_OR_EQUAL_TO_EXPIRATION",
+                           inactivityTimeout, keyTokenExpiration);
+            }
+
+            // Warn when only one of the pair is configured — both are required together.
+            if (inactivityTimeout > 0 && refreshThreshold == 0) {
+                Tr.warning(tc, "LTPA_INACTIVITY_TIMEOUT_WITHOUT_REFRESH_THRESHOLD", inactivityTimeout);
+            } else if (refreshThreshold > 0 && inactivityTimeout == 0) {
+                Tr.warning(tc, "LTPA_REFRESH_THRESHOLD_WITHOUT_INACTIVITY_TIMEOUT", refreshThreshold);
+            }
+
+            // Validate that refreshThreshold is less than inactivityTimeout (if both configured)
+            if (inactivityTimeout > 0 && refreshThreshold > 0 && refreshThreshold >= inactivityTimeout) {
+                long adjustedThreshold = inactivityTimeout / 3;
+                // If refreshThreshold is also less than expiration, the user likely set it
+                // relative to expiration rather than inactivityTimeout — emit a clearer warning.
+                if (refreshThreshold < keyTokenExpiration) {
+                    Tr.warning(tc, "LTPA_REFRESH_THRESHOLD_RELATIVE_TO_INACTIVITY_TIMEOUT",
+                               refreshThreshold, inactivityTimeout, keyTokenExpiration, adjustedThreshold);
+                } else {
+                    Tr.warning(tc, "LTPA_REFRESH_THRESHOLD_MUST_BE_LESS_THAN_INACTIVITY_TIMEOUT",
+                               refreshThreshold, inactivityTimeout, adjustedThreshold);
+                }
+                refreshThreshold = adjustedThreshold;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Adjusted refreshThreshold to: " + refreshThreshold);
+                }
+            }
+        } else {
+            // In non-beta mode, set to default values that disable refresh functionality
+            refreshThreshold = 0L; // No refresh threshold
+            inactivityTimeout = 0L; // No inactivity timeout
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "LTPA token refresh is only available in beta edition. Setting refreshThreshold=0 and inactivityTimeout=0");
+            }
+        }
+
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
         authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);
         // expirationDifferenceAllowed is set to 3 seconds (3000ms) by default.
@@ -275,6 +340,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             StringJoiner sj = new StringJoiner(", ", "debugLTPAConfig[", "]");
             sj.add("primaryKeyImportFile: " + primaryKeyImportFile);
             sj.add("keyTokenExpiration: " + keyTokenExpiration);
+            sj.add("refreshThreshold: " + refreshThreshold);
+            sj.add("inactivityTimeout: " + inactivityTimeout);
+            sj.add("dynamicExpirationValidation: " + dynamicExpirationValidation);
             sj.add("monitorInterval: " + monitorInterval);
             sj.add("authFilterRef: " + authFilterRef);
             sj.add("monitorValidationKeysDir: " + monitorValidationKeysDir);
@@ -627,23 +695,30 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     /**
-     * The keys config is changed if the file, expiration, expirationDifferenceAllowed, moitorInterval, monitorValidationKeysDir, updateTrigger or validationKeys configured were
-     * modified.
+     * The keys config is changed if the file, expiration, refreshThreshold, inactivityTimeout,
+     * dynamicExpirationValidation, expirationDifferenceAllowed, monitorValidationKeysDir,
+     * updateTrigger or validationKeys configured were modified.
      * Changing the password by itself must not be considered a config change that should trigger a keys reload.
      *
      * @param oldKeyImportFile
      * @param oldKeyTokenExpiration
+     * @param oldRefreshThreshold
+     * @param oldInactivityTimeout
+     * @param oldDynamicExpirationValidation
      * @param oldExpirationDifferenceAllowed
-     * @param oldMonitorInterval
      * @param oldMonitorValidationKeysDir
      * @param oldUpdateTrigger
      * @param oldValidationKeys
      */
-    private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir,
-                                        String oldUpdateTrigger,
-                                        @Sensitive List<Properties> oldValidationKeys) {
+    private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldRefreshThreshold,
+                                        Long oldInactivityTimeout, boolean oldDynamicExpirationValidation,
+                                        Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir,
+                                        String oldUpdateTrigger, @Sensitive List<Properties> oldValidationKeys) {
         return ((oldKeyImportFile.equals(primaryKeyImportFile) == false)
                 || (oldKeyTokenExpiration != keyTokenExpiration)
+                || (oldRefreshThreshold != refreshThreshold)
+                || (oldInactivityTimeout != inactivityTimeout)
+                || (oldDynamicExpirationValidation != dynamicExpirationValidation)
                 || (oldExpirationDifferenceAllowed != expirationDifferenceAllowed)
                 || (oldMonitorValidationKeysDir != monitorValidationKeysDir)
                 || (oldUpdateTrigger != updateTrigger)
@@ -802,6 +877,24 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Override
     public long getTokenExpiration() {
         return keyTokenExpiration;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public long getRefreshThreshold() {
+        return refreshThreshold;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public long getInactivityTimeout() {
+        return inactivityTimeout;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isDynamicExpirationValidation() {
+        return dynamicExpirationValidation;
     }
 
     /** {@inheritDoc} */
