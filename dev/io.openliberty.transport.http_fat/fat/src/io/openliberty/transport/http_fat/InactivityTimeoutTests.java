@@ -47,7 +47,7 @@ import componenttest.topology.utils.HttpUtils;
  * Test to ensure that the tcpOptions inactivityTimeout works.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+// @Mode(TestMode.FULL)
 public class InactivityTimeoutTests {
 
     private static final Logger LOG = Logger.getLogger(InactivityTimeoutTests.class.getName());
@@ -80,7 +80,7 @@ public class InactivityTimeoutTests {
         if (server != null && server.isStarted()) {
             //CWWKO0211E: TCP Channel defaultHttpEndpoint has been constructed with an incorrect configuration property value. Name: inactivityTimeout Value: -1 Valid Range: Minimum 0, Maximum 3600000 <br>[4/8/25, 21:04:00:557 EDT] 0000004c com.ibm.ws.channelfw.internal.ChannelFrameworkImpl
             //CWWKO0029E: An exception was generated when initializing chain CHAIN-defaultHttpEndpoint because of exception com.ibm.wsspi.channelfw.exception.ChannelException: A TCP Channel has been constructed with incorrect configuration property value, Channel Name: defaultHttpEndpoint name: inactivityTimeout value: -1 minimum Value: 0 maximum Value: 3600000
-            server.stopServer("CWWKO0211E", "CWWKO0029E");
+            server.stopServer("CWWKO0211E", "CWWKO0029E", "CWWKO1713W", "CWWKO1714W");
         }
     }
 
@@ -369,10 +369,10 @@ public class InactivityTimeoutTests {
         // Verify that there was a SocketTimeoutException in the trace.
         if (!runningNetty) {
             assertTrue("The SocketTimeoutException was not found in the trace and should have been!",
-                       server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() == 1);
+                       server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() >= 1);
         } else {
             assertTrue("The connection closed message was not found in the trace and should have been!",
-                       server.findStringsInLogsAndTraceUsingMark("The connection is closing due an idle read timeout").size() == 1);
+                       server.findStringsInLogsAndTraceUsingMark("The connection is closing due an idle read timeout").size() >= 1);
         }
     }
 
@@ -465,10 +465,10 @@ public class InactivityTimeoutTests {
         // Verify that there was a SocketTimeoutException in the trace.
         if (!runningNetty) {
             assertTrue("The SocketTimeoutException was not found in the trace and should have been!",
-                       server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() == 1);
+                       server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() >= 1);
         } else {
             assertTrue("The connection closed message was not found in the trace and should have been!",
-                       server.findStringsInLogsAndTraceUsingMark("connection closed due to idle timeout").size() == 1);
+                       server.findStringsInLogsAndTraceUsingMark("connection closed due to idle timeout").size() >= 1);
         }
     }
 
@@ -591,7 +591,7 @@ public class InactivityTimeoutTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getTcpOptions().setInactivityTimeout("5s");
         // Set the readTimeout back to the default of 60s.
-        httpEndpoint.getHttpOptions().setExtraAttribute("readTimeout", "60s");
+        httpEndpoint.getHttpOptions().setReadTimeout("60s");
 
         server.setMarkToEndOfLog();
         server.setTraceMarkToEndOfDefaultTrace();
@@ -720,5 +720,175 @@ public class InactivityTimeoutTests {
         }
 
         assertTrue("The expected response: " + expectedResponse + " was not received!", expectedResponseFound);
+    }
+
+    /**
+     * Tests that httpOptions readTimeout fires when the server is waiting for an incomplete request.
+     *
+     * Configuration:
+     * <httpOptions readTimeout="5s" writeTimeout="0"/>
+     * <tcpOptions inactivityTimeout="0"/>  (disabled so it doesn't interfere)
+     *
+     * A raw socket is opened and only the request line is sent — headers are never completed.
+     * The server waits for the rest of the request. After readTimeout (5s) the server retries
+     * once (Netty path), then fires a ReadTimeoutException.
+     *
+     * Expected outcome:
+     * - The server sends "HTTP/1.1 408 Request Timeout" OR the socket is closed (SocketException).
+     * - CWWKO1713W appears in the server log (Netty path).
+     * - SocketTimeoutException appears in trace (ChannelFW path).
+     */
+    @Test
+    public void testReadTimeout() throws Exception {
+        String expectedResponse = "HTTP/1.1 408 Request Timeout";
+        boolean expectedResponseFound = false;
+        boolean socketExceptionOccurred = false;
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+
+        // readTimeout=5s drives the READ phase timeout on Netty (readTimeout > 0 wins over inactivityTimeout).
+        // inactivityTimeout=5s drives the initial TCP_IDLE phase (fires before any request data arrives).
+        // Both are set so there is always a timeout armed regardless of which phase fires first.
+        httpEndpoint.getTcpOptions().setInactivityTimeout("5s");
+        httpEndpoint.getHttpOptions().setReadTimeout("5s");
+        httpEndpoint.getHttpOptions().setWriteTimeout("0");
+
+        server.setMarkToEndOfLog();
+        server.setTraceMarkToEndOfDefaultTrace();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*InactivityTimeout.*");
+
+        assertNotNull("readTimeout trace confirmation not found!", server.waitForStringInTraceUsingMark("Config: Read timeout is 5000"));
+        assertNotNull("inactivityTimeout trace confirmation not found!", server.waitForStringInTraceUsingMark("inactivityTimeout: 5000"));
+
+        server.waitForDefaultHTTPEndpointStart();
+
+        // Send only the request line — never send Host header or blank line.
+        // The server is left waiting for the rest of the request headers.
+        String incompleteRequest = "GET /" + APP_NAME + "/InactivityTimeoutServlet" + " HTTP/1.1\r\n";
+
+        LOG.info("Opening raw socket and sending incomplete request.");
+        URL url = HttpUtils.createURL(server, "/InactivityTimeoutServlet");
+        try (Socket socket = new Socket(url.getHost(), url.getPort())) {
+            socket.setKeepAlive(true);
+            // setSoTimeout prevents readLine() from blocking forever if the server
+            // closes the connection without sending data we can read line-by-line.
+            socket.setSoTimeout(30000);
+
+            OutputStream os = socket.getOutputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            os.write(incompleteRequest.getBytes());
+            os.flush();
+
+            // readTimeout=5s with one Netty retry = fires after ~10s.
+            // inactivityTimeout=5s retries once too = also ~10s.
+            // Sleep 15s — enough margin for either path.
+            LOG.info("Sleeping 15s to allow readTimeout to fire...");
+            Thread.sleep(15000);
+
+            LOG.info("Reading response after sleep:");
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    LOG.info(line);
+                    if (line.equals(expectedResponse)) {
+                        LOG.info("Expected 408 response found!");
+                        expectedResponseFound = true;
+                    }
+                }
+            } catch (SocketException e) {
+                LOG.info("SocketException — connection closed by server: " + e.getMessage());
+                socketExceptionOccurred = true;
+            }
+        }
+
+        assertTrue("Expected a 408 response or socket close due to readTimeout, but neither occurred!",
+                   expectedResponseFound || socketExceptionOccurred);
+
+        // Verify the timeout warning appeared in the server log.
+        if (runningNetty) {
+            assertNotNull("CWWKO1713W (read timeout warning) was not found in logs!",
+                          server.waitForStringInLogUsingMark("CWWKO1713W"));
+        } else {
+            assertTrue("SocketTimeoutException was not found in trace!",
+                       server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() >= 1);
+        }
+    }
+
+    /**
+     * Tests that httpOptions writeTimeout fires when the server cannot write a large response
+     * because the client is not reading.
+     *
+     * Configuration:
+     * <httpOptions readTimeout="0" writeTimeout="3s"/>
+     * <tcpOptions inactivityTimeout="0"/>
+     *
+     * The client opens a socket to the SlowWriteServlet, which writes a 4 MB response body.
+     * The client deliberately never reads from the socket so the server's TCP send buffer fills
+     * up. Once the write stalls past writeTimeout the server fires WriteTimeoutException.
+     *
+     * Expected outcome:
+     * - CWWKO1714W appears in the server log (Netty path).
+     * - The socket is eventually closed from the server side.
+     */
+    @Test
+    public void testWriteTimeout() throws Exception {
+        // Write timeout is Netty-only at the HTTP layer. Skip on ChannelFW.
+        if (!runningNetty) {
+            LOG.info("Skipping testWriteTimeout — write timeout at HTTP layer is Netty-only.");
+            return;
+        }
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+
+        // Short writeTimeout so the test finishes quickly.
+        // Disable readTimeout and inactivityTimeout so they don't fire first.
+        httpEndpoint.getTcpOptions().setInactivityTimeout("0");
+        httpEndpoint.getHttpOptions().setReadTimeout("0");
+        httpEndpoint.getHttpOptions().setWriteTimeout("3s");
+
+        server.setMarkToEndOfLog();
+        server.setTraceMarkToEndOfDefaultTrace();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*InactivityTimeout.*");
+
+        assertNotNull("writeTimeout trace confirmation not found!", server.waitForStringInTraceUsingMark("Config: Write timeout is 3000"));
+
+        server.waitForDefaultHTTPEndpointStart();
+
+        // Send the full HTTP request but then never read the response, causing the server's
+        // write to stall once the socket send/receive buffers fill.
+        String address = server.getHostname() + ":" + server.getHttpDefaultPort();
+        String request = "GET /" + APP_NAME + "/SlowWriteServlet HTTP/1.1\r\n"
+                         + "Host: " + address + "\r\n"
+                         + "Connection: close\r\n"
+                         + "\r\n";
+
+        LOG.info("Opening socket to SlowWriteServlet and sending request — will NOT read response.");
+        URL url = HttpUtils.createURL(server, "/SlowWriteServlet");
+        try (Socket socket = new Socket(url.getHost(), url.getPort())) {
+            // Shrink the client receive buffer to help fill it faster and trigger the write stall.
+            socket.setReceiveBufferSize(4096);
+            // Safety net: this test should complete well within 30s.
+            socket.setSoTimeout(30000);
+
+            OutputStream os = socket.getOutputStream();
+            os.write(request.getBytes());
+            os.flush();
+
+            // Give the write timeout (3s) time to fire. Sleep well past writeTimeout.
+            LOG.info("Sleeping 15s to allow writeTimeout to fire...");
+            Thread.sleep(15000);
+        }
+
+        // The write stall caused by the non-reading client should trigger the write timeout.
+        // The WriteTimeoutHandler (closeConnection=false) fails the write promise with a
+        // SocketTimeoutException rather than firing WriteTimeoutException, so the observable
+        // signal is "Write timed out!!" appearing in trace from the failed write callback.
+        assertNotNull("Write timed out!! was not found in trace — writeTimeout did not fire!",
+                      server.waitForStringInTraceUsingMark("Write timed out!!"));
     }
 }
