@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,8 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
     private long fragmentCookieMaxAgeSec = 10*60; //10 minutes
 
     String cspHeader = null;
+
+    private String nonce = null; // generated once per redirect, shared by all <SCRIPT> blocks
 
     private final int NONCE_LENGTH = 30;
 
@@ -145,55 +147,15 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
             resp.setContentType("text/html");
 
             if (this.method.equalsIgnoreCase("POST") || (this.parameters != null && !this.parameters.isEmpty())) {
-                // create the form content
-                StringBuffer sb = new StringBuffer();
-                try {
-                    sb.append("<HTML xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">");
-                    sb.append("<HEAD>");
-                    sb.append("</HEAD>");
-                    sb.append("<BODY onload=\"document.forms[0].submit()\">");
-                    sb.append("<FORM name=\"redirectform\" id=\"redirectform\" action=\"");
-                    sb.append(this.reqUrl);
-                    if (fragement != null && !fragement.isEmpty()) {
-                        sb.append("#" + fragement);
-                    }
-                    sb.append("\" method=\"" + this.method + "\"><div>");
-                    if (this.bNeedFragment) {
-                        sb.append(handleFragmentCookiesAndNonce(resp));
-                    }
-                    if (this.parameters != null && !this.parameters.isEmpty()) {
-                        Set<Entry<String, String[]>> set = this.parameters.entrySet();
-                        for (Entry<String, String[]> entry : set) {
-                            String key = entry.getKey();
-                            String[] values = entry.getValue();
-                            if (values != null && values.length > 0) {
-                                for (int iI = 0; iI < values.length; iI++) {
-                                    sb.append("<input type=\"hidden\" name=\"" + key +
-                                              "\" value=\"" + values[iI] + "\"/>"); // the value had been encoded in handleParameter()
-                                }
-                            } else {
-                                sb.append("<input type=\"hidden\" name=\"" + key +
-                                          " value=\"\"/>");
-                            }
-                        }
-                    }
-                    sb.append("</div>");
-                    sb.append("<noscript><div>");
-                    sb.append("<button type=\"submit\" name=\"redirectform\">Process request</button>");
-                    sb.append("</div></noscript>");
-                    sb.append("</FORM></BODY></HTML>");
-                } catch (Exception e) {
-                    // This should not happen
-                    throw new SamlException(e); // Let SamlException handle the unexpected Exception
-                }
+                String html = buildRedirectHtml(resp);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "... expect to be redirected by the browser (" + this.method + ")\n" +
-                                 sb.toString());
+                                 html);
                 }
 
                 PrintWriter out = resp.getWriter();
-                out.println(sb.toString());
+                out.println(html);
                 out.flush();
             } else {
                 String urlGet = this.reqUrl;
@@ -243,15 +205,12 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "cookie " + cookieName + " , " + cookieMaxAge);
         }
-        String noncerand = null;
+
         if (this.cspHeader != null) {
-            String header = null;
-            if (cspHeader.contains(CONTENT_SECURITY_POLICY_NONCE_INSERT)) {
-                noncerand = RandomUtils.getRandomAlphaNumeric(NONCE_LENGTH);
-                header = this.cspHeader.replace(CONTENT_SECURITY_POLICY_NONCE_INSERT, noncerand); 
-            } else {
-                header = this.cspHeader;
-            }
+            String header = this.cspHeader;
+            if (this.nonce != null) {
+                header = this.cspHeader.replace(CONTENT_SECURITY_POLICY_NONCE_INSERT, this.nonce);
+            } 
             resp.addHeader("Content-Security-Policy", header);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "CSP header=" + header);
@@ -259,8 +218,8 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         }
         StringBuffer sb = new StringBuffer();
         sb.append("\n<SCRIPT type=\"TEXT/JAVASCRIPT\" language=\"JavaScript\"");
-        if (noncerand != null) {
-            String scriptNonce = " nonce=\"" + noncerand + "\">";
+        if (this.nonce != null) {
+            String scriptNonce = " nonce=\"" + this.nonce + "\">";
             sb.append(scriptNonce);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "script nonce="+scriptNonce);
@@ -435,5 +394,80 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
      */
     public void setCspHeader(String cspHeader) {
         this.cspHeader = cspHeader;
+    }
+
+    /**
+     * Builds the POST-binding redirect HTML page.
+     * Extracted into a package-private method so unit tests can inspect the
+     * generated HTML without needing to mock PrintWriter or HttpServletResponse.
+     * Called exclusively by redirectRequest().
+     */
+    String buildRedirectHtml(HttpServletResponse resp) throws SamlException {
+        // Generate the nonce once here so both the cookie <SCRIPT> block
+        // (handleFragmentCookiesAndNonce) and the form-submit <SCRIPT> block share it.
+        if (this.cspHeader != null && this.cspHeader.contains(CONTENT_SECURITY_POLICY_NONCE_INSERT)) {
+            this.nonce = RandomUtils.getRandomAlphaNumeric(NONCE_LENGTH);
+        }
+        StringBuffer sb = new StringBuffer();
+        try {
+            sb.append("<HTML xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">");
+            sb.append("<HEAD>");
+            sb.append("</HEAD>");
+            sb.append("<BODY>");
+            sb.append("<FORM name=\"redirectform\" id=\"redirectform\" action=\"");
+            sb.append(this.reqUrl);
+            if (this.fragement != null && !this.fragement.isEmpty()) {
+                sb.append("#" + this.fragement);
+            }
+            sb.append("\" method=\"" + this.method + "\"><div>");
+            if (this.bNeedFragment) {
+                sb.append(handleFragmentCookiesAndNonce(resp));
+            }
+            if (this.parameters != null && !this.parameters.isEmpty()) {
+                Set<Entry<String, String[]>> set = this.parameters.entrySet();
+                for (Entry<String, String[]> entry : set) {
+                    String key = entry.getKey();
+                    String[] values = entry.getValue();
+                    if (values != null && values.length > 0) {
+                        for (int iI = 0; iI < values.length; iI++) {
+                            sb.append("<input type=\"hidden\" name=\"" + key +
+                                      "\" value=\"" + values[iI] + "\"/>"); // the value had been encoded in handleParameter()
+                        }
+                    } else {
+                        sb.append("<input type=\"hidden\" name=\"" + key +
+                                  " value=\"\"/>");
+                    }
+                }
+            }
+            sb.append("</div>");
+            sb.append("<noscript><div>");
+            sb.append("<button type=\"submit\" name=\"redirectform\">Process request</button>");
+            sb.append("</div></noscript>");
+            sb.append("</FORM>");
+            // Form-submit script: uses the same nonce as the cookie script above.
+            // This replaces the former <BODY onload="document.forms[0].submit()">
+            // inline event handler, which CSP nonces cannot cover.
+            // window.onload defers execution until the load event fires, matching
+            // the original <BODY onload=...> timing so that fragment cookies set by
+            // handleFragmentCookiesAndNonce are committed before form submission.
+            sb.append("<SCRIPT type=\"TEXT/JAVASCRIPT\"");
+            if (this.nonce != null) {
+                sb.append(" nonce=\"" + this.nonce + "\"");
+            }
+            sb.append(">window.onload=function(){document.forms[0].submit();};</SCRIPT>");
+            sb.append("</BODY></HTML>");
+        } catch (Exception e) {
+            // This should not happen
+            throw new SamlException(e); // Let SamlException handle the unexpected Exception
+        }
+        return sb.toString();
+    }
+
+    /**
+     * For test use: pre-set the nonce value directly, simulating what
+     * redirectRequest() does before calling handleFragmentCookiesAndNonce().
+     */
+    void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 }
