@@ -44,7 +44,7 @@ encode.entriesDidNotMatch=Entries did not match.
 encode.mutuallyExclusiveArgError=The input file cannot specify both the {0} and {1} properties.
 encode.aesConfigFileEncryptionAmbiguous=ERROR: The input file cannot be used if it contains both the {0} and {1} variables.
 encode.aesConfigFileMissingEncryptionVariables=Cannot encode password; either the input file does not contain the {0} or {1} variables, or the input file is malformed.
-encode.aesKeyRequired=When using AES encoding, one of the following arguments must be specified: --key, --base64Key, --aesConfigFile, or --keyring.
+encode.aesKeyRequired=When using AES encoding, one of the following arguments must be specified: --key, --base64Key, --aesConfigFile, --keyring, or --keyringType=ICSF with --keyLabel.
 
 password.enterText=Enter password:
 password.reenterText=Re-enter password:
@@ -105,11 +105,21 @@ saf.arg.not.aes=The --keyring, --keyringType, and --keyLabel arguments can be us
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated
+createLTPAKeys.useEncryptionKey.passwordConflict=The --useEncryptionKey=true and --password options cannot be specified together. Use --useEncryptionKey=true with a key configuration option, or use --password without --useEncryptionKey=true.
+createLTPAKeys.useEncryptionKey.missingAesConfig=When --useEncryptionKey=true is specified, one of the following must also be specified: --passwordKey, --passwordBase64Key, --aesConfigFile, or --keyringType=ICSF with --keyLabel (z/OS only).
 createLTPAKeys.abort=Aborting LTPA key file creation:
 createLTPAKeys.fileExists=The {0} file already exists.  Unable to create a LTPA keys file in that location.
 createLTPAKeys.createdFile=Created LTPA keys file: {0}\n\
 Include the following configuration to your server.xml\n\
 {1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Note to translator: 'LTPA' should not be translated
+reEncryptLTPAKeys.fileNotFound=The {0} LTPA keys file was not found.
+reEncryptLTPAKeys.badPassword=Failed to decrypt the LTPA keys file {0}. Verify that the current password is correct.
+reEncryptLTPAKeys.success=Successfully re-encrypted LTPA keys file: {0}
+reEncryptLTPAKeys.ckdsWithBothPasswords=The {0} argument cannot be used with both {1} and {2}. Specify {0} with either {1} or {2}.
+reEncryptLTPAKeys.twoKeyArgsRequired=Specify exactly two of the following arguments: {0}, {1}, {2}.
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 configureFIPS.notIbmSdkNorSemeru=The Java installation is either not from IBM Semeru Runtimes nor IBM SDK, or if it is, it does not support FIPS 140-3.\n\
