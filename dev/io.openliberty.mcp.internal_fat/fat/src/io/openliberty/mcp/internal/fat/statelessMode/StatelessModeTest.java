@@ -392,6 +392,33 @@ public class StatelessModeTest extends FATServletClient {
     }
 
     @Test
+    public void testClientInfoAndCapabilitiesInStatelessModeReturnUnknownNotNull() throws Exception {
+        String request = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "1",
+                            "method": "tools/call",
+                            "params": {
+                                "name": "clientInfoInStatelessMode",
+                                "arguments": {}
+                            }
+                        }
+                        """;
+
+        String response = new HttpRequest(server, ENDPOINT)
+                                                           .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                           .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                                                           .jsonBody(request)
+                                                           .method("POST")
+                                                           .expectCode(200)
+                                                           .run(String.class);
+
+        assertThat("clientInfo().name() should return 'Unknown' in stateless mode", response, containsString("name=Unknown"));
+        assertThat("clientInfo().version() should return '0.0' in stateless mode", response, containsString("version=0.0"));
+        assertThat("rawClientCapabilities() should return an empty map in stateless mode", response, containsString("caps={}"));
+    }
+
+    @Test
     public void testDuplicateRequestIdAllowedInStatelessMode() throws Exception {
         final String LATCH_NAME = "statelessDuplicate";
 
