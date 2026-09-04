@@ -20,7 +20,6 @@ import static io.opentelemetry.semconv.SemanticAttributes.URL_FULL;
 import static io.opentelemetry.semconv.resource.attributes.ResourceAttributes.TELEMETRY_SDK_NAME;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
