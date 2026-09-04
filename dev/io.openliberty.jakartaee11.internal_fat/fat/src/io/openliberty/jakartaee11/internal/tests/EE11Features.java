@@ -268,9 +268,6 @@ public class EE11Features {
             features.remove("heritageAPIs-1.0");
             features.remove("heritageAPIs-1.1");
 
-            // iiopTransactionPropagation-1.0 is the javax (EE8) version; not applicable to Jakarta EE 11
-            features.remove("iiopTransactionPropagation-1.0");
-
             // Stabilized / discontinued / bluemix features were changed to not support EE 11 even though
             // they do not depend on Java / Jakarta EE features.
             features.remove("appState-1.0");
