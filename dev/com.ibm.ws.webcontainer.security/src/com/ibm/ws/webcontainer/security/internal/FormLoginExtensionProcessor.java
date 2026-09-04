@@ -200,7 +200,7 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
      * @param res
      * @throws IOException
      */
-    private void handleError(HttpServletRequest req, HttpServletResponse res) throws IOException, RuntimeException {
+    private void handleError(HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setStatus(javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
         if (getErrorPage(req, res) != null) {
             res.sendRedirect(res.encodeURL(getErrorPage(req, res)));
@@ -349,19 +349,17 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
      *
      * @param req                    the current HTTP request
      * @param fullUrl                the fully-expanded error page URL
-     * @param useWasReqUrlDomainList true to also include WASReqURLRedirectDomainNames (CVE/error_page path);
-     *                               false for hardening path (relogin/web.xml/global) which skips
-     *                               validation entirely when no domain lists are configured
      * @return fullUrl if valid, null if blocked
      */
     private String validateErrorPageRedirect(HttpServletRequest req, String fullUrl) {
+        List<String> errorURLRedirectDomains = webAppSecConfig.getLoginErrorURLRedirectDomainNames();
         try {
             ReferrerURLCookieHandler.isReferrerHostValid(
                     PasswordNullifier.nullifyParams(req.getRequestURL().toString()),
                     PasswordNullifier.nullifyParams(fullUrl),
-                    webAppSecConfig.getLoginErrorURLRedirectDomainNames());
+                    errorURLRedirectDomains);
             } catch (RuntimeException e) {
-                Tr.error(tc, "SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED", fullUrl, webAppSecConfig.getLoginErrorURLRedirectDomainNames());
+                Tr.error(tc, "SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED", fullUrl, errorURLRedirectDomains);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "validateErrorPageRedirect caught exception", e);
                 }
