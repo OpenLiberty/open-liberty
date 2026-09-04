@@ -248,6 +248,15 @@ public class AsyncContextImpl implements AsyncContext {
             cancelAsyncTimer();
 
             WebAppRequestDispatcher requestDispatcher = (WebAppRequestDispatcher) context.getRequestDispatcher(path);
+            
+            if (requestDispatcher == null) {
+                logger.logp(Level.SEVERE, CLASS_NAME, "dispatch", "error.calling.async.dispatch", "RequestDispatcher is null.");
+
+                //Cleanup and prevent starting future AsyncTimer since there is no dispatch.
+                complete();
+                throw new IllegalStateException(nls.getString("error.calling.async.dispatch", "RequestDispatcher is null."));
+            }
+
             dispatchRunnable = new DispatchRunnable(requestDispatcher, this);
             dispatchPending = true;
             dispatchAllowed = false;

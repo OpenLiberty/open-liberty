@@ -1107,21 +1107,33 @@ public class RequestUtils {
    public static String normalizePath(String path) {
        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
            logger.entering(CLASS_NAME, "normalizePath , path [" + path + "]");
+      
+       //Query string is excluded from normalize and canonicalize
+       int queryIndex = path.indexOf("?");
+       String tmpPath, queryInfo = null, decodePath;
+
+       if (queryIndex > 0) {
+           tmpPath = path.substring(0, queryIndex);
+           queryInfo = path.substring(queryIndex);
+       }
+       else {
+           tmpPath = path;
+       }
 
        try {
            //verify path does not have any suspicious encoded character %23 (#) ; %2e (.) ;  %2f (/) ;  %5c (\)
-           RequestUtils.verifyEncodedCharacter(path);
+           RequestUtils.verifyEncodedCharacter(tmpPath);
 
-           String decodePath;
-           //then decode path using UTF-8 encoding
            if (WCCustomProperties.DECODE_URL_PLUS_SIGN) {
-               decodePath = URLDecoder.decode(path, "UTF-8");
+               decodePath = URLDecoder.decode(tmpPath, "UTF-8");
            } else {
-               decodePath = WSURLDecoder.decode(path, "UTF-8");
+               decodePath = WSURLDecoder.decode(tmpPath, "UTF-8");
            }
 
-           //canonicalize
            path = RequestUtils.canonicalizeURI(decodePath);
+           
+           if (queryIndex > 0)
+               path = path + queryInfo;
 
            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                logger.logp(Level.FINE, CLASS_NAME, "normalizePath", "RETURN; return path [" + path + "]");
