@@ -331,9 +331,7 @@ public class McpTransport {
                     sendResponse(result);
 
                 } else {
-                    Throwable cause = throwable instanceof java.util.concurrent.CompletionException
-                                      ? throwable.getCause()
-                                      : throwable;
+                    Throwable cause = throwable instanceof java.util.concurrent.CompletionException ? throwable.getCause() : throwable;
                     if (cause instanceof JSONRPCException jsonRpcEx) {
                         sendJsonRpcException(jsonRpcEx);
                     } else if (cause instanceof HttpResponseException httpEx) {
@@ -410,6 +408,14 @@ public class McpTransport {
      */
     public HttpServletRequest getReq() {
         return req;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "McpTransport@" + Integer.toHexString(System.identityHashCode(this))
+               + "[sessionId=" + getSessionId()
+               + ", appName=" + appName + "]";
     }
 
 }
