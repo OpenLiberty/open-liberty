@@ -11,6 +11,8 @@ package io.openliberty.mcp.internal.fat.tool.encoderToolApp;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import org.mcpjava.server.ContentEncoder;
 import org.mcpjava.server.content.ContentBlock;
@@ -473,5 +475,84 @@ public class EncoderTools {
           description = "tests that a ToolResponseEncoder declared for an interface (IShape) handles a different implementing record (Circle) via getType().isAssignableFrom()")
     public Circle testGetTypeSubtypeMatch() {
         return new Circle(42);
+    }
+
+    /*******************************************************************************
+     * Dedicated exception used only by throwing-encoder tests so that @AllowedFFDC
+     * in EncoderTest can target this specific class rather than the broad RuntimeException.
+     *******************************************************************************/
+
+    public static class SimulatedEncoderFailureException extends RuntimeException {
+        public SimulatedEncoderFailureException(String message) {
+            super(message);
+        }
+    }
+
+    /*******************************************************************************
+     * Test that a ContentEncoder which throws is reported with CWMCM0019E
+     *******************************************************************************/
+
+    public record ThrowingEncoderTestType(String value) {}
+
+    @ApplicationScoped
+    public static class ThrowingContentEncoder implements ContentEncoder<ThrowingEncoderTestType> {
+
+        @Override
+        public Class<ThrowingEncoderTestType> getType() {
+            return ThrowingEncoderTestType.class;
+        }
+
+        @Override
+        public ContentBlock encode(ThrowingEncoderTestType value) {
+            throw new SimulatedEncoderFailureException("Simulated ContentEncoder failure");
+        }
+    }
+
+    @Tool(name = "testThrowingContentEncoder",
+          description = "tool whose ContentEncoder always throws, to verify CWMCM0019E is logged")
+    public ThrowingEncoderTestType testThrowingContentEncoder() {
+        return new ThrowingEncoderTestType("trigger");
+    }
+
+    /*******************************************************************************
+     * Test that a ToolResponseEncoder which throws is reported with CWMCM0019E
+     *******************************************************************************/
+
+    public record ThrowingResponseEncoderTestType(String value) {}
+
+    @ApplicationScoped
+    public static class ThrowingToolResponseEncoder implements ToolResponseEncoder<ThrowingResponseEncoderTestType> {
+
+        @Override
+        public Class<ThrowingResponseEncoderTestType> getType() {
+            return ThrowingResponseEncoderTestType.class;
+        }
+
+        @Override
+        public ToolResponse encode(ThrowingResponseEncoderTestType value) {
+            throw new SimulatedEncoderFailureException("Simulated ToolResponseEncoder failure");
+        }
+    }
+
+    @Tool(name = "testThrowingToolResponseEncoder",
+          description = "tool whose ToolResponseEncoder always throws, to verify CWMCM0019E is logged")
+    public ThrowingResponseEncoderTestType testThrowingToolResponseEncoder() {
+        return new ThrowingResponseEncoderTestType("trigger");
+    }
+
+    /*******************************************************************************
+     * Async variants - verify CWMCM0019E is also logged on the async path
+     *******************************************************************************/
+
+    @Tool(name = "testAsyncThrowingContentEncoder",
+          description = "async tool whose ContentEncoder always throws, to verify CWMCM0019E is logged on async path")
+    public CompletionStage<ThrowingEncoderTestType> testAsyncThrowingContentEncoder() {
+        return CompletableFuture.completedStage(new ThrowingEncoderTestType("trigger"));
+    }
+
+    @Tool(name = "testAsyncThrowingToolResponseEncoder",
+          description = "async tool whose ToolResponseEncoder always throws, to verify CWMCM0019E is logged on async path")
+    public CompletionStage<ThrowingResponseEncoderTestType> testAsyncThrowingToolResponseEncoder() {
+        return CompletableFuture.completedStage(new ThrowingResponseEncoderTestType("trigger"));
     }
 }
