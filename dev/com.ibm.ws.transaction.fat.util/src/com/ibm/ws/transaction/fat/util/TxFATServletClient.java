@@ -94,6 +94,14 @@ public class TxFATServletClient extends FATServletClient {
             throw e;
         }
 
-        return () -> server.updateServerConfiguration(originalConfig);
+        return () -> {
+            if (server.isStarted()) {
+                server.setMarkToEndOfLog();
+                server.updateServerConfiguration(originalConfig);
+                server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName));
+            } else {
+                server.updateServerConfiguration(originalConfig);
+            }
+        };
     }
 }
