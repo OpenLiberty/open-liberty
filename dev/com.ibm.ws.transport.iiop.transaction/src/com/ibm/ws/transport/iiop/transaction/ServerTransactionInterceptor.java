@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,135 +16,270 @@
 package com.ibm.ws.transport.iiop.transaction;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import javax.transaction.InvalidTransactionException;
-import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
+import org.omg.CORBA.TypeCodePackage.BadKind;
+import org.omg.CORBA.BAD_PARAM;
+import org.omg.CORBA.INTERNAL;
+import org.omg.CORBA.INVALID_TRANSACTION;
 import org.omg.CORBA.LocalObject;
+import org.omg.CORBA.TRANSACTION_ROLLEDBACK;
+import org.omg.CosTransactions.PropagationContext;
+import org.omg.CosTransactions.PropagationContextHelper;
+import org.omg.CosTransactions.TransIdentity;
 import org.omg.IOP.Codec;
+import org.omg.IOP.ServiceContext;
+import org.omg.IOP.TransactionService;
+import org.omg.IOP.CodecPackage.FormatMismatch;
+import org.omg.IOP.CodecPackage.TypeMismatch;
 import org.omg.PortableInterceptor.ForwardRequest;
 import org.omg.PortableInterceptor.ServerRequestInfo;
 import org.omg.PortableInterceptor.ServerRequestInterceptor;
 
-import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
+import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
+import com.ibm.tx.util.TMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.UOWCoordinator;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDtxTransactionImportHandler;
+import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
+import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
+import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 /**
- * @version $Revision: 476527 $ $Date: 2006-11-18 06:22:47 -0800 (Sat, 18 Nov 2006) $
+ * Server request interceptor for IIOP transaction import (Plan B).
+ *
+ * <p>Import dispatch:
+ * <ol>
+ *   <li>Decode {@code PropagationContext} from {@code TransactionService (0)}.</li>
+ *   <li>Read {@code isd.type().id()} — pure metadata, no classloader dependency.</li>
+ *   <li>Iterate registered providers; skip those whose {@link TransactionProtocolProvider#getExpectedISDTypeId()}
+ *       does not match (fast pre-screen). Call {@link TransactionProtocolProvider#importTransaction}
+ *       on matching providers.</li>
+ *   <li>If no provider handled the context, fall back to the NoDTx handler.</li>
+ * </ol>
  */
 class ServerTransactionInterceptor extends LocalObject implements ServerRequestInterceptor {
+
     private static final long serialVersionUID = 1L;
-    private static final TraceComponent tc = Tr.register(ServerTransactionInterceptor.class);
+    private static final TraceComponent tc = Tr.register(ServerTransactionInterceptor.class, "IIOP", null);
+
     private final Codec codec;
-    private final TransactionManager tranManager;
-    private final Map<Integer, Transaction> txMap;
+
+    /**
+     * Holds import state for one inbound transactional request on this thread.
+     * Carries both the handler that imported the transaction and the raw inbound
+     * TransactionService service context bytes so they can be echoed back in the reply.
+     * Echoing the inbound context is how the client interceptor knows the server
+     * successfully processed the transaction — its absence signals "server never saw it".
+     */
+    private static final class ImportState {
+        final Object handler;         // TransactionProtocolProvider or NoDtxTransactionImportHandler
+        final byte[] rawContextBytes; // raw inbound TransactionService context_data
+
+        ImportState(Object handler, byte[] rawContextBytes) {
+            this.handler = handler;
+            this.rawContextBytes = rawContextBytes;
+        }
+    }
+
+    /** Stores the ImportState for the current thread's inbound transactional request. */
+    private final ThreadLocal<ImportState> activeHandlers = new ThreadLocal<>();
+
+    private final NoDtxTransactionImportHandler noDtxHandler = new NoDtxTransactionImportHandler();
 
     public ServerTransactionInterceptor(Codec codec) {
         this.codec = codec;
-        tranManager = EmbeddableTransactionManagerFactory.getTransactionManager();
-        txMap = new ConcurrentHashMap<>();
+    }
+
+    // -------------------------------------------------------------------------
+    // Intercept points
+    // -------------------------------------------------------------------------
+
+    @Override
+    public void receive_request(ServerRequestInfo ri) throws ForwardRequest {
+        ServerTransactionPolicy policy =
+            (ServerTransactionPolicy) ri.get_server_policy(ServerTransactionPolicyFactory.POLICY_TYPE);
+        if (tc.isDebugEnabled()) Tr.debug(tc, "receive_request: policy={0}", policy);
+
+        if (policy == null) return;
+        if (!policy.getConfig().isTransactionImportEnabled()) {
+            if (tc.isDebugEnabled()) Tr.debug(tc, "Transaction import disabled by policy");
+            return;
+        }
+
+        TransactionServiceLocator locator = TransactionServiceLocator.getInstance();
+        importTransaction(ri, locator);
     }
 
     @Override
-    public void receive_request(ServerRequestInfo serverRequestInfo) throws ForwardRequest {
+    public void receive_request_service_contexts(ServerRequestInfo ri) throws ForwardRequest {}
+
+    @Override
+    public void send_exception(ServerRequestInfo ri) throws ForwardRequest { unimportTransaction(ri); }
+
+    @Override
+    public void send_other(ServerRequestInfo ri) throws ForwardRequest { unimportTransaction(ri); }
+
+    @Override
+    public void send_reply(ServerRequestInfo ri) { unimportTransaction(ri); }
+
+    // -------------------------------------------------------------------------
+    // Import
+    // -------------------------------------------------------------------------
+
+    @FFDCIgnore(BAD_PARAM.class)
+    private void importTransaction(ServerRequestInfo ri, TransactionServiceLocator locator) {
+        ServiceContext sc;
         try {
-            Transaction currentTx = txMap.remove(serverRequestInfo.request_id());
-            if (currentTx != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "colocated call, resuming transaction on dispatch thread");
-                tranManager.resume(currentTx);
-                return;
+            sc = ri.get_request_service_context(TransactionService.value);
+        } catch (BAD_PARAM e) {
+            if (tc.isDebugEnabled()) Tr.debug(tc, "No TransactionService context");
+            return;
+        }
+
+        org.omg.CORBA.Any any;
+        try {
+            any = codec.decode_value(sc.context_data, PropagationContextHelper.type());
+        } catch (FormatMismatch | TypeMismatch e) {
+            throw (INTERNAL) new INTERNAL("Could not decode PropagationContext").initCause(e);
+        }
+
+        PropagationContext pc = PropagationContextHelper.extract(any);
+        importTransactionInternal(ri, pc, locator, sc.context_data);
+    }
+
+    @FFDCIgnore(BadKind.class)
+    private void importTransactionInternal(ServerRequestInfo ri,
+                                           PropagationContext pc,
+                                           TransactionServiceLocator locator,
+                                           byte[] rawContextBytes) {
+        if (tc.isDebugEnabled()) Tr.debug(tc, "importTransactionInternal: pc={0}", pc);
+
+        try {
+            TMHelper.checkTMState();
+
+            if (pc == null) return;
+
+            if (pc.parents != null && pc.parents.length > 0) {
+                throw new INVALID_TRANSACTION(); // nested not supported
             }
-        } catch (InvalidTransactionException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Could not resume transaction", e);
-        } catch (IllegalStateException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Could not resume transaction", e);
-        } catch (SystemException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Could not resume transaction", e);
-        }
-        ServerTransactionPolicy policy = (ServerTransactionPolicy) serverRequestInfo.get_server_policy(ServerTransactionPolicyFactory.POLICY_TYPE);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "receive_request has retrieved transaction policy - ", policy);
-        // it's possible for applications to obtain the orb instance using "java:comp/ORB" and then
-        // use the rootPOA to activate an object.  If that happens, then we're not going to see a
-        // transaction policy on the request.  Just ignore any request that doesn't have one.
-        if (policy != null) {
-            ServerTransactionPolicyConfig serverTransactionPolicyConfig = policy.getServerTransactionPolicyConfig();
-            serverTransactionPolicyConfig.importTransaction(serverRequestInfo, codec);
-        }
-    }
 
-    @Override
-    public void receive_request_service_contexts(ServerRequestInfo ri) throws ForwardRequest {
-        // Stage 2: suspend the tran and squirrel away in ServerRequestInfo
-        Transaction currentTx;
-        try {
-            currentTx = tranManager.suspend();
-            if (currentTx != null)
-            {
-                int requestId = ri.request_id();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "suspend transaction " + currentTx + ", and put in map with requestId " + requestId);
-                txMap.put(requestId, currentTx);
+            TransIdentity transId = pc.current;
+            if (transId == null || transId.otid == null) return;
+
+            byte[] globalTid = transId.otid.tid;
+            if (globalTid == null || globalTid.length == 0) return;
+
+            TransactionHandlerContext context = locator.getContext();
+            Map<Integer, TransactionProtocolProvider> providers = locator.getProviders();
+
+            // Read ISD type ID once — pure metadata, no materialisation
+            String isdTypeId = null;
+            try {
+                if (pc.implementation_specific_data != null) {
+                    isdTypeId = pc.implementation_specific_data.type().id();
+                }
+            } catch (BadKind e) {
+                // Expected for primitive TypeCodes (e.g. tk_boolean from NoDTx) — no repository ID
+                if (tc.isDebugEnabled()) Tr.debug(tc, "Could not read ISD type id: {0}", e);
+            } catch (Exception e) {
+                // Unexpected — FFDC will fire, leave isdTypeId null and continue
+                if (tc.isDebugEnabled()) Tr.debug(tc, "Unexpected exception reading ISD type id: {0}", e);
             }
-        } catch (SystemException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Could not suspend transaction", e);
+
+            boolean imported = false;
+            for (TransactionProtocolProvider provider : providers.values()) {
+                // Pre-screen: skip providers whose expected ISD type doesn't match
+                String expected = provider.getExpectedISDTypeId();
+                if (expected != null && !expected.equals(isdTypeId)) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Skipping {0}: ISD type mismatch (expected={1}, actual={2})",
+                                 provider.getProtocolName(), expected, isdTypeId);
+                    }
+                    continue;
+                }
+
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Attempting import with: {0}", provider.getProtocolName());
+                }
+                if (provider.importTransaction(pc, context)) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Imported with: {0}", provider.getProtocolName());
+                    }
+                    activeHandlers.set(new ImportState(provider, rawContextBytes));
+                    imported = true;
+                    break;
+                }
+            }
+
+            // NoDTx fallback
+            if (!imported) {
+                if (noDtxHandler.importTransaction(pc, context)) {
+                    if (tc.isDebugEnabled()) Tr.debug(tc, "NoDTx fallback handled context");
+                    activeHandlers.set(new ImportState(noDtxHandler, rawContextBytes));
+                }
+            }
+
+        } catch (org.omg.CORBA.SystemException se) {
+            // Preserve TRANSACTION_ROLLEDBACK, INVALID_TRANSACTION, etc. — do not re-wrap as INTERNAL
+            throw se;
+        } catch (Exception ex) {
+            if (tc.isDebugEnabled()) Tr.debug(tc, "Exception during import: {0}", ex);
+            throw (INTERNAL) new INTERNAL().initCause(ex);
         }
     }
 
-    @Override
-    public void send_exception(ServerRequestInfo ri) throws ForwardRequest
-    {
-        suspendTxOnSend();
-    }
+    // -------------------------------------------------------------------------
+    // Unimport
+    // -------------------------------------------------------------------------
 
-    @Override
-    public void send_other(ServerRequestInfo ri) throws ForwardRequest
-    {
-        suspendTxOnSend();
-    }
+    private void unimportTransaction(ServerRequestInfo ri) {
+        if (tc.isDebugEnabled()) Tr.debug(tc, "unimportTransaction");
 
-    @Override
-    public void send_reply(ServerRequestInfo ri)
-    {
-        suspendTxOnSend();
-    }
+        ImportState state = activeHandlers.get();
+        if (state == null) return;
+        activeHandlers.remove();
 
-    private void suspendTxOnSend()
-    {
+        // Echo the inbound TransactionService context back in the reply (or exception reply).
+        // This is the signal the client interceptor uses to distinguish "server processed
+        // the transaction normally" (context present → no spurious rollback) from "server
+        // never saw the transaction" (context absent → roll back).
+        // Matches tWAS TxServerInterceptor.send_reply / send_exception behaviour.
+        if (state.rawContextBytes != null) {
+            try {
+                ServiceContext replyCtx = new ServiceContext(TransactionService.value, state.rawContextBytes);
+                ri.add_reply_service_context(replyCtx, true);
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "Failed to add reply service context: {0}", e);
+            }
+        }
+
+        TransactionHandlerContext context =
+            TransactionServiceLocator.getInstance().getContext();
+
         try {
-            tranManager.suspend();
-        } catch (SystemException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Could not suspend transaction", e);
+            if (state.handler instanceof TransactionProtocolProvider) {
+                ((TransactionProtocolProvider) state.handler).unimportTransaction(context);
+            } else if (state.handler instanceof NoDtxTransactionImportHandler) {
+                ((NoDtxTransactionImportHandler) state.handler).unimportTransaction(context);
+            } else {
+                // Defensive — suspend whatever is on the thread
+                context.getTransactionManager().suspend();
+            }
+        } catch (javax.transaction.SystemException se) {
+            if (tc.isDebugEnabled()) Tr.debug(tc, "SystemException in unimport: {0}", se);
         }
     }
 
     @Override
     public void destroy() {}
 
-    /**
-     * Returns the name of the interceptor.
-     * <p/>
-     * Each Interceptor may have a name that may be used administratively
-     * to order the lists of Interceptors. Only one Interceptor of a given
-     * name can be registered with the ORB for each Interceptor type. An
-     * Interceptor may be anonymous, i.e., have an empty string as the name
-     * attribute. Any number of anonymous Interceptors may be registered with
-     * the ORB.
-     * 
-     * @return the name of the interceptor.
-     */
     @Override
-    public String name() {
-        return getClass().getName();
-    }
+    public String name() { return getClass().getName(); }
 }
+
+// Made with Bob

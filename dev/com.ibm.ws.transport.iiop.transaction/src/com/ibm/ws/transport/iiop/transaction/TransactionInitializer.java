@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,16 +29,45 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 /**
+ * ORB initializer for transaction support. Registers transaction interceptors
+ * and policy factories. The IOR interceptor retrieves protocol contributions
+ * at runtime from the factory.
+ *
  * @version $Revision: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
 public class TransactionInitializer extends LocalObject implements ORBInitializer {
     private static final long serialVersionUID = 1L;
     private static final Encoding CDR_1_2_ENCODING = new Encoding(ENCODING_CDR_ENCAPS.value, (byte) 1, (byte) 2);
-    private static final TraceComponent tc = Tr.register(TransactionInitializer.class);
+    private static final TraceComponent tc = Tr.register(TransactionInitializer.class, "IIOP", null);
+    
+    /**
+     * Static reference to the factory, set when TransactionInitializer is constructed.
+     * This allows IORTransactionInterceptor to retrieve the factory at runtime.
+     */
+    private static volatile TransactionSubsystemFactory staticFactory;
+    
+    private final TransactionSubsystemFactory factory;
 
     public TransactionInitializer() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "TransactionInitializer.<init>");
+        this(null);
+    }
+    
+    public TransactionInitializer(TransactionSubsystemFactory factory) {
+        this.factory = factory;
+        staticFactory = factory;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "TransactionInitializer.<init> with factory: {0}", factory);
+        }
+    }
+    
+    /**
+     * Get the factory instance. This is called by IORTransactionInterceptor at runtime
+     * to retrieve protocol contributors.
+     *
+     * @return the factory, or null if not yet initialized
+     */
+    public static TransactionSubsystemFactory getFactory() {
+        return staticFactory;
     }
 
     /**
@@ -92,7 +121,7 @@ public class TransactionInitializer extends LocalObject implements ORBInitialize
             try {
                 info.add_client_request_interceptor(new ClientTransactionInterceptor(codec));
                 info.add_server_request_interceptor(new ServerTransactionInterceptor(codec));
-                info.add_ior_interceptor(new IORTransactionInterceptor(codec));
+                info.add_ior_interceptor(new IORTransactionInterceptor(codec, factory));
             } catch (DuplicateName duplicateName) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Duplicate name", duplicateName);

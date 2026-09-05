@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Copyright (c) 2015, 2025 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.transaction.services;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.transaction.HeuristicCommitException;
@@ -47,6 +48,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 import com.ibm.ws.Transaction.JTS.Configuration;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -101,9 +103,11 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             throw se;
         }
 
+/*
         //The next thing we need to do is distinguish between local and remote invocations. If the UOW currently associated
         //with the thread is a global txn then we know the invocation must be local.
         final UOWCoordinator uowCoord = _uowc.getUOWCoord();
+
 
         if (uowCoord != null && uowCoord.isGlobal()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -112,6 +116,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             ((DistributableTransaction) uowCoord).resumeAssociation();
             return false;
         }
+*/
 
         LocalTransactionCoordinator ltc;
         _suspendedLTC.set(ltc = LocalTranCurrentSet.instance().suspend());
@@ -120,38 +125,26 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
         // Still could be local
         DistributableTransaction tx = getTransactionForID(globalId);
-        if (tx != null) {
-            // We know about this transaction already so at least we know we don't need to register
+        boolean create = (tx == null);
 
-            try {
-                _tm.resume((Transaction) tx);
-            } catch (Exception e) {
-                SystemException se = new SystemException();
-                se.initCause(e);
-                throw se;
-            }
+        if (create) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "The request is a remote invocation");
 
-            return false;
+            _threadImportedTran.set(tx = new EmbeddableTransactionImpl(expires, globalId));
+            new TransactionWrapper((EmbeddableTransactionImpl) tx);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "The Web Service request is a remote invocation");
-
-        _threadImportedTran.set(tx = new EmbeddableTransactionImpl(expires, globalId));
-        // Add association to police single thread per tran
-        tx.addAssociation();
-        new TransactionWrapper((EmbeddableTransactionImpl) tx);
-
-        // Resume transaction on this thread
+        // Resume transaction on this thread and add association
         try {
-            _tm.resume((Transaction) tx);
+            ((EmbeddableWebSphereTransactionManager)_tm).resumeForImport((Transaction) tx);
         } catch (Exception e) {
             SystemException se = new SystemException();
             se.initCause(e);
             throw se;
         }
 
-        return true;
+        return create;
     }
 
     /*
@@ -212,7 +205,8 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             throw new SystemException("No global transaction");
         }
 
-        _tm.suspend();
+        //_tm.suspend();
+		((DistributableTransaction) uowCoord).suspendAssociation();
 
         return ((DistributableTransaction) uowCoord).getGlobalId();
     }
@@ -227,6 +221,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
         final DistributableTransaction tx = getTransactionForID(globalId);
 
+        /*
         try {
             _tm.resume((Transaction) tx);
         } catch (Exception e) {
@@ -234,6 +229,8 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             se.initCause(e);
             throw se;
         }
+		*/
+		tx.resumeAssociation();
     }
 
     /*
@@ -285,6 +282,35 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             }
         }
 
+        return null;
+    }
+
+    /**
+     * Lookup a transaction using the byte array transaction ID (tid).
+     * The tid contains only the global transaction ID part of the XID.
+     * This method directly compares the byte array with each transaction's XID
+     * to avoid unnecessary String conversions.
+     *
+     * @param tid the transaction ID as a byte array (globalID part only)
+     * @return the DistributableTransaction if found, null otherwise
+     */
+    @Override
+    public DistributableTransaction lookupTransaction(byte[] tid) {
+        if (tid == null || tid.length == 0) {
+            return null;
+        }
+        
+        // Iterate through all transactions and compare the byte arrays directly
+        for (TransactionImpl tx : LocalTIDTable.getAllTransactions()) {
+            DistributableTransaction dtx = (DistributableTransaction) tx;
+            byte[] txGlobalId = dtx.getXid().getGlobalTransactionId();
+            
+            // Compare byte arrays directly using Arrays.equals
+            if (Arrays.equals(tid, txGlobalId)) {
+                return dtx;
+            }
+        }
+        
         return null;
     }
 

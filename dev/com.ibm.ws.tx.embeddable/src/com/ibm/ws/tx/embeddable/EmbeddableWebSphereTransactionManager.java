@@ -1,4 +1,3 @@
-package com.ibm.ws.tx.embeddable;
 /*******************************************************************************
  * Copyright (c) 2009, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -11,6 +10,7 @@ package com.ibm.ws.tx.embeddable;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.tx.embeddable;
 
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
@@ -145,6 +145,23 @@ public interface EmbeddableWebSphereTransactionManager extends ExtendedTransacti
     /**
      *  Complete processing of passive transaction timeout.
      */
+    /**
+     * Atomically resume and add an association for a transaction being imported 
+     * from a remote system. This method combines the resume and addAssociation 
+     * operations with proper error handling, ensuring that if either operation 
+     * fails, the transaction state is left consistent.
+     * 
+     * The method performs resume first, then addAssociation. If addAssociation 
+     * fails after a successful resume, the transaction is automatically suspended 
+     * to restore the original state before re-throwing the exception.
+     * 
+     * @param t the transaction to resume and associate
+     * @throws InvalidTransactionException if the transaction is invalid
+     * @throws IllegalStateException if thread already has a transaction
+     * @throws TRANSACTION_ROLLEDBACK if addAssociation fails (transaction will be suspended first)
+     */
+    public void resumeForImport(Transaction t) throws javax.transaction.InvalidTransactionException, IllegalStateException;
+
     public void completeTxTimeout() throws TransactionRolledbackException;
 
     public void registerCallback(UOWScopeCallback callback);

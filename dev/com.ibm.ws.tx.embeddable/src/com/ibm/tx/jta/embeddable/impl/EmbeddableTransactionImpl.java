@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.tx.jta.embeddable.impl;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.Stack;
 
 import javax.transaction.Status;
@@ -68,6 +69,8 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     private int _retryWait = (_configProvider.getHeuristicRetryInterval() <= 0) ? defaultRetryTime : _configProvider.getHeuristicRetryInterval();
 
     private Thread _thread;
+
+    private final LinkedList<Thread> _suspendedAssociationThreadStack = new LinkedList<Thread>();
 
     public EmbeddableTransactionImpl() {
         super();
@@ -424,6 +427,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
                      new Object[] { notify, _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
 
         _suspendedAssociations++;
+        _suspendedAssociationThreadStack.addFirst(Thread.currentThread());
 
         if (notify)
             notifyAll();
@@ -487,7 +491,9 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         // doSetRollback indicates if this method has marked the transaction for rollbackOnly
         // and if so TRANSACTION_ROLLEDBACK exception is thrown.
         boolean doSetRollback = false;
-        while (_activeAssociations > _suspendedAssociations) {
+        Thread thisThread = Thread.currentThread();
+
+        while (_activeAssociations > _suspendedAssociations || !allowedToResume(thisThread)) {
             doSetRollback = allowSetRollback;
             try {
                 if (doSetRollback && !_rollbackOnly)
@@ -507,7 +513,11 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
         } // end while
 
+        if(!_suspendedAssociationThreadStack.isEmpty())
+            _suspendedAssociationThreadStack.removeFirst();
         _suspendedAssociations--;
+        setThread(Thread.currentThread());
+
         if (doSetRollback) {
             final TRANSACTION_ROLLEDBACK trb = new TRANSACTION_ROLLEDBACK("Context already active");
             if (traceOn && tc.isEntryEnabled())
@@ -519,6 +529,20 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (traceOn && tc.isEntryEnabled())
             Tr.exit(tc, "resumeAssociation",
                     new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
+    }
+
+    // Is the thread at the top of the stack?
+    private synchronized boolean allowedToResume(Thread thread)
+    {
+        // Use getFirst not removeFirst since called in loop, caller must removeFirst
+        Thread topOfStackThread = _suspendedAssociationThreadStack.isEmpty() ? null : _suspendedAssociationThreadStack.getFirst();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.debug(tc, "allowedToResume", new Object[]{thread, topOfStackThread});
+
+        if (topOfStackThread != null && topOfStackThread.equals(thread)) {
+            return true;
+        } else {
+            return (topOfStackThread == null); // should always return false
+        }
     }
 
     /*

@@ -20,6 +20,7 @@ bVersion=1.0
 
 
 Web-ContextPath: /ibm/wsatservice
+OL-VirtualHost: ${wsat.webservice.virtualHostRef}
 
 WS-TraceGroup: WSAT
 
