@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -454,15 +454,19 @@ public class ZipUtils {
     }
 
     private static boolean reachesOut(String entryPath) {
-        if ( !entryPath.contains("..") ) {
+        // Decode percent-encoded dots before any checks so that entries like
+        // "%2e%2e/outside.txt" are treated the same as "../outside.txt".
+        String decoded = entryPath.replace("%2e", ".").replace("%2E", ".");
+
+        // Fast exit: no ".." component means no traversal possible.
+        if ( !decoded.contains("..") ) {
             return false;
         }
 
-        String normalizedPath = PathUtils.normalizeUnixStylePath(entryPath);
-        return PathUtils.isNormalizedPathAbsolute(normalizedPath); // Leading ".." or "/.."
-
-        // The following is very inefficient ... and doesn't work when there
-        // are symbolic links.
-        // return targetFile.getCanonicalPath().startsWith(targetDirectory.getCanonicalPath() + File.separator);
+        // isNormalizedPathAbsolute returns TRUE when the path is safe (does not
+        // start with ".." after normalisation) and FALSE when it reaches above
+        // the target directory.  We need the opposite sense for reachesOut().
+        String normalizedPath = PathUtils.normalizeUnixStylePath(decoded);
+        return !PathUtils.isNormalizedPathAbsolute(normalizedPath);
     }
 }
