@@ -25,6 +25,9 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.control.RequestContextController;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Instance.Handle;
 import jakarta.enterprise.inject.spi.CDI;
 
@@ -35,6 +38,7 @@ import jakarta.enterprise.inject.spi.CDI;
 public class ScheduledMethod<T> extends ScheduledMethodAbstract {
     private final Class<T> beanClass;
     private final Annotation[] beanQualifierAnnos;
+    private final Class<? extends Annotation> beanScopeClass;
 
     /**
      * Constructor for Schedule directly annotating a bean method.
@@ -44,12 +48,15 @@ public class ScheduledMethod<T> extends ScheduledMethodAbstract {
      * @param schedule          the Schedule annotation
      * @param contextDescriptor captured thread context
      * @param managedExecutor   managed executor or managed scheduled executor
+     * @param beanScopeClass    class of the bean's scope (such as ApplicationScoped)
+     * @param beanClass         class of the bean that has the scheduled method
      * @param beanAnnos         qualifier annotations on the bean class (if any)
      */
     ScheduledMethod(Method method,
                     Schedule schedule,
                     ThreadContextDescriptor contextDescriptor,
                     WSManagedExecutorService managedExecutor,
+                    Class<? extends Annotation> beanScopeClass,
                     Class<T> beanClass,
                     Annotation... beanQualifierAnnos) {
         super(method, //
@@ -60,6 +67,7 @@ public class ScheduledMethod<T> extends ScheduledMethodAbstract {
 
         this.beanClass = beanClass;
         this.beanQualifierAnnos = beanQualifierAnnos;
+        this.beanScopeClass = beanScopeClass;
 
         // Intentionally placed as last line of constructuor to ensure
         // intialization is complete before the first task execution runs
@@ -85,17 +93,37 @@ public class ScheduledMethod<T> extends ScheduledMethodAbstract {
     protected CompletionStage<?> invokeMethod() //
                     throws InvocationTargetException, Exception {
 
-        Handle<T> handle = CDI.current() //
-                        .select(beanClass, beanQualifierAnnos) //
-                        .getHandle();
-        boolean isDependent = Dependent.class.equals(handle.getBean().getScope());
+        // Activate a request context for the duration of this invocation
+        // when the bean is @RequestScoped, so that the CDI proxy can
+        // resolve a contextual instance on the timer thread where no
+        // request context would otherwise be active.
+        RequestContextController requestContext = null;
+        if (RequestScoped.class.equals(beanScopeClass)) {
+            requestContext = CDI.current() //
+                            .select(RequestContextController.class) //
+                            .get();
+            if (!requestContext.activate())
+                requestContext = null;
+        }
 
+        Handle<T> handle = null;
         Object result;
         try {
-            result = method.invoke(handle.get());
+            Instance<T> instance = CDI.current().select(beanClass,
+                                                        beanQualifierAnnos);
+
+            // invoke the bean method
+            if (Dependent.class.equals(beanScopeClass)) {
+                handle = instance.getHandle();
+                result = method.invoke(handle.get());
+            } else {
+                result = method.invoke(instance.get());
+            }
         } finally {
-            if (isDependent)
+            if (handle != null)
                 handle.destroy();
+            if (requestContext != null)
+                requestContext.deactivate();
         }
 
         if (result instanceof CompletionStage<?> cs)
