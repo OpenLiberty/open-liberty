@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2024 IBM Corporation and others.
+ * Copyright (c) 2020,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
@@ -19,6 +20,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
@@ -97,6 +100,12 @@ class ContextualDefaultExecutor implements Executor, WSManagedExecutorService {
 
     @Override
     public <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> CompletableFuture<T> newScheduledMethod(Method method,
+                                                       AtomicReference<Future<?>> nextExecFuture) {
         throw new UnsupportedOperationException();
     }
 

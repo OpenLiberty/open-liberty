@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.ws.concurrent.WSManagedExecutorService;
@@ -62,8 +63,13 @@ public class ScheduledMethod<T> extends ScheduledMethodAbstract {
 
         // Intentionally placed as last line of constructuor to ensure
         // intialization is complete before the first task execution runs
-        ConcurrencyExtensionMetadata.scheduledExecutor //
-                        .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
+        ScheduledFuture<?> nextExec = ConcurrencyExtensionMetadata //
+                        .scheduledExecutor.schedule(this,
+                                                    computeDelayNanos(),
+                                                    TimeUnit.NANOSECONDS);
+        nextExecutionFuture.set(nextExec);
+        if (future.isCancelled())
+            nextExec.cancel(true);
     }
 
     /**
