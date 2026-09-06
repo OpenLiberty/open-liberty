@@ -457,6 +457,39 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * A RequestScoped bean method annotated Schedule runs automatically and
+     * provides a fresh bean instance on each execution. Because RequestScoped
+     * beans are normal-scoped, the CDI proxy is always resolvable, and the
+     * container must activate a request context for each scheduled invocation
+     * so that the underlying bean instance can be created. This test verifies
+     * that the method fires at least twice and that each invocation receives a
+     * distinct bean instance (i.e. a fresh request-scoped instance per run).
+     */
+    @Test
+    public void testRequestScopedBeanWithScheduledMethod() //
+                    throws InterruptedException {
+
+        Integer firstHash = RequestScopedConcurrency32Bean //
+                        .onThirdSecondsFrom1Queue.poll(TIMEOUT_NS,
+                                                       TimeUnit.NANOSECONDS);
+        assertNotNull("Timed out waiting for first execution of" +
+                      " RequestScopedConcurrency32Bean.onThirdSecondsFrom1",
+                      firstHash);
+
+        Integer secondHash = RequestScopedConcurrency32Bean //
+                        .onThirdSecondsFrom1Queue.poll(TIMEOUT_NS,
+                                                       TimeUnit.NANOSECONDS);
+        assertNotNull("Timed out waiting for second execution of " +
+                      " RequestScopedConcurrency32Bean.onThirdSecondsFrom1",
+                      secondHash);
+
+        assertEquals("Each Schedule invocation of a RequestScoped bean must" +
+                     " use a distinct bean instance",
+                     false,
+                     firstHash.equals(secondHash));
+    }
+
+    /**
      * A bean method that is scheduled to automatically run every 4 seconds,
      * but completes itself the first time it runs must run exactly once.
      */
@@ -735,4 +768,5 @@ public class Concurrency32CDITestServlet extends FATServlet {
         assertEquals(92,
                      writeLockBean.blockingReadNumber());
     }
+
 }
