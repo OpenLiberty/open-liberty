@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -49,6 +50,9 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public ImplementationInfo clientInfo() {
+        if (session == null) {
+            return ImplementationInfoImpl.UNKNOWN;
+        }
         return session.getClientInfo();
     }
 
@@ -64,6 +68,9 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public Map<String, Object> rawClientCapabilities() {
+        if (session == null) {
+            return Collections.emptyMap();
+        }
         return session.getClientCapabilities();
     }
 
