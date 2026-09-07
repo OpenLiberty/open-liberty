@@ -560,8 +560,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Remove WAS private ($WS*) headers for sources that are not listed in the trust-origin configuration. 
-        boolean desensitizePort = this.isc.getHttpConfig().desensitizePrivatePortHeader();
-        NettyHeaderUtils.filterPrivateHeaders(this.remoteAddress, nettyRequest.headers(), desensitizePort);
+        boolean desensitizePrivatePortHeader = this.isc.getHttpConfig().desensitizePrivatePortHeader();
+        boolean trustNonSensitive = HttpDispatcher.usePrivateHeaders(this.remoteAddress);
+        boolean trustSensitive    = HttpDispatcher.usePrivateSensitiveHeaders(this.remoteAddress);
+        NettyHeaderUtils.filterPrivateHeaders(this.remoteAddress, nettyRequest.headers(), desensitizePrivatePortHeader, trustNonSensitive, trustSensitive);
 
         //Add for Servlet 6.0
         //HttpDispatcherLink can be reused but ready(VirtualConnection) is always called to get a current VirtualConnection.
