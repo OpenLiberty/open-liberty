@@ -7,8 +7,6 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
 # Used to transform bundles so that imported versions work with Jakarta EE 12
