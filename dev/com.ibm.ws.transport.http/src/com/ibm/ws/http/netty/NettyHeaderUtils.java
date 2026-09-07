@@ -11,7 +11,9 @@ package com.ibm.ws.http.netty;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
@@ -22,6 +24,7 @@ import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.util.AsciiString;
 
 /**
  *
@@ -97,54 +100,116 @@ public class NettyHeaderUtils {
      *
      *
      * @param remoteAddr the resolved remote InetAddress, or null
-     * @param headers the mutable Netty HttpHeaders} map
+     * @param headers the mutable Netty HttpHeaders map
      * @param desensitizePrivatePortHeader when true $WSSP is evaluated against the non-sensitive trust list
+     * @param trustNonSensitive computed at HttpDispatcher.usePrivateHeaders(remoteAddr)
+     * @param trustSensitive    computed at HttpDispatcher.usePrivateSensitiveHeaders(remoteAddr)
+     
      */
     public static void filterPrivateHeaders(InetAddress remoteAddr, HttpHeaders headers,
-                                            boolean desensitizePrivatePortHeader) {
-        List<String> untrusted = null;
+                                            boolean desensitizePrivatePortHeader,
+                                            boolean trustNonSensitive, boolean trustSensitive) {
+        // Fast-path: source is trusted for everything, so nothing here could be stripped.
+        if (trustNonSensitive && trustSensitive) {
+            return;
+        }
 
-        for (String name : headers.names()) {
-            // Fast-path: skip any header whose name does not start with '$' to linit the check only to private headers
-            if (name.charAt(0) != '$') {
+        List<HttpHeaderKeys> toRemove = null;
+        boolean wsspNeedsPrune = false;
+
+        Iterator<Map.Entry<CharSequence, CharSequence>> it = headers.iteratorCharSequence();
+        while (it.hasNext()) {
+            Map.Entry<CharSequence, CharSequence> entry = it.next();
+            CharSequence nameCSeq = entry.getKey();
+
+            // Fast-path: every WAS private header begins with '$'.
+            if (nameCSeq.length() == 0 || nameCSeq.charAt(0) != '$') {
                 continue;
             }
-            if (!HttpHeaderKeys.isWasPrivateHeader(name)) {
+
+            HttpHeaderKeys key = matchHeaderKey(nameCSeq);
+            if (key == null || !HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
                 continue;
             }
 
-            boolean trusted;
-            if (HttpHeaderKeys.HDR_$WSSP.getName().equalsIgnoreCase(name)) {
-                // $WSSP: value affects the decision — check every occurrence.
-                // One untrusted value taints the whole header.
-                trusted = true;
-                for (String value : headers.getAll(name)) {
-                    if (!HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, name, value, desensitizePrivatePortHeader)) {
-                        trusted = false;
-                        break;
-                    }
-                }
+            if (HttpDispatcher.isPrivateHeaderTrusted(trustNonSensitive, trustSensitive,
+                                                      key, entry.getValue(),
+                                                      desensitizePrivatePortHeader)) {
+                continue;
+            }
+
+            if (key == HttpHeaderKeys.HDR_$WSSP) {
+                // Per-occurrence, admits or drops each $WSSP instance on its own value,
+                wsspNeedsPrune = true;
             } else {
-                // All other $WS* headers: decision is source-only, value is irrelevant.
-                trusted = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, name, null, false);
+                // All other $WS* headers: the decision is source-only and therefore identical
+                // for every occurrence, so the whole header goes.
+                if (toRemove == null) {
+                    toRemove = new ArrayList<>(2);
+                }
+                if (!toRemove.contains(key)) {
+                    toRemove.add(key);
+                }
             }
 
-            if (!trusted) {
-                if (untrusted == null) {
-                    untrusted = new ArrayList<>();
-                }
-                untrusted.add(name);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "filterPrivateHeaders: untrusted WAS private header ["
+                        + key.getName() + "] from remote address [" + remoteAddr + "]");
             }
         }
 
-        if (untrusted != null) {
-            for (String name : untrusted) {
-                headers.remove(name);
+        // Removal is deferred until the entry iteration has finished. Netty's entry iterator
+        // holds a raw pointer, so mutating the map mid-walk risks silently skipping later headers.
+        if (toRemove != null) {
+            for (int i = 0; i < toRemove.size(); i++) {
+                // Uses canonical name as Netty hashes header names case-insensitively, so this
+                // removes every occurrence whatever casing arrived on the wire.
+                headers.remove(toRemove.get(i).getName());
+            }
+        }
+
+        // $WSSP: drop only the untrusted values, keeping any trusted ones
+        // Only reached when at least one occurrence was untrusted.
+        if (wsspNeedsPrune) {
+            pruneUntrustedWssp(headers, desensitizePrivatePortHeader, trustNonSensitive, trustSensitive, remoteAddr);
+        }
+    }
+
+    /**
+     * Removes the untrusted values of a repeated $WSSP header while leaving trusted
+     * ones in place, matching the per-occurrence admission the legacy channel 
+     *
+     */
+    private static void pruneUntrustedWssp(HttpHeaders headers, boolean desensitizePrivatePortHeader,
+                                           boolean trustNonSensitive, boolean trustSensitive,
+                                           InetAddress remoteAddr) {
+        Iterator<? extends CharSequence> values =
+                headers.valueCharSequenceIterator(HttpHeaderKeys.HDR_$WSSP.getName());
+        while (values.hasNext()) {
+            CharSequence value = values.next();
+            if (!HttpDispatcher.isPrivateHeaderTrusted(trustNonSensitive, trustSensitive,
+                                                       HttpHeaderKeys.HDR_$WSSP, value,
+                                                       desensitizePrivatePortHeader)) {
+                values.remove();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "filterPrivateHeaders: removed untrusted private header " + name + (remoteAddr != null ? " sent by " + remoteAddr.getHostAddress() : " for this host"));
+                    Tr.debug(tc, "filterPrivateHeaders: removed untrusted $WSSP value from ["
+                            + remoteAddr + "]");
                 }
             }
         }
+    }
+
+    /**
+     * Resolve a header name to its HttpHeaderKeys singleton without allocating.
+     * Netty's H1 codec produces AsciiString names; anything else falls back to the String form.
+     */
+    private static HttpHeaderKeys matchHeaderKey(CharSequence name) {
+        if (name instanceof AsciiString) {
+            AsciiString a = (AsciiString) name;
+            return HttpHeaderKeys.match(a.array(), a.arrayOffset(), a.length());
+        }
+        String s = name.toString();
+        return HttpHeaderKeys.match(s, 0, s.length());
     }
 
 }

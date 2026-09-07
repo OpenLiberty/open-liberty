@@ -210,6 +210,43 @@ public class PrivateHeaderFilterTest {
     }
 
     /**
+     * Verifies that case variants of $WSRA (e.g. $wsra, $Wsra)
+     * are stripped from an untrusted source, not passed through to the servlet.
+     * Netty's header map is case-insensitive, so a lowercase name that is not matched
+     * by the filter would still be readable as  HDR_$WSRA downstream.
+     */
+    @Test
+    public void testSensitiveWsraStrippedRegardlessOfCase() throws Exception {
+        for (String wireName : new String[] { "$wsra", "$Wsra", "$WSRA" }) {
+            String response = sendRawGet(SERVLET_PATH, wireName + ": " + ALT_REMOTE_ADDR);
+            LOG.info("Case variant [" + wireName + "] response:\n" + response);
+
+            assertFalse("REMOTE_ADDR must not equal the override value for wire name [" + wireName + "]",
+                    ALT_REMOTE_ADDR.equals(extractResponseField(response, "REMOTE_ADDR")));
+            assertEquals("$WSRA must not be visible to the servlet for wire name [" + wireName + "]",
+                    "null", extractResponseField(response, "HDR_WSRA"));
+        }
+    }
+
+    /**
+     * Verifies that case variants of  $WSSP (e.g. $wssp $Wssp)
+     * are stripped from an untrusted source, not passed through to the servlet.
+     */
+    @Test
+    public void testWsspStrippedRegardlessOfCase() throws Exception {
+        for (String wireName : new String[] { "$wssp", "$Wssp", "$WSSP" }) {
+            String response = sendRawGet(SERVLET_PATH, wireName + ": " + ALT_PORT);
+            LOG.info("Case variant [" + wireName + "] response:\n" + response);
+
+            String serverPort = extractResponseField(response, "SERVER_PORT");
+            assertFalse("SERVER_PORT must not equal ALT_PORT for wire name [" + wireName + "]",
+                    ALT_PORT.equals(serverPort));
+            assertEquals("SERVER_PORT should equal the real server port for wire name [" + wireName + "]",
+                    String.valueOf(server.getHttpDefaultPort()), serverPort);
+        }
+    }
+
+    /**
      * Verifies that $WSRA is honoured when trustedSensitiveHeaderOrigin="*"
      * is configured. HttpServletRequest.getRemoteAddr() must return the value
      * supplied in the header, not the real socket address.
