@@ -36,7 +36,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.PrivHelper;
 import io.openliberty.jpa.persistence.tests.web.JakartaPersistenceServlet;
 
 /**
@@ -66,8 +65,6 @@ public class JakartaPersistenceTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
-
         server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -118,9 +115,6 @@ public class JakartaPersistenceTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer(
-            "CWWJP9991W",                                                // EclipseLink drop-and-create
-            "WTRN0074E: Exception caught from before_completion synchronization operation", // expected tx test
-            "Missing PostgreSQL10JsonPlatform");                          // postgres without plugin
+        server.stopServer();
     }
 }

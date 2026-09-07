@@ -27,33 +27,24 @@ configurations {
 dependencies {
     jpaFatTools project(':com.ibm.ws.jpa_testframework')
 
-    // Jakarta APIs provided by Liberty — exclude from Hibernate transitive closure
-    def withoutJakartaAPI = {
-        exclude group: 'jakarta.activation',   module: 'jakarta.activation-api'
-        exclude group: 'jakarta.inject',        module: 'jakarta.inject-api'
-        exclude group: 'jakarta.persistence',   module: 'jakarta.persistence-api'
-        exclude group: 'jakarta.transaction',   module: 'jakarta.transaction-api'
-        exclude group: 'jakarta.xml.bind',      module: 'jakarta.xml.bind-api'
-    }
-
     // Core Hibernate 8 runtime
-    hibernateJPA40 "org.hibernate.orm:hibernate-core:${hibernateVersion}",              withoutJakartaAPI
-    hibernateJPA40 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
-    hibernateJPA40 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}",        withoutJakartaAPI
+    hibernateJPA40("org.hibernate.orm:hibernate-core:${hibernateVersion}")              { transitive = false }
+    hibernateJPA40("org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}"){ transitive = false }
+    hibernateJPA40("org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}")       { transitive = false }
 
-    // Hibernate runtime dependencies (transitive=false — only what is actually needed)
-    hibernateJPA40("net.bytebuddy:byte-buddy:1.18.10")          { transitive = false }
-    hibernateJPA40("org.antlr:antlr4-runtime:4.13.2")           { transitive = false }
-    hibernateJPA40("org.jboss.logging:jboss-logging:3.6.3.Final"){ transitive = false }
-    hibernateJPA40("org.hibernate.models:hibernate-models:1.2.0"){ transitive = false }
-    hibernateJPA40("io.smallrye:jandex:3.6.0")                  { transitive = false }
+    // Hibernate runtime dependencies
+    hibernateJPA40("net.bytebuddy:byte-buddy:1.18.10")           { transitive = false }
+    hibernateJPA40("org.antlr:antlr4-runtime:4.13.2")            { transitive = false }
+    hibernateJPA40("org.jboss.logging:jboss-logging:3.6.3.Final") { transitive = false }
+    hibernateJPA40("org.hibernate.models:hibernate-models:1.2.0") { transitive = false }
+    hibernateJPA40("io.smallrye:jandex:3.6.0")                   { transitive = false }
 
-    // JAXB runtime (required by Hibernate for orm.xml parsing)
-    hibernateJPA40("org.glassfish.jaxb:jaxb-runtime:4.0.9")    { transitive = false }
-    hibernateJPA40("org.glassfish.jaxb:jaxb-core:4.0.9")       { transitive = false }
-    hibernateJPA40("com.sun.istack:istack-commons-runtime:4.1.2"){ transitive = false }
-    hibernateJPA40("org.eclipse.angus:angus-activation:2.0.3")  { transitive = false }
-    hibernateJPA40("org.glassfish.jaxb:txw2:4.0.9")            { transitive = false }
+    // JAXB runtime — Liberty's xmlBinding-4.0 feature provides the API jars;
+    // only the GlassFish JAXB implementation jars are needed in HibernateLib.
+    hibernateJPA40("org.glassfish.jaxb:jaxb-runtime:4.0.9")     { transitive = false }
+    hibernateJPA40("org.glassfish.jaxb:jaxb-core:4.0.9")        { transitive = false }
+    hibernateJPA40("com.sun.istack:istack-commons-runtime:4.1.2") { transitive = false }
+    hibernateJPA40("org.glassfish.jaxb:txw2:4.0.9")             { transitive = false }
 }
 
 task addJPAFATTools(type: Copy) {

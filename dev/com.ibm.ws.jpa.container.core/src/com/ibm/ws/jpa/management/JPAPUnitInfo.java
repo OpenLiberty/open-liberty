@@ -242,7 +242,7 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo implements Persi
 
     /**
      * Translates the version-specific {@code PersistenceUnitTransactionType} enum value into
-     * the boolean form accepted by {@link AbstractJPAPUnitInfo#setTransactionType(boolean, boolean)},
+     * the boolean form accepted by {@link AbstractJPAPUnitInfo#setTransactionTypeByName(String, boolean)},
      * which is safe to call across the javax/jakarta namespace boundary.
      *
      * <p>Kept on JPAPUnitInfo (not the abstract base) so the Jakarta EE transformer rewrites
