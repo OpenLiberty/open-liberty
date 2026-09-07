@@ -32,6 +32,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Integer postParamCookieSize = 16384;
     private final Boolean allowLogoutPageRedirectToAnyHost = false;
     private final String wasReqURLRedirectDomainNames = null;
+    private final String loginErrorURLRedirectDomainNames = null;
     private final String logoutPageRedirectDomainNames = null;
     private final String ssoCookieName = "LtpaToken2";
     private final Boolean allowFailOverToBasicAuth = false;
@@ -162,6 +163,16 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getWASReqURLRedirectDomainNames();
         else
             return domainNamesToList(wasReqURLRedirectDomainNames);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getLoginErrorURLRedirectDomainNames() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getLoginErrorURLRedirectDomainNames();
+        else
+            return domainNamesToList(loginErrorURLRedirectDomainNames);
     }
 
     /** {@inheritDoc} */
