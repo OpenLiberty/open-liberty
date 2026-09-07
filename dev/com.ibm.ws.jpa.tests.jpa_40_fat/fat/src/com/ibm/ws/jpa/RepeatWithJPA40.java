@@ -7,6 +7,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.jpa;
@@ -17,26 +19,26 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE12Action;
 
 /**
- * Runs the FAT suite once: {@code persistenceContainer-4.0} with Hibernate 8.
- * Marked FULL so it runs only in the full CI pipeline pass.
+ * Runs the FAT suite once: {@code persistence-4.0} with Hibernate 8 as the default provider.
+ * Marked LITE so it runs in the standard CI pipeline pass.
  */
-public class RepeatWithJPA40Hibernate extends JakartaEE12Action {
-    public static final String ID = "JPA_CONTAINER40_HIBERNATE";
+public class RepeatWithJPA40 extends JakartaEE12Action {
+    public static final String ID = "JPA40";
 
-    public RepeatWithJPA40Hibernate() {
+    public RepeatWithJPA40() {
         withID(ID);
-        withTestMode(TestMode.FULL);
+        withTestMode(TestMode.LITE);
     }
 
     @Override
     public String toString() {
-        return "persistenceContainer-4.0 + Hibernate 8";
+        return "JPA 4.0 + Hibernate 8";
     }
 
     @Override
     public void setup() throws Exception {
         super.setup();
-        FATSuite.repeatPhase = "persistenceContainer40-cfg.xml";
+        FATSuite.repeatPhase = "persistence40-cfg.xml";
         FATSuite.provider = JPAPersistenceProvider.HIBERNATE;
     }
 }

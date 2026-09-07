@@ -97,10 +97,11 @@ public class JakartaPersistenceTest {
         appRecord.setLocation(APP_NAME + "_" + specLevel + ".war");
         appRecord.setName(APP_NAME + "_" + specLevel);
 
-        // When running the Hibernate repeat phase, wire HibernateLib as a
+        // When running either Hibernate repeat phase, wire HibernateLib as a
         // commonLibraryRef so Hibernate 8 JARs are visible to the app classloader.
         if (AbstractFATSuite.repeatPhase != null
-                && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+                && (AbstractFATSuite.repeatPhase.contains("persistenceContainer40")
+                        || AbstractFATSuite.repeatPhase.contains("persistence40"))) {
             ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
             ClassloaderElement loader = new ClassloaderElement();
             loader.getCommonLibraryRefs().add("HibernateLib");

@@ -57,7 +57,7 @@ task addJPAFATTools(type: Copy) {
 task addhibernateJPA40(type: Copy) {
     shouldRunAfter jar
     from configurations.hibernateJPA40
-    into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_hibernate')
+    into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_persistencecontainer')
 }
 
 addRequiredLibraries {

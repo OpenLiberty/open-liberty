@@ -12,7 +12,7 @@
     <include location="../fatTestPorts.xml"/>
     <!--
         The repeat phase config snippet is included at runtime.
-        Resolves to hibernate40-cfg.xml (persistenceContainer-4.0 + Hibernate 8, LITE).
+        Resolves to the repeat-phase config (persistence40-cfg.xml or persistenceContainer40-cfg.xml).
     -->
     <include location="${shared.config.dir}/${env.repeat_phase}"/>
 
