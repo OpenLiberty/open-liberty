@@ -2235,8 +2235,19 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             if (hisc != null) {
                 remoteAddr = hisc.getRemoteAddr();
             }
-            boolean desensitizePort = (hisc != null && hisc.getHttpConfig() != null) && hisc.getHttpConfig().desensitizePrivatePortHeader();
-            rc = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, key.getName(),new String(value), desensitizePort);
+            // BNFHeadersImpl only calls filterAdd(..., true) with keys from HttpHeaderKeys.match(),
+            // which always returns HttpHeaderKeys singletons — the cast is always safe.
+            HttpHeaderKeys hkey = (HttpHeaderKeys) key;
+
+            // both the config flag and the value are only consulted for $WSSP, so for
+            // every other $WS* header we touch neither.
+            boolean isWssp = (HttpHeaderKeys.HDR_$WSSP == key);
+            boolean desensitizePrivatePortHeader = isWssp
+                                                   && hisc != null
+                                                   && hisc.getHttpConfig() != null
+                                                   && hisc.getHttpConfig().desensitizePrivatePortHeader();
+
+            rc = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, hkey, isWssp ? value : null, desensitizePrivatePortHeader);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && !rc) {
                 Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
