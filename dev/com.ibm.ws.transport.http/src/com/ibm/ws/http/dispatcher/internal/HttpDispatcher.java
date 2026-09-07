@@ -11,6 +11,7 @@ package com.ibm.ws.http.dispatcher.internal;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,8 +82,8 @@ public class HttpDispatcher {
     //Servlet 6.1 (EE11)
     private static volatile boolean isEE11 = false;
 
-    private static final String WSSP_HTTP_PORT  = "80";
-    private static final String WSSP_HTTPS_PORT = "443";
+    private static final byte[] DEFAULT_ALLOWED_HTTP_PORT  = { '8', '0' };
+    private static final byte[] DEFAULT_ALLOWED_HTTPS_PORT = { '4', '4', '3' };
 
     static final String CONFIG_ALIAS = "httpDispatcher";
 
@@ -372,38 +373,108 @@ public class HttpDispatcher {
         }
     }
 
+
+
+    /**
+     * Check whether the source host address is trusted to send SENSITIVE private headers.
+     *
+     * @param addr the remote address to check
+     * @return true if addr is a trusted source of sensitive private headers; false when the
+     *         dispatcher is not active, matching usePrivateHeaders(addr, &lt;sensitive name&gt;)
+     */
+    public static boolean usePrivateSensitiveHeaders(InetAddress addr) {
+        HttpDispatcher f = instance.get();
+        if (f != null) {
+            return f.isTrustedForSensitiveHeaders(addr);
+        }
+        return false;
+    }
+
     /**
      * Determines whether a specific WAS private header instance should be trusted and
-     * passed through to the application. This is the single shared admission check used
-     * by both the legacy channel and Netty transport paths
+     * passed through to the application for Legacy Channel. 
      *
      * @param addr  the remote peer address or null if unknown
-     * @param headerName  the header name (e.g. "$WSSP"})
+     * @param key  the header key (e.g. "$WSSP"})
      * @param value the header value
-     * @param desensitizePrivatePortHeader when code true, $WSSP is evaluated
+     * @param desensitizePrivatePortHeader when true, $WSSP is evaluated
      *                                    against the non-sensitive trust list
      * @return  true if this header instance should be trusted
      */
-    public static boolean isPrivateHeaderTrusted(InetAddress addr, String headerName,
-                                                 String value, boolean desensitizePrivatePortHeader) {
+    public static boolean isPrivateHeaderTrusted(InetAddress addr, HttpHeaderKeys key,
+                                                 byte[] value, boolean desensitizePrivatePortHeader) {
         // Fast path: if the source is already trusted for this header, nothing more to check.
-        if (usePrivateHeaders(addr, headerName)) {
+        if (usePrivateHeaders(addr, key.getName())) {
             return true;
         }
-
-        // Source is not trusted via the normal check. Apply $WSSP-specific rules.
-        if (HttpHeaderKeys.HDR_$WSSP.getName().equalsIgnoreCase(headerName)) {
-            // Config flag: treat $WSSP as non-sensitive; re-check against trustedHeaderOrigin.
+        if (HttpHeaderKeys.HDR_$WSSP == key) {
             if (desensitizePrivatePortHeader) {
                 return usePrivateHeaders(addr);
             }
-            // Default HTTP/HTTPS ports are safe to pass through from any source.
-            if(value != null && (WSSP_HTTP_PORT.equals(value) || WSSP_HTTPS_PORT.equals(value))) {
+            if (isDefaultAllowedPort(value)) {
                 return true;
             }
         }
-        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-            Tr.debug(tc, "isPrivateHeaderTrusted: "+ headerName + "is not trusted" + (addr != null ? " for host " + addr.getHostAddress() : " for this host"));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted"
+                    + (addr != null ? " for host " + addr.getHostAddress() : " for this host"));
+        }
+        return false;
+    }
+
+    /**
+     * Determines whether a specific WAS private header instance should be trusted and
+     * passed through to the application for Netty Transport Channel. 
+     * 
+     *
+     * @param trustNonSensitive           result of usePrivateHeaders(addr)
+     * @param trustSensitive              result of usePrivateSensitiveHeaders(addr)
+     * @param key                         the WAS private header being evaluated
+     * @param value                       the header value; only consulted for $WSSP
+     * @param desensitizePrivatePortHeader see the byte[] overload
+     * @return true if this header instance should be trusted
+     */
+    public static boolean isPrivateHeaderTrusted(boolean trustNonSensitive, boolean trustSensitive,
+                                                 HttpHeaderKeys key, CharSequence value,
+                                                 boolean desensitizePrivatePortHeader) {
+        if (HttpHeaderKeys.isSensitivePrivateHeader(key.getName()) ? trustSensitive : trustNonSensitive) {
+            return true;
+        }
+        if (HttpHeaderKeys.HDR_$WSSP == key) {
+            if (desensitizePrivatePortHeader) {
+                return trustNonSensitive;
+            }
+            if (isDefaultAllowedPort(value)) {
+                return true;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted");
+        }
+        return false;
+    }
+
+    /** $WSSP sub-policy: the default HTTP/HTTPS ports pass from any source. */
+    private static boolean isDefaultAllowedPort(byte[] value) {
+        return Arrays.equals(value, DEFAULT_ALLOWED_HTTP_PORT)
+            || Arrays.equals(value, DEFAULT_ALLOWED_HTTPS_PORT);
+    }
+
+    /**
+     * Allocation-free equivalent for Netty's CharSequence values. Deliberately not
+     * value.toString().equals("80") — h2 values arrive as AsciiString, and this is on the
+     * per-request path for every plugin-fronted request.
+     */
+    private static boolean isDefaultAllowedPort(CharSequence value) {
+        if (value == null) {
+            return false;
+        }
+        int len = value.length();
+        if (len == 2) {
+            return value.charAt(0) == '8' && value.charAt(1) == '0';
+        }
+        if (len == 3) {
+            return value.charAt(0) == '4' && value.charAt(1) == '4' && value.charAt(2) == '3';
         }
         return false;
     }
