@@ -25,6 +25,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.crypto.ltpakeyutil.AesLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
@@ -74,11 +75,11 @@ class LTPAKeyCreateTask implements Runnable {
                     // AES_V2 is configured via the wlp.aes.encryption.key system property.
                     Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_PROPERTY", AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY);
                 }
-                return new AesKeyEncryptor(AESKeyManager.getKeyViaResolver(KeyVersion.AES_V2));
+                return new AesLTPAKeyEncryptor(AESKeyManager.getKeyViaResolver(KeyVersion.AES_V2));
             } else {
                 // AES_V1 is configured via the wlp.password.encryption.key system property.
                 Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_PROPERTY", AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY);
-                return new AesKeyEncryptor(AESKeyManager.getKeyViaResolver(KeyVersion.AES_V1));
+                return new AesLTPAKeyEncryptor(AESKeyManager.getKeyViaResolver(KeyVersion.AES_V1));
             }
         } else {
             return new KeyEncryptor(getKeyPasswordBytes());

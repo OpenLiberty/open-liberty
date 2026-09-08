@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ public class AESKeyManager {
                 } else {
                     data = buildAesKeyWithPbkdf2(keyChars);
                 }
-                byte[] iv = Arrays.copyOfRange(data, 0, CryptoUtils.AES_128_KEY_LENGTH_BYTES);
+                byte[] iv = Arrays.copyOfRange(data, 0, CryptoUtils.AES_IV_LENGTH_BYTES);
                 KeyHolder holder2 = new KeyHolder(keyChars, new SecretKeySpec(data, CryptoUtils.ENCRYPT_ALGORITHM_AES), new IvParameterSpec(iv));
                 _key.compareAndSet(holder, holder2);
                 // Still use this holder for returns even if I do not end up caching it.

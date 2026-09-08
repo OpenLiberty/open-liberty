@@ -68,6 +68,12 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Make sure {aes} and {hash} passwo
 PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: One or more of your AES-encrypted passwords were encrypted without a custom encryption key. To improve the security of your stored credentials, re-encrypt them by using a custom encryption key. Be sure to store this key in a secure location.
 PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=AES-encrypted passwords in the server configuration use the default wlp.password.encryption.key value. A custom encryption key is more secure.
 PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Define a custom encryption key by setting the wlp.password.encryption.key or wlp.aes.encryption.key variable, and then re-encrypt your passwords using the securityUtility encode command with your custom key.
+ICSF_PROVIDER_UNAVAILABLE=CWWKS1866W: The IBMJCECCA security provider or the KeyLabelKeySpec class is not available on this platform. ICSF hardware-backed AES key encryption is disabled. The error is: {0}
+ICSF_PROVIDER_UNAVAILABLE.explanation=The IBMJCECCA provider required for ICSF CKDS key lookup could not be loaded. This is expected on non-z/OS platforms. AES password encryption will use the software-backed key instead.
+ICSF_PROVIDER_UNAVAILABLE.useraction=On z/OS, ensure that the IBMJCECCA security provider is installed and available on the class path. On other platforms, no action is required.
+ICSF_KEY_LOOKUP_FAILED=CWWKS1867E: An error occurred while retrieving the ICSF hardware-backed AES key for CKDS label {0}. The error is: {1}
+ICSF_KEY_LOOKUP_FAILED.explanation=The AES key identified by the specified CKDS label could not be retrieved from the IBMJCECCA provider.
+ICSF_KEY_LOOKUP_FAILED.useraction=Verify that the CKDS key label is correct and that the key exists in the Cryptographic Key Data Set. Check the ICSF and RACF configuration to ensure that the server has permission to access the key.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=The key length of the value that is specified in the wlp.aes.encryption.key variable must be 256-bit.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=The value that is specified in the wlp.aes.encryption.key variable must be base64 encoded.

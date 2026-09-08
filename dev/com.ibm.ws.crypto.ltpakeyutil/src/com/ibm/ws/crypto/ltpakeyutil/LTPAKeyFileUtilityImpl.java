@@ -96,30 +96,12 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
      * @throws Exception
      */
     protected final Properties generateLTPAKeys(LTPAKeyEncryptor encryptor, final String realm) throws Exception {
-        Properties expProps = null;
-
         LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
-        byte[] publicKeyBytes = pair.getPublic().getEncoded();
-        byte[] privateKeyBytes = pair.getPrivate().getEncoded();
-        byte[] encryptedPrivateKeyBytes = encryptor.encrypt(privateKeyBytes);
-
-        byte[] sharedKeyBytes = LTPACrypto.generateSharedKey();
-        byte[] encryptedSharedKeyBytes = encryptor.encrypt(sharedKeyBytes);
-
-        String tmpShared = Base64Coder.base64EncodeToString(encryptedSharedKeyBytes);
-        String tmpPrivate = Base64Coder.base64EncodeToString(encryptedPrivateKeyBytes);
-        String tmpPublic = Base64Coder.base64EncodeToString(publicKeyBytes);
-
-        expProps = new Properties();
-        expProps.put(KEYIMPORT_SECRETKEY, tmpShared);
-        expProps.put(KEYIMPORT_PRIVATEKEY, tmpPrivate);
-        expProps.put(KEYIMPORT_PUBLICKEY, tmpPublic);
-        expProps.put(KEYIMPORT_REALM, realm);
-        expProps.put(CREATION_HOST_PROPERTY, "localhost");
-        expProps.put(LTPA_VERSION_PROPERTY, CryptoUtils.isFips140_3Enabled() ? "2.0" : "1.0");
-        expProps.put(CREATION_DATE_PROPERTY, (new java.util.Date()).toString());
-
-        return expProps;
+        return generateLTPAKeys(encryptor,
+                                LTPACrypto.generateSharedKey(),
+                                pair.getPrivate().getEncoded(),
+                                pair.getPublic().getEncoded(),
+                                realm);
     }
 
     /**

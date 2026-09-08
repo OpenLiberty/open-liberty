@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.token.ltpa.internal;
+package com.ibm.ws.crypto.ltpakeyutil;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
@@ -24,9 +24,9 @@ import javax.crypto.spec.SecretKeySpec;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link AesKeyEncryptor}.
+ * Unit tests for {@link AesLTPAKeyEncryptor}.
  */
-public class AesKeyEncryptorTest {
+public class AesLTPAKeyEncryptorTest {
 
     /** A valid 32-byte (256-bit) AES key encoded as base64. */
     private static final String VALID_KEY_B64 = "pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=";
@@ -42,7 +42,7 @@ public class AesKeyEncryptorTest {
     @Test
     public void roundTrip_softwareKey() throws Exception {
         Key key = makeAesKey(VALID_KEY_B64);
-        AesKeyEncryptor encryptor = new AesKeyEncryptor(key);
+        AesLTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(key);
 
         byte[] plaintext = "Hello LTPA key bytes!".getBytes("UTF-8");
         byte[] ciphertext = encryptor.encrypt(plaintext);
@@ -57,7 +57,7 @@ public class AesKeyEncryptorTest {
     @Test
     public void encryptProducesDifferentBytes() throws Exception {
         Key key = makeAesKey(VALID_KEY_B64);
-        AesKeyEncryptor encryptor = new AesKeyEncryptor(key);
+        AesLTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(key);
 
         byte[] plaintext = "SomeKeyMaterial123456".getBytes("UTF-8");
         byte[] ciphertext = encryptor.encrypt(plaintext);
@@ -67,14 +67,14 @@ public class AesKeyEncryptorTest {
     }
 
     /**
-     * Two separate {@link AesKeyEncryptor} instances built from the same key
+     * Two separate {@link AesLTPAKeyEncryptor} instances built from the same key
      * must be able to decrypt each other's output (same fixed IV, same key).
      */
     @Test
     public void crossInstanceDecrypt() throws Exception {
         Key key = makeAesKey(VALID_KEY_B64);
-        AesKeyEncryptor enc1 = new AesKeyEncryptor(key);
-        AesKeyEncryptor enc2 = new AesKeyEncryptor(key);
+        AesLTPAKeyEncryptor enc1 = new AesLTPAKeyEncryptor(key);
+        AesLTPAKeyEncryptor enc2 = new AesLTPAKeyEncryptor(key);
 
         byte[] plaintext = "CrossInstanceTest".getBytes("UTF-8");
         byte[] ciphertext = enc1.encrypt(plaintext);
@@ -85,7 +85,7 @@ public class AesKeyEncryptorTest {
     }
 
     /**
-     * Constructing an {@link AesKeyEncryptor} from a key whose {@code getEncoded()} returns
+     * Constructing an {@link AesLTPAKeyEncryptor} from a key whose {@code getEncoded()} returns
      * {@code null} (e.g. a hardware-backed key) must not throw a NullPointerException.
      * The constructor must silently fall back to the fixed zero IV path.
      */
@@ -98,6 +98,6 @@ public class AesKeyEncryptorTest {
             private static final long serialVersionUID = 1L;
         };
         // Must not throw
-        new AesKeyEncryptor(nullEncodedKey);
+        new AesLTPAKeyEncryptor(nullEncodedKey);
     }
 }

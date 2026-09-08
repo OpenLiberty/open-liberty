@@ -399,12 +399,9 @@ public class PasswordCipherUtil {
                     logger.fine("Encrypting password using " + PasswordUtil.PROPERTY_CRYPTO_KEY);
                 info = aesEncipherV1(decrypted_bytes, cryptoKey);
             } else if (AESKeyManager.getSecretKeyResolver() != null) {
-                // Hardware-backed key (e.g. ICSF/CKDS): bypass software key derivation entirely
-                // and encrypt using AES_V2 wire format with the resolver key directly.
                 if (logger.isLoggable(Level.FINE))
                     logger.fine("Encrypting password using hardware SecretKeyResolver (AES_V2)");
-                info = aesEncipherCommon(decrypted_bytes, AESKeyManager.KeyVersion.AES_V2,
-                                         AESKeyManager.getSecretKeyResolver());
+                info = aesEncipherV2(decrypted_bytes);
             } else {
                 if (logger.isLoggable(Level.FINE))
                     logger.fine("Encrypting password using " + PasswordUtil.PROPERTY_CRYPTO_KEY);
@@ -710,10 +707,25 @@ public class PasswordCipherUtil {
         return sb.toString();
     }
 
+    /**
+     * Encrypts using the AES_V2 wire format with an explicit caller-supplied base64 key.
+     */
     private static EncryptedInfo aesEncipherV2(byte[] decrypted_bytes,
                                                String base64Key) throws InvalidKeySpecException, UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
         return aesEncipherCommon(decrypted_bytes, AESKeyManager.KeyVersion.AES_V2,
                                  () -> AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V2, base64Key));
+    }
+
+    /**
+     * Encrypts using the AES_V2 wire format via the resolver currently installed on
+     * {@link AESKeyManager.KeyVersion#AES_V2}. When a hardware-backed
+     * {@link SecretKeyResolver} (e.g. ICSF/CKDS) is registered this uses it directly;
+     * otherwise it falls back to the default software resolver.
+     * Keeping this as a separate overload preserves the explicit-key path above.
+     */
+    private static EncryptedInfo aesEncipherV2(byte[] decrypted_bytes) throws InvalidKeySpecException, UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
+        return aesEncipherCommon(decrypted_bytes, AESKeyManager.KeyVersion.AES_V2,
+                                 AESKeyManager.KeyVersion.AES_V2.resolver.get());
     }
 
     private static byte[] aesDecipherV2(byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
