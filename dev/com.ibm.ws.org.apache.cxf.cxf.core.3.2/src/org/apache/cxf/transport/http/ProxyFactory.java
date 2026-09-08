@@ -21,8 +21,14 @@ package org.apache.cxf.transport.http;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.common.util.SystemPropertyAction;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
@@ -54,6 +60,8 @@ public class ProxyFactory {
      * if there is no appropriate System properties)
      */
     private HTTPClientPolicy systemProxyConfiguration;
+    
+    private static final Logger LOG = LogUtils.getL7dLogger(ProxyFactory.class);  // Liberty Change
 
     public ProxyFactory() {
         this.systemProxyConfiguration = createSystemProxyConfiguration();
@@ -116,7 +124,19 @@ public class ProxyFactory {
      */
     private Proxy getSystemProxy(String hostname) {
         if (systemProxyConfiguration != null) {
-            return getProxy(systemProxyConfiguration, hostname);
+            // Liberty change after JAXP hardening fixes begin
+            try {
+                return AccessController.doPrivileged(new PrivilegedExceptionAction<Proxy>() {
+                    public Proxy run() throws Exception {
+                        return getProxy(systemProxyConfiguration, hostname);
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                if (LOG.isLoggable(Level.FINE)) { 
+                    LOG.fine("Exception getting system proxy: " + e.getStackTrace());
+                }
+            }
+            // Liberty change after JAXP hardening fixes end
         }
 
         // No proxy configured

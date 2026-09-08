@@ -32,6 +32,8 @@ import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -258,7 +260,18 @@ public class URIResolver implements AutoCloseable {
     }
 
     private HttpURLConnection createInputStream() throws IOException {
-        HttpURLConnection huc = (HttpURLConnection)url.openConnection();
+        // Liberty change after JAXP hardening fixes begin
+        // Wrap the network connection in doPrivileged so that callers (including
+        // user deployments) do not need SocketPermission for the target host.
+        final HttpURLConnection huc;
+        try {
+            huc = AccessController.doPrivileged(
+                (PrivilegedExceptionAction<HttpURLConnection>) () ->
+                    (HttpURLConnection)url.openConnection());
+        } catch (PrivilegedActionException e) {
+            throw (IOException) e.getException();
+        }
+        // Liberty change after JAXP hardening fixes end
 
         String host = SystemPropertyAction.getPropertyOrNull("http.proxyHost");
         if (host != null) {
