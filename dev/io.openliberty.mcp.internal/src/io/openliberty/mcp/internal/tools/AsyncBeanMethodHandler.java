@@ -19,9 +19,9 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
 import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -74,7 +74,9 @@ public class AsyncBeanMethodHandler extends BeanMethodHandler<CompletionStage<To
                                   if (throwable instanceof CompletionException) {
                                       throwable = throwable.getCause();
                                   }
-                                  if (throwable instanceof ToolCallUnauthorizedException) {
+                                  if (throwable instanceof McpResponseException) {
+                                      throw (McpResponseException) throwable;
+                                  } else if (throwable instanceof ToolCallUnauthorizedException) {
                                       throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, throwable.getMessage());
                                   } else if (isBusinessException(throwable)) {
                                       return ToolResponses.createBusinessErrorResponse(throwable);
