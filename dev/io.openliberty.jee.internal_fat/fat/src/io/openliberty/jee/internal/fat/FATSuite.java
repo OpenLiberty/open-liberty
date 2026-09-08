@@ -29,5 +29,8 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
-                    .andWith(FeatureReplacementAction.EE12_FEATURES());
+                    // usr:jeeTestFeature-1.0 resolves to its internal-6.0 base by default; that EE6 feature
+                    // set conflicts with EE12 features injected by the repeat action.  Remove the user feature
+                    // for the EE12 pass and explicitly add servlet-6.2 so the WAR/EAR can be deployed.
+                    .andWith(FeatureReplacementAction.EE12_FEATURES().removeFeature("usr:jeeTestFeature-1.0").alwaysAddFeature("servlet-6.2"));
 }
