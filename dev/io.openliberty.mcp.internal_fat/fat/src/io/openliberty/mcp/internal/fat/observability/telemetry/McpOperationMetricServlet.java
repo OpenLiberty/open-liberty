@@ -140,22 +140,15 @@ public class McpOperationMetricServlet extends FATServlet {
     }
 
     public void testCancelRequestErrorMetrics() {
-        Optional<HistogramPointData> errorPoint = reader.findCancelOperationPoint("error");
+        HistogramPointData point = reader.getCancelOperationPoint("error", null);
 
-        if (errorPoint.isPresent()) {
-            HistogramPointData point = errorPoint.get();
-            Attributes attributes = point.getAttributes();
-
-            assertEquals("notifications/cancelled", getStringAttribute(attributes, "mcp.method.name"));
-            assertInvariantOperationAttributes(attributes);
-            assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
-            assertNotNull("Expected error.type for failed cancel",
-                          getStringAttribute(attributes, "error.type"));
-            assertTimingAttributes(point);
-        } else {
-            assertTrue("At least success case should exist",
-                       reader.findCancelOperationPoint("ok").isPresent());
-        }
+        Attributes attributes = point.getAttributes();
+        assertEquals("notifications/cancelled", getStringAttribute(attributes, "mcp.method.name"));
+        assertInvariantOperationAttributes(attributes);
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertNotNull("Expected error.type for failed cancel",
+                      getStringAttribute(attributes, "error.type"));
+        assertTimingAttributes(point);
     }
 
     public void testBusinessErrorToolMetrics() {
