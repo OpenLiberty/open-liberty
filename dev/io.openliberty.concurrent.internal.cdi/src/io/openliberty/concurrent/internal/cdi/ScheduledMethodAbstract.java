@@ -162,6 +162,9 @@ public abstract class ScheduledMethodAbstract implements //
             // TODO application can also raise types of RuntimeException
             if (!appException)
                 FFDCFilter.processException(x, getClass().getName(), "183", this);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "exception from scheduled method", x);
         } finally {
             try {
                 if (contextApplied != null)
@@ -169,8 +172,16 @@ public abstract class ScheduledMethodAbstract implements //
             } catch (RuntimeException x) {
                 failure = x;
             } finally {
-                if (failure != null)
+                if (failure != null) {
                     future.completeExceptionally(failure);
+                    // TODO NLS
+                    System.out.println("The " + method.getName() +
+                                       " scheduled method of the " +
+                                       method.getDeclaringClass().getName() +
+                                       " CDI managed bean failed due to an error" +
+                                       " and will not run again. The error is: " +
+                                       failure);
+                }
             }
         }
 
