@@ -576,8 +576,7 @@ public class PasswordCipherUtil {
      */
     private static EncryptedInfo aesEncipherV0(byte[] decrypted_bytes, String cryptoKey, EncryptedInfo info,
                                                byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        SecureRandom rand = new SecureRandom();
-        byte[] preEncrypted = aesSetSeed(decrypted_bytes, rand);
+        byte[] preEncrypted = aesSetSeed(decrypted_bytes);
         Key encKey = AESKeyManager.getKey(AES_V0, cryptoKey);
         try {
             Cipher c = Cipher.getInstance(CryptoUtils.AES_CBC_CIPHER);
