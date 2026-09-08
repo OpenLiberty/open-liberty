@@ -54,8 +54,10 @@ import io.netty.handler.codec.http2.Http2Exception;
 import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.Http2HeadersEncoder;
 import io.netty.handler.codec.http2.Http2LifecycleManager;
+import io.netty.handler.codec.http2.Http2RemoteFlowController;
 import io.netty.handler.codec.http2.Http2ServerUpgradeCodec;
 import io.netty.handler.codec.http2.Http2Settings;
+import io.netty.handler.codec.http2.Http2Stream;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandlerBuilder;
@@ -290,8 +292,10 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         }
 
         /**
-         * queued-bytes guard - Intercept every outbound DATA write and account for its bytes.
-         * This method enforces our cap before the frame enters Netty's DefaultHttp2RemoteFlowController queue
+         * queued-bytes guard - Intercept every outbound DATA write that will be parked in the remote flow
+         * controller and account for its bytes.
+         * This method enforces our cap before the frame enters Netty's DefaultHttp2RemoteFlowController queue.
+         * The queued-bytes counter is incremented only when a frame will actually be deferred
          */
         @Override
         public ChannelFuture writeData(ChannelHandlerContext ctx, int streamId,
@@ -299,7 +303,6 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                                        ChannelPromise promise) {
             // Capture size before delegating — the delegate takes ownership of the buffer.
             final long frameSize = data.readableBytes() + padding;
-            ChannelPromise accounted = promise;
 
             // skipping a stream we have already timed out and reset.
             StreamWriteState timedOutState = streamWrites.get(streamId);
@@ -311,16 +314,22 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                 return super.writeData(ctx, streamId, data, padding, endStream, promise);
             }
 
+            // Nothing to account for if the flow controller can take the frame right now.
+            if (!willBeQueued(streamId, frameSize)) {
+                return super.writeData(ctx, streamId, data, padding, endStream, promise);
+            }
+
             switch (rateState.tryIncrementQueuedBytes(frameSize)) {
-                case SUCCESS:
-                    accounted = promise.unvoid();
+                case SUCCESS: {
+                    ChannelPromise accounted = promise.unvoid();
                     final int completedStreamId = streamId;
                     StreamWriteState state = scheduleWriteTimeoutIfNeeded(ctx, completedStreamId);
                     state.pendingFrames++;
                     accounted.addListener(f -> onDataWriteComplete(completedStreamId, (int) frameSize));
-                    break;
+                    return super.writeData(ctx, streamId, data, padding, endStream, accounted);
+                }
 
-                case FIRST_TO_EXCEED:
+                case FIRST_TO_EXCEED:  {
                     Http2Exception qbEx = Http2Exception.connectionError(
                             Http2Error.ENHANCE_YOUR_CALM,
                             "Total queued bytes across all streams exceeded limit!");
@@ -328,17 +337,50 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                         Tr.debug(tc, "writeData: queued bytes limit exceeded on channel "
                                      + ctx.channel() + "; closing the connection");
                     }
+                    ChannelPromise unvoided = promise.unvoid();
                     lifecycleManager.onError(ctx, true, qbEx);
                     ctx.close();
-                    break;
+                    // We are not delegating and releasing the buffer here
+                    ReferenceCountUtil.release(data);
+                    return unvoided.setFailure(qbEx);
+                }
 
                 case ALREADY_EXCEEDED:
-                default:
+                default: {
                     // Connection is already being torn down.
-                    break;
-            }
 
-            return super.writeData(ctx, streamId, data, padding, endStream, accounted);
+                    //Using a stream error to match legacy deferDataWrite's ALREADY_EXCEEDED path
+                    Http2Exception exception = Http2Exception.streamError(streamId,
+                            Http2Error.ENHANCE_YOUR_CALM,
+                            "Connection closing due to queued bytes limit exceeded");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "writeData: queued bytes limit already exceeded; dropping "
+                                     + frameSize + " bytes on stream " + streamId);
+                    }
+                    ChannelPromise unvoided = promise.unvoid();
+                    ReferenceCountUtil.release(data);
+                    return unvoided.setFailure(exception);
+                }
+            }
+        }
+
+        /**
+         * Check to see if this DATA frame actually be parked in the remote flow controller
+         *
+         */
+        private boolean willBeQueued(int streamId, long frameSize) {
+            Http2Stream stream = connection().stream(streamId);
+            if (stream == null) {
+                return false;
+            }
+            Http2RemoteFlowController controller = flowController();
+            if (controller.hasFlowControlled(stream) || !controller.isWritable(stream)) {
+                return true;
+            }
+            // windowSize() can be negative after the peer lowers SETTINGS_INITIAL_WINDOW_SIZE.
+            int available = Math.min(controller.windowSize(stream),
+                                     controller.windowSize(connection().connectionStream()));
+            return frameSize > available;
         }
 
         /**
