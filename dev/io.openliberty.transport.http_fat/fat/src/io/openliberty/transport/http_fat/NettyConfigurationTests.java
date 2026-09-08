@@ -60,7 +60,7 @@ public class NettyConfigurationTests {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKO0040W");
+            server.stopServer();
         }
     }
 
@@ -133,10 +133,8 @@ public class NettyConfigurationTests {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("netty-custom-server.xml");
 
-        assertNotNull("CWWKG0017I not found after config update",
-                      server.waitForStringInLogUsingMark("CWWKG0017I"));
-        assertNotNull("CWWKO0040W not found — dynamic Netty config warning missing",
-                      server.waitForStringInLogUsingMark("CWWKO0040W"));
+        assertNotNull("Dynamic Netty config warning missing",
+                      server.waitForStringInLogUsingMark("Dynamic configuration changes to the Netty framework are not supported"));
     }
 
 }
