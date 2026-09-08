@@ -180,6 +180,10 @@ public class McpServlet extends HttpServlet {
             }
             traceEvent("The following error was returned to the user: '" + errorMsg + "'");
 
+            if (metrics.getMethodName() == null) {
+                metrics.setTransport(transport);
+                trySetMethodNameFromTransport(metrics, transport);
+            }
             metrics.setOutcome("error", "http_error");
             McpOperationMetrics.operationEnded(metrics);
 
@@ -191,10 +195,31 @@ public class McpServlet extends HttpServlet {
             }
             traceEvent("The following error was returned to the user: '" + errorMsg + "'");
 
+            if (metrics.getMethodName() == null) {
+                metrics.setTransport(transport);
+                trySetMethodNameFromTransport(metrics, transport);
+            }
             metrics.setOutcome("error", "internal_error");
             McpOperationMetrics.operationEnded(metrics);
 
             transport.sendError(e);
+        }
+    }
+
+    /**
+     * Attempts to set the method name on metrics from the parsed request in the transport.
+     * Falls back to "_OTHER" if the method name cannot be determined or is not a known method.
+     */
+    private static void trySetMethodNameFromTransport(McpOperationMetrics metrics, McpTransport transport) {
+        try {
+            McpRequest mcpRequest = transport.getMcpRequest();
+            if (mcpRequest != null) {
+                metrics.setMethodName(mcpRequest.getRequestMethod().getMethodName());
+            } else {
+                metrics.setMethodName("_OTHER");
+            }
+        } catch (JSONRPCException e) {
+            metrics.setMethodName("_OTHER");
         }
     }
 

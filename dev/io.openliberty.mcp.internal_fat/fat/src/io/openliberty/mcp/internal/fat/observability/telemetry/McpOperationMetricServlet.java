@@ -140,7 +140,7 @@ public class McpOperationMetricServlet extends FATServlet {
     }
 
     public void testCancelRequestErrorMetrics() {
-        HistogramPointData point = reader.getCancelOperationPoint("error", null);
+        HistogramPointData point = reader.getCancelOperationPoint("error");
 
         Attributes attributes = point.getAttributes();
         assertEquals("notifications/cancelled", getStringAttribute(attributes, "mcp.method.name"));
