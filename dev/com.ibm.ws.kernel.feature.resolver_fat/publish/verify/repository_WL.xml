@@ -14490,7 +14490,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>com.ibm.ws.org.apache.neethi.3.1.1</symbolic-name>
+            <symbolic-name>io.openliberty.org.apache.neethi</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>

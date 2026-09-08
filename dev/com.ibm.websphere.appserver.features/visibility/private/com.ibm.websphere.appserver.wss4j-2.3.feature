@@ -15,7 +15,7 @@ singleton=true
  com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \
  com.ibm.ws.org.ehcache.ehcache.107.3.8.1, \
  com.ibm.ws.org.jasypt.jasypt.1.9.3, \
- com.ibm.ws.org.apache.neethi.3.1.1, \
+ io.openliberty.org.apache.neethi, \
  com.ibm.ws.org.joda.time.2.9.9, \
  io.openliberty.org.opensaml.opensaml.core, \
  io.openliberty.net.shibboleth.utilities.java.support

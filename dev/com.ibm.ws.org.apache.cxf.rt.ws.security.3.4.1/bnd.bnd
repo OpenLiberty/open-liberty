@@ -104,7 +104,7 @@ instrument.classesIncludes: \
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.rt.security.3.4.1;version=latest, \
   com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1;version=latest, \
-  com.ibm.ws.org.apache.neethi.3.1.1;version=latest, \
+  io.openliberty.org.apache.neethi;version=latest, \
   com.ibm.ws.org.apache.wss4j.bindings;version=latest, \
   com.ibm.ws.org.apache.wss4j.policy;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
