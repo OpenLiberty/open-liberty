@@ -48,10 +48,13 @@ Export-Package: \
 Private-Package: \
   jakarta.data.messages;version="1.0.0"
 
-instrument.classesExcludes: jakarta/data/*.class
+# Do not instrument classes otherwise we will fail the TCK
+instrument.disabled: true
 
-#-includeresource: \
-#  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+# TODO remove checkstyle.xml|rules.xml once https://github.com/jakartaee/data/issues/1562 is fixed.
+#  @${repo;jakarta.data:jakarta.data-api;1.1.0.M4;EXACT}!/!(META-INF/maven/*|module-info.class|checkstyle.xml|rules.xml)
+-includeresource: \
+  @${repo;jakarta.data:jakarta.data.stateful-api;1.1.0.M4;EXACT}!/!(META-INF/maven/*|module-info.class|checkstyle.xml|rules.xml)
 
 publish.wlp.jar.suffix: dev/api/spec
 
