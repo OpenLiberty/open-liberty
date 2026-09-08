@@ -177,7 +177,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Modified
     protected synchronized void modified(Map<String, Object> config) {
         // Log warning that dynamic Netty configuration changes are not supported
-        Tr.warning(tc, "netty.dynamic.config.not.supported");
+        // If netty element is exposed, use "netty.dynamic.config.not.supported" from ChannelfwMessages.nlsprops
+        Tr.warning(tc, "Dynamic configuration changes to the Netty framework are not supported. Changes to scalerMinThreads, scalerMaxThreads, scalerWindowSize, scalerDownThreshold, scalerUpThreshold, scalerDownStep, scalerUpStep, scalerCycles, scalerMetricsWindowSize, useNativeIO, and other options will not take effect until the server is restarted.");
     }
 
     /**
@@ -644,8 +645,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     chan.pipeline().addFirst(new QuiesceHandler(quiesce));
                 }
             } else {
+                 // If netty element is exposed, use "netty.quiesce.channel.not.endpoint" from ChannelfwMessages.nlsprops
                 if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "netty.quiesce.channel.not.endpoint");
+                    Tr.warning(tc, "An attempt was made to add a quiesce task to a channel that is not a registered endpoint. The quiesce task will not be added and will be ignored.");
                 }
             }
         }
