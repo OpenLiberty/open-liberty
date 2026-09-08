@@ -35,7 +35,7 @@ public class NettyH2RateState {
 
     private long    queuedBytesCount         = 0L;
     private boolean queuedBytesLimitExceeded = false;
-    private volatile int upgradeStreamId     = -1;
+    private int upgradeStreamId     = -1;
 
     /**
      * Result of a  tryIncrementQueuedBytes call.
@@ -74,7 +74,7 @@ public class NettyH2RateState {
         return maxLowWindowStreams;
     }
 
-    public synchronized int getLowWindowStreamCount() {
+    public int getLowWindowStreamCount() {
         return lowWindowStreams.size();
     }
 
@@ -98,7 +98,7 @@ public class NettyH2RateState {
      * @param streamId the ID of the stream with low window
      * @return true if the stream was newly added
      */
-    public synchronized boolean addLowWindowStream(int streamId) {
+    public boolean addLowWindowStream(int streamId) {
         if (streamId == upgradeStreamId) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "addLowWindowStream: stream " + streamId + " is the h2c upgrade stream, not counted");
@@ -121,7 +121,7 @@ public class NettyH2RateState {
      *
      * @return true if the stream was being tracked
      */
-    public synchronized boolean removeLowWindowStream(int streamId) {
+    public boolean removeLowWindowStream(int streamId) {
         boolean removed = lowWindowStreams.remove(streamId);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && removed) {
             Tr.debug(tc, "removeLowWindowStream: stream " + streamId
@@ -133,7 +133,7 @@ public class NettyH2RateState {
     /**
      * @return true if the current low-window stream count exceeds the configured limit
      */
-    public synchronized boolean tooManyLowWindowStreams() {
+    public boolean tooManyLowWindowStreams() {
         if (maxLowWindowStreams > 0 && lowWindowStreams.size() > maxLowWindowStreams) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "tooManyLowWindowStreams: " + lowWindowStreams.size()
@@ -150,7 +150,7 @@ public class NettyH2RateState {
      *
      * @return true if adding the stream would exceed the limit
      */
-    public synchronized boolean wouldExceedLowWindowStreams(int streamId) {
+    public boolean wouldExceedLowWindowStreams(int streamId) {
         if (streamId == upgradeStreamId || maxLowWindowStreams <= 0) {
             return false;
         }
@@ -169,7 +169,7 @@ public class NettyH2RateState {
      *         threshold (caller should send GOAWAY); ALREADY_EXCEEDED if a prior
      *         call already crossed it (caller should fail silently)
      */
-    public synchronized QueuedBytesResult tryIncrementQueuedBytes(long bytes) {
+    public QueuedBytesResult tryIncrementQueuedBytes(long bytes) {
         if (maxQueuedBytes <= 0) {
             return QueuedBytesResult.SUCCESS; // check disabled
         }
@@ -202,7 +202,7 @@ public class NettyH2RateState {
      * Decrement the queued-bytes counter when a previously accounted frame has
      * been written or discarded.
      */
-    public synchronized void decrementQueuedBytes(long bytes) {
+    public void decrementQueuedBytes(long bytes) {
         queuedBytesCount -= bytes;
         if (queuedBytesCount < 0) {
             queuedBytesCount = 0; // Safety check
