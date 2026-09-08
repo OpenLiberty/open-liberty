@@ -37,6 +37,7 @@ import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.extensions.mime.MIMEPart;
 import javax.wsdl.factory.WSDLFactory;
+import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -61,6 +62,9 @@ import org.apache.cxf.wsdl.WSDLManager;
 
 /**
  * WSDLManagerImpl
+ * 
+ * Liberty change WSDL import hardening backport
+ * https://github.com/apache/cxf/pull/3323/changes/c173d19db41ac2fd3f63f66bb9721debf3819def
  */
 @NoJSR250Annotations(unlessNull = "bus")
 public class WSDLManagerImpl implements WSDLManager {
@@ -179,15 +183,47 @@ public class WSDLManagerImpl implements WSDLManager {
         reader.setFeature("javax.wsdl.verbose", false);
         reader.setExtensionRegistry(registry);
 
+        // Liberty change WSDL import hardening begin
+        // Use a WSDLLocator even when loading from a DOM element so that any
+        // <wsdl:import> or <xsd:import> inside the element goes through
+        // AbstractWrapperWSDLLocator.getImportInputSource(), which pre-parses
+        // each imported document through CXF's hardened StaxUtils path before
+        // handing it to WSDL4J's DocumentBuilderFactory (CWE-611).
+        String documentBaseUri = el.getOwnerDocument().getDocumentURI();
+        if (documentBaseUri == null) {
+            documentBaseUri = "";
+        }
+        final WSDLLocator wsdlLocator;
+        if (bus != null) {
+            CatalogWSDLLocator catLocator = new CatalogWSDLLocator(documentBaseUri, bus);
+            wsdlLocator = new ResourceManagerWSDLLocator(documentBaseUri, catLocator, bus);
+        } else {
+            // No bus: fall back to catalog-only resolution. The anonymous subclass
+            // satisfies AbstractWrapperWSDLLocator's abstract methods and still
+            // applies hardening to whatever the catalog can resolve.
+            final CatalogWSDLLocator catLocator = new CatalogWSDLLocator(documentBaseUri);
+            wsdlLocator = new AbstractWrapperWSDLLocator(documentBaseUri, catLocator) {
+                @Override
+                public InputSource getInputSource() {
+                    return catLocator.getBaseInputSource();
+                }
+                @Override
+                public InputSource getInputSource(String parentLocation, String importLocation) {
+                    return new InputSource(); // no ResourceManager without a bus
+                }
+            };
+        }
+        // Liberty change WSDL import hardening end
+        
         final Definition def;
 
         // This is needed to avoid security exceptions when running with a security manager
         if (System.getSecurityManager() == null) {
-            def = reader.readWSDL("", el);
+            def = reader.readWSDL(wsdlLocator, el);     // Liberty change WSDL import hardening
         } else {
             try {
                 def = AccessController.doPrivileged(
-                        (PrivilegedExceptionAction<Definition>) () -> reader.readWSDL("", el));
+                        (PrivilegedExceptionAction<Definition>) () -> reader.readWSDL(wsdlLocator, el)); // Liberty change WSDL import hardening
             } catch (PrivilegedActionException paex) {
                 throw new WSDLException(WSDLException.PARSER_ERROR, paex.getMessage(), paex);
             }
