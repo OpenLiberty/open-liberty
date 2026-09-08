@@ -1,0 +1,11 @@
+org.opensaml.core.xml.config.XMLObjectProviderInitializer
+org.opensaml.core.xml.config.GlobalParserPoolInitializer
+org.opensaml.core.metrics.impl.MetricRegistryInitializer
+org.opensaml.saml.config.impl.XMLObjectProviderInitializer
+org.opensaml.saml.config.impl.SAMLConfigurationInitializer
+org.opensaml.xmlsec.config.GlobalAlgorithmRegistryInitializer
+org.opensaml.xmlsec.config.DecryptionParserPoolInitializer
+org.opensaml.xmlsec.config.impl.JavaCryptoValidationInitializer
+org.opensaml.xmlsec.config.impl.XMLObjectProviderInitializer
+org.opensaml.xmlsec.config.impl.ApacheXMLSecurityInitializer
+org.opensaml.xmlsec.config.impl.GlobalSecurityConfigurationInitializer
