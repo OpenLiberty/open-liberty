@@ -371,14 +371,14 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     @Test
     public void testParseErrorMetrics() throws Exception {
-        // Send a request with invalid JSON body
+        captureMetrics();
         client.callMCP("this is not json");
         FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testParseErrorMetrics");
     }
 
     @Test
     public void testInvalidRequestMetrics() throws Exception {
-        // Send valid JSON but invalid JSON-RPC
+        captureMetrics();
         client.callMCP("""
                         {
                           "jsonrpc": "1.0",
@@ -391,7 +391,7 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     @Test
     public void testMethodNotFoundMetrics() throws Exception {
-        // Send a valid JSON-RPC request for an unknown method
+        captureMetrics();
         client.callMCP("""
                         {
                           "jsonrpc": "2.0",
