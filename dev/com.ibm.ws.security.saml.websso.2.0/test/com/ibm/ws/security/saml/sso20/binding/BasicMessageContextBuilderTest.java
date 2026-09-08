@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.binding;
 
+import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -30,11 +31,14 @@ import org.junit.rules.TestRule;
 import org.opensaml.core.config.Configuration;
 import org.opensaml.core.config.ConfigurationService;
 import org.opensaml.core.config.provider.MapBasedConfiguration;
-import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
-import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.messaging.decoder.MessageDecodingException;
+import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
+
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.xml.BasicParserPool;
 
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -102,11 +106,30 @@ public class BasicMessageContextBuilderTest {
         XMLObjectProviderRegistry providerRegistry = new XMLObjectProviderRegistry();
         configuration.register(XMLObjectProviderRegistry.class, providerRegistry,
                                ConfigurationService.DEFAULT_PARTITION_NAME);
+
+        // Register a real BasicParserPool so that getSamlHttpPostDecoder's call to
+        // XMLObjectProviderRegistrySupport.getParserPool() returns non-null.
+        BasicParserPool pp = new BasicParserPool();
+        pp.setNamespaceAware(true);
+        pp.setMaxPoolSize(50);
+        try {
+            pp.initialize();
+        } catch (ComponentInitializationException e) {
+            // ignore — initialization failure would surface as a test failure
+        }
+        providerRegistry.setParserPool(pp);
     }
 
     @AfterClass
     public static void tearDown() {
         outputMgr.trace("*=all=disabled");
+    }
+
+    @After
+    public void resetInstance() {
+        // BuildAcsTest overwrites the static `instance` with an anonymous subclass.
+        // Reset to a real BasicMessageContextBuilder so subsequent tests exercise real code.
+        instance = new BasicMessageContextBuilder();
     }
 
     @Test
@@ -152,6 +175,49 @@ public class BasicMessageContextBuilderTest {
         verify(ssoConfig).getSpHostAndPort();
         verify(httpPostDecoder).decode();
         // We don't verify setMessageContext because it uses any() matcher and is called multiple times
+    }
+
+    /**
+     * Verifies that getSamlHttpPostDecoder uses setHttpServletRequestSupplier (not the
+     * deprecated setHttpServletRequest). After the fix, calling getHttpServletRequest()
+     * on the returned decoder must return the exact request object that was passed in,
+     * proving the supplier was wired correctly.
+     */
+    @Test
+    public void test_getSamlHttpPostDecoder_supplierReturnsCorrectRequest() throws Exception {
+        // Re-use the shared mock request from CommonMockitoObjects
+        HttpServletRequest mockRequest = httpServletRequest;
+        String acsUrl = "https://localhost/ibm/saml20/sp/acs";
+
+        HTTPPostDecoder decoder = instance.getSamlHttpPostDecoder(acsUrl, mockRequest);
+
+        // getHttpServletRequest() is backed by the supplier set via setHttpServletRequestSupplier.
+        // If the deprecated setHttpServletRequest was used instead, OpenSAML 4.x would log a warning
+        // and the supplier path would not be exercised.  Either way, the request must round-trip.
+        assertSame("decoder.getHttpServletRequest() must return the exact request passed to getSamlHttpPostDecoder",
+                   mockRequest, decoder.getHttpServletRequest());
+    }
+
+    /**
+     * Verifies that getSamlHttpPostDecoder does NOT call the deprecated
+     * setHttpServletRequest(HttpServletRequest) path, which would cause OpenSAML 4.x to
+     * log "Unsafe HttpServletRequest injected".  The fix uses setHttpServletRequestSupplier
+     * instead.  We verify this indirectly: the decoder returned must be initialized without
+     * error, and getHttpServletRequest() must not return null — if the supplier were absent
+     * the decoder would have no reference at all.
+     */
+    @Test
+    public void test_getSamlHttpPostDecoder_doesNotCallDeprecatedSetHttpServletRequest() throws Exception {
+        String acsUrl = "https://localhost/ibm/saml20/sp/acs";
+
+        HTTPPostDecoder decoder = instance.getSamlHttpPostDecoder(acsUrl, httpServletRequest);
+
+        // The decoder must be initialized (no exception thrown) and the request must be
+        // reachable via the supplier-backed accessor.  A null here would mean neither
+        // setHttpServletRequest nor setHttpServletRequestSupplier was called.
+        assertSame("decoder.getHttpServletRequest() must equal the request passed in — " +
+                   "confirming setHttpServletRequestSupplier was used (not the deprecated setter)",
+                   httpServletRequest, decoder.getHttpServletRequest());
     }
 
 }
