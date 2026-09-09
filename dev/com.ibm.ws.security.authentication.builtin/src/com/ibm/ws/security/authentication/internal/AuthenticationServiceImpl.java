@@ -13,6 +13,7 @@
 package com.ibm.ws.security.authentication.internal;
 
 import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -398,7 +399,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectInAuthCache(AuthenticationData authenticationData, Subject partialSubject,
                                            AuthenticationData hashtableAuthData) throws AuthenticationException {
         Subject subject = null;
-
         AuthCacheService authCacheService = getAuthCacheService();
         if (authCacheService != null && authenticationData != null) {
             String jwtSSOToken = (String) authenticationData.get(AuthenticationData.JWT_TOKEN);
@@ -461,7 +461,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return false;
         }
 
-        // Early-exit: both inactivityTimeout and refreshThreshold must be positive.
         LTPAConfiguration ltpaConfig = ltpaConfigurationRef.getService();
         if (ltpaConfig == null || !ltpaConfig.isTokenRefreshEnabled()) {
             return false;
@@ -520,7 +519,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // let the JAAS login path reject it properly.
             if (currentTime >= effectiveExpiration) {
                 if (isDebugEnabled()) {
-                    Tr.debug(tc, "Token is expired: current=" + currentTime + ", absoluteExpiration=" + effectiveExpiration);
+                    Tr.debug(tc, "Token is expired: current=" + new Date(currentTime) +
+                                 ", absoluteExpiration=" + new Date(effectiveExpiration));
                 }
                 return false;
             }
@@ -534,10 +534,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
 
             if (isDebugEnabled()) {
-                Tr.debug(tc, "Inactivity timeout check: creationTime=" + creationTime +
-                             ", inactivityExpiration=" + inactivityExpiration +
-                             ", absoluteExpiration=" + effectiveExpiration +
-                             ", currentTime=" + currentTime);
+                Tr.debug(tc, "Inactivity timeout check:\n" +
+                             "          creationTime =         " + new Date(creationTime) + "\n" +
+                             "          inactivityExpiration = " + new Date(inactivityExpiration) + "\n" +
+                             "          absoluteExpiration =   " + new Date(effectiveExpiration) + "\n" +
+                             "          currentTime =          " + new Date(currentTime));
             }
 
             // Check if token has exceeded inactivity timeout — expired, not refreshable
@@ -556,7 +557,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 if (isDebugEnabled()) {
                     Tr.debug(tc, "Token needs refresh: time until inactivity expiration (" +
                                  timeRemainingUntilInactivity + "ms) <= threshold (" +
-                                 refreshThresholdInMillis + "ms)");
+                                 refreshThresholdInMillis + "ms)" +
+                                 ", inactivityExpiration=" + new Date(inactivityExpiration) +
+                                 ", currentTime=" + new Date(currentTime));
                 }
                 return true;
             }
