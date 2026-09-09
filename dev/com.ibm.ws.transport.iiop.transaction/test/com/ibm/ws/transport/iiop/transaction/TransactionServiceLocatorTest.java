@@ -128,63 +128,50 @@ public class TransactionServiceLocatorTest {
     // -------------------------------------------------------------------------
 
     @Test
-    public void testGetProviders_unmodifiable() {
-        Map<Integer, TransactionProtocolProvider> map = new HashMap<Integer, TransactionProtocolProvider>();
-        TransactionServiceLocator loc = TransactionServiceLocator.create(context, map);
+    public void testGetSortedProviders_noActiveFactory_empty() {
+        // No active factory set — getProviders() must return empty list safely
+        TransactionServiceLocator loc =
+            TransactionServiceLocator.create(context, new HashMap<Integer, TransactionProtocolProvider>());
+        assertTrue("getProviders() must return empty list when no active factory is set",
+                   loc.getProviders().isEmpty());
+    }
+
+    @Test
+    public void testGetSortedProviders_twoProviders_bothPresent() {
+        // Wire a real factory with two providers as activeFactory so the locator
+        // can delegate to it via getActiveFactory().
+        mock.checking(new Expectations() {{
+            allowing(p1).getIORTagId(); will(returnValue(1));
+            allowing(p2).getIORTagId(); will(returnValue(2));
+        }});
+        TransactionSubsystemFactory factory = new TransactionSubsystemFactory();
+        factory.addTransactionProtocolProvider(p1);
+        factory.addTransactionProtocolProvider(p2);
+        setActiveFactory(factory);
+
+        TransactionServiceLocator loc =
+            TransactionServiceLocator.create(context, new HashMap<Integer, TransactionProtocolProvider>());
+        List<TransactionProtocolProvider> providers = loc.getProviders();
+        assertEquals("Expected 2 providers", 2, providers.size());
+        assertTrue("p1 must be present", providers.contains(p1));
+        assertTrue("p2 must be present", providers.contains(p2));
+    }
+
+    @Test
+    public void testGetSortedProviders_isImmutable() {
+        // getProviders() returns an unmodifiable snapshot of the factory's live map
+        TransactionSubsystemFactory factory = new TransactionSubsystemFactory();
+        setActiveFactory(factory);
+
+        TransactionServiceLocator loc =
+            TransactionServiceLocator.create(context, new HashMap<Integer, TransactionProtocolProvider>());
+        List<TransactionProtocolProvider> providers = loc.getProviders();
         try {
-            loc.getProviders().put(99, p1);
-            fail("getProviders() must return an unmodifiable view");
+            providers.add(p1);
+            fail("getProviders() must return an unmodifiable list");
         } catch (UnsupportedOperationException e) {
             // expected
         }
-    }
-
-    @Test
-    public void testGetProviders_reflectsLiveMap() {
-        Map<Integer, TransactionProtocolProvider> map = new HashMap<Integer, TransactionProtocolProvider>();
-        TransactionServiceLocator loc = TransactionServiceLocator.create(context, map);
-        mock.checking(new Expectations() {{
-            allowing(p1).getIORTagId(); will(returnValue(42));
-        }});
-        map.put(42, p1);
-        assertTrue("getProviders() must reflect additions to the backing map",
-                   loc.getProviders().containsKey(42));
-    }
-
-    @Test
-    public void testGetSortedProviders_empty() {
-        TransactionServiceLocator loc =
-            TransactionServiceLocator.create(context, new HashMap<Integer, TransactionProtocolProvider>());
-        assertTrue("getSortedProviders() on empty map must return empty list",
-                   loc.getSortedProviders().isEmpty());
-    }
-
-    @Test
-    public void testGetSortedProviders_sortedByPriority() {
-        mock.checking(new Expectations() {{
-            allowing(p1).getPriority(); will(returnValue(10));
-            allowing(p1).getIORTagId(); will(returnValue(1));
-            allowing(p2).getPriority(); will(returnValue(5));
-            allowing(p2).getIORTagId(); will(returnValue(2));
-        }});
-        Map<Integer, TransactionProtocolProvider> map = new HashMap<Integer, TransactionProtocolProvider>();
-        map.put(1, p1);
-        map.put(2, p2);
-        TransactionServiceLocator loc = TransactionServiceLocator.create(context, map);
-        List<TransactionProtocolProvider> sorted = loc.getSortedProviders();
-        assertEquals("Expected 2 providers in sorted list", 2, sorted.size());
-        assertSame("Provider with priority 5 must be first", p2, sorted.get(0));
-        assertSame("Provider with priority 10 must be second", p1, sorted.get(1));
-    }
-
-    @Test
-    public void testGetSortedProviders_isCopy() {
-        Map<Integer, TransactionProtocolProvider> map = new HashMap<Integer, TransactionProtocolProvider>();
-        TransactionServiceLocator loc = TransactionServiceLocator.create(context, map);
-        List<TransactionProtocolProvider> sorted = loc.getSortedProviders();
-        sorted.clear(); // mutate the returned list
-        // The original backing map must be unaffected
-        assertEquals("Mutating the sorted list must not affect the backing map", 0, map.size());
     }
 
     // -------------------------------------------------------------------------

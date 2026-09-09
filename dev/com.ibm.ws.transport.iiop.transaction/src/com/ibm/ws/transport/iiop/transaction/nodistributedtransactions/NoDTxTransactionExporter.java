@@ -36,16 +36,15 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 /**
- * Fallback transaction exporter that creates empty/minimal propagation contexts.
+ * Fallback transaction exporter for local-server calls and remote calls where
+ * no protocol-specific provider handles the target.
  *
- * This exporter is used when no protocol-specific exporter is available or suitable.
- * It creates a minimal CORBA propagation context but does not actually propagate
- * the transaction - it's a compatibility fallback for legacy behavior.
+ * <p>For local-server calls, it propagates the current transaction identity so
+ * the receiving server can look up the existing transaction. For remote calls,
+ * it creates an empty propagation identity for legacy non-interoperable
+ * transaction behavior.
  *
- * This exporter is always enabled and has the lowest priority (Integer.MAX_VALUE),
- * ensuring it's only used as a last resort.
- *
- * This class is directly instantiated (not OSGi managed) and receives services
+ * <p>This class is directly instantiated (not OSGi managed) and receives services
  * via the TransactionHandlerContext parameter.
  */
 public class NoDTxTransactionExporter {
@@ -64,12 +63,9 @@ public class NoDTxTransactionExporter {
         return 0;
     }
     
-    public int getPriority() {
-        return Integer.MAX_VALUE; // Lowest priority - use only as fallback
-    }
-    
     public void exportTransaction(ClientRequestInfo ri, Codec codec,
-                                  TransactionHandlerContext context) {
+                                  TransactionHandlerContext context,
+                                  boolean localTarget) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Fallback exportTransaction called for operation: {0}", ri.operation());
         }
@@ -84,44 +80,37 @@ public class NoDTxTransactionExporter {
         }
 
         final ORB orb = ORB.init();
-        PropagationContext propagationContext = null;
-        EmbeddableTransactionImpl tx = null;
+        PropagationContext propagationContext;
+        EmbeddableTransactionImpl tx;
         try {
             tx = (EmbeddableTransactionImpl) transactionManager.getTransaction();
-        
+
             if (tx == null)
                 return;
-        
+
             otid_t otid = NULL_XID;
-    
-            Xid xid = tx.getXidImpl(false);
-            if (xid != null) {
-                byte[] xidBytes = xid.getGlobalTransactionId();
-                if (xidBytes != null)
-                    otid = new otid_t(0, 0, xidBytes);
+            if (localTarget) {
+                Xid xid = tx.getXidImpl(false);
+                if (xid != null) {
+                    byte[] xidBytes = xid.getGlobalTransactionId();
+                    if (xidBytes != null)
+                        otid = new otid_t(0, 0, xidBytes);
+                }
             }
-        
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Creating non-interop propagation context");
+                Tr.debug(tc, "Creating {0} NoDTx propagation context",
+                         localTarget ? "local" : "remote");
             }
-            
+
             TransIdentity transIdentity = new TransIdentity(null, null, otid);
-            int timeout = 0;
-            Any implementationSpecificData = orb.create_any();
-            implementationSpecificData.insert_boolean(true);
-            propagationContext = new PropagationContext(timeout, transIdentity,
-                                                       NO_PARENTS, implementationSpecificData);
-            
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception creating empty propagation context: {0}", e);
-            }
-            // Create minimal context on error
-            TransIdentity transIdentity = new TransIdentity(null, null, NULL_XID);
             Any implementationSpecificData = orb.create_any();
             implementationSpecificData.insert_boolean(true);
             propagationContext = new PropagationContext(0, transIdentity,
                                                        NO_PARENTS, implementationSpecificData);
+        } catch (Exception e) {
+            throw (INTERNAL) new INTERNAL("Could not create NoDTx propagation context")
+                .initCause(e);
         }
         
         // Encode and add propagation context to service context

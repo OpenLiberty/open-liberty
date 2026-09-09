@@ -43,9 +43,9 @@ import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
  * via the TransactionHandlerContext parameter, matching the pattern used by
  * NoDTxTransactionExporter on the client side.
  */
-public class NoDtxTransactionImportHandler {
+public class NoDTxTransactionImporter {
     
-    private static final TraceComponent tc = Tr.register(NoDtxTransactionImportHandler.class, "IIOP", null);
+    private static final TraceComponent tc = Tr.register(NoDTxTransactionImporter.class, "IIOP", null);
 	
 	private final ThreadLocal<DistributableTransaction> _threadImportedTran = new ThreadLocal<DistributableTransaction>();
 
@@ -61,7 +61,7 @@ public class NoDtxTransactionImportHandler {
      */
     public boolean importTransaction(PropagationContext propagationContext, TransactionHandlerContext txHandlerContext) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "NoDtxTransactionImportHandler.importTransaction()");
+            Tr.debug(tc, "NoDTxTransactionImporter.importTransaction()");
         }
         
         // Check if we can handle this propagation context
@@ -91,14 +91,14 @@ public class NoDtxTransactionImportHandler {
 
                 if (tx != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "NoDtxTransactionImportHandler found existing transaction: {0}", tx);
+                        Tr.debug(tc, "NoDTxTransactionImporter found existing transaction: {0}", tx);
                     }
                     ((EmbeddableWebSphereTransactionManager)txHandlerContext.getTransactionManager()).resumeForImport((Transaction) tx);
                     _threadImportedTran.set(tx);
                 } else {
                     // We do NOT import this transaction, treat as Non-Interop 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "NoDtxTransactionImportHandler did not find existing transaction for tid");
+                        Tr.debug(tc, "NoDTxTransactionImporter did not find existing transaction for tid");
                     }
                     setupNonInterOpTransaction(txHandlerContext);
                 }
@@ -120,7 +120,7 @@ public class NoDtxTransactionImportHandler {
      */
     public void unimportTransaction(TransactionHandlerContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "NoDtxTransactionImportHandler.unimportTransaction() - no-op");
+            Tr.debug(tc, "NoDTxTransactionImporter.unimportTransaction() - no-op");
         }
 
         try {
@@ -142,7 +142,7 @@ public class NoDtxTransactionImportHandler {
         EmbeddableTransactionImpl theTx = new EmbeddableTransactionImpl(UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL, 0);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "NoDtxTransactionImportHandler detected Non-Interop transaction - created TXTYPE_NONINTEROP_GLOBAL transaction: {0}", theTx);
+            Tr.debug(tc, "NoDTxTransactionImporter detected Non-Interop transaction - created TXTYPE_NONINTEROP_GLOBAL transaction: {0}", theTx);
         }
 
         theTx.suspendAssociation(); // Or implement setNonInterOp to prevent Inactivity timer.

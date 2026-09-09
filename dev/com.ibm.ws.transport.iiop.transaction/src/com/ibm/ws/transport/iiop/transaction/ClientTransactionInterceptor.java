@@ -58,10 +58,10 @@ import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvid
  * <ol>
  *   <li>If the target IOR carries {@code TAG_IBM_SERVER_UUID} matching this server instance,
  *       use the NoDTx exporter (local-call optimisation).</li>
- *   <li>Otherwise iterate registered providers in priority order; the first whose
+ *   <li>Otherwise iterate registered providers; the first whose
  *       {@link TransactionProtocolProvider#handlesIOR(ClientRequestInfo)} returns true
  *       is used to export the transaction.</li>
- *   <li>If no provider handles the IOR, fall back to the NoDTx exporter.</li>
+ *   <li>If no provider handles the IOR, use the NoDTx exporter for the remote target.</li>
  * </ol>
  *
  * <p>The core interceptor has zero knowledge of any protocol's IOR tag format or
@@ -231,12 +231,12 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
         // Local-server UUID shortcut
         if (isLocalServerUUID(ri)) {
             if (tc.isDebugEnabled()) Tr.debug(tc, "Local UUID match — using NoDTx exporter");
-            exportWithNoDTx(ri, context);
+            exportWithNoDTx(ri, context, true);
             return;
         }
 
-        // Try providers in priority order
-        List<TransactionProtocolProvider> providers = locator.getSortedProviders();
+        // Try registered providers
+        List<TransactionProtocolProvider> providers = locator.getProviders();
         for (TransactionProtocolProvider provider : providers) {
             if (provider.handlesIOR(ri)) {
                 if (tc.isDebugEnabled()) {
@@ -248,13 +248,15 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
             }
         }
 
-        // No provider matched — fall back to NoDTx
-        if (tc.isDebugEnabled()) Tr.debug(tc, "No provider handled IOR — falling back to NoDTx");
-        exportWithNoDTx(ri, context);
+        // No provider matched — use NoDTx for the remote target
+        if (tc.isDebugEnabled()) Tr.debug(tc, "No provider handled IOR — using remote NoDTx");
+        exportWithNoDTx(ri, context, false);
     }
 
-    private void exportWithNoDTx(ClientRequestInfo ri, TransactionHandlerContext context) {
-        noDTxExporter.exportTransaction(ri, codec, context);
+    private void exportWithNoDTx(ClientRequestInfo ri,
+                                 TransactionHandlerContext context,
+                                 boolean localTarget) {
+        noDTxExporter.exportTransaction(ri, codec, context, localTarget);
         activeProviders.set(NODTX_SENTINEL);
     }
 
@@ -265,7 +267,6 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
      */
     private static final TransactionProtocolProvider NODTX_SENTINEL = new TransactionProtocolProvider() {
         public String getProtocolName()  { return "NoDTx-sentinel"; }
-        public int    getPriority()      { return Integer.MAX_VALUE; }
         public int    getIORTagId()      { return 0; }
         public void   contributeToIOR(org.omg.PortableInterceptor.IORInfo i, Codec c) {}
         public boolean handlesIOR(ClientRequestInfo r) { return false; }

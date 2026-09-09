@@ -43,19 +43,17 @@ public class TransactionServiceLocator {
     private static volatile TransactionServiceLocator instance;
 
     private final TransactionHandlerContext context;
-    private final Map<Integer, TransactionProtocolProvider> providers;
+    // Not stored — getProviders() delegates to the factory's live map so that
+    // providers arriving after factory activation are visible.
 
     /**
      * Private constructor - use getInstance() or setInstance().
      *
-     * @param context   the transaction handler context providing access to TransactionManager
-     *                  and RemoteTransactionController
-     * @param providers the map of protocol providers (shared reference to factory's map)
+     * @param context the transaction handler context providing access to TransactionManager
+     *                and RemoteTransactionController
      */
-    private TransactionServiceLocator(TransactionHandlerContext context,
-                                      Map<Integer, TransactionProtocolProvider> providers) {
+    private TransactionServiceLocator(TransactionHandlerContext context) {
         this.context = context;
-        this.providers = providers;
     }
 
     /**
@@ -133,38 +131,28 @@ public class TransactionServiceLocator {
     }
 
     /**
-     * Gets all registered protocol providers (unmodifiable live view).
-     * Used by ServerTransactionInterceptor for the import loop.
-     *
-     * @return unmodifiable view of the providers map (IOR tag ID to provider)
+     * Returns all currently registered protocol providers.
+     * Delegates to the active factory's live map so that providers arriving
+     * after factory activation (e.g. WSATTransactionProtocolProvider) are
+     * always visible. Returns an empty list if no factory is active.
      */
-    public Map<Integer, TransactionProtocolProvider> getProviders() {
-        return Collections.unmodifiableMap(providers);
-    }
-
-    /**
-     * Returns all registered providers sorted by priority (lowest value first).
-     * Used by IORTransactionInterceptor and ClientTransactionInterceptor.
-     * Sorting on every call is acceptable — N is always very small (typically 1).
-     */
-    public List<TransactionProtocolProvider> getSortedProviders() {
-        List<TransactionProtocolProvider> list = new java.util.ArrayList<>(providers.values());
-        list.sort(java.util.Comparator.comparingInt(TransactionProtocolProvider::getPriority));
-        return list;
+    public List<TransactionProtocolProvider> getProviders() {
+        TransactionSubsystemFactory factory = TransactionSubsystemFactory.getActiveFactory();
+        if (factory == null) return Collections.emptyList();
+        return factory.getProviders();
     }
 
     /**
      * Package-private factory method for creating a locator.
      *
-     * This is called by TransactionSubsystemFactory to create locator instances.
-     *
      * @param context   the transaction handler context
-     * @param providers the map of protocol providers
+     * @param providers unused — kept for call-site compatibility; providers are
+     *                  read live from the factory instead of being snapshotted here
      * @return a new service locator instance
      */
     static TransactionServiceLocator create(TransactionHandlerContext context,
                                             Map<Integer, TransactionProtocolProvider> providers) {
-        return new TransactionServiceLocator(context, providers);
+        return new TransactionServiceLocator(context);
     }
 }
 

@@ -37,7 +37,7 @@ import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvid
 
 /**
  * Unit tests for the pure-Java subset of {@link TransactionSubsystemFactory}:
- * provider registration/removal, getSortedProviders, and createServiceLocator
+ * provider registration/removal, getProviders, and createServiceLocator
  * null guards.
  *
  * <p>Also contains the single worthwhile {@link ServerTransactionPolicy} assertion
@@ -70,35 +70,33 @@ public class TransactionSubsystemFactoryTest {
     }
 
     // -------------------------------------------------------------------------
-    // getSortedProviders
+    // getProviders
     // -------------------------------------------------------------------------
 
     @Test
     public void testGetSortedProviders_empty() {
-        assertTrue("New factory must have no providers", factory.getSortedProviders().isEmpty());
+        assertTrue("New factory must have no providers", factory.getProviders().isEmpty());
     }
 
     @Test
     public void testAddProvider_appearsInSortedList() {
         mock.checking(new Expectations() {{
             allowing(p1).getIORTagId(); will(returnValue(1));
-            allowing(p1).getPriority(); will(returnValue(10));
         }});
         factory.addTransactionProtocolProvider(p1);
-        assertTrue("Provider must appear in getSortedProviders() after addTransactionProtocolProvider()",
-                   factory.getSortedProviders().contains(p1));
+        assertTrue("Provider must appear in getProviders() after addTransactionProtocolProvider()",
+                   factory.getProviders().contains(p1));
     }
 
     @Test
     public void testRemoveProvider_removedFromList() {
         mock.checking(new Expectations() {{
             allowing(p1).getIORTagId(); will(returnValue(1));
-            allowing(p1).getPriority(); will(returnValue(10));
         }});
         factory.addTransactionProtocolProvider(p1);
         factory.removeTransactionProtocolProvider(p1);
         assertFalse("Provider must be absent after removeTransactionProtocolProvider()",
-                    factory.getSortedProviders().contains(p1));
+                    factory.getProviders().contains(p1));
     }
 
     @Test
@@ -111,33 +109,17 @@ public class TransactionSubsystemFactoryTest {
     }
 
     @Test
-    public void testSortedProviders_priorityOrder() {
+    public void testGetSortedProviders_twoProviders_bothPresent() {
         mock.checking(new Expectations() {{
             allowing(p1).getIORTagId(); will(returnValue(1));
-            allowing(p1).getPriority(); will(returnValue(10));
             allowing(p2).getIORTagId(); will(returnValue(2));
-            allowing(p2).getPriority(); will(returnValue(3));
         }});
         factory.addTransactionProtocolProvider(p1);
         factory.addTransactionProtocolProvider(p2);
-        List<TransactionProtocolProvider> sorted = factory.getSortedProviders();
-        assertEquals("Expected 2 providers", 2, sorted.size());
-        assertSame("Provider with priority 3 must be first", p2, sorted.get(0));
-        assertSame("Provider with priority 10 must be second", p1, sorted.get(1));
-    }
-
-    @Test
-    public void testSortedProviders_equalPriority_bothPresent() {
-        mock.checking(new Expectations() {{
-            allowing(p1).getIORTagId(); will(returnValue(1));
-            allowing(p1).getPriority(); will(returnValue(5));
-            allowing(p2).getIORTagId(); will(returnValue(2));
-            allowing(p2).getPriority(); will(returnValue(5));
-        }});
-        factory.addTransactionProtocolProvider(p1);
-        factory.addTransactionProtocolProvider(p2);
-        assertEquals("Both providers with equal priority must appear in sorted list",
-                     2, factory.getSortedProviders().size());
+        List<TransactionProtocolProvider> providers = factory.getProviders();
+        assertEquals("Expected 2 providers", 2, providers.size());
+        assertTrue("p1 must be present", providers.contains(p1));
+        assertTrue("p2 must be present", providers.contains(p2));
     }
 
     // -------------------------------------------------------------------------

@@ -35,7 +35,7 @@ import org.omg.PortableInterceptor.IORInfo;
  *
  * <h3>Method groups</h3>
  * <ul>
- *   <li><b>Identity:</b> {@link #getProtocolName()}, {@link #getPriority()}</li>
+ *   <li><b>Identity:</b> {@link #getProtocolName()}</li>
  *   <li><b>IOR advertisement:</b> {@link #getIORTagId()}, {@link #contributeToIOR(IORInfo, Codec)}</li>
  *   <li><b>Client side:</b> {@link #handlesIOR(ClientRequestInfo)},
  *       {@link #exportTransaction(ClientRequestInfo, Codec, TransactionHandlerContext)},
@@ -55,13 +55,6 @@ public interface TransactionProtocolProvider {
      * Human-readable protocol name for trace and logging (e.g. "WS-AT").
      */
     String getProtocolName();
-
-    /**
-     * Priority for client-side provider selection. Lower value = higher priority.
-     * When multiple providers could handle a given IOR, the one with the lowest
-     * priority value is selected first.
-     */
-    int getPriority();
 
     // -------------------------------------------------------------------------
     // IOR advertisement — provider owns its own tag entirely

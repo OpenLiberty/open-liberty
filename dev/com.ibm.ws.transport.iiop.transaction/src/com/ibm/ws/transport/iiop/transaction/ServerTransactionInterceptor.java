@@ -15,7 +15,7 @@
  */
 package com.ibm.ws.transport.iiop.transaction;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
@@ -44,7 +44,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDtxTransactionImportHandler;
+import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxTransactionImporter;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
@@ -77,7 +77,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
      * successfully processed the transaction — its absence signals "server never saw it".
      */
     private static final class ImportState {
-        final Object handler;         // TransactionProtocolProvider or NoDtxTransactionImportHandler
+        final Object handler;         // TransactionProtocolProvider or NoDTxTransactionImporter
         final byte[] rawContextBytes; // raw inbound TransactionService context_data
 
         ImportState(Object handler, byte[] rawContextBytes) {
@@ -89,7 +89,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
     /** Stores the ImportState for the current thread's inbound transactional request. */
     private final ThreadLocal<ImportState> activeHandlers = new ThreadLocal<>();
 
-    private final NoDtxTransactionImportHandler noDtxHandler = new NoDtxTransactionImportHandler();
+    private final NoDTxTransactionImporter noDTxImporter = new NoDTxTransactionImporter();
 
     public ServerTransactionInterceptor(Codec codec) {
         this.codec = codec;
@@ -171,11 +171,8 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
             TransIdentity transId = pc.current;
             if (transId == null || transId.otid == null) return;
 
-            byte[] globalTid = transId.otid.tid;
-            if (globalTid == null || globalTid.length == 0) return;
-
             TransactionHandlerContext context = locator.getContext();
-            Map<Integer, TransactionProtocolProvider> providers = locator.getProviders();
+            List<TransactionProtocolProvider> providers = locator.getProviders();
 
             // Read ISD type ID once — pure metadata, no materialisation
             String isdTypeId = null;
@@ -192,7 +189,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
             }
 
             boolean imported = false;
-            for (TransactionProtocolProvider provider : providers.values()) {
+            for (TransactionProtocolProvider provider : providers) {
                 // Pre-screen: skip providers whose expected ISD type doesn't match
                 String expected = provider.getExpectedISDTypeId();
                 if (expected != null && !expected.equals(isdTypeId)) {
@@ -218,9 +215,9 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
 
             // NoDTx fallback
             if (!imported) {
-                if (noDtxHandler.importTransaction(pc, context)) {
+                if (noDTxImporter.importTransaction(pc, context)) {
                     if (tc.isDebugEnabled()) Tr.debug(tc, "NoDTx fallback handled context");
-                    activeHandlers.set(new ImportState(noDtxHandler, rawContextBytes));
+                    activeHandlers.set(new ImportState(noDTxImporter, rawContextBytes));
                 }
             }
 
@@ -264,8 +261,8 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
         try {
             if (state.handler instanceof TransactionProtocolProvider) {
                 ((TransactionProtocolProvider) state.handler).unimportTransaction(context);
-            } else if (state.handler instanceof NoDtxTransactionImportHandler) {
-                ((NoDtxTransactionImportHandler) state.handler).unimportTransaction(context);
+            } else if (state.handler instanceof NoDTxTransactionImporter) {
+                ((NoDTxTransactionImporter) state.handler).unimportTransaction(context);
             } else {
                 // Defensive — suspend whatever is on the thread
                 context.getTransactionManager().suspend();

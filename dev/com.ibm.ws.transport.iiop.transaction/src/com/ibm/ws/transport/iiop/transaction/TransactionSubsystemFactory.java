@@ -14,10 +14,11 @@ package com.ibm.ws.transport.iiop.transaction;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.transaction.TransactionManager;
 
@@ -73,6 +74,10 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
     /**
      * Map of protocol providers, keyed by IOR tag ID for uniqueness checking.
      * ConcurrentHashMap provides thread-safe access without locking.
+     * This map is read live by getProviders() so that providers arriving after
+     * activation (e.g. WSATTransactionProtocolProvider, whose Handler dependency
+     * may not be satisfied until after this component activates) are not silently
+     * dropped.
      */
     private final Map<Integer, TransactionProtocolProvider> providers = new ConcurrentHashMap<>();
 
@@ -139,13 +144,12 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
     }
 
     /**
-     * Returns all registered providers sorted by priority (lowest value first).
-     * Used by IORTransactionInterceptor and ClientTransactionInterceptor.
+     * Returns all currently registered protocol providers as an immutable snapshot.
+     * Reads from the live ConcurrentHashMap on every call so that providers that
+     * arrive after activation (e.g. WSATTransactionProtocolProvider) are included.
      */
-    public List<TransactionProtocolProvider> getSortedProviders() {
-        List<TransactionProtocolProvider> list = new java.util.ArrayList<>(providers.values());
-        list.sort(java.util.Comparator.comparingInt(TransactionProtocolProvider::getPriority));
-        return list;
+    public List<TransactionProtocolProvider> getProviders() {
+        return Collections.unmodifiableList(new ArrayList<>(providers.values()));
     }
 
     /**
@@ -193,9 +197,10 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
 
     @Activate
     protected void activate(BundleContext bundleContext) {
-        // Set the static reference so MyLocalFactory can access it
+        // Set the static reference so IORTransactionInterceptor.establish_components()
+        // can reach the factory via getActiveFactory() at IOR-creation time.
         activeFactory = this;
-        
+
         // Try to eagerly initialize service locator
         // (will succeed if services are already injected, otherwise lazy init will handle it)
         TransactionServiceLocator locator = createServiceLocator();

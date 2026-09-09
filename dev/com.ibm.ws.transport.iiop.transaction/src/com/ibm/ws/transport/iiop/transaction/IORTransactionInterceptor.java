@@ -84,7 +84,7 @@ final class IORTransactionInterceptor extends LocalObject implements IORIntercep
             // 2. Delegate IOR contribution to each enabled provider
             TransactionSubsystemFactory factory = TransactionSubsystemFactory.getActiveFactory();
             if (factory != null) {
-                List<TransactionProtocolProvider> providers = factory.getSortedProviders();
+                List<TransactionProtocolProvider> providers = factory.getProviders();
                 for (TransactionProtocolProvider provider : providers) {
                     try {
                         provider.contributeToIOR(info, codec);
