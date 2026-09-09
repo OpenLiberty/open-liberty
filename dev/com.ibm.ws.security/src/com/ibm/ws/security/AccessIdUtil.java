@@ -47,13 +47,9 @@ public final class AccessIdUtil {
     // The original pattern p splits the same string as
     // "group", "https:", "/test.com/group1".
     static final Pattern ph = Pattern.compile("([^:]+):([^:]+://[^/]+)/(.+)");
-    // Handles any leading-slash realm, including multi-segment paths (e.g. "/myrealm",
-    // "/a/b/c").  The realm group (/[^/:][^/]*...) is greedy so it captures everything
-    // up to the LAST slash, and the uniqueId group ([^/]+) captures the final segment.
-    // The second character must not be '/' or ':' so that "//host" (handled by ph) and
-    // bare strings without a "type:" prefix are not incorrectly matched.
-    // Rejects "//host" style, empty uniqueId, and plain realms (handled by p).
-    static final Pattern ps = Pattern.compile("([^:]+):(/[^/:].*)/([^/]+)");
+    // Handles a single leading-slash realm (e.g. "/realm"). The second character must
+    // not be '/' so that "//host" style realms (handled by ph) are not matched.
+    static final Pattern ps = Pattern.compile("([^:]+):(/[^/]+)/(.+)");
 
     public static final String TYPE_SERVER = "server";
     public static final String TYPE_USER = "user";
@@ -66,14 +62,14 @@ public final class AccessIdUtil {
 
     private static class RealmHolder {
         final String[] realm;
-        final Pattern[] realmPatterns;
+        final Pattern realmPattern;
 
         RealmHolder(String[] realm) {
             this.realm = realm;
-            this.realmPatterns = new Pattern[realm.length];
-            for (int i = 0; i < realm.length; i++) {
-                realmPatterns[i] = Pattern.compile(
-                        "([^:]+):(" + Pattern.quote(realm[i]) + ")/(.*)" );
+            if (realm.length == 1) {
+                realmPattern = Pattern.compile("([^:]+):(" + Pattern.quote(realm[0]) + ")/(.*)");
+            } else {
+                realmPattern = null;
             }
         }
     }
@@ -129,14 +125,12 @@ public final class AccessIdUtil {
             return null;
         }
         RealmHolder holder = realmHolder;
-        if (holder != null) {
-            for (Pattern rp : holder.realmPatterns) {
-                Matcher m = rp.matcher(accessId);
-                if (m.matches()) {
-                    if (m.group(3).length() > 0)
-                        return m;
-                    return null;
-                }
+        if (holder != null && holder.realmPattern != null) {
+            Matcher m = holder.realmPattern.matcher(accessId);
+            if (m.matches()) {
+                if (m.group(3).length() > 0)
+                    return m;
+                return null;
             }
         }
         Matcher m = ph.matcher(accessId);
@@ -218,17 +212,14 @@ public final class AccessIdUtil {
     }
 
     private static Pattern getPatternForRealm(String realm) {
+        Pattern pattern;
         RealmHolder holder = realmHolder;
-        if (holder != null) {
-            for (int i = 0; i < holder.realm.length; i++) {
-                if (realm.equals(holder.realm[i])) {
-                    return holder.realmPatterns[i];
-                }
-            }
+        if (holder != null && holder.realmPattern != null && realm.equals(holder.realm[0])) {
+            pattern = holder.realmPattern;
+        } else {
+            pattern = Pattern.compile("([^:]+):(" + Pattern.quote(realm) + ")/(.*)");
         }
-        // Realm is not registered in the holder (e.g. a WSCREDENTIAL_REALM override from
-        // custom properties). Compile on demand; this path is uncommon.
-        return Pattern.compile("([^:]+):(" + Pattern.quote(realm) + ")/(.*)");
+        return pattern;
     }
 
     private static final String getUniqueId(Pattern realmPattern, String accessId) {

@@ -190,59 +190,6 @@ public class AccessIdUtilLeadingSlashRealmTest {
         }
     }
 
-    // Multiple realms including a leading-slash realm: both entries match.
-    @Test
-    public void multiRealm_withLeadingSlashRealm_bothMatch() {
-        Mockery localMock = new JUnit4Mockery();
-        ServiceReference<SecurityService> localRef =
-                localMock.mock(ServiceReference.class, "multiRealmWithSlashRef");
-        localMock.checking(new Expectations() {
-            {
-                allowing(localRef).getProperty(SecurityServiceImpl.KEY_USERREGISTRY);
-                will(returnValue(new String[] { "/testRealm", "BasicRealm" }));
-            }
-        });
-
-        accessIdUtil.unsetSecurityService(securityServiceRef);
-        accessIdUtil.setSecurityService(localRef);
-        try {
-            assertTrue(AccessIdUtil.isUserAccessId("user:/testRealm/my_user"));
-            assertEquals("/testRealm", AccessIdUtil.getRealm("user:/testRealm/my_user"));
-            assertTrue(AccessIdUtil.isUserAccessId("user:BasicRealm/bob"));
-            assertEquals("BasicRealm", AccessIdUtil.getRealm("user:BasicRealm/bob"));
-        } finally {
-            accessIdUtil.unsetSecurityService(localRef);
-            accessIdUtil.setSecurityService(securityServiceRef);
-            localMock.assertIsSatisfied();
-        }
-    }
-
-    // Multiple plain realms: both entries match independently.
-    @Test
-    public void multiRealm_twoNormalRealms_bothMatch() {
-        Mockery localMock = new JUnit4Mockery();
-        ServiceReference<SecurityService> localRef =
-                localMock.mock(ServiceReference.class, "twoNormalRealmsRef");
-        localMock.checking(new Expectations() {
-            {
-                allowing(localRef).getProperty(SecurityServiceImpl.KEY_USERREGISTRY);
-                will(returnValue(new String[] { "RealmA", "RealmB" }));
-            }
-        });
-
-        accessIdUtil.unsetSecurityService(securityServiceRef);
-        accessIdUtil.setSecurityService(localRef);
-        try {
-            assertTrue(AccessIdUtil.isUserAccessId("user:RealmA/alice"));
-            assertTrue(AccessIdUtil.isUserAccessId("user:RealmB/bob"));
-            assertEquals("RealmA", AccessIdUtil.getRealm("user:RealmA/alice"));
-        } finally {
-            accessIdUtil.unsetSecurityService(localRef);
-            accessIdUtil.setSecurityService(securityServiceRef);
-            localMock.assertIsSatisfied();
-        }
-    }
-
     // Without a realmHolder, ph/ps/p are the fallbacks.
     // Plain and single-leading-slash realms match; double-slash does not.
     @Test
@@ -257,40 +204,9 @@ public class AccessIdUtilLeadingSlashRealmTest {
         }
     }
 
-    // --- Gap fix: multi-segment unregistered leading-slash realms ---
-    // ps was "(/[^/]+)/(.+)" which only matched ONE segment after the leading slash.
-    // The new ps "(/.*)/([^/]+)" is greedy on the realm and treats the LAST slash as
-    // the separator, so "/a/b" is the realm and "alice" is the uniqueId — correct.
-
-    // Two-segment unregistered leading-slash realm resolves with last segment as uniqueId.
+    // Single-segment leading-slash realm without a holder (bootstrap/fallback path).
     @Test
-    public void unregistered_twoSegmentLeadingSlashRealm_parsedCorrectly() {
-        accessIdUtil.unsetSecurityService(securityServiceRef);
-        try {
-            assertTrue(AccessIdUtil.isUserAccessId("user:/a/b/alice"));
-            assertEquals("/a/b", AccessIdUtil.getRealm("user:/a/b/alice"));
-            assertEquals("alice", AccessIdUtil.getUniqueId("user:/a/b/alice"));
-        } finally {
-            accessIdUtil.setSecurityService(securityServiceRef);
-        }
-    }
-
-    // Three-segment unregistered leading-slash realm: last segment is always the uniqueId.
-    @Test
-    public void unregistered_threeSegmentLeadingSlashRealm_parsedCorrectly() {
-        accessIdUtil.unsetSecurityService(securityServiceRef);
-        try {
-            assertTrue(AccessIdUtil.isUserAccessId("user:/a/b/c/alice"));
-            assertEquals("/a/b/c", AccessIdUtil.getRealm("user:/a/b/c/alice"));
-            assertEquals("alice", AccessIdUtil.getUniqueId("user:/a/b/c/alice"));
-        } finally {
-            accessIdUtil.setSecurityService(securityServiceRef);
-        }
-    }
-
-    // Single-segment case is unchanged: /myrealm still works as before.
-    @Test
-    public void unregistered_singleSegmentLeadingSlashRealm_unchanged() {
+    public void unregistered_singleSegmentLeadingSlashRealm_parsedCorrectly() {
         accessIdUtil.unsetSecurityService(securityServiceRef);
         try {
             assertTrue(AccessIdUtil.isUserAccessId("user:/myrealm/testuser"));
@@ -301,101 +217,35 @@ public class AccessIdUtilLeadingSlashRealmTest {
         }
     }
 
-    // Empty uniqueId must still be rejected — the new ps requires at least one non-slash char
-    // after the last slash, so "user:/a/b/" has no match.
+    // Empty uniqueId after a leading-slash realm must still be rejected.
     @Test
-    public void unregistered_multiSegmentLeadingSlashRealm_emptyUniqueId_returnsFalse() {
+    public void unregistered_leadingSlashRealm_emptyUniqueId_returnsFalse() {
         accessIdUtil.unsetSecurityService(securityServiceRef);
         try {
-            assertFalse(AccessIdUtil.isAccessId("user:/a/b/"));
+            assertFalse(AccessIdUtil.isAccessId("user:/testRealm/"));
         } finally {
             accessIdUtil.setSecurityService(securityServiceRef);
         }
     }
 
-    // Round-trip: createAccessId + parse for a multi-segment leading-slash realm.
+    // Round-trip: createAccessId + parse for a leading-slash realm.
     @Test
-    public void unregistered_multiSegmentLeadingSlashRealm_roundTrip() {
+    public void unregistered_leadingSlashRealm_roundTrip() {
         accessIdUtil.unsetSecurityService(securityServiceRef);
         try {
-            String created = AccessIdUtil.createAccessId("user", "/a/b", "alice");
-            assertEquals("user:/a/b/alice", created);
+            String created = AccessIdUtil.createAccessId("user", "/testRealm", "alice");
+            assertEquals("user:/testRealm/alice", created);
             assertTrue(AccessIdUtil.isUserAccessId(created));
-            assertEquals("/a/b", AccessIdUtil.getRealm(created));
+            assertEquals("/testRealm", AccessIdUtil.getRealm(created));
             assertEquals("alice", AccessIdUtil.getUniqueId(created));
         } finally {
             accessIdUtil.setSecurityService(securityServiceRef);
         }
     }
 
-    // getUniqueId(accessId, realm) with an unregistered multi-segment realm uses the
-    // on-demand compiled pattern and must not fall back to ps.
-    @Test
-    public void unregistered_multiSegmentLeadingSlashRealm_getUniqueIdWithRealm() {
-        assertEquals("alice", AccessIdUtil.getUniqueId("user:/a/b/alice", "/a/b"));
-    }
-
-    // Multi-segment slash realm registered in the holder resolves correctly.
-    @Test
-    public void subpathRealm_matcherNonNull_and_partsCorrect() {
-        Mockery localMock = new JUnit4Mockery();
-        ServiceReference<SecurityService> localRef =
-                localMock.mock(ServiceReference.class, "subpathRealmRef");
-        localMock.checking(new Expectations() {
-            {
-                allowing(localRef).getProperty(SecurityServiceImpl.KEY_USERREGISTRY);
-                will(returnValue(new String[] { "/realm/sub" }));
-            }
-        });
-
-        accessIdUtil.unsetSecurityService(securityServiceRef);
-        accessIdUtil.setSecurityService(localRef);
-        try {
-            org.junit.Assert.assertNotNull(
-                "matcher() must not return null for a subpath realm accessId",
-                AccessIdUtil.matcher("user:/realm/sub/testuser"));
-            assertEquals("/realm/sub", AccessIdUtil.getRealm("user:/realm/sub/testuser"));
-            assertEquals("testuser", AccessIdUtil.getUniqueId("user:/realm/sub/testuser"));
-            assertEquals("user", AccessIdUtil.getEntityType("user:/realm/sub/testuser"));
-        } finally {
-            accessIdUtil.unsetSecurityService(localRef);
-            accessIdUtil.setSecurityService(securityServiceRef);
-            localMock.assertIsSatisfied();
-        }
-    }
-
-    // A leading-slash realm not in the holder triggers on-demand pattern compilation.
+    // getUniqueId(accessId, realm) with a leading-slash realm not in the holder.
     @Test
     public void getUniqueIdWithRealm_leadingSlashRealmNotInHolder_fallsBackToCompiledPattern() {
-        String accessId = "user:/unknown/alice";
-        assertEquals("alice", AccessIdUtil.getUniqueId(accessId, "/unknown"));
-    }
-
-    // Multi-realm holder: an access ID whose uniqueId is empty must still be rejected.
-    // Guards the early-exit path in matcher() — the realmPatterns loop now applies to
-    // ALL registered realms, not just single-realm holders.
-    @Test
-    public void multiRealm_incompleteAccessId_returnsFalse() {
-        Mockery localMock = new JUnit4Mockery();
-        ServiceReference<SecurityService> localRef =
-                localMock.mock(ServiceReference.class, "multiRealmIncompleteRef");
-        localMock.checking(new Expectations() {
-            {
-                allowing(localRef).getProperty(SecurityServiceImpl.KEY_USERREGISTRY);
-                will(returnValue(new String[] { "/testRealm", "BasicRealm" }));
-            }
-        });
-        accessIdUtil.unsetSecurityService(securityServiceRef);
-        accessIdUtil.setSecurityService(localRef);
-        try {
-            // Realm matches realmPatterns[0] but uniqueId segment is empty — must return false.
-            assertFalse(AccessIdUtil.isAccessId("user:/testRealm/"));
-            // Realm matches realmPatterns[1] but uniqueId segment is empty — must return false.
-            assertFalse(AccessIdUtil.isAccessId("user:BasicRealm/"));
-        } finally {
-            accessIdUtil.unsetSecurityService(localRef);
-            accessIdUtil.setSecurityService(securityServiceRef);
-            localMock.assertIsSatisfied();
-        }
+        assertEquals("alice", AccessIdUtil.getUniqueId("user:/unknown/alice", "/unknown"));
     }
 }

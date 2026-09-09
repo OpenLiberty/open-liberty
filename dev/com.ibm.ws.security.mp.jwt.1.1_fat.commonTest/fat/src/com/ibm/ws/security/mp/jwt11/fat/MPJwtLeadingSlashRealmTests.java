@@ -199,36 +199,6 @@ public class MPJwtLeadingSlashRealmTests extends MPJwt11MPConfigTests {
     }
 
     /**
-     * <b>testLeadingSlashWithSubpath_authSucceeds</b>
-     *
-     * <p>A JWT token that carries a leading-slash realm with internal path structure
-     * (e.g. {@code "realm": "/realm/subRealm"}). This covers both the leading-slash
-     * and the internal-slash scenarios — both map to a slash-prefixed realm value
-     * and share the same NPE regression guard.
-     *
-     * <p>The default test server config uses basicRegistry, so this realm is unregistered
-     * and authentication may return HTTP 401. The assertion is therefore scoped to
-     * absence of NullPointerException only. Once {@code mapToUserRegistry="No"} support
-     * is confirmed for this server config, upgrade to {@code successExpectations()}.
-     *
-     * @throws Exception on unexpected test-infrastructure failure
-     */
-    @Test
-    public void testLeadingSlashWithSubpath_authSucceeds() throws Exception {
-
-        List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
-        extraClaims.add(new NameValuePair("upn", MPJwt11FatConstants.TESTUSER));
-        extraClaims.add(new NameValuePair(REALM_CLAIM, "/realm/subRealm"));
-
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
-
-        Expectations expectations = noNpeExpectations();
-
-        genericConfigTest(builtToken, expectations);
-
-    }
-
-    /**
      * <b>testNormalRealm_unaffected</b>
      *
      * <p>Regression guard: a JWT with a plain realm value that has no leading slash
