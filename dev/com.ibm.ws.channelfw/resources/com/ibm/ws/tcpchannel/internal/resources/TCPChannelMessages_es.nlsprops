@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=No se requiere ninguna acci\u00f3n.
 ZOSAIO_DEACTIVATED=CWWKO0230I: El soporte de E/S as\u00edncrona nativo para z/OS se ha desactivado.
 ZOSAIO_DEACTIVATED.explanation=El servicio de E/S de sockets TCP/IP as\u00edncrona para Liberty (AsyncIO) en z/OS, que proporciona prestaciones b\u00e1sicas de un paquete de E/S as\u00edncrona a nivel de sistema operativo, se ha desactivado.
 ZOSAIO_DEACTIVATED.useraction=No se requiere ninguna acci\u00f3n.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: Se ha eliminado el controlador de canal \u00ab {0} \u00bb Netty de una canalizaci\u00f3n de conexi\u00f3n activa.
+netty.handler.removed.from.pipeline.explanation=Se ha eliminado de forma inesperada un controlador de canal de \u00ab Netty \u00bb necesario para el correcto funcionamiento de la conexi\u00f3n, mientras el canal estaba activo.
+netty.handler.removed.from.pipeline.useraction=Si este mensaje persiste, recopila informaci\u00f3n de seguimiento de diagn\u00f3stico y ponte en contacto con el servicio de asistencia de IBM.
+
+read.timeout=CWWKO1713W: Se ha agotado el tiempo de espera de una operaci\u00f3n de lectura de HTTP : {0}
+read.timeout.explanation=Una conexi\u00f3n entrante de tipo \u00ab HTTP \u00bb no recibi\u00f3 datos dentro del periodo de tiempo de espera de lectura configurado.
+read.timeout.useraction=Comprueba la conexi\u00f3n de red o aumenta el valor del tiempo de espera de lectura en la configuraci\u00f3n del punto final HTTP.
+
+write.timeout=CWWKO1714W: Se ha producido un error de tiempo de espera en una operaci\u00f3n de escritura en HTTP : {0}
+write.timeout.explanation=Una operaci\u00f3n de escritura saliente de HTTP no se complet\u00f3 dentro del plazo de espera de escritura configurado.
+write.timeout.useraction=Comprueba la conexi\u00f3n de red o aumenta el valor del tiempo de espera de escritura en la configuraci\u00f3n del punto final HTTP.
+
+h2.idle.timeout=CWWKO1715W: Se ha cerrado una conexi\u00f3n de HTTP/2 debido a un tiempo de espera por inactividad: {0}
+h2.idle.timeout.explanation=La conexi\u00f3n HTTP/2 estuvo inactiva durante m\u00e1s tiempo del establecido en el tiempo de espera de inactividad configurado, por lo que el servidor cerr\u00f3 la conexi\u00f3n.
+h2.idle.timeout.useraction=Comprueba la conexi\u00f3n de red o aumenta el valor del tiempo de espera de inactividad de la conexi\u00f3n HTTP/2 en la configuraci\u00f3n del punto final HTTP.

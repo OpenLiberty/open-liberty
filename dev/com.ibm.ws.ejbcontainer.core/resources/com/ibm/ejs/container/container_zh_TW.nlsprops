@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2022 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1553,13 +1553,17 @@ UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: \u7121\u6cd5\u5c07 {3} \u61c9
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.explanation=\u7121\u6cd5\u5efa\u7acb\u9060\u7aef Enterprise Bean \u9023\u7d50\uff0c\u56e0\u70ba CORBA \u540d\u7a31\u4f3a\u670d\u5668\u7121\u6cd5\u4f7f\u7528\u3002
 UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u6a94\uff0c\u4ee5\u53d6\u5f97\u8207 ORB \u6216 CORBA \u540d\u7a31\u4f3a\u670d\u5668\u8d77\u59cb\u8a2d\u5b9a\u76f8\u95dc\u7684\u7570\u5e38\u72c0\u6cc1\u3002
 
-CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E\uff1a {2} \u61c9\u7528\u7a0b\u5f0f {1} \u6a21\u7d44\u4e2d\u7684 {0} Bean \u6709\u4e00\u6216\u591a\u500b\u65b9\u6cd5\u542b\u6709 jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\uff0c\u4e14\u4e0d\u5f97\u7528\u65bc Enterprise Bean\u3002 jakarta.ejb.Asynchronous \u8a3b\u91cb\u63d0\u4f9b Enterprise Bean \u7684\u975e\u540c\u6b65\u65b9\u6cd5\u3002
+CNTR0342E_INCORRECT_ASYNC_ANNO=CNTR0342E: {2} \u61c9\u7528\u7a0b\u5f0f {1} \u6a21\u7d44\u4e2d\u7684 {0} Bean \u6709\u4e00\u6216\u591a\u500b\u65b9\u6cd5\u542b\u6709 jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\uff0c\u4e14\u4e0d\u5f97\u7528\u65bc Enterprise Bean\u3002 jakarta.ejb.Asynchronous \u8a3b\u91cb\u63d0\u4f9b Enterprise Bean \u7684\u975e\u540c\u6b65\u65b9\u6cd5\u3002
 CNTR0342E_INCORRECT_ASYNC_ANNO.explanation=Jakarta Concurrency \u898f\u683c\u4e0d\u5bb9\u8a31 jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\u5728 Jakarta Enterprise Bean \u4e0a\u4f7f\u7528\u3002
 CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=\u5f9e\u65b9\u6cd5\u6216\u985e\u5225\u4e2d\u79fb\u9664 jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\u3002 \u8acb\u4f7f\u7528 jakarta.ejb.Asynchronous \u8a3b\u91cb\u4f86\u8b58\u5225\u975e\u540c\u6b65 Enterprise Bean \u65b9\u6cd5\u3002
 
-CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W\uff1a {0} \u5546\u696d\u4ecb\u9762\u5305\u542b jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\u3002 \u975e\u540c\u6b65\u8a3b\u91cb\u5728\u4efb\u4f55\u4ecb\u9762\u4e0a\u90fd\u7121\u6548\uff0cJakarta Enterprise Bean \u5132\u5b58\u5668\u6703\u5ffd\u7565\u5b83\u5011\u3002
+CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: {0} \u5546\u696d\u4ecb\u9762\u5305\u542b jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\u3002 \u975e\u540c\u6b65\u8a3b\u91cb\u5728\u4efb\u4f55\u4ecb\u9762\u4e0a\u90fd\u7121\u6548\uff0cJakarta Enterprise Bean \u5132\u5b58\u5668\u6703\u5ffd\u7565\u5b83\u5011\u3002
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\u4e0d\u5f97\u8207 Jakarta Enterprise Bean \u4e00\u8d77\u4f7f\u7528\u3002 Jakarta Enterprise Bean \u5132\u5b58\u5668\u6703\u5ffd\u7565\u4ecb\u9762\u4e0a\u7684\u9019\u4e9b\u8a3b\u91cb\u3002 \u9664\u975e\u5728 ejb-jar.xml \u90e8\u7f72\u63cf\u8ff0\u5b50\u4e2d\u5ba3\u544a\u65b9\u6cd5\u975e\u540c\u6b65\uff0c\u6216\u5728 Bean \u985e\u5225\u6216 Bean \u985e\u5225\u65b9\u6cd5\u4e0a\u6307\u5b9a jakarta.ejb.Asynchronous \u8a3b\u91cb\uff0c\u5426\u5247 Bean \u65b9\u6cd5\u6703\u540c\u6b65\u57f7\u884c\u3002
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=\u8acb\u5f9e\u6307\u5b9a\u7684\u5546\u696d\u4ecb\u9762\u79fb\u9664\u4efb\u4f55 jakarta.enterprise.concurrent.Asynchronous \u8a3b\u91cb\uff0c\u4e26\u9a57\u8b49 Bean \u985e\u5225\u4e2d\u5df2\u6b63\u78ba\u6307\u5b9a jakarta.ejb.Asynchronous \u8a3b\u91cb\u3002
+
+CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: {2} \u61c9\u7528\u7a0b\u5f0f\u7684 {1} \u6a21\u7d44\u4e2d\uff0c {0} Bean \u5305\u542b\u4e00\u500b\u6216\u591a\u500b\u6a19\u8a3b\u6709 jakarta.enterprise.concurrent.Schedule \u8a3b\u89e3\u7684\u65b9\u6cd5\u3002 \u6b64\u8a3b\u89e3\u7121\u6cd5\u7528\u65bc\u4f01\u696d Bean\u3002
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=Jakarta Concurrency \u898f\u7bc4\u4e0d\u5141\u8a31\u5728 Jakarta Enterprise Beans \u4e0a\u4f7f\u7528 jakarta.enterprise.concurrent.Schedule \u8a3b\u89e3\u3002
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.useraction=\u5f9e\u8a72\u65b9\u6cd5\u4e2d\u79fb\u9664 ` jakarta.enterprise.concurrent.Asynchronous ` \u8a3b\u89e3\u3002 \u4f7f\u7528 ` jakarta.ejb.Schedule ` \u8a3b\u89e3\u4f86\u6a19\u793a\u4f01\u696d Bean \u4e2d\u7684\u8d85\u6642\u65b9\u6cd5\u3002
 
 #-------------------------------------------------------------------------------
 #

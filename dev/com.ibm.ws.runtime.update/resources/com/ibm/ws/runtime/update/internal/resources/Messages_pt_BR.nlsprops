@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ quiesce.end.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 quiece.warning=CWWKE1102W: A opera\u00e7\u00e3o de coloca\u00e7\u00e3o em modo quiesce n\u00e3o foi conclu\u00edda. O servidor ser\u00e1 parado agora.
 quiece.warning.explanation=O processo n\u00e3o p\u00f4de colocar em modo quiesce todos os servi\u00e7os dentro do per\u00edodo de tempo limite de quiesce
-quiece.warning.useraction=\u00c9 poss\u00edvel ignorar seguramente as mensagens de erro que s\u00e3o o resultado de servi\u00e7os necess\u00e1rios indispon\u00edveis. Se o problema persistir, aumente a dura\u00e7\u00e3o de 'quiesceTimeout' incluindo o atributo 'quiesceTimeout' no elemento 'executor' no arquivo 'server.xml'.
+quiece.warning.useraction=Ignore as mensagens de erro decorrentes da indisponibilidade de servi\u00e7os obrigat\u00f3rios. Se o problema persistir, aumente a dura\u00e7\u00e3o do ` quiesceTimeout ` adicionando o atributo ` quiesceTimeout ` ao elemento `server` no arquivo ` server.xml `.
 
 client.quiesce.begin=CWWKE1103I: Aguardando at\u00e9 {0} segundos para o cliente colocar em modo quiesce.
 client.quiesce.begin.explanation=O cliente aguarda que os servi\u00e7os sejam colocados em modo quiesce antes de continuar com o encerramento
@@ -59,6 +59,6 @@ quiesce.listeners.not.complete=CWWKE1106W: {0} opera\u00e7\u00f5es de encerramen
 quiesce.listeners.not.complete.explanation=Uma ou mais opera\u00e7\u00f5es que foram iniciadas durante a opera\u00e7\u00e3o de encerramento n\u00e3o foram conclu\u00eddas. 
 quiesce.listeners.not.complete.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
-quiesce.waiting.on.threads=CWWKE1107W: {0} encadeamentos n\u00e3o foram conclu\u00eddos durante o per\u00edodo do modo quiesce. 
+quiesce.waiting.on.threads=CWWKE1107W: Um total de {0} threads n\u00e3o foram conclu\u00eddos durante o per\u00edodo de inatividade.
 quiesce.waiting.on.threads.explanation=Um ou mais encadeamentos que estavam ativos antes do encerramento do servidor ainda estavam ativos no final do per\u00edodo do modo quiesce.
-quiesce.waiting.on.threads.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. 
+quiesce.waiting.on.threads.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

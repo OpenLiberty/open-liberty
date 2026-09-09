@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: server \uc694\uc18c\uc758 ` quiesceTimeout ` \uc18d\uc131\uc740 ` chainQuiesceTimeout ` \uc18d\uc131\uc744 \uc7ac\uc815\uc758\ud569\ub2c8\ub2e4. \uc11c\ubc84\ub294 {0} \ucd08\ub85c \uc124\uc815\ub41c \u2018 chainQuiesceTimeout \u2019 \uac12\uc744 \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=server.xml \ud30c\uc77c\uc758 server \uc694\uc18c\uc5d0 quiesceTimeout \uc18d\uc131\uc774 \uc124\uc815\ub41c \uacbd\uc6b0, \uc774 \uc18d\uc131\uc740 channelfw \uc694\uc18c\uc758 chainQuiesceTimeout \uc18d\uc131\ubcf4\ub2e4 \uc6b0\uc120\ud569\ub2c8\ub2e4. \uc11c\ubc84\ub294 ` chainQuiesceTimeout ` \uac12\uc744 \ubb34\uc2dc\ud569\ub2c8\ub2e4.
+QUIESCE_TIMEOUT_OVERRIDE.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. chainQuiesceTimeout \uac12\uc744 \uc0ac\uc6a9\ud558\ub824\uba74 server \uc694\uc18c\uc5d0\uc11c quiesceTimeout \uc18d\uc131\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.

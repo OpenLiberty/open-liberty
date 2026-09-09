@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -492,6 +492,11 @@ schemagen.info.schema.file.created.useraction=Nen\u00ed pot\u0159eba \u017e\u00e
 error.config.root.deleted=CWWKG0110E: Byla zji\u0161t\u011bna aktualizace konfigurace, ale soubor server.xml neexistuje. Nebyly provedeny \u017e\u00e1dn\u00e9 aktualizace konfigurace.
 error.config.root.deleted.explanation=Soubor server.xml byl odstran\u011bn. Aby nedo\u0161lo k naru\u0161en\u00ed b\u011bhu aplikac\u00ed, neprov\u00e1d\u011bj\u00ed se \u017e\u00e1dn\u00e9 zm\u011bny konfigurace.
 error.config.root.deleted.useraction=P\u0159idejte soubor server.xml zp\u011bt na server.
+
+warn.invalid.quiesce.timeout=CWWKG0111W: Hodnota \u201e {0} \u201c, kter\u00e1 je zad\u00e1na pro atribut \u201e quiesceTimeout \u201c u prvku \u201eserver\u201c v souboru \u201e server.xml \u201c, nen\u00ed platn\u00e1. Hodnota mus\u00ed p\u0159edstavovat dobu trv\u00e1n\u00ed 30 sekund nebo v\u00edce. Server pou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed hodnotu 30 sekund.
+warn.invalid.quiesce.timeout.explanation=Atribut \u201e quiesceTimeout \u201c ur\u010duje dobu, po kterou se m\u00e1 \u010dekat, a\u017e se server b\u011bhem vyp\u00edn\u00e1n\u00ed dostane do klidov\u00e9ho stavu. Zadejte kladn\u00e9 cel\u00e9 \u010d\u00edslo n\u00e1sledovan\u00e9 jednotkou \u010dasu, nap\u0159\u00edklad \u201e 30s \u201c, \u201e 1m \u201c nebo \u201e 1m30s \u201c. Pokud jednotku \u010dasu neuvedete, server p\u0159edpokl\u00e1d\u00e1 sekundy. Hodnota mus\u00ed b\u00fdt alespo\u0148 30 sekund. Hodnoty ni\u017e\u0161\u00ed ne\u017e 30 sekund neposkytuj\u00ed serveru dostatek \u010dasu na dokon\u010den\u00ed prob\u00edhaj\u00edc\u00edch po\u017eadavk\u016f a proveden\u00ed \u0159\u00e1dn\u00e9ho vypnut\u00ed.
+warn.invalid.quiesce.timeout.useraction=V souboru ` server.xml ` zm\u011b\u0148te hodnotu atributu ` quiesceTimeout ` prvku `server` na hodnotu `duration` rovnou 30 sekund\u00e1m nebo v\u00edce (nap\u0159\u00edklad ` 30s `, ` 45s ` nebo ` 1m30s `), p\u0159\u00edpadn\u011b tento atribut odstra\u0148te, aby se pou\u017eila v\u00fdchoz\u00ed hodnota 30 sekund.
+
 
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Especifique um intervalo de r
 cookie.attribute.name.invalid=CWWKT0047E: O atributo de cookie [{0}] cont\u00e9m um caractere inv\u00e1lido.
 cookie.attribute.name.invalid.explanation=O nome do atributo de cookie n\u00e3o pode conter nenhum caractere especial [() <> @,;: \\/ []? = {}]..
 cookie.attribute.name.invalid.useraction=Corrija o nome do atributo de cookie para n\u00e3o usar nenhum caractere especial
+
+endpoint.netty.not.initialized=CWWKT0048E: O endpoint {0}HTTP n\u00e3o pode ser iniciado porque a estrutura Netty n\u00e3o foi inicializada.
+endpoint.netty.not.initialized.explanation=O servi\u00e7o da estrutura do Netty \u00e9 necess\u00e1rio, mas ele n\u00e3o estava dispon\u00edvel quando o endpoint tentou ser iniciado.
+endpoint.netty.not.initialized.useraction=Verifique a configura\u00e7\u00e3o do servidor e certifique-se de que o pacote da estrutura Netty necess\u00e1rio esteja ativo.
+
+endpoint.channel.not.initialized=CWWKT0049E: O endpoint {0}HTTP n\u00e3o pode ser iniciado porque a estrutura de canais n\u00e3o foi inicializada.
+endpoint.channel.not.initialized.explanation=O servi\u00e7o de estrutura de canais \u00e9 necess\u00e1rio, mas ele n\u00e3o estava dispon\u00edvel quando o endpoint tentou iniciar.
+endpoint.channel.not.initialized.useraction=Verifique a configura\u00e7\u00e3o do servidor e certifique-se de que o pacote de estrutura de canais necess\u00e1rio esteja ativo.
+
+endpoint.executor.not.available=CWWKT0050E: O endpoint {0}HTTP n\u00e3o pode ser iniciado porque o servi\u00e7o executor n\u00e3o est\u00e1 dispon\u00edvel.
+endpoint.executor.not.available.explanation=O servi\u00e7o executor \u00e9 necess\u00e1rio, mas n\u00e3o estava dispon\u00edvel quando o endpoint tentou iniciar.
+endpoint.executor.not.available.useraction=Verifique a configura\u00e7\u00e3o do servidor e certifique-se de que o servi\u00e7o executor necess\u00e1rio esteja ativo.
+
+endpoint.event.not.available=CWWKT0051E: O endpoint {0}HTTP n\u00e3o pode ser iniciado porque o servi\u00e7o de eventos n\u00e3o est\u00e1 dispon\u00edvel.
+endpoint.event.not.available.explanation=O servi\u00e7o de eventos \u00e9 obrigat\u00f3rio, mas ele n\u00e3o estava dispon\u00edvel quando o endpoint tentou iniciar.
+endpoint.event.not.available.useraction=Verifique a configura\u00e7\u00e3o do servidor e certifique-se de que o servi\u00e7o de eventos necess\u00e1rio esteja ativo.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: Uma opera\u00e7\u00e3o de grava\u00e7\u00e3o que causa bloqueio n\u00e3o pode ser executada na thread do ciclo de eventos \u201c Netty \u201d.
+netty.blocking.write.on.event.loop.explanation=A execu\u00e7\u00e3o de uma opera\u00e7\u00e3o de grava\u00e7\u00e3o bloqueante na thread do loop de eventos do ` Netty ` causa um impasse.
+netty.blocking.write.on.event.loop.useraction=Certifique-se de que as opera\u00e7\u00f5es de grava\u00e7\u00e3o que causam bloqueio sejam encaminhadas para uma thread separada e n\u00e3o sejam chamadas de dentro de um manipulador de loop de eventos do ` Netty `.
+
+netty.socket.timeout=CWWKT0053E: Uma opera\u00e7\u00e3o de socket atingiu o tempo limite antes de ser conclu\u00edda. Presencial: {0} / {1} : {2} Remoto: {3} / {4} : {5}
+netty.socket.timeout.explanation=Uma opera\u00e7\u00e3o de leitura no soquete n\u00e3o foi conclu\u00edda dentro do per\u00edodo de tempo limite configurado.
+netty.socket.timeout.useraction=Verifique a conex\u00e3o de rede ou aumente o valor do tempo limite de leitura caso a opera\u00e7\u00e3o demore mais para ser conclu\u00edda.
+
+netty.h2.window.ratio.error=CWWKT0054W: A taxa de atualiza\u00e7\u00e3o de janela \u201c HTTP/2 \u201d n\u00e3o pode ser atualizada: {0} O servidor utiliza a taxa de atualiza\u00e7\u00e3o de janela padr\u00e3o.
+netty.h2.window.ratio.error.explanation=A taxa de atualiza\u00e7\u00e3o da janela de controle de fluxo do ` HTTP/2 ` n\u00e3o pode ser definida para o valor configurado. O servidor utiliza a taxa de atualiza\u00e7\u00e3o de janela padr\u00e3o.
+netty.h2.window.ratio.error.useraction=N\u00e3o \u00e9 necess\u00e1rio tomar nenhuma medida se a taxa padr\u00e3o de atualiza\u00e7\u00e3o da janela for aceit\u00e1vel. Se a mensagem persistir, verifique as configura\u00e7\u00f5es de controle de fluxo do HTTP/2 na configura\u00e7\u00e3o do servidor.
+
+netty.tls.provider.not.loaded=CWWKT0055E: O endpoint HTTPS n\u00e3o pode ser inicializado porque o provedor TLS n\u00e3o est\u00e1 carregado.
+netty.tls.provider.not.loaded.explanation=O servi\u00e7o do provedor \u201c TLS \u201d n\u00e3o estava dispon\u00edvel quando o endpoint HTTPS tentou ser iniciado.
+netty.tls.provider.not.loaded.useraction=Verifique a configura\u00e7\u00e3o do servidor e certifique-se de que o pacote do provedor TLS necess\u00e1rio esteja ativo.
+
+netty.ssl.handler.create.failed=CWWKT0056E: O servidor n\u00e3o conseguiu criar o manipulador SSL para o endpoint {0} : {1}.
+netty.ssl.handler.create.failed.explanation=N\u00e3o \u00e9 poss\u00edvel criar o manipulador SSL para o host e a porta do endpoint especificados.
+netty.ssl.handler.create.failed.useraction=Verifique a configura\u00e7\u00e3o do SSL para o endpoint e certifique-se de que o provedor TLS esteja configurado corretamente.
+
+h2.encode.header.failed=CWWKT0057E: O servidor n\u00e3o conseguiu codificar um cabe\u00e7alho HTTP/2 : {0}
+h2.encode.header.failed.explanation=O servidor n\u00e3o conseguiu codificar um pseudo-cabe\u00e7alho HTTP/2 para a resposta. O servidor fecha o fluxo.
+h2.encode.header.failed.useraction=Verifique os logs do servidor em busca de erros relacionados a \u201c HTTP/2 \u201d. Se o problema persistir, colete informa\u00e7\u00f5es de diagn\u00f3stico e entre em contato com o Suporte d IBM.

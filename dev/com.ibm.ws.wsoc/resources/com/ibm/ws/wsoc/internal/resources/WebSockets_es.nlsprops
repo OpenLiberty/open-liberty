@@ -238,3 +238,7 @@ upgradeHttpToWebSocket.failed.useraction=Revise el error para identificar porqu\
 maxmessagesize.exceeded=CWWKH0056E: El maxMessageSize del m\u00e9todo {0} supera el Integer.MAX_VALUE de la clase {1}.
 maxmessagesize.exceeded.explanation=El par\u00e1metro de anotaci\u00f3n maxMessageSize OnMessage establece el tama\u00f1o m\u00e1ximo del mensaje en bytes para un m\u00e9todo. maxMessageSize s\u00f3lo se puede establecer en un valor m\u00e1ximo de Integer.MAX_VALUE.
 maxmessagesize.exceeded.useraction=Reduce el valor del par\u00e1metro maxMessageSize a no m\u00e1s de Integer.MAX_VALUE.
+
+client.no.response=CWWKH0057E: El cliente no recibi\u00f3 ninguna respuesta HTTP del punto final {0} una vez completada la solicitud de actualizaci\u00f3n WebSocket.
+client.no.response.explanation=Se ha completado el protocolo de actualizaci\u00f3n de \u00ab WebSocket \u00bb, pero no se ha recibido ninguna respuesta de \u00ab HTTP \u00bb para su procesamiento.
+client.no.response.useraction=Comprueba que se pueda acceder al servidor de destino y que responda correctamente a las solicitudes de actualizaci\u00f3n de WebSocket.

@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=Non \u00e8 richiesta alcuna azione.
 ZOSAIO_DEACTIVATED=CWWKO0230I: \u00c8 stato disattivato il supporto I/O asincrono nativo per z/OS.
 ZOSAIO_DEACTIVATED.explanation=Viene disattivato il servizio I/O socket TCP/IP asincrono per Liberty (AsyncIO) su z/OS, che fornisce capability di base di un package I/O asincrono al livello del sistema operativo.
 ZOSAIO_DEACTIVATED.useraction=Non \u00e8 richiesta alcuna azione.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: Il gestore del canale ` {0} ` Netty \u00e8 stato rimosso da una pipeline di connessione attiva.
+netty.handler.removed.from.pipeline.explanation=Un gestore di canale " Netty ", necessario per il corretto funzionamento della connessione, \u00e8 stato rimosso in modo imprevisto mentre il canale era attivo.
+netty.handler.removed.from.pipeline.useraction=Se questo messaggio continua a comparire, raccogliere le informazioni di tracciamento diagnostico e contattare il supporto di IBM.
+
+read.timeout=CWWKO1713W: Si \u00e8 verificato un timeout durante un''operazione di lettura su HTTP : {0}
+read.timeout.explanation=Una connessione in entrata HTTP non ha ricevuto dati entro il periodo di timeout di lettura configurato.
+read.timeout.useraction=Verificare la connessione di rete oppure aumentare il valore del timeout di lettura nella configurazione dell'endpoint HTTP.
+
+write.timeout=CWWKO1714W: Si \u00e8 verificato un timeout durante un''operazione di scrittura su HTTP : {0}
+write.timeout.explanation=Un'operazione di scrittura in uscita su HTTP non \u00e8 stata completata entro il periodo di timeout di scrittura configurato.
+write.timeout.useraction=Verificare la connessione di rete oppure aumentare il valore del timeout di scrittura nella configurazione dell'endpoint HTTP.
+
+h2.idle.timeout=CWWKO1715W: Una connessione HTTP/2 \u00e8 stata chiusa a causa di un timeout di inattivit\u00e0: {0}
+h2.idle.timeout.explanation=La connessione HTTP/2 \u00e8 rimasta inattiva per un periodo superiore al timeout di inattivit\u00e0 configurato, pertanto il server ha chiuso la connessione.
+h2.idle.timeout.useraction=Verificare la connessione di rete oppure aumentare il valore del timeout di inattivit\u00e0 della connessione HTTP/2 nella configurazione dell'endpoint HTTP.

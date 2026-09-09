@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -492,6 +492,11 @@ schemagen.info.schema.file.created.useraction=Nincs teend\u0151.
 error.config.root.deleted=CWWKG0110E: A rendszer konfigur\u00e1ci\u00f3s friss\u00edt\u00e9st \u00e9szlelt, de a server.xml nem l\u00e9tezik. Nem t\u00f6rt\u00e9nt konfigur\u00e1ci\u00f3friss\u00edt\u00e9s.
 error.config.root.deleted.explanation=A server.xml f\u00e1jl t\u00f6r\u00f6lve lett. Annak \u00e9rdek\u00e9ben, hogy ne okozzon fennakad\u00e1st az alkalmaz\u00e1sok futtat\u00e1s\u00e1ban, nem t\u00f6rt\u00e9nik konfigur\u00e1ci\u00f3m\u00f3dos\u00edt\u00e1s.
 error.config.root.deleted.useraction=Adja vissza a server.xml f\u00e1jlt a szerverhez.
+
+warn.invalid.quiesce.timeout=CWWKG0111W: A server.xml f\u00e1jlban a szerver elem quiesceTimeout attrib\u00fatum\u00e1hoz megadott \u201e {0} \u201d \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9knek legal\u00e1bb 30 m\u00e1sodperces id\u0151tartam\u00fanak kell lennie. A szerver az alap\u00e9rtelmezett 30 m\u00e1sodperces \u00e9rt\u00e9ket haszn\u00e1lja.
+warn.invalid.quiesce.timeout.explanation=Az \u201e quiesceTimeout \u201d attrib\u00fatum meghat\u00e1rozza, mennyi ideig kell v\u00e1rni arra, hogy a szerver le\u00e1ll\u00e1s k\u00f6zben nyugv\u00f3 \u00e1llapotba ker\u00fclj\u00f6n. Adjon meg egy pozit\u00edv eg\u00e9sz sz\u00e1mot, amelyet egy id\u0151egys\u00e9g k\u00f6vet, p\u00e9ld\u00e1ul 30s, 1m vagy 1m30s. Ha nem adsz meg id\u0151egys\u00e9get, a szerver a m\u00e1sodperceket veszi alapul. Az \u00e9rt\u00e9knek legal\u00e1bb 30 m\u00e1sodpercnek kell lennie. A 30 m\u00e1sodpercn\u00e9l r\u00f6videbb \u00e9rt\u00e9kek nem biztos\u00edtanak elegend\u0151 id\u0151t a szerver sz\u00e1m\u00e1ra a folyamatban l\u00e9v\u0151 k\u00e9r\u00e9sek feldolgoz\u00e1s\u00e1hoz \u00e9s a rendes le\u00e1ll\u00edt\u00e1si m\u0171veletek v\u00e9grehajt\u00e1s\u00e1hoz.
+warn.invalid.quiesce.timeout.useraction=A ` server.xml ` f\u00e1jlban m\u00f3dos\u00edtsa a `server` elem ` quiesceTimeout ` attrib\u00fatum\u00e1t \u00fagy, hogy a `duration` \u00e9rt\u00e9ke legal\u00e1bb 30 m\u00e1sodperc legyen (p\u00e9ld\u00e1ul ` 30s `, ` 45s ` vagy ` 1m30s `), vagy t\u00e1vol\u00edtsa el az attrib\u00fatumot, hogy az alap\u00e9rtelmezett 30 m\u00e1sodperces \u00e9rt\u00e9k legyen \u00e9rv\u00e9nyben.
+
 
 # Non-TR message
 error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.

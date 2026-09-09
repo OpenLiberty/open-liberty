@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: Das Attribut \u201e quiesceTimeout \u201c des Server-Elements \u00fcberschreibt das Attribut \u201e chainQuiesceTimeout \u201c. Der Server ignoriert den konfigurierten Wert f\u00fcr \u201e chainQuiesceTimeout \u201c von {0} Sekunden.
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=Wenn das Attribut \u201e quiesceTimeout \u201c im Server-Element der Datei \u201e server.xml \u201c konfiguriert ist, hat dieses Attribut Vorrang vor dem Attribut \u201e chainQuiesceTimeout \u201c im channelfw-Element. Der Server ignoriert den Wert \u201e chainQuiesceTimeout \u201c.
+QUIESCE_TIMEOUT_OVERRIDE.useraction=Es ist keine Aktion erforderlich. Wenn Sie den Wert \u201e chainQuiesceTimeout \u201c verwenden m\u00f6chten, entfernen Sie das Attribut \u201e quiesceTimeout \u201c aus dem Server-Element.

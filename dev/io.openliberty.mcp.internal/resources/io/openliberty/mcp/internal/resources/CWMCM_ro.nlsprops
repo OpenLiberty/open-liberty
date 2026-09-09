@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=Verifica\u021bi mesajul de
 CWMCM0043W.unsupported.annotation=CWMCM0043W: Metoda \u201e {0} \u201d utilizeaz\u0103 adnotarea \u201e {1} \u201d, care nu este acceptat\u0103. Aceast\u0103 metod\u0103 este ignorat\u0103.
 CWMCM0043W.unsupported.annotation.explanation=API-ul Java al Protocolului de Context al Modelului (MCP) include adnot\u0103ri pentru func\u021bionalit\u0103\u021bi care nu sunt acceptate de aceast\u0103 implementare. Metodele care con\u021bin adnot\u0103ri neacceptate sunt ignorate.
 CWMCM0043W.unsupported.annotation.useraction=Elimina\u021bi adnotarea neacceptat\u0103 din metod\u0103 sau utiliza\u021bi numai adnot\u0103rile acceptate de Protocolul de context al modelului (MCP).
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: Serverul nu a procesat o solicitare MCP local\u0103, deoarece valoarea antetului \u201eOrigin\u201d nu era valid\u0103.
+CWMCM0044I.localhost.header.rejected.explanation=Solicit\u0103rile nesecurizate de tip \u201e HTTP \u201d provenite de la \u201elocalhost\u201d trebuie fie s\u0103 nu con\u021bin\u0103 antetul \u201eOrigin\u201d, fie s\u0103 con\u021bin\u0103 un antet \u201eOrigin\u201d care s\u0103 includ\u0103 doar \u201elocalhost\u201d sau o adres\u0103 de loopback. Un antet \u201eOrigin\u201d care con\u021bine orice alt\u0103 valoare indic\u0103 un posibil atac de tip \u201eDNS rebinding\u201d.
+CWMCM0044I.localhost.header.rejected.useraction=Asigura\u021bi-v\u0103 c\u0103 antetul \u201eOrigin\u201d fie nu exist\u0103, fie con\u021bine doar \u201elocalhost\u201d.

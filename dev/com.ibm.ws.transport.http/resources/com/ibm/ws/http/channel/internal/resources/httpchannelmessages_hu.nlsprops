@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Adjon meg 1 perces vagy nagyo
 cookie.attribute.name.invalid=CWWKT0047E: A [{0}] cookie attrib\u00fatum \u00e9rv\u00e9nytelen karaktert tartalmaz.
 cookie.attribute.name.invalid.explanation=A cookie attrib\u00fatum neve nem tartalmaz k\u00fcl\u00f6nleges [() > @,;: \\/ []? = {}] karaktert.
 cookie.attribute.name.invalid.useraction=Jav\u00edtsa ki a cookie attrib\u00fatum nev\u00e9t, hogy ne haszn\u00e1ljon speci\u00e1lis karaktert.
+
+endpoint.netty.not.initialized=CWWKT0048E: A {0} HTTP v\u00e9gpont nem indulhat el, mert a Netty keretrendszer nincs inicializ\u00e1lva.
+endpoint.netty.not.initialized.explanation=Az \u201e Netty \u201d keretrendszer-szolg\u00e1ltat\u00e1sra van sz\u00fcks\u00e9g, de a szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151, amikor a v\u00e9gpont elind\u00edt\u00e1sra ker\u00fclt.
+endpoint.netty.not.initialized.useraction=Ellen\u0151rizze a szerver konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a sz\u00fcks\u00e9ges \u201e Netty \u201d keretcsomag akt\u00edv \u00e1llapotban van.
+
+endpoint.channel.not.initialized=CWWKT0049E: A \u201e {0} \u201d ( HTTP ) v\u00e9gpont nem indulhat el, mert a csatorna-keretrendszer nincs inicializ\u00e1lva.
+endpoint.channel.not.initialized.explanation=A csatorna-keretrendszer szolg\u00e1ltat\u00e1sra sz\u00fcks\u00e9g van, de a szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151, amikor a v\u00e9gpont elindulni pr\u00f3b\u00e1lt.
+endpoint.channel.not.initialized.useraction=Ellen\u0151rizze a szerver konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a sz\u00fcks\u00e9ges csatorna-keretrendszer-csomag akt\u00edv \u00e1llapotban van.
+
+endpoint.executor.not.available=CWWKT0050E: A {0} HTTP v\u00e9gpont nem indulhat el, mert a v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+endpoint.executor.not.available.explanation=Az executor szolg\u00e1ltat\u00e1sra sz\u00fcks\u00e9g van, de a szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151, amikor a v\u00e9gpont megpr\u00f3b\u00e1lta elind\u00edtani.
+endpoint.executor.not.available.useraction=Ellen\u0151rizze a szerver konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a sz\u00fcks\u00e9ges v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1s akt\u00edv \u00e1llapotban van.
+
+endpoint.event.not.available=CWWKT0051E: A {0} HTTP v\u00e9gpont nem indulhat el, mert az esem\u00e9nyszolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+endpoint.event.not.available.explanation=Az esem\u00e9nyszolg\u00e1ltat\u00e1s sz\u00fcks\u00e9ges, de a szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151, amikor a v\u00e9gpont megpr\u00f3b\u00e1lta elind\u00edtani.
+endpoint.event.not.available.useraction=Ellen\u0151rizze a szerver konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a sz\u00fcks\u00e9ges esem\u00e9nyszolg\u00e1ltat\u00e1s akt\u00edv.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: A blokkol\u00f3 \u00edr\u00e1si m\u0171velet nem h\u00edvhat\u00f3 meg az \u201e Netty \u201d esem\u00e9nyhurok sz\u00e1l\u00e1n.
+netty.blocking.write.on.event.loop.explanation=Ha blokkol\u00f3 \u00edr\u00e1si m\u0171veletet hajtunk v\u00e9gre a \u201e Netty \u201d esem\u00e9nyhurkos sz\u00e1lon, az holtpontot okoz.
+netty.blocking.write.on.event.loop.useraction=Gondoskodjon arr\u00f3l, hogy a blokkol\u00f3 \u00edr\u00e1si m\u0171veleteket egy k\u00fcl\u00f6n sz\u00e1lra ir\u00e1ny\u00edts\u00e1k, \u00e9s azokat ne h\u00edvj\u00e1k meg a ` Netty ` esem\u00e9nyhurok-kezel\u0151n bel\u00fcl.
+
+netty.socket.timeout=CWWKT0053E: A socket-m\u0171velet id\u0151t\u00fall\u00e9p\u00e9se a m\u0171velet befejez\u00e9se el\u0151tt k\u00f6vetkezett be. Helyi: {0} / {1} : {2} T\u00e1voli: {3} / {4} : {5}
+netty.socket.timeout.explanation=A socket olvas\u00e1si m\u0171velete nem fejez\u0151d\u00f6tt be a be\u00e1ll\u00edtott v\u00e1rakoz\u00e1si id\u0151n bel\u00fcl.
+netty.socket.timeout.useraction=Ellen\u0151rizze a h\u00e1l\u00f3zati kapcsolatot, vagy n\u00f6velje az olvas\u00e1si v\u00e1rakoz\u00e1si id\u0151 \u00e9rt\u00e9k\u00e9t, ha a m\u0171velet v\u00e9grehajt\u00e1s\u00e1hoz t\u00f6bb id\u0151re van sz\u00fcks\u00e9g.
+
+netty.h2.window.ratio.error=CWWKT0054W: A \u201e HTTP/2 \u201d ablakfriss\u00edt\u00e9si ar\u00e1ny nem friss\u00edthet\u0151: {0} A szerver az alap\u00e9rtelmezett ablakfriss\u00edt\u00e9si ar\u00e1nyt haszn\u00e1lja.
+netty.h2.window.ratio.error.explanation=A \u201e HTTP/2 \u201d adatfolyam-szab\u00e1lyoz\u00e1si ablak friss\u00edt\u00e9si ar\u00e1nya nem \u00e1ll\u00edthat\u00f3 be a konfigur\u00e1lt \u00e9rt\u00e9kre. A szerver az alap\u00e9rtelmezett ablakfriss\u00edt\u00e9si ar\u00e1nyt haszn\u00e1lja.
+netty.h2.window.ratio.error.useraction=Ha az ablakfriss\u00edt\u00e9si ar\u00e1ny alap\u00e9rtelmezett \u00e9rt\u00e9ke megfelel\u0151, akkor nincs sz\u00fcks\u00e9g semmilyen int\u00e9zked\u00e9sre. Ha az \u00fczenet tov\u00e1bbra is megjelenik, ellen\u0151rizze a szerverkonfigur\u00e1ci\u00f3ban a \u201e HTTP/2 \u201d \u00e1raml\u00e1sszab\u00e1lyoz\u00e1si be\u00e1ll\u00edt\u00e1sait.
+
+netty.tls.provider.not.loaded=CWWKT0055E: Az \u201e HTTPS \u201d v\u00e9gpont nem inicializ\u00e1lhat\u00f3, mivel az \u201e TLS \u201d szolg\u00e1ltat\u00f3 nincs bet\u00f6ltve.
+netty.tls.provider.not.loaded.explanation=A \u201e TLS \u201d szolg\u00e1ltat\u00f3 nem volt el\u00e9rhet\u0151, amikor a \u201e HTTPS \u201d v\u00e9gpont elind\u00edt\u00e1s\u00e1ra ker\u00fclt sor.
+netty.tls.provider.not.loaded.useraction=Ellen\u0151rizze a szerver konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a sz\u00fcks\u00e9ges \u201e TLS \u201d szolg\u00e1ltat\u00f3i csomag akt\u00edv \u00e1llapotban van.
+
+netty.ssl.handler.create.failed=CWWKT0056E: A szerver nem tudta l\u00e9trehozni az SSL kezel\u0151t a {0} : {1} v\u00e9gponthoz.
+netty.ssl.handler.create.failed.explanation=A \u201e SSL \u201d kezel\u0151 nem hozhat\u00f3 l\u00e9tre a megadott v\u00e9gpont gazdag\u00e9p\u00e9n \u00e9s portj\u00e1n.
+netty.ssl.handler.create.failed.useraction=Ellen\u0151rizze az adott v\u00e9gpont \u201e SSL \u201d be\u00e1ll\u00edt\u00e1sait, \u00e9s gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az \u201e TLS \u201d szolg\u00e1ltat\u00f3 megfelel\u0151en van-e konfigur\u00e1lva.
+
+h2.encode.header.failed=CWWKT0057E: A szerver nem tudta k\u00f3dolni az \u201e HTTP/2 \u201d fejl\u00e9ceket: {0}
+h2.encode.header.failed.explanation=A szerver nem tudta k\u00f3dolni az HTTP/2 \u00e1lfejl\u00e9ceket a v\u00e1laszban. A szerver bez\u00e1rja az adatfolyamot.
+h2.encode.header.failed.useraction=Ellen\u0151rizze a szerver napl\u00f3f\u00e1jljaiban, hogy szerepelnek-e a \u201e HTTP/2 \u201d hib\u00e1kkal kapcsolatos bejegyz\u00e9sek. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, gy\u0171jts\u00f6n \u00f6ssze diagnosztikai adatokat, majd vegye fel a kapcsolatot a IBM \u00fcgyf\u00e9lszolg\u00e1lattal.

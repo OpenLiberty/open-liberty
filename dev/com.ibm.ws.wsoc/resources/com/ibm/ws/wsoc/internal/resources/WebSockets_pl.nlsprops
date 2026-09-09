@@ -238,3 +238,7 @@ upgradeHttpToWebSocket.failed.useraction=Przejrzyj ten b\u0142\u0105d, aby okre\
 maxmessagesize.exceeded=CWWKH0056E: maxMessageSize dla metody {0} przekracza warto\u015b\u0107 Integer.MAX_VALUE dla klasy {1} .
 maxmessagesize.exceeded.explanation=Parametr adnotacji maxMessageSize OnMessage ustawia maksymalny rozmiar wiadomo\u015bci w bajtach dla metody. maxMessageSize mo\u017cna ustawi\u0107 tylko na maksymaln\u0105 warto\u015b\u0107 Integer.MAX_VALUE .
 maxmessagesize.exceeded.useraction=Zmniejsz warto\u015b\u0107 parametru maxMessageSize do warto\u015bci nie wi\u0119kszej ni\u017c Integer.MAX_VALUE .
+
+client.no.response=CWWKH0057E: Klient nie otrzyma\u0142 odpowiedzi \u201e HTTP \u201d z punktu ko\u0144cowego {0} po zako\u0144czeniu \u017c\u0105dania aktualizacji WebSocket.
+client.no.response.explanation=Proces uzgadniania wersji w ramach aktualizacji \u201e WebSocket \u201d zako\u0144czy\u0142 si\u0119 pomy\u015blnie, ale nie uzyskano odpowiedzi \u201e HTTP \u201d, kt\u00f3r\u0105 mo\u017cna by przetworzy\u0107.
+client.no.response.useraction=Sprawd\u017a, czy serwer docelowy jest dost\u0119pny i czy poprawnie odpowiada na \u017c\u0105dania aktualizacji wysy\u0142ane z adres WebSocket.

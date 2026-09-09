@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: \u4f3a\u670d\u5668\u5143\u7d20\u4e0a\u7684 ` quiesceTimeout ` \u5c6c\u6027\u6703\u8986\u5beb ` chainQuiesceTimeout ` \u5c6c\u6027\u3002 \u4f3a\u670d\u5668\u6703\u5ffd\u7565\u6240\u8a2d\u5b9a\u7684\u300c chainQuiesceTimeout \u300d\u503c\uff08 {0} \u79d2\uff09\u3002
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=\u7576\u5728 server.xml \u6a94\u6848\u7684 server \u5143\u7d20\u4e0a\u8a2d\u5b9a quiesceTimeout \u5c6c\u6027\u6642\uff0c\u8a72\u5c6c\u6027\u5c07\u512a\u5148\u65bc channelfw \u5143\u7d20\u4e0a\u7684 chainQuiesceTimeout \u5c6c\u6027\u3002 \u4f3a\u670d\u5668\u6703\u5ffd\u7565 ` chainQuiesceTimeout ` \u7684\u503c\u3002
+QUIESCE_TIMEOUT_OVERRIDE.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002 \u82e5\u8981\u4f7f\u7528 ` chainQuiesceTimeout ` \u503c\uff0c\u8acb\u5f9e `server` \u5143\u7d20\u4e2d\u79fb\u9664 ` quiesceTimeout ` \u5c6c\u6027\u3002
