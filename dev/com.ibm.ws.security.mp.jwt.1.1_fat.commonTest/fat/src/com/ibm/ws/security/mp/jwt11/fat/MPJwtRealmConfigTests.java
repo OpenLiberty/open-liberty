@@ -17,6 +17,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
+
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -136,8 +138,9 @@ public class MPJwtRealmConfigTests extends MPJwt11MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_realmIdentifier_realmClaim.xml");
 
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
+        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, MPJwt11FatConstants.TESTUSER));
         extraClaims.add(new NameValuePair("realm", "TokenRealm"));
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT_withAudience", extraClaims);
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
@@ -157,8 +160,9 @@ public class MPJwtRealmConfigTests extends MPJwt11MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_realmIdentifier_tenantClaim.xml");
 
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
+        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, MPJwt11FatConstants.TESTUSER));
         extraClaims.add(new NameValuePair("tenant", "TenantA"));
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT_withAudience", extraClaims);
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
@@ -178,7 +182,7 @@ public class MPJwtRealmConfigTests extends MPJwt11MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_realmIdentifier_tenantClaim.xml");
 
         // No "tenant" extra claim — token will not have it
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT");
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT_withAudience");
         JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
         String expectedRealm = getIssuerFromToken(jwtTokenTools);
 
@@ -201,8 +205,9 @@ public class MPJwtRealmConfigTests extends MPJwt11MPConfigTests {
 
         // Add a "realm" claim in the token — realmName should win over it
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
+        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, MPJwt11FatConstants.TESTUSER));
         extraClaims.add(new NameValuePair("realm", "TokenRealm"));
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT_withAudience", extraClaims);
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
@@ -223,8 +228,9 @@ public class MPJwtRealmConfigTests extends MPJwt11MPConfigTests {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_realmName_overrides_realmIdentifier.xml");
 
         List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
+        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, MPJwt11FatConstants.TESTUSER));
         extraClaims.add(new NameValuePair("tenant", "TenantA"));
-        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT", extraClaims);
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT_withAudience", extraClaims);
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));

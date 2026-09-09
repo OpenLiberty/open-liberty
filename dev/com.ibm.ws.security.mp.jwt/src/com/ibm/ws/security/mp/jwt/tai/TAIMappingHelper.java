@@ -53,7 +53,7 @@ public class TAIMappingHelper {
         config = null;
         //addJwtPrincipalToSubject = true;
         if (jwtToken != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, "upn", "groups", false);
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, "upn", "groups", false, "realm");
             setUsername();
             setRealm();
         }
@@ -79,14 +79,22 @@ public class TAIMappingHelper {
      *
      */
     private void setRealm() {
+        if (getmaptoURconfig()) {
+            return;
+        }
         if (config != null) {
             String configuredRealmName = config.getRealmName();
             if (configuredRealmName != null && !configuredRealmName.isEmpty()) {
                 this.realm = configuredRealmName;
-                return;
+            } else {
+                this.realm = claimToPrincipalMapping.getMappedRealm();
             }
+        } else {
+            this.realm = claimToPrincipalMapping.getMappedRealm();
         }
-        this.realm = claimToPrincipalMapping.getMappedRealm();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "realm name = ", this.realm);
+        }
     }
 
     public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken, boolean addJwtPrincipal) throws MpJwtProcessingException {
@@ -211,6 +219,9 @@ public class TAIMappingHelper {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_USERID, username);
         } else {
             if (realm == null && issuer != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "There is no realm, using issuer as realm");
+                }
                 realm = getRealm(issuer);
             }
             String uniqueID = getUniqueId(realm);
