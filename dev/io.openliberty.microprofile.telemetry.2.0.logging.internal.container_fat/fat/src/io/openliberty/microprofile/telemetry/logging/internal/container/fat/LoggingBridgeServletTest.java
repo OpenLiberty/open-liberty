@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ public class LoggingBridgeServletTest {
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
     //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
@@ -83,7 +82,7 @@ public class LoggingBridgeServletTest {
     public void testBridgedLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         TestUtils.runApp(server, "logs");
 

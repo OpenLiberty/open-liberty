@@ -58,7 +58,6 @@ public class LoggingServletTest {
 
     public static final int WAIT_TIMEOUT = 5; // 5 seconds
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
     //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
@@ -98,7 +97,7 @@ public class LoggingServletTest {
     public void testMessageLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_MSG_SOURCES, messageLogFile, server);
@@ -135,7 +134,7 @@ public class LoggingServletTest {
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_TRACE_SOURCE, messageLogFile, server);
@@ -175,7 +174,7 @@ public class LoggingServletTest {
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_FFDC_SOURCE, messageLogFile, server);
@@ -224,7 +223,7 @@ public class LoggingServletTest {
     public void testAuditEventLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_AUDIT_SOURCE, messageLogFile, server);
@@ -277,7 +276,7 @@ public class LoggingServletTest {
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ACCESS_SOURCE, messageLogFile, server);

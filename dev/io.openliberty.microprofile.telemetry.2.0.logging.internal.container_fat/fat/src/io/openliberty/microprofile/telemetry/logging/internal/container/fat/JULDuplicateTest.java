@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,6 @@ public class JULDuplicateTest {
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
     //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
@@ -97,7 +96,7 @@ public class JULDuplicateTest {
         // Wait for the second message (SESN0176I) to arrive, to ensure all the occurrences of the first message (SRVE0250I) has arrived.
         server.waitForStringInLog("SESN0176I");
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ALL_SOURCES, messageLogFile, server);
