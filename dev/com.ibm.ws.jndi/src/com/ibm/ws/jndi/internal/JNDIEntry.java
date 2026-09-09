@@ -25,11 +25,13 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
+
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jndi.internal.literals.LiteralParser;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.jndi.internal.literals.LiteralParser;
+
 
 /**
  * <p>
