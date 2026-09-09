@@ -2058,6 +2058,119 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a NativeQuery method that returns a page of results. Retrieve the
+     * second page, then the next (third) page, then the next (fourth) page.
+     * Finally, retrieve the previous page from the second page, which is page 1.
+     */
+    @Test
+    public void testNativeQueryRetrievesPages() {
+        // Fractions n/d where 2^n < d^2, ordered by denominator ASC, numerator ASC.
+        // With page size 8: page 1 = items 1-8, page 2 = items 9-16, etc.
+
+        PageRequest page2Req = PageRequest.ofSize(8).pageNumber(2);
+
+        Page<Fraction> page2 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2Req);
+
+        assertEquals(List.of("3/5",
+                             "4/5",
+                             "1/6",
+                             "2/6",
+                             "3/6",
+                             "4/6",
+                             "5/6",
+                             "1/7"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(2L,
+                     page2.pageRequest().pageNumber());
+        assertEquals(8,
+                     page2.numberOfElements());
+        assertEquals(true,
+                     page2.hasPrevious());
+        assertEquals(true,
+                     page2.hasNext());
+
+        Page<Fraction> page3 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2.nextPageRequest());
+
+        assertEquals(List.of("2/7",
+                             "3/7",
+                             "4/7",
+                             "5/7",
+                             "1/8",
+                             "2/8",
+                             "3/8",
+                             "4/8"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(3L,
+                     page3.pageRequest().pageNumber());
+        assertEquals(8,
+                     page3.numberOfElements());
+        assertEquals(true,
+                     page3.hasPrevious());
+        assertEquals(true,
+                     page3.hasNext());
+
+        Page<Fraction> page4 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page3.nextPageRequest());
+
+        assertEquals(List.of("5/8",
+                             "1/9",
+                             "2/9",
+                             "3/9",
+                             "4/9",
+                             "5/9",
+                             "6/9",
+                             "1/10"),
+                     page4.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4L,
+                     page4.pageRequest().pageNumber());
+        assertEquals(8,
+                     page4.numberOfElements());
+        assertEquals(true,
+                     page4.hasPrevious());
+        assertEquals(true,
+                     page4.hasNext());
+
+        Page<Fraction> page1 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2.previousPageRequest());
+
+        assertEquals(List.of("1/2",
+                             "1/3",
+                             "2/3",
+                             "1/4",
+                             "2/4",
+                             "3/4",
+                             "1/5",
+                             "2/5"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(1L,
+                     page1.pageRequest().page());
+        assertEquals(8,
+                     page1.numberOfElements());
+        assertEquals(false,
+                     page1.hasPrevious());
+        assertEquals(true,
+                     page1.hasNext());
+    }
+
+    /**
      * Use a NativeQuery method that returns subsets of entity attributes
      * as an array of Java records
      */
