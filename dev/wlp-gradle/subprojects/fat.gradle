@@ -273,7 +273,7 @@ if (!bnd.get('-sub', '').empty) {
 publishedArtifacts.add(project.name)
 
 task autoFVT {
-  shouldRunAfter cleanFat
+  mustRunAfter cleanFat
   dependsOn jar
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
