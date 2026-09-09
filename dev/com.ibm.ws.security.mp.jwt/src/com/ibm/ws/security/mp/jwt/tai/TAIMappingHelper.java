@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ public class TAIMappingHelper {
         }
         config = clientConfig;
         if (jwtToken != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry(), config.getRealmIdentifier());
             setUsername();
             setRealm();
         }
@@ -79,8 +79,14 @@ public class TAIMappingHelper {
      *
      */
     private void setRealm() {
+        if (config != null) {
+            String configuredRealmName = config.getRealmName();
+            if (configuredRealmName != null && !configuredRealmName.isEmpty()) {
+                this.realm = configuredRealmName;
+                return;
+            }
+        }
         this.realm = claimToPrincipalMapping.getMappedRealm();
-
     }
 
     public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken, boolean addJwtPrincipal) throws MpJwtProcessingException {
