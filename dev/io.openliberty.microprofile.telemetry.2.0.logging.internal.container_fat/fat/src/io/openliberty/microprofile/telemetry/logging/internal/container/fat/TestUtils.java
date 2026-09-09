@@ -28,7 +28,6 @@ import javax.net.ssl.X509TrustManager;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -39,8 +38,7 @@ public class TestUtils {
     private static Class<?> c = TestUtils.class;
     protected static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
 
-    protected static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
-                    .apply(DockerImageName.parse("ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.154.0")).asCanonicalNameString();
+    protected static final DockerImageName IMAGE_NAME = DockerImageName.parse("ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.154.0");
 
     public static void runApp(LibertyServer server, String type) throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/MpTelemetryLogApp";

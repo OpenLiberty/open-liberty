@@ -24,7 +24,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -58,12 +58,10 @@ public class LoggingServletTest {
 
     public static final int WAIT_TIMEOUT = 5; // 5 seconds
 
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
-    public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from(TestUtils.IMAGE_NAME)
-                                    .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
-                    .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml"), 0644))
+    public static GenericContainer<?> container = new GenericContainer<>(TestUtils.IMAGE_NAME)
+                    .withCopyFileToContainer(MountableFile.forHostPath(new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml").toPath()),
+                                             "/etc/otelcol-contrib/config.yaml")
                     .withLogConsumer(new SimpleLogConsumer(LoggingServletTest.class, "opentelemetry-collector-contrib"))
                     .withExposedPorts(4317, 4318);
 
