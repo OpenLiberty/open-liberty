@@ -93,9 +93,7 @@ instrument.classesExcludes: com/ibm/ws/security/csiv2/internal/resources/*.class
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
-	io.openliberty.yoko.spec.corba;version=latest,\
 	io.openliberty.yoko.core;version=latest,\
-	io.openliberty.yoko.osgi;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.credentials;version=latest, \
@@ -111,11 +109,6 @@ testsrc: test/src
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \
-    io.openliberty.yoko.osgi;version=latest,\
-    io.openliberty.yoko.util;version=latest,\
-    io.openliberty.yoko.rmi.spec;version=latest,\
-    io.openliberty.yoko.rmi.impl;version=latest,\
-    io.openliberty.yoko.core;version=latest,\
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock;version=2.6.0, \
     org.jmock:jmock-junit4;version=2.6.0, \

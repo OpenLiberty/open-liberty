@@ -45,12 +45,7 @@ test.project: true
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
-    io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.core;version=latest,\
-	io.openliberty.yoko.osgi;version=latest,\
-	io.openliberty.yoko.rmi.impl;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
-	io.openliberty.yoko.util;version=latest,\
+    io.openliberty.yoko.core;version=latest,\
 	com.ibm.ws.classloading.configuration;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region
 

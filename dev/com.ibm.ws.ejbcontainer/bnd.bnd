@@ -152,7 +152,7 @@ instrument.classesIncludes: com/ibm/ws/ejbcontainer/osgi/**/*.class
 instrument.classesExcludes: com/ibm/ws/ejbcontainer/osgi/internal/resources/*.class
 
 -buildpath: \
-	io.openliberty.yoko.spec.corba;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	com.ibm.ws.ejbcontainer.core;version=latest,\
 	com.ibm.ws.ejbcontainer.remote.portable.core;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
