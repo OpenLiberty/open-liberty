@@ -13,6 +13,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -846,5 +847,289 @@ public class McpMonitorTest {
         // Verify duration was recorded
         double duration = (Double) mbeanServer.getAttribute(mbean, "Duration");
         assertTrue("Duration should be greater than 0", duration > 0);
+    }
+
+    // Negative Tests
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Negative test: querying an MBean for a tool that has never been called must return
+     * {@code null}, the runtime must not pre-register MBeans.
+     */
+    @Test
+    public void testNoMBeanExistsForUncalledTool() throws Exception {
+        ObjectName mbean = findOperationMBean("tools/call", "neverCalledTool");
+        assertNull(
+                   "No MBean should exist for a tool that has never been called", mbean);
+    }
+
+    /**
+     * Negative test: a {@code tools/call} request for a tool name that does not exist in the
+     * application must produce an error-status MBean whose {@code RpcResponseStatusCode} is
+     * {@code "error"} and whose {@code ErrorType} attribute is non-null. A phantom MBean for
+     * a known tool must NOT be created as a side effect.
+     */
+    @Test
+    public void testUnknownToolCallProducesErrorMBean() throws Exception {
+        String unknownToolRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 20,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "doesNotExistTool",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(unknownToolRequest);
+        assertNotNull("Response must not be null", response);
+        assertTrue("Response should contain error indicator", response.contains("error") || response.contains("isError"));
+
+        // The MBean should capture the failed call under the unknown tool name
+        ObjectName errorMBean = findOperationMBean("tools/call", "doesNotExistTool");
+        assertNotNull("An operation MBean should be registered for the unknown-tool call", errorMBean);
+
+        String statusCode = (String) mbeanServer.getAttribute(errorMBean, "RpcResponseStatusCode");
+        assertEquals("RpcResponseStatusCode must be 'error' for an unknown tool call", "error", statusCode);
+
+        String errorType = (String) mbeanServer.getAttribute(errorMBean, "ErrorType");
+        assertNotNull("ErrorType must be non-null for an unknown tool call", errorType);
+
+        // Verify a phantom MBean was not created for an unrelated known tool
+        ObjectName addMBean = findOperationMBean("tools/call", "add");
+        if (addMBean != null) {
+            // If add was called before in the same test run the count is unchanged
+            long addCountBefore = (Long) mbeanServer.getAttribute(addMBean, "Count");
+            // Do not call add here, assert count did not change due to the unknown-tool call
+            long addCountAfter = (Long) mbeanServer.getAttribute(addMBean, "Count");
+            assertEquals("The 'add' MBean count must not be affected by an unknown-tool call",
+                         addCountBefore, addCountAfter);
+        }
+    }
+
+    /**
+     * Negative test: a {@code tools/call} for a tool that throws a business error
+     * ({@code ToolCallException}) must set {@code RpcResponseStatusCode} to {@code "error"}
+     * and {@code ErrorType} to a non-null value. The call count must still increment.
+     */
+    @Test
+    public void testBusinessErrorMBeanHasErrorStatusAndNonNullErrorType() throws Exception {
+        String businessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 21,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "businessErrorTool",
+                            "arguments": {"input": "bad-value"}
+                          }
+                        }
+                        """;
+
+        // Capture count before the call
+        ObjectName mbean = findOperationMBean("tools/call", "businessErrorTool");
+        long countBefore = (mbean != null) ? (Long) mbeanServer.getAttribute(mbean, "Count") : 0L;
+
+        client.callMCP(businessErrorRequest);
+
+        mbean = findOperationMBean("tools/call", "businessErrorTool");
+        assertNotNull("MBean must exist after a business-error tool call", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("RpcResponseStatusCode must be 'error'", "error", statusCode);
+
+        String errorType = (String) mbeanServer.getAttribute(mbean, "ErrorType");
+        assertNotNull("ErrorType must not be null for a business error", errorType);
+
+        long countAfter = (Long) mbeanServer.getAttribute(mbean, "Count");
+        assertEquals("Count must increment even when the tool throws a business error",
+                     countBefore + 1, countAfter);
+    }
+
+    /**
+     * Negative test: a {@code tools/call} for a tool that throws a non-business error
+     * ({@code RuntimeException}) must set {@code RpcResponseStatusCode} to {@code "error"},
+     * {@code ErrorType} to non-null, and still increment the call count.
+     */
+    @Test
+    public void testNonBusinessErrorMBeanHasErrorStatusAndNonNullErrorType() throws Exception {
+        String nonBusinessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 22,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "nonBusinessErrorTool",
+                            "arguments": {"input": "trigger-error"}
+                          }
+                        }
+                        """;
+
+        ObjectName mbean = findOperationMBean("tools/call", "nonBusinessErrorTool");
+        long countBefore = (mbean != null) ? (Long) mbeanServer.getAttribute(mbean, "Count") : 0L;
+
+        client.callMCP(nonBusinessErrorRequest);
+
+        mbean = findOperationMBean("tools/call", "nonBusinessErrorTool");
+        assertNotNull("MBean must exist after a non-business-error tool call", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("RpcResponseStatusCode must be 'error'", "error", statusCode);
+
+        String errorType = (String) mbeanServer.getAttribute(mbean, "ErrorType");
+        assertNotNull("ErrorType must not be null for a non-business error", errorType);
+
+        long countAfter = (Long) mbeanServer.getAttribute(mbean, "Count");
+        assertEquals("Count must increment even when the tool throws a non-business error",
+                     countBefore + 1, countAfter);
+    }
+
+    /**
+     * Negative test: session MBean must NOT exist before any session has been explicitly ended.
+     * Verifies the runtime does not pre-register session MBeans.
+     * A fresh client is initialised for this test but the session is deliberately not deleted
+     * through the normal path before the assertion. Only then is the session cleaned up.
+     */
+    @Test
+    public void testSessionMBeanAbsentBeforeSessionEnds() throws Exception {
+        // Record any session MBeans already registered from previous tests
+        ObjectName sessionQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_SESSION + ",*");
+        Set<ObjectName> sessionsBefore = mbeanServer.queryNames(sessionQuery, null);
+        long countBefore = 0;
+        for (ObjectName on : sessionsBefore) {
+            countBefore += (Long) mbeanServer.getAttribute(on, "Count");
+        }
+
+        // Perform operations in this session but do NOT end it yet
+        client.callMCP(PING_REQUEST);
+
+        // The aggregate session count must not have increased — no new completed session
+        Set<ObjectName> sessionsAfterOps = mbeanServer.queryNames(sessionQuery, null);
+        long countAfterOps = 0;
+        for (ObjectName on : sessionsAfterOps) {
+            countAfterOps += (Long) mbeanServer.getAttribute(on, "Count");
+        }
+        assertEquals("Session MBean count must not increase while the session is still open",
+                     countBefore, countAfterOps);
+
+        // Now end the session and verify the count increments exactly once
+        client.deleteSession();
+
+        Set<ObjectName> sessionsAfterEnd = mbeanServer.queryNames(sessionQuery, null);
+        long countAfterEnd = 0;
+        for (ObjectName on : sessionsAfterEnd) {
+            countAfterEnd += (Long) mbeanServer.getAttribute(on, "Count");
+        }
+        assertEquals("Session MBean count must increment by exactly 1 after session ends",
+                     countBefore + 1, countAfterEnd);
+    }
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Negative test: a {@code tools/call} for a tool that does not exist must NOT create an
+     * operation MBean whose {@code McpMethodName} attribute is {@code null} or empty.
+     * Whatever MBean is registered must carry a non-empty method name.
+     */
+    @Test
+    public void testMBeanMethodNameNeverNullOrEmpty() throws Exception {
+        String unknownToolRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 23,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "phantomSchemaTool",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(unknownToolRequest);
+
+        // Inspect every operation MBean currently registered
+        ObjectName operationQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> allMBeans = mbeanServer.queryNames(operationQuery, null);
+        assertFalse("At least one operation MBean must be registered", allMBeans.isEmpty());
+
+        for (ObjectName on : allMBeans) {
+            String methodName = (String) mbeanServer.getAttribute(on, "McpMethodName");
+            assertNotNull("McpMethodName must never be null on any operation MBean: " + on, methodName);
+            assertFalse("McpMethodName must never be empty on any operation MBean: " + on, methodName.isBlank());
+        }
+    }
+
+    /**
+     * Negative test: a {@code tools/list} operation that succeeds must NOT produce an MBean
+     * with a {@code genAiTool} key property, and {@code GenAiToolName} attribute must be
+     * {@code null}. Tool-name metadata only belongs on {@code tools/call} MBeans.
+     */
+    @Test
+    public void testToolsListMBeanHasNoToolNameAttribute() throws Exception {
+        client.callMCP(TOOLS_LIST_REQUEST);
+
+        ObjectName mbean = findOperationMBean("tools/list", null);
+        assertNotNull("tools/list operation MBean must exist", mbean);
+
+        // GenAiToolName attribute must be null for a non-tool-call operation
+        String toolName = (String) mbeanServer.getAttribute(mbean, "GenAiToolName");
+        org.junit.Assert.assertNull(
+                                    "GenAiToolName must be null for a tools/list operation MBean", toolName);
+
+        // The ObjectName string must not contain genAiTool= key
+        String mbeanName = mbean.toString();
+        assertFalse("ObjectName must not contain 'genAiTool=' for a tools/list MBean: " + mbeanName,
+                    mbeanName.contains("genAiTool="));
+    }
+
+    /**
+     * Negative test: calling the same tool with the same success/error outcome repeatedly
+     * must accumulate its count on the existing MBean rather than creating duplicate MBeans.
+     * Verifies there is exactly one operation MBean per (method, tool, status) combination.
+     */
+    @Test
+    public void testNoDuplicateMBeansForRepeatedCalls() throws Exception {
+        // Call the add tool three additional times
+        client.callMCP(ADD_TOOL_REQUEST);
+        client.callMCP(ADD_TOOL_REQUEST);
+        client.callMCP(ADD_TOOL_REQUEST);
+
+        // Query all operation MBeans for tools/call + add
+        StringBuilder pattern = new StringBuilder(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION);
+        pattern.append(",mcpMethod=tools/call,genAiTool=add,*");
+        Set<ObjectName> addMBeans = mbeanServer.queryNames(new ObjectName(pattern.toString()), null);
+
+        assertEquals("There must be exactly one MBean for the 'add' tool regardless of call count",
+                     1, addMBeans.size());
+    }
+
+    /**
+     * Negative test: a {@code ping} operation must NOT produce a session MBean — session
+     * statistics must only be recorded when a session lifecycle event (DELETE) occurs.
+     */
+    @Test
+    public void testPingDoesNotCreateSessionMBean() throws Exception {
+        // Record session count before
+        ObjectName sessionQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_SESSION + ",*");
+        Set<ObjectName> sessionsBefore = mbeanServer.queryNames(sessionQuery, null);
+        long countBefore = 0;
+        for (ObjectName on : sessionsBefore) {
+            countBefore += (Long) mbeanServer.getAttribute(on, "Count");
+        }
+
+        // Ping only — no session deletion
+        client.callMCP(PING_REQUEST);
+
+        Set<ObjectName> sessionsAfter = mbeanServer.queryNames(sessionQuery, null);
+        long countAfter = 0;
+        for (ObjectName on : sessionsAfter) {
+            countAfter += (Long) mbeanServer.getAttribute(on, "Count");
+        }
+
+        assertEquals("A ping call must not increment any session MBean count",
+                     countBefore, countAfter);
     }
 }

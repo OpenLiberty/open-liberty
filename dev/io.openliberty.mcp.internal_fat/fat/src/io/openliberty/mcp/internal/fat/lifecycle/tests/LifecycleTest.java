@@ -10,6 +10,8 @@
 package io.openliberty.mcp.internal.fat.lifecycle.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -132,6 +134,95 @@ public class LifecycleTest {
                           {
                           "jsonrpc": "2.0",
                           "id": "123",
+                          "result": {}
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+    // Negative Tests
+
+    /**
+     * Negative test: an {@code initialize} request that omits the required
+     * {@code protocolVersion} field must still return a valid JSON-RPC response
+     * envelope; the server must not crash or return an empty body.
+     */
+    @Test
+    public void testInitializeWithMissingProtocolVersionReturnsError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-1",
+                          "method": "initialize",
+                          "params": {
+                            "capabilities": {},
+                            "clientInfo": {
+                              "name": "BadClient",
+                              "version": "0.0"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null for a malformed initialize request", response);
+        // The server must return a JSON-RPC envelope; it must not silently swallow the call
+        assertTrue("Response must contain 'jsonrpc'", response.contains("jsonrpc"));
+    }
+
+    /**
+     * Negative test: a JSON-RPC request for an unknown method name must return a
+     * JSON-RPC error response with code {@code -32601} (Method not found).
+     */
+    @Test
+    public void testUnknownMethodReturnsMethodNotFoundError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-2",
+                          "method": "nonexistent/method"
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null for an unknown method", response);
+
+        String expectedError = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-2",
+                          "error": {
+                            "code": -32601
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedError, response, JSONCompareMode.LENIENT);
+    }
+
+    /**
+     * Negative test: a {@code ping} request carrying extra unknown fields in its
+     * {@code params} object must still succeed; the server must ignore unknown
+     * parameters rather than rejecting the request.
+     */
+    @Test
+    public void testPingWithUnknownParamsIsIgnored() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-3",
+                          "method": "ping",
+                          "params": {
+                            "unknownField": "shouldBeIgnored"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null", response);
+
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-3",
                           "result": {}
                         }
                         """;

@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -201,5 +202,110 @@ public class AsyncToolLifecycleTest {
                             containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleCompleteCompletionStage Tool logged"),
                             containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleCompleteCompletionStage Tool throwing error"),
                             containsString("@PreDestroy AsyncLifecycleTools")));
+    }
+
+    // Negative Tests
+
+    /**
+     * Negative test: when {@code asyncLifecycleAsyncStage} is called with the
+     * {@code "throw error"} input it throws a {@link RuntimeException} synchronously
+     * (before returning a stage). The {@code @PreDestroy} callback must still fire;
+     * the CDI {@code Dependent} lifecycle must be honoured on the exception path.
+     */
+    @Test
+    public void testAsyncDependentBeanLifecycleWhenAsyncStageThrowsException() throws Exception {
+        server.setMarkToEndOfLog();
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-1",
+                          "method": "tools/call",
+                          "params": {
+                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
+                            "name": "asyncLifecycleAsyncStage",
+                            "arguments": {
+                              "input": "throw error"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        // The server must return an error response, not crash
+        String expectedResponseString = """
+                        {"id":"neg-1","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+
+        // @PreDestroy must fire even though the tool threw synchronously
+        assertNotNull("@PreDestroy must fire after asyncLifecycleAsyncStage throws an exception",
+                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+
+        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        assertFalse("Lifecycle log must not be empty", lifecycleMessages.isEmpty());
+
+        assertThat("Unexpected lifecycle sequence on error path:\n" + String.join("\n", lifecycleMessages),
+                   lifecycleMessages,
+                   contains(containsString("@PostConstruct AsyncLifecycleTools"),
+                            containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleAsyncStage Tool logged"),
+                            containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleAsyncStage Tool throwing error"),
+                            containsString("@PreDestroy AsyncLifecycleTools")));
+    }
+
+    /**
+     * Negative test: two successive calls to the same async tool must each create and
+     * destroy a distinct {@code Dependent}-scoped bean instance;instance reuse across
+     * invocations is not permitted by the CDI {@code @Dependent} scope.
+     */
+    @Test
+    public void testAsyncDependentBeanIsNotReusedAcrossSuccessiveCalls() throws Exception {
+        server.setMarkToEndOfLog();
+
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-2",
+                          "method": "tools/call",
+                          "params": {
+                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
+                            "name": "asyncLifecycleCompleteCompletionStage",
+                            "arguments": {
+                              "input": "First"
+                            }
+                          }
+                        }
+                        """;
+        client.callMCP(request);
+
+        String request2 = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-3",
+                          "method": "tools/call",
+                          "params": {
+                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
+                            "name": "asyncLifecycleCompleteCompletionStage",
+                            "arguments": {
+                              "input": "Second"
+                            }
+                          }
+                        }
+                        """;
+        client.callMCP(request2);
+
+        // Wait for at least one @PreDestroy to confirm both calls ran
+        assertNotNull("@PreDestroy must fire after async tool calls",
+                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+
+        List<String> postConstructEvents = server.findStringsInLogsUsingMark(
+                                                                             ".*\\[LIFECYCLE] @PostConstruct AsyncLifecycleTools.*", server.getDefaultLogFile());
+        List<String> preDestroyEvents = server.findStringsInLogsUsingMark(
+                                                                          ".*\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools.*", server.getDefaultLogFile());
+
+        assertTrue("Two separate @PostConstruct events must fire (Dependent scope, no instance reuse)",
+                   postConstructEvents.size() >= 2);
+        assertTrue("Two separate @PreDestroy events must fire",
+                   preDestroyEvents.size() >= 2);
     }
 }

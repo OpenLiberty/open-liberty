@@ -680,4 +680,201 @@ public class ToolManagerTest extends FATServletClient {
                        .map(JsonObject.class::cast)
                        .collect(Collectors.toMap(o -> o.getString("name"), identity()));
     }
+
+    // Negative Tests
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Negative test: calling {@code tools/list} must not include the tool that was
+     * removed during startup ({@code methodToolToBeRemoved}). This verifies that the
+     * ToolManager's {@code removeTool} API takes effect before the first client request.
+     */
+    @Test
+    public void testRemovedToolAbsentFromToolsList() throws Exception {
+        assertThat("methodToolToBeRemoved must not appear in tools/list after removal",
+                   getTools(), not(hasKey("methodToolToBeRemoved")));
+    }
+
+    /**
+     * Negative test: a {@code tools/call} request for a tool that does not exist must
+     * return a JSON-RPC error response. The server must not throw a 500 or return an
+     * empty body.
+     */
+    @Test
+    public void testCallNonExistentToolReturnsError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 50,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "toolThatWasNeverRegistered",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null for an unregistered tool", response);
+        assertTrue("Response must indicate an error for an unregistered tool",
+                   response.contains("error") || response.contains("isError"));
+    }
+
+    /**
+     * Negative test: a {@code tools/call} for the tool removed at startup
+     * ({@code methodToolToBeRemoved}) must return an error response — the tool must not
+     * be callable even though it was defined as a method on the bean.
+     */
+    @Test
+    public void testCallRemovedToolReturnsError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 51,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "methodToolToBeRemoved",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null when calling a removed tool", response);
+        assertTrue("Calling a removed tool must produce an error response",
+                   response.contains("error") || response.contains("isError"));
+    }
+
+    /**
+     * Negative test: a dynamic tool called <em>after</em> it has been removed must return
+     * an error response; removal must take effect immediately for subsequent calls.
+     */
+    @Test
+    public void testCallDynamicToolAfterRemovalReturnsError() throws Exception {
+        ToolEditorClient toolEditorClient = new ToolEditorClient(server, APP_NAME);
+        try {
+            // Add, verify it appears, then remove it
+            toolEditorClient.addDynamicRepeaterTool(3);
+            assertThat("dynamicRepeater must appear after add", getTools(), hasKey(DYNAMIC_REPEATER));
+            toolEditorClient.removeDynamicRepeaterTool();
+            assertThat("dynamicRepeater must be absent after remove", getTools(), not(hasKey(DYNAMIC_REPEATER)));
+
+            // Now call the removed tool — must not succeed
+            String request = """
+                            {
+                              "jsonrpc": "2.0",
+                              "id": 52,
+                              "method": "tools/call",
+                              "params": {
+                                "name": "dynamicRepeater",
+                                "arguments": {
+                                  "inputString": "hello"
+                                }
+                              }
+                            }
+                            """;
+
+            String response = client.callMCP(request);
+            assertNotNull("Response must not be null after tool removal", response);
+            assertTrue("Calling a removed dynamic tool must produce an error response",
+                       response.contains("error") || response.contains("isError"));
+        } finally {
+            toolEditorClient.removeDynamicRepeaterTool();
+        }
+    }
+
+    /**
+     * Negative test: supplying an unknown {@code action} value to {@code sync-test-tool}
+     * must return an internal-error response (the handler throws {@link RuntimeException}
+     * for unknown actions). The response body must be a well-formed JSON-RPC error
+     * envelope with {@code isError: true}, not a raw 500.
+     */
+    @Test
+    public void testCallSyncToolWithUnknownActionReturnsInternalError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 53,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "sync-test-tool",
+                            "arguments": {
+                              "action": "unknownAction"
+                            }
+                          }
+                        }
+                        """;
+
+        server.setMarkToEndOfLog();
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 53,
+                          "result": {
+                            "content": [{
+                              "type": "text",
+                              "text": "An internal server error occurred while running the tool."
+                            }],
+                            "isError": true
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, STRICT);
+        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0010E:.*sync-test-tool.*Unknown action"));
+    }
+
+    /**
+     * Negative test: supplying an unknown {@code action} value to {@code async-test-tool}
+     * must return an internal-error response; the same invariant applies to the async path.
+     */
+    @Test
+    public void testCallAsyncToolWithUnknownActionReturnsInternalError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 54,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "async-test-tool",
+                            "arguments": {
+                              "action": "unknownAction"
+                            }
+                          }
+                        }
+                        """;
+
+        server.setMarkToEndOfLog();
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 54,
+                          "result": {
+                            "content": [{
+                              "type": "text",
+                              "text": "An internal server error occurred while running the tool."
+                            }],
+                            "isError": true
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, STRICT);
+        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0010E:.*async-test-tool.*Unknown action"));
+    }
+
+    // --- ToolManager API (in-process servlet tests) ---
+
+    /**
+     * Negative test: {@link io.openliberty.mcp.tools.ToolManager#getTool} must return
+     * {@code null} when the requested tool name has never been registered.
+     * Verified in-process via {@link ToolManagerTestServlet}.
+     */
+    @Test
+    public void testGetToolReturnsNullForNonExistentTool() throws Exception {
+        runTest(server, APP_NAME + "/toolManagerTestServlet", "testGetToolReturnsNullForNonExistentTool");
+    }
 }
