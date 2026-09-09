@@ -49,6 +49,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     static final String CFG_KEY_ALLOW_LOGOUT_PAGE_REDIRECT_TO_ANY_HOST = "allowLogoutPageRedirectToAnyHost";
     static final String CFG_KEY_LOGOUT_PAGE_REDIRECT_DOMAIN_NAMES = "logoutPageRedirectDomainNames";
     static final String CFG_KEY_WAS_REQ_URL_REDIRECT_DOMAIN_NAMES = "wasReqURLRedirectDomainNames";
+    static final String CFG_KEY_WAS_ERROR_REDIRECT_DOMAIN_NAMES = "loginErrorURLRedirectDomainNames";
     protected static final String CFG_KEY_SSO_COOKIE_NAME = "ssoCookieName";
     static final String CFG_KEY_AUTO_GEN_SSO_COOKIE_NAME = "autoGenSsoCookieName";
     public static final String CFG_KEY_FAIL_OVER_TO_BASICAUTH = "allowFailOverToBasicAuth";
@@ -83,6 +84,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final Integer postParamCookieSize;
     private final Boolean allowLogoutPageRedirectToAnyHost;
     private final String wasReqURLRedirectDomainNames;
+    private final String loginErrorURLRedirectDomainNames;
     private final String logoutPageRedirectDomainNames;
     protected String ssoCookieName;
     protected final Boolean autoGenSsoCookieName;
@@ -144,6 +146,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES, "trackLoggedOutSSOCookies");
             put(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME, "useOnlyCustomCookieName");
             put(CFG_KEY_WAS_REQ_URL_REDIRECT_DOMAIN_NAMES, "wasReqURLRedirectDomainNames");
+            put(CFG_KEY_WAS_ERROR_REDIRECT_DOMAIN_NAMES, "loginErrorURLRedirectDomainNames");
             put(CFG_KEY_OVERRIDE_HAM, "overrideHttpAuthMethod");
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
@@ -173,6 +176,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         postParamCookieSize = (Integer) newProperties.get(CFG_KEY_POSTPARAM_COOKIE_SIZE);
         allowLogoutPageRedirectToAnyHost = (Boolean) newProperties.get(CFG_KEY_ALLOW_LOGOUT_PAGE_REDIRECT_TO_ANY_HOST);
         wasReqURLRedirectDomainNames = (String) newProperties.get(CFG_KEY_WAS_REQ_URL_REDIRECT_DOMAIN_NAMES);
+        loginErrorURLRedirectDomainNames = (String) newProperties.get(CFG_KEY_WAS_ERROR_REDIRECT_DOMAIN_NAMES);
         logoutPageRedirectDomainNames = (String) newProperties.get(CFG_KEY_LOGOUT_PAGE_REDIRECT_DOMAIN_NAMES);
         autoGenSsoCookieName = (Boolean) newProperties.get(CFG_KEY_AUTO_GEN_SSO_COOKIE_NAME);
         ssoCookieName = resolveSsoCookieName(newProperties);
@@ -337,6 +341,12 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public List<String> getWASReqURLRedirectDomainNames() {
         return domainNamesToList(wasReqURLRedirectDomainNames);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<String> getLoginErrorURLRedirectDomainNames() {
+        return domainNamesToList(loginErrorURLRedirectDomainNames);
     }
 
     /** {@inheritDoc} */
