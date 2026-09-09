@@ -42,3 +42,14 @@ generate.replacement: false
 	org.jsoup:jsoup;version=1.7.2,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	wlp-generateChecksums;version=latest
+
+testsrc=test/src
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.kernel.feature.core;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest, \
+	com.ibm.ws.logging.core;version=latest, \
+	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.websphere.org.osgi.core;version=latest, \
+	com.ibm.ws.org.apache.aries.util;version=latest

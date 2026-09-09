@@ -26,3 +26,14 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.org.apache.aries.util;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.metatype;version=latest,\
 	com.ibm.wsspi.org.osgi.service.metatype;version=latest
+
+testsrc=test/src
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.kernel.feature.core;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest, \
+	com.ibm.ws.logging.core;version=latest, \
+	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.websphere.org.osgi.core;version=latest, \
+	com.ibm.ws.org.apache.aries.util;version=latest

@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -293,6 +294,9 @@ public class FeatureList {
             writeApiSpiPkgs(writer, apiPkgs, "apiPackage");
             writeApiSpiPkgs(writer, spiPkgs, "spiPackage");
 
+            // write maven coordinates from constituents
+            writeMavenCoordinates(writer, fd);
+
             // configElement
             if (showExternals) {
                 Set<String> elements = new HashSet<String>();
@@ -496,6 +500,24 @@ public class FeatureList {
 
                 writer.writeTextElementWithAttributes(elementName, nameToWrite, e.getValue());
             }
+        }
+    }
+
+    /**
+     * Writes deduplicated {@code <mavenCoordinates>} elements for every constituent of the
+     * given feature that carries a {@code mavenCoordinates} attribute in the format
+     * {@code groupId:artifactId:version}.
+     */
+    private void writeMavenCoordinates(FeatureListWriter writer, ProvisioningFeatureDefinition fd) throws IOException, XMLStreamException {
+        LinkedHashSet<String> seen = new LinkedHashSet<String>();
+        for (FeatureResource resource : fd.getConstituents(null)) {
+            String coordinate = resource.getAttributes().get("mavenCoordinates");
+            if (coordinate != null && !coordinate.isEmpty() && coordinate.split(":").length == 3) {
+                seen.add(coordinate);
+            }
+        }
+        for (String coordinate : seen) {
+            writer.writeTextElement("mavenCoordinates", coordinate);
         }
     }
 
