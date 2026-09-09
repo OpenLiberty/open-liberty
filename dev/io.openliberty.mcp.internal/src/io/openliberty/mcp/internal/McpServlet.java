@@ -274,11 +274,11 @@ public class McpServlet extends HttpServlet {
 
             Authorizer.requireAuthorized(transport, params.getMetadata());
 
+            ToolArguments toolArgs = createToolArguments(request, params, transport);
             if (params.getMetadata().returnsCompletionStage()) {
-                ToolArguments toolArgs = createToolArguments(request, params, transport);
                 callToolAndSendResponseAsync(transport, requestId, params, toolArgs, metrics);
             } else {
-                callToolAndSendResponseSync(transport, requestId, request, params, metrics);
+                callToolAndSendResponseSync(transport, requestId, toolArgs, params, metrics);
             }
         } catch (ToolCallUnauthorizedException e) {
             throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
@@ -295,11 +295,10 @@ public class McpServlet extends HttpServlet {
     @FFDCIgnore({ McpResponseException.class, ToolCallUnauthorizedException.class, ToolCallException.class, Exception.class })
     private void callToolAndSendResponseSync(McpTransport transport,
                                              ExecutionRequestId requestId,
-                                             McpRequest mcpRequest,
+                                             ToolArguments toolArgs,
                                              McpToolCallParams params,
                                              McpOperationMetrics metrics) {
 
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params, transport);
         if (requestId != null) {
             requestTrackers.getCurrent().registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }
