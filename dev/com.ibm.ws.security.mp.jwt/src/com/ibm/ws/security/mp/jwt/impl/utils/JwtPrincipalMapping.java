@@ -36,10 +36,6 @@ public class JwtPrincipalMapping {
     String userName = null;
     ArrayList<String> groupIds = null;
 
-    public JwtPrincipalMapping(JwtToken jwtToken, String userAttr, String groupAttr, boolean mapToUr) {
-        this(jwtToken, userAttr, groupAttr, mapToUr, null);
-    }
-
     public JwtPrincipalMapping(JwtToken jwtToken, String userAttr, String groupAttr, boolean mapToUr, String realmIdentifierAttr) {
         String methodName = "<init>";
         if (tc.isDebugEnabled()) {
