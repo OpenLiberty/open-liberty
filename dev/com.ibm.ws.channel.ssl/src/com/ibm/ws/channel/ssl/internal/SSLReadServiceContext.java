@@ -303,7 +303,7 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "More data needs to be read, loop to another read");
                     }
-                    if (0L == this.bytesRequested) {
+                    if (0L == this.bytesRequested && encryptedBytesAvailable == 0) {
                         break;
                     }
                     getNetworkBuffer(this.bytesRequested - this.bytesProduced);
