@@ -27,9 +27,6 @@ import javax.persistence.spi.PersistenceUnitTransactionType;
  * version of this class compiled against the non-spi import so that the 4.0 container bundle
  * wires correctly when the JPA 4.0 API is active.
  *
- * <p>{@link JPAPUnitInfo#setTransactionType(javax.persistence.spi.PersistenceUnitTransactionType)}
- * bridges to {@link #setTransactionTypeByName(String, boolean)} using only the enum constant name
- * so that the call never crosses the javax/jakarta namespace boundary at the method signature level.
  */
 public abstract class AbstractJPAPUnitInfo {
 

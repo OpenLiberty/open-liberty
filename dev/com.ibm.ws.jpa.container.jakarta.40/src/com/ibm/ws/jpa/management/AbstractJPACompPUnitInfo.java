@@ -31,7 +31,11 @@ abstract class AbstractJPACompPUnitInfo {
 
     // The common (real) PUnitInfo (non component specific).
     // Set by JPACompPUnitInfo constructor; declared here so getTransactionType() can access it.
-    protected JPAPUnitInfo ivPUnitInfo;
+    protected final JPAPUnitInfo ivPUnitInfo;
+
+    AbstractJPACompPUnitInfo(JPAPUnitInfo puInfo) {
+        ivPUnitInfo = puInfo;
+    }
 
     /**
      * Returns the transaction type using the JPA 4.0 non-spi type location.

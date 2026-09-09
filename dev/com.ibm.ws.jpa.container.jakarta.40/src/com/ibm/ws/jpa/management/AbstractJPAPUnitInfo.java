@@ -28,10 +28,6 @@ import jakarta.persistence.PersistenceUnitTransactionType;
  * onto the transformed jar by the {@code com.ibm.ws.jpa.container.jakarta.40} bundle so that
  * the correct class is resolved at runtime when the JPA 4.0 API bundle is wired.
  *
- * <p>The public API is exactly the same as the pre-4.0 version because
- * {@link JPAPUnitInfo#setTransactionType(javax.persistence.spi.PersistenceUnitTransactionType)}
- * bridges via the name-based {@link #setTransactionTypeByName(String, boolean)} rather than
- * calling the typed setter directly.
  */
 public abstract class AbstractJPAPUnitInfo {
 

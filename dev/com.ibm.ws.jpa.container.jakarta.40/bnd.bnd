@@ -75,11 +75,10 @@ Private-Package: \
 
 # The 4.0 API places PersistenceUnitTransactionType in the top-level package (not spi).
 Import-Package: \
-    jakarta.persistence;jpa="4.0";consumer="persistenceService", \
-    jakarta.persistence.criteria;jpa="4.0";consumer="persistenceService", \
-    jakarta.persistence.metamodel;jpa="4.0";consumer="persistenceService", \
-    jakarta.persistence.query;jpa="4.0";consumer="persistenceService", \
-    jakarta.persistence.spi;jpa="4.0";consumer="persistenceService", \
+    jakarta.persistence;version="[4.0.0, 5.0.0)", \
+    jakarta.persistence.criteria;version="[4.0.0, 5.0.0)", \
+    jakarta.persistence.metamodel;version="[4.0.0, 5.0.0)", \
+    jakarta.persistence.spi;version="[4.0.0, 5.0.0)", \
     !jakarta.activation, \
     !jakarta.xml.bind.*, \
     *

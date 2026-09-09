@@ -30,7 +30,11 @@ abstract class AbstractJPACompPUnitInfo {
     // The common (real) PUnitInfo (non component specific).
     // Declared here so getTransactionType() can delegate to it without
     // referencing ivPUnitInfo across the class hierarchy boundary.
-    protected JPAPUnitInfo ivPUnitInfo;
+    protected final JPAPUnitInfo ivPUnitInfo;
+
+    AbstractJPACompPUnitInfo(JPAPUnitInfo puInfo) {
+        ivPUnitInfo = puInfo;
+    }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()

@@ -84,7 +84,6 @@ public class JakartaPersistenceServlet extends FATServlet {
         managed.setSalary(65_000L);
         tx.commit();
 
-        tx.begin();
         SimpleEmployee reloaded = em.find(SimpleEmployee.class, id);
         assertEquals(65_000L, reloaded.getSalary());
     }

@@ -39,12 +39,6 @@ dependencies {
     hibernateJPA40("org.hibernate.models:hibernate-models:1.2.0") { transitive = false }
     hibernateJPA40("io.smallrye:jandex:3.6.0")                   { transitive = false }
 
-    // JAXB runtime — Liberty's xmlBinding-4.0 feature provides the API jars;
-    // only the GlassFish JAXB implementation jars are needed in HibernateLib.
-    hibernateJPA40("org.glassfish.jaxb:jaxb-runtime:4.0.9")     { transitive = false }
-    hibernateJPA40("org.glassfish.jaxb:jaxb-core:4.0.9")        { transitive = false }
-    hibernateJPA40("com.sun.istack:istack-commons-runtime:4.1.2") { transitive = false }
-    hibernateJPA40("org.glassfish.jaxb:txw2:4.0.9")             { transitive = false }
 }
 
 task addJPAFATTools(type: Copy) {

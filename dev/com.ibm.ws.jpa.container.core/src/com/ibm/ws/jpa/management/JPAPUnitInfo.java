@@ -241,20 +241,6 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo implements Persi
     }
 
     /**
-     * Translates the version-specific {@code PersistenceUnitTransactionType} enum value into
-     * the boolean form accepted by {@link AbstractJPAPUnitInfo#setTransactionTypeByName(String, boolean)},
-     * which is safe to call across the javax/jakarta namespace boundary.
-     *
-     * <p>Kept on JPAPUnitInfo (not the abstract base) so the Jakarta EE transformer rewrites
-     * the {@code javax.persistence.spi.PersistenceUnitTransactionType} reference here without
-     * touching the abstract base class, which the JPA 4.0 overlay replaces entirely.
-     */
-    final void setTransactionType(javax.persistence.spi.PersistenceUnitTransactionType newValue) {
-        setTransactionTypeByName(newValue == null ? null : newValue.name(),
-                                 ivApplInfo.getJPAComponent().isServerRuntime());
-    }
-
-    /**
      * Name-based overload called by {@link JPAPxmlInfo} via
      * {@link JaxbPUnit#getTransactionTypeName()}.  Accepts the plain enum constant name
      * ({@code "JTA"}, {@code "RESOURCE_LOCAL"}, or {@code null} for the runtime default)

@@ -77,11 +77,11 @@ final class JPACompPUnitInfo extends AbstractJPACompPUnitInfo implements Persist
      *                     java:comp/env context used.
      */
     JPACompPUnitInfo(JPAPuId puId, JPAPUnitInfo puInfo, J2EEName j2eeName) {
+        super(puInfo);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "<init> : " + puId + ", " + j2eeName);
 
         ivPuId = puId;
-        ivPUnitInfo = puInfo;
         ivJ2eeName = j2eeName;
     }
 
