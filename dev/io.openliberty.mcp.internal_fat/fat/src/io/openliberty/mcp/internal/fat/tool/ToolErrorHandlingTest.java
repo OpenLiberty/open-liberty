@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -667,33 +668,178 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                  }
                                  """;
 
-       // Lenient mode test (false boolean in 3rd parameter
-       JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
-   }
+        // Lenient mode test (false boolean in 3rd parameter
+        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
+    }
 
-   @Test
-   public void testToolThrowsToolCallUnauthorizedException() throws Exception {
-       String request = """
-                       {
-                         "jsonrpc": "2.0",
-                         "id": 1,
-                         "method": "tools/call",
-                         "params": {
-                           "name": "unauthorizedTool",
-                           "arguments": {
-                             "input": "bad-value"
-                           }
-                         }
-                       }
-                       """;
+    @Test
+    public void testToolThrowsToolCallUnauthorizedException() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unauthorizedTool",
+                            "arguments": {
+                              "input": "bad-value"
+                            }
+                          }
+                        }
+                        """;
 
-       McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
-       Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
+        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+        Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
 
-       assertEquals(403, response.statusCode());
-       assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
-       assertTrue("Response body must contain the exception message",
-                  response.body().contains("Not authorized to call this tool for input: bad-value"));
-       assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
-   }
+        assertEquals(403, response.statusCode());
+        assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
+        assertTrue("Response body must contain the exception message",
+                   response.body().contains("Not authorized to call this tool for input: bad-value"));
+        assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
+    }
+
+    // Negative Tests
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Negative test: {@code inputValidationTool} declares {@code count} as optional
+     * (not required). Calling the tool without supplying {@code count} at all must
+     * succeed; the server must not report a missing-argument error for a non-required
+     * argument that has no default value (the implementation receives {@code null}).
+     */
+    @Test
+    public void testOptionalArgumentOmittedDoesNotProduceError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 200,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        // The implementation does input.repeat(count) which will NPE if count is null,
+        // so the response will be isError:true; but it must be the internal-error text,
+        // NOT a validation complaint about a missing required argument.
+        assertNotNull("Response must not be null", response);
+        assertTrue("Response must be a well-formed JSON-RPC envelope", response.contains("jsonrpc"));
+        assertFalse("Response must not claim 'input' is missing (it was supplied)",
+                    response.contains("input") && response.contains("did not receive"));
+        assertFalse("Response must not claim 'count' is missing (it is not required)",
+                    response.contains("count") && response.contains("did not receive"));
+    }
+
+    /**
+     * Negative test: a {@code tools/list} response for this deployment must include
+     * every declared tool. For tools whose arguments are all required the
+     * {@code inputSchema.required} array must contain those argument names; tools with
+     * no required arguments must still have a {@code required} key present (as an
+     * empty array), not absent entirely.
+     */
+    @Test
+    public void testToolsListSchemaRequiredArrayAlwaysPresent() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 201,
+                          "method": "tools/list"
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("tools/list response must not be null", response);
+
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
+
+        for (int i = 0; i < tools.length(); i++) {
+            JSONObject tool = tools.getJSONObject(i);
+            String name = tool.getString("name");
+            assertTrue("Tool '" + name + "' must have an inputSchema", tool.has("inputSchema"));
+            JSONObject schema = tool.getJSONObject("inputSchema");
+            assertTrue("inputSchema for tool '" + name + "' must contain a 'required' key",
+                       schema.has("required"));
+        }
+    }
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Negative test: calling a tool with a missing required argument must return
+     * {@code isError:true} with a message that names the missing argument; it must
+     * NOT use the generic internal-server-error text (which would hide the root cause).
+     */
+    @Test
+    public void testMissingRequiredArgumentErrorMessageNamesArgument() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 202,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "count": 3
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null", response);
+
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONObject result = jsonResponse.getJSONObject("result");
+        assertTrue("Result must be flagged as an error", result.getBoolean("isError"));
+
+        String text = result.getJSONArray("content").getJSONObject(0).getString("text");
+        assertFalse("Error text must not be the generic internal-error message",
+                    "An internal server error occurred while running the tool.".equals(text));
+        assertTrue("Error text must mention the missing argument 'input'",
+                   text.contains("input"));
+    }
+
+    /**
+     * Negative test: calling a tool with a type-mismatched argument must return
+     * {@code isError:true} with a message that names both the argument and the
+     * expected Java type; it must NOT use the generic internal-server-error text.
+     */
+    @Test
+    public void testArgumentTypeMismatchErrorMessageNamesArgumentAndType() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 203,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "input": "hello",
+                              "count": "not-a-number"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null", response);
+
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONObject result = jsonResponse.getJSONObject("result");
+        assertTrue("Result must be flagged as an error", result.getBoolean("isError"));
+
+        String text = result.getJSONArray("content").getJSONObject(0).getString("text");
+        assertFalse("Error text must not be the generic internal-error message",
+                    "An internal server error occurred while running the tool.".equals(text));
+        assertTrue("Error text must mention the mismatched argument 'count'",
+                   text.contains("count"));
+    }
 }
