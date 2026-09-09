@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.security.audit.Audit;
+import com.ibm.ws.security.audit.source.utils.AuditUtils;
 import com.ibm.ws.security.audit.event.ApiAuthnEvent;
 import com.ibm.ws.security.audit.event.ApiAuthnTerminateEvent;
 import com.ibm.ws.security.audit.event.ApplicationPasswordTokenEvent;
@@ -335,18 +336,19 @@ public class AuditPE implements ProbeExtension {
 						auditManager.setLocalAddr(req.getLocalAddr());
 						auditManager.setLocalPort(String.valueOf(req.getLocalPort()));
 						String sessionID = null;
-						final HttpServletRequest f_req = req;
-						sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
-							@Override
-							public String run() {
-								HttpSession session = f_req.getSession();
-								if (session != null) {
-									return session.getId();
-								} else {
-									return null;
+							final HttpServletRequest f_req = req;
+							final boolean createNew = AuditUtils.isGenerateNewSession();
+							sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
+								@Override
+								public String run() {
+									HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
+									if (session != null) {
+										return session.getId();
+									} else {
+										return null;
+									}
 								}
-							}
-						});
+							});
 						if (sessionID != null) {
 							auditManager.setSessionId(sessionID);
 						}

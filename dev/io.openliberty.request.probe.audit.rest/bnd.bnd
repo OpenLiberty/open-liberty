@@ -31,6 +31,7 @@ Import-Package: \
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.ws.rest.handler;version=latest,\
 	com.ibm.websphere.security.wim.base;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,11 +33,11 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.UserRegistry;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.security.audit.source.AuditServiceImpl;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
-
 
 /**
  * Various and sundry utility methods for auditing.
@@ -72,11 +72,17 @@ public class AuditUtils {
     /**
      * Return the session id if the request has an HttpSession,
      * otherwise return null.
+     * <p>
+     * When {@code generateNewSession} is configured to {@code false} on the
+     * {@code auditSource} element, this method will not create a new HTTP
+     * session if one does not already exist (uses {@code getSession(false)}).
+     * The default behavior (true) creates a new session if none exists.
      *
      * @param req
      * @return session id or null
      */
     public static String getSessionID(HttpServletRequest req) {
+        final boolean createNew = isGenerateNewSession();
         String sessionID = null;
         final HttpServletRequest f_req = req;
 
@@ -84,7 +90,7 @@ public class AuditUtils {
             sessionID = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                 @Override
                 public String run() throws Exception {
-                    HttpSession session = f_req.getSession();
+                    HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
                     if (session != null) {
                         return session.getId();
                     } else {
@@ -98,7 +104,8 @@ public class AuditUtils {
                     sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
                         @Override
                         public String run() {
-                            return f_req.getSession().getId();
+                            HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
+                            return session != null ? session.getId() : null;
                         }
                     });
                 } else {
@@ -117,7 +124,8 @@ public class AuditUtils {
                     sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
                         @Override
                         public String run() {
-                            return f_req.getSession().getId();
+                            HttpSession session = createNew ? f_req.getSession() : f_req.getSession(false);
+                            return session != null ? session.getId() : null;
                         }
                     });
                 } else {
@@ -236,6 +244,19 @@ public class AuditUtils {
         } catch (Exception ex) {
         }
         return realm;
+    }
+
+    /**
+     * Returns the {@code generateNewSession} configuration value from the audit service.
+     * When the audit service is unavailable, defaults to {@code true} to preserve
+     * existing behavior.
+     *
+     * @return {@code true} if a new session should be created when none exists,
+     *         {@code false} otherwise
+     */
+    public static boolean isGenerateNewSession() {
+        AuditService svc = auditServiceRef != null ? auditServiceRef.getService() : null;
+        return (svc == null) || !(svc instanceof AuditServiceImpl) || ((AuditServiceImpl) svc).isGenerateNewSession();
     }
 
 }

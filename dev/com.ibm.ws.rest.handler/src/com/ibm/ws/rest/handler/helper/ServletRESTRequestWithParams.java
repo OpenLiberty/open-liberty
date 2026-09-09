@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import com.ibm.wsspi.rest.handler.RESTRequest;
 /**
  *
  */
-public class ServletRESTRequestWithParams implements RESTRequest {
+public class ServletRESTRequestWithParams implements LibertyServletRESTRequest {
     private final RESTRequest request;
     private final Map<String, String> params;
     private Map<String, Object> hostsInfo;
@@ -383,6 +383,20 @@ public class ServletRESTRequestWithParams implements RESTRequest {
         ServletRESTRequestImpl ret = castRequest();
         if (ret != null)
             return ret.getSessionId();
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Uses {@code getSession(false)} so no new session is created when one
+     * does not already exist.
+     */
+    @Override
+    public String getSessionForAudit() {
+        ServletRESTRequestImpl ret = castRequest();
+        if (ret != null)
+            return ret.getSessionForAudit();
         return null;
     }
 
