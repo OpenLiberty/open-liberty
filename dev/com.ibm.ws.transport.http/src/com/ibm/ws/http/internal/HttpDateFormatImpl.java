@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2025 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.internal;
 
@@ -16,6 +13,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.Instant;
+import java.time.Year;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -64,15 +62,15 @@ public class HttpDateFormatImpl implements HttpDateFormat {
     }
 
     /** Cached RFC 1123 format timer */
-    private final CachedTime c1123Time = new CachedTime("EEE, dd MMM uuuu HH:mm:ss z", true);
-    /** Cached RFC 1036 format timer */
-    private final CachedTime c1036Time = new CachedTime("EEEE, dd-MMM-uu HH:mm:ss z", true);
+    private final FourDigitYearCachedTime c1123Time = new FourDigitYearCachedTime("EEE, dd MMM uuuu HH:mm:ss z", true);
+    /** Cached RFC 1036 format timer - uses dynamic 2-digit year base per RFC 7231 §7.1.1.1 */
+    private final TwoDigitYearCachedTime c1036Time = new TwoDigitYearCachedTime("EEEE, dd-MMM-uu HH:mm:ss z", true);
     /** Cached ASCII format timer */
-    private final CachedTime cAsciiTime = new CachedTime("EEE MMM  d HH:mm:ss uuuu", true);
+    private final FourDigitYearCachedTime cAsciiTime = new FourDigitYearCachedTime("EEE MMM  d HH:mm:ss uuuu", true);
     /** Cached NCSA format timer */
-    private final CachedTime cNCSATime = new CachedTime("dd/MMM/uuuu:HH:mm:ss Z", false);
-    /** Cached RFC 2109 format timer */
-    private final CachedTime c2109Time = new CachedTime("EEE, dd-MMM-uu HH:mm:ss z", true);
+    private final FourDigitYearCachedTime cNCSATime = new FourDigitYearCachedTime("dd/MMM/uuuu:HH:mm:ss Z", false);
+    /** Cached RFC 2109 format timer - uses dynamic 2-digit year base per RFC 7231 §7.1.1.1 */
+    private final TwoDigitYearCachedTime c2109Time = new TwoDigitYearCachedTime("EEE, dd-MMM-uu HH:mm:ss z", true);
 
     private static class CachedFormattedTime {
         final long timeInMilliseconds;
@@ -107,7 +105,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      * level so no synchronization is required.
      *
      */
-    private static class CachedTime {
+    private static abstract class CachedTime {
 
         /** Ref to the GMT timezone */
         static final ZoneId gmt = ZoneId.of("GMT");
@@ -128,19 +126,14 @@ public class HttpDateFormatImpl implements HttpDateFormat {
 
         private final AtomicReference<CachedFormattedTime> cachedTime = new AtomicReference<>();
 
-        /** Stored formatter */
-        final DateTimeFormatter formatter;
+        abstract DateTimeFormatter getFormatter();
 
-        /**
-         * Create a cachedTime instance with the given format.
-         * <br>
-         *
-         * @param pattern
-         */
-        CachedTime(String pattern, boolean gmtTimeZone) {
-            DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder().parseCaseInsensitive().parseLenient().appendPattern(pattern);
-            DateTimeFormatter dateFormatter = builder.toFormatter(Locale.US).withZone(gmtTimeZone ? gmt : ZoneId.systemDefault()).withResolverFields(resolverFields);
-            formatter = dateFormatter;
+        abstract void appendPattern(DateTimeFormatterBuilder builder);
+
+        DateTimeFormatter buildFormatter(boolean gmtTimeZone) {
+            DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder().parseCaseInsensitive().parseLenient();
+            appendPattern(builder);
+            return builder.toFormatter(Locale.US).withZone(gmtTimeZone ? gmt : ZoneId.systemDefault()).withResolverFields(resolverFields);
         }
 
         /**
@@ -180,7 +173,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
             }
 
             // otherwise need to format the current time
-            String sTime = formatter.format(Instant.ofEpochMilli(strippedMillis));
+            String sTime = getFormatter().format(Instant.ofEpochMilli(strippedMillis));
 
             CachedFormattedTime newCachedFormattedTime = new CachedFormattedTime(time, strippedMillis, sTime);
 
@@ -239,6 +232,88 @@ public class HttpDateFormatImpl implements HttpDateFormat {
             return checkTime(time, tolerance, isCurrentTime).formattedTimeString;
         }
 
+    }
+
+    private static class FourDigitYearCachedTime extends CachedTime {
+        /** Stored formatter */
+        final DateTimeFormatter formatter;
+
+        final String pattern;
+
+        /**
+         * Create a cachedTime instance with the given format.
+         * <br>
+         *
+         * @param pattern
+         */
+        FourDigitYearCachedTime(String pattern, boolean gmtTimeZone) {
+            this.pattern = pattern;
+            formatter = buildFormatter(gmtTimeZone);
+        }
+
+        @Override
+        void appendPattern(DateTimeFormatterBuilder builder) {
+            builder.appendPattern(pattern);
+        }
+
+        @Override
+        DateTimeFormatter getFormatter() {
+            return formatter;
+        }
+
+    }
+
+    private static class TwoDigitYearCachedTime extends CachedTime {
+        private volatile DateTimeFormatter dynamicFormatter;
+
+        /** The pattern fragment before the 2-digit year token, retained for rebuilding on year rollover */
+        private final String patternBeforeYear;
+
+        /** The pattern fragment after the 2-digit year token, retained for rebuilding on year rollover */
+        private final String patternAfterYear;
+
+        /** The timezone setting, retained for rebuilding the formatter on year rollover */
+        private final boolean gmtTimeZone;
+
+        /** The year for which the current formatter was built */
+        private volatile int formatterYear;
+
+        TwoDigitYearCachedTime(String pattern, boolean gmtTimeZone) {
+            int uuIndex = pattern.indexOf("uu");
+            this.gmtTimeZone = gmtTimeZone;
+            // Split on the "uu" year token and insert appendValueReduced in its place
+            // so the parser uses a rolling base of (now - 50 years) rather than the
+            // fixed base of 2000 that appendPattern("uu") produces internally.
+            patternBeforeYear = pattern.substring(0, uuIndex);
+            patternAfterYear = pattern.substring(uuIndex + 2);
+            this.dynamicFormatter = buildFormatter(gmtTimeZone);
+        }
+
+        @Override
+        void appendPattern(DateTimeFormatterBuilder builder) {
+            int currentYear = Year.now().getValue();
+            // RFC 7231 §7.1.1.1: roll back only when the date appears *more than* 50 years
+            // in the future (strict inequality). Using base (currentYear - 49) gives the window
+            // [currentYear-49, currentYear+50], so exactly 50 years out stays in the future
+            // and only 51+ years out rolls back.
+            builder.appendPattern(patternBeforeYear).appendValueReduced(ChronoField.YEAR, 2, 2, currentYear - 49).appendPattern(patternAfterYear);
+            formatterYear = currentYear;
+        }
+
+        /**
+         * Returns the formatter, rebuilding it if the year has changed since it was last built.
+         */
+        @Override
+        DateTimeFormatter getFormatter() {
+            int currentYear = Year.now().getValue();
+            if (currentYear != formatterYear) {
+                // Year has rolled over - rebuild with the new base.
+                // Benign race: two threads may both rebuild; the last write wins,
+                // and both formatters are equivalent for that year.
+                dynamicFormatter = buildFormatter(gmtTimeZone);
+            }
+            return dynamicFormatter;
+        }
     }
 
     /*
@@ -318,7 +393,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC1036Time(Date inDate) {
-        return c1036Time.formatter.format(inDate.toInstant());
+        return c1036Time.getFormatter().format(inDate.toInstant());
     }
 
     /*
@@ -358,7 +433,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC2109Time(Date inDate) {
-        return c2109Time.formatter.format(inDate.toInstant());
+        return c2109Time.getFormatter().format(inDate.toInstant());
     }
 
     /*
@@ -501,7 +576,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc1036 parsing [" + input + "]");
         }
-        Date d = attemptParse(c1036Time.formatter, input);
+        Date d = attemptParse(c1036Time.getFormatter(), input);
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
@@ -516,7 +591,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc2109 parsing [" + input + "]");
         }
-        Date d = attemptParse(c2109Time.formatter, input);
+        Date d = attemptParse(c2109Time.getFormatter(), input);
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
@@ -571,11 +646,11 @@ public class HttpDateFormatImpl implements HttpDateFormat {
 
         Date parsedDate = attemptParse(c1123Time.formatter, data);
         if (null == parsedDate) {
-            parsedDate = attemptParse(c1036Time.formatter, data);
+            parsedDate = attemptParse(c1036Time.getFormatter(), data);
             if (null == parsedDate) {
                 parsedDate = attemptParse(cAsciiTime.formatter, data);
                 if (null == parsedDate) {
-                    parsedDate = attemptParse(c2109Time.formatter, data);
+                    parsedDate = attemptParse(c2109Time.getFormatter(), data);
                     if (null == parsedDate) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Time does not match supported formats");
