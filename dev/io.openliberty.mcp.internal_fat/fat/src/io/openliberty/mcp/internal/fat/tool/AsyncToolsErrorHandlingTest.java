@@ -12,11 +12,14 @@ package io.openliberty.mcp.internal.fat.tool;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -67,6 +70,104 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     @Before
     public void markBeforeEachTest() throws Exception {
         server.setMarkToEndOfLog();
+    }
+
+    // Negative Tests
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Negative test: a {@code tools/list} call must report that both {@code exception}
+     * and {@code failureMechanism} are required arguments in {@code asyncErrorTool}'s
+     * {@code inputSchema}; neither may be absent from the {@code required} array.
+     */
+    @Test
+    public void testAsyncErrorToolSchemaListsBothArgumentsAsRequired() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 100,
+                          "method": "tools/list"
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertFalse("tools/list response must not be empty", response.isEmpty());
+
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
+
+        JSONObject asyncErrorToolDescriptor = null;
+        for (int i = 0; i < tools.length(); i++) {
+            JSONObject tool = tools.getJSONObject(i);
+            if ("asyncErrorTool".equals(tool.getString("name"))) {
+                asyncErrorToolDescriptor = tool;
+                break;
+            }
+        }
+
+        assertNotNull("asyncErrorTool must appear in tools/list", asyncErrorToolDescriptor);
+
+        JSONObject schema = asyncErrorToolDescriptor.getJSONObject("inputSchema");
+        assertTrue("inputSchema must contain a 'required' array", schema.has("required"));
+
+        JSONArray required = schema.getJSONArray("required");
+        boolean foundException = false;
+        boolean foundMechanism = false;
+        for (int i = 0; i < required.length(); i++) {
+            String arg = required.getString(i);
+            if ("exception".equals(arg))
+                foundException = true;
+            if ("failureMechanism".equals(arg))
+                foundMechanism = true;
+        }
+        assertTrue("'exception' must be listed as required in asyncErrorTool's inputSchema", foundException);
+        assertTrue("'failureMechanism' must be listed as required in asyncErrorTool's inputSchema", foundMechanism);
+    }
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Negative test: supplying an unknown {@code exception} value (not one of the
+     * recognised class names) must return a well-formed {@code isError:true} JSON-RPC
+     * result; the server must not crash or produce an HTTP 500.
+     * The tool's default branch throws a {@link io.openliberty.mcp.tools.ToolCallException},
+     * so the response content must be the user-visible exception message.
+     */
+    @Test
+    public void testUnknownExceptionTypeReturnsUserErrorNotServerCrash() throws Exception {
+        String response = callTool("UnknownExceptionType", "THROWN");
+
+        assertFalse("Response must not be empty", response.isEmpty());
+        assertTrue("Response must be a well-formed JSON-RPC envelope", response.contains("jsonrpc"));
+
+        JSONObject result = new JSONObject(response).getJSONObject("result");
+        assertTrue("Result must be flagged as isError:true", result.getBoolean("isError"));
+
+        String text = result.getJSONArray("content").getJSONObject(0).getString("text");
+        assertFalse("Error text must not be an HTTP-level error page", text.contains("<html"));
+        // The tool throws ToolCallException("Invalid exception type: …") for unknown names
+        assertTrue("Error text must contain the unrecognised exception name",
+                   text.contains("UnknownExceptionType") || text.contains("Invalid exception type"));
+    }
+
+    // --- Bean Lifecycle ---
+
+    /**
+     * Negative test: when the async tool fails via {@code FAILED} (returns a
+     * {@code CompletableFuture.failedStage}), the CDI container must not keep any
+     * stale bean state; a second call with a different failure mechanism must still
+     * succeed independently. This is verified by calling twice in succession and
+     * asserting both produce well-formed {@code isError:true} responses (no session
+     * contamination or cached bean failure).
+     */
+    @Test
+    public void testSuccessiveFailedStageCallsRemainIsolated() throws Exception {
+        String firstResponse = callTool("BusinessException", "FAILED");
+        String secondResponse = callTool("ToolCallException", "FAILED");
+
+        assertUserError(firstResponse, "BusinessException");
+        assertUserError(secondResponse, "ToolCallException");
     }
 
     @Test

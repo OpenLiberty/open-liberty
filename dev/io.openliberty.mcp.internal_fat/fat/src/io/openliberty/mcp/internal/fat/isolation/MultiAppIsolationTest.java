@@ -385,4 +385,128 @@ public class MultiAppIsolationTest extends FATServletClient {
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
+
+    // Negative Tests
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Negative test: {@code tools/list} on the <em>alpha</em> endpoint must not
+     * contain {@code betaOnlyTool}'s schema, and {@code tools/list} on the <em>beta</em>
+     * endpoint must not contain {@code alphaOnlyTool}'s schema. Schema isolation must
+     * mirror tool-call isolation.
+     */
+    @Test
+    public void testToolListSchemaIsolatedBetweenApps() throws Exception {
+        String alphaResponse = alphaClient.listAllTools();
+        String betaResponse = betaClient.listAllTools();
+
+        JSONArray alphaTools = new JSONObject(alphaResponse).getJSONObject("result").getJSONArray("tools");
+        JSONArray betaTools = new JSONObject(betaResponse).getJSONObject("result").getJSONArray("tools");
+
+        // Alpha must not expose betaOnlyTool's schema
+        for (int i = 0; i < alphaTools.length(); i++) {
+            assertFalse("Alpha tools/list must not expose betaOnlyTool",
+                        "betaOnlyTool".equals(alphaTools.getJSONObject(i).getString("name")));
+        }
+
+        // Beta must not expose alphaOnlyTool's schema
+        for (int i = 0; i < betaTools.length(); i++) {
+            assertFalse("Beta tools/list must not expose alphaOnlyTool",
+                        "alphaOnlyTool".equals(betaTools.getJSONObject(i).getString("name")));
+        }
+    }
+
+    /**
+     * Negative test: the {@code sharedToolName} tool exists in both apps but their
+     * {@code inputSchema} shapes must not bleed across; each app's listing must only
+     * describe its own tool definition (description comes from {@code AlphaTools} vs
+     * {@code BetaTools} respectively).
+     */
+    @Test
+    public void testSharedToolNameSchemaIsIsolatedPerApp() throws Exception {
+        String alphaResponse = alphaClient.listAllTools();
+        String betaResponse = betaClient.listAllTools();
+
+        JSONObject alphaShared = null;
+        JSONObject betaShared = null;
+
+        JSONArray alphaTools = new JSONObject(alphaResponse).getJSONObject("result").getJSONArray("tools");
+        for (int i = 0; i < alphaTools.length(); i++) {
+            JSONObject t = alphaTools.getJSONObject(i);
+            if ("sharedToolName".equals(t.getString("name"))) {
+                alphaShared = t;
+                break;
+            }
+        }
+
+        JSONArray betaTools = new JSONObject(betaResponse).getJSONObject("result").getJSONArray("tools");
+        for (int i = 0; i < betaTools.length(); i++) {
+            JSONObject t = betaTools.getJSONObject(i);
+            if ("sharedToolName".equals(t.getString("name"))) {
+                betaShared = t;
+                break;
+            }
+        }
+
+        assertNotNull("sharedToolName must appear in alpha tools/list", alphaShared);
+        assertNotNull("sharedToolName must appear in beta tools/list", betaShared);
+
+        // Each listing must carry its own app-specific title/description, not the other's
+        String alphaTitle = alphaShared.optString("title", "");
+        String betaTitle = betaShared.optString("title", "");
+        assertFalse("Alpha's sharedToolName must not carry Beta's title",
+                    "Shared tool name in Beta".equals(alphaTitle));
+        assertFalse("Beta's sharedToolName must not carry Alpha's title",
+                    "Shared tool name in Alpha".equals(betaTitle));
+    }
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Negative test: calling {@code alphaOnlyTool} via the <em>alpha</em> client and
+     * then calling {@code betaOnlyTool} via the <em>beta</em> client must each succeed
+     * independently; the alpha session must not affect the beta session (no
+     * cross-app state contamination via shared MBeans or shared bean instances).
+     */
+    @Test
+    public void testCrossAppCallsRemainIndependent() throws Exception {
+        String alphaRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-1",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "alphaOnlyTool",
+                            "arguments": {"input": "ping"}
+                          }
+                        }
+                        """;
+        String betaRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "betaOnlyTool",
+                            "arguments": {"input": "ping"}
+                          }
+                        }
+                        """;
+
+        String alphaResponse = alphaClient.callMCP(alphaRequest);
+        String betaResponse = betaClient.callMCP(betaRequest);
+
+        // Both must succeed with isError:false
+        assertFalse("Alpha response must not indicate an error",
+                    new JSONObject(alphaResponse).getJSONObject("result").getBoolean("isError"));
+        assertFalse("Beta response must not indicate an error",
+                    new JSONObject(betaResponse).getJSONObject("result").getBoolean("isError"));
+
+        // Responses must not cross-contaminate; each must contain its own app prefix
+        assertTrue("Alpha response text must come from alphaOnlyTool",
+                   alphaResponse.contains("alpha-response"));
+        assertTrue("Beta response text must come from betaOnlyTool",
+                   betaResponse.contains("beta-response"));
+    }
 }
