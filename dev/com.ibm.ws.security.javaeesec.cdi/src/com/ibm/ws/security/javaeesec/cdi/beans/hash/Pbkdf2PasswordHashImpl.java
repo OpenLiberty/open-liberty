@@ -29,6 +29,7 @@ import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 
 @Default
@@ -47,12 +48,12 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
 
     private static final int DEFAULT_ALGORITHM = 1; // offset in SUPPORTED_ALGORITHMS
     private static final int DEFAULT_ITERATIONS = 2048;
-    private static final int DEFAULT_SALTSIZE = 32;
-    private static final int DEFAULT_KEYSIZE = 32;
+    private static final int DEFAULT_SALTSIZE = CryptoUtils.isFips140_3Enabled() ? CryptoUtils.FIPS1403_PBKDF2_SALT_LENGTH_BYTES : 32;
+    private static final int DEFAULT_KEYSIZE = CryptoUtils.isFips140_3Enabled() ? CryptoUtils.FIPS1403_PBKDF2_KEY_LENGTH_BITS : 32;
 
     private static final int MINIMUM_ITERATIONS = 1024;
-    private static final int MINIMUM_SALTSIZE = 16;
-    private static final int MINIMUM_KEYSIZE = 16;
+    private static final int MINIMUM_SALTSIZE = CryptoUtils.isFips140_3Enabled() ? CryptoUtils.FIPS1403_PBKDF2_MINIMUM_SALT_LENGTH_BYTES: 16;
+    private static final int MINIMUM_KEYSIZE = CryptoUtils.isFips140_3Enabled() ? CryptoUtils.FIPS1403_PBKDF2_MINIMUM_KEY_LENGTH_BITS : 16;
 
     private static final List<String> SUPPORTED_ALGORITHMS = Arrays.asList("PBKDF2WithHmacSHA224", "PBKDF2WithHmacSHA256", "PBKDF2WithHmacSHA384", "PBKDF2WithHmacSHA512");
 
