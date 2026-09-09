@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,7 +47,12 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import componenttest.annotation.SkipForRepeat;
 
+
+@SkipForRepeat({ JakartaEEAction.EE9_ACTION_ID,
+                 JakartaEEAction.EE10_ACTION_ID,
+                 JakartaEEAction.EE11_ACTION_ID })
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class LTPATokenRefreshTests {
@@ -58,6 +63,17 @@ public class LTPATokenRefreshTests {
     private static final Class<?> thisClass  = LTPATokenRefreshTests.class;
 
     private static LibertyServer server;
+
+    // Legacy server: represents a pre-refresh-feature deployment.
+    // Both servers share the same LTPA keys so tokens minted by the legacy
+    // server can be decrypted and validated by the new-server.
+    private static LibertyServer legacyServer;
+
+    // Relative path (under publish/files/) of the pre-provisioned key set used
+    // by both servers. Using a known key avoids the race between key generation
+    // and the first test request.
+    private static final String SHARED_KEYS_SRC = "alternate/validation1.keys";
+    private static final String KEYS_DEST       = "resources/security/ltpa.keys";
 
     // Token age offsets in seconds used by authenticateAndSetTokenAge().
     private static final int PAST_THRESHOLD_S   = 70;
@@ -89,10 +105,23 @@ public class LTPATokenRefreshTests {
     public static void setUpBeforeClass() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.token.ltpa.fat.refresh");
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/ltpafattestlibertyinternals-1.0.mf");
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            JakartaEEAction.transformApp(Paths.get(server.getServerRoot() + "/apps/ltpaTest.war"));
-        }
+        // if (JakartaEEAction.isEE9OrLaterActive()) {
+        //     JakartaEEAction.transformApp(Paths.get(server.getServerRoot() + "/apps/ltpaTest.war"));
+        // }
         server.addInstalledAppForValidation(APP_NAME);
+
+        legacyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.token.ltpa.fat.legacyTokenServer");
+        legacyServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/ltpafattestlibertyinternals-1.0.mf");
+        // if (JakartaEEAction.isEE9OrLaterActive()) {
+        //     JakartaEEAction.transformApp(Paths.get(legacyServer.getServerRoot() + "/apps/ltpaTest.war"));
+        // }
+        legacyServer.addInstalledAppForValidation(APP_NAME);
+        legacyServer.useSecondaryHTTPPort();
+
+        // Pre-provision both servers with identical LTPA keys so tokens minted by the legacy
+        // server are decryptable by the new (refresh-enabled) server.
+        copySharedKeysToServer(server);
+        copySharedKeysToServer(legacyServer);
     }
 
     @Before
@@ -103,10 +132,14 @@ public class LTPATokenRefreshTests {
         server.setServerConfigurationFile(CFG_TOKEN_REFRESH);
         server.startServer(true);
         server.waitForStringInLog("CWWKZ0001I.*" + APP_NAME);
+        // legacyServer is started on demand by startLegacyServer() in mixed-environment tests only.
     }
 
     @After
     public void tearDown() throws Exception {
+        if (legacyServer != null && legacyServer.isStarted()) {
+            legacyServer.stopServer();
+        }
         if (server != null && server.isStarted()) {
             // These warnings are intentionally produced by specific test configs and must not
             // cause teardown to fail: CWWKS4125W (inactivityTimeout >= expiration),
@@ -120,6 +153,9 @@ public class LTPATokenRefreshTests {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        if (legacyServer != null && legacyServer.isStarted()) {
+            legacyServer.stopServer();
+        }
         if (server != null && server.isStarted()) {
             server.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W", "CWWKS4126W", "CWWKS4127W");
         }
@@ -368,6 +404,129 @@ public class LTPATokenRefreshTests {
                  "token refreshed when adjusted threshold was crossed");
     }
 
+    // New → Legacy: a fresh token from the new-server is accepted by the legacy server
+    // Legacy → New: a fresh token from the legacy server is accepted by the new-server
+    // new-server:   expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, beta=true
+    // legacyServer: expiration=3m, no inactivityTimeout, no refreshThreshold
+    @Test
+    public void testFreshTokensAcceptedAcrossServers() throws Exception {
+        startLegacyServer();
+        String legacyServerUrl = getLegacyServletUrl();
+        String newServerUrl = getServletUrl();
+        String method = "testFreshTokensAcceptedAcrossServers";
+
+        // Mint a fresh token on the new-server.
+        // Pass that token to the legacy server expecting it to be accepted
+        String newServerCookie = authenticateAndSetTokenAge(newServerUrl, "user1", "user1pwd", 0, method);
+        HttpURLConnection conn = ssoRequest(legacyServerUrl, newServerCookie, "new-server token on legacy server acceptance expected", method);
+        assertEquals("Token from new-server must be accepted by legacy server", 200, conn.getResponseCode());
+        conn.disconnect();
+
+        // Mint a fresh token on the legacy server
+        // Pass that token to the new-server expecting it to be accepted
+        String legacyServerCookie = authenticateAndSetTokenAge(legacyServerUrl, "user1", "user1pwd", 0, method);
+        conn = ssoRequest(newServerUrl, legacyServerCookie, "legacy server token on new-server acceptance expected", method);
+        assertEquals("Token from legacy server must be accepted by new-server", 200, conn.getResponseCode());
+        conn.disconnect();
+
+        Log.info(thisClass, method, "PASSED: new-server token accepted by legacy server — stored expiry (creationTime+inactivityTimeout) has not elapsed");
+    }
+
+    // New → Legacy
+    // A token from the new-server whose stored expiry has already elapsed must be rejected by
+    // the legacy server with 401.
+    // new-server:   expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, beta=true
+    // legacyServer: expiration=3m, no inactivityTimeout, no refreshThreshold
+    @Test
+    public void testNewServerTokenRejectedByLegacyServerAfterInactivityExpiry() throws Exception {
+        startLegacyServer();
+        String legacyServerUrl = getLegacyServletUrl();
+        String newServerUrl = getServletUrl();
+        String method = "testNewServerTokenRejectedByLegacyServerAfterInactivityExpiry";
+        
+        // Authenticate and backdate token past inactivity (2m)
+        String agedCookie = authenticateAndSetTokenAge(newServerUrl, "user1", "user1pwd", PAST_INACTIVITY_S, method);
+
+        // Send SSO request to legacy server with timed out token - must be rejected with 401
+        HttpURLConnection conn = ssoRequest(legacyServerUrl, agedCookie, "new-server token on legacy (past inactivity, rejection expected)", method);
+        int status = conn.getResponseCode();
+        assertEquals("Token from new-server must be rejected by legacy server after inactivityTimeout elapses — got HTTP " + status, 401, status);
+        conn.disconnect();
+
+        Log.info(thisClass, method, "PASSED: new-server token correctly rejected by legacy server");
+    }
+
+    // Legacy → New
+    // A token minted by the legacy server is accepted by the new-server and triggers a refresh once its
+    // age crosses the refreshThreshold (1m)
+    // new-server:   expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, beta=true
+    // legacyServer: expiration=3m, no inactivityTimeout, no refreshThreshold
+    @Test
+    public void testLegacyTokenAcceptedByNewServerAndRefreshed() throws Exception {
+        startLegacyServer();
+        String legacyServerUrl = getLegacyServletUrl();
+        String newServerUrl = getServletUrl();
+        String method = "testLegacyTokenAcceptedByNewServerAndRefreshed";
+        
+        // Authenticate and backdate legacy server's token past new-server's refresh threshold (1m)
+        String agedLegacyCookie = authenticateAndSetTokenAge(legacyServerUrl, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+
+        // Send SSO request to new-server with backdated legacy token — must be accepted and a refresh must be issued.
+        ssoRequestExpectingRefresh(newServerUrl, agedLegacyCookie, "legacy token on new-server (refresh expected)", method);
+        Log.info(thisClass, method, "PASSED: legacy token accepted by new-server and refreshed");
+    }
+
+    // Legacy → New
+    // A token created by the legacy server that has aged past the absolute expiration (3m)
+    // must be rejected by the new-server with 401
+    // new-server:   expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, beta=true
+    // legacyServer: expiration=3m, no inactivityTimeout, no refreshThreshold
+    @Test
+    public void testExpiredLegacyTokenRejectedByNewServer() throws Exception {
+        startLegacyServer();
+        String legacyServerUrl = getLegacyServletUrl();
+        String newServerUrl = getServletUrl();
+        String method = "testExpiredLegacyTokenRejectedByNewServer";
+        
+        // Authenicate and backdate token past expiration (3m)
+        String expiredLegacyCookie = authenticateAndSetTokenAge(legacyServerUrl, "user1", "user1pwd", PAST_EXPIRY_S, method);
+
+        // Send SSO request to new-server with expired legacy token - must be rejected with 401
+        HttpURLConnection conn = ssoRequest(newServerUrl, expiredLegacyCookie, "expired legacy token on new-server (rejection expected)", method);
+        int status = conn.getResponseCode();
+        assertEquals("Absolutely expired legacy token must be rejected by new-server — got HTTP " + status, 401, status);
+        conn.disconnect();
+
+        Log.info(thisClass, method, "PASSED: expired legacy token correctly rejected by new-server");
+    }
+
+    
+    // New → legacy
+    // Verifies that a refreshed token issued by the new-server is accepted by the legacy server
+    // new-server:   expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, beta=true
+    // legacyServer: expiration=3m, no inactivityTimeout, no refreshThreshold
+    @Test
+    public void testRefreshedTokenAcceptedByLegacyServer() throws Exception {
+        startLegacyServer();
+        String legacyServerUrl = getLegacyServletUrl();
+        String newServerUrl = getServletUrl();
+        String method = "testRefreshedTokenAcceptedByLegacyServer";
+        
+        // Authenicate and backdate cookie past refresh threshold (1m)
+        String backdatedCookie = authenticateAndSetTokenAge(newServerUrl, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+
+        // Trigger refresh
+        String refreshedCookie = ssoRequestExpectingRefresh(newServerUrl, backdatedCookie, "trigger refresh on new-server", method);
+
+        // Present the refreshed token to the legacy server.
+        HttpURLConnection conn = ssoRequest(legacyServerUrl, refreshedCookie, "refreshed token on legacy server (acceptance expected)", method);
+        assertEquals("Refreshed token from new-server must be accepted by legacy server before inactivityTimeout elapses", 200, conn.getResponseCode());
+        conn.disconnect();
+
+        Log.info(thisClass, method, "PASSED: refreshed token accepted by legacy server — refreshed inactivity window has not yet elapsed");
+    }
+
+
     // Authenticates via Basic Auth, backdates the token by ageSeconds on the server, and returns the LtpaToken2 cookie value.
     private String authenticateAndSetTokenAge(String url, String username, String password,
                                               int ageSeconds, String method) throws IOException {
@@ -467,10 +626,37 @@ public class LTPATokenRefreshTests {
         return conn;
     }
 
-    // Returns the full URL of the test servlet.
+    // Returns the servlet URL for the new (refresh-enabled) server.
     private String getServletUrl() {
         return "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() +
                "/" + APP_NAME + "/" + SERVLET_NAME;
+    }
+
+    // Starts the legacy server. Called only by mixed-environment tests that need it,
+    // keeping single-server tests free of the legacy server startup overhead.
+    // @After handles shutdown via the isStarted() guard regardless of which tests ran.
+    private void startLegacyServer() throws Exception {
+        legacyServer.startServer(true);
+        legacyServer.waitForStringInLog("CWWKZ0001I.*" + APP_NAME);
+    }
+
+    // Returns the servlet URL for the legacy server (no refresh feature).
+    private String getLegacyServletUrl() {
+        return "http://" + legacyServer.getHostname() + ":" + legacyServer.getHttpDefaultPort() +
+               "/" + APP_NAME + "/" + SERVLET_NAME;
+    }
+
+    // Copies the shared pre-provisioned LTPA keys file into the server's security resources
+    // directory so both servers start with identical keys and can decrypt each other's tokens.
+    private static void copySharedKeysToServer(LibertyServer srv) throws Exception {
+        // Place validation1.keys directly into resources/security/ (same pattern as LTPAKeyPasswordTests).
+        srv.copyFileToLibertyServerRoot("resources/security", SHARED_KEYS_SRC);
+        // Rename validation1.keys → ltpa.keys within that directory.
+        File placed  = new File(srv.getServerRoot(), "resources/security/validation1.keys");
+        File dest    = new File(srv.getServerRoot(), KEYS_DEST);
+        if (!placed.renameTo(dest)) {
+            throw new Exception("Failed to rename " + placed + " to " + dest);
+        }
     }
 
     // Swaps the server configuration file and waits for Liberty to apply the change.
