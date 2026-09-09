@@ -66,6 +66,22 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
                     }
                     """;
 
+    /**
+     * Calls the {@code businessErrorTool} which always throws {@code ToolCallException}
+     * for the given input, so it produces status "error" and a non-null error type.
+     */
+    private static final String BUSINESS_ERROR_REQUEST = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 10,
+                      "method": "tools/call",
+                      "params": {
+                        "name": "businessErrorTool",
+                        "arguments": {"input": "bad-value"}
+                      }
+                    }
+                    """;
+
     /** Lists all tools — no tool name, should produce status "ok". */
     private static final String TOOLS_LIST_REQUEST = """
                     {
@@ -231,5 +247,86 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
         client.callMCP(PING_REQUEST);
         client.deleteSession();
         runTest(server, SERVLET, "testSessionMBeanInfoContainsAllInterfaceAttributes");
+    }
+
+    // Negative Tests
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Negative test: querying the MBean server for a tool that has never been called must
+     * return {@code null}. No speculative pre-registration is allowed.
+     */
+    @Test
+    public void testNoMBeanForNeverCalledTool() throws Exception {
+        runTest(server, SERVLET, "testNoMBeanForNeverCalledTool");
+    }
+
+    /**
+     * Negative test: an operation MBean for a tool that threw an error must expose
+     * {@code RpcResponseStatusCode == "error"} and a non-null {@code ErrorType} via the
+     * typed MXBean proxy.
+     */
+    @Test
+    public void testErrorToolMBeanHasErrorStatusAndNonNullErrorType() throws Exception {
+        client.callMCP(BUSINESS_ERROR_REQUEST);
+        runTest(server, SERVLET, "testErrorToolMBeanHasErrorStatusAndNonNullErrorType");
+    }
+
+    /**
+     * Negative test: a {@code tools/list} operation MBean must return {@code null} from
+     * {@code getGenAiToolName()}. Tool-name metadata must only appear on {@code tools/call}
+     * MBeans.
+     */
+    @Test
+    public void testNonToolCallMBeanReturnsNullToolName() throws Exception {
+        client.callMCP(TOOLS_LIST_REQUEST);
+        runTest(server, SERVLET, "testNonToolCallMBeanReturnsNullToolName");
+    }
+
+    // --- Bean Lifecycle ---
+
+    /**
+     * Negative test: performs operations without ending the session and then asserts that the
+     * session MBean. If present, it is well-formed. Delegates final assertion to the servlet.
+     */
+    @Test
+    public void testSessionMBeanAbsentBeforeSessionDeleted() throws Exception {
+        client.callMCP(PING_REQUEST);
+        // Deliberately do NOT call client.deleteSession() before the servlet assertion
+        runTest(server, SERVLET, "testSessionMBeanAbsentBeforeSessionDeleted");
+    }
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Negative test: every registered operation MBean must have a non-null, non-blank
+     * {@code McpMethodName} attribute. The runtime must never produce an anonymous MBean.
+     */
+    @Test
+    public void testAllOperationMBeansHaveNonEmptyMethodName() throws Exception {
+        client.callMCP(ADD_REQUEST);
+        runTest(server, SERVLET, "testAllOperationMBeansHaveNonEmptyMethodName");
+    }
+
+    /**
+     * Negative test: calling the same tool multiple times must not produce duplicate MBeans;
+     * the count on the single MBean must accumulate instead.
+     */
+    @Test
+    public void testRepeatedCallsDoNotProduceDuplicateMBeans() throws Exception {
+        client.callMCP(ADD_REQUEST);
+        client.callMCP(ADD_REQUEST);
+        runTest(server, SERVLET, "testRepeatedCallsDoNotProduceDuplicateMBeans");
+    }
+
+    /**
+     * Negative test: a {@code ping} must not trigger a session MBean registration —
+     * session statistics are only recorded on session lifecycle events.
+     */
+    @Test
+    public void testPingDoesNotRegisterSessionMBean() throws Exception {
+        client.callMCP(PING_REQUEST);
+        runTest(server, SERVLET, "testPingDoesNotRegisterSessionMBean");
     }
 }
