@@ -209,13 +209,9 @@ public class PageImpl<T> implements Page<T> {
             pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
 
-        if (queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1119.keyword.prevents.count",
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName(),
-                      queryInfo.jpqlCount,
-                      queryInfo.ql);
+        if (queryInfo.type == QueryType.NATIVE ||
+            queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
+            Fail.totalsNotSupported(queryInfo);
 
         boolean stateful = queryInfo.producer.stateful();
         EntityHandlerFactory factory = queryInfo.entityInfo.factory;
