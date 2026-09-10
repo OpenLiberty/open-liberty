@@ -36,10 +36,9 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  */
 public class AesLTPAKeyEncryptor implements LTPAKeyEncryptor {
 
-    /** AES/CBC cipher — same value as {@code CryptoUtils.AES_CBC_CIPHER}. */
     private static final String AES_CIPHER = CryptoUtils.AES_CBC_CIPHER;
 
-    private static final int IV_LENGTH = 16;
+    private static final int IV_LENGTH = CryptoUtils.AES_IV_LENGTH_BYTES;
 
     private final Key aesKey;
 
