@@ -274,7 +274,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             }
         }
         
-        if (message instanceof LastHttpContent) {
+        if (message instanceof LastHttpContent && !(message instanceof HttpResponse)) {
             promise.addListener(f -> {
                 state.setResponseInFlight(false);
 
