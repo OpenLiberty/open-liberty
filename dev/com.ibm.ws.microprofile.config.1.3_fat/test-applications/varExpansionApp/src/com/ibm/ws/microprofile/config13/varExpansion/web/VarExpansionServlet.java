@@ -12,9 +12,6 @@ package com.ibm.ws.microprofile.config13.varExpansion.web;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
@@ -50,10 +47,7 @@ public class VarExpansionServlet extends FATServlet {
         configChecker.assertConfigPropertyEquals("app.appPropertyExamplePorts", new String[] { "27017" }); //We get this value from io.openliberty.microprofile.config.internal.serverxml.AppPropertiesComponent.activate
         //And AppPropertiesComponent.activate receives the properties with any lists stripped down to the first entry. I am very suspicious of this behavior, but this test is written to match the existing behavior first.
         //Deciding what is the correct behavior is another task.
-
-        List<String> hostsTestList = new ArrayList<String>();
-        hostsTestList.add("mongo1.example.com");//Same limitation as above
-        configChecker.assertConfigPropertyEquals("app.appPropertyExampleHosts", hostsTestList);
+        configChecker.assertConfigPropertyEquals("app.appPropertyExampleHosts", new String[] { "mongo1.example.com" });
     }
 
     /**
@@ -68,12 +62,7 @@ public class VarExpansionServlet extends FATServlet {
         //This method's variables are coming from ServerXMLVariableConfigSource.getProperties without needing
         //any extra code for handling list expansion
         configChecker.assertConfigPropertyEquals("examplePorts", new String[] { "27017", "27018", "27019" });
-
-        List<String> hostsTestList = new ArrayList<String>();
-        hostsTestList.add("mongo1.example.com");
-        hostsTestList.add("mongo2.example.com");
-        hostsTestList.add("mongo3.example.com");
-        configChecker.assertConfigPropertyEquals("exampleHosts", hostsTestList);
+        configChecker.assertConfigPropertyEquals("exampleHosts", new String[] { "mongo1.example.com", "mongo2.example.com", "mongo3.example.com" });
     }
 
     /**
