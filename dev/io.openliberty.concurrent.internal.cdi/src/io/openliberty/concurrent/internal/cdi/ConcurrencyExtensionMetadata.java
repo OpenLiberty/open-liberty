@@ -454,14 +454,19 @@ public class ConcurrencyExtensionMetadata implements //
                         !beanClass.isAnnotationPresent(Asynchronous.class) &&
                         !method.isAnnotationPresent(Asynchronous.class)) {
 
-                        new ScheduledMethod<>( //
-                                        method.getJavaMember(), //
-                                        schedule, //
-                                        threadContext, //
-                                        execSvc, //
-                                        scopeClass, //
-                                        beanClass, //
-                                        beanAnnos);
+                        if (method.getJavaMember().getParameterCount() == 0)
+                            new ScheduledMethod<>( //
+                                            method.getJavaMember(), //
+                                            schedule, //
+                                            threadContext, //
+                                            execSvc, //
+                                            scopeClass, //
+                                            beanClass, //
+                                            beanAnnos);
+                        else // Scheduled methods cannot have parameters
+                            Tr.error(tc, "CWWKC1413.sched.method.args",
+                                     method.getJavaMember().getName(),
+                                     beanClass.getName());
                     }
                 } // let Asynchronous handle the invalid combination of annos
             }
