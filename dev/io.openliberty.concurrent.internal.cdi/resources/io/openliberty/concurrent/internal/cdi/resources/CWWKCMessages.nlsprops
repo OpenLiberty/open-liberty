@@ -58,8 +58,8 @@ CWWKC1412.qualifier.conflict.useraction=Ensure that each resource definition \
 
 CWWKC1413.sched.method.args=CWWKC1413E: The {0} method of the {1} CDI managed \
  bean is annotated Schedule but is not automatically scheduled because \
- methods annotated Schedule are are not permitted to have parameters.
+ methods annotated Schedule are not permitted to have parameters.
 CWWKC1413.sched.method.args.explanation=Methods that are annotated Schedule \
  must have no parameters.
-CWWKC1413.sched.method.args.useraction=Remove the method's parameters, or \
- remove the Schedule annotation from the method.
+CWWKC1413.sched.method.args.useraction=Remove the parameters from the method, \
+ or remove the Schedule annotation from the method.
