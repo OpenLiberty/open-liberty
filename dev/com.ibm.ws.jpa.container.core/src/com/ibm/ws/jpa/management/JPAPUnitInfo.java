@@ -58,7 +58,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
 /**
  * Internal representation of a persistence unit in the form of a PersistenceUnitInfo object.
  */
-public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo implements PersistenceUnitInfo {
+public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo {
     private static final String CLASS_NAME = JPAPUnitInfo.class.getName();
 
     private static final TraceComponent tc = Tr.register(JPAPUnitInfo.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
@@ -194,7 +194,6 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo implements Persi
 
         ivApplInfo = applInfo;
         ivArchivePuId = puId;
-        initTxType();
         ivQualifierClassNames = new ArrayList<String>();
         ivJarFileURLs = new ArrayList<URL>();
         ivManagedClassNames = new ArrayList<String>();

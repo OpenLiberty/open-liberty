@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.management;
 
+import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 
 /**
@@ -25,7 +26,7 @@ import javax.persistence.spi.PersistenceUnitTransactionType;
  * compiled-from-source replacement of this class that returns
  * {@code jakarta.persistence.PersistenceUnitTransactionType}.
  */
-abstract class AbstractJPACompPUnitInfo {
+abstract class AbstractJPACompPUnitInfo implements PersistenceUnitInfo {
 
     // The common (real) PUnitInfo (non component specific).
     // Declared here so getTransactionType() can delegate to it without
@@ -39,6 +40,7 @@ abstract class AbstractJPACompPUnitInfo {
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
      */
+    @Override
     public PersistenceUnitTransactionType getTransactionType() {
         return ivPUnitInfo.getTransactionType();
     }

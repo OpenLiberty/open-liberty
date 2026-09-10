@@ -47,7 +47,7 @@ import com.ibm.ws.jpa.JPAPuId;
  * {@code getTransactionType()} is inherited from {@link AbstractJPACompPUnitInfo}.
  * The JPA 4.0 overlay replaces that class to return the non-spi type. <p>
  */
-final class JPACompPUnitInfo extends AbstractJPACompPUnitInfo implements PersistenceUnitInfo {
+final class JPACompPUnitInfo extends AbstractJPACompPUnitInfo {
     private static final TraceComponent tc = Tr.register(JPACompPUnitInfo.class,
                                                          JPA_TRACE_GROUP,
                                                          JPA_RESOURCE_BUNDLE_NAME);

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.management;
 
+import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 
 /**
@@ -28,24 +29,17 @@ import javax.persistence.spi.PersistenceUnitTransactionType;
  * wires correctly when the JPA 4.0 API is active.
  *
  */
-public abstract class AbstractJPAPUnitInfo {
+public abstract class AbstractJPAPUnitInfo implements PersistenceUnitInfo {
 
     // Transaction Type, i.e. JTA or ResourceLocal
-    private PersistenceUnitTransactionType ivTxType = null;
-
-    /**
-     * Initialises the transaction type to JTA as the default for a new persistence unit.
-     * Called by {@link JPAPUnitInfo#JPAPUnitInfo(JPAApplInfo, JPAPuId, ClassLoader)}.
-     */
-    protected final void initTxType() {
-        ivTxType = PersistenceUnitTransactionType.JTA;
-    }
+    private PersistenceUnitTransactionType ivTxType = PersistenceUnitTransactionType.JTA;
 
     /**
      * Returns the transaction type of this persistence unit.
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
      */
+    @Override
     public final PersistenceUnitTransactionType getTransactionType() {
         return ivTxType;
     }
@@ -62,7 +56,7 @@ public abstract class AbstractJPAPUnitInfo {
      * of the {@code spi} package.
      */
     public final boolean isJtaTransactionType() {
-        return ivTxType == null || PersistenceUnitTransactionType.JTA == ivTxType;
+        return PersistenceUnitTransactionType.JTA == ivTxType;
     }
 
     /**

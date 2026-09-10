@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.management;
 
+import jakarta.persistence.spi.PersistenceUnitInfo;
 import jakarta.persistence.PersistenceUnitTransactionType;
 
 /**
@@ -27,7 +28,7 @@ import jakarta.persistence.PersistenceUnitTransactionType;
  * by the {@code com.ibm.ws.jpa.container.jakarta.40} bundle. All delegation logic remains in
  * the transformed {@code JPACompPUnitInfo}; only {@code getTransactionType()} is here.
  */
-abstract class AbstractJPACompPUnitInfo {
+abstract class AbstractJPACompPUnitInfo implements PersistenceUnitInfo {
 
     // The common (real) PUnitInfo (non component specific).
     // Set by JPACompPUnitInfo constructor; declared here so getTransactionType() can access it.
@@ -42,6 +43,7 @@ abstract class AbstractJPACompPUnitInfo {
      *
      * @see jakarta.persistence.spi.PersistenceUnitInfo#getTransactionType()
      */
+    @Override
     public PersistenceUnitTransactionType getTransactionType() {
         return ivPUnitInfo.getTransactionType();
     }
