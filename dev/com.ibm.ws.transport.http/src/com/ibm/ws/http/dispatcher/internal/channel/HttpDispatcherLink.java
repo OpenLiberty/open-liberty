@@ -271,6 +271,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     Tr.debug(tc, "close streams from HttpDispatcherLink.close");
                 }
 
+                // Save any unread data that arrived before the upgrade completed so that UpgradeInputByteBufferUtil.initialRead() can replay it to the ReadListener.
+                if (this.isc.isReadDataAvailable()) {
+                    WsByteBuffer currentBuffer = this.isc.getReadBuffer();
+                    WsByteBuffer newBuffer = HttpDispatcher.getBufferManager().allocate(currentBuffer.remaining());
+                    newBuffer.put(currentBuffer);
+                    newBuffer.flip();
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close, saved [" + newBuffer.remaining() + "] unread data from isc buffer [" + currentBuffer + "] to vc statemap [" + newBuffer + "]");
+                    }
+
+                    currentBuffer = null;
+                    vc.getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, newBuffer);
+                }
+
                 // This close streams should be synchronous to match with legacy
                 Exception errorinClosing = this.closeStreams();
 
