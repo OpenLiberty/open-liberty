@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -928,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=Reconfigura\u0163i Serviciul rezolv
 warning.traditional.enabled=CWSCT0441W: Containerul SIP nu suport\u0103 PMI-ul tradi\u0163ional.
 warning.traditional.enabled.explanation=Atributul enableTraditionalPMI este setat la true \u00een fi\u015fierul server.xml. Containerul SIP nu suport\u0103 PMI tradi\u0163ional \u00een Liberty.
 warning.traditional.enabled.useraction=\u00cenl\u0103tura\u0163i proprietatea enableTraditionalPMI din fi\u015fierul server.xml.
+
+missingPorts.endpointDisabled=CWSCT0442W: Terminalul SIP (Session Initiation Protocol) al serviciului \u201e {0} \u201d nu are porturi configurate \u0219i este dezactivat.
+missingPorts.endpointDisabled.explanation=Configura\u021bia punctului terminal SIP nu specific\u0103 niciun port de tip TCP, TLS sau UDP. Terminalul nu poate recep\u021biona traficul SIP de intrare.
+missingPorts.endpointDisabled.useraction=\u00cen fi\u0219ierul \u201e server.xml \u201d, configura\u021bi atributul \u201e sipTCPPort, \u201d (\u201e sipTLSPort, \u201d sau \u201e sipUDPPort \u201d) pentru terminalul SIP.

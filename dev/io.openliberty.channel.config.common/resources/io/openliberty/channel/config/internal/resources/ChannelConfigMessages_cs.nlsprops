@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: Atribut \u201e quiesceTimeout \u201c v prvku \u201eserver\u201c p\u0159episuje atribut \u201e chainQuiesceTimeout \u201c. Server ignoruje nastavenou hodnotu \u201e chainQuiesceTimeout \u201c () v d\u00e9lce {0} sekund.
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=Je-li v souboru ` server.xml ` na prvku `server` nakonfigurov\u00e1n atribut ` quiesceTimeout `, m\u00e1 tento atribut p\u0159ednost p\u0159ed atributem ` chainQuiesceTimeout ` na prvku `channelfw`. Server ignoruje hodnotu ` chainQuiesceTimeout `.
+QUIESCE_TIMEOUT_OVERRIDE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Chcete-li pou\u017e\u00edt hodnotu \u201e chainQuiesceTimeout \u201c, odstra\u0148te atribut \u201e quiesceTimeout \u201c z prvku server.

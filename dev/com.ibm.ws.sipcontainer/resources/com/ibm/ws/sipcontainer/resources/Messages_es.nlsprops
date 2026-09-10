@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -928,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=Reconfigure el servicio del solucio
 warning.traditional.enabled=CWSCT0441W: El contenedor SIP no da soporte a la PMI tradicional.
 warning.traditional.enabled.explanation=enableTraditionalPMI de atributo est\u00e1 establecido en true en el archivo server.xml. El contenedor SIP no da soporte a la PMI tradicional en Liberty.
 warning.traditional.enabled.useraction=Elimine la propiedad enableTraditionalPMI del archivo server.xml.
+
+missingPorts.endpointDisabled=CWSCT0442W: El punto final del Protocolo de Inicio de Sesi\u00f3n (SIP) de {0} no tiene puertos configurados y est\u00e1 desactivado.
+missingPorts.endpointDisabled.explanation=La configuraci\u00f3n del punto final SIP no especifica ning\u00fan puerto TCP, TLS ni UDP. El terminal no puede escuchar el tr\u00e1fico SIP entrante.
+missingPorts.endpointDisabled.useraction=En el archivo \u00ab server.xml \u00bb, configura el atributo \u00ab sipTCPPort, \u00bb, \u00ab sipTLSPort, \u00bb o \u00ab sipUDPPort \u00bb para el terminal SIP.

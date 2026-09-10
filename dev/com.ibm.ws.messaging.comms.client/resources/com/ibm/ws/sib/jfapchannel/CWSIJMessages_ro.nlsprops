@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2003, 2010 IBM Corporation and others.
+# Copyright (c) 2003, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
 #
@@ -552,6 +549,45 @@ CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Examina\u0163i excep\u0163ia preci
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: Lan\u0163ul de transport mesagerie {0} a fost oprit.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=Lan\u0163ul de transport a fost oprit urm\u00e2nd o schimbare de configura\u0163ie de securitate ceea ce \u00eenseamn\u0103 c\u0103 nici o \u00eentruc\u00e2t nici o magistral\u0103 definit\u0103 la celul\u0103 nu mai permite utilizarea lan\u0163ului.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Nici o ac\u0163iune necesar\u0103.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception which occurred
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086=CWSIJ0086E: O eroare intern\u0103 a \u00eempiedicat ini\u021bializarea procesului de ini\u021bializare a transportului Netty din cauza urm\u0103toarei excep\u021bii: {0}
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.explanation=Obiectul bootstrap de transport \u201e Netty \u201d nu poate fi ini\u021bializat. Conexiunile de ie\u0219ire ale serviciului Java Message Service (JMS) care utilizeaz\u0103 calea de transport \u201e Netty \u201d nu se pot conecta.
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.useraction=Analiza\u021bi excep\u021bia men\u021bionat\u0103 \u00een mesaj \u0219i jurnalele de server asociate pentru a identifica cauza. Verifica\u021bi dac\u0103 serviciul de cadru \u201e Netty \u201d este activ \u0219i dac\u0103 op\u021biunile de transport \u201e TCP \u201d sunt configurate corect.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel for which no connection could be found
+NETTY_READ_NO_CONNECTION_SICJ0087=CWSIJ0087W: Un mesaj primit pe canalul \u201e {0} \u201d nu poate fi asociat cu o conexiune Java Message Service (JMS). Serverul ignor\u0103 mesajul \u0219i \u00eenchide canalul.
+NETTY_READ_NO_CONNECTION_SICJ0087.explanation=S-a primit un mesaj pe un canal de transport de tip \u201e Netty \u201d care nu are asociat niciun obiect de conexiune JMS. Aceast\u0103 situa\u021bie ar putea indica o condi\u021bie de concuren\u021b\u0103 \u00een timpul \u00eentreruperii conexiunii. Serverul nu poate procesa mesajul.
+NETTY_READ_NO_CONNECTION_SICJ0087.useraction=Verifica\u021bi jurnalele serverului pentru a identifica eventualele mesaje de eroare sau de avertizare care ar putea explica de ce obiectul de conexiune nu era prezent. Dac\u0103 problema persist\u0103, genera\u021bi un raport de urm\u0103rire a serverului \u0219i contacta\u021bi serviciul de asisten\u021b\u0103 IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the JMS Connection object
+# {1} the IOReadCompletedCallback object
+# {2} the IOReadRequestContext object
+# {3} the NetworkConnection object
+NETTY_UNEXPECTED_CALLBACK_SICJ0088=CWSIJ0088W: Un mesaj primit sau un eveniment de tip \u201eheartbeat\u201d pe un canal de tip \u201e Netty \u201d nu poate fi procesat deoarece unul sau mai multe obiecte asociate nu sunt de tipul a\u0219teptat \u201e Netty \u201d. Leg\u0103tur\u0103: {0} Callback: {1} ReadContext: {2} NetworkConnection: {3}
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.explanation=Canalul \u201e Netty \u201d a primit date sau un eveniment de expirare a timpului de a\u0219teptare, dar conexiunea, apelul de retur, contextul de citire sau obiectul de conexiune de re\u021bea asociat canalului nu este de tipul specific \u201e Netty \u201d a\u0219teptat. Serverul \u00eenchide canalul. Aceast\u0103 situa\u021bie indic\u0103 o eroare de programare intern\u0103.
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.useraction=Analiza\u021bi jurnalele serverului \u0219i eventualele \u00eenregistr\u0103ri ale sistemului FFDC (First Failure Data Capture) pentru a identifica mesajele de eroare asociate care ar putea explica de ce obiectele de conexiune nu sunt de tipurile a\u0219teptate. Dac\u0103 problema persist\u0103, genera\u021bi un raport de urm\u0103rire a serverului \u0219i contacta\u021bi serviciul de asisten\u021b\u0103 IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the IdleStateEvent that was received
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089=CWSIJ0089W: A fost primit un eveniment de tip nea\u0219teptat \u00een starea de inactivitate \u201e Netty \u201d, care este transmis mai departe prin canalul de procesare. Eveniment: {0}
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.explanation=Handlerul de semnale de activitate al serviciului Java Message Service (JMS) \u201e Netty \u201d a primit un eveniment de stare inactiv\u0103 care nu este un eveniment de inactivitate a cititorului (timp de a\u0219teptare dep\u0103\u0219it la citire). Handlerul \u201eheartbeat\u201d a\u0219teapt\u0103 numai evenimente de inactivitate a cititorului. Serverul transmite evenimentul de-a lungul canalului de procesare pentru prelucrare ulterioar\u0103.
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.useraction=Nu este necesar\u0103 nicio ac\u021biune dac\u0103 acest mesaj apare rar. Dac\u0103 acest mesaj apare \u00een mod repetat, verifica\u021bi jurnalele serverului pentru a identifica eventualele avertismente sau erori legate de aceasta \u0219i contacta\u021bi serviciul de asisten\u021b\u0103 IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel on which the heartbeat timeout event occurred
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090=CWSIJ0090W: Un eveniment de expirare a timpului de a\u0219teptare de tip \u201eheartbeat\u201d pe canalul \u201e {0} \u201d nu poate fi asociat cu o conexiune Java Message Service (JMS). Serverul transmite evenimentul prin canalul de procesare.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.explanation=S-a declan\u0219at un eveniment \u201eread-idle\u201d (timp de a\u0219teptare pentru semnalul de activitate) pe un canal de tip \u201e Netty \u201d care nu are asociat niciun obiect de conexiune JMS. Aceast\u0103 situa\u021bie ar putea indica o condi\u021bie de concuren\u021b\u0103 \u00een timpul \u00eentreruperii conexiunii. Serverul nu poate procesa evenimentul \u0219i \u00eel transmite mai departe de-a lungul canalului.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.useraction=Verifica\u021bi jurnalele serverului pentru a identifica eventualele mesaje de eroare sau de avertizare care ar putea explica de ce obiectul de conexiune nu era prezent. Dac\u0103 problema persist\u0103, genera\u021bi un raport de urm\u0103rire a serverului \u0219i contacta\u021bi serviciul de asisten\u021b\u0103 IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel (null) for which the SSL session was requested
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091=CWSIJ0091W: A fost solicitat\u0103 o sesiune Secure Sockets Layer ( SSL ), dar nu este \u00eenregistrat niciun canal Netty pentru aceast\u0103 conexiune. Canal: {0}
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.explanation=Sesiunea SSL nu poate fi recuperat\u0103, deoarece canalul Netty nu este asociat cu acest obiect de conexiune. Aceast\u0103 situa\u021bie ar putea indica o problem\u0103 de sincronizare \u00een timpul stabilirii conexiunii.
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.useraction=Verifica\u021bi jurnalele serverului pentru a identifica eventualele mesaje de eroare sau de avertizare care ar putea explica motivul pentru care canalul nu a fost \u00eenregistrat. Dac\u0103 problema persist\u0103, genera\u021bi un raport de urm\u0103rire a serverului \u0219i contacta\u021bi serviciul de asisten\u021b\u0103 IBM.
 
 # Emergency use
 # -------------------------------------------------------------------------------------------------

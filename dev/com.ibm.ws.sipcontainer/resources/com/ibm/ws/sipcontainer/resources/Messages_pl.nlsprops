@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -928,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=Skonfiguruj ponownie us\u0142ug\u01
 warning.traditional.enabled=CWSCT0441W: Kontener SIP nie obs\u0142uguje tradycyjnej infrastruktury PMI.
 warning.traditional.enabled.explanation=Atrybut enableTraditionalPMI ma ustawion\u0105 warto\u015b\u0107 true w pliku server.xml. Kontener SIP nie obs\u0142uguje tradycyjnej infrastruktury PMI w profilu Liberty.
 warning.traditional.enabled.useraction=Usu\u0144 w\u0142a\u015bciwo\u015b\u0107 enableTraditionalPMI z pliku server.xml.
+
+missingPorts.endpointDisabled=CWSCT0442W: Punkt ko\u0144cowy protoko\u0142u SIP (Session Initiation Protocol) w us\u0142udze {0} nie ma skonfigurowanych port\u00f3w i jest wy\u0142\u0105czony.
+missingPorts.endpointDisabled.explanation=W konfiguracji punktu ko\u0144cowego SIP nie okre\u015blono portu TCP, TLS ani UDP. Punkt ko\u0144cowy nie mo\u017ce nas\u0142uchiwa\u0107 przychodz\u0105cego ruchu SIP.
+missingPorts.endpointDisabled.useraction=W pliku ` server.xml ` nale\u017cy skonfigurowa\u0107 atrybut ` sipTCPPort, ` (` sipTLSPort, ` lub ` sipUDPPort `) dla punktu ko\u0144cowego SIP.

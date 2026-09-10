@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -492,6 +492,11 @@ schemagen.info.schema.file.created.useraction=Aucune\naction n'est requise.
 error.config.root.deleted=CWWKG0110E: Une mise \u00e0 jour de la configuration a \u00e9t\u00e9 d\u00e9tect\u00e9e, mais le server.xml n'existe pas. Aucune mise \u00e0 jour de la configuration n'a \u00e9t\u00e9 effectu\u00e9e.
 error.config.root.deleted.explanation=Le fichier server.xml a \u00e9t\u00e9 supprim\u00e9. Pour ne pas perturber les applications en cours, aucun changement de configuration n'est effectu\u00e9.
 error.config.root.deleted.useraction=Ajoutez le fichier server.xml au serveur.
+
+warn.invalid.quiesce.timeout=CWWKG0111W: La valeur \u00ab {0} \u00bb sp\u00e9cifi\u00e9e pour l''attribut \u00ab quiesceTimeout \u00bb de l''\u00e9l\u00e9ment \u00ab server \u00bb dans le fichier \u00ab server.xml \u00bb n''est pas valide. La valeur doit correspondre \u00e0 une dur\u00e9e d''au moins 30 secondes. Le serveur utilise la valeur par d\u00e9faut de 30 secondes.
+warn.invalid.quiesce.timeout.explanation=L'attribut \u00ab quiesceTimeout \u00bb d\u00e9finit le d\u00e9lai d'attente avant que le serveur ne passe en \u00e9tat de repos lors de son arr\u00eat. Indiquez un nombre entier positif suivi d'une unit\u00e9 de temps, par exemple \u00ab 30s \u00bb, \u00ab 1m \u00bb ou \u00ab 1m30s \u00bb. Si vous n'indiquez pas d'unit\u00e9 de temps, le serveur consid\u00e8re qu'il s'agit de secondes. La valeur doit \u00eatre d'au moins 30 secondes. Les valeurs inf\u00e9rieures \u00e0 30 secondes ne laissent pas suffisamment de temps au serveur pour traiter les requ\u00eates en cours et effectuer les op\u00e9rations d'arr\u00eat de mani\u00e8re ordonn\u00e9e.
+warn.invalid.quiesce.timeout.useraction=Dans le fichier ` server.xml `, modifiez l'attribut ` quiesceTimeout ` de l'\u00e9l\u00e9ment `server` pour lui attribuer une dur\u00e9e de 30 secondes ou plus (par exemple, ` 30s `, ` 45s ` ou ` 1m30s `), ou supprimez cet attribut pour utiliser la valeur par d\u00e9faut de 30 secondes.
+
 
 # Non-TR message
 error.invalidOCDRef=ERREUR : Le PID [{0}] du m\u00e9tatype sp\u00e9cifie un ID de d\u00e9finition de classe d''objets qui n''existe pas [{1}]

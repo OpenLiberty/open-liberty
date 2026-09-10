@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=Projd\u011bte si chybovou 
 CWMCM0043W.unsupported.annotation=CWMCM0043W: Metoda ` {0} ` vyu\u017e\u00edv\u00e1 anotaci ` {1} `, kter\u00e1 nen\u00ed podporov\u00e1na. Tato metoda se ignoruje.
 CWMCM0043W.unsupported.annotation.explanation=Java API protokolu Model Context Protocol (MCP) obsahuje anotace pro funkce, kter\u00e9 tato implementace nepodporuje. Metody ozna\u010den\u00e9 nepodporovan\u00fdmi anotacemi jsou ignorov\u00e1ny.
 CWMCM0043W.unsupported.annotation.useraction=Odstra\u0148te z metody nepodporovanou anotaci nebo pou\u017e\u00edvejte pouze podporovan\u00e9 anotace protokolu Model Context Protocol (MCP).
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: Server nezpracoval m\u00edstn\u00ed po\u017eadavek MCP, proto\u017ee hodnota hlavi\u010dky Origin nebyla platn\u00e1.
+CWMCM0044I.localhost.header.rejected.explanation=Nezabezpe\u010den\u00e9 po\u017eadavky typu \u201e HTTP \u201c od localhostu nesm\u00ed obsahovat hlavi\u010dku Origin, p\u0159\u00edpadn\u011b mus\u00ed obsahovat hlavi\u010dku Origin, kter\u00e1 obsahuje pouze localhost nebo smy\u010dkovou adresu. Hlavi\u010dka \u201eOrigin\u201c, kter\u00e1 obsahuje jakoukoli jinou hodnotu, nazna\u010duje mo\u017en\u00fd \u00fatok typu DNS rebinding.
+CWMCM0044I.localhost.header.rejected.useraction=Ujist\u011bte se, \u017ee z\u00e1hlav\u00ed \u201eOrigin\u201c bu\u010f nen\u00ed p\u0159\u00edtomno, nebo obsahuje pouze \u201elocalhost\u201c.

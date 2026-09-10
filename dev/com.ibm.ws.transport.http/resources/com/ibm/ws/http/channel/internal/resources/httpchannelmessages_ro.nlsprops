@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Specifica\u021bi un interval 
 cookie.attribute.name.invalid=CWWKT0047E: Atributul cookie [{0}un caracter nevalid.
 cookie.attribute.name.invalid.explanation=Numele cookie-ului nu con\u021bine nici un caracter special [() < > @,;: \\/ []? = {}] caracter.
 cookie.attribute.name.invalid.useraction=Corecta\u021bi numele atributului cookie pentru a nu folosi niciun caracter special.
+
+endpoint.netty.not.initialized=CWWKT0048E: Punctul final \u201e {0} \u201d ( HTTP ) nu poate fi pornit deoarece cadrul \u201e Netty \u201d nu este ini\u021bializat.
+endpoint.netty.not.initialized.explanation=Este necesar serviciul de cadru \u201e Netty \u201d, dar acesta nu era disponibil \u00een momentul \u00een care punctul final a \u00eencercat s\u0103 porneasc\u0103.
+endpoint.netty.not.initialized.useraction=Verifica\u021bi configura\u021bia serverului \u0219i asigura\u021bi-v\u0103 c\u0103 pachetul necesar pentru framework-ul Netty este activ.
+
+endpoint.channel.not.initialized=CWWKT0049E: Punctul final \u201e {0} \u201d ( HTTP ) nu poate fi pornit deoarece cadrul de lucru al canalului nu este ini\u021bializat.
+endpoint.channel.not.initialized.explanation=Serviciul de structur\u0103 a canalelor este necesar, dar acesta nu era disponibil \u00een momentul \u00een care punctul final a \u00eencercat s\u0103 porneasc\u0103.
+endpoint.channel.not.initialized.useraction=Verifica\u021bi configura\u021bia serverului \u0219i asigura\u021bi-v\u0103 c\u0103 pachetul de framework-uri de canal necesar este activ.
+
+endpoint.executor.not.available=CWWKT0050E: Punctul final \u201e {0} \u201d ( HTTP ) nu poate fi pornit deoarece serviciul executor nu este disponibil.
+endpoint.executor.not.available.explanation=Serviciul executor este necesar, dar acesta nu era disponibil \u00een momentul \u00een care punctul terminal a \u00eencercat s\u0103 porneasc\u0103.
+endpoint.executor.not.available.useraction=Verifica\u021bi configura\u021bia serverului \u0219i asigura\u021bi-v\u0103 c\u0103 serviciul de execu\u021bie necesar este activ.
+
+endpoint.event.not.available=CWWKT0051E: Punctul final \u201e {0} \u201d ( HTTP ) nu poate fi pornit deoarece serviciul de evenimente nu este disponibil.
+endpoint.event.not.available.explanation=Serviciul de evenimente este obligatoriu, dar acesta nu era disponibil \u00een momentul \u00een care punctul final a \u00eencercat s\u0103 porneasc\u0103.
+endpoint.event.not.available.useraction=Verifica\u021bi configura\u021bia serverului \u0219i asigura\u021bi-v\u0103 c\u0103 serviciul de evenimente necesar este activ.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: O opera\u021biune de scriere care blocheaz\u0103 nu poate fi invocat\u0103 pe firul de execu\u021bie al buclei de evenimente \u201e Netty \u201d.
+netty.blocking.write.on.event.loop.explanation=Efectuarea unei opera\u021biuni de scriere cu blocare pe firul buclei de evenimente \u201e Netty \u201d provoac\u0103 un blocaj reciproc.
+netty.blocking.write.on.event.loop.useraction=Asigura\u021bi-v\u0103 c\u0103 opera\u021biunile de scriere care blocheaz\u0103 sunt redirec\u021bionate c\u0103tre un thread separat \u0219i nu sunt apelate din interiorul unui handler al buclei de evenimente de tip \u201e Netty \u201d.
+
+netty.socket.timeout=CWWKT0053E: O opera\u021biune de tip socket a dep\u0103\u0219it limita de timp \u00eenainte ca opera\u021biunea s\u0103 fie finalizat\u0103. Local: {0} / {1} : {2} La distan\u021b\u0103: {3} / {4} : {5}
+netty.socket.timeout.explanation=O opera\u021biune de citire pe socket nu s-a finalizat \u00een intervalul de timp configurat.
+netty.socket.timeout.useraction=Verifica\u021bi conexiunea la re\u021bea sau m\u0103ri\u021bi valoarea timpului de a\u0219teptare pentru citire dac\u0103 opera\u021biunea necesit\u0103 mai mult timp pentru a fi finalizat\u0103.
+
+netty.h2.window.ratio.error=CWWKT0054W: Rata de actualizare a ferestrei \u201e HTTP/2 \u201d nu poate fi actualizat\u0103: {0} Serverul utilizeaz\u0103 rata implicit\u0103 de actualizare a ferestrei.
+netty.h2.window.ratio.error.explanation=Raportul de actualizare a ferestrei de control al fluxului \u201e HTTP/2 \u201d nu poate fi setat la valoarea configurat\u0103. Serverul utilizeaz\u0103 frecven\u021ba implicit\u0103 de actualizare a ferestrei.
+netty.h2.window.ratio.error.useraction=Nu este necesar\u0103 nicio ac\u021biune dac\u0103 rata implicit\u0103 de actualizare a ferestrei este acceptabil\u0103. Dac\u0103 mesajul persist\u0103, verifica\u021bi set\u0103rile de control al fluxului \u201e HTTP/2 \u201d din configura\u021bia serverului.
+
+netty.tls.provider.not.loaded=CWWKT0055E: Punctul final \u201e HTTPS \u201d nu poate fi ini\u021bializat, deoarece furnizorul \u201e TLS \u201d nu este \u00eenc\u0103rcat.
+netty.tls.provider.not.loaded.explanation=Serviciul furnizor \u201e TLS \u201d nu era disponibil \u00een momentul \u00een care punctul final \u201e HTTPS \u201d a \u00eencercat s\u0103 porneasc\u0103.
+netty.tls.provider.not.loaded.useraction=Verifica\u021bi configura\u021bia serverului \u0219i asigura\u021bi-v\u0103 c\u0103 pachetul necesar al furnizorului \u201e TLS \u201d este activ.
+
+netty.ssl.handler.create.failed=CWWKT0056E: Serverul nu a reu\u0219it s\u0103 creeze handlerul SSL pentru punctul final {0} : {1}.
+netty.ssl.handler.create.failed.explanation=Handlerul \u201e SSL \u201d nu poate fi creat pentru gazda \u0219i portul punctului de cap\u0103t specificat.
+netty.ssl.handler.create.failed.useraction=Verifica\u021bi configura\u021bia serviciului \u201e SSL \u201d pentru punctul final \u0219i asigura\u021bi-v\u0103 c\u0103 furnizorul \u201e TLS \u201d este configurat corect.
+
+h2.encode.header.failed=CWWKT0057E: Serverul nu a reu\u0219it s\u0103 codifice un antet \u201e HTTP/2 \u201d: {0}
+h2.encode.header.failed.explanation=Serverul nu a reu\u0219it s\u0103 codifice un pseudo-antet \u201e HTTP/2 \u201d pentru r\u0103spuns. Serverul \u00eenchide fluxul.
+h2.encode.header.failed.useraction=Verifica\u021bi jurnalele serverului pentru a identifica eventualele erori legate de \u201e HTTP/2 \u201d. Dac\u0103 problema persist\u0103, colecta\u021bi informa\u021bii de diagnosticare \u0219i contacta\u021bi serviciul de asisten\u021b\u0103 IBM.
