@@ -14,6 +14,8 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -99,5 +101,63 @@ public class AesLTPAKeyEncryptorTest {
         };
         // Must not throw
         new AesLTPAKeyEncryptor(nullEncodedKey);
+    }
+
+    /**
+     * The output of {@link AesLTPAKeyEncryptor#encrypt} must be at least
+     * {@code IV_LENGTH + 1} bytes long: a 16-byte IV prefix followed by at least
+     * one block of ciphertext.
+     */
+    @Test
+    public void encrypt_prependsIV() throws Exception {
+        Key key = makeAesKey(VALID_KEY_B64);
+        AesLTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(key);
+
+        byte[] plaintext = "SomeKeyMaterial".getBytes("UTF-8");
+        byte[] ciphertext = encryptor.encrypt(plaintext);
+
+        // IV is 16 bytes; AES/CBC/PKCS5Padding pads to a 16-byte block boundary,
+        // so the minimum ciphertext length after the IV is 16 bytes.
+        assertTrue("Encrypted output must be longer than IV_LENGTH (16) bytes",
+                   ciphertext.length > 16);
+    }
+
+    /**
+     * Two independent encryptions of the same plaintext with the same key must produce
+     * different ciphertexts because a fresh random IV is generated on every call.
+     */
+    @Test
+    public void twoEncryptionsProduceDifferentCiphertexts() throws Exception {
+        Key key = makeAesKey(VALID_KEY_B64);
+        AesLTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(key);
+
+        byte[] plaintext = "SameInputEveryTime".getBytes("UTF-8");
+        byte[] ct1 = encryptor.encrypt(plaintext);
+        byte[] ct2 = encryptor.encrypt(plaintext);
+
+        assertFalse("Two encryptions of the same plaintext must produce different ciphertexts (random IV)",
+                    Arrays.equals(ct1, ct2));
+    }
+
+    /**
+     * Feeding fewer than {@code IV_LENGTH} (16) bytes to
+     * {@link AesLTPAKeyEncryptor#decrypt} must throw an exception, not silently
+     * return garbage.
+     */
+    @Test
+    public void decrypt_truncatedInput_throwsException() throws Exception {
+        Key key = makeAesKey(VALID_KEY_B64);
+        AesLTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(key);
+
+        // 8 bytes — shorter than the 16-byte IV prefix that decrypt expects.
+        byte[] truncated = new byte[8];
+
+        try {
+            encryptor.decrypt(truncated);
+            fail("Expected an exception when decrypting input shorter than IV_LENGTH bytes");
+        } catch (Exception e) {
+            // Any exception (ArrayIndexOutOfBoundsException, IllegalArgumentException,
+            // BadPaddingException, etc.) is acceptable — the point is it must not succeed.
+        }
     }
 }
