@@ -428,7 +428,8 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             throw new IllegalStateException("An upgraded asynchronous read is already pending");
         }
 
-        if (peerClosed.get() || !channel.isActive()) {
+        //Input shutdown does not discard bytes received before the peer's FIN
+        if ((peerClosed.get() || !channel.isActive()) && queuedBytes.get() < operation.minimumBytes) {
             fireAsyncReadError(operation,
                                new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
                                                 channel.localAddress() + " remote=" + channel.remoteAddress()));
