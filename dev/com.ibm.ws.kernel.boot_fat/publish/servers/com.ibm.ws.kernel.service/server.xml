@@ -13,6 +13,9 @@
 <server>
 <!-- Note fatTestPort is not included because we control creation of all ports in fats  -->
 	<include location="../fatTestCommon.xml"/>
+
+    <!-- Temporary: enable CpuInfo trace for cgroups v2 fix verification - remove before merge -->
+    <logging traceSpecification="com.ibm.ws.kernel.service.util.CpuInfo=all" traceFileName="trace.log"/>
 	
     <featureManager>
         <feature>localConnector-1.0</feature>
