@@ -193,7 +193,17 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
             String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
             ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
-            checkCommandOutput(po, 0, null, filesList);
+            try {
+                checkCommandOutput(po, 0, null, filesList);
+            } catch (AssertionError e) {
+                // A transient HTTP transfer corruption of the large features JSON can cause
+                // a JsonParsingException and leave no installed files. 
+                deleteFeaturesAndLafilesFolders(METHOD_NAME);
+                writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo",
+                        Files.createTempDirectory("maven-repo").toAbsolutePath().toString());
+                po = runFeatureUtility(METHOD_NAME, param1s);
+                checkCommandOutput(po, 0, null, filesList);
+            }
         } finally {
 
             // restore the local maven repo properties
