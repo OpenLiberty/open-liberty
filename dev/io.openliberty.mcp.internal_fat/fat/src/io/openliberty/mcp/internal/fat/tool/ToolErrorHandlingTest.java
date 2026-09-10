@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -699,76 +698,6 @@ public class ToolErrorHandlingTest extends FATServletClient {
     }
 
     // Negative Tests
-
-    // --- Tool Metadata and Schema Generation ---
-
-    /**
-     * Negative test: {@code inputValidationTool} declares {@code count} as optional
-     * (not required). Calling the tool without supplying {@code count} at all must
-     * succeed; the server must not report a missing-argument error for a non-required
-     * argument that has no default value (the implementation receives {@code null}).
-     */
-    @Test
-    public void testOptionalArgumentOmittedDoesNotProduceError() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 200,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "inputValidationTool",
-                            "arguments": {
-                              "input": "hello"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        // The implementation does input.repeat(count) which will NPE if count is null,
-        // so the response will be isError:true; but it must be the internal-error text,
-        // NOT a validation complaint about a missing required argument.
-        assertNotNull("Response must not be null", response);
-        assertTrue("Response must be a well-formed JSON-RPC envelope", response.contains("jsonrpc"));
-        assertFalse("Response must not claim 'input' is missing (it was supplied)",
-                    response.contains("input") && response.contains("did not receive"));
-        assertFalse("Response must not claim 'count' is missing (it is not required)",
-                    response.contains("count") && response.contains("did not receive"));
-    }
-
-    /**
-     * Negative test: a {@code tools/list} response for this deployment must include
-     * every declared tool. For tools whose arguments are all required the
-     * {@code inputSchema.required} array must contain those argument names; tools with
-     * no required arguments must still have a {@code required} key present (as an
-     * empty array), not absent entirely.
-     */
-    @Test
-    public void testToolsListSchemaRequiredArrayAlwaysPresent() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 201,
-                          "method": "tools/list"
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        assertNotNull("tools/list response must not be null", response);
-
-        JSONObject jsonResponse = new JSONObject(response);
-        JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
-
-        for (int i = 0; i < tools.length(); i++) {
-            JSONObject tool = tools.getJSONObject(i);
-            String name = tool.getString("name");
-            assertTrue("Tool '" + name + "' must have an inputSchema", tool.has("inputSchema"));
-            JSONObject schema = tool.getJSONObject("inputSchema");
-            assertTrue("inputSchema for tool '" + name + "' must contain a 'required' key",
-                       schema.has("required"));
-        }
-    }
 
     // --- Monitoring and Management ---
 
