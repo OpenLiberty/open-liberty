@@ -25,5 +25,5 @@ wss4jVersion=2.4.4.1
  com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
  com.ibm.ws.org.apache.wss4j.ws.security.stax;version=latest, \
  com.ibm.ws.org.slf4j.api;version=latest, \
- com.ibm.ws.org.apache.neethi.3.1.1;version=latest,\
+ io.openliberty.org.apache.neethi;version=latest,\
  com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest
