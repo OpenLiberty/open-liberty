@@ -19,7 +19,6 @@ import java.util.List;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
-import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.inject.Inject;
@@ -79,12 +78,12 @@ public class DataErrPaths_1_1_Servlet extends FATServlet {
      */
     @Test
     public void nativeQueryCountElements() {
-        Page<Character> page = ops.binaryOps(PageRequest.ofSize(5));
+        Page<String> page = ops.binaryOps(PageRequest.ofSize(5));
         assertEquals(true,
                      page.hasContent());
         assertEquals(5L,
                      page.numberOfElements());
-        assertEquals(List.of('+', '-', '<', '=', '>'),
+        assertEquals(List.of("+", "-", "<", "=", ">"),
                      page.content());
         try {
             long total = page.totalElements();
@@ -92,7 +91,7 @@ public class DataErrPaths_1_1_Servlet extends FATServlet {
                  " Found " + total);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                //TODO once NLS is added: !x.getMessage().startsWith("CWWKD????E:") ||
+            //TODO once NLS is added: !x.getMessage().startsWith("CWWKD????E:") ||
                 !x.getMessage().contains("NativeQuery"))
                 throw x;
         }
@@ -103,7 +102,7 @@ public class DataErrPaths_1_1_Servlet extends FATServlet {
                  " Found " + total);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                //TODO once NLS is added: !x.getMessage().startsWith("CWWKD????E:") ||
+            //TODO once NLS is added: !x.getMessage().startsWith("CWWKD????E:") ||
                 !x.getMessage().contains("NativeQuery"))
                 throw x;
         }

@@ -40,7 +40,7 @@ public interface Operations extends DataRepository<Operation, String> {
                      WHERE COALESCE (numArgs, 0) = 2
                      ORDER BY symbol ASC
                     """)
-    Page<Character> binaryOps(PageRequest req);
+    Page<String> binaryOps(PageRequest req);
 
     @Insert
     void define(Operation op);

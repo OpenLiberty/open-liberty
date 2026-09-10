@@ -1487,6 +1487,8 @@ public abstract class QueryInfo {
      * @param entityHandler EntityAgent or EntityManager
      * @return the query
      */
+    // TODO once we have persistence providers that support Persistence 4.0,
+    // see if we can have this method return TypedQuery<T> like ehCreateTypedQuery
     protected abstract jakarta.persistence.Query //
                     ehCreateNativeQuery(AutoCloseable entityHandler);
 
