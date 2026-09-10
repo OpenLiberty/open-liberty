@@ -219,8 +219,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
 
         boolean readAgain = state.isReadAgain();
         state.setReadPending(false);
-        if (readAgain) {
-            state.setReadAgain(false);
+        state.setReadAgain(false);
+        if (readAgain || (state.isRequestConsumed() && !state.isResponseInFlight() && state.isKeepAliveAllowed())) {
             context.executor().execute(() -> requestRead(context));
         }
 
@@ -230,8 +230,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
      * Intercepts write operations to monitor the response progress and update the Keep-Alive state.
      * When a response is written, the handler sets {@link FlowState#setResponseInFlight(boolean)}
      * once the response is considered committed. When the final response write completes, the handler
-     * clears the {@link FlowState#setResponseInFlight(boolean)} flag and may issue a read for the 
-     * next request if the Keep-Alive policy permits it. 
+     * clears the {@link FlowState#setResponseInFlight(boolean)} flag and may issue a read for the
+     * next request if the Keep-Alive policy permits it.
      */
     @Override
     public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
@@ -268,6 +268,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                             return;
                         }
 
+                        state.setReadPending(false);
+                        state.setReadAgain(false);
                         verifyNeedRead(context, state);
                     });
                 }
@@ -288,6 +290,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                     return;
                 }
 
+                state.setReadPending(false);
+                state.setReadAgain(false);
                 verifyNeedRead(context, state);
             });
         }
