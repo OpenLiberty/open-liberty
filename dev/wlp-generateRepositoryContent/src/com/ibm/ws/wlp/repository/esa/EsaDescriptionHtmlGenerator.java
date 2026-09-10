@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,10 @@ package com.ibm.ws.wlp.repository.esa;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.tools.ant.BuildException;
@@ -22,6 +26,7 @@ import org.apache.tools.ant.Task;
 
 import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
+import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 
 /**
@@ -152,7 +157,42 @@ public class EsaDescriptionHtmlGenerator extends Task {
                 result.append("</div>").append(System.lineSeparator());
             }
         }
+        List<String> mavenCoordinates = getMavenCoordinates(feature);
+        if (!mavenCoordinates.isEmpty()) {
+            result.append(" <h2 id=\"ibm-wasdev-feature-maven-title\">Maven Coordinates</h2> ").append(System.lineSeparator());
+            result.append("<div id=\"ibm-wasdev-feature-maven-content\">").append(System.lineSeparator());
+            result.append("The following Maven coordinates can be used to access the APIs this feature provides from your Maven build:<br/>").append(System.lineSeparator());
+            for (String coordinate : mavenCoordinates) {
+                String[] parts = coordinate.split(":");
+                result.append("<code>&lt;dependency&gt;</br>").append(System.lineSeparator());
+                result.append("&nbsp;&nbsp;&lt;groupId&gt;").append(parts[0]).append("&lt;/groupId&gt;</br>").append(System.lineSeparator());
+                result.append("&nbsp;&nbsp;&lt;artifactId&gt;").append(parts[1]).append("&lt;/artifactId&gt;</br>").append(System.lineSeparator());
+                result.append("&nbsp;&nbsp;&lt;version&gt;").append(parts[2]).append("&lt;/version&gt;</br>").append(System.lineSeparator());
+                result.append("&nbsp;&nbsp;&lt;scope&gt;provided&lt;/scope&gt;</br>").append(System.lineSeparator());
+                result.append("&lt;/dependency&gt;</code><br/>").append(System.lineSeparator());
+            }
+            result.append("</div>").append(System.lineSeparator());
+        }
         return result.toString();
+    }
+
+    /**
+     * Returns the distinct Maven coordinates declared on constituents of this feature,
+     * preserving encounter order and omitting duplicates.
+     *
+     * @param feature the feature whose constituents are inspected
+     * @return ordered, deduplicated list of "groupId:artifactId:version" strings; never null
+     */
+    static List<String> getMavenCoordinates(ProvisioningFeatureDefinition feature) {
+        Collection<FeatureResource> constituents = feature.getConstituents(null);
+        LinkedHashSet<String> seen = new LinkedHashSet<>();
+        for (FeatureResource resource : constituents) {
+            String coordinate = resource.getAttributes().get("mavenCoordinates");
+            if (coordinate != null && !coordinate.isEmpty() && coordinate.split(":").length == 3) {
+                seen.add(coordinate);
+            }
+        }
+        return new ArrayList<>(seen);
     }
 
     /**
