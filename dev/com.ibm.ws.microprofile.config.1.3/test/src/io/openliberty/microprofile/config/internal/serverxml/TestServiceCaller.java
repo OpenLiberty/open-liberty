@@ -23,8 +23,9 @@ import com.ibm.ws.kernel.service.util.ServiceCaller;
  */
 public class TestServiceCaller<S> extends ServiceCaller<S> {
 
-    public TestServiceCaller(Class<S> serviceType) {
-        super(TestServiceCaller.class, serviceType);
+    @SuppressWarnings("unchecked")
+    public TestServiceCaller() {
+        super(TestServiceCaller.class, (Class<S>) Object.class);
     }
 
     @Override
@@ -43,6 +44,7 @@ public class TestServiceCaller<S> extends ServiceCaller<S> {
     }
 
     @Override
-    public void unget() {}
+    public void unget() {
+    }
 
 }

@@ -122,17 +122,6 @@ public class MapEnvVarServlet extends FATServlet {
 
     @Test
     @SkipForRepeat(MicroProfileActions.MP33_ID)
-    public void testBuiltInDollarCurleyBraceVarInServerXML() throws Exception {
-
-        //The value for this property is not found by the server.xml config source but by
-        //https://github.com/smallrye/smallrye-config/blob/3.3.0/implementation/src/main/java/io/smallrye/config/SysPropConfigSource.java
-
-        // Test that the environment variable set in the is accessible
-        configChecker.assertConfigPropertyContains("server.config.dir", "wlp/usr/server"); //With the `env.` prefix this should be translated by OSGiConfigUtils.getVariablesFromServerXML();
-    }
-
-    @Test
-    @SkipForRepeat(MicroProfileActions.MP33_ID)
     public void testEnvVarInServerXMLViaInject() throws Exception {
         // Test that the environment variable set in the is accessible via injected bean
         String injectedValue = serverXMLEnvVariable;

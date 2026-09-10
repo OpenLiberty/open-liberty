@@ -98,7 +98,7 @@ public class OSGiConfigUtils {
          * This special case was not included in the microprofile config specification, so it was removed from liberty docs but code remains for
          * backwards compatibility.
          *
-         * However this backwards compatibility does not extend to our microprofile config implementation. I am documenting this here because
+         * However this backwards compatibility intentionally does not extend to our microprofile config implementation. I am documenting this here because
          * I previously had a customer ask about this, and implemented code here to support it before learning that Liberty's mpConfig Impl
          * actually shouldn't treat ${env.X} as a special case.
          */

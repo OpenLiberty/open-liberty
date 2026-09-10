@@ -41,14 +41,14 @@ public class VarExpansionServlet extends FATServlet {
     ConfigChecker configChecker;
 
     /**
-     * When a server.xml variable's contents are a string containing commas the variable is treated as a comma seperated list.
+     * When a server.xml variable's contents are a string containing commas the variable is treated as a comma separated list.
      * This test verifies that mpConfig can access such a variable as either a {@code String[]} or a {@code List<String>}.
      */
     @Test
     public void testAppPropertyExpansionOfList() throws Exception {
 
         configChecker.assertConfigPropertyEquals("app.appPropertyExamplePorts", new String[] { "27017" }); //We get this value from io.openliberty.microprofile.config.internal.serverxml.AppPropertiesComponent.activate
-        //And AppPropertiesComponent.activate strips the list down to the first entry. I am very suspicious of this behavior, but this test is written to match the existing behavior first.
+        //And AppPropertiesComponent.activate receives the properties with any lists stripped down to the first entry. I am very suspicious of this behavior, but this test is written to match the existing behavior first.
         //Deciding what is the correct behavior is another task.
 
         List<String> hostsTestList = new ArrayList<String>();
@@ -173,6 +173,8 @@ public class VarExpansionServlet extends FATServlet {
         configChecker.assertConfigPropertyContains("shared.resource.dir", userDir.replace("\\", "/"));
 
         // 7. server.config.dir – must contain the server name
+        //Impl Note: The value for this property is not found by the server.xml config source but by
+        //https://github.com/smallrye/smallrye-config/blob/3.3.0/implementation/src/main/java/io/smallrye/config/SysPropConfigSource.java
         configChecker.assertConfigPropertyContains("server.config.dir", serverName);
 
         // 8. server.output.dir – must contain the server name (defaults to server.config.dir)

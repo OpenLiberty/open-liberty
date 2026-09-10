@@ -20,6 +20,7 @@ import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.microprofile.config13.impl.Config13ProviderResolverImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
+
 import io.openliberty.microprofile.config.internal.serverxml.OSGiConfigUtils;
 import io.openliberty.microprofile.config.internal.serverxml.TestServiceCaller;
 
@@ -31,9 +32,9 @@ public abstract class AbstractConfigTest {
     @Before
     public void before() throws Exception {
         setOSGiCallers(
-            new TestServiceCaller<CDIService>(CDIService.class),
-            new TestServiceCaller<ConfigVariables>(ConfigVariables.class),
-            new TestServiceCaller<VariableRegistry>(VariableRegistry.class));
+                       new TestServiceCaller<CDIService>(),
+                       new TestServiceCaller<ConfigVariables>(),
+                       new TestServiceCaller<VariableRegistry>());
         ConfigProviderResolver.setInstance(new Config13ProviderResolverImpl());
     }
 
@@ -42,9 +43,9 @@ public abstract class AbstractConfigTest {
         ((Config13ProviderResolverImpl) ConfigProviderResolver.instance()).shutdown();
         ConfigProviderResolver.setInstance(null);
         setOSGiCallers(
-            new ServiceCaller<CDIService>(OSGiConfigUtils.class, CDIService.class),
-            new ServiceCaller<ConfigVariables>(OSGiConfigUtils.class, ConfigVariables.class),
-            new ServiceCaller<VariableRegistry>(OSGiConfigUtils.class, VariableRegistry.class));
+                       new ServiceCaller<CDIService>(OSGiConfigUtils.class, CDIService.class),
+                       new ServiceCaller<ConfigVariables>(OSGiConfigUtils.class, ConfigVariables.class),
+                       new ServiceCaller<VariableRegistry>(OSGiConfigUtils.class, VariableRegistry.class));
     }
 
     private static void setOSGiCallers(ServiceCaller<CDIService> cdiCaller,
