@@ -309,12 +309,18 @@ public class McpCdiExtension implements Extension {
 
         for (ToolMetadata tool : tools.getAllTools()) {
             Set<String> names = new HashSet<>();
+            boolean reportedMissingName = false;
 
             for (ToolArgument argMetadata : tool.arguments()) {
                 for (var error : ToolValidation.validateToolArgument(argMetadata, tools.getConverterRegistry())) {
                     switch (error.type()) {
                         case NAME_BLANK -> Tr.error(tc, "CWMCM0001E.blank.arguments", tool.getToolQualifiedName());
-                        case NAME_MISSING -> Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());
+                        case NAME_MISSING -> {
+                            if (!reportedMissingName) {
+                                Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());
+                                reportedMissingName = true;
+                            }
+                        }
                         case NO_CONVERTER -> Tr.error(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type());
                         case CONVERSION_ERROR -> Tr.error(tc, "CWMCM0020E.defaultvalue.conversion.error", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type(),
                                                           argMetadata.defaultValue(), error.exception());
@@ -322,9 +328,13 @@ public class McpCdiExtension implements Extension {
                     foundErrors = true;
                 }
 
-                if (!names.add(argMetadata.name())) {
-                    Tr.error(tc, "CWMCM0002E.duplicate.arguments", tool.getToolQualifiedName(), argMetadata.name());
-                    foundErrors = true;
+                // Only check for duplicate names when the name is valid; invalid/sentinel names
+                // are already reported above and should not trigger a spurious CWMCM0002E error.
+                if (!argMetadata.name().isBlank() && !argMetadata.name().equals(ToolMetadata.MISSING_TOOL_ARG_NAME)) {
+                    if (!names.add(argMetadata.name())) {
+                        Tr.error(tc, "CWMCM0002E.duplicate.arguments", tool.getToolQualifiedName(), argMetadata.name());
+                        foundErrors = true;
+                    }
                 }
             }
         }

@@ -26,4 +26,11 @@ public class NoParamTools {
     public String missingToolArgAnnotation(String input) {
         return input;
     }
+
+    @Tool(name = "multipleUnnamedArgs", title = "Multiple Unnamed Args Tool", description = "Multiple args without names - CWMCM0003E should appear exactly once")
+    public String multipleUnnamedArgs(@ToolArg(description = "first arg") String first,
+                                      @ToolArg(description = "second arg") String second,
+                                      @ToolArg(description = "third arg") String third) {
+        return first + second + third;
+    }
 }
