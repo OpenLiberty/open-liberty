@@ -13,6 +13,7 @@
 package com.ibm.ws.security.utility.tasks;
 
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,17 +163,24 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
         String newPassword     = getArgumentValue(ARG_NEW_PASSWORD,      args, null);
         String ckdsLabel       = getArgumentValue(ARG_CKDS_LABEL,        args, null);
 
-        // Source encryptor: prefer currentPassword; fall back to ckdsLabel.
-        LTPAKeyEncryptor currentEncryptor = (currentPassword != null)
-                ? new KeyEncryptor(currentPassword.getBytes())
-                : buildCkdsEncryptor(ckdsLabel);
+        byte[] currentBytes = (currentPassword != null) ? currentPassword.getBytes(StandardCharsets.UTF_8) : null;
+        byte[] newBytes     = (newPassword     != null) ? newPassword.getBytes(StandardCharsets.UTF_8)     : null;
+        try {
+            // Source encryptor: prefer currentPassword; fall back to ckdsLabel.
+            LTPAKeyEncryptor currentEncryptor = (currentBytes != null)
+                    ? new KeyEncryptor(currentBytes)
+                    : buildCkdsEncryptor(ckdsLabel);
 
-        // Target encryptor: prefer newPassword; fall back to ckdsLabel.
-        LTPAKeyEncryptor newEncryptor = (newPassword != null)
-                ? new KeyEncryptor(newPassword.getBytes())
-                : buildCkdsEncryptor(ckdsLabel);
+            // Target encryptor: prefer newPassword; fall back to ckdsLabel.
+            LTPAKeyEncryptor newEncryptor = (newBytes != null)
+                    ? new KeyEncryptor(newBytes)
+                    : buildCkdsEncryptor(ckdsLabel);
 
-        ltpaKeyFileUtil.reEncryptLTPAKeysFile(currentFile, currentEncryptor, newFile, newEncryptor);
+            ltpaKeyFileUtil.reEncryptLTPAKeysFile(currentFile, currentEncryptor, newFile, newEncryptor);
+        } finally {
+            if (currentBytes != null) Arrays.fill(currentBytes, (byte) 0);
+            if (newBytes     != null) Arrays.fill(newBytes,     (byte) 0);
+        }
 
         stdout.println(getMessage("reEncryptLTPAKeys.success", newFile));
         return SecurityUtilityReturnCodes.OK;

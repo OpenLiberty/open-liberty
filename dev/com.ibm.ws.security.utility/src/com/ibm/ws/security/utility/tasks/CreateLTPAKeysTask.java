@@ -315,7 +315,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
             if (base64Key != null) {
                 // --passwordBase64Key: Base64-decode directly to AES_V2 key.
                 aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V2, base64Key);
-                hintLine = "    <!-- Set variable: wlp.aes.encryption.key=" + base64Key + " -->";
+                hintLine = "    <!-- Ensure the variable wlp.aes.encryption.key is set to the value supplied via --passwordBase64Key -->";
             } else if (aesConfigFile != null) {
                 // --aesConfigFile: parse the file; it contains either a base64 key (PROPERTY_AES_KEY)
                 // or a password key (PROPERTY_CRYPTO_KEY).
@@ -334,7 +334,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
                 // --passwordKey: PBKDF2 hash of the supplied string.
                 String keyStr = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
                 aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, keyStr);
-                hintLine = "    <!-- Set variable: wlp.password.encryption.key=" + keyStr + " -->";
+                hintLine = "    <!-- Ensure the variable wlp.password.encryption.key is set to the value supplied via --passwordKey -->";
             }
         }
 
