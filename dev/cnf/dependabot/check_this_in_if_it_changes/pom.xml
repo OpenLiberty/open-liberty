@@ -3637,6 +3637,11 @@
       <version>3.0.5</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.yasson</groupId>
+      <artifactId>yasson</artifactId>
+      <version>3.1.0-M1</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
       <version>1.0.11</version>

@@ -723,6 +723,7 @@ org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0
 org.eclipse.transformer:org.eclipse.transformer:0.5.0
 org.eclipse.yasson:yasson:3.0.5
+org.eclipse.yasson:yasson:3.1.0-M1
 org.eclipse:yasson:1.0.11
 org.eclipse:yasson:2.0.4
 org.ehcache:ehcache:3.9.3
