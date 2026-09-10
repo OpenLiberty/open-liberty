@@ -65,6 +65,16 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
         String publicKeyStr  = currentProps.getProperty(KEYIMPORT_PUBLICKEY);
         String realm         = currentProps.getProperty(KEYIMPORT_REALM, "defaultRealm");
 
+        if (secretKeyStr == null || secretKeyStr.isEmpty()) {
+            throw new IllegalArgumentException("LTPA key file missing required property: " + KEYIMPORT_SECRETKEY);
+        }
+        if (privateKeyStr == null || privateKeyStr.isEmpty()) {
+            throw new IllegalArgumentException("LTPA key file missing required property: " + KEYIMPORT_PRIVATEKEY);
+        }
+        if (publicKeyStr == null || publicKeyStr.isEmpty()) {
+            throw new IllegalArgumentException("LTPA key file missing required property: " + KEYIMPORT_PUBLICKEY);
+        }
+
         byte[] sharedKey  = currentEncryptor.decrypt(Base64Coder.base64DecodeString(secretKeyStr));
         byte[] privateKey = currentEncryptor.decrypt(Base64Coder.base64DecodeString(privateKeyStr));
         byte[] publicKey  = Base64Coder.base64DecodeString(publicKeyStr);

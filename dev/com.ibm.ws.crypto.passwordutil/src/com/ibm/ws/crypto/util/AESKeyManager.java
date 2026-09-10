@@ -268,8 +268,7 @@ public class AESKeyManager {
             return true;
         }
         char[] keyChars = getKeyCharsUsingResolver(version, null);
-        String keyString = new String(keyChars);
-        return !version.resolverProperty.equals(keyString);
+        return !Arrays.equals(keyChars, version.resolverProperty.toCharArray());
     }
 
     /**

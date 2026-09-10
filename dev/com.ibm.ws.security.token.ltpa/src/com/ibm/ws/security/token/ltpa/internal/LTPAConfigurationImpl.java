@@ -229,6 +229,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         Long oldExpirationDifferenceAllowed = expirationDifferenceAllowed;
         boolean oldMonitorValidationKeysDir = monitorValidationKeysDir;
         String oldUpdateTrigger = updateTrigger;
+        boolean oldUseEncryptionKey = useEncryptionKey;
         List<Properties> oldValidationKeys = new ArrayList<Properties>();
         oldValidationKeys.addAll(validationKeys);
 
@@ -239,7 +240,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         try {
             loadConfig(props);
 
-            if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
+            if (oldUseEncryptionKey != useEncryptionKey || isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
                 unsetFileMonitorRegistration();
                 Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
                 setupRuntimeLTPAInfrastructure();

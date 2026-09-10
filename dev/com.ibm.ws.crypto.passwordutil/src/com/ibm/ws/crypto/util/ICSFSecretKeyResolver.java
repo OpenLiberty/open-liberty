@@ -56,6 +56,11 @@ public class ICSFSecretKeyResolver implements SecretKeyResolver {
      * cause so the caller's stack trace reflects the actual call site, not class-load time.
      */
     private static final InvalidKeySpecException INIT_FAILURE;
+    /**
+     * Ensures the unavailability warning is emitted at most once, deferred to the first
+     * actual {@link #getKey()} call rather than at class-load time.
+     */
+    private static volatile boolean unavailabilityWarningLogged = false;
 
     static {
         Constructor<?> ctor = null;
@@ -66,9 +71,6 @@ public class ICSFSecretKeyResolver implements SecretKeyResolver {
             factory = SecretKeyFactory.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_AES, IBMJCECCA_PROVIDER);
         } catch (Exception e) {
             failure = new InvalidKeySpecException("IBMJCECCA provider or KeyLabelKeySpec unavailable on this platform", e);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "ICSF_PROVIDER_UNAVAILABLE", e);
-            }
         }
         KEY_LABEL_KEY_SPEC_CTOR = ctor;
         SECRET_KEY_FACTORY = factory;
@@ -102,13 +104,17 @@ public class ICSFSecretKeyResolver implements SecretKeyResolver {
     @Override
     public Key getKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
         if (INIT_FAILURE != null) {
+            if (!unavailabilityWarningLogged) {
+                unavailabilityWarningLogged = true;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "ICSF_PROVIDER_UNAVAILABLE", INIT_FAILURE.getCause());
+                }
+            }
             throw new InvalidKeySpecException(INIT_FAILURE.getMessage(), INIT_FAILURE);
         }
         try {
             KeySpec keySpec = (KeySpec) KEY_LABEL_KEY_SPEC_CTOR.newInstance(label);
             return SECRET_KEY_FACTORY.generateSecret(keySpec);
-        } catch (InvalidKeySpecException e) {
-            throw e;
         } catch (Exception e) {
             InvalidKeySpecException ex = new InvalidKeySpecException("Failed to obtain ICSF key for label: " + label, e);
             if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
@@ -121,6 +127,6 @@ public class ICSFSecretKeyResolver implements SecretKeyResolver {
     /** {@inheritDoc} */
     @Override
     public String getDescription() {
-        return "ICSFSecretKeyResolver[label=" + label + "]";
+        return "ICSFSecretKeyResolver [label=" + label + "]";
     }
 }

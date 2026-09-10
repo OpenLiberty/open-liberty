@@ -89,9 +89,10 @@ class LTPAKeyCreateTask implements Runnable {
     private LTPAKeyInfoManager getPreparedLtpaKeyInfoManager() throws Exception {
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
         if (config.isUseEncryptionKey()) {
+            LTPAKeyEncryptor encryptor = buildEncryptor();
             keyInfoManager.prepareLTPAKeyInfo(locService,
                                               config.getPrimaryKeyFile(),
-                                              buildEncryptor(),
+                                              encryptor,
                                               config.getValidationKeys(),
                                               config.getTryToReEncryptLtpaKeys());
         } else {

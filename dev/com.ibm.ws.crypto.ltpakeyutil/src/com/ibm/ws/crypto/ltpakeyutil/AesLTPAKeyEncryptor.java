@@ -23,11 +23,12 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * An {@link LTPAKeyEncryptor} that encrypts and decrypts LTPA key material
  * using a raw AES {@link Key}. The cipher is always {@code AES/CBC/PKCS5Padding}.
  *
- * <p>A fixed well-known 16-byte IV is used for all operations. Using a fixed IV
- * is intentional: the LTPA key file is a configuration artifact (not user data),
- * and the key itself provides the necessary entropy. Hardware-backed keys
- * (e.g. ICSF/CKDS) return {@code null} from {@code getEncoded()}, so deriving
- * the IV from key bytes is not possible in the general case.
+ * <p>A fresh random 16-byte IV is generated on every {@link #encrypt} call and
+ * prepended to the ciphertext. {@link #decrypt} reads the first 16 bytes as the
+ * IV before decrypting the remainder. This avoids a fixed all-zero IV while
+ * requiring no access to the key's raw bytes, which makes it compatible with
+ * hardware-backed keys (e.g. ICSF/CKDS) that return {@code null} from
+ * {@code getEncoded()}.
  *
  * <p>This class lives in {@code com.ibm.ws.crypto.ltpakeyutil} so that it can be
  * used from both {@code com.ibm.ws.security.token.ltpa} and
@@ -38,12 +39,7 @@ public class AesLTPAKeyEncryptor implements LTPAKeyEncryptor {
     /** AES/CBC cipher — same value as {@code CryptoUtils.AES_CBC_CIPHER}. */
     private static final String AES_CIPHER = CryptoUtils.AES_CBC_CIPHER;
 
-    /**
-     * Fixed 16-byte IV shared by all instances. Hardware-backed AES keys cannot
-     * expose their raw bytes to derive a key-dependent IV, so a well-known
-     * constant is used instead.
-     */
-    private static final IvParameterSpec FIXED_IV = new IvParameterSpec(new byte[16]);
+    private static final int IV_LENGTH = 16;
 
     private final Key aesKey;
 
@@ -60,16 +56,22 @@ public class AesLTPAKeyEncryptor implements LTPAKeyEncryptor {
     /** {@inheritDoc} */
     @Override
     public byte[] encrypt(byte[] data) throws Exception {
+        byte[] iv = CryptoUtils.generateRandomBytes(IV_LENGTH);
         Cipher cipher = Cipher.getInstance(AES_CIPHER);
-        cipher.init(Cipher.ENCRYPT_MODE, aesKey, FIXED_IV);
-        return cipher.doFinal(data);
+        cipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(iv));
+        byte[] encrypted = cipher.doFinal(data);
+        byte[] result = new byte[IV_LENGTH + encrypted.length];
+        System.arraycopy(iv, 0, result, 0, IV_LENGTH);
+        System.arraycopy(encrypted, 0, result, IV_LENGTH, encrypted.length);
+        return result;
     }
 
     /** {@inheritDoc} */
     @Override
     public byte[] decrypt(byte[] encryptedData) throws Exception {
+        IvParameterSpec iv = new IvParameterSpec(encryptedData, 0, IV_LENGTH);
         Cipher cipher = Cipher.getInstance(AES_CIPHER);
-        cipher.init(Cipher.DECRYPT_MODE, aesKey, FIXED_IV);
-        return cipher.doFinal(encryptedData);
+        cipher.init(Cipher.DECRYPT_MODE, aesKey, iv);
+        return cipher.doFinal(encryptedData, IV_LENGTH, encryptedData.length - IV_LENGTH);
     }
 }
