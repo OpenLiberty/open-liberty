@@ -216,11 +216,21 @@ public class DefaultConfigIdTests {
             conn.disconnect();
         }
 
-        // Small pause
-        Thread.sleep(1000);
+        // Poll for the async LoggerOffThread to flush the entry to disk (up to 10 seconds)
+        List<String> lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
+        long timeout = 10000;
+        long pollInterval = 500;
+        long elapsed = 0;
+        while (elapsed < timeout) {
+            lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
+            if (lines.size() == (initialLineCount + 1)) {
+                break;
+            }
+            Thread.sleep(pollInterval);
+            elapsed += pollInterval;
+        }
 
         // Check that access log has one more entry than before
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
         assertTrue("Access log should have one more line entry", (initialLineCount + 1) == lines.size());
 
         String lastLine = lines.get(lines.size() - 1);
