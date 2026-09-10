@@ -83,7 +83,7 @@ io.openliberty.org.opensaml:opensaml-xacml-saml-api:4.3.2.1
 io.openliberty.org.opensaml:opensaml-xacml-saml-impl:4.3.2.1
 io.openliberty.org.opensaml:opensaml-xmlsec-api:4.3.2.1
 io.openliberty.org.opensaml:opensaml-xmlsec-impl:4.3.2.1
-io.openliberty.yoko:yoko-core:1.6.2.20260723_ead0c0a13b
+io.openliberty.yoko:yoko-core:0.0.0.dev_20261011_3809158788
 io.openliberty.yoko:yoko-osgi:1.6.2.20260723_ead0c0a13b
 io.openliberty.yoko:yoko-rmi-impl:1.6.2.20260723_ead0c0a13b
 io.openliberty.yoko:yoko-rmi-spec:1.6.2.20260723_ead0c0a13b
