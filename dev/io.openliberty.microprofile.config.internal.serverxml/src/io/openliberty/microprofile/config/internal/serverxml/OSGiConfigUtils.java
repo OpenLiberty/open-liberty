@@ -46,6 +46,7 @@ public class OSGiConfigUtils {
     /** Specifies the nested AppProperties Property value for a Factory PID sought in the Configuration */
     private static final String CFG_APP_PROPERTIES_PROPERTY = "com.ibm.ws.appconfig.appProperties.property";
 
+    //Not final as these are replaced by mock classes in unittests
     private static ServiceCaller<CDIService> cdiServiceCaller = new ServiceCaller<CDIService>(OSGiConfigUtils.class, CDIService.class);
     private static ServiceCaller<ConfigVariables> configVariablesCaller = new ServiceCaller<ConfigVariables>(OSGiConfigUtils.class, ConfigVariables.class);
     private static ServiceCaller<VariableRegistry> variableRegistryCaller = new ServiceCaller<VariableRegistry>(OSGiConfigUtils.class, VariableRegistry.class);

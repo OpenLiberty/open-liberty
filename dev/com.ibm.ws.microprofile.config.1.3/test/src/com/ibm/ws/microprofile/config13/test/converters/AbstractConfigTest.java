@@ -9,32 +9,19 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config13.test.converters;
 
-import java.lang.reflect.Field;
-
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.After;
 import org.junit.Before;
 
-import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.config.xml.ConfigVariables;
-import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.microprofile.config13.impl.Config13ProviderResolverImpl;
-import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 
-import io.openliberty.microprofile.config.internal.serverxml.OSGiConfigUtils;
-import io.openliberty.microprofile.config.internal.serverxml.TestServiceCaller;
+import io.openliberty.microprofile.config.fat.repeat.UnitTestUtils;
 
-/**
- *
- */
 public abstract class AbstractConfigTest {
 
     @Before
     public void before() throws Exception {
-        setOSGiCallers(
-                       new TestServiceCaller<CDIService>(),
-                       new TestServiceCaller<ConfigVariables>(),
-                       new TestServiceCaller<VariableRegistry>());
+        UnitTestUtils.mockOSGiCallers();
         ConfigProviderResolver.setInstance(new Config13ProviderResolverImpl());
     }
 
@@ -42,26 +29,6 @@ public abstract class AbstractConfigTest {
     public void after() throws Exception {
         ((Config13ProviderResolverImpl) ConfigProviderResolver.instance()).shutdown();
         ConfigProviderResolver.setInstance(null);
-        setOSGiCallers(
-                       new ServiceCaller<CDIService>(OSGiConfigUtils.class, CDIService.class),
-                       new ServiceCaller<ConfigVariables>(OSGiConfigUtils.class, ConfigVariables.class),
-                       new ServiceCaller<VariableRegistry>(OSGiConfigUtils.class, VariableRegistry.class));
+        UnitTestUtils.restoreOSGiCallers();
     }
-
-    private static void setOSGiCallers(ServiceCaller<CDIService> cdiCaller,
-                                       ServiceCaller<ConfigVariables> configVarsCaller,
-                                       ServiceCaller<VariableRegistry> varRegistryCaller) throws Exception {
-        Field cdiField = OSGiConfigUtils.class.getDeclaredField("cdiServiceCaller");
-        cdiField.setAccessible(true);
-        cdiField.set(null, cdiCaller);
-
-        Field configVarsField = OSGiConfigUtils.class.getDeclaredField("configVariablesCaller");
-        configVarsField.setAccessible(true);
-        configVarsField.set(null, configVarsCaller);
-
-        Field varRegField = OSGiConfigUtils.class.getDeclaredField("variableRegistryCaller");
-        varRegField.setAccessible(true);
-        varRegField.set(null, varRegistryCaller);
-    }
-
 }

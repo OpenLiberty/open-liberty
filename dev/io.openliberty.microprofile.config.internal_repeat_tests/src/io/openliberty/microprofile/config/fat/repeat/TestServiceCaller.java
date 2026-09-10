@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal.serverxml;
+package io.openliberty.microprofile.config.fat.repeat;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -46,5 +46,4 @@ public class TestServiceCaller<S> extends ServiceCaller<S> {
     @Override
     public void unget() {
     }
-
 }
