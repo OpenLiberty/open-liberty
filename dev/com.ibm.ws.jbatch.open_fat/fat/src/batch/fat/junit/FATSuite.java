@@ -64,6 +64,7 @@ import componenttest.topology.impl.LibertyServer;
         LocalServerJobRecoveryAtStartUpTest.class,
         MiscTest.class,
         TranTimeoutTest.class,
+        TranTimeoutJakartaTest.class,
         DDLTest.class,
         SkipRetryHandlerTest.class,
         JPAPersistenceManagerImplTest.class,
