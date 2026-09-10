@@ -121,14 +121,16 @@ encode.option-key.keyringType=\
 \ \ \ \ --keyringType=[keyringType]
 encode.option-desc.keyringType=\
 \tSpecify the key storage type. Use JCERACFKS, JCECCARACFKS, or\n\
-\tJCEHYBRIDRACFKS for a SAF keyring. Use ICSF to use a hardware\n\
-\tAES key from the ICSF Cryptographic Key Data Set; in this case\n\
-\t--keyring is not required.
+\tJCEHYBRIDRACFKS for a SAF keyring. To retrieve a hardware\n\
+\tAdvanced Encryption Standard (AES) key from the Integrated\n\
+\tCryptographic Service Facility (ICSF) Cryptographic Key Data Set\n\
+\t(CKDS), specify ICSF; the --keyring option is not required in this case.
 encode.option-key.keyLabel=\
 \ \ \ \ --keyLabel=[keyLabel]
 encode.option-desc.keyLabel=\
-\tFor SAF keyring types, specify the label of the certificate within\n\
-\tthe keyring. For ICSF, specify the ICSF key label.
+\tFor System Authorization Facility (SAF) keyring types, specify the\n\
+\tcertificate label in the keyring. For Integrated Cryptographic\n\
+\tService Facility (ICSF), specify the key label.
 
 
 
@@ -265,9 +267,9 @@ createLTPAKeys.usage.options=\
 createLTPAKeys.required-key.password=\
 \ \ \ \ --password[=pwd]
 createLTPAKeys.required-desc.password=\
-\tLTPA keys password. If no value is defined you will be prompted.\n\
-\tNot required when --useEncryptionKey=true is specified.\n\
-\tCannot be combined with --useEncryptionKey=true.
+\tThe password for the Lightweight Third Party Authentication (LTPA)\n\
+\tkeys file. If you do not specify a value, you are prompted to enter\n\
+\tone. This option cannot be used with --useEncryptionKey=true.
 createLTPAKeys.option-key.server=\
 \ \ \ \ --server=name
 createLTPAKeys.option-desc.server=\
@@ -312,27 +314,33 @@ createLTPAKeys.option-desc.aesConfigFile=\
 createLTPAKeys.option-key.useEncryptionKey=\
 \ \ \ \ --useEncryptionKey=[true|false]
 createLTPAKeys.option-desc.useEncryptionKey=\
-\tWhen set to true, the LTPA file is protected directly by an AES key\n\
-\trather than a password. --password must not be specified. One of the\n\
-\tfollowing key configurations must be supplied:\n\
-\t  --passwordKey, --passwordBase64Key, --aesConfigFile (non-z/OS or z/OS),\n\
-\t  or --keyring + --keyringType + --keyLabel for a SAF keyring (z/OS only),\n\
-\t  or --keyringType=ICSF + --keyLabel for an ICSF hardware key (z/OS only).\n\
-\tThe server.xml snippet will include useEncryptionKey="true" on the\n\
-\t<ltpa> element plus a hint line for the runtime key configuration.
+\tWhen set to true, an Advanced Encryption Standard (AES) key protects\n\
+\tthe Lightweight Third Party Authentication (LTPA) file directly rather\n\
+\tthan a password. Do not specify --password. You must also specify one\n\
+\tof the following key configurations:\n\
+\t  --passwordKey, --passwordBase64Key, or --aesConfigFile\n\
+\t  --keyring + --keyringType + --keyLabel for a System Authorization\n\
+\t  Facility (SAF) keyring (z/OS only)\n\
+\t  --keyringType=ICSF + --keyLabel for an ICSF hardware key (z/OS only)\n\
+\tThe server.xml snippet includes useEncryptionKey="true" on the <ltpa>\n\
+\telement and a hint line for the runtime key configuration.
 createLTPAKeys.option-key.keyring=\
 \ \ \ \ --keyring=[keyring]
 createLTPAKeys.option-desc.keyring=\
-\t(z/OS only) The SAF keyring URL where the AES encryption key is located.\n\
-\tNot required when --keyringType=ICSF is specified.
+\t(z/OS only) The System Authorization Facility (SAF) keyring URL that\n\
+\tcontains the Advanced Encryption Standard (AES) encryption key. This\n\
+\toption is not required when you specify --keyringType=ICSF.
 createLTPAKeys.option-key.keyringType=\
 \ \ \ \ --keyringType=[keyringType]
 createLTPAKeys.option-desc.keyringType=\
 \t(z/OS only) The key storage type. Use JCERACFKS, JCECCARACFKS, or\n\
-\tJCEHYBRIDRACFKS for a SAF keyring. Use ICSF to protect the LTPA\n\
-\tkey material using a hardware AES key from the ICSF Cryptographic\n\
-\tKey Data Set; in this case --keyring and --password are not required\n\
-\tand useEncryptionKey="true" will be set in the server.xml snippet.
+\tJCEHYBRIDRACFKS for a System Authorization Facility (SAF) keyring.\n\
+\tSpecify ICSF to protect Lightweight Third Party Authentication (LTPA)\n\
+\tkey material by using a hardware Advanced Encryption Standard (AES)\n\
+\tkey from the Integrated Cryptographic Service Facility (ICSF)\n\
+\tCryptographic Key Data Set (CKDS). When you specify ICSF, the\n\
+\t--keyring and --password options are not required and\n\
+\tuseEncryptionKey="true" is set in the server.xml snippet.
 createLTPAKeys.option-key.keyLabel=\
 \ \ \ \ --keyLabel=[keyLabel]
 createLTPAKeys.option-desc.keyLabel=\
