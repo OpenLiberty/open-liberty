@@ -44,6 +44,7 @@ Include-Resource: OSGI-INF=resources/OSGI-INF
 	io.openliberty.yoko.osgi;version=latest,\
 	com.ibm.ws.transport.iiop;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 
 -testpath: \

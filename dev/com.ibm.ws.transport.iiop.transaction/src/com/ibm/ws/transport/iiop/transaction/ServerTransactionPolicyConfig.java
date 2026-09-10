@@ -16,16 +16,19 @@ import java.io.Serializable;
 
 /**
  * Lightweight, truly serializable configuration for server transaction policy.
- * 
- * This class contains only configuration data (primitives and immutable objects),
+ *
+ * <p>This class contains only configuration data (primitives and immutable objects),
  * making it genuinely serializable as required by the CORBA specification.
- * 
- * Services (TransactionManager, RemoteTransactionController, import handlers) are
- * accessed separately via TransactionServiceLocator, not stored in this config.
- * 
- * This design provides clean separation of concerns:
- * - Policy configuration (this class) - what to do
- * - Service access (TransactionServiceLocator) - how to do it
+ *
+ * <p>Services (TransactionManager, RemoteTransactionController, import handlers) are
+ * accessed at request time via {@code ServiceCaller<TransactionHandlerContext>} in the
+ * interceptors — not stored in this config.
+ *
+ * <p>This design provides clean separation of concerns:
+ * <ul>
+ *   <li>Policy configuration (this class) — what to do</li>
+ *   <li>Service access ({@code ServiceCaller}) — how to reach the runtime services</li>
+ * </ul>
  */
 public class ServerTransactionPolicyConfig implements Serializable {
     private static final long serialVersionUID = 1L;

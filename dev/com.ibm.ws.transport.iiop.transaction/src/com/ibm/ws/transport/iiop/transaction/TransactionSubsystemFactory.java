@@ -42,25 +42,24 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
 
-@Component(configurationPolicy = IGNORE, property = { "service.ranking:Integer=2" })
-public class TransactionSubsystemFactory implements SubsystemFactory {
+@Component(configurationPolicy = IGNORE,
+           service = { SubsystemFactory.class, TransactionHandlerContext.class },
+           property = { "service.ranking:Integer=2" })
+public class TransactionSubsystemFactory implements SubsystemFactory, TransactionHandlerContext {
     private static final TraceComponent tc = Tr.register(TransactionSubsystemFactory.class, "IIOP", null);
     
-    /**
-     * Static reference to the active factory instance.
-     * This is needed because the ORB's LocalFactory mechanism may create new instances
-     * of MyLocalFactory, so we need a static way to access the factory.
-     */
-    private static volatile TransactionSubsystemFactory activeFactory;
-    
     private static class MyLocalFactory implements LocalFactory {
+        @Override
         public Class<?> forName(String name) throws ClassNotFoundException {
             return TransactionInitializer.class;
         }
-        
+
+        @Override
         @SuppressWarnings("rawtypes")
         public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
-            return new TransactionInitializer(activeFactory);
+            // Yoko's ORBInitializer path never calls this — it invokes the no-args constructor
+            // directly via reflection. This override satisfies the LocalFactory contract.
+            return new TransactionInitializer();
         }
     }
 
@@ -89,16 +88,6 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
         this.transactionManager = transactionManager;
         this.remoteTransactionController = remoteTransactionController;
 
-        activeFactory = this;
-
-        TransactionServiceLocator locator = createServiceLocator();
-        if (locator != null) {
-            TransactionServiceLocator.setInstance(locator);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Eagerly initialized service locator");
-            }
-        }
-
         transactionInitializerClass = new ServiceProvider(new MyLocalFactory(), TransactionInitializer.class);
         providerRegistry.registerProvider(transactionInitializerClass);
     }
@@ -125,22 +114,19 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
     }
 
     /**
-     * Get the TransactionManager for this subsystem.
-     *
-     * @return the TransactionManager, or null if not available
+     * {@inheritDoc}
      */
+    @Override
     public TransactionManager getTransactionManager() {
         return transactionManager;
     }
 
     /**
-     * Get the active factory instance. This is called by IORTransactionInterceptor
-     * at runtime to retrieve protocol contributors.
-     *
-     * @return the active factory, or null if not yet activated
+     * {@inheritDoc}
      */
-    public static TransactionSubsystemFactory getActiveFactory() {
-        return activeFactory;
+    @Override
+    public RemoteTransactionController getRemoteTransactionController() {
+        return remoteTransactionController;
     }
 
     /**
@@ -152,31 +138,9 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
         return Collections.unmodifiableList(new ArrayList<>(providers.values()));
     }
 
-    /**
-     * Creates a service locator with current services.
-     *
-     * This is called during activation to eagerly initialize the locator,
-     * or by TransactionServiceLocator.getInstance() for lazy initialization.
-     *
-     * @return a new service locator, or null if services not yet available
-     */
-    public TransactionServiceLocator createServiceLocator() {
-        TransactionHandlerContext context = new TransactionHandlerContextImpl(
-            remoteTransactionController,
-            transactionManager
-        );
-
-        return TransactionServiceLocator.create(context, providers);
-    }
-    
-
     @Deactivate
     protected void deactivate() {
         providerRegistry.unregisterProvider(transactionInitializerClass);
-        // Clear the service locator
-        TransactionServiceLocator.clearInstance();
-        // Clear the static reference
-        activeFactory = null;
     }
 
     @Override

@@ -24,9 +24,9 @@ import org.omg.CORBA.Policy;
  * transaction subsystem is properly initialized and ready to propagate
  * transactions.
  *
- * This policy does not carry configuration data or service references - it
+ * <p>This policy carries no configuration data or service references — it
  * simply signals that transaction propagation is enabled. The interceptor
- * uses TransactionSubsystemFactory.getActiveFactory() to access exporters.
+ * accesses the transaction subsystem via {@code ServiceCaller<TransactionHandlerContext>}.
  *
  * @version $Rev: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */

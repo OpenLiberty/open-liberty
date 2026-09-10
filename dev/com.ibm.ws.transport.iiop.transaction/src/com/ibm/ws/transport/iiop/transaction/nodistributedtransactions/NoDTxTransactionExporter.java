@@ -12,8 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.transaction.nodistributedtransactions;
 
-import javax.transaction.Status;
-import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.Xid;
@@ -152,14 +150,6 @@ public class NoDTxTransactionExporter {
         }
     }
     
-    private static boolean isTransactionActive(TransactionManager transactionManager) {
-        try {
-            int status = transactionManager.getStatus();
-            return status == Status.STATUS_ACTIVE || status == Status.STATUS_MARKED_ROLLBACK;
-        } catch (SystemException ignored) {
-            return false;
-        }
-    }
 }
 
 // Made with Bob

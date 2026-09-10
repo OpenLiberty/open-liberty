@@ -30,8 +30,13 @@ import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * ORB initializer for transaction support. Registers transaction interceptors
- * and policy factories. The IOR interceptor retrieves protocol contributions
- * at runtime from the factory.
+ * and policy factories.
+ *
+ * <p>Yoko resolves ORBInitializer implementations by calling
+ * {@link org.apache.yoko.osgi.locator.LocalFactory#forName} to load the class, then
+ * instantiating it via reflection using the no-args constructor. The factory access
+ * needed by the interceptors at runtime is performed via the OSGi service registry
+ * through {@code ServiceCaller<TransactionHandlerContext>} held by each interceptor.
  *
  * @version $Revision: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
@@ -39,35 +44,14 @@ public class TransactionInitializer extends LocalObject implements ORBInitialize
     private static final long serialVersionUID = 1L;
     private static final Encoding CDR_1_2_ENCODING = new Encoding(ENCODING_CDR_ENCAPS.value, (byte) 1, (byte) 2);
     private static final TraceComponent tc = Tr.register(TransactionInitializer.class, "IIOP", null);
-    
-    /**
-     * Static reference to the factory, set when TransactionInitializer is constructed.
-     * This allows IORTransactionInterceptor to retrieve the factory at runtime.
-     */
-    private static volatile TransactionSubsystemFactory staticFactory;
-    
-    private final TransactionSubsystemFactory factory;
 
-    public TransactionInitializer() {
-        this(null);
-    }
-    
-    public TransactionInitializer(TransactionSubsystemFactory factory) {
-        this.factory = factory;
-        staticFactory = factory;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "TransactionInitializer.<init> with factory: {0}", factory);
-        }
-    }
-    
     /**
-     * Get the factory instance. This is called by IORTransactionInterceptor at runtime
-     * to retrieve protocol contributors.
-     *
-     * @return the factory, or null if not yet initialized
+     * No-args constructor — Yoko always instantiates ORBInitializer implementations via
+     * reflection using the no-args constructor. Factory access is performed at interceptor
+     * call time via the OSGi service registry.
      */
-    public static TransactionSubsystemFactory getFactory() {
-        return staticFactory;
+    public TransactionInitializer() {
+        // Intentionally empty
     }
 
     /**
@@ -121,7 +105,7 @@ public class TransactionInitializer extends LocalObject implements ORBInitialize
             try {
                 info.add_client_request_interceptor(new ClientTransactionInterceptor(codec));
                 info.add_server_request_interceptor(new ServerTransactionInterceptor(codec));
-                info.add_ior_interceptor(new IORTransactionInterceptor(codec, factory));
+                info.add_ior_interceptor(new IORTransactionInterceptor(codec));
             } catch (DuplicateName duplicateName) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Duplicate name", duplicateName);

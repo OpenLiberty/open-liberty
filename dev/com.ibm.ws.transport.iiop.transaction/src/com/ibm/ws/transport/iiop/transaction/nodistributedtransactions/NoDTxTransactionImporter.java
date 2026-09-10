@@ -86,7 +86,6 @@ public class NoDTxTransactionImporter {
                 // Create non-interop transaction
                 setupNonInterOpTransaction(txHandlerContext);
             } else {
-                // Use the new lookupTransaction method that takes byte[] directly
                 DistributableTransaction tx = txHandlerContext.getRemoteTransactionController().lookupTransaction(tid);
 
                 if (tx != null) {
@@ -113,14 +112,14 @@ public class NoDTxTransactionImporter {
     }
 
     /**
-     * No-op cleanup method.
+     * Suspends the current transaction and removes the thread association for
+     * the previously imported transaction.
      *
      * @param context context providing access to shared services
-     * @throws TransactionImportFailed never thrown
      */
     public void unimportTransaction(TransactionHandlerContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "NoDTxTransactionImporter.unimportTransaction() - no-op");
+            Tr.debug(tc, "NoDTxTransactionImporter.unimportTransaction()");
         }
 
         try {
@@ -150,7 +149,7 @@ public class NoDTxTransactionImporter {
         ((EmbeddableWebSphereTransactionManager)txHandlerContext.getTransactionManager()).resumeForImport(theTx);
         _threadImportedTran.set(theTx);
         } catch (Exception e) {
-            // Should never get here but if we do, make the request fail and indicate teh transaction should rollback
+            // Should never get here but if we do, make the request fail and indicate the transaction should rollback
             throw (TRANSACTION_ROLLEDBACK) new TRANSACTION_ROLLEDBACK().initCause(e);
         }
     }

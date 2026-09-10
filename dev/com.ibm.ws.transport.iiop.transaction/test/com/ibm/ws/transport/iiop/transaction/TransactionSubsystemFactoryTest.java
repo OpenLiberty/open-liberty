@@ -14,12 +14,10 @@ package com.ibm.ws.transport.iiop.transaction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.transaction.TransactionManager;
@@ -30,7 +28,6 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.omg.CORBA.Policy;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +36,7 @@ import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvid
 
 /**
  * Unit tests for the pure-Java subset of {@link TransactionSubsystemFactory}:
- * provider registration/removal, getProviders, and createServiceLocator.
+ * provider registration/removal, getProviders, and TransactionHandlerContext getters.
  *
  * <p>Also contains the single worthwhile {@link ServerTransactionPolicy} assertion
  * (copy() shares the same config reference) since that policy is created by the
@@ -67,23 +64,6 @@ public class TransactionSubsystemFactoryTest {
             allowing(providerRegistry).registerProvider(with(any(ServiceProvider.class)));
         }});
         factory = new TransactionSubsystemFactory(providerRegistry, tm, rtc);
-    }
-
-    @After
-    public void tearDown() {
-        // Clear any locator or active factory the constructor may have pushed during tests
-        TransactionServiceLocator.clearInstance();
-        setActiveFactory(null);
-    }
-
-    private static void setActiveFactory(TransactionSubsystemFactory factory) {
-        try {
-            Field field = TransactionSubsystemFactory.class.getDeclaredField("activeFactory");
-            field.setAccessible(true);
-            field.set(null, factory);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not set activeFactory via reflection", e);
-        }
     }
 
     // -------------------------------------------------------------------------
@@ -140,13 +120,19 @@ public class TransactionSubsystemFactoryTest {
     }
 
     // -------------------------------------------------------------------------
-    // createServiceLocator
+    // TransactionHandlerContext getter methods
     // -------------------------------------------------------------------------
 
     @Test
-    public void testCreateServiceLocator_constructorDependenciesPresent_returnsLocator() {
-        assertNotNull("createServiceLocator() must return a non-null locator when constructed with required services",
-                      factory.createServiceLocator());
+    public void testGetTransactionManager_returnsSameInstance() {
+        assertSame("getTransactionManager() must return the TM passed to constructor",
+                   tm, factory.getTransactionManager());
+    }
+
+    @Test
+    public void testGetRemoteTransactionController_returnsSameInstance() {
+        assertSame("getRemoteTransactionController() must return the RTC passed to constructor",
+                   rtc, factory.getRemoteTransactionController());
     }
 
     // -------------------------------------------------------------------------

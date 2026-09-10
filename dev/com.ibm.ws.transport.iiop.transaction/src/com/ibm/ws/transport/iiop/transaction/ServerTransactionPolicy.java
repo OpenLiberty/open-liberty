@@ -20,14 +20,15 @@ import org.omg.CORBA.Policy;
 
 /**
  * CORBA policy for server transaction configuration.
- * 
- * This policy holds lightweight, truly serializable configuration data.
+ *
+ * <p>This policy holds lightweight, truly serializable configuration data.
  * Services (TransactionManager, RemoteTransactionController, import handlers)
- * are accessed separately via TransactionServiceLocator.
- * 
- * This design satisfies CORBA specification requirements for serializable policies
+ * are accessed at request time via {@code ServiceCaller<TransactionHandlerContext>}
+ * in the interceptors — not stored here.
+ *
+ * <p>This design satisfies CORBA specification requirements for serializable policies
  * while maintaining access to non-serializable OSGi services.
- * 
+ *
  * @version $Rev: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
 public class ServerTransactionPolicy extends LocalObject implements Policy {

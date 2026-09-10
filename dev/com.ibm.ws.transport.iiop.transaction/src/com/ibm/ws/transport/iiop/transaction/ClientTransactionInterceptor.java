@@ -47,6 +47,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxTransactionExporter;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
@@ -77,13 +78,12 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
     private final ThreadLocal<TransactionProtocolProvider> activeProviders = new ThreadLocal<>();
     private final NoDTxTransactionExporter noDTxExporter = new NoDTxTransactionExporter();
 
+    private static final ServiceCaller<TransactionHandlerContext> contextCaller =
+        new ServiceCaller<>(TransactionSubsystemFactory.class, TransactionHandlerContext.class);
+
     public ClientTransactionInterceptor(Codec codec) {
         this.codec = codec;
         if (tc.isDebugEnabled()) Tr.debug(tc, "Registered");
-    }
-
-    private TransactionManager getTransactionManager() {
-        return TransactionServiceLocator.getInstance().getContext().getTransactionManager();
     }
 
     // -------------------------------------------------------------------------
@@ -110,7 +110,7 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
         // This matches tWAS TxClientInterceptor.receive_common's else-if structure.
         if (hadActiveTx && ri.reply_status() == SYSTEM_EXCEPTION.value
                 && !hasReplyServiceContext(ri)) {
-            setRollbackOnly(false);
+            contextCaller.call(ctx -> setRollbackOnly(ctx, false));
             throw new TRANSACTION_ROLLEDBACK("Transaction rolled back due to system exception");
         }
     }
@@ -148,33 +148,33 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
         }
         activeProviders.remove();
 
-        try {
-            if (getTransactionManager().getTransaction() != null) {
-                TransactionHandlerContext context =
-                    TransactionServiceLocator.getInstance().getContext();
-                try {
-                    if (provider == NODTX_SENTINEL) {
-                        noDTxExporter.unexportTransaction(ri, context, exceptionOccurred);
-                    } else {
-                        provider.unexportTransaction(ri, context, exceptionOccurred);
+        contextCaller.call(ctx -> {
+            try {
+                if (ctx.getTransactionManager().getTransaction() != null) {
+                    try {
+                        if (provider == NODTX_SENTINEL) {
+                            noDTxExporter.unexportTransaction(ri, ctx, exceptionOccurred);
+                        } else {
+                            provider.unexportTransaction(ri, ctx, exceptionOccurred);
+                        }
+                    } catch (com.ibm.tx.remote.TRANSACTION_ROLLEDBACK ibmTrb) {
+                        // IBM-internal unchecked exception from resumeAssociation — translate to CORBA
+                        if (tc.isDebugEnabled()) Tr.debug(tc, "resumeAssociation threw IBM TRANSACTION_ROLLEDBACK", ibmTrb);
+                        FFDCFilter.processException(ibmTrb, getClass().getName(), "resumeTxOnReply", this);
+                        setRollbackOnly(ctx, true);
+                        throw new TRANSACTION_ROLLEDBACK(ibmTrb.getMessage());
+                    } catch (TRANSACTION_ROLLEDBACK corbaTrb) {
+                        // Provider threw the CORBA version — mark rollback and propagate
+                        setRollbackOnly(ctx, false);
+                        throw corbaTrb;
                     }
-                } catch (com.ibm.tx.remote.TRANSACTION_ROLLEDBACK ibmTrb) {
-                    // IBM-internal unchecked exception from resumeAssociation — translate to CORBA
-                    if (tc.isDebugEnabled()) Tr.debug(tc, "resumeAssociation threw IBM TRANSACTION_ROLLEDBACK", ibmTrb);
-                    FFDCFilter.processException(ibmTrb, getClass().getName(), "resumeTxOnReply", this);
-                    setRollbackOnly(true);
-                    throw new TRANSACTION_ROLLEDBACK(ibmTrb.getMessage());
-                } catch (TRANSACTION_ROLLEDBACK corbaTrb) {
-                    // Provider threw the CORBA version — mark rollback and propagate
-                    setRollbackOnly(true);
-                    throw corbaTrb;
+                } else {
+                    if (tc.isDebugEnabled()) Tr.debug(tc, "Provider existed but no current transaction");
                 }
-            } else {
-                if (tc.isDebugEnabled()) Tr.debug(tc, "Provider existed but no current transaction");
+            } catch (SystemException se) {
+                throw (INTERNAL) new INTERNAL().initCause(se);
             }
-        } catch (SystemException se) {
-            throw (INTERNAL) new INTERNAL().initCause(se);
-        }
+        });
     }
 
     @Override
@@ -185,72 +185,74 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
     // -------------------------------------------------------------------------
 
     @Override
-    @FFDCIgnore(BAD_PARAM.class)
     public void send_request(ClientRequestInfo ri) throws ForwardRequest {
 
-        // Gate on policy presence
+        // Gate on policy presence — no context needed
         ClientTransactionPolicy policy =
             (ClientTransactionPolicy) ri.get_request_policy(ClientTransactionPolicyFactory.POLICY_TYPE);
         if (policy == null) return;
 
-        TransactionServiceLocator locator = TransactionServiceLocator.getInstance();
-        TransactionHandlerContext context = locator.getContext();
-        TransactionManager tm = context.getTransactionManager();
+        // Wrap everything that needs the transaction context in a ServiceCaller call.
+        // If the transaction subsystem is not active, call() returns false and we no-op.
+        contextCaller.call(ctx -> {
+            TransactionManager tm = ctx.getTransactionManager();
 
-        try {
-            if (tm.getTransaction() == null
-                    || !ri.response_expected()
-                    || "_is_a".equals(ri.operation())
-                    || "_get_handle".equals(ri.operation())
-                    || "resolve".equals(ri.operation())) {
-                return;
-            }
-        } catch (SystemException se) {
-            throw (INTERNAL) new INTERNAL().initCause(se);
-        }
-
-        // Check for OTS ADAPTS policy
-        TaggedComponent otsPolicyTag;
-        try {
-            otsPolicyTag = ri.get_effective_component(TAG_OTS_POLICY.value);
-        } catch (BAD_PARAM e) {
-            return;
-        }
-
-        if (tc.isDebugEnabled()) Tr.debug(tc, "Target has a transaction policy");
-
-        org.omg.CORBA.Any any;
-        try {
-            any = codec.decode_value(otsPolicyTag.component_data, OTSPolicyValueHelper.type());
-        } catch (Exception e) {
-            throw (INTERNAL) new INTERNAL("OTS policy decode failed").initCause(e);
-        }
-
-        if (OTSPolicyValueHelper.extract(any) != ADAPTS.value) return;
-
-        // Local-server UUID shortcut
-        if (isLocalServerUUID(ri)) {
-            if (tc.isDebugEnabled()) Tr.debug(tc, "Local UUID match — using NoDTx exporter");
-            exportWithNoDTx(ri, context, true);
-            return;
-        }
-
-        // Try registered providers
-        List<TransactionProtocolProvider> providers = locator.getProviders();
-        for (TransactionProtocolProvider provider : providers) {
-            if (provider.handlesIOR(ri)) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Exporting with provider: {0}", provider.getProtocolName());
+            try {
+                if (tm.getTransaction() == null
+                        || !ri.response_expected()
+                        || "_is_a".equals(ri.operation())
+                        || "_get_handle".equals(ri.operation())
+                        || "resolve".equals(ri.operation())) {
+                    return;
                 }
-                provider.exportTransaction(ri, codec, context);
-                activeProviders.set(provider);
+            } catch (SystemException se) {
+                throw (INTERNAL) new INTERNAL().initCause(se);
+            }
+
+            // Check for OTS ADAPTS policy
+            TaggedComponent otsPolicyTag;
+            try {
+                otsPolicyTag = ri.get_effective_component(TAG_OTS_POLICY.value);
+            } catch (BAD_PARAM e) {
                 return;
             }
-        }
 
-        // No provider matched — use NoDTx for the remote target
-        if (tc.isDebugEnabled()) Tr.debug(tc, "No provider handled IOR — using remote NoDTx");
-        exportWithNoDTx(ri, context, false);
+            if (tc.isDebugEnabled()) Tr.debug(tc, "Target has a transaction policy");
+
+            org.omg.CORBA.Any any;
+            try {
+                any = codec.decode_value(otsPolicyTag.component_data, OTSPolicyValueHelper.type());
+            } catch (Exception e) {
+                throw (INTERNAL) new INTERNAL("OTS policy decode failed").initCause(e);
+            }
+
+            if (OTSPolicyValueHelper.extract(any) != ADAPTS.value) return;
+
+            // Local-server UUID shortcut
+            if (isLocalServerUUID(ri)) {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "Local UUID match — using NoDTx exporter");
+                exportWithNoDTx(ri, ctx, true);
+                return;
+            }
+
+            // Try registered providers
+            List<TransactionProtocolProvider> providers =
+                ((TransactionSubsystemFactory) ctx).getProviders();
+            for (TransactionProtocolProvider provider : providers) {
+                if (provider.handlesIOR(ri)) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exporting with provider: {0}", provider.getProtocolName());
+                    }
+                    provider.exportTransaction(ri, codec, ctx);
+                    activeProviders.set(provider);
+                    return;
+                }
+            }
+
+            // No provider matched — use NoDTx for the remote target
+            if (tc.isDebugEnabled()) Tr.debug(tc, "No provider handled IOR — using remote NoDTx");
+            exportWithNoDTx(ri, ctx, false);
+        });
     }
 
     private void exportWithNoDTx(ClientRequestInfo ri,
@@ -304,10 +306,10 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
         return false;
     }
 
-    private void setRollbackOnly(boolean resumeAssociation) {
+    private void setRollbackOnly(TransactionHandlerContext ctx, boolean resumeAssociation) {
         try {
             EmbeddableTransactionImpl tx =
-                (EmbeddableTransactionImpl) getTransactionManager().getTransaction();
+                (EmbeddableTransactionImpl) ctx.getTransactionManager().getTransaction();
             if (tx != null) {
                 try {
                     if (resumeAssociation) tx.resumeAssociation();

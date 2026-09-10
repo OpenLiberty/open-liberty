@@ -44,6 +44,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxTransactionImporter;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
@@ -91,6 +92,9 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
 
     private final NoDTxTransactionImporter noDTxImporter = new NoDTxTransactionImporter();
 
+    private static final ServiceCaller<TransactionHandlerContext> contextCaller =
+        new ServiceCaller<>(TransactionSubsystemFactory.class, TransactionHandlerContext.class);
+
     public ServerTransactionInterceptor(Codec codec) {
         this.codec = codec;
     }
@@ -111,8 +115,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
             return;
         }
 
-        TransactionServiceLocator locator = TransactionServiceLocator.getInstance();
-        importTransaction(ri, locator);
+        contextCaller.call(ctx -> importTransaction(ri, ctx));
     }
 
     @Override
@@ -132,7 +135,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
     // -------------------------------------------------------------------------
 
     @FFDCIgnore(BAD_PARAM.class)
-    private void importTransaction(ServerRequestInfo ri, TransactionServiceLocator locator) {
+    private void importTransaction(ServerRequestInfo ri, TransactionHandlerContext ctx) {
         ServiceContext sc;
         try {
             sc = ri.get_request_service_context(TransactionService.value);
@@ -149,13 +152,13 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
         }
 
         PropagationContext pc = PropagationContextHelper.extract(any);
-        importTransactionInternal(ri, pc, locator, sc.context_data);
+        importTransactionInternal(ri, pc, ctx, sc.context_data);
     }
 
     @FFDCIgnore(BadKind.class)
     private void importTransactionInternal(ServerRequestInfo ri,
                                            PropagationContext pc,
-                                           TransactionServiceLocator locator,
+                                           TransactionHandlerContext ctx,
                                            byte[] rawContextBytes) {
         if (tc.isDebugEnabled()) Tr.debug(tc, "importTransactionInternal: pc={0}", pc);
 
@@ -171,8 +174,8 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
             TransIdentity transId = pc.current;
             if (transId == null || transId.otid == null) return;
 
-            TransactionHandlerContext context = locator.getContext();
-            List<TransactionProtocolProvider> providers = locator.getProviders();
+            List<TransactionProtocolProvider> providers =
+                ((TransactionSubsystemFactory) ctx).getProviders();
 
             // Read ISD type ID once — pure metadata, no materialisation
             String isdTypeId = null;
@@ -203,7 +206,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Attempting import with: {0}", provider.getProtocolName());
                 }
-                if (provider.importTransaction(pc, context)) {
+                if (provider.importTransaction(pc, ctx)) {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Imported with: {0}", provider.getProtocolName());
                     }
@@ -215,7 +218,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
 
             // NoDTx fallback
             if (!imported) {
-                if (noDTxImporter.importTransaction(pc, context)) {
+                if (noDTxImporter.importTransaction(pc, ctx)) {
                     if (tc.isDebugEnabled()) Tr.debug(tc, "NoDTx fallback handled context");
                     activeHandlers.set(new ImportState(noDTxImporter, rawContextBytes));
                 }
@@ -255,21 +258,20 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
             }
         }
 
-        TransactionHandlerContext context =
-            TransactionServiceLocator.getInstance().getContext();
-
-        try {
-            if (state.handler instanceof TransactionProtocolProvider) {
-                ((TransactionProtocolProvider) state.handler).unimportTransaction(context);
-            } else if (state.handler instanceof NoDTxTransactionImporter) {
-                ((NoDTxTransactionImporter) state.handler).unimportTransaction(context);
-            } else {
-                // Defensive — suspend whatever is on the thread
-                context.getTransactionManager().suspend();
+        contextCaller.call(ctx -> {
+            try {
+                if (state.handler instanceof TransactionProtocolProvider) {
+                    ((TransactionProtocolProvider) state.handler).unimportTransaction(ctx);
+                } else if (state.handler instanceof NoDTxTransactionImporter) {
+                    ((NoDTxTransactionImporter) state.handler).unimportTransaction(ctx);
+                } else {
+                    // Defensive — suspend whatever is on the thread
+                    ctx.getTransactionManager().suspend();
+                }
+            } catch (javax.transaction.SystemException se) {
+                if (tc.isDebugEnabled()) Tr.debug(tc, "SystemException in unimport: {0}", se);
             }
-        } catch (javax.transaction.SystemException se) {
-            if (tc.isDebugEnabled()) Tr.debug(tc, "SystemException in unimport: {0}", se);
-        }
+        });
     }
 
     @Override

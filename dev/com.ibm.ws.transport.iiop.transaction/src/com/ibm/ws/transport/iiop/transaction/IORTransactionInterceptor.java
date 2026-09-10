@@ -37,6 +37,8 @@ import org.omg.PortableInterceptor.IORInterceptor;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
+import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
 
 /**
@@ -61,7 +63,10 @@ final class IORTransactionInterceptor extends LocalObject implements IORIntercep
 
     private final Codec codec;
 
-    public IORTransactionInterceptor(Codec codec, TransactionSubsystemFactory factory) {
+    private static final ServiceCaller<TransactionHandlerContext> contextCaller =
+        new ServiceCaller<>(TransactionSubsystemFactory.class, TransactionHandlerContext.class);
+
+    public IORTransactionInterceptor(Codec codec) {
         this.codec = codec;
     }
 
@@ -82,9 +87,9 @@ final class IORTransactionInterceptor extends LocalObject implements IORIntercep
                 new TaggedComponent(org.omg.IOP.TAG_OTS_POLICY.value, otsBytes), TAG_INTERNET_IOP.value);
 
             // 2. Delegate IOR contribution to each enabled provider
-            TransactionSubsystemFactory factory = TransactionSubsystemFactory.getActiveFactory();
-            if (factory != null) {
-                List<TransactionProtocolProvider> providers = factory.getProviders();
+            contextCaller.call(ctx -> {
+                List<TransactionProtocolProvider> providers =
+                    ((TransactionSubsystemFactory) ctx).getProviders();
                 for (TransactionProtocolProvider provider : providers) {
                     try {
                         provider.contributeToIOR(info, codec);
@@ -98,7 +103,7 @@ final class IORTransactionInterceptor extends LocalObject implements IORIntercep
                         }
                     }
                 }
-            }
+            });
 
             // 3. Server UUID for local-call optimisation
             byte[] serverUuidData = buildIBMServerUUIDComponent();
