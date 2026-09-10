@@ -195,8 +195,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
 
     /**
      * Called when the current read has finished. At this point, the {@link FlowState#setReadPending(boolean)}
-     * flag is cleared and a decision is made to determine whether another {@link ChannelHandlerContext#read()} 
-     * should be requested for additional body payload. 
+     * flag is cleared. If a second {@link ChannelHandlerContext#read()} was requested while the previous one
+     * was still in-flight (i.e. {@link FlowState#setReadAgain(boolean)} was set), that deferred read is
+     * issued now. Otherwise no action is taken — the next read will be triggered by whichever code path
+     * determines that one is needed (e.g. the write-promise listener in {@link #write}).
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext context) throws Exception {
@@ -214,13 +216,14 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             }
             return;
         }
-        
+
+        boolean readAgain = state.isReadAgain();
         state.setReadPending(false);
-        if(state.isReadAgain()){
+        if (readAgain) {
             state.setReadAgain(false);
-            context.executor().execute(()->requestRead(context));
+            context.executor().execute(() -> requestRead(context));
         }
-        
+
     }
 
     /**
