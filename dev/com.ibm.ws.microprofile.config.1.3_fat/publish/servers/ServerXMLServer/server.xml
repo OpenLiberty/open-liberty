@@ -48,7 +48,5 @@
 		</appProperties>
 	</webApplication>
 	
-	<mpConfig serverConfigValueExpansion="true"/>
-	
 	<application location="mapEnvVarApp.war"/>
 </server>

@@ -45,7 +45,7 @@ public class VarExpansionTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         DeployOptions[] options = { DeployOptions.SERVER_ONLY };
-        ShrinkHelper.defaultApp(server, APP_NAME, options, "com.ibm.ws.microprofile.config13.varExpansion.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, options, new String[] { "com.ibm.ws.microprofile.config13.varExpansion.*", "com.ibm.ws.microprofile.config13.test.utils" });
         server.startServer();
     }
 

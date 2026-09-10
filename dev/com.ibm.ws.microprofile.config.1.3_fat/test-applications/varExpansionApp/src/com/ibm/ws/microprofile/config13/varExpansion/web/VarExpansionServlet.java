@@ -20,6 +20,8 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.config13.test.utils.ConfigChecker;
+
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -36,22 +38,22 @@ public class VarExpansionServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    UtilBean utilBean;
+    ConfigChecker configChecker;
 
     /**
-     * Verifies that comma-separated server.xml variables exposed via
-     * {@code list()} are injected as {@code String[]} and {@code List<String>}
-     * with the expected individual values.
+     * When a server.xml variable's contents are a string containing commas the variable is treated as a comma seperated list.
+     * This test verifies that mpConfig can access such a variable as either a {@code String[]} or a {@code List<String>}.
      */
     @Test
     public void testAppPropertyExpansionOfList() throws Exception {
 
-        utilBean.getAndCheckVarValue("app.appPropertyExamplePorts", new String[] { "27017" }); //We get this value from io.openliberty.microprofile.config.internal.serverxml.AppPropertiesComponent.activate
-        //And its already been stripped down to the first entry.
+        configChecker.assertConfigPropertyEquals("app.appPropertyExamplePorts", new String[] { "27017" }); //We get this value from io.openliberty.microprofile.config.internal.serverxml.AppPropertiesComponent.activate
+        //And AppPropertiesComponent.activate strips the list down to the first entry. I am very suspicious of this behavior, but this test is written to match the existing behavior first.
+        //Deciding what is the correct behavior is another task.
 
         List<String> hostsTestList = new ArrayList<String>();
         hostsTestList.add("mongo1.example.com");//Same limitation as above
-        utilBean.getAndCheckVarValue("app.appPropertyExampleHosts", hostsTestList);
+        configChecker.assertConfigPropertyEquals("app.appPropertyExampleHosts", hostsTestList);
     }
 
     /**
@@ -65,13 +67,13 @@ public class VarExpansionServlet extends FATServlet {
 
         //This method's variables are coming from ServerXMLVariableConfigSource.getProperties without needing
         //any extra code for handling list expansion
-        utilBean.getAndCheckVarValue("examplePorts", new String[] { "27017", "27018", "27019" });
+        configChecker.assertConfigPropertyEquals("examplePorts", new String[] { "27017", "27018", "27019" });
 
         List<String> hostsTestList = new ArrayList<String>();
         hostsTestList.add("mongo1.example.com");
         hostsTestList.add("mongo2.example.com");
         hostsTestList.add("mongo3.example.com");
-        utilBean.getAndCheckVarValue("exampleHosts", hostsTestList);
+        configChecker.assertConfigPropertyEquals("exampleHosts", hostsTestList);
     }
 
     /**
@@ -94,12 +96,12 @@ public class VarExpansionServlet extends FATServlet {
     @Mode(TestMode.EXPERIMENTAL) //The code for server.xml arithmatic is not exposed on any OSGi interface, at all.
     public void testDirectArithmaticVariables() throws Exception {
 
-        utilBean.getAndCheckVarValue("arithmatic_one", "1");
-        utilBean.getAndCheckVarValue("arithmatic_two", "2");
-        utilBean.getAndCheckVarValue("arithmatic_three", "3");
-        utilBean.getAndCheckVarValue("arithmatic_six", "6");
-        utilBean.getAndCheckVarValue("arithmatic_five", "5");
-        utilBean.getAndCheckVarValue("arithmatic_threeagain", "3");
+        configChecker.assertConfigPropertyEquals("arithmatic_one", "1");
+        configChecker.assertConfigPropertyEquals("arithmatic_two", "2");
+        configChecker.assertConfigPropertyEquals("arithmatic_three", "3");
+        configChecker.assertConfigPropertyEquals("arithmatic_six", "6");
+        configChecker.assertConfigPropertyEquals("arithmatic_five", "5");
+        configChecker.assertConfigPropertyEquals("arithmatic_threeagain", "3");
     }
 
     /**
@@ -110,12 +112,12 @@ public class VarExpansionServlet extends FATServlet {
     @Mode(TestMode.EXPERIMENTAL) //The code for server.xml arithmatic is not exposed on any OSGi interface, at all.
     public void testAppPropertyArithmaticVariables() throws Exception {
 
-        utilBean.getAndCheckVarValue("app.appPropertyArithmaticOne", "1");
-        utilBean.getAndCheckVarValue("app.appPropertyArithmaticTwo", "2");
-        utilBean.getAndCheckVarValue("app.appPropertyArithmaticThree", "3");
-        utilBean.getAndCheckVarValue("app.appPropertyArithmaticSix", "6");
-        utilBean.getAndCheckVarValue("app.appPropertyArithmaticFive", "5");
-        utilBean.getAndCheckVarValue("app.appPropertyArithmaticThreeAgain", "3");
+        configChecker.assertConfigPropertyEquals("app.appPropertyArithmaticOne", "1");
+        configChecker.assertConfigPropertyEquals("app.appPropertyArithmaticTwo", "2");
+        configChecker.assertConfigPropertyEquals("app.appPropertyArithmaticThree", "3");
+        configChecker.assertConfigPropertyEquals("app.appPropertyArithmaticSix", "6");
+        configChecker.assertConfigPropertyEquals("app.appPropertyArithmaticFive", "5");
+        configChecker.assertConfigPropertyEquals("app.appPropertyArithmaticThreeAgain", "3");
     }
 
     /**
@@ -128,14 +130,14 @@ public class VarExpansionServlet extends FATServlet {
      *
      * <p>Variables verified:
      * <ul>
-     *   <li>{@code wlp.install.dir}   – Liberty installation directory</li>
-     *   <li>{@code wlp.server.name}   – server name</li>
-     *   <li>{@code wlp.user.dir}      – usr directory (default: {@code ${wlp.install.dir}/usr})</li>
-     *   <li>{@code shared.app.dir}    – shared apps directory (default: {@code ${wlp.user.dir}/shared/apps})</li>
-     *   <li>{@code shared.config.dir} – shared config directory (default: {@code ${wlp.user.dir}/shared/config})</li>
-     *   <li>{@code shared.resource.dir} – shared resources directory (default: {@code ${wlp.user.dir}/shared/resources})</li>
-     *   <li>{@code server.config.dir} – server configuration directory (default: {@code ${wlp.user.dir}/servers/${wlp.server.name}})</li>
-     *   <li>{@code server.output.dir} – server output directory (default: same as {@code server.config.dir})</li>
+     * <li>{@code wlp.install.dir} – Liberty installation directory</li>
+     * <li>{@code wlp.server.name} – server name</li>
+     * <li>{@code wlp.user.dir} – usr directory (default: {@code ${wlp.install.dir}/usr})</li>
+     * <li>{@code shared.app.dir} – shared apps directory (default: {@code ${wlp.user.dir}/shared/apps})</li>
+     * <li>{@code shared.config.dir} – shared config directory (default: {@code ${wlp.user.dir}/shared/config})</li>
+     * <li>{@code shared.resource.dir} – shared resources directory (default: {@code ${wlp.user.dir}/shared/resources})</li>
+     * <li>{@code server.config.dir} – server configuration directory (default: {@code ${wlp.user.dir}/servers/${wlp.server.name}})</li>
+     * <li>{@code server.output.dir} – server output directory (default: same as {@code server.config.dir})</li>
      * </ul>
      */
     @Test
@@ -146,42 +148,42 @@ public class VarExpansionServlet extends FATServlet {
         // not tied to any absolute path on a specific host.
         String installDir = System.getProperty("wlp.install.dir");
         String serverName = System.getProperty("wlp.server.name");
-        String userDir    = System.getProperty("wlp.user.dir");
+        String userDir = System.getProperty("wlp.user.dir");
 
         assertNotNull("System property wlp.install.dir must be set by Liberty", installDir);
         assertNotNull("System property wlp.server.name must be set by Liberty", serverName);
         assertNotNull("System property wlp.user.dir must be set by Liberty", userDir);
 
         // 1. wlp.install.dir – must match the system property value
-        utilBean.getAndCheckVarValue("wlp.install.dir", installDir);
+        configChecker.assertConfigPropertyEquals("wlp.install.dir", installDir);
 
         // 2. wlp.server.name – must match the system property value
-        utilBean.getAndCheckVarValue("wlp.server.name", serverName);
+        configChecker.assertConfigPropertyEquals("wlp.server.name", serverName);
 
         // 3. wlp.user.dir – must match the system property value
-        utilBean.getAndCheckVarValue("wlp.user.dir", userDir);
+        configChecker.assertConfigPropertyEquals("wlp.user.dir", userDir);
 
         // 4. shared.app.dir – must be under wlp.user.dir
-        utilBean.getAndCheckVarValueContains("shared.app.dir", userDir.replace("\\", "/"));
+        configChecker.assertConfigPropertyContains("shared.app.dir", userDir.replace("\\", "/"));
 
         // 5. shared.config.dir – must be under wlp.user.dir
-        utilBean.getAndCheckVarValueContains("shared.config.dir", userDir.replace("\\", "/"));
+        configChecker.assertConfigPropertyContains("shared.config.dir", userDir.replace("\\", "/"));
 
         // 6. shared.resource.dir – must be under wlp.user.dir
-        utilBean.getAndCheckVarValueContains("shared.resource.dir", userDir.replace("\\", "/"));
+        configChecker.assertConfigPropertyContains("shared.resource.dir", userDir.replace("\\", "/"));
 
         // 7. server.config.dir – must contain the server name
-        utilBean.getAndCheckVarValueContains("server.config.dir", serverName);
+        configChecker.assertConfigPropertyContains("server.config.dir", serverName);
 
         // 8. server.output.dir – must contain the server name (defaults to server.config.dir)
-        utilBean.getAndCheckVarValueContains("server.output.dir", serverName);
+        configChecker.assertConfigPropertyContains("server.output.dir", serverName);
 
         // Structural invariants between the variables
-        String sharedAppDir     = System.getProperty("shared.app.dir",      userDir + "/shared/apps");
-        String sharedConfigDir  = System.getProperty("shared.config.dir",   userDir + "/shared/config");
+        String sharedAppDir = System.getProperty("shared.app.dir", userDir + "/shared/apps");
+        String sharedConfigDir = System.getProperty("shared.config.dir", userDir + "/shared/config");
         String sharedResourceDir = System.getProperty("shared.resource.dir", userDir + "/shared/resources");
-        String serverConfigDir  = System.getProperty("server.config.dir",   userDir + "/servers/" + serverName);
-        String serverOutputDir  = System.getProperty("server.output.dir",   serverConfigDir);
+        String serverConfigDir = System.getProperty("server.config.dir", userDir + "/servers/" + serverName);
+        String serverOutputDir = System.getProperty("server.output.dir", serverConfigDir);
 
         // shared dirs must sit within wlp.user.dir
         assertTrue("shared.app.dir should reside under wlp.user.dir",

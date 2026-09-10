@@ -25,8 +25,7 @@ Import-Package: \
         org.eclipse.microprofile.config.spi;version="[1.0,4)", \
         *
 
--dsannotations: io.openliberty.microprofile.config.internal.common.ConfigIntrospector,\
-    io.openliberty.microprofile.config.internal.common.MPConfigComponent
+-dsannotations: io.openliberty.microprofile.config.internal.common.ConfigIntrospector
 
 WS-TraceGroup: APPCONFIG
 

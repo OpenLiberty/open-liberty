@@ -193,7 +193,7 @@ public class ServiceCaller<S> {
      *
      * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param function    a function that consumes the OSGi service and retrns a value
+     * @param function    a function that consumes the OSGi service and returns a value
      * @param <S>         the OSGi service type to look up
      * @param <R>         the type returned by calling the method on the service
      * @return an Optional containing the object returned by function, or null if it failed to return a value
@@ -211,16 +211,16 @@ public class ServiceCaller<S> {
     }
 
     /**
-     * Call ServiceCaller dynamically and get a property from the resulting service.
+     * As {@link #callOnce(Class, Class, Consumer)} but replaces the Consumer with a Function that returns a value.
      *
      * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param function    a function that consumes the OSGi service and retrns a value
      * @param filter      an OSGi filter to restrict the services found
+     * @param function    a function that consumes the OSGi service and returns a value
      * @param <S>         the OSGi service type to look up
      * @param <R>         the type returned by calling the method on the service
      * @return an Optional containing the object returned by function, or null if it failed to return a value
-     * @throws NullPointerException  if any of the parameters except filter are {@code null}
+     * @throws NullPointerException  if any of the parameters are {@code null}
      * @throws IllegalStateException if the bundle associated with the caller class
      *                                   cannot be determined
      */
@@ -242,32 +242,30 @@ public class ServiceCaller<S> {
     }
 
     /**
-     * As {@link #runOnce(Class, Class, Function)} but with an additional OSGi filter.
+     * Call ServiceCaller dynamically and get a property from the resulting service.
      *
      * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param function    a function that consumes the OSGi service and retrns a value
-     * @param filter      an OSGi filter to restrict the services found
+     * @param property    the property to look up.
      * @param <S>         the OSGi service type to look up
-     * @return an Optional containing the property value, or null if it failed to return a value
+     * @return an Optional containing the object returned by function, or null if it failed to return a value
      * @throws NullPointerException  if any of the parameters except filter are {@code null}
      * @throws IllegalStateException if the bundle associated with the caller class
      *                                   cannot be determined
      */
-    //TODO ask Tom Watson what name he wants
     public static <S> Optional<Object> currentProperty(Class<?> caller, Class<S> serviceType, String property) {
         return currentProperty(caller, serviceType, property, null);
     }
 
     /**
-     * As {@link #runOnce(Class, Class, Function)} but with an additional OSGi filter.
+     * Call ServiceCaller dynamically and get a property from the resulting service.
      *
      * @param caller      a class from the bundle that will use service
      * @param serviceType the OSGi service type to look up
-     * @param function    a function that consumes the OSGi service and retrns a value
-     * @param filter      an OSGi filter to restrict the services found
+     * @param property    the property to look up.
      * @param <S>         the OSGi service type to look up
-     * @return an Optional containing the property value, or null if it failed to return a value
+     * @param filter      an OSGi filter to restrict the services found
+     * @return an Optional containing the object returned by function, or null if it failed to return a value
      * @throws NullPointerException  if any of the parameters except filter are {@code null}
      * @throws IllegalStateException if the bundle associated with the caller class
      *                                   cannot be determined

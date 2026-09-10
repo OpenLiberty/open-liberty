@@ -13,7 +13,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.osgi.framework.Constants;
@@ -94,8 +93,15 @@ public class OSGiConfigUtils {
     static Map<String, String> getVariablesFromServerXML() {
         Map<String, String> preprocessedVariables = configVariablesCaller.run(ConfigVariables::getUserDefinedVariables).orElse(Collections.emptyMap());
 
-        //Do not do any special treatment for variables starting with env., e.g. ${env.X}. This used to be part of the rules for server.xml variables but was
-        //deprecated and is not supposed to be supported by mpConfig.
+        /*
+         * In the past we had special treatment for variables in the format ${env.X}, they would be evaluated to an environment variable of just {X}.
+         * This special case was not included in the microprofile config specification, so it was removed from liberty docs but code remains for
+         * backwards compatibility.
+         *
+         * However this backwards compatibility does not extend to our microprofile config implementation. I am documenting this here because
+         * I previously had a customer ask about this, and implemented code here to support it before learning that Liberty's mpConfig Impl
+         * actually shouldn't treat ${env.X} as a special case.
+         */
         return preprocessedVariables;
     }
 
@@ -107,13 +113,6 @@ public class OSGiConfigUtils {
     }
 
     /**
-     * @return a Map that represents the name/value pairs of <variable name="x" value="y"> elements in the server.xml
-     */
-    static Map<String, String> processVariables() {
-        return configVariablesCaller.run(ConfigVariables::getUserDefinedVariables).orElse(Collections.emptyMap());
-    }
-
-    /**
      * Get the internal OSGi identifier for the Application with the given name
      *
      * @param applicationName The application name to look for
@@ -122,10 +121,9 @@ public class OSGiConfigUtils {
     static String getApplicationPID(String applicationName) {
         String filter = FilterUtils.createPropertyFilter("name", applicationName);
 
-        Optional<Object> applicationPIDOptional = ServiceCaller.currentProperty(OSGiConfigUtils.class, Application.class, Constants.SERVICE_PID, filter);
-        String applicationPID = applicationPIDOptional.isPresent() ? (String) applicationPIDOptional.get() : null;
-        return applicationPID;
-
+        return ServiceCaller.currentProperty(OSGiConfigUtils.class, Application.class, Constants.SERVICE_PID, filter)
+                        .map(String.class::cast)
+                        .orElse(null);
     }
 
 }

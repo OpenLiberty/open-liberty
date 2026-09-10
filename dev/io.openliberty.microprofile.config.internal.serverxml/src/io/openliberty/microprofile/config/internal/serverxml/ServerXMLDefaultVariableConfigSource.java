@@ -49,7 +49,7 @@ public class ServerXMLDefaultVariableConfigSource extends InternalConfigSource {
 
     @Override
     public Map<String, String> getProperties() {
-        return OSGiConfigUtils.getDefaultVariablesFromServerXML();
+        return OSGiConfigUtils.runPrivilegedIfNeeded(OSGiConfigUtils::getDefaultVariablesFromServerXML);
     }
 
 }
