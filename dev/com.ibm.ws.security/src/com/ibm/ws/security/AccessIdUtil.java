@@ -47,6 +47,9 @@ public final class AccessIdUtil {
     // The original pattern p splits the same string as
     // "group", "https:", "/test.com/group1".
     static final Pattern ph = Pattern.compile("([^:]+):([^:]+://[^/]+)/(.+)");
+    // Handles a single leading-slash realm (e.g. "/realm"). The second character must
+    // not be '/' so that "//host" style realms (handled by ph) are not matched.
+    static final Pattern ps = Pattern.compile("([^:]+):(/[^/]+)/(.+)");
 
     public static final String TYPE_SERVER = "server";
     public static final String TYPE_USER = "user";
@@ -129,13 +132,15 @@ public final class AccessIdUtil {
                     return m;
                 return null;
             }
-
         }
         Matcher m = ph.matcher(accessId);
         if (m.matches()) {
             return m;
         }
-
+        m = ps.matcher(accessId);
+        if (m.matches()) {
+            return m;
+        }
         m = p.matcher(accessId);
         if (m.matches()) {
             return m;

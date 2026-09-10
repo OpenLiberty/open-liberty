@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -273,7 +273,18 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
      */
     protected void updateSubjectWithSharedStateContents() {
         subject.getPrincipals().add((WSPrincipal) sharedState.get(Constants.WSPRINCIPAL_KEY));
-        subject.getPublicCredentials().add(sharedState.get(Constants.WSCREDENTIAL_KEY));
+        // Guard against null WSCredential: Subject$SecureSet.add(null) throws NPE by JDK contract.
+        // A missing credential (e.g. when AccessIdUtil fails to parse the access ID due to a
+        // slash-prefixed realm) should produce a controlled authentication failure rather than
+        // an unhandled NullPointerException.
+        Object wsCredential = sharedState.get(Constants.WSCREDENTIAL_KEY);
+        if (wsCredential != null) {
+            subject.getPublicCredentials().add(wsCredential);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "updateSubjectWithSharedStateContents: WSCredential is absent from shared state; skipping credential population.");
+            }
+        }
         if (sharedState.get(Constants.WSSSOTOKEN_KEY) != null)
             subject.getPrivateCredentials().add(sharedState.get(Constants.WSSSOTOKEN_KEY));
     }
