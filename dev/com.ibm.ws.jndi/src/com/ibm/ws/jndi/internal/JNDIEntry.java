@@ -124,12 +124,10 @@ public class JNDIEntry {
         @Sensitive
         public Object getService(Bundle bundle, ServiceRegistration<Object> registration) {
             String serviceObject = encryptedValue;
-            if (PasswordUtil.isEncrypted(encryptedValue)) {
-                try {
-                    serviceObject = PasswordUtil.decode(encryptedValue); 
-                } catch (Exception e) {
-                    Tr.warning(tc, "jndi.decode.warning", jndiName, e);
-                }
+            try {
+                serviceObject = PasswordUtil.decode(encryptedValue);
+            } catch (Exception e) {
+                Tr.warning(tc, "jndi.decode.warning", jndiName, e);
             }
             return LiteralParser.parse(serviceObject);
         }

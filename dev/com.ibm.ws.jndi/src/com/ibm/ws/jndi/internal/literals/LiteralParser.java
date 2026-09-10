@@ -12,14 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.jndi.internal.literals;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 
 public enum LiteralParser {
     ;
-    private static final TraceComponent tc = Tr.register(LiteralParser.class);
 
-    public static Object parse(String s) {
+    public static Object parse(@Sensitive String s) {
         for (LiteralType type : LiteralType.values())
             if (type.matches(s))
                 return type.parse(s);
