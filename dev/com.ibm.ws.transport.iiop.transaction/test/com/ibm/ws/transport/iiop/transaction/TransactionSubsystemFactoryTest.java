@@ -16,14 +16,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.transaction.TransactionManager;
 
+import org.apache.yoko.osgi.locator.Register;
+import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -37,14 +39,14 @@ import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvid
 
 /**
  * Unit tests for the pure-Java subset of {@link TransactionSubsystemFactory}:
- * provider registration/removal, getProviders, and createServiceLocator
- * null guards.
+ * provider registration/removal, getProviders, and createServiceLocator.
  *
  * <p>Also contains the single worthwhile {@link ServerTransactionPolicy} assertion
  * (copy() shares the same config reference) since that policy is created by the
  * factory's getTargetPolicy() method.
  *
- * <p>activate()/deactivate() require live OSGi BundleContext and Register — not tested here.
+ * <p>The activation constructor performs the production initialization; OSGi-specific
+ * lifecycle integration is not tested here.
  */
 public class TransactionSubsystemFactoryTest {
 
@@ -53,6 +55,7 @@ public class TransactionSubsystemFactoryTest {
 
     private final TransactionProtocolProvider p1  = mock.mock(TransactionProtocolProvider.class, "p1");
     private final TransactionProtocolProvider p2  = mock.mock(TransactionProtocolProvider.class, "p2");
+    private final Register                    providerRegistry = mock.mock(Register.class);
     private final TransactionManager          tm  = mock.mock(TransactionManager.class);
     private final RemoteTransactionController rtc = mock.mock(RemoteTransactionController.class);
 
@@ -60,13 +63,27 @@ public class TransactionSubsystemFactoryTest {
 
     @Before
     public void setUp() {
-        factory = new TransactionSubsystemFactory();
+        mock.checking(new Expectations() {{
+            allowing(providerRegistry).registerProvider(with(any(ServiceProvider.class)));
+        }});
+        factory = new TransactionSubsystemFactory(providerRegistry, tm, rtc);
     }
 
     @After
     public void tearDown() {
-        // Clear any locator the factory may have pushed during tests
+        // Clear any locator or active factory the constructor may have pushed during tests
         TransactionServiceLocator.clearInstance();
+        setActiveFactory(null);
+    }
+
+    private static void setActiveFactory(TransactionSubsystemFactory factory) {
+        try {
+            Field field = TransactionSubsystemFactory.class.getDeclaredField("activeFactory");
+            field.setAccessible(true);
+            field.set(null, factory);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not set activeFactory via reflection", e);
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -123,30 +140,12 @@ public class TransactionSubsystemFactoryTest {
     }
 
     // -------------------------------------------------------------------------
-    // createServiceLocator null guards
+    // createServiceLocator
     // -------------------------------------------------------------------------
 
     @Test
-    public void testCreateServiceLocator_nullTM_returnsNull() {
-        // Only RTC injected — TM is missing
-        factory.setRemoteTransactionController(rtc);
-        assertNull("createServiceLocator() must return null when TransactionManager is not injected",
-                   factory.createServiceLocator());
-    }
-
-    @Test
-    public void testCreateServiceLocator_nullRTC_returnsNull() {
-        // Only TM injected — RTC is missing
-        factory.setTransactionManager(tm);
-        assertNull("createServiceLocator() must return null when RemoteTransactionController is not injected",
-                   factory.createServiceLocator());
-    }
-
-    @Test
-    public void testCreateServiceLocator_bothPresent_returnsLocator() {
-        factory.setTransactionManager(tm);
-        factory.setRemoteTransactionController(rtc);
-        assertNotNull("createServiceLocator() must return a non-null locator when both services are injected",
+    public void testCreateServiceLocator_constructorDependenciesPresent_returnsLocator() {
+        assertNotNull("createServiceLocator() must return a non-null locator when constructed with required services",
                       factory.createServiceLocator());
     }
 

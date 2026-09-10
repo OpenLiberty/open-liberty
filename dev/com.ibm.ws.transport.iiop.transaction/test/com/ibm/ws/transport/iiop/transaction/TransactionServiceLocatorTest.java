@@ -30,7 +30,11 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
+import org.apache.yoko.osgi.locator.Register;
+import org.apache.yoko.osgi.locator.ServiceProvider;
 
 import com.ibm.tx.remote.RemoteTransactionController;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
@@ -54,6 +58,16 @@ public class TransactionServiceLocatorTest {
     private final TransactionHandlerContext   context = mock.mock(TransactionHandlerContext.class);
     private final TransactionProtocolProvider p1      = mock.mock(TransactionProtocolProvider.class, "p1");
     private final TransactionProtocolProvider p2      = mock.mock(TransactionProtocolProvider.class, "p2");
+    private final Register                    providerRegistry = mock.mock(Register.class);
+    private final TransactionManager          transactionManager = mock.mock(TransactionManager.class);
+    private final RemoteTransactionController remoteTransactionController = mock.mock(RemoteTransactionController.class);
+
+    @Before
+    public void setUp() {
+        mock.checking(new Expectations() {{
+            allowing(providerRegistry).registerProvider(with(any(ServiceProvider.class)));
+        }});
+    }
 
     @After
     public void tearDown() {
@@ -144,7 +158,8 @@ public class TransactionServiceLocatorTest {
             allowing(p1).getIORTagId(); will(returnValue(1));
             allowing(p2).getIORTagId(); will(returnValue(2));
         }});
-        TransactionSubsystemFactory factory = new TransactionSubsystemFactory();
+        TransactionSubsystemFactory factory = new TransactionSubsystemFactory(
+            providerRegistry, transactionManager, remoteTransactionController);
         factory.addTransactionProtocolProvider(p1);
         factory.addTransactionProtocolProvider(p2);
         setActiveFactory(factory);
@@ -160,7 +175,8 @@ public class TransactionServiceLocatorTest {
     @Test
     public void testGetSortedProviders_isImmutable() {
         // getProviders() returns an unmodifiable snapshot of the factory's live map
-        TransactionSubsystemFactory factory = new TransactionSubsystemFactory();
+        TransactionSubsystemFactory factory = new TransactionSubsystemFactory(
+            providerRegistry, transactionManager, remoteTransactionController);
         setActiveFactory(factory);
 
         TransactionServiceLocator loc =
@@ -186,10 +202,8 @@ public class TransactionServiceLocatorTest {
     @Test
     public void testGetInstance_lazyInit_viaActiveFactory() {
         // Arrange: inject services into a real factory instance
-        TransactionSubsystemFactory factory = new TransactionSubsystemFactory();
-        factory.setTransactionManager(mock.mock(TransactionManager.class, "lazyTm"));
-        factory.setRemoteTransactionController(
-            mock.mock(RemoteTransactionController.class, "lazyRtc"));
+        TransactionSubsystemFactory factory = new TransactionSubsystemFactory(
+            providerRegistry, transactionManager, remoteTransactionController);
         setActiveFactory(factory);
         TransactionServiceLocator.clearInstance(); // ensure null before test
 

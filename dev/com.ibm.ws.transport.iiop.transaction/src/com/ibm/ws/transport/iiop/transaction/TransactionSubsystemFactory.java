@@ -27,7 +27,6 @@ import org.apache.yoko.osgi.locator.Register;
 import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
-import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -65,11 +64,11 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
         }
     }
 
-    private Register providerRegistry;
+    private final Register providerRegistry;
     private ServiceProvider transactionInitializerClass;
 
-    private TransactionManager transactionManager;
-    private RemoteTransactionController remoteTransactionController;
+    private final TransactionManager transactionManager;
+    private final RemoteTransactionController remoteTransactionController;
 
     /**
      * Map of protocol providers, keyed by IOR tag ID for uniqueness checking.
@@ -81,26 +80,27 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
      */
     private final Map<Integer, TransactionProtocolProvider> providers = new ConcurrentHashMap<>();
 
-    @Reference
-    protected void setRegister(Register providerRegistry) {
+    @Activate
+    public TransactionSubsystemFactory(
+            @Reference Register providerRegistry,
+            @Reference TransactionManager transactionManager,
+            @Reference RemoteTransactionController remoteTransactionController) {
         this.providerRegistry = providerRegistry;
-    }
-
-    @Reference
-    protected void setTransactionManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
-        // Try to initialize locator now that we have a service
-        tryInitializeLocator();
-    }
-    
-    @Reference
-    protected void setRemoteTransactionController(RemoteTransactionController remoteTransactionController) {
         this.remoteTransactionController = remoteTransactionController;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Set RemoteTransactionController: {0}", remoteTransactionController);
+
+        activeFactory = this;
+
+        TransactionServiceLocator locator = createServiceLocator();
+        if (locator != null) {
+            TransactionServiceLocator.setInstance(locator);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Eagerly initialized service locator");
+            }
         }
-        // Try to initialize locator now that we have a service
-        tryInitializeLocator();
+
+        transactionInitializerClass = new ServiceProvider(new MyLocalFactory(), TransactionInitializer.class);
+        providerRegistry.registerProvider(transactionInitializerClass);
     }
     
     @Reference(service = TransactionProtocolProvider.class,
@@ -161,14 +161,6 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
      * @return a new service locator, or null if services not yet available
      */
     public TransactionServiceLocator createServiceLocator() {
-        if (transactionManager == null || remoteTransactionController == null) {
-            // Services not yet injected
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Cannot create service locator - services not yet available");
-            }
-            return null;
-        }
-        
         TransactionHandlerContext context = new TransactionHandlerContextImpl(
             remoteTransactionController,
             transactionManager
@@ -177,47 +169,6 @@ public class TransactionSubsystemFactory implements SubsystemFactory {
         return TransactionServiceLocator.create(context, providers);
     }
     
-    /**
-     * Attempts to initialize the service locator if not already initialized
-     * and all required services are available.
-     *
-     * This is called when services are injected to eagerly initialize the locator.
-     */
-    private void tryInitializeLocator() {
-        if (TransactionServiceLocator.getInstance() == null) {
-            TransactionServiceLocator locator = createServiceLocator();
-            if (locator != null) {
-                TransactionServiceLocator.setInstance(locator);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Initialized service locator after service injection");
-                }
-            }
-        }
-    }
-
-    @Activate
-    protected void activate(BundleContext bundleContext) {
-        // Set the static reference so IORTransactionInterceptor.establish_components()
-        // can reach the factory via getActiveFactory() at IOR-creation time.
-        activeFactory = this;
-
-        // Try to eagerly initialize service locator
-        // (will succeed if services are already injected, otherwise lazy init will handle it)
-        TransactionServiceLocator locator = createServiceLocator();
-        if (locator != null) {
-            TransactionServiceLocator.setInstance(locator);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Eagerly initialized service locator");
-            }
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Services not yet available - service locator will lazy initialize");
-            }
-        }
-        
-        transactionInitializerClass = new ServiceProvider(new MyLocalFactory(), TransactionInitializer.class);
-        providerRegistry.registerProvider(transactionInitializerClass);
-    }
 
     @Deactivate
     protected void deactivate() {
