@@ -1724,7 +1724,12 @@
     <dependency>
       <groupId>jakarta.json.bind</groupId>
       <artifactId>jakarta.json.bind-api</artifactId>
-      <version>3.0.1</version>
+      <version>3.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.json.bind</groupId>
+      <artifactId>jakarta.json.bind-api</artifactId>
+      <version>3.1.0-M1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.json</groupId>
@@ -3635,6 +3640,11 @@
       <groupId>org.eclipse.yasson</groupId>
       <artifactId>yasson</artifactId>
       <version>3.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.yasson</groupId>
+      <artifactId>yasson</artifactId>
+      <version>3.1.0-M1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>

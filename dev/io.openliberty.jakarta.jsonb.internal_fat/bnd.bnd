@@ -28,7 +28,8 @@ tested.features: \
 	jsonb-1.0, servlet-4.0, jsonp-1.1,\
 	jsonb-2.0, servlet-5.0, jsonp-2.0,\
 	jsonb-3.0, servlet-6.0, jsonp-2.1,\
-	servlet-6.1
+	servlet-6.1,\
+	jsonb-3.1, servlet-6.2, jsonp-2.2, jsonbcontainer-3.1
 	
 
 -buildpath: \
