@@ -490,7 +490,7 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
-     * A bean method with Schedule annotation and a method parameter must run
+     * A bean method with Schedule annotation and a method parameter must not run
      * automatically because method parameters are not allowed on scheduled methods.
      */
     @Test
