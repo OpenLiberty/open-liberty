@@ -10,8 +10,14 @@
       <feature>ejb-3.2</feature>
     </featureManager>
 
+    <!--
+         transactionLogDirectory is intentionally not set here.
+         BadLogTest.beforeClass() always sets it at runtime to a
+         dynamically-created unwritable directory so that the recovery
+         log open fails and 2PC is disabled.  Any hardcoded path here
+         would be overwritten before the server starts.
+    -->
     <transaction
-        transactionLogDirectory="f:/TheRecoveryLogsOfJon"
         recoverOnStartup="true"
         waitForRecovery="true"
     />
