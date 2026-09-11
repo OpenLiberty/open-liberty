@@ -60,14 +60,12 @@ public class TransactionInitializer extends LocalObject implements ORBInitialize
      * interceptors, then those initial services shall be registered at
      * this point via calls to
      * <code>ORBInitInfo.register_initial_reference</code>.
-     * 
+     *
      * @param orbInitInfo provides initialization attributes and operations by
      *            which Interceptors can be registered.
      */
     @Override
-    public void pre_init(ORBInitInfo orbInitInfo) {
-
-    }
+    public void pre_init(ORBInitInfo orbInitInfo) {}
 
     /**
      * Called during ORB initialization. If a service must resolve initial

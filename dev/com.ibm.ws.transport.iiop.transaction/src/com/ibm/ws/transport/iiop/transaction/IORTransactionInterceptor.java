@@ -37,6 +37,7 @@ import org.omg.PortableInterceptor.IORInterceptor;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
@@ -97,10 +98,12 @@ final class IORTransactionInterceptor extends LocalObject implements IORIntercep
                             Tr.debug(tc, "contributeToIOR: {0}", provider.getProtocolName());
                         }
                     } catch (Exception e) {
-                        if (tc.isDebugEnabled()) {
+                        FFDCFilter.processException(e,
+                            "com.ibm.ws.transport.iiop.transaction.IORTransactionInterceptor.establish_components",
+                            "1", this);
+                        if (tc.isDebugEnabled())
                             Tr.debug(tc, "contributeToIOR failed for {0}: {1}",
                                      provider.getProtocolName(), e);
-                        }
                     }
                 }
             });
@@ -118,9 +121,11 @@ final class IORTransactionInterceptor extends LocalObject implements IORIntercep
         } catch (INV_POLICY e) {
             // Policy not supported — skip silently
         } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
+            FFDCFilter.processException(e,
+                "com.ibm.ws.transport.iiop.transaction.IORTransactionInterceptor.establish_components",
+                "2", this);
+            if (tc.isDebugEnabled())
                 Tr.debug(tc, "Error generating IOR components", e);
-            }
         }
     }
 
@@ -138,9 +143,11 @@ final class IORTransactionInterceptor extends LocalObject implements IORIntercep
             bos.write(SERVER_INSTANCE_UUID_BYTES);
             return bos.toByteArray();
         } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
+            FFDCFilter.processException(e,
+                "com.ibm.ws.transport.iiop.transaction.IORTransactionInterceptor.buildIBMServerUUIDComponent",
+                "1", this);
+            if (tc.isDebugEnabled())
                 Tr.debug(tc, "Error building TAG_IBM_SERVER_UUID", e);
-            }
             return null;
         }
     }

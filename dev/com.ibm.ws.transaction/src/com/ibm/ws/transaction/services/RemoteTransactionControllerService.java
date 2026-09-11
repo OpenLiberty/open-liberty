@@ -303,10 +303,10 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         // Iterate through all transactions and compare the byte arrays directly
         for (TransactionImpl tx : LocalTIDTable.getAllTransactions()) {
             DistributableTransaction dtx = (DistributableTransaction) tx;
-            byte[] txGlobalId = dtx.getXid().getGlobalTransactionId();
-            
-            // Compare byte arrays directly using Arrays.equals
-            if (Arrays.equals(tid, txGlobalId)) {
+            javax.transaction.xa.Xid xid = dtx.getXid();
+            if (xid == null) continue;
+            byte[] txGlobalId = xid.getGlobalTransactionId();
+            if (txGlobalId != null && Arrays.equals(tid, txGlobalId)) {
                 return dtx;
             }
         }

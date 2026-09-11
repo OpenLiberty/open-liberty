@@ -32,6 +32,7 @@ import org.omg.PortableInterceptor.ClientRequestInfo;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 /**
  * Fallback transaction exporter for local-server calls and remote calls where
@@ -53,12 +54,6 @@ public class NoDTxTransactionExporter {
     
     public String getProtocolName() {
         return "NoDTx";
-    }
-    
-    public int getProtocolId() {
-        // NoDTx doesn't have a protocol ID in TAG_IBM_TRANSACTION_EXTENDED
-        // Return 0 to indicate "no distributed transaction protocol"
-        return 0;
     }
     
     public void exportTransaction(ClientRequestInfo ri, Codec codec,
@@ -143,10 +138,14 @@ public class NoDTxTransactionExporter {
         
         try {
             EmbeddableTransactionImpl tx = (EmbeddableTransactionImpl) transactionManager.getTransaction();
-            if(tx != null)
+            if (tx != null)
                 tx.resumeAssociation();
         } catch (Exception e) {
-            // Silently ignore - best effort resume
+            FFDCFilter.processException(e,
+                "com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxTransactionExporter.unexportTransaction",
+                "1", this);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "resumeAssociation failed after outbound IIOP call — transaction left suspended", e);
         }
     }
     

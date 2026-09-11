@@ -205,13 +205,13 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
                     suspend();
                 } catch (Exception suspendEx) {
                     // Log but don't throw - we're already in error handling
-                    FFDCFilter.processException(suspendEx, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.resumeForImport", "XXX", this);
+                    FFDCFilter.processException(suspendEx, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.resumeForImport", "200", this);
                     if (traceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "Failed to suspend after addAssociation failure", suspendEx);
                 }
                 
                 // Re-throw the original exception from addAssociation
-                FFDCFilter.processException(e, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.resumeForImport", "XXX", this);
+                FFDCFilter.processException(e, "com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl.resumeForImport", "201", this);
                 if (traceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "synchronized resumeForImport", e);
                 throw e;

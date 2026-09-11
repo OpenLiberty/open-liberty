@@ -452,11 +452,6 @@ public class WSCoorUtil {
         return createCoordinationContextXML(wsatHandler, recoveryId);
     }
 
-    public static CoordinationContext getCoordinationContextForCurrentTransaction() throws Exception {
-    
-        return null;
-    }
-
     public static String getCoordinationContextAsXMLString(CoordinationContext coordinationContext) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getCoordinationContextAsXMLString", "Converting coordination context to XML");

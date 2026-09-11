@@ -43,6 +43,7 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxTransactionImporter;
@@ -258,7 +259,7 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
             }
         }
 
-        contextCaller.call(ctx -> {
+        boolean handled = contextCaller.call(ctx -> {
             try {
                 if (state.handler instanceof TransactionProtocolProvider) {
                     ((TransactionProtocolProvider) state.handler).unimportTransaction(ctx);
@@ -269,9 +270,22 @@ class ServerTransactionInterceptor extends LocalObject implements ServerRequestI
                     ctx.getTransactionManager().suspend();
                 }
             } catch (javax.transaction.SystemException se) {
-                if (tc.isDebugEnabled()) Tr.debug(tc, "SystemException in unimport: {0}", se);
+                FFDCFilter.processException(se,
+                    "com.ibm.ws.transport.iiop.transaction.ServerTransactionInterceptor.unimportTransaction",
+                    "1", this);
+                if (tc.isDebugEnabled()) Tr.debug(tc, "SystemException dissociating imported transaction: {0}", se);
+                throw new TRANSACTION_ROLLEDBACK();
             }
         });
+        if (!handled) {
+            FFDCFilter.processException(
+                new IllegalStateException("TransactionHandlerContext unavailable during unimport"),
+                "com.ibm.ws.transport.iiop.transaction.ServerTransactionInterceptor.unimportTransaction",
+                "2", this);
+            if (tc.isDebugEnabled()) Tr.debug(tc, "unimportTransaction: TransactionHandlerContext unavailable — "
+                    + "imported transaction not cleaned up on thread");
+            throw new TRANSACTION_ROLLEDBACK();
+        }
     }
 
     @Override

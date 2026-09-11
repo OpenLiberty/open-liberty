@@ -146,10 +146,7 @@ public class TransactionSubsystemFactory implements SubsystemFactory, Transactio
     @Override
     public Policy getTargetPolicy(ORB orb, Map<String, Object> properties, Map<String, Object> extraConfig) throws Exception {
         // Create lightweight, truly serializable policy with just configuration
-        boolean enabled = true;  // Could be extracted from properties if needed
-        int timeout = 30;        // Could be extracted from properties if needed
-        
-        ServerTransactionPolicyConfig config = new ServerTransactionPolicyConfig(enabled, timeout);
+        ServerTransactionPolicyConfig config = new ServerTransactionPolicyConfig(true, 30);
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created server transaction policy with config: {0}", config);

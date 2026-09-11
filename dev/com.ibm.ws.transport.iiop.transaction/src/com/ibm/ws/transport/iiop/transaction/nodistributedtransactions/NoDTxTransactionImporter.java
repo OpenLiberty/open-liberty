@@ -130,6 +130,7 @@ public class NoDTxTransactionImporter {
         }
 
         DistributableTransaction tx = _threadImportedTran.get();
+        _threadImportedTran.remove();
         if (tx != null) {
             tx.removeAssociation();
         }

@@ -541,7 +541,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (topOfStackThread != null && topOfStackThread.equals(thread)) {
             return true;
         } else {
-            return (topOfStackThread == null); // should always return false
+            return (topOfStackThread == null); // true when stack is empty: no LIFO constraint, any thread may resume
         }
     }
 
