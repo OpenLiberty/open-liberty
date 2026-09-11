@@ -22,7 +22,7 @@
     <load-on-startup></load-on-startup>
   </servlet>
 
-  <!-- SERVLET MAPPINGS -->        
+  <!-- SERVLET MAPPINGS -->
   <servlet-mapping id="ServletMapping_Default">
     <servlet-name>LTPATestServlet</servlet-name>
     <url-pattern>/*</url-pattern>
@@ -31,4 +31,28 @@
     <servlet-name>TokenAPIServlet</servlet-name>
     <url-pattern>/TokenAPIServlet/*</url-pattern>
   </servlet-mapping>
+
+  <!-- SECURITY CONSTRAINTS -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Protected LTPA Test Resources</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>**</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- LOGIN CONFIGURATION -->
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>BasicRealm</realm-name>
+  </login-config>
+
+  <!-- SECURITY ROLES -->
+  <security-role>
+    <role-name>**</role-name>
+  </security-role>
 </web-app>

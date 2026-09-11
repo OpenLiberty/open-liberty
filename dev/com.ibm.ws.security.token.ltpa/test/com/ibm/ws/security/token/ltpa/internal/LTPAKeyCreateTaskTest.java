@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -103,6 +103,8 @@ public class LTPAKeyCreateTaskTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, false);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, "polled");
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, 0L);
+        props.put(LTPAConfiguration.CFG_KEY_INACTIVITY_TIMEOUT, 60L);
+        props.put(LTPAConfiguration.CFG_KEY_REFRESH_THRESHOLD, 30L);
     }
 
     private void setupLocationServiceExpecatations() {
