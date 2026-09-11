@@ -3443,6 +3443,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyWrite(sendHeaders, true);
         } else if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             // Skip writing data and send headers and last http content only
+            prepareNettyCloseForIncompleteRequestBody(true);
             if(sendHeaders){
                 sendNettyHeaders();
             }
