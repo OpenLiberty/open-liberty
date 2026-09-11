@@ -5,6 +5,7 @@ fbicodex/spnego-kdc-server:1.0
 ghcr.io/gvenzl/oracle-free:23.26.2-full-faststart
 ghcr.io/gvenzl/oracle-free:23.9-full-faststart
 ghcr.io/gvenzl/oracle-free:23.9-slim-faststart
+ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.154.0
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.150.1
 ghcr.io/openzipkin/zipkin-slim:3.6
@@ -40,7 +41,6 @@ localhost/openliberty/testcontainers/spnego-kdc-server:1.0.0.1
 localhost/openliberty/testcontainers/sqlserver-ssl:2022.0.0.1-latest
 mariadb:10.3
 mcr.microsoft.com/mssql/server:2022-latest
-otel/opentelemetry-collector-contrib:0.103.0
 public.ecr.aws/docker/library/alpine:3
 public.ecr.aws/docker/library/alpine:3.17
 public.ecr.aws/docker/library/couchdb:3
