@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -248,6 +248,15 @@ public class AsyncContextImpl implements AsyncContext {
             cancelAsyncTimer();
 
             WebAppRequestDispatcher requestDispatcher = (WebAppRequestDispatcher) context.getRequestDispatcher(path);
+            
+            if (requestDispatcher == null) {
+                logger.logp(Level.SEVERE, CLASS_NAME, "dispatch", "error.calling.async.dispatch", "RequestDispatcher is null.");
+
+                //Cleanup and prevent starting future AsyncTimer since there is no dispatch.
+                complete();
+                throw new IllegalStateException(nls.getString("error.calling.async.dispatch", "RequestDispatcher is null."));
+            }
+
             dispatchRunnable = new DispatchRunnable(requestDispatcher, this);
             dispatchPending = true;
             dispatchAllowed = false;
