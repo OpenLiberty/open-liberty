@@ -9,7 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite.serverLifecycle;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -23,44 +24,38 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
-import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
 @RunWith(FATRunner.class)
 public class AsyncToolCallEventTraceTest extends FATServletClient {
 
     private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async")
-    public static LibertyServer server;
+    private static final String APP_NAME = "asyncToolCallEventTraceTest";
+
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server or copy the field here.
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolCallEventTraceTest");
-
-    @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");
+    public McpClient client = new McpClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolCallEventTraceTest.war")
+        serverLifecycle.getServer().addIgnoredErrors(List.of(EXPECTED_ERROR));
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.deployDropinApp(war);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -83,7 +78,7 @@ public class AsyncToolCallEventTraceTest extends FATServletClient {
                                                       "The tool method 'asyncEcho' returned: 'Async Hello: (async)'");
 
         for (String traceMsg : expectedEventTraceMsgs) {
-            assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+            assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
         }
 
     }
@@ -105,7 +100,7 @@ public class AsyncToolCallEventTraceTest extends FATServletClient {
                         """;
         client.callMCP(request);
         String traceMsg = "The tool method 'asyncEcho' returned the following error to the user: 'An internal server error occurred while running the tool.'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
     }
 
     @Test
@@ -123,7 +118,7 @@ public class AsyncToolCallEventTraceTest extends FATServletClient {
 
         client.callMCP(request);
         String traceMsg = "The tool method 'asyncEcho' returned the following error to the user: 'The method expected the following arguments but did not receive them: [input].'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,11 +9,15 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
+import static io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite.serverLifecycle;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,13 +30,9 @@ import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.AsyncErrorHandlingTools;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.NonBusinessException;
@@ -44,29 +44,30 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class AsyncToolsErrorHandlingTest extends FATServletClient {
 
-    @Server("mcp-server-async")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "asyncToolErrorHandling";
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolErrorHandling");
+    public McpClient client = new McpClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolErrorHandling.war")
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E"));
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(AsyncErrorHandlingTools.class.getPackage());
-        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.deployDropinApp(war);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0010E"); // Tool threw non-business exception
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Before
     public void markBeforeEachTest() throws Exception {
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
     }
 
     @Test
@@ -266,7 +267,7 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     }
 
     private void assertErrorLogged(Class<?> exceptionClass, String error) {
-        String logLine = server.waitForStringInLogUsingMark("CWMCM0010E");
+        String logLine = serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0010E");
         assertThat(logLine,
                    containsString("CWMCM0010E: The asyncErrorTool tool method threw an unexpected exception. The exception is " + exceptionClass.getName() + ": " + error));
     }
