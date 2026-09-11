@@ -195,6 +195,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         parsev0CookieDateRFC1123compat(options.get(HttpConfigConstants.PROPNAME_V0_COOKIE_RFC1123_COMPAT));
 
         parseIgnoreWriteAfterCommit(options.get(HttpConfigConstants.PROPNAME_IGNORE_WRITE_AFTER_COMMIT));
+        parseThrowIOEForInboundConnections(options.get(HttpConfigConstants.PROPNAME_THROW_IOE_FOR_INBOUND_CONNECTIONS)); //PI57542
         parseDesensitizePrivatePortHeader(options.get(HttpConfigConstants.PROPNAME_DESENSITIZE_PRIVATE_PORT_HEADER));
 
         // HTTP/2 Options
