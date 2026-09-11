@@ -6,7 +6,7 @@ IBM-Process-Types: server, \
 -features=com.ibm.websphere.appserver.eeCompatible-12.0, \
   io.openliberty.jsonpInternal-2.2,\
   io.openliberty.noShip-1.0
--bundles=io.openliberty.org.eclipse.persistence-4.0; location:=lib/
+-bundles=io.openliberty.org.hibernate-4.0; location:=lib/
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
