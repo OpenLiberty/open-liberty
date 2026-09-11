@@ -1,24 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal.serverxml;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import org.osgi.framework.BundleContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -54,11 +47,8 @@ public class AppPropertyConfigSource extends InternalConfigSource {
 
     private static final TraceComponent tc = Tr.register(AppPropertyConfigSource.class);
 
-    private final PrivilegedAction<String> getApplicationPidAction = new GetApplicationPidAction();
     private final String name;
-    
-    private BundleContext bundleContext;
-    private String applicationName;
+
     private String applicationPID;
 
     @Trivial
@@ -96,52 +86,17 @@ public class AppPropertyConfigSource extends InternalConfigSource {
     @Override
     public Map<String, String> getProperties() {
 
-        String appPid;
-        if (System.getSecurityManager() == null) {
-            appPid = getApplicationPID();
-        } else {
-            appPid = AccessController.doPrivileged(getApplicationPidAction);
+        if (applicationPID == null) {
+            String appName = OSGiConfigUtils.getApplicationName();
+            if (appName != null) {
+                applicationPID = OSGiConfigUtils.runPrivilegedIfNeeded(() -> OSGiConfigUtils.getApplicationPID(appName));
+            }
         }
 
-        if (appPid != null) {
-            return AppPropertiesTrackingComponent.getAppProperties(appPid);
+        if (applicationPID != null) {
+            return AppPropertiesTrackingComponent.getAppProperties(applicationPID);
         } else {
             return Collections.emptyMap();
         }
     }
-
-    private BundleContext getBundleContext() {
-        if (this.bundleContext == null) {
-            this.bundleContext = OSGiConfigUtils.getBundleContext(getClass());
-        }
-        return this.bundleContext;
-    }
-
-    private String getApplicationName() {
-        if (this.applicationName == null) {
-            BundleContext bundleContext = getBundleContext();
-            if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-                this.applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
-            }
-        }
-        return this.applicationName;
-    }
-
-    private String getApplicationPID() {
-        if (this.applicationPID == null) {
-            BundleContext bundleContext = getBundleContext();
-            if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-                this.applicationPID = OSGiConfigUtils.getApplicationPID(bundleContext, getApplicationName());
-            }
-        }
-        return this.applicationPID;
-    }
-
-    private class GetApplicationPidAction implements PrivilegedAction<String> {
-        @Override
-        public String run() {
-            return getApplicationPID();
-        }
-    }
-
 }
