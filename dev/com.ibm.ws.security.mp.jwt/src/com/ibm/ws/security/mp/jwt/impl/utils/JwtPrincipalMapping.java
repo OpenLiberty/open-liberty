@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,10 +36,10 @@ public class JwtPrincipalMapping {
     String userName = null;
     ArrayList<String> groupIds = null;
 
-    public JwtPrincipalMapping(JwtToken jwtToken, String userAttr, String groupAttr, boolean mapToUr) {
+    public JwtPrincipalMapping(JwtToken jwtToken, String userAttr, String groupAttr, boolean mapToUr, String realmIdentifierAttr) {
         String methodName = "<init>";
         if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jwtToken, userAttr, groupAttr, mapToUr);
+            Tr.entry(tc, methodName, jwtToken, userAttr, groupAttr, mapToUr, realmIdentifierAttr);
         }
         userName = getUserName(userAttr, jwtToken);
         if (userName == null) {
@@ -52,7 +52,9 @@ public class JwtPrincipalMapping {
             Tr.debug(tc, "user name = ", userName);
         }
         if (!mapToUr) {
-            realm = getRealm(REALM_CLAIM, jwtToken);
+            String effectiveRealmAttr = (realmIdentifierAttr != null && !realmIdentifierAttr.isEmpty())
+                                        ? realmIdentifierAttr : REALM_CLAIM;
+            realm = getRealm(effectiveRealmAttr, jwtToken);
             populateGroupIds(jwtToken, groupAttr);
         }
         if (tc.isDebugEnabled()) {

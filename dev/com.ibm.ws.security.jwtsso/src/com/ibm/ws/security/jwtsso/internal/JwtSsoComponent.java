@@ -355,6 +355,18 @@ public class JwtSsoComponent implements JwtSsoConfig {
 
     /** {@inheritDoc} */
     @Override
+    public String getRealmIdentifier() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getRealmName() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean ignoreApplicationAuthMethod() {
         return true;
     }
