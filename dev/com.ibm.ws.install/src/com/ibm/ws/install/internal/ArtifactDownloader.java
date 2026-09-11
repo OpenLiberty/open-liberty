@@ -368,7 +368,8 @@ public class ArtifactDownloader implements AutoCloseable {
                                              destination.toString());
         }
 
-        if (destination.exists() || !tempFile.renameTo(destination)) {
+        destination.delete();
+        if (!tempFile.renameTo(destination)) {
             logger.fine("Could not rename " + tempFile.getName() + " to: " + destination.getName());
             tempFile.delete();
         }
