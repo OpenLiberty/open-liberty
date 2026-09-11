@@ -9,10 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,11 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -43,37 +40,34 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AuthCancellationTest extends FATServletClient {
 
-    @Server("mcp-server-auth")
-    public static LibertyServer server;
+    private static final String APP_NAME = "cancellationTest";
+
+    // Server is managed by McpAuthServerSuite — do NOT add @Server or copy the field here.
     private static ExecutorService executor;
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/cancellationTest").basicAuth("BobTheAdmin", "testpassword").build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/asyncToolCancellationTest").basicAuth("BobTheAdmin", "testpassword").build();
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");
+    public ToolStatusClient toolStatus = new ToolStatusClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "cancellationTest.war")
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E"));
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(CancellationTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        serverLifecycle.deployDropinApp(war);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
 
         executor = Executors.newSingleThreadExecutor();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-                          "CWMCM0010E" //Internal server error
-        );
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @AfterClass
@@ -137,7 +131,7 @@ public class AuthCancellationTest extends FATServletClient {
         String responseA = futureA.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
-        assertTrue(!server.findStringsInLogs("Exception: The tool cannot be cancelled as the calling user is not authorized.").isEmpty());
+        assertTrue(!serverLifecycle.getServer().findStringsInLogs("Exception: The tool cannot be cancelled as the calling user is not authorized.").isEmpty());
 
     }
 
