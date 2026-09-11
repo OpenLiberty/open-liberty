@@ -53,7 +53,8 @@ tested.features:\
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
-fat.test.container.images: otel/opentelemetry-collector-contrib:0.103.0
+fat.test.container.images: \
+  ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.154.0
 	
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

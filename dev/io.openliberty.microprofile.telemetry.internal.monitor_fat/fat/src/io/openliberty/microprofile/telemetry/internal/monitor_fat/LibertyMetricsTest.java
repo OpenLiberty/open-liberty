@@ -20,7 +20,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -44,15 +44,12 @@ public class LibertyMetricsTest extends BaseTestClass {
     @ClassRule
     public static RepeatTests rt = FATSuite.testRepeatMPTel20(SERVER_NAME);
 	
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
-	@ClassRule
-	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
-			.withDockerfileFromBuilder(builder -> builder.from(IMAGE_NAME).copy("/etc/otelcol-contrib/config.yaml",
-					"/etc/otelcol-contrib/config.yaml"))
-			.withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
-			.withLogConsumer(new SimpleLogConsumer(LibertyMetricsTest.class, "opentelemetry-collector-contrib"))
-			.withExposedPorts(8888, 8889, 4317);
+ @ClassRule
+ public static GenericContainer<?> container = new GenericContainer<>(IMAGE_NAME)
+   .withCopyFileToContainer(MountableFile.forHostPath(new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml").toPath()),
+    	"/etc/otelcol-contrib/config.yaml")
+   .withLogConsumer(new SimpleLogConsumer(LibertyMetricsTest.class, "opentelemetry-collector-contrib"))
+   .withExposedPorts(8888, 8889, 4317);
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {

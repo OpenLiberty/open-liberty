@@ -22,7 +22,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -47,15 +47,12 @@ public class SessionMetricsTest extends BaseTestClass {
     @ClassRule
     public static RepeatTests rt = FATSuite.testRepeatMPTel20(SERVER_NAME);
 	
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
-	@ClassRule
-	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
-			.withDockerfileFromBuilder(builder -> builder.from(IMAGE_NAME).copy("/etc/otelcol-contrib/config.yaml",
-					"/etc/otelcol-contrib/config.yaml"))
-			.withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
-			.withLogConsumer(new SimpleLogConsumer(SessionMetricsTest.class, "opentelemetry-collector-contrib"))
-			.withExposedPorts(8888, 8889, 4317);
+ @ClassRule
+ public static GenericContainer<?> container = new GenericContainer<>(IMAGE_NAME)
+   .withCopyFileToContainer(MountableFile.forHostPath(new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml").toPath()),
+    	"/etc/otelcol-contrib/config.yaml")
+   .withLogConsumer(new SimpleLogConsumer(SessionMetricsTest.class, "opentelemetry-collector-contrib"))
+   .withExposedPorts(8888, 8889, 4317);
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -109,11 +106,11 @@ public class SessionMetricsTest extends BaseTestClass {
 
 		// Allow time for the collector to receive and expose metrics
 		matchStringsWithRetries(() -> getContainerCollectorMetrics(container),
-                new String[] { "io_openliberty_session_created_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
-                        "io_openliberty_session_live\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
-                        "io_openliberty_session_active\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
-                        "io_openliberty_session_invalidated_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
-                        "io_openliberty_session_invalidated_by_timeout_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*" });
+		              new String[] { "io_openliberty_session_created_total\\{.*io_openliberty_app_name=\"default_host/testSessionApp\".*\\}.*",
+		                      "io_openliberty_session_live\\{.*io_openliberty_app_name=\"default_host/testSessionApp\".*\\}.*",
+		                      "io_openliberty_session_active\\{.*io_openliberty_app_name=\"default_host/testSessionApp\".*\\}.*",
+		                      "io_openliberty_session_invalidated_total\\{.*io_openliberty_app_name=\"default_host/testSessionApp\".*\\}.*",
+		                      "io_openliberty_session_invalidated_by_timeout_total\\{.*io_openliberty_app_name=\"default_host/testSessionApp\".*\\}.*" });
 	}
 	
 
