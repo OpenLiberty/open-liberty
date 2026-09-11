@@ -203,4 +203,20 @@ public class JaxbPUnit40 extends JaxbPUnit {
         }
         return rtnType;
     }
+
+    /**
+     * Overrides {@link JaxbPUnit#getTransactionTypeName()} to read directly from the pxml40
+     * JAXB enum ({@code com.ibm.ws.jpa.pxml40.PersistenceUnitTransactionType}) without ever
+     * touching {@code javax.persistence.spi.PersistenceUnitTransactionType}.
+     *
+     * <p>After Jakarta transformation, {@code javax.persistence.spi.PersistenceUnitTransactionType}
+     * becomes {@code jakarta.persistence.spi.PersistenceUnitTransactionType} which does not exist
+     * in the JPA 4.0 API bundle, causing a {@code NoClassDefFoundError} if loaded.  By overriding
+     * here we avoid that class being resolved altogether for the JPA 4.0 call path.
+     */
+    @Override
+    String getTransactionTypeName() {
+        com.ibm.ws.jpa.pxml40.PersistenceUnitTransactionType jaxbType = ivPUnit.getTransactionType();
+        return jaxbType == null ? null : jaxbType.name();
+    }
 }

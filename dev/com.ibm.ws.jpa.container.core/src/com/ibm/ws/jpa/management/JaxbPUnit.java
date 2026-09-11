@@ -216,6 +216,20 @@ abstract class JaxbPUnit {
      */
     abstract PersistenceUnitTransactionType getTransactionType();
 
+    /**
+     * Returns the transaction type name ("JTA" or "RESOURCE_LOCAL") as read directly from
+     * this persistence unit's JAXB model, or {@code null} if none is set in persistence.xml.
+     *
+     * <p>This method is intentionally <em>abstract</em> and implemented in each subclass by
+     * reading the JAXB-internal enum (e.g. {@code com.ibm.ws.jpa.pxml20.PersistenceUnitTransactionType})
+     * so that the API-level {@code PersistenceUnitTransactionType} (which lives in the spi package
+     * pre-JPA-4.0 and in the top-level package from JPA 4.0 onwards) is <em>never referenced</em>
+     * inside this method's bytecode.  This prevents a {@code NoClassDefFoundError} at runtime
+     * when the JPA 4.0 API bundle is wired and {@code jakarta.persistence.spi.PersistenceUnitTransactionType}
+     * no longer exists.
+     */
+    abstract String getTransactionTypeName();
+
     @Override
     public String toString() {
         return (getClass().getSimpleName() + "(" + getName() + ")@" + Integer.toHexString(hashCode()));
