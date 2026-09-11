@@ -8,7 +8,10 @@
     <include location="../fatTestPorts.xml"/>
     <!-- value="foobar" (type String)-->
     <jndiEntry jndiName="stringJndiEntry" value="{xor}OTAwPT4t" decode="true"/>
-    <!-- value="12345" (type Integer)-->
-    <jndiEntry jndiName="doubleJndiEntry" value="{xor}bm1sa2o=" decode="true"/>
+    <!-- value="12345.1" (type Double)-->
+    <jndiEntry jndiName="doubleJndiEntry" value="{xor}bm1sa2pxbg==" decode="true"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <jndiEntry jndiName="stringPlainTextJndiEntry" value="not_encrypted_passw0rd" decode="true"/>
+    <jndiEntry jndiName="invalidEncryptedJndiEntry" value="{aes}invalidAES" decode="true"/>
+
 </server>
