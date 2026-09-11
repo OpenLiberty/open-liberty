@@ -169,7 +169,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      */
     @Test
     public void testInstallFeatureFromMavenCentralMirror() throws Exception {
-        final String METHOD_NAME = "testInstallFeatureFromMavenCentralMirror";
+        final String METHOD_NAME = "testInstallFeature";
         Log.entering(c, METHOD_NAME);
 
         LibertyServer server = LibertyServerFactory.getLibertyServer("staticWebServer");
@@ -184,13 +184,15 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
                             server.getHostname(),
                             server.getHttpDefaultPort()));
 
+            // create a temporary local maven repo
+            writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo",
+                    Files.createTempDirectory("maven-repo").toAbsolutePath().toString());
+
             // Begin Test
             String[] param1s = { "installFeature", "json-1.0", "--verbose" };
             String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
-
-            writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo",
-                    Files.createTempDirectory("maven-repo").toAbsolutePath().toString());
             ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
             checkCommandOutput(po, 0, null, filesList);
         } finally {
 
