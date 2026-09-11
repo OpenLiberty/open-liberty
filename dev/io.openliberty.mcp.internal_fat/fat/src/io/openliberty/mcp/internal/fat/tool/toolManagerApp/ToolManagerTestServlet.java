@@ -69,4 +69,17 @@ public class ToolManagerTestServlet extends FATServlet {
         ToolInfo removedMethodTool = toolManager.getTool("methodToolToBeRemoved");
         assertNull("removedMethodTool", removedMethodTool);
     }
+
+    // Negative Tests
+
+    /**
+     * Negative test: {@link ToolManager#getTool} must return {@code null} for a tool name
+     * that has never been registered; it must not throw, return a default stub, or
+     * produce a non-null placeholder.
+     */
+    @Test
+    public void testGetToolReturnsNullForNonExistentTool() {
+        ToolInfo result = toolManager.getTool("aNeverRegisteredToolName");
+        assertNull("getTool must return null for a tool that was never registered", result);
+    }
 }

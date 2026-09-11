@@ -667,33 +667,108 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                  }
                                  """;
 
-       // Lenient mode test (false boolean in 3rd parameter
-       JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
-   }
+        // Lenient mode test (false boolean in 3rd parameter
+        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
+    }
 
-   @Test
-   public void testToolThrowsToolCallUnauthorizedException() throws Exception {
-       String request = """
-                       {
-                         "jsonrpc": "2.0",
-                         "id": 1,
-                         "method": "tools/call",
-                         "params": {
-                           "name": "unauthorizedTool",
-                           "arguments": {
-                             "input": "bad-value"
-                           }
-                         }
-                       }
-                       """;
+    @Test
+    public void testToolThrowsToolCallUnauthorizedException() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unauthorizedTool",
+                            "arguments": {
+                              "input": "bad-value"
+                            }
+                          }
+                        }
+                        """;
 
-       McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
-       Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
+        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+        Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
 
-       assertEquals(403, response.statusCode());
-       assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
-       assertTrue("Response body must contain the exception message",
-                  response.body().contains("Not authorized to call this tool for input: bad-value"));
-       assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
-   }
+        assertEquals(403, response.statusCode());
+        assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
+        assertTrue("Response body must contain the exception message",
+                   response.body().contains("Not authorized to call this tool for input: bad-value"));
+        assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
+    }
+
+    // Negative Tests
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Negative test: calling a tool with a missing required argument must return
+     * {@code isError:true} with a message that names the missing argument; it must
+     * NOT use the generic internal-server-error text (which would hide the root cause).
+     */
+    @Test
+    public void testMissingRequiredArgumentErrorMessageNamesArgument() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 202,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "count": 3
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null", response);
+
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONObject result = jsonResponse.getJSONObject("result");
+        assertTrue("Result must be flagged as an error", result.getBoolean("isError"));
+
+        String text = result.getJSONArray("content").getJSONObject(0).getString("text");
+        assertFalse("Error text must not be the generic internal-error message",
+                    "An internal server error occurred while running the tool.".equals(text));
+        assertTrue("Error text must mention the missing argument 'input'",
+                   text.contains("input"));
+    }
+
+    /**
+     * Negative test: calling a tool with a type-mismatched argument must return
+     * {@code isError:true} with a message that names both the argument and the
+     * expected Java type; it must NOT use the generic internal-server-error text.
+     */
+    @Test
+    public void testArgumentTypeMismatchErrorMessageNamesArgumentAndType() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 203,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "input": "hello",
+                              "count": "not-a-number"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null", response);
+
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONObject result = jsonResponse.getJSONObject("result");
+        assertTrue("Result must be flagged as an error", result.getBoolean("isError"));
+
+        String text = result.getJSONArray("content").getJSONObject(0).getString("text");
+        assertFalse("Error text must not be the generic internal-error message",
+                    "An internal server error occurred while running the tool.".equals(text));
+        assertTrue("Error text must mention the mismatched argument 'count'",
+                   text.contains("count"));
+    }
 }
