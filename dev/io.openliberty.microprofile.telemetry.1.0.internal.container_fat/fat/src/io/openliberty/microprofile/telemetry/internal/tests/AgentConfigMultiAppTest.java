@@ -24,7 +24,6 @@ import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;

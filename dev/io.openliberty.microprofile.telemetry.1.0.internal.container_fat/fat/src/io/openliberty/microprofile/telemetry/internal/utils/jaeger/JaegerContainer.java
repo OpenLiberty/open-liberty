@@ -13,7 +13,6 @@
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
 import java.io.File;
-
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.MountableFile;
 
@@ -204,4 +203,5 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
     public int getQueryGrpcPort() {
         return getMappedPort(GRPC_QUERY_PORT);
     }
+
 }
