@@ -222,6 +222,34 @@ public class TCPUtils {
                         }
                         return;
                     }
+                    // On the very first bind failure, probe the port to distinguish a real
+                    // conflict from a TIME_WAIT remnant.  If it is TIME_WAIT only, retry
+                    // immediately with SO_REUSEADDR=true rather than burning through all
+                    // retries waiting for the OS TIME_WAIT period to expire.
+                    if (config.isInbound() && future.cause() instanceof java.net.BindException
+                        && !reuseAddrRetry && retryCount == config.getPortOpenRetries()) {
+                        String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
+                        InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
+                        if (!probeAddr.isUnresolved()) {
+                            try (java.net.Socket probe = new java.net.Socket()) {
+                                probe.connect(probeAddr, 1000);
+                                // Connection succeeded — someone is actively listening, not TIME_WAIT.
+                                // Fall through to the normal retry countdown below.
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Probe connect to " + probeAddr + " succeeded: real port conflict, will retry normally for " + config.getExternalName());
+                                }
+                            } catch (java.io.IOException probeEx) {
+                                // Connection refused — TIME_WAIT only, retry immediately with SO_REUSEADDR=true.
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Probe connect to " + probeAddr + " failed (" + probeEx.getMessage()
+                                                 + "): TIME_WAIT only, retrying bind with SO_REUSEADDR=true for " + config.getExternalName());
+                                }
+                                channel.config().setOption(ChannelOption.SO_REUSEADDR, true);
+                                open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, true);
+                                return;
+                            }
+                        }
+                    }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         // config.getPortOpenRetries() + 1 because the initial bind failed, now trying
                         // config.getPortOpenRetries() additional times.
