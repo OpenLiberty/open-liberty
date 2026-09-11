@@ -188,30 +188,10 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
             String[] param1s = { "installFeature", "json-1.0", "--verbose" };
             String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
 
-            // Retry up to 3 times: a transient HTTP transfer corruption of the large
-            // features JSON can cause a JsonParsingException and leave no installed files.
-            // Each attempt uses a fresh temp repo so any corrupt cached file is discarded.
-            int maxAttempts = 3;
-            AssertionError lastError = null;
-            for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-                Log.info(c, METHOD_NAME, "Attempt " + attempt + " of " + maxAttempts + ": starting featureUtility run");
-                deleteFeaturesAndLafilesFolders(METHOD_NAME);
-                writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo",
-                        Files.createTempDirectory("maven-repo").toAbsolutePath().toString());
-                ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-                try {
-                    checkCommandOutput(po, 0, null, filesList);
-                    Log.info(c, METHOD_NAME, "Attempt " + attempt + " of " + maxAttempts + ": succeeded");
-                    lastError = null;
-                    break;
-                } catch (AssertionError e) {
-                    Log.info(c, METHOD_NAME, "Attempt " + attempt + " of " + maxAttempts + ": failed with: " + e.getMessage());
-                    lastError = e;
-                }
-            }
-            if (lastError != null) {
-                throw lastError;
-            }
+            writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo",
+                    Files.createTempDirectory("maven-repo").toAbsolutePath().toString());
+            ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+            checkCommandOutput(po, 0, null, filesList);
         } finally {
 
             // restore the local maven repo properties
