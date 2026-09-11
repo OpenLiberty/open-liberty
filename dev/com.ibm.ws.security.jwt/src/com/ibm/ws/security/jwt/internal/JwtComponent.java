@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,7 @@ public class JwtComponent implements JwtConfig {
     private String trustedAlias;
     private long jwkRotationTime;
     private int jwkSigningKeySize;
+    private int jwkMaxKeys;
     private String keyManagementKeyAlgorithm;
     private String keyManagementKeyAlias;
     private String contentEncryptionAlgorithm;
@@ -171,6 +172,7 @@ public class JwtComponent implements JwtConfig {
         // Rotation time is in minutes, so convert value to milliseconds
         jwkRotationTime = jwkRotationTime * 60 * 1000;
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
+        jwkMaxKeys = (Integer) props.get(JwtUtils.CFG_KEY_JWK_MAX_KEYS);
         nbfOffsetTime = ((Long) props.get(JwtUtils.CFG_KEY_NBF_OFFSET)).longValue();
         amrAttributes = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_ATTR));
         loadJweConfigOptions(props);
@@ -204,7 +206,7 @@ public class JwtComponent implements JwtConfig {
         }
         if (jwtConfig.isJwkEnabled()) {
             jwkProvider = new JWKProvider(jwtConfig.getJwkSigningKeySize(), jwtConfig.getSignatureAlgorithm(),
-                    jwtConfig.getJwkRotationTime());
+                    jwtConfig.getJwkRotationTime(), jwtConfig.getJwkMaxKeys());
         }
     }
 
@@ -335,6 +337,11 @@ public class JwtComponent implements JwtConfig {
     @Override
     public int getJwkSigningKeySize() {
         return jwkSigningKeySize;
+    }
+
+    @Override
+    public int getJwkMaxKeys() {
+        return jwkMaxKeys;
     }
 
     @Override
