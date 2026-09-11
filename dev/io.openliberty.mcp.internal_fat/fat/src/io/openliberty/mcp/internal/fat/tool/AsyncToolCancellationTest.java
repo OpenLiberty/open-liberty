@@ -29,10 +29,9 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
@@ -43,36 +42,34 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AsyncToolCancellationTest extends FATServletClient {
 
-    @Server("mcp-server-async-auth")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncAuthServerSuite — do NOT add @Server or copy the field here.
     private static ExecutorService executor;
     private static final String EXPECTED_ERROR = "OperationCancelledException";
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolCancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
+    public McpClient client = new McpClient(McpAsyncAuthServerSuite.server, "/asyncToolCancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolCancellationTest");
+    public ToolStatusClient toolStatus = new ToolStatusClient(McpAsyncAuthServerSuite.server, "/asyncToolCancellationTest");
 
     @BeforeClass
     public static void setup() throws Exception {
+        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolCancellationTest.war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(McpAsyncAuthServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAsyncAuthServerSuite.server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
 
-        server.startServer();
         executor = Executors.newSingleThreadExecutor();
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
+        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
+        McpAsyncAuthServerSuite.undeployDropinApp("asyncToolCancellationTest");
         executor.shutdown();
-        server.stopServer(EXPECTED_ERROR);
     }
 
     @Test
@@ -178,7 +175,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
         // Verify that the internal server error message (CWMCM0010E) was NOT logged
         // This error message is only logged for non-business exceptions, and OperationCancelledException
         // should be handled specially without logging
-        String errorLog = server.waitForStringInLog("CWMCM0010E.*asyncCancellationTool", TestConstants.NEGATIVE_TIMEOUT_MS);
+        String errorLog = McpAsyncAuthServerSuite.server.waitForStringInLog("CWMCM0010E.*asyncCancellationTool", TestConstants.NEGATIVE_TIMEOUT_MS);
         if (errorLog != null) {
             throw new AssertionError("OperationCancelledException should not be logged as an error. Found: " + errorLog);
         }

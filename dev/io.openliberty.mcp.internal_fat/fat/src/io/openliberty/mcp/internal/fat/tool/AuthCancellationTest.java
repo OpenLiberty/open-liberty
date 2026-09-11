@@ -30,10 +30,9 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
@@ -44,37 +43,32 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AuthCancellationTest extends FATServletClient {
 
-    @Server("mcp-server-auth")
-    public static LibertyServer server;
+    // Server is managed by McpAuthServerSuite — do NOT add @Server or copy the field here.
     private static ExecutorService executor;
 
     @Rule
-    public McpClient client = new McpClient(server, "/cancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
+    public McpClient client = new McpClient(McpAuthServerSuite.server, "/cancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");
+    public ToolStatusClient toolStatus = new ToolStatusClient(McpAuthServerSuite.server, "/cancellationTest");
 
     @BeforeClass
     public static void setup() throws Exception {
+        McpAuthServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "cancellationTest.war")
                                    .addPackage(CancellationTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        ShrinkHelper.exportDropinAppToServer(McpAuthServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAuthServerSuite.server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
 
         executor = Executors.newSingleThreadExecutor();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-                          "CWMCM0010E" //Internal server error
-        );
+        McpAuthServerSuite.server.setMarkToEndOfLog();
+        McpAuthServerSuite.undeployDropinApp("cancellationTest");
     }
 
     @AfterClass
@@ -138,7 +132,7 @@ public class AuthCancellationTest extends FATServletClient {
         String responseA = futureA.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
-        assertTrue(!server.findStringsInLogs("Exception: The tool cannot be cancelled as the calling user is not authorized.").isEmpty());
+        assertTrue(!McpAuthServerSuite.server.findStringsInLogs("Exception: The tool cannot be cancelled as the calling user is not authorized.").isEmpty());
 
     }
 
