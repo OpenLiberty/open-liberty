@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -54,13 +56,16 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.internal.netty.RequestMetadata;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.http.netty.inbound.NettyTCPWriteRequestContext;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -120,6 +125,7 @@ import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -132,6 +138,8 @@ import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
 import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.openliberty.http.constants.HttpGenerics;
+import io.netty.util.AsciiString;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -320,6 +328,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     protected ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
+    /** Request protocol and stream metadata, set once before executor publication. */
+    private volatile RequestMetadata nettyRequestMetadata;
 
     /**
      * Constructor for this base service context class.
@@ -341,6 +351,34 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     public void setNettyRequest(FullHttpRequest request) {
         this.nettyRequest = request;
+    }
+
+    protected final synchronized void initializeRequestMetadata(RequestMetadata requestMetadata) {
+        if (requestMetadata == null) {
+            throw new IllegalArgumentException("requestMetadata");
+        }
+        if (this.nettyRequestMetadata != null) {
+            throw new IllegalStateException("Netty request metadata is already initialized");
+        }
+        this.nettyRequestMetadata = requestMetadata;
+    }
+
+    public final boolean isNettyHttp2Request() {
+        RequestMetadata metadata = nettyRequestMetadata;
+        return metadata != null && metadata.isHttp2();
+    }
+
+    public final int getNettyHttp2StreamId() {
+        RequestMetadata metadata = nettyRequestMetadata;
+        return metadata == null ? -1 : metadata.streamId();
+    }
+
+    private void bindNettyRequestVersion(TCPWriteRequestContext writeInterface) {
+        if (writeInterface instanceof NettyTCPWriteRequestContext) {
+            RequestMetadata metadata = nettyRequestMetadata;
+            ((NettyTCPWriteRequestContext) writeInterface).setHttp10Request(metadata != null
+                            && metadata.protocol() == NettyHttpConstants.ProtocolName.HTTP10);
+        }
     }
 
     public void setNettyResponse(io.netty.handler.codec.http.HttpResponse response) {
@@ -2303,15 +2341,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * will be sent as is and therefore sets the headers sent flag to avoid changes to them.
      */
     private void prepareNettyHeadersToSend() {
-        HttpResponse response = ((NettyResponseMessage) getResponse()).getResponse();
+        NettyResponseMessage responseMessage = (NettyResponseMessage) getResponse();
+        HttpResponse response = responseMessage.getResponse();
 
         // check compression and set up the Content-Encoding header if need be
         if (null != this.compressHandler) {
             ContentEncodingValues ce = this.compressHandler.getContentEncoding();
             getResponse().setContentEncoding(ce);
         }else {
-            String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-            acceptEncoding = nettyRequest.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
+            String acceptEncoding = getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString();
             if (acceptEncoding != null) {
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
                 compressionHandler.setCurrentContentLength(getResponse().getContentLength());
@@ -2326,6 +2364,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         ((NettyResponseMessage) getResponse()).processCookies();
         HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
         headerHandler.complianceCheck();
+        // The Netty encoder consumes this reserved extension field. Project authority once,
+        // after ordinary configuration and compliance have completed.
+        String streamIdHeader = HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString();
+        responseMessage.removeHeader(streamIdHeader);
+        if (isNettyHttp2Request()) {
+            responseMessage.setHeader(streamIdHeader, Integer.toString(getNettyHttp2StreamId()));
+        }
         String closeNonUpgraded = (String) (this.myVC.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
         // Shouldn't close upgraded requests
         boolean upgradedRequest = closeNonUpgraded != null && "true".equalsIgnoreCase(closeNonUpgraded);
@@ -2338,11 +2383,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         if (HttpUtil.isContentLengthSet(response)) {
             this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
-        }
-        final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
-
-        if (isSwitching && "websocket".equalsIgnoreCase(getResponse().getHeader(HttpHeaderKeys.HDR_UPGRADE).asString())) {
-                nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
         this.setHeadersSent();
     }
@@ -2963,8 +3003,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Compression enabled. Prepping data");
             }
-            String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-            acceptEncoding = nettyRequest.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
+            String acceptEncoding = getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString();
             if (this.compressHandler == null && acceptEncoding != null) {
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
                 compressionHandler.setCurrentContentLength(getResponse().getContentLength());
@@ -3043,8 +3082,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyResponseMessage)msg).update(nettyResponse);
             }
             prepareNettyHeadersToSend();
-            if (getResponse().containsHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString())) {
-                nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
+            if (isNettyHttp2Request()) {
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
                 if (Objects.isNull(handler)) {
                 } else if (handler.connection().remote().allowPushTo()) {
@@ -3060,7 +3098,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
-                                           && !"HTTP2".equals(nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get());
+                                           && ProtocolState.current(nettyContext.channel()) != NettyHttpConstants.ProtocolName.HTTP2;
         // On upgrade but haven't written headers
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
             sendNettyHeaders();
@@ -3073,8 +3111,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            HeaderField streamIdField = getResponse().getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-            String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
+            String streamId = Integer.toString(getNettyHttp2StreamId());
 
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
                 ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
@@ -3097,7 +3134,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         Http2Connection connection = handler.connection();
 
         int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
-        int currentStreamId = nettyRequest.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+        int currentStreamId = getNettyHttp2StreamId();
 
         Http2Headers headers = new DefaultHttp2Headers().clear();
         String scheme = "https";
@@ -3285,8 +3322,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Compression enabled. Prepping data");
             }
-            String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-            acceptEncoding = nettyRequest.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
+            String acceptEncoding = getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString();
             if (this.compressHandler == null && acceptEncoding != null) {
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
                 compressionHandler.setCurrentContentLength(getResponse().getContentLength());
@@ -3368,7 +3404,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyResponseMessage)msg).update(nettyResponse);
             }
             prepareNettyHeadersToSend();
-            if (msg.containsHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString())) {
+            if (isNettyHttp2Request()) {
 
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
                 if (Objects.isNull(handler)) {
@@ -3385,7 +3421,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
-                                           && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
+                                           && ProtocolState.current(nettyContext.channel()) != NettyHttpConstants.ProtocolName.HTTP2;
         // On upgrade but haven't written headers
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
             sendNettyHeaders();
@@ -3398,8 +3434,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            HeaderField streamIdField = getResponse().getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-            String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
+            String streamId = Integer.toString(getNettyHttp2StreamId());
 
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
                 ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
@@ -3413,6 +3448,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             sendNettyFinalContent();
         }
+        // if (isNettyUpgrade101()) {
+        //     triggerNettyUpgradeEvent();
+        // }
         setMessageSent();
     }
 
@@ -3647,6 +3685,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing (async) " + writeBuffers.length + " buffers.");
             }
+            bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             return getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, callback, isForceAsync(), getWriteTimeout());
         }
@@ -3679,6 +3718,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Writing (sync) " + writeBuffers.length + " buffers.");
             }
 
+            bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             try {
                 getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, getWriteTimeout());
@@ -3752,6 +3792,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if(!(getTSC().getWriteInterface() instanceof NettyTCPWriteRequestContext))
             throw new RuntimeException("Writing on Netty requires a NettyTCPWriteRequestContext");
 
+        prepareNettyCloseForIncompleteRequestBody(finalWrite);
+
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing " + writeBuffers.length + " buffers on netty channel.");
@@ -3763,6 +3805,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).queuePrefixObject(nettyResponse);
             }
 
+            bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             try {
                 if(!nettyContext.channel().isOpen()){
@@ -3789,6 +3832,39 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
+    private void prepareNettyCloseForIncompleteRequestBody(boolean finalWrite) {
+        if (!finalWrite || nettyResponse == null) {
+            return;
+        }
+        if (isNettyHttp2Request()) {
+            return;
+        }
+        if (!hasUnconsumedNettyRequestBody()) {
+            return;
+        }
+
+        // A finalized response cannot safely leave an HTTP/1.x connection reusable while
+        // unread request-body bytes may still be on the wire. Mark the response state as
+        // close-delimited before the write path so close cleanup does not block draining.
+        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
+        setPersistent(false);
+        nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+    }
+
+    /**
+     * Determines whether an HTTP/1.x response must close because request entity
+     * bytes may still be unread. Protocol completion remains owned by
+     * {@code LastHttpContent}; consuming the declared fixed-length entity is
+     * sufficient only for this response-close decision.
+     */
+    private boolean hasUnconsumedNettyRequestBody() {
+        // Incomplete-body forced-close is an HTTP/1 keep-alive concern only.
+        if (isNettyHttp2Request()) {
+            return false;
+        }
+        return !isBodyComplete() && !ReadFlowHandler.state(nettyContext).isRequestConsumed();
+    }
+
     private void sendNettyFinalContent() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
@@ -3796,13 +3872,28 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         NettyResponseMessage resp = (NettyResponseMessage) getResponse();
         HttpHeaders trailers = resp.getNettyTrailers();
 
-        HeaderField streamIdField = resp.getHeader(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text().toString());
-        String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
+        String streamId = Integer.toString(getNettyHttp2StreamId());
 
         DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
+        boolean closeAfterFinalContent = "-1".equals(streamId)
+                                        && (!isPersistent()
+                                            || resp.getResponse().headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
+                                            || !trailers.isEmpty()
+                                            || hasUnconsumedNettyRequestBody());
+
+        if (closeAfterFinalContent && hasUnconsumedNettyRequestBody()) {
+            this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
+            setPersistent(false);
+            resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        }
 
         // Sending last http content since all data was written
-        this.nettyContext.channel().eventLoop().execute(() -> nettyContext.channel().writeAndFlush(lastContent));
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture future = nettyContext.channel().writeAndFlush(lastContent);
+            if (closeAfterFinalContent) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
+        });
     }
 
     /**
@@ -3810,7 +3901,53 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      */
     private void sendNettyHeaders() {
-        this.nettyContext.channel().eventLoop().execute(() -> nettyContext.channel().writeAndFlush(nettyResponse));
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture future = nettyContext.channel().writeAndFlush(nettyResponse);
+            boolean websocketIntent = Boolean.TRUE.equals(nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).get());
+            boolean isSwitching = nettyResponse.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code();
+            boolean isUpgrade = isSwitching
+                            && nettyResponse.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true)
+                            && nettyResponse.headers().get(HttpHeaderNames.UPGRADE) != null;
+            boolean isWebSocketUpgrade = isUpgrade
+                            && HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(nettyResponse.headers().get(HttpHeaderNames.UPGRADE));
+            if (websocketIntent && !isWebSocketUpgrade) {
+                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
+            }
+            if (isSwitching) {
+                String connection = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
+                String upgrade = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
+                        
+                if(isUpgrade) {
+                    Object upgPromise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+                    if(!(upgPromise instanceof CompletableFuture<?>)) {
+                        CompletableFuture<Void> promise = new CompletableFuture<>();
+                        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+                    }
+
+                    Tr.debug(tc,"UPGRADE LOG -> sendNettyHeaders detected 101, attaching event to listener");
+
+                    future.addListener(f -> {
+                        if(f.isSuccess()){
+                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush success, firing event. Autoread = " 
+                                + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
+                            
+                            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+                        } else {
+                            if (isWebSocketUpgrade) {
+                                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
+                            }
+                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush failed: " + String.valueOf(f.cause()));
+                        }
+                        
+                    });
+                
+                } else {
+                    Tr.debug(tc," UPGRADE LOG -> status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
+                }
+            }
+        });
+
+        
     }
 
     /**
@@ -5690,7 +5827,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     break;
                 case ("deflate"):
                 case ("zlib"):
-                    this.compressHandler = new DeflateOutputHandler(GenericUtils.getBytes(nettyRequest.headers().get(HttpHeaderKeys.HDR_USER_AGENT.getName())), bufferSize);
+                    this.compressHandler = new DeflateOutputHandler(
+                                    GenericUtils.getBytes(getRequest().getHeader(HttpHeaderKeys.HDR_USER_AGENT).asString()), bufferSize);
                     break;
                 case ("identity"):
                     getResponse().removeHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING);
@@ -6444,4 +6582,80 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         return ret;
     }
 
+    private boolean isNettyUpgrade101() {
+        if (nettyResponse == null || nettyContext == null) {
+            return false;
+        }
+
+        if (!nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
+            return false;
+        }
+
+        // Check Connection: Upgrade and Upgrade: <token>
+        final CharSequence conn = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
+        final CharSequence upg = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
+        if (conn == null || upg == null || upg.length() == 0) {
+            return false;
+        }
+
+        return AsciiString.containsIgnoreCase(conn, "upgrade");
+    }
+
+    private void triggerNettyUpgradeEvent() {
+        if (nettyContext == null) {
+            return;
+        }
+        CompletableFuture<Void> promise = getUpgradeReadyPromise();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "triggerNettyUpgradeEvent: firing 101 Event");
+        }
+
+        if(nettyContext.executor().inEventLoop()) {
+            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+        } else {
+            nettyContext.executor().execute(() ->
+                nettyContext.pipeline().fireUserEventTriggered(
+                    HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
+        }
+
+        //TODO: discuss what if we want to set a task to timeout installing the upgrade handler
+        // and log the promise as failed
+        // final ScheduledFuture<?> upgradeInstallTimeout = nettyContext.executor().schedule(() -> {
+        //     if(!promise.isDone()){
+        //         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //             Tr.debug(tc, "triggerNettyUpgradeEvent: timed out waiting for upgrade handler installation");
+        //         }
+        //         promise.completeExceptionally(new IOException("Upgrade failed: Upgrade handler not installed"));
+        //     }
+        // }, 1000, TimeUnit.MILLISECONDS);
+        // promise.whenComplete((v, t) -> upgradeInstallTimeout.cancel(false));
+    }
+    
+    /**
+     * Prepares the channel upgrade promise. This promise is completed by the 
+     * {@link HttpDispatcherHandler} after the pipeline handlers are changed to handle 
+     * the upgraded connection.
+     * 
+     * @return the channel upgrade promise
+     */
+    private CompletableFuture<Void> getUpgradeReadyPromise() {
+        CompletableFuture<Void> promise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise != null) {
+            return promise;
+        }
+
+        promise = new CompletableFuture<>();
+        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        
+        //If channel closes before the upgrade handler is installed, fail this promise
+        final CompletableFuture<Void> finalPromise = promise;
+        nettyContext.channel().closeFuture().addListener(f -> {
+            if (!finalPromise.isDone()) {
+                finalPromise.completeExceptionally(new IllegalStateException("Channel closed before upgrade handler was installed"));
+            }
+        });
+
+        return promise;
+    }
 }
