@@ -80,7 +80,10 @@ public class ConfigurableAsyncTimeoutTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        // CWWKZ0014W: invalidTimeoutTest.war is declared in server.xml but only deployed
+        // by InvalidAsyncTimeoutTest — not present when this test class starts the server.
+        // CWWKG0075E: expected from invalidTimeoutTest.war (invalid asyncTimeout="sheep")
+        server.stopServer("CWWKZ0014W", "CWWKG0075E");
     }
 
     /**

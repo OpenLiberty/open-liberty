@@ -7,6 +7,11 @@
     <feature>concurrent-3.0</feature>
   </featureManager>
 
+  <!-- asyncToolsTestShortTimeout.war needs a short timeout to test timeout behaviour -->
+  <application location="asyncToolsTestShortTimeout.war">
+    <mcp asyncTimeout="5s"/>
+  </application>
+
   <include location="../fatTestPorts.xml" />
 
 </server>
