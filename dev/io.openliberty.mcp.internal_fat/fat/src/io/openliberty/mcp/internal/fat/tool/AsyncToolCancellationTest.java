@@ -29,10 +29,10 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
@@ -42,10 +42,9 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AsyncToolCancellationTest extends FATServletClient {
 
-    @Server("mcp-server-async-auth")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncAuthServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpAsyncAuthServerSuite.server;
     private static ExecutorService executor;
-    private static final String EXPECTED_ERROR = "OperationCancelledException";
 
     @Rule
     public McpClient client = new McpClient(server, "/asyncToolCancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
@@ -55,23 +54,25 @@ public class AsyncToolCancellationTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolCancellationTest.war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        server.startServer();
         executor = Executors.newSingleThreadExecutor();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         executor.shutdown();
-        server.stopServer(EXPECTED_ERROR);
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("dropins/asyncToolCancellationTest.war");
+        server.waitForStringInLog("CWWKZ0009I:.*asyncToolCancellationTest");
+        server.removeInstalledAppForValidation("asyncToolCancellationTest");
     }
 
     @Test

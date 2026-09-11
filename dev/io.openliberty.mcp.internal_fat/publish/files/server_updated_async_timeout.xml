@@ -17,6 +17,11 @@
     <mcp/>
   </application>
 
+  <!-- Application with invalid async timeout — used by InvalidAsyncTimeoutTest -->
+  <application location="invalidTimeoutTest.war">
+    <mcp asyncTimeout="sheep"/>
+  </application>
+
   <include location="../fatTestPorts.xml" />
   
 </server>
