@@ -490,6 +490,27 @@ public class Concurrency32CDITestServlet extends FATServlet {
     }
 
     /**
+     * A bean method with Schedule annotation and a method parameter must not run
+     * automatically because method parameters are not allowed on scheduled methods.
+     */
+    @Test
+    public void testScheduledMethodCannotHaveParametersSoItMustNotRun() //
+                    throws InterruptedException {
+        CountDownLatch methodStarts = //
+                        schedulingBean.trackerOfNeverDueToMethodParameter();
+
+        // wait up to 10 seconds past initialization to see if it runs
+        long elapsedNS = System.nanoTime() - initTimeNS.get();
+        long remainingNS = TimeUnit.SECONDS.toNanos(10) - elapsedNS;
+        if (remainingNS > 0)
+            assertEquals(false,
+                         methodStarts.await(remainingNS, TimeUnit.NANOSECONDS));
+        else
+            assertEquals(1, // countDown was never invoked
+                         methodStarts.getCount());
+    }
+
+    /**
      * A bean method that is scheduled to automatically run every 4 seconds,
      * but completes itself the first time it runs must run exactly once.
      */

@@ -85,9 +85,19 @@ public class Concurrency32WithCDITest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted())
-            server.stopServer("CNTR0344E", // @Schedule on EJB method
-                              "CNTR4006E" // @Schedule on EJB method
-            );
+            server.stopServer(// @Schedule on EJB method
+                              "CNTR0344E",
+                              // @Schedule on EJB method
+                              "CNTR4006E",
+                              // Scheduled method with args
+                              "CWWKC1413E.*neverDueToMethodParameter");
+    }
+
+    @Test
+    public void testScheduledMethodCannotHaveParameters() throws Exception {
+        String searchPattern = "CWWKC1413E.*neverDueToMethodParameter";
+        assertEquals(1,
+                     server.findStringsInLogs(searchPattern).size());
     }
 
     @Test
