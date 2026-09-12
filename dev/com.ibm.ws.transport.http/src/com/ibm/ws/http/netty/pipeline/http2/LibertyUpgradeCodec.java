@@ -20,6 +20,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpServerKeepAliveHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -29,10 +30,12 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObjectDecoder;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodecFactory;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.DecoratingHttp2ConnectionEncoder;
@@ -79,7 +82,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
         LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel);
         int maxContentlength = (httpConfig.getMessageSizeLimit() >= Integer.MAX_VALUE || httpConfig.getMessageSizeLimit() < 0) ? Integer.MAX_VALUE : (int) httpConfig.getMessageSizeLimit();
-        final HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec, codec, maxContentlength);
+        final HttpServerUpgradeHandler upgradeHandler = new Http11OnlyUpgradeHandler(sourceCodec, codec, maxContentlength);
         return new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, codec.buildHttp2ConnectionHandler(httpConfig, channel));
     }
 
@@ -255,6 +258,23 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                 }
             }
             return future;
+        }
+    }
+
+    /**
+     * Restricts H2C upgrade attempts to HTTP/1.1 requests only.
+     * Requests carrying an illegal version token (e.g. HTTP/1.2)
+     * are rejected them with a 505 response.
+     */
+    private static final class Http11OnlyUpgradeHandler extends HttpServerUpgradeHandler {
+
+        Http11OnlyUpgradeHandler(SourceCodec sourceCodec, UpgradeCodecFactory factory, int maxContentLength) {
+            super(sourceCodec, factory, maxContentLength);
+        }
+
+        @Override
+        protected boolean shouldHandleUpgradeRequest(HttpRequest request) {
+            return HttpVersion.HTTP_1_1.equals(request.protocolVersion());
         }
     }
 
