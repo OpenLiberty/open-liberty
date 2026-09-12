@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.UserRegistry;
+import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtilityImpl;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -102,6 +103,15 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
                                          @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception {
         String realmName = isUserRegistryAvailable() ? getRealmName() : "defaultRealm";
         Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, sharedKeyBytes, privateKeyBytes, publicKeyBytes, realmName);
+        addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
+        return ltpaProps;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive LTPAKeyEncryptor encryptor) throws Exception {
+        String realmName = isUserRegistryAvailable() ? getRealmName() : "defaultRealm";
+        Properties ltpaProps = generateLTPAKeys(encryptor, realmName);
         addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
         return ltpaProps;
     }

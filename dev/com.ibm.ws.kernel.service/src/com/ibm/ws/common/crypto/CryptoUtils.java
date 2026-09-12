@@ -120,6 +120,9 @@ public class CryptoUtils {
     public static final int AES_128_KEY_LENGTH_BYTES = 16;
     public static final int AES_256_KEY_LENGTH_BYTES = 32;
 
+    /** AES IV length is always 128 bits (16 bytes), regardless of key size. */
+    public static final int AES_IV_LENGTH_BYTES = 16;
+
     public static final int DESEDE_KEY_LENGTH_BYTES = 24;
 
     public static final int PBKDF2HMACSHA1_ITERATIONS = 84756;
@@ -418,7 +421,7 @@ public class CryptoUtils {
         if (isEnhancedSecurityChecked) {
             return isEnhancedSecurity;
         } else {
-            isEnhancedSecurity = isRunningBetaMode() && Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false"));
+            isEnhancedSecurity = Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false")) &&  isRunningBetaMode() ;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isEnhancedSecurity: " + (isEnhancedSecurity ? "enabled" : "disabled"));
             }
