@@ -3367,8 +3367,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         }
 
+        boolean complete = false;
         if (sendHeaders) {
-            boolean complete = false;
             HttpResponseMessage msg = getResponse();
 
             // if a finishMessage started this write, then always set the
@@ -3446,7 +3446,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if(sendHeaders){
                 sendNettyHeaders();
             }
-            sendNettyFinalContent();
+            // A HEAD request (or any response where complete=true) must not emit a
+            // trailing LastHttpContent. The DefaultFullHttpResponse promotion above
+            // already encodes the response as self-contained; sending a
+            // LastStreamSpecificHttpContent after it would put a spurious chunked
+            // terminator on the wire and leave the client stalled waiting for it.
+            if (!complete) {
+                sendNettyFinalContent();
+            }
         }
         // if (isNettyUpgrade101()) {
         //     triggerNettyUpgradeEvent();
