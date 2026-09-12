@@ -13,7 +13,7 @@
 /**
  * @version 1.4
  */
-@org.osgi.annotation.versioning.Version("1.4")
+@org.osgi.annotation.versioning.Version("1.5")
 @TraceOptions(traceGroup = "Token", messageBundle = "com.ibm.ws.security.token.internal.resources.TokenMessages")
 package com.ibm.wsspi.security.token;
 
