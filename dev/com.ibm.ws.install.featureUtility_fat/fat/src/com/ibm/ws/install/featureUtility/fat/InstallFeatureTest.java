@@ -169,7 +169,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      */
     @Test
     public void testInstallFeatureFromMavenCentralMirror() throws Exception {
-        final String METHOD_NAME = "testInstallFeature";
+        final String METHOD_NAME = "testInstallFeatureFromMavenCentralMirror";
         Log.entering(c, METHOD_NAME);
 
         LibertyServer server = LibertyServerFactory.getLibertyServer("staticWebServer");
