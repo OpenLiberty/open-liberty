@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal;
 
+import static io.openliberty.data.internal.QueryType.NATIVE;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 
 import java.util.AbstractList;
@@ -31,6 +32,7 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Mode;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -125,9 +127,14 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.method.getGenericReturnType().getTypeName(),
                       CursoredPage.class.getName());
 
-        TypedQuery<T> query = queryInfo.ehCreateTypedQuery(entityHandler,
-                                                           queryInfo.ql,
-                                                           Object.class);
+        Query query;
+        if (queryInfo.type == NATIVE)
+            query = queryInfo.ehCreateNativeQuery(entityHandler);
+        else
+            query = queryInfo.ehCreateTypedQuery(entityHandler,
+                                                 queryInfo.ql,
+                                                 Object.class);
+
         queryInfo.setParameters(query,
                                 args,
                                 deferredConstraints,
@@ -140,7 +147,9 @@ public class PageImpl<T> implements Page<T> {
                         ? Integer.MAX_VALUE //
                         : (maxPageSize + 1)); // extra result indicates if next page exists
 
-        results = query.getResultList();
+        @SuppressWarnings("unchecked")
+        List<T> resultList = query.getResultList();
+        results = resultList;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");
@@ -209,13 +218,9 @@ public class PageImpl<T> implements Page<T> {
             pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
 
-        if (queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1119.keyword.prevents.count",
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName(),
-                      queryInfo.jpqlCount,
-                      queryInfo.ql);
+        if (queryInfo.type == QueryType.NATIVE ||
+            queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
+            Fail.totalsNotSupported(queryInfo);
 
         boolean stateful = queryInfo.producer.stateful();
         EntityHandlerFactory factory = queryInfo.entityInfo.factory;

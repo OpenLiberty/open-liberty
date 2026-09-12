@@ -233,6 +233,15 @@ public interface Fractions {
     @QueryOptions(entityGraph = "EagerlyLoadRoundedValues")
     Optional<Fraction> of(int numerator, int denominator);
 
+    @NativeQuery("""
+                    SELECT *
+                      FROM Fraction
+                     WHERE POWER(2, numerator) < POWER(denominator, ?)
+                     ORDER BY denominator ASC, numerator ASC
+                    """)
+    Page<Fraction> pageOfNumSquaredLessThanDenomPowerOf(int denominatorExponent,
+                                                        PageRequest PageReq);
+
     @Query("SELECT numerator, denominator - numerator" +
            " ORDER BY denominator - numerator DESC, numerator ASC")
     Page<Ratio> pageOfRatios(PageRequest pageReq);
