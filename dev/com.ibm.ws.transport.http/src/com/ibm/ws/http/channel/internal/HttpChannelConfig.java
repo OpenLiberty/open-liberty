@@ -1879,6 +1879,10 @@ public class HttpChannelConfig {
                 for (String headerName : headers) {
                     if (headerName.isEmpty()) {
                         Tr.warning(tc, "headers.emptyName", "remove");
+                    } else if (isReservedNettyResponseAuthorityHeader(headerName)) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(tc, "Headers remove configuration: ignoring reserved Netty authority header [" + headerName + "]");
+                        }
                     } else {
 
                         int hashcode = headerName.trim().toLowerCase().hashCode();
@@ -2015,6 +2019,11 @@ public class HttpChannelConfig {
         if (headerName.isEmpty()) {
             Tr.warning(tc, "headers.emptyName", collectionType.getName());
 
+        } else if (isReservedNettyResponseAuthorityHeader(headerName)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Header " + collectionType.getName()
+                             + " configuration: ignoring reserved Netty authority header [" + headerName + "]");
+            }
         } else {
             //No configuration error so far, check that no other list defines this, as
             //that would create ambiguity. If found elsewhere, warn the user and take it
@@ -3221,6 +3230,21 @@ public class HttpChannelConfig {
      */
     public Map<Integer, String> getConfiguredHeadersToRemove() {
         return this.configuredHeadersToRemove;
+    }
+
+    /**
+     * Netty reserved extension headers are internal routing/authority signals and must not be
+     * admitted through generic response-header configuration.
+     * Keep the literal aligned with HttpConversionUtil.ExtensionHeaderNames.STREAM_ID without
+     * introducing a Netty package dependency on this config class.
+     */
+    private static final String RESERVED_NETTY_STREAM_ID_HEADER = "x-http2-stream-id";
+
+    private static boolean isReservedNettyResponseAuthorityHeader(String headerName) {
+        if (headerName == null) {
+            return false;
+        }
+        return RESERVED_NETTY_STREAM_ID_HEADER.equalsIgnoreCase(headerName.trim());
     }
 
     /**

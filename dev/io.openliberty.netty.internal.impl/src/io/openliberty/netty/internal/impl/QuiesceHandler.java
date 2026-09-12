@@ -71,14 +71,18 @@ public class QuiesceHandler extends ChannelDuplexHandler {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof QuiesceEvent) {
+
+        if (evt == QUIESCE_EVENT) {
+       
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received Quiesce Event for " + ctx.channel() + " with callable: " + quiesceTask);
             }
             handleQuiesce();
-        } else {
-            super.userEventTriggered(ctx, evt);
+            ctx.fireUserEventTriggered(evt);
+            return;
         }
+            super.userEventTriggered(ctx, evt);
+        
     }
 
     /**
@@ -87,6 +91,7 @@ public class QuiesceHandler extends ChannelDuplexHandler {
      * existing work as the server transitions into quiesce.
      */
     private void handleQuiesce() throws Exception {
+        
         quiesceTask.call();
     }
 

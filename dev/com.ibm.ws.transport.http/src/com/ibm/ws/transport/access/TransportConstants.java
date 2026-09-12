@@ -30,4 +30,6 @@ public class TransportConstants {
 
     //Initial upgrade request data may be read together with the headers before the upgrade.
     public static final String NOT_UPGRADED_UNREAD_DATA = "NotUpgradedUnreadData";
+
+    public static final String UPGRADED_FATAL_ERROR = "UPGRADED_FATAL_ERROR";
 }
