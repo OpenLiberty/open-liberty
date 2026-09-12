@@ -9,8 +9,11 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -37,6 +40,7 @@ public class NettyHttpConstants {
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
     public static final AttributeKey<Socket> SOCKET_HANDLE = AttributeKey.valueOf("SocketHandleKey");
+    public static final AttributeKey<SslHandler> SSL_HANDLER = AttributeKey.valueOf("sslHandler");
 
     public enum ProtocolName {
         HTTP1("HTTP1"),
@@ -48,14 +52,19 @@ public class NettyHttpConstants {
 
         ProtocolName(String protocol) { this.protocol = protocol; }
 
+        private static final Map<String, ProtocolName> PROTOCOLS;
+        static {
+            PROTOCOLS = new HashMap<>(8);
+            for (ProtocolName p : values())
+                PROTOCOLS.put(p.protocol, p);
+        }
+
         /** Reverse-lookup from the string stored on the channel. */
         public static ProtocolName from(String protocol) {
             if (protocol == null)
                 return UNKNOWN;
-            for (ProtocolName p : values())
-                if (p.protocol.equals(protocol))
-                    return p;
-            return UNKNOWN;
+            ProtocolName result = PROTOCOLS.get(protocol);
+            return result != null ? result : UNKNOWN;
         }
     }
 }

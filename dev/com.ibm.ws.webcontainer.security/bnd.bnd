@@ -127,4 +127,5 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.injection;version=latest, \
 	com.ibm.ws.threading,\
 	com.ibm.ws.org.apache.commons.io;version=latest, \
-	com.ibm.ws.org.apache.commons.fileupload;version=latest
+	com.ibm.ws.org.apache.commons.fileupload;version=latest, \
+	io.openliberty.io.netty;version=latest

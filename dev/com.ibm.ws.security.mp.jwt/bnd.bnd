@@ -123,4 +123,5 @@ Include-Resource: \
     com.ibm.ws.anno;version=latest, \
     com.ibm.ws.threading;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \
-    com.ibm.ws.org.glassfish.json.1.0;version=latest
+    com.ibm.ws.org.glassfish.json.1.0;version=latest, \
+    io.openliberty.io.netty;version=latest
