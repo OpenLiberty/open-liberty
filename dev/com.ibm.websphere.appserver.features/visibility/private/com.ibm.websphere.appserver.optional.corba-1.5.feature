@@ -60,9 +60,7 @@ IBM-API-Package: \
   org.omg.SendingContext.CodeBasePackage; type="spec"; require-java:="9",\
   org.omg.TimeBase; type="spec"; require-java:="9"
 -bundles=\
-  io.openliberty.yoko.spec.corba; require-java:="9",\
-  io.openliberty.yoko.rmi.spec; require-java:="9",\
-  io.openliberty.yoko.osgi; require-java:="9"
+  io.openliberty.yoko.core; require-java:="9"
 -jars=\
   io.openliberty.corba.2.4; location:="dev/api/spec/,lib/"
 kind=ga

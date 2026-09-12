@@ -42,8 +42,7 @@ test.project: true
 generate.replacement: true
 
 -buildpath: \
-	io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.jms.1.1;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
