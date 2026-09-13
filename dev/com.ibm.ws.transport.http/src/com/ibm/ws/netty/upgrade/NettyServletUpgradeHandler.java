@@ -11,6 +11,7 @@ package com.ibm.ws.netty.upgrade;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -168,13 +169,21 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
         UpgradeReadOperation operation = asyncRead.get();
         if (operation != null && operation.callback != null) {
-            fireAsyncReadError(operation, new SocketTimeoutException("Immediate timeout requested"));
+            fireAsyncReadError(operation, createSocketTimeoutException());
         }
         if (context != null) {
             context.executor().execute(() -> immediateTimeout.set(false));
         } else {
             immediateTimeout.set(false);
         }
+    }
+
+    SocketTimeoutException createSocketTimeoutException() {
+        InetSocketAddress local = (InetSocketAddress) channel.localAddress();
+        InetSocketAddress remote = (InetSocketAddress) channel.remoteAddress();
+        return new SocketTimeoutException(Tr.formatMessage(tc, "netty.socket.timeout",
+                                            local.getHostName(), local.getAddress().getHostAddress(), local.getPort(),
+                                            remote.getHostName(), remote.getAddress().getHostAddress(), remote.getPort()));
     }
 
     private void signalReadReady() {
@@ -434,7 +443,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
         if (timeoutMillis > 0) {
             ScheduledFuture<?> timeout = channel.eventLoop().schedule(
-                            () -> fireAsyncReadError(operation, new SocketTimeoutException("Read operation timed out")),
+                            () -> fireAsyncReadError(operation, createSocketTimeoutException()),
                             timeoutMillis,
                             TimeUnit.MILLISECONDS);
             operation.setTimeout(timeout);
