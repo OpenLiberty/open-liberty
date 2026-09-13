@@ -61,6 +61,8 @@ public interface WebAppSecurityConfig {
 
     List<String> getWASReqURLRedirectDomainNames();
 
+    List<String> getLoginErrorURLRedirectDomainNames();
+
     boolean getSSOUseDomainFromURL();
 
     boolean isUseLtpaSSOForJaspic();
