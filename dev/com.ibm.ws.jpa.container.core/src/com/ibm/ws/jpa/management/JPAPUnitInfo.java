@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -139,6 +139,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
     // ValidataionMode
     private ValidationMode ivValidationMode = null; // F743-8705
+
+    // DefaultToOneFetchType (JPA 4.0)
+    private javax.persistence.FetchType ivDefaultToOneFetchType = javax.persistence.FetchType.EAGER;
 
     // EntityManagerFactory associated with this persistence unit (non java:comp/env).
     private EntityManagerFactory ivEMFactory = null; // d510184
@@ -1226,6 +1229,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         sbuf.append("\n ExcludeUnlistedClass : ").append(ivExcludeUnlistedClasses);
         sbuf.append("\n SharedCacheMode      : ").append(ivCaching); // d597764
         sbuf.append("\n ValidationMode       : ").append(ivValidationMode); // d597764
+        sbuf.append("\n DefaultToOneFetchType: ").append(ivDefaultToOneFetchType);
         sbuf.append("\n Properties           : ").append(ivProperties);
 
         boolean first;
@@ -1502,5 +1506,35 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // F743-8705
     void setValidationMode(ValidationMode mode) {
         ivValidationMode = mode;
+    }
+
+    /**
+     * Returns all class names in the persistence unit.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getAllClassNames() {
+        return getManagedClassNames();
+    }
+
+    /**
+     * Returns the default fetch type for to-one associations.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will implement it correctly.
+     */
+    public javax.persistence.FetchType getDefaultToOneFetchType() {
+        return ivDefaultToOneFetchType;
+    }
+
+    /**
+     * Internal method used to populate the Persistence Unit Info metadata from persistence.xml.
+     * Sets the default fetch type for to-one associations (JPA 4.0).
+     */
+    void setDefaultToOneFetchType(javax.persistence.FetchType fetchType) {
+        if (fetchType != null) {
+            ivDefaultToOneFetchType = fetchType;
+        }
     }
 }

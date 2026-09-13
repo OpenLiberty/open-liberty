@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -81,17 +81,15 @@ public class NettyJMSClientHandler extends SimpleChannelInboundHandler<WsByteBuf
 				((NettyConnectionReadCompletedCallback)callback).readCompleted(msg, readCtx, (NettyNetworkConnection)networkConnection);
 			}else {
 				if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-					SibTr.warning(tc, "channelRead0: Something's wrong. Callback, network connection, or read context is not netty specific. This shouldn't happen.", new Object[] {connection, callback, readCtx, networkConnection});
+					SibTr.warning(tc, "NETTY_UNEXPECTED_CALLBACK_SICJ0088", new Object[] {connection, callback, readCtx, networkConnection});
 				}
 				exceptionCaught(ctx, new NettyException("Illegal callback type for channel."));
 				return;
 			}
 
-		}else {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				SibTr.warning(tc, "channelRead0: could not associate an incoming message with a Connection. Message will be ignored and channel will be closed.", new Object[] {ctx.channel()});
-				ctx.close();
-			}
+		} else {
+			SibTr.warning(tc, "NETTY_READ_NO_CONNECTION_SICJ0087", new Object[] { ctx.channel() });
+			ctx.close();
 		}
 		if (tc.isEntryEnabled())
 			SibTr.exit(this, tc, "channelRead0", ctx.channel());

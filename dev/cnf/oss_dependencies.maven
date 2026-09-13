@@ -107,9 +107,12 @@ io.jaegertracing:jaeger-thrift:1.6.0
 io.jaegertracing:jaeger-tracerresolver:0.34.0
 io.jaegertracing:jaeger-tracerresolver:1.6.0
 io.micrometer:micrometer-commons:1.15.12
+io.micrometer:micrometer-commons:1.16.7
 io.micrometer:micrometer-core:1.15.12
+io.micrometer:micrometer-core:1.16.7
 io.micrometer:micrometer-core:1.9.3
 io.micrometer:micrometer-registry-prometheus-simpleclient:1.15.12
+io.micrometer:micrometer-registry-prometheus-simpleclient:1.16.7
 io.micrometer:micrometer-registry-prometheus:1.15.12
 io.micrometer:micrometer-registry-prometheus:1.9.3
 io.netty:netty-buffer:4.2.17.Final
@@ -351,7 +354,7 @@ jakarta.nosql:jakarta.nosql-api:1.0.1
 jakarta.persistence:jakarta.persistence-api:3.0.0
 jakarta.persistence:jakarta.persistence-api:3.1.0
 jakarta.persistence:jakarta.persistence-api:3.2.0
-jakarta.persistence:jakarta.persistence-api:4.0.0-M2
+jakarta.persistence:jakarta.persistence-api:4.0.0-M6
 jakarta.resource:jakarta.resource-api:2.0.0
 jakarta.resource:jakarta.resource-api:2.1.0
 jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0
@@ -541,6 +544,7 @@ org.apache.myfaces.core:myfaces-impl:4.0.3
 org.apache.myfaces.core:myfaces-impl:4.1.1
 org.apache.neethi:neethi:3.1.1
 org.apache.neethi:neethi:3.2.2
+org.apache.neethi:neethi:3.2.3
 org.apache.openjpa:openjpa:3.1.2
 org.apache.santuario:xmlsec:2.3.4
 org.apache.sshd:sshd-common:2.12.1

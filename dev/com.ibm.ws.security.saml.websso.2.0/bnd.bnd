@@ -30,6 +30,7 @@ Export-Package: com.ibm.ws.security.saml, \
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, \
     net.shibboleth.utilities.java.support.codec.*, \
     net.shibboleth.utilities.java.support.component.*, \
+    net.shibboleth.utilities.java.support.primitive.*, \
     net.shibboleth.utilities.java.support.resolver.*, \
     net.shibboleth.utilities.java.support.xml.*, \
     org.opensaml.core.config,\

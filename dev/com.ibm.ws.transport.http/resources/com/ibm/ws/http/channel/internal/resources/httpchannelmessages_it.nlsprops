@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Specificare un intervallo di 
 cookie.attribute.name.invalid=CWWKT0047E: L''attributo cookie [{0}] contiene un carattere non valido.
 cookie.attribute.name.invalid.explanation=Il nome dell'attributo cookie non pu\u00f2 contenere alcun carattere speciale [ () <> @,;: \\/ []? = {}].
 cookie.attribute.name.invalid.useraction=Correggere il nome dell'attributo cookie per non utilizzare alcun carattere speciale.
+
+endpoint.netty.not.initialized=CWWKT0048E: L''endpoint {0} HTTP non pu\u00f2 essere avviato perch\u00e9 il framework Netty non \u00e8 stato inizializzato.
+endpoint.netty.not.initialized.explanation=\u00c8 richiesto il servizio del framework " Netty ", ma tale servizio non era disponibile quando l'endpoint ha tentato di avviarsi.
+endpoint.netty.not.initialized.useraction=Verificare la configurazione del server e assicurarsi che il pacchetto del framework Netty richiesto sia attivo.
+
+endpoint.channel.not.initialized=CWWKT0049E: L''endpoint {0} HTTP non pu\u00f2 essere avviato perch\u00e9 il framework del canale non \u00e8 stato inizializzato.
+endpoint.channel.not.initialized.explanation=\u00c8 necessario il servizio di framework del canale, ma tale servizio non era disponibile quando l'endpoint ha tentato di avviarsi.
+endpoint.channel.not.initialized.useraction=Verificare la configurazione del server e assicurarsi che il pacchetto del framework di canale richiesto sia attivo.
+
+endpoint.executor.not.available=CWWKT0050E: L''endpoint {0}HTTP non pu\u00f2 essere avviato perch\u00e9 il servizio di esecuzione non \u00e8 disponibile.
+endpoint.executor.not.available.explanation=Il servizio di esecuzione \u00e8 necessario, ma non era disponibile quando l'endpoint ha tentato di avviarsi.
+endpoint.executor.not.available.useraction=Verificare la configurazione del server e assicurarsi che il servizio di esecuzione richiesto sia attivo.
+
+endpoint.event.not.available=CWWKT0051E: L''endpoint {0} HTTP non pu\u00f2 essere avviato perch\u00e9 il servizio eventi non \u00e8 disponibile.
+endpoint.event.not.available.explanation=Il servizio dell'evento \u00e8 necessario, ma non era disponibile quando l'endpoint ha tentato di avviarsi.
+endpoint.event.not.available.useraction=Verificare la configurazione del server e assicurarsi che il servizio eventi richiesto sia attivo.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: Non \u00e8 possibile eseguire un'operazione di scrittura bloccante sul thread del ciclo di eventi Netty.
+netty.blocking.write.on.event.loop.explanation=L'esecuzione di un'operazione di scrittura bloccante sul thread del ciclo di eventi Netty provoca un deadlock.
+netty.blocking.write.on.event.loop.useraction=Assicurarsi che le operazioni di scrittura bloccanti vengano eseguite in un thread separato e non vengano chiamate dall'interno di un gestore del ciclo di eventi Netty.
+
+netty.socket.timeout=CWWKT0053E: L''operazione sulla socket \u00e8 scaduta prima che fosse completata. In sede: {0} / {1} : {2} Da remoto: {3} / {4} : {5}
+netty.socket.timeout.explanation=Un'operazione di lettura sul socket non \u00e8 stata completata entro il periodo di timeout configurato.
+netty.socket.timeout.useraction=Verificare la connessione di rete oppure aumentare il valore del timeout di lettura se l'operazione richiede pi\u00f9 tempo per essere completata.
+
+netty.h2.window.ratio.error=CWWKT0054W: Non \u00e8 possibile aggiornare il rapporto di aggiornamento delle finestre dell'' HTTP/2 : {0} Il server utilizza il rapporto di aggiornamento delle finestre predefinito.
+netty.h2.window.ratio.error.explanation=Non \u00e8 possibile impostare il rapporto di aggiornamento della finestra di controllo del flusso dell\u2019 HTTP/2 al valore configurato. Il server utilizza la frequenza di aggiornamento delle finestre predefinita.
+netty.h2.window.ratio.error.useraction=Non \u00e8 necessario intervenire se la frequenza di aggiornamento predefinita delle finestre \u00e8 accettabile. Se il messaggio persiste, verificare le impostazioni di controllo del flusso di HTTP/2 nella configurazione del server.
+
+netty.tls.provider.not.loaded=CWWKT0055E: Non \u00e8 possibile inizializzare l'endpoint HTTPS poich\u00e9 il provider TLS non \u00e8 stato caricato.
+netty.tls.provider.not.loaded.explanation=Il servizio del provider " TLS " non era disponibile quando l'endpoint HTTPS ha tentato di avviarsi.
+netty.tls.provider.not.loaded.useraction=Verificare la configurazione del server e assicurarsi che il pacchetto del provider \u201c TLS \u201d richiesto sia attivo.
+
+netty.ssl.handler.create.failed=CWWKT0056E: Il server non \u00e8 riuscito a creare il gestore " SSL " per l''endpoint {0} : {1}.
+netty.ssl.handler.create.failed.explanation=Non \u00e8 possibile creare il gestore \u201c SSL \u201d per l\u2019host e la porta dell\u2019endpoint specificati.
+netty.ssl.handler.create.failed.useraction=Controllare la configurazione di SSL per l'endpoint e verificare che il provider TLS sia configurato correttamente.
+
+h2.encode.header.failed=CWWKT0057E: Il server non \u00e8 riuscito a codificare un''intestazione HTTP/2 : {0}
+h2.encode.header.failed.explanation=Il server non \u00e8 riuscito a codificare una pseudo-intestazione \u201c HTTP/2 \u201d nella risposta. Il server chiude lo stream.
+h2.encode.header.failed.useraction=Controlla i log del server per verificare la presenza di errori relativi a HTTP/2. Se il problema persiste, raccogli le informazioni diagnostiche e contatta l'assistenza di IBM.

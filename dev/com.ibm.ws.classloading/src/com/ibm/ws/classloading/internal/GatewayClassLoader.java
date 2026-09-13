@@ -250,6 +250,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         return loadClassImpl(className, true);
     }
 
+    @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
     private Class<?> loadClassImpl(String className, boolean throwException) throws ClassNotFoundException {
         // The resolve parameter is a legacy parameter that is effectively
@@ -259,37 +260,53 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         // passes false, so we ignore the parameter.
 
         Class<?> result = null;
+        boolean fromJvmPackages = false;
         if (cl != null) {
             if (config.getDelegateToSystem()) {
                 try {
-                    // first check the bundle loader
+                    // first check the bundle loader (liberty API packages)
                     result = Delegation.loadClass(className, cl);
                 } catch (ClassNotFoundException perfectlyNormal) {
-                    // second check the system classloader
+                    // second check the system classloader (JVM packages)
                     result = jvmPackages.loadClass(className, throwException);
+                    fromJvmPackages = true;
                 }
             } else {
                 result = Delegation.loadClass(className, cl);
             }
         } else {
+            // liberty API packages via OSGi bundle loader
             result = Delegation.loadClass(className, bLoader);
             if (result == null) {
                 if (config.getDelegateToSystem()) {
                     result = jvmPackages.loadClass(className, throwException);
+                    fromJvmPackages = true;
                 } else if (throwException) {
                     throw new ClassNotFoundException(className);
                 }
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && result != null) {
-            final Class<?> result0 = result;
-            ClassLoader classLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) result0::getClassLoader);
-            ProtectionDomain pd = AccessController.doPrivileged((PrivilegedAction<ProtectionDomain>) result0::getProtectionDomain);
-            Tr.debug(tc, String.format("CLASS LOAD: class=[%s]; classloader=[%s]; location=[%s]",
-                                       className,
-                                       classLoader != null ? classLoader.toString() : "bootstrap",
-                                       pd.getCodeSource() != null ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown"));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (result != null) {
+                final Class<?> result0 = result;
+                ClassLoader definingLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) result0::getClassLoader);
+                ProtectionDomain pd = AccessController.doPrivileged((PrivilegedAction<ProtectionDomain>) result0::getProtectionDomain);
+                String location = pd.getCodeSource() != null ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown";
+                String message = "";
+                if (definingLoader != null) {
+                    message = fromJvmPackages ? "loaded from JVM packages" : "loaded from liberty API packages";
+                } else {
+                    message = "loaded by bootstrap loader";
+                }
+                
+                Tr.debug(tc, String.format("Class=[%s] %s; classloader=[%s]; location=[%s]",
+                                           className, message,
+                                           definingLoader != null ? definingLoader.toString() : "bootstrap",
+                                           location));
+            } else {
+                Tr.debug(tc, String.format("Class=[%s] failed to load; classloader=[%s]", className, this));
+            }
         }
         return result;
     }

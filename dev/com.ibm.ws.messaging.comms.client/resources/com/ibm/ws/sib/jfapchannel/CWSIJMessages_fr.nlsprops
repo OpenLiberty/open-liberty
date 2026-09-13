@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2003, 2010 IBM Corporation and others.
+# Copyright (c) 2003, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
 #
@@ -552,6 +549,45 @@ CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Examinez l'exception nomm\u00e9e d
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: La de transport de messagerie {0} a \u00e9t\u00e9 arr\u00eat\u00e9e.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=La cha\u00eene de transport a \u00e9t\u00e9 arr\u00eat\u00e9e \u00e0 la suite d'une modification de configuration de la s\u00e9curit\u00e9 qui se traduit par le fait qu'aucun bus d\u00e9fini sur la cellule n'autorisera l'utilisation de la cha\u00eene.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Aucune action n'est requise.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception which occurred
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086=CWSIJ0086E: Une erreur interne a emp\u00each\u00e9 l''initialisation du processus de d\u00e9marrage du transport Netty en raison de l''exception suivante : {0}
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.explanation=L'objet \u00ab bootstrap \u00bb de transport de l' Netty e ne peut pas \u00eatre initialis\u00e9. Les connexions sortantes du service de messagerie Java (JMS) qui utilisent le chemin de transport \u00ab Netty \u00bb ne parviennent pas \u00e0 s'\u00e9tablir.
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.useraction=Examinez l'exception mentionn\u00e9e dans le message ainsi que les journaux du serveur correspondants afin d'en d\u00e9terminer la cause. V\u00e9rifiez que le service \u00ab Netty \u00bb est actif et que les options de transport \u00ab TCP \u00bb sont correctement configur\u00e9es.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel for which no connection could be found
+NETTY_READ_NO_CONNECTION_SICJ0087=CWSIJ0087W: Un message entrant sur le canal \u00ab {0} \u00bb ne peut pas \u00eatre associ\u00e9 \u00e0 une connexion JMS (Java Message Service). Le serveur ignore le message et ferme le canal.
+NETTY_READ_NO_CONNECTION_SICJ0087.explanation=Un message a \u00e9t\u00e9 re\u00e7u sur un canal de transport \u00ab Netty \u00bb qui n'est associ\u00e9 \u00e0 aucun objet de connexion JMS. Cette situation pourrait indiquer une condition de concurrence lors de la fermeture de la connexion. Le serveur ne peut pas traiter ce message.
+NETTY_READ_NO_CONNECTION_SICJ0087.useraction=Consultez les journaux du serveur pour rechercher d'\u00e9ventuels messages d'erreur ou d'avertissement qui pourraient expliquer pourquoi l'objet de connexion \u00e9tait absent. Si le probl\u00e8me persiste, g\u00e9n\u00e9rez une trace du serveur et contactez le support technique \u00e0 l'adresse IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the JMS Connection object
+# {1} the IOReadCompletedCallback object
+# {2} the IOReadRequestContext object
+# {3} the NetworkConnection object
+NETTY_UNEXPECTED_CALLBACK_SICJ0088=CWSIJ0088W: Un message entrant ou un \u00e9v\u00e9nement \u00ab heartbeat \u00bb sur un canal \u00ab Netty \u00bb ne peut pas \u00eatre trait\u00e9 car un ou plusieurs objets associ\u00e9s ne sont pas du type \u00ab Netty \u00bb attendu. Lien : {0} Rappel : {1} ReadContext: {2} NetworkConnection: {3}
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.explanation=Le canal \u00ab Netty \u00bb a re\u00e7u des donn\u00e9es ou a d\u00e9tect\u00e9 un d\u00e9lai d'expiration, mais la connexion, la fonction de rappel, le contexte de lecture ou l'objet de connexion r\u00e9seau associ\u00e9 au canal n'est pas du type sp\u00e9cifique \u00e0 l' Netty attendu. Le serveur ferme le canal. Cette situation indique une erreur de programmation interne.
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.useraction=Examinez les journaux du serveur ainsi que les \u00e9ventuels enregistrements FFDC (First Failure Data Capture) \u00e0 la recherche de messages d'erreur susceptibles d'expliquer pourquoi les objets de connexion ne sont pas du type attendu. Si le probl\u00e8me persiste, g\u00e9n\u00e9rez une trace du serveur et contactez le support technique \u00e0 l'adresse IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the IdleStateEvent that was received
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089=CWSIJ0089W: Un \u00e9v\u00e9nement de type inattendu li\u00e9 \u00e0 l''\u00e9tat de repos d''un \u00ab Netty \u00bb a \u00e9t\u00e9 re\u00e7u et est transmis via le pipeline. Ev\u00e9nement : {0}
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.explanation=Le gestionnaire de pulsations du service Java Message Service (JMS) d\u2019 Netty a re\u00e7u un \u00e9v\u00e9nement d\u2019\u00e9tat d\u2019inactivit\u00e9 qui n\u2019est pas un \u00e9v\u00e9nement \u00ab reader-idle \u00bb (d\u00e9lai d\u2019attente de lecture). Le gestionnaire de pulsations n'attend que des \u00e9v\u00e9nements \u00ab reader-idle \u00bb. Le serveur transmet l'\u00e9v\u00e9nement le long du pipeline en vue d'un traitement ult\u00e9rieur.
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.useraction=Si ce message s'affiche rarement, aucune action n'est n\u00e9cessaire. Si ce message s'affiche de mani\u00e8re r\u00e9p\u00e9t\u00e9e, consultez les journaux du serveur pour rechercher d'\u00e9ventuels avertissements ou erreurs li\u00e9s \u00e0 ce probl\u00e8me, puis contactez le support technique d' IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel on which the heartbeat timeout event occurred
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090=CWSIJ0090W: Un \u00e9v\u00e9nement de d\u00e9lai d''expiration de pulsation sur le canal \u00ab {0} \u00bb ne peut pas \u00eatre associ\u00e9 \u00e0 une connexion Java Message Service (JMS). Le serveur transmet l''\u00e9v\u00e9nement via le pipeline.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.explanation=Un \u00e9v\u00e9nement \u00ab read-idle \u00bb (d\u00e9lai d'expiration du signal de vie) s'est d\u00e9clench\u00e9 sur un canal \u00ab Netty \u00bb auquel aucun objet de connexion JMS n'est associ\u00e9. Cette situation pourrait indiquer une condition de concurrence lors de la fermeture de la connexion. Le serveur ne peut pas traiter l'\u00e9v\u00e9nement et le transmet plus loin dans le pipeline.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.useraction=Consultez les journaux du serveur pour rechercher d'\u00e9ventuels messages d'erreur ou d'avertissement qui pourraient expliquer pourquoi l'objet de connexion \u00e9tait absent. Si le probl\u00e8me persiste, g\u00e9n\u00e9rez une trace du serveur et contactez le support technique \u00e0 l'adresse IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel (null) for which the SSL session was requested
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091=CWSIJ0091W: Une session SSL (Secure Sockets Layer, SSL ) a \u00e9t\u00e9 demand\u00e9e, mais aucun canal Netty n''est enregistr\u00e9 pour cette connexion. Cha\u00eene : {0}
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.explanation=La session \u00ab SSL \u00bb ne peut pas \u00eatre r\u00e9cup\u00e9r\u00e9e car le canal \u00ab Netty \u00bb n'est pas associ\u00e9 \u00e0 cet objet de connexion. Cette situation pourrait indiquer un probl\u00e8me de synchronisation lors de l'\u00e9tablissement de la connexion.
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.useraction=Consultez les journaux du serveur pour rechercher d'\u00e9ventuels messages d'erreur ou d'avertissement qui pourraient expliquer pourquoi le canal n'a pas \u00e9t\u00e9 enregistr\u00e9. Si le probl\u00e8me persiste, g\u00e9n\u00e9rez une trace du serveur et contactez le support technique \u00e0 l'adresse IBM.
 
 # Emergency use
 # -------------------------------------------------------------------------------------------------

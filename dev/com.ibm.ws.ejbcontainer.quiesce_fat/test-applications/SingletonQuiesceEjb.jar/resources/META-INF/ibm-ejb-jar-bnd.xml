@@ -30,4 +30,7 @@
     <session name="StartupSingletonQuiesceServerOverride">
         <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="false"/>
     </session>
+    <session name="StartupSingletonQuiesceInvalidBnd">
+        <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="notABooleanBnd"/>
+    </session>
 </ejb-jar-bnd>

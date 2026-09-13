@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,10 +64,16 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.Schedule;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.inject.Qualifier;
+import jakarta.inject.Scope;
+import jakarta.inject.Singleton;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { ApplicationStateListener.class,
@@ -89,6 +95,16 @@ public class ConcurrencyExtensionMetadata implements //
 
     private static final String DEFAULT_MSES_FILTER = //
                     "(&(id=DefaultManagedScheduledExecutorService)(component.name=com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl))";
+
+    /**
+     * Scope annotations that are supported on CDI managed beans that have
+     * methods annotated Schedule.
+     */
+    private static final Set<Class<? extends Annotation>> SCHEDULED_METHOD_BEAN_SCOPES = //
+                    Set.of(Singleton.class,
+                           ApplicationScoped.class,
+                           Dependent.class,
+                           RequestScoped.class);
 
     /**
      * For obtaining the JEE name of the application artifact that provides each
@@ -401,30 +417,59 @@ public class ConcurrencyExtensionMetadata implements //
             }
 
             // Schedule each method that is annotated @Schedule
-            for (AnnotatedType<?> beanType : beanTypes)
+            for (AnnotatedType<?> beanType : beanTypes) {
+                Class<?> beanClass = beanType.getJavaClass();
+                Class<? extends Annotation> scopeClass = null;
+                ArrayList<Annotation> beanAnnoList = new ArrayList<>();
+                for (Annotation beanAnno : beanType.getAnnotations()) {
+                    Class<? extends Annotation> annoType = //
+                                    beanAnno.annotationType();
+                    if (annoType.isAnnotationPresent(Qualifier.class))
+                        beanAnnoList.add(beanAnno);
+                    else if (annoType.isAnnotationPresent(Scope.class) ||
+                             annoType.isAnnotationPresent(NormalScope.class))
+                        scopeClass = annoType;
+                }
+
+                if (scopeClass == null ||
+                    !SCHEDULED_METHOD_BEAN_SCOPES.contains(scopeClass)) {
+                    // TODO NLS
+                    System.out.println("Methods of the " + beanClass.getName() +
+                                       " CDI managed bean that are annotated Schedule" +
+                                       " are not automatically scheduled because the" +
+                                       " CDI managed bean has a " +
+                                       (scopeClass == null ? null : scopeClass.getName()) +
+                                       " scope annotation. Scheduled methods must have" +
+                                       " one of the following scope annotations: " +
+                                       SCHEDULED_METHOD_BEAN_SCOPES);
+                    continue;
+                }
+
+                Annotation[] beanAnnos = beanAnnoList //
+                                .toArray(new Annotation[beanAnnoList.size()]);
+
                 for (AnnotatedMethod<?> method : beanType.getMethods()) {
-                    Class<?> beanClass = beanType.getJavaClass();
                     Schedule schedule = method.getAnnotation(Schedule.class);
                     if (schedule != null &&
                         !beanClass.isAnnotationPresent(Asynchronous.class) &&
                         !method.isAnnotationPresent(Asynchronous.class)) {
 
-                        ArrayList<Annotation> beanAnnoList = new ArrayList<>();
-                        for (Annotation beanAnno : beanType.getAnnotations())
-                            if (beanAnno.annotationType() //
-                                            .isAnnotationPresent(Qualifier.class))
-                                beanAnnoList.add(beanAnno);
-                        Annotation[] beanAnnos = beanAnnoList //
-                                        .toArray(new Annotation[beanAnnoList.size()]);
-                        new ScheduledMethod<>( //
-                                        method.getJavaMember(), //
-                                        schedule, //
-                                        threadContext, //
-                                        execSvc, //
-                                        beanClass, //
-                                        beanAnnos);
+                        if (method.getJavaMember().getParameterCount() == 0)
+                            new ScheduledMethod<>( //
+                                            method.getJavaMember(), //
+                                            schedule, //
+                                            threadContext, //
+                                            execSvc, //
+                                            scopeClass, //
+                                            beanClass, //
+                                            beanAnnos);
+                        else // Scheduled methods cannot have parameters
+                            Tr.error(tc, "CWWKC1413.sched.method.args",
+                                     method.getJavaMember().getName(),
+                                     beanClass.getName());
                     }
                 } // let Asynchronous handle the invalid combination of annos
+            }
         }
     }
 

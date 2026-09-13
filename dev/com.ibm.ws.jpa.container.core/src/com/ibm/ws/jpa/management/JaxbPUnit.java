@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -183,6 +183,15 @@ abstract class JaxbPUnit {
     ValidationMode getValidationMode() {
         // Not available in 1.0 persistence schema
         // Per the spec, must return null when not in xml
+        return null;
+    }
+
+    /**
+     * Gets the default fetch type for to-one associations.
+     * Not available prior to JPA 4.0 persistence schema.
+     * Returns null when not specified; JPAPUnitInfo will use EAGER as the default.
+     */
+    javax.persistence.FetchType getDefaultToOneFetchType() {
         return null;
     }
 

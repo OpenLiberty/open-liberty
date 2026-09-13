@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ quiesce.end.useraction=Non sono richieste azioni.
 
 quiece.warning=CWWKE1102W: L'operazione di esecuzione del quiesce non \u00e8 stata completata. Il server verr\u00e0 ora arrestato.
 quiece.warning.explanation=Il processo non \u00e8 stato in grado di disattivare tutti i servizi entro il periodo di timeout di disattivazione.
-quiece.warning.useraction=\u00c8 possibile ignorare i messaggi di errore derivanti dalla non disponibilit\u00e0 di servizi richiesti senza alcun rischio. Se il problema persiste, aumentare la durata di 'quiesceTimeout' aggiungendo l'attributo 'quiesceTimeout' all'elemento 'executor' nel file 'server.xml'.
+quiece.warning.useraction=Ignora i messaggi di errore causati dall'indisponibilit\u00e0 dei servizi obbligatori. Se il problema persiste, aumentare la durata dell' quiesceTimeout e aggiungendo l'attributo quiesceTimeout all'elemento server nel file server.xml.
 
 client.quiesce.begin=CWWKE1103I: Attesa fino a {0} secondi per il quiesce del client.
 client.quiesce.begin.explanation=Il client attende che i servizi vengano disattivati prima di procedere con l'arresto.
@@ -59,6 +59,6 @@ quiesce.listeners.not.complete=CWWKE1106W: {0} operazioni di arresto non sono st
 quiesce.listeners.not.complete.explanation=Una o pi\u00f9 operazioni che sono state avviate durante l'operazione di chiusura non sono state completate. 
 quiesce.listeners.not.complete.useraction=Non sono richieste azioni.
 
-quiesce.waiting.on.threads=CWWKE1107W: {0} thread non sono stati completati durante il periodo di quiesce. 
+quiesce.waiting.on.threads=CWWKE1107W: Un totale di {0} thread non sono stati portati a termine durante il periodo di inattivit\u00e0.
 quiesce.waiting.on.threads.explanation=Uno o pi\u00f9 thread che erano attivi prima dell'arresto del server erano ancora attivi alla fine del periodo di quiesce.
-quiesce.waiting.on.threads.useraction=Non \u00e8 richiesta alcuna azione. 
+quiesce.waiting.on.threads.useraction=Non \u00e8 richiesta alcuna azione.

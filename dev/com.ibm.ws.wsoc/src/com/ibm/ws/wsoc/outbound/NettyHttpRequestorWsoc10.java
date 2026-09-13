@@ -277,7 +277,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
             throw new SocketTimeoutException(e1.getMessage());
         }
         if (resp == null) {
-            throw new IOException("Don't have a response yet!");
+            Tr.error(tc, "client.no.response", endpointAddress.getURI().toString());
+            throw new IOException(Tr.formatMessage(tc, "client.no.response", endpointAddress.getURI().toString()));
         }
         validateUpgradeResponse(resp);
 

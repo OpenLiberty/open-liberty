@@ -98,6 +98,22 @@ public class McpMonitorTest {
                     }
                     """;
 
+    private static final String UNKNOWN_METHOD_REQUEST = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 5,
+                      "method": "unknown/method"
+                    }
+                    """;
+
+    private static final String INVALID_JSONRPC_VERSION_REQUEST = """
+                    {
+                      "jsonrpc": "1.0",
+                      "id": 6,
+                      "method": "tools/list"
+                    }
+                    """;
+
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -141,11 +157,18 @@ public class McpMonitorTest {
      * @throws AssertionError if more than one matching MBean is found
      */
     private ObjectName findOperationMBean(String methodName, String toolName) throws Exception {
+        return findOperationMBean(methodName, toolName, null);
+    }
+
+    private ObjectName findOperationMBean(String methodName, String toolName, String errorType) throws Exception {
         // Build query pattern with individual properties instead of a single name property
         StringBuilder pattern = new StringBuilder(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION);
         pattern.append(",mcpMethod=").append(methodName);
         if (toolName != null) {
             pattern.append(",genAiTool=").append(toolName);
+        }
+        if (errorType != null) {
+            pattern.append(",errorType=").append(errorType);
         }
         pattern.append(",*");
 
@@ -155,7 +178,7 @@ public class McpMonitorTest {
         return switch (mbeans.size()) {
             case 0 -> null;
             case 1 -> mbeans.iterator().next();
-            default -> throw new AssertionError("More than one operation mbean found for " + methodName + (toolName != null ? "/" + toolName : ""));
+            default -> throw new AssertionError("More than one operation mbean found for " + methodName + (toolName != null ? "/" + toolName : "") + (errorType != null ? "/" + errorType : ""));
         };
     }
 
@@ -754,6 +777,49 @@ public class McpMonitorTest {
 
         // Verify MBean exists with correct attributes (null errorType for success, "ok" status)
         verifyOperationMBeanAttributes("ping", null, null, "ok");
+    }
+
+    /**
+     * Test that a PARSE_ERROR emits an MBean with method name "_OTHER".
+     */
+    @Test
+    public void testParseErrorMetrics() throws Exception {
+        client.callMCP("this is not json");
+
+        ObjectName mbean = findOperationMBean("_OTHER", null, "PARSE_ERROR");
+        assertNotNull("MBean for _OTHER/PARSE_ERROR should exist after parse error", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("Status code should be error", "error", statusCode);
+    }
+
+    /**
+     * Test that an INVALID_REQUEST emits an MBean with method name "_OTHER".
+     */
+    @Test
+    public void testInvalidRequestMetrics() throws Exception {
+        client.callMCP(INVALID_JSONRPC_VERSION_REQUEST);
+
+        ObjectName mbean = findOperationMBean("_OTHER", null, "INVALID_REQUEST");
+        assertNotNull("MBean for _OTHER/INVALID_REQUEST should exist after invalid request", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("Status code should be error", "error", statusCode);
+    }
+
+    /**
+     * Test that a METHOD_NOT_FOUND error emits an MBean with method name "_OTHER".
+     * Unknown method names must not be used as metric attributes directly to limit cardinality.
+     */
+    @Test
+    public void testMethodNotFoundMetrics() throws Exception {
+        client.callMCP(UNKNOWN_METHOD_REQUEST);
+
+        ObjectName mbean = findOperationMBean("_OTHER", null, "METHOD_NOT_FOUND");
+        assertNotNull("MBean for _OTHER/METHOD_NOT_FOUND should exist after unknown method call", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("Status code should be error", "error", statusCode);
     }
 
     /**

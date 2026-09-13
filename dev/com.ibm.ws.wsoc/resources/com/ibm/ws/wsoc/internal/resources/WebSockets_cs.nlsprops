@@ -238,3 +238,7 @@ upgradeHttpToWebSocket.failed.useraction=P\u0159ezkoumejte chybu a identifikujte
 maxmessagesize.exceeded=CWWKH0056E: maxMessageSize pro metodu {0} p\u0159ekra\u010duje Integer.MAX_VALUE pro t\u0159\u00eddu {1} .
 maxmessagesize.exceeded.explanation=Parametr anotace maxMessageSize OnMessage nastavuje maxim\u00e1ln\u00ed velikost zpr\u00e1vy v bajtech pro metodu. maxMessageSize lze nastavit pouze na maxim\u00e1ln\u00ed hodnotu Integer.MAX_VALUE .
 maxmessagesize.exceeded.useraction=Sni\u017ete hodnotu parametru maxMessageSize na v\u00edce ne\u017e Integer.MAX_VALUE .
+
+client.no.response=CWWKH0057E: Po dokon\u010den\u00ed po\u017eadavku na upgrade WebSocket klient neobdr\u017eel \u017e\u00e1dnou odpov\u011b\u010f typu \u201e HTTP \u201c z koncov\u00e9ho bodu {0}.
+client.no.response.explanation=Prob\u011bhlo dokon\u010den\u00ed odes\u00edl\u00e1n\u00ed handshake pro aktualizaci WebSocket, ale nebyla k dispozici \u017e\u00e1dn\u00e1 odpov\u011b\u010f HTTP, kterou by bylo mo\u017en\u00e9 zpracovat.
+client.no.response.useraction=Ov\u011b\u0159te, zda je c\u00edlov\u00fd server dostupn\u00fd a zda spr\u00e1vn\u011b reaguje na po\u017eadavky na aktualizaci slu\u017eby WebSocket.
