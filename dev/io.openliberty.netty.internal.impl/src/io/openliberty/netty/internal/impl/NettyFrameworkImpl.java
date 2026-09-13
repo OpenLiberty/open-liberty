@@ -41,6 +41,7 @@ import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 import io.netty.channel.Channel;
@@ -432,7 +433,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     for (Channel channel : activeChannelMap.keySet()) {
                         // Fire custom user event to let know that the endpoint is being stopped
                         channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+
+                        ChannelGroup group = activeChannelMap.get(channel);
+                        if (group != null) {
+                            for (Channel child : group) {
+                                child.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+                            }
+                        }
                     }
+                    
 
                     // Schedule quiesce tasks
                     quiesce.startTasks();
@@ -480,6 +489,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (child != null) {
             child.awaitUninterruptibly();
         }
+
+        activeChannelMap.clear();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Event loops finished clean up!");
         }
@@ -719,23 +731,27 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             ChannelFuture closeFuture = channel.close();
             ChannelGroup group = activeChannelMap.get(channel);
             if (group != null) {
-                if (!QuiesceState.isQuiesceInProgress()) {
+                if (group.isEmpty()) {
+                    activeChannelMap.remove(channel);
+                } else if (!FrameworkState.isStopping() || getDefaultChainQuiesceTimeout() <= 0){
                     group.close().addListener(innerFuture -> {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "channel group" + group + " has closed...");
                         }
                     });
+                    activeChannelMap.remove(channel);
                 }
-                activeChannelMap.remove(channel);
             }
-            // If this channel owned a dedicated accept EventLoopGroup, shut it down now
-            // that the channel is closing.
-            EventLoopGroup dedicatedGroup = dedicatedAcceptGroups.remove(channel);
-            if (dedicatedGroup != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Shutting down dedicated accept EventLoopGroup for stopped channel: " + channel);
-                }
-                dedicatedGroup.shutdownGracefully();
+            if (!activeChannelMap.containsKey(channel)){
+                // If this channel owned a dedicated accept EventLoopGroup, shut it down now
+                // that the channel is closing.
+                EventLoopGroup dedicatedGroup = dedicatedAcceptGroups.remove(channel);
+                if (dedicatedGroup != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Shutting down dedicated accept EventLoopGroup for stopped channel: " + channel);
+                    }
+                    dedicatedGroup.shutdownGracefully();
+                }          
             }
             return closeFuture;
         }
