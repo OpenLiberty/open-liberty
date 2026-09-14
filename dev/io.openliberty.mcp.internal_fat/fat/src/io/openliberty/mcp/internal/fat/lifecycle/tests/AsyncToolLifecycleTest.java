@@ -15,7 +15,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -168,6 +167,7 @@ public class AsyncToolLifecycleTest {
     @Test
     public void testAsyncDependentBeanLifecycleWhenToolThrowsException() throws Exception {
         server.setMarkToEndOfLog();
+        // asyncLifecycleCompleteCompletionStage - exception path
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -202,23 +202,14 @@ public class AsyncToolLifecycleTest {
                             containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleCompleteCompletionStage Tool logged"),
                             containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleCompleteCompletionStage Tool throwing error"),
                             containsString("@PreDestroy AsyncLifecycleTools")));
-    }
 
-    // Negative Tests
-
-    /**
-     * Negative test: when {@code asyncLifecycleAsyncStage} is called with the
-     * {@code "throw error"} input it throws a {@link RuntimeException} synchronously
-     * (before returning a stage). The {@code @PreDestroy} callback must still fire;
-     * the CDI {@code Dependent} lifecycle must be honoured on the exception path.
-     */
-    @Test
-    public void testAsyncDependentBeanLifecycleWhenAsyncStageThrowsException() throws Exception {
+        // asyncLifecycleAsyncStage - exception thrown synchronously before returning a stage;
+        // @PreDestroy must still fire (CDI-dependent lifecycle must be honoured on the error path)
         server.setMarkToEndOfLog();
-        String request = """
+        String request2 = """
                         {
                           "jsonrpc": "2.0",
-                          "id": "neg-1",
+                          "id": "2",
                           "method": "tools/call",
                           "params": {
                             "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
@@ -230,33 +221,32 @@ public class AsyncToolLifecycleTest {
                         }
                         """;
 
-        String response = client.callMCP(request);
+        String response2 = client.callMCP(request2);
 
-        // The server must return an error response, not crash
-        String expectedResponseString = """
-                        {"id":"neg-1","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
+        String expectedResponseString2 = """
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
                         """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        JSONAssert.assertEquals(expectedResponseString2, response2, true);
 
-        // @PreDestroy must fire even though the tool threw synchronously
-        assertNotNull("@PreDestroy must fire after asyncLifecycleAsyncStage throws an exception",
-                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
-        assertFalse("Lifecycle log must not be empty", lifecycleMessages.isEmpty());
+        List<String> lifecycleMessages2 = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages2.isEmpty());
 
-        assertThat("Unexpected lifecycle sequence on error path:\n" + String.join("\n", lifecycleMessages),
-                   lifecycleMessages,
+        assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages2),
+                   lifecycleMessages2,
                    contains(containsString("@PostConstruct AsyncLifecycleTools"),
                             containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleAsyncStage Tool logged"),
                             containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleAsyncStage Tool throwing error"),
                             containsString("@PreDestroy AsyncLifecycleTools")));
     }
 
+    // Negative Tests
+
     /**
-     * Negative test: two successive calls to the same async tool must each create and
-     * destroy a distinct {@code Dependent}-scoped bean instance;instance reuse across
-     * invocations is not permitted by the CDI {@code @Dependent} scope.
+     * Verifies that an async {@code @Dependent}-scoped bean is not reused across successive tool calls —
+     * each invocation must produce its own {@code @PostConstruct}/{@code @PreDestroy} pair,
+     * in the correct order.
      */
     @Test
     public void testAsyncDependentBeanIsNotReusedAcrossSuccessiveCalls() throws Exception {
@@ -265,7 +255,7 @@ public class AsyncToolLifecycleTest {
         String request = """
                         {
                           "jsonrpc": "2.0",
-                          "id": "neg-2",
+                          "id": "neg-1",
                           "method": "tools/call",
                           "params": {
                             "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
@@ -281,7 +271,7 @@ public class AsyncToolLifecycleTest {
         String request2 = """
                         {
                           "jsonrpc": "2.0",
-                          "id": "neg-3",
+                          "id": "neg-2",
                           "method": "tools/call",
                           "params": {
                             "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
@@ -294,18 +284,22 @@ public class AsyncToolLifecycleTest {
                         """;
         client.callMCP(request2);
 
-        // Wait for at least one @PreDestroy to confirm both calls ran
-        assertNotNull("@PreDestroy must fire after async tool calls",
+        // Wait for both @PreDestroy events — each call must destroy its own instance
+        assertNotNull("First @PreDestroy must fire",
+                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull("Second @PreDestroy must fire",
                       server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
-        List<String> postConstructEvents = server.findStringsInLogsUsingMark(
-                                                                             ".*\\[LIFECYCLE] @PostConstruct AsyncLifecycleTools.*", server.getDefaultLogFile());
-        List<String> preDestroyEvents = server.findStringsInLogsUsingMark(
-                                                                          ".*\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools.*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
-        assertTrue("Two separate @PostConstruct events must fire (Dependent scope, no instance reuse)",
-                   postConstructEvents.size() >= 2);
-        assertTrue("Two separate @PreDestroy events must fire",
-                   preDestroyEvents.size() >= 2);
+        assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
+                   lifecycleMessages,
+                   contains(containsString("@PostConstruct AsyncLifecycleTools"),
+                            containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleCompleteCompletionStage Tool logged"),
+                            containsString("@PreDestroy AsyncLifecycleTools"),
+                            containsString("@PostConstruct AsyncLifecycleTools"),
+                            containsString("[LOGGED] AsyncLifecycleTools.asyncLifecycleCompleteCompletionStage Tool logged"),
+                            containsString("@PreDestroy AsyncLifecycleTools")));
     }
 }
