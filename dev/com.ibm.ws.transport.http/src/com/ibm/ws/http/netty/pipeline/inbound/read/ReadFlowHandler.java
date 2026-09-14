@@ -7,7 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
@@ -199,8 +199,9 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                         + " uri=" + request.uri()
                         + " queueSize=" + (state.hasPendingAdmission() ? "non-empty" : "0"));
                 }
-                // Retain so we own the reference for the queue lifetime.
-                ReferenceCountUtil.retain(message);
+                // The pipeline delivers this message with a single ref owned by us.
+                // We are parking it instead of forwarding, so no retain is needed —
+                // we already own the reference.
                 state.enqueuePending((HttpObject) message);
                 // Do NOT issue an upstream read for the next request; body reads
                 // for the currently active exchange continue via setBodyReadWanted.
@@ -220,8 +221,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         if (message instanceof LastHttpContent) {
             // If the pending queue is non-empty this content belongs to a queued
             // request: park it with its request so it can be replayed together.
+            // We own the reference delivered by the pipeline; no retain needed.
             if (state.hasPendingAdmission()) {
-                ReferenceCountUtil.retain(message);
                 state.enqueuePending((HttpObject) message);
                 return;
             }
@@ -233,8 +234,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         }
 
         // Plain body chunk: park if it belongs to a queued request.
+        // We own the reference delivered by the pipeline; no retain needed.
         if (message instanceof HttpObject && state.hasPendingAdmission()) {
-            ReferenceCountUtil.retain(message);
             state.enqueuePending((HttpObject) message);
             return;
         }
@@ -346,25 +347,33 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         FlowState state = state(context);
 
         if (message instanceof HttpResponse) {
-            state.setResponseInFlight(true);
-
             HttpResponse response = (HttpResponse) message;
             int code = response.status().code();
             boolean informational = (code >= 100 && code < 200 && code != 101);
 
-            boolean responseKeepAlive = HttpUtil.isKeepAlive(response);
-            state.setKeepAliveAllowed(responseKeepAlive && !state.isQuiescing());
-
-            boolean noBodyExpected = state.isHeadRequest() || !isResponseBodyPermitted(code)
-                || (HttpUtil.getContentLength(response, -1) == 0 && !HttpUtil.isTransferEncodingChunked(response));
-
             if (!informational) {
+                // Mark the response as in-flight for every non-informational response.
                 state.setResponseInFlight(true);
 
-                // No body; install completion listener on this write.
-                if (noBodyExpected) {
-                    // Capture exchange id so a stale callback from a previous
-                    // exchange (e.g. reused promise) is ignored.
+                boolean responseKeepAlive = HttpUtil.isKeepAlive(response);
+                state.setKeepAliveAllowed(responseKeepAlive && !state.isQuiescing());
+
+                // A FullHttpResponse is both headers and terminal content in one
+                // message — it is self-contained.  Complete the exchange when this
+                // single write resolves (success or failure).
+                //
+                // A plain HttpResponse for HEAD, 204, or 304 must also complete
+                // here because the codec will not emit a separate LastHttpContent.
+                //
+                // An ordinary streaming HttpResponse must NOT complete here — the
+                // terminal LastHttpContent write is the authoritative endpoint.
+                // On failure, however, poison the exchange so even a later
+                // successful terminal flush cannot reuse the connection.
+                boolean selfContained = (message instanceof LastHttpContent)  // FullHttpResponse
+                    || state.isHeadRequest()
+                    || !isResponseBodyPermitted(code);
+
+                if (selfContained) {
                     final long myExchangeId = state.getActiveExchangeId();
                     promise.addListener(f -> {
                         if (!context.executor().inEventLoop()) {
@@ -373,10 +382,39 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                             onResponseComplete(context, state, f.isSuccess(), myExchangeId);
                         }
                     });
+                } else {
+                    // Streaming header write: a failure poisons the exchange.
+                    final long myExchangeId = state.getActiveExchangeId();
+                    promise.addListener(f -> {
+                        if (!f.isSuccess()) {
+                            if (!context.executor().inEventLoop()) {
+                                context.executor().execute(() -> poisonExchange(context, state, myExchangeId));
+                            } else {
+                                poisonExchange(context, state, myExchangeId);
+                            }
+                        }
+                    });
                 }
             }
+            // Informational (1xx except 101): do not touch responseInFlight or keepAlive.
+        } else if (message instanceof HttpContent && !(message instanceof LastHttpContent)) {
+            // Intermediate body chunk for a streaming response.  A failure here
+            // poisons the exchange; the terminal write cannot rescue it.
+            final long myExchangeId = state.getActiveExchangeId();
+            promise.addListener(f -> {
+                if (!f.isSuccess()) {
+                    if (!context.executor().inEventLoop()) {
+                        context.executor().execute(() -> poisonExchange(context, state, myExchangeId));
+                    } else {
+                        poisonExchange(context, state, myExchangeId);
+                    }
+                }
+            });
         }
 
+        // Separate (non-header) LastHttpContent: terminal write for a streamed body.
+        // Guard against FullHttpResponse which is also a LastHttpContent but was
+        // already handled above.
         if (message instanceof LastHttpContent && !(message instanceof HttpResponse)) {
             final long myExchangeId = state.getActiveExchangeId();
             promise.addListener(f -> {
@@ -389,6 +427,30 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         }
 
         super.write(context, message, promise);
+    }
+
+    /**
+     * Marks the active exchange as write-failed and immediately closes the
+     * connection. Called when a non-terminal outbound write fails (headers or
+     * body chunk) so that a later successful terminal flush cannot reuse the
+     * connection. Stale-id guarded to ignore callbacks from prior exchanges.
+     */
+    private static void poisonExchange(ChannelHandlerContext context, FlowState state,
+                                       long exchangeId) {
+        if (state.getActiveExchangeId() != exchangeId) {
+            return;
+        }
+        if (state.isExchangeWriteFailed()) {
+            return; // already handled
+        }
+        Tr.debug(tc, "[FLOW-PROOF] POISON_EXCHANGE ch=" + context.channel().id());
+        state.setExchangeWriteFailed();
+        state.setKeepAliveAllowed(false);
+        state.setStopReading(true);
+        state.releaseQueue();
+        if (context.channel().isActive()) {
+            context.channel().close();
+        }
     }
 
     /**
@@ -412,9 +474,13 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             return;
         }
 
-        if (!succeeded) {
-            // Write failed: close the connection, do not admit next request.
-            Tr.debug(tc, "[FLOW-PROOF] WRITE_FAILED_CLOSE ch=" + context.channel().id());
+        // Treat earlier-write poisoning the same as a terminal write failure:
+        // a successful terminal flush does not rescue an exchange whose preceding
+        // header or body write already failed.
+        if (!succeeded || state.isExchangeWriteFailed()) {
+            Tr.debug(tc, "[FLOW-PROOF] WRITE_FAILED_CLOSE ch=" + context.channel().id()
+                + " terminalSucceeded=" + succeeded
+                + " poisoned=" + state.isExchangeWriteFailed());
             state.setResponseInFlight(false);
             state.setKeepAliveAllowed(false);
             state.setStopReading(true);
