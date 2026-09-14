@@ -1093,12 +1093,22 @@ public class QueryInfo_1_1 extends QueryInfo {
     }
 
     @Override
+    @Trivial
     public int inspectMethodParam(int p,
                                   Class<?> paramType,
                                   Annotation[] paramAnnos,
                                   String[] attrNames,
                                   AttributeConstraint[] constraints,
                                   char[] updateOps) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "inspectMethodParam #" + p,
+                     paramType,
+                     Util.toStringList(paramAnnos),
+                     attrNames,
+                     constraints,
+                     updateOps);
+
         int prevNumJPQLParams = qlParamCount;
 
         for (Annotation anno : paramAnnos)
@@ -1144,6 +1154,8 @@ public class QueryInfo_1_1 extends QueryInfo {
             // TODO send in boolean for _CONFLICTS_WITH_CONSTRAINT
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "inspectMethodParam #" + p, qlParamCount);
         return qlParamCount;
     }
 
@@ -1155,6 +1167,7 @@ public class QueryInfo_1_1 extends QueryInfo {
      * @param isNativeQuery indicates if the query is a native query vs JPQL
      * @param entityHandler EntityAgent or EntityManager
      */
+    @Trivial
     private <T> void setReadOptions(Annotation options,
                                     jakarta.persistence.Query query,
                                     boolean isNativeQuery,
@@ -1163,6 +1176,9 @@ public class QueryInfo_1_1 extends QueryInfo {
                     IllegalAccessException, //
                     InvocationTargetException, //
                     NoSuchMethodException {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setReadOptions", Util.toString(options), query);
 
         Class<?> QueryOptions = options.getClass();
         String entityGraph = (String) QueryOptions //
@@ -1232,12 +1248,17 @@ public class QueryInfo_1_1 extends QueryInfo {
      * @param statement the jakarta.persistence.Statement upon which to configure
      *                      the options
      */
+    @Trivial
     private static void setWriteOptions(Annotation options,
                                         jakarta.persistence.Query statement) //
                     throws // TODO remove once using Persistence 4.0 API
                     IllegalAccessException, //
                     InvocationTargetException, //
                     NoSuchMethodException {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "setWriteOptions", Util.toString(options), statement);
+
         Class<?> QueryOptions = options.getClass();
         Object flush = QueryOptions //
                         .getMethod("flush") //

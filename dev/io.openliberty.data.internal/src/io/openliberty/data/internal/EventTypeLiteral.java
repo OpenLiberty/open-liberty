@@ -66,6 +66,7 @@ final class EventTypeLiteral<L extends LifecycleEvent<E>, E> //
      * Represents a LifeCycle event type with type parameters.
      * For example, PreDeleteEvent<MyEntity>
      */
+    @Trivial
     private static class ParameterizedLifeCycleEventType //
                     implements ParameterizedType {
         private final Class<?> eventClass;
