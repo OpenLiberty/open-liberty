@@ -51,19 +51,31 @@ public class FilteredDirEntryConfig extends DirEntryConfig {
         filterDirectory(dirContent, dirPattern, "");
 
         for (String file : dirContent) {
-            Path originalPath = new File(source, file).toPath();
-            if (originalPath.toFile().isDirectory())
-                continue;
+            Path tempFile = null;
+            try {
+                Path originalPath = new File(source, file).toPath();
+                if (originalPath.toFile().isDirectory())
+                    continue;
 
-            // Create a temporary file. We will write the filtered content to this file and include it in the archive.
-            Path tempFile = Files.createTempFile(null, null);
+                // Create a temporary file. We will write the filtered content to this file and include it in the archive.
+                tempFile = Files.createTempFile(null, null);
 
-            String originalFile = new String(Files.readAllBytes(originalPath));
-            String newFile = obscuredValuePattern.matcher(originalFile).replaceAll(OBSCURED_VALUE);
-            newFile = wlpPasswordEncryptionPattern.matcher(newFile).replaceAll(WLP_PASSWORD_ENCYRPTION_STRING + "=*****");
-            newFile = wlpAesEncryptionPattern.matcher(newFile).replaceAll(WLP_AES_ENCRYPTION_STRING + "=*****");
-            Files.write(tempFile, newFile.getBytes());
-            archive.addFileEntry(file, tempFile.toFile());
+                String originalFile = new String(Files.readAllBytes(originalPath));
+                String newFile = obscuredValuePattern.matcher(originalFile).replaceAll(OBSCURED_VALUE);
+                newFile = wlpPasswordEncryptionPattern.matcher(newFile).replaceAll(WLP_PASSWORD_ENCYRPTION_STRING + "=*****");
+                newFile = wlpAesEncryptionPattern.matcher(newFile).replaceAll(WLP_AES_ENCRYPTION_STRING + "=*****");
+                Files.write(tempFile, newFile.getBytes());
+                archive.addFileEntry(file, tempFile.toFile());
+            } finally {
+                if (tempFile != null) {
+                    try {
+                        Files.deleteIfExists(tempFile);
+                    } catch (IOException e) {
+                        System.err.println("Failed to delete temp file: " + e.getMessage());
+                    }
+                }
+            }
+
         }
 
     }
