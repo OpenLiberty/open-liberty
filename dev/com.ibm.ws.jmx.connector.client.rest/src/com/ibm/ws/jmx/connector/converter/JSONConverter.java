@@ -214,6 +214,8 @@ public class JSONConverter {
         SupportedClasses.put(CompositeDataSupport.class, TYPE.CompositeData);
         SupportedClasses.put(TabularDataSupport.class, TYPE.TabularData);
     }
+    // String names of all the classes in the SupportedClasses map
+    // Used to check incoming requests.
     private static final List<String> SupportedClassNames = new ArrayList<String>();
     static {
         for (Class key : SupportedClasses.keySet()) {
@@ -3518,8 +3520,10 @@ public class JSONConverter {
         return null;
     }
 
+    // Checks an array type definition string (possibly multidimensional)
+    // e.g. '[[[[Lmy.class.name;'
+    // Primitive arrays are accepted, and arrays of other supported classes
     private static void checkClassName(String name) throws ConversionException {
-        System.out.println("name is " + name);
         if (name.charAt(name.length() - 1) != ';') {
             // This is a primitive array
             return;
@@ -3528,13 +3532,13 @@ public class JSONConverter {
         while (name.charAt(0) == '[') {
             name = name.substring(1);
         }
-        // Take off the 'L' 
+        // Take off the leading 'L' and trailing ';'
         name = name.substring(1,name.length()-1);
         if (SupportedClassNames.contains(name)){
-            // We are good
             return;
         }
-        throwConversionException("Bad class name", name);
+        // Unsupported class
+        throw new ConversionException(name + " is not a supported class type");
     }
 
     private Object readPOJOValue(Object value, Object type, OpenType<?>[] openTypes) throws ConversionException, ClassNotFoundException {
@@ -3610,10 +3614,6 @@ public class JSONConverter {
         if (!(value instanceof String)) {
             throwConversionException("readSimpleValue() expects a String.", value);
         }
-        // TODO this shouldn't be necessary
-        if (t == null) {
-            throwConversionException("t shouldn't be null", "null string");
-        }
         String vstr = (String) value;
         switch (t) {
             case Byte:
@@ -3677,7 +3677,11 @@ public class JSONConverter {
 
         Object[] ret = (Object[]) Array.newInstance(component, size);
         for (int i = 0; i < size; i++) {
-            ret[i] = readSimpleValue(json.get(i), SupportedClasses.get(component));
+            TYPE type = SupportedClasses.get(component);
+            if (type == null) {
+                throw new ConversionException(component + " is not a supported type");
+            }
+            ret[i] = readSimpleValue(json.get(i), type);
         }
         return ret;
     }
