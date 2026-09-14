@@ -270,7 +270,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "close streams from HttpDispatcherLink.close");
                 }
-                
+
                 // This close streams should be synchronous to match with legacy
                 Exception errorinClosing = this.closeStreams();
 
