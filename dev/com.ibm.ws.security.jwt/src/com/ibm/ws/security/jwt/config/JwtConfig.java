@@ -73,4 +73,8 @@ public interface JwtConfig {
     String getContentEncryptionAlgorithm();
 
 	long getNbfOffsetTime();
+
+    String getWorkloadIdentityClaim();
+
+    String getWorkloadIdentity();
 }
