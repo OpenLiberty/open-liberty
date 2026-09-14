@@ -26,6 +26,9 @@ Export-Package: \
 -includeresource: \
   @${repo; jakarta.json.bind:jakarta.json.bind-api;2.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
+-maven-dependencies: \
+   dep1;groupId=jakarta.json.bind;artifactId=jakarta.json.bind-api;version=2.0.0;scope=runtime
+
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
