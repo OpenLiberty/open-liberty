@@ -87,6 +87,17 @@ public class FlowState {
     private boolean draining = false;
 
     /**
+     * Set to {@code true} when any non-terminal outbound write (headers or body
+     * chunk) for the active exchange fails. Even if the terminal
+     * {@code LastHttpContent} flush later succeeds, a poisoned exchange must not
+     * be reused; {@link #onResponseComplete} checks this flag first.
+     *
+     * <p>Reset to {@code false} by {@link #nextExchangeId()} when a new exchange
+     * begins, so the flag never leaks across exchanges.
+     */
+    private boolean exchangeWriteFailed = false;
+
+    /**
      * FlowState constructor.
      */
     public FlowState() {
@@ -225,12 +236,31 @@ public class FlowState {
     }
 
     /**
-     * Allocates a new exchange id, records it as the active exchange, and returns
-     * the new value. Must be called on the event loop, immediately before the
-     * {@code HttpRequest} is forwarded downstream.
+     * Allocates a new exchange id, records it as the active exchange, resets the
+     * per-exchange write-failure flag, and returns the new value. Must be called
+     * on the event loop, immediately before the {@code HttpRequest} is forwarded
+     * downstream.
      */
     public long nextExchangeId() {
+        exchangeWriteFailed = false;
         return ++activeExchangeId;
+    }
+
+    /**
+     * Returns {@code true} if any non-terminal write for the active exchange has
+     * already failed. When this is set, a later successful terminal write must
+     * not reuse the connection.
+     */
+    public boolean isExchangeWriteFailed() {
+        return exchangeWriteFailed;
+    }
+
+    /**
+     * Poisons the active exchange so that its terminal write cannot trigger
+     * connection reuse even if the flush promise itself succeeds.
+     */
+    public void setExchangeWriteFailed() {
+        this.exchangeWriteFailed = true;
     }
 
     /**
