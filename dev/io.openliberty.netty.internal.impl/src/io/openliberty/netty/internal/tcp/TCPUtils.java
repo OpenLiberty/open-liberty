@@ -289,6 +289,40 @@ public class TCPUtils {
                         // Log the specific error message
                         Tr.error(tc, TCPMessageConstants.LOCAL_HOST_UNRESOLVED,
                                  new Object[] { config.getExternalName(), newHost, String.valueOf(inetPort) });
+                    } else if (config.isInbound() && future.cause() instanceof java.net.BindException
+                               && !reuseAddrRetry) {
+                        // portOpenRetries == 0: no retries were configured so the first-failure
+                        // probe in the retryCount > 0 branch never ran.  Probe now to distinguish
+                        // TIME_WAIT from a real conflict before giving up.
+                        String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
+                        InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
+                        if (!probeAddr.isUnresolved()) {
+                            try (java.net.Socket probe = new java.net.Socket()) {
+                                probe.connect(probeAddr, 1000);
+                                // Connection succeeded — real conflict, log the error.
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Probe connect to " + probeAddr + " succeeded: real port conflict for " + config.getExternalName());
+                                }
+                                Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+                                                                                            String.valueOf(inetPort), openFuture.cause().getMessage() });
+                            } catch (java.io.IOException probeEx) {
+                                // Connection refused — TIME_WAIT only, retry with SO_REUSEADDR=true.
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Probe connect to " + probeAddr + " failed (" + probeEx.getMessage()
+                                                 + "): TIME_WAIT only, retrying bind with SO_REUSEADDR=true for " + config.getExternalName());
+                                }
+                                channel.config().setOption(ChannelOption.SO_REUSEADDR, true);
+                                open(framework, channel, config, newHost, inetPort, openListener, 0, true);
+                                return;
+                            }
+                        } else {
+                            // Unresolvable probe address — treat conservatively as a real conflict.
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Probe address " + probeAddr + " is unresolved, treating as real conflict for " + config.getExternalName());
+                            }
+                            Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+                                                                                        String.valueOf(inetPort), openFuture.cause().getMessage() });
+                        }
                     } else {
                         if (config.isInbound()) {
                             Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
