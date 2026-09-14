@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound.read;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
@@ -16,6 +17,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
@@ -372,22 +374,20 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 boolean responseKeepAlive = HttpUtil.isKeepAlive(response);
                 state.setKeepAliveAllowed(responseKeepAlive && !state.isQuiescing());
 
-                // A FullHttpResponse is both headers and terminal content in one
-                // message — it is self-contained.  Complete the exchange when this
-                // single write resolves (success or failure).
+                // A FullHttpResponse (which also implements LastHttpContent) is both
+                // headers and terminal content in one message — it is self-contained.
+                // Complete the exchange when this single write resolves.
                 //
-                // A plain HttpResponse for HEAD, 204, or 304 must also complete
-                // here because the codec will not emit a separate LastHttpContent.
+                // An ordinary streaming HttpResponse (non-full) must NOT complete
+                // here regardless of method or status code — the terminal
+                // LastHttpContent write is the authoritative endpoint.  Using
+                // method/status shortcuts risks releasing admission for request B
+                // before A's terminal content has been flushed, which causes the
+                // codec to see an out-of-order message type.
                 //
-                // An ordinary streaming HttpResponse must NOT complete here — the
-                // terminal LastHttpContent write is the authoritative endpoint.
-                // On failure, however, poison the exchange so even a later
+                // On header-write failure, poison the exchange so even a later
                 // successful terminal flush cannot reuse the connection.
-                boolean selfContained = (message instanceof LastHttpContent)  // FullHttpResponse
-                    || state.isHeadRequest()
-                    || !isResponseBodyPermitted(code);
-
-                if (selfContained) {
+                if (message instanceof FullHttpResponse) {
                     final long myExchangeId = state.getActiveExchangeId();
                     promise.addListener(f -> {
                         if (!context.executor().inEventLoop()) {
@@ -411,6 +411,24 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 }
             }
             // Informational (1xx except 101): do not touch responseInFlight or keepAlive.
+        } else if (message instanceof ByteBuf) {
+            // Raw ByteBuf body write (e.g. fixed-length HTTP/1 bodies written by
+            // NettyTCPWriteRequestContext for Content-Length responses).  These bypass
+            // the HttpContent type but are still part of the active exchange.  A
+            // failure here must poison the exchange so a later successful terminal
+            // flush cannot reuse the connection.
+            if (state.isResponseInFlight()) {
+                final long myExchangeId = state.getActiveExchangeId();
+                promise.addListener(f -> {
+                    if (!f.isSuccess()) {
+                        if (!context.executor().inEventLoop()) {
+                            context.executor().execute(() -> poisonExchange(context, state, myExchangeId));
+                        } else {
+                            poisonExchange(context, state, myExchangeId);
+                        }
+                    }
+                });
+            }
         } else if (message instanceof HttpContent && !(message instanceof LastHttpContent)) {
             // Intermediate body chunk for a streaming response.  A failure here
             // poisons the exchange; the terminal write cannot rescue it.
@@ -776,20 +794,4 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         return HttpUtil.getContentLength(request, -1) > 0;
     }
 
-    /**
-     * Utility method to inspect the response status to confirm if a body is
-     * permitted. As detailed in RFC 9110, the following status codes do not provide
-     * body payloads:
-     * <ul>
-     *  <li>204 No Content</li>
-     *  <li>304 Not Modified</li>
-     *  <li>1xx Informational</li>
-     * </ul>
-     * This is utilized to change the flow status during writing so that the
-     * {@link FlowState#isResponseInFlight()} is flagged as false (response sent).
-     */
-    private static boolean isResponseBodyPermitted(int status) {
-        if (status == 101 || status == 204 || status == 304) return false;
-        return !(status >= 100 && status < 200);
-    }
 }
