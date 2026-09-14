@@ -188,6 +188,7 @@ public class FormLoginExtensionProcessorTest {
                 will(returnValue(authResultContinue));
                 allowing(req).getParameter("error_page");
                 allowing(req).getCookies();
+                allowing(webAppSecConfig).getLoginErrorURLRedirectDomainNames();
             }
         });
 
@@ -390,6 +391,7 @@ public class FormLoginExtensionProcessorTest {
                 allowing(resp).sendRedirect(errorURL);
                 allowing(req).getParameter("error_page");
                 allowing(req).getCookies();
+                allowing(webAppSecConfig).getLoginErrorURLRedirectDomainNames();
             }
         });
 
@@ -447,6 +449,7 @@ public class FormLoginExtensionProcessorTest {
                 allowing(req).getParameter("error_page");
                 allowing(req).getCookies();
                 allowing(wac).getContextRoot();
+                allowing(webAppSecConfig).getLoginErrorURLRedirectDomainNames();
             }
         });
 

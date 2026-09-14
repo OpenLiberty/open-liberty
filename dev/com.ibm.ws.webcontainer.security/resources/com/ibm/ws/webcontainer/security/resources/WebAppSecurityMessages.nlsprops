@@ -171,3 +171,7 @@ OLD_LOGOUT_TOKENS_MIGRATED.useraction=To ensure that logged-out tokens use the m
 JCACHE_MIGRATION_FAILURE=CWWKS9133E: The logged-out-cookie cache encountered an error while migrating old tokens to hashed versions. The error is: {0}
 JCACHE_MIGRATION_FAILURE.explanation=The logged-out-cookie cache encountered an error during the one-time migration of old logged-out tokens to the new hashed format.
 JCACHE_MIGRATION_FAILURE.useraction=Review the error message and server logs to determine the cause of the failure. The migration will be retried on the next server restart.
+
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED=CWWKS9134E: The error page redirect URL {0} is not allowed. The URL host does not match the current request host or a domain in the loginErrorURLRedirectDomainNames configuration: {1}
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED.explanation=The error page redirect URL is not on the same host as the current request and does not match any domain that is configured in the loginErrorURLRedirectDomainNames property.
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED.useraction=Ensure that the error page redirect URL host matches the current request host, or add the domain name to the loginErrorURLRedirectDomainNames property in the webAppSecurity configuration.
