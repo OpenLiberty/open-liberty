@@ -72,9 +72,4 @@ instrument.disabled: true
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
-	io.openliberty.yoko.spec.corba;version=latest,\
 	io.openliberty.yoko.core;version=latest,\
-	io.openliberty.yoko.osgi;version=latest,\
-	io.openliberty.yoko.rmi.impl;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
-	io.openliberty.yoko.util;version=latest
