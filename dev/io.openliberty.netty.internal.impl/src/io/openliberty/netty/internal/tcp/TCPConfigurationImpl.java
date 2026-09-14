@@ -148,6 +148,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
     public void applyConfiguration(ServerBootstrap bootstrap) {
         bootstrap.option(ChannelOption.SO_REUSEADDR, getSoReuseAddress());
         bootstrap.childOption(ChannelOption.SO_LINGER, getSoLinger());
+        bootstrap.childOption(ChannelOption.TCP_NODELAY, getTcpNoDelay());
     }
 
     /**

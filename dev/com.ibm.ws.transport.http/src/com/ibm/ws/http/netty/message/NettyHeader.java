@@ -72,8 +72,9 @@ public class NettyHeader implements HeaderField {
 
     @Override
     public String asString() {
-
-        return (Objects.nonNull(value)) ? this.value : nettyHeaders.get(name);
+        if(Objects.isNull(value))
+            value = nettyHeaders.get(name);
+        return value;
     }
 
     @Override

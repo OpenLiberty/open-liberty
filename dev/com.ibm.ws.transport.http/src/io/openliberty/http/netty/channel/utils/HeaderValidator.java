@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.http.netty.channel.utils;
 
-import java.util.regex.Pattern;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
@@ -32,11 +31,6 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
  */
 public class HeaderValidator {
     
-        /**
-         * Defines a pattern for valid header names (token characters or "tchars") as specified in 
-         * RFC 7230, Section 3.2.6, "Field Value Components".
-         */
-        private static final Pattern TCHAR_PATTERN = Pattern.compile("^[!#$%&'*+\\-\\.\\^_`|~0-9a-zA-Z]+$");
         private static final char CR = '\r';
         private static final char LF = '\n';
         private static final char TAB = '\t';
@@ -126,11 +120,6 @@ public class HeaderValidator {
             return token;
         }
         
-        // For header names, only validate if not empty (empty is caught earlier with proper exception)
-        if (type == FieldType.NAME && !token.isEmpty() && !TCHAR_PATTERN.matcher(token).matches()) {
-            throw new IllegalArgumentException("Invalid header name: " + token);
-        }
-
         if(!token.isEmpty()){
             char lastChar = token.charAt(token.length()-1);
             if(lastChar == CR || lastChar == LF){
@@ -143,7 +132,9 @@ public class HeaderValidator {
         for (int i = 0; i < token.length(); i++) {
             char c = token.charAt(i);
 
-            if (c == CR) {
+            if (type == FieldType.NAME && !HttpHeaderKeys.isValidTchar(c)) {
+                error = "Invalid header name: " + token;
+            } else if (c == CR) {
                 if (i + 1 >= token.length() || token.charAt(i + 1) != LF) {
                     error = "Invalid CR not followed by LF in header " + token;
                 }

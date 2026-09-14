@@ -131,6 +131,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         this.headers = request.headers();
         this.nettyContext = nettyContext;
 
+        this.streamId = headers.getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), -1);
+
         parameters = new HashMap<String, String[]>();
         this.scheme = isc.isSecure() ? SchemeValues.HTTPS : SchemeValues.HTTP;
         processQuery();

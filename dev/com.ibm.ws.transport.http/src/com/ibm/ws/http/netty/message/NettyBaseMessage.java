@@ -49,6 +49,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.netty.util.AsciiString;
 import io.openliberty.http.constants.HttpGenerics;
 import io.openliberty.http.netty.cookie.CookieDecoder;
 import io.openliberty.http.netty.cookie.CookieEncoder;
@@ -80,6 +81,9 @@ public class NettyBaseMessage implements HttpBaseMessage {
     protected long startTime = 0;
     protected long endTime = 0;
 
+    int streamId = -1;
+    protected long cachedContentLength = HttpGenerics.NOT_SET;
+
     /** Cookie Caches */
     private final Map<HttpHeaderKeys, CookieCacheData> cookieCacheMap = new HashMap<>();
     /** Reference to the cookie parser */
@@ -89,8 +93,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
     private HttpServiceContext serviceContext;
 
     private int limitOfTokenSize;
-
-    private Map<String, String> headersMap = new HashMap<>();
 
     public enum MessageType {REQUEST, RESPONSE;}
 
@@ -143,6 +145,17 @@ public class NettyBaseMessage implements HttpBaseMessage {
         return new NettyHeader(name, headers);
     }
 
+    private List<HeaderField> getHeaders(AsciiString name) {
+        List<String> values = headers.getAll(name);
+        if (values.isEmpty()) 
+            return Collections.emptyList();   // avoid alloc on miss
+        List<HeaderField> result = new ArrayList<>(values.size());
+        for (String value : values) {
+            result.add(new NettyHeader(name.toString(), value));   // HeaderKeys constructor — no find()
+        }
+        return result;
+    }
+
     @Override
     public List<HeaderField> getHeaders(String name) {
         List<String> values = headers.getAll(name);
@@ -155,7 +168,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public List<HeaderField> getHeaders(byte[] name) {
-        return getHeaders(new String(name, StandardCharsets.UTF_8));
+        // TODO: Should this be a copy?
+        return getHeaders(new AsciiString(name, false));
     }
 
     @Override
@@ -228,9 +242,14 @@ public class NettyBaseMessage implements HttpBaseMessage {
         headers.add(header, value);
     }
 
+    private int getNumberOfHeaderInstances(AsciiString headerName) {
+        if (!headers.contains(headerName)) return 0;
+            return headers.getAll(headerName).size();
+    }
+
     @Override
     public int getNumberOfHeaderInstances(String header) {
-        return headers.getAll(header).size();
+        return getNumberOfHeaderInstances(AsciiString.of(header));
     }
 
     @Override
@@ -250,16 +269,19 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public int getNumberOfHeaderInstances(byte[] header) {
-        return this.getNumberOfHeaderInstances(new String(header, StandardCharsets.UTF_8));
+        // TODO: Should this be a copy or not?
+        return this.getNumberOfHeaderInstances(new AsciiString(header, false));
     }
 
     @Override
     public int getNumberOfHeaderInstances(HeaderKeys header) {
-        return this.getNumberOfHeaderInstances(header.getName());
+        return this.getNumberOfHeaderInstances(header.getByteArray());
     }
 
     @Override
     public void removeHeader(byte[] header) {
+        // Byte-array name: can't compare cheaply, so always invalidate the cache.
+        cachedContentLength = HttpGenerics.NOT_SET;
         removeHeader(new String(header, StandardCharsets.UTF_8));
     }
 
@@ -270,7 +292,11 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void removeHeader(HeaderKeys header) {
-        removeHeader(header.getName());
+        // Typed key: reference comparison is free — no character scan needed.
+        if (header == HttpHeaderKeys.HDR_CONTENT_LENGTH) {
+            cachedContentLength = HttpGenerics.NOT_SET;
+        }
+        headers.remove(header.getName());
     }
 
     @Override
@@ -280,6 +306,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void removeHeader(String header) {
+        // String name: always invalidate — no equalsIgnoreCase needed on the hot path.
+        cachedContentLength = HttpGenerics.NOT_SET;
         headers.remove(header);
     }
 
@@ -290,6 +318,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void removeAllHeaders() {
+        cachedContentLength = HttpGenerics.NOT_SET;
         headers.clear();
     }
 
@@ -320,7 +349,20 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void setHeader(HeaderKeys header, String value) {
-        setHeader(header.getName(), value);
+        if (header == HttpHeaderKeys.HDR_CONTENT_LENGTH) {
+            // Typed key: parse the value directly into the cache, bypassing
+            // the string path below which would just wipe it again.
+            try {
+                cachedContentLength = Long.parseLong(value.trim());
+            } catch (NumberFormatException e) {
+                cachedContentLength = HttpGenerics.NOT_SET;
+                // Don't set content length if not valid...
+                return;
+            }
+            headers.set(header.getName(), value);
+        } else {
+            setHeader(header.getName(), value);
+        }
     }
 
     @Override
@@ -328,7 +370,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
         Objects.requireNonNull(header);
         Objects.requireNonNull(value);
         if (!headers.contains(header.getName())) {
-            headers.set(header.getName(), value);
+            setHeader(header, value);  // reuse typed path so cache stays coherent
         }
         return null;
     }
@@ -345,6 +387,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void setHeader(String header, String value) {
+        // String name: always invalidate — avoids equalsIgnoreCase on every header write.
+        cachedContentLength = HttpGenerics.NOT_SET;
         headers.set(header, value);
     }
 
@@ -404,6 +448,10 @@ public class NettyBaseMessage implements HttpBaseMessage {
             parseAllCookies(cache, header);
         }
         cache.getAllCookieValues(name, list);
+    }
+
+    public int getStreamId() {
+        return streamId;
     }
 
 
@@ -608,6 +656,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
     public void clear() {
         cookieCacheMap.clear();
         this.committed = false;
+        this.cachedContentLength = HttpGenerics.NOT_SET;
     }
 
     @Override
@@ -668,13 +717,20 @@ public class NettyBaseMessage implements HttpBaseMessage {
                 }
             }
         }
-
-        headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), length);
+        headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getAsciiStringName(), length);
+        this.cachedContentLength = length;
     }
 
     @Override
     public long getContentLength() {
-        return HttpUtil.isContentLengthSet(message) ? HttpUtil.getContentLength(message) : HttpGenerics.NOT_SET;
+        if (cachedContentLength != HttpGenerics.NOT_SET)
+            return cachedContentLength;
+        if (HttpUtil.isContentLengthSet(message)) {
+            cachedContentLength = HttpUtil.getContentLength(message);
+            return cachedContentLength;
+        }
+        cachedContentLength = HttpGenerics.NOT_SET;
+        return HttpGenerics.NOT_SET;
     }
 
     @Override
@@ -814,7 +870,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public VersionValues getVersionValue() {
-        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (streamId != -1) {
             return VersionValues.V20;
         }
         return VersionValues.find(message.protocolVersion().text());
@@ -822,7 +878,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public String getVersion() {
-        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (streamId != -1) {
             return VersionValues.V20.getName();
         }
         return this.message.protocolVersion().text();
