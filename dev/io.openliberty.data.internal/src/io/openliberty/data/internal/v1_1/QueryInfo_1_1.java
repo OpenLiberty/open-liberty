@@ -1069,12 +1069,22 @@ public class QueryInfo_1_1 extends QueryInfo {
     }
 
     @Override
+    @Trivial
     public int inspectMethodParam(int p,
                                   Class<?> paramType,
                                   Annotation[] paramAnnos,
                                   String[] attrNames,
                                   AttributeConstraint[] constraints,
                                   char[] updateOps) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "inspectMethodParam #" + p,
+                     paramType,
+                     Util.toStringList(paramAnnos),
+                     attrNames,
+                     constraints,
+                     updateOps);
+
         int prevNumJPQLParams = qlParamCount;
 
         for (Annotation anno : paramAnnos)
@@ -1120,6 +1130,8 @@ public class QueryInfo_1_1 extends QueryInfo {
             // TODO send in boolean for _CONFLICTS_WITH_CONSTRAINT
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "inspectMethodParam #" + p, qlParamCount);
         return qlParamCount;
     }
 
@@ -1130,6 +1142,7 @@ public class QueryInfo_1_1 extends QueryInfo {
      * @param query         the query upon which to configure the options
      * @param entityHandler EntityAgent or EntityManager
      */
+    @Trivial
     private <T> void setReadOptions(QueryOptions options,
                                     jakarta.persistence.Query query,
                                     AutoCloseable entityHandler) //
@@ -1137,6 +1150,9 @@ public class QueryInfo_1_1 extends QueryInfo {
                     IllegalAccessException, //
                     InvocationTargetException, //
                     NoSuchMethodException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setReadOptions", Util.toString(options), query);
+
         // QueryOptions specified via Hints:
         for (QueryHint hint : options.hints())
             query.setHint(hint.name(),
@@ -1183,8 +1199,12 @@ public class QueryInfo_1_1 extends QueryInfo {
      * @param statement the jakarta.persistence.Statement upon which to configure
      *                      the options
      */
+    @Trivial
     private static void setWriteOptions(QueryOptions options,
                                         jakarta.persistence.Query statement) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "setWriteOptions", Util.toString(options), statement);
+
         // QueryOptions specified via Hints:
         for (QueryHint hint : options.hints())
             statement.setHint(hint.name(),
