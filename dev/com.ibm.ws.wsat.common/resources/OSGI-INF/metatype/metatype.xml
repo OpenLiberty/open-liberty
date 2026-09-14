@@ -15,7 +15,7 @@
 			type="String" default="" required="false" />
 		<AD id="asyncResponseTimeout" name="%asyncResponseTimeout.name" description="%asyncResponseTimeout.description"
 			type="String" ibm:type="duration" default="30s" required="false"  min="0" />
-		<AD id="virtualHostRef" name="%virtualHostRef.name" description="%virtualHostRef.description"
+		<AD id="virtualHostRef" name="internal" description="internal use only"
 			type="String" default="default_host" required="false" ibmui:uiReference="com.ibm.ws.http.virtualhost" />
 	</OCD>
 
