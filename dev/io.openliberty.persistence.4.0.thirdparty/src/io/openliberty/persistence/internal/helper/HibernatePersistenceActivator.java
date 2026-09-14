@@ -34,8 +34,6 @@ public class HibernatePersistenceActivator implements BundleActivator {
     private static final String HIBERNATE_JTA_PLATFORM = "hibernate.transaction.jta.platform";
     private static final String LIBERTY_JTA_PLATFORM_CLASS = "com.ibm.ws.jpa.hibernate.LibertyJtaPlatform";
 
-    private static final String HIBERNATE_BYTECODE_OPTIMIZER = "hibernate.bytecode.use_reflection_optimizer";
-
     private ServiceRegistration<?> hibernateSvcReg = null;
 
     @Override
@@ -56,9 +54,6 @@ public class HibernatePersistenceActivator implements BundleActivator {
         // detection in AbstractJPAProviderIntegration.
         System.setProperty(HIBERNATE_JTA_PLATFORM, LIBERTY_JTA_PLATFORM_CLASS);
 
-        // Disable reflection optimizer — bytecode enhancement is handled by
-        // Liberty's class transformation pipeline, not Hibernate's own optimizer.
-        System.setProperty(HIBERNATE_BYTECODE_OPTIMIZER, "false");
     }
 
     @Override
@@ -68,6 +63,5 @@ public class HibernatePersistenceActivator implements BundleActivator {
             hibernateSvcReg = null;
         }
         System.clearProperty(HIBERNATE_JTA_PLATFORM);
-        System.clearProperty(HIBERNATE_BYTECODE_OPTIMIZER);
     }
 }
