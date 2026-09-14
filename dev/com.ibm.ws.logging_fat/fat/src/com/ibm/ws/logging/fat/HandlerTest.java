@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -546,7 +546,8 @@ public class HandlerTest {
         Log.info(c, testName, "Inside Test method : " + testName);
 
         // ***** Wait for Server to completely start
-        traceServer.waitForStringInLog("JUST-WAIT-WILL-NOT-FIND-STRING", TWENTY_SECONDS);
+        assertTrue("SSL channel not ready",
+                   traceServer.waitForStringInLog("CWWKO0219I:") != null);
         assertTrue("TraceSourceHandlerServer NOT completely started",
                    traceServer.waitForStringInLog("CWWKF0011I:") != null); // wait for TraceSourceHandlerServer to be ready
 
