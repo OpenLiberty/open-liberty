@@ -349,14 +349,18 @@ public class ArtifactDownloader implements AutoCloseable {
 
         conn.connect();
 
+        long expectedBytes = conn.getContentLengthLong();
+
         destination.getParentFile().mkdirs();
         File tempFile = File.createTempFile(destination.getName(), null, destination.getParentFile());
+        long totalRead = 0;
         try (InputStream in = conn.getInputStream(); OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile))) {
             byte[] buffer = new byte[BUFFER_SIZE];
             int numRead;
             long progressCounter = 0;
             while ((numRead = in.read(buffer)) != -1) {
                 progressCounter += numRead;
+                totalRead += numRead;
                 if (progressCounter / PROGRESS_CHUNK > 0) {
                     progressCounter = progressCounter - PROGRESS_CHUNK;
                 }
@@ -364,8 +368,15 @@ public class ArtifactDownloader implements AutoCloseable {
             }
 
         } catch (FileNotFoundException e) {
+            tempFile.delete();
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                              destination.toString());
+        }
+
+        if (expectedBytes > 0 && totalRead != expectedBytes) {
+            tempFile.delete();
+            throw new IOException("Download of " + ArtifactDownloaderUtils.getFileNameFromURL(address.toString())
+                                  + " was truncated: expected " + expectedBytes + " bytes but received " + totalRead);
         }
 
         destination.delete();
