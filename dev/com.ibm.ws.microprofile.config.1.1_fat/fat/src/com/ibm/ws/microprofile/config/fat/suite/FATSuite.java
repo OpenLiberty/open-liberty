@@ -19,17 +19,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.microprofile.config.fat.tests.BasicConfigTests;
-import com.ibm.ws.microprofile.config.fat.tests.CDIBrokenInjectionTest;
-import com.ibm.ws.microprofile.config.fat.tests.ClassLoaderCacheTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
-import com.ibm.ws.microprofile.config.fat.tests.VisibilityTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
-import com.ibm.ws.microprofile.config.fat.tests.DynamicSourcesTest;
-import com.ibm.ws.microprofile.config.fat.tests.LibertySpecificConfigTests;
-import com.ibm.ws.microprofile.config.fat.tests.OrdinalsForDefaultsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
-import com.ibm.ws.microprofile.config.fat.tests.SimultaneousRequestsTest;
-import com.ibm.ws.microprofile.config.fat.tests.StressTest;
 
 /**
  * Tests specific to appConfig
@@ -38,24 +30,20 @@ import com.ibm.ws.microprofile.config.fat.tests.StressTest;
  * the rest repeat against the lastest version of MP Config (where appropriate) and then one other combination of MP Config and EE version
  * the aim is that each combination is used to test at least once, across all of the MP Config FAT buckets
  * some classes do not repeat against the latest due to functional changes between MP Config 1.4 -> 2.0
+ *
+ * Tests moved to com.ibm.ws.microprofile.config.1.1_fat_two:
+ *   OrdinalsForDefaultsTest, SimultaneousRequestsTest, VisibilityTest,
+ *   LibertySpecificConfigTests, CDIBrokenInjectionTest, ClassLoaderCacheTest, DynamicSourcesTest
+ *
+ * Tests moved to com.ibm.ws.microprofile.config.1.1_fat_stress:
+ *   StressTest
  */
 @RunWith(Suite.class)
 @SuiteClasses({
                 BasicConfigTests.class, //LITE
                 ClassLoadersTest.class, //FULL
                 DefaultSourcesTest.class, //FULL
-                OrdinalsForDefaultsTest.class, //FULL
-                SimultaneousRequestsTest.class, //FULL
-                SharedLibTest.class, //FULL
-                StressTest.class, //FULL
-                VisibilityTest.class, //FULL
-
-                // The following don't repeat against mpConfig > 1.4. See classes for why.
-                LibertySpecificConfigTests.class, //FULL
-                CDIBrokenInjectionTest.class, //FULL
-                ClassLoaderCacheTest.class, //FULL
-                DynamicSourcesTest.class //FULL
-
+                SharedLibTest.class //FULL
 })
 
 public class FATSuite {
