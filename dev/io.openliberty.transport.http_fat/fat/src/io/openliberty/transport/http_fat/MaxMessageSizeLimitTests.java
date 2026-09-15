@@ -304,6 +304,8 @@ public class MaxMessageSizeLimitTests {
         server.updateServerConfiguration(configuration);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*FileUpload.*");
 
+        boolean timedOut = false;
+
         try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
             socket.setSoTimeout(5000);
             OutputStream out = socket.getOutputStream();
@@ -333,9 +335,14 @@ public class MaxMessageSizeLimitTests {
             } catch (java.net.SocketTimeoutException expected) {
                 // Liberty accepted the chunk-size and is waiting for the 2 GB body.
                 // Timeout is the expected outcome — the size was not rejected.
+                timedOut = true;
                 LOG.info("[Boundary 2GB] Socket timed out waiting for body — chunk-size was accepted as expected.");
             }
 
+        }
+        if(timedOut) {
+                // The close has occurred, so Liberty can observe EOF and finish the request.
+                server.waitForStringInLogUsingMark("FFDC1015I:.*EOFException.*SRTServletRequest.finish");
         }
     }
 
