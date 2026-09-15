@@ -605,7 +605,8 @@ public class Data_1_1_Servlet extends FATServlet {
      *
      * Applies scaling due to Oracle stripping trailing 0s
      */
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
@@ -2682,7 +2683,8 @@ public class Data_1_1_Servlet extends FATServlet {
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
         // Derby ignores query timeout and the lock timeout ends up applying instead.
         // Hibernate does not honor the query timeout on native queries with DB2.
