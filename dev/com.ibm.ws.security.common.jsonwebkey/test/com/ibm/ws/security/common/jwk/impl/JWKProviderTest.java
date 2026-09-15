@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ public class JWKProviderTest {
 
     private int defaultKeySize = 2048;
     private long defaultRotationTime = 12 * 60 * 60 * 1000;
+    private int defaultMaxKeys = 2;
 
     private final Mockery mockery = new JUnit4Mockery() {
         {
@@ -95,26 +96,37 @@ public class JWKProviderTest {
     @Test
     public void testConstructor() {
         try {
-            JWKProvider provider = new JWKProvider(-1, null, -1);
+            JWKProvider provider = new JWKProvider(-1, null, -1, -1);
             assertEquals("Key size was not the expected length.", defaultKeySize, provider.size);
             assertNull("Algorithm was not null when it should have been. Algorithm was [" + provider.alg + "].", provider.alg);
             assertEquals("Rotation time was not the expected value.", defaultRotationTime, provider.rotationTimeInMilliseconds);
+            assertEquals("Max keys was not the expected value.", defaultMaxKeys, provider.maxKeys);
             // No JWKs should have been generated yet
             assertEquals("Number of generated JWKs was not expected value.", 0, provider.jwks.size());
 
+            provider = new JWKProvider(defaultKeySize, RS256, defaultRotationTime, defaultMaxKeys);
+            assertEquals("Key size was not the expected length.", defaultKeySize, provider.size);
+            assertEquals("Did not get expected algorithm.", RS256, provider.alg);
+            assertEquals("Rotation time was not the expected value.", defaultRotationTime, provider.rotationTimeInMilliseconds);
+            assertEquals("Max keys was not the expected value.", defaultMaxKeys, provider.maxKeys);
+            assertEquals("Number of generated JWKs was not expected value.", 0, provider.jwks.size());
+
+            // Allow 0m rotation time, resulting in keys never rotating
+            provider = new JWKProvider(defaultKeySize, RS256, 0, defaultMaxKeys);
+            assertEquals("Key size was not the expected length.", defaultKeySize, provider.size);
+            assertEquals("Did not get expected algorithm.", RS256, provider.alg);
+            assertEquals("Rotation time was not the expected value.", 0, provider.rotationTimeInMilliseconds);
+            assertEquals("Max keys was not the expected value.", defaultMaxKeys, provider.maxKeys);
+            assertEquals("Number of generated JWKs was not expected value.", 0, provider.jwks.size());
+            assertEquals("Timer was not expected value.", null, provider.timer);
+
+            // Test default maxKeys with 3 argument constructor
             provider = new JWKProvider(defaultKeySize, RS256, defaultRotationTime);
             assertEquals("Key size was not the expected length.", defaultKeySize, provider.size);
             assertEquals("Did not get expected algorithm.", RS256, provider.alg);
             assertEquals("Rotation time was not the expected value.", defaultRotationTime, provider.rotationTimeInMilliseconds);
+            assertEquals("Max keys was not the expected value.", defaultMaxKeys, provider.maxKeys);
             assertEquals("Number of generated JWKs was not expected value.", 0, provider.jwks.size());
-
-            // Allow 0m rotation time, resulting in keys never rotating
-            provider = new JWKProvider(defaultKeySize, RS256, 0);
-            assertEquals("Key size was not the expected length.", defaultKeySize, provider.size);
-            assertEquals("Did not get expected algorithm.", RS256, provider.alg);
-            assertEquals("Rotation time was not the expected value.", 0, provider.rotationTimeInMilliseconds);
-            assertEquals("Number of generated JWKs was not expected value.", 0, provider.jwks.size());
-            assertEquals("Timer was not expected value.", null, provider.timer);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -149,7 +161,7 @@ public class JWKProviderTest {
             assertEquals("JWK's algorithm did not match expected algorithm.", RS256, jwk.getAlgorithm());
             assertNotNull("Public key was null when it should not have been.", jwk.getPublicKey());
             assertNotNull("Private key was null when it should not have been.", jwk.getPrivateKey());
-            assertEquals("Number of generated JWKs was not expected value.", 2, provider.jwks.size());
+            assertEquals("Number of generated JWKs was not expected value.", 1, provider.jwks.size());
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -170,7 +182,7 @@ public class JWKProviderTest {
 
             // Should generate new JWK
             JSONWebKey jwk = provider.getJWK();
-            assertEquals("Number of generated JWKs was not expected value.", 2, provider.jwks.size());
+            assertEquals("Number of generated JWKs was not expected value.", 1, provider.jwks.size());
             PublicKey publicKey = jwk.getPublicKey();
 
             provider.rotateKeys();
@@ -183,6 +195,41 @@ public class JWKProviderTest {
             // Testing equality of public keys should be sufficient to ensure keys are different
             assertFalse("Public keys were equal when they should not have been. Both keys were: " + publicKey, publicKey.toString().equals(newPublicKey.toString()));
 
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method(s) under test:
+     * <ul>
+     * <li>{@link JWKProvider#rotateKeys()}</li>
+     * </ul>
+     */
+    @Test
+    public void testRotateKeys_withMaxKeys() {
+        try {
+            // maxKeys=3, rotation disabled so rotations are driven manually
+            JWKProvider provider = new JWKProvider(defaultKeySize, RS256, 0, 3);
+            provider.getJWK();
+            assertEquals("Number of generated JWKs was not expected value.", 1, provider.jwks.size());
+
+            // Pool grows by 1 per rotation until maxKeys is reached
+            provider.rotateKeys();
+            assertEquals("Number of generated JWKs was not expected value.", 2, provider.jwks.size());
+
+            provider.rotateKeys();
+            assertEquals("Number of generated JWKs was not expected value.", 3, provider.jwks.size());
+
+            // Once at maxKeys, oldest key is evicted and size stays at maxKeys
+            JWK oldestKey = provider.jwks.get(0);
+            provider.rotateKeys();
+            assertEquals("Number of generated JWKs was not expected value.", 3, provider.jwks.size());
+            assertFalse("Oldest key was not evicted when the pool reached max size.", provider.jwks.contains(oldestKey));
+
+            // getJWK should return the newest (last) key in the pool
+            JSONWebKey newestKey = provider.getJWK();
+            assertEquals("Returned JWK was not the newest key in the pool.", provider.jwks.get(provider.jwks.size() - 1), newestKey);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

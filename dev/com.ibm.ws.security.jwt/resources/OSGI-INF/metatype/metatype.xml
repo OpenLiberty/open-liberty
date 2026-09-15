@@ -43,12 +43,13 @@
          <AD id="keyStoreRef" name="%keyStoreRef" description="%keyStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
          <AD id="keyAlias" name="%keyAliasName" description="%keyAliasName.desc" required="false" type="String" />
          <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.builder.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
-         <AD id="jwkRotationTime" name="internal" description="internal use only" required="false" type="String" ibm:type="duration(m)" default="720m" min="60m"/>
+         <AD id="jwkRotationTime" name="%jwkRotationTime" description="%jwkRotationTime.desc" required="false" type="String" ibm:type="duration(m)" default="720m" min="1m" ibm:beta="true" />
          <AD id="jwkSigningKeySize" name="internal" description="internal use only" required="false" type="Long" default="2048">
             <Option label="%jwkSigningKeySize.1024" value="1024"/>
             <Option label="%jwkSigningKeySize.2048" value="2048"/>
             <Option label="%jwkSigningKeySize.4096" value="4096"/>
          </AD>
+         <AD id="jwkMaxKeys" name="%jwkMaxKeys" description="%jwkMaxKeys.desc" required="false" type="Integer" default="2" min="1" max="500" ibm:beta="true" />
          <AD id="nbfOffset" name="%nbfOffset" description="%nbfOffset.desc" required="false" type="String" default="-1" ibm:type="duration(s)"/>
          <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
          <AD id="keyManagementKeyAlgorithm" name="%keyManagementKeyAlgorithm" description="%keyManagementKeyAlgorithm.desc" required="false" type="String" >
