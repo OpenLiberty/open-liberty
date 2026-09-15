@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class TAIMappingHelper {
         config = null;
         //addJwtPrincipalToSubject = true;
         if (jwtToken != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, "upn", "groups", false);
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, "upn", "groups", false, "realm");
             setUsername();
             setRealm();
         }
@@ -66,7 +66,7 @@ public class TAIMappingHelper {
         }
         config = clientConfig;
         if (jwtToken != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry(), config.getRealmIdentifier());
             setUsername();
             setRealm();
         }
@@ -79,8 +79,22 @@ public class TAIMappingHelper {
      *
      */
     private void setRealm() {
-        this.realm = claimToPrincipalMapping.getMappedRealm();
-
+        if (getmaptoURconfig()) {
+            return;
+        }
+        if (config != null) {
+            String configuredRealmName = config.getRealmName();
+            if (configuredRealmName != null && !configuredRealmName.isEmpty()) {
+                this.realm = configuredRealmName;
+            } else {
+                this.realm = claimToPrincipalMapping.getMappedRealm();
+            }
+        } else {
+            this.realm = claimToPrincipalMapping.getMappedRealm();
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "realm name = ", this.realm);
+        }
     }
 
     public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken, boolean addJwtPrincipal) throws MpJwtProcessingException {
@@ -205,6 +219,9 @@ public class TAIMappingHelper {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_USERID, username);
         } else {
             if (realm == null && issuer != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "There is no realm, using issuer as realm");
+                }
                 realm = getRealm(issuer);
             }
             String uniqueID = getUniqueId(realm);
