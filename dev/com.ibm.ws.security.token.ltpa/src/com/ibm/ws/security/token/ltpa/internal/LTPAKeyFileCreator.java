@@ -15,6 +15,7 @@ package com.ibm.ws.security.token.ltpa.internal;
 import java.util.Properties;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
@@ -54,5 +55,19 @@ public interface LTPAKeyFileCreator extends LTPAKeyFileUtility {
      */
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes,
                                          @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception;
+
+    /**
+     * Create the LTPA keys file at the specified location using the supplied
+     * {@link LTPAKeyEncryptor} (AES key path).
+     * <p>
+     * Access the keyFile using the WsLocationAdmin.
+     *
+     * @param locService
+     * @param keyFile
+     * @param encryptor  the encryptor that will protect the generated key material
+     * @return A Properties object containing the various attributes created for the LTPA keys
+     * @throws Exception
+     */
+    public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive LTPAKeyEncryptor encryptor) throws Exception;
 
 }

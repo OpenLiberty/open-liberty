@@ -23,12 +23,13 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,6 +59,7 @@ import com.ibm.ws.crypto.util.custom.CustomUtils;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.crypto.CustomPasswordEncryption;
 import com.ibm.wsspi.security.crypto.EncryptedInfo;
+import com.ibm.wsspi.security.crypto.SecretKeyResolver;
 
 /**
  * Utility class for password enciphering and deciphering.
@@ -69,8 +71,7 @@ import com.ibm.wsspi.security.crypto.EncryptedInfo;
            property = "service.vendor=IBM")
 public class PasswordCipherUtil {
 
-    private static final Class<?> CLASS_NAME = PasswordCipherUtil.class;
-    private final static Logger logger = Logger.getLogger(CLASS_NAME.getCanonicalName(), MessageUtils.RB);
+    private static final Logger logger = Logger.getLogger(PasswordCipherUtil.class.getCanonicalName(), MessageUtils.RB);
 
     private static final String CUSTOM = "custom";
     private static final String CUSTOM_COLON = "custom:";
@@ -84,18 +85,18 @@ public class PasswordCipherUtil {
 
     private static final String[] SUPPORTED_CRYPTO_ALGORITHMS_DEFAULT = new String[] { XOR, AES, AES_128, AES_256, HASH };
     private static final String[] SUPPORTED_CRYPTO_ALGORITHMS_CUSTOM = new String[] { XOR, AES, HASH, CUSTOM };
-    private static String[] SUPPORTED_CRYPTO_ALGORITHMS = SUPPORTED_CRYPTO_ALGORITHMS_DEFAULT;
+    private static volatile String[] SUPPORTED_CRYPTO_ALGORITHMS = SUPPORTED_CRYPTO_ALGORITHMS_DEFAULT;
     private static String[] SUPPORTED_HASH_ALGORITHMS = new String[] { HASH };
 
     static final String KEY_ENCRYPTION_SERVICE = "customPasswordEncryption";
     private static AtomicServiceReference<CustomPasswordEncryption> customPasswordEncryption = new AtomicServiceReference<CustomPasswordEncryption>(KEY_ENCRYPTION_SERVICE);
 
-    private static CustomPasswordEncryption cpeImpl = null;
-    private static List<CustomManifest> cms = null;
+    private static volatile CustomPasswordEncryption cpeImpl = null;
+    private static volatile List<CustomManifest> cms = null;
 
-    private static boolean alreadyLoggedAESWeakPasswordAlgoWarning = false;
-    private static boolean alreadyLoggedHASHWeakPasswordAlgoWarning = false;
-    private static boolean alreadyLoggedAESDefaultKeyWarning = false;
+    private static final AtomicBoolean alreadyLoggedAESWeakPasswordAlgoWarning = new AtomicBoolean(false);
+    private static final AtomicBoolean alreadyLoggedHASHWeakPasswordAlgoWarning = new AtomicBoolean(false);
+    private static final AtomicBoolean alreadyLoggedAESDefaultKeyWarning = new AtomicBoolean(false);
 
     // in order to support the custom encryption for the command line parameter, implement a static initialier to check whether
     // the custom encryption is enabled.
@@ -258,9 +259,16 @@ public class PasswordCipherUtil {
     }
 
     /**
-     * @param encrypted_bytes
-     * @param decrypted_bytes
-     * @return
+     * Dispatches AES decryption to the correct version handler based on the version byte
+     * stored at {@code encrypted_bytes[0]}.
+     * <ul>
+     *   <li>0 — AES-CBC / V0 (AES-128, PBKDF2-HMAC-SHA1)</li>
+     *   <li>1 — AES-GCM / V1 (AES-256, PBKDF2-HMAC-SHA512)</li>
+     *   <li>2 — AES-GCM / V2 (raw AES-256 key or hardware resolver)</li>
+     * </ul>
+     *
+     * @param encrypted_bytes the full encrypted payload including version byte
+     * @return decrypted plaintext bytes
      * @throws InvalidKeySpecException
      * @throws InvalidPasswordCipherException
      * @throws NoSuchAlgorithmException
@@ -270,10 +278,9 @@ public class PasswordCipherUtil {
         if (encrypted_bytes[0] == 0 && CryptoUtils.isFips140_3Enabled()) {
             throw new InvalidPasswordCipherException("FIPS 140-3 cannot use AES-128");
         } else if (encrypted_bytes[0] == 0) {
-            if (!!!alreadyLoggedAESWeakPasswordAlgoWarning) {
+            if (alreadyLoggedAESWeakPasswordAlgoWarning.compareAndSet(false, true)) {
                 logger.logp(Level.WARNING, PasswordUtil.class.getName(), "aesDecipher", "PASSWORDUTIL_WEAK_ALGORITHM_WARNING",
                             new Object[] { "{aes}", ": AES-" + AES_V0.keyLength, ": AES-" + AES_V1.keyLength });
-                alreadyLoggedAESWeakPasswordAlgoWarning = true;
             }
             checkAndLogDefaultKeyWarning(AES_V0);
             return aesDecipherV0(encrypted_bytes);
@@ -293,44 +300,47 @@ public class PasswordCipherUtil {
      * @param version - the AES key version being used
      */
     private static void checkAndLogDefaultKeyWarning(AESKeyManager.KeyVersion version) {
-        if (!!!alreadyLoggedAESDefaultKeyWarning) {
+        if (!alreadyLoggedAESDefaultKeyWarning.get()) {
             char[] keyChars = AESKeyManager.getKeyCharsUsingResolver(version, null);
-            String keyString = new String(keyChars);
-            
-            if (AESKeyManager.PROPERTY_WLP_PASSWORD_ENCRYPTION_KEY.equals(keyString) ) {
-                logger.logp(Level.WARNING, PasswordCipherUtil.class.getName(), "checkAndLogDefaultKeyWarning",
-                            "PASSWORDUTIL_DEFAULT_KEY_WARNING");
-                alreadyLoggedAESDefaultKeyWarning = true;
+            if (Arrays.equals(keyChars, AESKeyManager.PROPERTY_WLP_PASSWORD_ENCRYPTION_KEY.toCharArray())) {
+                if (alreadyLoggedAESDefaultKeyWarning.compareAndSet(false, true)) {
+                    logger.logp(Level.WARNING, PasswordCipherUtil.class.getName(), "checkAndLogDefaultKeyWarning",
+                                "PASSWORDUTIL_DEFAULT_KEY_WARNING");
+                }
             }
         }
     }
 
     private static byte[] aesDecipherV0(byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_CBC_CIPHER, AES_V0, AESKeyManager.getIV(AES_V0, null), encrypted_bytes, 1, encrypted_bytes.length - 1);
-
+        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_CBC_CIPHER, AESKeyManager.getResolverFor(AES_V0),
+                                             AESKeyManager.getIV(AES_V0, null), encrypted_bytes, 1, encrypted_bytes.length - 1);
         return removeSeed(decrypted);
     }
 
     private static byte[] aesDecipherV1(byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
         int ivLen = encrypted_bytes[1];
         int cipherBytesStart = ivLen + 2;
-
         GCMParameterSpec iv = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, encrypted_bytes, 2, ivLen);
-
-        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_GCM_CIPHER, AESKeyManager.KeyVersion.AES_V1, iv, encrypted_bytes, cipherBytesStart,
+        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_GCM_CIPHER, AESKeyManager.getResolverFor(AES_V1), iv, encrypted_bytes, cipherBytesStart,
                                              encrypted_bytes.length - cipherBytesStart);
-
         return removeSeed(decrypted);
-
     }
 
-    private static byte[] aesDecipherCommon(String cipher, AESKeyManager.KeyVersion kv, AlgorithmParameterSpec ps, byte[] cipherText, int start,
+    private static byte[] aesDecipherCommon(String cipher, SecretKeyResolver resolver,
+                                            AlgorithmParameterSpec ps, byte[] cipherText, int start,
                                             int len) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
+        Key key = resolver.getKey();
+        return aesDecipherCommon(cipher, key, ps, cipherText, start, len);
+    }
+
+    private static byte[] aesDecipherCommon(String cipher, Key key, AlgorithmParameterSpec ps, byte[] cipherText, int start,
+                                            int len) throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
         try {
-            Key key = AESKeyManager.getKey(kv, null);
             Cipher c = Cipher.getInstance(cipher);
             c.init(Cipher.DECRYPT_MODE, key, ps);
             return c.doFinal(cipherText, start, len);
+        } catch (NoSuchAlgorithmException e) {
+            throw (UnsupportedCryptoAlgorithmException) new UnsupportedCryptoAlgorithmException().initCause(e);
         } catch (NoSuchPaddingException e) {
             throw (UnsupportedCryptoAlgorithmException) new UnsupportedCryptoAlgorithmException().initCause(e);
         } catch (InvalidKeyException e) {
@@ -355,7 +365,7 @@ public class PasswordCipherUtil {
      */
     public static byte[] encipher(byte[] decrypted_bytes,
                                   String crypto_algorithm) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        EncryptedInfo info = encipher_internal(decrypted_bytes, crypto_algorithm, (String) null); // TODO check null
+        EncryptedInfo info = encipher_internal(decrypted_bytes, crypto_algorithm, (String) null);
         return info.getEncryptedBytes();
     }
 
@@ -385,22 +395,32 @@ public class PasswordCipherUtil {
                 cryptoKey = properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
                 base64Key = properties.get(PasswordUtil.PROPERTY_AES_KEY);
             }
+            final AESKeyManager.KeyVersion encipherVersion;
+            final SecretKeyResolver encipherResolver;
             if (base64Key != null) {
                 if (logger.isLoggable(Level.FINE))
                     logger.fine("Encrypting password using " + PasswordUtil.PROPERTY_AES_KEY);
-                info = aesEncipherV2(decrypted_bytes, base64Key);
+                encipherVersion = AESKeyManager.KeyVersion.AES_V2;
+                encipherResolver = AESKeyManager.resolverForKey(AESKeyManager.KeyVersion.AES_V2, base64Key);
+            } else if (AESKeyManager.hasCustomSecretKeyResolver()) {
+                if (logger.isLoggable(Level.FINE))
+                    logger.fine("Encrypting password using hardware SecretKeyResolver (AES_V2)");
+                encipherVersion = AESKeyManager.KeyVersion.AES_V2;
+                encipherResolver = AESKeyManager.getResolverFor(AESKeyManager.KeyVersion.AES_V2);
             } else {
                 if (logger.isLoggable(Level.FINE))
                     logger.fine("Encrypting password using " + PasswordUtil.PROPERTY_CRYPTO_KEY);
-                info = aesEncipherV1(decrypted_bytes, cryptoKey);
+                encipherVersion = AESKeyManager.KeyVersion.AES_V1;
+                encipherResolver = AESKeyManager.resolverForKey(AESKeyManager.KeyVersion.AES_V1, cryptoKey);
             }
+            info = aesEncipherCommon(decrypted_bytes, encipherVersion, encipherResolver);
 
         } else if (AES_128.equalsIgnoreCase(crypto_algorithm)) {
             String cryptoKey = null;
             if (properties != null) {
                 cryptoKey = properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
             }
-            info = aesEncipherV0(decrypted_bytes, cryptoKey, info, encrypted_bytes);
+            info = aesEncipherV0(decrypted_bytes, cryptoKey);
         } else if (XOR.equalsIgnoreCase(crypto_algorithm)) {
             encrypted_bytes = xor(decrypted_bytes);
             if (encrypted_bytes != null)
@@ -442,10 +462,13 @@ public class PasswordCipherUtil {
     }
 
     /**
-     * @param decrypted_bytes
-     * @param properties
-     * @return
-     * @throws InvalidPasswordCipherException
+     * Generates a hashed representation of the given plaintext password bytes.
+     *
+     * @param plainBytes the plaintext password as a char array
+     * @param properties optional hash parameters (algorithm, salt, iteration count, output length)
+     * @return an {@link EncryptedInfo} wrapping the serialised {@link HashedData} bytes,
+     *         or {@code null} if FIPS 140-3 is enabled and an incompatible algorithm is selected
+     * @throws InvalidPasswordCipherException if hashing fails or the algorithm is unavailable
      */
     private static EncryptedInfo generateHash(char[] plainBytes, Map<String, String> properties) throws InvalidPasswordCipherException {
         EncryptedInfo info = null;
@@ -525,10 +548,9 @@ public class PasswordCipherUtil {
             return null;
         }
         //Print warning if older algorithm is being used.
-        else if (!!!alreadyLoggedHASHWeakPasswordAlgoWarning && usingSHA1) {
+        else if (usingSHA1 && alreadyLoggedHASHWeakPasswordAlgoWarning.compareAndSet(false, true)) {
             logger.logp(Level.WARNING, PasswordUtil.class.getName(), "generateHash", "PASSWORDUTIL_WEAK_ALGORITHM_WARNING",
                         new Object[] { "{hash}", ": " + algorithm, ": " + PasswordHashGenerator.LATEST_DEFAULT_ALGORITHM });
-            alreadyLoggedHASHWeakPasswordAlgoWarning = true;
         }
 
         try {
@@ -547,31 +569,30 @@ public class PasswordCipherUtil {
     }
 
     /**
-     * @param decrypted_bytes
-     * @param cryptoKey
-     * @param info
-     * @param encrypted_bytes
-     * @return
+     * Enciphers the given plaintext using AES-128 / CBC (V0 wire format).
+     * This is the legacy path, preserved for backward compatibility with existing
+     * passwords encrypted under the {@code {aes-128}} tag.
+     *
+     * @param decrypted_bytes the plaintext password bytes
+     * @param cryptoKey       the key string, or {@code null} to use the configured property
+     * @return an {@link EncryptedInfo} wrapping the V0 wire format bytes
      * @throws InvalidKeySpecException
      * @throws InvalidPasswordCipherException
      * @throws NoSuchAlgorithmException
      * @throws UnsupportedCryptoAlgorithmException
-     *
      */
-    private static EncryptedInfo aesEncipherV0(byte[] decrypted_bytes, String cryptoKey, EncryptedInfo info,
-                                               byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        SecureRandom rand = new SecureRandom();
-        byte[] preEncrypted = aesSetSeed(decrypted_bytes, rand);
+    private static EncryptedInfo aesEncipherV0(byte[] decrypted_bytes, String cryptoKey) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
+        byte[] preEncrypted = aesSetSeed(decrypted_bytes);
+        Key encKey = AESKeyManager.getKey(AES_V0, cryptoKey);
         try {
             Cipher c = Cipher.getInstance(CryptoUtils.AES_CBC_CIPHER);
-            c.init(Cipher.ENCRYPT_MODE, AESKeyManager.getKey(cryptoKey), AESKeyManager.getIV(cryptoKey));
-            encrypted_bytes = c.doFinal(preEncrypted);
-            if (encrypted_bytes != null) {
-                byte[] updatedBytes = new byte[encrypted_bytes.length + 1];
-                updatedBytes[0] = 0; // indicates how we encoded so later on we can decode
-                System.arraycopy(encrypted_bytes, 0, updatedBytes, 1, encrypted_bytes.length);
-                info = new EncryptedInfo(updatedBytes, "");
-            }
+            c.init(Cipher.ENCRYPT_MODE, encKey, AESKeyManager.getIV(AES_V0, cryptoKey));
+            // Cipher.doFinal never returns null; failures throw exceptions
+            byte[] encrypted_bytes = c.doFinal(preEncrypted);
+            byte[] updatedBytes = new byte[encrypted_bytes.length + 1];
+            updatedBytes[0] = 0; // indicates how we encoded so later on we can decode
+            System.arraycopy(encrypted_bytes, 0, updatedBytes, 1, encrypted_bytes.length);
+            return new EncryptedInfo(updatedBytes, "");
         } catch (NoSuchAlgorithmException e) {
             throw (UnsupportedCryptoAlgorithmException) new UnsupportedCryptoAlgorithmException().initCause(e);
         } catch (NoSuchPaddingException e) {
@@ -585,45 +606,6 @@ public class PasswordCipherUtil {
         } catch (InvalidAlgorithmParameterException e) {
             throw (InvalidPasswordCipherException) new InvalidPasswordCipherException().initCause(e);
         }
-        return info;
-    }
-
-    /**
-     * This method takes some plain text bytes and encodes it into a byte array using the provided
-     * cryptoKey. If null is provided a default crypto key is used by looking up the value as a
-     * variable and using what is returned.
-     *
-     * <p>The first byte of the encrypted data indicates the version of the encrypted payload, this is so in the future AES encryption can be
-     * updated to improve security while continuing to decode previously encrypted passwords. A number of 0 means the encoding key that was
-     * used to encode it was generated using PBKDF2withHmacSHA1 with a 128 bit AES key length, 1 means it was generated with PBKDF2withHmacSHA256 with a 256 bit AES key length. The
-     * remaining data is
-     * the encrypted payload.
-     * </p>
-     *
-     * <p>The encrypted payload is generated by encrypting the following data:
-     *
-     * <ol>
-     * <li>byte: len of the seed<li>
-     * <li>byte array: the seed bytes<li>
-     * <li>byte array: the plain text bytes<li>
-     * </ol>
-     *
-     * <p>This allows the salt size to be increased without changing the version of the encrypted format.</p>
-     *
-     *
-     * @param decrypted_bytes
-     * @param cryptoKey
-     * @param info
-     * @param encrypted_bytes
-     * @return
-     * @throws InvalidKeySpecException
-     * @throws InvalidPasswordCipherException
-     * @throws NoSuchAlgorithmException
-     * @throws UnsupportedCryptoAlgorithmException
-     */
-    private static EncryptedInfo aesEncipherV1(byte[] decrypted_bytes,
-                                               String cryptoKey) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        return aesEncipherCommon(decrypted_bytes, cryptoKey, AESKeyManager.KeyVersion.AES_V1);
     }
 
     /**
@@ -667,14 +649,7 @@ public class PasswordCipherUtil {
     }
 
     private static String formatSupportedCryptoAlgorithms() {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < SUPPORTED_CRYPTO_ALGORITHMS.length; i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(SUPPORTED_CRYPTO_ALGORITHMS[i]);
-        }
-        return sb.toString();
+        return String.join(", ", SUPPORTED_CRYPTO_ALGORITHMS);
     }
 
     private static CustomPasswordEncryption getCustomImpl() {
@@ -686,35 +661,28 @@ public class PasswordCipherUtil {
     }
 
     private static String composeMultipleCustomErrorMessage(List<CustomManifest> list) {
-        StringBuffer sb = new StringBuffer(MessageUtils.getMessage("PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION"));
+        StringBuilder sb = new StringBuilder(MessageUtils.getMessage("PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION"));
         for (CustomManifest cm : list) {
             sb.append("\n").append(cm.getLocation());
         }
         return sb.toString();
     }
 
-    private static EncryptedInfo aesEncipherV2(byte[] decrypted_bytes,
-                                               String base64Key) throws InvalidKeySpecException, UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
-
-        return aesEncipherCommon(decrypted_bytes, base64Key, AESKeyManager.KeyVersion.AES_V2);
-    }
-
     private static byte[] aesDecipherV2(byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-
         int ivLen = encrypted_bytes[1];
         int cipherBytesStart = ivLen + 2;
         GCMParameterSpec iv = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, encrypted_bytes, 2, ivLen);
-        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_GCM_CIPHER, AESKeyManager.KeyVersion.AES_V2, iv, encrypted_bytes, cipherBytesStart,
-                                             encrypted_bytes.length - cipherBytesStart);
+        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_GCM_CIPHER,
+                                             AESKeyManager.getResolverFor(AESKeyManager.KeyVersion.AES_V2),
+                                             iv, encrypted_bytes, cipherBytesStart, encrypted_bytes.length - cipherBytesStart);
         return removeSeed(decrypted);
     }
 
     /**
      * @param decrypted_bytes
-     * @param rand
      * @return
      */
-    private static byte[] aesSetSeed(byte[] decrypted_bytes, SecureRandom rand) {
+    private static byte[] aesSetSeed(byte[] decrypted_bytes) {
 
         byte seedSize = 64;
         byte[] seed = CryptoUtils.generateRandomBytes(seedSize);
@@ -726,37 +694,54 @@ public class PasswordCipherUtil {
     }
 
     private static byte[] removeSeed(byte[] decrypted) {
-        byte[] decrypted_bytes = null;
-        if (decrypted != null) {
-            decrypted_bytes = new byte[decrypted.length - decrypted[0] - 1];
-            System.arraycopy(decrypted, decrypted[0] + 1, decrypted_bytes, 0, decrypted_bytes.length);
+        if (decrypted == null) {
+            return null;
         }
+        int seedSize = decrypted[0];
+        byte[] decrypted_bytes = new byte[decrypted.length - seedSize - 1];
+        System.arraycopy(decrypted, seedSize + 1, decrypted_bytes, 0, decrypted_bytes.length);
         return decrypted_bytes;
     }
 
+    /**
+     * Common AES-GCM encipher path for V1 and V2. Encrypts {@code decrypted_bytes} using the
+     * supplied resolver to obtain the key, prepends a random seed, and serialises the result
+     * in the wire format: {@code [version byte][IV length byte][IV bytes][ciphertext]}.
+     *
+     * <p>The version byte encodes how the key was derived:
+     * <ul>
+     *   <li>1 — PBKDF2withHmacSHA512, AES-256 ({@link AESKeyManager.KeyVersion#AES_V1})</li>
+     *   <li>2 — raw AES-256 key or hardware resolver ({@link AESKeyManager.KeyVersion#AES_V2})</li>
+     * </ul>
+     *
+     * <p>The plaintext payload layout (before encryption):
+     * <ol>
+     *   <li>byte: seed length</li>
+     *   <li>byte[]: seed bytes (random, 64 bytes)</li>
+     *   <li>byte[]: original plaintext bytes</li>
+     * </ol>
+     */
     private static EncryptedInfo aesEncipherCommon(byte[] decrypted_bytes,
-                                                   String key,
-                                                   AESKeyManager.KeyVersion version) throws InvalidKeySpecException, UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
-        EncryptedInfo info = null;
-        SecureRandom rand = new SecureRandom();
-        byte[] preEncrypted = aesSetSeed(decrypted_bytes, rand);
+                                                   AESKeyManager.KeyVersion version,
+                                                   SecretKeyResolver resolver) throws InvalidKeySpecException, UnsupportedCryptoAlgorithmException, InvalidPasswordCipherException {
+        byte[] preEncrypted = aesSetSeed(decrypted_bytes);
         try {
             Cipher c = Cipher.getInstance(CryptoUtils.AES_GCM_CIPHER);
             // 128 is the GCM tag length. 128 is the MAX.
-            GCMParameterSpec ps = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, rand.generateSeed(c.getBlockSize()));
-            c.init(Cipher.ENCRYPT_MODE, AESKeyManager.getKey(version, key), ps);
+            // Use CryptoUtils.generateRandomBytes to avoid UnsupportedOperationException on hardware crypto providers (e.g. IBMJCECCA) that do not implement generateSeed.
+            GCMParameterSpec ps = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, CryptoUtils.generateRandomBytes(c.getBlockSize()));
+            Key resolvedKey = resolver.getKey();
+            c.init(Cipher.ENCRYPT_MODE, resolvedKey, ps);
+            // Cipher.doFinal never returns null; failures throw exceptions
             byte[] encrypted_bytes = c.doFinal(preEncrypted);
-            if (encrypted_bytes != null) {
-                byte[] ivBytes = ps.getIV();
-                byte[] updatedBytes = new byte[ivBytes.length + encrypted_bytes.length + 2];
-                int ver = (version == AESKeyManager.KeyVersion.AES_V1) ? 1 : 2;
-                updatedBytes[0] = (byte) ver; // indicates how we encoded so later on we can decode
-                updatedBytes[1] = (byte) ivBytes.length;
-
-                System.arraycopy(ivBytes, 0, updatedBytes, 2, ivBytes.length);
-                System.arraycopy(encrypted_bytes, 0, updatedBytes, ivBytes.length + 2, encrypted_bytes.length);
-                info = new EncryptedInfo(updatedBytes, "");
-            }
+            byte[] ivBytes = ps.getIV();
+            byte[] updatedBytes = new byte[ivBytes.length + encrypted_bytes.length + 2];
+            int ver = (version == AESKeyManager.KeyVersion.AES_V1) ? 1 : 2;
+            updatedBytes[0] = (byte) ver; // indicates how we encoded so later on we can decode
+            updatedBytes[1] = (byte) ivBytes.length;
+            System.arraycopy(ivBytes, 0, updatedBytes, 2, ivBytes.length);
+            System.arraycopy(encrypted_bytes, 0, updatedBytes, ivBytes.length + 2, encrypted_bytes.length);
+            return new EncryptedInfo(updatedBytes, "");
         } catch (NoSuchAlgorithmException e) {
             throw (UnsupportedCryptoAlgorithmException) new UnsupportedCryptoAlgorithmException().initCause(e);
         } catch (NoSuchPaddingException e) {
@@ -770,6 +755,5 @@ public class PasswordCipherUtil {
         } catch (InvalidAlgorithmParameterException e) {
             throw (InvalidPasswordCipherException) new InvalidPasswordCipherException().initCause(e);
         }
-        return info;
     }
 }
