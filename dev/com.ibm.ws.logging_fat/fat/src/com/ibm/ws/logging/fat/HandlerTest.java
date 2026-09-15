@@ -546,8 +546,8 @@ public class HandlerTest {
         Log.info(c, testName, "Inside Test method : " + testName);
 
         // ***** Wait for Server to completely start
-        assertTrue("SSL channel not ready",
-                   traceServer.waitForStringInLog("CWWKO0219I:") != null);
+        assertNotNull("SSL channel not ready",
+                      traceServer.waitForDefaultHTTPEndpointSSLStart());
         assertTrue("TraceSourceHandlerServer NOT completely started",
                    traceServer.waitForStringInLog("CWWKF0011I:") != null); // wait for TraceSourceHandlerServer to be ready
 
