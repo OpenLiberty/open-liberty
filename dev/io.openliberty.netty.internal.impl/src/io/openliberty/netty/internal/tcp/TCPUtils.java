@@ -25,6 +25,7 @@ import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -104,7 +105,7 @@ public class TCPUtils {
 
     private static ChannelFuture open(NettyFrameworkImpl framework, final Channel channel,
                                       final TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener,
-                                      final int retryCount) {
+                                      final int retryCount, final boolean reuseAddrRetry) {
         if (!channel.isOpen()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Channel not started because it was closed: " + channel);
@@ -116,6 +117,15 @@ public class TCPUtils {
             inetHost = NettyConstants.INADDR_ANY;
         }
         if (config.isInbound()) {
+            // Bind with SO_REUSEADDR=false first so the OS rejects a conflicting
+            // bind (e.g. a specific-host:port when a wildcard:port is already
+            // listening).  This mirrors CHFW's TCPPort.finishInitServerSocket()
+            // which calls attemptSocketBind(addr, false) and only sets
+            // reuseAddress=true after a successful bind.
+            // On the TIME_WAIT retry (reuseAddrRetry=true) keep SO_REUSEADDR=true.
+            if (!reuseAddrRetry) {
+                channel.config().setOption(ChannelOption.SO_REUSEADDR, false);
+            }
             oFuture = channel.bind(new InetSocketAddress(inetHost, inetPort));
         } else {
             oFuture = channel.connect(new InetSocketAddress(inetHost, inetPort));
@@ -152,6 +162,9 @@ public class TCPUtils {
                     framework.stop(channel);
                 });
                 if (config.isInbound()) {
+                    // Restore SO_REUSEADDR=true after a successful bind to allow
+                    // graceful restart (TIME_WAIT reuse), matching CHFW behavior.
+                    channel.config().setOption(ChannelOption.SO_REUSEADDR, true);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Adding new channel group for " + channel);
                     }
@@ -202,6 +215,30 @@ public class TCPUtils {
                              "open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
                 }
 
+                // If the framework itself already owns an active channel on this port
+                // (e.g. during a config update where the old channel has not yet been
+                // released), this is a transient self-conflict — not a user-visible error.
+                // Retry silently at debug level; the old channel will release shortly.
+                if (config.isInbound() && future.cause() instanceof java.net.BindException
+                    && !reuseAddrRetry && frameworkOwnsPort(framework, inetPort)) {
+
+                    Tr.debug(tc, "Bind failed for " + config.getExternalName() + " on port " + inetPort
+                                     + " because this framework already owns that port (config update in progress)."
+                                     + " retryCount=" + retryCount + ". Retrying silently.");
+
+                    if (retryCount > 0 && channel.isOpen()) {
+                        try {
+                            Thread.sleep(timeBetweenRetriesMsec);
+                        } catch (InterruptedException x) {
+                            Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
+                        }
+                        open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, false);
+                    }
+                    // retryCount == 0 and self-conflict: silently give up, the chain
+                    // restart will be re-triggered by the config update machinery.
+                    return;
+                }
+
                 if (retryCount > 0) {
                     if (!channel.isOpen()) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -209,12 +246,38 @@ public class TCPUtils {
                         }
                         return;
                     }
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        // config.getPortOpenRetries() + 1 because the initial bind failed, now trying
-                        // config.getPortOpenRetries() additional times.
-                        Tr.debug(tc, "attempt " + retryCount + " of " + (config.getPortOpenRetries() + 1)
-                                     + " failed to open the port, will try again after wait interval");
+                    // On the very first bind failure, probe the port to distinguish a real
+                    // conflict from a TIME_WAIT remnant.  If it is TIME_WAIT only, retry
+                    // immediately with SO_REUSEADDR=true rather than burning through all
+                    // retries waiting for the OS TIME_WAIT period to expire.
+                    if (config.isInbound() && future.cause() instanceof java.net.BindException
+                        && !reuseAddrRetry && retryCount == config.getPortOpenRetries()) {
+                        String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
+                        InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
+                        if (!probeAddr.isUnresolved()) {
+                            try (java.net.Socket probe = new java.net.Socket()) {
+                                probe.connect(probeAddr, 1000);
+                                // Connection succeeded — someone is actively listening, not TIME_WAIT.
+                                // Fall through to the normal retry countdown below.
+                                Tr.debug(tc, "Probe connect to " + probeAddr + " succeeded: real port conflict, will retry normally for " + config.getExternalName());
+
+                            } catch (java.io.IOException probeEx) {
+                                // Connection refused — TIME_WAIT only, retry immediately with SO_REUSEADDR=true.
+                                Tr.debug(tc, "Probe connect to " + probeAddr + " failed (" + probeEx.getMessage()
+                                         + "): TIME_WAIT only, retrying bind with SO_REUSEADDR=true for " + config.getExternalName());
+
+                                channel.config().setOption(ChannelOption.SO_REUSEADDR, true);
+                                open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, true);
+                                return;
+                            }
+                        }
                     }
+
+                    // config.getPortOpenRetries() + 1 because the initial bind failed, now trying
+                    // config.getPortOpenRetries() additional times.
+                    Tr.debug(tc, "attempt " + retryCount + " of " + (config.getPortOpenRetries() + 1)
+                             + " failed to open the port, will try again after wait interval");
+
                     // recurse until we either complete successfully or run out of retries;
                     try {
                         Thread.sleep(timeBetweenRetriesMsec);
@@ -224,7 +287,7 @@ public class TCPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1);
+                    open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, false);
                 } else {
                     if (!channel.isOpen()) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -248,6 +311,37 @@ public class TCPUtils {
                         // Log the specific error message
                         Tr.error(tc, TCPMessageConstants.LOCAL_HOST_UNRESOLVED,
                                  new Object[] { config.getExternalName(), newHost, String.valueOf(inetPort) });
+                    } else if (config.isInbound() && future.cause() instanceof java.net.BindException
+                               && !reuseAddrRetry) {
+                        // portOpenRetries == 0: no retries were configured so the first-failure
+                        // probe in the retryCount > 0 branch never ran.  Probe now to distinguish
+                        // TIME_WAIT from a real conflict before giving up.
+                        String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
+                        InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
+                        if (!probeAddr.isUnresolved()) {
+                            try (java.net.Socket probe = new java.net.Socket()) {
+                                probe.connect(probeAddr, 1000);
+                                // Connection succeeded — real conflict, log the error.
+                                Tr.debug(tc, "Probe connect to " + probeAddr + " succeeded: real port conflict for " + config.getExternalName());
+
+                                Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+                                                                                            String.valueOf(inetPort), openFuture.cause().getMessage() });
+                            } catch (java.io.IOException probeEx) {
+                                // Connection refused — TIME_WAIT only, retry with SO_REUSEADDR=true.
+                                Tr.debug(tc, "Probe connect to " + probeAddr + " failed (" + probeEx.getMessage()
+                                                 + "): TIME_WAIT only, retrying bind with SO_REUSEADDR=true for " + config.getExternalName());
+
+                                channel.config().setOption(ChannelOption.SO_REUSEADDR, true);
+                                open(framework, channel, config, newHost, inetPort, openListener, 0, true);
+                                return;
+                            }
+                        } else {
+                            // Unresolvable probe address — treat conservatively as a real conflict.
+                            Tr.debug(tc, "Probe address " + probeAddr + " is unresolved, treating as real conflict for " + config.getExternalName());
+
+                            Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+                                                                                        String.valueOf(inetPort), openFuture.cause().getMessage() });
+                        }
                     } else {
                         if (config.isInbound()) {
                             Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
@@ -318,13 +412,13 @@ public class TCPUtils {
                         Tr.debug(tc, "Found waitToAccept enabled, channel will be bound even if the server is not completely started.");
                     }
                     open(framework, channel, config, inetHost, inetPort, openListener,
-                        config.getPortOpenRetries());
+                        config.getPortOpenRetries(), false);
                 } else {
                     framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                         @Override
                         public ChannelFuture call() {
                             return open(framework, channel, config, inetHost, inetPort, openListener,
-                                        config.getPortOpenRetries());
+                                        config.getPortOpenRetries(), false);
                         }
                     });
                 }
@@ -431,6 +525,26 @@ public class TCPUtils {
             Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
                      new Object[] { channelName, host, String.valueOf(port) });
         }
+    }
+
+    /**
+     * Returns true if the framework already has an active inbound channel listening
+     * on the given port.  When true, a probe connect to localhost would succeed
+     * because we ourselves are listening — not an external conflict — so the probe
+     * result cannot be used to distinguish TIME_WAIT from a real conflict.
+     */
+    private static boolean frameworkOwnsPort(NettyFrameworkImpl framework, int port) {
+        synchronized (framework.getActiveChannelsMap()) {
+            for (Channel activeChannel : framework.getActiveChannelsMap().keySet()) {
+                java.net.SocketAddress localAddr = activeChannel.localAddress();
+                if (localAddr instanceof java.net.InetSocketAddress) {
+                    if (((java.net.InetSocketAddress) localAddr).getPort() == port) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }
