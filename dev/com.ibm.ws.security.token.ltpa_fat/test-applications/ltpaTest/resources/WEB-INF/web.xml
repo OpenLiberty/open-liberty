@@ -22,7 +22,7 @@
     <load-on-startup></load-on-startup>
   </servlet>
 
-  <!-- SERVLET MAPPINGS -->        
+  <!-- SERVLET MAPPINGS -->
   <servlet-mapping id="ServletMapping_Default">
     <servlet-name>LTPATestServlet</servlet-name>
     <url-pattern>/*</url-pattern>
@@ -31,4 +31,27 @@
     <servlet-name>TokenAPIServlet</servlet-name>
     <url-pattern>/TokenAPIServlet/*</url-pattern>
   </servlet-mapping>
+
+  <!-- SECURITY: protect /LTPATestServlet/* so that SSO requests with an expired
+       or inactive token receive 401 instead of being served anonymously.
+       The root path (GET /ltpaTest/) stays unprotected for FATTest.assertTokenCanBeCreated(). -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>LTPATestServlet</web-resource-name>
+      <url-pattern>/LTPATestServlet/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>AllAuthenticated</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- LOGIN CONFIGURATION -->
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>BasicRealm</realm-name>
+  </login-config>
+
+  <security-role>
+    <role-name>AllAuthenticated</role-name>
+  </security-role>
 </web-app>
