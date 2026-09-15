@@ -24,6 +24,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -54,7 +55,8 @@ public class JULLogServletTest {
                     .withCopyFileToContainer(MountableFile.forHostPath(new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml").toPath()),
                                              "/etc/otelcol-contrib/config.yaml")
                     .withLogConsumer(new SimpleLogConsumer(JULLogServletTest.class, "opentelemetry-collector-contrib"))
-                    .withExposedPorts(4317, 4318);
+                    .withExposedPorts(4317, 4318)
+                    .waitingFor(Wait.forLogMessage(".*Everything is ready.*", 1));
 
     @BeforeClass
     public static void beforeClass() throws Exception {

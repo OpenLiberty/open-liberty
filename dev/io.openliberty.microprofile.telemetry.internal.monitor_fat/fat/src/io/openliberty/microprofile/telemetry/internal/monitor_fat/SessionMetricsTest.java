@@ -22,6 +22,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -52,7 +53,8 @@ public class SessionMetricsTest extends BaseTestClass {
    .withCopyFileToContainer(MountableFile.forHostPath(new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml").toPath()),
     	"/etc/otelcol-contrib/config.yaml")
    .withLogConsumer(new SimpleLogConsumer(SessionMetricsTest.class, "opentelemetry-collector-contrib"))
-   .withExposedPorts(8888, 8889, 4317);
+   .withExposedPorts(8888, 8889, 4317)
+   .waitingFor(Wait.forLogMessage(".*Everything is ready.*", 1));
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
