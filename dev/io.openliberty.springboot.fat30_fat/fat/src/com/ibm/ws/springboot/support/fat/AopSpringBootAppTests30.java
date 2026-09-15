@@ -23,7 +23,8 @@ import componenttest.custom.junit.runner.FATRunner;
 public class AopSpringBootAppTests30 extends AopAbstractTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("servlet-6.0", "springBoot-3.0"));
+        String servletVersion = testName.getMethodName().contains("Servlet61") ? "servlet-6.1" : "servlet-6.0";
+        return new HashSet<>(Arrays.asList(servletVersion, "springBoot-3.0"));
     }
 
     @Override
@@ -32,7 +33,14 @@ public class AopSpringBootAppTests30 extends AopAbstractTests {
     }
 
     @Test
-    public void testAopSpringBootApplication() throws Exception {
+    public void testAopSpringBootApplicationServlet60() throws Exception {
+        testAop();
+    }
+
+    // The SRVE8046E NullPointerException on AsyncContext dispatch is expected when running with servlet-6.1.
+    // See https://github.com/OpenLiberty/open-liberty/issues/35666
+    @Test
+    public void testAopSpringBootApplicationServlet61() throws Exception {
         testAop();
     }
 }
