@@ -47,13 +47,7 @@ IBM-API-Package: \
  org.hibernate.stat; type="third-party", \
  org.hibernate.tool.schema; type="third-party", \
  org.hibernate.type; type="third-party", \
- org.hibernate.type.spi; type="third-party", \
- net.bytebuddy; type="third-party", \
- net.bytebuddy.description; type="third-party", \
- net.bytebuddy.dynamic; type="third-party", \
- net.bytebuddy.implementation; type="third-party", \
- net.bytebuddy.matcher; type="third-party", \
- org.jboss.logging; type="third-party"
+ org.hibernate.type.spi; type="third-party"
 IBM-ShortName: persistence-4.0
 WLP-AlsoKnownAs: jpa-4.0
 Subsystem-Name: Jakarta Persistence 4.0
@@ -63,7 +57,9 @@ Subsystem-Name: Jakarta Persistence 4.0
   io.openliberty.jsonp-2.2, \
   com.ibm.websphere.appserver.transaction-2.1
 -bundles=io.openliberty.persistence.4.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.hibernate.orm:hibernate-core:8.0.0.Beta1", \
- com.ibm.ws.jpa.container.hibernate
+ com.ibm.ws.jpa.container.hibernate, \
+ io.openliberty.org.jboss.logging36, \
+ io.openliberty.io.smallrye.jandex3
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
