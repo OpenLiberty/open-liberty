@@ -174,6 +174,13 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         }
     }
 
+    @Modified
+    protected synchronized void modified(Map<String, Object> config) {
+        // Log warning that dynamic Netty configuration changes are not supported
+        // If netty element is exposed, use "netty.dynamic.config.not.supported" from ChannelfwMessages.nlsprops
+        Tr.warning(tc, "Dynamic configuration changes to the Netty framework are not supported. Changes to scalerMinThreads, scalerMaxThreads, scalerWindowSize, scalerDownThreshold, scalerUpThreshold, scalerDownStep, scalerUpStep, scalerCycles, scalerMetricsWindowSize, useNativeIO, and other options will not take effect until the server is restarted.");
+    }
+
     /**
      * Creates a Netty Dynamic Autoscaler based off the values in the passed config map.
      *
@@ -329,7 +336,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     /*
      * Used for share config between legacy channel framework and the netty framework.
      */
-    @Reference(service = ChannelFrameworkConfig.class, cardinality = ReferenceCardinality.MANDATORY)
+    @Reference(service = ChannelFrameworkConfig.class, cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, updated = "updatedChannelFWConfig", unbind = "unsetChannelFWConfig")
     protected void setChannelFWConfig(ChannelFrameworkConfig config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Updating ChannelFrameworkConfig: " + config);
@@ -339,6 +346,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     protected void updatedChannelFWConfig(ChannelFrameworkConfig config) {
         this.channelConfig = config;
+    }
+
+    protected void unsetChannelFWConfig(ChannelFrameworkConfig config) {
+        this.channelConfig = null;
     }
 
     public ChannelFrameworkConfig getChannelFWConfig() {
@@ -634,8 +645,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     chan.pipeline().addFirst(new QuiesceHandler(quiesce));
                 }
             } else {
+                 // If netty element is exposed, use "netty.quiesce.channel.not.endpoint" from ChannelfwMessages.nlsprops
                 if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+                    Tr.warning(tc, "An attempt was made to add a quiesce task to a channel that is not a registered endpoint. The quiesce task will not be added and will be ignored.");
                 }
             }
         }
