@@ -207,7 +207,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         // 8192 is used instead 4096 of for the maxInitialLineLength to avoid io.netty.handler.codec.http.TooLongHttpLineException 
         // Needed to pass JWT tests with long tokens
-        HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        HttpServerCodec sourceCodec = new HttpServerCodec(httpConfig.getLimitOfFieldSize(), httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
         pipeline.addLast(CRLFValidationHandler.NAME, CRLFValidationHandler.INSTANCE);
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
