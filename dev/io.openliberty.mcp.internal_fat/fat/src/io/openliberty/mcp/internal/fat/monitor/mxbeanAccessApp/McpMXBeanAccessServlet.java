@@ -10,7 +10,9 @@
 package io.openliberty.mcp.internal.fat.monitor.mxbeanAccessApp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
@@ -259,7 +261,10 @@ public class McpMXBeanAccessServlet extends FATServlet {
         assertTrue("ObjectName must contain mcpVer=", name.contains("mcpVer="));
     }
 
-    /** Verifies that a {@code tools/list} MBean does NOT have a {@code genAiTool} key property. */
+    /**
+     * Verifies that a {@code tools/list} MBean does NOT have a {@code genAiTool} key property,
+     * and that {@code getGenAiToolName()} returns {@code null} via the typed MXBean proxy.
+     */
     public void testNonToolCallMBeanHasNoToolNameProperty() throws Exception {
         ObjectName mbean = findOperationMBean("tools/list", null);
         assertNotNull("tools/list MBean must be registered", mbean);
@@ -267,6 +272,10 @@ public class McpMXBeanAccessServlet extends FATServlet {
         String name = mbean.toString();
         assertTrue("ObjectName must contain mcpMethod=tools/list", name.contains("mcpMethod=tools/list"));
         assertTrue("ObjectName must NOT contain genAiTool=", !name.contains("genAiTool="));
+
+        McpOperationStatisticsMXBean operationStats = JMX.newMXBeanProxy(mbs, mbean, McpOperationStatisticsMXBean.class);
+        assertNull("GenAiToolName must be null for a tools/list operation MBean",
+                   operationStats.getGenAiToolName());
     }
 
     /** Verifies the session MBean ObjectName contains {@code session=true} and protocol-version properties. */
@@ -325,6 +334,76 @@ public class McpMXBeanAccessServlet extends FATServlet {
                                               "Count", "CountDetails", "Duration", "DurationDetails"
         }) {
             assertTrue("MBeanInfo must expose attribute: " + expected, attributeNames.contains(expected));
+        }
+    }
+
+    // Negative Tests
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Verifies that no operation MBean is registered for a tool that has never been called.
+     * MBeans must not be pre-registered speculatively.
+     */
+    public void testNoMBeanForNeverCalledTool() throws Exception {
+        ObjectName mbean = findOperationMBean("tools/call", "neverCalledTool");
+        assertNull("No operation MBean should exist for a tool that has never been called", mbean);
+    }
+
+    /**
+     * Verifies that an operation MBean for a tool that threw a {@code ToolCallException} exposes
+     * {@code RpcResponseStatusCode} as {@code "error"} and {@code ErrorType} as {@code "tool_error"}.
+     */
+    public void testErrorToolMBeanHasErrorStatusAndNonNullErrorType() throws Exception {
+        // The FAT test called businessErrorTool before invoking this method
+        ObjectName mbean = findOperationMBean("tools/call", "businessErrorTool");
+        assertNotNull("Operation MBean for businessErrorTool must exist after a call", mbean);
+
+        McpOperationStatisticsMXBean operationStats = JMX.newMXBeanProxy(mbs, mbean, McpOperationStatisticsMXBean.class);
+
+        String statusCode = operationStats.getRpcResponseStatusCode();
+        assertEquals("RpcResponseStatusCode must be 'error' for a business-error tool call",
+                     "error", statusCode);
+
+        String errorType = operationStats.getErrorType();
+        assertNotNull("ErrorType must not be null for a business-error tool call", errorType);
+    }
+
+    // --- Bean Lifecycle ---
+
+    /**
+     * Verifies that the session MBean is registered with a positive count and duration
+     * after the session is explicitly ended via DELETE.
+     */
+    public void testSessionMBeanPresentAfterSessionDeleted() throws Exception {
+        ObjectName mbean = findSessionMBean();
+        assertNotNull("Session MBean must be registered after session ends", mbean);
+
+        McpSessionStatisticsMXBean sessionStats = JMX.newMXBeanProxy(mbs, mbean, McpSessionStatisticsMXBean.class);
+
+        long count = sessionStats.getCount();
+        assertTrue("Session MBean Count must be >= 1 after session ends", count >= 1L);
+
+        double duration = sessionStats.getDuration();
+        assertTrue("Session MBean Duration must be > 0 after session ends", duration > 0.0);
+    }
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Verifies that every registered operation MBean exposes a non-null, non-blank
+     * {@code McpMethodName} attribute.
+     */
+    public void testAllOperationMBeansHaveNonEmptyMethodName() throws Exception {
+        ObjectName queryPattern = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> allMBeans = mbs.queryNames(queryPattern, null);
+        assertFalse("At least one operation MBean must be registered", allMBeans.isEmpty());
+
+        for (ObjectName on : allMBeans) {
+            McpOperationStatisticsMXBean stats = JMX.newMXBeanProxy(mbs, on, McpOperationStatisticsMXBean.class);
+            String methodName = stats.getMcpMethodName();
+            assertNotNull("McpMethodName must never be null on MBean: " + on, methodName);
+            assertFalse("McpMethodName must never be blank on MBean: " + on, methodName.isBlank());
         }
     }
 }

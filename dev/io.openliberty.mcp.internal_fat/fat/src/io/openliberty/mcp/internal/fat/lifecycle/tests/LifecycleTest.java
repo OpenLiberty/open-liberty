@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.lifecycle.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -132,6 +133,115 @@ public class LifecycleTest {
                           {
                           "jsonrpc": "2.0",
                           "id": "123",
+                          "result": {}
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    // Negative Tests
+
+    /**
+     * Verifies that an {@code initialize} request whose body omits {@code protocolVersion}
+     * is tolerated: the server falls back to its preferred version ({@code 2025-11-25}) and
+     * returns a normal, successful initialize result rather than an error.
+     */
+    @Test
+    public void testInitializeWithMissingProtocolVersionFallsBackToServerDefault() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-1",
+                          "method": "initialize",
+                          "params": {
+                            "capabilities": {},
+                            "clientInfo": {
+                              "name": "BadClient",
+                              "version": "0.0"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        // Missing protocolVersion in the body is tolerated - the server falls back to
+        // its preferred version (2025-11-25) and returns a normal initialize result
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-1",
+                          "result": {
+                            "protocolVersion": "2025-11-25",
+                            "capabilities": {
+                              "tools": {
+                                "listChanged": false
+                              }
+                            },
+                            "serverInfo": {
+                              "name": "mcp-server",
+                              "version": "1.0.0"
+                            }
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    /**
+     * Verifies that a JSON-RPC request for an unrecognised method returns an error response
+     * with code {@code -32601} (Method not found), the standard message, and the method name
+     * in the {@code data} field.
+     */
+    @Test
+    public void testUnknownMethodReturnsMethodNotFoundError() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-2",
+                          "method": "nonexistent/method"
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        assertNotNull("Response must not be null for an unknown method", response);
+
+        String expectedError = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-2",
+                          "error": {
+                            "code": -32601,
+                            "message": "Method not found",
+                            "data": ["nonexistent/method not found"]
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedError, response, JSONCompareMode.STRICT);
+    }
+
+    /**
+     * Verifies that a {@code ping} request with unrecognised fields in {@code params}
+     * still succeeds — unknown parameters must be silently ignored.
+     */
+    @Test
+    public void testPingWithUnknownParamsIsIgnored() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-3",
+                          "method": "ping",
+                          "params": {
+                            "unknownField": "shouldBeIgnored"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-3",
                           "result": {}
                         }
                         """;
