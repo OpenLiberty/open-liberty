@@ -207,7 +207,17 @@ public class NettyChain extends HttpChain {
                     Tr.debug(this, tc, "This configuration differs and should cause an update ");
                 }
                 currentConfig = newConfig;
-                if (state.get() != ChainState.UNINITIALIZED) {
+                ChainState currentState = state.get();
+                if (currentState == ChainState.STARTING) {
+                    // A deferred bind (initial startup) is in flight on another thread.
+                    // channelFutureHandler will transition the state to STARTED or STOPPED
+                    // and call notifyStarted/notifyStopped when the bind completes.
+                    // Stopping the chain here would fire notifyStopped without a matching
+                    // notifyStarted, spuriously removing all web apps from the virtual host.
+                    // Skip the stop; the next update() call (after the bind resolves) will
+                    // see STARTED/STOPPED and handle the config change correctly.
+                    Tr.debug(this, tc, "Deferred bind in progress (STARTING), skipping stopAndWait for config change on " + endpointName);
+                } else if (currentState != ChainState.UNINITIALIZED) {
                     stopAndWait();
                 }
             }
@@ -276,57 +286,41 @@ public class NettyChain extends HttpChain {
                     long bindTimeoutMs = nettyFramework.getDefaultChainQuiesceTimeout();
                     long deadline = System.currentTimeMillis() + bindTimeoutMs;
 
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "startNettyChannel, server started. If state is STARTING, wait() for binding before continue. state: [" + state.get() + "]");
-                    }
+                    Tr.debug(this, tc, "startNettyChannel, server started. If state is STARTING, wait() for binding before continue. state: [" + state.get() + "]");
 
                     while (state.get() == ChainState.STARTING) {
                         long remaining = deadline - System.currentTimeMillis();
                         if (remaining <= 0) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "Timed out after " + bindTimeoutMs + "ms waiting for bind result on " + endpointName + ", treating as failure");
-                            }
+                            Tr.debug(this, tc, "Timed out after " + bindTimeoutMs + "ms waiting for bind result on " + endpointName + ", treating as failure");
                             state.set(ChainState.STOPPED);
                             break;
                         }
                         wait(remaining);
                     }
                 } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Bind deferred until server fully started for " + endpointName + "; returning without waiting");
-                    }
+                    Tr.debug(this, tc, "Bind deferred until server fully started for " + endpointName + "; returning without waiting");
                 }
 
             } catch (InterruptedException ie) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "startNettyChannel interrupted while waiting for bind to complete");
-                }
+                Tr.debug(this, tc, "startNettyChannel interrupted while waiting for bind to complete");
                 state.set(ChainState.STOPPED);
                 Thread.currentThread().interrupt();
             } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.exit(this, tc, "Failed to start Netty Channel: " + e.getMessage());
-                }
+                Tr.debug(this, tc, "Failed to start Netty Channel: " + e.getMessage());
                 state.set(ChainState.STOPPED);
             }
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.exit(this, tc, "Finished starting Netty Channel: " + endpointName + ", Final state: " + state.get());
-        }
+        Tr.debug(this, tc, "Finished starting Netty Channel: " + endpointName + ", Final state: " + state.get());
 
     }
 
     private void channelFutureHandler(ChannelFuture future) {
         if (state.get() == ChainState.STOPPING || state.get() == ChainState.STOPPED) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get()
-                                   + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
-            }
+            Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get()
+                               + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
             if (future.channel().isActive()) {
                 // Found active channel when it should be stopped/stopping
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Found active channel: " + future.channel() + ". Will attempt to stop it.");
-                }
+                Tr.debug(this, tc, "Found active channel: " + future.channel() + ". Will attempt to stop it.");
                 nettyFramework.stop(future.channel());
             }
             // Ensure any thread waiting in startNettyChannel is unblocked.
@@ -340,10 +334,8 @@ public class NettyChain extends HttpChain {
             // the chain was already restarted.
             // Close the stale channel so it doesn't hold the port open for the next bind attempt.
             if (future.channel() != serverChannel) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Stale channel " + future.channel()
-                                       + " fired callback but current serverChannel is " + serverChannel + ", closing stale channel...");
-                }
+                Tr.debug(this, tc, "Stale channel " + future.channel()
+                                   + " fired callback but current serverChannel is " + serverChannel + ", closing stale channel...");
                 if (future.channel().isActive()) {
                     nettyFramework.stop(future.channel());
                 }
@@ -353,9 +345,7 @@ public class NettyChain extends HttpChain {
                 state.set(ChainState.STARTED);
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
                 info = endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Channel is now active and listening on port " + getActivePort());
-                }
+                Tr.debug(this, tc, "Channel is now active and listening on port " + getActivePort());
                 // Notify virtual hosts and post the started event here so that both the
                 // immediate-bind path (server already started) and the deferred-bind path
                 // (ServerStarted queued) are covered.
@@ -363,9 +353,7 @@ public class NettyChain extends HttpChain {
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
                 postEvent(topic, currentConfig, null);
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
-                }
+                Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
                 handleStartupError(new NettyException(future.cause()), currentConfig);
 
                 if (currentConfig != null) {

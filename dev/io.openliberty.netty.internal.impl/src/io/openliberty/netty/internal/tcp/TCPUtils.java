@@ -230,9 +230,7 @@ public class TCPUtils {
                         try {
                             Thread.sleep(timeBetweenRetriesMsec);
                         } catch (InterruptedException x) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
-                            }
+                            Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                         open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, false);
                     }
@@ -243,15 +241,15 @@ public class TCPUtils {
 
                 if (retryCount > 0) {
                     if (!channel.isOpen()) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Channel not open so it must have been cancelled. Returning...");
-                        }
+                        Tr.debug(tc, "Channel not open so it must have been cancelled. Returning...");
                         return;
                     }
                     // On the very first bind failure, probe the port to distinguish a real
                     // conflict from a TIME_WAIT remnant.  If it is TIME_WAIT only, retry
                     // immediately with SO_REUSEADDR=true rather than burning through all
                     // retries waiting for the OS TIME_WAIT period to expire.
+                    // When portOpenRetries == 0 this branch is never reached; a parallel
+                    // probe runs in the retryCount == 0 else-branch below.
                     if (config.isInbound() && future.cause() instanceof java.net.BindException
                         && !reuseAddrRetry && retryCount == config.getPortOpenRetries()) {
                         String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
@@ -284,17 +282,12 @@ public class TCPUtils {
                     try {
                         Thread.sleep(timeBetweenRetriesMsec);
                     } catch (InterruptedException x) {
-                        // do nothing but debug
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
-                        }
+                        Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                     }
                     open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, false);
                 } else {
                     if (!channel.isOpen()) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "No retries left and channel is not open so not printing any logs. Returning...");
-                        }
+                        Tr.debug(tc, "No retries left and channel is not open so not printing any logs. Returning...");
                         return;
                     }
 
@@ -315,9 +308,9 @@ public class TCPUtils {
                                  new Object[] { config.getExternalName(), newHost, String.valueOf(inetPort) });
                     } else if (config.isInbound() && future.cause() instanceof java.net.BindException
                                && !reuseAddrRetry) {
-                        // portOpenRetries == 0: no retries were configured so the first-failure
-                        // probe in the retryCount > 0 branch never ran.  Probe now to distinguish
-                        // TIME_WAIT from a real conflict before giving up.
+                        // portOpenRetries == 0: no retries were configured, so the first-failure
+                        // probe in the retryCount > 0 branch never ran.
+                        // Probe now to distinguish TIME_WAIT from a real conflict before giving up.
                         String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
                         InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
                         if (!probeAddr.isUnresolved()) {
@@ -349,10 +342,8 @@ public class TCPUtils {
                             Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
                                                                                         String.valueOf(inetPort), openFuture.cause().getMessage() });
                         } else {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
-                                                                                            newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
-                            }
+                            Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
+                                                                                        newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
                         }
                     }
                 }
@@ -376,9 +367,7 @@ public class TCPUtils {
                         try {
                             listener.operationComplete(future);
                         } catch (Exception e) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Exception caught running open listener!! Closing channel just in case");
-                            }
+                            Tr.debug(tc, "Exception caught running open listener!! Closing channel just in case");
                             future.channel().close();
                         }
                     }
@@ -410,9 +399,7 @@ public class TCPUtils {
                                     .channel();
                 }
                 if (config.getWaitToAccept()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found waitToAccept enabled, channel will be bound even if the server is not completely started.");
-                    }
+                    Tr.debug(tc, "Found waitToAccept enabled, channel will be bound even if the server is not completely started.");
                     open(framework, channel, config, inetHost, inetPort, openListener,
                         config.getPortOpenRetries(), false);
                 } else {

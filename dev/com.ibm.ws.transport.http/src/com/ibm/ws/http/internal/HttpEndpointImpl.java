@@ -1427,9 +1427,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             }
             return;
         } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "verifyResumedChainStates, throw new PauseableComponentException");
-            }
+            Tr.debug(tc, "verifyResumedChainStates, throw new PauseableComponentException");
             throw new PauseableComponentException("The request to resume HTTP endpoint " + name + " did not complete successfully. HTTPChain: " + httpChain.toString()
                                                   + ". HTTPSChain: " + httpsChain.toString());
         }
