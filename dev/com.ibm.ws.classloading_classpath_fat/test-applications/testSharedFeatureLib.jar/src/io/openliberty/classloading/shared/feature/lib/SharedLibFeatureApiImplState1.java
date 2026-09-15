@@ -30,10 +30,10 @@ import io.openliberty.classloading.feature.api.TestFeatureApi;
  * the cast at the call site will fail with {@code ClassCastException} — this is
  * the <em>Failure Mode B</em> described in the background document.
  */
-public class SharedFeatureLibImpl implements TestFeatureApi {
+public class SharedLibFeatureApiImplState1 implements TestFeatureApi {
 
     @Override
     public String doWork() {
-        return "SharedFeatureLibImpl.doWork() called successfully from shared library";
+        return "SharedLibFeatureApiImplState1.doWork() called successfully from shared library";
     }
 }

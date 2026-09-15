@@ -8,7 +8,7 @@
     <include location="../fatTestPorts.xml"/>
 
     <!--
-        The shared library JAR contains SharedFeatureLibImpl, which implements
+        The shared library JAR contains SharedLibFeatureApiImplState1, which implements
         TestFeatureApi from the feature bundle. The library classloader is cached
         in ClassLoadingServiceImpl.aclStore under the "testFeatureSharedLib" key.
         The <library> element is NEVER modified during the test — only the feature

@@ -26,9 +26,9 @@ import io.openliberty.classloading.feature.api.TestFeatureApi;
  * the delegation chain rather than returning a result cached by
  * {@code findLoadedClass()} from a prior state.
  */
-public class LibraryRemovalFeatureLibImplState1 implements TestFeatureApi {
+public class LibraryRemovalFeatureApiImplState1 implements TestFeatureApi {
     @Override
     public String doWork() {
-        return "LibraryRemovalFeatureLibImplState1.doWork() called successfully — Test 3 State 1";
+        return "LibraryRemovalFeatureApiImplState1.doWork() called successfully — Test 3 State 1";
     }
 }

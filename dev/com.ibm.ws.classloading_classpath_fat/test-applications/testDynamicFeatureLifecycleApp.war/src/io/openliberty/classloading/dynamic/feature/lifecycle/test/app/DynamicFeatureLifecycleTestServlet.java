@@ -33,12 +33,12 @@ import io.openliberty.classloading.feature.api.TestFeatureApi3;
  * <p>The WAR artifact is deployed to servers whose {@code server.xml}
  * configurations wire up different classloader chains:
  * <ul>
- *   <li><b>dynamicFeatureLifecycleTest</b> — WAR directly depends on feature API
- *       (no shared library). Uses {@link TestFeatureApiImpl}, {@link TestFeatureApiImpl2},
- *       {@link TestFeatureApiImpl3} — in-WAR classes, one per lifecycle state.</li>
+ *   <li><b>dynamicFeatureLifecycleTest</b> — WAR directly depends on feature API.
+ *       Uses four in-WAR classes, one per lifecycle probe.</li>
  *   <li><b>dynamicFeatureSharedLibTest</b> — WAR → shared library → feature API.
- *       Uses {@code SharedFeatureLibImpl}, {@code SharedFeatureLibImpl2},
- *       {@code SharedFeatureLibImpl3} — library classes, one per lifecycle state.</li>
+ *       Uses four shared-library classes, one per lifecycle probe.</li>
+ *   <li><b>dynamicFeatureLibJarRemovedTest</b> — WAR → removable shared-library JAR
+ *       → feature API. Uses four library classes, one per lifecycle probe.</li>
  * </ul>
  *
  * <h3>Why one class per lifecycle state?</h3>
@@ -64,44 +64,44 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
     // ── Test 1: in-WAR impl classes ───────────────────────────────────────────
     // State 1: initial load, feature present; implements TestFeatureApi
     private static final String APP_IMPL_CLASS_STATE1 =
-        "io.openliberty.classloading.dynamic.feature.test.app.TestFeatureApiImpl";
-    // State 2 success probe: cached TestFeatureApi — expects success even after removal
-    private static final String APP_IMPL_CLASS_STATE2_REMOVED =
-        "io.openliberty.classloading.dynamic.feature.test.app.TestFeatureApiImpl_removed";
-    // State 2 NCDFE probe: fresh TestFeatureApi2 — expects NoClassDefFoundError after removal
-    private static final String APP_IMPL_CLASS_STATE2 =
-        "io.openliberty.classloading.dynamic.feature.test.app.TestFeatureApiImpl2";
+        "io.openliberty.classloading.dynamic.feature.test.app.AppFeatureApiImplState1";
+    // State 2a success probe: cached TestFeatureApi — expects success even after removal
+    private static final String APP_IMPL_CLASS_STATE2A =
+        "io.openliberty.classloading.dynamic.feature.test.app.AppFeatureApiImplState2a";
+    // State 2b NCDFE probe: fresh TestFeatureApi2 — expects NoClassDefFoundError after removal
+    private static final String APP_IMPL_CLASS_STATE2B =
+        "io.openliberty.classloading.dynamic.feature.test.app.AppFeatureApiImplState2b";
     // State 3: fresh TestFeatureApi3 — expects success after feature re-add
     private static final String APP_IMPL_CLASS_STATE3 =
-        "io.openliberty.classloading.dynamic.feature.test.app.TestFeatureApiImpl3";
+        "io.openliberty.classloading.dynamic.feature.test.app.AppFeatureApiImplState3";
 
     // ── Test 2: shared-library impl classes ───────────────────────────────────
     // State 1: initial load, feature present; implements TestFeatureApi
     private static final String LIB_IMPL_CLASS_STATE1 =
-        "io.openliberty.classloading.shared.feature.lib.SharedFeatureLibImpl";
-    // State 2 success probe: cached TestFeatureApi — expects success even after removal
-    private static final String LIB_IMPL_CLASS_STATE2_REMOVED =
-        "io.openliberty.classloading.shared.feature.lib.SharedFeatureLibImpl_removed";
-    // State 2 NCDFE probe: fresh TestFeatureApi2 — expects NoClassDefFoundError after removal
-    private static final String LIB_IMPL_CLASS_STATE2 =
-        "io.openliberty.classloading.shared.feature.lib.SharedFeatureLibImpl2";
+        "io.openliberty.classloading.shared.feature.lib.SharedLibFeatureApiImplState1";
+    // State 2a success probe: cached TestFeatureApi — expects success even after removal
+    private static final String LIB_IMPL_CLASS_STATE2A =
+        "io.openliberty.classloading.shared.feature.lib.SharedLibFeatureApiImplState2a";
+    // State 2b NCDFE probe: fresh TestFeatureApi2 — expects NoClassDefFoundError after removal
+    private static final String LIB_IMPL_CLASS_STATE2B =
+        "io.openliberty.classloading.shared.feature.lib.SharedLibFeatureApiImplState2b";
     // State 3: fresh TestFeatureApi3 — expects success after feature re-add
     private static final String LIB_IMPL_CLASS_STATE3 =
-        "io.openliberty.classloading.shared.feature.lib.SharedFeatureLibImpl3";
+        "io.openliberty.classloading.shared.feature.lib.SharedLibFeatureApiImplState3";
 
     // ── Test 3: library JAR removed from shared library fileset ───────────────
     // State 1: initial load, feature and library present; implements TestFeatureApi
     private static final String LIBRARY_REMOVAL_IMPL_CLASS_STATE1 =
-        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureLibImplState1";
-    // State 2 success probe: cached TestFeatureApi — reveals whether loader was evicted
-    private static final String LIBRARY_REMOVAL_IMPL_CLASS_CACHED_API =
-        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureLibImplCachedApi";
-    // State 2 NCDFE probe: fresh TestFeatureApi2 — expects CNFE/NCDFE after library removal
-    private static final String LIBRARY_REMOVAL_IMPL_CLASS_FRESH_API =
-        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureLibImplFreshApi";
+        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureApiImplState1";
+    // State 2a success probe: cached TestFeatureApi — reveals whether loader was evicted
+    private static final String LIBRARY_REMOVAL_IMPL_CLASS_STATE2A =
+        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureApiImplState2a";
+    // State 2b NCDFE probe: fresh TestFeatureApi2 — expects CNFE/NCDFE after library removal
+    private static final String LIBRARY_REMOVAL_IMPL_CLASS_STATE2B =
+        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureApiImplState2b";
     // State 3: fresh TestFeatureApi3 — expects success after library restore
     private static final String LIBRARY_REMOVAL_IMPL_CLASS_STATE3 =
-        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureLibImplState3";
+        "io.openliberty.classloading.shared.feature.lib.LibraryRemovalFeatureApiImplState3";
 
     // =========================================================================
     // Test 1 — Application directly depends on feature API (no shared library)
@@ -111,7 +111,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
      * Test 1, State 1: verifies that the in-WAR feature API implementation is
      * reachable and that {@code doWork()} succeeds when the feature is present.
      * <p>
-     * {@link TestFeatureApiImpl} (the State 1 class) is newly loaded here — it has
+     * {@link AppFeatureApiImplState1} (the State 1 class) is newly loaded here — it has
      * not been touched before this probe, so {@code findLoadedClass()} will not
      * short-circuit the lookup.
      */
@@ -121,7 +121,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
 
         // Load the State 1 in-WAR impl — first load, guaranteed fresh lookup.
         Class<?> implClass = cl.loadClass(APP_IMPL_CLASS_STATE1);
-        println("DYNAMIC_FEATURE_TEST STATE1 - TestFeatureApiImpl loaded by: "
+        println("DYNAMIC_FEATURE_TEST STATE1 - AppFeatureApiImplState1 loaded by: "
             + implClass.getClassLoader());
 
         Object impl = implClass.getDeclaredConstructor().newInstance();
@@ -134,7 +134,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
     }
 
     /**
-     * Test 1, State 2a: verifies that {@link TestFeatureApiImpl_removed} — which
+     * Test 1, State 2a: verifies that {@link AppFeatureApiImplState2a} — which
      * implements the already-cached {@link TestFeatureApi} — still loads successfully
      * after the feature bundle has been dynamically removed.
      * <p>
@@ -149,28 +149,28 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         println("DYNAMIC_FEATURE_TEST STATE2a - AppCL: " + cl);
 
         try {
-            Class<?> removedClass = cl.loadClass(APP_IMPL_CLASS_STATE2_REMOVED);
-            println("DYNAMIC_FEATURE_TEST STATE2a - _removed CLASS_STILL_VISIBLE (cached interface, expected): "
-                + "TestFeatureApiImpl_removed loaded by " + removedClass.getClassLoader());
+            Class<?> removedClass = cl.loadClass(APP_IMPL_CLASS_STATE2A);
+            println("DYNAMIC_FEATURE_TEST STATE2a - CLASS_STILL_VISIBLE (cached interface, expected): "
+                + "AppFeatureApiImplState2a loaded by " + removedClass.getClassLoader());
             if (!removedClass.getClassLoader().toString().contains("WebModule")) {
-                Assert.fail("STATE2a: unexpected classloader for TestFeatureApiImpl_removed: "
+                Assert.fail("STATE2a: unexpected classloader for AppFeatureApiImplState2a: "
                     + removedClass.getClassLoader());
             }
             println("DYNAMIC_FEATURE_TEST STATE2a - SUCCESS");
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            Assert.fail("STATE2a: TestFeatureApiImpl_removed (cached interface) should have loaded but got: "
+            Assert.fail("STATE2a: AppFeatureApiImplState2a (cached interface) should have loaded but got: "
                 + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
 
     /**
-     * Test 1, State 2b: verifies that loading {@link TestFeatureApiImpl2} — which
+     * Test 1, State 2b: verifies that loading {@link AppFeatureApiImplState2b} — which
      * implements the never-before-seen {@link TestFeatureApi2} — produces a
      * {@link NoClassDefFoundError} after the feature bundle has been dynamically removed.
      * <p>
      * {@code TestFeatureApi2} was never referenced in State 1, so it is not in any
      * classloader's cache. When the JVM attempts to resolve it while loading
-     * {@code TestFeatureApiImpl2}, it must walk the full delegation chain to the
+     * {@code AppFeatureApiImplState2b}, it must walk the full delegation chain to the
      * (now-absent) feature bundle. That walk fails with {@code NoClassDefFoundError},
      * providing genuine evidence that the classloader correctly observes the feature
      * as absent — not a cache hit masking the removal.
@@ -180,10 +180,10 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         println("DYNAMIC_FEATURE_TEST STATE2b - AppCL: " + cl);
 
         try {
-            Class<?> implClass = cl.loadClass(APP_IMPL_CLASS_STATE2);
+            Class<?> implClass = cl.loadClass(APP_IMPL_CLASS_STATE2B);
             println("DYNAMIC_FEATURE_TEST STATE2b - CLASS_STILL_VISIBLE (unexpected — stale loader): "
-                + "TestFeatureApiImpl2 loaded by " + implClass.getClassLoader());
-            Assert.fail("STATE2b: TestFeatureApiImpl2 (fresh TestFeatureApi2 interface) should have produced "
+                + "AppFeatureApiImplState2b loaded by " + implClass.getClassLoader());
+            Assert.fail("STATE2b: AppFeatureApiImplState2b (fresh TestFeatureApi2 interface) should have produced "
                 + "NoClassDefFoundError but loaded successfully — baseline has changed. "
                 + "Update this assertion if the fix is intentional.");
         } catch (NoClassDefFoundError ncdfe) {
@@ -200,14 +200,14 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
     }
 
     /**
-     * Test 1, State 3: verifies that all three in-WAR impl classes are loadable after
+     * Test 1, State 3: verifies that all four in-WAR impl classes are loadable after
      * the feature has been re-added.
      * <p>
-     * {@link TestFeatureApiImpl3} is the State 3 class (fresh, not cached). All three
+     * {@link AppFeatureApiImplState3} is the State 3 class (fresh, not cached). All four
      * impl classes are then loaded to confirm the WAR classloader is fully functional
      * after the feature re-add.
      * <p>
-     * <b>Expected baseline (pre-fix):</b> All three loads succeed because the same
+     * <b>Expected baseline (pre-fix):</b> All four loads succeed because the same
      * OSGi bundle object was reused on re-add (same {@code EquinoxClassLoader} instance,
      * same bundle id — Failure Mode A). The cast succeeds for the wrong reason: the
      * stale never-invalidated loader is still in place.
@@ -219,28 +219,28 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         try {
             // Load the State 3 impl first — fresh TestFeatureApi3, not cached from earlier states.
             Class<?> implClass3 = cl.loadClass(APP_IMPL_CLASS_STATE3);
-            println("DYNAMIC_FEATURE_TEST STATE3 - TestFeatureApiImpl3 loaded by: "
+            println("DYNAMIC_FEATURE_TEST STATE3 - AppFeatureApiImplState3 loaded by: "
                 + implClass3.getClassLoader());
             TestFeatureApi3 api3 = (TestFeatureApi3) implClass3.getDeclaredConstructor().newInstance();
             String result3 = api3.doWork();
-            Assert.assertNotNull("STATE3: TestFeatureApiImpl3.doWork() returned null", result3);
-            println("DYNAMIC_FEATURE_TEST STATE3 - TestFeatureApiImpl3 SUCCESS: " + result3);
+            Assert.assertNotNull("STATE3: AppFeatureApiImplState3.doWork() returned null", result3);
+            println("DYNAMIC_FEATURE_TEST STATE3 - AppFeatureApiImplState3 SUCCESS: " + result3);
 
             // Verify all four impl classes load cleanly after the re-add.
             Class<?> implClass1 = cl.loadClass(APP_IMPL_CLASS_STATE1);
             TestFeatureApi api1 = (TestFeatureApi) implClass1.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: TestFeatureApiImpl.doWork() returned null", api1.doWork());
-            println("DYNAMIC_FEATURE_TEST STATE3 - TestFeatureApiImpl re-load SUCCESS");
+            Assert.assertNotNull("STATE3: AppFeatureApiImplState1.doWork() returned null", api1.doWork());
+            println("DYNAMIC_FEATURE_TEST STATE3 - AppFeatureApiImplState1 re-load SUCCESS");
 
-            Class<?> removedClass = cl.loadClass(APP_IMPL_CLASS_STATE2_REMOVED);
+            Class<?> removedClass = cl.loadClass(APP_IMPL_CLASS_STATE2A);
             TestFeatureApi apiRemoved = (TestFeatureApi) removedClass.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: TestFeatureApiImpl_removed.doWork() returned null", apiRemoved.doWork());
-            println("DYNAMIC_FEATURE_TEST STATE3 - TestFeatureApiImpl_removed re-load SUCCESS");
+            Assert.assertNotNull("STATE3: AppFeatureApiImplState2a.doWork() returned null", apiRemoved.doWork());
+            println("DYNAMIC_FEATURE_TEST STATE3 - AppFeatureApiImplState2a re-load SUCCESS");
 
-            Class<?> implClass2 = cl.loadClass(APP_IMPL_CLASS_STATE2);
+            Class<?> implClass2 = cl.loadClass(APP_IMPL_CLASS_STATE2B);
             TestFeatureApi2 api2 = (TestFeatureApi2) implClass2.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: TestFeatureApiImpl2.doWork() returned null", api2.doWork());
-            println("DYNAMIC_FEATURE_TEST STATE3 - TestFeatureApiImpl2 re-load SUCCESS");
+            Assert.assertNotNull("STATE3: AppFeatureApiImplState2b.doWork() returned null", api2.doWork());
+            println("DYNAMIC_FEATURE_TEST STATE3 - AppFeatureApiImplState2b re-load SUCCESS");
 
             println("DYNAMIC_FEATURE_TEST STATE3 - SUCCESS: all impls loaded and invoked");
 
@@ -271,7 +271,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
      * {@code AppClassLoader} is intentionally <em>not</em> made the initiating
      * classloader for {@code TestFeatureApi} directly. The feature API class is
      * loaded transitively by the shared-library classloader when it resolves
-     * {@code SharedFeatureLibImpl}'s supertype. This keeps the WAR loader out of
+     * {@code SharedLibFeatureApiImplState1}'s supertype. This keeps the WAR loader out of
      * the feature API delegation path and isolates the test to the library loader.
      */
     public void testLibraryDependsOnFeatureApi_FeaturePresent() throws Exception {
@@ -281,7 +281,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         // Load only the State 1 library impl — do NOT call cl.loadClass(FEATURE_API_CLASS)
         // directly, to avoid making the WAR classloader the initiating CL for TestFeatureApi.
         Class<?> implClass = cl.loadClass(LIB_IMPL_CLASS_STATE1);
-        println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE1 - SharedFeatureLibImpl loaded by: "
+        println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE1 - SharedLibFeatureApiImplState1 loaded by: "
             + implClass.getClassLoader());
 
         Object impl = implClass.getDeclaredConstructor().newInstance();
@@ -294,7 +294,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
     }
 
     /**
-     * Test 2, State 2a: verifies that {@code SharedFeatureLibImpl_removed} — which
+     * Test 2, State 2a: verifies that {@code SharedLibFeatureApiImplState2a} — which
      * implements the already-cached {@link TestFeatureApi} — still loads successfully
      * after the feature bundle has been dynamically removed.
      * <p>
@@ -308,22 +308,22 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - WAR ClassLoader: " + cl);
 
         try {
-            Class<?> removedClass = cl.loadClass(LIB_IMPL_CLASS_STATE2_REMOVED);
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - _removed CLASS_STILL_VISIBLE (cached interface, expected): "
-                + "SharedFeatureLibImpl_removed loaded by " + removedClass.getClassLoader());
+            Class<?> removedClass = cl.loadClass(LIB_IMPL_CLASS_STATE2A);
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - CLASS_STILL_VISIBLE (cached interface, expected): "
+                + "SharedLibFeatureApiImplState2a loaded by " + removedClass.getClassLoader());
             if (!removedClass.getClassLoader().toString().contains("testFeatureSharedLib")) {
-                Assert.fail("STATE2a: unexpected classloader for SharedFeatureLibImpl_removed: "
+                Assert.fail("STATE2a: unexpected classloader for SharedLibFeatureApiImplState2a: "
                     + removedClass.getClassLoader());
             }
             println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - SUCCESS");
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            Assert.fail("STATE2a: SharedFeatureLibImpl_removed (cached interface) should have loaded but got: "
+            Assert.fail("STATE2a: SharedLibFeatureApiImplState2a (cached interface) should have loaded but got: "
                 + e.getClass().getSimpleName() + ": " + e.getMessage());
         }
     }
 
     /**
-     * Test 2, State 2b: verifies that loading {@code SharedFeatureLibImpl2} — which
+     * Test 2, State 2b: verifies that loading {@code SharedLibFeatureApiImplState2b} — which
      * implements the never-before-seen {@link TestFeatureApi2} — produces a
      * {@link NoClassDefFoundError} after the feature bundle has been dynamically removed.
      * <p>
@@ -336,10 +336,10 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2b - WAR ClassLoader: " + cl);
 
         try {
-            Class<?> implClass = cl.loadClass(LIB_IMPL_CLASS_STATE2);
+            Class<?> implClass = cl.loadClass(LIB_IMPL_CLASS_STATE2B);
             println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2b - CLASS_STILL_VISIBLE (unexpected): "
-                + "SharedFeatureLibImpl2 loaded by " + implClass.getClassLoader());
-            Assert.fail("STATE2b: SharedFeatureLibImpl2 (fresh TestFeatureApi2 interface) should have produced "
+                + "SharedLibFeatureApiImplState2b loaded by " + implClass.getClassLoader());
+            Assert.fail("STATE2b: SharedLibFeatureApiImplState2b (fresh TestFeatureApi2 interface) should have produced "
                 + "NoClassDefFoundError but loaded successfully — baseline has changed. "
                 + "Update this assertion if the fix is intentional.");
         } catch (NoClassDefFoundError ncdfe) {
@@ -354,10 +354,10 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
     }
 
     /**
-     * Test 2, State 3: verifies that all three shared-library impl classes are loadable
+     * Test 2, State 3: verifies that all four shared-library impl classes are loadable
      * after the feature has been re-added.
      * <p>
-     * {@code SharedFeatureLibImpl3} is the State 3 class (fresh, not cached). All three
+     * {@code SharedLibFeatureApiImplState3} is the State 3 class (fresh, not cached). All four
      * library impl classes are then loaded to confirm the full library chain is functional
      * after the feature re-add.
      * <p>
@@ -374,28 +374,28 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         try {
             // Load the State 3 library impl first — fresh TestFeatureApi3, not cached.
             Class<?> implClass3 = cl.loadClass(LIB_IMPL_CLASS_STATE3);
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedFeatureLibImpl3 loaded by: "
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedLibFeatureApiImplState3 loaded by: "
                 + implClass3.getClassLoader());
             TestFeatureApi3 api3 = (TestFeatureApi3) implClass3.getDeclaredConstructor().newInstance();
             String result3 = api3.doWork();
-            Assert.assertNotNull("STATE3: SharedFeatureLibImpl3.doWork() returned null", result3);
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedFeatureLibImpl3 SUCCESS: " + result3);
+            Assert.assertNotNull("STATE3: SharedLibFeatureApiImplState3.doWork() returned null", result3);
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedLibFeatureApiImplState3 SUCCESS: " + result3);
 
             // Verify all four library impls load cleanly after the re-add.
             Class<?> implClass1 = cl.loadClass(LIB_IMPL_CLASS_STATE1);
             TestFeatureApi api1 = (TestFeatureApi) implClass1.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: SharedFeatureLibImpl.doWork() returned null", api1.doWork());
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedFeatureLibImpl re-load SUCCESS");
+            Assert.assertNotNull("STATE3: SharedLibFeatureApiImplState1.doWork() returned null", api1.doWork());
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedLibFeatureApiImplState1 re-load SUCCESS");
 
-            Class<?> removedClass = cl.loadClass(LIB_IMPL_CLASS_STATE2_REMOVED);
+            Class<?> removedClass = cl.loadClass(LIB_IMPL_CLASS_STATE2A);
             TestFeatureApi apiRemoved = (TestFeatureApi) removedClass.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: SharedFeatureLibImpl_removed.doWork() returned null", apiRemoved.doWork());
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedFeatureLibImpl_removed re-load SUCCESS");
+            Assert.assertNotNull("STATE3: SharedLibFeatureApiImplState2a.doWork() returned null", apiRemoved.doWork());
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedLibFeatureApiImplState2a re-load SUCCESS");
 
-            Class<?> implClass2 = cl.loadClass(LIB_IMPL_CLASS_STATE2);
+            Class<?> implClass2 = cl.loadClass(LIB_IMPL_CLASS_STATE2B);
             TestFeatureApi2 api2 = (TestFeatureApi2) implClass2.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: SharedFeatureLibImpl2.doWork() returned null", api2.doWork());
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedFeatureLibImpl2 re-load SUCCESS");
+            Assert.assertNotNull("STATE3: SharedLibFeatureApiImplState2b.doWork() returned null", api2.doWork());
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SharedLibFeatureApiImplState2b re-load SUCCESS");
 
             println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SUCCESS: all impls loaded and invoked");
 
@@ -433,14 +433,14 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
      *          └─ GatewayClassLoader
      *               └─ EquinoxClassLoader [test.feature.api]
      * </pre>
-     * {@code LibraryRemovalFeatureLibImplState1} is the State 1 class — fresh, not yet loaded,
+     * {@code LibraryRemovalFeatureApiImplState1} is the State 1 class — fresh, not yet loaded,
      * so {@code findLoadedClass()} does not short-circuit the lookup.
      * <p>
      * Only the library impl class is loaded via the WAR classloader — the WAR's
      * {@code AppClassLoader} is intentionally <em>not</em> made the initiating
      * classloader for {@code TestFeatureApi} directly. The feature API class is
      * resolved transitively by the shared-library classloader when it resolves
-     * {@code LibraryRemovalFeatureLibImplState1}'s supertype.
+     * {@code LibraryRemovalFeatureApiImplState1}'s supertype.
      */
     public void testLibraryJarRemovedFromSharedLib_LibraryPresent() throws Exception {
         ClassLoader cl = getClass().getClassLoader();
@@ -449,7 +449,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         // Load only the State 1 library impl — do NOT call cl.loadClass(FEATURE_API_CLASS)
         // directly, to avoid making the WAR classloader the initiating CL for TestFeatureApi.
         Class<?> implClass = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_STATE1);
-        println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE1 - LibraryRemovalFeatureLibImplState1 loaded by: "
+        println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE1 - LibraryRemovalFeatureApiImplState1 loaded by: "
             + implClass.getClassLoader());
 
         Object impl = implClass.getDeclaredConstructor().newInstance();
@@ -476,10 +476,10 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE2a - WAR ClassLoader: " + cl);
 
         try {
-            Class<?> removedClass = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_CACHED_API);
+            Class<?> removedClass = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_STATE2A);
             println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE2a - CLASS_STILL_VISIBLE "
                 + "(library AppClassLoader NOT evicted despite server.xml change): "
-                + "LibraryRemovalFeatureLibImplCachedApi loaded by " + removedClass.getClassLoader());
+                + "LibraryRemovalFeatureApiImplState2a loaded by " + removedClass.getClassLoader());
             println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE2a - WARNING: "
                 + "cached interface still visible; library loader may not have been evicted.");
         } catch (ClassNotFoundException cnfe) {
@@ -489,12 +489,12 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         } catch (NoClassDefFoundError ncdfe) {
             println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE2a - NCDFE (unexpected): "
                 + ncdfe.getMessage());
-            Assert.fail("STATE2a: unexpected NoClassDefFoundError for _removed class: " + ncdfe.getMessage());
+            Assert.fail("STATE2a: unexpected NoClassDefFoundError for cached-interface class: " + ncdfe.getMessage());
         }
     }
 
     /**
-     * Test 3, State 2b: hard assertion that {@code LibraryRemovalFeatureLibImplFreshApi} — which
+     * Test 3, State 2b: hard assertion that {@code LibraryRemovalFeatureApiImplState2b} — which
      * implements the never-before-seen {@link TestFeatureApi2} — cannot be loaded after
      * the library JAR has been removed from the fileset.
      * <p>
@@ -508,11 +508,11 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE2b - WAR ClassLoader: " + cl);
 
         try {
-            Class<?> implClass = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_FRESH_API);
+            Class<?> implClass = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_STATE2B);
             println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE2b - CLASS_STILL_VISIBLE "
                 + "(library AppClassLoader NOT evicted despite server.xml change): "
-                + "LibraryRemovalFeatureLibImplFreshApi loaded by " + implClass.getClassLoader());
-            Assert.fail("STATE2b: LibraryRemovalFeatureLibImplFreshApi (fresh TestFeatureApi2) was still visible after "
+                + "LibraryRemovalFeatureApiImplState2b loaded by " + implClass.getClassLoader());
+            Assert.fail("STATE2b: LibraryRemovalFeatureApiImplState2b (fresh TestFeatureApi2) was still visible after "
                 + "library JAR removal — SharedLibraryImpl.delete() did not evict the AppClassLoader. "
                 + "Update this assertion if this is the confirmed baseline.");
         } catch (ClassNotFoundException cnfe) {
@@ -531,7 +531,7 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
      * loadable after the original {@code server.xml} has been restored (library JAR
      * back in the fileset, feature present throughout).
      * <p>
-     * {@code LibraryRemovalFeatureLibImplState3} is the State 3 class (fresh, not cached). All
+     * {@code LibraryRemovalFeatureApiImplState3} is the State 3 class (fresh, not cached). All
      * four Test 3 probe classes are then loaded to confirm the library chain is fully
      * reconstructed after the config restore.
      * <p>
@@ -553,28 +553,28 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
         try {
             // Load the State 3 library impl first — fresh TestFeatureApi3, not cached.
             Class<?> implClass3 = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_STATE3);
-            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureLibImplState3 loaded by: "
+            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureApiImplState3 loaded by: "
                 + implClass3.getClassLoader());
             TestFeatureApi3 api3 = (TestFeatureApi3) implClass3.getDeclaredConstructor().newInstance();
             String result3 = api3.doWork();
-            Assert.assertNotNull("STATE3: LibraryRemovalFeatureLibImplState3.doWork() returned null", result3);
-            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureLibImplState3 SUCCESS: " + result3);
+            Assert.assertNotNull("STATE3: LibraryRemovalFeatureApiImplState3.doWork() returned null", result3);
+            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureApiImplState3 SUCCESS: " + result3);
 
             // Verify all four Test 3 impls load cleanly after library restore.
             Class<?> implClass1 = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_STATE1);
             TestFeatureApi api1 = (TestFeatureApi) implClass1.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: LibraryRemovalFeatureLibImplState1.doWork() returned null", api1.doWork());
-            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureLibImplState1 re-load SUCCESS");
+            Assert.assertNotNull("STATE3: LibraryRemovalFeatureApiImplState1.doWork() returned null", api1.doWork());
+            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureApiImplState1 re-load SUCCESS");
 
-            Class<?> removedClass = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_CACHED_API);
+            Class<?> removedClass = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_STATE2A);
             TestFeatureApi apiRemoved = (TestFeatureApi) removedClass.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: LibraryRemovalFeatureLibImplCachedApi.doWork() returned null", apiRemoved.doWork());
-            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureLibImplCachedApi re-load SUCCESS");
+            Assert.assertNotNull("STATE3: LibraryRemovalFeatureApiImplState2a.doWork() returned null", apiRemoved.doWork());
+            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureApiImplState2a re-load SUCCESS");
 
-            Class<?> implClass2 = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_FRESH_API);
+            Class<?> implClass2 = cl.loadClass(LIBRARY_REMOVAL_IMPL_CLASS_STATE2B);
             TestFeatureApi2 api2 = (TestFeatureApi2) implClass2.getDeclaredConstructor().newInstance();
-            Assert.assertNotNull("STATE3: LibraryRemovalFeatureLibImplFreshApi.doWork() returned null", api2.doWork());
-            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureLibImplFreshApi re-load SUCCESS");
+            Assert.assertNotNull("STATE3: LibraryRemovalFeatureApiImplState2b.doWork() returned null", api2.doWork());
+            println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - LibraryRemovalFeatureApiImplState2b re-load SUCCESS");
 
             println("DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - SUCCESS: all impls loaded and invoked");
 
