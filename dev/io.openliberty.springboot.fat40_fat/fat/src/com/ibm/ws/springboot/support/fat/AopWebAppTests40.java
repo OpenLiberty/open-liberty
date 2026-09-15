@@ -36,6 +36,8 @@ public class AopWebAppTests40 extends AopAbstractTests {
         return "/testName/";
     }
 
+    // The SRVE8046E NullPointerException on AsyncContext dispatch is expected when running with servlet-6.1.
+    // See https://github.com/OpenLiberty/open-liberty/issues/35666
     @Test
     public void testAopWebApplication() throws Exception {
         testAop();

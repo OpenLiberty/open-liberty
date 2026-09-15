@@ -29,6 +29,8 @@ public class AopSpringBootAppTests40 extends AopAbstractTests {
         return AppConfigType.SPRING_BOOT_APP_TAG;
     }
 
+    // The SRVE8046E NullPointerException on AsyncContext dispatch is expected when running with servlet-6.1.
+    // See https://github.com/OpenLiberty/open-liberty/issues/35666
     @Test
     public void testAopSpringBootApplication() throws Exception {
         testAop();
