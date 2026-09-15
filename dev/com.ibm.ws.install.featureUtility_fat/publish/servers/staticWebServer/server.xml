@@ -20,9 +20,14 @@
     <include location="../fatTestPorts.xml" />
 
     <!-- HTTP endpoint configuration -->
+    <!-- keepAliveEnabled="false" prevents Netty from reusing the TCP connection across
+         requests. Without this, Liberty uses chunked transfer encoding on keep-alive
+         connections, and the Netty inactivity timeout (60 s) can fire mid-transfer and
+         silently truncate large JSON downloads (e.g. features-23.0.0.2.json). -->
     <httpEndpoint id="defaultHttpEndpoint"
         httpPort="${bvt.prop.HTTP_default}"
-        httpsPort="${bvt.prop.HTTP_default.secure}" />
+        httpsPort="${bvt.prop.HTTP_default.secure}"
+        keepAliveEnabled="false" />
 
     <!-- Enable directory browsing for static files -->
     <webContainer directoryBrowsingEnabled="true" />
