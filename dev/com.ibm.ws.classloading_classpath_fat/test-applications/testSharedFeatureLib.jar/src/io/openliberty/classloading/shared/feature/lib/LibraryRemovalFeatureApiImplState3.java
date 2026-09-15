@@ -24,9 +24,9 @@ import io.openliberty.classloading.feature.api.TestFeatureApi3;
  * confirms that Liberty recreated the shared-library {@code AppClassLoader} and that
  * the feature bundle is properly wired back into the classloader chain.
  */
-public class LibraryRemovalFeatureLibImplState3 implements TestFeatureApi3 {
+public class LibraryRemovalFeatureApiImplState3 implements TestFeatureApi3 {
     @Override
     public String doWork() {
-        return "LibraryRemovalFeatureLibImplState3.doWork() called successfully — Test 3 State 3";
+        return "LibraryRemovalFeatureApiImplState3.doWork() called successfully — Test 3 State 3";
     }
 }

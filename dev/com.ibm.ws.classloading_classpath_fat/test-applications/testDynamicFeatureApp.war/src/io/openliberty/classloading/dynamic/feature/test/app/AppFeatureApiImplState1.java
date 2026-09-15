@@ -22,10 +22,10 @@ import io.openliberty.classloading.feature.api.TestFeatureApi;
  * that each probe forces {@code ClassLoader.loadClass()} to perform a genuine
  * re-lookup rather than returning a cached result from {@code findLoadedClass()}.
  */
-public class TestFeatureApiImpl implements TestFeatureApi {
+public class AppFeatureApiImplState1 implements TestFeatureApi {
 
     @Override
     public String doWork() {
-        return "TestFeatureApiImpl.doWork() called successfully (state 1)";
+        return "AppFeatureApiImplState1.doWork() called successfully (state 1)";
     }
 }

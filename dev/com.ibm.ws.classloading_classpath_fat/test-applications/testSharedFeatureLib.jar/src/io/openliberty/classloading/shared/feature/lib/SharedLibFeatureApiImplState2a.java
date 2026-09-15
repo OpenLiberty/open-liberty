@@ -15,26 +15,26 @@ package io.openliberty.classloading.shared.feature.lib;
 import io.openliberty.classloading.feature.api.TestFeatureApi;
 
 /**
- * Shared-library implementation of {@link TestFeatureApi} used by the State 2
- * "removed" success probe of Test 2 (shared-library classloader test).
+ * Shared-library implementation of {@link TestFeatureApi} used by the State 2a
+ * cached-interface probe of Test 2 (shared-library classloader test).
  * <p>
  * This class implements the <em>already-cached</em> {@link TestFeatureApi} interface.
  * Because {@code TestFeatureApi} was successfully resolved via the shared-library
  * classloader in State 1, it remains in that loader's internal cache even after the
- * feature bundle is removed. Loading this class in State 2 therefore still succeeds
+ * feature bundle is removed. Loading this class in State 2a therefore still succeeds
  * — the JVM resolves the supertype from the cache without walking to the
  * (now-absent) bundle.
  * <p>
- * This is the expected <em>success</em> probe for State 2: it documents that the
+ * This is the expected <em>success</em> probe for State 2a: it documents that the
  * shared-library {@code AppClassLoader} is not recycled on feature removal and that
- * previously-loaded types remain accessible. Compare with {@link SharedFeatureLibImpl2},
+ * previously-loaded types remain accessible. Compare with {@link SharedLibFeatureApiImplState2b},
  * which implements the never-before-seen {@code TestFeatureApi2} and is expected to
  * produce a {@link NoClassDefFoundError}.
  */
-public class SharedFeatureLibImpl_removed implements TestFeatureApi {
+public class SharedLibFeatureApiImplState2a implements TestFeatureApi {
 
     @Override
     public String doWork() {
-        return "SharedFeatureLibImpl_removed.doWork() called successfully from shared library (state 2, cached interface)";
+        return "SharedLibFeatureApiImplState2a.doWork() called successfully from shared library (state 2a, cached interface)";
     }
 }

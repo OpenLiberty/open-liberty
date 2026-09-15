@@ -15,7 +15,7 @@ package io.openliberty.classloading.shared.feature.lib;
 import io.openliberty.classloading.feature.api.TestFeatureApi;
 
 /**
- * Test 3, State 2 "removed" success probe.
+ * Test 3, State 2a cached-interface probe.
  * <p>
  * This class implements the <em>already-cached</em> {@link TestFeatureApi} interface.
  * Because {@code TestFeatureApi} was successfully resolved via the shared-library
@@ -23,14 +23,14 @@ import io.openliberty.classloading.feature.api.TestFeatureApi;
  * library JAR is removed from the fileset. If the library {@code AppClassLoader} was
  * NOT evicted by {@code SharedLibraryImpl.delete()}, loading this class still succeeds.
  * <p>
- * Compare with {@link LibraryRemovalFeatureLibImplFreshApi}, which implements the never-before-seen
+ * Compare with {@link LibraryRemovalFeatureApiImplState2b}, which implements the never-before-seen
  * {@code TestFeatureApi2} and is expected to produce a {@link NoClassDefFoundError}
  * if the loader was properly evicted.
  */
-public class LibraryRemovalFeatureLibImplCachedApi implements TestFeatureApi {
+public class LibraryRemovalFeatureApiImplState2a implements TestFeatureApi {
 
     @Override
     public String doWork() {
-        return "LibraryRemovalFeatureLibImplCachedApi.doWork() called successfully — Test 3 State 2 (cached interface)";
+        return "LibraryRemovalFeatureApiImplState2a.doWork() called successfully — Test 3 State 2a (cached interface)";
     }
 }

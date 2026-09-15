@@ -24,10 +24,10 @@ import io.openliberty.classloading.feature.api.TestFeatureApi3;
  * walk. A successful load confirms the re-added bundle is properly wired back into
  * the classloader chain.
  */
-public class TestFeatureApiImpl3 implements TestFeatureApi3 {
+public class AppFeatureApiImplState3 implements TestFeatureApi3 {
 
     @Override
     public String doWork() {
-        return "TestFeatureApiImpl3.doWork() called successfully (state 3)";
+        return "AppFeatureApiImplState3.doWork() called successfully (state 3)";
     }
 }

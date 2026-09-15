@@ -24,10 +24,10 @@ import io.openliberty.classloading.feature.api.TestFeatureApi3;
  * A successful load confirms the re-added bundle is properly wired back into the
  * shared-library classloader chain.
  */
-public class SharedFeatureLibImpl3 implements TestFeatureApi3 {
+public class SharedLibFeatureApiImplState3 implements TestFeatureApi3 {
 
     @Override
     public String doWork() {
-        return "SharedFeatureLibImpl3.doWork() called successfully from shared library (state 3)";
+        return "SharedLibFeatureApiImplState3.doWork() called successfully from shared library (state 3)";
     }
 }

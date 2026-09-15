@@ -15,25 +15,25 @@ package io.openliberty.classloading.dynamic.feature.test.app;
 import io.openliberty.classloading.feature.api.TestFeatureApi;
 
 /**
- * In-WAR implementation of {@link TestFeatureApi} used by the State 2 "removed"
- * probe of Test 1 (direct application dependency test).
+ * In-WAR implementation of {@link TestFeatureApi} used by the State 2a
+ * cached-interface probe of Test 1 (direct application dependency test).
  * <p>
  * This class implements the <em>already-cached</em> {@link TestFeatureApi} interface.
  * Because {@code TestFeatureApi} was successfully loaded in State 1 it remains in the
  * WAR classloader's internal cache even after the feature bundle is removed. Loading
- * this class in State 2 therefore still succeeds — the JVM resolves the supertype from
+ * this class in State 2a therefore still succeeds — the JVM resolves the supertype from
  * the cache without walking the delegation chain to the (now-absent) bundle.
  * <p>
- * This is the expected <em>success</em> probe for State 2: it documents that the WAR
+ * This is the expected <em>success</em> probe for State 2a: it documents that the WAR
  * {@code AppClassLoader} is not recycled on feature removal and that previously-loaded
- * types remain accessible. Compare with {@link TestFeatureApiImpl2}, which implements
+ * types remain accessible. Compare with {@link AppFeatureApiImplState2b}, which implements
  * the never-before-seen {@code TestFeatureApi2} and is expected to produce a
  * {@link NoClassDefFoundError}.
  */
-public class TestFeatureApiImpl_removed implements TestFeatureApi {
+public class AppFeatureApiImplState2a implements TestFeatureApi {
 
     @Override
     public String doWork() {
-        return "TestFeatureApiImpl_removed.doWork() called successfully (state 2, cached interface)";
+        return "AppFeatureApiImplState2a.doWork() called successfully (state 2a, cached interface)";
     }
 }
