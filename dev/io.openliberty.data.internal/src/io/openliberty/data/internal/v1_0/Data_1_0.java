@@ -38,6 +38,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Capability that is specific to the version of Jakarta Data.
@@ -94,6 +95,12 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Trivial
     public boolean atLeast(int major, int minor) {
         return major == 1 && minor == 0;
+    }
+
+    @Override
+    @Trivial
+    public EntityManager createEntityManager(EntityManagerFactory emf) {
+        return emf.createEntityManager();
     }
 
     @Override

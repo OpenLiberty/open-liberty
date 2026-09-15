@@ -24,6 +24,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.internal.cdi.RepositoryProducer;
 import jakarta.data.repository.Find;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Interface for version-dependent capability, available as an OSGi service.
@@ -80,6 +82,15 @@ public interface DataVersionCompatibility {
     boolean atLeast(int major, int minor);
 
     /**
+     * Creates a new EntityManager instance.
+     *
+     * @param emf EntityManager factory
+     * @return a new EntityManager instance
+     */
+    @Trivial
+    EntityManager createEntityManager(EntityManagerFactory emf);
+
+    /**
      * Construct partially complete query information.
      *
      * @param repositoryProducer    producer of the repository bean instance.
@@ -101,18 +112,17 @@ public interface DataVersionCompatibility {
      * @param singleTypeElementType Element type of singleType when singleType is an
      *                                  array or collection. Otherwise null.
      */
-    @Trivial
-    public QueryInfo createQueryInfo(RepositoryProducer<?> repositoryProducer,
-                                     Class<?> repositoryInterface,
-                                     Method method,
-                                     QueryType methodType,
-                                     Annotation methodTypeAnno,
-                                     Class<?> entityParamType,
-                                     boolean isOptional,
-                                     Class<?> returnArrayType,
-                                     Class<?> multiType,
-                                     Class<?> singleType,
-                                     Class<?> singleTypeElementType);
+    QueryInfo createQueryInfo(RepositoryProducer<?> repositoryProducer,
+                              Class<?> repositoryInterface,
+                              Method method,
+                              QueryType methodType,
+                              Annotation methodTypeAnno,
+                              Class<?> entityParamType,
+                              boolean isOptional,
+                              Class<?> returnArrayType,
+                              Class<?> multiType,
+                              Class<?> singleType,
+                              Class<?> singleTypeElementType);
 
     /**
      * Obtains the Count annotation if present on the method. Otherwise null.

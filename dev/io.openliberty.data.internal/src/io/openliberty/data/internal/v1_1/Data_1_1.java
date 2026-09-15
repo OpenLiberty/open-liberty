@@ -14,6 +14,8 @@ package io.openliberty.data.internal.v1_1;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.Collection;
@@ -39,6 +41,7 @@ import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
@@ -58,11 +61,27 @@ import jakarta.data.repository.stateful.Refresh;
 import jakarta.data.repository.stateful.Remove;
 import jakarta.data.restrict.Restriction;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Capability that is specific to the version of Jakarta Data.
  */
 public class Data_1_1 implements DataVersionCompatibility {
+    /**
+     * The class jakarta.persistence.EntityManager.CreationOption[]
+     * if Jakarta Persistence 4.0+ is used. Otherwise null (a temporary
+     * special case to allow experimentation with EclipseLink's Persistence
+     * 3.2 implementation). TODO remove the special case
+     */
+    private final Class<?> CreationOptionArrayClass;
+
+    /**
+     * Empty array of jakarta.persistence.EntityManager.CreationOption[]
+     * if Jakarta Persistence 4.0+ is used. Otherwise null (a temporary
+     * special case to allow experimentation with EclipseLink's Persistence
+     * 3.2 implementation). TODO remove the special case
+     */
+    private final Object EmptyCreationOptions;
 
     /**
      * Annotations that represent lifecycle operations that are allowed for
@@ -128,10 +147,54 @@ public class Data_1_1 implements DataVersionCompatibility {
                            PageRequest.class,
                            Restriction.class);
 
+    public Data_1_1() {
+        String className = "jakarta.persistence.EntityManager$CreationOption";
+        Class<?> c;
+        Object array;
+        try {
+            Class<?> componentClass = EntityManager.class //
+                            .getClassLoader() //
+                            .loadClass(className);
+            c = componentClass.arrayType();
+            array = Array.newInstance(componentClass, 0);
+        } catch (ClassNotFoundException x) {
+            c = null;
+            array = null;
+        }
+        CreationOptionArrayClass = c;
+        EmptyCreationOptions = array;
+    }
+
     @Override
     @Trivial
     public boolean atLeast(int major, int minor) {
         return major == 1 && minor <= 1;
+    }
+
+    @Override
+    @Trivial
+    public EntityManager createEntityManager(EntityManagerFactory emf) {
+        EntityManager em;
+
+        if (CreationOptionArrayClass == null)
+            em = emf.createEntityManager();
+        else {
+            try { // em = emf.createEntityManager(CreationOption...)
+                em = (EntityManager) emf.getClass() //
+                                .getMethod("createEntityManager",
+                                           CreationOptionArrayClass) //
+                                .invoke(emf,
+                                        new Object[] { EmptyCreationOptions });
+            } catch (IllegalAccessException | NoSuchMethodException x) {
+                throw new RuntimeException(x); // should be impossible
+            } catch (InvocationTargetException x) {
+                if (x.getCause() instanceof RuntimeException rx)
+                    throw rx;
+                throw new DataException(x.getCause());
+            }
+        }
+
+        return em;
     }
 
     @Override

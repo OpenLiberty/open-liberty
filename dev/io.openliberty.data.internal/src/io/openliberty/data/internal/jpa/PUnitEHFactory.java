@@ -104,7 +104,7 @@ public class PUnitEHFactory extends EntityHandlerFactory {
     @Override
     @Trivial
     public EntityManager createEntityManager() {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = provider.compat.createEntityManager(emf);
         em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -119,7 +119,7 @@ public class PUnitEHFactory extends EntityHandlerFactory {
             return emf.unwrap(DataSource.class);
         } catch (PersistenceException x) {
             try {
-                EntityManager em = emf.createEntityManager();
+                EntityManager em = provider.compat.createEntityManager(emf);
                 return em.unwrap(DataSource.class);
             } catch (PersistenceException xx) {
                 throw exc(UnsupportedOperationException.class,
