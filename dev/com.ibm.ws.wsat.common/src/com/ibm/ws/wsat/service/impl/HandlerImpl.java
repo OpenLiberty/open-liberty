@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright 2019,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -234,6 +234,20 @@ public class HandlerImpl {
                 wsatTran = WSATTransaction.getTran(globalId);
                 if (wsatTran == null) {
                     throw new WSATException(Tr.formatMessage(TC, "NO_WSAT_TRAN_CWLIB0201", globalId));
+                }
+
+                // Guard against the case where the transaction was imported in a previous
+                // request but registration with the coordinator failed before it could
+                // complete.  The coordinator has no record of this participant, so if we
+                // were to proceed silently the application work would run in a transaction
+                // that will never receive Prepare/Commit/Rollback — guaranteeing a phantom
+                // commit.  Re-attempt registration now so the coordinator is aware of us
+                // before we allow the application to run.
+                if (!wsatTran.isRegistered()) {
+                    if (TC.isDebugEnabled()) {
+                        Tr.debug(TC, "Existing WSAT transaction {0} has not been registered; re-attempting registration", globalId);
+                    }
+                    registrationService.registerParticipant(globalId, wsatTran);
                 }
             }
         } finally {
