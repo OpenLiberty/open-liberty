@@ -444,4 +444,14 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	public String getContentEncryptionAlgorithm() {
 		return null;
 	}
+
+	@Override
+	public String getWorkloadIdentityClaim() {
+		return null;
+	}
+
+	@Override
+	public String getWorkloadIdentity() {
+		return null;
+	}
 }
