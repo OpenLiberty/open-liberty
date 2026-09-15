@@ -340,68 +340,31 @@ public class ArtifactDownloader implements AutoCloseable {
         final String userAgentValue = calculateUserAgent();
         String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
 
+        URL url = address.toURL();
+        URLConnection conn = url.openConnection();
+        conn.setRequestProperty("User-Agent", userAgentValue);
+        if (!repoEncodedAuth.isEmpty()) {
+            conn.setRequestProperty("Authorization", repoEncodedAuth);
+        }
+        conn.connect();
+
         destination.getParentFile().mkdirs();
 
-        final int MAX_ATTEMPTS = 3;
-        IOException lastException = null;
-
-        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-            URL url = address.toURL();
-            URLConnection conn = url.openConnection();
-            conn.setRequestProperty("User-Agent", userAgentValue);
-            if (!repoEncodedAuth.isEmpty()) {
-                conn.setRequestProperty("Authorization", repoEncodedAuth);
-            }
-            conn.connect();
-
-            long expectedBytes = conn.getContentLengthLong();
-
-            File tempFile = File.createTempFile(destination.getName(), null, destination.getParentFile());
-            long totalRead = 0;
-            try (InputStream in = conn.getInputStream(); OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile))) {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                int numRead;
-                long progressCounter = 0;
-                while ((numRead = in.read(buffer)) != -1) {
-                    progressCounter += numRead;
-                    totalRead += numRead;
-                    if (progressCounter / PROGRESS_CHUNK > 0) {
-                        progressCounter = progressCounter - PROGRESS_CHUNK;
-                    }
-                    out.write(buffer, 0, numRead);
+        try (InputStream in = conn.getInputStream(); OutputStream out = new BufferedOutputStream(new FileOutputStream(destination))) {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int numRead;
+            long progressCounter = 0;
+            while ((numRead = in.read(buffer)) != -1) {
+                progressCounter += numRead;
+                if (progressCounter / PROGRESS_CHUNK > 0) {
+                    progressCounter = progressCounter - PROGRESS_CHUNK;
                 }
-            } catch (FileNotFoundException e) {
-                tempFile.delete();
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
-                                                 destination.toString());
-            } catch (IOException e) {
-                tempFile.delete();
-                lastException = e;
-                logger.fine("Attempt " + attempt + " failed downloading " + ArtifactDownloaderUtils.getFileNameFromURL(address.toString())
-                            + ": " + e.getMessage());
-                continue;
+                out.write(buffer, 0, numRead);
             }
-
-            if (expectedBytes > 0 && totalRead != expectedBytes) {
-                tempFile.delete();
-                lastException = new IOException("Download of " + ArtifactDownloaderUtils.getFileNameFromURL(address.toString())
-                                                + " was truncated: expected " + expectedBytes + " bytes but received " + totalRead
-                                                + " (attempt " + attempt + ")");
-                logger.fine(lastException.getMessage());
-                continue;
-            }
-
-            destination.delete();
-            if (!tempFile.renameTo(destination)) {
-                logger.fine("Could not rename " + tempFile.getName() + " to: " + destination.getName());
-                tempFile.delete();
-            }
-            return;
+        } catch (FileNotFoundException e) {
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
+                                             destination.toString());
         }
-
-        throw lastException != null ? lastException
-                                    : new IOException("Failed to download " + ArtifactDownloaderUtils.getFileNameFromURL(address.toString())
-                                                      + " after " + MAX_ATTEMPTS + " attempts");
     }
 
     private String calculateUserAgent() {
