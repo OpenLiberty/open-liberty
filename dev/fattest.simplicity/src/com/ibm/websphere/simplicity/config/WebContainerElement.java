@@ -107,6 +107,7 @@ public class WebContainerElement extends ConfigElement {
     private Boolean useMaxRequestsizeforMultipart; //PI75528
     private Boolean allowAbsoluteFileNameForPartWrite; //PH62271
     private String displayCustomizedExceptionText;
+    private Boolean skipEncodedCharVerification;
 
     /**
      * @return the listeners
@@ -1134,6 +1135,21 @@ public class WebContainerElement extends ConfigElement {
         this.displayCustomizedExceptionText = displayCustomizedExceptionText;
     }
 
+    /**
+     * @return the skipEncodedCharVerification
+     */
+    public Boolean getSkipEncodedCharVerification() {
+        return skipEncodedCharVerification;
+    }
+
+    /**
+     * @param skipEncodedCharVerification true to skip encoded-character verification for %2F and %5C in URIs
+     */
+    @XmlAttribute(name = "skipEncodedCharVerification")
+    public void setSkipEncodedCharVerification(Boolean skipEncodedCharVerification) {
+        this.skipEncodedCharVerification = skipEncodedCharVerification;
+    }
+
     /*
      * listeners
      * decodeurlasutf8
@@ -1371,6 +1387,9 @@ public class WebContainerElement extends ConfigElement {
         
         if (displayCustomizedExceptionText != null)
             buf.append("displayCustomizedExceptionText=\"" + displayCustomizedExceptionText + "\" ");
+
+        if (skipEncodedCharVerification != null)
+            buf.append("skipEncodedCharVerification=\"" + skipEncodedCharVerification + "\" ");
 
         buf.append("}");
         return buf.toString();
