@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -168,7 +168,7 @@ public class CheckpointRule implements TestRule {
     private final Set<String> unsupportedRepeatIDs = new HashSet<>(Arrays.asList(EE6FeatureReplacementAction.ID, EE7FeatureReplacementAction.ID));
     private String[] checkpointIgnoreMessages;
     private boolean runNormalTests = true;
-    private boolean checkrestart;
+    private boolean checkrestart = true;
 
     /**
      * Sets the optional function to do class setup before running the normal and checkpoint mode for the test
