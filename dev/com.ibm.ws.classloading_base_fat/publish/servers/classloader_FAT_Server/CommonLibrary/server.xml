@@ -1,0 +1,52 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>classloadingfatlibertyinternals-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <application type="war" id="sharedLib1" name="sharedLib1" location="sharedLib.war">
+        <classloader privateLibraryRef="AppSharedLibraryA, AppSharedLibraryB, AppSharedLibraryC" />
+    </application>
+
+    <application type="war" id="sharedLib2" name="sharedLib2" location="sharedLib.war">
+        <classloader privateLibraryRef="AppSharedLibraryA, AppSharedLibraryB, AppSharedLibraryC" />
+    </application>
+
+    <application type="war" id="sharedLib3" name="sharedLib3" location="sharedLib.war">
+        <classloader commonLibraryRef="AppSharedLibraryA, AppSharedLibraryB" />
+    </application>
+
+    <application type="war" id="sharedLib4" name="sharedLib4" location="sharedLib.war">
+        <classloader commonLibraryRef="AppSharedLibraryA, AppSharedLibraryB, AppSharedLibraryC" />
+    </application>
+
+    <application type="war" id="sharedLib5" name="sharedLib5" location="sharedLib.war">
+        <classloader privateLibraryRef="AppSharedLibraryA" commonLibraryRef="AppSharedLibraryB" />
+    </application>
+
+    <library id="AppSharedLibraryA">
+        <fileset dir="${server.config.dir}/SharedLibraryA" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <library id="AppSharedLibraryB">
+        <fileset dir="${server.config.dir}/SharedLibraryB" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <library id="AppSharedLibraryC">
+        <fileset dir="${server.config.dir}/SharedLibraryC" includes="*.jar" scanInterval="5s"/>
+    </library>
+</server>

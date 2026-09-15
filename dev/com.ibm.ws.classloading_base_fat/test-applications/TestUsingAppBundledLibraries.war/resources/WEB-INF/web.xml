@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+  <display-name>TestUsingAppBundledLibraries</display-name>
+  <servlet>
+    <servlet-name>GetTempDirectoryServlet</servlet-name>
+    <servlet-class>test.delegation.bundled.GetTempDirectoryServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetTempDirectoryServlet</servlet-name>
+    <url-pattern>/GetTempDirectory</url-pattern>
+  </servlet-mapping>
+  <filter>
+    <filter-name>TestFilter</filter-name>
+    <filter-class>test.delegation.bundled.TestFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>TestFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+</web-app>
