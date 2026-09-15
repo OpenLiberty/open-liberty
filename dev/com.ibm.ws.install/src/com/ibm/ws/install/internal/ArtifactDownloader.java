@@ -337,20 +337,21 @@ public class ArtifactDownloader implements AutoCloseable {
     }
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
-        final String userAgentValue = calculateUserAgent();
-        String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
-
         URL url = address.toURL();
         URLConnection conn = url.openConnection();
+
+        final String userAgentValue = calculateUserAgent();
+        String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
         conn.setRequestProperty("User-Agent", userAgentValue);
         if (!repoEncodedAuth.isEmpty()) {
             conn.setRequestProperty("Authorization", repoEncodedAuth);
         }
+
         conn.connect();
 
         destination.getParentFile().mkdirs();
-
-        try (InputStream in = conn.getInputStream(); OutputStream out = new BufferedOutputStream(new FileOutputStream(destination))) {
+        File tempFile = File.createTempFile(destination.getName(), null, destination.getParentFile());
+        try (InputStream in = conn.getInputStream(); OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile))) {
             byte[] buffer = new byte[BUFFER_SIZE];
             int numRead;
             long progressCounter = 0;
@@ -361,9 +362,15 @@ public class ArtifactDownloader implements AutoCloseable {
                 }
                 out.write(buffer, 0, numRead);
             }
+
         } catch (FileNotFoundException e) {
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                              destination.toString());
+        }
+
+        if (destination.exists() || !tempFile.renameTo(destination)) {
+            logger.fine("Could not rename " + tempFile.getName() + " to: " + destination.getName());
+            tempFile.delete();
         }
     }
 
