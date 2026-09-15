@@ -16,10 +16,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -68,6 +72,7 @@ public class LTPAKeyPasswordTests {
 
     private static final String LTPA_CONFIG_WEBAS = "ltpaKeyPasswordTests/ltpaConfigWithKeysPassword_WebAS.xml";
     private static final String LTPA_CONFIG_MYKEYSPASSWORD = "ltpaKeyPasswordTests/ltpaConfigWithKeysPassword_myKeysPassword.xml"; // pragma: allowlist secret
+    private static final String LTPA_CONFIG_USE_ENCRYPTION_KEY = "ltpaKeyPasswordTests/ltpaConfigWithUseEncryptionKey.xml";
 
     private static final String KEYSTORE_PASSWORD_NAME = "keystore_password";
     private static final String KEYSTORE_PASSWORD_ENTRY = KEYSTORE_PASSWORD_NAME + "=myKeystorePassword";
@@ -75,11 +80,24 @@ public class LTPAKeyPasswordTests {
     private static final String LTPA_KEYS_PASSWORD_NAME = "ltpa_keys_password";
     private static final String LTPA_KEYS_PASSWORD_ENTRY = LTPA_KEYS_PASSWORD_NAME + "=myLtpaKeysPassword";
 
+    // Variable names used by AESKeyManager for useEncryptionKey decryption
+    private static final String WLP_PASSWORD_ENCRYPTION_KEY_NAME = "wlp.password.encryption.key";
+    private static final String WLP_AES_ENCRYPTION_KEY_NAME      = "wlp.aes.encryption.key";
+
+    // Key string used to generate passwordKey/ltpa.keys at test-data creation time.
+    private static final String TEST_PASSWORD_ENCRYPTION_KEY = "myLtpaEncryptionKey"; // pragma: allowlist secret
+
+    // Base64 key string used to generate passwordBase64Key/ltpa.keys at test-data creation time.
+    // Recorded from: securityUtility generateAESKey
+    private static final String TEST_AES_ENCRYPTION_KEY_B64 = "ZOYs2pmTFQTzIyIqe2bmbWLSBrH+b2oAH2Fegz4jLII="; // pragma: allowlist secret
+
     private static String FIPS140_3_FOLDER = "fips140-3/";
     private static String LTPA_KEYS_WEBAS = "WebAS/ltpa.keys";
     private static String LTPA_KEYS_MYKEYSPASSWORD = "myKeysPassword/ltpa.keys"; // pragma: allowlist secret
     private static String LTPA_KEYS_MYLTPAKEYSPASSWORD = "myLtpaKeysPassword/ltpa.keys"; // pragma: allowlist secret
     private static String LTPA_KEYS_MYKEYSTOREPASSWORD = "myKeystorePassword/ltpa.keys"; // pragma: allowlist secret
+    private static final String LTPA_KEYS_PASSWORDKEY    = "passwordKey/ltpa.keys";
+    private static final String LTPA_KEYS_BASE64KEY      = "passwordBase64Key/ltpa.keys";
 
     @Rule
     public TestRule passwordChecker = new LeakedPasswordChecker(server);
@@ -147,6 +165,7 @@ public class LTPAKeyPasswordTests {
             server.deleteFileFromLibertyServerRoot(LTPA_KEYS_BACKUP_LOCATION);
             server.deleteFileFromLibertyServerRoot(SERVER_ENV_LOCATION);
             server.deleteAllDropinConfigurations();
+            removeBootstrapProperties(WLP_PASSWORD_ENCRYPTION_KEY_NAME, WLP_AES_ENCRYPTION_KEY_NAME);
         }
 
         Log.info(thisClass, "after()", "exiting");
@@ -371,6 +390,148 @@ public class LTPAKeyPasswordTests {
         verifyUnsuccessfulFormLogin();
     }
 
+    // -----------------------------------------------------------------------
+    // useEncryptionKey tests
+    // -----------------------------------------------------------------------
+
+    /**
+     * Server with useEncryptionKey="true" and wlp.password.encryption.key set to the key that
+     * was used to encrypt passwordKey/ltpa.keys. Expects CWWKS4105I and a successful form-login.
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void testUseEncryptionKey_wlpPasswordEncryptionKey_serverStarts() throws Exception {
+        copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        addBootstrapProperty(WLP_PASSWORD_ENCRYPTION_KEY_NAME, TEST_PASSWORD_ENCRYPTION_KEY);
+        server.startServer(true);
+
+        verifyLtpaConfigurationReadyMessageFound();
+        verifySuccessfulFormLogin();
+    }
+
+    /**
+     * Server with useEncryptionKey="true" and wlp.aes.encryption.key set to the key that
+     * was used to encrypt passwordBase64Key/ltpa.keys. Expects CWWKS4105I and a successful form-login.
+     */
+    @Test
+    public void testUseEncryptionKey_wlpAesEncryptionKey_serverStarts() throws Exception {
+        copyLtpaKeysIntoServer(LTPA_KEYS_BASE64KEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        addBootstrapProperty(WLP_AES_ENCRYPTION_KEY_NAME, TEST_AES_ENCRYPTION_KEY_B64);
+        server.startServer(true);
+
+        verifyLtpaConfigurationReadyMessageFound();
+        verifySuccessfulFormLogin();
+    }
+
+    /**
+     * Server with useEncryptionKey="true" and wlp.password.encryption.key: stop then restart
+     * with the same bootstrap.properties. Expects CWWKS4105I on both starts and the LTPA cookie
+     * from the first start to remain valid on the second.
+     */
+    @Test
+    public void testUseEncryptionKey_wlpPasswordEncryptionKey_stopRestart() throws Exception {
+        copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        addBootstrapProperty(WLP_PASSWORD_ENCRYPTION_KEY_NAME, TEST_PASSWORD_ENCRYPTION_KEY);
+        server.startServer(true);
+
+        verifyLtpaConfigurationReadyMessageFound();
+        String cookie = verifySuccessfulFormLogin();
+
+        restartServer(false);
+
+        verifyLtpaConfigurationReadyMessageFound();
+        verifySuccessfulFormLoginWithCookie(cookie);
+    }
+
+    /**
+     * Server with useEncryptionKey="true" and wlp.aes.encryption.key: stop then restart with
+     * the same bootstrap.properties. Expects CWWKS4105I on both starts and the LTPA cookie from
+     * the first start to remain valid on the second.
+     */
+    @Test
+    public void testUseEncryptionKey_wlpAesEncryptionKey_stopRestart() throws Exception {
+        copyLtpaKeysIntoServer(LTPA_KEYS_BASE64KEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        addBootstrapProperty(WLP_AES_ENCRYPTION_KEY_NAME, TEST_AES_ENCRYPTION_KEY_B64);
+        server.startServer(true);
+
+        verifyLtpaConfigurationReadyMessageFound();
+        String cookie = verifySuccessfulFormLogin();
+
+        restartServer(false);
+
+        verifyLtpaConfigurationReadyMessageFound();
+        verifySuccessfulFormLoginWithCookie(cookie);
+    }
+
+    /**
+     * Server with useEncryptionKey="true" but wlp.password.encryption.key set to a different
+     * (wrong) value. The decryption of the LTPA file fails; expects CWWKS4106E.
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    @ExpectedFFDC({ "javax.crypto.BadPaddingException",
+                    "javax.security.auth.login.CredentialException",
+                    "java.lang.IllegalArgumentException",
+                    "com.ibm.websphere.security.auth.TokenCreationFailedException" })
+    public void testUseEncryptionKey_wrongPasswordEncryptionKey_fails() throws Exception {
+        copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        addBootstrapProperty(WLP_PASSWORD_ENCRYPTION_KEY_NAME, "wrongEncryptionKey"); // pragma: allowlist secret
+        server.startServer(true);
+
+        verifyUnableToReadOrCreateLtpaKeysErrorMessageFound();
+        verifyUnsuccessfulFormLogin();
+    }
+
+    /**
+     * Server with useEncryptionKey="true" but wlp.aes.encryption.key set to a different (wrong)
+     * valid Base64 AES key. The decryption of the LTPA file fails; expects CWWKS4106E.
+     */
+    @Test
+    @ExpectedFFDC({ "javax.crypto.BadPaddingException",
+                    "javax.security.auth.login.CredentialException",
+                    "java.lang.IllegalArgumentException",
+                    "com.ibm.websphere.security.auth.TokenCreationFailedException" })
+    public void testUseEncryptionKey_wrongAesEncryptionKey_fails() throws Exception {
+        // A valid 256-bit Base64 key that is NOT the one used to encrypt the test file.
+        String wrongKey = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; // pragma: allowlist secret
+        copyLtpaKeysIntoServer(LTPA_KEYS_BASE64KEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        addBootstrapProperty(WLP_AES_ENCRYPTION_KEY_NAME, wrongKey);
+        server.startServer(true);
+
+        verifyUnableToReadOrCreateLtpaKeysErrorMessageFound();
+        verifyUnsuccessfulFormLogin();
+    }
+
+    /**
+     * Server with useEncryptionKey="true" but neither wlp.password.encryption.key nor
+     * wlp.aes.encryption.key set in bootstrap.properties. Liberty logs CWWKS4122E (config
+     * validation failure) rather than attempting decryption.
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException",
+                    "com.ibm.websphere.security.auth.TokenCreationFailedException",
+                    "javax.security.auth.login.CredentialException" })
+    public void testUseEncryptionKey_noKeyVariable_fails() throws Exception {
+        copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        // No bootstrap properties added — neither key variable is present.
+        server.startServer(true);
+
+        verifyUseEncryptionKeyNotConfiguredErrorMessageFound();
+        verifyUnsuccessfulFormLogin();
+    }
+
+    // -----------------------------------------------------------------------
+    // Helper methods
+    // -----------------------------------------------------------------------
+
     private void copyLtpaKeysIntoServer(String ltpaKeysFile) throws Exception {
         server.copyFileToLibertyServerRoot("resources/security", "ltpaKeyPasswordTests/" + ltpaKeysFile);
     }
@@ -382,6 +543,44 @@ public class LTPAKeyPasswordTests {
                 output.write(entry + System.lineSeparator());
             }
         }
+    }
+
+    /**
+     * Appends {@code key=value} as a raw line to bootstrap.properties without going through
+     * {@link java.util.Properties#store}, which would re-escape every backslash and equals sign
+     * in the existing content (corrupting trace specs and other entries).
+     */
+    private void addBootstrapProperty(String key, String value) throws Exception {
+        String bootstrapPath = server.getServerRoot() + File.separator + "bootstrap.properties";
+        String line = System.lineSeparator() + key + "=" + value;
+        Files.write(Paths.get(bootstrapPath),
+                    line.getBytes(StandardCharsets.UTF_8),
+                    java.nio.file.StandardOpenOption.APPEND);
+    }
+
+    /**
+     * Removes lines whose key prefix matches any of {@code keys} from bootstrap.properties,
+     * operating on raw text so existing content is never re-escaped.
+     */
+    private void removeBootstrapProperties(String... keys) throws Exception {
+        String bootstrapPath = server.getServerRoot() + File.separator + "bootstrap.properties";
+        java.nio.file.Path path = Paths.get(bootstrapPath);
+        if (!path.toFile().exists()) return;
+        Set<String> prefixes = new HashSet<>(Arrays.asList(keys));
+        List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+        List<String> kept = new ArrayList<>();
+        for (String line : lines) {
+            String trimmed = line.trim();
+            boolean remove = false;
+            for (String k : prefixes) {
+                if (trimmed.startsWith(k + "=") || trimmed.equals(k)) {
+                    remove = true;
+                    break;
+                }
+            }
+            if (!remove) kept.add(line);
+        }
+        Files.write(path, kept, StandardCharsets.UTF_8);
     }
 
     private void verifyLtpaConfigurationReadyMessageFound() {
@@ -401,6 +600,12 @@ public class LTPAKeyPasswordTests {
     private void verifyLtpaPasswordNotSetErrorMessageFound() {
         assertNotNull("Expected LTPA password not set error message not found in the logs.", server.waitForStringInLog("CWWKS4118E"));
         serverShutdownMessages.add("CWWKS4118E");
+    }
+
+    private void verifyUseEncryptionKeyNotConfiguredErrorMessageFound() {
+        assertNotNull("Expected useEncryptionKey not configured error message (CWWKS4122E) not found in the logs.",
+                      server.waitForStringInLog("CWWKS4122E"));
+        serverShutdownMessages.add("CWWKS4122E");
     }
 
     private void verifyReEncryptingLtpaKeysMessageFound() {

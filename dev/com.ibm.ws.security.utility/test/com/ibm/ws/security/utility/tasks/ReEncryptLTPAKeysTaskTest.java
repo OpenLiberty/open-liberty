@@ -309,4 +309,32 @@ public class ReEncryptLTPAKeysTaskTest {
         }
     }
 
+    // -----------------------------------------------------------------------
+    // checkRequiredArguments — no key-material args at all
+    // -----------------------------------------------------------------------
+
+    /**
+     * When only file arguments are present and none of the three key-material
+     * arguments ({@code --currentPassword}, {@code --newPassword},
+     * {@code --ckdsLabel}) are supplied, validation must reject the invocation.
+     * This covers the {@code keyArgCount == 0} branch of
+     * {@link ReEncryptLTPAKeysTask#checkRequiredArguments}.
+     */
+    @Test
+    public void checkRequiredArguments_noKeyArgs_throws() {
+        String[] args = { "reEncryptLTPAKeys",
+                          "--currentFile=ltpa.keys",
+                          "--newFile=ltpa-new.keys" };
+        try {
+            task.checkRequiredArguments(args);
+            fail("Expected IllegalArgumentException when no key-material args are supplied");
+        } catch (IllegalArgumentException e) {
+            String msg = e.getMessage();
+            assertTrue("Message must mention at least one key-material arg, got: " + msg,
+                       msg.contains("--currentPassword") ||
+                       msg.contains("--newPassword")     ||
+                       msg.contains("--ckdsLabel"));
+        }
+    }
+
 }

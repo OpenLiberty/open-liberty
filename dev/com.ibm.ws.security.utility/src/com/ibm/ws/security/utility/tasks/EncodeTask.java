@@ -218,7 +218,7 @@ public class EncodeTask extends BaseCommandTask {
         if (encoding != null && encoding.trim().equalsIgnoreCase("aes")) {
 
             // ICSF path: type=ICSF + label only, no keyring needed.
-            // encipher_internal() consults AESKeyManager.getSecretKeyResolver() and uses AES_V2 automatically.
+            // encipher_internal() detects a registered SecretKeyResolver via AESKeyManager.hasCustomSecretKeyResolver() and uses AES_V2 automatically.
             if ("ICSF".equalsIgnoreCase(type) && label != null && !label.isEmpty()) {
                 AESKeyManager.setSecretKeyResolver(new ICSFSecretKeyResolver(label));
                 return p;
