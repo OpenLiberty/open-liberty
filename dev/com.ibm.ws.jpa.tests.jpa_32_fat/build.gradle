@@ -60,33 +60,28 @@ dependencies {
     transitive = false
   }
 
-  // Hibernate 8 (JPA 4.0 container backwards-compatibility repeat phase)
-  // reuses withoutJakartaAPI closure defined above
-  hibernateJPA40 "org.hibernate.orm:hibernate-core:${hibernate40Version}",              withoutJakartaAPI
-  hibernateJPA40 "org.hibernate.orm:hibernate-community-dialects:${hibernate40Version}", withoutJakartaAPI
-  hibernateJPA40 "org.hibernate.orm:hibernate-scan-jandex:${hibernate40Version}",        withoutJakartaAPI
+  // Hibernate 8 (JPA 4.0 persistence-4.0 repeat phase)
+  // Core Hibernate 8 runtime
+  hibernateJPA40("org.hibernate.orm:hibernate-core:${hibernate40Version}")              { transitive = false }
+  hibernateJPA40("org.hibernate.orm:hibernate-community-dialects:${hibernate40Version}"){ transitive = false }
+  hibernateJPA40("org.hibernate.orm:hibernate-scan-jandex:${hibernate40Version}")       { transitive = false }
   hibernateJPA40("org.hibernate.orm:hibernate-jcache:${hibernate40Version}") {
     exclude group: 'org.hibernate.orm', module: 'hibernate-core'
     exclude group: 'org.jboss.logging', module: 'jboss-logging'
   }
-  hibernateJPA40("org.ehcache:ehcache:3.10.8:jakarta") {
-    transitive = false
-  }
-  hibernateJPA40("javax.cache:cache-api:1.1.1") {
-    transitive = false
-  }
-  hibernateJPA40("net.bytebuddy:byte-buddy:1.18.10")           { transitive = false }
-  hibernateJPA40("org.antlr:antlr4-runtime:4.13.2")            { transitive = false }
+
+  // Hibernate runtime dependencies
+  hibernateJPA40("net.bytebuddy:byte-buddy:1.18.10")            { transitive = false }
+  hibernateJPA40("org.antlr:antlr4-runtime:4.13.2")             { transitive = false }
   hibernateJPA40("org.jboss.logging:jboss-logging:3.6.3.Final") { transitive = false }
   hibernateJPA40("org.hibernate.models:hibernate-models:1.2.0") { transitive = false }
-  hibernateJPA40("io.smallrye:jandex:3.6.0")                   { transitive = false }
-  hibernateJPA40("org.glassfish.jaxb:jaxb-runtime:4.0.9")      { transitive = false }
-  hibernateJPA40("org.glassfish.jaxb:jaxb-core:4.0.9")         { transitive = false }
-  hibernateJPA40("com.sun.istack:istack-commons-runtime:4.1.2") { transitive = false }
+  hibernateJPA40("io.smallrye:jandex:3.6.0")                    { transitive = false }
+  hibernateJPA40("org.ehcache:ehcache:3.10.8:jakarta")          { transitive = false }
+  hibernateJPA40("javax.cache:cache-api:1.1.1")                 { transitive = false }
   hibernateJPA40("org.slf4j:slf4j-api:1.7.36")                  { transitive = false }
   hibernateJPA40("org.slf4j:slf4j-simple:1.7.36")               { transitive = false }
   hibernateJPA40("org.eclipse.angus:angus-activation:2.0.3")    { transitive = false }
-  hibernateJPA40("org.glassfish.jaxb:txw2:4.0.9")              { transitive = false }
+
 }
 
 task addJPAFATTools (type: Copy) {
@@ -104,6 +99,10 @@ task addhibernateJPA32(type: Copy) {
 
 task addhibernateJPA40(type: Copy) {
   shouldRunAfter jar
+  // Clean first to remove any stale jars from previous Hibernate versions
+  doFirst {
+    delete new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_hibernate')
+  }
   from configurations.hibernateJPA40
   into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_hibernate')
 }
