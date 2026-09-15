@@ -19,11 +19,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE12Action;
 
 /**
- * Repeat phase: run the JPA 3.2 test suite against the JPA 4.0 container
- * (persistenceContainer-4.0) with Hibernate 8 as the provider.
- *
- * This validates backwards compatibility — JPA 3.2 applications must continue
- * to function when deployed on a server running the JPA 4.0 container feature.
+ * Repeat phase: run the JPA 3.2 test suite against the JPA 4.0 persistence
+ * feature (persistence-4.0) with Hibernate 8 as the provider.
  */
 public class RepeatWithJPA40Hibernate extends JakartaEE12Action {
     public static final String ID = "JPA40_HIBERNATE8";
@@ -35,7 +32,7 @@ public class RepeatWithJPA40Hibernate extends JakartaEE12Action {
 
     @Override
     public String toString() {
-        return "JPA 3.2 apps on persistenceContainer-4.0 with Hibernate 8 (backwards compatibility)";
+        return "JPA 3.2 apps on persistence-4.0 with Hibernate 8";
     }
 
     @Override
