@@ -23,9 +23,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpStatelessAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.PermitAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
@@ -36,12 +36,14 @@ import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 @RunWith(FATRunner.class)
 public class PermitAllTestsStateless extends AbstractPermitAll {
 
-    @Server("mcp-stateless-server-auth")
-    public static LibertyServer server;
+    private static final String APP_NAME = "permitAllToolsStateless";
+
+    // Server is managed by McpStatelessAuthServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpStatelessAuthServerSuite.server;
     Logger logger = Logger.getLogger(PermitAllTestsStateless.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/securityTests", StateMode.STATELESS);
+    public McpClient client = new McpClient(server, "/" + APP_NAME, StateMode.STATELESS);
 
     /** {@inheritDoc} */
     @Override
@@ -51,16 +53,17 @@ public class PermitAllTestsStateless extends AbstractPermitAll {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "securityTests.war").addClass(PermitAllTools.class);
+        server.setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(PermitAllTools.class);
         ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-        assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        assertNotNull(server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("apps/" + APP_NAME + ".war");
+        server.waitForStringInLog("CWWKZ0009I:.*" + APP_NAME);
+        server.removeInstalledAppForValidation(APP_NAME);
     }
 }

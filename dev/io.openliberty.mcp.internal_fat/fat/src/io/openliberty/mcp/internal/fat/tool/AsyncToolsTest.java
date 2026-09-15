@@ -29,12 +29,12 @@ import org.skyscreamer.jsonassert.JSONParser;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
@@ -43,9 +43,9 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AsyncToolsTest extends FATServletClient {
 
-    private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async-tools")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server here as that
+    // would cause FATRunner to stop the shared server after this class completes.
+    public static LibertyServer server = McpAsyncServerSuite.server;
 
     @Rule
     public McpClient client = new McpClient(server, "/asyncToolsTest");
@@ -58,26 +58,36 @@ public class AsyncToolsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
+
+        // asyncToolsTest.war has no special server.xml config — use dropins so Liberty
+        // picks it up reliably without needing an <application> declaration.
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolsTest.war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        // Same app deployed a second time, but has different config in server.xml
+        // asyncToolsTestShortTimeout.war is declared in server.xml with <mcp asyncTimeout="5s"/>
+        // so it must go to apps/ where Liberty will pick it up via that declaration.
         WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, "asyncToolsTestShortTimeout.war")
                                                .addPackage(AsyncTools.class.getPackage())
                                                .addPackage(ToolStatus.class.getPackage());
 
         ShrinkHelper.exportAppToServer(server, shortTimeoutWar, SERVER_ONLY);
 
-        server.startServer();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("dropins/asyncToolsTest.war");
+        server.deleteFileFromLibertyServerRoot("apps/asyncToolsTestShortTimeout.war");
+        server.waitForStringInLog("CWWKZ0009I:.*asyncToolsTest");
+        server.waitForStringInLog("CWWKZ0009I:.*asyncToolsTestShortTimeout");
+        server.removeInstalledAppForValidation("asyncToolsTest");
+        server.removeInstalledAppForValidation("asyncToolsTestShortTimeout");
     }
 
     @Test

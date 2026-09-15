@@ -36,7 +36,7 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 @RunWith(FATRunner.class)
 public class InvalidAsyncTimeoutTest {
 
-    @Server("mcp-server-invalid-async-timeout")
+    @Server("mcp-server-configurable-async-timeout")
     public static LibertyServer server;
 
     @BeforeClass
