@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: testFeatureApi-1.0
+Subsystem-SymbolicName: test.feature.classloading.testFeatureApi-1.0; visibility:=public
+Subsystem-Version: 1.0
+Subsystem-Content: test.feature.api; version="[1,1.1)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package:
+ io.openliberty.classloading.feature.api; type="spec"
+IBM-Feature-Version: 2

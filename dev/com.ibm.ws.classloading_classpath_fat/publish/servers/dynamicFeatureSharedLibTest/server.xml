@@ -1,0 +1,38 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>testFeatureApi-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        The shared library JAR contains SharedFeatureLibImpl, which implements
+        TestFeatureApi from the feature bundle. The library classloader is cached
+        in ClassLoadingServiceImpl.aclStore under the "testFeatureSharedLib" key.
+        The <library> element is NEVER modified during the test — only the feature
+        is removed and re-added. This models the scenario where a stale library
+        AppClassLoader remains in aclStore after a feature lifecycle change.
+    -->
+    <library id="testFeatureSharedLib">
+        <fileset dir="${server.config.dir}/sharedLibs" includes="testSharedFeatureLib.jar"/>
+    </library>
+
+    <webApplication location="testDynamicFeatureSharedLibApp.war">
+        <classloader commonLibraryRef="testFeatureSharedLib"/>
+    </webApplication>
+
+    <!--
+        getClassLoader permission is required by the probe servlet to log classloader
+        identity strings for architectural analysis.
+    -->
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureSharedLibApp.war"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+    <javaPermission
+        codeBase="${server.config.dir}/sharedLibs/testSharedFeatureLib.jar"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+</server>
