@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,6 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 11)
-@MaximumJavaLevel(javaLevel = 21) //Fails on Java 23 due to updates to CLDR https://jdk.java.net/23/release-notes#JDK-8319990
 public class JsonbTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -51,16 +50,6 @@ public class JsonbTckLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
-        // To work around the issue described in issue:
-        // https://github.com/eclipse-ee4j/jsonb-api/issues/272
-        if (javaSpecVersion >= 13) {
-            additionalProps.put("java.locale.providers", "COMPAT");
-        }
-
-        // TODO Update if a service release of JSON-B tck is ever released
-        additionalProps.put("jakarta.jsonb.tck.groupId", "io.openliberty.jakarta.json.bind");
-        additionalProps.put("jakarta.jsonb.tck.version", "3.0.0-13102023");
 
         // Skip signature testing on Windows
         // So far as I can tell the signature test plugin is not supported on Windows
@@ -74,7 +63,6 @@ public class JsonbTckLauncher {
         // we need to ensure that the temporary file location the signature tests
         // use to read/write files to is accessible to the maven wrapper (.mvnw)
         additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
-
     }
 
     /**
