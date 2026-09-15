@@ -197,7 +197,7 @@ public class ForwardRequestInfoTest {
 
     /**
      * The form-submit &lt;SCRIPT&gt; block must appear after &lt;/FORM&gt;,
-     * and it must invoke document.forms[0].submit().
+     * and it must register a load listener that invokes document.forms[0].submit().
      */
     @Test
     public void testBuildRedirectHtml_formSubmitScriptAppearsAfterFormEndTag() throws Exception {
@@ -211,18 +211,30 @@ public class ForwardRequestInfoTest {
         assertTrue("</FORM> tag must be present in the generated HTML", formEnd >= 0);
         assertTrue("document.forms[0].submit() call must be present", scriptPos >= 0);
         assertTrue("form-submit script must appear after </FORM>", scriptPos > formEnd);
+        assertTrue("form-submit script must defer submission to the load event",
+                   html.contains("window.addEventListener('load'"));
+        assertFalse("generated HTML must not use an inline event-handler attribute",
+                    html.toLowerCase().matches("(?s).*\\bonload\\s*=.*"));
     }
 
     /**
      * When a CSP header with a nonce placeholder is configured, both the cookie
      * &lt;SCRIPT&gt; block and the form-submit &lt;SCRIPT&gt; block must share
-     * the same nonce value generated once per redirect.
+     * the same nonce value generated once per redirect, including the CSP header.
      */
     @Test
     public void testBuildRedirectHtml_bothScriptBlocksShareSameNonce() throws Exception {
+        final String[] cspHeader = new String[1];
         mockery.checking(new Expectations() {{
             // handleFragmentCookiesAndNonce sets the Content-Security-Policy header
             one(response).addHeader(with(equal("Content-Security-Policy")), with(any(String.class)));
+            will(new org.jmock.lib.action.CustomAction("capture CSP header") {
+                @Override
+                public Object invoke(org.jmock.api.Invocation invocation) {
+                    cspHeader[0] = (String) invocation.getParameter(1);
+                    return null;
+                }
+            });
         }});
 
         ForwardRequestInfo fri = new ForwardRequestInfo("https://idp.example.com/saml/acs");
@@ -248,6 +260,9 @@ public class ForwardRequestInfoTest {
         assertTrue("At least one nonce attribute must be present in the generated HTML", count > 0);
         assertNotNull("Nonce value must not be null", firstNonce);
         assertTrue("All nonce attributes in the page must share the same value", allMatch);
+        assertNotNull("CSP header must be captured", cspHeader[0]);
+        assertTrue("CSP header must authorize the generated nonce",
+                   cspHeader[0].contains("'nonce-" + firstNonce + "'"));
     }
 
     /**

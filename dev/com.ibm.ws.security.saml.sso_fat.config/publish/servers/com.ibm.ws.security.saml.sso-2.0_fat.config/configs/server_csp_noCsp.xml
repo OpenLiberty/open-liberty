@@ -17,7 +17,7 @@
 	<include location="${server.config.dir}/imports/saml_only_features.xml" />
 	<include location="${server.config.dir}/imports/BasicRegistry.xml" />
 	<include location="${server.config.dir}/imports/misc.xml" />
-	<include location="${server.config.dir}/imports/samlProvider1.xml" />
+	<include location="${server.config.dir}/imports/samlProvider1_csp_noCsp.xml" />
 	<include location="${server.config.dir}/imports/samlTestApplication.xml" />
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
 

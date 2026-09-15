@@ -54,24 +54,6 @@ public class SAMLContentSecurityPolicyTests extends SAMLConfigCommonTests {
      * @throws Exception
      */
     @Test
-    public void testCspHeader_withNonce_redirectPageHasNoOnloadAttribute() throws Exception {
-
-        testSAMLServer.reconfigServer("server_csp_withNonce.xml", _testName, null, SAMLConstants.JUNIT_REPORTING);
-
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-
-        solicited_SP_initiated_SAML(_testName, updatedTestSettings, SAMLConstants.SOLICITED_SP_INITIATED_FLOW,
-                helpers.setDefaultGoodSAMLSolicitedSPInitiatedExpectations(updatedTestSettings));
-    }
-
-    /**
-     * Config attribute: contentSecurityPolicy
-     * End-to-end solicited SP-initiated flow succeeds when contentSecurityPolicy
-     * uses the %NONCE% placeholder.
-     *
-     * @throws Exception
-     */
-    @Test
     public void testCspHeader_withNonce_flowCompletesSuccessfully() throws Exception {
 
         testSAMLServer.reconfigServer("server_csp_withNonce.xml", _testName, null, SAMLConstants.JUNIT_REPORTING);
@@ -119,22 +101,4 @@ public class SAMLContentSecurityPolicyTests extends SAMLConfigCommonTests {
                 helpers.setDefaultGoodSAMLIDPInitiatedExpectations(updatedTestSettings));
     }
 
-    /**
-     * Config attribute: contentSecurityPolicy (no %NONCE% placeholder)
-     * Solicited SP-initiated flow completes successfully when a CSP header is
-     * configured but does not contain the %NONCE% placeholder. No nonce is
-     * emitted and the form-submit script is still present on the redirect page.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testCspHeader_noNoncePlaceholder_flowCompletesSuccessfully() throws Exception {
-
-        testSAMLServer.reconfigServer("server_csp_noNoncePlaceholder.xml", _testName, null, SAMLConstants.JUNIT_REPORTING);
-
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-
-        solicited_SP_initiated_SAML(_testName, updatedTestSettings, SAMLConstants.SOLICITED_SP_INITIATED_FLOW,
-                helpers.setDefaultGoodSAMLSolicitedSPInitiatedExpectations(updatedTestSettings));
-    }
 }

@@ -16,13 +16,8 @@
 	<include location="${server.config.dir}/imports/saml_only_features.xml" />
 	<include location="${server.config.dir}/imports/BasicRegistry.xml" />
 	<include location="${server.config.dir}/imports/misc.xml" />
-	<include location="${server.config.dir}/imports/samlProvider1.xml" />
+	<include location="${server.config.dir}/imports/samlProvider1_csp_withNonce.xml" />
 	<include location="${server.config.dir}/imports/samlTestApplication.xml" />
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
-
-	<!-- override defaultSP to add a nonce-based Content Security Policy header -->
-	<samlWebSso20 id="defaultSP"
-		contentSecurityPolicy="script-src 'self' 'nonce-%NONCE%' ; object-src 'none'; frame-ancestors 'self'"
-	/>
 
 </server>
