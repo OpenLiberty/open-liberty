@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -39,7 +38,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  * location.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11)
+@MinimumJavaLevel(javaLevel = 17)
 public class JsonbTckLauncher {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -70,9 +69,9 @@ public class JsonbTckLauncher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchJsonb30TCK() throws Exception {
+    public void launchJsonb31TCK() throws Exception {
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonb")
-                        .withPlatformVersion("10")
+                        .withPlatformVersion("12")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
 
