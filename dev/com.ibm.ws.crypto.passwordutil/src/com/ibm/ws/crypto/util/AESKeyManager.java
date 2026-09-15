@@ -39,7 +39,7 @@ public class AESKeyManager {
     public static final String PROPERTY_WLP_PASSWORD_ENCRYPTION_KEY = "${" + NAME_WLP_PASSWORD_ENCRYPTION_KEY + "}";
     public static final String PROPERTY_WLP_BASE64_AES_ENCRYPTION_KEY = "${" + NAME_WLP_BASE64_AES_ENCRYPTION_KEY + "}";
 
-    private static final AtomicReference<KeyStringResolver> _resolver = new AtomicReference<KeyStringResolver>();
+    private static final AtomicReference<KeyStringResolver> _keyStringResolver = new AtomicReference<KeyStringResolver>();
 
     public enum KeyVersion {
 
@@ -59,7 +59,7 @@ public class AESKeyManager {
         public final int keyLength;
         private final byte[] salt;
         public final String resolverProperty;
-        final AtomicReference<SecretKeyResolver> resolver;
+        private final AtomicReference<SecretKeyResolver> secretKeyResolver;
 
         private KeyVersion(String alg, int iterations, int keyLength, byte[] salt, String resolverProperty) {
             this.alg = alg;
@@ -67,7 +67,7 @@ public class AESKeyManager {
             this.keyLength = keyLength;
             this.salt = salt;
             this.resolverProperty = resolverProperty;
-            this.resolver = new AtomicReference<>(new DefaultSecretKeyResolver(this));
+            this.secretKeyResolver = new AtomicReference<>(new DefaultSecretKeyResolver(this));
         }
 
         /**
@@ -184,7 +184,35 @@ public class AESKeyManager {
      * @return the resolved Key as char[]
      */
     public static char[] getKeyCharsUsingResolver(KeyVersion version, String key) {
-        return _resolver.get().getKey(key == null ? version.resolverProperty : key);
+        return _keyStringResolver.get().getKey(key == null ? version.resolverProperty : key);
+    }
+
+    /**
+     * Returns the active {@link SecretKeyResolver} for the given {@link KeyVersion}.
+     * Always returns a non-null resolver — if no custom resolver has been installed via
+     * {@link #setSecretKeyResolver(SecretKeyResolver)}, the default software resolver is returned.
+     * Use {@link #hasCustomSecretKeyResolver()} to test whether a custom resolver is active
+     * before calling {@link SecretKeyResolver#getDescription()} or similar.
+     *
+     * @param version the key version whose resolver should be returned
+     * @return the currently installed resolver for that version, never {@code null}
+     */
+    public static SecretKeyResolver getResolverFor(KeyVersion version) {
+        return version.secretKeyResolver.get();
+    }
+
+    /**
+     * Returns a {@link SecretKeyResolver} that resolves the given explicit key string for the
+     * given version. Use this when a caller-supplied key string must override the configured
+     * property — for example an explicit {@code cryptoKey} or {@code base64Key} argument passed
+     * at encrypt time. The returned resolver is a lightweight one-shot adapter; it is not cached.
+     *
+     * @param version  the key version that defines how {@code keyString} is decoded/derived
+     * @param keyString the explicit key string to resolve
+     * @return a resolver that returns the key derived from {@code keyString}
+     */
+    public static SecretKeyResolver resolverForKey(KeyVersion version, String keyString) {
+        return () -> getKey(version, keyString);
     }
 
     /**
@@ -196,20 +224,19 @@ public class AESKeyManager {
      */
     public static void setSecretKeyResolver(SecretKeyResolver resolver) {
         SecretKeyResolver effective = (resolver != null) ? resolver : new DefaultSecretKeyResolver(KeyVersion.AES_V2);
-        KeyVersion.AES_V2.resolver.set(effective);
+        KeyVersion.AES_V2.secretKeyResolver.set(effective);
         // Invalidate any cached AES_V2 key so the next encrypt/decrypt starts clean
         KeyVersion.AES_V2._key.set(null);
     }
 
     /**
-     * Returns the active hardware-backed {@link SecretKeyResolver} if one is installed,
-     * or {@code null} if AES_V2 is currently using the default software path.
+     * Returns {@code true} if a custom (non-default) hardware-backed {@link SecretKeyResolver}
+     * is currently registered for {@link KeyVersion#AES_V2}.
      *
-     * @return the active hardware SecretKeyResolver, or null
+     * @return {@code true} if a custom resolver is active, {@code false} if the default software path is used
      */
-    public static SecretKeyResolver getSecretKeyResolver() {
-        SecretKeyResolver skr = KeyVersion.AES_V2.resolver.get();
-        return (skr instanceof DefaultSecretKeyResolver) ? null : skr;
+    public static boolean hasCustomSecretKeyResolver() {
+        return !(KeyVersion.AES_V2.secretKeyResolver.get() instanceof DefaultSecretKeyResolver);
     }
 
     /**
@@ -229,7 +256,7 @@ public class AESKeyManager {
                 }
             };
         }
-        _resolver.set(resolver);
+        _keyStringResolver.set(resolver);
     }
 
     /**
@@ -264,7 +291,7 @@ public class AESKeyManager {
      * @return {@code true} if the version is configured with a real key
      */
     public static boolean isKeyConfigured(KeyVersion version) {
-        if (version == KeyVersion.AES_V2 && getSecretKeyResolver() != null) {
+        if (version == KeyVersion.AES_V2 && hasCustomSecretKeyResolver()) {
             return true;
         }
         char[] keyChars = getKeyCharsUsingResolver(version, null);
@@ -288,7 +315,7 @@ public class AESKeyManager {
      * @throws InvalidKeySpecException  if the key material is invalid or improperly encoded
      */
     public static java.security.Key getKeyViaResolver(KeyVersion version) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        return version.resolver.get().getKey();
+        return version.secretKeyResolver.get().getKey();
     }
 
 }
