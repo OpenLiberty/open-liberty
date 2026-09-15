@@ -490,7 +490,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
   
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testRecordAsEmbeddable_NoMatchAndOrdering() throws Exception {
         // Clean up any existing data
         deleteAllEntities(Participant.class);
@@ -528,7 +528,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     @SkipIfSysProp(DB_Oracle)
     public void testRecordAsEmbeddable_NullEdgeCaseAndOrdering() throws Exception {
         deleteAllEntities(Participant.class);
@@ -984,7 +984,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     @SkipIfSysProp({
         DB_SQLServer, //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32957
         DB_Oracle //Oracle DB doesn't have any conversion function into TIME so whole TIMESTAMP is returned and result is converted to time in EclipseLink/Java
@@ -1024,7 +1024,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractDateFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 15, 9, 30));
@@ -1061,7 +1061,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractWeekFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         // Using dates that fall in the same ISO week
@@ -1099,7 +1099,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractQuarterFromLocalDataWithJPQL() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 15), LocalTime.of(8, 30), LocalDateTime.of(2023, 2, 15, 8, 30));   // Q1
@@ -1136,7 +1136,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractMonthFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 03, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 03, 15, 9, 30));
@@ -1171,7 +1171,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractYearFromLocalDataWithJPQL() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
@@ -1207,7 +1207,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractDayFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 25), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 25, 9, 30));
@@ -1243,7 +1243,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractHourFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 5, 10), LocalTime.of(14, 30), LocalDateTime.of(2023, 5, 10, 14, 30));
@@ -1279,7 +1279,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractMinuteFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
@@ -1315,7 +1315,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testExtractSecondFromLocalData() throws Exception {
         deleteAllEntities(DateTimeEntity.class);
         DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 14), LocalTime.of(13, 25, 30), LocalDateTime.of(2023, 2, 14, 13, 25, 30));
@@ -1482,7 +1482,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testCacheRetrieveMode_QueryLevel_Use_Default() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
         String id = "testCacheRetrieveMode_QueryLevel_Use_Default";
@@ -1516,7 +1516,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_QueryOverridesEM_UseOverridesBypass() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1932,7 +1932,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testYearConversionError() throws Exception {
         PartialDateEntity entity2022 = new PartialDateEntity();
         entity2022.setYear(Year.of(2022));
@@ -1982,7 +1982,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA32_HIBERNATE")
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
     public void testConstructorExpressionWithCasePrimitiveLong() throws Exception {
         deleteAllEntities(SimpleEmployee.class);
 
