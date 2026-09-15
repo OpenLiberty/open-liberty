@@ -214,6 +214,14 @@ public class JSONConverter {
         SupportedClasses.put(CompositeDataSupport.class, TYPE.CompositeData);
         SupportedClasses.put(TabularDataSupport.class, TYPE.TabularData);
     }
+    // String names of all the classes in the SupportedClasses map
+    // Used to check incoming requests.
+    private static final List<String> SupportedClassNames = new ArrayList<String>();
+    static {
+        for (Class key : SupportedClasses.keySet()) {
+          SupportedClassNames.add(key.getName());
+        }
+    }
 
     // Set of 13 simple value classes corresponding to values that can be
     // represented as Strings, hence used as keys in simple maps.
@@ -3512,6 +3520,27 @@ public class JSONConverter {
         return null;
     }
 
+    // Checks an array type definition string (possibly multidimensional)
+    // e.g. '[[[[Lmy.class.name;'
+    // Primitive arrays are accepted, and arrays of other supported classes
+    private static void checkClassName(String name) throws ConversionException {
+        if (name.charAt(name.length() - 1) != ';') {
+            // This is a primitive array
+            return;
+        }
+        // Something like '[[[[Lmy.class.name;'
+        while (name.charAt(0) == '[') {
+            name = name.substring(1);
+        }
+        // Take off the leading 'L' and trailing ';'
+        name = name.substring(1,name.length()-1);
+        if (SupportedClassNames.contains(name)){
+            return;
+        }
+        // Unsupported class
+        throw new ConversionException(name + " is not a supported class type");
+    }
+
     private Object readPOJOValue(Object value, Object type, OpenType<?>[] openTypes) throws ConversionException, ClassNotFoundException {
         if (type == null) {
             return null;
@@ -3522,6 +3551,7 @@ public class JSONConverter {
             TYPE t = SimpleValues.get(tstr);
             if (t == null) {
                 if (tstr.length() > 0 && tstr.charAt(0) == '[') {
+                    checkClassName(tstr);
                     return readSimpleArray(value, Class.forName(tstr));
                 }
                 throwConversionException("readPOJOValue() received an unknown class name.", type);
@@ -3548,6 +3578,7 @@ public class JSONConverter {
         TYPE t = StructuredClasses.get(className);
         if (t == null) {
             if (className.length() > 0 && className.charAt(0) == '[') {
+                checkClassName(className);
                 return readComplexArray(value, Class.forName(className), tjson.get(N_ITEMS), openTypes);
             }
             throwConversionException("readPOJOValue() received an unknown class name.", o);
@@ -3646,7 +3677,11 @@ public class JSONConverter {
 
         Object[] ret = (Object[]) Array.newInstance(component, size);
         for (int i = 0; i < size; i++) {
-            ret[i] = readSimpleValue(json.get(i), SupportedClasses.get(component));
+            TYPE type = SupportedClasses.get(component);
+            if (type == null) {
+                throw new ConversionException(component + " is not a supported type");
+            }
+            ret[i] = readSimpleValue(json.get(i), type);
         }
         return ret;
     }
