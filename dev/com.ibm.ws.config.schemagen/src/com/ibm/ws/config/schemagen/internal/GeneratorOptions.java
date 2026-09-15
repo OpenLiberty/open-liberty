@@ -50,6 +50,7 @@ public class GeneratorOptions {
     private SchemaVersion schemaVersion = SchemaVersion.v1_0;
     private OutputVersion outputVersion = OutputVersion.v1;
     private boolean compactOutput = false;
+    private boolean anyAttribute = true;
 
     /**
      * @return
@@ -128,7 +129,8 @@ public class GeneratorOptions {
                         System.out.println(MessageFormat.format(messages.getString("error.unknownOutputVersion"), argValue));
                         return(ReturnCode.BAD_ARGUMENT);
                     }
-                	
+                } else if (argToLower.contains("-strict")) {
+                    anyAttribute = !processBooleanArg(argToLower);
                 }  else {
                     System.out.println(MessageFormat.format(messages.getString("error.unknownArgument"), arg));
                     return(ReturnCode.BAD_ARGUMENT);
@@ -351,6 +353,10 @@ public class GeneratorOptions {
     public boolean getCompactOutput() {
     	return compactOutput;
     }
+
+    public boolean isAnyAttribute() {
+        return anyAttribute;
+    }
     
     public void setSchemaVersion(SchemaVersion v) {
       schemaVersion = v;
@@ -362,5 +368,9 @@ public class GeneratorOptions {
     
     public void setCompactOutput(boolean compactOutput) {
     	this.compactOutput = compactOutput;
+    }
+
+    public void setAnyAttribute(boolean any) {
+        this.anyAttribute = any;
     }
 }
