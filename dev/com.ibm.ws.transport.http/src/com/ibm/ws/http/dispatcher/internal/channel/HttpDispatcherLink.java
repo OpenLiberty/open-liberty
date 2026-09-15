@@ -50,6 +50,7 @@ import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.NettyConnectionLink;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
@@ -557,6 +558,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setRemoteAddr(remoteAddress);
 
         }
+
+        // Remove WAS private ($WS*) headers for sources that are not listed in the trust-origin configuration. 
+        boolean desensitizePrivatePortHeader = this.isc.getHttpConfig().desensitizePrivatePortHeader();
+        boolean trustNonSensitive = HttpDispatcher.usePrivateHeaders(this.remoteAddress);
+        boolean trustSensitive    = HttpDispatcher.usePrivateSensitiveHeaders(this.remoteAddress);
+        NettyHeaderUtils.filterPrivateHeaders(this.remoteAddress, nettyRequest.headers(), desensitizePrivatePortHeader, trustNonSensitive, trustSensitive);
 
         //Add for Servlet 6.0
         //HttpDispatcherLink can be reused but ready(VirtualConnection) is always called to get a current VirtualConnection.
