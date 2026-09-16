@@ -3097,13 +3097,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
+        boolean isHeadRequest = this.getRequestMethod().equals(MethodValues.HEAD) || getRequest().getMethod().equals(MethodValues.HEAD.getName());
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
                                            && ProtocolState.current(nettyContext.channel()) != NettyHttpConstants.ProtocolName.HTTP2;
         // On upgrade but haven't written headers
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
             sendNettyHeaders();
         }
-        else if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        else if (!isHeadRequest && !shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
             addBytesWritten(GenericUtils.sizeOf(buffers));
 
@@ -3118,6 +3119,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
 
             nettyWrite(sendHeaders, false);
+        } else if (isHeadRequest && sendHeaders) {
+            // If a HEAD request is found, the response is self-contained
+            prepareNettyCloseForIncompleteRequestBody(false);
+            sendNettyHeaders();
         }
     }
 
@@ -3426,7 +3431,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
             sendNettyHeaders();
         }
-        else if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        else if (!complete && !shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
             addBytesWritten(GenericUtils.sizeOf(buffers));
 
