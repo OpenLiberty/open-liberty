@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <!--  The directory below is not compiled in the main build.
+          Only importing this project into Eclipse as an existing 
+          maven project would add the correct dependencies to  
+          get rid of eclipse markers for unresolved project dependencies.
+          If you do that, you can uncomment the line below.
+    <classpathentry kind="src" path="publish/tckRunner/tck/src"/>
+    -->
+    <classpathentry kind="src" path="fat/src"/>
+    <classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+    <classpathentry kind="output" path="bin"/>
+</classpath>
