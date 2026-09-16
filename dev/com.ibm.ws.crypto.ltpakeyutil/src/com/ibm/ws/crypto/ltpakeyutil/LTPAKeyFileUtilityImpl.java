@@ -34,9 +34,7 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
     /** {@inheritDoc} */
     @Override
     public Properties createLTPAKeysFile(String keyFile, byte[] keyPasswordBytes) throws Exception {
-        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, "defaultRealm");
-        addLTPAKeysToFile(getOutputStream(keyFile), ltpaProps);
-        return ltpaProps;
+        return createLTPAKeysFile(keyFile, new PasswordLTPAKeyEncryptor(keyPasswordBytes));
     }
 
     /** {@inheritDoc} */
@@ -86,19 +84,8 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
     }
 
     /**
-     * Generates the LTPA keys and stores them into a Properties object.
-     *
-     * @param keyPasswordBytes
-     * @param realm
-     * @return
-     * @throws Exception
-     */
-    protected final Properties generateLTPAKeys(byte[] keyPasswordBytes, final String realm) throws Exception {
-        return generateLTPAKeys(keyPasswordBytes, null, null, null, realm);
-    }
-
-    /**
-     * Generates LTPA keys using the supplied {@link LTPAKeyEncryptor} (AES key path).
+     * Generates LTPA keys using the supplied {@link LTPAKeyEncryptor}, generating
+     * any key material that is passed as {@code null}.
      *
      * @param encryptor the encryptor used to protect the private and secret keys
      * @param realm     the realm name to embed in the key file
@@ -106,97 +93,43 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
      * @throws Exception
      */
     protected final Properties generateLTPAKeys(LTPAKeyEncryptor encryptor, final String realm) throws Exception {
-        LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
-        return generateLTPAKeys(encryptor,
-                                LTPACrypto.generateSharedKey(),
-                                pair.getPrivate().getEncoded(),
-                                pair.getPublic().getEncoded(),
-                                realm);
+        return generateLTPAKeys(encryptor, null, null, null, realm);
     }
 
     /**
-     * Re-encrypts existing LTPA key material using the supplied {@link LTPAKeyEncryptor}.
-     * Analogous to {@link #generateLTPAKeys(byte[], byte[], byte[], byte[], String)} but
-     * accepts a pre-built encryptor instead of a password byte array.
+     * Generates or re-encrypts LTPA key material using the supplied {@link LTPAKeyEncryptor}.
+     * Pass {@code null} for {@code sharedKeyBytes}, {@code privateKeyBytes}, and
+     * {@code publicKeyBytes} to generate fresh key material; pass existing plaintext
+     * bytes to re-encrypt them.
      *
-     * @param encryptor      the encryptor used to protect the private and secret keys
-     * @param sharedKeyBytes   plaintext shared (3DES/AES) key bytes
-     * @param privateKeyBytes  plaintext RSA private key bytes
-     * @param publicKeyBytes   RSA public key bytes (stored as-is, not encrypted)
+     * @param encryptor        the encryptor used to protect the private and secret keys
+     * @param sharedKeyBytes   plaintext shared (3DES/AES) key bytes, or {@code null} to generate
+     * @param privateKeyBytes  plaintext RSA private key bytes, or {@code null} to generate
+     * @param publicKeyBytes   RSA public key bytes (stored as-is), or {@code null} to generate
      * @param realm            realm name to embed in the key file
-     * @return Properties containing the re-encrypted key material
+     * @return Properties containing the (re-)encrypted key material
      * @throws Exception
      */
     protected final Properties generateLTPAKeys(LTPAKeyEncryptor encryptor,
                                                  byte[] sharedKeyBytes, byte[] privateKeyBytes,
                                                  byte[] publicKeyBytes, final String realm) throws Exception {
-        byte[] encryptedPrivateKeyBytes = encryptor.encrypt(privateKeyBytes);
-        byte[] encryptedSharedKeyBytes  = encryptor.encrypt(sharedKeyBytes);
-
-        Properties expProps = new Properties();
-        expProps.put(KEYIMPORT_SECRETKEY,       Base64Coder.base64EncodeToString(encryptedSharedKeyBytes));
-        expProps.put(KEYIMPORT_PRIVATEKEY,      Base64Coder.base64EncodeToString(encryptedPrivateKeyBytes));
-        expProps.put(KEYIMPORT_PUBLICKEY,       Base64Coder.base64EncodeToString(publicKeyBytes));
-        expProps.put(KEYIMPORT_REALM,           realm);
-        expProps.put(CREATION_HOST_PROPERTY,    "localhost");
-        expProps.put(LTPA_VERSION_PROPERTY,     CryptoUtils.isFips140_3Enabled() ? "2.0" : "1.0");
-        expProps.put(CREATION_DATE_PROPERTY,    (new java.util.Date()).toString());
-        return expProps;
-    }
-
-    /**
-     * Generates the LTPA keys and stores them into a Properties object.
-     *
-     * In the case of generating new ltpa keys, pass null in sharedKeyBytes,
-     * privateKeyBytes, and publicKeyBytes to generate them.
-     *
-     * Otherwise, in the case of re-encrypting existing ltpa keys, pass the bytes in
-     * sharedKeyBytes, privateKeyBytes, and publicKeyBytes to reuse them.
-     *
-     * @param keyPasswordBytes
-     * @param sharedKeyBytes
-     * @param privateKeyBytes
-     * @param publicKeyBytes
-     * @param realm
-     * @return
-     * @throws Exception
-     */
-    protected final Properties generateLTPAKeys(byte[] keyPasswordBytes, byte[] sharedKeyBytes, byte[] privateKeyBytes, byte[] publicKeyBytes, final String realm) throws Exception {
-        Properties expProps = null;
-
-        try {
-            LTPAKeyEncryptor encryptor = new PasswordLTPAKeyEncryptor(keyPasswordBytes);
-
-            if (publicKeyBytes == null && privateKeyBytes == null) {
-                LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
-                publicKeyBytes = pair.getPublic().getEncoded();
-                privateKeyBytes = pair.getPrivate().getEncoded();
-            }
-            byte[] encryptedPrivateKeyBytes = encryptor.encrypt(privateKeyBytes);
-
-            if (sharedKeyBytes == null) {
-                sharedKeyBytes = LTPACrypto.generateSharedKey(); // key length is 32 bytes (256 bits) for FIPS (AES), 24 bytes (192 bits) for non-FIPS (3DES)
-            }
-            byte[] encryptedSharedKeyBytes = encryptor.encrypt(sharedKeyBytes);
-
-            String tmpShared = Base64Coder.base64EncodeToString(encryptedSharedKeyBytes);
-            String tmpPrivate = Base64Coder.base64EncodeToString(encryptedPrivateKeyBytes);
-            String tmpPublic = Base64Coder.base64EncodeToString(publicKeyBytes);
-
-            expProps = new Properties();
-
-            expProps.put(KEYIMPORT_SECRETKEY, tmpShared);
-            expProps.put(KEYIMPORT_PRIVATEKEY, tmpPrivate);
-            expProps.put(KEYIMPORT_PUBLICKEY, tmpPublic);
-
-            expProps.put(KEYIMPORT_REALM, realm);
-            expProps.put(CREATION_HOST_PROPERTY, "localhost");
-            expProps.put(LTPA_VERSION_PROPERTY, CryptoUtils.isFips140_3Enabled() ? "2.0" : "1.0");
-            expProps.put(CREATION_DATE_PROPERTY, (new java.util.Date()).toString());
-        } catch (Exception e) {
-            throw e;
+        if (publicKeyBytes == null && privateKeyBytes == null) {
+            LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
+            publicKeyBytes = pair.getPublic().getEncoded();
+            privateKeyBytes = pair.getPrivate().getEncoded();
+        }
+        if (sharedKeyBytes == null) {
+            sharedKeyBytes = LTPACrypto.generateSharedKey();
         }
 
+        Properties expProps = new Properties();
+        expProps.put(KEYIMPORT_SECRETKEY,    Base64Coder.base64EncodeToString(encryptor.encrypt(sharedKeyBytes)));
+        expProps.put(KEYIMPORT_PRIVATEKEY,   Base64Coder.base64EncodeToString(encryptor.encrypt(privateKeyBytes)));
+        expProps.put(KEYIMPORT_PUBLICKEY,    Base64Coder.base64EncodeToString(publicKeyBytes));
+        expProps.put(KEYIMPORT_REALM,        realm);
+        expProps.put(CREATION_HOST_PROPERTY, "localhost");
+        expProps.put(LTPA_VERSION_PROPERTY,  CryptoUtils.isFips140_3Enabled() ? "2.0" : "1.0");
+        expProps.put(CREATION_DATE_PROPERTY, (new java.util.Date()).toString());
         return expProps;
     }
 

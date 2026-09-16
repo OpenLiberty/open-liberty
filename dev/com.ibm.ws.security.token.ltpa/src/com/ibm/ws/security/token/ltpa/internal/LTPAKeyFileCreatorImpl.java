@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.UserRegistry;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtilityImpl;
+import com.ibm.ws.crypto.ltpakeyutil.PasswordLTPAKeyEncryptor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.location.WsResource.Type;
@@ -91,8 +92,8 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
     /** {@inheritDoc} */
     @Override
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes) throws Exception {
-        String realmName = isUserRegistryAvailable()?getRealmName():"defaultRealm";
-        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, realmName);
+        String realmName = isUserRegistryAvailable() ? getRealmName() : "defaultRealm";
+        Properties ltpaProps = generateLTPAKeys(new PasswordLTPAKeyEncryptor(keyPasswordBytes), realmName);
         addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
         return ltpaProps;
     }
@@ -102,7 +103,7 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes,
                                          @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception {
         String realmName = isUserRegistryAvailable() ? getRealmName() : "defaultRealm";
-        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, sharedKeyBytes, privateKeyBytes, publicKeyBytes, realmName);
+        Properties ltpaProps = generateLTPAKeys(new PasswordLTPAKeyEncryptor(keyPasswordBytes), sharedKeyBytes, privateKeyBytes, publicKeyBytes, realmName);
         addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
         return ltpaProps;
     }

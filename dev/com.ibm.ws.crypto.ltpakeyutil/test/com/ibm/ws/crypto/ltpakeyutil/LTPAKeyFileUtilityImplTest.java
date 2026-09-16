@@ -46,7 +46,7 @@ public class LTPAKeyFileUtilityImplTest {
     @Test
     public void testLTPAKeyGeneration() throws Exception {
         LTPAKeyFileUtilityImpl creator = new LTPAKeyFileUtilityImpl();
-        Properties keyInfo = creator.generateLTPAKeys("WebAS".getBytes(), "myRealm");
+        Properties keyInfo = creator.generateLTPAKeys(new PasswordLTPAKeyEncryptor("WebAS".getBytes()), "myRealm");
 
         // Check the secret key.
         Assert.assertNotNull(keyInfo.get(LTPAKeyFileUtility.KEYIMPORT_SECRETKEY));
