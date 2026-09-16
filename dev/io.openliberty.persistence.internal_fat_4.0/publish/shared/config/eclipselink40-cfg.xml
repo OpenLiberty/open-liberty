@@ -1,0 +1,49 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Repeat phase: Persistence Container 4.0 with EclipseLink 5 (FULL mode).
+    Uses persistenceContainer-4.0 — no default provider is bundled.
+    EclipseLink 5 JARs are supplied via the EclipseLinkLib shared library and
+    wired to the app classloader in JakartaPersistenceTest.createApplication().
+    Included by JakartaPersistenceServer/server.xml via ${env.repeat_phase}.
+-->
+<server>
+    <featureManager>
+        <feature>persistenceContainer-4.0</feature>
+        <feature>servlet-6.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>xmlBinding-4.0</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+
+    <!--
+        Mandatory: persistenceContainer-4.0 has no bundled provider.
+        This sets org.eclipse.persistence.jpa.PersistenceProvider as the default
+        for all persistence units that do not declare a <provider> element.
+    -->
+    <jpa defaultPersistenceProvider="org.eclipse.persistence.jpa.PersistenceProvider"/>
+
+    <!--
+        EclipseLink 5 JARs placed in ${wlp.user.dir}/shared/resources/jpa_fat_jpa40_eclipselink/.
+        The test framework downloads these via Gradle before the FAT runs.
+        Update versions here when upgrading EclipseLink.
+    -->
+    <!--
+        apiTypeVisibility ensures EclipseLink 5 uses the Jakarta Persistence API
+        classes exported by Liberty's OSGi bundle (io.openliberty.org.eclipse.persistence-4.0)
+        rather than the copy bundled inside eclipselink-5.0.0.jar.
+        Without this, the PersistenceUnitInfo instance handed to EclipseLink by the
+        Liberty container is loaded by a different classloader than EclipseLink expects,
+        causing a NoSuchMethodError at pre-deploy time.
+    -->
+    <library id="EclipseLinkLib" apiTypeVisibility="spec,ibm-api,api,stable,third-party">
+        <fileset dir="${shared.resource.dir}/jpa_fat_jpa40_eclipselink" includes="*.jar"/>
+    </library>
+
+</server>
