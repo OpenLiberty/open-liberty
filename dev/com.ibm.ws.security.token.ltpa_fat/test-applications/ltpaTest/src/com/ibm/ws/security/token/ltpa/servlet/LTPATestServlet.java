@@ -32,6 +32,7 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.token.TokenManager;
+import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
@@ -85,11 +86,14 @@ public class LTPATestServlet extends HttpServlet {
             }
         } catch (Exception e) {
             throw new Exception("Error creating the token: " + e.getMessage());
+        } finally {
+            ctx.ungetService(tokenManagerReference);
         }
     }
 
-    // Backdates the LTPA token by offsetSeconds seconds by appending a backdated WSTOKEN_CREATION_TIME
-    // to the SSO token bytes so LTPAToken2.checkRefreshNeeded() and validateExpiration() see the older age.
+    // Backdates the LTPA token by offsetSeconds seconds. The token is created fresh, its bytes are
+    // passed through TokenManager.recreateTokenFromBytes() with WSTOKEN_CREATION_TIME stripped, and
+    // the single backdated value is then added. This guarantees exactly one creationTime entry.
     // Usage: GET /ltpaTest/LTPATestServlet?action=backdate&offsetSeconds=70
     private void handleBackdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");
@@ -133,11 +137,17 @@ public class LTPATestServlet extends HttpServlet {
         }
     }
 
-    // Creates an SSO token for the authenticated user with creationTime backdated to backdatedCreationTime.
-    //
-    // Strategy:
-    //  1. Call createSSOToken() — Liberty stamps creationTime=now and expire=now+duration.
-    //  2. Append backdated creationTime (second value wins in validateExpiration() and checkRefreshNeeded()).
+    /* 
+    * Creates an SSO token for the authenticated user with creationTime backdated to backdatedCreationTime.
+    *
+    * Strategy:
+    *  1. Call createSSOToken() — Liberty stamps creationTime=now and expire=now+duration.
+    *  2. Recreate the token from its bytes, passing WSTOKEN_CREATION_TIME as an attribute to remove.
+    *     This strips the original creationTime without requiring access to internal API.
+    *  3. Add the single backdated creationTime to the recreated token.
+    *
+    * Result: the token contains exactly one WSTOKEN_CREATION_TIME entry.
+    */
     private SingleSignonToken createBackdatedToken(TokenManager tm, HttpServletRequest request,
                                                    long backdatedCreationTime, PrintWriter writer) throws Exception {
         String accessId = resolveAccessId(request, writer);
@@ -145,10 +155,24 @@ public class LTPATestServlet extends HttpServlet {
 
         HashMap<String, Object> tokenData = new HashMap<>();
         tokenData.put("unique_id", accessId);
-        SingleSignonToken token = tm.createSSOToken(tokenData);
+        SingleSignonToken freshToken = tm.createSSOToken(tokenData);
+
+        // Recreate from bytes with the original creationTime stripped.
+        Token stripped = tm.recreateTokenFromBytes(freshToken.getBytes(), CREATION_TIME);
+
+        // Re-wrap as SingleSignonToken so we can add the backdated value and call getBytes().
+        SingleSignonToken token = tm.createSSOToken(stripped);
 
         token.addAttribute(CREATION_TIME, Long.toString(backdatedCreationTime));
         writer.println("backdatedCreationTime=" + backdatedCreationTime);
+
+        // Verify exactly one creationTime entry was produced.
+        String[] entries = token.getAttributes(CREATION_TIME);
+        if (entries == null || entries.length != 1) {
+            throw new IllegalStateException("Expected exactly 1 creationTime entry after backdating, found: "
+                + (entries == null ? "null" : entries.length));
+        }
+        writer.println("creationTimeCount=" + entries.length);
         return token;
     }
 

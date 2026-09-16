@@ -10,7 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="com.ibm.ws.security.token.ltpa.fat.legacyTokenServer">
+<server description="com.ibm.ws.security.token.ltpa.fat.refreshDisabled">
 
     <featureManager>
         <feature>appSecurity-2.0</feature>
@@ -20,7 +20,7 @@
     </featureManager>
 
     <!-- Use the secondary port set so this server can run concurrently with the
-         refresh server (which binds the default port) without a port conflict.
+         refresh-enabled server (which binds the default port) without a port conflict.
          We declare the httpEndpoint here and include only fatTestCommon.xml (not
          fatTestPorts.xml) so the port is never overwritten back to HTTP_default. -->
     <httpEndpoint id="defaultHttpEndpoint"
@@ -64,9 +64,14 @@
 
     <httpSession securityIntegrationEnabled="false"/>
 
-    <!-- No inactivityTimeout, no refreshThreshold, no dynamicExpirationValidation — simulates a
-         pre-refresh-feature server. Tokens minted here carry only absolute-expiration bytes. -->
+    <!-- Refresh disabled: no inactivityTimeout, no refreshThreshold.
+         dynamicExpirationValidation is enabled to match the refresh-enabled server's
+         expiration behaviour — expiration is recomputed from creationTime + expiration
+         on every validation rather than trusting the expire field baked into the token.
+         This server runs the same codebase as the refresh-enabled server but with the
+         refresh feature turned off via configuration. -->
     <ltpa expiration="3m"
+          dynamicExpirationValidation="true"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
           keysPassword="{xor}Lz4sLCgwLTs="/>
 
