@@ -1341,6 +1341,8 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testJakartaQueryWithRestrictionAndOrder() {
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         Restriction<Fraction> ninthsAndTenths = //
                         Restrict.any(_Fraction.denominator.equalTo(9),
@@ -1560,6 +1562,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDB2() && isHibernatePersistence())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 18/23.
         // Ensure deletion in the finally block.
@@ -2021,6 +2025,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 14/23.
         // Ensure deletion in the finally block.
@@ -2067,6 +2073,9 @@ public class Data_1_1_Servlet extends FATServlet {
     public void testNativeQueryRetrievesPages() {
         // Fractions n/d where 2^n < d^2, ordered by denominator ASC, numerator ASC.
         // With page size 8: page 1 = items 1-8, page 2 = items 9-16, etc.
+
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         PageRequest page2Req = PageRequest.ofSize(8).pageNumber(2);
 
@@ -2195,6 +2204,9 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryReturnsFirstEntity() {
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
+
         assertEquals("Seven Twentieths",
                      fractions.firstValueWithin(0.334, 0.4)
                                      .orElseThrow().name);
@@ -2209,6 +2221,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(List.of("1/2",
                              "1/3",
@@ -2272,6 +2286,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
                      fractions.numReducedWithDenominatorOf(18, true));

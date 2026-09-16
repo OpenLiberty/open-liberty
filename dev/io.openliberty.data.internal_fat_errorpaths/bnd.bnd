@@ -24,6 +24,9 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
+tested.features: cdi-5.0
+
+# persistence.4.0 used only for classes in query and sql packages
 -buildpath: \
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\
@@ -33,6 +36,7 @@ fat.project: true
   io.openliberty.jakarta.cdi.4.1,\
   io.openliberty.jakarta.data.1.1,\
   io.openliberty.jakarta.persistence.3.2,\
+  io.openliberty.jakarta.persistence.4.0,\
   io.openliberty.jakarta.validation.3.1,\
   io.openliberty.jakarta.servlet.6.1;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest
