@@ -58,6 +58,24 @@ public interface LTPAKeyFileCreator extends LTPAKeyFileUtility {
 
     /**
      * Create the LTPA keys file at the specified location using the supplied
+     * {@link LTPAKeyEncryptor} to protect the given key material.
+     * <p>
+     * Access the keyFile using the WsLocationAdmin.
+     *
+     * @param locService
+     * @param keyFile
+     * @param encryptor       the encryptor that will protect the key material
+     * @param sharedKeyBytes  plaintext shared (3DES/AES) key bytes
+     * @param privateKeyBytes plaintext RSA private key bytes
+     * @param publicKeyBytes  RSA public key bytes (stored as-is)
+     * @return A Properties object containing the re-encrypted LTPA key attributes
+     * @throws Exception
+     */
+    public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive LTPAKeyEncryptor encryptor,
+                                         @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception;
+
+    /**
+     * Create the LTPA keys file at the specified location using the supplied
      * {@link LTPAKeyEncryptor} (AES key path).
      * <p>
      * Access the keyFile using the WsLocationAdmin.

@@ -25,7 +25,6 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -300,13 +299,10 @@ public class PasswordCipherUtil {
      * @param version - the AES key version being used
      */
     private static void checkAndLogDefaultKeyWarning(AESKeyManager.KeyVersion version) {
-        if (!alreadyLoggedAESDefaultKeyWarning.get()) {
-            char[] keyChars = AESKeyManager.getKeyCharsUsingResolver(version, null);
-            if (Arrays.equals(keyChars, AESKeyManager.PROPERTY_WLP_PASSWORD_ENCRYPTION_KEY.toCharArray())) {
-                if (alreadyLoggedAESDefaultKeyWarning.compareAndSet(false, true)) {
-                    logger.logp(Level.WARNING, PasswordCipherUtil.class.getName(), "checkAndLogDefaultKeyWarning",
-                                "PASSWORDUTIL_DEFAULT_KEY_WARNING");
-                }
+        if (!alreadyLoggedAESDefaultKeyWarning.get() && !AESKeyManager.isKeyConfigured(version)) {
+            if (alreadyLoggedAESDefaultKeyWarning.compareAndSet(false, true)) {
+                logger.logp(Level.WARNING, PasswordCipherUtil.class.getName(), "checkAndLogDefaultKeyWarning",
+                            "PASSWORDUTIL_DEFAULT_KEY_WARNING");
             }
         }
     }
