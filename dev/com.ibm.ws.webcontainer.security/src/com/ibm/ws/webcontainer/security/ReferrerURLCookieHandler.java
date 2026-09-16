@@ -318,9 +318,9 @@ public class ReferrerURLCookieHandler extends URLHandler {
                     //if referrerURL==null then storedReq is not a valid URL. Otherwise, currentURL is invalid
                     if (referrerURL == null) {
                         if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Redirect URL:" + storedReq + " is a MalformedURL.");
+                            Tr.debug(tc, "WASReqURL:" + storedReq + " is a MalformedURL.");
                         }
-                        RuntimeException e = new RuntimeException("Redirect URL:" + "'" + storedReq + "'" + " is not a valid URL.", me);
+                        RuntimeException e = new RuntimeException("WASReqURL:" + "'" + storedReq + "'" + " is not a valid URL.", me);
                         throw e;
                     } else {
                         if (tc.isDebugEnabled()) {
@@ -335,7 +335,7 @@ public class ReferrerURLCookieHandler extends URLHandler {
             }
         });
         if (!isValid) {
-            RuntimeException e = new RuntimeException("Redirect URL:" + "'" + storedReq + "'"
+            RuntimeException e = new RuntimeException("WASReqURL:" + "'" + storedReq + "'"
                                                       + " hostname does not match current request hostname: " + "'" + currentReqURL
                                                       + "'");
             throw e;
