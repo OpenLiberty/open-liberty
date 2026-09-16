@@ -26,8 +26,7 @@
          silently truncate large JSON downloads (e.g. features-23.0.0.2.json). -->
     <httpEndpoint id="defaultHttpEndpoint"
         httpPort="${bvt.prop.HTTP_default}"
-        httpsPort="${bvt.prop.HTTP_default.secure}"
-        keepAliveEnabled="false" />
+        httpsPort="${bvt.prop.HTTP_default.secure}" />
 
     <!-- Enable directory browsing for static files -->
     <webContainer directoryBrowsingEnabled="true" />
