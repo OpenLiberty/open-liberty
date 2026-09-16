@@ -80,7 +80,7 @@ autoFVT {
     'com.ibm.ws.security.token.ltpa.fat.validationKeyTestServer2',
     'com.ibm.ws.security.token.ltpa.fat.ltpaKeyPasswordTestServer',
     'com.ibm.ws.security.token.ltpa.fat.refresh',
-    'com.ibm.ws.security.token.ltpa.fat.legacyTokenServer'
+    'com.ibm.ws.security.token.ltpa.fat.refreshDisabled'
   ]
   servers.each { server ->
     copy { 
