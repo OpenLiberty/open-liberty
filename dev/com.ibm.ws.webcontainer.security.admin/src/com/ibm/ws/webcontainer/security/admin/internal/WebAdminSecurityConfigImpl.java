@@ -32,7 +32,6 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Integer postParamCookieSize = 16384;
     private final Boolean allowLogoutPageRedirectToAnyHost = false;
     private final String wasReqURLRedirectDomainNames = null;
-    private final String loginErrorURLRedirectDomainNames = null;
     private final String logoutPageRedirectDomainNames = null;
     private final String ssoCookieName = "LtpaToken2";
     // Admin supports CLIENT_CERT, but also needs to support basic auth
@@ -126,12 +125,6 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public List<String> getWASReqURLRedirectDomainNames() {
         return domainNamesToList(wasReqURLRedirectDomainNames);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<String> getLoginErrorURLRedirectDomainNames() {
-        return domainNamesToList(loginErrorURLRedirectDomainNames);
     }
 
     /** {@inheritDoc} */

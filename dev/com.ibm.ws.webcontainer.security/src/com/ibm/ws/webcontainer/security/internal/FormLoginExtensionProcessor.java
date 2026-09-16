@@ -14,9 +14,7 @@
 package com.ibm.ws.webcontainer.security.internal;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
@@ -316,56 +314,29 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
      *
      */
     private String getErrorPage(HttpServletRequest req, HttpServletResponse res) {
-
-        // error_page request parameter
+        boolean bCtx = true;
         String loginErrorPage = getCustomErrorPage(req);
-        if (loginErrorPage != null && loginErrorPage.length() > 0) {
-            return validateErrorPageRedirect(req, setUpAFullUrl(req, loginErrorPage, true));
+        if (loginErrorPage == null || loginErrorPage.length() == 0) {
+            bCtx = false;
+            loginErrorPage = getCustomReloginErrorPage(req);
         }
 
-        // WASReloginURL cookie
-        loginErrorPage = getCustomReloginErrorPage(req);
-        if (loginErrorPage != null && loginErrorPage.length() > 0) {
-            return setUpAFullUrl(req, loginErrorPage, false);
+        if (loginErrorPage == null || loginErrorPage.length() == 0) {
+            bCtx = true;
+            // still nothing?
+            loginErrorPage = getErrorPageFromWebXml();
         }
-
-        // web.xml
-        loginErrorPage = getErrorPageFromWebXml();
-        if (loginErrorPage != null && loginErrorPage.length() > 0) {
-            return setUpAFullUrl(req, loginErrorPage, true);
+        // look for global error page.
+        if (loginErrorPage == null || loginErrorPage.length() == 0) {
+            bCtx = false;
+            loginErrorPage = webAppSecConfig.getLoginErrorURL();
         }
+        if (loginErrorPage != null) {
 
-        // look for global error page defined in server.xml
-        loginErrorPage = webAppSecConfig.getLoginErrorURL();
-        if (loginErrorPage != null && loginErrorPage.length() > 0) {
-            return validateErrorPageRedirect(req, setUpAFullUrl(req, loginErrorPage, false));
+            return setUpAFullUrl(req, loginErrorPage, bCtx);
         }
 
         return null;
-    }
-
-    /**
-     * Validates a fully-expanded error page URL against a merged domain list.
-     *
-     * @param req                    the current HTTP request
-     * @param fullUrl                the fully-expanded error page URL
-     * @return fullUrl if valid, null if blocked
-     */
-    private String validateErrorPageRedirect(HttpServletRequest req, String fullUrl) {
-        List<String> errorURLRedirectDomains = webAppSecConfig.getLoginErrorURLRedirectDomainNames();
-        try {
-            ReferrerURLCookieHandler.isReferrerHostValid(
-                    PasswordNullifier.nullifyParams(req.getRequestURL().toString()),
-                    PasswordNullifier.nullifyParams(fullUrl),
-                    errorURLRedirectDomains);
-            } catch (RuntimeException e) {
-                Tr.error(tc, "SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED", fullUrl, errorURLRedirectDomains);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "validateErrorPageRedirect caught exception", e);
-                }
-                return null;
-            }
-        return fullUrl;
     }
 
     /**
@@ -403,11 +374,8 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
         LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();
         if (loginConfig != null) {
             formLoginConfig = loginConfig.getFormLoginConfiguration();
-            if (formLoginConfig != null) {
+            if (formLoginConfig != null)
                 loginErrorPage = formLoginConfig.getErrorPage();
-                if (loginErrorPage != null && !loginErrorPage.isEmpty() && !loginErrorPage.startsWith("/"))
-                    loginErrorPage = "/" + loginErrorPage;
-            }
         }
         return loginErrorPage;
     }

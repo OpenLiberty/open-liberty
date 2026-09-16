@@ -37,9 +37,6 @@
 		<AD id="wasReqURLRedirectDomainNames" name="%wasReqURLRedirectDomainNames" description="%wasReqURLRedirectDomainNames.desc"
             required="false" type="String" />
 
-        <AD id="loginErrorURLRedirectDomainNames" name="%loginErrorURLRedirectDomainNames" description="%loginErrorURLRedirectDomainNames.desc"
-            required="false" type="String" />
-
         <AD id="logoutPageRedirectDomainNames" name="%logoutPageRedirectDomainNames" description="%logoutPageRedirectDomainNames.desc"
             required="false" type="String" />
 
