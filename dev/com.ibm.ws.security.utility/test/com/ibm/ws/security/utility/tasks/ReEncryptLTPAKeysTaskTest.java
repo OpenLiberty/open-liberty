@@ -244,7 +244,7 @@ public class ReEncryptLTPAKeysTaskTest {
     // -----------------------------------------------------------------------
 
     /**
-     * Password → password: both {@link com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor}
+     * Password → password: both {@link com.ibm.ws.crypto.ltpakeyutil.PasswordLTPAKeyEncryptor}
      * instances are passed to {@code reEncryptLTPAKeysFile}; the task prints a
      * success message containing the new file name and returns OK.
      */

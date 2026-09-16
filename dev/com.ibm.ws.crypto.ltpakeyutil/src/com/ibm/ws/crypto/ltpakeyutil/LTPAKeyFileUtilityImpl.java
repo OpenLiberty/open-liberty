@@ -165,7 +165,7 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
         Properties expProps = null;
 
         try {
-            LTPAKeyEncryptor encryptor = new KeyEncryptor(keyPasswordBytes);
+            LTPAKeyEncryptor encryptor = new PasswordLTPAKeyEncryptor(keyPasswordBytes);
 
             if (publicKeyBytes == null && privateKeyBytes == null) {
                 LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();

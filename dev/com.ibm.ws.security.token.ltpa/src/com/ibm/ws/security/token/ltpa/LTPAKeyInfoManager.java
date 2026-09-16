@@ -32,8 +32,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
-import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
+import com.ibm.ws.crypto.ltpakeyutil.PasswordLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.token.ltpa.internal.LTPAKeyFileCreator;
@@ -449,7 +449,7 @@ public class LTPAKeyInfoManager {
     @Sensitive
     private byte[][] decryptKeys(@Sensitive byte[] keyPassword, @Sensitive String secretKeyStr, @Sensitive String privateKeyStr,
                                  @Sensitive String publicKeyStr) throws Exception {
-        LTPAKeyEncryptor encryptor = new KeyEncryptor(keyPassword);
+        LTPAKeyEncryptor encryptor = new PasswordLTPAKeyEncryptor(keyPassword);
         byte[] secretKey, privateKey, publicKey;
         // Secret key
         if ((secretKeyStr == null) || (secretKeyStr.length() == 0)) {

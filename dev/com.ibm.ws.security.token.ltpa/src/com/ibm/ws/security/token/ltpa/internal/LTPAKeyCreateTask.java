@@ -26,8 +26,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.crypto.ltpakeyutil.AesLTPAKeyEncryptor;
-import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
+import com.ibm.ws.crypto.ltpakeyutil.PasswordLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 import com.ibm.ws.crypto.util.AESKeyManager;
@@ -81,7 +81,7 @@ class LTPAKeyCreateTask implements Runnable {
                 return new AesLTPAKeyEncryptor(AESKeyManager.getKeyViaResolver(KeyVersion.AES_V1));
             }
         } else {
-            return new KeyEncryptor(getKeyPasswordBytes());
+            return new PasswordLTPAKeyEncryptor(getKeyPasswordBytes());
         }
     }
 

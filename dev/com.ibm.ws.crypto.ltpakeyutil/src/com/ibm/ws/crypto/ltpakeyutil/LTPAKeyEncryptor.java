@@ -14,7 +14,7 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 /**
  * Common interface for encrypting and decrypting LTPA key material.
- * Implementations include {@link KeyEncryptor} (password-derived cipher key)
+ * Implementations include {@link PasswordLTPAKeyEncryptor} (password-derived cipher key)
  * and {@link AesLTPAKeyEncryptor} (raw AES key).
  */
 public interface LTPAKeyEncryptor {

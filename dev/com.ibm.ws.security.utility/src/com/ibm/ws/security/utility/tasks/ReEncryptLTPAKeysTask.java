@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ibm.ws.crypto.ltpakeyutil.AesLTPAKeyEncryptor;
-import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
+import com.ibm.ws.crypto.ltpakeyutil.PasswordLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.ICSFSecretKeyResolver;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
@@ -168,12 +168,12 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
         try {
             // Source encryptor: prefer currentPassword; fall back to ckdsLabel.
             LTPAKeyEncryptor currentEncryptor = (currentBytes != null)
-                    ? new KeyEncryptor(currentBytes)
+                    ? new PasswordLTPAKeyEncryptor(currentBytes)
                     : buildCkdsEncryptor(ckdsLabel);
 
             // Target encryptor: prefer newPassword; fall back to ckdsLabel.
             LTPAKeyEncryptor newEncryptor = (newBytes != null)
-                    ? new KeyEncryptor(newBytes)
+                    ? new PasswordLTPAKeyEncryptor(newBytes)
                     : buildCkdsEncryptor(ckdsLabel);
 
             ltpaKeyFileUtil.reEncryptLTPAKeysFile(currentFile, currentEncryptor, newFile, newEncryptor);

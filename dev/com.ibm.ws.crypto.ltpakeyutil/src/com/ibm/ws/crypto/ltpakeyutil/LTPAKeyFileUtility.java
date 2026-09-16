@@ -61,7 +61,7 @@ public interface LTPAKeyFileUtility {
 	 * {@code newEncryptor}, and write the result to {@code newKeyFile}.
 	 * The source and destination paths may be the same (in-place update).
 	 * <p>
-	 * Use {@link KeyEncryptor} to wrap a plaintext password, and
+	 * Use {@link PasswordLTPAKeyEncryptor} to wrap a plaintext password, and
 	 * {@link AesLTPAKeyEncryptor} to wrap a hardware AES/CKDS key.
 	 *
 	 * @param currentKeyFile   path to the existing LTPA keys file
