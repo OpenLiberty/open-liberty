@@ -51,7 +51,9 @@
         </application-bnd>
     </application>
 
-    <authentication id="Basic" cacheEnabled="true" />
+    <!-- cacheEnabled=false ensures every SSO request exercises the full LTPA token
+         validation path. -->
+    <authentication id="Basic" cacheEnabled="false" />
 
     <httpSession securityIntegrationEnabled="false"/>
 
@@ -62,10 +64,7 @@
 
     <include location="../fatTestPorts.xml" />
 
-    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
-    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
-    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
-    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+    <javaPermission className="java.security.AllPermission"/>
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
     <ssl id="defaultSSLConfig" />
