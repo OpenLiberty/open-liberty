@@ -19,6 +19,8 @@ public class HttpOptions extends ConfigElement {
     private String websocketBufferSize;
     private String readTimeout;
     private String writeTimeout;
+    private Boolean throwIOEForInboundConnections;
+
 
     public Integer getMessageSizeLimit() {
         return this.messageSizeLimit;
@@ -65,6 +67,17 @@ public class HttpOptions extends ConfigElement {
         this.writeTimeout = writeTimeout;
     }
 
+    public Boolean isThrowIOEForInboundConnections() {
+        return this.throwIOEForInboundConnections;
+    }
+
+    @XmlAttribute(name = "ThrowIOEForInboundConnections")
+    public void setThrowIOEForInboundConnections(Boolean throwIOEForInboundConnections) {
+        this.throwIOEForInboundConnections = throwIOEForInboundConnections;
+    }
+
+
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("httpOptions{");
@@ -80,6 +93,9 @@ public class HttpOptions extends ConfigElement {
             buf.append("readTimeout=\"" + readTimeout + "\" ");
         if (writeTimeout != null)
             buf.append("writeTimeout=\"" + writeTimeout + "\" ");
+        if (throwIOEForInboundConnections != null)
+            buf.append("ThrowIOEForInboundConnections=\"" + throwIOEForInboundConnections + "\" ");
+
         buf.append("}");
         return buf.toString();
     }
