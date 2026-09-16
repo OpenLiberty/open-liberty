@@ -10,7 +10,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.org.hibernate-4.0; singleton:=true
+Bundle-SymbolicName: io.openliberty.org.hibernate.4.0; singleton:=true
 
 Bundle-Activator: io.openliberty.jakarta.persistence.internal.JakartaPersistenceActivator
 

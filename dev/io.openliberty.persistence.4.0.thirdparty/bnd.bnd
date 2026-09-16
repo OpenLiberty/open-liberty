@@ -160,7 +160,6 @@ Include-Resource: \
   @${repo;org.hibernate.orm:hibernate-core;${hibernateVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class), \
   @${repo;${hibernateModelsGroupId}:hibernate-models;${hibernateModelsVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class), \
   @${repo;${hibernateModelsGroupId}:hibernate-models-bytebuddy;${hibernateModelsVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class), \
-  @${repo;net.bytebuddy:byte-buddy;${byteBuddyVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class), \
   @${repo;org.antlr:${antlrArtifactId};${antlrVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class)
 
 Private-Package: io.openliberty.persistence.internal.helper
@@ -182,7 +181,7 @@ Service-Component: \
     org.hibernate.orm:hibernate-core;version=${hibernateVersion},\
     ${hibernateModelsGroupId}:hibernate-models;version=${hibernateModelsVersion},\
     ${hibernateModelsGroupId}:hibernate-models-bytebuddy;version=${hibernateModelsVersion},\
-    net.bytebuddy:byte-buddy;version=${byteBuddyVersion},\
+    io.openliberty.net.bytebuddy;version=latest,\
     org.antlr:${antlrArtifactId};version=${antlrVersion},\
     io.openliberty.org.jboss.logging36;version=latest,\
     io.openliberty.io.smallrye.jandex3;version=latest,\
