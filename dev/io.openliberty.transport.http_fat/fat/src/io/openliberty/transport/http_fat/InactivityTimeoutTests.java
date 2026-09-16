@@ -38,6 +38,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -45,7 +47,7 @@ import componenttest.topology.utils.HttpUtils;
  * Test to ensure that the tcpOptions inactivityTimeout works.
  */
 @RunWith(FATRunner.class)
-// @Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class InactivityTimeoutTests {
 
     private static final Logger LOG = Logger.getLogger(InactivityTimeoutTests.class.getName());
@@ -116,7 +118,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
- //@Test
+ @Test
     public void testInactivityTimeout_nonDefault() throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         LOG.info("Server configuration that the test started with: " + configuration);
@@ -158,7 +160,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
-   //@Test
+   @Test
     @AllowedFFDC("com.ibm.wsspi.channelfw.exception.ChannelException")
     @AllowedFFDC("io.openliberty.netty.internal.exception.NettyException")
     public void testInactivityTimeout_tooLow() throws Exception {
@@ -230,7 +232,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
-   //@Test
+   @Test
     @AllowedFFDC("com.ibm.wsspi.channelfw.exception.ChannelException")
     @AllowedFFDC("io.openliberty.netty.internal.exception.NettyException")
     public void testInactivityTimeout_tooHigh() throws Exception {
@@ -293,7 +295,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
-   //@Test
+   @Test
     public void testInactivityTimeout_one_request() throws Exception {
         String expectedResponse = "HTTP/1.1 408 Request Timeout";
         boolean expectedResponseFound = false;
@@ -391,7 +393,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
-   //@Test
+   @Test
     public void testInactivityTimeout_two_requests() throws Exception {
         String expectedResponse1 = "Response from InactivityTimeoutServlet!";
         boolean requestOnePassed = false;
@@ -488,7 +490,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
-   //@Test
+   @Test
     public void testInactivityTimeout_verify_read_retry() throws Exception {
         String expectedResponse = "Response from InactivityTimeoutServlet!";
         boolean expectedResponseFound = false;
@@ -571,7 +573,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
-   //@Test
+   @Test
     public void testInactivityTimeout_with_readTimeout() throws Exception {
         String expectedResponse = "Response from InactivityTimeoutServlet!";
         boolean expectedResponseFound = false;
@@ -656,7 +658,7 @@ public class InactivityTimeoutTests {
      *
      * @throws Exception
      */
-   //@Test
+   @Test
     public void testInactivityTimeout_read_write_timeouts_zero() throws Exception {
         String expectedResponse = "Response from InactivityTimeoutServlet!";
         boolean expectedResponseFound = false;
@@ -736,7 +738,7 @@ public class InactivityTimeoutTests {
      * - io.openliberty.http.netty.timeout.exception.ReadTimeoutException appears in the server log (Netty path).
      * - com.ibm.wsspi.http.channel.exception.HttpErrorException: Request Timeout appears in trace (ChannelFW path).
      */
-   //@Test
+   @Test
     public void testReadTimeout() throws Exception {
         String expectedResponse = "HTTP/1.1 408 Request Timeout";
         boolean expectedResponseFound = false;
@@ -836,7 +838,7 @@ public class InactivityTimeoutTests {
      * Expected outcome (Netty path):
      * - "The connection is closing due to a write timeout" appears in trace.
      */
-   @Test
+    @Test
     public void testWriteTimeout() throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
@@ -918,6 +920,98 @@ public class InactivityTimeoutTests {
                 // On ChannelFW, the write timeout surfaces as a SocketTimeoutException inside
                 // synchWrite(). With throwIOEForInboundConnections=true it is no longer swallowed,
                 // so it appears in trace as "IOException during sync write: Socket operation timed out".
+                assertNotNull("IOException during sync write (write timeout) was not found in trace!",
+                              server.waitForStringInTraceUsingMark(
+                                  "IOException during sync write: Socket operation timed out", 30000));
+            }
+        }
+    }
+
+    /**
+     * Tests that ThrowIOEForInboundConnections="true" causes the server to propagate the
+     * IOException from a stalled write back to the servlet, verifying consistent behaviour
+     * between the Channel Framework and Netty transports.
+     *
+     * Configuration:
+     * <httpOptions readTimeout="0" writeTimeout="1s" ThrowIOEForInboundConnections="true"/>
+     * <tcpOptions inactivityTimeout="0"/>
+     *
+     * The client opens a socket to the SlowWriteServlet (40 MB response) and stops reading
+     * after the response headers arrive. The server write stalls once OS buffers fill.
+     *
+     * Expected outcome (Netty path):
+     * - "The connection is closing due to a write timeout" appears in trace.
+     * Expected outcome (ChannelFW path):
+     * - "IOException during sync write: Socket operation timed out" appears in trace.
+     *   With ThrowIOEForInboundConnections=true the IOException is no longer swallowed,
+     *   confirming parity with the Netty path.
+     */
+    // @Test -- ThrowIOEForInboundConnections doens't look to be honored in Netty
+    public void testWriteTimeout_throwIOEForInboundConnections() throws Exception {
+        ServerConfiguration configuration = server.getServerConfiguration();
+        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+
+        httpEndpoint.getTcpOptions().setInactivityTimeout("0");
+        httpEndpoint.getHttpOptions().setReadTimeout("0");
+        httpEndpoint.getHttpOptions().setWriteTimeout("1s");
+        httpEndpoint.getHttpOptions().setThrowIOEForInboundConnections(true);
+
+        server.setMarkToEndOfLog();
+        server.setTraceMarkToEndOfDefaultTrace();
+        server.updateServerConfiguration(configuration);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*InactivityTimeout.*");
+
+        assertNotNull("writeTimeout trace confirmation not found!",
+                      server.waitForStringInTraceUsingMark("Config: Write timeout is 1000"));
+        // ChannelFW only — Netty does not log this config line but still honours the attribute.
+        if (!runningNetty) {
+            assertNotNull("ThrowIOEForInboundConnections trace confirmation not found!",
+                          server.waitForStringInTraceUsingMark("ThrowIOEForInboundConnections is true"));
+        }
+
+        server.waitForDefaultHTTPEndpointStart();
+
+        String address = server.getHostname() + ":" + server.getHttpDefaultPort();
+        String request = "GET /" + APP_NAME + "/SlowWriteServlet HTTP/1.1\r\n"
+                         + "Host: " + address + "\r\n"
+                         + "Connection: close\r\n"
+                         + "\r\n";
+
+        LOG.info("Opening socket to SlowWriteServlet — will stop reading after headers to stall server write.");
+        URL url = HttpUtils.createURL(server, "/SlowWriteServlet");
+        try (Socket socket = new Socket(url.getHost(), url.getPort())) {
+            socket.setReceiveBufferSize(4096);
+            socket.setSoTimeout(30000);
+
+            OutputStream os = socket.getOutputStream();
+            os.write(request.getBytes());
+            os.flush();
+
+            // Read only the HTTP response headers, then stop reading entirely.
+            // This stalls the server write once the OS send/receive buffers fill.
+            java.io.InputStream is = socket.getInputStream();
+            byte[] headerBuf = new byte[4096];
+            int totalRead = 0;
+            boolean headersEnded = false;
+            while (!headersEnded && totalRead < headerBuf.length) {
+                int n = is.read(headerBuf, totalRead, headerBuf.length - totalRead);
+                if (n < 0) break;
+                totalRead += n;
+                for (int i = 0; i <= totalRead - 4; i++) {
+                    if (headerBuf[i] == '\r' && headerBuf[i + 1] == '\n'
+                            && headerBuf[i + 2] == '\r' && headerBuf[i + 3] == '\n') {
+                        headersEnded = true;
+                        break;
+                    }
+                }
+            }
+            LOG.info("Read " + totalRead + " bytes of response headers — stopping reads to stall server write.");
+
+            if (runningNetty) {
+                assertNotNull("Write timeout message was not found in trace!",
+                              server.waitForStringInTraceUsingMark(
+                                  "The connection is closing due to a write timeout; channel=", 30000));
+            } else {
                 assertNotNull("IOException during sync write (write timeout) was not found in trace!",
                               server.waitForStringInTraceUsingMark(
                                   "IOException during sync write: Socket operation timed out", 30000));
