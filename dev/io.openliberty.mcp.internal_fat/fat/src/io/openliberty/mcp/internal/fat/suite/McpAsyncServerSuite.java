@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,24 +32,42 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
  * {@code tidyAllKnownServers}. Instead, each test class references
  * {@link McpAsyncServerSuite#server} directly.
  *
+ * <p>Each test class manages its own WAR deployment in {@code @BeforeClass} /
+ * {@code @AfterClass}. The suite does NOT pre-deploy any applications.
+ * Note that {@code mcp-server-async/server.xml} only declares
+ * {@code asyncToolsTestShortTimeout.war} (which needs a custom MCP timeout); all
+ * other WARs use dropins and require no server.xml declaration.
+ *
  * <p>Test classes must call {@code server.setMarkToEndOfLog()} as the very first
  * line of {@code @BeforeClass} to isolate their log searches from earlier tests.
+ *
+ * <p><b>Important:</b> test classes must reference {@code McpAsyncServerSuite.server}
+ * directly — never copy it into a static field. The suite's {@code @ClassRule} assigns
+ * {@code server} inside {@code before()}, which runs <em>after</em> test-class static
+ * initializers execute, so a static copy would always capture {@code null}.
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    AsyncToolsErrorHandlingTest.class,
-    AsyncToolCallEventTraceTest.class,
-    AsyncToolLifecycleTest.class,
-    AsyncToolsTest.class,
+                AsyncToolsErrorHandlingTest.class,
+                AsyncToolCallEventTraceTest.class,
+                AsyncToolLifecycleTest.class,
+                AsyncToolsTest.class,
 })
 public class McpAsyncServerSuite {
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("mcp-server-async");
+    public static LibertyServer server;
 
     @ClassRule
-    public static ExternalResource serverLifecycle = new ExternalResource() {
+    public static ExternalResource serverLifecycle = new ServerLifecycle();
+
+    static class ServerLifecycle extends ExternalResource {
         @Override
         protected void before() throws Throwable {
+            // getLibertyServer is called here rather than in a static initializer so
+            // that it runs on every repeat.  Between repeats the JakartaEEAction deletes
+            // the server root; calling getLibertyServer again re-copies the server files
+            // from the autoFVT source directory before the next repeat starts the server.
+            server = LibertyServerFactory.getLibertyServer("mcp-server-async");
             server.startServer();
         }
 
@@ -59,16 +77,16 @@ public class McpAsyncServerSuite {
                 server.stopServer(
                     // AsyncToolsErrorHandlingTest
                     "CWMCM0010E",
-                    // AsyncToolsTest, AsyncToolCallEventTraceTest, AsyncToolLifecycleTest
-                    "Method call caused runtime exception. This is expected if the input was 'throw error'",
-                    // asyncToolsTestShortTimeout.war is declared in server.xml but only deployed
-                    // during AsyncToolsTest.setup() — not present at server start (CWWKZ0014W)
-                    // and deleted before the server stops while still configured (CWWKZ0059E)
+                    // asyncToolsTestShortTimeout.war is declared in server.xml but deployed by
+                    // AsyncToolsTest after startup, so Liberty warns at startup (CWWKZ0014W) and
+                    // at shutdown when still configured but already removed (CWWKZ0059E)
                     "CWWKZ0014W",
-                    "CWWKZ0059E");
+                    "CWWKZ0059E",
+                    // AsyncToolsTest / AsyncToolCallEventTraceTest / AsyncToolLifecycleTest
+                    "Method call caused runtime exception. This is expected if the input was 'throw error'");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-    };
+    }
 }

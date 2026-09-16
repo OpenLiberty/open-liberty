@@ -36,12 +36,11 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 @RunWith(FATRunner.class)
 public class InvalidAsyncTimeoutTest {
 
-    @Server("mcp-server-configurable-async-timeout")
+    @Server("mcp-server-invalid-async-timeout")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        // Deploy app with invalid timeout ("sheep")
         WebArchive invalidTimeoutWar = ShrinkWrap.create(WebArchive.class, "invalidTimeoutTest.war")
                                                  .addPackage(AsyncTools.class.getPackage())
                                                  .addPackage(ToolStatus.class.getPackage());

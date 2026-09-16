@@ -44,12 +44,13 @@ import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
 })
 public class McpStatelessAuthServerSuite {
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("mcp-stateless-server-auth");
+    public static LibertyServer server;
 
     @ClassRule
     public static ExternalResource serverLifecycle = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
+            server = LibertyServerFactory.getLibertyServer("mcp-stateless-server-auth");
             server.startServer();
             server.waitForLTPAConfigReady();
         }
@@ -57,13 +58,7 @@ public class McpStatelessAuthServerSuite {
         @Override
         protected void after() {
             try {
-                server.stopServer(
-                    // The apps are declared in server.xml so that <mcp stateless="true"/> is applied,
-                    // but the WARs are deployed/undeployed dynamically by each test class.
-                    // CWWKZ0014W fires at server start (WAR not yet present) and
-                    // CWWKZ0059E fires at teardown (WAR deleted while app is still configured).
-                    "CWWKZ0014W",
-                    "CWWKZ0059E");
+                server.stopServer();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

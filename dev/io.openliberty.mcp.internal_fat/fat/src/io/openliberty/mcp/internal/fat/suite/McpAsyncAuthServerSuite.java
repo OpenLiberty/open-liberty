@@ -46,12 +46,13 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
 })
 public class McpAsyncAuthServerSuite {
 
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("mcp-server-async-auth");
+    public static LibertyServer server;
 
     @ClassRule
     public static ExternalResource serverLifecycle = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
+            server = LibertyServerFactory.getLibertyServer("mcp-server-async-auth");
             server.startServer();
             server.waitForLTPAConfigReady();
         }
@@ -59,9 +60,7 @@ public class McpAsyncAuthServerSuite {
         @Override
         protected void after() {
             try {
-                server.stopServer(
-                    // AsyncToolCancellationTest
-                    "OperationCancelledException");
+                server.stopServer();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
