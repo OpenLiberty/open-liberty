@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -158,7 +158,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
                 pendingCommitTask.cancel(true);
             }
             // commit now
-            commitCompletedWork();
+            commitCompletedWork(false);
         } else {
             if ((pendingCommitTask == null) && !maxCommitBatchInterval.isZero()) {
                 // commit later
@@ -166,7 +166,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
                     Tr.debug(this, tc, "Scheduling deferred commit task", this);
                 }
                 pendingCommitTask = asyncProvider.getScheduledExecutorService()
-                                                 .schedule(this::commitCompletedWork, maxCommitBatchInterval.toNanos(), TimeUnit.NANOSECONDS);
+                                                 .schedule(() -> commitCompletedWork(false), maxCommitBatchInterval.toNanos(), TimeUnit.NANOSECONDS);
             }
         }
     }
@@ -177,7 +177,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
      * We can only commit the offset for a record if all prior records are complete. This method looks through the committed work to see which messages can be committed without
      * leaving a gap and then commits them.
      */
-    private void commitCompletedWork() {
+    private void commitCompletedWork(boolean waitForCommit) {
         synchronized (completedWork) {
             if (Thread.interrupted()) {
                 // Don't do anything if we were cancelled
@@ -209,14 +209,20 @@ public class CommittingPartitionTracker extends PartitionTracker {
             }
 
             if (newestWork != null) {
-                // commit
                 long originalCommitOffset = committedOffset;
                 long finalCommitOffset = newCommitOffset;
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(this, tc, "Committing from " + originalCommitOffset + " to " + finalCommitOffset, this);
                 }
-                commitUpTo(newestWork).whenCompleteAsync((r, t) -> processCommittedWork(originalCommitOffset, finalCommitOffset, t), asyncProvider.getExecutorService());
+                if (waitForCommit) {
+                    Throwable commitException = commitUpToSync(newestWork);
+                    processCommittedWork(originalCommitOffset, finalCommitOffset, commitException);
+                } else {
+                    commitUpTo(newestWork).whenCompleteAsync((r, t) -> processCommittedWork(originalCommitOffset, finalCommitOffset, t), asyncProvider.getExecutorService());
+                }
+            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "There was no new work to commit");
             }
 
             outstandingUncommittedWork -= newCommitOffset - committedOffset;
@@ -226,7 +232,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
     }
 
     /**
-     * Commit the offset up to the offset of the given work
+     * Commit the offset up to the offset of the given work asynchronously
      *
      * @param work
      * @return completion stage which completes with the result of the commit, or completes exceptionally if the commit failed
@@ -238,6 +244,24 @@ public class CommittingPartitionTracker extends PartitionTracker {
         // Therefore, the offset which we are about to commit must be the offset _after_ the last message we have processed.
         OffsetAndMetadata offsetAndMetadata = factory.newOffsetAndMetadata(work.offset + 1, work.leaderEpoch, null);
         return kafkaInput.commitOffsets(this, offsetAndMetadata);
+    }
+
+    /**
+     * Commit the offset up to the offset of the given work synchronously.
+     * <p>
+     * Blocks until the broker acknowledges the commit. Intended for use during shutdown only.
+     *
+     * @param work the work whose offset (+ 1) should be committed
+     * @return {@code null} on success, or the exception if the commit failed
+     */
+    private Throwable commitUpToSync(CompletedWork work) {
+        OffsetAndMetadata offsetAndMetadata = factory.newOffsetAndMetadata(work.offset + 1, work.leaderEpoch, null);
+        try {
+            kafkaInput.commitOffsetsSync(this, offsetAndMetadata);
+            return null;
+        } catch (RuntimeException e) {
+            return e;
+        }
     }
 
     /**
@@ -342,13 +366,12 @@ public class CommittingPartitionTracker extends PartitionTracker {
     public void close() {
         synchronized (completedWork) {
             try {
-                // A request to commit may have been queued but not run yet.
-                // Allow queued tasks to run while we hold the completedWork lock
-                kafkaInput.runPendingActions();
-
                 if (!completedWork.isEmpty()) {
-                    // Attempt a final commit before we relinquish the partition
-                    commitCompletedWork();
+                    // Attempt a final synchronous commit before we relinquish the partition.
+                    // We use waitForCommit=true so that commitUpToSync is called, which calls
+                    // kafkaInput.commitOffsetsSync() directly — bypassing both the running guard
+                    // and the need for a future poll() to deliver the async callback.
+                    commitCompletedWork(true);
                 }
             } finally {
                 super.close();
