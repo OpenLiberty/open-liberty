@@ -56,17 +56,7 @@ public class HandlerImpl {
     public boolean isTranActive() {
         boolean tranActive = false;
         if (!wsatCall.get().booleanValue()) {
-            if (((EmbeddableTranManagerSet) EmbeddableTranManagerSet.instance()).isQuiesced()) {
-                // Don't propagate WS-AT transactions when the server is quiescing.
-                // This mirrors the inbound guard in importTransaction() and prevents
-                // the export+ThreadLocal pairing from being broken by the quiesce path
-                // in TransactionWrapper.getTransactionWrapper().
-                if (TC.isDebugEnabled()) {
-                    Tr.debug(TC, "Server is quiescing, suppressing WS-AT transaction propagation");
-                }
-            } else {
-                tranActive = tranService.isTranActive();
-            }
+            tranActive = tranService.isTranActive();
         } else {
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Processing a WS-AT service call");
@@ -89,6 +79,19 @@ public class HandlerImpl {
      */
     public WSATContext clientRequest() throws WSATException {
         WSATContext ctx = null;
+
+        // Refuse to export a WS-AT transaction when the server is quiescing.
+        // Returning false from isTranActive() would silently skip propagation for
+        // optional-policy endpoints, leaving the outbound call running outside the
+        // transaction without any indication to the caller.  Throwing here ensures
+        // both mandatory and optional policies fail consistently and the transaction
+        // can roll back cleanly on the coordinator side.
+        if (((EmbeddableTranManagerSet) EmbeddableTranManagerSet.instance()).isQuiesced()) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Server is quiescing; refusing WS-AT transaction propagation");
+            }
+            throw new WSATException("Cannot propagate WS-AT transaction: server is quiescing");
+        }
 
         // Called by the client-side out-bound web service interceptor to obtain the
         // information needed to build a CoordinationContext.  We should return null
