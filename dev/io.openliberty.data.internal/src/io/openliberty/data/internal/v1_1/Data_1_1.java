@@ -48,8 +48,6 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
-import jakarta.data.repository.JakartaQuery; // TODO replace with Persistence 4.0 annotation once available
-import jakarta.data.repository.NativeQuery; // TODO replace with Persistence 4.0 annotation once available
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Select;
@@ -68,12 +66,28 @@ import jakarta.persistence.EntityManagerFactory;
  */
 public class Data_1_1 implements DataVersionCompatibility {
     /**
+     * The class jakarta.persistence.EntityAgent.CreationOption[]
+     * if Jakarta Persistence 4.0+ is used. Otherwise null (a temporary
+     * special case to allow experimentation with EclipseLink's Persistence
+     * 3.2 implementation). TODO remove the special case
+     */
+    private static final Class<?> EA_CREATION_OPTION_ARRAY_CLASS;
+
+    /**
      * The class jakarta.persistence.EntityManager.CreationOption[]
      * if Jakarta Persistence 4.0+ is used. Otherwise null (a temporary
      * special case to allow experimentation with EclipseLink's Persistence
      * 3.2 implementation). TODO remove the special case
      */
-    private final Class<?> CreationOptionArrayClass;
+    private static final Class<?> EM_CREATION_OPTION_ARRAY_CLASS;
+
+    /**
+     * Empty array of jakarta.persistence.EntityAgent.CreationOption[]
+     * if Jakarta Persistence 4.0+ is used. Otherwise null (a temporary
+     * special case to allow experimentation with EclipseLink's Persistence
+     * 3.2 implementation). TODO remove the special case
+     */
+    private static final Object EMPTY_EA_CREATION_OPTIONS;
 
     /**
      * Empty array of jakarta.persistence.EntityManager.CreationOption[]
@@ -81,7 +95,17 @@ public class Data_1_1 implements DataVersionCompatibility {
      * special case to allow experimentation with EclipseLink's Persistence
      * 3.2 implementation). TODO remove the special case
      */
-    private final Object EmptyCreationOptions;
+    private static final Object EMPTY_EM_CREATION_OPTIONS;
+
+    /**
+     * jakarta.persistence.query.JakartaQuery.class
+     */
+    static final Class<? extends Annotation> JAKARTA_QUERY_CLASS;
+
+    /**
+     * The value() method of the JakartaQuery annotation.
+     */
+    static final Method JAKARTA_QUERY_VALUE;
 
     /**
      * Annotations that represent lifecycle operations that are allowed for
@@ -113,12 +137,24 @@ public class Data_1_1 implements DataVersionCompatibility {
                                     .toList();
 
     /**
+     * jakarta.persistence.query.NativeQuery.class
+     */
+    static final Class<? extends Annotation> NATIVE_QUERY_CLASS;
+
+    /**
+     * The value() method of the NativeQuery annotation.
+     */
+    static final Method NATIVE_QUERY_VALUE;
+
+    /**
      * Annotations for repository query operations that accept a JPQL or SQL query.
      */
-    private static final Set<Class<? extends Annotation>> QUERY_LANGUAGE_ANNOS = //
-                    Set.of(JakartaQuery.class,
-                           NativeQuery.class,
-                           Query.class);
+    private static final Set<Class<? extends Annotation>> QUERY_LANGUAGE_ANNOS;
+
+    /**
+     * jakarta.persistence.query.Query.class
+     */
+    static final Class<? extends Annotation> QUERY_OPTIONS_CLASS;
 
     /**
      * Classes that are valid as return types of resource accessor methods for a
@@ -147,22 +183,51 @@ public class Data_1_1 implements DataVersionCompatibility {
                            PageRequest.class,
                            Restriction.class);
 
-    public Data_1_1() {
-        String className = "jakarta.persistence.EntityManager$CreationOption";
-        Class<?> c;
-        Object array;
-        try {
-            Class<?> componentClass = EntityManager.class //
-                            .getClassLoader() //
-                            .loadClass(className);
-            c = componentClass.arrayType();
-            array = Array.newInstance(componentClass, 0);
-        } catch (ClassNotFoundException x) {
-            c = null;
-            array = null;
+    static {
+        // TODO remove this temporary toleration for the persistence-3.2 feature
+        ClassLoader cl = EntityManager.class.getClassLoader();
+        boolean jpa32 = EntityManager.class.getClasses().length == 0;
+        if (jpa32) {
+            EA_CREATION_OPTION_ARRAY_CLASS = null;
+            EM_CREATION_OPTION_ARRAY_CLASS = null;
+            EMPTY_EA_CREATION_OPTIONS = null;
+            EMPTY_EM_CREATION_OPTIONS = null;
+            JAKARTA_QUERY_CLASS = null;
+            JAKARTA_QUERY_VALUE = null;
+            NATIVE_QUERY_CLASS = null;
+            NATIVE_QUERY_VALUE = null;
+            QUERY_OPTIONS_CLASS = null;
+            QUERY_LANGUAGE_ANNOS = Set.of(Query.class);
+        } else { // Persistence 4.0
+            try {
+                Class<?> CreationOption_EA = cl //
+                                .loadClass("jakarta.persistence.EntityAgent$CreationOption");
+                EA_CREATION_OPTION_ARRAY_CLASS = CreationOption_EA.arrayType();
+                EMPTY_EA_CREATION_OPTIONS = Array.newInstance(CreationOption_EA, 0);
+
+                Class<?> CreationOption_EM = cl //
+                                .loadClass("jakarta.persistence.EntityManager$CreationOption");
+                EM_CREATION_OPTION_ARRAY_CLASS = CreationOption_EM.arrayType();
+                EMPTY_EM_CREATION_OPTIONS = Array.newInstance(CreationOption_EM, 0);
+
+                JAKARTA_QUERY_CLASS = (Class<? extends Annotation>) cl //
+                                .loadClass("jakarta.persistence.query.JakartaQuery");
+                JAKARTA_QUERY_VALUE = JAKARTA_QUERY_CLASS.getMethod("value");
+
+                NATIVE_QUERY_CLASS = (Class<? extends Annotation>) cl //
+                                .loadClass("jakarta.persistence.query.NativeQuery");
+                NATIVE_QUERY_VALUE = NATIVE_QUERY_CLASS.getMethod("value");
+
+                QUERY_LANGUAGE_ANNOS = Set.of(JAKARTA_QUERY_CLASS,
+                                              NATIVE_QUERY_CLASS,
+                                              Query.class);
+
+                QUERY_OPTIONS_CLASS = (Class<? extends Annotation>) cl //
+                                .loadClass("jakarta.persistence.query.QueryOptions");
+            } catch (ClassNotFoundException | NoSuchMethodException x) {
+                throw new ExceptionInInitializerError(x);
+            }
         }
-        CreationOptionArrayClass = c;
-        EmptyCreationOptions = array;
     }
 
     @Override
@@ -173,25 +238,51 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public AutoCloseable createEntityAgent(EntityManagerFactory emf) {
+        AutoCloseable agent;
+        try {
+            // TODO once JPA 3.2 is no longer tolerated with data-1.1,
+            // agent = emf.createEntityAgent();
+            agent = (AutoCloseable) emf.getClass() //
+                            .getMethod("createEntityAgent",
+                                       EA_CREATION_OPTION_ARRAY_CLASS) //
+                            .invoke(emf,
+                                    new Object[] { EMPTY_EA_CREATION_OPTIONS });
+        } catch (IllegalAccessException | NoSuchMethodException x) {
+            throw new RuntimeException(x); // should be impossible
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            throw new DataException(x.getCause());
+        }
+
+        return agent;
+    }
+
+    @Override
+    @Trivial
     public EntityManager createEntityManager(EntityManagerFactory emf) {
         EntityManager em;
 
-        if (CreationOptionArrayClass == null)
-            em = emf.createEntityManager();
-        else {
-            try { // em = emf.createEntityManager(CreationOption...)
+        try {
+            if (EM_CREATION_OPTION_ARRAY_CLASS == null)
+                // em = emf.createEntityManager()
+                em = (EntityManager) emf.getClass() //
+                                .getMethod("createEntityManager") //
+                                .invoke(emf);
+            else
+                // em = emf.createEntityManager(CreationOption...)
                 em = (EntityManager) emf.getClass() //
                                 .getMethod("createEntityManager",
-                                           CreationOptionArrayClass) //
+                                           EM_CREATION_OPTION_ARRAY_CLASS) //
                                 .invoke(emf,
-                                        new Object[] { EmptyCreationOptions });
-            } catch (IllegalAccessException | NoSuchMethodException x) {
-                throw new RuntimeException(x); // should be impossible
-            } catch (InvocationTargetException x) {
-                if (x.getCause() instanceof RuntimeException rx)
-                    throw rx;
-                throw new DataException(x.getCause());
-            }
+                                        new Object[] { EMPTY_EM_CREATION_OPTIONS });
+        } catch (IllegalAccessException | NoSuchMethodException x) {
+            throw new RuntimeException(x); // should be impossible
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            throw new DataException(x.getCause());
         }
 
         return em;

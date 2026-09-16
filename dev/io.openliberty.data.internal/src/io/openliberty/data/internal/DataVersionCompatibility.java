@@ -82,12 +82,19 @@ public interface DataVersionCompatibility {
     boolean atLeast(int major, int minor);
 
     /**
+     * Creates a new EntityAgent instance.
+     *
+     * @param emf factory for EntityManager and EntityAgent
+     * @return a new EntityAgent instance
+     */
+    AutoCloseable createEntityAgent(EntityManagerFactory emf);
+
+    /**
      * Creates a new EntityManager instance.
      *
      * @param emf EntityManager factory
      * @return a new EntityManager instance
      */
-    @Trivial
     EntityManager createEntityManager(EntityManagerFactory emf);
 
     /**

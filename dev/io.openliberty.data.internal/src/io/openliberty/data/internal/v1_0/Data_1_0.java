@@ -99,6 +99,12 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public AutoCloseable createEntityAgent(EntityManagerFactory emf) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Trivial
     public EntityManager createEntityManager(EntityManagerFactory emf) {
         return emf.createEntityManager();
     }
