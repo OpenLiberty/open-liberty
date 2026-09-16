@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: Hibernate JPA Container
-Bundle-SymbolicName: com.ibm.ws.jpa.container.hibernate
+Bundle-SymbolicName: io.openliberty.jpa.container.hibernate
 Bundle-Description: Container-managed Hibernate JPA support, version ${bVersion}
 
 WS-TraceGroup: JPA

@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.org.hibernate-4.0
+symbolicName=io.openliberty.org.hibernate-4.0
 singleton=true
 IBM-Process-Types: server, \
  client
