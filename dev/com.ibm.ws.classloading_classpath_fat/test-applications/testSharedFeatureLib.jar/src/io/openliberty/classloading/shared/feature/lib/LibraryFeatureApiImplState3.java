@@ -15,19 +15,14 @@ package io.openliberty.classloading.shared.feature.lib;
 import io.openliberty.classloading.feature.api.TestFeatureApi3;
 
 /**
- * Third shared-library implementation, used by the State 3 probe of Test 2
- * (shared-library classloader test).
+ * Shared-library implementation of {@link TestFeatureApi3} for State 3.
  * <p>
- * This class intentionally implements {@link TestFeatureApi3} — an interface that is
- * <em>never</em> referenced in States 1 or 2 and therefore never cached. Loading this
- * class in State 3 (feature re-added) forces a genuine cold delegation-chain walk.
- * A successful load confirms the re-added bundle is properly wired back into the
- * shared-library classloader chain.
+ * Implements {@link TestFeatureApi3}, loaded after configuration / feature restore.
  */
-public class SharedLibFeatureApiImplState3 implements TestFeatureApi3 {
+public class LibraryFeatureApiImplState3 implements TestFeatureApi3 {
 
     @Override
     public String doWork() {
-        return "SharedLibFeatureApiImplState3.doWork() called successfully from shared library (state 3)";
+        return "LibraryFeatureApiImplState3.doWork() called successfully from shared library (state 3)";
     }
 }

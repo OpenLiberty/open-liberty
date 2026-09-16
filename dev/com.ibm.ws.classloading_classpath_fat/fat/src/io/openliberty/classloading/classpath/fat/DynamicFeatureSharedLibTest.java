@@ -13,9 +13,9 @@
 package io.openliberty.classloading.classpath.fat;
 
 import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_SHARED_LIB_TEST_SERVER;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_WAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_WAR;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -75,7 +75,7 @@ public class DynamicFeatureSharedLibTest {
     public static LibertyServer server;
 
     private static final String SERVLET_PATH =
-        TEST_DYNAMIC_FEATURE_SHARED_LIB_APP + "/DynamicFeatureLifecycleTestServlet";
+        TEST_DYNAMIC_FEATURE_APP + "/DynamicFeatureLifecycleTestServlet";
 
     @BeforeClass
     public static void setupTestServer() throws Exception {
@@ -89,7 +89,7 @@ public class DynamicFeatureSharedLibTest {
                    server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
 
         // Deploy the WAR to the apps directory.
-        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_SHARED_LIB_WAR, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_WAR, DeployOptions.SERVER_ONLY);
 
         // Deploy the shared library JAR to the server's sharedLibs directory — this
         // corresponds to the <fileset dir="${server.config.dir}/sharedLibs"> in server.xml.

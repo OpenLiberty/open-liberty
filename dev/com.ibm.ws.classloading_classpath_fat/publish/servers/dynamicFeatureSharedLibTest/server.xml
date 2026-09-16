@@ -8,7 +8,7 @@
     <include location="../fatTestPorts.xml"/>
 
     <!--
-        The shared library JAR contains SharedLibFeatureApiImplState1, which implements
+        The shared library JAR contains LibraryFeatureApiImplState1, which implements
         TestFeatureApi from the feature bundle. The library classloader is cached
         in ClassLoadingServiceImpl.aclStore under the "testFeatureSharedLib" key.
         The <library> element is NEVER modified during the test — only the feature
@@ -19,7 +19,7 @@
         <fileset dir="${server.config.dir}/sharedLibs" includes="testSharedFeatureLib.jar"/>
     </library>
 
-    <webApplication location="testDynamicFeatureSharedLibApp.war">
+    <webApplication location="testDynamicFeatureApp.war">
         <classloader commonLibraryRef="testFeatureSharedLib"/>
     </webApplication>
 
@@ -28,7 +28,7 @@
         identity strings for architectural analysis.
     -->
     <javaPermission
-        codeBase="${server.config.dir}/apps/testDynamicFeatureSharedLibApp.war"
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
         className="java.lang.RuntimePermission"
         name="getClassLoader"/>
     <javaPermission
