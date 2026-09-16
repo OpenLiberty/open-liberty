@@ -22,7 +22,7 @@
         <fileset dir="${server.config.dir}/sharedLibs" includes="testSharedFeatureLib.jar"/>
     </library>
 
-    <webApplication location="testDynamicFeatureLibJarRemovedApp.war">
+    <webApplication location="testDynamicFeatureApp.war">
         <classloader commonLibraryRef="testFeatureSharedLib"/>
     </webApplication>
 
@@ -31,7 +31,7 @@
         identity strings for architectural analysis.
     -->
     <javaPermission
-        codeBase="${server.config.dir}/apps/testDynamicFeatureLibJarRemovedApp.war"
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
         className="java.lang.RuntimePermission"
         name="getClassLoader"/>
     <javaPermission

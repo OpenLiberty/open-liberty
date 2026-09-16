@@ -61,7 +61,7 @@ import io.openliberty.classloading.library.test.app.LibraryUserTestServlet;
 import io.openliberty.classloading.libs.util.CodeSourceUtil;
 import io.openliberty.classloading.parent.library.inconsistent.test.app.ParentLibraryInconsistentTestServlet;
 import io.openliberty.classloading.platform.delegation.test.app.PlatformDelegationTestServlet;
-import io.openliberty.classloading.shared.feature.lib.SharedLibFeatureApiImplState1;
+import io.openliberty.classloading.shared.feature.lib.LibraryFeatureApiImplState1;
 import io.openliberty.nativelib.test.app.NativeLibraryTestServlet;
 import io.openlibery.classloading.override.library.test.app.OverrideLibraryTestServlet;
 import io.openlibery.classloading.override.library.test.app.a.AOverride;
@@ -151,10 +151,8 @@ public class FATSuite {
     public static final String TEST_OVERRIDE_LIB_APP = "testOverrideLib";
     public static final String TEST_LIBRARY_USER_APP = "testLibraryUser";
     public static final String TEST_DYNAMIC_FEATURE_APP = "testDynamicFeatureApp";
-    public static final String TEST_DYNAMIC_FEATURE_SHARED_LIB_APP = "testDynamicFeatureSharedLibApp";
-    public static final String TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_APP = "testDynamicFeatureLibJarRemovedApp";
     public static final String TEST_DYNAMIC_FEATURE_SHARED_LIB = "testSharedFeatureLib";
-    // Servlet class name is shared — all three WARs deploy the same servlet URL path.
+    // Servlet class name is shared across tests
     static final String DYNAMIC_FEATURE_LIFECYCLE_SERVLET = "DynamicFeatureLifecycleTestServlet";
 
     // EJB archive names
@@ -241,8 +239,6 @@ public class FATSuite {
     static final WebArchive TEST_LIB_PRECEDENCE_WAR;
     static final WebArchive TEST_LIBRARY_USER_WAR;
     static final WebArchive TEST_DYNAMIC_FEATURE_WAR;
-    static final WebArchive TEST_DYNAMIC_FEATURE_SHARED_LIB_WAR;
-    static final WebArchive TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_WAR;
     static final JavaArchive TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
 
     // EJB archives
@@ -392,36 +388,15 @@ public class FATSuite {
             TEST_LIBRARY_USER_WAR = ShrinkHelper.buildDefaultApp(TEST_LIBRARY_USER_APP + ".war",
                                                                    LibraryUserTestServlet.class.getPackage().getName());
 
-            // Test 1 WAR: servlet + four in-WAR impl classes (one per lifecycle probe).
-            // The impl classes must be inside this WAR's WEB-INF/classes — they are the
-            // classes under test for the direct app → feature API dependency scenario.
+            // Single consolidated WAR: contains the servlet and the in-WAR impl classes.
+            // Used across all dynamic feature lifecycle tests.
             TEST_DYNAMIC_FEATURE_WAR = ShrinkHelper.buildDefaultApp(TEST_DYNAMIC_FEATURE_APP + ".war",
                                                                      DynamicFeatureLifecycleTestServlet.class.getPackage().getName(),
                                                                      "io.openliberty.classloading.dynamic.feature.test.app");
 
-            // Test 2 WAR: servlet only — NO in-WAR impl classes.
-            // The shared library (testSharedFeatureLib.jar) is wired via commonLibraryRef in
-            // server.xml. Putting impl classes in the WAR would make the WAR's own classloader
-            // find them directly, bypassing the shared-library delegation chain under test.
-            TEST_DYNAMIC_FEATURE_SHARED_LIB_WAR = ShrinkHelper.buildDefaultApp(
-                                                                     TEST_DYNAMIC_FEATURE_SHARED_LIB_APP + ".war",
-                                                                     DynamicFeatureLifecycleTestServlet.class.getPackage().getName());
-
-            // Shared library JAR: contains all four implementation classes for Tests 2 and 3.
-            // The whole package is included so each lifecycle probe class is available.
+            // Shared library JAR: contains the four implementation classes for Tests 2 and 3.
             TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR = ShrinkHelper.buildJavaArchive(TEST_DYNAMIC_FEATURE_SHARED_LIB + ".jar",
-                                                                     SharedLibFeatureApiImplState1.class.getPackage().getName());
-
-            // Test 3 WAR: servlet only — NO in-WAR impl classes.
-            // The shared library (testSharedFeatureLib.jar) is wired via commonLibraryRef in
-            // server.xml. The FAT test drives State 2 by swapping server.xml to server_no_lib.xml,
-            // which removes the JAR from the fileset and triggers SharedLibraryImpl.delete().
-            // LibraryRemovalFeatureApiImplState1, LibraryRemovalFeatureApiImplState2a,
-            // LibraryRemovalFeatureApiImplState2b, and LibraryRemovalFeatureApiImplState3
-            // live in testSharedFeatureLib.jar, not in this WAR.
-            TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_WAR = ShrinkHelper.buildDefaultApp(
-                                                                     TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_APP + ".war",
-                                                                     DynamicFeatureLifecycleTestServlet.class.getPackage().getName());
+                                                                     LibraryFeatureApiImplState1.class.getPackage().getName());
 
             TEST_RESOURCE_ADAPTOR_JAR = ShrinkHelper.buildJavaArchive(TEST_RESOURCE_ADAPTOR + ".jar",
                                                                       TestResourceAdapter.class.getPackage().getName()).

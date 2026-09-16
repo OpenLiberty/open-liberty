@@ -15,20 +15,15 @@ package io.openliberty.classloading.shared.feature.lib;
 import io.openliberty.classloading.feature.api.TestFeatureApi;
 
 /**
- * Test 3, State 1 impl class.
- *
- * <p>Used by {@code testLibraryJarRemovedFromSharedLib_LibraryPresent} to verify
- * that the shared-library classloader chain resolves correctly when both the
- * library JAR and the feature bundle are present.
- *
- * <p>A distinct class is used per lifecycle state so that
- * {@code ClassLoader.loadClass()} is forced to perform a genuine re-lookup through
- * the delegation chain rather than returning a result cached by
- * {@code findLoadedClass()} from a prior state.
+ * Shared-library implementation of {@link TestFeatureApi} for State 2a
+ * (cached-interface probe).
+ * <p>
+ * Implements {@link TestFeatureApi}, which was cached during State 1.
  */
-public class LibraryRemovalFeatureApiImplState1 implements TestFeatureApi {
+public class LibraryFeatureApiImplState2a implements TestFeatureApi {
+
     @Override
     public String doWork() {
-        return "LibraryRemovalFeatureApiImplState1.doWork() called successfully — Test 3 State 1";
+        return "LibraryFeatureApiImplState2a.doWork() called successfully (state 2a, cached interface)";
     }
 }

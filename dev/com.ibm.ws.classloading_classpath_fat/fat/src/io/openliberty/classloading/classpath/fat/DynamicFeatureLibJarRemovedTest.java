@@ -13,9 +13,9 @@
 package io.openliberty.classloading.classpath.fat;
 
 import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST_SERVER;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_APP;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_WAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_WAR;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -85,7 +85,7 @@ public class DynamicFeatureLibJarRemovedTest {
     public static LibertyServer server;
 
     private static final String SERVLET_PATH =
-        TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_APP + "/DynamicFeatureLifecycleTestServlet";
+        TEST_DYNAMIC_FEATURE_APP + "/DynamicFeatureLifecycleTestServlet";
 
     @BeforeClass
     public static void setupTestServer() throws Exception {
@@ -99,7 +99,7 @@ public class DynamicFeatureLibJarRemovedTest {
                    server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
 
         // Deploy the WAR to the apps directory.
-        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_WAR,
+        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_WAR,
                                        DeployOptions.SERVER_ONLY);
 
         // Deploy the shared library JAR to the server's sharedLibs directory — this
@@ -162,7 +162,7 @@ public class DynamicFeatureLibJarRemovedTest {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFromFilePath("server_no_lib.xml");
         server.waitForConfigUpdateInLogUsingMark(
-            Collections.singleton(TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_APP));
+            Collections.singleton(TEST_DYNAMIC_FEATURE_APP));
 
         // State 2a: cached-interface eviction-detection probe (informational — does not fail on class-visible)
         server.setMarkToEndOfLog();
@@ -189,7 +189,7 @@ public class DynamicFeatureLibJarRemovedTest {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFromFilePath("server_with_lib.xml");
         server.waitForConfigUpdateInLogUsingMark(
-            Collections.singleton(TEST_DYNAMIC_FEATURE_LIB_JAR_REMOVED_APP));
+            Collections.singleton(TEST_DYNAMIC_FEATURE_APP));
 
         server.setMarkToEndOfLog();
         FATServletClient.runTest(server, SERVLET_PATH,
