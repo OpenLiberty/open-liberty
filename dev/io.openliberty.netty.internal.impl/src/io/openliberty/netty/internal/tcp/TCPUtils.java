@@ -235,8 +235,12 @@ public class TCPUtils {
 
                 // If the framework itself already owns an active channel on this port
                 // (e.g. during a config update where the old channel has not yet been
-                // released), this is a transient self-conflict — not a user-visible error.
-                // Retry silently at debug level; the old channel will release shortly.
+                // released), this is a transient self-conflict.
+                // If retries remain, retry silently — the old channel will release shortly.
+                // If no retries remain (retryCount==0), this is treated as a permanent
+                // conflict (e.g. two endpoints configured for the same port): log the
+                // error and notify the chain so startNettyChannel() is unblocked and the
+                // state transitions to STOPPED.
                 if (config.isInbound() && future.cause() instanceof java.net.BindException
                     && !reuseAddrRetry && frameworkOwnsPort(framework, inetPort)) {
 
@@ -257,12 +261,25 @@ public class TCPUtils {
                         // The real openListener is already registered on the terminal
                         // future via the recursive open() call that exhausts retries or
                         // succeeds, so return here without attaching it again.
+                        return;
                     }
-                    // retryCount == 0 and self-conflict: silently give up, the chain
-                    // restart will be re-triggered by the config update machinery.
-                    // Do NOT notify the listener here — firing it with a failure would
-                    // call notifyStopped() and remove web applications from the virtual
-                    // host. The config update machinery will re-trigger a new bind.
+                    // retryCount == 0: no retries remain and the port is still owned by
+                    // this framework.  With no retry loop there is no opportunity to wait
+                    // for the old channel to release, so treat this as a terminal failure.
+                    // Log the error (matching CHFW's CWWKO0221E behaviour) and invoke the
+                    // openListener so channelFutureHandler() runs, transitions state to
+                    // STOPPED, and calls notifyAll() to unblock startNettyChannel().
+                    Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+                                                                                String.valueOf(inetPort), openFuture.cause().getMessage() });
+                    if (openListener != null) {
+                        try {
+                            generateOpenListenerWrapper(framework, openListener).operationComplete(openFuture);
+                        } catch (Exception e) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Exception dispatching openListener self-conflict terminal callback: " + e.getMessage());
+                            }
+                        }
+                    }
                     return;
                 }
 
