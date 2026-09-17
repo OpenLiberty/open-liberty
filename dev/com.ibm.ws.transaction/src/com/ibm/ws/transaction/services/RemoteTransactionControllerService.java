@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Copyright (c) 2015, 2026 IBM Corporation and others.
+ * Copyright 2015,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -435,6 +435,19 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
     @Override
     @FFDCIgnore({ SystemException.class })
     public Object getResource(String globalId) {
+        // Use getTransactionForID as the primary path — resource lookup must succeed
+        // regardless of quiesce state.  getTransactionWrapper() throws SystemException when
+        // the TM is quiesced, which would silently return null here and break callers that
+        // need to read a resource stored on a live transaction (e.g. WSATTransaction.getTran()
+        // in HandlerImpl and ProtocolImpl).  putResource() already uses getTransactionForID
+        // directly with no quiesce check; getResource should be symmetric.
+        DistributableTransaction tx = getTransactionForID(globalId);
+        if (tx instanceof EmbeddableTransactionImpl) {
+            return ((EmbeddableTransactionImpl) tx).getResource(globalId);
+        }
+
+        // Fall back to the TransactionWrapper path for any cases not covered above
+        // (e.g. transactions created before the TransactionImpl was in LocalTIDTable).
         TransactionWrapper tw;
         try {
             tw = TransactionWrapper.getTransactionWrapper(globalId);
@@ -443,26 +456,16 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         }
 
         if (tw != null) {
-            EmbeddableTransactionImpl tx = tw.getTransaction();
-
-            if (tx != null) {
-                return tx.getResource(globalId);
+            EmbeddableTransactionImpl twTx = tw.getTransaction();
+            if (twTx != null) {
+                return twTx.getResource(globalId);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "No matching Transaction");
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "No matching TransactionWrapper");
-
-            DistributableTransaction tx = getTransactionForID(globalId);
-
-            if (tx instanceof EmbeddableTransactionImpl) {
-                return ((EmbeddableTransactionImpl) tx).getResource(globalId);
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "No matching DistributableTransaction");
-            }
+                Tr.debug(tc, "No matching TransactionWrapper or DistributableTransaction");
         }
 
         return null;
