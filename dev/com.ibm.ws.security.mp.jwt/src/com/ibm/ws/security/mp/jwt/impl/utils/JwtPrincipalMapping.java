@@ -52,9 +52,7 @@ public class JwtPrincipalMapping {
             Tr.debug(tc, "user name = ", userName);
         }
         if (!mapToUr) {
-            String effectiveRealmAttr = (realmIdentifierAttr != null && !realmIdentifierAttr.isEmpty())
-                                        ? realmIdentifierAttr : REALM_CLAIM;
-            realm = getRealm(effectiveRealmAttr, jwtToken);
+            realm = getRealm(realmIdentifierAttr, jwtToken);
             populateGroupIds(jwtToken, groupAttr);
         }
         if (tc.isDebugEnabled()) {
@@ -68,8 +66,10 @@ public class JwtPrincipalMapping {
      * @return
      */
     private String getRealm(String realmAttribute, JwtToken jwtToken) {
-
-        if (jwtToken != null && realmAttribute != null) {
+        if (realmAttribute == null) {
+            realmAttribute = REALM_CLAIM;
+        }
+        if (jwtToken != null) {
             Object realm = getClaim(jwtToken, realmAttribute);
             if (realm instanceof String) {
                 return (String) realm;
