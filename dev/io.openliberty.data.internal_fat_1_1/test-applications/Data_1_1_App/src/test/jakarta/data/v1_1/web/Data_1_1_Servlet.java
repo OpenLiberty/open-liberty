@@ -2074,6 +2074,11 @@ public class Data_1_1_Servlet extends FATServlet {
         // Fractions n/d where 2^n < d^2, ordered by denominator ASC, numerator ASC.
         // With page size 8: page 1 = items 1-8, page 2 = items 9-16, etc.
 
+        // Hibernate has trouble with SELECT * in native query combined with
+        // limit for SQL Server
+        if (isHibernatePersistence() && isSQLServer())
+            return;
+
         if (!isHibernatePersistence())
             return; // TODO remove once using persistence-4.0
 
