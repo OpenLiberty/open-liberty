@@ -41,6 +41,8 @@ public class DataErrPaths_1_1_Test extends FATServletClient {
      */
     private static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
+                                   // TODO remove after we switch from persistence-3.2 to 4.0
+                                   "CWWKD1011E.*binaryOps"
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths.1.1")

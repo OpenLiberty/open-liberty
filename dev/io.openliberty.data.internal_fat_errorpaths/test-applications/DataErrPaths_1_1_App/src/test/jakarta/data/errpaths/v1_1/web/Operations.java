@@ -16,10 +16,9 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Insert;
-import jakarta.data.repository.NativeQuery;
 import jakarta.data.repository.Repository;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.query.NativeQuery;
 
 /**
  * Repository with a valid entity.

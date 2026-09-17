@@ -14,11 +14,11 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-    hibernateVersion = '7.0.9.Final'
+    hibernateVersion = '8.0.0.Beta1'
   }
 
 configurations {
-    hibernateJPA32
+    hibernateJPA40
 }
 
 dependencies {
@@ -30,25 +30,25 @@ dependencies {
         exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
     }
 
-    hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}", withoutJakartaAPI
-    hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
-    hibernateJPA32 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}", withoutJakartaAPI
+    hibernateJPA40 "org.hibernate.orm:hibernate-core:${hibernateVersion}", withoutJakartaAPI
+    hibernateJPA40 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
+    hibernateJPA40 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}", withoutJakartaAPI
 }
 
 /*
  * Copy Hibernate and transitive dependencies into shared resources
  */
-task addHibernateJPA32(type: Copy) {
+task addHibernateJPA40(type: Copy) {
   shouldRunAfter jar
-  from configurations.hibernateJPA32
-  into new File(autoFvtDir, 'publish/shared/resources/jpa32_hibernate_orm')
+  from configurations.hibernateJPA40
+  into new File(autoFvtDir, 'publish/shared/resources/jpa40_hibernate_orm')
 }
 
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn copyJdbcDriversJava17Plus
 
 addRequiredLibraries.dependsOn addH2
-addRequiredLibraries.dependsOn addHibernateJPA32
+addRequiredLibraries.dependsOn addHibernateJPA40
 
 apply plugin: 'java'
 
