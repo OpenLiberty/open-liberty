@@ -397,13 +397,19 @@ public class QueryInfo_1_1 extends QueryInfo {
         //if (entityHandler instanceof EntityHandler handler) ...
 
         jakarta.persistence.Query query;
-        if (entityHandler instanceof EntityManager em) {
-            if (resultClass == null)
-                query = em.createNativeQuery(ql);
-            else
-                query = em.createNativeQuery(ql, resultClass);
-        } else {
-            try {
+        try {
+            if (entityHandler instanceof EntityManager em) {
+                if (resultClass == null)
+                    query = em.createNativeQuery(ql);
+                else // em.createNativeQuery(ql, resultClass);
+                    query = (jakarta.persistence.Query) entityHandler.getClass() //
+                                    .getMethod("createNativeQuery",
+                                               String.class,
+                                               Class.class) //
+                                    .invoke(entityHandler,
+                                            ql,
+                                            resultClass);
+            } else {
                 query = (jakarta.persistence.Query) entityHandler.getClass() //
                                 .getMethod("createNativeQuery",
                                            String.class,
@@ -411,13 +417,13 @@ public class QueryInfo_1_1 extends QueryInfo {
                                 .invoke(entityHandler,
                                         ql,
                                         resultClass);
-            } catch (IllegalAccessException | NoSuchMethodException x) {
-                throw new RuntimeException(x); // should be impossible
-            } catch (InvocationTargetException x) {
-                if (x.getCause() instanceof RuntimeException rx)
-                    throw rx;
-                throw new DataException(x.getCause());
             }
+        } catch (IllegalAccessException | NoSuchMethodException x) {
+            throw new RuntimeException(x); // should be impossible
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            throw new DataException(x.getCause());
         }
 
         Annotation options = QUERY_OPTIONS_CLASS == null //
@@ -425,7 +431,7 @@ public class QueryInfo_1_1 extends QueryInfo {
                         : method.getAnnotation(QUERY_OPTIONS_CLASS);
         if (options != null)
             try {
-                setReadOptions(options, query, entityHandler);
+                setReadOptions(options, query, true, entityHandler);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -521,7 +527,7 @@ public class QueryInfo_1_1 extends QueryInfo {
                             .getMethod("createQuery", String.class, Class.class) //
                             .invoke(entityHandler, jpql, resultType);
             if (options != null)
-                setReadOptions(options, query, entityHandler);
+                setReadOptions(options, query, false, entityHandler);
             return query;
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
@@ -1146,10 +1152,12 @@ public class QueryInfo_1_1 extends QueryInfo {
      *
      * @param options       jakarta.persistence.query.QueryOptions
      * @param query         the query upon which to configure the options
+     * @param isNativeQuery indicates if the query is a native query vs JPQL
      * @param entityHandler EntityAgent or EntityManager
      */
     private <T> void setReadOptions(Annotation options,
                                     jakarta.persistence.Query query,
+                                    boolean isNativeQuery,
                                     AutoCloseable entityHandler) //
                     throws // TODO remove once using Persistence 4.0 API
                     IllegalAccessException, //
@@ -1205,7 +1213,12 @@ public class QueryInfo_1_1 extends QueryInfo {
         query.getClass().getMethod("setQueryFlushMode", flush.getClass()) //
                         .invoke(query, flush);
 
-        query.setLockMode(lockMode);
+        if (isNativeQuery && lockMode == LockModeType.NONE)
+            // Per the API, setLockMode is never permitted for native queries.
+            // Avoid attempting to set it when QueryOptions defaults to NONE.
+            ;
+        else
+            query.setLockMode(lockMode);
 
         // TODO the correct value is null, but Hibernate and EclipseLink do not handle it correctly
         query.setTimeout(timeout == -1 ? 0 : timeout);
