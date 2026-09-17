@@ -13,6 +13,7 @@ package io.openliberty.springboot.support.version30.test.aop.app;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.WebAsyncTask;
 
 @RestController
 public class AopController {
@@ -20,8 +21,8 @@ public class AopController {
     AopService aopService;
 
     @RequestMapping("/service")
-    public String aop() throws Exception {
-        return aopService.getService();
+    public WebAsyncTask<String> aop() {
+        return new WebAsyncTask<>(30_000L, aopService::getService);
     }
 
 }

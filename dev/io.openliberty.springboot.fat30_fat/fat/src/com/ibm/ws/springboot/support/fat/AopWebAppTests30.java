@@ -23,7 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 public class AopWebAppTests30 extends AopAbstractTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("servlet-6.0"));
+        return new HashSet<>(Arrays.asList(testName.getMethodName().contains("Servlet61") ? "servlet-6.1" : "servlet-6.0"));
     }
 
     @Override
@@ -37,7 +37,14 @@ public class AopWebAppTests30 extends AopAbstractTests {
     }
 
     @Test
-    public void testAopWebApplication() throws Exception {
+    public void testAopWebApplicationServlet60() throws Exception {
+        testAop();
+    }
+
+    // The SRVE8046E NullPointerException on AsyncContext dispatch is expected when running with servlet-6.1.
+    // See https://github.com/OpenLiberty/open-liberty/issues/35666
+    @Test
+    public void testAopWebApplicationServlet61() throws Exception {
         testAop();
     }
 }
