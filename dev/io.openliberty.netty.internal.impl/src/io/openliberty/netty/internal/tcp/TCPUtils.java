@@ -254,13 +254,11 @@ public class TCPUtils {
                         } catch (InterruptedException x) {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
-                        // Pass null so the intermediate failure future does not invoke the
-                        // openListener — only the terminal outcome (success or final failure)
-                        // should notify NettyChain.channelFutureHandler().
-                        open(framework, channel, config, newHost, inetPort, null, retryCount - 1, false);
-                        // The real openListener is already registered on the terminal
-                        // future via the recursive open() call that exhausts retries or
-                        // succeeds, so return here without attaching it again.
+                        // Pass the real openListener so the terminal outcome (success or
+                        // final failure) notifies NettyChain.channelFutureHandler().
+                        // The current failure future cannot invoke it again because we
+                        // return immediately after this call.
+                        open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, false);
                         return;
                     }
                     // retryCount == 0: no retries remain and the port is still owned by
@@ -311,10 +309,11 @@ public class TCPUtils {
                                          + "): TIME_WAIT only, retrying bind with SO_REUSEADDR=true for " + config.getExternalName());
 
                                 channel.config().setOption(ChannelOption.SO_REUSEADDR, true);
-                                // Pass null so this intermediate future does not invoke the
-                                // openListener — only the terminal outcome should notify
-                                // NettyChain.channelFutureHandler().
-                                open(framework, channel, config, newHost, inetPort, null, retryCount - 1, true);
+                                // Pass the real openListener so the terminal outcome
+                                // (success or final failure) notifies channelFutureHandler().
+                                // The current failure future cannot invoke it again because
+                                // we return immediately after this call.
+                                open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, true);
                                 return;
                             }
                         }
@@ -326,10 +325,10 @@ public class TCPUtils {
                              + " failed to open the port, will try again after wait interval");
 
                     // recurse until we either complete successfully or run out of retries;
-                    // Pass null so this intermediate future does not invoke the
-                    // openListener — only the terminal outcome (success or final failure
-                    // after all retries are exhausted) should notify
-                    // NettyChain.channelFutureHandler().
+                    // Pass the real openListener so the terminal outcome (success or final
+                    // failure after retries exhausted) notifies channelFutureHandler().
+                    // The current failure future cannot invoke it again because we return
+                    // immediately after this call.
                     try {
                         Thread.sleep(timeBetweenRetriesMsec);
                     } catch (InterruptedException x) {
@@ -338,10 +337,9 @@ public class TCPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    open(framework, channel, config, newHost, inetPort, null, retryCount - 1, false);
+                    open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1, false);
                     // A retry has been launched — do NOT fall through to the terminal
-                    // listener block below. Invoking it here would fire notifyStopped()
-                    // on an intermediate failure while the retry is still pending.
+                    // listener block below.
                     return;
                 } else {
                     if (!channel.isOpen()) {
