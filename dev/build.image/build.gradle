@@ -279,19 +279,19 @@ class PackageLibertyWithFeatures extends DefaultTask {
             }
         }
 
-        // Create server in order to minify an image that only includes kind=ga features
-        project.delete project.file('wlp/usr/servers/packageOpenLiberty')
-        execOperations.exec {
-            workingDir project.file('wlp/bin')
-            def args = ["create", "packageOpenLiberty"]
-            if (OperatingSystem.current().windows) {
-                commandLine = ["cmd", "/c", "server"] + args
-            } else {
-                commandLine = ["./server"] + args
-            }
-        }
-
         try {
+            // Create server in order to minify an image that only includes kind=ga features
+            project.delete project.file('wlp/usr/servers/packageOpenLiberty')
+            execOperations.exec {
+                workingDir project.file('wlp/bin')
+                def args = ["create", "packageOpenLiberty"]
+                if (OperatingSystem.current().windows) {
+                    commandLine = ["cmd", "/c", "server"] + args
+                } else {
+                    commandLine = ["./server"] + args
+                }
+            }
+
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
 <server description="new server">
@@ -305,14 +305,32 @@ class PackageLibertyWithFeatures extends DefaultTask {
             execOperations.exec {
                 workingDir project.file('wlp/bin')
                 def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
-                if (completeFeatureList) { 
-                    args.add("-Dinternal.minify.feature.list.complete=true") 
+                if (completeFeatureList) {
+                    args.add("-Dinternal.minify.feature.list.complete=true")
                 }
                 if (OperatingSystem.current().windows) {
                     commandLine = ["cmd", "/c", "server"] + args
                 } else {
                     commandLine = ["./server"] + args
                 }
+            }
+
+            def messagesLog = project.file("wlp/usr/servers/packageOpenLiberty/logs/messages.log")
+            if (!messagesLog.exists()) {
+                throw new GradleException("Expected messages.log file does not exist at: " + messagesLog.absolutePath)
+            }
+
+            def errorPattern = ~/E\s+[A-Z]{5}\d{4}E:/
+            def errorLines = []
+            messagesLog.eachLine { String line ->
+                if (line =~ errorPattern) {
+                    errorLines << line
+                }
+            }
+            if (!errorLines.isEmpty()) {
+                println "-- ERROR MESSAGES DETECTED IN MESSAGES.LOG --"
+                errorLines.each { println it }
+                throw new GradleException("Error messages detected in messages.log:\n" + errorLines.join("\n"))
             }
 
             // Postprocess to remove unwanted files
@@ -362,6 +380,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
                     println line
                 }
             }
+            throw new GradleException("Failed to package OpenLiberty: " + all.message, all)
         } finally {
             // If we excluded some features, put them back
             if (excludedFeatures != null) {
@@ -373,6 +392,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
     }
 }
 
+//all GA features
 def gaPublicFeatures() {
     String features = ""
     gaFeatures(false).each {
@@ -381,16 +401,30 @@ def gaPublicFeatures() {
     features
 }
 
-def gaAndBetaPublicFeatures() {
-    String features = gaPublicFeatures()
+//Only latest EE and MP, plus beta features
+def latestEEAndBetaPublicFeatures() {
+    String features = ""
+    jakartaee11Features().each {
+        features += it + '\n'
+    }
+    microProfile7Features().each {
+        features += it + '\n'
+    }
     betaFeatures().each {
         features += '<feature>' + it + '</feature>\n'
     }
     features
 }
 
+//all GA, beta and no-ship features
 def gaAndBetaAndNoShipPublicFeatures() {
-    String features = gaAndBetaPublicFeatures()
+    String features = ""
+    gaFeatures(false).each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    betaFeatures().each {
+        features += '<feature>' + it + '</feature>\n'
+    }
     noShipFeatures().each {
         features += '<feature>' + it + '</feature>\n'
     }
@@ -449,7 +483,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn copyBetaLicenseToBuildImage
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&gaAndBetaPublicFeatures
+        withFeatures this.&latestEEAndBetaPublicFeatures
         completeFeatureList = true
         outputTo new File(packageDir, "beta")
         isBeta = true
