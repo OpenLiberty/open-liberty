@@ -67,8 +67,7 @@ class LTPAKeyCreateTask implements Runnable {
             // is protecting the LTPA key material.
             if (AESKeyManager.isKeyConfigured(KeyVersion.AES_V2)) {
                 if (AESKeyManager.hasCustomSecretKeyResolver()) {
-                    // A hardware SecretKeyResolver is registered — this is the ICSF/CKDS path.
-                    // getDescription() on ICSFSecretKeyResolver returns the ICSF key label.
+                    // A custom SecretKeyResolver is registered; getDescription() identifies the key source.
                     Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_ICSF", AESKeyManager.getResolverFor(KeyVersion.AES_V2).getDescription());
                 } else {
                     // AES_V2 is configured via the wlp.aes.encryption.key system property.

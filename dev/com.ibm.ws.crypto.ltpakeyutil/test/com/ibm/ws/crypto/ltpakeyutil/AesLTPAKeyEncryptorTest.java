@@ -88,7 +88,7 @@ public class AesLTPAKeyEncryptorTest {
 
     /**
      * Constructing an {@link AesLTPAKeyEncryptor} from a key whose {@code getEncoded()} returns
-     * {@code null} (e.g. a hardware-backed key) must not throw a NullPointerException.
+     * {@code null} must not throw a NullPointerException.
      * The constructor must silently fall back to the fixed zero IV path.
      */
     @Test

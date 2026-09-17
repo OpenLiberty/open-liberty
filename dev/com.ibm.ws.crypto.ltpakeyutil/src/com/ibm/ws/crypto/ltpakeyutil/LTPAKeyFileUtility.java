@@ -45,8 +45,7 @@ public interface LTPAKeyFileUtility {
 
 	/**
 	 * Create the LTPA keys file at the specified location, protecting the key
-	 * material with the supplied {@link LTPAKeyEncryptor} (e.g. an
-	 * {@link AesLTPAKeyEncryptor} backed by an ICSF/CKDS hardware key).
+	 * material with the supplied {@link LTPAKeyEncryptor}.
 	 *
 	 * @param keyFile   path where the LTPA keys file will be written
 	 * @param encryptor encryptor used to protect the private and secret key bytes
@@ -60,9 +59,6 @@ public interface LTPAKeyFileUtility {
 	 * {@code currentEncryptor}, re-encrypt that same key material using
 	 * {@code newEncryptor}, and write the result to {@code newKeyFile}.
 	 * The source and destination paths may be the same (in-place update).
-	 * <p>
-	 * Use {@link PasswordLTPAKeyEncryptor} to wrap a plaintext password, and
-	 * {@link AesLTPAKeyEncryptor} to wrap a hardware AES/CKDS key.
 	 *
 	 * @param currentKeyFile   path to the existing LTPA keys file
 	 * @param currentEncryptor encryptor used to decrypt the current file

@@ -216,9 +216,9 @@ public class AESKeyManager {
     }
 
     /**
-     * Sets a hardware-backed {@link SecretKeyResolver} (e.g. ICSF/CKDS via IBMJCECCA) directly
-     * on {@link KeyVersion#AES_V2}. When non-null, all AES_V2 encrypt and decrypt operations will
-     * use the supplied resolver. Pass {@code null} to revert to the software base64-key path.
+     * Sets a custom {@link SecretKeyResolver} directly on {@link KeyVersion#AES_V2}. When
+     * non-null, all AES_V2 encrypt and decrypt operations will use the supplied resolver.
+     * Pass {@code null} to revert to the software base64-key path.
      *
      * @param resolver the resolver to install, or null to revert to the standard char[]-based path
      */
@@ -230,7 +230,7 @@ public class AESKeyManager {
     }
 
     /**
-     * Returns {@code true} if a custom (non-default) hardware-backed {@link SecretKeyResolver}
+     * Returns {@code true} if a custom (non-default) {@link SecretKeyResolver}
      * is currently registered for {@link KeyVersion#AES_V2}.
      *
      * @return {@code true} if a custom resolver is active, {@code false} if the default software path is used
@@ -284,8 +284,7 @@ public class AESKeyManager {
      * rather than the unresolved placeholder string.
      *
      * <p>For {@link KeyVersion#AES_V2}: also returns {@code true} when a non-default
-     * hardware-backed {@link SecretKeyResolver} is registered via
-     * {@link #setSecretKeyResolver(SecretKeyResolver)}.
+     * {@link SecretKeyResolver} is registered via {@link #setSecretKeyResolver(SecretKeyResolver)}.
      *
      * @param version the key version to test
      * @return {@code true} if the version is configured with a real key
@@ -300,14 +299,13 @@ public class AESKeyManager {
 
     /**
      * Returns the {@link java.security.Key} for the given version by calling through the
-     * version's own {@link SecretKeyResolver}. For {@link KeyVersion#AES_V2} this honours a
-     * hardware-backed resolver (e.g. ICSF/CKDS) so the raw key bytes are never exposed. For
-     * V1/V0 it delegates to the default software resolver, which derives the key via PBKDF2.
+     * version's own {@link SecretKeyResolver}. For {@link KeyVersion#AES_V2} this keeps the
+     * raw key bytes unexposed. For V1/V0 it delegates to the default software resolver,
+     * which derives the key via PBKDF2.
      *
      * <p>This is the preferred call site for obtaining the key when the caller wants a
      * {@link java.security.Key} object — for example when constructing an
-     * {@code AesKeyEncryptor} — because it keeps the Key opaque and avoids calling
-     * {@code getEncoded()} on hardware keys.
+     * {@code AesKeyEncryptor} — because it keeps the Key opaque.
      *
      * @param version the key version whose resolver should be invoked
      * @return the resolved {@link java.security.Key}

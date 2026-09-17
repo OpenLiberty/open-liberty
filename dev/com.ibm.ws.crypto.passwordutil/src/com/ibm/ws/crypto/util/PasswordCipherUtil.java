@@ -724,7 +724,7 @@ public class PasswordCipherUtil {
         try {
             Cipher c = Cipher.getInstance(CryptoUtils.AES_GCM_CIPHER);
             // 128 is the GCM tag length. 128 is the MAX.
-            // Use CryptoUtils.generateRandomBytes to avoid UnsupportedOperationException on hardware crypto providers (e.g. IBMJCECCA) that do not implement generateSeed.
+            // Use CryptoUtils.generateRandomBytes to avoid UnsupportedOperationException on providers that do not implement generateSeed.
             GCMParameterSpec ps = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, CryptoUtils.generateRandomBytes(c.getBlockSize()));
             Key resolvedKey = resolver.getKey();
             c.init(Cipher.ENCRYPT_MODE, resolvedKey, ps);

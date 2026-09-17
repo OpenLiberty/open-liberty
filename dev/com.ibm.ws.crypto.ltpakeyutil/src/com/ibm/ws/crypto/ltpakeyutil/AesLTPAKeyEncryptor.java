@@ -27,8 +27,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * prepended to the ciphertext. {@link #decrypt} reads the first 16 bytes as the
  * IV before decrypting the remainder. This avoids a fixed all-zero IV while
  * requiring no access to the key's raw bytes, which makes it compatible with
- * hardware-backed keys (e.g. ICSF/CKDS) that return {@code null} from
- * {@code getEncoded()}.
+ * keys that return {@code null} from {@code getEncoded()}.
  *
  * <p>This class lives in {@code com.ibm.ws.crypto.ltpakeyutil} so that it can be
  * used from both {@code com.ibm.ws.security.token.ltpa} and

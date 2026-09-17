@@ -150,8 +150,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * <ol>
      *   <li>{@code KeyStringResolverImpl} (in {@code com.ibm.ws.zos.password.encryption.key})
      *       runs its own DS {@code activate()}, which calls
-     *       {@code AESKeyManager.setSecretKeyResolver(new ICSFSecretKeyResolver(label))}
-     *       to install the hardware ICSF key resolver.</li>
+     *       {@code AESKeyManager.setSecretKeyResolver(...)}
+     *       to install the key resolver.</li>
      *   <li>Only after that activate completes does DS publish the {@link KeyStringResolver}
      *       service and call <em>this</em> method on {@code LTPAConfigurationImpl}.</li>
      *   <li>Only after this bind method returns will DS call
@@ -171,8 +171,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      */
     protected void setKeyStringResolver(KeyStringResolver resolver) {
         // Intentional no-op: the ordering guarantee is the only purpose of this binding.
-        // AESKeyManager already holds the ICSFSecretKeyResolver installed by
-        // KeyStringResolverImpl.activate() before DS calls this method.
+        // AESKeyManager already holds the resolver installed by KeyStringResolverImpl.activate()
+        // before DS calls this method.
     }
 
     /**
