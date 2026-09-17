@@ -356,7 +356,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
     /** {@inheritDoc} */
     @Override
     public String getRealmIdentifier() {
-        return null;
+        return "realm";
     }
 
     /** {@inheritDoc} */

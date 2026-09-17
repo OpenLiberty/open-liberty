@@ -240,4 +240,31 @@ public class MPJwtRealmConfigTests extends MPJwt11MPConfigTests {
 
         invokeAppsAndValidate(builtToken, expectations);
     }
+
+    /**
+     * No realmIdentifier is configured (attribute absent from mpJwt element).
+     * The token contains a "realm" claim with value "TokenRealm".
+     * Expect the realm claim to be ignored and the realm to fall back to the iss claim,
+     * consistent with how the OIDC client behaves when realmIdentifier is null.
+     */
+    @Test
+    public void MPJwtRealmConfig_noRealmIdentifier_realmClaimIgnored_fallsBackToIss() throws Exception {
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_noRealmIdentifier_realmClaimIgnored.xml");
+
+        // Token has a "realm" claim — it should be ignored since realmIdentifier is not configured
+        List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
+        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, MPJwt11FatConstants.TESTUSER));
+        extraClaims.add(new NameValuePair("realm", "TokenRealm"));
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT_withAudience", extraClaims);
+        JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
+        String expectedRealm = getIssuerFromToken(jwtTokenTools);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseFullExpectation(MPJwt11FatConstants.STRING_CONTAINS,
+                "com.ibm.wsspi.security.cred.uniqueId=user:" + expectedRealm + "/",
+                "Response did NOT contain uniqueId with iss as realm — 'realm' token claim should be ignored when realmIdentifier is not configured"));
+
+        invokeAppsAndValidate(builtToken, expectations);
+    }
 }

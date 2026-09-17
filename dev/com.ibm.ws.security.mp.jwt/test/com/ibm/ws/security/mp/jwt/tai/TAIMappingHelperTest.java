@@ -248,8 +248,8 @@ public class TAIMappingHelperTest {
 
     @Test
     public void testSetRealm_noConfig_fallbackToIss() {
-        // No config (null) path: TAIMappingHelper(JwtToken) uses "upn"/"groups"/false/null
-        // so realmIdentifier defaults to REALM_CLAIM="realm", which is absent → falls back to iss
+        // No config (null) path: TAIMappingHelper(JwtToken) uses "upn"/"groups"/false/"realm".
+        // The token has no "realm" claim, so getMappedRealm() returns null → falls back to iss.
         try {
             String jwt = "eyJraWQiOiJXYlVqSEN5b3V5ZEoySEFKc1dOMSIsImFsZyI6IlJTMjU2In0.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiYXVkIjoiYXVkMSIsInN1YiI6InRlc3R1c2VyIiwidXBuIjoidGVzdHVzZXIiLCJncm91cHMiOlsiZ3JvdXAxLWFiYyIsImdyb3VwMi1kZWYiLCJ0ZXN0dXNlci1ncm91cCJdLCJpc3MiOiJodHRwczovLzkuMjQuOC4xMDM6ODk0Ny9qd3QvandrRW5hYmxlZCIsImV4cCI6MTUwNDIxMjM5MCwiaWF0IjoxNTA0MjA1MTkwfQ.egKHKw1hfEAmZMBwI1_vPFxZIzXd9UWjLqz1MvlcvT3FHNKyV3CQ8KVSb-DrHll5J57QgJxY_vBiKgZgKkDJn6rKB4LNivV-_mcsCWawjKkmFDjesMLiSFKLfLWpfbt7qVbnRNT7ysMlXMDDJguRHRj_l1M70VAQT9gaCrPsoMvDAzOtTBS0iLnRATFCddYwQsw82Ma4rfTo5Hq-ouQWgRYerxkNswZJRnahsUKoSh4ptjYBmNySBTIF7X0WL9q0gr3SzJA59rLbQLaIhLzv8lYn7GRL05ifegQX41y11peG0_-ySN3nvaYvynwwbVvsJhRWbOc9B9LiYCX_qpxuXA";
             ConsumerUtil consumerUtil = new ConsumerUtil(null);
@@ -268,6 +268,37 @@ public class TAIMappingHelperTest {
             Object realm = helper.getCustomProperties().get(AttributeNameConstants.WSCREDENTIAL_REALM);
             assertEquals("Expected realm to be iss claim value when no config",
                          "https://9.24.8.103:8947/jwt/jwkEnabled", realm);
+        } catch (Exception e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+    }
+
+    @Test
+    public void testSetRealm_realmNameNull_realmIdentifierClaimPresent() {
+        // When realmName=null and the token contains the claim named by realmIdentifier,
+        // the realm should come from that token claim.
+        try {
+            // JWT payload contains: "realm":"TokenRealm", "upn":"testuser"
+            String jwt = "eyJraWQiOiJXYlVqSEN5b3V5ZEoySEFKc1dOMSIsImFsZyI6IlJTMjU2In0"
+                       + ".eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiYXVkIjoiYXVkMSIsInN1YiI6InRlc3R1c2VyIiwidXBuIjoidGVzdHVzZXIiLCJncm91cHMiOlsiZ3JvdXAxLWFiYyJdLCJpc3MiOiJodHRwczovLzkuMjQuOC4xMDM6ODk0Ny9qd3QvandrRW5hYmxlZCIsInJlYWxtIjoiVG9rZW5SZWFsbSIsImV4cCI6MTUwNDIxMjM5MCwiaWF0IjoxNTA0MjA1MTkwfQ"
+                       + ".ZmFrZXNpZw";
+            ConsumerUtil consumerUtil = new ConsumerUtil(null);
+            JwtConsumerConfigImpl jwtConfig = new JwtConsumerConfigImpl() {
+                @Override
+                public boolean isValidationRequired() {
+                    return false;
+                }
+            };
+            JwtToken jwtToken = consumerUtil.parseJwt(jwt, jwtConfig);
+
+            // realmName=null, realmIdentifier="realm" — the token has "realm":"TokenRealm"
+            MicroProfileJwtConfig mpJwtConfig = buildMockConfig(null, "realm");
+            TAIMappingHelper helper = new TAIMappingHelper(jwtToken, mpJwtConfig);
+            helper.createJwtPrincipalAndPopulateCustomProperties(jwtToken, false);
+
+            Object realm = helper.getCustomProperties().get(AttributeNameConstants.WSCREDENTIAL_REALM);
+            assertEquals("Expected realm to come from 'realm' claim in token when realmName is null",
+                         "TokenRealm", realm);
         } catch (Exception e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }
