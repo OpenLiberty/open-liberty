@@ -188,7 +188,7 @@ public class AuthCancellationTest extends FATServletClient {
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
                                         """;
 
-        String responseA = futureA.get(10, TimeUnit.SECONDS);
+        String responseA = futureA.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
     }

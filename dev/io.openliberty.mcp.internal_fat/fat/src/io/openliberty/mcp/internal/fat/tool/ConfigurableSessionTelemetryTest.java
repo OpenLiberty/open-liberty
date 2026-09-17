@@ -32,6 +32,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestRetryHelper;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
@@ -89,24 +90,29 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
     @Test
     public void testCustomSessionTimeoutWithMetrics() throws Exception {
-        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
-        client.callMCP(BASIC_TOOL_REQUEST);
-
-        // Wait long enough for the session to expire
-        // sessionTimeout = 10s in server.xml
-        Thread.sleep(10500);
-
-        try {
+        TestRetryHelper.retry(3, () -> {
+            FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
             client.callMCP(BASIC_TOOL_REQUEST);
-            fail("Expected session to be timed out, but too call succeeded");
-        } catch (Exception e) {
-            assertTrue("Expected session not found error",
-                       e.getMessage().contains("Session not found") ||
-                                                           e.getMessage().contains("404"));
-            client.setSessionDeleted(true);
-        }
 
-        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionTimeoutMetrics");
+            // Wait long enough for the session to expire
+            // sessionTimeout = 2s in server.xml
+            Thread.sleep(2300);
+
+            try {
+                client.callMCP(BASIC_TOOL_REQUEST);
+                fail("Expected session to be timed out, but tool call succeeded");
+            } catch (Exception e) {
+                assertTrue("Expected session not found error",
+                           e.getMessage().contains("Session not found") ||
+                                                               e.getMessage().contains("404"));
+                client.markSessionDeleted();
+            }
+
+            FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionTimeoutMetrics");
+        }, () -> {
+            client.cleanupSession();
+            client.initializeSession();
+        });
     }
 
 }

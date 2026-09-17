@@ -62,7 +62,7 @@ public class AsyncTools {
     public CompletionStage<String> asyncDelayedEcho(@ToolArg(name = "input", description = "input to echo") String input) {
         return executor.supplyAsync(() -> {
             try {
-                Thread.sleep(1_000); //simulate long running tool
+                Thread.sleep(200); //simulate long running tool
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

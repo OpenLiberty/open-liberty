@@ -32,6 +32,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 @RunWith(FATRunner.class)
 public class DefaultValueTest extends FATServletClient {
@@ -133,7 +134,7 @@ public class DefaultValueTest extends FATServletClient {
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
         assertNotNull((server.waitForStringInLog(Pattern.quote("[PriorityCityConverter] City converter with HIGHER priority used"))));
-        assertNull(server.waitForStringInLog(Pattern.quote("[CityConverter] City converter with LOWER priority used"), 3000));
+        assertNull(server.waitForStringInLog(Pattern.quote("[CityConverter] City converter with LOWER priority used"), TestConstants.NEGATIVE_TIMEOUT_MS));
     }
 
     @Test
@@ -223,7 +224,7 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNull(server.waitForStringInLog(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), 3000));
+        assertNull(server.waitForStringInLog(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), TestConstants.NEGATIVE_TIMEOUT_MS));
     }
 
     @Test
