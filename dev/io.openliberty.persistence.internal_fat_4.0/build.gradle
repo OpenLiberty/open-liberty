@@ -62,3 +62,28 @@ addRequiredLibraries {
     dependsOn addJakartaTransformer
     dependsOn copyTestContainers
 }
+
+
+// ---- EclipseLink 5 (persistenceContainer-4.0, FULL repeat) ----
+ext {
+    eclipselinkVersion = '5.0.0'
+}
+
+configurations {
+    eclipselinkJPA40
+}
+
+dependencies {
+    // EclipseLink 5 is a self-contained uber-jar on Maven Central
+    eclipselinkJPA40("org.eclipse.persistence:eclipselink:${eclipselinkVersion}") { transitive = false }
+}
+
+task addEclipseLinkJPA40(type: Copy) {
+    shouldRunAfter jar
+    from configurations.eclipselinkJPA40
+    into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_eclipselink')
+}
+
+addRequiredLibraries {
+    dependsOn addEclipseLinkJPA40
+}
