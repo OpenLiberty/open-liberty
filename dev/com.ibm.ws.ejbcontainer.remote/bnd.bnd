@@ -57,8 +57,7 @@ Service-Component: \
       classes=com.ibm.ws.ejbcontainer.remote.internal.SerializedStubString"
 
 -buildpath: \
-	io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
@@ -72,7 +71,6 @@ Service-Component: \
 	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-	io.openliberty.yoko.core;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
