@@ -19,7 +19,8 @@ Subsystem-Name: Messaging Server 3.0 Client
   io.openliberty.messaging.internal-3.0; ibm.tolerates:="3.1", \
   com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0, 12.0", \
   com.ibm.websphere.appserver.transaction-2.0; ibm.tolerates:="2.1", \
-  io.openliberty.jakarta.messaging-3.0; ibm.tolerates:="3.1"
+  io.openliberty.jakarta.messaging-3.0; ibm.tolerates:="3.1", \
+  io.openliberty.netty.internal-1.0
 -bundles=com.ibm.ws.messaging.common, \
  com.ibm.ws.resource, \
  com.ibm.ws.messaging.utils, \
@@ -27,11 +28,7 @@ Subsystem-Name: Messaging Server 3.0 Client
  com.ibm.ws.messaging.jms.common.jakarta, \
  com.ibm.ws.messaging.jms.2.0.jakarta, \
  com.ibm.ws.messaging.comms.client, \
- io.openliberty.transport.config.internal, \
- io.openliberty.io.netty, \
- io.openliberty.io.netty.ssl, \
- io.openliberty.netty.internal, \
- io.openliberty.netty.internal.impl
+ io.openliberty.transport.config.internal
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
