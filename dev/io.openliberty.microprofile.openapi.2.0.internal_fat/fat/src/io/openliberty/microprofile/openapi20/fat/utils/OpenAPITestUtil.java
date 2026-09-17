@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 public class OpenAPITestUtil {
 
-    private final static int TIMEOUT = 30000;
+    private final static int TIMEOUT = 60000;
 
     private final static Logger LOG = Logger.getLogger("OpenAPITestUtil");
 
@@ -197,7 +197,18 @@ public class OpenAPITestUtil {
                     throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         Application app = config.addApplication(name, path, type);
+        // Set the mark before sending the config update so that
+        // waitForApplicationProcessorAddedEvent only matches the deployment
+        // triggered by this call, not any earlier in-flight deployment of the
+        // same app that may still be completing from server startup.
+        setMarkToEndOfAllLogs(server);
         server.updateServerConfiguration(config);
+        // Wait for the server to acknowledge the config update before checking
+        // for the OpenAPI app-processor trace message.  This ensures the 60s
+        // TIMEOUT below applies only to processing of this specific deployment
+        // and is not consumed waiting for the config change to be picked up.
+        // No need to check for appNames as we check for OpenAPI events
+        server.waitForConfigUpdateInLogUsingMark(null, false);
         if (waitForAppProcessor) {
             waitForApplicationProcessorAddedEvent(server, name);
         }
