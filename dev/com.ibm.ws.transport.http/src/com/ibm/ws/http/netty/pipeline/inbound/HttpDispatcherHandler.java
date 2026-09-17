@@ -409,6 +409,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
 
         link.initStreaming(ctx, request, config, isFullRequest, requestMetadata);
+        final HttpDispatcherLink requestLink = link;
 
         final HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
         final HttpInputStreamImpl body = req.getBody();
@@ -449,7 +450,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (upg && !requestMetadata.isHttp2()) {
             //upgradingNow = true;
             if(commitScheduled.compareAndSet(false, true)){
-               HttpDispatcher.getExecutorService().execute(() -> link.ready()); 
+               HttpDispatcher.getExecutorService().execute(() -> requestLink.ready()); 
             }
             return;
         }
@@ -483,7 +484,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         streamingInitialized = true;
 
-        HttpDispatcher.getExecutorService().execute(() -> link.ready());
+        HttpDispatcher.getExecutorService().execute(() -> requestLink.ready());
     }
 
     private void drainEarlyHttpContentToBodyQueue(ChannelHandlerContext ctx) {
