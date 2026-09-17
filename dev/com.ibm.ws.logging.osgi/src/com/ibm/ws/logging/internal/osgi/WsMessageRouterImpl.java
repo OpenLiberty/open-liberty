@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
@@ -146,15 +147,16 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
 //        return (routedMessage != null && isValidMessage(routedMessage.getFormattedMsg()));
 //    }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean route(RoutedMessage routedMessage, boolean messageHidden) {
 
+    	
+
+    	
         if (routedMessage == null) {
             return true;
         }
+    
         //There can be many Reader locks, but only one writer lock.
         //This ReaderWriter lock is needed to avoid duplicate messages when the class is passing on the EarlyBuffer messages to the new WsLogHandler.
         RERWLOCK.readLock().lock();
@@ -170,16 +172,55 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
             }
             Set<String> logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
             
-            if (wildCardMsgIdToLogHandlerIds.size() > 0){
-                //todo: logic about matching and adding to handelr set.
-            	
-            	for (String wildCardMsgId : wildCardMsgIdToLogHandlerIds.keySet()) {
-            		if (routedMessage.getFormattedMsg().startsWith(wildCardMsgId)){
-            			logHandlerIds.addAll(wildCardMsgIdToLogHandlerIds.get(wildCardMsgId));
-            		}
-            	}
+            
+            String s_isDoWC = System.getProperty("doWC");
+            boolean isDoWC = false;
+            if (s_isDoWC != null) {
+            	isDoWC = Boolean.valueOf(s_isDoWC);
             }
+            
+            
+            //only diff logic during routing - fence off
+            
+            if (s_isDoWC != null && isDoWC == true) {
+                if (wildCardMsgIdToLogHandlerIds.size() > 0){
+                	
+                	//NEED TO PARSE LOG LEVEL SEP .... BECAUSE INFO COULD ACTUALLY BE AN AUDIT
+                	//Level msgLevel = routedMessage.getLogRecord().getLevel();
+                	
+                	
+                	
+                	String parsedMessageID = parseMessageId(routedMessage.getFormattedMsg());
 
+                	
+                	//Don't check if we can't parse message ID.
+                	if ( parsedMessageID != null) {
+                		
+                		
+                		Level msgLevelReadAsIs = parseLevel(parsedMessageID);
+                		
+                    	for (WildCardMessageAndLevel wmac : wildCardMsgIdToLogHandlerIds.keySet()) {
+                    		
+                    		//IF NOT ALL (Default) need to check AND THEN IF NOT MATCHING - SKIP
+                    		Level wmacLevl = wmac.getLogLevel();
+                    		if (!wmacLevl.equals(Level.ALL) && !wmacLevl.equals(msgLevelReadAsIs)) {
+                    			continue;
+                    		}
+                    		
+                    		if (parsedMessageID.startsWith(wmac.getWildCardMessageID())){
+                    			if (logHandlerIds == null ) {
+                    				logHandlerIds = new HashSet<String>();
+                    			}
+                    			logHandlerIds.addAll(wildCardMsgIdToLogHandlerIds.get(wmac));
+                    		}
+                    	}
+                	}
+                }
+            }
+            
+
+
+            
             if (logHandlerIds == null) {
                 // There are no routing requirements for this msgId.
                 // Return true to tell the caller to log the msg normally.
@@ -208,7 +249,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
             RERWLOCK.readLock().unlock();
         }
     }
-
+    
     /**
      * Route the message to all LogHandlers in the set.
      *
