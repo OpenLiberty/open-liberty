@@ -9,11 +9,14 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *
+ * Co-authored-by: IBM Bob <bob@ibm.com>
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
 import java.io.File;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -60,6 +63,11 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
         withEnv("QUERY_GRPC_TLS_KEY", "/etc/private.key");
         withCopyFileToContainer(MountableFile.forHostPath(tlsCert.toPath()), "/etc/certificate.crt");
         withCopyFileToContainer(MountableFile.forHostPath(tlsKey.toPath()), "/etc/private.key");
+        // Wait until the OTLP gRPC port is actually accepting connections before
+        // declaring the container ready.  Without this, the first BatchSpanProcessor
+        // flush hits a RST_STREAM/CANCEL from Jaeger and the spans are permanently
+        // dropped (BatchSpanProcessor does not re-queue failed batches).
+        waitingFor(Wait.forListeningPort());
         Log.info(c, "JaegerContainer", "creating JaegerContainer with grpc client cert and key");
     }
 
@@ -88,6 +96,11 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
         withCopyFileToContainer(MountableFile.forHostPath(otelCollectorTlsCert.toPath()), "/etc/otelCollectorCertificate.crt");
         withCopyFileToContainer(MountableFile.forHostPath(otelCollectorTlsKey.toPath()), "/etc/otelCollectorPrivateKey.key");
 
+        // Wait until the OTLP gRPC port is actually accepting connections before
+        // declaring the container ready.  Without this, the first BatchSpanProcessor
+        // flush hits a RST_STREAM/CANCEL from Jaeger and the spans are permanently
+        // dropped (BatchSpanProcessor does not re-queue failed batches).
+        waitingFor(Wait.forListeningPort());
         Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
 
     }
