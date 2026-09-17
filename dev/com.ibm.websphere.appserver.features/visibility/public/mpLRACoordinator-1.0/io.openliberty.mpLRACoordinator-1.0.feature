@@ -18,7 +18,7 @@ IBM-API-Package: \
     io.openliberty.microprofile.lra.coordinator.1.0.internal
 -files= \
     lib/mpLRACoordinator_5.10.6.jar
-kind=beta
-edition=core
+kind=noship
+edition=full
 WLP-Activation-Type: parallel
 

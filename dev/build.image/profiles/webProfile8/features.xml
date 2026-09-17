@@ -42,5 +42,5 @@
 <feature>mpOpenAPI</feature>
 <feature>mpOpenTracing</feature>
 <feature>mpRestClient</feature>
-<feature>servlet</feature>
+<feature>servlet-4.0</feature>
 <feature>websocket</feature>
