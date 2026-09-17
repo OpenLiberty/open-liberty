@@ -93,6 +93,7 @@ public class JwtUtils {
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALG = "keyManagementKeyAlgorithm";
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
     public static final String CFG_KEY_CONTENT_ENCRYPTION_ALG = "contentEncryptionAlgorithm";
+    public static final String CFG_KEY_WORKLOAD_IDENTITY_CLAIM = "workloadIdentityClaim";
 
     public static final String ISSUER = "iss";
     public static final String SUBJECT = "sub";

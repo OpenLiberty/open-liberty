@@ -60,6 +60,7 @@
          <AD id="contentEncryptionAlgorithm" name="%contentEncryptionAlgorithm" description="%contentEncryptionAlgorithm.desc" required="false" type="String" >
              <Option label="%contentEncryptionAlgorithm.A256GCM" value="A256GCM" />
          </AD>
+         <AD id="workloadIdentityClaim" name="%workloadIdentityClaim" description="%workloadIdentityClaim.desc" required="false" type="String" ibm:beta="true" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jwt.builder">
