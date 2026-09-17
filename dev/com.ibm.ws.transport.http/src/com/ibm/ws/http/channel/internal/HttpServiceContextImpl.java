@@ -2381,6 +2381,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
         }
+        // If persistence was explicitly disabled (e.g. by an error path or updatePersistence),
+        // reflect that as Connection: close in the response headers so that
+        // HttpServerKeepAliveHandler can manage the connection lifecycle natively.
+        if (!isNettyHttp2Request() && !isPersistent()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "sendHeaders: Adding close connection header due to isPersistent=false");
+            }
+            getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION, ConnectionValues.CLOSE.getName());
+        }
         if (HttpUtil.isContentLengthSet(response)) {
             this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
         }
@@ -3888,24 +3897,23 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         String streamId = Integer.toString(getNettyHttp2StreamId());
 
         DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
-        boolean closeAfterFinalContent = "-1".equals(streamId)
-                                        && (!isPersistent()
-                                            || resp.getResponse().headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
-                                            || !trailers.isEmpty()
-                                            || hasUnconsumedNettyRequestBody());
 
-        if (closeAfterFinalContent && hasUnconsumedNettyRequestBody()) {
+        // If there are unread request-body bytes on the wire we must close after
+        // the response to prevent the next pipelined request from misreading them.
+        // prepareNettyCloseForIncompleteRequestBody() handles the common case at
+        // finishMessage time, but guard here too for the finalContent-only path.
+        if ("-1".equals(streamId) && hasUnconsumedNettyRequestBody()) {
             this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
             setPersistent(false);
             resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         }
 
-        // Sending last http content since all data was written
+        // Sending last http content since all data was written.
+        // Connection-close is owned by HttpServerKeepAliveHandler: it reads the
+        // Connection header written above (or by prepareNettyHeadersToSend) and
+        // attaches ChannelFutureListener.CLOSE to this write automatically.
         this.nettyContext.channel().eventLoop().execute(() -> {
-            ChannelFuture future = nettyContext.channel().writeAndFlush(lastContent);
-            if (closeAfterFinalContent) {
-                future.addListener(ChannelFutureListener.CLOSE);
-            }
+            nettyContext.channel().writeAndFlush(lastContent);
         });
     }
 
