@@ -558,8 +558,18 @@
     </dependency>
     <dependency>
       <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-commons</artifactId>
+      <version>1.16.7</version>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
       <artifactId>micrometer-core</artifactId>
       <version>1.15.12</version>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+      <version>1.16.7</version>
     </dependency>
     <dependency>
       <groupId>io.micrometer</groupId>
@@ -570,6 +580,11 @@
       <groupId>io.micrometer</groupId>
       <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
       <version>1.15.12</version>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus-simpleclient</artifactId>
+      <version>1.16.7</version>
     </dependency>
     <dependency>
       <groupId>io.micrometer</groupId>
