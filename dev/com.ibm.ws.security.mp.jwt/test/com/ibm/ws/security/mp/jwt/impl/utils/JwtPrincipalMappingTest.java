@@ -150,17 +150,17 @@ public class JwtPrincipalMappingTest {
     }
 
     @Test
-    public void testGetMappedRealm_nullAttr_fallsBackToRealmConstant() {
+    public void testGetMappedRealm_nullAttr_returnsNull() {
         try {
             Map<String, Object> claims = new HashMap<String, Object>();
             claims.put("upn", "testuser");
             claims.put("realm", "FallbackRealm");
             JwtToken token = buildMockToken(claims);
 
-            // null realmIdentifierAttr → falls back to REALM_CLAIM="realm"
+            // null realmIdentifierAttr → getRealm() returns null; iss fallback happens in TAIMappingHelper
             JwtPrincipalMapping mapping = new JwtPrincipalMapping(token, "upn", "groups", false, null);
-            assertEquals("Expected realm from default 'realm' claim when attr is null",
-                         "FallbackRealm", mapping.getMappedRealm());
+            assertNull("Expected null realm when realmIdentifierAttr is null",
+                       mapping.getMappedRealm());
         } catch (Exception e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
         }

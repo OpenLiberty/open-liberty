@@ -76,20 +76,18 @@ public class TAIMappingHelper {
     }
 
     /**
-     *
+     * Sets the realm for the subject being created. When {@code mapToUserRegistry} is false, the realm
+     * is resolved in priority order: the configured {@code realmName} attribute takes precedence; if it
+     * is not set (null), the realm claim from the JWT token (via {@code claimToPrincipalMapping}) is used.
      */
     private void setRealm() {
         if (getmaptoURconfig()) {
             return;
         }
         if (config != null) {
-            String configuredRealmName = config.getRealmName();
-            if (configuredRealmName != null && !configuredRealmName.isEmpty()) {
-                this.realm = configuredRealmName;
-            } else {
-                this.realm = claimToPrincipalMapping.getMappedRealm();
-            }
-        } else {
+            this.realm = config.getRealmName();
+        }
+        if (this.realm == null) {
             this.realm = claimToPrincipalMapping.getMappedRealm();
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

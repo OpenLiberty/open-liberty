@@ -240,4 +240,30 @@ public class MPJwtRealmConfigTests extends MPJwt11MPConfigTests {
 
         invokeAppsAndValidate(builtToken, expectations);
     }
+
+    /**
+     * No realmIdentifier is configured (attribute absent from mpJwt element).
+     * The token contains a "realm" claim with value "TokenRealm".
+     * Because the metatype declares default="realm" for realmIdentifier, omitting the
+     * attribute still results in an effective realmIdentifier of "realm" at runtime.
+     * Expect the "realm" claim value ("TokenRealm") to be used as the realm.
+     */
+    @Test
+    public void MPJwtRealmConfig_noRealmIdentifier_usesMetatypeDefault_realmClaimApplied() throws Exception {
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_noRealmIdentifier_realmClaimIgnored.xml");
+
+        // Token has a "realm" claim — metatype default "realm" means it IS picked up
+        List<NameValuePair> extraClaims = new ArrayList<NameValuePair>();
+        extraClaims.add(new NameValuePair(JwtConstants.PARAM_UPN, MPJwt11FatConstants.TESTUSER));
+        extraClaims.add(new NameValuePair("realm", "TokenRealm"));
+        String builtToken = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, "defaultJWT_withAudience", extraClaims);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseFullExpectation(MPJwt11FatConstants.STRING_CONTAINS,
+                "com.ibm.wsspi.security.cred.uniqueId=user:TokenRealm/",
+                "Response did NOT contain uniqueId with 'TokenRealm' — metatype default realmIdentifier=\"realm\" should pick up the 'realm' claim when realmIdentifier is absent from config"));
+
+        invokeAppsAndValidate(builtToken, expectations);
+    }
 }
