@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,12 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         final ApplicationDependency appDep = createDependency("resolves when app " + getAppName() + " finishes stopping");
         _notifyAppStopped.add(appDep);
-        createExplicitStartFuture();
+        // Only re-arm the explicit-start barrier for applications configured with autoStart=false.
+        // For autoStart=true applications the barrier was never installed, so installing it here
+        // would silently convert the application to manual-start behaviour on the next configure().
+        if (!_appConfig.get().isAutoStarted()) {
+            createExplicitStartFuture();
+        }
         attemptStateChange(StateChangeAction.STOP);
         return appDep.getFuture();
     }
