@@ -107,6 +107,9 @@ public class MaxMessageSizeLimitTests {
         server.setTraceMarkToEndOfDefaultTrace();
         server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(null);
+        if (!server.findStringsInLogsUsingMark("CWWKO0220I", server.getDefaultLogFile()).isEmpty()) {
+            server.waitForStringInLogUsingMark("CWWKO0219I");
+        }
     }
 
     @Test
@@ -277,10 +280,9 @@ public class MaxMessageSizeLimitTests {
 
             assertFalse("SENTINEL-HIT must not appear — subsequent request must not be processed",
                     responseStr.contains("SENTINEL-HIT"));
-            // Connection must be closed — only 1 response allowed (the ChunkSizeTestServlet 200 or
-            // no response)
+            // Connection must be closed — only 1 response allowed (the ChunkSizeTestServlet 200)
             assertTrue("Expected at most 1 HTTP response — no second pipelined response",
-                    countOccurrences(responseStr, "HTTP/1.1") <= 1);
+                    countOccurrences(responseStr, "HTTP/1.1") == 1);
         }
     }
 
