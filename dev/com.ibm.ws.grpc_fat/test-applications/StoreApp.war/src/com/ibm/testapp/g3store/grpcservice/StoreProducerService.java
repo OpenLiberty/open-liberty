@@ -650,15 +650,18 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
         @Override
         public void onCompleted() {
             log.info("twoWayStreamA: onComplete() called");
-            String s = responseStringTwoWay + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
+            String s;
+            synchronized (messageSync) {
+                s = responseStringTwoWay + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
-            int maxStringLength = 32768 - lastClientMessage.length() - 1;
-            // limit response string to 32K, make sure the last message concatenated at the end
-            if (s.length() > maxStringLength) {
-                s = s.substring(0, maxStringLength);
-                s = s + lastClientMessage;
-            } else {
-                s = s + lastClientMessage;
+                int maxStringLength = 32768 - lastClientMessage.length() - 1;
+                // limit response string to 32K, make sure the last message concatenated at the end
+                if (s.length() > maxStringLength) {
+                    s = s.substring(0, maxStringLength);
+                    s = s + lastClientMessage;
+                } else {
+                    s = s + lastClientMessage;
+                }
             }
             log.info("twoWayStreamA: onComplete() sending string of length: " + s.length());
 
@@ -740,15 +743,18 @@ public class StoreProducerService extends AppProducerServiceGrpc.AppProducerServ
             } catch (InterruptedException e) {
             }
 
-            String s = responseStringTwoWay + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
+            String s;
+            synchronized (messageSync) {
+                s = responseStringTwoWay + "...[[time response sent back to Client: " + System.currentTimeMillis() + "]]";
 
-            int maxStringLength = 32768 - lastClientMessage.length() - 1;
-            // limit response string to 32K, make sure the last message concatenated at the end
-            if (s.length() > maxStringLength) {
-                s = s.substring(0, maxStringLength);
-                s = s + lastClientMessage;
-            } else {
-                s = s + lastClientMessage;
+                int maxStringLength = 32768 - lastClientMessage.length() - 1;
+                // limit response string to 32K, make sure the last message concatenated at the end
+                if (s.length() > maxStringLength) {
+                    s = s.substring(0, maxStringLength);
+                    s = s + lastClientMessage;
+                } else {
+                    s = s + lastClientMessage;
+                }
             }
 
             // Print out message in the logs, but don't send the message to the client since the async thread
