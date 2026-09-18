@@ -30,10 +30,10 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
@@ -44,8 +44,8 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AuthCancellationTest extends FATServletClient {
 
-    @Server("mcp-server-auth")
-    public static LibertyServer server;
+    // Server is managed by McpAuthServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpAuthServerSuite.server;
     private static ExecutorService executor;
 
     @Rule
@@ -56,25 +56,25 @@ public class AuthCancellationTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "cancellationTest.war")
                                    .addPackage(CancellationTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        server.startServer();
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
 
         executor = Executors.newSingleThreadExecutor();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-                          "CWMCM0010E" //Internal server error
-        );
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("dropins/cancellationTest.war");
+        server.waitForStringInLog("CWWKZ0009I:.*cancellationTest");
+        server.removeInstalledAppForValidation("cancellationTest");
     }
 
     @AfterClass

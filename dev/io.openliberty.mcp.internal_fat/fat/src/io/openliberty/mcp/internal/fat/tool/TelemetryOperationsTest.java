@@ -31,12 +31,12 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
+import io.openliberty.mcp.internal.fat.suite.McpTelemetryServerSuite;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
@@ -45,8 +45,8 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     private final static String APP_NAME = "telemetryTest";
 
-    @Server("mcp-server-telemetry")
-    public static LibertyServer server;
+    // Server is managed by McpTelemetryServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpTelemetryServerSuite.server;
 
     @Rule
     public McpClient client = new McpClient(server, "/" + APP_NAME);
@@ -99,6 +99,7 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(PullExporterAutoConfigurationCustomizerProvider.class.getPackage())
                                    .addAsResource(new StringAsset("otel.sdk.disabled=false"),
@@ -106,12 +107,14 @@ public class TelemetryOperationsTest extends FATServletClient {
                                    .addAsServiceProvider(AutoConfigurationCustomizerProvider.class,
                                                          PullExporterAutoConfigurationCustomizerProvider.class);
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0010E"); // Expected: Tool threw non-business exception
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
+        server.waitForStringInLog("CWWKZ0009I:.*" + APP_NAME);
+        server.removeInstalledAppForValidation(APP_NAME);
     }
 
     private static final String TOOLS_LIST_REQUEST = """

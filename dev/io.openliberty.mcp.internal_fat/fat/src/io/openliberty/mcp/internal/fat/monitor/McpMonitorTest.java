@@ -30,9 +30,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpMonitorServerSuite;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
@@ -49,8 +49,8 @@ public class McpMonitorTest {
     private static final String MBEAN_TYPE_OPERATION = "McpOperationStatistics";
     private static final String MBEAN_TYPE_SESSION = "McpSessionStatistics";
 
-    @Server("mcp-server-monitor-only")
-    public static LibertyServer server;
+    // Server is managed by McpMonitorServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpMonitorServerSuite.server;
 
     @Rule
     public McpClient client = new McpClient(server, "/" + APP_NAME);
@@ -116,15 +116,15 @@ public class McpMonitorTest {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
 
-        // Wait for server to be ready
-        assertNotNull("Server should start successfully",
-                      server.waitForStringInLog("CWWKF0011I"));
+        // Wait for the app to be ready (MCP endpoint log message)
+        assertNotNull("App should start and register MCP endpoint",
+                      server.waitForStringInLogUsingMark("MCP server endpoint: .*/" + APP_NAME + "/mcp"));
 
         // Connect to local JMX connector
         localConnector = new LocalConnector(server.getServerRoot());
@@ -139,9 +139,10 @@ public class McpMonitorTest {
                 localConnector.close();
             }
         } finally {
-            if (server != null && server.isStarted()) {
-                server.stopServer("CWMCM0010E"); // Expected: Tool threw non-business exception
-            }
+            server.setMarkToEndOfLog();
+            server.deleteFileFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
+            server.waitForStringInLog("CWWKZ0009I:.*" + APP_NAME);
+            server.removeInstalledAppForValidation(APP_NAME);
         }
     }
 

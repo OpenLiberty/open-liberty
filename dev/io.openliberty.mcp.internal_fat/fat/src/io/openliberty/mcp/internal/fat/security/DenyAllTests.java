@@ -23,9 +23,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.DenyAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -35,8 +35,8 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class DenyAllTests extends AbstractDenyAll {
 
-    @Server("mcp-server-auth")
-    public static LibertyServer server;
+    // Server is managed by McpAuthServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpAuthServerSuite.server;
     Logger logger = Logger.getLogger(DenyAllTests.class.getName());
 
     @Rule
@@ -50,17 +50,18 @@ public class DenyAllTests extends AbstractDenyAll {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "denyAllTools.war").addClass(DenyAllTools.class);
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-        assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("dropins/denyAllTools.war");
+        server.waitForStringInLog("CWWKZ0009I:.*denyAllTools");
+        server.removeInstalledAppForValidation("denyAllTools");
     }
 
 }
