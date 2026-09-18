@@ -73,15 +73,11 @@ public class TestRetryHelper {
             }
             try {
                 action.run();
+                return; // Succeeded
             } catch (Throwable t) {
                 lastThrowable = t;
                 LOG.log(Level.WARNING, "Attempt " + attempt + " of " + maxAttempts + " failed: " + t.getMessage(), t);
-                if (attempt < maxAttempts) {
-                    continue;
-                }
-                break;
             }
-            return; 
         }
 
         if (lastThrowable instanceof Exception e) {
