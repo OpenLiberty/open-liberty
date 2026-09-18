@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2003, 2010 IBM Corporation and others.
+# Copyright (c) 2003, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
 #
@@ -552,6 +549,45 @@ CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Vizsg\u00e1lja meg az \u00fczenetb
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: A(z) {0} \u00fczenetkezel\u00e9si sz\u00e1ll\u00edt\u00e1si l\u00e1nc le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=A sz\u00e1ll\u00edt\u00e1si l\u00e1nc a biztons\u00e1gi be\u00e1ll\u00edt\u00e1sok m\u00f3dos\u00edt\u00e1sa ut\u00e1n le\u00e1llt, ami azt jelenti, hogy nincs busz meghat\u00e1rozva a cell\u00e1hoz, ami tov\u00e1bbra is engedn\u00e9 a l\u00e1nc haszn\u00e1lat\u00e1t.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception which occurred
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086=CWSIJ0086E: Egy bels\u0151 hiba megakad\u00e1lyozta az Netty \u00e1tviteli bootstrap inicializ\u00e1l\u00e1s\u00e1t a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {0}
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.explanation=A \u201e Netty \u201d transzport-bootstrap-objektum nem inicializ\u00e1lhat\u00f3. Azok a kimen\u0151 Java Message Service (JMS) kapcsolatok, amelyek az \u201e Netty \u201d \u00e1tviteli \u00fatvonalat haszn\u00e1lj\u00e1k, nem tudnak csatlakozni.
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz vizsg\u00e1lja meg az \u00fczenetben megnevezett kiv\u00e9telt \u00e9s a kapcsol\u00f3d\u00f3 szervernapl\u00f3kat. Ellen\u0151rizze, hogy az \u201e Netty \u201d keretrendszer-szolg\u00e1ltat\u00e1s akt\u00edv-e, \u00e9s hogy az \u201e TCP \u201d \u00e1tviteli be\u00e1ll\u00edt\u00e1sok helyesen vannak-e konfigur\u00e1lva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel for which no connection could be found
+NETTY_READ_NO_CONNECTION_SICJ0087=CWSIJ0087W: Az \u201e {0} \u201d csatorn\u00e1ra \u00e9rkez\u0151 \u00fczenet nem t\u00e1rs\u00edthat\u00f3 Java Message Service (JMS) kapcsolathoz. A szerver elveti az \u00fczenetet, \u00e9s bez\u00e1rja a csatorn\u00e1t.
+NETTY_READ_NO_CONNECTION_SICJ0087.explanation=\u00dczenet \u00e9rkezett egy olyan \u201e Netty \u201d \u00e1tviteli csatorn\u00e1n, amelyhez nincs t\u00e1rs\u00edtott JMS-kapcsolatobjektum. Ez a hiba a kapcsolat bont\u00e1sa sor\u00e1n fell\u00e9p\u0151 versenyhelyzetre utalhat. A szerver nem tudja feldolgozni az \u00fczenetet.
+NETTY_READ_NO_CONNECTION_SICJ0087.useraction=Ellen\u0151rizze a szerver napl\u00f3it, h\u00e1tha tal\u00e1l olyan hiba- vagy figyelmeztet\u0151 \u00fczenetet, amely megmagyar\u00e1zhatja, mi\u00e9rt nem volt jelen a kapcsolati objektum. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, k\u00e9sz\u00edtsen szervernyomk\u00f6vet\u00e9st, \u00e9s vegye fel a kapcsolatot a IBM \u00fcgyf\u00e9lszolg\u00e1lattal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the JMS Connection object
+# {1} the IOReadCompletedCallback object
+# {2} the IOReadRequestContext object
+# {3} the NetworkConnection object
+NETTY_UNEXPECTED_CALLBACK_SICJ0088=CWSIJ0088W: A \u201e Netty \u201d csatorn\u00e1n be\u00e9rkez\u0151 \u00fczenet vagy \u201eheartbeat\u201d esem\u00e9ny nem feldolgozhat\u00f3, mert egy vagy t\u00f6bb kapcsol\u00f3d\u00f3 objektum nem a v\u00e1rt \u201e Netty \u201d t\u00edpus\u00fa. Kapcsolat: {0} Visszah\u00edv\u00e1s: {1} ReadContext: {2} NetworkConnection: {3}
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.explanation=A \u201e Netty \u201d csatorna adatot vagy id\u0151t\u00fall\u00e9p\u00e9si esem\u00e9nyt kapott, de a csatorn\u00e1hoz kapcsol\u00f3d\u00f3 kapcsolat, visszah\u00edv\u00e1s, olvas\u00e1si kontextus vagy h\u00e1l\u00f3zati kapcsolat-objektum nem a v\u00e1rt, a \u201e Netty \u201d specifik\u00e1ci\u00f3j\u00e1nak megfelel\u0151 t\u00edpus\u00fa. A szerver bez\u00e1rja a csatorn\u00e1t. Ez a hiba bels\u0151 programoz\u00e1si hib\u00e1ra utal.
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.useraction=Vizsg\u00e1lja meg a szerver napl\u00f3it \u00e9s az esetleges FFDC (First Failure Data Capture) bejegyz\u00e9seket olyan k\u00eds\u00e9r\u0151 hiba\u00fczenetek ut\u00e1n kutatva, amelyek megmagyar\u00e1zhatj\u00e1k, mi\u00e9rt nem a v\u00e1rt t\u00edpus\u00faak a kapcsolati objektumok. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, k\u00e9sz\u00edtsen szervernyomk\u00f6vet\u00e9st, \u00e9s vegye fel a kapcsolatot a IBM \u00fcgyf\u00e9lszolg\u00e1lattal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the IdleStateEvent that was received
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089=CWSIJ0089W: Egy v\u00e1ratlan t\u00edpus\u00fa \u201e Netty \u201d alap\u00e1llapot-esem\u00e9ny \u00e9rkezett, \u00e9s az \u00e1tjutott a feldolgoz\u00e1si folyamaton. Esem\u00e9ny: {0}
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.explanation=A \u201e Netty \u201d Java Message Service (JMS) pulzuskezel\u0151je olyan t\u00e9tlen \u00e1llapot\u00fa esem\u00e9nyt kapott, amely nem \u201ereader-idle\u201d (olvas\u00e1si id\u0151t\u00fall\u00e9p\u00e9s) esem\u00e9ny. A heartbeat-kezel\u0151 kiz\u00e1r\u00f3lag \u201ereader-idle\u201d esem\u00e9nyeket v\u00e1r. A szerver tov\u00e1bb\u00edtja az esem\u00e9nyt a feldolgoz\u00e1si l\u00e1nc ment\u00e9n a tov\u00e1bbi feldolgoz\u00e1s c\u00e9lj\u00e1b\u00f3l.
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.useraction=Ha ez az \u00fczenet ritk\u00e1n jelenik meg, nincs sz\u00fcks\u00e9g semmilyen int\u00e9zked\u00e9sre. Ha ez az \u00fczenet t\u00f6bbsz\u00f6r is megjelenik, ellen\u0151rizze a szerver napl\u00f3it a kapcsol\u00f3d\u00f3 figyelmeztet\u00e9sek vagy hib\u00e1k felder\u00edt\u00e9se \u00e9rdek\u00e9ben, \u00e9s vegye fel a kapcsolatot a IBM \u00fcgyf\u00e9lszolg\u00e1lattal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel on which the heartbeat timeout event occurred
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090=CWSIJ0090W: A \u201e {0} \u201d csatorn\u00e1n bek\u00f6vetkez\u0151 \u201eheartbeat timeout\u201d esem\u00e9ny nem t\u00e1rs\u00edthat\u00f3 Java Message Service (JMS) kapcsolathoz. A szerver tov\u00e1bb\u00edtja az esem\u00e9nyt a folyamatl\u00e1ncon kereszt\u00fcl.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.explanation=Olvas\u00e1si t\u00e9tlens\u00e9g (heartbeat id\u0151t\u00fall\u00e9p\u00e9s) esem\u00e9ny v\u00e1lt ki egy \u201e Netty \u201d csatorn\u00e1n, amelyhez nincs t\u00e1rs\u00edtott JMS-kapcsolatobjektum. Ez a hiba a kapcsolat bont\u00e1sa sor\u00e1n fell\u00e9p\u0151 versenyhelyzetre utalhat. A szerver nem tudja feldolgozni az esem\u00e9nyt, ez\u00e9rt tov\u00e1bb\u00edtja azt a feldolgoz\u00e1si folyamat ment\u00e9n.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.useraction=Ellen\u0151rizze a szerver napl\u00f3it, h\u00e1tha tal\u00e1l olyan hiba- vagy figyelmeztet\u0151 \u00fczenetet, amely megmagyar\u00e1zhatja, mi\u00e9rt nem volt jelen a kapcsolati objektum. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, k\u00e9sz\u00edtsen szervernyomk\u00f6vet\u00e9st, \u00e9s vegye fel a kapcsolatot a IBM \u00fcgyf\u00e9lszolg\u00e1lattal.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel (null) for which the SSL session was requested
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091=CWSIJ0091W: Secure Sockets Layer ( SSL ) munkamenetet k\u00e9rtek, de ehhez a kapcsolathoz nincs regisztr\u00e1lva Netty csatorna. Csatorna: {0}
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.explanation=A \u201e SSL \u201d munkamenet nem t\u00f6lthet\u0151 be, mivel a \u201e Netty \u201d csatorna nincs t\u00e1rs\u00edtva ehhez a kapcsolati objektumhoz. Ez a hiba a kapcsolat fel\u00e9p\u00edt\u00e9se sor\u00e1n felmer\u00fclt id\u0151z\u00edt\u00e9si probl\u00e9m\u00e1ra utalhat.
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.useraction=Ellen\u0151rizze a szerver napl\u00f3it, hogy tal\u00e1l-e olyan k\u00eds\u00e9r\u0151 hiba- vagy figyelmeztet\u0151 \u00fczenetet, amely megmagyar\u00e1zhatja, mi\u00e9rt nem siker\u00fclt regisztr\u00e1lni a csatorn\u00e1t. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, k\u00e9sz\u00edtsen szervernyomk\u00f6vet\u00e9st, \u00e9s vegye fel a kapcsolatot a IBM \u00fcgyf\u00e9lszolg\u00e1lattal.
 
 # Emergency use
 # -------------------------------------------------------------------------------------------------

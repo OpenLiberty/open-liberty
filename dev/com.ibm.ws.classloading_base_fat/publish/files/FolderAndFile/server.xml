@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>classloadingfatlibertyinternals-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <application type="war" id="sharedLib" name="sharedLib" location="sharedLib.war">
+        <classloader privateLibraryRef="SharedLibrary" />
+    </application>
+
+    <library id="SharedLibrary">
+        <folder dir="${server.config.dir}/libs/folder1"/>
+        <folder dir="${server.config.dir}/libs/folder2"/>
+        <file name="${server.config.dir}/libs/folder3/libC.jar"/>
+        <file name="${server.config.dir}/libs/files/fileTest.properties"/>
+    </library>
+
+    <library id="ErrorTest">
+        <folder dir="${server.config.dir}/libs/NotAFolder"/>
+        <file name="${server.config.dir}/libs/folder1"/>
+        <file name="${server.config.dir}/libs/files/NotAFile"/>
+        <folder dir="${server.config.dir}/libs/files/fileTest.properties"/>
+    </library>
+</server>

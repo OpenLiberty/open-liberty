@@ -1,0 +1,64 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+// Always pull from mirror so we don't have to upload transitive dependencies to Artifactory
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+ext {
+    hibernateVersion = '8.0.0.Beta1'
+}
+
+configurations {
+    jpaFatTools {
+        transitive = false
+    }
+    hibernateJPA40
+}
+
+dependencies {
+    jpaFatTools project(':com.ibm.ws.jpa_testframework')
+
+    // Core Hibernate 8 runtime
+    hibernateJPA40("org.hibernate.orm:hibernate-core:${hibernateVersion}")              { transitive = false }
+    hibernateJPA40("org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}"){ transitive = false }
+    hibernateJPA40("org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}")       { transitive = false }
+
+    // Hibernate runtime dependencies
+    hibernateJPA40("net.bytebuddy:byte-buddy:1.18.10")           { transitive = false }
+    hibernateJPA40("org.antlr:antlr4-runtime:4.13.2")            { transitive = false }
+    hibernateJPA40("org.jboss.logging:jboss-logging:3.6.3.Final") { transitive = false }
+    hibernateJPA40("org.hibernate.models:hibernate-models:1.2.0") { transitive = false }
+    hibernateJPA40("io.smallrye:jandex:3.6.0")                   { transitive = false }
+
+}
+
+task addJPAFATTools(type: Copy) {
+    mustRunAfter jar
+    from configurations.jpaFatTools
+    include "**/com.ibm.ws.jpa_testframework.jakarta.jar"
+    into new File(autoFvtDir, 'lib')
+}
+
+task addhibernateJPA40(type: Copy) {
+    shouldRunAfter jar
+    from configurations.hibernateJPA40
+    into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_persistencecontainer')
+}
+
+addRequiredLibraries {
+    dependsOn addH2
+    dependsOn copyJdbcDrivers
+    dependsOn addJPAFATTools
+    dependsOn addhibernateJPA40
+    dependsOn addJakartaTransformer
+    dependsOn copyTestContainers
+}

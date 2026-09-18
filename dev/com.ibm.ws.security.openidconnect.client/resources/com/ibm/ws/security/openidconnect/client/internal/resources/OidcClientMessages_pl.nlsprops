@@ -40,7 +40,7 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Klient OpenID Connect (strona zal
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: najpierw upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, u\u017cyj sk\u0142adnika klienta OpenID Connect i ustaw w\u0142a\u015bciwo\u015b\u0107 enforceHTTPS na warto\u015b\u0107 false w konfiguracji sk\u0142adnika klienta OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Ten warunek jest niedozwolony.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Taka sytuacja nie jest dozwolona.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Klient OpenID Connect (strona zale\u017cna) wys\u0142a\u0142 \u017c\u0105danie do dostawcy OpenID Connect, kt\u00f3ry odes\u0142a\u0142 odpowied\u017a z parametrem stanu niezgodnym ze stanem strony zale\u017cnej w momencie wys\u0142ania. Dostawca OpenID musi do\u0142\u0105czy\u0107 do odpowiedzi taki sam stan, jaki zosta\u0142 wys\u0142any.  Stan jest u\u017cywany w ten spos\u00f3b do ochrony przed atakami typu CSRF (Cross-Site Request Forgery). 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Upewnij si\u0119, \u017ce adres URL u\u017cywanego dostawcy OpenID jest poprawny. Sprawd\u017a dzienniki dostawcy OpenID, aby upewni\u0107 si\u0119, \u017ce otrzyma\u0142 \u017c\u0105danie.
 
@@ -79,22 +79,22 @@ OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga OSGi nie jest dost\u01
 OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer z opcj\u0105 clean.
 
 #used_by_client_project
-PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu utraci\u0142 wa\u017cno\u015b\u0107. Roszczenie Godzina utraty wa\u017cno\u015bci (expiration time - exp) ma warto\u015b\u0107 [{0}], a bie\u017c\u0105ca godzina to [{1}].
+PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu utraci\u0142 wa\u017cno\u015b\u0107. \u017b\u0105danie Godzina utraty wa\u017cno\u015bci (expiration time - exp) ma warto\u015b\u0107 [{0}], a bie\u017c\u0105ca godzina to [{1}].
 PROPAGATION_TOKEN_EXPIRED_ERR.explanation=Znacznik dost\u0119pu utraci\u0142 wa\u017cno\u015b\u0107 i \u015brodowisko robocze nie mo\u017ce kontynuowa\u0107 propagacji znacznika dost\u0119pu.
 PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Podaj wa\u017cny znacznik dost\u0119pu i zsynchronizuj czas system\u00f3w.
 
 #used_by_client_project
-PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu jest niepoprawny. Warto\u015b\u0107 roszczenia Godzina wystawienia (issue at time - iat) wynosz\u0105ca [{0}] przypada w przysz\u0142o\u015bci [{1}]. Ten warunek nie jest dozwolony.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu jest niepoprawny. Warto\u015b\u0107 \u017c\u0105dania Godzina wystawienia (issue at time - iat) wynosz\u0105ca [{0}] przypada w przysz\u0142o\u015bci [{1}]. Ten warunek nie jest dozwolony.
 PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.explanation=\u017b\u0105danie Godzina wystawienia w znaczniku dost\u0119pu przypada w przysz\u0142o\u015bci. Jest to niedozwolone.
 PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.useraction=Upewnij si\u0119, \u017ce znacznik dost\u0119pu nie zosta\u0142 wystawiony w przysz\u0142o\u015bci i/lub zsynchronizuj czasy system\u00f3w.
 
 #used_by_client_project
-PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu nie zawiera roszczenia [{0}]. Wymagane s\u0105 roszczenia [{1}].
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znajduj\u0105cy si\u0119 w \u017c\u0105daniu znacznik dost\u0119pu nie zawiera \u017c\u0105dania [{0}]. Wymagane s\u0105 \u017c\u0105dania [{1}].
 PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Znacznik dost\u0119pu nie zawiera wszystkich wymaganych \u017c\u0105da\u0144. 
 PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Sprawd\u017a, czy podany znacznik dost\u0119pu zawiera wymagane \u017c\u0105dania.
 
 #used_by_client_project
-PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna u\u017cy\u0107 znajduj\u0105cego si\u0119 w \u017c\u0105daniu znacznika dost\u0119pu. Warto\u015b\u0107 roszczenia Nie przed godzin\u0105 (not before time - nbf) wynosz\u0105ca [{0}] przypada w przysz\u0142o\u015bci [{1}]. Ten warunek nie jest dozwolony.
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna u\u017cy\u0107 znajduj\u0105cego si\u0119 w \u017c\u0105daniu znacznika dost\u0119pu. Warto\u015b\u0107 \u017c\u0105dania Nie przed godzin\u0105 (not before time - nbf) wynosz\u0105ca [{0}] przypada w przysz\u0142o\u015bci [{1}]. Ten warunek nie jest dozwolony.
 PROPAGATION_TOKEN_NBF_ERR.explanation=\u017b\u0105danie Nie przed godzin\u0105 w znaczniku dost\u0119pu ma warto\u015b\u0107 przypadaj\u0105c\u0105 w przysz\u0142o\u015bci i \u015brodowisko wykonawcze nie mo\u017ce u\u017cy\u0107 tego znacznika dost\u0119pu w chwili obecnej.
 PROPAGATION_TOKEN_NBF_ERR.useraction=Upewnij si\u0119, \u017ce w znaczniku dost\u0119pu nie ustawiono \u017c\u0105dania nbf przypadaj\u0105cego w przysz\u0142o\u015bci i/lub zsynchronizuj czasy system\u00f3w. Mo\u017cna tak\u017ce wys\u0142a\u0107 ponownie \u017c\u0105danie p\u00f3\u017aniej.
 
@@ -149,7 +149,7 @@ PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Zaktualizuj konfiguracj\u0119 k
 # 1730 used in clients.common, don't use here.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera roszczenia [{0}] okre\u015blonego przez atrybut [{1}].
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik dost\u0119pu nie zawiera \u017c\u0105dania [{0}] okre\u015blonego przez atrybut [{1}].
 PROPAGATION_TOKEN_MISSING_REALM.explanation=Udost\u0119pniony znacznik dost\u0119pu nie zawiera okre\u015blonego \u017c\u0105dania na potrzeby identyfikacji dziedziny i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy w konfiguracji klienta OpenID Connect okre\u015blono atrybut realmName. 2) Sprawd\u017a, czy dostawca OpenID Connect emituje znacznik dost\u0119pu z okre\u015blonym \u017c\u0105daniem. 3) Sprawd\u017a, czy dostawca OpenID Connect mo\u017ce emitowa\u0107 znacznik dost\u0119pu z \u017c\u0105daniem iss. 
 
@@ -292,5 +292,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Sprawd\u017a konfigur
 REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: \u017b\u0105danie uwierzytelnienia si\u0119 nie powiod\u0142o, poniewa\u017c dostawca OpenID Connect zwr\u00f3ci\u0142 nast\u0119puj\u0105cy b\u0142\u0105d {0}: {1}
 REDIRECT_URI_CONTAINED_ERROR.explanation=Okre\u015blony status odpowiedzi wskazuje, \u017ce uwierzytelnianie nie powiod\u0142o si\u0119. Informacje dodatkowe zawieraj\u0105 b\u0142\u0105d i jego opis, kt\u00f3ry jest podany w komunikacie.
 REDIRECT_URI_CONTAINED_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera opis b\u0142\u0119du w komunikacie.
+
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: Metadane zasobu chronionego nie mog\u0105 zawiera\u0107 tokenu JWT typu \u201esigned_metadata\u201d, poniewa\u017c narz\u0119dzie do generowania token\u00f3w JWT [ {0} ] nie zdo\u0142a\u0142o utworzy\u0107 tokenu: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=Skonfigurowany modu\u0142 generuj\u0105cy tokeny JWT wygenerowa\u0142 wyj\u0105tek podczas tworzenia podpisanego tokenu metadanych. Serwer zwraca dokument metadanych bez pola \u201esigned_metadata\u201d.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=Aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du, sprawd\u017a konfiguracj\u0119 narz\u0119dzia do generowania token\u00f3w JWT oraz logi serwera.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

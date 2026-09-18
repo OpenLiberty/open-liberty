@@ -333,6 +333,8 @@ public class FutureEHFactory extends CompletableFuture<EntityHandlerFactory> //
                 else
                     throw excJNDINameNotFound(jeeName, x);
             } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "createFactory", x);
                 throw (DataException) exc(DataException.class,
                                           "CWWKD1080.datastore.general.err",
                                           getClassNames(repositoryInterfaces),

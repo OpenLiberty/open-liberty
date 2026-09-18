@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=Ellen\u0151rizze a hiba\u0
 CWMCM0043W.unsupported.annotation=CWMCM0043W: Az ` {0} ` met\u00f3dus a ` {1} ` annot\u00e1ci\u00f3t haszn\u00e1lja, amelyet a rendszer nem t\u00e1mogat. Ezt a m\u00f3dszert a rendszer figyelmen k\u00edv\u00fcl hagyja.
 CWMCM0043W.unsupported.annotation.explanation=A Model Context Protocol (MCP) Java API olyan funkci\u00f3kra vonatkoz\u00f3 annot\u00e1ci\u00f3kat is tartalmaz, amelyeket ez a megval\u00f3s\u00edt\u00e1s nem t\u00e1mogat. A nem t\u00e1mogatott annot\u00e1ci\u00f3kkal ell\u00e1tott m\u00f3dszereket a rendszer figyelmen k\u00edv\u00fcl hagyja.
 CWMCM0043W.unsupported.annotation.useraction=T\u00e1vol\u00edtsa el a met\u00f3dusb\u00f3l a nem t\u00e1mogatott annot\u00e1ci\u00f3t, vagy kiz\u00e1r\u00f3lag a Model Context Protocol (MCP) \u00e1ltal t\u00e1mogatott annot\u00e1ci\u00f3kat haszn\u00e1lja.
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: A szerver nem dolgozta fel a helyi MCP-k\u00e9relmet, mert az Origin fejl\u00e9c \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen volt.
+CWMCM0044I.localhost.header.rejected.explanation=A localhost-r\u00f3l \u00e9rkez\u0151, nem biztons\u00e1gos HTTP -k\u00e9r\u00e9seknek vagy nem szabad tartalmazniuk Origin fejl\u00e9ceket, vagy az Origin fejl\u00e9c\u00fckben kiz\u00e1r\u00f3lag a \u201elocalhost\u201d vagy egy loopback-c\u00edm szerepelhet. Ha az \u201eOrigin\u201d fejl\u00e9c b\u00e1rmilyen m\u00e1s \u00e9rt\u00e9ket tartalmaz, az lehets\u00e9ges DNS-rebinding-t\u00e1mad\u00e1sra utal.
+CWMCM0044I.localhost.header.rejected.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az \u201eOrigin\u201d fejl\u00e9c vagy hi\u00e1nyzik, vagy kiz\u00e1r\u00f3lag a \u201elocalhost\u201d \u00e9rt\u00e9ket tartalmazza.

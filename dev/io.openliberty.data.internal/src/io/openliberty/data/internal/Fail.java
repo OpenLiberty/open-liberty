@@ -11,6 +11,7 @@ package io.openliberty.data.internal;
 
 import static io.openliberty.data.internal.QueryType.FIND;
 import static io.openliberty.data.internal.QueryType.FIND_AND_DELETE;
+import static io.openliberty.data.internal.QueryType.NATIVE;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 
 import java.lang.annotation.Annotation;
@@ -1107,6 +1108,34 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   paramType.getSimpleName(),
                   info.type.operationName);
+    }
+
+    /**
+     * Raise a new UnsupportedOperationException for the errors where a count of
+     * total elements or pages is not possible due to the query being a NativeQuery
+     * or having a keyword that is incompatible with automatically generating a
+     * count query.
+     *
+     * @param info query information for the repository method.
+     * @throws UnsupportedOperationException.
+     */
+    static UnsupportedOperationException totalsNotSupported(QueryInfo info) {
+        if (info.type == NATIVE) // TODO NLS
+            throw new UnsupportedOperationException //
+            ("A count of total elements or total pages cannot be automatically" +
+             " obtained for the " + info.method.getName() + " method of the " +
+             info.repositoryInterface.getName() +
+             " repository because the repository method has the" +
+             " jakarta.persistence.query.NativeQuery annotation. Write a " +
+             " separate, designated repository method annotated NativeQuery" +
+             " that computes the total count of elements for your application.");
+        else
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1119.keyword.prevents.count",
+                      info.method.getName(),
+                      info.repositoryInterface.getName(),
+                      info.jpqlCount,
+                      info.ql);
     }
 
     /**

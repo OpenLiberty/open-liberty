@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2022 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -529,7 +529,7 @@ FBF_DISABLED_CNTR0098I.explanation=Aplica\u0163ia este configurat\u0103 ca acest
 FBF_DISABLED_CNTR0098I.useraction=Nu este necesar\u0103 nicio ac\u021biune a utilizatorului.
 
 #-------------------------------------------------------------------------------
-SFB_CONTROLLER_INIT_CNTR0099I=CNTR0099I: serviciul {0} a fost ini\u0163ializat cu succes.
+SFB_CONTROLLER_INIT_CNTR0099I=CNTR0099I: Serviciul {0} a fost ini\u021bializat cu succes.
 SFB_CONTROLLER_INIT_CNTR0099I.explanation=Serviciul controler z/OS pentru suport Stateful SessionBean din DRS a fost ini\u0163ializat cu succes.
 SFB_CONTROLLER_INIT_CNTR0099I.useraction=Nu este necesar\u0103 nicio ac\u021biune a utilizatorului.
 
@@ -959,8 +959,7 @@ MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Nu este necesar\u0103 nicio ac\u01
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
-TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Nu a putut fi ob\u0163inut managerul de cronometre utilizat de serviciul de cronometru EJB.\n\
-{0}
+TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: Nu a putut fi ob\u0163inut managerul de cronometre utilizat de servicul de cronometru EJB.\n{0}
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.explanation=S-a \u00eencercat ob\u0163inerea managerului de cronometre, deoarece op\u0163iunea de a crea un pool separat de fire de execu\u0163ie pentru cronometrele nepersistente a fost configurat\u0103 pentru obiect de configura\u0163ie EJBTimer (uniqueTimerManagerForNP).
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E.useraction=Ca alternativ\u0103, pute\u0163i configura serviciul de cronometru pentru a utiliza un planificator pentru cronometre nepersistente.
 
@@ -1561,6 +1560,10 @@ CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: Interfa\u021ba opera\u021bio
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Adnotarea jakarta.enterprise.concurrent.Asynchronous trebuie s\u0103 nu fie utilizat\u0103 cu Jakarta Enterprise Beans. Containerul Jakarta Enterprise Beans ignor\u0103 aceste adnot\u0103ri pentru interfe\u021be. Cu excep\u021bia cazului \u00een care metodele sunt declarate asincrone \u00een descriptorul de implementare ejb-jar.xml sau este specificat\u0103 adnotarea jakarta.ejb.Asynchronous pentru clasa de bean sau o metod\u0103 a clasei de bean, metodele bean-ului ruleaz\u0103 sincron.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Elimina\u021bi orice adnotare jakarta.enterprise.concurrent.Asynchronous din interfa\u021ba opera\u021bional\u0103 specificat\u0103 \u0219i verifica\u021bi dac\u0103 adnotarea jakarta.ejb.Asynchronous este specificat\u0103 corect \u00een clasa de bean.
 
+CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: Bean-ul \u201e {0} \u201d din modulul \u201e {1} \u201d al aplica\u021biei \u201e {2} \u201d are una sau mai multe metode cu adnotarea \u201e jakarta.enterprise.concurrent.Schedule \u201d. Aceast\u0103 adnotare nu poate fi utilizat\u0103 pentru componentele Enterprise Bean.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=Specifica\u021bia Jakarta Concurrency nu permite utilizarea adnot\u0103rii \u201e jakarta.enterprise.concurrent.Schedule \u201d pentru componentele Jakarta Enterprise Beans.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.useraction=Elimina\u021bi adnotarea \u201e jakarta.enterprise.concurrent.Asynchronous \u201d din metod\u0103. Utiliza\u021bi adnotarea \u201e jakarta.ejb.Schedule \u201d pentru a identifica metodele cu limit\u0103 de timp din cadrul bean-urilor de \u00eentreprindere.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -1740,7 +1743,7 @@ JIT_NO_EJBHOME_METHOD_CNTR5033E.explanation=Conform specifica\u0163iei EJB, clas
 JIT_NO_EJBHOME_METHOD_CNTR5033E.useraction=Modifica\u0163i clasa bean-ului  pentru a furniza o metod\u0103 ejbHomecare corespunde metodei .
 
 #-------------------------------------------------------------------------------
-JIT_INVALID_EJBHOME_RETURN_CNTR5034E=CNTR5034E: Metoda {2} cu tipul de returnare {3} de pe clasa {1} pentru bean-ul entitate {0} trebuie s\u0103 returneze tipul {4}. Acest tip trebuie s\u0103 fie acela\u015fi tip ca metoda interfe\u0163ei de baz\u0103 corespunz\u0103toare.
+JIT_INVALID_EJBHOME_RETURN_CNTR5034E=CNTR5034E: Metoda {2} cu tipul de returnare {3} de pe clasa {1} pentru bean-ul entitate {0} trebuie s\u0103 returneze tipul {4}. Acest tip trebuie s\u0103 fie acela\u015fi tip ca metoa interfe\u0163ei de baz\u0103 corespunz\u0103toare.
 JIT_INVALID_EJBHOME_RETURN_CNTR5034E.explanation=Conform specifica\u0163iei EJB, tipul de retur al metodelorejbHome pentru o clas\u0103 bean entitate trebuie s\u0103 se potriveasc\u0103 cu metoda interfe\u0163ei de baz\u0103 corespunz\u0103toare.
 JIT_INVALID_EJBHOME_RETURN_CNTR5034E.useraction=Modifica\u0163i tipul de returnare al metodei la tipul care se potrive\u015fte cu metoda interfe\u0163ei de baz\u0103 corespondente.
 
@@ -1793,16 +1796,16 @@ JIT_INVALID_NOT_EXCEPTION_SUBCLASS_CNTR5107E.useraction=Modifica\u0163i aplica\u
 # end of CNTR5000 to CNTR5999 reservation (JIT Deploy).
 #-------------------------------------------------------------------------------
 
-ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I=CNTR8990I: Acest mesaj este un mesaj informativ doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I=CNTR8990I: Acest mesaj este un mesaj cu caracter informativ, redat exclusiv \u00een limba englez\u0103: {0}.
 ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I.explanation=Acest mesaj cu caracter informativ nu este tradus.
 ENGLISH_ONLY_INFO_MESSAGE_CNTR8990I.useraction=Consulta\u0163i mesajul pentru detalii.
 
 # ---------------------------------
-ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W=CNTR8991W: Acest mesaj este un mesaj de avertisment doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W=CNTR8991W: Acest mesaj este un mesaj de avertizare, redat exclusiv \u00een limba englez\u0103: {0}.
 ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W.explanation=Acest mesaj de avertizare nu este tradus.
 ENGLISH_ONLY_WARN_MESSAGE_CNTR8991W.useraction=Consulta\u0163i mesajul pentru detalii.
 
-ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E=CNTR8992E: Acest mesaj este un mesaj de eroare doar \u00een Englez\u0103: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E=CNTR8992E: Acest mesaj este un mesaj de eroare, redat exclusiv \u00een limba englez\u0103: {0}.
 ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.explanation=Acest mesaj de eroare nu este tradus.
 ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=Consulta\u0163i mesajul pentru detalii.
 
@@ -1814,7 +1817,7 @@ ENGLISH_ONLY_ERROR_MESSAGE_CNTR8992E.useraction=Consulta\u0163i mesajul pentru d
 #-------------------------------------------------------------------------------
 # The only words that should be translated are: "Usage", "server", "filter", "options", "application name", "module name", "bean name", "host name", "timer id", "userid"
 # Do NOT translate any word beginning with a "-"
-CNTR9000I=Utilizare: {0} <server> <filter> [options]
+CNTR9000I=Folosire: {0} <server> <filter> [options]
 CNTR9001I=\tfilter : <-all> | <-timer> | <-app [-mod [-bean]]>
 CNTR9002I=\t\ \ \ \ \ \ \ \ \ -all
 CNTR9003I=\t\ \ \ \ \ \ \ \ \ -timer <id timer>
@@ -1848,7 +1851,7 @@ CNTR9064I=Nu a putut fi anulat cronometrul EJB: {0}
 CNTR9065I=E\u015fuarea anul\u0103rii cronometrului EJB a fost cauzat\u0103 de: {0}
 
 #-------------------------------------------------------------------------------
-CNTR9100E=CNTR9100E: Excep\u0163ia {0}
+CNTR9100E=CNTR9100E: Excep\u021bie {0}
 CNTR9100E.explanation=A fost descoperit\u0103 o condi\u0163ie general\u0103 de excep\u0163ie.
 CNTR9100E.useraction=Combina\u0163i aceste informa\u0163ii cu mesaje suplimentare de excep\u0163ie pentru a realiza determinare de probleme suplimentare.
 
@@ -1887,8 +1890,7 @@ CNTR9106E.useraction=Examina\u0163i declara\u0163ia de utilizare \u015fi specifi
 #-------------------------------------------------------------------------------
 # Do NOT translate any word beginning with a "-", "createEJBStubs", "class" "jar", "JAR", "war", "WAR",  "ear", "EAR", "\n", or "\t"
 NEWLINE_CNTR9200I=\n
-CNTR9201I=\n\
-Utilizare: createEJBStubs <numele complet calificat al clasei, fi\u015fierului jar sau fi\u015fierului ear> [op\u0163iuni]
+CNTR9201I=\nFolosire: createEJBStubs <numele complet calificat al clasei, fi\u015fierului jar sau fi\u015fierului ear> [op\u0163iuni]
 CNTR9202I=\nop\u0163iuni:
 CNTR9203I=\t-help
 CNTR9204I=\t-newfile [fi\u015fier nou]
@@ -2004,7 +2006,7 @@ UNEXPECTED_EXCEPTION_CNTR9258E.explanation=A ap\u0103rut o excep\u0163ie nea\u01
 UNEXPECTED_EXCEPTION_CNTR9258E.useraction=Ad\u0103uga\u0163i op\u0163iunea -verbose la invocarea comenzii createEJBStubs pentru a vedea informa\u0163ii suplimentare.
 
 #-------------------------------------------------------------------------------
-NO_COMPONENT_INTERFACE_CNTR9259E=CNTR9259E: Nu a fost specificat\u0103 nici o interfa\u0163\u0103 component\u0103 pentru baza {0}.
+NO_COMPONENT_INTERFACE_CNTR9259E=CNTR9259E: Nu a fost specificat\u0103 nicio interfa\u0163\u0103 compnent\u0103 pentru baza {0}.
 NO_COMPONENT_INTERFACE_CNTR9259E.explanation=Fiecare baz\u0103 configurat\u0103 trebuie s\u0103 aib\u0103 o interfa\u0163\u0103 de component\u0103.
 NO_COMPONENT_INTERFACE_CNTR9259E.useraction=Examina\u0163i datele de configurare pentru aceast\u0103 baz\u0103.
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Indiquez un intervalle de rem
 cookie.attribute.name.invalid=CWWKT0047E: L''attribut de cookie [{0}] contient un caract\u00e8re non valide.
 cookie.attribute.name.invalid.explanation=Le nom d'attribut de cookie ne contient pas de caract\u00e8re sp\u00e9cial [ () < > @, ;: \\/ [ ]? = { } ].
 cookie.attribute.name.invalid.useraction=Corrigez le nom d'attribut de cookie pour ne pas utiliser de caract\u00e8re sp\u00e9cial.
+
+endpoint.netty.not.initialized=CWWKT0048E: Le point de terminaison {0} HTTP ne peut pas d\u00e9marrer car le framework Netty n''est pas initialis\u00e9.
+endpoint.netty.not.initialized.explanation=Le service du framework \u00ab Netty \u00bb est requis, mais celui-ci n'\u00e9tait pas disponible lorsque le point de terminaison a tent\u00e9 de d\u00e9marrer.
+endpoint.netty.not.initialized.useraction=V\u00e9rifiez la configuration du serveur et assurez-vous que le module \u00ab Netty \u00bb requis est bien activ\u00e9.
+
+endpoint.channel.not.initialized=CWWKT0049E: Le point de terminaison {0} HTTP ne peut pas d\u00e9marrer car le framework de canaux n''est pas initialis\u00e9.
+endpoint.channel.not.initialized.explanation=Le service de structure de canal est requis, mais celui-ci n'\u00e9tait pas disponible lorsque le point de terminaison a tent\u00e9 de d\u00e9marrer.
+endpoint.channel.not.initialized.useraction=V\u00e9rifiez la configuration du serveur et assurez-vous que le bundle du framework de canal requis est actif.
+
+endpoint.executor.not.available=CWWKT0050E: Le point de terminaison {0} HTTP ne peut pas d\u00e9marrer car le service d''ex\u00e9cution n''est pas disponible.
+endpoint.executor.not.available.explanation=Le service d'ex\u00e9cution est requis, mais celui-ci n'\u00e9tait pas disponible lorsque le point de terminaison a tent\u00e9 de d\u00e9marrer.
+endpoint.executor.not.available.useraction=V\u00e9rifiez la configuration du serveur et assurez-vous que le service d'ex\u00e9cution requis est actif.
+
+endpoint.event.not.available=CWWKT0051E: Le point de terminaison {0} HTTP ne peut pas d\u00e9marrer car le service d''\u00e9v\u00e9nements n''est pas disponible.
+endpoint.event.not.available.explanation=Le service d'\u00e9v\u00e9nements est requis, mais celui-ci n'\u00e9tait pas disponible lorsque le point de terminaison a tent\u00e9 de d\u00e9marrer.
+endpoint.event.not.available.useraction=V\u00e9rifiez la configuration du serveur et assurez-vous que le service d'\u00e9v\u00e9nements requis est actif.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: Une op\u00e9ration d'\u00e9criture bloquante ne peut pas \u00eatre appel\u00e9e sur le thread de la boucle d'\u00e9v\u00e9nements Netty.
+netty.blocking.write.on.event.loop.explanation=L'ex\u00e9cution d'une op\u00e9ration d'\u00e9criture bloquante sur le thread de la boucle d'\u00e9v\u00e9nements Netty provoque un blocage.
+netty.blocking.write.on.event.loop.useraction=Veillez \u00e0 ce que les op\u00e9rations d'\u00e9criture bloquantes soient ex\u00e9cut\u00e9es dans un thread distinct et ne soient pas appel\u00e9es depuis un gestionnaire de boucle d'\u00e9v\u00e9nements de type \u00ab Netty \u00bb.
+
+netty.socket.timeout=CWWKT0053E: Une op\u00e9ration sur le socket a atteint le d\u00e9lai d''expiration avant d''\u00eatre termin\u00e9e. En pr\u00e9sentiel : {0} / {1} : {2} \u00c0 distance : {3} / {4} : {5}
+netty.socket.timeout.explanation=Une op\u00e9ration de lecture sur le socket n'a pas abouti dans le d\u00e9lai d'expiration d\u00e9fini.
+netty.socket.timeout.useraction=V\u00e9rifiez la connexion r\u00e9seau ou augmentez la dur\u00e9e d'attente de lecture si l'op\u00e9ration n\u00e9cessite plus de temps pour s'ex\u00e9cuter.
+
+netty.h2.window.ratio.error=CWWKT0054W: Le taux de rafra\u00eechissement de la fen\u00eatre \u00ab HTTP/2 \u00bb ne peut pas \u00eatre modifi\u00e9 : {0} Le serveur utilise le taux de rafra\u00eechissement par d\u00e9faut.
+netty.h2.window.ratio.error.explanation=Le taux de mise \u00e0 jour de la fen\u00eatre de contr\u00f4le de flux de l' HTTP/2 ne peut pas \u00eatre d\u00e9fini sur la valeur configur\u00e9e. Le serveur utilise la fr\u00e9quence de rafra\u00eechissement par d\u00e9faut.
+netty.h2.window.ratio.error.useraction=Aucune intervention n'est n\u00e9cessaire si la fr\u00e9quence de rafra\u00eechissement par d\u00e9faut de la fen\u00eatre vous convient. Si le message persiste, v\u00e9rifiez les param\u00e8tres de contr\u00f4le de flux d' HTTP/2 s dans la configuration du serveur.
+
+netty.tls.provider.not.loaded=CWWKT0055E: Le point de terminaison \u00ab HTTPS \u00bb ne peut pas \u00eatre initialis\u00e9 car le fournisseur \u00ab TLS \u00bb n'est pas charg\u00e9.
+netty.tls.provider.not.loaded.explanation=Le service du fournisseur \u00ab TLS \u00bb n'\u00e9tait pas disponible lorsque le point de terminaison \u00ab HTTPS \u00bb a tent\u00e9 de d\u00e9marrer.
+netty.tls.provider.not.loaded.useraction=V\u00e9rifiez la configuration du serveur et assurez-vous que le module du fournisseur d' TLS s requis est bien activ\u00e9.
+
+netty.ssl.handler.create.failed=CWWKT0056E: Le serveur n''a pas r\u00e9ussi \u00e0 cr\u00e9er le gestionnaire \u00ab SSL \u00bb pour le point de terminaison {0} : {1}.
+netty.ssl.handler.create.failed.explanation=Le gestionnaire \u00ab SSL \u00bb ne peut pas \u00eatre cr\u00e9\u00e9 pour l'h\u00f4te et le port du point de terminaison sp\u00e9cifi\u00e9s.
+netty.ssl.handler.create.failed.useraction=V\u00e9rifiez la configuration de l' SSL pour le point de terminaison et assurez-vous que le fournisseur TLS est correctement configur\u00e9.
+
+h2.encode.header.failed=CWWKT0057E: Le serveur n''a pas r\u00e9ussi \u00e0 encoder un en-t\u00eate \u00ab HTTP/2 \u00bb : {0}
+h2.encode.header.failed.explanation=Le serveur n'a pas r\u00e9ussi \u00e0 encoder un pseudo-en-t\u00eate \u00ab HTTP/2 \u00bb dans la r\u00e9ponse. Le serveur ferme le flux.
+h2.encode.header.failed.useraction=V\u00e9rifiez les journaux du serveur pour voir s'ils contiennent des erreurs d' HTTP/2 s associ\u00e9es. Si le probl\u00e8me persiste, recueillez les informations de diagnostic et contactez le support technique d' IBM.

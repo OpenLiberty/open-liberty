@@ -15,29 +15,6 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>Jakarta JSON Binding TCK Runner TCK Module</name>
 
-	<repositories>
-		<!-- For artifacts not yet in Maven Central -->
-		<!--
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		-->
-		<!-- For artifacts not yet in Stagging repo use DHE -->
-		<repository>
-			<name>IBM DHE Maven repository</name>
-			<id>DHE</id>
-			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-		</repository>
-	</repositories>
-
 	<properties>
 		<!-- Global Maven settings -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,12 +24,12 @@
 		<maven.compiler.release>11</maven.compiler.release>
 
 		<!-- Jakarta EE API -->
-		<jakarta.json.version>2.1.0</jakarta.json.version>
-		<jakarta.jsonb.version>3.0.0</jakarta.jsonb.version>
+		<jakarta.json.version>2.1.3</jakarta.json.version>
+		<jakarta.jsonb.version>3.0.3</jakarta.jsonb.version>
 		
 		<!-- Jakarta EE TCK - Can be overridden by test class -->
 		<jakarta.jsonb.tck.groupId>jakarta.json.bind</jakarta.jsonb.tck.groupId>
-		<jakarta.jsonb.tck.version>3.0.0</jakarta.jsonb.tck.version>
+		<jakarta.jsonb.tck.version>3.0.3</jakarta.jsonb.tck.version>
 
 		<!-- Test versions -->
 		<targetDirectory>${project.basedir}/target</targetDirectory>
@@ -107,7 +84,6 @@
 			<systemPath>${io.openliberty.org.eclipse.parsson.1.1}</systemPath>
 		</dependency>
 		<!-- impl - cdi - weld - external artifact -->
-		<!-- TODO change to use internal bundle for weld -->
 		<dependency>
 		    <groupId>org.jboss.weld.se</groupId>
 		    <artifactId>weld-se-core</artifactId>

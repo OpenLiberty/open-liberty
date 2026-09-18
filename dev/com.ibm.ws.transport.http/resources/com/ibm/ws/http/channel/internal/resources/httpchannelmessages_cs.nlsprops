@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Zadejte interval p\u0159eto\u
 cookie.attribute.name.invalid=CWWKT0047E: Atribut souboru cookie [{0}] obsahuje neplatn\u00fd znak.
 cookie.attribute.name.invalid.explanation=N\u00e1zev atributu souboru cookie nesm\u00ed obsahovat \u017e\u00e1dn\u00fd speci\u00e1ln\u00ed znak [ () < > @,;: \\/ []? = {}].
 cookie.attribute.name.invalid.useraction=Opravte n\u00e1zev atributu souboru cookie tak, aby nepou\u017e\u00edval \u017e\u00e1dn\u00fd speci\u00e1ln\u00ed znak.
+
+endpoint.netty.not.initialized=CWWKT0048E: Koncov\u00fd bod {0} HTTP nelze spustit, proto\u017ee r\u00e1mec Netty nen\u00ed inicializov\u00e1n.
+endpoint.netty.not.initialized.explanation=Je vy\u017eadov\u00e1na slu\u017eba r\u00e1mce Netty, ale tato slu\u017eba nebyla k dispozici v okam\u017eiku, kdy se koncov\u00fd bod pokou\u0161el spustit.
+endpoint.netty.not.initialized.useraction=Ov\u011b\u0159te konfiguraci serveru a ujist\u011bte se, \u017ee je aktivn\u00ed po\u017eadovan\u00fd bal\u00ed\u010dek frameworku Netty.
+
+endpoint.channel.not.initialized=CWWKT0049E: Koncov\u00fd bod {0} HTTP nelze spustit, proto\u017ee r\u00e1mec kan\u00e1lu nen\u00ed inicializov\u00e1n.
+endpoint.channel.not.initialized.explanation=Je vy\u017eadov\u00e1na slu\u017eba Channel Framework, ale v okam\u017eiku, kdy se koncov\u00fd bod pokou\u0161el spustit, nebyla tato slu\u017eba k dispozici.
+endpoint.channel.not.initialized.useraction=Ov\u011b\u0159te konfiguraci serveru a ujist\u011bte se, \u017ee je aktivn\u00ed po\u017eadovan\u00fd bal\u00ed\u010dek frameworku kan\u00e1lu.
+
+endpoint.executor.not.available=CWWKT0050E: Koncov\u00fd bod {0} HTTP nelze spustit, proto\u017ee slu\u017eba executor nen\u00ed k dispozici.
+endpoint.executor.not.available.explanation=Je vy\u017eadov\u00e1na slu\u017eba executor, ale v okam\u017eiku, kdy se koncov\u00fd bod pokou\u0161el spustit, nebyla tato slu\u017eba k dispozici.
+endpoint.executor.not.available.useraction=Ov\u011b\u0159te konfiguraci serveru a ujist\u011bte se, \u017ee je po\u017eadovan\u00e1 slu\u017eba executor aktivn\u00ed.
+
+endpoint.event.not.available=CWWKT0051E: Koncov\u00fd bod {0} HTTP nelze spustit, proto\u017ee slu\u017eba ud\u00e1lost\u00ed nen\u00ed k dispozici.
+endpoint.event.not.available.explanation=Slu\u017eba ud\u00e1lost\u00ed je povinn\u00e1, ale v okam\u017eiku, kdy se koncov\u00fd bod pokusil spustit, nebyla tato slu\u017eba k dispozici.
+endpoint.event.not.available.useraction=Ov\u011b\u0159te konfiguraci serveru a ujist\u011bte se, \u017ee je po\u017eadovan\u00e1 slu\u017eba ud\u00e1lost\u00ed aktivn\u00ed.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: Blokuj\u00edc\u00ed operaci z\u00e1pisu nelze vyvolat v vl\u00e1kn\u011b smy\u010dky ud\u00e1lost\u00ed typu \u201e Netty \u201c.
+netty.blocking.write.on.event.loop.explanation=Proveden\u00ed blokuj\u00edc\u00edho z\u00e1pisu v podprocesu smy\u010dky ud\u00e1lost\u00ed typu \u201e Netty \u201c zp\u016fsob\u00ed vz\u00e1jemnou blok\u00e1du.
+netty.blocking.write.on.event.loop.useraction=Zajist\u011bte, aby blokuj\u00edc\u00ed operace z\u00e1pisu byly p\u0159id\u011bleny do samostatn\u00e9ho vl\u00e1kna a nebyly vol\u00e1ny z obslu\u017en\u00e9 rutiny smy\u010dky ud\u00e1lost\u00ed typu \u201e Netty \u201c.
+
+netty.socket.timeout=CWWKT0053E: Do\u0161lo k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu operace soketu je\u0161t\u011b p\u0159ed jej\u00edm dokon\u010den\u00edm. M\u00edstn\u00ed: {0} / {1} : {2} Na d\u00e1lku: {3} / {4} : {5}
+netty.socket.timeout.explanation=Operace \u010dten\u00ed ze soketu nebyla dokon\u010dena v r\u00e1mci nastaven\u00e9ho \u010dasov\u00e9ho limitu.
+netty.socket.timeout.useraction=Zkontrolujte s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo prodlu\u017ete \u010dasov\u00fd limit pro \u010dten\u00ed, pokud operace vy\u017eaduje v\u00edce \u010dasu k dokon\u010den\u00ed.
+
+netty.h2.window.ratio.error=CWWKT0054W: Pom\u011br aktualizace oken v r\u00e1mci slu\u017eby \u201e HTTP/2 \u201c nelze zm\u011bnit: {0} Server pou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed pom\u011br aktualizace oken.
+netty.h2.window.ratio.error.explanation=Pom\u011br aktualizace okna \u0159\u00edzen\u00ed toku v r\u00e1mci slu\u017eby \u201e HTTP/2 \u201c nelze nastavit na nakonfigurovanou hodnotu. Server pou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed frekvenci aktualizace okna.
+netty.h2.window.ratio.error.useraction=Pokud v\u00e1m vyhovuje v\u00fdchoz\u00ed frekvence aktualizace okna, nen\u00ed t\u0159eba nic d\u011blat. Pokud se tato zpr\u00e1va st\u00e1le zobrazuje, zkontrolujte nastaven\u00ed \u0159\u00edzen\u00ed toku v r\u00e1mci protokolu HTTP/2 v konfiguraci serveru.
+
+netty.tls.provider.not.loaded=CWWKT0055E: Koncov\u00fd bod \u201e HTTPS \u201c nelze inicializovat, proto\u017ee nen\u00ed na\u010dten poskytovatel \u201e TLS \u201c.
+netty.tls.provider.not.loaded.explanation=Slu\u017eba poskytovatele \u201e TLS \u201c nebyla k dispozici v okam\u017eiku, kdy se pokusil spustit koncov\u00fd bod \u201e HTTPS \u201c.
+netty.tls.provider.not.loaded.useraction=Ov\u011b\u0159te konfiguraci serveru a ujist\u011bte se, \u017ee je aktivn\u00ed po\u017eadovan\u00fd bal\u00ed\u010dek poskytovatele slu\u017eby TLS.
+
+netty.ssl.handler.create.failed=CWWKT0056E: Serveru se nepoda\u0159ilo vytvo\u0159it obslu\u017enou funkci SSL pro koncov\u00fd bod {0} : {1}.
+netty.ssl.handler.create.failed.explanation=Pro zadan\u00fd hostitel a port koncov\u00e9ho bodu nelze vytvo\u0159it handler typu \u201e SSL \u201c.
+netty.ssl.handler.create.failed.useraction=Zkontrolujte konfiguraci slu\u017eby \u201e SSL \u201c pro dan\u00fd koncov\u00fd bod a ov\u011b\u0159te, zda je poskytovatel slu\u017eby \u201e TLS \u201c spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+h2.encode.header.failed=CWWKT0057E: Serveru se nepoda\u0159ilo zak\u00f3dovat hlavi\u010dku HTTP/2 : {0}
+h2.encode.header.failed.explanation=Serveru se nepoda\u0159ilo zak\u00f3dovat pseudo-hlavi\u010dku \u201e HTTP/2 \u201c v odpov\u011bdi. Server uzav\u0159e datov\u00fd proud.
+h2.encode.header.failed.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed souvisej\u00edc\u00ed chyby typu \u201e HTTP/2 \u201c. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, shrom\u00e1\u017ed\u011bte diagnostick\u00e9 \u00fadaje a obra\u0165te se na podporu slu\u017eby IBM.

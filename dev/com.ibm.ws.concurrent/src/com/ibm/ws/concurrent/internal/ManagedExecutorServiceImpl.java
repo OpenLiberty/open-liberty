@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.AbstractMap.SimpleEntry;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +32,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
@@ -81,10 +84,15 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-@Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, //
-                       ResourceFactory.class, ApplicationRecycleComponent.class },
-           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class))
+@Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           service = { ExecutorService.class,
+                       ManagedExecutor.class,
+                       ManagedExecutorService.class,
+                       ResourceFactory.class,
+                       ApplicationRecycleComponent.class },
+           reference = @Reference(name = "ApplicationRecycleCoordinator",
+                                  service = ApplicationRecycleCoordinator.class))
 public class ManagedExecutorServiceImpl implements ExecutorService, //
                 ManagedExecutor, ManagedExecutorService, CompletionStageExecutor, //
                 ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
@@ -108,6 +116,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * Name of reference to the ApplicationRecycleCoordinator
      */
     static final String APP_RECYCLE_SERVICE = "ApplicationRecycleCoordinator";
+
+    /**
+     * Controls how often we purge the list of tracked futures.
+     */
+    private static final int FUTURE_PURGE_INTERVAL = 20;
 
     /**
      * Jakarta EE Concurrency execution properties that specify to suspend the current transaction.
@@ -159,6 +172,22 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
      */
     private ServiceReference<JavaEEVersion> eeVersionRef;
+
+    /**
+     * Count of tracked futures. In combination with FUTURE_PURGE_INTERVAL,
+     * this determines when to purge completed futures from the list.
+     */
+    private volatile int futureCount;
+
+    /**
+     * List of futures for tasks. Not all tasks are tracked.
+     * Currently this includes futures for scheduled tasks and scheduled methods.
+     * These are tracked to be canceled when an application is stopping or the
+     * managed executor service goes away. The latter is done always. The former
+     * is contingent on being Jakarta EE 12 or higher to avoid changing behavior.
+     */
+    private final ConcurrentLinkedQueue<Future<?>> futures = //
+                    new ConcurrentLinkedQueue<>();
 
     /**
      * Hash code for this instance.
@@ -294,6 +323,14 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      */
     @Deactivate
     protected void deactivate(ComponentContext context) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // Cancel scheduled or running tasks
+        for (Future<?> future = futures.poll(); future != null; future = futures.poll())
+            if (!future.isDone() && future.cancel(true))
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "canceled scheduled task", future);
+
         // Cancel submitted or running tasks
         int count = 0;
         PolicyAndExecutor normal = normalPolicyAndExecutorRef.get();
@@ -322,6 +359,35 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
             return getNormalPolicyExecutor().awaitTermination(timeout, unit);
         else // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
             throw new IllegalStateException(new UnsupportedOperationException("awaitTermination"));
+    }
+
+    /**
+     * Cancel scheduled futures associated with the given application
+     * that have not yet completed.
+     *
+     * @param appName name of an application that is stopping
+     */
+    @Trivial
+    final void cancelFutures(String appName) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        for (Iterator<Future<?>> it = futures.iterator(); it.hasNext();) {
+            Future<?> future = it.next();
+            String name = future instanceof ManagedCompletableFuture //
+                            ? ((ManagedCompletableFuture<?>) future).appName //
+                            : future instanceof ScheduledTask //
+                                            ? ((ScheduledTask<?>) future).appName //
+                                            : null;
+            if (appName.equals(name)) {
+                if (!future.isDone()) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "cancel due to application " + appName +
+                                           " stopping");
+                    future.cancel(true);
+                }
+                // also purge tracking of the future
+                it.remove();
+            }
+        }
     }
 
     @Override
@@ -734,6 +800,29 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     }
 
     @Override
+    public <T> CompletableFuture<T> newScheduledMethod(Method method,
+                                                       AtomicReference<Future<?>> nextExecFuture) {
+        // Ideally, we would always cancel scheduled methods when the application
+        // stops. However, this could possibly break an application, so it is done
+        // only at the Jakarta EE 12 (Concurrency 3.2) version and above.
+        if (eeVersion >= 12)
+            return new ManagedCompletableFuture<T>(this, method, nextExecFuture);
+        else
+            return new ManagedCompletableFuture<T>(this, null);
+    }
+
+    /**
+     * Purge completed futures from the list we are tracking.
+     * This method should be invoked every so often so that we don't leak memory.
+     */
+    @Trivial
+    final void purgeFutures() {
+        for (Iterator<Future<?>> it = futures.iterator(); it.hasNext();)
+            if (it.next().isDone())
+                it.remove();
+    }
+
+    @Override
     public CompletableFuture<Void> runAsync(Runnable runnable) {
         return ManagedCompletableFuture.runAsync(runnable, this);
     }
@@ -900,6 +989,20 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     public String toString() {
         String s = name.get();
         return s != null && s.startsWith("ManagedExecutor@") ? s : ("ManagedExecutor@" + Integer.toHexString(hashCode()) + ' ' + s);
+    }
+
+    /**
+     * Add tracking of the given future, such that it can be canceled when the
+     * managed executor deactivates, and, if the application is recorded, can be
+     * canceled when the application is stopping. This method periodically purges
+     * already completed futures.
+     *
+     * @param future future to track
+     */
+    @Trivial
+    final void trackFuture(Future<?> future) {
+        if (futures.add(future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
+            purgeFutures();
     }
 
     /**

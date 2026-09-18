@@ -108,7 +108,9 @@ class JPAPxmlInfo {
 
             // JaxbPunit abstraction properly maps the TransactionType from
             // the JAXB generated class to the JPA enum value.          F1879-16302
-            puInfo.setTransactionType(pu.getTransactionType());
+            // Use name-based bridge so javax.persistence.spi.PersistenceUnitTransactionType
+            // never crosses the class hierarchy — safe at both JPA 3.x and 4.0.
+            puInfo.setTransactionType(pu.getTransactionTypeName());
 
             // Set <persistence-unit>
             puInfo.setPersistenceUnitDescription(pu.getDescription());

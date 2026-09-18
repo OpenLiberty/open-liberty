@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -928,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=Konfigur\u00e1lja \u00fajra a SIP f
 warning.traditional.enabled=CWSCT0441W: Az SIP t\u00e1rol\u00f3 nem t\u00e1mogatja a hagyom\u00e1nyos PMI haszn\u00e1lat\u00e1t.
 warning.traditional.enabled.explanation=Az enableTraditionalPMI attrib\u00fatum true \u00e9rt\u00e9kre ker\u00fcl be\u00e1ll\u00edt\u00e1sra a server.xml f\u00e1jlban. Az SIP t\u00e1rol\u00f3 nem t\u00e1mogatja a hagyom\u00e1nyos PMI haszn\u00e1lat\u00e1t a Liberty k\u00f6rnyezetben.
 warning.traditional.enabled.useraction=T\u00e1vol\u00edtsa el az enableTraditionalPMI tulajdons\u00e1got a server.xml f\u00e1jlb\u00f3l.
+
+missingPorts.endpointDisabled=CWSCT0442W: A \u201e {0} \u201d Session Initiation Protocol (SIP) v\u00e9gpontnak nincs be\u00e1ll\u00edtott portja, \u00e9s le van tiltva.
+missingPorts.endpointDisabled.explanation=A SIP v\u00e9gpont konfigur\u00e1ci\u00f3ja nem hat\u00e1roz meg TCP, TLS vagy UDP portot. A v\u00e9gpont nem k\u00e9pes a bej\u00f6v\u0151 SIP-forgalmat figyelni.
+missingPorts.endpointDisabled.useraction=Az \u201e server.xml \u201d f\u00e1jlban \u00e1ll\u00edtsa be a SIP-v\u00e9gpont \u201e sipTCPPort, \u201d (\u201e sipTLSPort, \u201d vagy \u201e sipUDPPort \u201d) attrib\u00fatum\u00e1t.

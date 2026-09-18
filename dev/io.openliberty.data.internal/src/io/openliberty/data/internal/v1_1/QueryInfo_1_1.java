@@ -23,6 +23,11 @@ import static io.openliberty.data.internal.QueryType.PERSIST;
 import static io.openliberty.data.internal.QueryType.REFRESH;
 import static io.openliberty.data.internal.QueryType.REMOVE;
 import static io.openliberty.data.internal.QueryType.SAVE;
+import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_CLASS;
+import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_VALUE;
+import static io.openliberty.data.internal.v1_1.Data_1_1.NATIVE_QUERY_CLASS;
+import static io.openliberty.data.internal.v1_1.Data_1_1.NATIVE_QUERY_VALUE;
+import static io.openliberty.data.internal.v1_1.Data_1_1.QUERY_OPTIONS_CLASS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -84,11 +89,8 @@ import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
-import jakarta.data.repository.JakartaQuery;
-import jakarta.data.repository.NativeQuery;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
-import jakarta.data.repository.QueryOptions;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.data.repository.stateful.Detach;
@@ -109,9 +111,12 @@ import jakarta.data.spi.expression.function.TextFunctionExpression;
 import jakarta.data.spi.expression.literal.Literal;
 import jakarta.data.spi.expression.path.NavigablePath;
 import jakarta.data.spi.expression.path.Path;
+import jakarta.persistence.CacheRetrieveMode;
+import jakarta.persistence.CacheStoreMode;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.FlushModeType;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.QueryHint;
 import jakarta.persistence.TypedQuery;
 
@@ -392,13 +397,19 @@ public class QueryInfo_1_1 extends QueryInfo {
         //if (entityHandler instanceof EntityHandler handler) ...
 
         jakarta.persistence.Query query;
-        if (entityHandler instanceof EntityManager em) {
-            if (resultClass == null)
-                query = em.createNativeQuery(ql);
-            else
-                query = em.createNativeQuery(ql, resultClass);
-        } else {
-            try {
+        try {
+            if (entityHandler instanceof EntityManager em) {
+                if (resultClass == null)
+                    query = em.createNativeQuery(ql);
+                else // em.createNativeQuery(ql, resultClass);
+                    query = (jakarta.persistence.Query) entityHandler.getClass() //
+                                    .getMethod("createNativeQuery",
+                                               String.class,
+                                               Class.class) //
+                                    .invoke(entityHandler,
+                                            ql,
+                                            resultClass);
+            } else {
                 query = (jakarta.persistence.Query) entityHandler.getClass() //
                                 .getMethod("createNativeQuery",
                                            String.class,
@@ -406,19 +417,21 @@ public class QueryInfo_1_1 extends QueryInfo {
                                 .invoke(entityHandler,
                                         ql,
                                         resultClass);
-            } catch (IllegalAccessException | NoSuchMethodException x) {
-                throw new RuntimeException(x); // should be impossible
-            } catch (InvocationTargetException x) {
-                if (x.getCause() instanceof RuntimeException rx)
-                    throw rx;
-                throw new DataException(x.getCause());
             }
+        } catch (IllegalAccessException | NoSuchMethodException x) {
+            throw new RuntimeException(x); // should be impossible
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            throw new DataException(x.getCause());
         }
 
-        QueryOptions options = method.getAnnotation(QueryOptions.class);
+        Annotation options = QUERY_OPTIONS_CLASS == null //
+                        ? null //
+                        : method.getAnnotation(QUERY_OPTIONS_CLASS);
         if (options != null)
             try {
-                setReadOptions(options, query, entityHandler);
+                setReadOptions(options, query, true, entityHandler);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -435,30 +448,32 @@ public class QueryInfo_1_1 extends QueryInfo {
                     ehCreateNativeStatement(AutoCloseable entityHandler) {
         jakarta.persistence.Query query;
 
-        QueryOptions options = method.getAnnotation(QueryOptions.class);
+        Annotation options = QUERY_OPTIONS_CLASS == null //
+                        ? null //
+                        : method.getAnnotation(QUERY_OPTIONS_CLASS);
 
         // TODO Persistence 4.0 API
         //if (entityHandler instanceof EntityHandler handler) ...
         //    handler.createNativeStatement(ql)
 
-        if (entityHandler instanceof EntityManager em) {
-            query = em.createNativeQuery(ql);
-        } else {
-            try {
+        try {
+            if (entityHandler instanceof EntityManager em) {
+                query = em.createNativeQuery(ql);
+            } else {
                 query = (jakarta.persistence.Query) entityHandler.getClass() //
-                                .getMethod("createNativeMutationQuery", String.class) //
+                                .getMethod("createNativeStatement", String.class) //
                                 .invoke(entityHandler, ql);
-            } catch (IllegalAccessException | NoSuchMethodException x) {
-                throw new RuntimeException(x); // should be impossible
-            } catch (InvocationTargetException x) {
-                if (x.getCause() instanceof RuntimeException rx)
-                    throw rx;
-                throw new DataException(x.getCause());
             }
-        }
 
-        if (options != null)
-            setWriteOptions(options, query);
+            if (options != null)
+                setWriteOptions(options, query);
+        } catch (IllegalAccessException | NoSuchMethodException x) {
+            throw new RuntimeException(x); // should be impossible
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            throw new DataException(x.getCause());
+        }
 
         return query;
     }
@@ -467,8 +482,8 @@ public class QueryInfo_1_1 extends QueryInfo {
     @Trivial
     protected jakarta.persistence.Query ehCreateStatement(AutoCloseable entityHandler,
                                                           String jpql) {
-        QueryOptions options = type.supportsQueryOptions //
-                        ? method.getAnnotation(QueryOptions.class) //
+        Annotation options = type.supportsQueryOptions && QUERY_OPTIONS_CLASS != null //
+                        ? method.getAnnotation(QUERY_OPTIONS_CLASS) //
                         : null;
 
         jakarta.persistence.Query query;
@@ -497,8 +512,8 @@ public class QueryInfo_1_1 extends QueryInfo {
     protected <T> TypedQuery<T> ehCreateTypedQuery(AutoCloseable entityHandler,
                                                    String jpql,
                                                    Class<?> resultType) {
-        QueryOptions options = type.supportsQueryOptions //
-                        ? method.getAnnotation(QueryOptions.class) //
+        Annotation options = type.supportsQueryOptions && QUERY_OPTIONS_CLASS != null //
+                        ? method.getAnnotation(QUERY_OPTIONS_CLASS) //
                         : null;
 
         // TODO Persistence 4.0 API
@@ -512,7 +527,7 @@ public class QueryInfo_1_1 extends QueryInfo {
                             .getMethod("createQuery", String.class, Class.class) //
                             .invoke(entityHandler, jpql, resultType);
             if (options != null)
-                setReadOptions(options, query, entityHandler);
+                setReadOptions(options, query, false, entityHandler);
             return query;
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
@@ -985,14 +1000,23 @@ public class QueryInfo_1_1 extends QueryInfo {
     protected String getQueryAnnoValue() {
         if (methodTypeAnno instanceof Query query) {
             return query.value();
-        } else if (methodTypeAnno instanceof JakartaQuery query) {
-            return query.value();
-        } else if (methodTypeAnno instanceof NativeQuery query) {
-            type = NATIVE;
-            return query.value();
         } else {
-            return null;
+            // TODO directly use persistence 4.0 API once data-1.1 no longer
+            // needs to temporarily work with persistence-3.2
+            try {
+                if (JAKARTA_QUERY_CLASS != null &&
+                    JAKARTA_QUERY_CLASS.isInstance(methodTypeAnno)) {
+                    return (String) JAKARTA_QUERY_VALUE.invoke(methodTypeAnno);
+                } else if (NATIVE_QUERY_CLASS != null &&
+                           NATIVE_QUERY_CLASS.isInstance(methodTypeAnno)) {
+                    type = NATIVE;
+                    return (String) NATIVE_QUERY_VALUE.invoke(methodTypeAnno);
+                }
+            } catch (IllegalAccessException | InvocationTargetException x) {
+                throw new DataException(x); // should never occur
+            }
         }
+        return null;
     }
 
     /**
@@ -1126,84 +1150,117 @@ public class QueryInfo_1_1 extends QueryInfo {
     /**
      * Configures the query options that are intended for JPQL find/select queries.
      *
-     * @param options       configurable query options
+     * @param options       jakarta.persistence.query.QueryOptions
      * @param query         the query upon which to configure the options
+     * @param isNativeQuery indicates if the query is a native query vs JPQL
      * @param entityHandler EntityAgent or EntityManager
      */
-    private <T> void setReadOptions(QueryOptions options,
+    private <T> void setReadOptions(Annotation options,
                                     jakarta.persistence.Query query,
+                                    boolean isNativeQuery,
                                     AutoCloseable entityHandler) //
                     throws // TODO remove once using Persistence 4.0 API
                     IllegalAccessException, //
                     InvocationTargetException, //
                     NoSuchMethodException {
+
+        Class<?> QueryOptions = options.getClass();
+        String entityGraph = (String) QueryOptions //
+                        .getMethod("entityGraph") //
+                        .invoke(options);
+        Object flush = QueryOptions //
+                        .getMethod("flush") //
+                        .invoke(options); // QueryFlushMode
+        CacheStoreMode cacheStoreMode = (CacheStoreMode) QueryOptions //
+                        .getMethod("cacheStoreMode") //
+                        .invoke(options);
+        CacheRetrieveMode cacheRetrieveMode = (CacheRetrieveMode) QueryOptions //
+                        .getMethod("cacheRetrieveMode") //
+                        .invoke(options);
+        QueryHint[] hints = (QueryHint[]) QueryOptions //
+                        .getMethod("hints") //
+                        .invoke(options);
+        LockModeType lockMode = (LockModeType) QueryOptions //
+                        .getMethod("lockMode") //
+                        .invoke(options);
+        PessimisticLockScope lockScope = (PessimisticLockScope) QueryOptions //
+                        .getMethod("lockScope") //
+                        .invoke(options);
+        int timeout = (Integer) QueryOptions //
+                        .getMethod("timeout") //
+                        .invoke(options);
+
         // QueryOptions specified via Hints:
-        for (QueryHint hint : options.hints())
+        for (QueryHint hint : hints)
             query.setHint(hint.name(),
                           hint);
-        if (options.entityGraph().length() > 0) {
+        if (entityGraph.length() > 0) {
             // TODO Persistence 4.0: entityHandler.getEntityGraph(options.entityGraph());
             EntityGraph<?> loadGraph = (EntityGraph<?>) entityHandler.getClass() //
                             .getMethod("getEntityGraph", String.class) //
-                            .invoke(entityHandler, options.entityGraph());
+                            .invoke(entityHandler, entityGraph);
             query.setHint("jakarta.persistence.loadgraph",
                           loadGraph);
         }
 
         query.setHint("jakarta.persistence.lock.scope",
-                      options.lockScope());
+                      lockScope);
 
-        // QueryOptions specified via dedicated API methods:
-        if (!entityInfo.isHibernate) {
-            // TODO enable for Hibernate once its NullPointerException is fixed
-            query.setCacheStoreMode(options.cacheStoreMode());
-            query.setCacheRetrieveMode(options.cacheRetrieveMode());
-        }
-        // TODO Persistence 4.0 directly delegate to setQueryFlushMode
-        switch (options.flush()) {
-            case DEFAULT:
-                break;
-            case FLUSH:
-                query.setFlushMode(FlushModeType.AUTO);
-                break;
-            case NO_FLUSH:
-                // TODO query.setQueryFlushMode(NO_FLUSH);
-                throw new UnsupportedOperationException("QueryFlushMode.NO_FLUSH");
-        }
-        query.setLockMode(options.lockMode());
+        query.setCacheStoreMode(cacheStoreMode);
+
+        query.setCacheRetrieveMode(cacheRetrieveMode);
+
+        query.getClass().getMethod("setQueryFlushMode", flush.getClass()) //
+                        .invoke(query, flush);
+
+        if (isNativeQuery && lockMode == LockModeType.NONE)
+            // Per the API, setLockMode is never permitted for native queries.
+            // Avoid attempting to set it when QueryOptions defaults to NONE.
+            ;
+        else
+            query.setLockMode(lockMode);
+
         // TODO the correct value is null, but Hibernate and EclipseLink do not handle it correctly
-        query.setTimeout(options.timeout() == -1 ? 0 : options.timeout());
+        query.setTimeout(timeout == -1 ? 0 : timeout);
     }
 
     /**
      * Configures the query options that are intended for JPQL DELETE and UPDATE
      * statements.
      *
-     * @param options   configurable query options
+     * @param options   jakarta.persistence.query.QueryOptions
      * @param statement the jakarta.persistence.Statement upon which to configure
      *                      the options
      */
-    private static void setWriteOptions(QueryOptions options,
-                                        jakarta.persistence.Query statement) {
+    private static void setWriteOptions(Annotation options,
+                                        jakarta.persistence.Query statement) //
+                    throws // TODO remove once using Persistence 4.0 API
+                    IllegalAccessException, //
+                    InvocationTargetException, //
+                    NoSuchMethodException {
+        Class<?> QueryOptions = options.getClass();
+        Object flush = QueryOptions //
+                        .getMethod("flush") //
+                        .invoke(options); // QueryFlushMode
+        QueryHint[] hints = (QueryHint[]) QueryOptions //
+                        .getMethod("hints") //
+                        .invoke(options);
+        int timeout = (Integer) QueryOptions //
+                        .getMethod("timeout") //
+                        .invoke(options);
+
         // QueryOptions specified via Hints:
-        for (QueryHint hint : options.hints())
+        for (QueryHint hint : hints)
             statement.setHint(hint.name(),
                               hint.value());
 
         // QueryOptions specified via dedicated API methods:
         // TODO Persistence 4.0 directly delegate to setQueryFlushMode
-        switch (options.flush()) {
-            case DEFAULT:
-                break;
-            case FLUSH:
-                statement.setFlushMode(FlushModeType.AUTO);
-                break;
-            case NO_FLUSH:
-                // TODO query.setQueryFlushMode(NO_FLUSH);
-                throw new UnsupportedOperationException("QueryFlushMode.NO_FLUSH");
-        }
+        statement.getClass() //
+                        .getMethod("setQueryFlushMode", flush.getClass()) //
+                        .invoke(statement, flush);
 
-        statement.setTimeout(options.timeout() == -1 ? null : options.timeout());
+        statement.setTimeout(timeout == -1 ? null : timeout);
     }
 
     /**

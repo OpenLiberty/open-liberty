@@ -211,7 +211,8 @@ public abstract class QueryInfo {
      * For counting the total number of results across all pages.
      * If less than Util.MIN_COUNT_QUERY_LENGTH characters long, indicates a
      * query keyword that prevents computation of a count.
-     * Null if pagination is not used or if pagination without totals is used.
+     * Null if pagination is not used or if pagination without totals is used
+     * or the query is a NativeQuery.
      */
     String jpqlCount;
 
@@ -1486,6 +1487,8 @@ public abstract class QueryInfo {
      * @param entityHandler EntityAgent or EntityManager
      * @return the query
      */
+    // TODO once we have persistence providers that support Persistence 4.0,
+    // see if we can have this method return TypedQuery<T> like ehCreateTypedQuery
     protected abstract jakarta.persistence.Query //
                     ehCreateNativeQuery(AutoCloseable entityHandler);
 
@@ -3839,7 +3842,8 @@ public abstract class QueryInfo {
                     specialParamsStartAt = i;
                 // Reject all special parameters on native queries until we
                 // TODO determine which, if any, can be supported
-                if (!Limit.class.equals(paramType))
+                if (!Limit.class.equals(paramType) &&
+                    !PageRequest.class.equals(paramType))
                     throw new UnsupportedOperationException //
                     ("The " + method.getName() + " method of the " +
                      repositoryInterface.getName() + " repository cannot have a " +
@@ -3877,7 +3881,6 @@ public abstract class QueryInfo {
             throw Fail.mixedQLParamTypes(this, namedParamCount);
 
         qlParamCount = specialParamsStartAt;
-
         ql = sql;
     }
 
@@ -4754,13 +4757,22 @@ public abstract class QueryInfo {
             Tr.entry(this, tc, "nativeQuery");
 
         QueryCustomization qc = QueryCustomization.from(this, args);
+        Limit limit = qc.limit();
         PageRequest pageReq = qc.pageRequest();
         Object returnValue;
 
         if (CursoredPage.class.equals(multiType)) {
             throw new UnsupportedOperationException(); // TODO
         } else if (Page.class.equals(multiType)) {
-            throw new UnsupportedOperationException(); // TODO
+            PageRequest req = limit == null ? pageReq : toPageRequest(limit);
+            returnValue = new PageImpl<>(//
+                            this, //
+                            entityHandler, //
+                            req, //
+                            args, //
+                            Map.of(), // no deferred constraints
+                            null, // no added query parameters
+                            null); // Sort/Order not supported for native query
         } else if (pageReq != null &&
                    !PageRequest.Mode.OFFSET.equals(pageReq.mode())) {
             throw Fail.pageModeIncompatible(this, pageReq);
@@ -4791,7 +4803,6 @@ public abstract class QueryInfo {
             } else {
                 query = ehCreateNativeQuery(entityHandler);
 
-                Limit limit = qc.limit();
                 int startAt = limit != null //
                                 ? computeOffset(limit) //
                                 : pageReq != null //
