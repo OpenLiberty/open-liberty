@@ -5,6 +5,7 @@ fbicodex/spnego-kdc-server:1.0
 ghcr.io/gvenzl/oracle-free:23.26.2-full-faststart
 ghcr.io/gvenzl/oracle-free:23.9-full-faststart
 ghcr.io/gvenzl/oracle-free:23.9-slim-faststart
+ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.154.0
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.150.1
 ghcr.io/openzipkin/zipkin-slim:3.6

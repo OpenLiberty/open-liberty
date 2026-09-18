@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -133,14 +133,14 @@ public class GenericUDPChain extends GenericChain  {
                                 c_logger.traceDebug("SIP UDP endpoint start success");
                             }
                         } else {
-                            if (c_logger.isTraceDebugEnabled()) {
-                                c_logger.traceDebug("SIP UDP endpoint start failure: " + future.cause());
+                            if (c_logger.isErrorEnabled()) {
+                                c_logger.error("start.sipChain.error", getName(), future.cause().toString());
                             }
                         }
                     });
                 } catch (NettyException e) {
-                    if (c_logger.isTraceDebugEnabled()) {
-                        c_logger.traceDebug("Exception creating UDP bootstrap: " + e);
+                    if (c_logger.isErrorEnabled()) {
+                        c_logger.error("start.sipChain.error", getName(), e.toString());
                     }
                 }
             }

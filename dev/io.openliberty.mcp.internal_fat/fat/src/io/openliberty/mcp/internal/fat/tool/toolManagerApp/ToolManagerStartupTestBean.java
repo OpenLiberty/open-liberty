@@ -122,6 +122,18 @@ public class ToolManagerStartupTestBean {
                    .register();
     }
 
+    @SuppressWarnings("unused")
+    private void createNullDefaultValueTool(@Observes Startup startup) {
+        toolManager.newTool("tool-with-null-default")
+                   .addArgument("value", null, false, String.class)
+                   .setDescription("Tool with a non-required arg that has no default value")
+                   .setHandler(a -> {
+                       String val = (String) a.args().get("value");
+                       return ToolResponse.ofText(val == null ? "null" : val);
+                   })
+                   .register();
+    }
+
     private static record PojoInput(String foo, int bar) {};
 
     private static record PojoOutput(String baz, List<Boolean> qux) {}

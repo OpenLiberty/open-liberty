@@ -1,0 +1,11 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: classloadingfatlibertyinternals-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: org.slf4j; type="internal",
+ com.ibm.websphere.appserver.classloading-1.0; type="osgi.subsystem.feature",
+ com.ibm.wsspi.classloading; type="internal",
+ com.ibm.wsspi.library; type="internal",
+ com.ibm.wsspi.config; type="internal",
+ org.osgi.framework; type="spec"
+IBM-Feature-Version: 2

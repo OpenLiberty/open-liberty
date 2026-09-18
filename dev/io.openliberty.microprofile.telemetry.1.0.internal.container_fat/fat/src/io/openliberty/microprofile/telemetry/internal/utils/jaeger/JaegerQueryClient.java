@@ -195,7 +195,7 @@ public class JaegerQueryClient implements AutoCloseable {
 
         int retryCount = 0;
 
-        while (retryCount < 3) {
+        while (retryCount < 6) {
             retryCount += 1;
             Timeout timeout = new Timeout(Duration.ofSeconds(10));
             try {
@@ -222,7 +222,7 @@ public class JaegerQueryClient implements AutoCloseable {
                 throw new AssertionError("Interrupted while waiting for spans", e);
             }
         }
-        assertThat("Spans not found within timeout after 3 retries: " + result, result, waitCondition);
+        assertThat("Spans not found within timeout after 6 retries: " + result, result, waitCondition);
         return result;
     }
 

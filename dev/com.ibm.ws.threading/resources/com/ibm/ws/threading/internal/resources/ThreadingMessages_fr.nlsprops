@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015,2025 IBM Corporation and others.
+# Copyright (c) 2015,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,10 +57,6 @@ CWWKE1204.unable.to.invoke.useraction=Aucune action n'est n\u00e9cessaire si l'a
 CWWKE1205.start.timeout=CWWKE1205E: L''ex\u00e9cuteur {0} n''a pas pu d\u00e9marrer la t\u00e2che {1} apr\u00e8s {2} nanosecondes, car la t\u00e2che d\u00e9passe la valeur startTimeout de {3} nanosecondes.
 CWWKE1205.start.timeout.explanation=Lorsqu'une valeur startTimeout est configur\u00e9e sur un ex\u00e9cuteur ou demand\u00e9e par voie de programmation pour une t\u00e2che, l'ex\u00e9cuteur suit le d\u00e9lai \u00e9coul\u00e9 entre l'envoi de la t\u00e2che et le moment o\u00f9 il est possible d'ex\u00e9cuter la t\u00e2che. Si le temps \u00e9coul\u00e9 d\u00e9passe la valeur startTimeout, l'ex\u00e9cuteur abandonne la t\u00e2che au lieu de la d\u00e9marrer. 
 CWWKE1205.start.timeout.useraction=Aucune action n'est n\u00e9cessaire si l'application s'attend \u00e0 ce que certaines t\u00e2ches soient abandonn\u00e9es car elles d\u00e9passent la dur\u00e9e startTimeout . Sinon, effectuez une combinaison des actions suivantes: augmentez la dur\u00e9e de startTimeout et augmentez la valeur de maxConcurrency .
-
-CWWKE1206.quiesce.timeout.not.valid=CWWKE1206W: La valeur ''{0}'' sp\u00e9cifi\u00e9e pour l''attribut''quiesceTimeout''de l''\u00e9l\u00e9ment''executor''dans le fichier''server.xml''n''est pas valide.  La valeur par d\u00e9faut de 30 secondes est utilis\u00e9e \u00e0 la place.
-CWWKE1206.quiesce.timeout.not.valid.explanation=La valeur'quiesceTimeout'indique une dur\u00e9e et accepte des valeurs au format XmXs, o\u00f9'X' est remplac\u00e9 par un nombre,'m'repr\u00e9sente les minutes et's'repr\u00e9sente les secondes.  La valeur par d\u00e9faut est'30s'(30 secondes). La valeur'1m30s'repr\u00e9sente 90 secondes.  
-CWWKE1206.quiesce.timeout.not.valid.useraction=Editez le fichier'server.xml'et remplacez l'attribut'quiesceTimeout'de l'\u00e9l\u00e9ment'executor'par une dur\u00e9e valide.
 
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ Tous les threads de l''ex\u00e9cuteur par d\u00e9faut Liberty semblent \u00eatre bloqu\u00e9s, et aucun thread ne peut \u00eatre ajout\u00e9 car la taille du pool a atteint sa limite.  La taille actuelle de la piscine est de {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Tous les threads de l'ex\u00e9cuteur par d\u00e9faut sont occup\u00e9s, les threads n'ont pas accompli de t\u00e2ches r\u00e9cemment et des t\u00e2ches sont en attente dans la file d'attente. Il n'est plus possible d'ajouter des threads car la taille du pool a atteint sa limite.  

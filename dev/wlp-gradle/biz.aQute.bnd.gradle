@@ -4,9 +4,23 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
+
+// Repositories must be declared on the root project first so the detached
+// configurations in anttaskdefs.gradle can resolve external artifacts.
+// Note: repos.gradle is intentionally applied twice: once here at root project level
+// so that anttaskdefs.gradle's detached configurations can resolve Maven artifacts,
+// and again per-subproject below so each subproject's own dependency resolution
+// has the correct repositories configured.
+apply from: rootProject.file('wlp-gradle/subprojects/repos.gradle')
+
+// Define Ant task classpath strings and taskdef closures once at root project
+// level. anttaskdefs.gradle resolves Maven GAV dependencies eagerly during
+// configuration; applying it per-subproject would re-resolve them hundreds of
+// times and violates Gradle 9's configuration resolution locking rules.
+apply from: rootProject.file('wlp-gradle/anttaskdefs.gradle')
 
 /**
  * Apply biz.aQute.bnd plugin to all subprojects containing a *.bnd file.
@@ -19,25 +33,23 @@ subprojects {
   if (bndProject != null) {
     apply plugin: bndPlugin
 
-    // Configure repositories.	
+    // Configure repositories for this subproject's dependency resolution.
+    // Note: repos.gradle is also applied at root level above for anttaskdefs.gradle.
     apply from: rootProject.file('wlp-gradle/subprojects/repos.gradle')
-    
-    // Apply Maven Publish plugin and configure publications.	
+
+    // Apply Maven Publish plugin and configure publications.
     apply from: rootProject.file('wlp-gradle/subprojects/publish.gradle')
 
-    // Define Ant tasks to use for subprojects.	
-    apply from: rootProject.file('wlp-gradle/subprojects/anttaskdefs.gradle')
-
-    // Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.	
+    // Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.
     apply from: rootProject.file('wlp-gradle/subprojects/tasks.gradle')
 
-    // Apply Jacoco plugin and configure 'jacoco', 'test', 'jacocoTestReport', and 'jacocoTestCoverageVerification' tasks.	
+    // Apply Jacoco plugin and configure 'jacoco', 'test', 'jacocoTestReport', and 'jacocoTestCoverageVerification' tasks.
     apply from: rootProject.file('wlp-gradle/subprojects/jacoco.gradle')
 
-    // Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',	
-    // 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',	
-    // and 'publishLibNative' tasks.	
-    // Configure 'assemble' to depend on above tasks.	
+    // Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',
+    // 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',
+    // and 'publishLibNative' tasks.
+    // Configure 'assemble' to depend on above tasks.
     apply from: rootProject.file('wlp-gradle/subprojects/assemble.gradle')
 
     // Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.
@@ -52,7 +64,7 @@ subprojects {
     task releaseNeeded { dependsOn release }
     task copyPiiFiles { }
   }
-  
+
   // Make the release task depend on assemble and publish so that invoking 'release' or 'releaseNeeded'
   // will publish jar updates to the local `build.image/wlp` image and `cnf/release` repository
   release.dependsOn assemble

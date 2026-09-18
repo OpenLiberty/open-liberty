@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ quiesce.end.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 quiece.warning=CWWKE1102W: Nie mo\u017cna by\u0142o wykona\u0107 operacji wyciszenia. Serwer zostanie teraz zatrzymany.
 quiece.warning.explanation=Proces nie m\u00f3g\u0142 wyciszy\u0107 wszystkich us\u0142ug w limicie czasu wygaszania.
-quiece.warning.useraction=Mo\u017cna bezpiecznie zignorowa\u0107 komunikaty o b\u0142\u0119dach, kt\u00f3re s\u0105 wynikiem niedost\u0119pno\u015bci wymaganych us\u0142ug. Je\u015bli problem nie ust\u0105pi, zwi\u0119ksz przedzia\u0142 czasu 'quiesceTimeout', dodaj\u0105c atrybut 'quiesceTimeout' do elementu 'executor' w pliku 'server.xml'.
+quiece.warning.useraction=Zignoruj komunikaty o b\u0142\u0119dach wynikaj\u0105ce z niedost\u0119pno\u015bci wymaganych us\u0142ug. Je\u015bli problem nadal wyst\u0119puje, nale\u017cy wyd\u0142u\u017cy\u0107 czas dzia\u0142ania us\u0142ugi \u201e quiesceTimeout \u201d, dodaj\u0105c atrybut \u201e quiesceTimeout \u201d do elementu \u201eserver\u201d w pliku \u201e server.xml \u201d.
 
 client.quiesce.begin=CWWKE1103I: Oczekiwanie do {0} sekund na wyciszenie klienta.
 client.quiesce.begin.explanation=Klient oczekuje na wyciszenie us\u0142ug, zanim zostanie zamkni\u0119ty.
@@ -59,6 +59,6 @@ quiesce.listeners.not.complete=CWWKE1106W: Nast\u0119puj\u0105ca liczba operacji
 quiesce.listeners.not.complete.explanation=Co najmniej jedna operacja zainicjowana w czasie operacji zamkni\u0119cia systemu nie zosta\u0142a zako\u0144czona.
 quiesce.listeners.not.complete.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-quiesce.waiting.on.threads=CWWKE1107W: Nast\u0119puj\u0105ca liczba w\u0105tk\u00f3w: {0} nie zosta\u0142a zako\u0144czona w trakcie okresu wyciszania. 
+quiesce.waiting.on.threads=CWWKE1107W: W sumie {0} w\u0105tk\u00f3w nie zako\u0144czy\u0142o dzia\u0142ania w okresie spoczynku.
 quiesce.waiting.on.threads.explanation=Co najmniej jeden w\u0105tek, kt\u00f3ry by\u0142y aktywny przed wy\u0142\u0105czeniem serwera, by\u0142 nadal aktywny na koniec okresu wyciszania.
-quiesce.waiting.on.threads.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+quiesce.waiting.on.threads.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

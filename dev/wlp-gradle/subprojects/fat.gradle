@@ -110,7 +110,7 @@ dependencies {
 
   jakartaTransformerJava17Plus('biz.aQute.bnd:biz.aQute.bnd.transform') {
                          version {
-                            strictly '7.0.0'
+                            strictly '7.4.0'
                          }
                      }
 
@@ -273,7 +273,7 @@ if (!bnd.get('-sub', '').empty) {
 publishedArtifacts.add(project.name)
 
 task autoFVT {
-  shouldRunAfter cleanFat
+  mustRunAfter cleanFat
   dependsOn jar
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries

@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=No action is required.
 ZOSAIO_DEACTIVATED=CWWKO0230I: Native Asynchronous I/O support for z/OS has been deactivated.
 ZOSAIO_DEACTIVATED.explanation=The Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS service, which provides basic capabilities of an Asynchronous I/O package at the operating system level, is deactivated.
 ZOSAIO_DEACTIVATED.useraction=No action is required.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: The {0} Netty channel handler was removed from an active connection pipeline.
+netty.handler.removed.from.pipeline.explanation=A Netty channel handler that is required for correct operation of the connection was unexpectedly removed while the channel was active.
+netty.handler.removed.from.pipeline.useraction=If this message persists, collect diagnostic trace information and contact IBM Support.
+
+read.timeout=CWWKO1713W: An HTTP read operation timed out: {0}
+read.timeout.explanation=An inbound HTTP connection did not receive data within the configured read timeout period.
+read.timeout.useraction=Check the network connection or increase the read timeout value in the HTTP endpoint configuration.
+
+write.timeout=CWWKO1714W: An HTTP write operation timed out: {0}
+write.timeout.explanation=An outbound HTTP write operation did not complete within the configured write timeout period.
+write.timeout.useraction=Check the network connection or increase the write timeout value in the HTTP endpoint configuration.
+
+h2.idle.timeout=CWWKO1715W: An HTTP/2 connection closed because of an idle timeout: {0}
+h2.idle.timeout.explanation=The HTTP/2 connection was idle for longer than the configured idle timeout period, so the server closed the connection.
+h2.idle.timeout.useraction=Check the network connection or increase the HTTP/2 connection idle timeout value in the HTTP endpoint configuration.

@@ -142,9 +142,28 @@ public class SharedLibraryImpl implements Library, SpiLibrary {
     void delete() {
         deleted = true;
 
-        if (libraryListenersTracker != null) {
-            libraryListenersTracker.close();
-            libraryListenersTracker = null;
+        // Notify those interested that the library is being deleted
+        final ServiceTracker<LibraryChangeListener, LibraryChangeListener> ls = libraryListenersTracker;
+        libraryListenersTracker = null;
+        if (ls != null) {
+            for (LibraryChangeListener listener : ls.getTracked().values()) {
+                if (listener instanceof WeakLibraryListener) {
+                    // TODO may want to add libraryDeleted SPI method to LibraryChangeListener interface with a default method
+                    // or have an internal interface others in Liberty can implement to get notified of deletes
+                    try {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "notifying delete: " + listener);
+                        }
+                        ((WeakLibraryListener) listener).libraryDeleted();
+                    } catch (Exception e) {
+                        // Swallow the error so that others may continue
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "caught exception from listener: " + listener, e);
+                        }
+                    }
+                }
+            }
+            ls.close();
         }
 
         synchronized (generationLock) {

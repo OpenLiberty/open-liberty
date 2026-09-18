@@ -21,6 +21,17 @@
     <persistence-unit name="MyDataStore">
     	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:comp/DefaultDataSource</jta-data-source>
+
+        <!-- TODO there appears to be a change in behavior between
+             persistenceContainer-3.2/Hibernate 7 vs
+             persistenceContainer-4.0/Hibernate 8 where the latter
+             requries entities to be listed explicitly -->
+        <class>test.jakarta.data.v1_1.web.Advertisement</class>
+        <class>test.jakarta.data.v1_1.web.Billboard</class>
+        <class>test.jakarta.data.v1_1.web.Commercial</class>
+        <class>test.jakarta.data.v1_1.web.Fraction</class>
+        <class>test.jakarta.data.v1_1.web.Sector</class>
+
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
             <property name="hibernate.show_sql" value="true"/>

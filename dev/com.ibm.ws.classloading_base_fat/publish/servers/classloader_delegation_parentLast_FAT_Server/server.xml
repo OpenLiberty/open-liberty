@@ -1,0 +1,35 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>restConnector-2.0</feature>
+        <feature>classloadingfatlibertyinternals-1.0</feature>
+    </featureManager>
+
+    <application type="ear" id="TestUsingAppBundledLibraries" name="TestUsingAppBundledLibraries" location="TestUsingAppBundledLibraries.ear">
+        <classloader delegation="parentLast" />
+    </application>
+
+    <enterpriseApplication id="TestUsingSharedLibraries" name="TestUsingSharedLibraries" location="TestUsingSharedLibraries.ear" >
+        <classloader delegation="parentLast" privateLibraryRef="DelegationLibs"/>
+    </enterpriseApplication>
+
+    <library id="DelegationLibs">
+        <fileset dir="${server.config.dir}/libs" includes="*.jar" />
+    </library>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Test to see that classloader parentLast delegation is correct -->
+</server>

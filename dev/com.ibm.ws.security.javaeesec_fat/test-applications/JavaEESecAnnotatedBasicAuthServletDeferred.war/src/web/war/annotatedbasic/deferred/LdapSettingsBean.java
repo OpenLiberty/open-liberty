@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -34,93 +33,60 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * allowing tests to update the LDAP identity store dynamically by simply updating the
  * well-known file.
  */
-
 @Named
 @ApplicationScoped
 public class LdapSettingsBean {
     private static final String CLASS_NAME = LdapSettingsBean.class.getName();
     private static final String PROPS_FILE = "LdapSettingsBean.props";
-    
-    private Properties props;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private volatile long lastModified = 0;
-    private volatile boolean initialized = false;
+
+    private Properties props = new Properties();
 
     public LdapSettingsBean() {
     }
 
+    /**
+     * Perform the initial file load after CDI construction is complete.
+     * Doing I/O here rather than in the constructor prevents z/OS CDI
+     * initialization hangs caused by blocking I/O during bean wiring.
+     */
     @PostConstruct
     public void init() {
         try {
-            loadConfiguration();
-            initialized = true;
+            refreshConfiguration();
         } catch (IOException e) {
             System.err.println(CLASS_NAME + ".init() failed to load configuration: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
     /**
-     * Load configuration from file. This method is synchronized to prevent
-     * concurrent file access during CDI initialization.
+     * Reload the properties file from disk.
+     * Called both at startup (via @PostConstruct) and on every property access,
+     * so tests always see the latest values written by updateLdapSettingsBean().
      */
-    private void loadConfiguration() throws IOException {
-        lock.writeLock().lock();
+    private void refreshConfiguration() throws IOException {
+        Properties p = new Properties();
+        FileReader fr = new FileReader(PROPS_FILE);
         try {
-            props = new Properties();
-            FileReader fr = null;
-            try {
-                java.io.File file = new java.io.File(PROPS_FILE);
-                fr = new FileReader(file);
-                props.load(fr);
-                lastModified = file.lastModified();
-                System.out.println(CLASS_NAME + ".loadConfiguration() loaded properties from " + PROPS_FILE);
-            } finally {
-                if (fr != null) {
-                    fr.close();
-                }
-            }
+            p.load(fr);
         } finally {
-            lock.writeLock().unlock();
+            fr.close();
         }
+        props = p;
     }
 
     /**
-     * Check if the properties file has been modified and reload if necessary.
-     */
-    private void checkAndReloadIfModified() {
-        try {
-            java.io.File file = new java.io.File(PROPS_FILE);
-            long currentModified = file.lastModified();
-            
-            if (currentModified != lastModified) {
-                System.out.println(CLASS_NAME + ".checkAndReloadIfModified() detected file change, reloading...");
-                loadConfiguration();
-            }
-        } catch (IOException e) {
-            System.err.println(CLASS_NAME + ".checkAndReloadIfModified() failed: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Get property value with read lock protection.
+     * Return the named property, reloading the file first so tests always get
+     * the current configuration. Returns null if the stored value is the
+     * sentinel string "null", allowing tests to drive null-handling paths.
      */
     private String getProperty(String prop) {
-        if (!initialized) {
-            System.err.println(CLASS_NAME + ".getProperty() called before initialization for: " + prop);
-            return null;
-        }
-        
-        // Check for file modifications before reading
-        checkAndReloadIfModified();
-        
-        lock.readLock().lock();
         try {
-            String value = props.getProperty(prop);
-            return "null".equalsIgnoreCase(value) ? null : value;
-        } finally {
-            lock.readLock().unlock();
+            refreshConfiguration();
+        } catch (IOException e) {
+            System.err.println(CLASS_NAME + ".getProperty() failed to refresh configuration for '" + prop + "': " + e.getMessage());
         }
+        String value = props.getProperty(prop);
+        return "null".equalsIgnoreCase(value) ? null : value;
     }
 
     public String getBindDn() {

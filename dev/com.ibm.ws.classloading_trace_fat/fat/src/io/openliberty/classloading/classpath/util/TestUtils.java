@@ -69,97 +69,77 @@ public class TestUtils {
     public static final String DOMAIN_SHARED_LIB    = "Shared Library";
     public static final String DOMAIN_GATEWAY       = "GatewayClassLoader";
 
-    // Trace message prefixes
-    public static final String TRACE_CLASS_LOAD_PRFIX  = "CLASS LOAD:";
-    public static final String TRACE_CLASS_FAIL_PREFIX = "CLASS FAIL:";
+    public static final String TRACE_CLASS_DEFINE_SUCCESS  = ".*was successfully defined.*";
+    public static final String TRACE_CLASS_LOAD_SUCCESS    = ".*was successfully loaded.*";
+    public static final String TRACE_CLASS_DEFINE_FAIL     = ".*failed to be defined.*";
+    public static final String TRACE_LOCAL_CLASSPATH       = ".*on the local classpath.*";
+    public static final String TRACE_BY_PARENT             = ".*by parent classloader.*";
+    public static final String TRACE_BY_COMMON_LIB         = ".*by common library loader.*";
+    public static final String TRACE_CLASS_LOAD_FAIL       = ".*failed to load.*";
+    public static final String TRACE_LIBERTY_API_PACKAGES  = ".*liberty API packages.*";
+    public static final String TRACE_NOT_FOUND             = ".*not found.*";
+
+    public static final String CLASS_REGEX     = "Class=\\[.*";
+    public static final String RESOURCE_REGEX  = "Resource=\\[.*";
+    public static final String RESOURCES_REGEX = "Resources=\\[.*";
 
     // Field tokens used in trace verification
-    private static final String FIELD_CLASS           = "class=[";
+    private static final String FIELD_CLASS           = "Class=[";
     private static final String FIELD_CLASSLOADER     = "classloader=[";
     private static final String FIELD_LOCATION        = "location=[";
     public  static final String FIELD_DELEGATION_PATH = "delegation path=[";
 
     /**
-     * Verifies a {@code CLASS LOAD} trace line.
-     * The format is:
-     * {@code CLASS LOAD: class=[<name>]; classloader=[<type>@<hex>:...]; location=[<url>]}
+     * Verifies a class-defined-successfully trace line emitted by
+     * {@code AppClassLoader.definePackageAndClass}.
      *
-     * <p>For {@value #APP_CL} and {@value #PL_CL}, the delegation mode is inferred automatically
-     * ({@value #APP_CL} → {@value #PF}, {@value #PL_CL} → {@value #PL}) and the full
-     * {@code classloader} field is validated via {@link #checkClassLoaderField}.
-     * For any other classloader type (e.g. {@code EquinoxClassLoader}, {@code GatewayClassLoader})
-     * only a simple {@code contains} check is performed on the classloader field.
+     * <p>Expected format:
+     * {@code Class=[<name>] was successfully defined; classloader=[<type>@<hex>:...]; location=[<url>]}
      *
-     * @param traceLine   raw trace line containing the {@code CLASS LOAD:} prefix
+     * @param traceLine   raw trace line containing {@value #TRACE_CLASS_DEFINE_SUCCESS}
      * @param className   expected binary class name
-     * @param classLoader classloader type substring, e.g. {@value #APP_CL}, {@value #PL_CL},
-     *                    or {@code "EquinoxClassLoader"}
+     * @param classLoader classloader type substring, e.g. {@value #APP_CL} or {@value #PL_CL}
      * @param location    substring expected inside {@code location=[...]}
      */
     public static void checkClassLoadTrace(String traceLine, String className,
                                            String classLoader, String location) {
-        assertNotNull("Expected CLASS LOAD trace for " + className + " not found", traceLine);
-
-        String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_LOAD_PRFIX) + TRACE_CLASS_LOAD_PRFIX.length());
-        String[] traceElements = traceMsg.split(";");
-
-        checkTraceElements(className, classLoader, location, traceElements);
-    }
-
-    private static void checkTraceElements(String className, String classLoader, String location, String[] traceElements) {
-        assertTrue("First element should contain " + FIELD_CLASS, traceElements[0].contains(FIELD_CLASS));
-        assertTrue("First element should contain class name " + className,
-                   traceElements[0].contains(className));
-
-        assertTrue("Second element should contain " + FIELD_CLASSLOADER,
-                   traceElements[1].contains(FIELD_CLASSLOADER));
+        assertNotNull("Expected trace for " + className + " not found", traceLine);
+        assertTrue("Trace should contain 'Class=[" + className + "]'", traceLine.contains(FIELD_CLASS + className));
+        assertTrue("Trace should contain '" + FIELD_CLASSLOADER + "'", traceLine.contains(FIELD_CLASSLOADER));
+        assertTrue("Trace should reference classloader type " + classLoader, traceLine.contains(classLoader));
+        if (location != null) {
+            assertTrue("Trace should contain '" + FIELD_LOCATION + "'", traceLine.contains(FIELD_LOCATION));
+            assertTrue("Trace should reference location " + location, traceLine.contains(location));
+        }
         if (classLoader.equals(APP_CL) || classLoader.equals(PL_CL)) {
             String delegationMode = classLoader.equals(PL_CL) ? PL : PF;
-            checkClassLoaderField(traceElements[1], classLoader, delegationMode);
-        } else {
-            assertTrue("Second element should identify as " + classLoader,
-                       traceElements[1].contains(classLoader));
+            assertTrue("Trace should reference delegation mode " + delegationMode, traceLine.contains(delegationMode));
         }
-
-        assertTrue("Third element should contain " + FIELD_LOCATION, traceElements[2].contains(FIELD_LOCATION));
-        assertTrue("Third element should reference location " + location,
-                   traceElements[2].contains(location));
     }
 
     /**
-     * Verifies a CLASS FAIL trace line produced when defineClass() throws ClassFormatError.
-     * The format is:
-     * {@code CLASS FAIL: class=[<name>]; classloader=[<type>@<hex>:...]; location=[<url>]}
+     * Verifies a class-define-failed trace line emitted by
+     * {@code AppClassLoader.definePackageAndClass} when {@code defineClass()} throws.
+     *
+     * <p>Expected format:
+     * {@code Class=[<name>] failed to be defined; classloader=[<type>@<hex>:...]; location=[<url>]}
+     *
+     * @param traceLine   raw trace line containing {@value #TRACE_CLASS_DEFINE_FAIL}
+     * @param className   expected binary class name
+     * @param classLoader classloader type substring, e.g. {@value #APP_CL} or {@value #PL_CL}
+     * @param location    substring expected inside {@code location=[...]}
      */
     public static void checkClassFailTrace(String traceLine, String className, String classLoader, String location) {
-        assertNotNull("Expected CLASS FAIL trace for " + className + " not found", traceLine);
-
-        String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_FAIL_PREFIX) + TRACE_CLASS_FAIL_PREFIX.length());
-        String[] traceElements = traceMsg.split(";");
-
-        checkTraceElements(className, classLoader, location, traceElements);
-    }
-
-    /**
-     * Verifies the {@code classloader=[...]} field produced by {@code AppClassLoader} or
-     * {@code ParentLastClassLoader}.
-     * The format is:
-     * {@code classloader=[<type>@<hex>:EARApplication:traceTestEar:PF|PL]}
-     *
-     * @param traceElement   semicolon-delimited segment containing {@code classloader=[...]}
-     * @param classLoader    classloader type substring, e.g. {@value #APP_CL} or {@value #PL_CL}
-     * @param delegationMode delegation mode, e.g. {@value #PF} or {@value #PL}
-     */
-    public static void checkClassLoaderField(String traceElement, String classLoader, String delegationMode) {
-        String[] parts = traceElement.split(":");
-        assertTrue("classloader field should identify " + classLoader,
-                   parts[0].contains(classLoader));
-        assertTrue("classloader field should contain domain EARApplication",
-                   parts[1].contains("EARApplication"));
-        assertTrue("classloader field should contain app traceTestEar",
-                   parts[2].contains("traceTestEar"));
-        assertTrue("classloader field should contain delegation mode " + delegationMode,
-                   parts[3].contains(delegationMode));
+        assertNotNull("Expected class-define-failed trace for " + className + " not found", traceLine);
+        assertTrue("Trace should contain 'Class=[" + className + "]'", traceLine.contains(FIELD_CLASS + className));
+        assertTrue("Trace should contain '" + FIELD_CLASSLOADER + "'", traceLine.contains(FIELD_CLASSLOADER));
+        assertTrue("Trace should reference classloader type " + classLoader, traceLine.contains(classLoader));
+        assertTrue("Trace should contain '" + FIELD_LOCATION + "'", traceLine.contains(FIELD_LOCATION));
+        assertTrue("Trace should reference location " + location, traceLine.contains(location));
+        if (classLoader.equals(APP_CL) || classLoader.equals(PL_CL)) {
+            String delegationMode = classLoader.equals(PL_CL) ? PL : PF;
+            assertTrue("Trace should reference delegation mode " + delegationMode, traceLine.contains(delegationMode));
+        }
     }
 
     /**

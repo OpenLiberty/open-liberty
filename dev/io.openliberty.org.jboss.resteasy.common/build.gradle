@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,23 +22,45 @@ dependencies {
            'org.jboss.resteasy:resteasy-core-spi:4.7.2.Final'
 }
 
+// Extracted resteasy classes land in their own directory, completely separate
+// from compileJava.destinationDirectory (build/classes/java/main).  This means
+// Gradle's stale-output cleaning on compileJava never touches them, and there is
+// no risk of extracted originals overwriting the project's overlay classes.
+def injectedClassesDir = layout.projectDirectory.dir('build/classes/resteasy-injected').asFile
+
 task extractInjectedClasses(type: Copy) {
   from zipTree(configurations.resteasy[0])
   include '**/*.class'
-  into compileJava.destinationDirectory
+  into injectedClassesDir
 
   from zipTree(configurations.resteasy[1])
   include '**/*.class'
-  into compileJava.destinationDirectory
+  into injectedClassesDir
 
   from zipTree(configurations.resteasy[2])
   include '**/*.class'
-  into compileJava.destinationDirectory
+  into injectedClassesDir
 
   from zipTree(configurations.resteasy[3])
   include '**/*.class'
-  into compileJava.destinationDirectory
+  into injectedClassesDir
 }
 
-compileJava.dependsOn extractInjectedClasses
+// Instrument the extracted resteasy classes in-place as a doLast on the copy task,
+// mirroring the compileJava instrumentation pattern in wlp-gradle/subprojects/tasks.gradle.
+extractInjectedClasses {
+  dependsOn compileJava
+  inputs.files { rasInstrumentationInputFiles() }
+  doLast {
+    rasInstrumentationTaskdef(ant)
+    ant.instrumentForTrace(ffdc: bnd.get('instrument.ffdc'), taskInjection: bnd.get('instrument.taskInjection')) {
+      fileset(dir: injectedClassesDir, includes: bnd.get('instrument.classesIncludes'), excludes: bnd.get('instrument.classesExcludes'))
+      // Include package-info.class files from the project's own compiled sources so that
+      // processPackageInfo() picks up package-level trace annotations. The instrumentation
+      // tool skips re-instrumenting package-info itself; these are read-only for annotation discovery.
+      fileset(dir: compileJava.destinationDirectory.getAsFile().get(), includes: 'org/jboss/resteasy/**/package-info.class')
+    }
+  }
+}
 
+jar.dependsOn extractInjectedClasses

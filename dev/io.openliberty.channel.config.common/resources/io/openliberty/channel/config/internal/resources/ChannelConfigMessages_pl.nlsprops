@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: Atrybut \u201e quiesceTimeout \u201d elementu \u201eserver\u201d zast\u0119puje dzia\u0142anie atrybutu \u201e chainQuiesceTimeout \u201d. Serwer ignoruje skonfigurowan\u0105 warto\u015b\u0107 parametru \u201e chainQuiesceTimeout \u201d wynosz\u0105c\u0105 {0} sekund.
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=Gdy atrybut \u201e quiesceTimeout \u201d jest skonfigurowany w elemencie \u201eserver\u201d w pliku \u201e server.xml \u201d, ma on pierwsze\u0144stwo przed atrybutem \u201e chainQuiesceTimeout \u201d w elemencie \u201echannelfw\u201d. Serwer ignoruje warto\u015b\u0107 \u201e chainQuiesceTimeout \u201d.
+QUIESCE_TIMEOUT_OVERRIDE.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Je\u015bli chcesz u\u017cy\u0107 warto\u015bci \u201e chainQuiesceTimeout \u201d, usu\u0144 atrybut \u201e quiesceTimeout \u201d z elementu \u201eserver\u201d.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2022 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -94,8 +94,7 @@ INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.explanation=O cont\u00eainer encontrou u
 INVALID_TYPE_IN_JAVA_COMP_ENV_CNTR0011W.useraction=Certifique-se de que o tipo de entrada de ambiente seja um dos seguintes: String,Integer,Boolean,Double,Byte,Short,Long ou Float.
 
 # --------------------------------
-COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: O colaborador {0} emitiu uma exce\u00e7\u00e3o inesperada - prosseguindo com os demais colaboradores.\n\
-\ Dados da exece\u00e7\u00e3o:{1}
+COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W=CNTR0012W: O colaborador {0} emitiu uma exce\u00e7\u00e3o inesperada - prosseguindo com os demais colaboradores.\n Dados da exce\u00e7\u00e3o:{1}
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.explanation=CMSG0001
 COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0012W.useraction=CMSG0002
 
@@ -110,10 +109,7 @@ STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.explanation=CMSG0001
 STATEFUL_BEAN_REAPER_THREAD_INTERRUPTED_CNTR0014W.useraction=CMSG0002
 
 # --------------------------------
-UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Ocorreu uma exce\u00e7\u00e3o inesperada durante a limpeza de beans com estado. \n\
-\ Dados da exece\u00e7\u00e3o: \n\
-\ {0} \n\
-\ {1}
+UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W=CNTR0015W: Ocorreu uma exce\u00e7\u00e3o inesperada durante a limpeza de beans com estado. \n Dados da exce\u00e7\u00e3o: \n {0} \n {1}
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.explanation=CMSG0001
 UNEXPECTED_EXCEPTION_DURING_STATEFUL_BEAN_CLEANUP_CNTR0015W.useraction=CMSG0002
 
@@ -123,8 +119,7 @@ REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.explanation=O cont\u00eainer n\u0
 REMOVE_FROM_PASSIVATION_STORE_FAILED_CNTR0016W.useraction=Tome uma a\u00e7\u00e3o com base na mensagem de exce\u00e7\u00e3o na mensagem CNTR0016W.
 
 # --------------------------------
-SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: O colaborador de seguran\u00e7a emitiu uma exce\u00e7\u00e3o inesperada. \n\
-\ Dados da exece\u00e7\u00e3o:{0}
+SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W=CNTR0017W: O colaborador de seguran\u00e7a emitiu uma exce\u00e7\u00e3o inesperada. \n Dados da exce\u00e7\u00e3o:{0}
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.explanation=CMSG0001
 SECURITY_COLLABORATOR_THREW_UNEXPECTED_EXCEPTION_CNTR0017W.useraction=CMSG0002
 
@@ -1524,7 +1519,7 @@ DUPLICATE_REF_BINDING_WEB_CNTR0334E.explanation=O arquivo ibm-web-bnd.xmi ou ibm
 DUPLICATE_REF_BINDING_WEB_CNTR0334E.useraction=Remova todas as liga\u00e7\u00f5es para a refer\u00eancia, exceto uma.
 
 #-------------------------------------------------------------------------------
-ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: O enterprise bean {0} no m\u00f3dulo {1} no aplicativo {2} \u00e9 um bean de entidade declarado em um aplicativo Java EE vers\u00e3o 7 ou mais recente. Beans de entidade n\u00e3o s\u00e3o suportados em aplicativos Java EE 7 ou mais recente. A configura\u00e7\u00e3o do bean de entidade ser\u00e1 ignorada e n\u00e3o ser\u00e1 vinculada a um local de nomenclatura.
+ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: O enterprise bean {0} no m\u00f3dulo {1} no aplicativo {2} \u00e9 um bean de entidade declarado em um aplicativo Java EE vers\u00e3o 7 ou mais recente. Beans de entidade n\u00e3o s\u00e3o suportados em aplicativos Java EE 7 ou mais recente. A configura\u00e7\u00e3o do bean de entidade ser\u00e1 ignorada e n\u00e3o ser\u00e1 ligada a um local de nomenclatura.
 ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Enterprise beans de entidade declarados em qualquer m\u00f3dulo de vers\u00e3o n\u00e3o s\u00e3o suportados quando o m\u00f3dulo \u00e9 empacotado em um aplicativo Java EE vers\u00e3o 7 ou mais recente. Um aplicativo \u00e9 considerado como Java EE vers\u00e3o 7 se o arquivo application.xml \u00e9 declarado como sendo da vers\u00e3o 7 ou qualquer m\u00f3dulo EJB ou WAR empacotado dentro desse aplicativo estiver em uma vers\u00e3o correspondente ao Java EE vers\u00e3o 7.
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Remova o uso do enterprise bean da entidade do aplicativo ou empacote o bean em um aplicativo vers\u00e3o 6 ou mais antigo.
 
@@ -1564,6 +1559,10 @@ CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Remova a anota\u00e7\u00e3o jakartata.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: A interface de neg\u00f3cios {0} cont\u00e9m uma anota\u00e7\u00e3o jakarta.enterprise.concurrent.Asynchronous. As anota\u00e7\u00f5es ass\u00edncronas n\u00e3o s\u00e3o v\u00e1lidas em nenhuma interface e o cont\u00eainer Jakarta Enterprise Beans as ignora.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=A anota\u00e7\u00e3o jakarta.enterprise.concurrent.Asynchronous n\u00e3o deve ser usada com o Jakarta Enterprise Beans. O cont\u00eainer Jakarta Enterprise Beans ignora essas anota\u00e7\u00f5es em interfaces. A menos que os m\u00e9todos sejam declarados ass\u00edncronos no descritor de implementa\u00e7\u00e3o ejb-jar.xml ou na anota\u00e7\u00e3o jakarta.ejb.Asynchronous \u00e9 especificado na classe bean ou um m\u00e9todo de classe bean, os m\u00e9todos bean s\u00e3o executados de maneira sincronizada.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Remova qualquer anota\u00e7\u00e3o jakarta.enterprise.concurrent.Asynchronous da interface de neg\u00f3cios especificada e verifique se a anota\u00e7\u00e3o jakarta.ejb.Asynchronous est\u00e1 especificada corretamente na classe bean.
+
+CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: O bean ` {0} `, no m\u00f3dulo ` {1} ` do aplicativo ` {2} `, possui um ou mais m\u00e9todos com a anota\u00e7\u00e3o ` jakarta.enterprise.concurrent.Schedule `. Essa anota\u00e7\u00e3o n\u00e3o pode ser usada em enterprise beans.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=A especifica\u00e7\u00e3o de concorr\u00eancia do Jakarta n\u00e3o permite que a anota\u00e7\u00e3o ` jakarta.enterprise.concurrent.Schedule ` seja usada em Enterprise Beans do Jakarta.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.useraction=Remova a anota\u00e7\u00e3o ` jakarta.enterprise.concurrent.Asynchronous ` do m\u00e9todo. Use a anota\u00e7\u00e3o ` jakarta.ejb.Schedule ` para identificar m\u00e9todos com tempo limite nos enterprise beans.
 
 #-------------------------------------------------------------------------------
 #
@@ -1838,7 +1837,7 @@ CNTR9053I={0}Chave EJB: {1}
 CNTR9054I={0}Informa\u00e7\u00f5es   : {1}
 CNTR9055I=Cron\u00f4metro do EJB : {0}     Expira\u00e7\u00e3o: {1}     Calend\u00e1rio
 CNTR9056I=Express\u00e3o de calend\u00e1rio: {0}
-CNTR9057I={0}Cron\u00f4metro autom\u00e1tico com m\u00e9todo timout: {1}
+CNTR9057I={0}Cron\u00f4metro autom\u00e1tico com m\u00e9todo timeout: {1}
 CNTR9058I={0}Cron\u00f4metro program\u00e1tico
 
 

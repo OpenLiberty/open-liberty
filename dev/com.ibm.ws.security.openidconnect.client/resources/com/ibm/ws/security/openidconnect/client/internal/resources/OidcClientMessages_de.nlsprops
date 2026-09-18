@@ -62,12 +62,12 @@ OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Stellen Sie sicher, dass die r
 #1708 is used in clients.common bundle. don't use it.
 
 #used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Die OpenID Connect-Anforderung wurde vom Benutzer abgelehnt, oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
+OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Die OpenID Connect-Anforderung wurde vom Benutzer abgelehnt oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=Der Benutzer hat die OpenID Connect-Anforderung durch Abbrechen der Anforderung im Formular f\u00fcr die Geltungsbereichsgenehmigung abgelehnt oder es ist ein anderer Fehler aufgetreten, der den Zugriff auf die OpenID Connect-Anforderung verhindert.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=Der Benutzer muss dem OpenID Connect-Provider erlauben, die Geltungsbereiche gemeinsam zu nutzen, die der Client erfordert, damit die OpenID Connect-Anforderung erfolgreich verarbeitet werden kann. Wenn der Benutzer die Anforderung genehmigt hat, \u00fcberpr\u00fcfen Sie die Protokolle im OP nach weiteren Fehlern.
 
 #used_by_client_project
-OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: Die Anforderung wurde vom Benutzer abgelehnt, oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: Die Anforderung wurde vom Benutzer abgelehnt oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=Der Benutzer hat die OpenID Connect-Anforderung durch Abbrechen der Anforderung im Formular f\u00fcr die Geltungsbereichsgenehmigung abgelehnt oder es ist ein anderer Fehler aufgetreten, der den Zugriff auf die OpenID Connect-Anforderung verhindert.
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=Der Benutzer muss dem OpenID Connect-Provider erlauben, die Geltungsbereiche gemeinsam zu nutzen, die der Client erfordert, damit die OpenID Connect-Anforderung erfolgreich verarbeitet werden kann. Wenn der Benutzer die Anforderung genehmigt hat, \u00fcberpr\u00fcfen Sie die Protokolle im OP nach weiteren Fehlern.
 
@@ -292,5 +292,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=\u00dcberpr\u00fcfen 
 REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: Eine Authentifizierungsanforderung ist fehlgeschlagen, da der OpenID Connect-Provider den Fehler {0} zur\u00fcckgegeben hat: {1}
 REDIRECT_URI_CONTAINED_ERROR.explanation=Der angegebene Antwortstatus gibt an, dass die Authentifizierung nicht erfolgreich war. Die in der Nachricht angegebene Fehler- und Fehlerbeschreibung enth\u00e4lt weitere Informationen.
 REDIRECT_URI_CONTAINED_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen.
+
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: Die Metadaten der gesch\u00fctzten Ressource d\u00fcrfen kein \u201esigned_metadata\u201c-JWT enthalten, da der [ {0} ] JWT-Builder das Token nicht erstellen konnte: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=Der konfigurierte JWT-Builder hat beim Erstellen des signierten Metadaten-Tokens eine Ausnahme ausgel\u00f6st. Der Server gibt das Metadaten-Dokument ohne das Feld \u201esigned_metadata\u201c zur\u00fcck.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration des JWT-Builders und die Serverprotokolle, um weitere Informationen zum Fehler zu erhalten.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

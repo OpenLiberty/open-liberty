@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -83,15 +83,20 @@ public abstract class JsonProvider {
 
     /**
      * Cache of discovered providers keyed by the context classloader. Weak keys allow the entry
-     * to be GC'd when the classloader is no longer reachable. Weak values break the strong
-     * reference cycle that would otherwise exist because a {@code JsonProvider} instance holds a
-     * strong reference back to its loading classloader (via its {@code Class}), which would
-     * otherwise prevent the weak key from ever being collected.
+     * to be evicted when the classloader (e.g. a WAR's classloader) is no longer reachable,
+     * preventing classloader leaks on application undeploy.
+     *
+     * <p>Soft values allow the JVM to reclaim the cached provider under memory pressure, while
+     * keeping it alive under normal conditions. This avoids the strong reference cycle that would
+     * exist if the value were held strongly when a provider's class is defined by the same
+     * classloader used as the map key (e.g. a provider bundled in WEB-INF/lib):
+     * value &rarr; its Class &rarr; its ClassLoader == key. A strong cycle would prevent the
+     * weak key from ever being enqueued, leaking the WAR classloader on undeploy.
      *
      * <p>All accesses are guarded by explicit {@code synchronized (CLASSLOADER_CACHE)} blocks in
      * {@link #provider()}.
      */
-    private static final Map<ClassLoader, WeakReference<JsonProvider>> CLASSLOADER_CACHE =
+    private static final Map<ClassLoader, SoftReference<JsonProvider>> CLASSLOADER_CACHE =
             new WeakHashMap<>();
 
     /**
@@ -135,7 +140,7 @@ public abstract class JsonProvider {
         }
 
         synchronized (CLASSLOADER_CACHE) {
-            WeakReference<JsonProvider> ref = CLASSLOADER_CACHE.get(cl);
+            SoftReference<JsonProvider> ref = CLASSLOADER_CACHE.get(cl);
             JsonProvider cached = (ref != null) ? ref.get() : null;
             if (cached != null) {
                 return cached;
@@ -144,8 +149,9 @@ public abstract class JsonProvider {
         LOG.log(Level.FINE, "Cache miss for classloader [{0}]; starting discovery", cl);
         JsonProvider discovered = discover(cl);
         synchronized (CLASSLOADER_CACHE) {
-            WeakReference<JsonProvider> existing = CLASSLOADER_CACHE.putIfAbsent(cl, new WeakReference<>(discovered));
-            return (existing != null && existing.get() != null) ? existing.get() : discovered;
+            SoftReference<JsonProvider> existingRef = CLASSLOADER_CACHE.putIfAbsent(cl, new SoftReference<>(discovered));
+            JsonProvider existing = (existingRef != null) ? existingRef.get() : null;
+            return existing != null ? existing : discovered;
         }
     }
 

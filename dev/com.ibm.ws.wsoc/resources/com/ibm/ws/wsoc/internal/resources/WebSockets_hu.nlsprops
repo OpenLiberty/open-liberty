@@ -238,3 +238,7 @@ upgradeHttpToWebSocket.failed.useraction=Tekintse \u00e1t a hib\u00e1t, hogy azo
 maxmessagesize.exceeded=CWWKH0056E: A {0} met\u00f3dus maxMessageSize meghaladja Integer.MAX_VALUE \u00e9rt\u00e9ket a(z) {1} oszt\u00e1lyban.
 maxmessagesize.exceeded.explanation=A maxMessageSize OnMessage annot\u00e1ci\u00f3s param\u00e9ter be\u00e1ll\u00edtja a met\u00f3dus maxim\u00e1lis \u00fczenetm\u00e9ret\u00e9t b\u00e1jtban. maxMessageSize csak Integer.MAX_VALUE maxim\u00e1lis \u00e9rt\u00e9kre \u00e1ll\u00edthat\u00f3 be.
 maxmessagesize.exceeded.useraction=Cs\u00f6kkentse a maxMessageSize param\u00e9ter \u00e9rt\u00e9k\u00e9t legfeljebb Integer.MAX_VALUE \u00e9rt\u00e9kre.
+
+client.no.response=CWWKH0057E: A WebSocket friss\u00edt\u00e9si k\u00e9r\u00e9s v\u00e9grehajt\u00e1sa ut\u00e1n az \u00fcgyf\u00e9l nem kapott \u201e HTTP \u201d v\u00e1lasz\u00fczenetet a {0} v\u00e9gpontr\u00f3l.
+client.no.response.explanation=A kimen\u0151 \u201e WebSocket \u201d friss\u00edt\u00e9si k\u00e9zfog\u00e1s befejez\u0151d\u00f6tt, de a \u201e HTTP \u201d v\u00e1lasz nem \u00e1llt rendelkez\u00e9sre feldolgoz\u00e1sra.
+client.no.response.useraction=Ellen\u0151rizze, hogy a c\u00e9lszerver el\u00e9rhet\u0151-e, \u00e9s megfelel\u0151en v\u00e1laszol-e az WebSocket friss\u00edt\u00e9si k\u00e9r\u00e9seire.

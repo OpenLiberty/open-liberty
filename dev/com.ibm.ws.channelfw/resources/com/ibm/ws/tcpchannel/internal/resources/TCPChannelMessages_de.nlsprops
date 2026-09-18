@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=Es ist keine Aktion erforderlich.
 ZOSAIO_DEACTIVATED=CWWKO0230I: Die native Unterst\u00fctzung f\u00fcr asynchrone Ein-/Ausgabe f\u00fcr z/OS wurde inaktiviert.
 ZOSAIO_DEACTIVATED.explanation=Der Service f\u00fcr asynchrone Ein-/Ausgabe \u00fcber TCP/IP-Sockets f\u00fcr Liberty (AsyncIO) unter z/OS, der die Basisfunktionen eines Pakets f\u00fcr asynchrone Ein-/Ausgabe auf Betriebssystemebene bereitstellt, wurde inaktiviert.
 ZOSAIO_DEACTIVATED.useraction=Es ist keine Aktion erforderlich.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: Der Kanalhandler \u201e {0} \u201c ( Netty ) wurde aus einer aktiven Verbindungs-Pipeline entfernt.
+netty.handler.removed.from.pipeline.explanation=Ein \u201e Netty \u201c-Kanalhandler, der f\u00fcr den korrekten Betrieb der Verbindung erforderlich ist, wurde unerwartet entfernt, w\u00e4hrend der Kanal aktiv war.
+netty.handler.removed.from.pipeline.useraction=Sollte diese Meldung weiterhin angezeigt werden, erfassen Sie bitte Diagnose-Trace-Informationen und wenden Sie sich an den Support unter IBM.
+
+read.timeout=CWWKO1713W: Beim Lesevorgang \u201e HTTP \u201c ist eine Zeit\u00fcberschreitung aufgetreten: {0}
+read.timeout.explanation=Eine eingehende Verbindung \u00fcber \u201e HTTP \u201c hat innerhalb der konfigurierten Lese-Timeout-Dauer keine Daten empfangen.
+read.timeout.useraction=\u00dcberpr\u00fcfen Sie die Netzwerkverbindung oder erh\u00f6hen Sie den Wert f\u00fcr das Lese-Timeout in der Konfiguration des Endpunkts \u201e HTTP \u201c.
+
+write.timeout=CWWKO1714W: Ein Schreibvorgang bei \u201e HTTP \u201c ist abgelaufen: {0}
+write.timeout.explanation=Ein Schreibvorgang an den \u201e HTTP \u201c konnte nicht innerhalb der konfigurierten Schreib-Timeout-Frist abgeschlossen werden.
+write.timeout.useraction=\u00dcberpr\u00fcfen Sie die Netzwerkverbindung oder erh\u00f6hen Sie den Wert f\u00fcr das Schreib-Timeout in der Konfiguration des Endpunkts \u201e HTTP \u201c.
+
+h2.idle.timeout=CWWKO1715W: Eine Verbindung zu HTTP/2 wurde aufgrund eines Timeouts wegen Inaktivit\u00e4t geschlossen: {0}
+h2.idle.timeout.explanation=Die Verbindung zum \u201e HTTP/2 \u201c war l\u00e4nger inaktiv als die konfigurierte Zeit\u00fcberschreitung f\u00fcr inaktive Verbindungen, daher hat der Server die Verbindung geschlossen.
+h2.idle.timeout.useraction=\u00dcberpr\u00fcfen Sie die Netzwerkverbindung oder erh\u00f6hen Sie den Wert f\u00fcr das Zeitlimit bei Inaktivit\u00e4t der Verbindung \u201e HTTP/2 \u201c in der Konfiguration des Endpunkts \u201e HTTP \u201c.

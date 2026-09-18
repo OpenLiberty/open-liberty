@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2024 IBM Corporation and others.
+ * Copyright (c) 2008, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import javax.persistence.SharedCacheMode;
 import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -44,17 +43,17 @@ import com.ibm.ws.jpa.JPAPuId;
  * are delegated to the 'common' PersistenceUnitInfo implementation.
  * This allows the datasources to be cached per component, rather than
  * per persistence unit. <p>
+ *
+ * {@code getTransactionType()} is inherited from {@link AbstractJPACompPUnitInfo}.
+ * The JPA 4.0 overlay replaces that class to return the non-spi type. <p>
  */
-final class JPACompPUnitInfo implements PersistenceUnitInfo {
+final class JPACompPUnitInfo extends AbstractJPACompPUnitInfo {
     private static final TraceComponent tc = Tr.register(JPACompPUnitInfo.class,
                                                          JPA_TRACE_GROUP,
                                                          JPA_RESOURCE_BUNDLE_NAME);
 
     // Persistence unit id.
     protected JPAPuId ivPuId;
-
-    // The common (real) PUnitInfo (non component specific).
-    private final JPAPUnitInfo ivPUnitInfo;
 
     // JavaEE unique identifier for the component, identifying the
     // java:comp/env context used.
@@ -78,11 +77,11 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
      *                     java:comp/env context used.
      */
     JPACompPUnitInfo(JPAPuId puId, JPAPUnitInfo puInfo, J2EEName j2eeName) {
+        super(puInfo);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "<init> : " + puId + ", " + j2eeName);
 
         ivPuId = puId;
-        ivPUnitInfo = puInfo;
         ivJ2eeName = j2eeName;
     }
 
@@ -230,14 +229,6 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
         return ivPUnitInfo.getProperties();
     }
 
-    /**
-     * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
-     */
-    @Override
-    public final PersistenceUnitTransactionType getTransactionType() {
-        return ivPUnitInfo.getTransactionType();
-    }
-
     // New JPA 2.0 methods - F743-954.1
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceXMLSchemaVersion()
@@ -261,6 +252,27 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo {
     @Override
     public ValidationMode getValidationMode() {
         return ivPUnitInfo.getValidationMode();
+    }
+
+    /**
+     * Returns all class names in the persistence unit.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getAllClassNames() {
+        return ivPUnitInfo.getAllClassNames();
+    }
+
+    /**
+     * Returns the default fetch type for to-one associations.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Returns EAGER, which is the backward-compatible default as per the JPA 4.0 spec.
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will return jakarta.persistence.FetchType.EAGER.
+     */
+    public javax.persistence.FetchType getDefaultToOneFetchType() {
+        return ivPUnitInfo.getDefaultToOneFetchType();
     }
 
     // --------------------------------------------------------------------------

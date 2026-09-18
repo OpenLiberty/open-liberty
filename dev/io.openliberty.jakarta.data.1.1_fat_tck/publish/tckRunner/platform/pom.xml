@@ -35,7 +35,7 @@
 			<artifactId>jakarta.data-tck</artifactId>
 			<version>${jakarta.data.tck.version}</version>
 		</dependency>
-		<!-- api - data - internal bundle -->
+		<!-- api - data - internal bundle (General API and Stateful API-->
 		<dependency>
 			<groupId>${jakarta.data.groupid}</groupId>
 			<artifactId>jakarta.data-api</artifactId>

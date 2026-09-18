@@ -1,0 +1,80 @@
+<!--
+    Copyright (c) 2024, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>classloadingfatlibertytestfeature-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        These are the things that can vary:
+        - apiTypeVisibility can be explicit or default on class loader
+        - apiTypeVisibility can be explicit or default on shared library
+        - app can use private library ref (all library apiTypeVisibility can be ignored - no clashes)
+        - app can use common library ref with same  APIs
+        - app can use common library ref with fewer  APIs
+        - app can use common library ref with more  APIs
+        - app can use common library ref with different  APIs
+
+        So let's use these API collections:
+        - DEFAULTS: leave unspecified ("spec, ibm-api", "api")
+        - EMPTYSET: no allowed api types ("")
+        - ALLTYPES: "spec, ibm-api, api, third-party" filesetRef="A"
+        - SPECONLY: "spec"
+        - SPEC_3RD: "spec, third-party"
+        - EXPLICIT: "spec, ibm-api", "api" (to match default)
+    -->
+    <!-- Define some filesets -->
+    <fileset id="A" dir="${server.config.dir}/SharedLibraryA" includes="*.jar" scanInterval="5s"/>
+    <fileset id="B" dir="${server.config.dir}/SharedLibraryB" includes="*.jar" scanInterval="5s"/>
+    <fileset id="C" dir="${server.config.dir}/SharedLibraryC" includes="*.jar" scanInterval="5s"/>
+    <!-- Set up some libraries with different api types: libDEFAULTS, libEMPTYSET, libSPEC_3RD, libAll -->
+    <library id="libDEFAULTS" filesetRef="A" />
+    <library id="libEMPTYSET" filesetRef="B" apiTypeVisibility="" />
+    <library id="libALLTYPES" filesetRef="C" apiTypeVisibility="spec, ibm-api, api, third-party" />
+    <library id="libSPEC_3RD" filesetRef="C" apiTypeVisibility="spec, third-party" />
+    <library id="libEXPLICIT" filesetRef="C" apiTypeVisibility="spec, ibm-api, api" />
+
+    <!-- So that gives us this test matrix: -->
+    <!--  1 ) appDEFAULTS_libPRIVLIBS -> default app + private libraries  -->
+    <application id="appDEFAULTS_libPRIVLIBS" name="appDEFAULTS_libPRIVLIBS" location="sharedLib.war"><classloader privateLibraryRef="libDEFAULTS, libEMPTYSET, libALLTYPES" /></application>
+    <!--  2 ) appDEFAULTS_libDEFAULTS -> default app + libs with same APIs            -->
+    <application id="appDEFAULTS_libDEFAULTS" name="appDEFAULTS_libDEFAULTS" location="sharedLib.war"><classloader commonLibraryRef="libDEFAULTS" /></application>
+    <!--  2a) appDEFAULTS_libEXPLICIT -> default app + libs with same APIs (explicit) -->
+    <application id="appDEFAULTS_libEXPLICIT" name="appDEFAULTS_libEXPLICIT" location="sharedLib.war"><classloader commonLibraryRef="libEXPLICIT" /></application>
+    <!--  3 ) appDEFAULTS_libEMPTYSET -> default app + libs with fewer APIs           -->
+    <application id="appDEFAULTS_libEMPTYSET" name="appDEFAULTS_libEMPTYSET" location="sharedLib.war"><classloader commonLibraryRef="libEMPTYSET" /></application>
+    <!--  4 ) appDEFAULTS_libALLTYPES -> default app + libs with more APIs            -->
+    <application id="appDEFAULTS_libALLTYPES" name="appDEFAULTS_libALLTYPES" location="sharedLib.war"><classloader commonLibraryRef="libALLTYPES" /></application>
+    <!--  5 ) appDEFAULTS_libSPEC_3RD -> default app + libs with different APIs       -->
+    <application id="appDEFAULTS_libSPEC_3RD" name="appDEFAULTS_libSPEC_3RD" location="sharedLib.war"><classloader commonLibraryRef="libSPEC_3RD" /></application>
+    <!--  6 ) appSPEC_3RD_libPRIVLIBS -> explicit app + private libraries             -->
+    <application id="appSPEC_3RD_libPRIVLIBS" name="appSPEC_3RD_libPRIVLIBS" location="sharedLib.war"><classloader privateLibraryRef="libDEFAULTS, libEMPTYSET, libALLTYPES" apiTypeVisibility="spec, third-party" /></application>
+    <!--  7 ) appEMPTYSET_libEMPTYSET -> explicit app + libs with same APIs (none)    -->
+    <application id="appEMPTYSET_libEMPTYSET" name="appEMPTYSET_libEMPTYSET" location="sharedLib.war"><classloader commonLibraryRef="libEMPTYSET" apiTypeVisibility="" /></application>
+    <!--  7a) appSPEC_3RD_libSPEC_3RD -> explicit app + libs with same APIs           -->
+    <application id="appSPEC_3RD_libSPEC_3RD" name="appSPEC_3RD_libSPEC_3RD" location="sharedLib.war"><classloader commonLibraryRef="libSPEC_3RD" apiTypeVisibility="spec, third-party" /></application>
+    <!--  7b) appEXPLICIT_libDEFAULTS -> explicit app + libs with same APIs (default) -->
+    <application id="appEXPLICIT_libDEFAULTS" name="appEXPLICIT_libDEFAULTS" location="sharedLib.war"><classloader commonLibraryRef="libDEFAULTS" apiTypeVisibility="spec, ibm-api, api" /></application>
+    <!--  8 ) appALLTYPES_libSPEC_3RD -> explicit app + libs with fewer APIs          -->
+    <application id="appALLTYPES_libSPEC_3RD" name="appALLTYPES_libSPEC_3RD" location="sharedLib.war"><classloader commonLibraryRef="libSPEC_3RD" apiTypeVisibility="spec, ibm-api, api, third-party" /></application>
+    <!--  9 ) appSPECONLY_libSPEC_3RD -> explicit app + libs with more APIs           -->
+    <application id="appSPECONLY_libSPEC_3RD" name="appSPECONLY_libSPEC_3RD" location="sharedLib.war"><classloader commonLibraryRef="libSPEC_3RD" apiTypeVisibility="spec" /></application>
+    <!-- 10 ) appSPEC_3RD_libDEFAULTS -> explicit app + libs with different APIs      -->
+    <application id="appSPEC_3RD_libDEFAULTS" name="appSPEC_3RD_libDEFAULTS" location="sharedLib.war"><classloader commonLibraryRef="libDEFAULTS" apiTypeVisibility="spec, third-party" /></application>
+
+    <!-- 11 ) app with no shared lib, no classloader config, global lib present, not used. -->
+    <application id="appEXPLICIT_libPRIVLIBS" name="appEXPLICIT_libPRIVLIBS" location="sharedLib.war"></application>
+</server>
