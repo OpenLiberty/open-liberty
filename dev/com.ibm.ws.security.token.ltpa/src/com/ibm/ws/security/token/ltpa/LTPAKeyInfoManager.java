@@ -349,7 +349,7 @@ public class LTPAKeyInfoManager {
     }
 
     /**
-     * Decrypt keys using a pre-built {@link LTPAKeyEncryptor} (AES path).
+     * Decrypt keys using a pre-built {@link LTPAKeyEncryptor}.
      */
     @Sensitive
     private byte[][] decryptKeys(@Sensitive LTPAKeyEncryptor encryptor, @Sensitive String secretKeyStr, @Sensitive String privateKeyStr,

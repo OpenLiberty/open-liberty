@@ -14,6 +14,7 @@ package com.ibm.ws.security.utility.tasks;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -277,7 +278,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
                                                       String keyLabel) throws Exception {
         try {
             AESKeyManager.setSecretKeyResolver(new ICSFSecretKeyResolver(keyLabel));
-            java.security.Key aesKey = AESKeyManager.getKeyViaResolver(AESKeyManager.KeyVersion.AES_V2);
+            Key aesKey = AESKeyManager.getKeyViaResolver(AESKeyManager.KeyVersion.AES_V2);
             LTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(aesKey);
             ltpaKeyFileUtil.createLTPAKeysFile(path, encryptor);
         } finally {
@@ -286,7 +287,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
 
         // The server needs both a zosPasswordEncryptionKey element (to load the ICSF key
         // at runtime) and an ltpa element with useEncryptionKey="true".
-        String zosSnippet = "    <zosPasswordEncryptionKey type=\"ICSF\" label=\"" + keyLabel + "\" />";
+        String zosSnippet = String.format("    <zosPasswordEncryptionKey type=\"ICSF\" label=\"%s\" />", keyLabel);
         String ltpaSnippet = buildLtpaSnippet(serverName, path, "useEncryptionKey=\"true\"");
         stdout.println(getMessage("createLTPAKeys.createdFile", path, zosSnippet + "\n" + ltpaSnippet));
         return SecurityUtilityReturnCodes.OK;
@@ -303,11 +304,14 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
         Key aesKey;
         String hintLine;
 
-        if (keyring != null && keyringType != null && keyLabel != null) {
+        // Non-ICSF SAF keyring: all three SAF args are present and keyringType is not ICSF
+        // (the ICSF branch is already handled by handleICSFPath before reaching here).
+        if (keyring != null && keyringType != null && !KEYRING_TYPE_ICSF.equalsIgnoreCase(keyringType) && keyLabel != null) {
             // SAF keyring: extract private key bytes, derive AES key via PBKDF2 (same as --passwordKey).
             SAFEncryptionKey ek = new SAFEncryptionKey(keyring, keyringType, keyLabel);
             aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, ek.getKey());
-            hintLine = "    <zosPasswordEncryptionKey type=\"" + keyringType + "\" keyring=\"" + keyring + "\" label=\"" + keyLabel + "\" />";
+            hintLine = String.format("    <zosPasswordEncryptionKey type=\"%s\" keyring=\"%s\" label=\"%s\" />",
+                                     keyringType, keyring, keyLabel);
         } else {
             String base64Key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
             String aesConfigFile = getArgumentValue(BaseCommandTask.ARG_AES_CONFIG_FILE, args, null);
@@ -366,7 +370,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
             AESKeyManager.setSecretKeyResolver(null);
         }
 
-        ltpaKeyFileUtil.createLTPAKeysFile(path, password.getBytes());
+        ltpaKeyFileUtil.createLTPAKeysFile(path, password.getBytes(StandardCharsets.UTF_8));
 
         stdout.println(getMessage("createLTPAKeys.createdFile", path,
                                   buildLtpaSnippet(serverName, path, "keysPassword=\"" + encodedPassword + "\"")));
@@ -391,7 +395,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
         String encoding = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, "aes");
         String encodedPassword = PasswordUtil.encode(password, encoding, props);
 
-        ltpaKeyFileUtil.createLTPAKeysFile(path, password.getBytes());
+        ltpaKeyFileUtil.createLTPAKeysFile(path, password.getBytes(StandardCharsets.UTF_8));
 
         stdout.println(getMessage("createLTPAKeys.createdFile", path,
                                   buildLtpaSnippet(serverName, path, "keysPassword=\"" + encodedPassword + "\"")));
@@ -403,19 +407,21 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
      */
     private SecurityUtilityReturnCodes handlePasswordPath(String path, String serverName,
                                                           String[] args) throws Exception {
-        Map<String, String> argMap = new HashMap<>();
-        String password = getArgumentValue(ARG_PASSWORD, args, null);
-        String encoding = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, PasswordUtil.getDefaultEncoding());
-        String key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
-        argMap.put(BaseCommandTask.ARG_PASSWORD_KEY, key);
-        String base64Key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
-        argMap.put(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, base64Key);
+        String password    = getArgumentValue(ARG_PASSWORD, args, null);
+        String encoding    = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, PasswordUtil.getDefaultEncoding());
+        String key         = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
+        String base64Key   = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
         String aesConfigFile = getArgumentValue(BaseCommandTask.ARG_AES_CONFIG_FILE, args, null);
+
+        Map<String, String> argMap = new HashMap<>();
+        argMap.put(BaseCommandTask.ARG_PASSWORD_KEY, key);
+        argMap.put(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, base64Key);
         argMap.put(BaseCommandTask.ARG_AES_CONFIG_FILE, aesConfigFile);
+
         Map<String, String> props = BaseCommandTask.convertToProperties(argMap, stdout);
         String encodedPassword = PasswordUtil.encode(password, encoding, props);
 
-        ltpaKeyFileUtil.createLTPAKeysFile(path, password.getBytes());
+        ltpaKeyFileUtil.createLTPAKeysFile(path, password.getBytes(StandardCharsets.UTF_8));
         stdout.println(getMessage("createLTPAKeys.createdFile", path,
                                   buildLtpaSnippet(serverName, path, "keysPassword=\"" + encodedPassword + "\"")));
         return SecurityUtilityReturnCodes.OK;
@@ -434,9 +440,9 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
      */
     private String buildLtpaSnippet(String serverName, String path, String attributes) {
         if (serverName != null) {
-            return "    <ltpa " + attributes + " />";
+            return String.format("    <ltpa %s />", attributes);
         }
-        return "    <ltpa " + attributes + " keysFileName=\"" + path + "\" />";
+        return String.format("    <ltpa %s keysFileName=\"%s\" />", attributes, path);
     }
 
     /**
