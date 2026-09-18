@@ -54,33 +54,34 @@ public class TestRetryHelper {
     public static void retry(int maxAttempts, RetryableAction action, ResetAction resetState) throws Exception {
         Throwable lastThrowable = null;
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            try {
-                if (attempt > 1 && resetState != null) {
-                    try {
-                        resetState.run();
-                    } catch (Throwable resetFailure) {
-                        // If we can't reset state, don't retry
-                        if (lastThrowable != null) {
-                            resetFailure.addSuppressed(lastThrowable);
-                        }
-                        if (resetFailure instanceof Exception e) {
-                            throw e;
-                        } else if (resetFailure instanceof Error err) {
-                            throw err;
-                        } else {
-                            throw new RuntimeException("Failed to reset state before retry attempt " + attempt, resetFailure);
-                        }
+            if (attempt > 1 && resetState != null) {
+                try {
+                    resetState.run();
+                } catch (Throwable resetFailure) {
+                    // If we can't reset state, don't retry
+                    if (lastThrowable != null) {
+                        resetFailure.addSuppressed(lastThrowable);
+                    }
+                    if (resetFailure instanceof Exception e) {
+                        throw e;
+                    } else if (resetFailure instanceof Error err) {
+                        throw err;
+                    } else {
+                        throw new RuntimeException("Failed to reset state before retry attempt " + attempt, resetFailure);
                     }
                 }
+            }
+            try {
                 action.run();
-                return; // Succeeded
             } catch (Throwable t) {
                 lastThrowable = t;
                 LOG.log(Level.WARNING, "Attempt " + attempt + " of " + maxAttempts + " failed: " + t.getMessage(), t);
-                if (attempt == maxAttempts) {
-                    break;
+                if (attempt < maxAttempts) {
+                    continue;
                 }
+                break;
             }
+            return; 
         }
 
         if (lastThrowable instanceof Exception e) {
