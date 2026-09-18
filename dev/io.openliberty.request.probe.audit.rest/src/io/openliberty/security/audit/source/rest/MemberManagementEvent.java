@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.context.AuditManager;
+import com.ibm.ws.rest.handler.helper.LibertyServletRESTRequest;
 import com.ibm.ws.security.audit.source.utils.AuditUtils;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.security.wim.model.Entity;
@@ -81,8 +82,16 @@ public class MemberManagementEvent extends AuditEvent {
                     set(AuditEvent.TARGET_CREDENTIAL_TYPE, AuditEvent.CRED_TYPE_BASIC);
                 }
 
-                if (req.getSessionId() != null)
-                    set(AuditEvent.TARGET_SESSION, req.getSessionId());
+                String sessionID;
+                if (AuditUtils.isGenerateNewSession()) {
+                    sessionID = req.getSessionId();
+                } else {
+                    sessionID = (req instanceof LibertyServletRESTRequest)
+                        ? ((LibertyServletRESTRequest) req).getSessionForAudit()
+                        : null;
+                }
+                if (sessionID != null)
+                    set(AuditEvent.TARGET_SESSION, sessionID);
 
                 set(AuditEvent.TARGET_METHOD, req.getMethod());
 

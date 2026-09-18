@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import com.ibm.ws.rest.handler.helper.LibertyServletRESTRequest;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
@@ -205,6 +206,22 @@ public class ExtendedRESTRequestImpl implements RESTRequest {
      */
     @Override
     public String getSessionId() {
+        return request.getSessionId();
+    }
+
+    /**
+     * Returns the session ID for audit purposes without creating a new session,
+     * if the wrapped request implements {@link LibertyServletRESTRequest}.
+     * Otherwise falls back to {@link #getSessionId()} to preserve the original
+     * behaviour for non-Liberty request implementations.
+     *
+     * @return the session ID, or {@code null} if no session exists and the
+     *         wrapped request is a {@link LibertyServletRESTRequest}
+     */
+    public String getSessionForAudit() {
+        if (request instanceof LibertyServletRESTRequest) {
+            return ((LibertyServletRESTRequest) request).getSessionForAudit();
+        }
         return request.getSessionId();
     }
 
