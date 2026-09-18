@@ -31,9 +31,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
-import com.ibm.ws.crypto.util.AESKeyManager;
-import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -43,6 +40,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.nester.Nester;
+import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
@@ -240,7 +239,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         try {
             loadConfig(props);
 
-            if (oldUseEncryptionKey != useEncryptionKey || isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
+            if (oldUseEncryptionKey != useEncryptionKey
+                || isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
                 unsetFileMonitorRegistration();
                 Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
                 setupRuntimeLTPAInfrastructure();
@@ -266,8 +266,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                 Tr.warning(tc, "LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY");
             }
             resolveAndValidateAesKey();
+            try {
+                resolvePrimaryKeyPassword(props);
+            } catch (IllegalArgumentException iae) {
+                // intentionally empty, a primary key password is not needed but this method is called to set the tryToReEncryptLtpaKeys variable.
+            }
             primaryKeyPassword = null;
-            tryToReEncryptLtpaKeys = false;
         } else {
             primaryKeyPassword = resolvePrimaryKeyPassword(props);
         }
@@ -453,7 +457,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
                 Properties properties = new Properties();
                 properties.setProperty(CFG_KEY_VALIDATION_FILE_NAME, fullFileName);
-                properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
+                // When useEncryptionKey=true, primaryKeyPassword is null. Leave the password property
+                // absent so LTPAKeyInfoManager sees null and uses the primaryEncryptor (AES) instead
+                // of attempting to build a PasswordLTPAKeyEncryptor from a null/garbage value.
+                if (primaryKeyPassword != null) {
+                    properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
+                }
                 properties.setProperty(INTERNAL_KEY_IS_CONFIGURED_VALIDATION_KEY, Boolean.FALSE.toString());
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

@@ -1,0 +1,3 @@
+<server description="com.ibm.ws.security.token.ltpa_fat.ltpaKeyPasswordTestServer">
+    <ltpa monitorValidationKeysDir="true" monitorInterval="5" useEncryptionKey="true"/> 
+</server>

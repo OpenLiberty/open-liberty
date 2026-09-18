@@ -73,6 +73,7 @@ public class LTPAKeyPasswordTests {
     private static final String LTPA_CONFIG_WEBAS = "ltpaKeyPasswordTests/ltpaConfigWithKeysPassword_WebAS.xml";
     private static final String LTPA_CONFIG_MYKEYSPASSWORD = "ltpaKeyPasswordTests/ltpaConfigWithKeysPassword_myKeysPassword.xml"; // pragma: allowlist secret
     private static final String LTPA_CONFIG_USE_ENCRYPTION_KEY = "ltpaKeyPasswordTests/ltpaConfigWithUseEncryptionKey.xml";
+    private static final String LTPA_CONFIG_USE_ENCRYPTION_KEY_MONITOR_DIR = "ltpaKeyPasswordTests/ltpaConfigWithUseEncryptionKeyAndMonitorDir.xml";
 
     private static final String KEYSTORE_PASSWORD_NAME = "keystore_password";
     private static final String KEYSTORE_PASSWORD_ENTRY = KEYSTORE_PASSWORD_NAME + "=myKeystorePassword";
@@ -96,8 +97,14 @@ public class LTPAKeyPasswordTests {
     private static String LTPA_KEYS_MYKEYSPASSWORD = "myKeysPassword/ltpa.keys"; // pragma: allowlist secret
     private static String LTPA_KEYS_MYLTPAKEYSPASSWORD = "myLtpaKeysPassword/ltpa.keys"; // pragma: allowlist secret
     private static String LTPA_KEYS_MYKEYSTOREPASSWORD = "myKeystorePassword/ltpa.keys"; // pragma: allowlist secret
+    // AES-encrypted LTPA key files — created with useEncryptionKey=true, NOT password-protected.
+    // passwordKey/ltpa.keys:    securityUtility createLTPAKeys --useEncryptionKey=true --passwordKey=myLtpaEncryptionKey
+    // passwordBase64Key/ltpa.keys: securityUtility createLTPAKeys --useEncryptionKey=true --passwordBase64Key=<TEST_AES_ENCRYPTION_KEY_B64>
     private static final String LTPA_KEYS_PASSWORDKEY    = "passwordKey/ltpa.keys";
     private static final String LTPA_KEYS_BASE64KEY      = "passwordBase64Key/ltpa.keys";
+    private static final String LTPA_KEYS_WEBAS_PASSWORD = "WebAS/ltpa.keys";
+
+    private static final String VALIDATION_KEYS_LOCATION = "resources/security/validation.keys";
 
     @Rule
     public TestRule passwordChecker = new LeakedPasswordChecker(server);
@@ -163,6 +170,7 @@ public class LTPAKeyPasswordTests {
             serverShutdownMessages.clear();
             server.deleteFileFromLibertyServerRoot(LTPA_KEYS_LOCATION);
             server.deleteFileFromLibertyServerRoot(LTPA_KEYS_BACKUP_LOCATION);
+            server.deleteFileFromLibertyServerRoot(VALIDATION_KEYS_LOCATION);
             server.deleteFileFromLibertyServerRoot(SERVER_ENV_LOCATION);
             server.deleteAllDropinConfigurations();
             removeBootstrapProperties(WLP_PASSWORD_ENCRYPTION_KEY_NAME, WLP_AES_ENCRYPTION_KEY_NAME);
@@ -529,11 +537,51 @@ public class LTPAKeyPasswordTests {
     }
 
     // -----------------------------------------------------------------------
+    // useEncryptionKey + monitorValidationKeysDir tests
+    // -----------------------------------------------------------------------
+
+    /**
+     * Primary {@code ltpa.keys} is AES-encrypted (passwordKey path). A second AES-encrypted
+     * {@code validation.keys} (same key) is dropped into {@code resources/security/} alongside it.
+     * With {@code monitorValidationKeysDir="true"} and {@code useEncryptionKey="true"} Liberty must
+     * load both files using the primary AES encryptor: {@code CWWKS4105I} is logged and form-login
+     * succeeds.
+     */
+    @Test
+    public void testUseEncryptionKey_monitorValidationKeysDir_sameKey_validationKeyLoads() throws Exception {
+        copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
+        copyLtpaKeysIntoServerAs(LTPA_KEYS_PASSWORDKEY, VALIDATION_KEYS_LOCATION);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY_MONITOR_DIR);
+        addBootstrapProperty(WLP_PASSWORD_ENCRYPTION_KEY_NAME, TEST_PASSWORD_ENCRYPTION_KEY);
+        server.startServer(true);
+
+        verifyLtpaConfigurationReadyMessageFound();
+        verifySuccessfulFormLogin();
+    }
+
+
+    // -----------------------------------------------------------------------
     // Helper methods
     // -----------------------------------------------------------------------
 
     private void copyLtpaKeysIntoServer(String ltpaKeysFile) throws Exception {
         server.copyFileToLibertyServerRoot("resources/security", "ltpaKeyPasswordTests/" + ltpaKeysFile);
+    }
+
+    /**
+     * Copies a test-data LTPA keys file into the server under an explicit destination path
+     * (relative to the server root), renaming it as needed. The source is first copied into
+     * {@code resources/security/} under a unique temp name and then renamed to the final
+     * destination file name.
+     *
+     * @param ltpaKeysFile    source path relative to {@code ltpaKeyPasswordTests/} test-files dir
+     * @param destinationPath destination path relative to server root (e.g. {@code resources/security/validation.keys})
+     */
+    private void copyLtpaKeysIntoServerAs(String ltpaKeysFile, String destinationPath) throws Exception {
+        server.copyFileToLibertyServerRoot("resources/security", "ltpaKeyPasswordTests/" + ltpaKeysFile);
+        // copyFileToLibertyServerRoot preserves the source filename; rename to the desired dest
+        String srcName = "resources/security/" + new java.io.File(ltpaKeysFile).getName();
+        server.renameLibertyServerRootFile(srcName, destinationPath);
     }
 
     private void createServerEnvFile(String... entries) throws Exception {
