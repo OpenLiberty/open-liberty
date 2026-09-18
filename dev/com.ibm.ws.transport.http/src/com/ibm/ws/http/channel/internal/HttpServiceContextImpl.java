@@ -323,6 +323,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
     // PI57542 - Deferred IOException from an async Netty write failure
     volatile IOException deferredNettyWriteError = null;
+    // PI57542 - Reusable listener that stores the first async write failure into deferredNettyWriteError
+    private final ChannelFutureListener nettyWriteErrorListener = f -> {
+        if (!f.isSuccess() && this.deferredNettyWriteError == null) {
+            Throwable cause = f.cause();
+            this.deferredNettyWriteError = (cause instanceof IOException)
+                ? (IOException) cause
+                : new IOException(cause);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ThrowIOEForInboundConnections: deferred Netty write IOE stored: " + cause);
+            }
+        }
+    };
 
     /**
      * Constructor for this base service context class.
@@ -3779,9 +3791,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
             getTSC().getWriteInterface().setBuffers(writeBuffers);
             try {
-                if(!nettyContext.channel().isOpen()){
-                    // PI57542 - synchronous IOE (channel already closed): apply the same inbound guard
-                    // as Channel Framework's synchWrite() to match the default swallow behaviour.
+                // PI57542 - synchronous IOE (channel already closed): apply the same inbound guard
+                // as Channel Framework's synchWrite() to match the default swallow behaviour.
+                if (!nettyContext.channel().isOpen()) {
+                    if (isInboundConnection() && !getHttpConfig().throwIOEForInboundConnections()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "ThrowIOEForInboundConnections=false: swallowing closed-channel IOE on Netty inbound write.");
+                        }
+                        return;
+                    }
                     throw new IOException("Attempted to write on a closed Netty channel");
                 }
                 // PI57542 - when throwIOEForInboundConnections=true, create a promise, attach
@@ -3789,28 +3807,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // flush resolves it instead of its own internal promise.
                 if (isInboundConnection() && getHttpConfig().throwIOEForInboundConnections()) {
                     ChannelPromise writePromise = nettyContext.channel().newPromise();
-                    writePromise.addListener((ChannelFuture f) -> {
-                        if (!f.isSuccess() && this.deferredNettyWriteError == null) {
-                            Throwable cause = f.cause();
-                            this.deferredNettyWriteError = (cause instanceof IOException)
-                                ? (IOException) cause
-                                : new IOException("Netty inbound write failed", cause);
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "ThrowIOEForInboundConnections: deferred Netty write IOE stored: " + cause);
-                            }
-                        }
-                    });
+                    writePromise.addListener(nettyWriteErrorListener);
                     ((NettyTCPWriteRequestContext) getTSC().getWriteInterface()).setWriteCompletionPromise(writePromise);
                 }
                 getTSC().getWriteInterface().write(TCPWriteRequestContext.WRITE_ALL_DATA, null, false, getWriteTimeout());
-            } catch (IOException ioe) {
-                if (isInboundConnection() && !getHttpConfig().throwIOEForInboundConnections()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "ThrowIOEForInboundConnections=false: swallowing closed-channel IOE on Netty inbound write: " + ioe.getMessage());
-                    }
-                    return;
-                }
-                throw ioe;
             } finally {
                 // 457369 - disconnect write buffers in TCP when done
                 getTSC().getWriteInterface().setBuffers(null);
@@ -3831,10 +3831,23 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
-    private void sendNettyFinalContent() {
+    private void sendNettyFinalContent() throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
         }
+
+        // PI57542 - synchronous IOE (channel already closed): apply the same inbound guard
+        // as Channel Framework's synchWrite() to match the default swallow behaviour.
+        if (!nettyContext.channel().isOpen()) {
+            if (isInboundConnection() && !getHttpConfig().throwIOEForInboundConnections()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "ThrowIOEForInboundConnections=false: swallowing closed-channel IOE on Netty final content.");
+                }
+                return;
+            }
+            throw new IOException("Attempted to write on a closed Netty channel");
+        }
+
         NettyResponseMessage resp = (NettyResponseMessage) getResponse();
         HttpHeaders trailers = resp.getNettyTrailers();
 
