@@ -1,0 +1,34 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>testFeatureApi-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        State 2 configuration: the fileset references a non-existent JAR so that
+        Liberty detects the library content change and fires SharedLibraryImpl.delete(),
+        evicting the library AppClassLoader from ClassLoadingServiceImpl.aclStore.
+
+        The <library> element identity (id="testFeatureSharedLib") and the WAR's
+        <classloader commonLibraryRef> are preserved — only the fileset changes —
+        so the WAR lifecycle is not disturbed by this config swap.
+
+        An unmatched glob (rather than an empty <fileset>) is used to avoid any
+        parser-level differences between an empty element and a zero-match pattern.
+    -->
+    <library id="testFeatureSharedLib">
+        <fileset dir="${server.config.dir}/sharedLibs" includes="__nonexistent__.jar"/>
+    </library>
+
+    <webApplication location="testDynamicFeatureApp.war">
+        <classloader commonLibraryRef="testFeatureSharedLib"/>
+    </webApplication>
+
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+</server>
