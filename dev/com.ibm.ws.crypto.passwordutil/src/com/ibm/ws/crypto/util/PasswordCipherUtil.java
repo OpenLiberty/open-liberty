@@ -15,6 +15,7 @@ package com.ibm.ws.crypto.util;
 
 import static com.ibm.ws.crypto.util.AESKeyManager.KeyVersion.AES_V0;
 import static com.ibm.ws.crypto.util.AESKeyManager.KeyVersion.AES_V1;
+import static com.ibm.ws.crypto.util.AESKeyManager.KeyVersion.AES_V2;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -285,9 +286,9 @@ public class PasswordCipherUtil {
             return aesDecipherV0(encrypted_bytes);
         } else if (encrypted_bytes[0] == 1) {
             checkAndLogDefaultKeyWarning(AES_V1);
-            return aesDecipherV1(encrypted_bytes);
+            return aesDecipherGcm(AES_V1, encrypted_bytes);
         } else if (encrypted_bytes[0] == 2) {
-            return aesDecipherV2(encrypted_bytes);
+            return aesDecipherGcm(AES_V2, encrypted_bytes);
         } else {
             throw new InvalidPasswordCipherException();
         }
@@ -313,11 +314,11 @@ public class PasswordCipherUtil {
         return removeSeed(decrypted);
     }
 
-    private static byte[] aesDecipherV1(byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
+    private static byte[] aesDecipherGcm(AESKeyManager.KeyVersion version, byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
         int ivLen = encrypted_bytes[1];
         int cipherBytesStart = ivLen + 2;
         GCMParameterSpec iv = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, encrypted_bytes, 2, ivLen);
-        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_GCM_CIPHER, AESKeyManager.getResolverFor(AES_V1), iv, encrypted_bytes, cipherBytesStart,
+        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_GCM_CIPHER, AESKeyManager.getResolverFor(version), iv, encrypted_bytes, cipherBytesStart,
                                              encrypted_bytes.length - cipherBytesStart);
         return removeSeed(decrypted);
     }
@@ -662,16 +663,6 @@ public class PasswordCipherUtil {
             sb.append("\n").append(cm.getLocation());
         }
         return sb.toString();
-    }
-
-    private static byte[] aesDecipherV2(byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        int ivLen = encrypted_bytes[1];
-        int cipherBytesStart = ivLen + 2;
-        GCMParameterSpec iv = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, encrypted_bytes, 2, ivLen);
-        byte[] decrypted = aesDecipherCommon(CryptoUtils.AES_GCM_CIPHER,
-                                             AESKeyManager.getResolverFor(AESKeyManager.KeyVersion.AES_V2),
-                                             iv, encrypted_bytes, cipherBytesStart, encrypted_bytes.length - cipherBytesStart);
-        return removeSeed(decrypted);
     }
 
     /**
