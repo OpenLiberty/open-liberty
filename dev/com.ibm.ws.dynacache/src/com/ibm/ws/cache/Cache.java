@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -102,7 +103,7 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
      * This is an index to the entries for random access given a cache id. The key is the cache id that is unique within
      * the server. The value is the entry.
      */
-    private NonSyncHashtable entryHashtable = null;
+    private ConcurrentHashMap<Object, CacheEntry> entryHashtable = null;
 
     /**
      * This is the default value for the priority.
@@ -210,7 +211,7 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
         // --------------------------------------------------------
         // Setup tables for cache entries, templates and dependencies
         // --------------------------------------------------------
-        entryHashtable = new NonSyncHashtable(cacheConfig.cacheSize);
+        entryHashtable = new ConcurrentHashMap<>(cacheConfig.cacheSize);
         increaseCacheSizeInBytes(ObjectSizer.FASTHASHTABLE_INITIAL_OVERHEAD + ObjectSizer.FASTHASHTABLE_INITIAL_PER_ENTRY_OVERHEAD
                                  * cacheConfig.cacheSize, "EHT");
 
@@ -1209,9 +1210,6 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
             cacheEntry.setValue(value);
             increaseCacheSizeInBytes(cacheEntry);
         }
-        // For new entries, put into the hashtable only after the value and all metadata
-        // are fully set. This prevents a concurrent unsynchronised getCacheEntry() from
-        // observing the entry with a null value and treating it as a cache miss.
         if (cause == ChangeEvent.NEW_ENTRY_ADDED) {
             entryHashtable.put(entryInfo.getIdObject(), cacheEntry);
         }
@@ -1956,7 +1954,7 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
         if (tc.isDebugEnabled())
             Tr.debug(tc, "clearLocal() cacheName=" + cacheName + " invalidating " + entryHashtable.size() + " entries");
 
-        Enumeration e = entryHashtable.keys();
+        Enumeration e = Collections.enumeration(entryHashtable.keySet());
         while (e.hasMoreElements()) {
             Object id = e.nextElement();
             internalInvalidateById(id, cause, source, !FIRE_INVALIDATION_LISTENER);
@@ -2004,7 +2002,7 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
      */
     @Override
     public synchronized Enumeration getAllIds() {
-        return entryHashtable.keys();
+        return Collections.enumeration(entryHashtable.keySet());
     }
 
     /**
@@ -2036,7 +2034,7 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
         int totalCount = 0;
         synchronized (this) {
             // loop to retrieve each cache entry from memory cache
-            Enumeration e = entryHashtable.elements();
+            Enumeration e = Collections.enumeration(entryHashtable.values());
             while (e.hasMoreElements()) {
                 CacheEntry ce = (CacheEntry) e.nextElement();
                 // find hashcode of cache id and then add to the total
@@ -2905,7 +2903,7 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
                 Tr.info(tc, "DYNA0060I", new Object[] { cacheName });
                 swapToDisk = false;
                 diskCache.stop(!HTODDynacache.COMPLETE_CLEAR);
-                Enumeration e = entryHashtable.elements();
+                Enumeration e = Collections.enumeration(entryHashtable.values());
                 // int size = entryHashtable.size();
                 long timeoutAdjustment = 2 * 60 * 1000; // 2 min (time for stop and restart server)
                 // int i = 0;
@@ -3690,7 +3688,7 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
             diskCache.clearInvalidationBuffers();
         }
 
-        Enumeration e = entryHashtable.keys();
+        Enumeration e = Collections.enumeration(entryHashtable.keySet());
         while (e.hasMoreElements()) {
             Object id = e.nextElement();
             internalInvalidateById(id, CachePerf.DIRECT, CachePerf.LOCAL, !FIRE_INVALIDATION_LISTENER);
