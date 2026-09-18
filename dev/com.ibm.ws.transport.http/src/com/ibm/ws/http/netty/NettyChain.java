@@ -413,7 +413,20 @@ public class NettyChain extends HttpChain {
 
     @Override
     public int getActivePort() {
-        return (currentConfig != null) ? currentConfig.configPort : -1;
+        // Return the port only when the channel is actually bound and listening,
+        // matching the legacy HttpChain contract (which queries the CFW for the
+        // real bound port and returns -1 until finishInitServerSocket completes).
+        // Returning configPort before STARTED would cause VirtualHostMap callers
+        // (e.g. addVirtualHost) to see ePort > 0 and fire CWWKT0016I before the
+        // OS bind has succeeded — emitting "Web application available" before the
+        // port is actually open, which is wrong and differs from legacy behavior.
+        // TODO: uncomment the one-liner below and remove the debug block for the final version:
+        // return (currentConfig != null && state.get() == ChainState.STARTED) ? currentConfig.configPort : -1;
+        int port = (currentConfig != null && state.get() == ChainState.STARTED) ? currentConfig.configPort : -1;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "getActivePort: state=" + state.get() + ", port=" + port);
+        }
+        return port;
     }
 
     public String getActiveHost() {
