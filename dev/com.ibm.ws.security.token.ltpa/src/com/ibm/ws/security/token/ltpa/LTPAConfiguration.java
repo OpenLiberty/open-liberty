@@ -83,6 +83,11 @@ public interface LTPAConfiguration {
     static final String INTERNAL_KEY_IS_CONFIGURED_VALIDATION_KEY = "isConfiguredValidationKey";
 
     /**
+     * Whether to use a raw AES key (instead of a password-derived key) to encrypt/decrypt LTPA key material.
+     */
+    static final String CFG_KEY_USE_ENCRYPTION_KEY = "useEncryptionKey";
+
+    /**
      * @return TokenFactory instance corresponding to this LTPA configuration
      */
     TokenFactory getTokenFactory();
@@ -141,5 +146,11 @@ public interface LTPAConfiguration {
      * @return validation Keys
      */
     List<Properties> getValidationKeys();
-    
+
+    /**
+     * @return true if LTPA key material should be encrypted/decrypted using a raw AES key
+     *         rather than a password-derived cipher key
+     */
+    boolean isUseEncryptionKey();
+
 }

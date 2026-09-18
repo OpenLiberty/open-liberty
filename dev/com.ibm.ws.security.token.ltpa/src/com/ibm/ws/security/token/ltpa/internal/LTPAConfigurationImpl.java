@@ -40,6 +40,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.xml.nester.Nester;
+import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
@@ -49,6 +51,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+import com.ibm.wsspi.security.crypto.KeyStringResolver;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -89,6 +92,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Sensitive
     private String primaryKeyPassword;
     private boolean tryToReEncryptLtpaKeys;
+    private boolean useEncryptionKey;
     private long keyTokenExpiration;
     private long monitorInterval;
     private LTPAFileMonitor ltpaFileMonitor;
@@ -134,6 +138,58 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         ltpaKeysChangeNotifierService.unsetReference(ref);
     }
 
+    /**
+     * DS bind method for the optional {@link KeyStringResolver} reference.
+     *
+     * <p>This method is intentionally a no-op. It exists only to give the OSGi DS runtime
+     * an activation ordering anchor when the {@code zosPasswordEncryptionKey-1.0} feature
+     * is present alongside {@code <ltpa useEncryptionKey="true"/>}.
+     *
+     * <p>The ordering guarantee works as follows:
+     * <ol>
+     *   <li>{@code KeyStringResolverImpl} (in {@code com.ibm.ws.zos.password.encryption.key})
+     *       runs its own DS {@code activate()}, which calls
+     *       {@code AESKeyManager.setSecretKeyResolver(...)}
+     *       to install the key resolver.</li>
+     *   <li>Only after that activate completes does DS publish the {@link KeyStringResolver}
+     *       service and call <em>this</em> method on {@code LTPAConfigurationImpl}.</li>
+     *   <li>Only after this bind method returns will DS call
+     *       {@code LTPAConfigurationImpl.activate()}, which runs {@code loadConfig()} and
+     *       ultimately {@code LTPAKeyCreateTask.buildEncryptor()}.</li>
+     * </ol>
+     *
+     * <p>Without this declared reference there is no ordering constraint between the two
+     * components: {@code LTPAConfigurationImpl} could activate first, causing
+     * {@code AESKeyManager.isKeyConfigured(AES_V2)} to return {@code false} and LTPA
+     * startup to fail with {@code LTPA_AES_ENCRYPTION_KEY_NOT_CONFIGURED}.
+     *
+     * <p>The actual key resolver value held by {@code AESKeyManager} is managed entirely
+     * by {@code KeyStringResolverImpl} — this component never reads the reference itself.
+     *
+     * @param resolver the {@link KeyStringResolver} service bound by DS (not used directly)
+     */
+    protected void setKeyStringResolver(KeyStringResolver resolver) {
+        // Intentional no-op: the ordering guarantee is the only purpose of this binding.
+        // AESKeyManager already holds the resolver installed by KeyStringResolverImpl.activate()
+        // before DS calls this method.
+    }
+
+    /**
+     * DS unbind method for the optional {@link KeyStringResolver} reference.
+     *
+     * <p>Intentional no-op. The reference is declared {@code dynamic}, so DS will call
+     * this method if {@code KeyStringResolverImpl} deactivates (e.g. the
+     * {@code zosPasswordEncryptionKey-1.0} feature is removed at runtime) without tearing
+     * down {@code LTPAConfigurationImpl}. {@code KeyStringResolverImpl.deactivate()} has
+     * already called {@code AESKeyManager.setSecretKeyResolver(null)} to clear the hardware
+     * resolver — no further action is needed here.
+     *
+     * @param resolver the {@link KeyStringResolver} service being unbound by DS (not used directly)
+     */
+    protected void unsetKeyStringResolver(KeyStringResolver resolver) {
+        // Intentional no-op: KeyStringResolverImpl.deactivate() already cleared AESKeyManager.
+    }
+
     /*
      * When FileMonitor is enabled, its onBaseline method will call performFileBasedAction(baselineFiles)
      * to process key files after loadConfig(props), but before submitTaskToCreateLTPAKeys().
@@ -172,6 +228,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         Long oldExpirationDifferenceAllowed = expirationDifferenceAllowed;
         boolean oldMonitorValidationKeysDir = monitorValidationKeysDir;
         String oldUpdateTrigger = updateTrigger;
+        boolean oldUseEncryptionKey = useEncryptionKey;
         List<Properties> oldValidationKeys = new ArrayList<Properties>();
         oldValidationKeys.addAll(validationKeys);
 
@@ -182,7 +239,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         try {
             loadConfig(props);
 
-            if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
+            if (oldUseEncryptionKey != useEncryptionKey
+                || isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
                 unsetFileMonitorRegistration();
                 Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
                 setupRuntimeLTPAInfrastructure();
@@ -199,7 +257,24 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Sensitive
     private void loadConfig(Map<String, Object> props) {
         primaryKeyImportFile = (String) props.get(CFG_KEY_IMPORT_FILE);
-        primaryKeyPassword = resolvePrimaryKeyPassword(props);
+        Boolean useEncryptionKeyProp = (Boolean) props.get(CFG_KEY_USE_ENCRYPTION_KEY);
+        useEncryptionKey = useEncryptionKeyProp != null ? useEncryptionKeyProp : false;
+        if (useEncryptionKey) {
+            // Warn if keysPassword was also explicitly set — it will be ignored.
+            SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
+            if (sps != null && sps.getChars() != null && sps.getChars().length > 0) {
+                Tr.warning(tc, "LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY");
+            }
+            resolveAndValidateAesKey();
+            try {
+                resolvePrimaryKeyPassword(props);
+            } catch (IllegalArgumentException iae) {
+                // intentionally empty, a primary key password is not needed but this method is called to set the tryToReEncryptLtpaKeys variable.
+            }
+            primaryKeyPassword = null;
+        } else {
+            primaryKeyPassword = resolvePrimaryKeyPassword(props);
+        }
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
         authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);
@@ -240,6 +315,19 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         combineValidationKeys();
+    }
+
+    /**
+     * Checks that at least one AES key version (V2 or V1) is configured. Throws an
+     * {@link IllegalArgumentException} (which causes an error to be logged and the
+     * service to fail startup) when neither is configured.
+     */
+    private void resolveAndValidateAesKey() {
+        if (AESKeyManager.isKeyConfigured(KeyVersion.AES_V2) || AESKeyManager.isKeyConfigured(KeyVersion.AES_V1)) {
+            return;
+        }
+        String formattedMessage = Tr.formatMessage(tc, "LTPA_AES_ENCRYPTION_KEY_NOT_CONFIGURED");
+        throw new IllegalArgumentException(formattedMessage);
     }
 
     @Sensitive
@@ -369,7 +457,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
                 Properties properties = new Properties();
                 properties.setProperty(CFG_KEY_VALIDATION_FILE_NAME, fullFileName);
-                properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
+                // When useEncryptionKey=true, primaryKeyPassword is null. Leave the password property
+                // absent so LTPAKeyInfoManager sees null and uses the primaryEncryptor (AES) instead
+                // of attempting to build a PasswordLTPAKeyEncryptor from a null/garbage value.
+                if (primaryKeyPassword != null) {
+                    properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
+                }
                 properties.setProperty(INTERNAL_KEY_IS_CONFIGURED_VALIDATION_KEY, Boolean.FALSE.toString());
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -854,6 +947,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Override
     public String getUpdateTrigger() {
         return updateTrigger;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUseEncryptionKey() {
+        return useEncryptionKey;
     }
 
     /** {@inheritDoc} */
