@@ -205,18 +205,40 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 @Override
                 public Future<Boolean> start() {
                     configurator.noteExplicitStart(appName);
-                    return asm.start();
+                    ApplicationStateMachine currentAsm = asm;
+                    if (currentAsm == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
+                            Tr.debug(_tc, "start() called on application " + appName + " whose state machine has already been removed; ignoring");
+                        }
+                        return null;
+                    }
+                    return currentAsm.start();
                 }
 
                 @Override
                 public Future<Boolean> stop() {
                     configurator.clearExplicitStart(appName);
-                    return asm.stop();
+                    ApplicationStateMachine currentAsm = asm;
+                    if (currentAsm == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
+                            Tr.debug(_tc, "stop() called on application " + appName + " whose state machine has already been removed; ignoring");
+                        }
+                        return null;
+                    }
+                    return currentAsm.stop();
                 }
 
                 @Override
                 public void restart() {
-                    asm.restart();
+                    configurator.noteExplicitStart(appName);
+                    ApplicationStateMachine currentAsm = asm;
+                    if (currentAsm == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
+                            Tr.debug(_tc, "restart() called on application " + appName + " whose state machine has already been removed; ignoring");
+                        }
+                        return;
+                    }
+                    currentAsm.restart();
                 }
 
                 @Override
@@ -1945,6 +1967,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _appFromPid.clear();
         _blockedConfigFromPid.clear();
         _blockedPidsFromName.clear();
+        _pendingExplicitStartAppNames.clear();
 
         cleanCache(getCacheAdaptDir(), appCacheIds);
         cleanCache(getCacheOverlayDir(), appCacheIds);

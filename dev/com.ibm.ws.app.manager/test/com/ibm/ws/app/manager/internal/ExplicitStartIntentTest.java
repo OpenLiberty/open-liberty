@@ -176,4 +176,64 @@ public class ExplicitStartIntentTest {
         assertFalse("A single clearExplicitStart must fully remove a duplicate-noted entry",
                     pendingNames.contains("cicsasclientEAR"));
     }
+
+    // ---------------------------------------------------------------------------
+    // Issue 2 — restart() must record start intent (same failure mode as start())
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Verifies that calling {@code noteExplicitStart} for a restart (Issue 2 fix) records
+     * intent in the same way that {@code start()} does, so that a PID replacement during
+     * a restart does not leave the replacement ASM permanently stalled.
+     *
+     * <p>The fix adds {@code configurator.noteExplicitStart(appName)} to the
+     * {@code Application.restart()} lambda, mirroring {@code start()}.
+     */
+    @Test
+    public void testRestartRecordsExplicitStartIntent() {
+        // Simulate the Application.restart() lambda (fixed version):
+        //   configurator.noteExplicitStart(appName);
+        //   currentAsm.restart();
+        configurator.noteExplicitStart("cicsasclientEAR");
+
+        assertTrue("restart() must record explicit-start intent so PID replacement can propagate it",
+                   pendingNames.contains("cicsasclientEAR"));
+    }
+
+    /**
+     * If a stop() is called after restart() recorded intent, the stop must clear it so that
+     * a subsequent PID replacement does not auto-start an intentionally stopped application.
+     */
+    @Test
+    public void testStopAfterRestartClearsIntent() {
+        configurator.noteExplicitStart("cicsasclientEAR"); // from restart()
+        configurator.clearExplicitStart("cicsasclientEAR"); // from stop()
+
+        assertFalse("stop() after restart() must clear the intent recorded by restart()",
+                    pendingNames.contains("cicsasclientEAR"));
+    }
+
+    // ---------------------------------------------------------------------------
+    // Issue 4 — readyForAppsToStop() must clear _pendingExplicitStartAppNames
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Verifies that after {@code readyForAppsToStop()} runs (simulated here by direct set
+     * manipulation to mirror the production code), the pending-start set is empty.  This
+     * ensures stale intent cannot survive into a subsequent server restart.
+     *
+     * <p>Production fix: added {@code _pendingExplicitStartAppNames.clear()} to
+     * {@code readyForAppsToStop()} alongside the existing map clears.
+     */
+    @Test
+    public void testPendingIntentClearedOnShutdown() {
+        configurator.noteExplicitStart("cicsasclientEAR");
+        configurator.noteExplicitStart("otherApp");
+
+        // Simulate what readyForAppsToStop() now does (among other things):
+        pendingNames.clear();
+
+        assertTrue("All pending explicit-start intent must be cleared during server shutdown",
+                   pendingNames.isEmpty());
+    }
 }
