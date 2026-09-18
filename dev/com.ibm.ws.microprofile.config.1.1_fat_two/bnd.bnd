@@ -21,8 +21,7 @@ src: \
 	test-applications/ordForDefaults.war/src,\
 	test-applications/sharedLib.jar/src,\
 	test-applications/sharedLibUser.jar/src,\
-	test-applications/simultaneousRequests.war/src,\
-	test-applications/testAppUtils.jar/src
+	test-applications/simultaneousRequests.war/src
 
 fat.project: true
 
@@ -55,4 +54,5 @@ tested.features: mpConfig-1.1,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.ws.microprofile.config.1.1_fat.common;version=latest,\
 	io.openliberty.microprofile.config.internal_repeat_tests;version=latest

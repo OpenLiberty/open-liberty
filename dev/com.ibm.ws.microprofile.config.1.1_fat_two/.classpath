@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/testAppUtils.jar/src"/>
 	<classpathentry kind="src" path="test-applications/brokenCDIConfig.war/resources"/>
 	<classpathentry kind="src" path="test-applications/brokenCDIConfig.war/src"/>
 	<classpathentry kind="src" path="test-applications/classLoaderCache.war/src"/>
