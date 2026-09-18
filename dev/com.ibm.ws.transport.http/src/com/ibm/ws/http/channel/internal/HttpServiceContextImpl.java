@@ -123,6 +123,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -3372,7 +3373,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         }
 
-        boolean complete = false;
+        boolean complete = this.getRequestMethod().equals(MethodValues.HEAD) || getRequest().getMethod().equals(MethodValues.HEAD.getName());
         if (sendHeaders) {
             HttpResponseMessage msg = getResponse();
 
@@ -3457,7 +3458,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // already encodes the response as self-contained; sending a
             // LastStreamSpecificHttpContent after it would put a spurious chunked
             // terminator on the wire and leave the client stalled waiting for it.
-            if (!complete) {
+            if (!complete || !(nettyResponse instanceof FullHttpResponse)) {
                 sendNettyFinalContent();
             }
         }
