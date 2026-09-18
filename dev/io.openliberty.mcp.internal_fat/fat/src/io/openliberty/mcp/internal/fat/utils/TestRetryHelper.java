@@ -58,8 +58,18 @@ public class TestRetryHelper {
                 if (attempt > 1 && resetState != null) {
                     try {
                         resetState.run();
-                    } catch (Throwable t) {
-                        LOG.log(Level.WARNING, "Error while resetting state before retry attempt " + attempt + ": " + t.getMessage(), t);
+                    } catch (Throwable resetFailure) {
+                        // If we can't reset state, don't retry
+                        if (lastThrowable != null) {
+                            resetFailure.addSuppressed(lastThrowable);
+                        }
+                        if (resetFailure instanceof Exception e) {
+                            throw e;
+                        } else if (resetFailure instanceof Error err) {
+                            throw err;
+                        } else {
+                            throw new RuntimeException("Failed to reset state before retry attempt " + attempt, resetFailure);
+                        }
                     }
                 }
                 action.run();

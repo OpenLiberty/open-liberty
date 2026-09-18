@@ -110,7 +110,11 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
             FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionTimeoutMetrics");
         }, () -> {
-            client.cleanupSession();
+            try {
+                client.cleanupSession();
+            } catch (Exception e) {
+                // Ignore failures cleaning up the session, it may have expired
+            }
             client.initializeSession();
         });
     }
