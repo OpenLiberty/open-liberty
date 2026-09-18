@@ -61,6 +61,7 @@ import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.TooLongFrameException;
+import io.netty.handler.codec.http.ContentLengthNotAllowedException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
@@ -241,7 +242,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (!(msg.decoderResult().isFinished() && msg.decoderResult().isSuccess())) {
             if(context.channel().isActive()) {
                 if (msg.decoderResult().cause() != null) {
-                    if (!msg.decoderResult().cause().getMessage().contains("possibly HTTP/0.9")) {
+                    // The legacy parser rejects this protocol condition without FFDC.
+                    if (!(msg.decoderResult().cause() instanceof ContentLengthNotAllowedException)
+                                    && !msg.decoderResult().cause().getMessage().contains("possibly HTTP/0.9")) {
                         FFDCFilter.processException(msg.decoderResult().cause(), HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
                     sendErrorMessage(msg.decoderResult().cause());
