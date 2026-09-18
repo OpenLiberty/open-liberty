@@ -16,6 +16,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -139,7 +141,7 @@ public class StatefulModeTest extends FATServletClient {
         String expectedResponse = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"stateful-mode"}],"isError":false}}
                         """;
-        String firstResponse = future.get(10, TimeUnit.SECONDS);
+        String firstResponse = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponse, firstResponse, true);
     }
 }
