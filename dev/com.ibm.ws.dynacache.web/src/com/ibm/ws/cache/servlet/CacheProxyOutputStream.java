@@ -195,20 +195,6 @@ public class CacheProxyOutputStream extends ServletOutputStream {
         }
     }
 
-    /**
-     * Performs the delayWrite->caching state transition without touching the network stream.
-     */
-    public void finishCaching() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "finishCaching this=" + this + " delayWrite=" + delayWrite + " caching=" + caching);
-        outputStreamFlushed = true;
-        flushrequired = false;
-        if (delayWrite && (!caching)) {
-            caching = postDelayCachingValue;
-            delayWrite = false;
-        }
-    }
-
     @Override
     public void close() throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

@@ -1109,7 +1109,6 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
             cause = ChangeEvent.NEW_ENTRY_ADDED;
 
             cacheEntry = getFreeLruEntry();
-            entryHashtable.put(entryInfo.getIdObject(), cacheEntry);
 
             boolean found = false;
             // if not in memory, clean up potential entry from disk
@@ -1209,6 +1208,12 @@ public class Cache extends DCacheBase implements com.ibm.websphere.cache.CacheLo
             updateInvalidationHashtable(cacheEntry);
             cacheEntry.setValue(value);
             increaseCacheSizeInBytes(cacheEntry);
+        }
+        // For new entries, put into the hashtable only after the value and all metadata
+        // are fully set. This prevents a concurrent unsynchronised getCacheEntry() from
+        // observing the entry with a null value and treating it as a cache miss.
+        if (cause == ChangeEvent.NEW_ENTRY_ADDED) {
+            entryHashtable.put(entryInfo.getIdObject(), cacheEntry);
         }
         if (updateLru) {
             updateLruLocation(cacheEntry);

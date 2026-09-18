@@ -417,9 +417,7 @@ public class FragmentComposer {
 			try {
 				cacheProxyOutputStream.flush();
 			} catch (IOException ex) {
-				FFDCFilter.processException(ex, this.getClass().getName() + ".requestFinished()", "413");
-				// Transport may have closed the stream; ensure caching state is still updated.
-				cacheProxyOutputStream.finishCaching();
+		              FFDCFilter.processException(ex, this.getClass().getName() + ".requestFinished()", "413");
 			}
 		}
 
