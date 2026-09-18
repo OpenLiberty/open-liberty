@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+    <archive targetInArchive="/updateableAppEJB.jar">
+        <dir sourceOnDisk="${server.config.dir}/loose/updateableAppEJB" targetInArchive="/"/>
+    </archive>
+    <archive targetInArchive="/updateableAppWeb.war">
+        <dir sourceOnDisk="${server.config.dir}/loose/updateableAppWeb" targetInArchive="/"/>
+        <dir sourceOnDisk="${server.config.dir}/loose/updateableAppWeb/WEB-INF/classes" targetInArchive="/WEB-INF/classes"/>
+    </archive>
+    <archive targetInArchive="/lib/updateableAppLib.jar">
+        <dir sourceOnDisk="${server.config.dir}/loose/updateableAppLib" targetInArchive="/"/>
+    </archive>
+    <dir sourceOnDisk="${server.config.dir}/loose/updateableApp" targetInArchive="/"/>
+</archive>

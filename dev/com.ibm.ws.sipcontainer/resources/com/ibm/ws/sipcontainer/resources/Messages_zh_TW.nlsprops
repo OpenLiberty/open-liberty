@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -678,12 +675,10 @@ warn.server.overloaded.explanation=\u7576\u968e\u6bb5\u4f5c\u696d\u8d77\u59cb\u9
 warn.server.overloaded.useraction=\u8acb\u6e1b\u5c11\u9001\u5165\u8a0a\u606f\uff0c\u6216\u6e1b\u5c11\u4f3a\u670d\u5668\u6a5f\u5668\u4e0a\u4efb\u4f55\u5176\u4ed6\u53ef\u80fd\u7684\u58d3\u529b\u4f86\u6e90\u3002
 
 warn.server.overloaded.too.many.sessions=CWSCT0342W: \u4f3a\u670d\u5668\u8d85\u8f09\uff0c\u56e0\u70ba\u61c9\u7528\u7a0b\u5f0f\u968e\u6bb5\u4f5c\u696d\u592a\u591a\u3002
-
 warn.server.overloaded.too.many.sessions.explanation=\u7576 SIP \u4f3a\u670d\u5668\u8d85\u8f09\u6642\uff0c\u5b83\u7121\u6cd5\u63a5\u53d7\u4efb\u4f55\u5176\u4ed6\u9001\u5165\u8a0a\u606f\u3002\u4f5c\u7528\u4e2d\u7684\u61c9\u7528\u7a0b\u5f0f\u968e\u6bb5\u4f5c\u696d\u592a\u591a\u3002
 warn.server.overloaded.too.many.sessions.useraction=\u8acb\u6e1b\u5c11\u6240\u5efa\u7acb\u7684\u61c9\u7528\u7a0b\u5f0f\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\uff0c\u6216\u8a2d\u5b9a\u8f03\u9ad8\u7684\u968e\u6bb5\u4f5c\u696d\u8d77\u59cb\u901a\u8a0a\u5354\u5b9a (SIP) com.ibm.ws.sip.container \u61c9\u7528\u7a0b\u5f0f\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u4e0a\u9650\u503c\u3002
 
 warn.server.overloaded.too.many.messages=CWSCT0343W: \u4f3a\u670d\u5668\u56e0\u5e73\u5747\u9031\u671f\u6536\u5230\u7684\u8a0a\u606f\u592a\u591a\u800c\u8d85\u8f09\u3002
-
 warn.server.overloaded.too.many.messages.explanation=\u7576 SIP \u4f3a\u670d\u5668\u8d85\u8f09\u6642\uff0c\u5b83\u7121\u6cd5\u63a5\u53d7\u4efb\u4f55\u5176\u4ed6\u9001\u5165\u8a0a\u606f\u3002\u8a0a\u606f\u6d41\u91cf\u592a\u5927\u3002
 warn.server.overloaded.too.many.messages.useraction=\u8acb\u6e1b\u5c11\u8a0a\u606f\u8ca0\u8377\u91cf\uff0c\u6216\u5c07\u968e\u6bb5\u4f5c\u696d\u8d77\u59cb\u901a\u8a0a\u5354\u5b9a (SIP) com.ibm.ws.sip.container \u7684\u6bcf\u4e00\u5e73\u5747\u9031\u671f\u8a0a\u606f\u6578\u91cf\u4e0a\u9650\u503c\u8a2d\u6210\u6bd4\u8f03\u9ad8\u3002
 
@@ -703,9 +698,7 @@ info.bootstrap.started=CWSCT0347I: \u5df2\u555f\u52d5\u5f15\u5c0e\u6284\u5beb\u3
 info.bootstrap.started.explanation=\u968e\u6bb5\u4f5c\u696d\u8d77\u59cb\u901a\u8a0a\u5354\u5b9a (SIP) com.ibm.ws.sip.container\uff0c\u6b63\u5728\u5c07\u5b83\u7684\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u6284\u5beb\u5230\u65b0\u9023\u63a5\u7684\u540c\u5c64\u7d1a\u3002
 info.bootstrap.started.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
 
-
 info.bootstrap.finished=CWSCT0348I: \u5df2\u5b8c\u6210\u5f15\u5c0e\u6284\u5beb\u3002
-
 info.bootstrap.finished.explanation=\u968e\u6bb5\u4f5c\u696d\u8d77\u59cb\u901a\u8a0a\u5354\u5b9a (SIP) com.ibm.ws.sip.container \u5df2\u5b8c\u6210\u5c07\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u6284\u5beb\u5230\u65b0\u9023\u63a5\u7684\u540c\u5c64\u7d1a\u3002
 info.bootstrap.finished.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
 
@@ -799,9 +792,7 @@ error.dar.repository.create.1.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u5
 
 error.dar.selector.1=CWSCT0407E: \u9810\u8a2d\u61c9\u7528\u7a0b\u5f0f\u8def\u7531\u5668\u6c92\u6709\u72c0\u614b\u3002
 error.dar.selector.1.explanation=\u5728\u61c9\u7528\u7a0b\u5f0f\u8def\u7531\u5668\u63a5\u6536\u5167\u542b NEW \u4ee5\u5916\u6307\u5f15\u7684\u8981\u6c42\u6642\uff0c\u61c9\u6703\u5728\u61c9\u7528\u7a0b\u5f0f\u93c8\u4e2d\u5305\u542b\u4e00\u500b\u72c0\u614b\u7d22\u5f15\u3002
-
 error.dar.selector.1.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c
-
 
 error.dar.property.parser.1=CWSCT0408E: \u9810\u8a2d\u61c9\u7528\u7a0b\u5f0f\u8def\u7531\u5668 property strategy \u7121\u6cd5\u8f09\u5165\u5167\u5bb9\u6a94\u3002
 error.dar.property.parser.1.explanation=\u61c9\u7528\u7a0b\u5f0f\u8def\u7531\u5668\u5167\u5bb9\u6a94\u7684\u683c\u5f0f\u7121\u6548\u3002
@@ -828,7 +819,6 @@ warn.server.overloaded.message.queue.overloaded.explanation=\u7576 SIP \u4f3a\u6
 warn.server.overloaded.message.queue.overloaded.useraction=\u8acb\u964d\u4f4e\u9001\u5165\u7684\u8a0a\u606f\u8cc7\u6599\u6d41\u91cf\uff0c\u6216\u63d0\u9ad8\u300c\u968e\u6bb5\u4f5c\u696d\u8d77\u59cb\u901a\u8a0a\u5354\u5b9a (SIP)\u300dcom.ibm.ws.sip.container \u4f47\u5217\u5927\u5c0f\u4e0a\u9650\u503c\u3002
 
 info.sip.replication.mode=CWSCT0414I: SIP \u6284\u5beb\u6a21\u5f0f\u70ba\uff1a{0}
-
 info.sip.replication.mode.explanation=\u8de8\u6284\u5beb\u7db2\u57df (\u82e5\u6709\u7684\u8a71) \u6284\u5beb SIP \u968e\u6bb5\u4f5c\u696d\u7684\u983b\u7387\u3002
 info.sip.replication.mode.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c
 
@@ -841,7 +831,6 @@ error.dar.no.config.explanation=\u627e\u4e0d\u5230\u4f7f\u7528\u8005\u6240\u63d0
 error.dar.no.config.useraction=\u8acb\u6aa2\u67e5 SIP com.ibm.ws.sip.container \u5167\u5bb9 "javax.servlet.sip.ar.dar.configuration" \u4e2d\u63d0\u4f9b\u7684\u8def\u5f91\u662f\u5426\u6b63\u78ba
 
 error.sip.descriptor.wrong.class=CWSCT0417E: \u627e\u4e0d\u5230 sip.xml \u4e2d\u6240\u5b9a\u7fa9\u7684 siplet \u985e\u5225\u540d\u7a31\uff0c\u985e\u5225\u540d\u7a31\uff1a{0}\u3002
-
 error.sip.descriptor.wrong.class.explanation=sip.xml \u6587\u4ef6\u5b9a\u7fa9\u7684 siplet \u985e\u5225\u540d\u7a31\u7121\u6cd5\u8f09\u5165\u3002
 error.sip.descriptor.wrong.class.useraction=\u8acb\u6aa2\u67e5\u60a8\u7684 sip.xml \u6a94\uff0c\u78ba\u5b9a\u64b0\u5beb\u7684\u985e\u5225\u540d\u7a31\u6b63\u78ba\u3002
 
@@ -936,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=\u8acb\u4f7f\u7528\u540d\u7a31\u4f3
 warning.traditional.enabled=CWSCT0441W: SIP \u5132\u5b58\u5668\u4e0d\u652f\u63f4\u50b3\u7d71 PMI\u3002
 warning.traditional.enabled.explanation=\u5728 server.xml \u6a94\u4e2d\uff0cenableTraditionalPMI \u5c6c\u6027\u8a2d\u70ba true\u3002\u5728 Liberty \u4e2d\uff0cSIP \u5132\u5b58\u5668\u4e0d\u652f\u63f4\u50b3\u7d71 PMI\u3002
 warning.traditional.enabled.useraction=\u8acb\u5f9e server.xml \u6a94\u4e2d\u79fb\u9664 enableTraditionalPMI \u5167\u5bb9\u3002
+
+missingPorts.endpointDisabled=CWSCT0442W: {0} \u7684\u6703\u8a71\u555f\u52d5\u5354\u5b9a (SIP) \u7aef\u9ede\u672a\u8a2d\u5b9a\u4efb\u4f55\u9023\u63a5\u57e0\uff0c\u4e14\u5df2\u505c\u7528\u3002
+missingPorts.endpointDisabled.explanation=SIP \u7aef\u9ede\u8a2d\u5b9a\u4e2d\u672a\u6307\u5b9a TCP\u3001 TLS \u6216 UDP \u7684\u4efb\u4f55\u9023\u63a5\u57e0\u3002 \u8a72\u7d42\u7aef\u7121\u6cd5\u76e3\u807d\u50b3\u5165\u7684 SIP \u6d41\u91cf\u3002
+missingPorts.endpointDisabled.useraction=\u5728 server.xml \u6a94\u6848\u4e2d\uff0c\u70ba SIP \u7aef\u9ede\u8a2d\u5b9a sipTCPPort, sipTLSPort, \u6216 sipUDPPort \u5c6c\u6027\u3002

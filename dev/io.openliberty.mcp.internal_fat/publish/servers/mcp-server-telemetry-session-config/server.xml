@@ -4,7 +4,6 @@
         <feature>mcp-1.0</feature>
         <feature>componenttest-2.0</feature>
         <feature>monitor-1.0</feature>
-        <feature>mpmetrics-5.1</feature>
         <feature>cdi-4.0</feature>
         <feature>mptelemetry-2.1</feature>
         <feature>servlet-6.0</feature>
@@ -14,5 +13,4 @@
   	 </application>
     
     <include location="../fatTestPorts.xml"/>
-    <mpMetrics authentication="false"/>
 </server>

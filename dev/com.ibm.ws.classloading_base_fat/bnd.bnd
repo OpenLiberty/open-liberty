@@ -1,0 +1,73 @@
+#*******************************************************************************
+# Copyright (c) 2025, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src, \
+	test-applications/PLGenStubEJB.jar/src, \
+	test-applications/PLGenStubWeb.war/src, \
+	test-applications/TestUsingAppBundledLibraries.war/src, \
+	test-applications/TestUsingSharedLibraries.war/src, \
+	test-applications/forbidden.war/src, \
+	test-applications/sharedLib.war/src, \
+	test-applications/sharedLibEJB.jar/src, \
+	test-applications/sharedLibraryA.jar/src, \
+	test-applications/sharedLibraryB.jar/src, \
+	test-applications/sharedLibraryBase1.jar/src, \
+	test-applications/sharedLibraryC.jar/src, \
+	test-applications/sharedLibraryD.jar/src, \
+	test-applications/sharedLibraryE.jar/src, \
+	test-applications/spring-loader-sci.war/src, \
+	test-applications/test.library.packages.exporter.jar/src, \
+	test-applications/updateableAppEJB.jar/src, \
+	test-applications/updateableAppLib.jar/src, \
+	test-applications/updateableAppWeb.war/src, \
+	test-bundles/libraryChangeBundle/src, \
+	test-bundles/mock.jca/src, \
+	test-bundles/test.libraries/src, \
+	test-bundles/test.library.packages/src, \
+	test-bundles/test.library.packages.importer1/src, \
+	test-bundles/test.library.packages.importer2/src
+
+fat.project: true
+-sub: *.bnd
+
+tested.features: \
+    library.listener-1.0, \
+    jdbc-4.3, \
+    pages-3.1, \
+    expressionlanguage-5.0, \
+    restconnector-2.0, \
+    json-1.0
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.4.0, \
+	io.openliberty.jakarta.servlet.6.0;version=latest, \
+	com.ibm.websphere.javaee.ejb.3.2, \
+	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest, \
+	io.openliberty.jakarta.annotation.2.1;version=latest, \
+	com.ibm.ws.jmx.connector.client.rest;version=latest, \
+	com.ibm.websphere.javaee.connector.1.7, \
+	com.ibm.websphere.javaee.annotation.1.3, \
+	com.ibm.websphere.javaee.jms.2.0, \
+	com.ibm.ws.classloading.configuration, \
+	com.ibm.websphere.org.osgi.core, \
+	com.ibm.websphere.org.osgi.service.cm;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component, \
+	com.ibm.wsspi.org.osgi.service.component.annotations, \
+	com.ibm.ws.classloading, \
+	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
+	com.ibm.websphere.appserver.spi.kernel.metatype, \
+	com.ibm.ws.org.apache.commons.io;version=latest, \
+	com.ibm.ws.org.slf4j.api;version=latest

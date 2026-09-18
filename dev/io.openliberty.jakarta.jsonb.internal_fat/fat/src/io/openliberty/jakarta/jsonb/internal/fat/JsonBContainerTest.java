@@ -41,7 +41,14 @@ public class JsonBContainerTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true).forServers(SERVER_NAME).fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .setSkipTransformation(true)
+                                    .forServers(SERVER_NAME)
+                                    .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE12_FEATURES()
+                                    .setSkipTransformation(true)
+                                    .forServers(SERVER_NAME)
+                                    .fullFATOnly());
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = JsonBContainerTestServlet.class, contextRoot = "jsonbcontainertestapp")

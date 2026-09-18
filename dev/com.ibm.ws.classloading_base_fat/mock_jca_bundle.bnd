@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2024, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: Mock JCA Resource Adapter
+Bundle-SymbolicName: mock.jca; singleton:=true
+Bundle-Description: This bundle provides a mock resource adapter to use for testing; version=${bVersion}
+
+WS-TraceGroup: MockJCA
+
+# don't need to export any packages
+Export-Package:
+
+# include the implementation packages
+Private-Package: mock.*
+
+# add the OSGI-INF stuff into the bundle
+Include-Resource: OSGI-INF=test-bundles/mock.jca/resources/OSGI-INF
+
+# use the annotations to describe the services
+-dsannotations: mock.jca.ResourceAdapter

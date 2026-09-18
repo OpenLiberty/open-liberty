@@ -679,7 +679,20 @@ public class PluginMergeToolImpl implements PluginMergeTool {
 
                 debug(f.getName() + ": " + cluster + "|" + vhGrp + "|" + uriGrp);
 
-                // use keys from inner hashtable
+                // use keys from inner hashtable — skip if any element is missing (e.g. paused endpoint)
+                boolean clusterMissing = clusterNames.get(cluster) == null;
+                boolean vhGrpMissing   = vhGrpNames.get(vhGrp) == null;
+                boolean uriGrpMissing  = uriGrpNames.get(uriGrp) == null;
+                if (clusterMissing || vhGrpMissing || uriGrpMissing) {
+                    List<String> missing = new ArrayList<String>();
+                    if (clusterMissing) missing.add("ServerCluster=\"" + cluster + "\"");
+                    if (vhGrpMissing)   missing.add("VirtualHostGroup=\"" + vhGrp + "\"");
+                    if (uriGrpMissing)  missing.add("UriGroup=\"" + uriGrp + "\"");
+                    Tr.info(traceComponent, "Skipping Route [ServerCluster=" + cluster + ", VirtualHostGroup=" + vhGrp + ", UriGroup=" + uriGrp +
+                                           "] in " + f.getName() + " because the following referenced elements could not be found: " +
+                                           missing + ". The plugin-cfg.xml may have been generated while the httpEndpoint listeners were paused.");
+                    continue;
+                }
                 Enumeration<String> serverKeys = clusterNames.get(cluster).keys();
                 while (serverKeys.hasMoreElements()) {
                     String k1 = serverKeys.nextElement();
@@ -1090,10 +1103,21 @@ public class PluginMergeToolImpl implements PluginMergeTool {
                 }
 
                 String scName = (info.getRoute()).getAttribute("ServerCluster");
-                info.setServerCluster((Element) ((Element) serverClusters.get(scName.substring(0, scName.lastIndexOf("_" + seqNum)))).cloneNode(true));
+                String scNameStripped = scName.substring(0, scName.lastIndexOf("_" + seqNum));
+                Element eServerCluster = (Element) serverClusters.get(scNameStripped);
+                if (eServerCluster == null) {
+                    Tr.info(traceComponent, "Skipping UriGroup " + uriGrpName + " because its ServerCluster \"" + scNameStripped + "\" could not be found. " +
+                                           "The plugin-cfg.xml may have been generated while the httpEndpoint listeners were paused.");
+                    continue;
+                }
+                info.setServerCluster((Element) eServerCluster.cloneNode(true));
 
                 String vhgName = info.getRoute().getAttribute("VirtualHostGroup");
                 Element eVhg = (Element) vHostGrps.get(vhgName.substring(0, vhgName.lastIndexOf("_" + seqNum)));
+                if (eVhg == null) {
+                    Tr.info(traceComponent, "Skipping UriGroup " + uriGrpName + " because its VirtualHostGroup \"" + vhgName + "\" could not be found.");
+                    continue;
+                }
                 info.setVhg((Element) eVhg.cloneNode(false));
 
                 // VirtualHostName:VirtualHostElement

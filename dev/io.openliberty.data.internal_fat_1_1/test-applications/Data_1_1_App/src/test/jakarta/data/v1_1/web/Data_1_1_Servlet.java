@@ -605,7 +605,8 @@ public class Data_1_1_Servlet extends FATServlet {
      *
      * Applies scaling due to Oracle stripping trailing 0s
      */
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
@@ -1340,6 +1341,8 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testJakartaQueryWithRestrictionAndOrder() {
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         Restriction<Fraction> ninthsAndTenths = //
                         Restrict.any(_Fraction.denominator.equalTo(9),
@@ -1559,6 +1562,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDB2() && isHibernatePersistence())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 18/23.
         // Ensure deletion in the finally block.
@@ -2020,6 +2025,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 14/23.
         // Ensure deletion in the finally block.
@@ -2058,6 +2065,127 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a NativeQuery method that returns a page of results. Retrieve the
+     * second page, then the next (third) page, then the next (fourth) page.
+     * Finally, retrieve the previous page from the second page, which is page 1.
+     */
+    @Test
+    public void testNativeQueryRetrievesPages() {
+        // Fractions n/d where 2^n < d^2, ordered by denominator ASC, numerator ASC.
+        // With page size 8: page 1 = items 1-8, page 2 = items 9-16, etc.
+
+        // Hibernate has trouble with SELECT * in native query combined with
+        // limit for SQL Server
+        if (isHibernatePersistence() && isSQLServer())
+            return;
+
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
+
+        PageRequest page2Req = PageRequest.ofSize(8).pageNumber(2);
+
+        Page<Fraction> page2 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2Req);
+
+        assertEquals(List.of("3/5",
+                             "4/5",
+                             "1/6",
+                             "2/6",
+                             "3/6",
+                             "4/6",
+                             "5/6",
+                             "1/7"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(2L,
+                     page2.pageRequest().pageNumber());
+        assertEquals(8,
+                     page2.numberOfElements());
+        assertEquals(true,
+                     page2.hasPrevious());
+        assertEquals(true,
+                     page2.hasNext());
+
+        Page<Fraction> page3 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2.nextPageRequest());
+
+        assertEquals(List.of("2/7",
+                             "3/7",
+                             "4/7",
+                             "5/7",
+                             "1/8",
+                             "2/8",
+                             "3/8",
+                             "4/8"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(3L,
+                     page3.pageRequest().pageNumber());
+        assertEquals(8,
+                     page3.numberOfElements());
+        assertEquals(true,
+                     page3.hasPrevious());
+        assertEquals(true,
+                     page3.hasNext());
+
+        Page<Fraction> page4 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page3.nextPageRequest());
+
+        assertEquals(List.of("5/8",
+                             "1/9",
+                             "2/9",
+                             "3/9",
+                             "4/9",
+                             "5/9",
+                             "6/9",
+                             "1/10"),
+                     page4.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4L,
+                     page4.pageRequest().pageNumber());
+        assertEquals(8,
+                     page4.numberOfElements());
+        assertEquals(true,
+                     page4.hasPrevious());
+        assertEquals(true,
+                     page4.hasNext());
+
+        Page<Fraction> page1 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2.previousPageRequest());
+
+        assertEquals(List.of("1/2",
+                             "1/3",
+                             "2/3",
+                             "1/4",
+                             "2/4",
+                             "3/4",
+                             "1/5",
+                             "2/5"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(1L,
+                     page1.pageRequest().page());
+        assertEquals(8,
+                     page1.numberOfElements());
+        assertEquals(false,
+                     page1.hasPrevious());
+        assertEquals(true,
+                     page1.hasNext());
+    }
+
+    /**
      * Use a NativeQuery method that returns subsets of entity attributes
      * as an array of Java records
      */
@@ -2081,6 +2209,9 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryReturnsFirstEntity() {
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
+
         assertEquals("Seven Twentieths",
                      fractions.firstValueWithin(0.334, 0.4)
                                      .orElseThrow().name);
@@ -2095,6 +2226,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(List.of("1/2",
                              "1/3",
@@ -2158,6 +2291,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
                      fractions.numReducedWithDenominatorOf(18, true));
@@ -2569,7 +2704,8 @@ public class Data_1_1_Servlet extends FATServlet {
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
         // Derby ignores query timeout and the lock timeout ends up applying instead.
         // Hibernate does not honor the query timeout on native queries with DB2.

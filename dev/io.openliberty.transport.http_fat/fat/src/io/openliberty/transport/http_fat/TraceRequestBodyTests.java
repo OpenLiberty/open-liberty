@@ -275,10 +275,13 @@ public class TraceRequestBodyTests {
                 "\r\n" +
                 postBody;
 
+        // Use keep-alive so Netty's HttpServerKeepAliveHandler does not close
+        // the channel after writing the POST response, which on servlet-4.0+
+        // would race with the server writing the pipelined GET response.
         String getRequest =
                 "GET " + TRACE_SERVLET + " HTTP/1.1\r\n" +
                 "Host: " + hostHeader() + "\r\n" +
-                "Connection: close\r\n" +
+                "Connection: keep-alive\r\n" +
                 "\r\n";
 
         String response = sendRawRequest(postRequest + getRequest);

@@ -40,34 +40,34 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Clientul OpenID Connect (server b
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Efectua\u021bi una dintre urm\u0103toarele ac\u021biuni: mai \u00eent\u00e2i, asigura\u021bi-v\u0103 ca furnizorul OpenID Connect suport\u0103 SSL. Dac\u0103 furnizorul OpenID Connector nu suport\u0103 SSL, folosi\u021bi caracteristica OpenID Connect Client \u0219i seta\u021bi enforceHTTPS la valoarea fals \u00een configura\u021bia caracteristicii OpenID Connect Client.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Starea curent\u0103 [{0}] pentru clientul OpenID Connect [{2}] \u015fi parametrul de stare [{1}] din r\u0103spunsul de la furnizorul OpenID Connect nu se potrivesc.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Starea curent\u0103 [{0}] pentru clientul OpenID Connect [{2}] \u0219i parametrul de stare [{1}] din r\u0103spunsul furnizorului OpenID Connect nu se potrivesc.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Clientul OpenID Connect (beneficiar sau RP) a trimis o cerere unui furnizor OpenID Connect (OP), iar OP a trimis \u00eenapoi un r\u0103spuns cu un parametru de stare care nu se potrive\u0219te cu starea RP la momentul \u00een care a fost trimis. OP trebuie s\u0103 includ\u0103 \u00een r\u0103spuns aceea\u0219i stare, \u00een acela\u0219i mod \u00een care a fost trimis\u0103.  Starea este folosit\u0103 astfel pentru a preveni falsificarea cererilor \u00eentre site-uri. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 URL-ul OP-ului dumneavoastr\u0103 este corect. Verifica\u021bi istoricele pe OP-ul dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 a primit cererea.
 
 # This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
-OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: Clientul OpenID Connect [{0}] a e\u015fuat s\u0103 autentifice jetonul de ID deoarece nu a fost inclus \u00een jeton un identificator de subiect. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: Clientul OpenID Connect [{0}] nu a reu\u0219it autentificarea jetonului ID deoarece \u00een jeton nu a fost inclus un identificator de subiect. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Pentru a autentifica un jeton ID, clientul OpenID Connect (beneficiar sau RP) trebuie s\u0103 aib\u0103 un identificator de subiect. Jetonul ID primit drept r\u0103spuns de la furnizorul OpenID Connect (OP) nu a con\u021binut un identificator de subiect, drept urmare autentificarea nu a reu\u0219it. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 furnizorul OpenID Connect (OP) returneaz\u0103 un jeton ID care include un identificator de subiect.
 
 #used_by_client_project and clients project. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: Clientul OpenID Connect [{1}] a e\u015fuat s\u0103 valideze jetonul de ID din cauza [{0}].
+OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: Clientul OpenID Connect [{1}] nu a reu\u0219it s\u0103 valideze jetonul ID din cauza [{0}].
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Clientul OpenID Connect (beneficiar sau RP) nu poate valida jetonul ID cu succes. Acest lucru ar putea fi cauzat de o eroare \u00een procesul de validare a revendic\u0103rilor. C\u00e2teva dintre revendic\u0103rile legate de jetonul ID includ emitentul, audien\u021ba, timpul de emitere. 
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 ceasul de sistem al clientului OpenID Connect (RP) este sincronizat cu ceasul de sistem al furnizorului OpenID Connect (OP) (\u00een cazul \u00een care ace\u0219tia se afl\u0103 pe dou\u0103 sisteme diferite). Vede\u021bi de asemenea ac\u021biunea utilizatorului pentru eroarea care apare dup\u0103 aceast\u0103 eroare.
 
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Clientul OpenID Connect [{1}] nu a putut crea un context SSL din cauza [{0}]. Asigura\u0163i-v\u0103 c\u0103 caracteristica SSL este configurat\u0103 corespunz\u0103tor.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Clientul OpenID Connect [{1}] nu a putut crea un context SSL din cauza [{0}]. Asigura\u021bi-v\u0103 c\u0103 este configurat\u0103 corespunz\u0103tor caracteristica dumneavoastr\u0103 SSL.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Configura\u021bia clientului OpenID Connect (server beneficiar sau de resurse) este reglat\u0103 pentru a folosi schema HTTPS, dar o conexiune HTTPS nu poate fi stabilit\u0103. Caracteristica SSL poate fi neactivat\u0103. Elementul depozit de chei poate lipsi sau poate fi incorect specificat.  
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Asigura\u021bi-v\u0103 c\u0103 ave\u021bi informa\u021bia SSL corect\u0103 \u00een server.xml. Vede\u021bi ac\u021biunea utilizatorului pentru eroarea care apare \u00eenainte de acest mesaj.
 
 #1708 is used in clients.common bundle. don't use it.
 
 #used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Cererea OpenID Connect a fost refuzat\u0103 de utilizator sau a ap\u0103rut alt\u0103 eroare, care a determinat refuzarea cererii.
+OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Cererea OpenID Connect a fost refuzat\u0103 de utilizator, sau o alt\u0103 eroare s-a produs, rezult\u00e2nd \u00een refuzul cererii.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=Utilizatorul a refuzat cererea OpenID Connect anul\u00e2nd cererea \u00een formularul de acceptare a domeniului, sau o alt\u0103 eroare s-a produs \u0219i a generat refuzul accesului la cererea OpenID Connect.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=Utilizatorul trebuie s\u0103 permit\u0103 furnizorului OpenID Connect s\u0103 partajeze domeniile de care are nevoie clientul pentru ca cererea OpenID Connect s\u0103 reu\u0219easc\u0103. Dac\u0103 utilizatorul a aprobat cererea, verifica\u021bi istoricele de pe OP pentru alte erori suplimentare.
 
 #used_by_client_project
-OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: Cererea a fost refuzat\u0103 de utilizator sau a ap\u0103rut alt\u0103 eroare, care a determinat refuzarea cererii.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: Cererea OpenID Connect a fost refuzat\u0103 de utilizator, sau o alt\u0103 eroare s-a produs, care a avut drept rezultat refuzul cererii.
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=Utilizatorul a refuzat cererea OpenID Connect anul\u00e2nd cererea \u00een formularul de acceptare a domeniului, sau o alt\u0103 eroare s-a produs \u0219i a generat refuzul accesului la cererea OpenID Connect.
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=Utilizatorul trebuie s\u0103 permit\u0103 furnizorului OpenID Connect s\u0103 partajeze domeniile de care are nevoie clientul pentru ca cererea OpenID Connect s\u0103 reu\u0219easc\u0103. Dac\u0103 utilizatorul a aprobat cererea, verifica\u021bi istoricele de pe OP pentru alte erori suplimentare.
 
@@ -79,59 +79,59 @@ OSGI_SERVICE_ERROR.explanation=Serviciul OSGi specificat nu este disponibil.
 OSGI_SERVICE_ERROR.useraction=Reporni\u021bi serverul cu op\u021biunea \u201ecur\u0103\u021bare\u201d.
 
 #used_by_client_project
-PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece jetonul de acces din cerere a expirat. Momentul expir\u0103rii ("exp") este [{0}] \u015fi ora curent\u0103 este [{1}].
+PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Serverul de resurse nu a finalizat cererea de autentificare deoarece jetonul de acces din cerere a expirat. Ora la care expir\u0103 (\u201eexp\u201d) este [{0}] \u0219i ora curent\u0103 este [{1}].
 PROPAGATION_TOKEN_EXPIRED_ERR.explanation=Jetonul de acces a expirat \u0219i timpul de rulare nu poate continua propagarea jetonului de acces.
 PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 furniza\u021bi un jeton de acces valid \u0219i, de asemenea, nu uita\u021bi s\u0103 sincroniza\u021bi ora \u00eentre sisteme.
 
 #used_by_client_project
-PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece jetonul de acces din cerere nu este valid. Timpul lans\u0103rii ("iat") [{0}] este dup\u0103 timpul curent [{1}] \u015fi aceast\u0103 condi\u0163ie nu este permis\u0103.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: Serverul de resurse nu a finalizat cererea de autentificare deoarece jetonul de acces din cerere nu este valid. Emiterea la timp (\u201eiat") [{0}] este dup\u0103 ora curent\u0103 [{1}] \u0219i aceast\u0103 condi\u021bie nu este permis\u0103.
 PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.explanation=Emiterea la ora de revendicare \u00een jetonul de acces este dup\u0103 ora curent\u0103. Acest lucru nu este permis.
 PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de acces nu este emis pentru o or\u0103 viitoare \u0219i/sau sincroniza\u021bi ora \u00eentre sisteme.
 
 #used_by_client_project
-PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece jetonul de acces din cerere nu are revendicarea (claim) [{0}]. Revendic\u0103rile cerute sunt [{1}].
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: Serverul de resurse nu a finalizat cererea de autentificare deoarece jetonul de acces din cerere nu are revendicarea [{0}]. Revendic\u0103rile cerute sunt [{1}].
 PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Jetonul de acces nu are toate revendic\u0103rile necesare. 
 PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de acces furnizat are revendicarea necesar\u0103.
 
 #used_by_client_project
-PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece jetonul de acces din cerere nu ppoate fi folosit. Timpul nu \u00eenainte de ("nbf") [{0}] este dup\u0103 timpul curent [{1}] \u015fi aceast\u0103 condi\u0163ie nu este permis\u0103.
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: Serverul de resurse nu a finalizat cererea de autentificare deoarece jetonul de acces din cerere nu poate fi folosit. Nu \u00eenainte de timp (\u201enbf\u201d) [{0}] este dup\u0103 ora curent\u0103 [{1}] \u0219i aceast\u0103 condi\u021bie nu este permis\u0103.
 PROPAGATION_TOKEN_NBF_ERR.explanation=Revendicarea nu \u00eenainte de timp din jetonul de acces este dup\u0103 ora curent\u0103 \u0219i timpul de rulare nu poate folosi jetonul de acces \u00een acest moment.
 PROPAGATION_TOKEN_NBF_ERR.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de acces nu are o revendicare \u201enbf\u201d setat\u0103 la o or\u0103 viitoare \u0219i/sau sincroniza\u021bi ora \u00eentre sistem sau retrimite\u021bi o cerere mai t\u00e2rziu.
 
 #used_by_client_project
-PROPAGATION_TOKEN_NOT_ACTIVE=CWWKS1720E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece jetonul de acces din cerere nu este activ. Metoda de validare este [{0}], iar URL-ul punctului final de validare este [{1}].
+PROPAGATION_TOKEN_NOT_ACTIVE=CWWKS1720E: Serverul de resurse nu a finalizat cererea de autentificare deoarece jetonul de acces din cerere nu este activ. Metoda de validare este [{0}], iar url-ul punctului final de validare este [{1}].
 PROPAGATION_TOKEN_NOT_ACTIVE.explanation=Jetonul de acces furnizat nu este activ \u0219i timpul de rulare nu poate continua procesul de autentificare.
 PROPAGATION_TOKEN_NOT_ACTIVE.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de acces furnizat este valid \u0219i, dac\u0103 este posibil, verifica\u021bi istoricele furnizorului OpenID Connector (OP). De asemenea, asigura\u021bi-v\u0103 c\u0103 metoda de validare specificat\u0103 \u0219i url-ul de punct final din configura\u021bia clientului OpenID Connect sunt corecte.
 
 #used_by_client_project
-OIDC_PROPAGATION_FAIL=CWWKS1721E: Serverul resurs\u0103 a primit o eroare [{0}] \u00een timp ce \u00eencerca s\u0103 valideze jetonul de acces. Este fie expirat fie nu poate fi recunoscut de punctul final de validare [{1}].
+OIDC_PROPAGATION_FAIL=CWWKS1721E: Serverul de resurse a primit eroarea [{0}] \u00een timp ce \u00eencerca s\u0103 valideze jetonul de acces. Este fie expirat, fie nu poate fi recunoscut de punctul final de validare [{1}].
 OIDC_PROPAGATION_FAIL.explanation=Jetonul de acces furnizat nu poate fi validat din cauza unui r\u0103spuns de eroare de la furnizorul OpenID Connect. 
 OIDC_PROPAGATION_FAIL.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul de propagare este valid \u0219i, dac\u0103 este posibil, verifica\u021bi istoricele furnizorului OpenID Connect pentru detalii suplimentare referitoare la eroare.
 
 # 1722 is used in clients.common bundle, do not use here.
 
 #used_by_client_project
-PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: O eroare invalid_client a ap\u0103rut c\u00e2nd serverul de resurse a \u00eencercat s\u0103 valideze jetonul de acces care folose\u015fte ID-ul de client [{0}] \u015fi URL-ul de validare [{1}].
+PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: O eroare invalid_client s-a produs c\u00e2nd serverul de resurse a \u00eencercat s\u0103 valideze jetonul de acces folosind id client [{0}] \u0219i url-ul de validare [{1}].
 PROPAGATION_TOKEN_INVALID_CLIENTID.explanation=Jetonul de acces furnizat nu poate fi verificat din cauza erorii invalid_client a furnizorului OpenID Connect \u0219i timpul de rulare nu poate continua procesul de autentificare.
 PROPAGATION_TOKEN_INVALID_CLIENTID.useraction=Verifica\u021bi dac\u0103 configura\u021bia clientului OpenID Connect are id-ul client care se potrive\u0219te cu id-ul client din configura\u021bia furnizorului OpenID Connect \u0219i, dac\u0103 este posibil, verifica\u021bi istoricele furnizorului OpenID Connect pentru informa\u021bii suplimentare.
 
 #used_by_client_project
-PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Serverul de resurse a e\u015fuat la cererea de autentificare deoarece issuerIdentifier [{0}] din configura\u0163ie nu con\u0163ine revendicarea "iss" [{1}] \u00een jetonul de acces.
+PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Serverul de resurse nu a finalizat cererea de autentificare deoarece issuerIdentifier [{0}] din configura\u021bie nu con\u021bine revendicarea \u201eiss\u201d [{1}] \u00een jetonul de acces.
 PROPAGATION_TOKEN_ISS_ERROR.explanation=Jetonul de acces furnizat nu poate fi verificat deoarece revendicarea \u201eiss\u201d din jetonul de acces nu se potrive\u0219te cu atributul configurare \u0219i timpul de rulare nu poate continua procesul de autentificare.
 PROPAGATION_TOKEN_ISS_ERROR.useraction=Verifica\u021bi dac\u0103 configura\u021bia clientului OpenID Connect are issuerIdentifier care con\u021bine revendicarea \u201eiss\u201d \u00een jetonul de acces. 
 
 #used_by_client_project
-PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: Serverul de resurse a e\u015fuat validarea jetonului de acces deoarece validationEndpointUrl [{0}] nu a fost un URL sau nu a putut realiza validarea.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: Serverul de resurse nu a reu\u0219it s\u0103 valideze jetonul de acces deoarece validationEndpointUrl [{0}] fie nu a fost un URL valid, fie nu a putut efectua validarea.
 PROPAGATION_TOKEN_INVALID_VALIDATION_URL.explanation=Jetonul de acces furnizat nu poate fi validat deoarece validationEndpointUrl specificat \u00een configura\u021bia clientului OpenID Connect este nevalid \u0219i timpul de execu\u021bie nu poate continua procesul de autentificare.
 PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Asigura\u021bi-v\u0103 c\u0103 specifica\u021bi o valoare valid\u0103 pentru atributul validationEndpointUrl \u00een configura\u021bia clientului OpenID Connect.
 
 #used_by_client_project
-PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece cererea nu are un jeton de propagare cerut, cum ar fi: un jeton de acces sau un jeton jwt.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Serverul de resurse nu a finalizat cererea de autentificare deoarece aceast\u0103 cerere nu are jetonul de propagare necesar, cum ar fi: un jeton de acces sau un jeton jwt.
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=Cererea trebuie s\u0103 con\u021bin\u0103 jetonul de propagare necesar, cum ar fi: un jeton de acces sau un jeton jwt, astfel \u00eenc\u00e2t serverul de resurse s\u0103 poat\u0103 procesa autentificarea \u0219i propagarea jetonului.
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Asigura\u021bi-v\u0103 c\u0103 cererea are un jeton de propagare valid.
 
 # USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece nu poate valida jetonul de acces din cauza unei erori [{0}]. Metoda de validare este [{1}], iar URL-ul punctului final de validare este [{2}].
+PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Serverul de resurse nu a reu\u0219it cererea de autentificare deoarece nu poate valida jetonul de acces din cauza unei erori [{0}]. Metoda de validare este [{1}], iar url-ul punctului final de validare este [{2}].
 PROPAGATION_TOKEN_INTERNAL_ERR.explanation=Jetonul de acces furnizat nu poate fi validat din cauza unei erori interne \u0219i timpul de rulare nu poate continua procesul de autentificare. 
 PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Verifica\u021bi istoricele serverului de resurse pentru a vedea dac\u0103 mai sunt \u0219i alte erori \u00eenregistrate \u00eenainte de aceasta.
 
@@ -142,40 +142,40 @@ PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Verifica\u021bi istoricele serverului 
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece metoda de validare [{0}] nu a fost corespunz\u0103toare pentru URL-ul punctului final de validare [{1}].
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serverul de resurse nu a finalizat cererea de autentificare din cauz\u0103 c\u0103 metoda de validare [{0}] nu a fost potrivit\u0103 pentru URL-ul punctului final de validare [{1}].
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=ValidationEndpointUrl specificat \u00een configura\u021bia clientului OpenID Connect nu este punctul final potrivit pentru validationMethod specificat\u0103.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Actualiza\u021bi configura\u021bia clientului OpenID Connect schimb\u00e2nd fie validationMethod, fie validationEndpointUrl.
  
 # 1730 used in clients.common, don't use here.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece jetonul de acces nu are revendicarea (claim) [{0}] specificat\u0103 de atributul [{1}].
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Serverul de resurse nu a finalizat cererea de autentificare deoarece jetonul de acces nu con\u021bine revendicarea [{0}] specificat\u0103 de atributul [{1}].
 PROPAGATION_TOKEN_MISSING_REALM.explanation=Jetonul de acces furnizat nu con\u021bine revendicarea specificat\u0103 pentru a identifica regiunea \u0219i timpul de execu\u021bie nu poate continua procesul de autentificare.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Efectua\u021bi una dintre ac\u021biunile urm\u0103toare. 1) Verifica\u021bi dac\u0103 configura\u021bia clientului OpenID Connect specific\u0103 atributul realmName 2) Verifica\u021bi ca furnizorul OpenID Connect (OP) emite jetonul de acces cu revendicarea specificat\u0103 3) Verifica\u021bi dac\u0103 OP poate emite jetonul de acces cu revendicarea \u201eiss\u201d. 
 
 # do not translate the quoted "required"
 #used_by_client_project
-BAD_INBOUND_PRPAGATION_REQUIRED=CWWKS1732E: Configura\u0163ia de clien OpenID Connect [{0}] este dezactivat\u0103 deoarece valoarea validationEndpointUrl [{1}] nu este valid\u0103 \u015fi inboundPropagation este "necesar\u0103".
+BAD_INBOUND_PRPAGATION_REQUIRED=CWWKS1732E: Configura\u021bia clientului OpenID Connect [{0}] este dezactivat\u0103 deoarece valoarea validationEndpointUrl [{1}] nu este valid\u0103 \u0219i inboundPropagation este \u201enecesar\u201d.
 BAD_INBOUND_PRPAGATION_REQUIRED.explanation=Clientul OpenID Connect indicat a setat inboundPropagation la \u201enecesar\u201d, dar validationEndpointUrl configurat nu a fost valid. Trebuie setat validationEndpointUrl la un URL valid folosind schema http sau https URI. \u00cen condi\u021biile \u00een care clientul OpenID Connect ac\u021bioneaz\u0103 ca un server de resurse, acesta nu va fi capabil s\u0103 proceseze nicio cerere.
 BAD_INBOUND_PRPAGATION_REQUIRED.useraction=Asigura\u021bi-v\u0103 c\u0103 respectiva configura\u021bie a clientului OpenID Connect a specificat un validationEndpointUrl nevid care folose\u0219te schema http sau https URI.
 
 # do not translate the quoted "supported" and "none"
 #used_by_client_project
-BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: ValidationEndpointUrl [{0}] nu este valid dar atributul inboundPropagation este setat la "suportat". Pentru a suporta propagarea la intrare trebuie s\u0103 fie specificat un validationEndpointUrl valid deci clientul OpenID Connect [{1}] se va comporta ca \u015fi cum valoarea inboundPropagation at fi fost "nimic".
+BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: ValidationEndpointUrl [{0}] nu este valid, dar atributul inboundPropagation este setat la \u201esuportat\u201d. Pentru a suporta propagarea de intrare trebuie specificat un validationEndpointUrl valid, astfel \u00eenc\u00e2t clientul OpenID Connect [{1}] se va comporta ca \u0219i cum valoarea sa inboundPropagation ar fi \u201eniciuna\u201d.
 BAD_INBOUND_PRPAGATION_SUPPORTED.explanation=ValidationEndpointUrl specificat \u00een configura\u021bia clientului OpenID Connect nu a fost valid. Un validationEndpointUrl corect este necesar pentru a suporta propagarea de intrare. Valoarea validationEndpointUrl trebuie s\u0103 fie nevid\u0103 \u0219i trebuie s\u0103 foloseasc\u0103 schema http sau https URI. Clientul OpenID Connect se va comporta ca \u0219i cum valoarea sa inboundPropagation ar fi \u201eniciuna\u201d.
 BAD_INBOUND_PRPAGATION_SUPPORTED.useraction=Asigura\u021bi-v\u0103 c\u0103 respectiva configura\u021bie a clientului OpenID Connect a specificat un validationEndpointUrl nevid care folose\u0219te schema http sau https URI. 
 
 #1734 used by clients.common bundle, don't use here. 
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Serverul de resurse a e\u015fuat cererea de autentificare deoarece r\u0103spunsul de la punctul final de validare [{0}] are revendicarea (claim) [{1}], dar atributul [{2}] este setat la true.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Serverul de resurse nu a finalizat cererea de autentificare deoarece r\u0103spunsul de la punctul final de validare [{0}] are revendicarea [{1}], dar atributul [{2}] este setat la valoarea adev\u0103rat.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Din moment ce configura\u021bia OpenID Connect specific\u0103 \u201edisableIssChecking\u201d, serverul de resurse a\u0219teapt\u0103 ca r\u0103spunsul json de la punctul final de validare s\u0103 nu aib\u0103 revendicarea \u201eiss\u201d.  
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Efectua\u021bi una dintre ac\u021biunile urm\u0103toare. 1) Actualiza\u021bi configura\u021bia clientului OpenID Connect \u0219i seta\u021bi \u201edisableIssChecking\u201d la \u201efals\u201d 2) Face\u021bi \u00een a\u0219a fel \u00eenc\u00e2t punctul final de validare s\u0103 nu emit\u0103 revendicarea \u201eiss\u201d.
 
 # Do not translate "JSON Web Token"
 #0=Java runtime level, 1=Minimum Java level required by JWT library
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_JWT_JDK7=CWWKS1736E: Versiunea de Java utilizat\u0103 de acest timp de rulare [{0}] nu este suportat\u0103 de biblioteca JSON Web Token. Versiunea suportat\u0103 de Java este [{1}] sau mai \u00eenalt\u0103.
+OIDC_CLIENT_JWT_JDK7=CWWKS1736E: Versiunea Java folosit\u0103 de aceast\u0103 rulare [{0}] nu este suportat\u0103 de biblioteca JSON Web Token. Versiunea Java suportat\u0103 este [{1}] sau ulterioar\u0103.
 OIDC_CLIENT_JWT_JDK7.explanation=Bibliotecile din surs\u0103 deschis\u0103 care proceseaz\u0103 JSON Web Tokens nu suport\u0103 versiunea Java pe care o folose\u0219te \u00een mod curent serverul Liberty.
 OIDC_CLIENT_JWT_JDK7.useraction=Instala\u021bi o versiune Java de nivel superior celui ar\u0103tat \u00een mesaj.
 
@@ -185,7 +185,7 @@ OIDC_CLIENT_JWT_JDK7.useraction=Instala\u021bi o versiune Java de nivel superior
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 #0=signatureAlgorithm, 1=exception or error message if any
 #used_by_client_project and clients project
-OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Nu a fost disponibil\u0103 o cheie de semnare cerut\u0103 de algoritmul de semn\u0103tur\u0103 [{0}]. {1}
+OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Cheia de semnare cerut\u0103 de algoritmul de semn\u0103tur\u0103 [{0}] nu a fost disponibil\u0103. {1}
 OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Cheia de semnare nu a fost g\u0103sit\u0103, sau cheia care folose\u0219te algoritmul de semn\u0103tur\u0103 configurat nu a fost g\u0103sit\u0103. Acest lucru se poate datora unor informa\u021bii lips\u0103, afectate sau eronate \u00een configura\u021bia sau jetonul clientului.
 OIDC_CLIENT_NO_VERIFYING_KEY.useraction=Efectua\u021bi una dintre urm\u0103toarele ac\u021biuni: 1) Dac\u0103 utiliza\u021bi JWK pentru a semna si a valida jetoane, asigura\u021bi-v\u0103 c\u0103 atributul jwkEndpointUrl este configurat corect \u0219i c\u0103 revendic\u0103rile JWT \u0219i JWK sunt corecte. 2) Dac\u0103 folosi\u021bi certificate X.509 pentru a semna \u0219i a valida jetoane, asigura\u021bi-v\u0103 c\u0103 atributele signatureAlgorithm, trustStoreRef \u0219i trustStoreAlias sunt configurate corect. 3) Dac\u0103 folosi\u021bi chei partajate pentru a semna \u0219i a valida jetoane, asigura\u021bi-v\u0103 c\u0103 atributele clientId \u0219i clientSecret sunt configurate corect.
 
@@ -212,7 +212,7 @@ OIDC_CLIENT_NONE_ALG.useraction=Dac\u0103 nu se a\u0219teapt\u0103 ca jetoanele 
 # do not translate WASOidcCode
 # 0: the content of WASOidcCode, 1: client ID
 #used_by_client_project and clients project
-OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: Cookie-ul WASOidcCode [{0}] din cererea c\u0103tre clientul OpenID Connect [{1}] nu este valid. E posibil ca valoarea sa s\u0103 fi fost modificat\u0103.
+OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: Modulul cookie WASOidcCode [{0}] din cererea c\u0103tre clientul OpenID Connect [{1}] nu este valid. Este posibil ca valoarea acestuia s\u0103 fi fost modificat\u0103.
 OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=Clientul OpenID Connect (beneficiar sau RP) a primit un modul cookie WASOidcCode care nu este valid. Este posibil ca valoarea acestuia s\u0103 fi fost modificat\u0103.
 OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Verifica\u021bi dac\u0103 modulul cookie nu a fost modificat \u0219i con\u021binutul decodat al modulului cookie \u00eencepe cu un obiect JSON formatat \u00een mod adecvat.
 
@@ -220,12 +220,12 @@ OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Verifica\u021bi dac\u0103 modulul cookie
 
 # do not translate GET
 # present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: Nu este valid\u0103 o cerere GET la [{0}]. Este returnat un cod de r\u0103spuns de 500.
+OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: Cererea GET pentru [{0}] nu este valid\u0103. Este returnat un cod de r\u0103spuns de 500.
 OIDC_CLIENT_BAD_GET_REQUEST.explanation=A fost primit\u0103 o cerere care nu se potrive\u0219te cu URL-ul a\u0219teptat sau nu con\u021bine parametrii necesari.
 OIDC_CLIENT_BAD_GET_REQUEST.useraction=Verifica\u0163i configura\u0163ia de furnizor OpenID Connect. Acest mesaj poate fi de asemenea cauzat de spionarea cu ajutorul unui navigator. 
 
 # present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: Nu este valid\u0103 o cerere la [{0}]. Lipse\u015fte parametrul de stare necesar. Este returnat un cod de r\u0103spuns de 500.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: Cererea pentru [{0}] nu este valid\u0103. Lipse\u015fte parametrul de stare necesar. Este returnat un cod de r\u0103spuns de 500.
 OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=A fost primit\u0103 o cerere care nu include parametrul de stare necesar.
 OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifica\u0163i configura\u0163ia de furnizor OpenID Connect. Acest mesaj poate fi de asemenea cauzat de spionarea cu ajutorul unui navigator.
 
@@ -233,43 +233,43 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifica\u0163i configura\u0163ia de
 
 # do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Nu este valid\u0103 o cerere la [{0}]. Lipse\u015fte un cookie necesar cu un nume care \u00eencepe cu WASReqURLOidc. Numele de gazd\u0103 care este utilizat pentru a accesa clientul ar putea s\u0103 nu se potriveasc\u0103 cu numele care este \u00eenregistrat la furnizor. Este returnat un cod de r\u0103spuns de 500.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Cererea pentru [{0}] nu este valid\u0103. Lipse\u0219te un modul cookie al c\u0103rui nume care \u00eencepe cu WASReqURLOidc. Este posibil ca numele gazdei folosit pentru a accesa clientul s\u0103 nu se potriveasc\u0103 cu numele \u00eenregistrat la furnizor. Este returnat un cod de r\u0103spuns de 500.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=A fost primit\u0103 o cerere care nu include modulul cookie necesar.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifica\u021bi configura\u021bia furnizorului OpenID Connect \u0219i configura\u021biile clientului. Modulul cookie lips\u0103 poate fi cauzat de \u00eencercarea de a accesa clientul cu un nume de gazd\u0103 care difer\u0103 de numele de gazd\u0103 al redirec\u021bion\u0103rii \u00eenregistrate la furnizor. Dac\u0103 acela\u0219i atribut sameSiteCookie al elementului webAppSecurity din configura\u021bia serverului este setat la Strict, \u00eencerca\u021bi s\u0103 seta\u021bi valoarea la Lax sau None.
 
-OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) [{2}] specific\u0103 at\u00e2t URL-ul de punct final descoperire [{0}], c\u00e2t \u015fi alte puncte finale. RP va folosi informa\u0163iile de la cererea de descoperire \u015fi va ignora celelalte puncte finale configurate [{1}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Configura\u021bia clientului OpenId Connect (Relying Party sau RP) [{2}] specific\u0103 URL-ul de punct final de descoperire [{0}] \u0219i celelalte puncte finale. RP va folosi informa\u021bia din cererea de descoperire \u0219i va ignora celelalte puncte finale[{1}] configurate.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Clientul OpenId Connect folose\u0219te punctul final de descoperire pentru a contacta furnizorul \u0219i utilizeaz\u0103 informa\u021bia din cererea de descoperire pentru a contacta celelalte puncte finale, precum autorizarea, jetonul \u0219i informa\u021biile de utilizator.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Configura\u021bi fie punctul final de descoperire, fie celelalte puncte finale, precum autorizarea, jetonul \u0219i informa\u021biile de utilizator, nu ambele.
 
-OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) [{2}] specific\u0103 at\u00e2t URL-ul de punct final descoperire [{0}], c\u00e2t \u015fi identificatorul emitentului [{1}]. RP va folosi informa\u0163iile de la cererea de descoperire \u015fi va ignora identificatorul de emitent configurat.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: Configura\u021bia clientului OpenId Connect (Relying Party sau RP) [{2}] specific\u0103 URL-ul de punct final de descoperire [{0}] \u0219i identificatorul emitentului [{1}]. RP va utiliza informa\u021bia de la cererea de descoperire \u0219i va ignora identificatorul emitentului configurat.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=Clientul OpenId Connect folose\u0219te punctul final de descoperire pentru a contacta furnizorul \u0219i folose\u0219te informa\u021bia din cererea de descoperire.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Configura\u021bi fie punctul final de descoperire, fie identificatorul emitentului, nu ambele.
 
-OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) [{3}] specific\u0103 [{0}], o valoare implicit\u0103 pentru [{1}] \u015fi ca rezultat al descoperirii aceasta este modificat\u0103 la [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: Configura\u021bia clientului OpenId Connect (Relying Party sau RP) [{3}] specific\u0103 [{0}] ca valoare implicit\u0103 pentru [{1}] \u0219i, drept rezultat al descoperirii, aceasta se schimb\u0103 \u00een[{2}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Dac\u0103 furnizorul OpenID Connect nu suport\u0103 valorile implicite RP, \u00een func\u021bie de capacitatea RP, aceste valori pot fi ajustate pentru a fi suportate de OP.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Mesaj cu caracter informativ. Nu este necesar\u0103 nicio ac\u0163iune.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: Clientul OpenID Connect [{0}] a e\u015fuat s\u0103 ob\u0163in\u0103 informa\u0163iile de punct final furnizor OpenID Connect prin URL-ul de punct final descoperire [{1}]. Actualiza\u0163i configura\u0163ia pentru clientul OpenID Connect cu URL-ul HTTPS de punct final descoperire corect. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: Clientul OpenID Connect [{0}] nu a reu\u0219it s\u0103 ob\u021bin\u0103 informa\u021bia de punct final Open ID Connect Provider prin URL-ul punctului final de descoperire [{1}]. Actualiza\u021bi configura\u021bia pentru clientul OpenID Connect cu URL-ul de punct final de descoperire HTTPS corect. 
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=OpenID Connect Client este configurat pentru a descoperi punctele finale ale OpenID Connect Provider prin URL-ul de descoperire, dar procesul de descoperire a e\u0219uat. OpenID Connect Client nu va fi capabil s\u0103 proceseze cererile de autentificare p\u00e2n\u0103 c\u00e2nd configura\u021bia discoveryEndpointURL nu este corectat\u0103 sau nu este finalizat\u0103 cu succes.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corecta\u021bi configura\u021bia OpenID Connect Client pentru a v\u0103 asigura c\u0103 1) URL-ul de punct final de descoperire face referire la furnizorul OpenID Connect corect, 2) URL-ul de punct final de descoperire este HTTPS \u0219i 3) caracteristica SSL \u0219i elementele depozite de chei sunt configurate corect, respect\u00e2nd OpenID Connect Provider. Asigura\u021bi-v\u0103 c\u0103 punctul final de descoperire pentru furnizorul OpenID Connect este func\u021bional.
 
-OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Nu a fost returnat un mesaj de succes de la URL-ul [{0}]. Aceasta este starea de r\u0103spuns [{1}] \u015fi eroarea [{2}] de la cererea de descoperire.
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Nu a fost returnat un r\u0103spuns pozitiv de la URL [{0}]. Aceasta este starea r\u0103spunsului [{1}] \u0219i eroarea [{2}] de la cererea de descoperire.
 OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=Clientul OpenID Connect nu a reu\u0219it s\u0103 acceseze punctul final de descoperire al furnizorului OpenID Connect \u0219i mesajul poate con\u021bine mai multe informa\u021bii referitoare la eroare.
 OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Asigura\u021bi-v\u0103 c\u0103 furnizorul OpenID Connect este disponibil \u0219i c\u0103 punctul final de descoperire specificat este corect.
 
-OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: Configura\u0163ia de client OpenID Connect [{0}] a fost stabilit\u0103 cu informa\u0163ii de la URL-ul de punct final descoperire [{1}]. Aceste informa\u0163ii permit clientului s\u0103 interac\u0163ioneze cu furnizorul OpenID Connect pentru a procesa cererile cum ar fi de autorizare \u015fi de jeton.
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: Configura\u021bia clientului OpenID Connect [{0}] a fost stabilit\u0103 cu informa\u021bia din URL-ul punctului final de descoperire [{1}]. Aceast\u0103 informa\u021bie d\u0103 posibilitatea clientului s\u0103 interac\u021bioneze cu furnizorul OpenID Connect pentru a procesa cereri ca autorizarea \u0219i jetonul.
 OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=Clientul OpenID Connect contacteaz\u0103 punctul final de descoperire al furnizorului OpenID Connect pentru a ob\u021bine informa\u021bii precum authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl, jwkEndpointUrl. Aceast\u0103 informa\u021bie d\u0103 posibilitatea d\u0103 posibilitatea clientului OpenID Connect s\u0103 interac\u021bioneze cu furnizorul OpenID Connect pentru a trimite autorizare, jeton, jwk \u0219i cereri de informa\u021bii de utilizator.
 OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Mesaj cu caracter informativ. Nu este necesar\u0103 nicio ac\u0163iune.
 
-OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS1527I: Configura\u0163ia de client OpenID Connect [{0}] a fost actualizat\u0103 cu informa\u0163iile noi primite de la URL-ul de punct final descoperire [{1}].
+OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG=CWWKS1527I: Configura\u021bia clientului OpenID Connect [{0}] a fost actualizat\u0103 cu noua informa\u021bie primit\u0103 de la URL-ul punctului final de descoperire [{1}].
 OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.explanation=Clientul OpenID Connect contacteaz\u0103 punctul final al descoperirii furnizorului OpenID Connect, 1) dac\u0103 apare o problem\u0103 la contactarea autoriza\u021biei sau a punctelor finale ale jetonului furnizorului OpenID Connect 2) dac\u0103 ora curent\u0103 este ulterioar\u0103 urm\u0103toarei ore de descoperire. Urm\u0103toarea or\u0103 de descoperire este calculat\u0103 ad\u0103ug\u00e2nd valoarea discoveryPollingRate la ora curent\u0103 dup\u0103 fiecare apel de descoperire.
 OIDC_CLIENT_DISCOVERY_UPDATED_CONFIG.useraction=Mesaj cu caracter informativ. Nu este necesar\u0103 nicio ac\u0163iune.
 
-OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: Configura\u0163ia de client OpenID Connect [{0}] este consistent\u0103 cu informa\u0163ii de la URL-ul de punct final descoperire [{1}], astfel nu este nevoie de actualiz\u0103ri de configura\u0163ie.
+OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG=CWWKS1528I: Configura\u021bia clientului OpenID Connect [{0}] este conform\u0103 cu informa\u021bia de la URL-ul punctului final de descoperire [{1}], prin urmare nu este nevoie de nicio actualizare a configura\u021biei.
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.explanation=Clientul OpenID Connect contacteaz\u0103 punctul final al descoperirii furnizorului OpenID Connect, 1) dac\u0103 apare o problem\u0103 la contactarea autoriza\u021biei sau a punctelor finale ale jetonului furnizorului OpenID Connect 2) dac\u0103 ora curent\u0103 este ulterioar\u0103 urm\u0103toarei ore de descoperire. Urm\u0103toarea or\u0103 de descoperire este calculat\u0103 ad\u0103ug\u00e2nd valoarea discoveryPollingRate la ora curent\u0103 dup\u0103 fiecare apel de descoperire. Dac\u0103 ultima informa\u021bie de descoperire se potrive\u0219te celei precedente, atunci nu are loc nicio actualizare a configura\u021biei.
 OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Mesaj cu caracter informativ. Nu este necesar\u0103 nicio ac\u0163iune.
 
-CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Atributul de configurare [{0}] necesar lipse\u015fte sau este gol \u015fi nu este furnizat\u0103 o valoare implicit\u0103. Verifica\u0163i dac\u0103 atributul este configurat sau descoperit de la furnizor, dac\u0103 este completat \u015fi dac\u0103 nu con\u0163ine doar caractere spa\u0163iu.
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: Atributul necesar [{0}] al configura\u021biei lipse\u0219te sau este gol \u0219i nu este furnizat\u0103 o valoare implicit\u0103. Verifica\u021bi c\u0103 atributul este configurat sau descoperit de c\u0103tre furnizor, c\u0103 nu este gol \u0219i c\u0103 nu este format doar din caractere spa\u021biu alb.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Atributul configura\u021biei specificat poate lipsi din configura\u021bia serverului. Dac\u0103 este specificat\u0103 o valoare, spa\u021biul alb de la \u00eenceputul \u0219i sf\u00e2r\u0219itul valorii este \u00eenl\u0103turat c\u00e2nd este valoarea este procesat\u0103, a\u0219adar valoarea din configura\u021bie poate fi necompletat\u0103 sau poate fi format\u0103 din caractere spa\u021biu alb. Dac\u0103 punctul final al descoperirii este specificat s\u0103 ob\u021bin\u0103 aceast\u0103 valoare a atributului de la furnizor, atunci descoperirea poate avea o problem\u0103.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Asigura\u021bi-v\u0103 c\u0103 atributul configura\u021biei specificat este configurat, c\u0103 nu este gol \u0219i c\u0103 nu este format doar din caractere spa\u021biu alb. Dac\u0103 punctul final de descoperire este configurat s\u0103 ob\u021bin\u0103 aceast\u0103 informa\u021bie, atunci asigura\u021bi-v\u0103 c\u0103 nu se \u00eenregistreaz\u0103 erori la cererea de descoperire.
 
@@ -292,5 +292,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifica\u021bi confi
 REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: O cerere de autentificare a e\u0219uat, deoarece furnizorul OpenID Connect a returnat urm\u0103toarea eroare {0}: {1}
 REDIRECT_URI_CONTAINED_ERROR.explanation=Starea r\u0103spunsului specificat a indicat c\u0103 autentificarea nu a avut succes. Eroarea \u0219i descrierea erorii care sunt furnizate \u00een mesaj con\u021bin informa\u021bii suplimentare.
 REDIRECT_URI_CONTAINED_ERROR.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea din mesaj.
+
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: Metadatele resursei protejate nu pot include un JWT de tip \u201esigned_metadata\u201d, deoarece generatorul de JWT [ {0} ] nu a reu\u0219it s\u0103 genereze tokenul: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=Generatorul JWT configurat a generat o excep\u021bie \u00een timpul gener\u0103rii tokenului de metadate semnat. Serverul returneaz\u0103 documentul de metadate f\u0103r\u0103 c\u00e2mpul \u201esigned_metadata\u201d.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=Verifica\u021bi configura\u021bia generatorului JWT \u0219i jurnalele serverului pentru mai multe informa\u021bii despre eroare.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

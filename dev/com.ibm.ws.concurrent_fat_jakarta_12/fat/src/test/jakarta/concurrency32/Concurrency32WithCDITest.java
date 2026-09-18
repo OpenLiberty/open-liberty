@@ -13,6 +13,7 @@
 package test.jakarta.concurrency32;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
@@ -84,9 +85,19 @@ public class Concurrency32WithCDITest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted())
-            server.stopServer("CNTR0344E", // @Schedule on EJB method
-                              "CNTR4006E" // @Schedule on EJB method
-            );
+            server.stopServer(// @Schedule on EJB method
+                              "CNTR0344E",
+                              // @Schedule on EJB method
+                              "CNTR4006E",
+                              // Scheduled method with args
+                              "CWWKC1413E.*neverDueToMethodParameter");
+    }
+
+    @Test
+    public void testScheduledMethodCannotHaveParameters() throws Exception {
+        String searchPattern = "CWWKC1413E.*neverDueToMethodParameter";
+        assertEquals(1,
+                     server.findStringsInLogs(searchPattern).size());
     }
 
     @Test
@@ -123,10 +134,18 @@ public class Concurrency32WithCDITest extends FATServletClient {
                      false,
                      testRan);
 
-        // EJB container should have rejected the @Schedule annotation
-        // Also wait for FFDC so it doen't interfere with subsequent tests
-        server.waitForStringsInLogUsingMark(List.of("CNTR0344E",
-                                                    "CNTR4006E",
-                                                    "FFDC1015I.*WELD-000079"));
+        // An error will either be raised by EJB or Concurrency depending on timing
+        // TODO the Concurrency error still needs an NLS message
+        String searchFor = "CNTR0344E" + // EJB
+                           "|" + // or
+                           "ScheduleMethodBean.*scope"; // Concurrency
+        String line = server.waitForStringInLogUsingMark(searchFor);
+        assertNotNull("Container or Concurrency error message not found in log",
+                      line);
+
+        if (line.contains("CNTR0344E"))
+            // Also wait for FFDC so it doen't interfere with subsequent tests
+            server.waitForStringsInLogUsingMark(List.of("CNTR4006E",
+                                                        "FFDC1015I.*WELD-000079"));
     }
 }

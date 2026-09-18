@@ -15,7 +15,8 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/DataErrPathsTestApp/src
+  test-applications/DataErrPathsTestApp/src,\
+  test-applications/DataErrPaths_1_1_App/src
 
 javac.source: 17
 javac.target: 17
@@ -23,6 +24,9 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
+tested.features: cdi-5.0
+
+# persistence.4.0 used only for classes in query and sql packages
 -buildpath: \
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\
@@ -30,8 +34,9 @@ fat.project: true
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.1,\
-  io.openliberty.jakarta.data.1.0,\
+  io.openliberty.jakarta.data.1.1,\
   io.openliberty.jakarta.persistence.3.2,\
+  io.openliberty.jakarta.persistence.4.0,\
   io.openliberty.jakarta.validation.3.1,\
   io.openliberty.jakarta.servlet.6.1;version=latest,\
   io.openliberty.jakarta.transaction.2.0;version=latest

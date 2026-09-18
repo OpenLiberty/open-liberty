@@ -43,6 +43,8 @@ DynamicImport-Package: \
   jakarta.data.spi.expression.function, \
   jakarta.data.spi.expression.literal, \
   jakarta.data.spi.expression.path, \
+  jakarta.persistence.query, \
+  jakarta.persistence.sql, \
   jakarta.validation, \
   jakarta.validation.executable, \
   jakarta.validation.metadata
@@ -52,13 +54,15 @@ Import-Package: \
   !com.ibm.ws.beanvalidation.service, \
   !io.openliberty.data.repository, \
   !io.openliberty.data.repository.*, \
+  jakarta.annotation.*;version="[2.1,4)", \
   !jakarta.data, \
   !jakarta.data.*, \
-  !jakarta.validation, \
-  !jakarta.validation.*, \
-  jakarta.annotation.*;version="[2.1,4)", \
+  !jakarta.persistence.query, \
+  !jakarta.persistence.sql, \
   jakarta.persistence;version="[3.2,5)", \
   jakarta.persistence.*;version="[3.2,5)", \
+  !jakarta.validation, \
+  !jakarta.validation.*, \
   *
 
 Private-Package: \
@@ -79,6 +83,8 @@ Include-Resource:\
 
 instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
 
+# TODO fully switch to persistence.4.0
+# Currently we are only using it for classes in the new query and sql packages
 -buildpath: \
 	com.ibm.tx.jta.jakarta;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
@@ -105,6 +111,7 @@ instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
 	io.openliberty.jakarta.data.1.1,\
 	io.openliberty.jakarta.interceptor.2.1,\
 	io.openliberty.jakarta.persistence.3.2;version=latest,\
+	io.openliberty.jakarta.persistence.4.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0,\
 	io.openliberty.jakarta.validation.3.0,\
 	com.ibm.ws.jdbc

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ quiesce.end.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 quiece.warning=CWWKE1102W: Operace uveden\u00ed do klidov\u00e9ho stavu nebyla dokon\u010dena. Nyn\u00ed se zastav\u00ed server.
 quiece.warning.explanation=Procesu se nepoda\u0159ilo uv\u00e9st do klidov\u00e9ho stavu v\u0161echny slu\u017eby v r\u00e1mci \u010dasov\u00e9ho limitu pro uveden\u00ed do klidov\u00e9ho stavu.
-quiece.warning.useraction=Chybov\u00e9 zpr\u00e1vy, kter\u00e9 jsou v\u00fdsledkem nedostupn\u00fdch povinn\u00fdch slu\u017eeb, m\u016f\u017eete bezpe\u010dn\u011b ignorovat. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, zvy\u0161te dobu trv\u00e1n\u00ed 'quiesceTimeout' p\u0159id\u00e1n\u00edm atributu 'quiesceTimeout' do prvku 'executor' v souboru 'server.xml'.
+quiece.warning.useraction=Ignorujte chybov\u00e9 zpr\u00e1vy zp\u016fsoben\u00e9 nedostupnost\u00ed po\u017eadovan\u00fdch slu\u017eeb. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, prodlu\u017ete dobu platnosti ( quiesceTimeout ) p\u0159id\u00e1n\u00edm atributu \u201e quiesceTimeout \u201c k prvku \u201eserver\u201c v souboru \u201e server.xml \u201c.
 
 client.quiesce.begin=CWWKE1103I: \u010cek\u00e1 se a\u017e {0} sekund na uveden\u00ed klienta do klidov\u00e9ho stavu.
 client.quiesce.begin.explanation=Klient \u010dek\u00e1 na uveden\u00ed slu\u017eeb do klidov\u00e9ho stavu, ne\u017e bude pokra\u010dovat s ukon\u010den\u00edm.
@@ -59,6 +59,6 @@ quiesce.listeners.not.complete=CWWKE1106W: Operace ukon\u010den\u00ed {0} nebyly
 quiesce.listeners.not.complete.explanation=Jedna nebo v\u00edce operac\u00ed, kter\u00e9 byly zah\u00e1jeny b\u011bhem operace vypnut\u00ed, se nedokon\u010dilo. 
 quiesce.listeners.not.complete.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-quiesce.waiting.on.threads=CWWKE1107W: Podprocesy {0} nebyly dokon\u010deny b\u011bhem doby uveden\u00ed do klidov\u00e9ho stavu. 
+quiesce.waiting.on.threads=CWWKE1107W: B\u011bhem obdob\u00ed klidu nebylo dokon\u010deno celkem {0} n\u00edch vl\u00e1ken.
 quiesce.waiting.on.threads.explanation=Jeden nebo v\u00edce podproces\u016f, kter\u00e9 byly aktivn\u00ed p\u0159ed ukon\u010den\u00edm serveru, byly aktivn\u00ed i na konci obdob\u00ed uveden\u00ed do klidov\u00e9ho stavu.
-quiesce.waiting.on.threads.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+quiesce.waiting.on.threads.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

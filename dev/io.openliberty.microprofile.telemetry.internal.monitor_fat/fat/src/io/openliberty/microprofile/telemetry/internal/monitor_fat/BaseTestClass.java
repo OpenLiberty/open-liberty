@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import org.junit.Assert;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -39,8 +38,7 @@ public abstract class BaseTestClass {
 
     protected static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
 
-    protected static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
-                    .apply(DockerImageName.parse("otel/opentelemetry-collector-contrib:0.103.0")).asCanonicalNameString();
+    protected static final DockerImageName IMAGE_NAME = DockerImageName.parse("ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.154.0");
 
     
     protected String requestContainerHttpServlet(String servletPath, String host, int port, String requestMethod, String query) {

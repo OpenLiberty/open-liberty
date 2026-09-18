@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=Aby ustali\u0107 przyczyn\
 CWMCM0043W.unsupported.annotation=CWMCM0043W: Metoda ` {0} ` wykorzystuje adnotacj\u0119 ` {1} `, kt\u00f3ra nie jest obs\u0142ugiwana. Ta metoda jest ignorowana.
 CWMCM0043W.unsupported.annotation.explanation=Interfejs API j\u0119zyka Java protoko\u0142u Model Context Protocol (MCP) zawiera adnotacje dotycz\u0105ce funkcji, kt\u00f3re nie s\u0105 obs\u0142ugiwane przez t\u0119 implementacj\u0119. Metody opatrzone adnotacjami, kt\u00f3re nie s\u0105 obs\u0142ugiwane, s\u0105 ignorowane.
 CWMCM0043W.unsupported.annotation.useraction=Nale\u017cy usun\u0105\u0107 z metody adnotacj\u0119, kt\u00f3ra nie jest obs\u0142ugiwana, lub stosowa\u0107 wy\u0142\u0105cznie obs\u0142ugiwane adnotacje protoko\u0142u Model Context Protocol (MCP).
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: Serwer nie przetworzy\u0142 lokalnego \u017c\u0105dania MCP, poniewa\u017c warto\u015b\u0107 nag\u0142\u00f3wka \u201eOrigin\u201d by\u0142a nieprawid\u0142owa.
+CWMCM0044I.localhost.header.rejected.explanation=Niezabezpieczone \u017c\u0105dania typu \u201e HTTP \u201d wysy\u0142ane z \u201elocalhost\u201d musz\u0105 albo nie zawiera\u0107 nag\u0142\u00f3wka \u201eOrigin\u201d, albo zawiera\u0107 nag\u0142\u00f3wek \u201eOrigin\u201d zawieraj\u0105cy wy\u0142\u0105cznie \u201elocalhost\u201d lub adres p\u0119tli zwrotnej. Nag\u0142\u00f3wek \u201eOrigin\u201d zawieraj\u0105cy jak\u0105kolwiek inn\u0105 warto\u015b\u0107 wskazuje na potencjalny atak typu \u201eDNS rebinding\u201d.
+CWMCM0044I.localhost.header.rejected.useraction=Upewnij si\u0119, \u017ce nag\u0142\u00f3wek \u201eOrigin\u201d albo nie wyst\u0119puje, albo zawiera wy\u0142\u0105cznie warto\u015b\u0107 \u201elocalhost\u201d.

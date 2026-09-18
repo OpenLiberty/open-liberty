@@ -12,6 +12,7 @@ wasliberty-aws-docker-remote/elastic/logstash:9.3.3
 wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23.26.2-full-faststart
 wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23.9-full-faststart
 wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23.9-slim-faststart
+wasliberty-ghcr-docker-remote/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.154.0
 wasliberty-ghcr-docker-remote/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0
 wasliberty-ghcr-docker-remote/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.150.1
 wasliberty-ghcr-docker-remote/openzipkin/zipkin-slim:3.6
