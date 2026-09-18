@@ -217,3 +217,7 @@ log.rollover.interval.too.short.warning.useraction=Specify a log rollover interv
 cookie.attribute.name.invalid=CWWKT0047E: The [{0}] cookie attribute contains an invalid character.
 cookie.attribute.name.invalid.explanation=The cookie attribute name cannnot contain any special [\()<>@,;:\\/[]?={} \t] character.
 cookie.attribute.name.invalid.useraction=Correct the cookie attribute name to not use any special character.
+
+write.to.closed.connection=CWWKT0048E: An attempt was made to write to an inbound connection that was already closed.
+write.to.closed.connection.explanation=The remote client closed the connection before the server finished writing the response.
+write.to.closed.connection.useraction=No action is required. The client disconnected and the server will stop processing this request.

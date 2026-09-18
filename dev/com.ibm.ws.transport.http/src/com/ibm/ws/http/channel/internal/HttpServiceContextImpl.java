@@ -3800,7 +3800,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         }
                         return;
                     }
-                    throw new IOException("Attempted to write on a closed Netty channel");
+                    throw new IOException(Tr.formatMessage(tc, "write.to.closed.connection"));
                 }
                 // PI57542 - when throwIOEForInboundConnections=true, create a promise, attach
                 // the deferred-error listener, then give it to the write context so the async
@@ -3845,7 +3845,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
                 return;
             }
-            throw new IOException("Attempted to write on a closed Netty channel");
+            throw new IOException(Tr.formatMessage(tc, "write.to.closed.connection"));
         }
 
         NettyResponseMessage resp = (NettyResponseMessage) getResponse();
