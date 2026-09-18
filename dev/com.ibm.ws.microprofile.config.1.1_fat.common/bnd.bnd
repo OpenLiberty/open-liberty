@@ -26,4 +26,5 @@ Export-Package: \
 	com.ibm.ws.microprofile.appConfig.test.utils
 
 -buildpath: \
-	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest
+	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
