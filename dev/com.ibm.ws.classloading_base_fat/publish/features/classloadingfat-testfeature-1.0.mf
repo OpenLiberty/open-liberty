@@ -1,0 +1,13 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: classloadingfat-testfeature-1.0
+Subsystem-SymbolicName: test.feature.classloading.classloadingfat-testfeature-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: \
+ javax.servlet; type="spec", \
+ javax.servlet.http; type="spec", \
+ com.ibm.wsspi.classloading; type="internal", \
+ com.ibm.ws.ffdc, \
+ com.ibm.ejs.ras; type="api", \
+ org.osgi.framework; type="spec"
+IBM-Feature-Version: 2

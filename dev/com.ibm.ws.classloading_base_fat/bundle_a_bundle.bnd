@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Class Loading FAT Test Bundle A
+Bundle-SymbolicName: test.classloading.bvt.bundle.a; singleton:=true
+Bundle-Activator: io.openliberty.classloading.bvt.bundle.a.Activator
+
+Private-Package: io.openliberty.classloading.bvt.bundle.a
+
+# com.ibm.wsspi.classloading is referenced in the DS component XML
+# (implementation class="com.ibm.wsspi.classloading.ResourceProvider").
+# BND does not scan XML for imports so we declare it explicitly.
+Import-Package: com.ibm.wsspi.classloading, \
+  org.osgi.framework;version="[1.10,2)"
+
+Include-Resource: test-bundles/bundleA/resources/
+
+Service-Component: OSGI-INF/test.classloading.bvt.bundle.a.ResourceProvider.xml

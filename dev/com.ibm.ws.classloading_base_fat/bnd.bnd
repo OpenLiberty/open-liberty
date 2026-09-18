@@ -20,6 +20,7 @@ src: \
 	test-applications/TestUsingAppBundledLibraries.war/src, \
 	test-applications/TestUsingSharedLibraries.war/src, \
 	test-applications/forbidden.war/src, \
+	test-applications/loaderApp.war/src, \
 	test-applications/sharedLib.war/src, \
 	test-applications/sharedLibEJB.jar/src, \
 	test-applications/sharedLibraryA.jar/src, \
@@ -33,6 +34,8 @@ src: \
 	test-applications/updateableAppEJB.jar/src, \
 	test-applications/updateableAppLib.jar/src, \
 	test-applications/updateableAppWeb.war/src, \
+	test-bundles/bundleA/src, \
+	test-bundles/bundleB/src, \
 	test-bundles/libraryChangeBundle/src, \
 	test-bundles/mock.jca/src, \
 	test-bundles/test.libraries/src, \
@@ -45,6 +48,7 @@ fat.project: true
 
 tested.features: \
     library.listener-1.0, \
+    servlet-4.0, \
     jdbc-4.3, \
     pages-3.1, \
     expressionlanguage-5.0, \
@@ -69,5 +73,4 @@ tested.features: \
 	com.ibm.ws.classloading, \
 	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
 	com.ibm.websphere.appserver.spi.kernel.metatype, \
-	com.ibm.ws.org.apache.commons.io;version=latest, \
-	com.ibm.ws.org.slf4j.api;version=latest
+	com.ibm.ws.org.apache.commons.io;version=latest

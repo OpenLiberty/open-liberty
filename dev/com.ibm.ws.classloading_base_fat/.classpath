@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="test-applications/TestUsingAppBundledLibraries.war/src"/>
 	<classpathentry kind="src" path="test-applications/TestUsingSharedLibraries.war/src"/>
 	<classpathentry kind="src" path="test-applications/forbidden.war/src"/>
+	<classpathentry kind="src" path="test-applications/loaderApp.war/src"/>
 	<classpathentry kind="src" path="test-applications/sharedLib.war/src"/>
 	<classpathentry kind="src" path="test-applications/sharedLibEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/sharedLibraryA.jar/src"/>
@@ -19,6 +20,8 @@
 	<classpathentry kind="src" path="test-applications/updateableAppEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/updateableAppLib.jar/src"/>
 	<classpathentry kind="src" path="test-applications/updateableAppWeb.war/src"/>
+	<classpathentry kind="src" path="test-bundles/bundleA/src"/>
+	<classpathentry kind="src" path="test-bundles/bundleB/src"/>
 	<classpathentry kind="src" path="test-bundles/libraryChangeBundle/src"/>
 	<classpathentry kind="src" path="test-bundles/mock.jca/src"/>
 	<classpathentry kind="src" path="test-bundles/test.libraries/src"/>
