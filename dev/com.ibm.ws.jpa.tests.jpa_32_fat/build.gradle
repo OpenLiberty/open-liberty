@@ -27,6 +27,9 @@ configurations {
   }
   hibernateJPA32
   hibernateJPA40
+  jpa40CompileOnly {
+    transitive = false
+  }
 }
 
 dependencies {
@@ -82,6 +85,10 @@ dependencies {
   hibernateJPA40("org.slf4j:slf4j-simple:1.7.36")               { transitive = false }
   hibernateJPA40("org.eclipse.angus:angus-activation:2.0.3")    { transitive = false }
 
+  // JPA 4.0 API jar resolved from Maven — used as the compile-only classpath for the
+  // custom recompile tasks below.  Declared here so Gradle tracks it as a proper
+  // dependency rather than a raw file reference into build.image/wlp/dev/api/spec.
+  jpa40CompileOnly "jakarta.persistence:jakarta.persistence-api:4.0.0-M6"
 }
 
 task addJPAFATTools (type: Copy) {
@@ -123,9 +130,9 @@ task compileJPA40TestApp(type: JavaCompile) {
 
   source = fileTree('test-applications/jakartapersistence/src')
 
-  classpath = (compileJava.classpath
-      .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') }
-      + fileTree(dir: "${rootDir}/build.image/wlp/dev/api/spec", include: 'io.openliberty.jakarta.persistence.4.0_*.jar'))
+  classpath = compileJava.classpath
+      .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') && !it.name.contains('jakarta.persistence.4.0') } +
+      configurations.jpa40CompileOnly
 
   destinationDirectory = file("${buildDir}/jpa40AppClasses")
   options.release = 17
@@ -149,9 +156,9 @@ task compileJPA40DataTestApp(type: JavaCompile) {
 
   source = fileTree('test-applications/jakartadata/src')
 
-  classpath = (compileJava.classpath
-      .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') }
-      + fileTree(dir: "${rootDir}/build.image/wlp/dev/api/spec", include: 'io.openliberty.jakarta.persistence.4.0_*.jar'))
+  classpath = compileJava.classpath
+      .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') && !it.name.contains('jakarta.persistence.4.0') } +
+      configurations.jpa40CompileOnly
 
   destinationDirectory = file("${buildDir}/jpa40DataAppClasses")
   options.release = 17
