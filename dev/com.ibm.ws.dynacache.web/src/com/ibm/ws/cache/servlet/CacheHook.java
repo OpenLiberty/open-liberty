@@ -15,6 +15,8 @@ package com.ibm.ws.cache.servlet;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
@@ -42,7 +44,15 @@ import com.ibm.wsspi.webcontainer.WebContainerConstants;
 public class CacheHook {
 
    private static TraceComponent tc = Tr.register(CacheHook.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");
-   
+
+   /**
+    * Tracks cache IDs whose servlet is currently being executed for the first time.
+    * A concurrent request for the same ID will wait on the latch rather than
+    * re-executing the servlet, preventing duplicate execution and stale cache values.
+    */
+   private static final ConcurrentHashMap<String, CountDownLatch> inProgressMap =
+           new ConcurrentHashMap<String, CountDownLatch>();
+
    static WSThreadLocal <FragmentComposer> threadLocalFragmentComposer = new WSThreadLocal<FragmentComposer>();
    static WSThreadLocal <Boolean> threadLocalSkipCache = new WSThreadLocal <Boolean>();
    
@@ -723,12 +733,58 @@ public class CacheHook {
 							fragmentComposer, jspCache, cacheEntry, fragmentValue);
 				}
 			} else {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-					Tr.debug(tc, "CACHE MISS id: " + id);
-				didMiss = true;
-				handleCacheMiss(servlet, request, response, fragmentInfo,
-						fragmentComposer, jspCache, cacheEntry, fragmentValue);
-
+				// Entry not in cache. Use a work-in-progress latch to prevent concurrent
+				// requests for the same ID from all executing the servlet simultaneously.
+				CountDownLatch newLatch = new CountDownLatch(1);
+				CountDownLatch existingLatch = inProgressMap.putIfAbsent(id, newLatch);
+				if (existingLatch != null) {
+					// Another thread is already computing this ID. Wait for it to finish,
+					// then re-check the cache — it should now be a hit.
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+						Tr.debug(tc, "WIP wait for id: " + id);
+					try {
+						existingLatch.await();
+					} catch (InterruptedException ie) {
+						Thread.currentThread().interrupt();
+					}
+					// Re-read from cache after the computing thread has finished.
+					cacheEntry = jspCache.getEntry(fragmentInfo);
+					if (cacheEntry != null) {
+						fragmentValue = cacheEntry.getValue();
+						if (fragmentValue != null && !cacheEntry.isInvalid()) {
+							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+								Tr.debug(tc, "WIP cache hit after wait id: " + id);
+							// didMiss stays false — handleCacheHit called below
+						} else {
+							// First thread did not populate (e.g. servlet threw). Fall through as a miss.
+							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+								Tr.debug(tc, "WIP no value after wait, treating as miss id: " + id);
+							didMiss = true;
+							handleCacheMiss(servlet, request, response, fragmentInfo,
+									fragmentComposer, jspCache, cacheEntry, fragmentValue);
+						}
+					} else {
+						// Entry still not present (first thread's response was not cacheable). Execute servlet.
+						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+							Tr.debug(tc, "WIP null entry after wait, treating as miss id: " + id);
+						didMiss = true;
+						handleCacheMiss(servlet, request, response, fragmentInfo,
+								fragmentComposer, jspCache, cacheEntry, fragmentValue);
+					}
+				} else {
+					// This thread is first — execute servlet and populate cache.
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+						Tr.debug(tc, "CACHE MISS id: " + id);
+					didMiss = true;
+					try {
+						handleCacheMiss(servlet, request, response, fragmentInfo,
+								fragmentComposer, jspCache, cacheEntry, fragmentValue);
+					} finally {
+						// Always release waiting threads and remove from map.
+						inProgressMap.remove(id, newLatch);
+						newLatch.countDown();
+					}
+				}
 			}
 			// }
 			// handle cache hit outside the mutex...
