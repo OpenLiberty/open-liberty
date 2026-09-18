@@ -15,12 +15,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -122,7 +122,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
                 if (sizeOfCurrentChunk > maxContentLength ||
                     (content.readableBytes() + sizeOfCurrentChunk) > maxContentLength) {
-                    throw new TooLongFrameException("Content length exceeded max of " + maxContentLength + " bytes.");
+                    throw new IllegalHttpBodyException("Chunk size exceeds configured message size limit of " + maxContentLength + " bytes.");
                 }
 
                 content.addComponent(true, httpContent.content().retain());
