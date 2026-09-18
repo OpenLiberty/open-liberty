@@ -271,6 +271,10 @@ public class NettyChain extends HttpChain {
 
                 serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
+                VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+                postEvent(topic, currentConfig, null);
+
                 // Only block waiting for the bind result when the server is already fully
                 // started — meaning the bind task was submitted to the executor immediately
                 // (not queued via runWhenServerStarted for later).
@@ -362,14 +366,6 @@ public class NettyChain extends HttpChain {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel is now active and listening on port " + getActivePort());
                 }
-                // Notify virtual hosts and post the started event here so that both the
-                // immediate-bind path (server already started) and the deferred-bind path
-                // (ServerStarted queued) are covered by the same code path.
-                // startNettyChannel() is blocked on wait() above and will unblock via notifyAll()
-                // below only after these notifications have completed.
-                VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
-                String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
-                postEvent(topic, currentConfig, null);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Channel failed to bind to port:  " + future.cause());
