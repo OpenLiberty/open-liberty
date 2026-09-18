@@ -20,8 +20,6 @@
 package org.apache.neethi;
 
 import java.io.InputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.Map;
 import javax.xml.namespace.QName;
@@ -275,14 +273,7 @@ public class PolicyBuilder {
     } 
 
     private static int readConfiguredLimit(String key, int defaultValue) {
-    	// Liberty Change begin
-		String value = AccessController.doPrivileged(new PrivilegedAction<String>() {
-			@Override
-			public String run() {
-				return System.getProperty(key);
-			}
-		});
-        // Liberty Change end
+        String value = System.getProperty(key);
         if (value == null || value.trim().length() == 0) {
             return defaultValue;
         }
