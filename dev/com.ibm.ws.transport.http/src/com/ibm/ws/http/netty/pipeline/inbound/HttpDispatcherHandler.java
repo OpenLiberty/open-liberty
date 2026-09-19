@@ -848,9 +848,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
 
         AsyncReadDispatchState asyncReadState = AsyncReadDispatchState.forChannel(context.channel());
-        boolean asyncReadInProgress =
-            Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get()) ||
-            asyncReadState.hasOutstandingCallback();
         Throwable lifecycleFailure = null;
         try {
             asyncReadState.fail();
@@ -858,24 +855,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             lifecycleFailure = t;
         }
 
+        // Channel closed while request body was still in flight: signal an error so
+        // any thread blocked in BodyQueue.awaitChange() unblocks immediately. The
+        // forced-close path that used to signal EOS here has been removed; a genuine
+        // premature close is always an error from the body reader's perspective.
         try {
-            boolean responseCloseBeforeRequestBodyComplete =
-                Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).get());
             if (queue != null && !queue.isEos()) {
-                if (responseCloseBeforeRequestBodyComplete && !asyncReadInProgress) {
-                    queue.signalEos();
-                    if (link != null)
-                        link.setBodyComplete();
-                } else {
-                    context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
-                    queue.signalError(new EOFException("Channel closed before request body completed."));
-                }
+                context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
+                queue.signalError(new EOFException("Channel closed before request body completed."));
             }
-        } catch (Throwable t) {
-            lifecycleFailure = mergeLifecycleFailure(lifecycleFailure, t);
-        }
-        try {
-            context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.FALSE);
         } catch (Throwable t) {
             lifecycleFailure = mergeLifecycleFailure(lifecycleFailure, t);
         }

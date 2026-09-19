@@ -101,9 +101,19 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     }
 
     public static void markRequestConsumed(ChannelHandlerContext context) {
+        if (!context.executor().inEventLoop()) {
+            context.executor().execute(() -> markRequestConsumed(context));
+            return;
+        }
         FlowState state = state(context);
         state.setRequestConsumed(true);
-        verifyNeedRead(context, state);
+        // If requests were queued waiting for the active body to finish, drain
+        // them now. Otherwise just check if a new socket read is needed.
+        if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+            drainPendingAdmission(context, state);
+        } else {
+            verifyNeedRead(context, state);
+        }
     }
 
     public static void setBodyReadWanted(ChannelHandlerContext context, boolean want) {
@@ -203,8 +213,13 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             // ----------------------------------------------------------------
             // Admission gate: if a prior exchange is still active, park this
             // request (and any content that follows) until the exchange ends.
+            // An exchange is still active when:
+            //  - the response is still being written (responseInFlight), OR
+            //  - the request body has not yet been fully consumed/drained
+            //    (requestConsumed=false — body purge in progress), OR
+            //  - a prior request is already waiting in the queue.
             // ----------------------------------------------------------------
-            if (state.isResponseInFlight() || state.hasPendingAdmission()) {
+            if (state.isResponseInFlight() || !state.isRequestConsumed() || state.hasPendingAdmission()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "[FLOW-PROOF] GATE_INBOUND_REQUEST ch=" + context.channel().id()
                         + " uri=" + request.uri()
@@ -229,24 +244,42 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         // --------------------------------------------------------------------
         // HttpContent (body chunk or LastHttpContent)
         // --------------------------------------------------------------------
+        //
+        // Parking rule for body content:
+        //
+        //   Park when ALL of:
+        //     (a) there is a queued request waiting for admission, AND
+        //     (b) EITHER the active exchange's body is already consumed
+        //         (requestConsumed=true — A is done, so content belongs to B),
+        //         OR  the queue head is already body content (B's body has
+        //             already started accumulating and this is its next chunk).
+        //
+        //   Forward otherwise — content belongs to the active exchange (A's body
+        //   arriving before B's HttpRequest, or A's body during the purge phase
+        //   after A's response has completed).
+        //
+        // This preserves correct ordering for pipelined requests with bodies
+        // while allowing the body-purge path to drain A's remaining body.
         if (message instanceof LastHttpContent) {
-            // If the pending queue is non-empty this content belongs to a queued
-            // request: park it with its request so it can be replayed together.
-            // We own the reference delivered by the pipeline; no retain needed.
-            if (state.hasPendingAdmission()) {
+            if (shouldParkBodyContent(state)) {
                 state.enqueuePending((HttpObject) message);
                 return;
             }
 
             state.setRequestConsumed(true);
             super.channelRead(context, message);
-            verifyNeedRead(context, state);
+            // Drain any queued requests that were waiting for this body to finish,
+            // or issue a socket read if keep-alive is still allowed.
+            if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+                drainPendingAdmission(context, state);
+            } else {
+                verifyNeedRead(context, state);
+            }
             return;
         }
 
-        // Plain body chunk: park if it belongs to a queued request.
-        // We own the reference delivered by the pipeline; no retain needed.
-        if (message instanceof HttpObject && state.hasPendingAdmission()) {
+        // Plain body chunk: same parking rule.
+        if (message instanceof HttpObject && shouldParkBodyContent(state)) {
             state.enqueuePending((HttpObject) message);
             return;
         }
@@ -538,6 +571,20 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         state.setReadPending(false);
         state.setReadAgain(false);
 
+        // The current request body must be fully drained before the next request
+        // is admitted. If the application did not read the body, an async purge
+        // will have been started by HttpDispatcherLink.nettyClose(); it drives
+        // further reads via setBodyReadWanted and calls markRequestConsumed when
+        // done, which re-enters verifyNeedRead/drainPendingAdmission.
+        if (!state.isRequestConsumed()) {
+            // Purge is in progress (or body read is still needed). Ensure reads
+            // are scheduled so the remaining body chunks can arrive.
+            if (!state.stoppedReading() && context.channel().isActive()) {
+                ReadFlowHandler.setBodyReadWanted(context, true);
+            }
+            return;
+        }
+
         // Drain the admission queue before issuing a socket read; the next
         // request may already be fully decoded and waiting.
         if (state.hasPendingAdmission()) {
@@ -768,6 +815,38 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             + " respInFlight=" + state.isResponseInFlight()
             + " keepAlive=" + state.isKeepAliveAllowed());
         context.read();
+    }
+
+    /**
+     * Returns {@code true} when an arriving {@link io.netty.handler.codec.http.HttpContent}
+     * or {@link LastHttpContent} should be parked in the pending-admission queue rather
+     * than forwarded to the active exchange.
+     *
+     * <p>Content is parked when:
+     * <ol>
+     *   <li>there is a queued request waiting for admission, <em>and</em></li>
+     *   <li>the active exchange's body is already fully consumed
+     *       ({@code requestConsumed=true}) — meaning the content belongs to the
+     *       queued request, not to the current one; <em>or</em> the queue head is
+     *       already body content, meaning we have already started accumulating the
+     *       queued request's body.</li>
+     * </ol>
+     *
+     * <p>When {@code requestConsumed=false}, the active exchange still has unread body
+     * on the wire. On a pipelined connection A's body always arrives before B's
+     * {@code HttpRequest} header, so content arriving while A's body is incomplete
+     * must belong to A — forwarding it lets the body drain finish, after which
+     * {@code markRequestConsumed} triggers {@code drainPendingAdmission} for B.
+     */
+    private static boolean shouldParkBodyContent(FlowState state) {
+        if (!state.hasPendingAdmission()) {
+            return false;
+        }
+        // Active exchange body not yet done: content belongs to current exchange.
+        if (!state.isRequestConsumed() && state.peekPending() instanceof HttpRequest) {
+            return false;
+        }
+        return true;
     }
 
     private static void verifyNeedRead(ChannelHandlerContext context, FlowState state) {

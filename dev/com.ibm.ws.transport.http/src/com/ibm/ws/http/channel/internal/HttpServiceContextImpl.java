@@ -65,7 +65,6 @@ import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -3130,7 +3129,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyWrite(sendHeaders, false);
         } else if (isHeadRequest && sendHeaders) {
             // If a HEAD request is found, the response is self-contained
-            prepareNettyCloseForIncompleteRequestBody(false);
             sendNettyHeaders();
         }
     }
@@ -3457,7 +3455,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyWrite(sendHeaders, true);
         } else if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             // Skip writing data and send headers and last http content only
-            prepareNettyCloseForIncompleteRequestBody(true);
             if(sendHeaders){
                 sendNettyHeaders();
             }
@@ -3814,8 +3811,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if(!(getTSC().getWriteInterface() instanceof NettyTCPWriteRequestContext))
             throw new RuntimeException("Writing on Netty requires a NettyTCPWriteRequestContext");
 
-        prepareNettyCloseForIncompleteRequestBody(finalWrite);
-
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing " + writeBuffers.length + " buffers on netty channel.");
@@ -3854,39 +3849,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
-    private void prepareNettyCloseForIncompleteRequestBody(boolean finalWrite) {
-        if (!finalWrite || nettyResponse == null) {
-            return;
-        }
-        if (isNettyHttp2Request()) {
-            return;
-        }
-        if (!hasUnconsumedNettyRequestBody()) {
-            return;
-        }
-
-        // A finalized response cannot safely leave an HTTP/1.x connection reusable while
-        // unread request-body bytes may still be on the wire. Mark the response state as
-        // close-delimited before the write path so close cleanup does not block draining.
-        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
-        setPersistent(false);
-        nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-    }
-
-    /**
-     * Determines whether an HTTP/1.x response must close because request entity
-     * bytes may still be unread. Protocol completion remains owned by
-     * {@code LastHttpContent}; consuming the declared fixed-length entity is
-     * sufficient only for this response-close decision.
-     */
-    private boolean hasUnconsumedNettyRequestBody() {
-        // Incomplete-body forced-close is an HTTP/1 keep-alive concern only.
-        if (isNettyHttp2Request()) {
-            return false;
-        }
-        return !isBodyComplete() && !ReadFlowHandler.state(nettyContext).isRequestConsumed();
-    }
-
     private void sendNettyFinalContent() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
@@ -3898,20 +3860,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
 
-        // If there are unread request-body bytes on the wire we must close after
-        // the response to prevent the next pipelined request from misreading them.
-        // prepareNettyCloseForIncompleteRequestBody() handles the common case at
-        // finishMessage time, but guard here too for the finalContent-only path.
-        if ("-1".equals(streamId) && hasUnconsumedNettyRequestBody()) {
-            this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
-            setPersistent(false);
-            resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-        }
-
         // Sending last http content since all data was written.
         // Connection-close is owned by HttpServerKeepAliveHandler: it reads the
-        // Connection header written above (or by prepareNettyHeadersToSend) and
-        // attaches ChannelFutureListener.CLOSE to this write automatically.
+        // Connection header (set by prepareNettyHeadersToSend or by explicit policy)
+        // and attaches ChannelFutureListener.CLOSE to this write automatically.
         this.nettyContext.channel().eventLoop().execute(() -> {
             nettyContext.channel().writeAndFlush(lastContent);
         });

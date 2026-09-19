@@ -315,29 +315,37 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
-        // Read until consumed data to read for other request if not already read.
-        // If this response/connection is already closing, there is no next request to protect;
-        // blocking here can deadlock raw clients that advertise a request body and then wait for EOF.
+        // If the application did not consume the full request body, we must drain it
+        // before the connection can be reused. Follow Channel Framework's pattern
+        // (HttpInboundLink.close / HttpIgnoreBodyCallback):
+        //
+        // - On a keep-alive-eligible exchange: deferClear defers isc.clear() until
+        //   setBodyComplete() fires from the purge. ReadFlowHandler.onResponseComplete
+        //   already calls setBodyReadWanted(true) when requestConsumed=false, which
+        //   drives the remaining body reads. When the body finishes, markRequestConsumed
+        //   fires, which calls verifyNeedRead / drainPendingAdmission.
+        //
+        // - On teardown (error, quiesce, non-keepalive): signal the queue so any
+        //   thread blocked in BodyQueue.awaitChange() unblocks, then fall through
+        //   to the normal channel-close branches below.
         if (!this.isc.isBodyComplete()) {
-            boolean shouldDrainRequestBody = shouldDrainRequestBodyBeforeNettyClose(e);
-            if (shouldDrainRequestBody) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Body not fully read for request. Consuming until finished.");
-            }
-            HttpInputStreamImpl body = this.request.getBody();
-            try {
-                body.fillFromStreamingNetty();
-            } catch (Exception e2) {
+            if (shouldDrainRequestBodyBeforeNettyClose(e)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Failed to consume remaining Netty request body before close: " + e2);
+                    Tr.debug(tc, "Body not fully read; deferring isc.clear() until purge completes.");
                 }
-            }
-        } else {
-                if (e == null && this.nettyContext != null) {
-                    this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
-                }
+                // deferClear is set here; the read scheduling is owned by
+                // ReadFlowHandler.onResponseComplete (setBodyReadWanted path).
+                // This method falls through to the KEEPALIVE_NO_CHANNEL_CLOSE
+                // branch, which also sets deferClear — the double-set is idempotent.
+                deferClear.set(true);
+            } else {
+                // Teardown path: unblock any reader waiting on the queue.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Skipping remaining request body drain because Netty connection is closing.");
+                    Tr.debug(tc, "Skipping body drain; signaling queue EOS and closing.");
+                }
+                HttpInputStreamImpl body = (this.request != null) ? this.request.getBody() : null;
+                if (body != null) {
+                    body.signalEOS();
                 }
             }
         } else {
@@ -479,29 +487,44 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return requestReference != null && requestReference.headers().contains(HttpHeaderNames.TRAILER);
     }
 
+    /**
+     * Returns {@code true} when the remaining request body should be drained
+     * asynchronously before the connection is reused.
+     *
+     * <p>Mirrors Channel Framework's {@code HttpInboundLink.close()} logic: drain
+     * is skipped only for genuine termination conditions (error state, quiesce,
+     * server shutdown, or an explicitly non-keepalive exchange). An early response
+     * with an unread body is no longer a reason to skip draining — doing so was the
+     * root cause of the 30-second {@code PersistTimeoutException} stall.
+     */
     private boolean shouldDrainRequestBodyBeforeNettyClose(Exception closeCause) {
+        // Non-null exception = error state; matches Channel Framework's errorState check.
         if (closeCause != null) {
             return false;
         }
         if (this.nettyContext == null) {
-            return true;
+            // No channel context; nothing to drain.
+            return false;
         }
+        // Server is shutting down; don't hold up quiesce with a body drain.
         if (QuiesceState.isQuiesceInProgress()) {
             return false;
         }
-        if (Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).get())) {
-            return false;
-        }
-        if (this.isc != null && !this.isc.isPersistent()) {
-            return false;
-        }
+        // Servlet-upgrade connections keep the socket; body is owned by the upgrade handler.
         if (this.nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
             return true;
         }
+        // Keep-alive handler must be present for the connection to be reusable.
+        if (this.nettyContext.pipeline().get("httpKeepAlive") == null) {
+            return false;
+        }
+        // If the request itself was not keep-alive, reuse is not possible.
         FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
         if (requestReference != null && !HttpUtil.isKeepAlive(requestReference)) {
             return false;
         }
+        // If an explicit Connection: close was set on the response (by policy, not by
+        // the old forced-close code which is now removed), honour it.
         if (this.isc != null && this.isc.getNettyResponse() != null) {
             if (!HttpUtil.isKeepAlive(this.isc.getNettyResponse())) {
                 return false;
@@ -510,7 +533,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 return false;
             }
         }
-        return this.nettyContext.pipeline().get("httpKeepAlive") != null;
+        return true;
     }
 
     /*
