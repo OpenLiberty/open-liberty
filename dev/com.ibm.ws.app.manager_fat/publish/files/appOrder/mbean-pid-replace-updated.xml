@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Updated server configuration for the PID-replacement regression test
+  (TS022427317 / testAutoStartFalseMBeanStartSurvivesConfigReplacement).
+
+  Identical to mbean-pid-replace.xml except that the application id has
+  changed from "slowV1" to "slowV2".  Liberty interprets this as a deletion
+  of the old PID and addition of a new PID for the same logical application
+  name "slow", reproducing the OSGi Config Admin churn that caused the bug.
+-->
+<server description="mbean pid replace test - updated config">
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+    <applicationManager autoExpand="true"/>
+
+    <application id="slowV2" name="slow" autoStart="false" location="slowapp.war"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>

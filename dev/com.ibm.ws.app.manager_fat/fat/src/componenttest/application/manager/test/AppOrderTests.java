@@ -294,6 +294,59 @@ public class AppOrderTests extends AbstractAppManagerTest {
     }
 
     /**
+     * Regression test for TS022427317.
+     *
+     * <p>Scenario: an application configured with {@code autoStart="false"} receives an explicit
+     * {@code ApplicationMBean.start()} call.  Before startup completes, Liberty's OSGi Configuration
+     * Admin delivers a {@code deleted(old_pid)} / {@code updated(new_pid)} pair for the same logical
+     * application name — reproducing the PID churn that occurs when a CICS BUNDLE installation
+     * rewrites {@code installedApps.xml} during a z/OS system IPL.
+     *
+     * <p>Without the fix the replacement state machine is born with a fresh, unsatisfied
+     * explicit-start barrier and the application stalls in STOPPED state forever.  With the fix,
+     * the start intent recorded before the deletion is propagated to the replacement state machine
+     * and the application completes startup without requiring a second {@code start()} call.
+     *
+     * <p>The "slow" application sleeps for ~40 seconds during {@code contextInitialized()}, which
+     * gives this test a reliable window to perform the server.xml replacement while the application
+     * is in-flight between the explicit {@code start()} invocation and {@code STARTED} state.
+     */
+    @Test
+    public void testAutoStartFalseMBeanStartSurvivesConfigReplacement() throws Exception {
+        final String method = testName.getMethodName();
+
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SLOW_APP);
+
+        // Start with id="slowV1" — autoStart=false, so the app remains STOPPED after boot.
+        server.setServerConfigurationFile("/appOrder/mbean-pid-replace.xml");
+        server.startServer(method + ".log");
+
+        ApplicationMBean slow = getApplicationMBean("slow");
+        assertTrue("The application 'slow' should be in STOPPED state after server start",
+                   slow.getState() == ApplicationState.STOPPED);
+
+        // Invoke start() exactly once. The slow app will now begin contextInitialized(),
+        // sleeping ~40 s before completing — keeping the application in STARTING state.
+        slow.start();
+
+        // While the application is in-flight (STARTING), replace the server config so that
+        // the application element's id changes from "slowV1" to "slowV2".  Liberty's Config
+        // Admin will issue a deleted(slowV1-pid) + updated(slowV2-pid) pair, destroying the
+        // in-flight state machine and creating a fresh one for the same application name.
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("/appOrder/mbean-pid-replace-updated.xml");
+        // Wait for Liberty to acknowledge the config change before polling for app start.
+        assertNotNull("Server config update was not acknowledged",
+                      server.waitForStringInLogUsingMark("CWWKG0017I"));
+
+        // The application must reach STARTED without any second start() call.
+        // We allow the full LONG_TIMEOUT (120 s) because the slow app sleeps ~40 s.
+        assertNotNull("Application 'slow' did not start after config PID replacement — "
+                      + "explicit start intent was lost (regression of TS022427317)",
+                      server.waitForStringInLogUsingMark("CWWKZ0001I.* slow", LONG_TIMEOUT));
+    }
+
+    /**
      * An older test (pre-addition of 'startAfter') that just reverses the order of applications in server.xml and makes
      * sure that it doesn't make a difference.
      */

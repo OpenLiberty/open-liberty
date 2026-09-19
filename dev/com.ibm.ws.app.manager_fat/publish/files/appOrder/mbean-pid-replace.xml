@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Initial server configuration for the PID-replacement regression test
+  (TS022427317 / testAutoStartFalseMBeanStartSurvivesConfigReplacement).
+
+  The "slow" application is configured with autoStart="false" and uses
+  slowapp.war whose contextInitialized() sleeps for ~40 seconds.  This
+  gives the test a large window in which to perform a server.xml replacement
+  while the application is in-flight between start() and STARTED.
+
+  The id "slowV1" is deliberately different from id "slowV2" in the updated
+  config.  Liberty's OSGi Configuration Admin will therefore issue a
+  deleted("com.ibm.ws.app.manager_slowV1") / updated("com.ibm.ws.app.manager_slowV2")
+  pair — exactly the PID-churn pattern that caused the original bug.
+-->
+<server description="mbean pid replace test - initial config">
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+    <applicationManager autoExpand="true"/>
+
+    <application id="slowV1" name="slow" autoStart="false" location="slowapp.war"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>
