@@ -16,29 +16,33 @@ package com.ibm.ws.jpa;
 import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE11Action;
+import componenttest.rules.repeater.JakartaEE12Action;
 
-public class RepeatWithJPA32Hibernate extends JakartaEE11Action {
-    public static final String ID = "JPA32_HIBERNATE7";
+/**
+ * Repeat phase: run the JPA 3.2 test suite against the JPA 4.0 persistence
+ * feature (persistence-4.0) with Hibernate 8 as the provider.
+ */
+public class RepeatWithJPA40Hibernate extends JakartaEE12Action {
+    public static final String ID = "JPA40_HIBERNATE8";
 
-    /**
-     * Restrict Hibernate tests to run on FULL mode
-     */
-    public RepeatWithJPA32Hibernate() {
+    public RepeatWithJPA40Hibernate() {
         withID(ID);
-        // Used in componenttest.rules.repeater.RepeatTestAction.isEnabled() to determine if the test should run
         withTestMode(TestMode.FULL);
     }
 
     @Override
     public String toString() {
-        return "Switch to JPA Container 3.2 feature and use Hibernate for JPA persistence provider";
+        return "JPA 3.2 apps on persistence-4.0 with Hibernate 8";
     }
 
     @Override
     public void setup() throws Exception {
+        // Override the jakarta.persistence import version to [4.0,5) so the
+        // transformed WARs resolve against the JPA 4.0 API bundle instead of
+        // the JPA 3.2 API bundle (which is [3.2,4) by default in JakartaEE12Action).
+        withLocalVersionTransformAppend("jpa40-versions.properties");
         super.setup();
-        FATSuite.repeatPhase = "hibernate32-cfg.xml";
+        FATSuite.repeatPhase = "hibernate40-cfg.xml";
         FATSuite.provider = JPAPersistenceProvider.HIBERNATE;
     }
 }

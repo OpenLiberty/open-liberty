@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ *******************************************************************************/
+-->
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+        version="3.2">
+
+    <persistence-unit name="JakartaPersistenceUnit">
+        <!-- Hibernate 8 requires explicit @Entity/@Embeddable class listings (no WEB-INF/classes scanning) -->
+        <class>io.openliberty.jpa.persistence.tests.models.AsciiCharacter</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Book</class>
+        <class>io.openliberty.jpa.persistence.tests.models.ConcatEntity</class>
+        <class>io.openliberty.jpa.persistence.tests.models.DateTimeEntity</class>
+        <class>io.openliberty.jpa.persistence.tests.models.DocumentEntity</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Employee</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Event</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Organization</class>
+        <class>io.openliberty.jpa.persistence.tests.models.PartialDateEntity</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Participant</class>
+        <class>io.openliberty.jpa.persistence.tests.models.PersistenceUnitEntity</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Person</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Prime</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Product</class>
+        <class>io.openliberty.jpa.persistence.tests.models.SimpleEmployee</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Ticket</class>
+        <class>io.openliberty.jpa.persistence.tests.models.User</class>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <!-- Drop and recreate the database schema automatically for clean test runs -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <!-- L2 cache via JCache/EHCache (hibernate-jcache + ehcache shipped in jpa_fat_jpa40_hibernate) -->
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.jcache.internal.JCacheRegionFactory"/>
+            <property name="hibernate.javax.cache.missing_cache_strategy" value="create"/>
+            <!-- ORA-43853: disable SecureFiles LOB syntax for non-ASSM tablespaces (e.g. SYSTEM) -->
+            <property name="hibernate.dialect.oracle.value_lob_enabled" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>

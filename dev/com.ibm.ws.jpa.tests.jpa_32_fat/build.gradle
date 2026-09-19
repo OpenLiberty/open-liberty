@@ -14,7 +14,8 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-  hibernateVersion = '7.4.4.Final'
+  hibernateVersion    = '7.4.4.Final'
+  hibernate40Version  = '8.0.0.Beta1'
 }
 
 configurations {
@@ -25,6 +26,10 @@ configurations {
     transitive = false
   }
   hibernateJPA32
+  hibernateJPA40
+  jpa40CompileOnly {
+    transitive = false
+  }
 }
 
 dependencies {
@@ -57,12 +62,39 @@ dependencies {
   hibernateJPA32("org.slf4j:slf4j-simple:1.7.36") {
     transitive = false
   }
+
+  // Hibernate 8 (JPA 4.0 persistence-4.0 repeat phase)
+  // Core Hibernate 8 runtime
+  hibernateJPA40("org.hibernate.orm:hibernate-core:${hibernate40Version}")              { transitive = false }
+  hibernateJPA40("org.hibernate.orm:hibernate-community-dialects:${hibernate40Version}"){ transitive = false }
+  hibernateJPA40("org.hibernate.orm:hibernate-scan-jandex:${hibernate40Version}")       { transitive = false }
+  hibernateJPA40("org.hibernate.orm:hibernate-jcache:${hibernate40Version}") {
+    exclude group: 'org.hibernate.orm', module: 'hibernate-core'
+    exclude group: 'org.jboss.logging', module: 'jboss-logging'
+  }
+
+  // Hibernate runtime dependencies
+  hibernateJPA40("net.bytebuddy:byte-buddy:1.18.10")            { transitive = false }
+  hibernateJPA40("org.antlr:antlr4-runtime:4.13.2")             { transitive = false }
+  hibernateJPA40("org.jboss.logging:jboss-logging:3.6.3.Final") { transitive = false }
+  hibernateJPA40("org.hibernate.models:hibernate-models:1.2.0") { transitive = false }
+  hibernateJPA40("io.smallrye:jandex:3.6.0")                    { transitive = false }
+  hibernateJPA40("org.ehcache:ehcache:3.10.8:jakarta")          { transitive = false }
+  hibernateJPA40("javax.cache:cache-api:1.1.1")                 { transitive = false }
+  hibernateJPA40("org.slf4j:slf4j-api:1.7.36")                  { transitive = false }
+  hibernateJPA40("org.slf4j:slf4j-simple:1.7.36")               { transitive = false }
+  hibernateJPA40("org.eclipse.angus:angus-activation:2.0.3")    { transitive = false }
+
+  // JPA 4.0 API jar resolved from Maven — used as the compile-only classpath for the
+  // custom recompile tasks below.  Declared here so Gradle tracks it as a proper
+  // dependency rather than a raw file reference into build.image/wlp/dev/api/spec.
+  jpa40CompileOnly "jakarta.persistence:jakarta.persistence-api:4.0.0-M6"
 }
 
 task addJPAFATTools (type: Copy) {
   mustRunAfter jar
   from configurations.jpaFatTools
-  include "**/com.ibm.ws.jpa_testframework.jar"
+  include "**/com.ibm.ws.jpa_testframework.jakarta.jar"
   into new File(autoFvtDir, 'lib')
 }
 
@@ -72,11 +104,87 @@ task addhibernateJPA32(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa32_hibernate')
 }
 
+task addhibernateJPA40(type: Copy) {
+  shouldRunAfter jar
+  // Clean first to remove any stale jars from previous Hibernate versions
+  doFirst {
+    delete new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_hibernate')
+  }
+  from configurations.hibernateJPA40
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa40_hibernate')
+}
+
+// ---------------------------------------------------------------------------
+// JPA40_HIBERNATE8 repeat phase — recompile the jakartapersistence and
+// jakartadata test apps against the JPA 4.0 API and package as separate WARs.
+//
+// Both servlets use createQuery(String) which moved to the EntityHandler
+// superinterface with a different return type (StatementOrTypedQuery) in
+// JPA 4.0.  Compiled against JPA 3.2 the call descriptor is (String)→Query;
+// the JPA 4.0 runtime only has (String)→StatementOrTypedQuery, so the JVM
+// throws NoSuchMethodError.  Recompiling against the 4.0 API fixes the
+// descriptors without any source changes.
+// ---------------------------------------------------------------------------
+task compileJPA40TestApp(type: JavaCompile) {
+  dependsOn jar
+
+  source = fileTree('test-applications/jakartapersistence/src')
+
+  classpath = compileJava.classpath
+      .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') && !it.name.contains('jakarta.persistence.4.0') } +
+      configurations.jpa40CompileOnly
+
+  destinationDirectory = file("${buildDir}/jpa40AppClasses")
+  options.release = 17
+}
+
+task packageJPA40TestWar(type: Jar, dependsOn: compileJPA40TestApp) {
+  archiveFileName = 'jakartapersistence_jpa40compiled.war'
+  destinationDirectory = file("${autoFvtDir}/publish/shared/jpa40war")
+
+  from("${buildDir}/jpa40AppClasses") {
+    into 'WEB-INF/classes'
+  }
+  // Use jpa-4.0 resources which carry explicit <class> listings required by Hibernate 8
+  from('test-applications/jakartapersistence/resources/jpa-4.0/web') {
+    into '/'
+  }
+}
+
+task compileJPA40DataTestApp(type: JavaCompile) {
+  dependsOn jar
+
+  source = fileTree('test-applications/jakartadata/src')
+
+  classpath = compileJava.classpath
+      .filter { !it.name.contains('jakarta.persistence.3.2') && !it.name.contains('jakarta.persistence.api.3.2') && !it.name.contains('jakarta.persistence.4.0') } +
+      configurations.jpa40CompileOnly
+
+  destinationDirectory = file("${buildDir}/jpa40DataAppClasses")
+  options.release = 17
+}
+
+task packageJPA40DataTestWar(type: Jar, dependsOn: compileJPA40DataTestApp) {
+  archiveFileName = 'jakartadata_jpa40compiled.war'
+  destinationDirectory = file("${autoFvtDir}/publish/shared/jpa40war")
+
+  from("${buildDir}/jpa40DataAppClasses") {
+    into 'WEB-INF/classes'
+  }
+  // Use jpa-4.0 resources which carry explicit <class> listings required by Hibernate 8
+  from('test-applications/jakartadata/resources/jpa-4.0/web') {
+    into '/'
+  }
+}
+
 addRequiredLibraries {
   dependsOn addH2
   dependsOn copyJdbcDrivers
   dependsOn addJPAFATTools
   dependsOn addhibernateJPA32
+  dependsOn addhibernateJPA40
+  dependsOn packageJPA40TestWar
+  dependsOn packageJPA40DataTestWar
   dependsOn addJakartaTransformer
   dependsOn copyTestContainers
 }
