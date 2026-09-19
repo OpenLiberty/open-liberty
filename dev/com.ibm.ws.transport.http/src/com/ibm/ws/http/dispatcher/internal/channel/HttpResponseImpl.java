@@ -211,7 +211,7 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
                 if (messageContentLength != -1) { //it's set
                     this.body.setContentLength(getContentLength());
                 }
-            }
+            }   
         }
         return this.body;
     }
