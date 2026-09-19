@@ -512,6 +512,47 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Uses a Delete method with a constraint parameter. The method is provided
+     * by a stateful repository.
+     */
+    @Test
+    public void testConstraintDeleteStateful() {
+        // Populate with 1/24, 2/24, and 3/24.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(1, 24),
+                                                Fraction.of(2, 24),
+                                                Fraction.of(3, 24)));
+        boolean removed = false;
+        try {
+            assertEquals(2,
+                         statefulFractionRepo //
+                                         .omit(Between.bounds(2, 10), // numerator
+                                               _Fraction.denominator.equalTo(24)));
+
+            Fraction f1_24 = statefulFractions.fetch(1, 24).orElseThrow();
+
+            statefulFractionRepo.remove(f1_24);
+            removed = true;
+        } finally {
+            // Ensure no fractions with denominator of 24 or more are left around
+            if (!removed)
+                fractions.discard(AtLeast.min(24),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
+        }
+
+        assertEquals(false,
+                     statefulFractions.fetch(2, 24).isPresent());
+
+        assertEquals(false,
+                     statefulFractions.fetch(3, 24).isPresent());
+
+        // Ensure we did not delete a non-matching entity:
+        assertEquals(true,
+                     statefulFractions.fetch(3, 20).isPresent());
+    }
+
+    /**
      * Request cursor pagination from a repository method that accepts a
      * Restriction parameter, but specify the unrestricted restriction.
      * Verify the total count of elements and pages is computed correctly.
@@ -1870,6 +1911,27 @@ public class Data_1_1_Servlet extends FATServlet {
             else
                 throw x;
         }
+    }
+
+    /**
+     * Uses a Query by Method Name pattern deleteBy method that is provided
+     * by a stateful repository.
+     */
+    @Test
+    public void testMethodNameDeleteStateful() {
+        // Populate with 19/23 and 20/23.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(19, 23),
+                                                Fraction.of(20, 23)));
+
+        assertEquals(2,
+                     statefulFractions.deleteByDenominator(23));
+
+        // Ensure we did not delete a number with other denominator
+        fractions.exists(Restrict.all(_Fraction.numerator.equalTo(19),
+                                      _Fraction.denominator.equalTo(20)));
+
+        assertEquals(0,
+                     statefulFractions.deleteByDenominator(23));
     }
 
     /**
