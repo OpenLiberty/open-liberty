@@ -94,7 +94,7 @@ dependencies {
 task addJPAFATTools (type: Copy) {
   mustRunAfter jar
   from configurations.jpaFatTools
-  include "**/com.ibm.ws.jpa_testframework.jar"
+  include "**/com.ibm.ws.jpa_testframework.jakarta.jar"
   into new File(autoFvtDir, 'lib')
 }
 
