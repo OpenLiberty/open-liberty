@@ -11,6 +11,10 @@ package com.ibm.ws.http.netty.pipeline.http2;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -45,11 +49,15 @@ import io.netty.handler.codec.http2.DefaultHttp2LocalFlowController;
 import io.netty.handler.codec.http2.Http2CodecUtil;
 import io.netty.handler.codec.http2.Http2ConnectionEncoder;
 import io.netty.handler.codec.http2.Http2ControlFrameLimitEncoder;
+import io.netty.handler.codec.http2.Http2Error;
 import io.netty.handler.codec.http2.Http2Exception;
+import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.Http2HeadersEncoder;
 import io.netty.handler.codec.http2.Http2LifecycleManager;
+import io.netty.handler.codec.http2.Http2RemoteFlowController;
 import io.netty.handler.codec.http2.Http2ServerUpgradeCodec;
 import io.netty.handler.codec.http2.Http2Settings;
+import io.netty.handler.codec.http2.Http2Stream;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandlerBuilder;
@@ -98,7 +106,9 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Valid h2c protocol, setting up http2 clear text " + protocol);
             }
-            HttpToHttp2ConnectionHandler handler = buildHttp2ConnectionHandler(httpConfig, channel);
+            NettyH2RateState rateState = new NettyH2RateState(httpConfig);
+            rateState.setUpgradeStreamId(Http2CodecUtil.HTTP_UPGRADE_STREAM_ID);
+            HttpToHttp2ConnectionHandler handler = buildHttp2ConnectionHandler(httpConfig, channel, rateState);
             return new Http2ServerUpgradeCodec(handler) {
                 @Override
                 public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
@@ -164,6 +174,10 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
     }
 
     HttpToHttp2ConnectionHandler buildHttp2ConnectionHandler(HttpChannelConfig httpConfig, Channel channel) {
+         return buildHttp2ConnectionHandler(httpConfig, channel, new NettyH2RateState(httpConfig));
+    }
+
+    HttpToHttp2ConnectionHandler buildHttp2ConnectionHandler(HttpChannelConfig httpConfig, Channel channel, NettyH2RateState rateState) {
         DefaultHttp2Connection connection = new DefaultHttp2Connection(true);
         // Netty accepts integer for max length so we would need to adapt for this
         int maxContentlength = httpConfig.getMessageSizeLimit() >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) httpConfig.getMessageSizeLimit();
@@ -175,7 +189,10 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             builder.maxContentLength(maxContentlength);
         else
             maxContentlength = Integer.MAX_VALUE;
-        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, maxContentlength, false, false, channel, httpConfig);
+        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, maxContentlength, false, false, channel, httpConfig, rateState);
+
+        connection.addListener(listener);
+
 
         // Create encoder with same configuration as builder would
         DefaultHttp2FrameWriter frameWriter = new DefaultHttp2FrameWriter(Http2HeadersEncoder.NEVER_SENSITIVE, true);
@@ -188,7 +205,9 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         // Wrap with millisecond tracking for Liberty logic reusing the listener as the tracker
         wrappedEncoder = new LibertyResetEncoderWrapper(
             wrappedEncoder,
-            listener
+            listener,
+            rateState,
+            httpConfig.getWriteTimeout()
         );
 
         // Create default decoder with reader using Liberty HTTP options
@@ -230,11 +249,26 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
 
     private class LibertyResetEncoderWrapper extends DecoratingHttp2ConnectionEncoder {
         private final ResetFrameTracker tracker;
+        private final NettyH2RateState rateState;
+        private final int writeTimeout;
         private Http2LifecycleManager lifecycleManager;
+
+        /**
+         * Per-stream state for the deferred-write timeout 
+         */
+        private final Map<Integer, StreamWriteState> streamWrites = new HashMap<>();
+
+        private final class StreamWriteState {
+            ScheduledFuture<?> timeoutFuture;
+            boolean timedOut;
+            int pendingFrames;
+        }
         
-        public LibertyResetEncoderWrapper(Http2ConnectionEncoder delegate, ResetFrameTracker libertyAdapter) {
+        public LibertyResetEncoderWrapper(Http2ConnectionEncoder delegate, ResetFrameTracker libertyAdapter, NettyH2RateState rateState, int writeTimeout) {
             super(delegate);
             this.tracker = libertyAdapter;
+            this.rateState = rateState;
+            this.writeTimeout = writeTimeout;
         }
 
         @Override
@@ -254,6 +288,213 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                     ctx.close();
                 }
             }
+            return future;
+        }
+
+        /**
+         * queued-bytes guard - Intercept every outbound DATA write that will be parked in the remote flow
+         * controller and account for its bytes.
+         * This method enforces our cap before the frame enters Netty's DefaultHttp2RemoteFlowController queue.
+         * The queued-bytes counter is incremented only when a frame will actually be deferred
+         */
+        @Override
+        public ChannelFuture writeData(ChannelHandlerContext ctx, int streamId,
+                                       ByteBuf data, int padding, boolean endStream,
+                                       ChannelPromise promise) {
+            // Capture size before delegating — the delegate takes ownership of the buffer.
+            final long frameSize = data.readableBytes() + padding;
+
+            // skipping a stream we have already timed out and reset.
+            StreamWriteState timedOutState = streamWrites.get(streamId);
+            if (timedOutState != null && timedOutState.timedOut) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "writeData: stream " + streamId + " already timed out and reset; "
+                                       + frameSize + " bytes not accounted against the queue cap");
+                }
+                return super.writeData(ctx, streamId, data, padding, endStream, promise);
+            }
+
+            // Nothing to account for if the flow controller can take the frame right now.
+            if (!willBeQueued(streamId, frameSize)) {
+                return super.writeData(ctx, streamId, data, padding, endStream, promise);
+            }
+
+            switch (rateState.tryIncrementQueuedBytes(frameSize)) {
+                case SUCCESS: {
+                    ChannelPromise accounted = promise.unvoid();
+                    final int completedStreamId = streamId;
+                    StreamWriteState state = scheduleWriteTimeoutIfNeeded(ctx, completedStreamId);
+                    state.pendingFrames++;
+                    accounted.addListener(f -> onDataWriteComplete(completedStreamId, (int) frameSize));
+                    return super.writeData(ctx, streamId, data, padding, endStream, accounted);
+                }
+
+                case FIRST_TO_EXCEED:  {
+                    Http2Exception qbEx = Http2Exception.connectionError(
+                            Http2Error.ENHANCE_YOUR_CALM,
+                            "Total queued bytes across all streams exceeded limit!");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "writeData: queued bytes limit exceeded on channel "
+                                     + ctx.channel() + "; closing the connection");
+                    }
+                    ChannelPromise unvoided = promise.unvoid();
+                    lifecycleManager.onError(ctx, true, qbEx);
+                    ctx.close();
+                    // We are not delegating and releasing the buffer here
+                    ReferenceCountUtil.release(data);
+                    return unvoided.setFailure(qbEx);
+                }
+
+                case ALREADY_EXCEEDED:
+                default: {
+                    // Connection is already being torn down.
+
+                    //Using a stream error to match legacy deferDataWrite's ALREADY_EXCEEDED path
+                    Http2Exception exception = Http2Exception.streamError(streamId,
+                            Http2Error.ENHANCE_YOUR_CALM,
+                            "Connection closing due to queued bytes limit exceeded");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "writeData: queued bytes limit already exceeded; dropping "
+                                     + frameSize + " bytes on stream " + streamId);
+                    }
+                    ChannelPromise unvoided = promise.unvoid();
+                    ReferenceCountUtil.release(data);
+                    return unvoided.setFailure(exception);
+                }
+            }
+        }
+
+        /**
+         * Check to see if this DATA frame actually be parked in the remote flow controller
+         *
+         */
+        private boolean willBeQueued(int streamId, long frameSize) {
+            Http2Stream stream = connection().stream(streamId);
+            if (stream == null) {
+                return false;
+            }
+            Http2RemoteFlowController controller = flowController();
+            if (controller.hasFlowControlled(stream) || !controller.isWritable(stream)) {
+                return true;
+            }
+            // windowSize() can be negative after the peer lowers SETTINGS_INITIAL_WINDOW_SIZE.
+            int available = Math.min(controller.windowSize(stream),
+                                     controller.windowSize(connection().connectionStream()));
+            return frameSize > available;
+        }
+
+        /**
+         * Deferred-write timeout for a stream, if it does not already have one.
+         * One timer per stream, not per frame.
+         */
+        private StreamWriteState scheduleWriteTimeoutIfNeeded(ChannelHandlerContext ctx, int streamId) {
+            StreamWriteState state = streamWrites.get(streamId);
+            if (state == null) {
+                state = new StreamWriteState();
+                streamWrites.put(streamId, state);
+            }
+            if (state.timeoutFuture == null && writeTimeout > 0 && !state.timedOut) {
+                state.timeoutFuture = ctx.executor().schedule(() -> handleWriteTimeout(ctx, streamId),
+                                                              writeTimeout, TimeUnit.MILLISECONDS);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "scheduleWriteTimeoutIfNeeded: stream " + streamId
+                                 + " write timeout armed for " + writeTimeout + "ms");
+                }
+            }
+            return state;
+        }
+
+        /**
+         * A stream did not drain its queued DATA within writeTimeout.
+         * Resets the stream but does NOT return its bytes to the budget.
+         */
+        private void handleWriteTimeout(ChannelHandlerContext ctx, int streamId) {
+            StreamWriteState state = streamWrites.get(streamId);
+            if (state == null) {
+                return; 
+            }
+            state.timeoutFuture = null;
+            state.timedOut = true;
+
+            if (!ctx.channel().isActive()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "handleWriteTimeout: stream " + streamId + " channel already closed, no RST_STREAM sent");
+                }
+                return;
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "handleWriteTimeout: stream " + streamId + " did not drain within "
+                             + writeTimeout + "ms; resetting stream, queued bytes stay charged");
+            }
+
+            writeRstStream(ctx, streamId, Http2Error.FLOW_CONTROL_ERROR.code(), ctx.newPromise());
+            ctx.flush();
+        }
+
+        /**
+         * A queued DATA frame has left the flow controller.
+         * Returns bytes to the budget unless this stream was timed out.
+         */
+        private void onDataWriteComplete(int streamId, int size) {
+            StreamWriteState state = streamWrites.get(streamId);
+            boolean timedOut = state != null && state.timedOut;
+
+            if (!timedOut) {
+                rateState.decrementQueuedBytes(size);
+            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "onDataWriteComplete: stream " + streamId + " timed out earlier; "
+                             + size + " bytes stay charged to the connection");
+            }
+
+            if (state != null && --state.pendingFrames <= 0) {
+                if (state.timeoutFuture != null) {
+                    state.timeoutFuture.cancel(false);
+                }
+                streamWrites.remove(streamId);
+            }
+        }
+
+        /**
+         * server-push low-window guard 
+         */
+        @Override
+        public ChannelFuture writePushPromise(ChannelHandlerContext ctx, int streamId,
+                                              int promisedStreamId, Http2Headers headers,
+                                              int padding, ChannelPromise promise) {
+            final int     initialWindowSize = flowController().initialWindowSize();
+            final boolean lowWindow = rateState.getMaxLowWindowStreams() > 0
+                                      && initialWindowSize <= rateState.getLowWindowLimit();
+
+            // Reject before sending anything to the client.
+            if (lowWindow && rateState.wouldExceedLowWindowStreams(promisedStreamId)) {
+                ChannelPromise unvoided = promise.unvoid();
+                Http2Exception exception = Http2Exception.connectionError(
+                        Http2Error.ENHANCE_YOUR_CALM,
+                        "Too many streams with low initial window size have been opened; closing the connection");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writePushPromise: too many low-window streams (including push promises);"
+                                 + " suppressing PUSH_PROMISE for stream " + promisedStreamId
+                                 + " and closing connection");
+                }
+                lifecycleManager.onError(ctx, true, exception);
+                ctx.close();
+                return unvoided.setFailure(exception);
+            }
+
+            ChannelFuture future = super.writePushPromise(ctx, streamId, promisedStreamId,
+                                                          headers, padding, promise);
+
+            // Only add if the stream was actually reserved.
+            if (lowWindow && connection().stream(promisedStreamId) != null) {
+                rateState.addLowWindowStream(promisedStreamId);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writePushPromise: push stream " + promisedStreamId
+                                 + " has low initial window: " + initialWindowSize
+                                 + " <= " + rateState.getLowWindowLimit());
+                }
+            }
+
             return future;
         }
     }
