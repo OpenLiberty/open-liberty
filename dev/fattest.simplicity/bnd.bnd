@@ -134,8 +134,8 @@ fat.test.container.images:\
     jakarta.tck.arquillian:tck-porting-lib;version=11.0.1
 
 -testpath:\
-    net.bytebuddy:byte-buddy-agent;version=1.17.8,\
-    net.bytebuddy:byte-buddy;version=1.17.8,\
+    net.bytebuddy:byte-buddy-agent;version=1.18.10,\
+    net.bytebuddy:byte-buddy;version=1.18.10,\
     org.mockito:mockito-core;version=4.11.0,\
     org.mockito:mockito-inline;version=4.11.0,\
     org.objenesis:objenesis;version=3.4
