@@ -212,7 +212,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
         // We need to tidy up the environment at this point. We cannot guarantee
         // test order, so we should ensure
         // that we do any necessary recovery at this point
-        FATUtils.stopServers(server);
+        FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
 
         FATUtils.startServers(runner, server);
 
