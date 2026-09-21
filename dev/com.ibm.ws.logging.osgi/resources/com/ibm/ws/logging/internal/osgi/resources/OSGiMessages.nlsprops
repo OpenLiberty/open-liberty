@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,3 +51,7 @@ OSGI_ERROR_MSG.useraction=See the error message for information.
 OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}
 OSGI_BUNDLE_EXCEPTION.explanation=A BundleException was thrown by the OSGi Framework.
 OSGI_BUNDLE_EXCEPTION.useraction=See the exception message for information.
+
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W=CWWKE0710W: Invalid use of wildcard message ID for {0}. The expected syntax is <prefix>*[<log-level] where log-level is an optional single character representing one of the following log levels: I=Info, A=Audit, W=Warning, E=ERROR.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.explanation=Invalid use of wildcard message ID. The expected syntax is <prefix>*[<log-level] where log-level is an optional single character representing one of the following log levels: I=Info, A=Audit, W=Warning, E=ERROR.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.useraction=Fix message ID to follow the expected syntax: <prefix>*[<log-level] where log-level is an optional single character representing the log level: I=Info, A=Audit, W=Warning, E=ERROR.
