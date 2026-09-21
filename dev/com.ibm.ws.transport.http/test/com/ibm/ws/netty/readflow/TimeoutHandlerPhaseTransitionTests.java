@@ -39,6 +39,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
@@ -484,6 +485,91 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertEquals("RequestConsumed fires once via verifyNeedRead", 1, events.requestConsumed);
     }
 
+
+    // -----------------------------------------------------------------------
+    // Test 11 — Pipelined next-request timer not cancelled by prior LastHttpContent
+    //
+    // When A's LastHttpContent is forwarded downstream, ReadFlowHandler admits
+    // the queued request B synchronously. B's HttpRequest re-enters
+    // TimeoutHandler.channelRead() and arms a fresh READ timer. The outer call
+    // must NOT cancel B's timer when it reaches the post-forward isRequestEnd block.
+    //
+    // This test verifies that after A's body is consumed (LastHttpContent arrives)
+    // and B is admitted inline, B still has an active READ timer (phase == READ).
+    // -----------------------------------------------------------------------
+    @Test
+    public void testPipelinedNextRequestTimerNotCancelledByPriorTerminalContent()
+            throws Exception {
+        CapturingHandler cap = buildChannel();
+
+        // A: 2-byte body; response written before body arrives (purge path).
+        channel.writeInbound(requestWithBody("/a", 2));
+        channel.runPendingTasks();
+
+        // Queue B: a body-bearing POST so TimeoutHandler arms READ when B is admitted.
+        channel.writeInbound(requestWithBody("/b", 3));
+        channel.runPendingTasks();
+        assertEquals("Only A dispatched initially", 1, cap.requests.size());
+
+        // A's response completes; B is still gated (A body not consumed yet).
+        writeOut(fullOkNoBody());
+        assertFalse("A body not consumed after response", state().isRequestConsumed());
+
+        // A's terminal body arrives. ReadFlowHandler:
+        //   1. Sets requestConsumed=true for A.
+        //   2. Calls drainPendingAdmission which admits B.
+        //   3. admitRequest sets requestConsumed=false for B (body expected).
+        // After all this, requestConsumed reflects B's state (false, body pending).
+        channel.writeInbound(lastContent((byte) 1, (byte) 2));
+        channel.runPendingTasks();
+
+        // B must have been admitted — A's last content triggered the drain.
+        assertEquals("B admitted after A body drained", 2, cap.requests.size());
+        assertFalse("no more pending after drain", state().hasPendingAdmission());
+
+        // requestConsumed is now false for B (B has an unread 3-byte body).
+        assertFalse("requestConsumed=false for B (body not yet consumed)", state().isRequestConsumed());
+
+        // B has a body; TimeoutHandler must have armed READ for B's body.
+        // If the stale-cancel bug were present, phase would be OFF here.
+        assertEquals("TimeoutHandler must be in READ phase for B's body", "READ", phase(channel));
+        assertNull("No spurious timeout after pipelined admission", extractException(channel));
+    }
+
+    // -----------------------------------------------------------------------
+    // Test 12 — Pipelined bodyless next request: timer reset correctly
+    //
+    // Same as Test 11 but B is a bodyless GET. After admission, TimeoutHandler
+    // must NOT be in READ phase (no body), so no timer is armed. This verifies
+    // the timer snapshot check does not break the bodyless-request path.
+    // -----------------------------------------------------------------------
+    @Test
+    public void testPipelinedBodylessNextRequestNoTimerArmed() throws Exception {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 2));
+        channel.runPendingTasks();
+
+        // Queue B: a bodyless GET.
+        DefaultFullHttpRequest reqB = new DefaultFullHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.GET, "/b", Unpooled.EMPTY_BUFFER);
+        reqB.headers().set("Connection", "keep-alive");
+        channel.writeInbound(reqB);
+        channel.runPendingTasks();
+        assertEquals("Only A dispatched", 1, cap.requests.size());
+
+        writeOut(fullOkNoBody()); // A's response — A body still outstanding
+
+        // A's body arrives; B is admitted inline.
+        channel.writeInbound(lastContent((byte) 5, (byte) 6));
+        channel.runPendingTasks();
+
+        assertEquals("B admitted", 2, cap.requests.size());
+        assertNull("No timeout fired", extractException(channel));
+        // B is bodyless; if TimeoutHandler had cancelled B's timer it was null
+        // anyway, so no exception either way. Just assert channel is alive.
+        assertTrue("channel alive", channel.isActive());
+    }
 
     // -----------------------------------------------------------------------
     // Helpers

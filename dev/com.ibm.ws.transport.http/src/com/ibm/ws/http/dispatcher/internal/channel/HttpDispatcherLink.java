@@ -54,6 +54,7 @@ import com.ibm.ws.http.netty.NettyConnectionLink;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
+import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer; 
 import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
@@ -315,49 +316,67 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
-        // If the application did not consume the full request body, we must drain it
-        // before the connection can be reused. Follow Channel Framework's pattern
-        // (HttpInboundLink.close / HttpIgnoreBodyCallback):
+        // Release any application-unread body storage unconditionally so that
+        // queued fragments are not leaked regardless of whether the protocol
+        // body was already completely received (isBodyComplete) or not.
         //
-        // - On a keep-alive-eligible exchange: deferClear defers isc.clear() until
-        //   setBodyComplete() fires from the purge. ReadFlowHandler.onResponseComplete
-        //   already calls setBodyReadWanted(true) when requestConsumed=false, which
-        //   drives the remaining body reads. When the body finishes, markRequestConsumed
-        //   fires, which calls verifyNeedRead / drainPendingAdmission.
+        // Three distinct states must be handled:
         //
-        // - On teardown (error, quiesce, non-keepalive): signal the queue so any
-        //   thread blocked in BodyQueue.awaitChange() unblocks, then fall through
-        //   to the normal channel-close branches below.
+        //   (a) Body not yet protocol-complete (!isBodyComplete):
+        //       The connection may be reused (shouldDrain=true) or torn down.
+        //       - Reuse: drain buffered fragments, set deferClear so isc.clear()
+        //         fires after setBodyComplete(), and let ReadFlowHandler drive
+        //         the remaining reads.
+        //       - Teardown: drain buffered fragments and unblock any reader.
+        //
+        //   (b) Body protocol-complete (isBodyComplete) but application-unread:
+        //       All wire bytes have arrived and the BodyQueue may still hold
+        //       retained fragments. Release them now; no further reads are needed.
+        //       The stream buffer inside HttpInputStreamImpl (if partially
+        //       consumed) is also released by drainAndRelease via the
+        //       isPurging() check in fillFromStreamingNettyLocked.
+        //
+        //   (c) Body protocol-complete and fully application-read:
+        //       Queue is empty; drainAndRelease is a no-op.
+        HttpInputStreamImpl body = (this.request != null) ? this.request.getBody() : null;
+        BodyQueue bodyQueue = (body != null) ? body.getBodyQueue() : null;
+
         if (!this.isc.isBodyComplete()) {
             if (shouldDrainRequestBodyBeforeNettyClose(e)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Body not fully read; starting async purge: draining BodyQueue and deferring isc.clear().");
                 }
                 // Begin the purge lifecycle:
-                //   1. Drain any already-buffered BodyQueue fragments so they are
-                //      released immediately.  Future arriving fragments will be
-                //      discarded inline by BodyQueue.enqueueRetained once purging=true.
+                //   1. Drain any already-buffered BodyQueue fragments and mark
+                //      future arrivals as discard-only (no retain).
                 //   2. deferClear defers isc.clear() until setBodyComplete() fires.
                 //   3. Read scheduling is owned by ReadFlowHandler.onResponseComplete
                 //      (setBodyReadWanted path) and channelReadComplete.
-                HttpInputStreamImpl body = (this.request != null) ? this.request.getBody() : null;
-                if (body != null && body.getBodyQueue() != null) {
-                    body.getBodyQueue().drainAndRelease();
+                if (bodyQueue != null) {
+                    bodyQueue.drainAndRelease();
                 }
                 deferClear.set(true);
             } else {
-                // Teardown path: unblock any reader waiting on the queue.
+                // Teardown path: drain queued fragments and unblock any reader
+                // that is blocked inside BodyQueue.awaitChange().
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Skipping body drain; signaling queue EOS and closing.");
+                    Tr.debug(tc, "Skipping body drain; releasing queue and signaling EOS.");
                 }
-                HttpInputStreamImpl body = (this.request != null) ? this.request.getBody() : null;
+                if (bodyQueue != null) {
+                    bodyQueue.drainAndRelease();
+                }
                 if (body != null) {
                     body.signalEOS();
                 }
             }
         } else {
+            // Protocol-complete: release any retained but application-unread
+            // queue fragments. This is a no-op when the body was fully read.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "No body needed for request. Assuming data was already read.");
+                Tr.debug(tc, "Body protocol-complete; releasing any unread queue fragments.");
+            }
+            if (bodyQueue != null) {
+                bodyQueue.drainAndRelease();
             }
         }
 
@@ -2122,15 +2141,28 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void setBodyComplete(){
         if (this.isc != null) {
             this.isc.setBodyComplete();
+
+            // Perform deferred isc.clear() BEFORE calling markRequestConsumed.
+            //
+            // markRequestConsumed can synchronously trigger drainPendingAdmission
+            // which fires the next request's HttpRequest downstream. If isc.clear()
+            // has not yet run, the current exchange's storage overlaps with the next
+            // exchange's initialisation, which is incorrect.
+            //
+            // Sequence (keeping these in order):
+            //   1. isc.setBodyComplete() — marks protocol end.
+            //   2. isc.clear()           — releases current exchange storage.
+            //   3. markRequestConsumed() — may admit next request; must see clean state.
+            if (deferClear.compareAndSet(true, false)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Body complete; performing deferred ISC.clear() before admitting next exchange.");
+                }
+                this.isc.clear();
+            }
+
             // HTTP/1 read-flow state is not authority for trusted HTTP/2 streams.
             if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
                 ReadFlowHandler.markRequestConsumed(nettyContext);
-            }
-            if (deferClear.compareAndSet(true, false)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Body complete; performing deferred ISC.clear() for keep-alive.");
-                }
-                this.isc.clear();
             }
         }
     }
