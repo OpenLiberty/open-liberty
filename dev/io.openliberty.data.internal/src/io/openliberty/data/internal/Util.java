@@ -11,6 +11,7 @@ package io.openliberty.data.internal;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
@@ -27,7 +28,6 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -574,30 +574,41 @@ public class Util {
             }
             // omit members that equal their default value
             Object defaultValue = member.getDefaultValue();
-            if (defaultValue != null &&
-                (defaultValue.equals(value) ||
-                 defaultValue.getClass().isArray() && Arrays //
-                                 .deepEquals((Object[]) defaultValue,
-                                             (Object[]) value)))
-                continue;
+            if (defaultValue != null) {
+                boolean isDefault;
+                if (defaultValue.getClass().isArray()) {
+                    int len = Array.getLength(defaultValue);
+                    isDefault = len == Array.getLength(value);
+                    for (int i = 0; isDefault && i < len; i++)
+                        isDefault = Array.get(defaultValue, i) //
+                                        .equals(Array.get(value, i));
+                } else {
+                    isDefault = defaultValue.equals(value);
+                }
+                if (isDefault)
+                    continue;
+            }
             b.append(first ? "(" : ", ");
-            b.append(member.getName()).append('=');
+            // omit "value=" when it is the only member (standard annotation shorthand)
+            if (members.length != 1 || !"value".equals(member.getName()))
+                b.append(member.getName()).append('=');
             if (value instanceof String)
                 b.append('"').append(value).append('"');
             else if (value instanceof Annotation)
                 b.append(toString((Annotation) value));
             else if (value.getClass().isArray()) {
-                Object[] arr = (Object[]) value;
+                int len = Array.getLength(value);
                 b.append('{');
-                for (int i = 0; i < arr.length; i++) {
+                for (int i = 0; i < len; i++) {
                     if (i > 0)
                         b.append(", ");
-                    if (arr[i] instanceof Annotation)
-                        b.append(toString((Annotation) arr[i]));
-                    else if (arr[i] instanceof String)
-                        b.append('"').append(arr[i]).append('"');
+                    Object element = Array.get(value, i);
+                    if (element instanceof Annotation)
+                        b.append(toString((Annotation) element));
+                    else if (element instanceof String)
+                        b.append('"').append(element).append('"');
                     else
-                        b.append(arr[i]);
+                        b.append(element);
                 }
                 b.append('}');
             } else
