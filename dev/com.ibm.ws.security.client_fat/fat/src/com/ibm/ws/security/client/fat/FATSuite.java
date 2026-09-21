@@ -30,6 +30,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ClientContainerSecurityTest.class,
                 ClientSSLandCipherTest.class,
                 ClientSSLHandshakeTest.class,
+                ClientSSLPQCHandshakeTest.class,
                 Java2Test.class,
                 JavaColonInjectionsTest.class,
                 NonSecureServerTest.class,
