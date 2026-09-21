@@ -1,13 +1,10 @@
 package com.ibm.ws.http.netty.message;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.util.ReferenceCountUtil;
+import io.netty.channel.EventLoop;
 
 final public class BodyQueue {
 
@@ -16,116 +13,120 @@ final public class BodyQueue {
 
     private final ConcurrentLinkedQueue<ByteBuf> queue = new ConcurrentLinkedQueue<>();
     private final int lowWater, highWater;
-    private final AtomicInteger buffered = new AtomicInteger();
+    private volatile int buffered;
     private volatile boolean eos;
     private volatile Throwable error;
     private final ByteBufAllocator allocator;
 
     /**
      * Total bytes received, counting every fragment regardless of whether it
-     * was queued or discarded by the purge path. Incremented before any
-     * routing decision so the count is accurate for limit enforcement even
-     * when purging.
+     * was queued or discarded by the purge path.  Incremented unconditionally
+     * in {@link #enqueueRetained} before the routing decision so that
+     * size-limit enforcement is accurate across the purge boundary.
      *
-     * <p>Accessed from both the event-loop producer ({@link #enqueueRetained})
-     * and the application-thread consumer ({@link #bytesRead}), hence volatile.
-     * A {@code long} write is not atomic on 32-bit JVMs; if strict atomicity is
-     * required in a future change, replace with {@link AtomicLong}.
+     * <p>Written only on the event loop; read from worker threads for limit
+     * checks. Declared {@code volatile} to ensure worker-thread reads see the
+     * latest value without an additional memory barrier.
      */
     private volatile long bytesReceived;
 
     /**
-     * Set to {@code true} once the purge lifecycle begins. While purging,
-     * {@link #enqueueRetained} counts but does not retain the arriving buffer,
-     * so fragments are discarded without accumulating in the queue.
+     * Set to {@code true} once the purge lifecycle begins.
+     *
+     * <h3>Thread model and race freedom</h3>
+     * Both {@link #enqueueRetained} and {@link #drainAndRelease} run on the
+     * same Netty I/O event loop (single-threaded). Because they are serialised
+     * by the event loop's execution model, no concurrent modification of this
+     * flag or the queue is possible — no lock is required for the
+     * enqueue/purge transition.
+     *
+     * <p>Declared {@code volatile} solely so that worker-thread callers of
+     * {@link #isPurging()} (e.g. {@code HttpInputStreamImpl} on an application
+     * thread after waking from {@link #awaitChange}) see the most recently
+     * written value promptly, without a monitor acquire.
      *
      * <h3>Ownership contract</h3>
      * <ul>
-     *   <li>The <em>caller</em> of {@link #enqueueRetained} owns the incoming
-     *       reference. The queue must not release a reference it did not
-     *       acquire.</li>
-     *   <li>When purging, the queue simply skips the retain-and-enqueue step.
-     *       The caller's {@code finally} block releases the enclosing
-     *       {@code HttpContent}, which releases the underlying buffer.</li>
-     *   <li>When not purging, the queue calls {@code buf.retain()} and then
-     *       owns that retained reference until it is transferred to a consumer
-     *       via {@link #poll()} or released by {@link #drainAndRelease()}.</li>
+     *   <li>The caller of {@link #enqueueRetained} owns the incoming reference.
+     *       The queue must not release a reference it did not acquire.</li>
+     *   <li>When purging, the queue skips retain-and-enqueue.  The caller's
+     *       {@code finally} block releases the enclosing {@code HttpContent}.</li>
+     *   <li>When not purging, the queue retains the buffer and owns that
+     *       reference until it is transferred via {@link #poll()} or released
+     *       by {@link #drainAndRelease()}.</li>
      * </ul>
      */
-    private final AtomicBoolean purging = new AtomicBoolean(false);
+    private volatile boolean purging = false;
 
     private final Object signalLock = new Object();
     private long signal;
 
-    public BodyQueue(ByteBufAllocator allocator){
+    public BodyQueue(ByteBufAllocator allocator) {
         this(allocator, DEFAULT_HIGH, DEFAULT_LOW);
     }
 
-    public BodyQueue(ByteBufAllocator allocator, int high, int low){
+    public BodyQueue(ByteBufAllocator allocator, int high, int low) {
         this.allocator = allocator;
         this.highWater = Math.max(high, low);
         this.lowWater = low;
     }
 
     /**
-     * Called by the dispatcher on the event loop when an {@link io.netty.handler.codec.http.HttpContent}
-     * fragment arrives.
+     * Called by the dispatcher on the Netty I/O event loop when an
+     * {@link io.netty.handler.codec.http.HttpContent} fragment arrives.
+     *
+     * <p>Must be called on the event loop. Because {@link #drainAndRelease}
+     * also runs on the event loop, the two methods are mutually exclusive by
+     * the event loop's single-threaded execution model — no lock is needed.
      *
      * <h3>Ownership</h3>
-     * The caller owns {@code buf} (typically {@code content.content()}) and
-     * will release the enclosing {@code HttpContent} in its {@code finally}
-     * block. This method must therefore:
+     * The caller owns {@code buf} and will release the enclosing
+     * {@code HttpContent} in its {@code finally} block.  This method either:
      * <ul>
-     *   <li>call {@code buf.retain()} before enqueuing so the queue holds its
-     *       own reference, OR</li>
-     *   <li>simply skip enqueue when purging — the caller's release of the
-     *       enclosing {@code HttpContent} will decrement the ref count back to
-     *       its original value. The queue must NOT call an extra release.</li>
+     *   <li>retains {@code buf} before enqueuing so the queue holds its own
+     *       reference, OR</li>
+     *   <li>skips enqueue when purging — the caller's release handles cleanup.
+     *       The queue must NOT call an extra release.</li>
      * </ul>
      *
-     * Cumulative byte accounting ({@link #bytesRead}) is updated unconditionally
-     * before the routing decision so that limit enforcement is accurate even
-     * when fragments are discarded by the purge path.
-     *
-     * @param buf the buffer to enqueue; the caller retains ownership of the
-     *            incoming reference and must release it after this call returns.
+     * @param buf the buffer to enqueue; the caller retains ownership.
      */
-    public void enqueueRetained(ByteBuf buf){
+    public void enqueueRetained(ByteBuf buf) {
         int readable = buf.readableBytes();
 
-        // Count bytes received regardless of purge state so that the cumulative
-        // size limit is enforced correctly over multi-fragment bodies.
+        // Count unconditionally so size-limit enforcement is accurate whether
+        // or not this fragment is actually retained.
         bytesReceived += readable;
 
-        // If a purge is in progress the queue does not acquire a reference —
-        // the caller's finally block will release the enclosing HttpContent.
+        // If a purge is in progress the queue does not acquire a reference.
+        // The caller's finally block releases the enclosing HttpContent.
         // Do NOT call release() here: we did not retain, so we do not release.
-        if (purging.get()) {
+        if (purging) {
             return;
         }
         queue.add(buf.retain());
-        buffered.addAndGet(readable);
+        buffered += readable;
         signalChange();
     }
 
-    public ByteBuf poll(){
+    public ByteBuf poll() {
         ByteBuf b = queue.poll();
-        if(b!=null){
-            buffered.addAndGet(-b.readableBytes());
+        if (b != null) {
+            buffered -= b.readableBytes();
         }
         return b;
     }
 
-    public boolean wantsInput(){
-        return error == null && !eos && buffered.get() < lowWater;
+    public boolean wantsInput() {
+        return error == null && !eos && buffered < lowWater;
     }
 
-    public boolean isEos(){
+    public boolean isEos() {
         return eos && queue.isEmpty();
     }
 
-    private void signalChange(){
-        synchronized (signalLock){
+    private void signalChange() {
+        synchronized (signalLock) {
             signal++;
             signalLock.notifyAll();
         }
@@ -138,15 +139,27 @@ final public class BodyQueue {
     }
 
     /**
-     * Blocks until the queue state changes from {@code lastToken}, or until EOS
-     * or an error is signalled. Also unblocks when {@link #drainAndRelease()}
-     * sets the purging flag, because that method calls {@link #signalChange()}.
+     * Blocks until the queue state changes from {@code lastToken}, EOS or an
+     * error is signalled, or the queue enters purge mode.
      *
-     * <p>Callers must re-check {@link #isPurging()} after waking up.
+     * <p>Including {@code !purging} in the predicate prevents a missed-wakeup
+     * when purge completes between the caller's {@link #isPurging()} check and
+     * this method's entry into {@code wait()}:
+     *
+     * <pre>
+     *   Reader:  isPurging() → false          (entry check in fillFromStreaming passes)
+     *   Event loop: drainAndRelease()         (purging=true, signal++)
+     *   Reader:  token = signalToken()        (captures post-purge token value)
+     *   Reader:  awaitChange(token)           (without !purging: signal==token → waits forever)
+     * </pre>
+     *
+     * <p>With {@code !purging} in the predicate the condition is false at entry
+     * and the reader returns immediately.  Callers must re-check
+     * {@link #isPurging()} after returning.
      */
     public long awaitChange(long lastToken) throws InterruptedException {
         synchronized (signalLock) {
-            while (signal == lastToken && !eos && error == null) {
+            while (signal == lastToken && !eos && error == null && !purging) {
                 signalLock.wait();
             }
             return signal;
@@ -154,70 +167,62 @@ final public class BodyQueue {
     }
 
     /**
-     * Returns the total number of bytes received by this queue. Counts every
-     * fragment including those discarded by the purge path, so the value is
-     * suitable for cumulative body-size limit enforcement.
+     * Returns the total bytes received, including fragments discarded during
+     * purge, for use in cumulative body-size limit enforcement.
      */
     public long bytesRead() {
         return bytesReceived;
     }
 
-    public void signalEos(){
+    public void signalEos() {
         eos = true;
         signalChange();
     }
 
-    public void signalError(Throwable t){
+    public void signalError(Throwable t) {
         error = t;
         signalChange();
     }
 
-    public Throwable error(){
+    public Throwable error() {
         return error;
     }
 
-    public void wakeReaders(){
+    public void wakeReaders() {
         signalChange();
     }
 
     /**
-     * Marks the queue as purging and drains any retained fragments currently
-     * held in the queue, releasing each owned reference exactly once.
+     * Marks the queue as purging and releases all retained fragments currently
+     * held in the queue.
      *
-     * <h3>Ownership</h3>
-     * Only the references that were <em>retained by the queue</em> (via
-     * {@link #enqueueRetained}) are released here. The caller must not release
-     * any buffers on behalf of this method.
+     * <p><strong>Must be called on the Netty I/O event loop.</strong> Because
+     * {@link #enqueueRetained} also runs on the event loop, the single-threaded
+     * execution model ensures that this method and {@code enqueueRetained} are
+     * mutually exclusive: either this drain runs first (after which every
+     * subsequent {@code enqueueRetained} sees {@code purging=true} and discards
+     * without retaining), or the in-progress {@code enqueueRetained} completes
+     * first (its buffer is then visible to the drain loop below). There is no
+     * window in which a retained buffer can be stranded after the drain.
      *
-     * <h3>Race safety</h3>
-     * Setting {@code purging=true} and then draining in two steps leaves a
-     * window in which a concurrent {@link #enqueueRetained} call could pass the
-     * {@code purging.get()} check (see false), be preempted, and then enqueue
-     * after the drain finishes. A second drain loop after the flag is set closes
-     * this window: any fragment that arrived between the flag-set and the first
-     * drain will be picked up by the second drain.
+     * <p>{@link #signalChange()} is called after setting the flag so that any
+     * reader blocked in {@link #awaitChange} wakes up immediately; the
+     * {@code !purging} predicate in that method causes the reader to exit the
+     * wait without needing a further EOS or fragment signal.
      *
-     * <p>Must be called at most once per exchange. Safe to call from any thread.
+     * <p>Must be called at most once per exchange. A second call is safe (the
+     * flag write is idempotent and the drain loop finds an empty queue) but
+     * unnecessary.
      */
     public void drainAndRelease() {
-        // Step 1: set the purge flag so new arrivals are discarded without retain.
-        purging.set(true);
+        purging = true;
 
-        // Step 2: drain fragments that were enqueued before the flag was set.
-        // Run the drain loop twice to close the enqueue/purge race window:
-        // any producer that passed purging.get()=false before Step 1 but has
-        // not yet called queue.add() will be visible in a second pass.
-        for (int pass = 0; pass < 2; pass++) {
-            ByteBuf buf;
-            while ((buf = queue.poll()) != null) {
-                int readable = buf.readableBytes();
-                buffered.addAndGet(-readable);
-                // The queue retained this buffer in enqueueRetained; release that ref.
-                buf.release();
-            }
+        ByteBuf buf;
+        while ((buf = queue.poll()) != null) {
+            buffered -= buf.readableBytes();
+            buf.release();
         }
 
-        // Wake any blocked readers so they see the purging flag and exit.
         signalChange();
     }
 
@@ -226,6 +231,6 @@ final public class BodyQueue {
      * {@link #drainAndRelease()}.
      */
     public boolean isPurging() {
-        return purging.get();
+        return purging;
     }
 }

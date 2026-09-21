@@ -1428,69 +1428,164 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     // -----------------------------------------------------------------------
-    // Finding 4 regression — isc.clear() before markRequestConsumed
+    // Finding 3 / Test C — cleanup ordering: B not admitted until cleanup done
     //
-    // setBodyComplete() must call isc.clear() (deferClear) BEFORE calling
-    // markRequestConsumed(). markRequestConsumed can synchronously trigger
-    // drainPendingAdmission which forwards request B downstream. If isc.clear()
-    // has not run yet, the current exchange's ISC would overlap with B's init.
+    // isc.clear() now runs unconditionally inside setBodyComplete(), which is
+    // called from HttpDispatcherHandler (event loop) when LastHttpContent
+    // arrives. setBodyComplete() calls isc.clear() and then markRequestConsumed().
     //
-    // This test uses a CapturingDeferClearHandler in place of the real ISC logic
-    // to verify ordering. Since we cannot inject the real ISC into an EmbeddedChannel,
-    // we verify the observable outcome: B is admitted AFTER body drain, not before.
-    // The admission-before-cleanup ordering would be visible as B dispatched
-    // before requestConsumed=true, which is already guarded by the serialisation
-    // tests (test 5e and 5i). These tests verify the guard holds when the
-    // response is already complete before the body is drained.
+    // The observable invariant at the ReadFlowHandler level: markRequestConsumed
+    // (and therefore B admission) is only triggered AFTER the terminal body
+    // fragment has been processed. A test that observes B admission implicitly
+    // verifies the clear-before-admit sequence because:
+    //   1. LastHttpContent arrives → forwarded to dispatcher
+    //   2. Dispatcher calls setBodyComplete() → isc.clear() → markRequestConsumed
+    //   3. markRequestConsumed → possibly drainPendingAdmission → B forwarded
+    //
+    // We verify both orderings (response-first and body-first) and also verify
+    // that B cannot be admitted by LastHttpContent arrival alone when the
+    // response is still in flight.
     // -----------------------------------------------------------------------
 
     /**
-     * Finding 4 — B must not be admitted until after the body is drained AND
-     * isc.clear() has had a chance to run.
+     * C1 — response completes first, body arrives later.
      *
-     * Observable invariant: {@code markRequestConsumed()} is only called after
-     * {@code deferClear()} has fired — which means requestConsumed transitions to
-     * {@code true} only after body drain completes. B is admitted when
-     * requestConsumed becomes true. So B admission always comes AFTER the body
-     * was fully received.
-     *
-     * This is already exercised by tests 5e and 5i; this test adds an explicit
-     * check that B is not admitted until after the TERMINAL body fragment.
+     * After A's terminal response write, B must remain gated because
+     * {@code requestConsumed=false}. Only after the terminal body fragment
+     * (which triggers the cleanup + markRequestConsumed sequence) is B admitted.
      */
     @Test
-    public void testAdmissionOnlyAfterBodyDrainComplete() {
+    public void testCleanupOrderingResponseFirstBodySecond() {
         CapturingHandler cap = buildChannel();
 
-        // A with a 4-byte body that the application will not read.
         channel.writeInbound(requestWithBody("/a", 4));
         channel.runPendingTasks();
         assertEquals("A dispatched", 1, cap.requests.size());
 
-        // B queued immediately.
         channel.writeInbound(bodylessGet("/b"));
         channel.runPendingTasks();
         assertEquals("B gated", 1, cap.requests.size());
 
-        // A's response completes; body drain starts.
+        // Response terminal write — body not yet drained.
         writeOut(fullOkNoBody());
-        assertEquals("B still gated after response — body not complete", 1, cap.requests.size());
+        assertEquals("B still gated: cleanup not done (body outstanding)", 1, cap.requests.size());
         assertFalse("requestConsumed false after response", state().isRequestConsumed());
 
-        // Partial body.
+        // Partial body — still not done.
         channel.writeInbound(bodyChunk((byte) 1, (byte) 2));
         channel.runPendingTasks();
-        assertEquals("B gated after partial body", 1, cap.requests.size());
-        assertFalse("requestConsumed false after partial", state().isRequestConsumed());
+        assertEquals("B still gated after partial body", 1, cap.requests.size());
+        assertFalse("requestConsumed false after partial body", state().isRequestConsumed());
 
-        // Terminal body — triggers markRequestConsumed (which is called after
-        // deferClear in the corrected setBodyComplete ordering).
+        // Terminal body — triggers setBodyComplete() → isc.clear() →
+        // markRequestConsumed() → drainPendingAdmission().
         channel.writeInbound(lastContent((byte) 3, (byte) 4));
         channel.runPendingTasks();
 
-        // Only NOW is B admitted — after the cleanup path completed.
         assertTrue("requestConsumed after terminal body", state().isRequestConsumed());
-        assertEquals("B admitted after complete body drain", 2, cap.requests.size());
-        assertFalse("no pending after B admitted", state().hasPendingAdmission());
+        assertEquals("B admitted after cleanup sequence completes", 2, cap.requests.size());
+        assertFalse("no pending admission after B", state().hasPendingAdmission());
+    }
+
+    /**
+     * C2 — body fully drained first, response arrives later.
+     *
+     * Even when the body has been completely received before the response
+     * write, B must remain gated until the response completes. Once the
+     * response terminal write fires, both conditions are satisfied and B
+     * is admitted immediately (no extra read cycle needed).
+     */
+    @Test
+    public void testCleanupOrderingBodyFirstResponseSecond() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 4));
+        channel.runPendingTasks();
+
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+        assertEquals("B gated", 1, cap.requests.size());
+
+        // Full body arrives before response.
+        channel.writeInbound(bodyChunk((byte) 10, (byte) 20));
+        channel.writeInbound(lastContent((byte) 30, (byte) 40));
+        channel.runPendingTasks();
+        assertTrue("requestConsumed after full body", state().isRequestConsumed());
+        assertEquals("B still gated: response in flight", 1, cap.requests.size());
+
+        // Response terminal — B admitted immediately without waiting for another body read.
+        writeOut(fullOkNoBody());
+        assertEquals("B admitted immediately: both conditions met", 2, cap.requests.size());
+        assertFalse("no pending after B", state().hasPendingAdmission());
+    }
+
+    /**
+     * C3 — stale A callback cannot affect B.
+     *
+     * After B is admitted, a second call to {@code markRequestConsumed} (as
+     * might arrive from a stale callback or a double invocation of
+     * {@code setBodyComplete}) must not cause a second admission of B or admit
+     * a phantom request C.
+     */
+    @Test
+    public void testStaleMarkRequestConsumedDoesNotAdmitExtraRequest() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 2));
+        channel.runPendingTasks();
+
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+
+        writeOut(fullOkNoBody()); // response-first
+
+        channel.writeInbound(lastContent((byte) 1, (byte) 2));
+        channel.runPendingTasks();
+        assertEquals("B admitted", 2, cap.requests.size());
+        assertTrue("requestConsumed", state().isRequestConsumed());
+
+        // Stale call — must be idempotent.
+        ReadFlowHandler.markRequestConsumed(channel.pipeline().context(ReadFlowHandler.class));
+        channel.runPendingTasks();
+
+        assertEquals("no extra admission from stale call", 2, cap.requests.size());
+        assertTrue("channel still alive", channel.isActive());
+    }
+
+    /**
+     * C4 — early error response with unread body; B is gated until body complete.
+     *
+     * Even when A returns a 4xx early, B must wait for A's body to arrive.
+     * The cleanup sequence (isc.clear + markRequestConsumed) only fires when
+     * setBodyComplete() is called, which requires the terminal body fragment.
+     */
+    @Test
+    public void testEarlyErrorResponseGatesBUntilBodyComplete() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 3));
+        channel.runPendingTasks();
+        assertEquals("A dispatched", 1, cap.requests.size());
+
+        // Queue B.
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+        assertEquals("B gated", 1, cap.requests.size());
+
+        // Early 400 response (simulated via streaming response + terminal write).
+        writeOut(streamingOk());
+        writeOut(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+
+        // Response done but body not yet received — B must remain gated.
+        assertEquals("B still gated after error response", 1, cap.requests.size());
+        assertFalse("requestConsumed false: body not complete", state().isRequestConsumed());
+
+        // Terminal body arrives — cleanup fires.
+        channel.writeInbound(lastContent((byte) 1, (byte) 2, (byte) 3));
+        channel.runPendingTasks();
+
+        assertTrue("requestConsumed after body", state().isRequestConsumed());
+        assertEquals("B admitted after body complete", 2, cap.requests.size());
     }
 
     // -----------------------------------------------------------------------

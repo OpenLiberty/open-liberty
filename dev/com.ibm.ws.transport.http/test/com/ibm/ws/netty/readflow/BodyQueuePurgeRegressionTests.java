@@ -195,47 +195,101 @@ public class BodyQueuePurgeRegressionTests {
     // -----------------------------------------------------------------------
 
     /**
-     * Simulates the race: a producer thread passes {@code purging.get()==false},
-     * then the drain runs (two-pass), then the producer enqueues. The two-pass
-     * drain picks up the fragment in the second pass. The final fragment must
-     * have its queue-retained ref released exactly once.
+     * Ordering A: enqueue completes, THEN drain runs.
      *
-     * This test is necessarily sequential and deterministic (no actual concurrency
-     * needed to verify the logic). It directly inserts into the queue between the
-     * two drain passes by using the public API in an order that mimics the race.
+     * The event-loop serialization model guarantees these two operations are
+     * mutually exclusive on the same thread, so the drain always sees any buffer
+     * that was enqueued before it ran.  This test verifies that invariant by
+     * calling them sequentially in order A→B: enqueue then drain.
      *
-     * We verify the invariant: after drainAndRelease() with a racing enqueue,
-     * no retained refs survive in the queue.
+     * After drain: the queue-retained ref must be released; the caller's ref
+     * must survive; no buffer is stranded.
      */
     @Test
-    public void testDrainTwoPassHandlesRacingEnqueue() throws Exception {
-        // We cannot truly inject between the two passes from outside,
-        // so we verify that running drainAndRelease() twice is idempotent and
-        // that a fragment enqueued AFTER the first drain is not leaked.
-
+    public void testEnqueueBeforeDrainBufferReleasedByDrain() {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
 
-        // Fragment A enqueued normally.
         ByteBuf a = Unpooled.buffer(2).writeBytes(new byte[]{1, 2});
         queue.enqueueRetained(a);
-        assertEquals("a retained", 2, a.refCnt());
+        assertEquals("queue acquired retain: refCnt=2", 2, a.refCnt());
 
-        // Begin the purge (sets flag + drains A).
+        // Drain runs after enqueue completes — picks up A.
         queue.drainAndRelease();
-        assertEquals("a released by drain", 1, a.refCnt());
-        assertTrue("purging after drain", queue.isPurging());
 
-        // Simulate a fragment that raced: it was enqueued AFTER purging=true.
-        // In the real code, enqueueRetained now skips retain; we verify that.
+        assertEquals("drain released queue ref: refCnt=1", 1, a.refCnt());
+        assertTrue("isPurging after drain", queue.isPurging());
+        assertNull("queue empty after drain", queue.poll());
+
+        // Caller releases its own ref cleanly.
+        assertTrue("caller release succeeds", a.release());
+        assertEquals("refCnt=0 after caller release", 0, a.refCnt());
+    }
+
+    /**
+     * Ordering B: drain runs, THEN enqueue is called.
+     *
+     * This is the critical case the old two-pass code tried (and failed) to
+     * handle.  With the event-loop serialization model these two operations
+     * cannot interleave: drainAndRelease() and enqueueRetained() both run on
+     * the event loop, so "drain runs then enqueue is called" is a sequential,
+     * not concurrent, ordering.
+     *
+     * After drain: purging=true.  A subsequent enqueueRetained must discard
+     * without retaining.  The caller's ref must remain at 1 — no double-release,
+     * no stranded queue-owned ref.
+     */
+    @Test
+    public void testDrainBeforeEnqueueDiscardWithNoRetain() {
+        BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
+
+        // Drain on an empty queue — sets purging=true.
+        queue.drainAndRelease();
+        assertTrue("purging=true after drain", queue.isPurging());
+
+        // Producer calls enqueueRetained after drain: must discard, not retain.
         ByteBuf b = Unpooled.buffer(2).writeBytes(new byte[]{3, 4});
-        queue.enqueueRetained(b);  // must NOT retain
-        assertEquals("b not retained during purge", 1, b.refCnt());
+        queue.enqueueRetained(b);
 
-        // No fragments remain in queue (nothing to drain).
-        assertNull("poll must return null after purge+skip", queue.poll());
+        assertEquals("no retain during purge: refCnt=1", 1, b.refCnt());
+        assertNull("queue empty: poll returns null", queue.poll());
+
+        // Caller releases cleanly.
+        assertTrue("caller release succeeds", b.release());
+        assertEquals("refCnt=0 after caller release", 0, b.refCnt());
+    }
+
+    /**
+     * Multiple buffers enqueued, then drain: every queue-owned ref released.
+     * After drain, a late enqueueRetained discards without stranding anything.
+     * Byte accounting includes all fragments regardless of purge.
+     */
+    @Test
+    public void testDrainReleasesAllThenLateEnqueueDiscards() {
+        BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
+
+        ByteBuf a = Unpooled.buffer(4).writeBytes(new byte[]{1, 2, 3, 4});
+        ByteBuf b = Unpooled.buffer(3).writeBytes(new byte[]{5, 6, 7});
+        queue.enqueueRetained(a);
+        queue.enqueueRetained(b);
+        assertEquals("a: refCnt=2", 2, a.refCnt());
+        assertEquals("b: refCnt=2", 2, b.refCnt());
+        assertEquals("7 bytes accounted", 7L, queue.bytesRead());
+
+        // Drain: both queue refs released.
+        queue.drainAndRelease();
+        assertEquals("a: refCnt=1 after drain", 1, a.refCnt());
+        assertEquals("b: refCnt=1 after drain", 1, b.refCnt());
+
+        // Late arrival discarded without retain.
+        ByteBuf c = Unpooled.buffer(2).writeBytes(new byte[]{8, 9});
+        queue.enqueueRetained(c);
+        assertEquals("c: refCnt=1 (not retained)", 1, c.refCnt());
+        // Byte accounting includes the discarded fragment.
+        assertEquals("9 bytes including purge-discarded", 9L, queue.bytesRead());
 
         a.release();
         b.release();
+        c.release();
     }
 
     /**
@@ -281,6 +335,231 @@ public class BodyQueuePurgeRegressionTests {
 
         readerDone.await();
         assertTrue("reader must see isPurging() after wakeup", seenPurge.get());
+    }
+
+    // -----------------------------------------------------------------------
+    // Finding 2: reader/purge interleavings — awaitChange predicate includes
+    // !purging so all three timing windows are covered deterministically.
+    // -----------------------------------------------------------------------
+
+    /**
+     * Interleaving B1 — reader already blocked in {@code awaitChange()} when
+     * purge begins.
+     *
+     * The reader captures its token before drain starts, then enters
+     * {@code wait()}. {@code drainAndRelease()} calls {@code signalChange()},
+     * which wakes the reader. The {@code !purging} predicate in
+     * {@code awaitChange} causes it to exit.
+     *
+     * This case was handled correctly by the old code (the signal woke the
+     * reader); it is retained here to guard regressions.
+     */
+    @Test(timeout = 5000)
+    public void testReaderAlreadyWaitingWhenPurgeBegins() throws Exception {
+        BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
+
+        CountDownLatch insideWait  = new CountDownLatch(1);
+        CountDownLatch readerDone  = new CountDownLatch(1);
+        AtomicBoolean  seenPurge   = new AtomicBoolean(false);
+        AtomicBoolean  interrupted = new AtomicBoolean(false);
+
+        Thread reader = new Thread(() -> {
+            try {
+                long token = queue.signalToken();
+                insideWait.countDown();        // signal: about to wait
+                queue.awaitChange(token);      // blocks here
+                seenPurge.set(queue.isPurging());
+            } catch (InterruptedException e) {
+                interrupted.set(true);
+                Thread.currentThread().interrupt();
+            } finally {
+                readerDone.countDown();
+            }
+        }, "b1-reader");
+
+        reader.setDaemon(true);
+        reader.start();
+        insideWait.await();
+        Thread.sleep(30);                      // ensure reader is in Object.wait()
+
+        queue.drainAndRelease();               // wakes reader via signalChange()
+
+        readerDone.await();
+        assertFalse("no interruption", interrupted.get());
+        assertTrue("reader sees purging after wakeup", seenPurge.get());
+    }
+
+    /**
+     * Interleaving B2 — purge occurs after the entry {@code isPurging()} check
+     * but before {@code signalToken()} is called.
+     *
+     * The reader sees {@code purging=false} at the fast-path entry check, then
+     * drain completes (setting {@code purging=true} and incrementing the signal),
+     * and only then does the reader capture the token.  Without {@code !purging}
+     * in the predicate, {@code awaitChange} would observe {@code signal==token}
+     * and block forever — no further signal is ever sent.
+     *
+     * With the fix, {@code awaitChange} exits immediately because
+     * {@code !purging} is already false when evaluated.
+     *
+     * This is the exact window described in Finding 2. The test uses a
+     * {@link CountDownLatch} pair to inject the drain at precisely this point.
+     */
+    @Test(timeout = 5000)
+    public void testPurgeAfterEntryCheckBeforeTokenCapture() throws Exception {
+        // Subclass that lets us interpose between isPurging() and signalToken().
+        CountDownLatch afterEntryCheck   = new CountDownLatch(1);
+        CountDownLatch drainComplete     = new CountDownLatch(1);
+        AtomicBoolean  exited            = new AtomicBoolean(false);
+        AtomicBoolean  interrupted       = new AtomicBoolean(false);
+
+        BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
+
+        // Simulate the isPurging() entry check passing (returns false),
+        // then signal the drain thread to run, then call signalToken().
+        Thread reader = new Thread(() -> {
+            try {
+                // Step 1: entry check (simulated — queue.isPurging() == false here)
+                assertFalse("isPurging false at entry check", queue.isPurging());
+
+                // Step 2: yield to allow drain to run
+                afterEntryCheck.countDown();
+                drainComplete.await();          // wait for drain to finish
+
+                // Step 3: capture token AFTER drain incremented signal
+                long token = queue.signalToken();
+
+                // Step 4: awaitChange — with !purging in predicate this must
+                // return immediately because purging is now true
+                queue.awaitChange(token);
+                exited.set(true);
+            } catch (InterruptedException e) {
+                interrupted.set(true);
+                Thread.currentThread().interrupt();
+            }
+        }, "b2-reader");
+
+        reader.setDaemon(true);
+        reader.start();
+
+        afterEntryCheck.await();       // reader has passed entry check
+        queue.drainAndRelease();       // sets purging=true, increments signal
+        drainComplete.countDown();     // allow reader to proceed
+
+        reader.join(3000);
+        assertFalse("reader thread must not still be alive", reader.isAlive());
+        assertFalse("no interruption", interrupted.get());
+        assertTrue("awaitChange must exit immediately when purging=true", exited.get());
+    }
+
+    /**
+     * Interleaving B3 — purge occurs after {@code signalToken()} but before
+     * {@code awaitChange} enters {@code wait()}.
+     *
+     * The reader captures the token, then drain runs (sets {@code purging=true}
+     * and increments the signal), then the reader calls {@code awaitChange(token)}.
+     * At this point {@code signal > token}, so the while predicate is false
+     * immediately and {@code wait()} is never entered — the reader exits promptly.
+     *
+     * This case is handled by the existing {@code signal != lastToken} part of the
+     * predicate; the {@code !purging} clause provides defence-in-depth for the
+     * window where the signal happens to match (e.g. on a wrapped counter), but
+     * the fundamental exit path here is the token mismatch.
+     */
+    @Test(timeout = 5000)
+    public void testPurgeAfterTokenCaptureBeforeAwait() throws Exception {
+        BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
+
+        // Capture token first.
+        long token = queue.signalToken();
+
+        // Drain runs — sets purging=true and increments signal.
+        queue.drainAndRelease();
+
+        // Now call awaitChange. Since signal > token, the predicate is false
+        // immediately and no wait() is entered.
+        AtomicBoolean exited       = new AtomicBoolean(false);
+        AtomicBoolean interrupted  = new AtomicBoolean(false);
+
+        Thread reader = new Thread(() -> {
+            try {
+                queue.awaitChange(token);
+                exited.set(true);
+            } catch (InterruptedException e) {
+                interrupted.set(true);
+                Thread.currentThread().interrupt();
+            }
+        }, "b3-reader");
+
+        reader.setDaemon(true);
+        reader.start();
+        reader.join(2000);
+
+        assertFalse("reader thread must exit promptly", reader.isAlive());
+        assertFalse("no interruption", interrupted.get());
+        assertTrue("awaitChange must exit (token mismatch or purging)", exited.get());
+    }
+
+    /**
+     * Interleaving B4 — partial buffer left in {@link
+     * com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl} when purge
+     * begins: the buffer must be released and the reader must not block.
+     *
+     * This is the "partially consumed stream-owned buffer" case from Finding 2.
+     * We simulate it at the BodyQueue level: the reader has already polled a
+     * fragment (owns a retained ref), then purge fires. The reader must release
+     * the buffer and return false, not block.
+     *
+     * The BodyQueue itself does not hold the stream buffer — that is owned by
+     * HttpInputStreamImpl. This test verifies that awaitChange exits when
+     * purging=true so that HttpInputStreamImpl's post-wait purge check fires
+     * promptly and can release its buffer without requiring another fragment.
+     */
+    @Test(timeout = 5000)
+    public void testReaderWithConsumedBufferExitsOnPurge() throws Exception {
+        BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
+
+        // Enqueue a fragment (simulating one already delivered to the stream buffer).
+        ByteBuf frag = Unpooled.buffer(4).writeBytes(new byte[]{1, 2, 3, 4});
+        queue.enqueueRetained(frag);
+
+        // Simulate the reader having polled it (queue-retained ref transferred).
+        ByteBuf polled = queue.poll();
+        assertNotNull("polled fragment exists", polled);
+        assertEquals("polled ref is queue-retained ref", 2, frag.refCnt()); // caller + queue->polled
+
+        // Queue is now empty; reader would call awaitChange waiting for more data.
+        CountDownLatch aboutToWait = new CountDownLatch(1);
+        CountDownLatch readerDone  = new CountDownLatch(1);
+        AtomicBoolean  exited      = new AtomicBoolean(false);
+
+        Thread reader = new Thread(() -> {
+            try {
+                long token = queue.signalToken();
+                aboutToWait.countDown();
+                queue.awaitChange(token); // blocks until signal or purge
+                exited.set(true);
+                // In the real code HttpInputStreamImpl releases its buffer here.
+                polled.release();         // simulate buffer release on purge exit
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                readerDone.countDown();
+            }
+        }, "b4-reader");
+
+        reader.setDaemon(true);
+        reader.start();
+        aboutToWait.await();
+        Thread.sleep(30); // let reader enter wait()
+
+        queue.drainAndRelease(); // wakes reader; sets purging=true
+        readerDone.await();
+
+        assertTrue("reader exited promptly via purge wakeup", exited.get());
+        // polled ref released by reader; caller ref still alive.
+        assertEquals("frag: caller ref survives", 1, frag.refCnt());
+        frag.release(); // caller release
     }
 
     // -----------------------------------------------------------------------

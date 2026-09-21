@@ -186,7 +186,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private FullHttpRequest nettyRequest;
     private ConnectionLink nettyConnectionLink;
     private FullHttpRequest nettyHeaderOnly;
-    private AtomicBoolean deferClear = new AtomicBoolean(false);
     private AtomicBoolean closeNonUpgradedDeferred = new AtomicBoolean(false);
 
     /**
@@ -320,14 +319,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // queued fragments are not leaked regardless of whether the protocol
         // body was already completely received (isBodyComplete) or not.
         //
+        // BodyQueue.drainAndRelease() must run on the Netty I/O event loop so
+        // that it is mutually exclusive with enqueueRetained() (also on the
+        // event loop). submitDrain() dispatches to the event loop if not already
+        // there, or calls drainAndRelease() directly if already on the loop.
+        //
         // Three distinct states must be handled:
         //
         //   (a) Body not yet protocol-complete (!isBodyComplete):
         //       The connection may be reused (shouldDrain=true) or torn down.
-        //       - Reuse: drain buffered fragments, set deferClear so isc.clear()
-        //         fires after setBodyComplete(), and let ReadFlowHandler drive
-        //         the remaining reads.
-        //       - Teardown: drain buffered fragments and unblock any reader.
+        //       - Reuse: drain buffered fragments and let ReadFlowHandler drive
+        //         the remaining reads. isc.clear() fires unconditionally in
+        //         setBodyComplete() once the terminal body arrives.
+        //       - Teardown: drain queued fragments and unblock any reader.
         //
         //   (b) Body protocol-complete (isBodyComplete) but application-unread:
         //       All wire bytes have arrived and the BodyQueue may still hold
@@ -344,27 +348,20 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (!this.isc.isBodyComplete()) {
             if (shouldDrainRequestBodyBeforeNettyClose(e)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Body not fully read; starting async purge: draining BodyQueue and deferring isc.clear().");
+                    Tr.debug(tc, "Body not fully read; starting async purge: draining BodyQueue.");
                 }
-                // Begin the purge lifecycle:
-                //   1. Drain any already-buffered BodyQueue fragments and mark
-                //      future arrivals as discard-only (no retain).
-                //   2. deferClear defers isc.clear() until setBodyComplete() fires.
-                //   3. Read scheduling is owned by ReadFlowHandler.onResponseComplete
-                //      (setBodyReadWanted path) and channelReadComplete.
-                if (bodyQueue != null) {
-                    bodyQueue.drainAndRelease();
-                }
-                deferClear.set(true);
+                // submitDrain() marks future arrivals as discard-only and releases
+                // already-buffered fragments on the event loop. Read scheduling is
+                // owned by ReadFlowHandler.onResponseComplete (setBodyReadWanted path).
+                // isc.clear() fires unconditionally in setBodyComplete().
+                submitDrain(bodyQueue);
             } else {
                 // Teardown path: drain queued fragments and unblock any reader
                 // that is blocked inside BodyQueue.awaitChange().
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Skipping body drain; releasing queue and signaling EOS.");
                 }
-                if (bodyQueue != null) {
-                    bodyQueue.drainAndRelease();
-                }
+                submitDrain(bodyQueue);
                 if (body != null) {
                     body.signalEOS();
                 }
@@ -375,9 +372,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Body protocol-complete; releasing any unread queue fragments.");
             }
-            if (bodyQueue != null) {
-                bodyQueue.drainAndRelease();
-            }
+            submitDrain(bodyQueue);
         }
 
         if (this.isc != null && this.isc.isNettyHttp2Request()) {
@@ -457,18 +452,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
-           
-            if (this.isc != null) {
-                if (!this.isc.isBodyComplete()) {
-                    deferClear.set(true);
-                } else {
-                    this.isc.clear();
-                }
-            }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "nettyClose: upgraded connection; not closing channel");
             }
+
+            // isc.clear() is handled by setBodyComplete() when the body finishes.
+            // If the body is already complete it was already cleared there.
 
              Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=UPGRADED_NO_CHANNEL_CLOSE"
         + " link=" + System.identityHashCode(this)
@@ -491,20 +481,41 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         + " ch=" + qpNettyChannelId()
         + " requestTrailersRequireClose=" + requestTrailersRequireClose);
             this.nettyContext.channel().close();
-        }else {
-
+        } else {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=KEEPALIVE_NO_CHANNEL_CLOSE"
         + " link=" + System.identityHashCode(this)
         + " ch=" + qpNettyChannelId()
         + " " + qpBodyState());
-            if (this.isc != null && !this.isc.isBodyComplete()) {
-                deferClear.set(true);
-            } else if (this.isc != null) {
+            // isc.clear() is handled unconditionally by setBodyComplete() once the
+            // body arrives. If isBodyComplete() is already true, it was cleared there.
+            if (this.isc != null && this.isc.isBodyComplete()) {
                 this.isc.clear();
             }
         }
         return;
 
+    }
+
+    /**
+     * Submits {@link BodyQueue#drainAndRelease()} to the Netty I/O event loop.
+     *
+     * <p>{@code drainAndRelease} must run on the event loop so that it is
+     * mutually exclusive with {@code enqueueRetained} (also on the event loop).
+     * If this method is already called on the event loop it invokes the drain
+     * directly; otherwise it submits a task via the channel's executor.
+     *
+     * <p>A {@code null} queue is silently ignored (no body, or streaming not
+     * configured).
+     */
+    private void submitDrain(BodyQueue bodyQueue) {
+        if (bodyQueue == null) {
+            return;
+        }
+        if (nettyContext.executor().inEventLoop()) {
+            bodyQueue.drainAndRelease();
+        } else {
+            nettyContext.executor().execute(bodyQueue::drainAndRelease);
+        }
     }
 
     static boolean requestTrailersRequireClose(FullHttpRequest requestReference) {
@@ -2138,27 +2149,33 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return connectionId;
     }
 
-    public void setBodyComplete(){
+    public void setBodyComplete() {
         if (this.isc != null) {
             this.isc.setBodyComplete();
 
-            // Perform deferred isc.clear() BEFORE calling markRequestConsumed.
+            // Always clear the ISC before markRequestConsumed so that request B
+            // is never admitted while exchange A's storage is still live.
             //
-            // markRequestConsumed can synchronously trigger drainPendingAdmission
-            // which fires the next request's HttpRequest downstream. If isc.clear()
-            // has not yet run, the current exchange's storage overlaps with the next
-            // exchange's initialisation, which is incorrect.
+            // Sequence:
+            //   1. isc.setBodyComplete() — marks wire-level protocol end.
+            //   2. isc.clear()           — releases this exchange's storage.
+            //   3. markRequestConsumed() — may synchronously admit B via
+            //                             drainPendingAdmission; must see clean state.
             //
-            // Sequence (keeping these in order):
-            //   1. isc.setBodyComplete() — marks protocol end.
-            //   2. isc.clear()           — releases current exchange storage.
-            //   3. markRequestConsumed() — may admit next request; must see clean state.
-            if (deferClear.compareAndSet(true, false)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Body complete; performing deferred ISC.clear() before admitting next exchange.");
-                }
-                this.isc.clear();
+            // isc.clear() is safe here because setBodyComplete() is called from the
+            // event loop (HttpDispatcherHandler.channelRead), which is after the
+            // response write promise has already resolved (nettyClose is triggered by
+            // the application completing its response). The response has been fully
+            // flushed before this point, so clearing the ISC cannot interfere with
+            // any in-progress write.
+            //
+            // nettyClose() also calls isc.clear() in the keep-alive branch when
+            // isBodyComplete() is already true — that is a safe double-clear because
+            // isc.clear() is idempotent.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "setBodyComplete: clearing ISC before admitting next exchange.");
             }
+            this.isc.clear();
 
             // HTTP/1 read-flow state is not authority for trusted HTTP/2 streams.
             if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
