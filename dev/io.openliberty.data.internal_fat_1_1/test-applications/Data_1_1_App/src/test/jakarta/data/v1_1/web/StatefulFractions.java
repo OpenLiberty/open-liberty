@@ -32,6 +32,8 @@ import jakarta.transaction.Transactional;
 @Repository(dataStore = "MyDataStore")
 public interface StatefulFractions {
 
+    int deleteByDenominator(int denominator);
+
     @Detach
     void detach(Fraction entity);
 
