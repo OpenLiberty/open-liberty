@@ -1,0 +1,10 @@
+# This is a USER feature (installed via LibertyServer.installUserFeature / usr: prefix in server.xml).
+# User features are loaded from usr/extension/lib/features/ and do NOT use IBM-ShortName.
+# Contrast with classloadingfat-testfeature-1.0.mf, which is a SYSTEM feature and carries IBM-ShortName.
+Subsystem-ManifestVersion: 1
+IBM-Feature-Version: 2
+Subsystem-SymbolicName: classloadingfat-testbundles-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: test.classloading.bvt.bundle.a;version="[1,2)",
+ test.classloading.bvt.bundle.b;version="[1,2)"

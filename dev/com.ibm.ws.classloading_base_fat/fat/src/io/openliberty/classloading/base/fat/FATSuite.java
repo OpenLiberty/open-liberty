@@ -32,6 +32,7 @@ import org.junit.runners.Suite.SuiteClasses;
     LibraryChangeListenerTest.class,
     LibrarySPIFatTest.class,
     LibraryExporterFatTest.class,
-    ForbiddenClassAccessTest.class
+    ForbiddenClassAccessTest.class,
+    ClassloaderResourceAndVisibilityFatTest.class
 })
 public class FATSuite {}
