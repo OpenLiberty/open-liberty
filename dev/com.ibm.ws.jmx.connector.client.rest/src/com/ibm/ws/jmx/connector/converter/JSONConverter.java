@@ -3532,8 +3532,8 @@ public class JSONConverter {
             name = name.substring(1);
         }
        
-        if (name.length() >= 2) {
-            if (name.charAt(name.length() - 1) == ';' && name.charAt(0) == 'L' && name.length() >= 3) {
+        if (name.length() >= 3) {
+            if (name.charAt(name.length() - 1) == ';' && name.charAt(0) == 'L') {
                 // Object array
                 // Take off the leading 'L' and trailing ';'
                 name = name.substring(1,name.length()-1);
