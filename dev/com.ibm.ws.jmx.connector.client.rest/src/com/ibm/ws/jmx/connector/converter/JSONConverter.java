@@ -27,7 +27,9 @@ import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -3521,20 +3523,26 @@ public class JSONConverter {
     }
 
     // Checks an array type definition string (possibly multidimensional)
-    // e.g. '[[[[Lmy.class.name;'
+    // e.g. '[[[[Lmy.class.name;' or '[[[B' for a primitive array
     // Primitive arrays are accepted, and arrays of other supported classes
+    private static final Set<Character> primitives = Collections.unmodifiableSet(new HashSet<Character>(Arrays.asList('B', 'C', 'D', 'F', 'I', 'J', 'S', 'Z')));
     private static void checkClassName(String name) throws ConversionException {
-        if (name.charAt(name.length() - 1) != ';') {
-            // This is a primitive array
-            return;
-        }
-        // Something like '[[[[Lmy.class.name;'
+
         while (name.charAt(0) == '[') {
             name = name.substring(1);
         }
-        // Take off the leading 'L' and trailing ';'
-        name = name.substring(1,name.length()-1);
-        if (SupportedClassNames.contains(name)){
+       
+        if (name.length() >= 2) {
+            if (name.charAt(name.length() - 1) == ';' && name.charAt(0) == 'L' && name.length() >= 3) {
+                // Object array
+                // Take off the leading 'L' and trailing ';'
+                name = name.substring(1,name.length()-1);
+                if (SupportedClassNames.contains(name)) {
+                   return;
+                }
+            }
+        } else if (name.length() == 1 && primitives.contains(name.charAt(0))) {
+            // Valid primitive array
             return;
         }
         // Unsupported class
