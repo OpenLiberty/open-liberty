@@ -153,10 +153,21 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             resetRead(context);
         }
 
+        // Snapshot the active timer before forwarding downstream.
+        // Forwarding LastHttpContent can synchronously admit a pipelined request B
+        // via ReadFlowHandler, which re-enters channelRead(HttpRequest_B) and
+        // installs a new timer (cancel + arm). After the forward returns we must
+        // only cancel the OLD timer — never B's newly-installed one.
+        final ScheduledFuture<?> timerBeforeForward = currentTimeout;
+
         super.channelRead(context, message);
 
         if (isRequestEnd(message)) {
-            if (phase == Phase.READ){
+            // Cancel only if the timer has not been replaced by a downstream
+            // pipelined-request admission. If B was admitted, currentTimeout ≠
+            // timerBeforeForward (cancel set it to null, arm set it to a new value),
+            // so this guard is false and we leave B's timer alone.
+            if (phase == Phase.READ && currentTimeout == timerBeforeForward) {
                 cancel();
             }
             firstRequest = false;
