@@ -331,12 +331,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (!this.isc.isBodyComplete()) {
             if (shouldDrainRequestBodyBeforeNettyClose(e)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Body not fully read; deferring isc.clear() until purge completes.");
+                    Tr.debug(tc, "Body not fully read; starting async purge: draining BodyQueue and deferring isc.clear().");
                 }
-                // deferClear is set here; the read scheduling is owned by
-                // ReadFlowHandler.onResponseComplete (setBodyReadWanted path).
-                // This method falls through to the KEEPALIVE_NO_CHANNEL_CLOSE
-                // branch, which also sets deferClear — the double-set is idempotent.
+                // Begin the purge lifecycle:
+                //   1. Drain any already-buffered BodyQueue fragments so they are
+                //      released immediately.  Future arriving fragments will be
+                //      discarded inline by BodyQueue.enqueueRetained once purging=true.
+                //   2. deferClear defers isc.clear() until setBodyComplete() fires.
+                //   3. Read scheduling is owned by ReadFlowHandler.onResponseComplete
+                //      (setBodyReadWanted path) and channelReadComplete.
+                HttpInputStreamImpl body = (this.request != null) ? this.request.getBody() : null;
+                if (body != null && body.getBodyQueue() != null) {
+                    body.getBodyQueue().drainAndRelease();
+                }
                 deferClear.set(true);
             } else {
                 // Teardown path: unblock any reader waiting on the queue.

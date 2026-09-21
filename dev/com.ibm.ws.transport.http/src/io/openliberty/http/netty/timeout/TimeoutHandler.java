@@ -22,6 +22,8 @@ import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.PurgeStartedEvent;
+import com.ibm.ws.http.netty.pipeline.inbound.read.RequestConsumedEvent;
 
 import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
 import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
@@ -191,9 +193,11 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
                 if (!serverKeepAlive) {
                     context.close();
-                } else {
-                    armPersistIfNeeded(context);
                 }
+                // Persist timeout is armed via RequestConsumedEvent fired by
+                // ReadFlowHandler — either immediately (body already consumed)
+                // or after purge completes. TimeoutHandler stays decoupled from
+                // FlowState entirely.
             }
         }); //-> TODO: move over to keep-alive handler when implemented
 
@@ -348,26 +352,28 @@ public class TimeoutHandler extends ChannelDuplexHandler {
                     cancel();
                 }
             }
+        } else if (event instanceof PurgeStartedEvent) {
+            // Async body purge has begun after the response completed. Arm the
+            // read timeout so each arriving body fragment is bounded — matching
+            // Channel Framework where every purge body read uses readTimeout.
+            arm(context, Phase.READ);
+            super.userEventTriggered(context, event);
+            return;
+        } else if (event instanceof RequestConsumedEvent) {
+            // Body purge has completed; the connection is now ready for the next
+            // request. Cancel any in-progress read timeout and transition to
+            // PERSIST — matching Channel Framework's sequencing where the persist
+            // timeout governs the keep-alive read issued after purge finishes.
+            cancel();
+            armPersistIfNeeded(context);
+            super.userEventTriggered(context, event);
+            return;
         }
         super.userEventTriggered(context, event);
     }
 
     private static ProtocolName currentProtocol(ChannelHandlerContext context) {
         return ProtocolState.current(context.channel());
-    }
-
-    public static void armPersistTimeout(Channel channel){
-        TimeoutHandler handler = channel.pipeline().get(TimeoutHandler.class);
-        if(handler == null || handler.streamOnly){
-            return;
-        }
-        ChannelHandlerContext context = handler.parentContext;
-        if(context == null){
-            return;
-        }
-
-
-        handler.armPersistIfNeeded(context);
     }
 
     public static ReadOpToken armReadOp(Channel channel, int timeout, Runnable callback){

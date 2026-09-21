@@ -1112,6 +1112,322 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     // -----------------------------------------------------------------------
+    // Regression tests for stalled-purge: purge reads must continue after
+    // each non-terminal fragment.
+    // -----------------------------------------------------------------------
+
+    /**
+     * Stalled-purge regression — body arrives across multiple read cycles
+     * after the response has completed.
+     *
+     * After response completion, {@code onResponseComplete} calls
+     * {@code setBodyReadWanted(true)} which schedules one read.  When a
+     * non-terminal fragment arrives and {@code channelReadComplete} fires,
+     * the handler MUST reschedule another read.  Without the fix, the
+     * {@code channelReadComplete} branch did not honour the
+     * {@code bodyReadWanted && !requestConsumed} condition and the purge
+     * stalled indefinitely.
+     */
+    @Test
+    public void testPurgeReadsRescheduledAfterNonTerminalFragment() {
+        CapturingHandler cap = buildChannel();
+
+        // A with 6-byte body that the application will not read.
+        channel.writeInbound(requestWithBody("/a", 6));
+        channel.runPendingTasks();
+        assertEquals("A dispatched", 1, cap.requests.size());
+
+        // Response completes before body is fully received.
+        writeOut(fullOkNoBody());
+        // After response, requestConsumed=false, bodyReadWanted=true via onResponseComplete.
+        assertFalse("requestConsumed still false after response", state().isRequestConsumed());
+        assertTrue("bodyReadWanted after response", state().isBodyReadWanted());
+
+        // First fragment — non-terminal; channelReadComplete must reschedule.
+        channel.writeInbound(bodyChunk((byte) 1, (byte) 2, (byte) 3));
+        channel.runPendingTasks();
+        // channelReadComplete should have rescheduled a read; state must not be stuck.
+        assertFalse("requestConsumed still false after first fragment", state().isRequestConsumed());
+        assertTrue("channel still active", channel.isActive());
+
+        // Second (terminal) fragment — purge complete.
+        channel.writeInbound(lastContent((byte) 4, (byte) 5, (byte) 6));
+        channel.runPendingTasks();
+        assertTrue("requestConsumed after terminal fragment", state().isRequestConsumed());
+        assertTrue("channel still active after purge", channel.isActive());
+    }
+
+    /**
+     * Stalled-purge regression — three body fragments, response complete
+     * before the first fragment.  B must not be admitted until all three arrive.
+     */
+    @Test
+    public void testPurgeMultipleFragmentsAllRescheduled() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 9));
+        channel.runPendingTasks();
+
+        // Queue B.
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+        assertEquals("B gated", 1, cap.requests.size());
+
+        // Response finishes before any body arrives.
+        writeOut(fullOkNoBody());
+        assertEquals("B still gated after response", 1, cap.requests.size());
+        assertFalse("requestConsumed false", state().isRequestConsumed());
+
+        // Fragment 1.
+        channel.writeInbound(bodyChunk((byte) 1, (byte) 2, (byte) 3));
+        channel.runPendingTasks();
+        assertEquals("B still gated after fragment 1", 1, cap.requests.size());
+        assertFalse("requestConsumed false after fragment 1", state().isRequestConsumed());
+
+        // Fragment 2.
+        channel.writeInbound(bodyChunk((byte) 4, (byte) 5, (byte) 6));
+        channel.runPendingTasks();
+        assertEquals("B still gated after fragment 2", 1, cap.requests.size());
+        assertFalse("requestConsumed false after fragment 2", state().isRequestConsumed());
+
+        // Terminal fragment.
+        channel.writeInbound(lastContent((byte) 7, (byte) 8, (byte) 9));
+        channel.runPendingTasks();
+        assertTrue("requestConsumed after terminal", state().isRequestConsumed());
+        assertEquals("B admitted after all fragments purged", 2, cap.requests.size());
+    }
+
+    /**
+     * Verifies idempotent cleanup: marking request consumed twice must not
+     * cause a double admission or crash.
+     */
+    @Test
+    public void testMarkRequestConsumedIsIdempotent() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 2));
+        channel.runPendingTasks();
+
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+
+        writeOut(fullOkNoBody());
+
+        // Terminal body drains normally.
+        channel.writeInbound(lastContent((byte) 1, (byte) 2));
+        channel.runPendingTasks();
+        assertTrue("requestConsumed", state().isRequestConsumed());
+        assertEquals("B admitted once", 2, cap.requests.size());
+
+        // Mark again — must be idempotent: B must not be dispatched twice, no crash.
+        ReadFlowHandler.markRequestConsumed(channel.pipeline().context(ReadFlowHandler.class));
+        channel.runPendingTasks();
+
+        // The count must remain 2 — no duplicate admission.
+        assertEquals("no duplicate admission", 2, cap.requests.size());
+    }
+
+    /**
+     * Already-buffered body data that arrives at the dispatcher BEFORE the
+     * response is written (response-first ordering is tested in existing tests;
+     * this checks the symmetric body-first ordering).
+     *
+     * Body arrives completely, THEN the response terminal write fires.
+     * B must be admitted immediately after the terminal write — no extra read
+     * cycle needed.
+     */
+    @Test
+    public void testBufferedBodyBeforeResponseAdmitsBImmediately() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 4));
+        channel.runPendingTasks();
+
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+        assertEquals("B gated during response", 1, cap.requests.size());
+
+        // Full body arrives before response terminal.
+        channel.writeInbound(bodyChunk((byte) 10, (byte) 20));
+        channel.writeInbound(lastContent((byte) 30, (byte) 40));
+        channel.runPendingTasks();
+        assertTrue("requestConsumed after body", state().isRequestConsumed());
+        assertEquals("B still gated (response in flight)", 1, cap.requests.size());
+
+        // Response terminal write — B must be admitted immediately.
+        writeOut(fullOkNoBody());
+        assertEquals("B admitted after response terminal", 2, cap.requests.size());
+    }
+
+    /**
+     * Disconnect during purge: no reuse but also no crash or double-release.
+     * The connection must close cleanly; B is never dispatched.
+     */
+    @Test
+    public void testDisconnectDuringPurgeClosesCleanly() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 6));
+        channel.runPendingTasks();
+
+        // Queue B.
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+
+        // Response complete — purge in progress.
+        writeOut(fullOkNoBody());
+        assertFalse("requestConsumed false", state().isRequestConsumed());
+
+        // Partial fragment.
+        channel.writeInbound(bodyChunk((byte) 1, (byte) 2));
+        channel.runPendingTasks();
+
+        // Channel closes mid-purge.
+        channel.close();
+        channel.runPendingTasks();
+
+        assertFalse("channel closed", channel.isActive());
+        assertFalse("queue released on close", state().hasPendingAdmission());
+        assertEquals("B never admitted", 1, cap.requests.size());
+    }
+
+    /**
+     * Explicit {@code Connection: close} response during purge: channel must
+     * close immediately after the terminal write; no purge reads are attempted
+     * since keepAliveAllowed=false.
+     */
+    @Test
+    public void testConnectionCloseSkipsPurge() {
+        CapturingHandler cap = buildChannel();
+
+        channel.writeInbound(requestWithBody("/a", 6));
+        channel.runPendingTasks();
+
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+
+        // Connection: close response — keepAlive=false.
+        DefaultFullHttpResponse closeResp = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.EMPTY_BUFFER);
+        closeResp.headers().set("Connection", "close");
+        closeResp.headers().set("Content-Length", "0");
+        writeOut(closeResp);
+
+        assertFalse("channel closed after Connection:close", channel.isActive());
+        assertEquals("B never admitted", 1, cap.requests.size());
+    }
+
+    /**
+     * Fully-consumed normal request: purge changes must not regress the
+     * normal keep-alive flow.  Same-socket reuse must work as expected.
+     */
+    @Test
+    public void testFullyConsumedRequestKeepAliveUnchanged() {
+        CapturingHandler cap = buildChannel();
+
+        // A: body fully read before response.
+        channel.writeInbound(requestWithBody("/a", 4));
+        channel.writeInbound(lastContent((byte) 1, (byte) 2, (byte) 3, (byte) 4));
+        channel.runPendingTasks();
+        assertTrue("A requestConsumed", state().isRequestConsumed());
+
+        writeOut(fullOkNoBody());
+        assertTrue("channel alive", channel.isActive());
+
+        // B arrives on the same socket — same-socket reuse.
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+        assertEquals("B dispatched immediately", 2, cap.requests.size());
+
+        writeOut(fullOkNoBody());
+        assertTrue("channel alive after B", channel.isActive());
+    }
+
+    /**
+     * Chunked request body with empty terminal {@link LastHttpContent} —
+     * the trailing empty chunk must still mark the request as consumed.
+     */
+    @Test
+    public void testChunkedBodyWithEmptyTerminalMarksConsumed() {
+        CapturingHandler cap = buildChannel();
+
+        DefaultHttpRequest chunked = new DefaultHttpRequest(
+                HttpVersion.HTTP_1_1, HttpMethod.POST, "/a");
+        chunked.headers().set("Transfer-Encoding", "chunked");
+        chunked.headers().set("Connection", "keep-alive");
+        channel.writeInbound(chunked);
+        channel.runPendingTasks();
+        assertFalse("requestConsumed false for chunked", state().isRequestConsumed());
+
+        // Data chunk.
+        channel.writeInbound(bodyChunk((byte) 0x41, (byte) 0x42));
+        channel.runPendingTasks();
+
+        // Empty terminal (0-sized chunk).
+        channel.writeInbound(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+        channel.runPendingTasks();
+        assertTrue("requestConsumed after empty terminal", state().isRequestConsumed());
+
+        writeOut(fullOkNoBody());
+        assertTrue("channel alive", channel.isActive());
+
+        // B on same socket.
+        channel.writeInbound(bodylessGet("/b"));
+        channel.runPendingTasks();
+        assertEquals("B dispatched", 2, cap.requests.size());
+    }
+
+    /**
+     * Response-first ordering vs purge-first ordering: verifies both orderings
+     * produce the correct outcome.
+     *
+     * <p>Case A: response terminal write occurs, then body LastHttpContent arrives.
+     * <p>Case B: body LastHttpContent arrives first, then response terminal write.
+     *
+     * Both cases must result in B being admitted exactly once.
+     */
+    @Test
+    public void testResponseFirstAndPurgeFirstOrderingBothWork() {
+        // Case A: response-first.
+        {
+            CapturingHandler cap = buildChannel();
+
+            channel.writeInbound(requestWithBody("/a", 2));
+            channel.runPendingTasks();
+            channel.writeInbound(bodylessGet("/b"));
+            channel.runPendingTasks();
+
+            writeOut(fullOkNoBody()); // response first
+            assertEquals("A: B gated after response", 1, cap.requests.size());
+
+            channel.writeInbound(lastContent((byte) 1, (byte) 2)); // body second
+            channel.runPendingTasks();
+            assertEquals("A: B admitted after body", 2, cap.requests.size());
+
+            try { channel.finishAndReleaseAll(); } catch (Throwable ignored) {}
+            channel = null;
+        }
+
+        // Case B: purge-first.
+        {
+            CapturingHandler cap = buildChannel();
+
+            channel.writeInbound(requestWithBody("/a", 2));
+            channel.runPendingTasks();
+            channel.writeInbound(bodylessGet("/b"));
+            channel.runPendingTasks();
+
+            channel.writeInbound(lastContent((byte) 1, (byte) 2)); // body first
+            channel.runPendingTasks();
+            assertTrue("B: requestConsumed after body", state().isRequestConsumed());
+            assertEquals("B: B still gated (response in flight)", 1, cap.requests.size());
+
+            writeOut(fullOkNoBody()); // response second
+            assertEquals("B: B admitted immediately", 2, cap.requests.size());
+        }
+    }
+
+    // -----------------------------------------------------------------------
     // Inner capturing handler
     // -----------------------------------------------------------------------
 

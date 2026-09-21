@@ -359,11 +359,21 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         boolean readAgain = state.isReadAgain();
         state.setReadPending(false);
         state.setReadAgain(false);
-        if (readAgain || (state.isRequestConsumed() && !state.isResponseInFlight() && state.isKeepAliveAllowed())) {
+
+        // Reschedule a read if:
+        //   (a) readAgain was explicitly requested, OR
+        //   (b) connection is eligible for reuse (normal keep-alive path), OR
+        //   (c) body purge is in progress: body still expected but not yet
+        //       consumed and body reads are wanted — without this the purge
+        //       stalls after a non-terminal fragment is received.
+        final boolean needsReadForPurge = state.isBodyReadWanted() && !state.isRequestConsumed();
+        if (readAgain
+                || (state.isRequestConsumed() && !state.isResponseInFlight() && state.isKeepAliveAllowed())
+                || needsReadForPurge) {
             context.executor().execute(() -> {
                 // Prefer draining an already-decoded queued request over issuing
                 // a new socket read.
-                if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+                if (state.hasPendingAdmission() && !state.isResponseInFlight() && state.isRequestConsumed()) {
                     drainPendingAdmission(context, state);
                 } else {
                     requestRead(context);
@@ -580,6 +590,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             // Purge is in progress (or body read is still needed). Ensure reads
             // are scheduled so the remaining body chunks can arrive.
             if (!state.stoppedReading() && context.channel().isActive()) {
+                // Notify TimeoutHandler that a purge is starting so it arms the
+                // read timeout for each incoming body fragment — matching Channel
+                // Framework where every purge body read uses readTimeout.
+                context.fireUserEventTriggered(PurgeStartedEvent.INSTANCE);
                 ReadFlowHandler.setBodyReadWanted(context, true);
             }
             return;
@@ -855,6 +869,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
 
         if (state.isRequestConsumed() && !state.isResponseInFlight() && state.isKeepAliveAllowed()
                 && !state.hasPendingAdmission()) {
+            // Body purge has just completed and the response was already sent.
+            // Fire RequestConsumedEvent so TimeoutHandler can reset the persist
+            // timer — keeping timeout logic self-contained in TimeoutHandler.
+            context.fireUserEventTriggered(RequestConsumedEvent.INSTANCE);
             requestRead(context);
         }
     }

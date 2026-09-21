@@ -685,6 +685,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             return false;
         }
 
+        // If the purge lifecycle has started, the application cannot read further
+        // body data — the queue is being drained by the purge path.
+        if (queue.isPurging()) {
+            return false;
+        }
+
         if (waitForInput && context != null && context.executor().inEventLoop()){
             throw new IllegalStateException("Blocking request read on event loop group thread");
         }
@@ -876,5 +882,15 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
             Tr.debug(tc, "signaled EOS to waiting body readers");
         }
+    }
+
+    /**
+     * Returns the {@link BodyQueue} backing this stream, or {@code null} if
+     * not in Netty streaming mode. Used by the purge lifecycle to drain
+     * already-buffered fragments when the application has finished its
+     * response without consuming the body.
+     */
+    public BodyQueue getBodyQueue() {
+        return this.queue;
     }
 }
