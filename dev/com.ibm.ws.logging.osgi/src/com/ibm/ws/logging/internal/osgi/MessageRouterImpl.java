@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,8 @@ import com.ibm.wsspi.logging.MessageRouter;
  */
 public class MessageRouterImpl implements MessageRouter {
 
-    private static final TraceComponent tc = Tr.register(MessageRouterImpl.class, "com.ibm.ws.logging.internal.osgi.resources.OSGiMessages.nlsprops");
+    private static final TraceComponent tc = Tr.register(MessageRouterImpl.class);
+    
 
     /**
      * Map of LogHandlerIDs to LogHandlers.
@@ -327,7 +328,7 @@ public class MessageRouterImpl implements MessageRouter {
             }
             if (count > 1 || (lastIndexAsterisk != msgId.length() - 1 && lastIndexAsterisk != msgId.length() - 2)) {
                 // Invalid pattern — ignore silently (caller should have validated input).
-            	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);;
+            	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);
             	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
             		Tr.debug(tc, String.format("Improper wildcard message ID detected from for Message ID:[%s] from handler:[%s]", msgId, handlerId), null);
             	}
