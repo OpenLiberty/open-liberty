@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public final class ImmediateFutureImpl<T> implements Future<T> {
     private T _result;
     private ExecutionException _exception;
@@ -28,6 +30,7 @@ public final class ImmediateFutureImpl<T> implements Future<T> {
         _exception = new ExecutionException(t);
     }
 
+    @Trivial
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return false;
@@ -47,11 +50,13 @@ public final class ImmediateFutureImpl<T> implements Future<T> {
         return get();
     }
 
+    @Trivial
     @Override
     public boolean isCancelled() {
         return false;
     }
 
+    @Trivial
     @Override
     public boolean isDone() {
         return true;
