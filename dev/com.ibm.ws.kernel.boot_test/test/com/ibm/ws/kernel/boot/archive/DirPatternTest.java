@@ -149,4 +149,5 @@ public class DirPatternTest {
         DirPattern dp = new DirPattern(DirPattern.EXCLUDE_BY_DEFAULT, PatternStrategy.ExcludePreference);
         assertFalse("includeByDefault should be false", dp.isIncludeByDefault());
     }
+    
 }
