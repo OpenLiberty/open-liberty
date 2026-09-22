@@ -88,4 +88,76 @@ public class TestRetryHelper {
             throw new RuntimeException("Test failed after " + maxAttempts + " attempts", lastThrowable);
         }
     }
+
+    /**
+     * Executes setup, action, and teardown as a unit, retrying the whole cycle up to
+     * maxAttempts times. The setup runs on every attempt (including the first), and the
+     * teardown runs after every attempt regardless of success or failure.
+     * <p>
+     *
+     * @param maxAttempts the maximum number of attempts
+     * @param setup       runs before every attempt to establish initial state
+     * @param action      the test action to execute
+     * @param teardown    runs after every attempt to clean up state
+     * @throws Exception if all retry attempts fail
+     */
+    public static void retryWithSetup(int maxAttempts, RetryableAction setup, RetryableAction action, RetryableAction teardown) throws Exception {
+        Throwable lastThrowable = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            // Setup runs on every attempt  failure here means we cannot proceed
+            try {
+                setup.run();
+            } catch (Throwable setupFailure) {
+                if (lastThrowable != null) {
+                    setupFailure.addSuppressed(lastThrowable);
+                }
+                if (setupFailure instanceof Exception e) {
+                    throw e;
+                } else if (setupFailure instanceof Error err) {
+                    throw err;
+                } else {
+                    throw new RuntimeException("Setup failed before attempt " + attempt, setupFailure);
+                }
+            }
+
+            Throwable actionFailure = null;
+            try {
+                action.run();
+            } catch (Throwable t) {
+                actionFailure = t;
+                lastThrowable = t;
+                LOG.log(Level.WARNING, "Attempt " + attempt + " of " + maxAttempts + " failed: " + t.getMessage(), t);
+            }
+
+            // Teardown always runs
+            try {
+                teardown.run();
+            } catch (Throwable teardownFailure) {
+                if (actionFailure != null) {
+                    actionFailure.addSuppressed(teardownFailure);
+                } else {
+                    // Action succeeded but teardown failed — propagate teardown failure
+                    if (teardownFailure instanceof Exception e) {
+                        throw e;
+                    } else if (teardownFailure instanceof Error err) {
+                        throw err;
+                    } else {
+                        throw new RuntimeException("Teardown failed after successful attempt " + attempt, teardownFailure);
+                    }
+                }
+            }
+
+            if (actionFailure == null) {
+                return; // Succeeded
+            }
+        }
+
+        if (lastThrowable instanceof Exception e) {
+            throw e;
+        } else if (lastThrowable instanceof Error err) {
+            throw err;
+        } else {
+            throw new RuntimeException("Test failed after " + maxAttempts + " attempts", lastThrowable);
+        }
+    }
 }
