@@ -239,7 +239,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         long timeoutNanos = TimeUnit.MILLISECONDS.toNanos(timeout);
         WriteTimeoutHandler timeoutHandler = nettyChannel.pipeline().get(WriteTimeoutHandler.class);
         if (Objects.isNull(timeoutHandler)) {
-            nettyChannel.pipeline().addLast(HttpPipelineInitializer.WRITE_TIMEOUT_HANDER_NAME, new WriteTimeoutHandler(timeout, TimeUnit.MILLISECONDS));
+            nettyChannel.pipeline().addLast("writeTimeoutHandler", new WriteTimeoutHandler(timeout, TimeUnit.MILLISECONDS));
         } else if(timeoutHandler.getTimeout() != timeoutNanos) {
             // Updated timeout so need to do so here as well
             timeoutHandler.setTimeout(timeout, TimeUnit.MILLISECONDS);
