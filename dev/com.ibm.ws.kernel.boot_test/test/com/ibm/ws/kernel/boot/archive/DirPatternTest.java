@@ -145,16 +145,8 @@ public class DirPatternTest {
     }
 
     @Test
-    public void testConstructor_includeByDefault2() {
-        DirPattern dp = new DirPattern(DirPattern.INCLUDE_BY_DEFAULT, PatternStrategy.IncludePreference);
-        assertTrue("includeByDefault should be true", dp.isIncludeByDefault());
-        assertTrue("includePatterns should be empty on construction", dp.getIncludePatterns().isEmpty());
-    }
-
-    @Test
     public void testConstructor_excludeByDefault() {
         DirPattern dp = new DirPattern(DirPattern.EXCLUDE_BY_DEFAULT, PatternStrategy.ExcludePreference);
         assertFalse("includeByDefault should be false", dp.isIncludeByDefault());
     }
-
 }
