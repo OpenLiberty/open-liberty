@@ -101,7 +101,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator, channel);
         channel.config().setRecvByteBufAllocator(loggingAllocator);
 
-        pipeline.addLast(WRITE_TIMEOUT_HANDER_NAME, new WriteTimeoutHandler(httpConfig.getWriteTimeout(), TimeUnit.MILLISECONDS, true));
+        pipeline.addLast(WRITE_TIMEOUT_HANDER_NAME, new WriteTimeoutHandler(httpConfig.getWriteTimeout(), TimeUnit.MILLISECONDS));
 
         if(chain.isHttps()){
             setupSecurePipeline(pipeline);
