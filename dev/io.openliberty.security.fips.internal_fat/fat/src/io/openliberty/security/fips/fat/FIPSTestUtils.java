@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,6 +92,18 @@ public class FIPSTestUtils {
                         String line;
                         boolean fipsCompatible = false;
                         while ((line = reader.readLine()) != null) {
+                            // As we are now beyond 2026-09-21 - all the FIPS tests now fail
+                            //RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate = 2026-09-21
+                            if(line.contains("RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate")){
+                                String[] dateElements = line.split("=")[1].trim().split("-");
+                                LocalDate now =  LocalDate.now();
+                                LocalDate sunsetDate = LocalDate.of(Integer.parseInt(dateElements[0]), Integer.parseInt(dateElements[1]), Integer.parseInt(dateElements[2]));
+                                if(sunsetDate.isBefore(now)){
+                                    Log.warning(FIPSTestUtils.class, "Restricted FIPS Profile Date has passed - you need to update Java");
+                                    fipsCompatible = false;
+                                    break;
+                                }
+                            }
                             if (line.contains("OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced")) {
                                 fipsCompatible = true;
                             }
