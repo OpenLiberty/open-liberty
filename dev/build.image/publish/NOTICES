@@ -122,8 +122,8 @@ Apache MyFaces JSF-2.3 Core Impl [myfaces-impl],
 Apache MyFaces JSF-3.0 Core API [myfaces-api],
 Apache MyFaces JSF-3.0 Core Impl [myfaces-impl], Apache Neethi [neethi],
 Apache Velocity [velocity], Apache Velocity - Engine [velocity-engine-core],
-Bean Validation API [validation-api], Bouncy Castle OpenPGP APIs [bcpg-jdk18on],
-CDI APIs [cdi-api], CDI APIs [jakarta.enterprise.cdi-api],
+Bean Validation API [validation-api], CDI APIs [cdi-api],
+CDI APIs [jakarta.enterprise.cdi-api],
 CDI EL integration API [jakarta.enterprise.cdi-el-api],
 CDI Language Model [jakarta.enterprise.lang-model],
 CDI Lite Extension Translator [weld-lite-extension-translator],
@@ -156,7 +156,8 @@ Java Concurrency Tools Core Library [jctools-core], Joda time [joda-time],
 Joda-Time [joda-time], Kotlin Stdlib [kotlin-stdlib],
 Kotlin Stdlib Common [kotlin-stdlib-common],
 Kotlin Stdlib Jdk7 [kotlin-stdlib-jdk7], Kotlin Stdlib Jdk8 [kotlin-stdlib-jdk8],
-LZ4 and xxHash [lz4-java], MicroProfile Config API [microprofile-config-api],
+LZ4 and xxHash [lz4-java], MCP Server API [mcp-server-api],
+MicroProfile Config API [microprofile-config-api],
 MicroProfile Context Propagation [microprofile-context-propagation-api],
 MicroProfile Fault Tolerance API [microprofile-fault-tolerance-api],
 MicroProfile GraphQL :: API [microprofile-graphql-api],
@@ -211,12 +212,10 @@ OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-semcon
 OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-incubator],
 OpenTelemetry Java [opentelemetry-exporter-otlp-common],
 OpenTelemetry Java [opentelemetry-exporter-jaeger],
-OpenTelemetry Java [opentelemetry-context],
 OpenTelemetry Java [opentelemetry-sdk-trace],
 OpenTelemetry Java [opentelemetry-sdk-metrics],
 OpenTelemetry Java [opentelemetry-sdk],
 OpenTelemetry Java [opentelemetry-sdk-common],
-OpenTelemetry Java [opentelemetry-api],
 OpenTelemetry Java [opentelemetry-semconv],
 OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure],
 OpenTelemetry Java [opentelemetry-exporter-logging],
@@ -226,7 +225,6 @@ OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure-spi],
 OpenTelemetry Java [opentelemetry-sdk-logs],
 OpenTelemetry Java [opentelemetry-api-logs],
 OpenTelemetry Java [opentelemetry-exporter-common],
-OpenTelemetry Java [opentelemetry-extension-trace-propagators],
 OpenTelemetry Java [opentelemetry-sdk],
 OpenTelemetry Java [opentelemetry-exporter-otlp],
 OpenTelemetry Java [opentelemetry-exporter-sender-okhttp],
@@ -234,12 +232,9 @@ OpenTelemetry Java [opentelemetry-exporter-otlp-common],
 OpenTelemetry Java [opentelemetry-sdk-metrics],
 OpenTelemetry Java [opentelemetry-exporter-common],
 OpenTelemetry Java [opentelemetry-api-events],
-OpenTelemetry Java [opentelemetry-api],
 OpenTelemetry Java [opentelemetry-extension-incubator],
 OpenTelemetry Java [opentelemetry-sdk-logs],
 OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure-spi],
-OpenTelemetry Java [opentelemetry-context],
-OpenTelemetry Java [opentelemetry-extension-trace-propagators],
 OpenTelemetry Java [opentelemetry-semconv],
 OpenTelemetry Java [opentelemetry-sdk-common],
 OpenTelemetry Java [opentelemetry-sdk-trace],
@@ -266,11 +261,8 @@ OpenTelemetry Java [opentelemetry-exporter-sender-okhttp],
 OpenTelemetry Java [opentelemetry-exporter-otlp],
 OpenTelemetry Java [opentelemetry-exporter-zipkin],
 OpenTelemetry Java [opentelemetry-exporter-otlp-common],
-OpenTelemetry Java [opentelemetry-extension-trace-propagators],
-OpenTelemetry Java [opentelemetry-api],
 OpenTelemetry Java [opentelemetry-sdk-logs],
 OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure],
-OpenTelemetry Java [opentelemetry-context],
 OpenTelemetry Java [opentelemetry-exporter-common],
 OpenTelemetry Java [opentelemetry-sdk-trace],
 OpenTelemetry Java [opentelemetry-sdk-common],
@@ -283,7 +275,11 @@ OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure-spi],
 OpenTelemetry Java [opentelemetry-exporter-logging],
 OpenTelemetry Java [opentelemetry-api-incubator],
 OpenTelemetry Java [opentelemetry-exporter-zipkin],
+OpenTelemetry Java [opentelemetry-common], OpenTelemetry Java [opentelemetry-api],
+OpenTelemetry Java [opentelemetry-context],
 OpenTelemetry Java [opentelemetry-extension-trace-propagators],
+OpenTelemetry Semantic Conventions Java [opentelemetry-semconv-incubating],
+OpenTelemetry Semantic Conventions Java [opentelemetry-semconv],
 OpenTelemetry Semantic Conventions Java [opentelemetry-semconv-incubating],
 OpenTelemetry Semantic Conventions Java [opentelemetry-semconv],
 OpenTelemetry Semantic Conventions Java [opentelemetry-semconv-incubating],
@@ -326,6 +322,8 @@ SmallRye Mutiny Zero JDK Flow / Reactive Streams Adapters [mutiny-zero-flow-adap
 SmallRye Reactive Messaging : API [smallrye-reactive-messaging-api],
 SmallRye Reactive Messaging : Provider [smallrye-reactive-messaging-provider],
 SmallRye: Common classes [smallrye-config-common],
+SmallRye: GraphQL Client :: API [smallrye-graphql-client-api],
+SmallRye: GraphQL Client :: Implementation [smallrye-graphql-client],
 SmallRye: GraphQL Common :: Schema Builder [smallrye-graphql-schema-builder],
 SmallRye: GraphQL Common :: Schema Model [smallrye-graphql-schema-model],
 SmallRye: GraphQL Server :: API [smallrye-graphql-api],
@@ -353,7 +351,6 @@ XML Commons Resolver Component [xml-resolver], XmlSchema Core [xmlschema-core],
 Zipkin Core Library [zipkin], Zipkin Reporter: Core [zipkin-reporter],
 Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
 acme4j Utils [acme4j-utils], asyncutil, b4a, bare-events, carbon-components,
-carbon-components [carbon-components-10.42.0-rc.0.min.js],
 classfilewriter [jboss-classfilewriter], commons-weaver-privilizer,
 cxf-rt-security, cxf-rt-security-saml, cxf-rt-ws-security, dompurify,
 error-prone annotations [error_prone_annotations], events-universal,
@@ -813,6 +810,7 @@ The Program includes some or all of the following that IBM obtained
 under the Bouncy Castle License:
 
 Bouncy Castle ASN.1 Extension and Utility APIs [bcutil-jdk18on],
+Bouncy Castle OpenPGP APIs [bcpg-jdk18on],
 Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk15on],
 Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk18on],
 Bouncy Castle Provider [bcprov-jdk15on], Bouncy Castle Provider [bcprov-jdk18on]
@@ -863,6 +861,7 @@ servlet (https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api/4.0.
 servlet.jsp (https://github.com/javaee/servlet-spec)
 servlet.jsp.resources (https://github.com/javaee/servlet-spec)
 servlet.resources (https://github.com/javaee/servlet-spec)
+
 
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1 NOTICES AND INFORMATION
@@ -1022,6 +1021,7 @@ org.eclipse.persistence.jpa.jpql (http://www.eclipse.org/eclipselink)
 org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
 
 
+
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1120,7 +1120,7 @@ async (Copyright 2010-2018 Caolan McMahon)
 autolinker (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
 available-typed-arrays (Copyright 2020 Inspect JS)
 base64-js (Copyright 2014 Jameson Little)
-bootstrap (Copyright 2011-2021 The Bootstrap Authors) (Copyright 2011-2021 Twitter, Inc) (Copyright 2011-2021 ode and documentation copyright) (Copyright and license" (#copyright-and-license))
+bootstrap (Copyright 2011-2021 The Bootstrap Authors) (Copyright 2011-2021 Twitter, Inc) (Copyright the Bootstrap Authors and Twitter, Inc)
 braces (Copyright 2014 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
 buffer (Copyright Feross Aboukhadijeh, and other contributors)
 cacheable-lookup (Copyright 2019 Szymon Marczak)
@@ -1182,6 +1182,7 @@ get-stream (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorh
 globals (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 gopd (Copyright 2022 Jordan Harband)
 got (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+graphql-java (Copyright 2015 Andreas Marek and Contributors)
 graphql-java (Copyright 2015 Andreas Marek and Contributors) (Copyright 2015 Andreas Marek and Contributors Permission is hereby granted, free of charge, to any person obtaining)
 has-property-descriptors (Copyright 2022 Inspect JS)
 has-symbols (Copyright 2016 Jordan Harband)

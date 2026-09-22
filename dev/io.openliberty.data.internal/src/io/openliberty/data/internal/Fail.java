@@ -35,7 +35,6 @@ import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
-import jakarta.data.repository.NativeQuery;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 
@@ -1126,10 +1125,10 @@ public class Fail {
             ("A count of total elements or total pages cannot be automatically" +
              " obtained for the " + info.method.getName() + " method of the " +
              info.repositoryInterface.getName() +
-             " repository because the repository method has the " +
-             NativeQuery.class.getSimpleName() +
-             " annotation. Write a separate repository method annotated " +
-             NativeQuery.class.getSimpleName() + " to compute the count.");
+             " repository because the repository method has the" +
+             " jakarta.persistence.query.NativeQuery annotation. Write a " +
+             " separate, designated repository method annotated NativeQuery" +
+             " that computes the total count of elements for your application.");
         else
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1119.keyword.prevents.count",

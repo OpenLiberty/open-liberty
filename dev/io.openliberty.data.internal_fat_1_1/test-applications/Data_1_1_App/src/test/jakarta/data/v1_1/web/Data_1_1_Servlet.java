@@ -512,6 +512,47 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Uses a Delete method with a constraint parameter. The method is provided
+     * by a stateful repository.
+     */
+    @Test
+    public void testConstraintDeleteStateful() {
+        // Populate with 1/24, 2/24, and 3/24.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(1, 24),
+                                                Fraction.of(2, 24),
+                                                Fraction.of(3, 24)));
+        boolean removed = false;
+        try {
+            assertEquals(2,
+                         statefulFractionRepo //
+                                         .omit(Between.bounds(2, 10), // numerator
+                                               _Fraction.denominator.equalTo(24)));
+
+            Fraction f1_24 = statefulFractions.fetch(1, 24).orElseThrow();
+
+            statefulFractionRepo.remove(f1_24);
+            removed = true;
+        } finally {
+            // Ensure no fractions with denominator of 24 or more are left around
+            if (!removed)
+                fractions.discard(AtLeast.min(24),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
+        }
+
+        assertEquals(false,
+                     statefulFractions.fetch(2, 24).isPresent());
+
+        assertEquals(false,
+                     statefulFractions.fetch(3, 24).isPresent());
+
+        // Ensure we did not delete a non-matching entity:
+        assertEquals(true,
+                     statefulFractions.fetch(3, 20).isPresent());
+    }
+
+    /**
      * Request cursor pagination from a repository method that accepts a
      * Restriction parameter, but specify the unrestricted restriction.
      * Verify the total count of elements and pages is computed correctly.
@@ -605,7 +646,8 @@ public class Data_1_1_Servlet extends FATServlet {
      *
      * Applies scaling due to Oracle stripping trailing 0s
      */
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
@@ -1340,6 +1382,8 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testJakartaQueryWithRestrictionAndOrder() {
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         Restriction<Fraction> ninthsAndTenths = //
                         Restrict.any(_Fraction.denominator.equalTo(9),
@@ -1559,6 +1603,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDB2() && isHibernatePersistence())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 18/23.
         // Ensure deletion in the finally block.
@@ -1868,6 +1914,27 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Uses a Query by Method Name pattern deleteBy method that is provided
+     * by a stateful repository.
+     */
+    @Test
+    public void testMethodNameDeleteStateful() {
+        // Populate with 19/23 and 20/23.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(19, 23),
+                                                Fraction.of(20, 23)));
+
+        assertEquals(2,
+                     statefulFractions.deleteByDenominator(23));
+
+        // Ensure we did not delete a number with other denominator
+        fractions.exists(Restrict.all(_Fraction.numerator.equalTo(19),
+                                      _Fraction.denominator.equalTo(20)));
+
+        assertEquals(0,
+                     statefulFractions.deleteByDenominator(23));
+    }
+
+    /**
      * Supply minus and times expressions to a restriction that is
      * supplied to a repository method.
      */
@@ -2020,6 +2087,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 14/23.
         // Ensure deletion in the finally block.
@@ -2066,6 +2135,14 @@ public class Data_1_1_Servlet extends FATServlet {
     public void testNativeQueryRetrievesPages() {
         // Fractions n/d where 2^n < d^2, ordered by denominator ASC, numerator ASC.
         // With page size 8: page 1 = items 1-8, page 2 = items 9-16, etc.
+
+        // Hibernate has trouble with SELECT * in native query combined with
+        // limit for SQL Server
+        if (isHibernatePersistence() && isSQLServer())
+            return;
+
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         PageRequest page2Req = PageRequest.ofSize(8).pageNumber(2);
 
@@ -2194,6 +2271,9 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryReturnsFirstEntity() {
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
+
         assertEquals("Seven Twentieths",
                      fractions.firstValueWithin(0.334, 0.4)
                                      .orElseThrow().name);
@@ -2208,6 +2288,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(List.of("1/2",
                              "1/3",
@@ -2271,6 +2353,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!isHibernatePersistence())
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
                      fractions.numReducedWithDenominatorOf(18, true));
@@ -2682,7 +2766,8 @@ public class Data_1_1_Servlet extends FATServlet {
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
         // Derby ignores query timeout and the lock timeout ends up applying instead.
         // Hibernate does not honor the query timeout on native queries with DB2.

@@ -43,16 +43,16 @@ import jakarta.data.repository.Find;
 import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
-import jakarta.data.repository.JakartaQuery; // TODO replace with Persistence 4.0 anno once available
-import jakarta.data.repository.NativeQuery; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
-import jakarta.data.repository.QueryOptions; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
 import jakarta.data.restrict.Restriction;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.query.JakartaQuery;
+import jakarta.persistence.query.NativeQuery;
+import jakarta.persistence.query.QueryOptions;
 
 /**
  * Repository for the Fraction entity

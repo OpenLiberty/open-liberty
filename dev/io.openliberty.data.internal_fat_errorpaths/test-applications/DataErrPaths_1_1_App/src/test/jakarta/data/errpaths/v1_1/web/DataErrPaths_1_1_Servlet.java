@@ -76,7 +76,8 @@ public class DataErrPaths_1_1_Servlet extends FATServlet {
      * Verify an error is raised when a total count of elements is requested of
      * a Page that was obtained via a NativeQuery.
      */
-    @Test
+    // TODO enable once we can switch from persistence-3.2 to persistence-4.0
+    //@Test
     public void nativeQueryCountElements() {
         Page<String> page = ops.binaryOps(PageRequest.ofSize(5));
         assertEquals(true,

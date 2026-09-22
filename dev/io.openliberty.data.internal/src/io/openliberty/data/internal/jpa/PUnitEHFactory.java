@@ -15,7 +15,6 @@ package io.openliberty.data.internal.jpa;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -28,7 +27,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.DataProvider;
 import io.openliberty.data.internal.EntityHandlerFactory;
-import jakarta.data.exceptions.DataException;
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -74,27 +72,7 @@ public class PUnitEHFactory extends EntityHandlerFactory {
     @Override
     @Trivial
     public AutoCloseable createEntityAgent() {
-        AutoCloseable agent;
-        // TODO Persistence 4.0 API
-        // agent = emf.getEntityAgent();
-
-        try {
-            // Because persistence-4.0 is unavailable and persistence-3.2 must
-            // be used in the meantime, emf is a
-            // com.ibm.ws.jpa.container.v32.JPAEMFactoryV32, which does not
-            // have the createEntityAgent method.
-            // A workaround is to unwrap it.
-            EntityManagerFactory factory = //
-                            emf.unwrap(EntityManagerFactory.class);
-
-            agent = (AutoCloseable) factory.getClass() //
-                            .getMethod("openStatelessSession") // TODO "createEntityAgent") //
-                            .invoke(factory);
-        } catch (IllegalAccessException | NoSuchMethodException x) {
-            throw new RuntimeException(x); // should be impossible
-        } catch (InvocationTargetException x) {
-            throw new DataException(x.getCause());
-        }
+        AutoCloseable agent = provider.compat.createEntityAgent(emf);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "createEntityAgent: " + agent);
@@ -104,7 +82,7 @@ public class PUnitEHFactory extends EntityHandlerFactory {
     @Override
     @Trivial
     public EntityManager createEntityManager() {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = provider.compat.createEntityManager(emf);
         em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -119,7 +97,7 @@ public class PUnitEHFactory extends EntityHandlerFactory {
             return emf.unwrap(DataSource.class);
         } catch (PersistenceException x) {
             try {
-                EntityManager em = emf.createEntityManager();
+                EntityManager em = provider.compat.createEntityManager(emf);
                 return em.unwrap(DataSource.class);
             } catch (PersistenceException xx) {
                 throw exc(UnsupportedOperationException.class,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,10 +25,13 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
+
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.jndi.internal.literals.LiteralParser;
+
 
 /**
  * <p>
@@ -56,7 +59,7 @@ public class JNDIEntry {
      * @param context
      * @param props The properties containing values for <code>"jndiName"</code> and <code>"value"</code>
      */
-    protected synchronized void activate(BundleContext context, Map<String, Object> props) {
+    protected synchronized void activate(BundleContext context, @Sensitive Map<String, Object> props) {
 
         String jndiName = (String) props.get("jndiName");
         String originalValue = (String) props.get("value");
@@ -65,25 +68,27 @@ public class JNDIEntry {
 
         if (jndiName == null || jndiName.isEmpty() || originalValue == null || originalValue.isEmpty()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unable to register JNDIEntry with jndiName " + jndiName + " and value " + originalValue + " because both must be set");
+                Tr.debug(tc, "Unable to register JNDIEntry: both jndiName and value must be set; jndiName=" + jndiName);
             }
             return;
         }
+        boolean decodeable = false;
         String value = originalValue;
-        if (decode) {
+        if (decode && PasswordUtil.isEncrypted(value)) {
             try {
-                value = PasswordUtil.decode(originalValue);
+            	value = PasswordUtil.decode(value);
+            	decodeable = true;
             } catch (Exception e) {
-                Tr.error(tc, "jndi.decode.failed", originalValue, e);
+                Tr.warning(tc, "jndi.decode.warning", jndiName, e);
             }
         }
         Object parsedValue = LiteralParser.parse(value);
         String valueClassName = parsedValue.getClass().getName();
-        final Object serviceObject = decode ? new Decode(originalValue) : parsedValue;
+        final Object serviceObject = decodeable ? new Decode(jndiName, originalValue) : parsedValue;
         Dictionary<String, Object> propertiesForJndiService = new Hashtable<>();
         propertiesForJndiService.put("osgi.jndi.service.name", jndiName);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Registering JNDIEntry " + valueClassName + " with value " + parsedValue + " and JNDI name " + jndiName);
+            Tr.debug(tc, "Registering JNDIEntry with jndiName: " + jndiName);
         }
         this.serviceRegistration = context.registerService(valueClassName, serviceObject, propertiesForJndiService);
     }
@@ -103,32 +108,32 @@ public class JNDIEntry {
     }
 
     /**
-     * Extends the JNDIEntry class to allow for decryption of values. JNDIEntry elements that are to be decrypted should
-     * add the attribute 'decode="true". If decode=false; the value is simply returned'
+     * A {@link ServiceFactory} that decrypts the stored encrypted value on each {@link #getService} call.
+     * Used when {@code decode="true"} is set on the {@code <jndiEntry>} element.
      */
     private static class Decode implements ServiceFactory<Object> {
+        private final String jndiName;
+        @Sensitive private final String encryptedValue;
 
-        private final String value;
-
-        public Decode(String value) {
-            this.value = value;
+        public Decode(String jndiName, @Sensitive String encryptedValue) {
+            this.jndiName = jndiName;
+            this.encryptedValue = encryptedValue;
         }
 
         @Override
+        @Sensitive
         public Object getService(Bundle bundle, ServiceRegistration<Object> registration) {
+            String serviceObject = encryptedValue;
             try {
-                String decodedValue = PasswordUtil.decode(value);
-                Object parsedValue = LiteralParser.parse(decodedValue);
-                return parsedValue;
+                serviceObject = PasswordUtil.decode(encryptedValue);
             } catch (Exception e) {
-                Tr.error(tc, "jndi.decode.failed", value, e);
+                Tr.warning(tc, "jndi.decode.warning", jndiName, e);
             }
-            return value;
+            return LiteralParser.parse(serviceObject);
         }
 
         @Override
-        public void ungetService(Bundle bundle, ServiceRegistration<Object> registration, Object service) {}
-
+        public void ungetService(Bundle bundle, ServiceRegistration<Object> registration, @Sensitive Object service) {}
     }
 
 }
