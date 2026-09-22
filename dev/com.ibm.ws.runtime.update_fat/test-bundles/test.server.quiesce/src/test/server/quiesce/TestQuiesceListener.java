@@ -13,7 +13,9 @@
 package test.server.quiesce;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -85,12 +87,14 @@ public class TestQuiesceListener {
             }
         }
 
+        final CountDownLatch running = new CountDownLatch(2);
         if (startThreadsAfterStop) {
             // Start a couple of threads. These SHOULD block shutdown
             Runnable r = new Runnable() {
 
                 @Override
                 public void run() {
+                    running.countDown();
                     while (true) {
                         try {
                             Thread.sleep(1000);
@@ -103,6 +107,16 @@ public class TestQuiesceListener {
             };
             executorService.submit(r);
             executorService.submit(r);
+            try {
+                // If the work has not started after 2 minutes then there is something wrong
+                running.await(2, TimeUnit.MINUTES);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            if (running.getCount() != 0) {
+                // This will FFDC and test should fail
+                throw new IllegalStateException("Our test work did not start");
+            }
         }
     }
 
