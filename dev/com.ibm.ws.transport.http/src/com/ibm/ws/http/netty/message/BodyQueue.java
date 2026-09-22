@@ -1,10 +1,10 @@
 package com.ibm.ws.http.netty.message;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.EventLoop;
 
 final public class BodyQueue {
 
@@ -13,7 +13,7 @@ final public class BodyQueue {
 
     private final ConcurrentLinkedQueue<ByteBuf> queue = new ConcurrentLinkedQueue<>();
     private final int lowWater, highWater;
-    private volatile int buffered;
+    private final AtomicInteger buffered = new AtomicInteger();
     private volatile boolean eos;
     private volatile Throwable error;
     private final ByteBufAllocator allocator;
@@ -105,20 +105,20 @@ final public class BodyQueue {
             return;
         }
         queue.add(buf.retain());
-        buffered += readable;
+        buffered.addAndGet(readable);
         signalChange();
     }
 
     public ByteBuf poll() {
         ByteBuf b = queue.poll();
         if (b != null) {
-            buffered -= b.readableBytes();
+            buffered.addAndGet(-b.readableBytes());
         }
         return b;
     }
 
     public boolean wantsInput() {
-        return error == null && !eos && buffered < lowWater;
+        return error == null && !eos && buffered.get() < lowWater;
     }
 
     public boolean isEos() {
@@ -219,7 +219,7 @@ final public class BodyQueue {
 
         ByteBuf buf;
         while ((buf = queue.poll()) != null) {
-            buffered -= buf.readableBytes();
+            buffered.addAndGet(-buf.readableBytes());
             buf.release();
         }
 

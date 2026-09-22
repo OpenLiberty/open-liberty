@@ -187,6 +187,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private ConnectionLink nettyConnectionLink;
     private FullHttpRequest nettyHeaderOnly;
     private AtomicBoolean closeNonUpgradedDeferred = new AtomicBoolean(false);
+    private AtomicBoolean deferClear = new AtomicBoolean(false);
 
     /**
      * Constructor.
@@ -457,8 +458,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "nettyClose: upgraded connection; not closing channel");
             }
 
-            // isc.clear() is handled by setBodyComplete() when the body finishes.
-            // If the body is already complete it was already cleared there.
+            if (this.isc != null) {
+                if (!this.isc.isBodyComplete()) {
+                    deferClear.set(true);
+                } else {
+                    this.isc.clear();
+                }
+            }
 
              Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=UPGRADED_NO_CHANNEL_CLOSE"
         + " link=" + System.identityHashCode(this)
@@ -486,9 +492,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         + " link=" + System.identityHashCode(this)
         + " ch=" + qpNettyChannelId()
         + " " + qpBodyState());
-            // isc.clear() is handled unconditionally by setBodyComplete() once the
-            // body arrives. If isBodyComplete() is already true, it was cleared there.
-            if (this.isc != null && this.isc.isBodyComplete()) {
+            // Body still in flight: defer isc.clear() until setBodyComplete() fires.
+            // Body already done: clear immediately (body was read or purged before
+            // the application finished its response).
+            if (this.isc != null && !this.isc.isBodyComplete()) {
+                deferClear.set(true);
+            } else if (this.isc != null) {
                 this.isc.clear();
             }
         }
@@ -2152,34 +2161,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void setBodyComplete() {
         if (this.isc != null) {
             this.isc.setBodyComplete();
-
-            // Always clear the ISC before markRequestConsumed so that request B
-            // is never admitted while exchange A's storage is still live.
-            //
-            // Sequence:
-            //   1. isc.setBodyComplete() — marks wire-level protocol end.
-            //   2. isc.clear()           — releases this exchange's storage.
-            //   3. markRequestConsumed() — may synchronously admit B via
-            //                             drainPendingAdmission; must see clean state.
-            //
-            // isc.clear() is safe here because setBodyComplete() is called from the
-            // event loop (HttpDispatcherHandler.channelRead), which is after the
-            // response write promise has already resolved (nettyClose is triggered by
-            // the application completing its response). The response has been fully
-            // flushed before this point, so clearing the ISC cannot interfere with
-            // any in-progress write.
-            //
-            // nettyClose() also calls isc.clear() in the keep-alive branch when
-            // isBodyComplete() is already true — that is a safe double-clear because
-            // isc.clear() is idempotent.
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "setBodyComplete: clearing ISC before admitting next exchange.");
-            }
-            this.isc.clear();
-
             // HTTP/1 read-flow state is not authority for trusted HTTP/2 streams.
             if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
                 ReadFlowHandler.markRequestConsumed(nettyContext);
+            }
+            // If nettyClose() already ran (response-complete path) it set deferClear=true
+            // because the body was still in flight at that point. Now that the body is
+            // done, perform the deferred clear exactly once.
+            // If nettyClose() has not run yet (body-first path), deferClear is still
+            // false and no clear happens here; nettyClose() will find isBodyComplete()
+            // true and clear immediately when it runs.
+            if (deferClear.compareAndSet(true, false)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setBodyComplete: performing deferred isc.clear() for keep-alive.");
+                }
+                this.isc.clear();
             }
         }
     }
