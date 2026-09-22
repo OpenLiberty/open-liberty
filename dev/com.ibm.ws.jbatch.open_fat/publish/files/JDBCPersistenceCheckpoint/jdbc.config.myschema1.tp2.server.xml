@@ -25,7 +25,7 @@
     <!-- H2 datasource used for batch tables-->
     <dataSource id="batchDB" jndiName="jdbc/batch" >
         <jdbcDriver libraryRef="H2Lib"/>
-        <properties.h2 URL="jdbc:h2:mem:JdbcConfigTestCheckpointDb;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH\\;CREATE SCHEMA IF NOT EXISTS MYSCHEMA1\\;CREATE SCHEMA IF NOT EXISTS APP;NON_KEYWORDS=VALUE" user="user" password="pass" />
+        <properties.h2 URL="jdbc:h2:mem:JdbcConfigTestCheckpointDb;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH\;CREATE SCHEMA IF NOT EXISTS MYSCHEMA1\;CREATE SCHEMA IF NOT EXISTS APP;NON_KEYWORDS=VALUE" user="user" password="pass" />
     </dataSource>
 
     <!-- H2 datasource used by chunk tests, transactional -->
