@@ -338,22 +338,22 @@ public class GenericEndpointImpl {
 		                ((com.ibm.ws.sip.stack.transport.netty.GenericChain)_genericTCPChain).init(name, cid, m_nettyBundle, "InboundTCPChain");
 		            }
 
-		            if (sslOptions != null) {
+		            if (_genericTLSChain != null) {
 		                ((com.ibm.ws.sip.stack.transport.netty.GenericChain)_genericTLSChain).init(name, cid, m_nettyBundle, "InboundTLSChain");
 		            }
-    	    } else {
-    	            if (udpOptions != null) {
-    	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericUDPChain).init(name, cid, m_chfw, "InboundUDPChain");
-    	            }
-    
-    	            if (tcpOptions != null) {
-    	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTCPChain).init(name, cid, m_chfw, "InboundTCPChain");
-    	            }
-    
-    	            if (sslOptions != null) {
-    	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTLSChain).init(name, cid, m_chfw, "InboundTLSChain");
-    	            }
-    	    }
+		       } else {
+		               if (udpOptions != null) {
+		                   ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericUDPChain).init(name, cid, m_chfw, "InboundUDPChain");
+		               }
+		  
+		               if (tcpOptions != null) {
+		                   ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTCPChain).init(name, cid, m_chfw, "InboundTCPChain");
+		               }
+		  
+		               if (_genericTLSChain != null) {
+		                   ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTLSChain).init(name, cid, m_chfw, "InboundTLSChain");
+		               }
+		       }
 			startChains(properties);
 			
 			try {
@@ -614,6 +614,11 @@ public class GenericEndpointImpl {
 			c_logger.event("enable ssl support ", this);
 		}
 		sslSupport = config;
+		if (endpointStarted && getEndpointOptions() != null) {
+			applyNewConfiguration(getEndpointOptions());
+		} else if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("Set SSL support without starting chain. EndpointStarted ? " + endpointStarted + ", Endpoint Options: " + getEndpointOptions());
+		}
 	}
 
 	/**
@@ -652,6 +657,11 @@ public class GenericEndpointImpl {
 					this);
 		}
 		sslOptions = config;
+		if (endpointStarted && getEndpointOptions() != null) {
+			applyNewConfiguration(getEndpointOptions());
+		} else if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("Set SSL options without starting chain. EndpointStarted ? " + endpointStarted + ", Endpoint Options: " + getEndpointOptions());
+		}
 	}
 
 	@Trivial
@@ -793,6 +803,11 @@ public class GenericEndpointImpl {
             c_logger.event("setNettyTlsProvider " + tls);
         }
         tlsProviderService = tls;
+        if (endpointStarted && getEndpointOptions() != null) {
+            applyNewConfiguration(getEndpointOptions());
+        } else if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug("Set Netty TLS provider without starting chain. EndpointStarted ? " + endpointStarted + ", Endpoint Options: " + getEndpointOptions());
+        }
     }
     
     protected void unsetNettyTlsProvider(NettyTlsProvider tls) {
