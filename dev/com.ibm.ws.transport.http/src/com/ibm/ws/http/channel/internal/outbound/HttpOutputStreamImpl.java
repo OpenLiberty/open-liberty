@@ -726,6 +726,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             if (isUpgrade101()) {
                 // Make sure WC is notified; this triggers access logging like legacy
                 if (!this.hasFinished && this.isc != null) {
+                    HttpResponseMessage responseMessage = this.isc.getResponse();
+                    if (responseMessage != null && !responseMessage.isCommitted()) {
+                        if (obs != null && !this.WCheadersWritten) {
+                            obs.alertOSFirstFlush();
+                        }
+                        responseMessage.setCommitted();
+                    }
                     try {
                         this.isc.finishResponseMessage(null);
                     } catch (Throwable ignore) {
