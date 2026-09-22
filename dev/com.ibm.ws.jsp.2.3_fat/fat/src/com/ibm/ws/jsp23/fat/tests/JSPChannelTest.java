@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,13 +40,19 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.rules.repeater.JakartaEEAction;
 
 /**
- * Testing the ignoreWriteAfterCommit config created for OLGH30757. This is a behavior difference between Liberty and tWAS.
- * On tWAS, a connections remained active during closure when an error occurred. On Liberty, this behavior was changed.
- * There isn't enough documentation or version history to explain the difference.
+ * Testing the ignoreWriteAfterCommit config created for OLGH30757. This is a
+ * behavior difference between Liberty and tWAS.
+ * On tWAS, a connections remained active during closure when an error occurred.
+ * On Liberty, this behavior was changed.
+ * There isn't enough documentation or version history to explain the
+ * difference.
  * 
- * This test attempts to verify the config by seeing if a connection reset error occurs (meaning the socket was closed).
- * The index.jsp is requested, but redirects you to another JSP. However, the index.jsp still writes out more data via the footer.jsp.
- * This causes a MessageSentException. A single socket is used to mimic the reused connection.
+ * This test attempts to verify the config by seeing if a connection reset error
+ * occurs (meaning the socket was closed).
+ * The index.jsp is requested, but redirects you to another JSP. However, the
+ * index.jsp still writes out more data via the footer.jsp.
+ * This causes a MessageSentException. A single socket is used to mimic the
+ * reused connection.
  * 
  * Additional Note - This can be replicated via a curl command via --retry.
  * 
@@ -64,23 +70,23 @@ public class JSPChannelTest {
     @Server("ignoreWriteAfterCommitServer")
     public static LibertyServer server;
 
-    //Deploy the app at the very start of the test
+    // Deploy the app at the very start of the test
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war",
-                                      "com.ibm.ws.jsp23.fat.writeafterredirect.servlets");
+                "com.ibm.ws.jsp23.fat.writeafterredirect.servlets");
         server.startServer(JSPChannelTest.class.getSimpleName() + ".log");
-        server.waitForStringInLog("CWWKT0016I:.*WriteAfterRedirect.*"); // ensure app has started. 
+        server.waitForStringInLog("CWWKT0016I:.*WriteAfterRedirect.*"); // ensure app has started.
     }
 
     @AfterClass
     public static void cleanup() throws Exception {
         if (server != null && server.isStarted()) {
 
-            //SRVE0777E - Exception thrown from application class 
-            //SRVE8115W: WARNING: Cannot set status. Response already committed.
-            //SRVE8094W: WARNING: Cannot set header. Response already committed
-            server.stopServer("SRVE8115W", "SRVE8094W", "SRVE0777E"); 
+            // SRVE0777E - Exception thrown from application class
+            // SRVE8115W: WARNING: Cannot set status. Response already committed.
+            // SRVE8094W: WARNING: Cannot set header. Response already committed
+            server.stopServer("SRVE8115W", "SRVE8094W", "SRVE0777E");
         }
     }
 
@@ -91,8 +97,8 @@ public class JSPChannelTest {
      *
      * @throws Exception if something goes horribly wrong
      */
-    
-   @Test
+
+    @Test
     public void testIgnoreWriteAfterCommitTrue() throws Exception {
         Socket socket = null;
         try {
@@ -105,19 +111,22 @@ public class JSPChannelTest {
             String page = JakartaEEAction.isEE11OrLaterActive() ? "indexEE11.jsp" : "index.jsp";
             LOG.info("[testIgnoreWriteAfterCommitTrue] Using page: " + page);
 
-            // Request 1: index.jsp — triggers sendRedirect + post-commit footer write (MSE).
-            // Keep-alive is the default for HTTP/1.1; do NOT send Connection: close here so the
+            // Request 1: index.jsp — triggers sendRedirect + post-commit footer write
+            // (MSE).
+            // Keep-alive is the default for HTTP/1.1; do NOT send Connection: close here so
+            // the
             // connection stays open after the 302 response.
             String request = "GET /" + APP_NAME + "/" + page + " HTTP/1.1\r\n" +
-                             "Host: " + address + "\r\n" +
-                             "\r\n";
+                    "Host: " + address + "\r\n" +
+                    "\r\n";
 
-            // Request 2: page2.jsp — the actual redirect destination, sent after the 302 is received.
+            // Request 2: page2.jsp — the actual redirect destination, sent after the 302 is
+            // received.
             // Connection: close tells the server this is the last request on the socket.
             String redirect_request = "GET /" + APP_NAME + "/page2.jsp HTTP/1.1\r\n" +
-                                      "Host: " + address + "\r\n" +
-                                      "Connection: close\r\n" +
-                                      "\r\n";
+                    "Host: " + address + "\r\n" +
+                    "Connection: close\r\n" +
+                    "\r\n";
 
             socket = new Socket(server.getHostname(), server.getHttpDefaultPort());
             socket.setSoTimeout(10000); // 10s read timeout so we don't block forever
@@ -126,9 +135,11 @@ public class JSPChannelTest {
             BufferedReader bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             OutputStream os = socket.getOutputStream();
 
-            // Send request 1 and wait for the complete 302 response before sending request 2.
+            // Send request 1 and wait for the complete 302 response before sending request
+            // 2.
             // This ensures HttpServerKeepAliveHandler processes the 302 first, keeping
-            // persistentConnection=true, and only learns about Connection: close from request 2
+            // persistentConnection=true, and only learns about Connection: close from
+            // request 2
             // after the 302 has already been counted.
             LOG.info("[testIgnoreWriteAfterCommitTrue] Sending request 1 (index.jsp)...");
             os.write(request.getBytes());
@@ -145,7 +156,8 @@ public class JSPChannelTest {
                 if (line.startsWith("HTTP/") && line.contains("302")) {
                     got302 = true;
                 }
-                // HTTP/1.1 responses with Content-Length: 0 end after the empty line after headers
+                // HTTP/1.1 responses with Content-Length: 0 end after the empty line after
+                // headers
                 if (line.isEmpty() && got302) {
                     LOG.info("[testIgnoreWriteAfterCommitTrue] Empty line after 302 headers — response complete");
                     break;
@@ -170,10 +182,13 @@ public class JSPChannelTest {
                 }
             }
             LOG.info("[testIgnoreWriteAfterCommitTrue] Done reading. containsMessage=" + containsMessage);
-            Assert.assertTrue("The redirect failed! Expected 'Successfully redirected!' in response but connection may have been closed. "
-                    + "Check server logs for [DEBUG nettyClose] and [DEBUG handleMSE] output.", containsMessage);
+            Assert.assertTrue(
+                    "The redirect failed! Expected 'Successfully redirected!' in response but connection may have been closed. "
+                            + "Check server logs for [DEBUG nettyClose] and [DEBUG handleMSE] output.",
+                    containsMessage);
         } catch (java.net.SocketTimeoutException e) {
-            Assert.fail("Socket timed out waiting for response — connection may have been closed prematurely: " + e.getMessage());
+            Assert.fail("Socket timed out waiting for response — connection may have been closed prematurely: "
+                    + e.getMessage());
         } finally {
             if (socket != null) {
                 socket.close();
@@ -190,7 +205,7 @@ public class JSPChannelTest {
      * @throws Exception if something goes horribly wrong
      */
     @ExpectedFFDC("com.ibm.wsspi.genericbnf.exception.MessageSentException")
-   @Test
+    @Test
     public void testIgnoreWriteAfterCommitFalse() throws Exception {
         Socket socket = null;
         boolean containsSuccessMessage = false;
@@ -286,7 +301,7 @@ public class JSPChannelTest {
      * MessageSentException
      * and doesn't apply to general IOExceptions.
      */
-   @Test
+    @Test
     @AllowedFFDC({ "java.lang.IllegalStateException", "java.io.IOException" })
     public void testIgnoreWriteAfterCommitTrueWithIOException() throws Exception {
         Socket socket = null;
@@ -431,13 +446,15 @@ public class JSPChannelTest {
         }
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(c);
-        // Always wait for CWWKO0219I (TCP channel started and listening on the HTTP port)
+        // Always wait for CWWKO0219I (TCP channel started and listening on the HTTP
+        // port)
         // so that the next connection attempt does not get a "Connection refused".
         // The httpOptions change cycles the TCP endpoint: the port stops and restarts.
-        // CWWKT0016I (app available) can fire before the OS has finished binding the port,
+        // CWWKT0016I (app available) can fire before the OS has finished binding the
+        // port,
         // so we wait for the TCP-ready message which is the authoritative signal.
         server.waitForConfigUpdateInLogUsingMark(Collections.emptySet(),
-                                                 serverXMLChanged ? "CWWKT0016I:.*WriteAfterRedirect.*" : "");
+                serverXMLChanged ? "CWWKT0016I:.*WriteAfterRedirect.*" : "");
         server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint.*");
         server.resetLogMarks();
     }
