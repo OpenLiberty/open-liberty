@@ -84,6 +84,7 @@ public class QueueableRequest implements Delayed {
 			this.delay = 0;
 	}
 	
+	@Trivial
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -94,6 +95,7 @@ public class QueueableRequest implements Delayed {
 		return result;
 	}
 
+	@Trivial
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
