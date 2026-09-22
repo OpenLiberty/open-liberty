@@ -16,11 +16,6 @@
    @${repo;org.apache.neethi:neethi;3.2.3;EXACT}!/!META-INF/maven/*, \
    org/apache/neethi=${bin}/org/apache/neethi
    
-instrument.ffdc: false
-
-instrument.classesExcludes: \
-  org/apache/neethi/PolicyBuilder.class, \
-  org/apache/neethi/PolicyBuilder$1.class, \
-  org/apache/neethi/PolicyBuilder$ParseBudgetContext.class
+instrument.disabled: true
   
 -buildpath: org.apache.neethi:neethi;strategy=exact;version=3.2.3
