@@ -19,7 +19,7 @@
 
 	<dataSource id="BatchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
 		<jdbcDriver libraryRef="H2Lib" />
-	       <properties.h2 URL="jdbc:h2:mem:RUNTIMEDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
+	       <properties.h2 URL="jdbc:h2:mem:RUNTIMEDB;OPTIMIZE_REUSE_RESULTS=0;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
 	</dataSource>
 
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
