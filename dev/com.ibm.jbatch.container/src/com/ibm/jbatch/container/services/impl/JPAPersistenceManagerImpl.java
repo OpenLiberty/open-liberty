@@ -2785,6 +2785,14 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                  */
                 retVal = call();
 
+                // Flush before commit so that writes are visible to concurrent readers
+                // immediately after the transaction commits. Required for in-memory databases
+                // (e.g. H2) where EclipseLink defers SQL writes until commit time, creating
+                // a window where a concurrent reader can open a snapshot and see stale data.
+                if (newTran) {
+                    entityMgr.flush();
+                }
+
             } catch (Throwable t) {
                 rollbackIfNewTranWasStarted(t);
             }
