@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 
 /**
@@ -135,6 +136,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
         }
     }
 
+    @Trivial
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -182,6 +184,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
      *
      * @see java.util.concurrent.Future#isDone()
      */
+    @Trivial
     @Override
     public boolean isDone() {
         // For scheduleAtFixedRate and scheduleWithFixedDelay, the Task is NOT done until cancel() is driven.
@@ -241,6 +244,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
      *
      * @see java.util.concurrent.Delayed#getDelay(java.util.concurrent.TimeUnit)
      */
+    @Trivial
     @Override
     public long getDelay(TimeUnit unit) {
         ScheduledFuture<?> f;
@@ -255,6 +259,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
      *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @Trivial
     @Override
     public int compareTo(Delayed o) {
         ScheduledFuture<?> f;
@@ -269,6 +274,7 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
      *
      * @see java.util.concurrent.Future#isCancelled()
      */
+    @Trivial
     @Override
     public boolean isCancelled() {
         return m_cancelResult;
