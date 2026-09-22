@@ -35,7 +35,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.openliberty.netty.internal.*;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.tcp.TCPConfigConstants;
 import jain.protocol.ip.sip.ListeningPoint;
 
 /**
@@ -44,6 +43,9 @@ import jain.protocol.ip.sip.ListeningPoint;
  */
 public class GenericTCPChain extends GenericChain {
     private static final LogMgr c_logger = Log.get(GenericTCPChain.class);
+
+    /** The default time out for TCP operations for this channel */
+    private static final String INACTIVITY_TIMEOUT = "inactivityTimeout";
 
 	private final boolean isTLS;
 
@@ -191,17 +193,18 @@ public class GenericTCPChain extends GenericChain {
                 SslHandler handler = GenericEndpointImpl.getTlsProvider().getInboundSSLContext(currentConfig.sslOptions, ep.getHost(), Integer.toString(ep.getPort()), ch);
                 pipeline.addFirst("ssl", handler);
             }
-            int inactivityTimeout = getInitialReadTimeoutMillis();
-            if (inactivityTimeout > 0) {
-                pipeline.addLast("sipInitialReadIdleStateHandler", new IdleStateHandler(inactivityTimeout, 0, 0, TimeUnit.MILLISECONDS));
-                pipeline.addLast("sipInitialReadTimeoutHandler", new SipInitialReadTimeoutHandler(inactivityTimeout));
-            }
+            // Commented out ot match CHFW behavior
+            // int inactivityTimeout = getInitialReadTimeoutMillis();
+            // if (inactivityTimeout > 0) {
+            //     pipeline.addLast("sipInitialReadIdleStateHandler", new IdleStateHandler(inactivityTimeout, 0, 0, TimeUnit.MILLISECONDS));
+            //     pipeline.addLast("sipInitialReadTimeoutHandler", new SipInitialReadTimeoutHandler(inactivityTimeout));
+            // }
             pipeline.addLast("decoder", new SipMessageBufferStreamDecoder());
             pipeline.addLast("handler", new SipStreamHandler());
         }
 
         private int getInitialReadTimeoutMillis() {
-            Object value = currentConfig.tcpOptions.get(TCPConfigConstants.INACTIVITY_TIMEOUT);
+            Object value = currentConfig.tcpOptions.get(INACTIVITY_TIMEOUT);
             if (value == null) {
                 return 0;
             }
