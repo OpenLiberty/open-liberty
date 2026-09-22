@@ -98,6 +98,21 @@ public class FlowState {
     private boolean exchangeWriteFailed = false;
 
     /**
+     * Per-exchange lifecycle coordinator.  Tracks body-completion and
+     * application-cleanup-readiness signals and performs {@code isc.clear()}
+     * exactly once when both have been recorded.  Replaced by
+     * {@link #nextExchangeId()} at the start of each new exchange.
+     *
+     * <p>{@code null} before the first request is admitted (representing "no
+     * exchange has ever been active on this connection").  A {@code null} value
+     * is distinct from an admitted exchange whose cleanup has not yet finished:
+     * the former allows immediate admission; the latter blocks it.
+     *
+     * <p>Event-loop-owned; must not be accessed from worker threads.
+     */
+    private ExchangeLifecycle activeLifecycle = null;
+
+    /**
      * FlowState constructor.
      */
     public FlowState() {
@@ -237,13 +252,56 @@ public class FlowState {
 
     /**
      * Allocates a new exchange id, records it as the active exchange, resets the
-     * per-exchange write-failure flag, and returns the new value. Must be called
-     * on the event loop, immediately before the {@code HttpRequest} is forwarded
-     * downstream.
+     * per-exchange write-failure flag, and returns the new value.  Also installs a
+     * fresh {@link ExchangeLifecycle} for the new exchange.
+     *
+     * <p>The cleanup action must be bound before application dispatch via
+     * {@link ExchangeLifecycle#bindCleanupAction(CleanupAction)}.  This two-phase
+     * approach allows {@code admitRequest} to allocate the lifecycle before forwarding
+     * the request downstream while letting the downstream initialiser (e.g.
+     * {@code HttpDispatcherLink.init}) bind the ISC-backed cleanup action once the
+     * ISC has been configured — all synchronously on the event loop, before any
+     * worker thread can call back.
+     *
+     * <p>Must be called on the event loop, immediately before the
+     * {@code HttpRequest} is forwarded downstream.
      */
     public long nextExchangeId() {
         exchangeWriteFailed = false;
+        activeLifecycle = new ExchangeLifecycle();
         return ++activeExchangeId;
+    }
+
+    /**
+     * Returns the {@link ExchangeLifecycle} for the currently active exchange,
+     * or {@code null} if no exchange has ever been admitted on this connection.
+     * Must be accessed on the event loop only.
+     */
+    public ExchangeLifecycle getActiveLifecycle() {
+        return activeLifecycle;
+    }
+
+    /**
+     * Returns {@code true} when the next request is eligible for admission.
+     *
+     * <p>Two cases allow admission:
+     * <ol>
+     *   <li>No exchange has ever been admitted ({@code activeLifecycle == null}).
+     *       This is the "first request" path.</li>
+     *   <li>The active exchange's lifecycle has successfully completed cleanup
+     *       ({@link ExchangeLifecycle#isCleanupComplete()} returns {@code true}).</li>
+     * </ol>
+     *
+     * <p>This is the single authoritative admission-eligibility check.  All
+     * code paths that may admit a request — inbound {@code HttpRequest} gate,
+     * {@link ReadFlowHandler#markRequestConsumed}, terminal-content handler,
+     * {@link ReadFlowHandler#onCleanupComplete}, and {@code channelReadComplete}
+     * tasks — must use this method rather than accessing the lifecycle directly.
+     *
+     * <p>Must be called on the event loop.
+     */
+    public boolean isAdmissionEligible() {
+        return activeLifecycle == null || activeLifecycle.isCleanupComplete();
     }
 
     /**

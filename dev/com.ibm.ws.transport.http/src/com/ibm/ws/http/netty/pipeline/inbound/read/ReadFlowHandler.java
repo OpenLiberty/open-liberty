@@ -107,12 +107,106 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         }
         FlowState state = state(context);
         state.setRequestConsumed(true);
-        // If requests were queued waiting for the active body to finish, drain
-        // them now. Otherwise just check if a new socket read is needed.
+        // Body is protocol-complete but admission requires all gates to be clear.
+        // Use the single authoritative eligibility check: this covers both the
+        // "no prior exchange" path and the "cleanup complete" path correctly.
+        if (!state.isAdmissionEligible()) {
+            // Cleanup not yet done: onCleanupComplete will re-evaluate once both
+            // lifecycle signals have arrived and isc.clear() has returned.
+            verifyNeedRead(context, state);
+            return;
+        }
+        // All gates clear: safe to drain or schedule the next request.
         if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
             drainPendingAdmission(context, state);
         } else {
             verifyNeedRead(context, state);
+        }
+    }
+
+    /**
+     * Called on the event loop by {@link ExchangeLifecycle} once {@code isc.clear()}
+     * and all associated release work have completed for the current exchange.
+     *
+     * <p>At this point both body-completion and application-cleanup-readiness have
+     * been recorded, so it is safe to admit the next request — subject to the
+     * remaining admission gates (requestConsumed, responseInFlight).
+     */
+    static void onCleanupComplete(ChannelHandlerContext context) {
+        assert context.executor().inEventLoop()
+            : "onCleanupComplete must be called on the event loop";
+        FlowState state = state(context);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "[FLOW-PROOF] CLEANUP_COMPLETE ch=" + context.channel().id()
+                + " requestConsumed=" + state.isRequestConsumed()
+                + " responseInFlight=" + state.isResponseInFlight()
+                + " hasPending=" + state.hasPendingAdmission());
+        }
+        // Only proceed if body is also consumed (markRequestConsumed was called).
+        if (!state.isRequestConsumed()) {
+            // Body not yet fully received; purge is still in progress.
+            // markRequestConsumed will re-evaluate once the last fragment arrives.
+            return;
+        }
+        if (state.isResponseInFlight()) {
+            // Response write not yet complete; onResponseComplete will drain.
+            return;
+        }
+        // isAdmissionEligible() is now true (cleanup just completed).
+        if (state.hasPendingAdmission()) {
+            drainPendingAdmission(context, state);
+        } else {
+            verifyNeedRead(context, state);
+        }
+    }
+
+    /**
+     * Called on the event loop by {@link ExchangeLifecycle} when cleanup fails
+     * (i.e. the {@link ExchangeLifecycle.CleanupAction} threw an exception).
+     *
+     * <p>Cleanup failure is fatal: the lifecycle is left in FAILED state so B
+     * is never admitted, all queued requests are released, and the connection is
+     * closed by the established failure/closure policy.
+     *
+     * @param context the channel handler context.
+     * @param cause   the exception thrown by the cleanup action.
+     */
+    public static void onCleanupFailed(ChannelHandlerContext context, Throwable cause) {
+        assert context.executor().inEventLoop()
+            : "onCleanupFailed must be called on the event loop";
+        FlowState state = state(context);
+        Tr.debug(tc, "[FLOW-PROOF] CLEANUP_FAILED ch=" + context.channel().id()
+            + " cause=" + cause);
+        state.setKeepAliveAllowed(false);
+        state.setStopReading(true);
+        state.releaseQueue();
+        if (context.channel().isActive()) {
+            context.channel().close();
+        }
+    }
+
+    /**
+     * Called on the event loop by {@link ExchangeLifecycle} when the cleanup action
+     * succeeded (lifecycle is now COMPLETE) but the subsequent admission notification
+     * threw an exception.
+     *
+     * <p>A's cleanup result ({@code COMPLETE}) is preserved.  The connection is closed
+     * via the failure policy without touching the lifecycle state.
+     *
+     * @param context the channel handler context.
+     * @param cause   the exception thrown by the notification/admission path.
+     */
+    public static void onCleanupNotificationFailed(ChannelHandlerContext context, Throwable cause) {
+        assert context.executor().inEventLoop()
+            : "onCleanupNotificationFailed must be called on the event loop";
+        FlowState state = state(context);
+        Tr.debug(tc, "[FLOW-PROOF] CLEANUP_NOTIFICATION_FAILED ch=" + context.channel().id()
+            + " cause=" + cause);
+        state.setKeepAliveAllowed(false);
+        state.setStopReading(true);
+        state.releaseQueue();
+        if (context.channel().isActive()) {
+            context.channel().close();
         }
     }
 
@@ -217,9 +311,12 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             //  - the response is still being written (responseInFlight), OR
             //  - the request body has not yet been fully consumed/drained
             //    (requestConsumed=false — body purge in progress), OR
-            //  - a prior request is already waiting in the queue.
+            //  - a prior request is already waiting in the queue, OR
+            //  - the exchange cleanup (isc.clear) has not yet completed
+            //    (!cleanupComplete — lifecycle signals still pending).
             // ----------------------------------------------------------------
-            if (state.isResponseInFlight() || !state.isRequestConsumed() || state.hasPendingAdmission()) {
+            if (state.isResponseInFlight() || !state.isRequestConsumed() || state.hasPendingAdmission()
+                    || !state.isAdmissionEligible()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "[FLOW-PROOF] GATE_INBOUND_REQUEST ch=" + context.channel().id()
                         + " uri=" + request.uri()
@@ -270,7 +367,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             super.channelRead(context, message);
             // Drain any queued requests that were waiting for this body to finish,
             // or issue a socket read if keep-alive is still allowed.
-            if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+            // Must check isAdmissionEligible() — lifecycle cleanup may not be done
+            // even though the body just completed.
+            if (state.hasPendingAdmission() && !state.isResponseInFlight()
+                    && state.isAdmissionEligible()) {
                 drainPendingAdmission(context, state);
             } else {
                 verifyNeedRead(context, state);
@@ -346,8 +446,9 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 state.setReadPending(false);
                 state.setReadAgain(false);
                 // A queued request may already be decoded and waiting; drain it
-                // before issuing another socket read.
-                if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+                // before issuing another socket read — but only once all gates clear.
+                if (state.hasPendingAdmission() && !state.isResponseInFlight()
+                        && state.isAdmissionEligible()) {
                     drainPendingAdmission(context, state);
                 } else {
                     requestRead(context);
@@ -372,8 +473,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 || needsReadForPurge) {
             context.executor().execute(() -> {
                 // Prefer draining an already-decoded queued request over issuing
-                // a new socket read.
-                if (state.hasPendingAdmission() && !state.isResponseInFlight() && state.isRequestConsumed()) {
+                // a new socket read — but only once all admission gates are clear.
+                if (state.hasPendingAdmission() && !state.isResponseInFlight()
+                        && state.isRequestConsumed()
+                        && state.isAdmissionEligible()) {
                     drainPendingAdmission(context, state);
                 } else {
                     requestRead(context);
@@ -600,7 +703,14 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         }
 
         // Drain the admission queue before issuing a socket read; the next
-        // request may already be fully decoded and waiting.
+        // request may already be fully decoded and waiting.  But only do so
+        // after all gates are clear — lifecycle cleanup may still be pending.
+        if (!state.isAdmissionEligible()) {
+            // Cleanup not yet done (app-done signal not yet dispatched, or body
+            // purge still in progress).  The lifecycle will call onCleanupComplete
+            // once both signals arrive; no further action needed here.
+            return;
+        }
         if (state.hasPendingAdmission()) {
             drainPendingAdmission(context, state);
         } else {
@@ -621,13 +731,46 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * does <em>not</em> count as a new physical read for the next request.
      *
      * <p>Re-entrance is guarded by {@link FlowState#isDraining()}.
+     *
+     * <p>Central admission eligibility is enforced here, before any request is
+     * dequeued or dispatched.  All of the following must be true to proceed:
+     * <ul>
+     *   <li>Channel is active and reading has not been stopped.</li>
+     *   <li>No response is still in flight for the current exchange.</li>
+     *   <li>No exchange write failure has been recorded.</li>
+     *   <li>The request body is fully consumed (purge complete).</li>
+     *   <li>Admission is eligible — either no prior exchange, or cleanup is complete.</li>
+     * </ul>
+     * The drain reentrancy guard is checked first to prevent recursive admission.
      */
-    static void drainPendingAdmission(ChannelHandlerContext context, FlowState state) {
+    public static void drainPendingAdmission(ChannelHandlerContext context, FlowState state) {
         if (state.isDraining()) {
             return;
         }
         if (!context.channel().isActive() || state.stoppedReading()) {
             state.releaseQueue();
+            return;
+        }
+        // Enforce all central admission prerequisites before dequeuing anything.
+        if (state.isResponseInFlight()) {
+            // Response write not yet complete — onResponseComplete will re-trigger.
+            return;
+        }
+        if (state.isExchangeWriteFailed()) {
+            // A prior write failure poisons this exchange; close, do not admit.
+            state.setKeepAliveAllowed(false);
+            state.releaseQueue();
+            if (context.channel().isActive()) {
+                context.channel().close();
+            }
+            return;
+        }
+        if (!state.isRequestConsumed()) {
+            // Body purge still in progress — markRequestConsumed will re-trigger.
+            return;
+        }
+        if (!state.isAdmissionEligible()) {
+            // Lifecycle cleanup pending — onCleanupComplete will re-trigger.
             return;
         }
 

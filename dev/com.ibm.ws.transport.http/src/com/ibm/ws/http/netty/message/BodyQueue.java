@@ -174,6 +174,19 @@ final public class BodyQueue {
         return bytesReceived;
     }
 
+    /**
+     * Returns the number of bytes currently retained in the queue (enqueued
+     * but not yet polled or drained).
+     *
+     * <p>This is the instantaneous value of the {@code buffered} counter.
+     * It is updated atomically as fragments are enqueued and polled, so
+     * a value of zero after all polls on the concurrent queue confirms that
+     * no bytes were stranded.
+     */
+    public int bufferedBytes() {
+        return buffered.get();
+    }
+
     public void signalEos() {
         eos = true;
         signalChange();

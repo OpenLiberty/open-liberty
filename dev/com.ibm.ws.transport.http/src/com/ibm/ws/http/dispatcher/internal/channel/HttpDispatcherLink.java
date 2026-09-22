@@ -59,6 +59,7 @@ import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer; 
 import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ExchangeLifecycle;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
@@ -187,7 +188,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private ConnectionLink nettyConnectionLink;
     private FullHttpRequest nettyHeaderOnly;
     private AtomicBoolean closeNonUpgradedDeferred = new AtomicBoolean(false);
-    private AtomicBoolean deferClear = new AtomicBoolean(false);
+
+    /**
+     * The per-exchange {@link ExchangeLifecycle} instance captured at bind time
+     * (inside {@link #init} / {@link #initStreaming}, on the event loop).
+     *
+     * <p>This field is written once per exchange during synchronous event-loop
+     * initialisation, before any worker thread can fire a callback.  Signal
+     * methods ({@link #setBodyComplete}, {@link #signalAppDoneOnEventLoop}) read
+     * this field rather than calling {@code getActiveLifecycle()} at signal time,
+     * so a delayed callback belonging to exchange A always reaches A's lifecycle
+     * even after the link has been recycled for exchange B.
+     *
+     * <p>{@code null} before the first Netty initialisation or for HTTP/2 requests
+     * that do not participate in the HTTP/1 lifecycle coordinator.
+     */
+    private volatile ExchangeLifecycle boundLifecycle;
 
     /**
      * Constructor.
@@ -246,6 +262,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK, DefaultHttpHeadersFactory.headersFactory().withValidation(false)));
         this.nettyConnectionLink = new NettyConnectionLink(context.channel());
         super.init(nettyVc);
+
+        // Bind the cleanup action to the active exchange lifecycle and capture the
+        // lifecycle instance in boundLifecycle.  Both steps run synchronously on the
+        // event loop, after the ISC is configured and before any application worker
+        // can deliver signals.  Capturing the instance (not just the cleanup action)
+        // means that setBodyComplete() and signalAppDoneOnEventLoop() always signal
+        // the correct lifecycle even after this link is recycled for exchange B.
+        if (!this.isc.isNettyHttp2Request()) {
+            final HttpInboundServiceContextImpl iscForCleanup = this.isc;
+            final ExchangeLifecycle lifecycle =
+                ReadFlowHandler.state(context).getActiveLifecycle();
+            if (lifecycle != null) {
+                lifecycle.bindCleanupAction(iscForCleanup::clear);
+                this.boundLifecycle = lifecycle;
+            }
+        }
     }
 
 
@@ -293,6 +325,18 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.nettyConnectionLink = new NettyConnectionLink(ctx.channel());
         super.init(nettyVc);
         this.linkIsReady = true;
+
+        // Bind the cleanup action to the active exchange lifecycle and capture the
+        // instance in boundLifecycle.  See comment in init() for rationale.
+        if (!this.isc.isNettyHttp2Request()) {
+            final HttpInboundServiceContextImpl iscForCleanup = this.isc;
+            final ExchangeLifecycle lifecycle =
+                ReadFlowHandler.state(ctx).getActiveLifecycle();
+            if (lifecycle != null) {
+                lifecycle.bindCleanupAction(iscForCleanup::clear);
+                this.boundLifecycle = lifecycle;
+            }
+        }
 
         
 
@@ -458,13 +502,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "nettyClose: upgraded connection; not closing channel");
             }
 
-            if (this.isc != null) {
-                if (!this.isc.isBodyComplete()) {
-                    deferClear.set(true);
-                } else {
-                    this.isc.clear();
-                }
-            }
+            // Signal app-done on the event loop so the lifecycle coordinator can
+            // perform isc.clear() exactly once, serialised with setBodyComplete().
+            signalAppDoneOnEventLoop();
 
              Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=UPGRADED_NO_CHANNEL_CLOSE"
         + " link=" + System.identityHashCode(this)
@@ -492,14 +532,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         + " link=" + System.identityHashCode(this)
         + " ch=" + qpNettyChannelId()
         + " " + qpBodyState());
-            // Body still in flight: defer isc.clear() until setBodyComplete() fires.
-            // Body already done: clear immediately (body was read or purged before
-            // the application finished its response).
-            if (this.isc != null && !this.isc.isBodyComplete()) {
-                deferClear.set(true);
-            } else if (this.isc != null) {
-                this.isc.clear();
-            }
+            // Signal app-done on the event loop so the lifecycle coordinator can
+            // perform isc.clear() exactly once, serialised with setBodyComplete().
+            // The coordinator handles both orderings (body-first and response-first)
+            // without a check-then-set race.
+            signalAppDoneOnEventLoop();
         }
         return;
 
@@ -2165,20 +2202,67 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
                 ReadFlowHandler.markRequestConsumed(nettyContext);
             }
-            // If nettyClose() already ran (response-complete path) it set deferClear=true
-            // because the body was still in flight at that point. Now that the body is
-            // done, perform the deferred clear exactly once.
-            // If nettyClose() has not run yet (body-first path), deferClear is still
-            // false and no clear happens here; nettyClose() will find isBodyComplete()
-            // true and clear immediately when it runs.
-            if (deferClear.compareAndSet(true, false)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "setBodyComplete: performing deferred isc.clear() for keep-alive.");
+            // Signal body completion using the lifecycle captured at bind time.
+            // Using boundLifecycle (not getActiveLifecycle()) prevents a race where
+            // the link is recycled for exchange B before this task runs: a stale
+            // body-done notification for A always reaches A's lifecycle instance.
+            final ExchangeLifecycle lc = this.boundLifecycle;
+            if (lc != null && !this.isc.isNettyHttp2Request() && this.nettyContext != null) {
+                final ChannelHandlerContext capturedCtx = this.nettyContext;
+                if (capturedCtx.executor().inEventLoop()) {
+                    lc.signalBodyDone(capturedCtx);
+                } else {
+                    try {
+                        capturedCtx.executor().execute(() -> lc.signalBodyDone(capturedCtx));
+                    } catch (java.util.concurrent.RejectedExecutionException ree) {
+                        // Event loop is shutting down; nothing further to do.
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "[LIFECYCLE] setBodyComplete: executor rejected, ch=" +
+                                capturedCtx.channel().id());
+                        }
+                    }
                 }
-                this.isc.clear();
             }
         }
     }
+
+    /**
+     * Signals app-done on the {@link ExchangeLifecycle} captured at bind time
+     * ({@link #boundLifecycle}).
+     *
+     * <p>Using the captured instance (rather than {@code getActiveLifecycle()})
+     * means that a delayed worker callback for exchange A always reaches A's
+     * lifecycle, even if the link has already been recycled for exchange B.
+     *
+     * <p>Called from {@link #nettyClose} on reusable keep-alive connections.
+     */
+    private void signalAppDoneOnEventLoop() {
+        if (this.nettyContext == null) {
+            return;
+        }
+        // Capture both context and lifecycle instance on the calling thread.
+        // boundLifecycle is written once on the event loop during init and is
+        // safely published via volatile; worker threads see the correct value.
+        final ChannelHandlerContext capturedCtx = this.nettyContext;
+        final ExchangeLifecycle lc = this.boundLifecycle;
+        if (lc == null) {
+            return;
+        }
+        if (capturedCtx.executor().inEventLoop()) {
+            lc.signalAppDone(capturedCtx);
+        } else {
+            try {
+                capturedCtx.executor().execute(() -> lc.signalAppDone(capturedCtx));
+            } catch (java.util.concurrent.RejectedExecutionException ree) {
+                // Event loop is shutting down; channel will be closed independently.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "[LIFECYCLE] signalAppDoneOnEventLoop: executor rejected, ch=" +
+                        capturedCtx.channel().id());
+                }
+            }
+        }
+    }
+
     public boolean awaitH2FinishComplete(long timeout, TimeUnit unit) {
         try {
             if (isc != null && isc.isH2Connection()) {

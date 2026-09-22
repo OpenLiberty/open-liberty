@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.netty.readflow;
 
+import com.ibm.ws.http.netty.pipeline.inbound.read.ExchangeLifecycle;
+
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
@@ -172,6 +174,41 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.runPendingTasks();
     }
 
+    /**
+     * Signals both body-done and app-done on the currently active lifecycle,
+     * simulating the wiring that {@code HttpDispatcherLink} provides in production.
+     *
+     * <p>Must be called after A's exchange is complete (body consumed AND response
+     * written) to allow the admission gate to open for the next exchange.
+     */
+    private void completeExchangeLifecycle() {
+        ExchangeLifecycle lc = state().getActiveLifecycle();
+        if (lc == null || lc.isCleanupComplete()) {
+            return; // already complete or no exchange active
+        }
+        // Bind a no-op if the lifecycle is UNBOUND (tests that do not inject a real ISC).
+        try {
+            lc.bindCleanupAction(() -> {});
+        } catch (IllegalStateException alreadyBound) {
+            // Already bound — nothing to do.
+        }
+        channel.pipeline().context(ReadFlowHandler.class)
+               .executor().execute(() -> {
+                   lc.signalBodyDone(channel.pipeline().context(ReadFlowHandler.class));
+                   lc.signalAppDone(channel.pipeline().context(ReadFlowHandler.class));
+               });
+        channel.runPendingTasks();
+    }
+
+    /**
+     * Convenience: write outbound AND complete the exchange lifecycle.
+     * Use wherever a test expects the next request to be admitted immediately.
+     */
+    private void writeOutAndComplete(Object msg) {
+        writeOut(msg);
+        completeExchangeLifecycle();
+    }
+
     // -----------------------------------------------------------------------
     // Test 1 — PurgeStartedEvent arms READ phase
     //
@@ -240,7 +277,8 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.writeInbound(requestWithBody("/a", 2));
         channel.writeInbound(lastContent((byte) 1, (byte) 2));
         channel.runPendingTasks();
-        writeOut(fullOkNoBody());
+        // Complete lifecycle so first exchange ends and second can be admitted.
+        writeOutAndComplete(fullOkNoBody());
         // Drain first exchange persist window without timing out.
         channel.advanceTimeBy(PERSIST_TIMEOUT_MS - 100, TimeUnit.MILLISECONDS);
         channel.runScheduledPendingTasks();
@@ -249,7 +287,7 @@ public class TimeoutHandlerPhaseTransitionTests {
         // Second exchange — body left unread, purge path.
         channel.writeInbound(requestWithBody("/b", 6));
         channel.runPendingTasks();
-        writeOut(fullOkNoBody());
+        writeOut(fullOkNoBody()); // response completes; body still pending → purge starts
         assertEquals("READ phase during purge on second exchange", "READ", phase(channel));
 
         // Advance past read timeout — firstRequest=false so ReadTimeoutException fires.
@@ -299,16 +337,18 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.writeInbound(requestWithBody("/a", 2));
         channel.writeInbound(lastContent((byte) 1, (byte) 2));
         channel.runPendingTasks();
-        writeOut(fullOkNoBody());
+        // Complete lifecycle to open admission for second exchange.
+        writeOutAndComplete(fullOkNoBody());
         channel.advanceTimeBy(PERSIST_TIMEOUT_MS - 100, TimeUnit.MILLISECONDS);
         channel.runScheduledPendingTasks();
 
         // Second exchange — unread body, purge, then silence.
         channel.writeInbound(requestWithBody("/b", 2));
         channel.runPendingTasks();
-        writeOut(fullOkNoBody());
+        writeOut(fullOkNoBody()); // purge starts (body not yet consumed)
         channel.writeInbound(lastContent((byte) 3, (byte) 4));
         channel.runPendingTasks();
+        completeExchangeLifecycle(); // second exchange lifecycle done
         assertEquals("PERSIST phase after purge", "PERSIST", phase(channel));
 
         // Advance past persist timeout — PersistTimeoutException must fire.
@@ -332,9 +372,10 @@ public class TimeoutHandlerPhaseTransitionTests {
 
         channel.writeInbound(requestWithBody("/a", 2));
         channel.runPendingTasks();
-        writeOut(fullOkNoBody());
+        writeOut(fullOkNoBody()); // purge starts (body not consumed yet)
         channel.writeInbound(lastContent((byte) 1, (byte) 2));
         channel.runPendingTasks();
+        completeExchangeLifecycle(); // completes lifecycle so PERSIST arms
         assertEquals("PERSIST after purge", "PERSIST", phase(channel));
 
         // Advance partially into persist window — no timeout yet.
@@ -368,6 +409,9 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.runPendingTasks();
         assertTrue("Body consumed before response", state().isRequestConsumed());
 
+        // Complete lifecycle first, then write response. After lifecycle completes,
+        // verifyNeedRead fires RequestConsumedEvent → PERSIST phase.
+        completeExchangeLifecycle();
         writeOut(fullOkNoBody());
 
         // No purge needed: PERSIST armed directly via RequestConsumedEvent.
@@ -427,6 +471,8 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.writeInbound(lastContent((byte) 5, (byte) 6));
         channel.runPendingTasks();
 
+        // Complete lifecycle before response so verifyNeedRead fires after writeOut.
+        completeExchangeLifecycle();
         writeOut(fullOkNoBody());
 
         // Must go straight to PERSIST — no READ phase for purge.
@@ -479,6 +525,17 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.writeInbound(requestWithBody("/a", 2));
         channel.writeInbound(lastContent((byte) 1, (byte) 2));
         channel.runPendingTasks();
+        // Complete lifecycle so verifyNeedRead fires RequestConsumedEvent after writeOut.
+        ExchangeLifecycle lc = state().getActiveLifecycle();
+        if (lc != null && !lc.isCleanupComplete()) {
+            try { lc.bindCleanupAction(() -> {}); } catch (IllegalStateException ignored) {}
+            channel.pipeline().context(ReadFlowHandler.class)
+                   .executor().execute(() -> {
+                       lc.signalBodyDone(channel.pipeline().context(ReadFlowHandler.class));
+                       lc.signalAppDone(channel.pipeline().context(ReadFlowHandler.class));
+                   });
+            channel.runPendingTasks();
+        }
         writeOut(fullOkNoBody());
 
         assertEquals("PurgeStarted must NOT fire on normal request", 0, events.purgeStarted);
@@ -515,15 +572,13 @@ public class TimeoutHandlerPhaseTransitionTests {
         writeOut(fullOkNoBody());
         assertFalse("A body not consumed after response", state().isRequestConsumed());
 
-        // A's terminal body arrives. ReadFlowHandler:
-        //   1. Sets requestConsumed=true for A.
-        //   2. Calls drainPendingAdmission which admits B.
-        //   3. admitRequest sets requestConsumed=false for B (body expected).
-        // After all this, requestConsumed reflects B's state (false, body pending).
+        // A's terminal body arrives. After body consumed, complete lifecycle so
+        // drainPendingAdmission can admit B.
         channel.writeInbound(lastContent((byte) 1, (byte) 2));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
 
-        // B must have been admitted — A's last content triggered the drain.
+        // B must have been admitted — A's last content + lifecycle triggered the drain.
         assertEquals("B admitted after A body drained", 2, cap.requests.size());
         assertFalse("no more pending after drain", state().hasPendingAdmission());
 
@@ -560,9 +615,10 @@ public class TimeoutHandlerPhaseTransitionTests {
 
         writeOut(fullOkNoBody()); // A's response — A body still outstanding
 
-        // A's body arrives; B is admitted inline.
+        // A's body arrives; complete lifecycle so B is admitted.
         channel.writeInbound(lastContent((byte) 5, (byte) 6));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
 
         assertEquals("B admitted", 2, cap.requests.size());
         assertNull("No timeout fired", extractException(channel));

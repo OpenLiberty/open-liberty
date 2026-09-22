@@ -19,6 +19,7 @@ import io.netty.buffer.ByteBuf;
 import org.junit.After;
 import org.junit.Test;
 
+import com.ibm.ws.http.netty.pipeline.inbound.read.ExchangeLifecycle;
 import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
@@ -191,6 +192,43 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
     }
 
+    /**
+     * Signals both body-done and app-done on the currently active lifecycle,
+     * simulating the wiring that {@code HttpDispatcherLink} provides in production.
+     *
+     * <p>In production, these signals flow from {@code HttpDispatcherLink} on the
+     * event loop.  In tests that do not have a real dispatcher, we deliver them
+     * manually so that the admission gate opens after the response write completes.
+     *
+     * <p>Call this after A's terminal response write has resolved whenever the
+     * test is verifying that B is admitted (i.e. A's exchange has ended).
+     */
+    private void completeExchangeLifecycle() {
+        ExchangeLifecycle lc = state().getActiveLifecycle();
+        if (lc == null || lc.isCleanupComplete()) {
+            return; // already complete or no exchange active
+        }
+        // Bind a no-op if the lifecycle is UNBOUND (tests that do not inject a real ISC).
+        try {
+            lc.bindCleanupAction(() -> {});
+        } catch (IllegalStateException alreadyBound) {
+            // Already bound by a prior call — nothing to do.
+        }
+        ChannelHandlerContext ctx = channel.pipeline().context(ReadFlowHandler.class);
+        lc.signalBodyDone(ctx);
+        lc.signalAppDone(ctx);
+        channel.runPendingTasks();
+    }
+
+    /**
+     * Convenience: write the response outbound AND complete the exchange lifecycle.
+     * Use wherever a test expects B to be admitted immediately after the response.
+     */
+    private void writeOutAndComplete(Object msg) {
+        writeOut(msg);
+        completeExchangeLifecycle();
+    }
+
     // -----------------------------------------------------------------------
     // Test 1 — B arrives before A's delayed terminal write; B stays undispatched
     // -----------------------------------------------------------------------
@@ -221,8 +259,8 @@ public class ReadFlowHandlerSerializationTests {
         // delivered the sole reference directly to ReadFlowHandler's queue.
         assertEquals("refCnt unchanged — no spurious retain", refBefore, reqB.refCnt());
 
-        // Complete A's response.
-        writeOut(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+        // Complete A's response and lifecycle.
+        writeOutAndComplete(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
 
         assertEquals("B dispatched after A's terminal write succeeds", 2, cap.requests.size());
         assertEquals("/b", cap.requests.get(1).uri());
@@ -254,8 +292,8 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B must NOT be admitted after header-only write", 1, cap.requests.size());
         assertTrue("responseInFlight still true", state().isResponseInFlight());
 
-        // Now write the terminal LastHttpContent.
-        writeOut(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+        // Now write the terminal LastHttpContent and complete the lifecycle.
+        writeOutAndComplete(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
 
         assertEquals("B admitted after terminal write", 2, cap.requests.size());
     }
@@ -299,6 +337,7 @@ public class ReadFlowHandlerSerializationTests {
         fullResp.headers().set("Content-Length", "2");
         fullResp.headers().set("Connection", "keep-alive");
         writeOut(fullResp);
+        completeExchangeLifecycle();
 
         assertEquals("B admitted after FullHttpResponse write", 2, cap.requests.size());
     }
@@ -319,6 +358,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B gated", 1, cap.requests.size());
 
         writeOut(noContentResponse());  // 204 — FullHttpResponse, no body
+        completeExchangeLifecycle();
 
         assertEquals("B admitted after 204", 2, cap.requests.size());
     }
@@ -464,8 +504,10 @@ public class ReadFlowHandlerSerializationTests {
         // after onResponseComplete calls setBodyReadWanted(true)).
         channel.writeInbound(lastContent((byte) 1, (byte) 2, (byte) 3));
         channel.runPendingTasks();
+        // Lifecycle signals fire after body completes (simulating dispatcher/app cleanup).
+        completeExchangeLifecycle();
 
-        // Body now consumed; B admitted via markRequestConsumed → drainPendingAdmission.
+        // Body now consumed and lifecycle complete; B admitted.
         assertTrue("requestConsumed after LastHttpContent", state().isRequestConsumed());
         assertEquals("B admitted after body drained", 2, cap.requests.size());
     }
@@ -498,6 +540,7 @@ public class ReadFlowHandlerSerializationTests {
         // Last body fragment completes the purge.
         channel.writeInbound(lastContent((byte) 4, (byte) 5, (byte) 6));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
 
         assertTrue("requestConsumed after final fragment", state().isRequestConsumed());
         assertEquals("B admitted after last fragment", 2, cap.requests.size());
@@ -527,7 +570,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B gated (response still in flight)", 1, cap.requests.size());
 
         // Terminal response write — body already consumed, B admitted immediately.
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertEquals("B admitted immediately — body was already drained", 2, cap.requests.size());
     }
 
@@ -586,6 +629,7 @@ public class ReadFlowHandlerSerializationTests {
         // A's body drain completes.
         channel.writeInbound(lastContent((byte) 1, (byte) 2, (byte) 3));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
 
         assertTrue("requestConsumed after body", state().isRequestConsumed());
         assertEquals("B admitted after purge", 2, cap.requests.size());
@@ -618,10 +662,12 @@ public class ReadFlowHandlerSerializationTests {
         // A's body arrives.
         channel.writeInbound(lastContent((byte) 5, (byte) 6));
         channel.runPendingTasks();
+        completeExchangeLifecycle(); // complete A's lifecycle
+
         assertEquals("B dispatched after A body drained", 2, cap.requests.size());
 
         // B's response.
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertEquals("C dispatched after B response", 3, cap.requests.size());
 
         // Verify ordering.
@@ -644,7 +690,7 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
         assertTrue("A requestConsumed", state().isRequestConsumed());
 
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertTrue("channel alive", channel.isActive());
 
         // B on the same connection.
@@ -652,7 +698,7 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
         assertEquals("B dispatched immediately", 2, cap.requests.size());
 
-        writeOut(fullOkNoBody());
+        writeOut(fullOkNoBody());  // B's response — no need to complete lifecycle for this test
         assertTrue("channel still alive after B", channel.isActive());
     }
 
@@ -704,7 +750,7 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("B queued", state().hasPendingAdmission());
 
         // Complete A — B should be drained and its ref transferred to downstream.
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
 
         assertEquals("B dispatched", 2, cap.requests.size());
         assertFalse("queue empty", state().hasPendingAdmission());
@@ -756,11 +802,11 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("B pending", state().hasPendingAdmission());
 
         // Complete A — B must be drained from queue, not from a new socket read.
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertEquals("B dispatched from queue", 2, cap.requests.size());
         assertFalse("queue empty", state().hasPendingAdmission());
 
-        // Complete B.
+        // Complete B (no pending C; just close check).
         writeOut(fullOkNoBody());
         assertTrue("channel alive", channel.isActive());
     }
@@ -779,13 +825,13 @@ public class ReadFlowHandlerSerializationTests {
 
         assertEquals("Only A dispatched initially", 1, cap.requests.size());
 
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertEquals("B dispatched after A", 2, cap.requests.size());
 
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertEquals("C dispatched after B", 3, cap.requests.size());
 
-        writeOut(fullOkNoBody());
+        writeOut(fullOkNoBody()); // C's response — no further B to admit
         assertEquals("/a", cap.requests.get(0).uri());
         assertEquals("/b", cap.requests.get(1).uri());
         assertEquals("/c", cap.requests.get(2).uri());
@@ -810,7 +856,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B still gated", 1, cap.requests.size());
 
         // Complete A.
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
 
         assertEquals("B dispatched", 2, cap.requests.size());
         // Body chunks for B must have been forwarded.
@@ -898,7 +944,7 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("responseInFlight still true after plain-204 header", state().isResponseInFlight());
 
         // Now the terminal LastHttpContent arrives — this closes the exchange.
-        writeOut(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+        writeOutAndComplete(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
 
         assertEquals("B admitted after terminal write for plain 204", 2, cap.requests.size());
     }
@@ -928,7 +974,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B must NOT be admitted after plain-304 header write", 1, cap.requests.size());
         assertTrue("responseInFlight still true after plain-304 header", state().isResponseInFlight());
 
-        writeOut(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+        writeOutAndComplete(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
 
         assertEquals("B admitted after terminal write for plain 304", 2, cap.requests.size());
     }
@@ -968,7 +1014,7 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("responseInFlight still true after plain HEAD header", state().isResponseInFlight());
 
         // Terminal write completes the exchange.
-        writeOut(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+        writeOutAndComplete(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
 
         assertEquals("B admitted after terminal write for HEAD response", 2, cap.requests.size());
     }
@@ -1010,6 +1056,7 @@ public class ReadFlowHandlerSerializationTests {
         resp.headers().set("Content-Length", "0");
         resp.headers().set("Connection", "keep-alive");
         writeOut(resp);
+        completeExchangeLifecycle();
 
         assertEquals("B admitted after real response", 2, cap.requests.size());
     }
@@ -1105,7 +1152,7 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("channel still active", channel.isActive());
 
         // Terminal write closes the exchange.
-        writeOut(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
+        writeOutAndComplete(new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER));
 
         assertEquals("B admitted after terminal write", 2, cap.requests.size());
         assertTrue("channel still active", channel.isActive());
@@ -1193,6 +1240,7 @@ public class ReadFlowHandlerSerializationTests {
         // Terminal fragment.
         channel.writeInbound(lastContent((byte) 7, (byte) 8, (byte) 9));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
         assertTrue("requestConsumed after terminal", state().isRequestConsumed());
         assertEquals("B admitted after all fragments purged", 2, cap.requests.size());
     }
@@ -1213,9 +1261,10 @@ public class ReadFlowHandlerSerializationTests {
 
         writeOut(fullOkNoBody());
 
-        // Terminal body drains normally.
+        // Terminal body drains normally; complete lifecycle so B can be admitted.
         channel.writeInbound(lastContent((byte) 1, (byte) 2));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
         assertTrue("requestConsumed", state().isRequestConsumed());
         assertEquals("B admitted once", 2, cap.requests.size());
 
@@ -1255,7 +1304,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B still gated (response in flight)", 1, cap.requests.size());
 
         // Response terminal write — B must be admitted immediately.
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertEquals("B admitted after response terminal", 2, cap.requests.size());
     }
 
@@ -1331,7 +1380,7 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
         assertTrue("A requestConsumed", state().isRequestConsumed());
 
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertTrue("channel alive", channel.isActive());
 
         // B arrives on the same socket — same-socket reuse.
@@ -1339,7 +1388,7 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
         assertEquals("B dispatched immediately", 2, cap.requests.size());
 
-        writeOut(fullOkNoBody());
+        writeOut(fullOkNoBody()); // B's response — no further request expected
         assertTrue("channel alive after B", channel.isActive());
     }
 
@@ -1368,7 +1417,7 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
         assertTrue("requestConsumed after empty terminal", state().isRequestConsumed());
 
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertTrue("channel alive", channel.isActive());
 
         // B on same socket.
@@ -1402,6 +1451,7 @@ public class ReadFlowHandlerSerializationTests {
 
             channel.writeInbound(lastContent((byte) 1, (byte) 2)); // body second
             channel.runPendingTasks();
+            completeExchangeLifecycle();
             assertEquals("A: B admitted after body", 2, cap.requests.size());
 
             try { channel.finishAndReleaseAll(); } catch (Throwable ignored) {}
@@ -1422,7 +1472,7 @@ public class ReadFlowHandlerSerializationTests {
             assertTrue("B: requestConsumed after body", state().isRequestConsumed());
             assertEquals("B: B still gated (response in flight)", 1, cap.requests.size());
 
-            writeOut(fullOkNoBody()); // response second
+            writeOutAndComplete(fullOkNoBody()); // response second
             assertEquals("B: B admitted immediately", 2, cap.requests.size());
         }
     }
@@ -1481,6 +1531,7 @@ public class ReadFlowHandlerSerializationTests {
         // markRequestConsumed() → drainPendingAdmission().
         channel.writeInbound(lastContent((byte) 3, (byte) 4));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
 
         assertTrue("requestConsumed after terminal body", state().isRequestConsumed());
         assertEquals("B admitted after cleanup sequence completes", 2, cap.requests.size());
@@ -1514,7 +1565,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B still gated: response in flight", 1, cap.requests.size());
 
         // Response terminal — B admitted immediately without waiting for another body read.
-        writeOut(fullOkNoBody());
+        writeOutAndComplete(fullOkNoBody());
         assertEquals("B admitted immediately: both conditions met", 2, cap.requests.size());
         assertFalse("no pending after B", state().hasPendingAdmission());
     }
@@ -1541,6 +1592,7 @@ public class ReadFlowHandlerSerializationTests {
 
         channel.writeInbound(lastContent((byte) 1, (byte) 2));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
         assertEquals("B admitted", 2, cap.requests.size());
         assertTrue("requestConsumed", state().isRequestConsumed());
 
@@ -1583,6 +1635,7 @@ public class ReadFlowHandlerSerializationTests {
         // Terminal body arrives — cleanup fires.
         channel.writeInbound(lastContent((byte) 1, (byte) 2, (byte) 3));
         channel.runPendingTasks();
+        completeExchangeLifecycle();
 
         assertTrue("requestConsumed after body", state().isRequestConsumed());
         assertEquals("B admitted after body complete", 2, cap.requests.size());
