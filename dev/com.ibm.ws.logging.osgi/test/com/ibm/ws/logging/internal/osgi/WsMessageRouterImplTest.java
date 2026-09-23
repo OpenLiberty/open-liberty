@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.logging.internal.osgi;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
@@ -29,12 +30,16 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 import test.TestConstants;
 import test.common.SharedOutputManager;
 
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.wsspi.logging.LogHandler;
 
 /**
  * Test the MessageRouterImpl.
@@ -985,6 +990,168 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         }
     }
 
+     /**
+     * Test the updateMessageListForHandler() flow in MessageRouterConfigurator,
+     * which is the Strategy-2 path used by internal consumers such as zosLogging.
+     *
+     * A testable subclass overrides getMessageRouter() to inject a plain
+     * WsMessageRouterImpl rather than the static singleton, avoiding the need
+     * for a real OSGi runtime. BundleContext is mocked to satisfy the constructor.
+     *
+     * Verifies:
+     *  - Initial call adds message IDs (including wildcards) to the router.
+     *  - Second call with overlapping IDs only adds the new ones and removes the dropped ones.
+     *  - Routing behaviour after each update matches the registered set.
+     */
+    @Test
+    public void testUpdateMessageListForHandler() throws Exception {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            // Initialize the test runner's mockery instance
+            mockery = new JUnit4Mockery();
+            BundleContext mockCtx = mockery.mock(BundleContext.class, "BundleContext");
+            WsLogHandler mockHandler = mockery.mock(WsLogHandler.class, "ConfiguratorHandler");
+
+            // Stub OSGi calls made during MessageRouterConfigurator initialization
+            mockery.checking(new Expectations() {{
+                allowing(mockCtx).addServiceListener(with(any(org.osgi.framework.ServiceListener.class)), with(any(String.class)));
+                allowing(mockCtx).getServiceReferences(with(any(String.class)), with(aNull(String.class)));
+                    will(returnValue(null));
+                allowing(mockCtx).registerService(with(any(Class.class)), with(any(Object.class)), with(any(java.util.Dictionary.class)));
+                    will(returnValue(null));
+                allowing(mockCtx).addBundleListener(with(any(org.osgi.framework.BundleListener.class)));
+                allowing(mockCtx).getBundles();
+                    will(returnValue(new Bundle[0]));
+            }});
+
+            // Build a WsMessageRouterImpl we control directly.
+            final WsMessageRouterImpl router = new WsMessageRouterImpl();
+            router.setWsLogHandler("WTO", mockHandler);
+
+            // Subclass MessageRouterConfigurator to inject our router instead of the singleton.
+            MessageRouterConfigurator configurator = new MessageRouterConfigurator(mockCtx) {
+                @Override
+                protected WsMessageRouterImpl getMessageRouter() {
+                    if (msgRouter == null) {
+                        msgRouter = router;
+                    }
+                    return msgRouter;
+                }
+            };
+
+            // ---------------------------------------------------------------
+            // First call: register "CWWKZ*,CWWKF001*I,EXACT0001I" for "WTO"
+            // ---------------------------------------------------------------
+            configurator.updateMessageListForHandler("CWWKZ*,CWWKF001*I,EXACT0001I", "WTO");
+
+            // CWWKZ* — prefix wildcard, any level
+            RoutedMessage cwwkzInfo  = new TestRoutedMessage("CWWKZ0001I: started");
+            RoutedMessage cwwkzWarn  = new TestRoutedMessage("CWWKZ0002W: warning");
+
+            // CWWKF001*I — prefix + INFO level only
+            RoutedMessage cwwkfInfo  = new TestRoutedMessage("CWWKF0011I: feature started");
+            RoutedMessage cwwkfWarn  = new TestRoutedMessage("CWWKF0011W: not INFO — should not route");
+
+            // EXACT0001I — exact match only
+            RoutedMessage exactMatch   = new TestRoutedMessage("EXACT0001I: exact");
+            RoutedMessage exactNoMatch = new TestRoutedMessage("EXACT0002I: different");
+
+            mockery.checking(new Expectations() {{
+                oneOf(mockHandler).publish(with(equal(cwwkzInfo)),  with(false));
+                oneOf(mockHandler).publish(with(equal(cwwkzWarn)),  with(false));
+                oneOf(mockHandler).publish(with(equal(cwwkfInfo)),  with(false));
+                // cwwkfWarn — no expectation: must NOT be called
+                oneOf(mockHandler).publish(with(equal(exactMatch)), with(false));
+                // exactNoMatch — no expectation: must NOT be called
+            }});
+
+            assertTrue(router.route(cwwkzInfo,    false));
+            assertTrue(router.route(cwwkzWarn,    false));
+            assertTrue(router.route(cwwkfInfo,    false));
+            assertTrue(router.route(cwwkfWarn,    false));   // routes normally, handler not called
+            assertTrue(router.route(exactMatch,   false));
+            assertTrue(router.route(exactNoMatch, false));   // routes normally, handler not called
+
+            mockery.assertIsSatisfied();
+
+            // ---------------------------------------------------------------
+            // Second call: update to "CWWKZ*,EXACT0002I"
+            //  - CWWKZ*    stays (no change)
+            //  - CWWKF001*I is removed
+            //  - EXACT0001I is removed
+            //  - EXACT0002I is added
+            // ---------------------------------------------------------------
+            configurator.updateMessageListForHandler("CWWKZ*,EXACT0002I", "WTO");
+
+            RoutedMessage cwwkzInfo2   = new TestRoutedMessage("CWWKZ0001I: still active");
+            RoutedMessage cwwkfInfo2   = new TestRoutedMessage("CWWKF0011I: removed — should not route");
+            RoutedMessage exactMatch2  = new TestRoutedMessage("EXACT0001I: removed — should not route");
+            RoutedMessage exactMatch2b = new TestRoutedMessage("EXACT0002I: newly added");
+
+            // Set fresh expectations on mockery: only cwwkzInfo2 and exactMatch2b must be published.
+            // Removed patterns (cwwkfInfo2, exactMatch2) have no expectations; invoking them will fail JMock.
+            mockery.checking(new Expectations() {{
+                oneOf(mockHandler).publish(with(equal(cwwkzInfo2)),   with(false));
+                oneOf(mockHandler).publish(with(equal(exactMatch2b)), with(false));
+                // cwwkfInfo2 and exactMatch2 — no expectation: must NOT be called
+            }});
+
+            assertTrue(router.route(cwwkzInfo2,   false));
+            assertTrue(router.route(cwwkfInfo2,   false));   // routes normally, handler not called
+            assertTrue(router.route(exactMatch2,  false));   // routes normally, handler not called
+            assertTrue(router.route(exactMatch2b, false));
+
+            mockery.assertIsSatisfied();
+
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Verify that wildcard subscriptions registered in the router do NOT affect
+     * strict SPI LogHandler routing via MessageRouterImpl.route(String, LogRecord).
+     *
+     * Wildcard matching is an internal WsLogHandler feature; standard SPI LogHandlers
+     * (com.ibm.wsspi.logging.LogHandler) must only receive messages matching exact ID
+     * subscriptions.
+     */
+    @Test
+    public void testWildcardsDoNotAffectStrictSpiLogHandlers() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+
+            // Create an SPI LogHandler bound to the active mockery
+            LogHandler spiHandler = mockery.mock(LogHandler.class, "SpiLogHandler");
+            msgRouter.setLogHandler("SPI_HANDLER", spiHandler);
+
+            // Register a wildcard pattern and an exact match pattern
+            Properties props = new Properties();
+            props.setProperty("ABCD*", "+SPI_HANDLER");
+            props.setProperty("EXACT0001I", "+SPI_HANDLER");
+            msgRouter.modified(props);
+
+            String exactMsg = "EXACT0001I: Exact message for SPI handler";
+            LogRecord exactRecord = new LogRecord(Level.INFO, exactMsg);
+
+            String wildcardMsg = "ABCD1234I: Wildcard message that should NOT route to SPI handler";
+            LogRecord wildcardRecord = new LogRecord(Level.INFO, wildcardMsg);
+
+            // Expect spiHandler to receive ONLY the exact message, NOT the wildcard message
+            mockery.checking(new Expectations() {{
+                oneOf(spiHandler).publish(with(equal(exactMsg)), with(equal(exactRecord)));
+            }});
+
+            // Exact message routes to SPI handler and returns true
+            assertTrue("Exact message should route to SPI LogHandler", msgRouter.route(exactMsg, exactRecord));
+
+            // Wildcard message must NOT be dispatched to SPI handler (no expectation set), returns true
+            assertTrue("Wildcard message should not route to SPI LogHandler", msgRouter.route(wildcardMsg, wildcardRecord));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
 }
 
 /**
