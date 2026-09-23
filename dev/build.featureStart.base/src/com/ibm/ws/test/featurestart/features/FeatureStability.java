@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -41,6 +42,16 @@ public class FeatureStability {
 
     public static final String STABLE_FEATURES_NAME = "com/ibm/ws/test/featurestart/features/feature-stable.txt";
 
+    // Expecting, for example:
+    //
+    // null acmeCA # 2.0                         #
+    // null adminCenter # 1.0                    #
+    // null appAuthentication 2.0 # 3.0          #
+    // null appAuthorization 2.0 # 2.1           #
+    // null appClientSupport 1.0 # 2.0           #
+    // null appSecurity 1.0 2.0 3.0 4.0 # 5.0    #
+    // null appSecurityClient # 1.0              # isClient    
+    
     protected static List<List<String>> readStableFeatureData() throws IOException {
         List<List<String>> featureData = new ArrayList<>();
 
@@ -48,7 +59,7 @@ public class FeatureStability {
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             try (InputStream featuresStream = url.openStream();
-                            Scanner scanner = new Scanner(featuresStream)) {
+                 Scanner scanner = new Scanner(featuresStream)) {
 
                 while (scanner.hasNextLine()) {
                     List<String> data = new ArrayList<>();
@@ -71,7 +82,11 @@ public class FeatureStability {
                         String text = line.substring(nextStart, nextSpace).trim();
                         if (!text.isEmpty()) {
                             if (text.equals("null")) {
-                                text = null;
+                                if ( data.size() == 0 ) {
+                                    text = null;
+                                } else {
+                                    throw new IllegalArgumentException("Null non-weight parameter");
+                                }
                             }
                             data.add(text);
                         }
@@ -81,9 +96,13 @@ public class FeatureStability {
                     String text = line.substring(nextStart).trim();
                     if (!text.isEmpty()) {
                         if (text.equals("null")) {
-                            text = null;
+                            throw new IllegalArgumentException("Null non-weight parameter");
                         }
                         data.add(text);
+                    }
+
+                    if ( data.size() < 2 ) {
+                        throw new IllegalArgumentException("Stable feature data must include a weight and a name");
                     }
 
                     featureData.add(data);
@@ -204,17 +223,24 @@ public class FeatureStability {
         this(null);
     }
 
-    public FeatureStability(List<List<String>> bucketData) throws NumberFormatException {
-        this.buckets = ((bucketData == null) ? new HashSet<StableFeatureBucket>() : new HashSet<StableFeatureBucket>(bucketData.size()));
+    public FeatureStability(List<List<String>> allBucketData) throws NumberFormatException {
+        this.buckets = ((allBucketData == null)
+            ? new LinkedHashSet<StableFeatureBucket>(0)
+            : new LinkedHashSet<StableFeatureBucket>(allBucketData.size()));
 
-        int numFeatures = 0;
-        for (List<String> data : bucketData) {
-            numFeatures += data.size() - 2; // Skip weight and name.
+        if (allBucketData != null) {
+            int numFeatures = 0;
+            for (List<String> data : allBucketData) {
+                numFeatures += data.size() - 2; // Skip weight and name.
+            }
+            this.names = new HashSet<>(numFeatures);
+            this.addBuckets(allBucketData);
+            
+        } else {
+            this.names = new HashSet<>(0);
         }
 
-        this.names = new HashSet<>(numFeatures);
 
-        this.addBuckets(bucketData);
     }
 
     //
@@ -250,60 +276,78 @@ public class FeatureStability {
         }
     }
 
-    public List<List<String>> partitionFeatureNames(int elements) {
-        if (elements < 1) {
-            throw new IllegalArgumentException("Count of partition elements [ " + elements + " ] must be at least [ 1 ].");
+    /**
+     * Partition feature buckets.
+     * 
+     * Attempt to proportion buckets according to their weight. Because
+     * each feature bucket is placed in a single partition element, this
+     * may cause one of more of the partition elements being empty.
+     * 
+     * @param numElements The size of the partition.
+     * 
+     * @return The partitioned bucket elements.
+     */
+    public List<List<String>> partitionFeatureNames(int numElements) {
+        if (numElements < 1) {
+            throw new IllegalArgumentException("Partition size [ " + numElements + " ] must be at least [ 1 ].");
         }
 
         Set<StableFeatureBucket> featureBuckets = getBuckets();
 
-        int nameCount = 0;
-        int weighedNameCount = 0;
-        for (StableFeatureBucket featureBucket : featureBuckets) {
-            nameCount += featureBucket.getSize();
-            weighedNameCount += featureBucket.getWeighedSize();
-        }
-
-        if (elements == 1) {
-            List<String> names = new ArrayList<>(nameCount);
+        if ( numElements == 1 ) {
+            // Special case: If the partition is into a single element, the weights don't
+            // matter..
+            
+            int totalNames = 0;
             for (StableFeatureBucket featureBucket : featureBuckets) {
-                names.addAll(featureBucket.getElements());
+                totalNames += featureBucket.getSize();
             }
-            return Collections.singletonList(names);
-        }
+            List<String> firstElement = new ArrayList<>(totalNames);
+            for (StableFeatureBucket featureBucket : featureBuckets) {
+                firstElement.addAll(featureBucket.getElements());
+            }
+            return Collections.singletonList(firstElement);
 
-        List<List<String>> nameLists = new ArrayList<>(elements);
+        } else {
+            // Weighed case. Do a best fit of the weights.
+            //
+            // Adjust the goal weight upwards if there is a remainder.
+            // This attempts to distribute overage across the partition
+            // elements, instead of all at the end.
 
-        // Simple approximate way to
-        int bucketWeight = weighedNameCount / elements;
-        if (weighedNameCount % elements != 0) {
-            bucketWeight++;
-        }
-        for (int elementNo = 0; elementNo < elements; elementNo++) {
-            List<String> names;
+            int totalWeight = 0;
+            for (StableFeatureBucket featureBucket : featureBuckets) {
+                totalWeight += featureBucket.getWeighedSize();
+            }
+            int goalElementWeight = totalWeight / numElements;
+            if ( totalWeight % numElements != 0 ) {
+                goalElementWeight++;
+            }
 
-            nameLists.add(names = new ArrayList<>());
+            List<List<String>> elements = new ArrayList<>(numElements);
 
-            int nextTotalWeight = 0;
+            int nextWeight = 0;
+            List<String> nextElement = null;
 
             for (StableFeatureBucket featureBucket : featureBuckets) {
-                int weight = featureBucket.getWeighedSize();
-                nextTotalWeight += weight;
+                if ( nextElement == null ) {
+                    elements.add( nextElement = new ArrayList<>() );
+                }
 
-                names.addAll(featureBucket.getElements());
+                nextWeight += featureBucket.getWeighedSize();
+                nextElement.addAll(featureBucket.getElements());
 
-                if (nextTotalWeight >= bucketWeight) {
-                    nameLists.add(names = new ArrayList<>());
+                if (nextWeight >= goalElementWeight) {
+                    nextWeight = 0;
+                    nextElement = null;
                 }
             }
-        }
 
-        int numElements = nameLists.size();
-        while (numElements < elements) {
-            nameLists.add(new ArrayList<>(0));
-            numElements++;
-        }
+            for (int elementNo = elements.size(); elementNo < numElements; elementNo++) {
+                elements.add(new ArrayList<>(0));
+            }
 
-        return nameLists;
+            return elements;
+        }
     }
 }

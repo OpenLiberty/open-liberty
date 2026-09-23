@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -157,17 +157,17 @@ public class FeatureReports {
         return ((requiredLevel == null) ? "DEF" : requiredLevel.toString());
     }
 
-    public void display(FeatureData featureData) {
+    public void display(FeatureData useFeatureData) {
         String m = "display";
 
-        String name = featureData.getName();
+        String name = useFeatureData.getName();
 
-        String featureLine1 = String.format("  %-20s : %s", name, featureData.symbolicName);
+        String featureLine1 = String.format("  %-20s : %s", name, useFeatureData.symbolicName);
 
         String featureLine2 = "  " +
-                              "  " + (flag(featureData.isClientOnly) + "isClient") +
-                              " " + (flag(featureData.isPublic) + "isPublic") +
-                              " " + (flag(featureData.isTest) + "isTest") +
+                              "  " + (flag(useFeatureData.isClientOnly) + "isClient") +
+                              " " + (flag(useFeatureData.isPublic) + "isPublic") +
+                              " " + (flag(useFeatureData.isTest) + "isTest") +
                               " " + (flag(isStable(name)) + "isStable") +
                               " " + ("java " + flagLevel(getRequiredLevel(name)));
 
