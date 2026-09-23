@@ -45,18 +45,23 @@ record TemporalLiteralRecord<V extends Temporal & Comparable<? extends Temporal>
         else
             temporal = value;
 
-        if (temporal instanceof Year y)
-            return "{d '" + y.getValue() + "'}";
-        else if (temporal instanceof LocalDate)
-            return "{d '" + value + "'}";
-        else if (temporal instanceof LocalDateTime d)
-            return "{ts '" + d.toLocalDate() + ' ' + d.toLocalTime() + "'}";
+        if (temporal instanceof Year year)
+            return "YEAR " + year.getValue();
+        else if (temporal instanceof LocalDate date)
+            return "DATE " + toString(date);
+        else if (temporal instanceof LocalDateTime ldt)
+            return "DATETIME " +
+                   toString(ldt.toLocalDate()) + ' ' +
+                   ldt.toLocalTime().toString();
         else if (temporal instanceof LocalTime)
-            return "{t '" + value + "'}";
+            return "TIME " + temporal.toString();
         else
-            return "{TemporalLiteral '" +
-                   value.getClass().getName() + " '" +
-                   value + "'}";
+            return "TEMPORAL " + temporal.getClass().getName() + " " + temporal;
     }
 
+    private static String toString(LocalDate date) {
+        return date.getYear() > 9999 //
+                        ? date.toString().substring(1) // first char (+) is unwanted
+                        : date.toString();
+    }
 }
