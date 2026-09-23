@@ -390,7 +390,7 @@ public class NettyInboundChain implements InboundChain{
             if (configPort < 0)
                 return -1;
             // the channel is not actually listening so returning -1
-            if (!_isChainStarted || serverChan == null || !serverChan.isActive())
+            if (!_isChainStarted || serverChan == null)
                 return -1;
 
             return configPort;
