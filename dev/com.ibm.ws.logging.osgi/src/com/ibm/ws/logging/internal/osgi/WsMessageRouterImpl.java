@@ -41,9 +41,6 @@ import com.ibm.ws.logging.WsMessageRouter;
  * to change, especially since third-party code may implement the SPI).
  */
 public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageRouter {
-
-	
-	protected final static boolean isBeta = ProductInfo.getBetaEdition(); 
 	
     private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     /**
@@ -92,7 +89,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
         if (logHandlerIds != null && logHandlerIds.contains(logHandlerId)) {
             return true;
         } else {
-            logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
+            logHandlerIds = getLogHandlersForMessageWC(routedMessage.getFormattedMsg());
             return (logHandlerIds == null) ? false : logHandlerIds.contains(logHandlerId);
         }
     }
@@ -130,13 +127,12 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
 
         }
     }
-    
-    
-    /**
+
+	/**
      * @return the Set of LogHandler IDs to route this already parsed message id
      */
-    @Override
-    protected Set<String> getLogHandlersForMsgId(String msgId) {
+    //@Override
+    protected Set<String> getLogHandlersForMsgIdWC(String msgId) {
         if (msgId == null)
             return null;
         
@@ -152,8 +148,8 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
         	return handlersToReturn;
         }
 
-        //First is for runtime (instanitated at bundle startup for - good for perf if saved during server runtime). Second is for junits (while during beta).
-		if (isBeta == true || Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+        //Beta-guard
+		if (ProductInfo.getBetaEdition()) {
 			if (wildCardMsgIdToLogHandlerIds.size() > 0) {
 				Level msgLevelReadAsIs = parseLevel(msgId);
 
@@ -204,6 +200,14 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
 //        return (routedMessage != null && isValidMessage(routedMessage.getFormattedMsg()));
 //    }
 
+    
+    protected Set<String> getLogHandlersForMessageWC(String msg) {
+        if (msg == null)
+            return null;
+
+        return getLogHandlersForMsgIdWC(parseMessageId(msg));
+    }
+    
     @Override
     public boolean route(RoutedMessage routedMessage, boolean messageHidden) {
 
@@ -225,7 +229,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
             if (routeAllMsgsToTheseLogHandlers != null) {
                 routeToAll(routedMessage, routeAllMsgsToTheseLogHandlers, messageHidden);
             }
-            Set<String> logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
+            Set<String> logHandlerIds = getLogHandlersForMessageWC(routedMessage.getFormattedMsg());
             
             if (logHandlerIds == null) {
                 // There are no routing requirements for this msgId.

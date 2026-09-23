@@ -23,6 +23,7 @@ import java.util.logging.LogRecord;
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 
@@ -252,14 +253,20 @@ public class MessageRouterImpl implements MessageRouter {
                         count++;
                     }
                 }
+                
+
                 if (count == 1 && (lastStar == msgId.length() - 1 || lastStar == msgId.length() - 2)) {
                     isWildCard = true;
                     wcmal = new WildCardMessageAndLevel(msgId);
                 } else {
-                	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);;
-                	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
-                		Tr.debug(tc, String.format("Improper wildcard message ID detected from MessageRouter.properties for Message ID:[%s] for handlers Handler(s):[%s]", msgId, logHandlerIds), null);
+                	//Only throw warning if we are beta. We can silently do the above logic because nobody is actually using props or know that his feature is supported.
+                	if (ProductInfo.getBetaEdition()) {
+                    	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);;
+                    	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                    		Tr.debug(tc, String.format("Improper wildcard message ID detected from MessageRouter.properties for Message ID:[%s] for handlers Handler(s):[%s]", msgId, logHandlerIds), null);
+                    	}
                 	}
+
                     continue;
                 }
             }
@@ -328,9 +335,12 @@ public class MessageRouterImpl implements MessageRouter {
             }
             if (count > 1 || (lastIndexAsterisk != msgId.length() - 1 && lastIndexAsterisk != msgId.length() - 2)) {
                 // Invalid pattern — ignore silently (caller should have validated input).
-            	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);
-            	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
-            		Tr.debug(tc, String.format("Improper wildcard message ID detected from for Message ID:[%s] from handler:[%s]", msgId, handlerId), null);
+            	//Only throw warning if we are beta. We can silently do the above logic because nobody knows this is supported at all.
+            	if (ProductInfo.getBetaEdition()) {
+                	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);
+                	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                		Tr.debug(tc, String.format("Improper wildcard message ID detected from for Message ID:[%s] from handler:[%s]", msgId, handlerId), null);
+                	}
             	}
                 return;
             } 
