@@ -11,6 +11,7 @@ package io.openliberty.data.internal;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
@@ -534,24 +535,90 @@ public class Util {
      * that can be assumed. This helps make the introspector output more
      * concise and less cluttered.
      *
-     * @param anno annotation.
-     * @return a shortened textual representation of the annotation.
+     * <p>This method is proxy-safe: it uses {@link Annotation#annotationType()}
+     * and reflective member invocation rather than {@link Object#toString()},
+     * so it produces meaningful output even when the annotation object is a
+     * WELD CDI proxy (e.g. obtained via {@code AnnotatedType.getAnnotations()}).
+     * The {@code @jakarta.data.} package prefix is omitted from the type name,
+     * and members that equal their default value are omitted for brevity.
+     *
+     * @param anno annotation, which may be a CDI/WELD proxy
+     * @return a shortened textual representation of the annotation. Null if the
+     *         given anno is null
      */
     @Trivial
-    private static String toString(Annotation anno) {
-        String s = anno.toString();
+    public static String toString(Annotation anno) {
+        if (anno == null)
+            return null;
 
-        int openParen = s.indexOf('(');
-        int dot = openParen > 0 ? s.lastIndexOf('.', openParen) : -1;
-        int end = s.length() - (s.endsWith("()") ? 2 : 0);
+        Class<? extends Annotation> annoType = anno.annotationType();
 
-        // omit jakarta data package names and any ending ()
-        if (dot > 0 && s.startsWith("@jakarta.data."))
-            s = '@' + s.substring(dot + 1, end);
-        else
-            s = s.substring(0, end);
+        // Use simple name for jakarta.data.* types; fully qualified name otherwise
+        String displayName = annoType.getPackageName().startsWith("jakarta.data.") //
+                        ? annoType.getSimpleName() //
+                        : annoType.getName();
 
-        return s;
+        Method[] members = annoType.getDeclaredMethods();
+
+        // Collect non-default members
+        StringBuilder b = new StringBuilder(displayName.length() +
+                                            members.length * 40 + 1);
+        b.append('@').append(displayName);
+        boolean first = true;
+        for (Method member : members) {
+            Object value;
+            try {
+                value = member.invoke(anno);
+            } catch (Exception x) {
+                value = '?';
+            }
+            // omit members that equal their default value
+            Object defaultValue = member.getDefaultValue();
+            if (defaultValue != null) {
+                boolean isDefault;
+                if (defaultValue.getClass().isArray()) {
+                    int len = Array.getLength(defaultValue);
+                    isDefault = len == Array.getLength(value);
+                    for (int i = 0; isDefault && i < len; i++)
+                        isDefault = Array.get(defaultValue, i) //
+                                        .equals(Array.get(value, i));
+                } else {
+                    isDefault = defaultValue.equals(value);
+                }
+                if (isDefault)
+                    continue;
+            }
+            b.append(first ? "(" : ", ");
+            // omit "value=" when it is the only member (standard annotation shorthand)
+            if (members.length != 1 || !"value".equals(member.getName()))
+                b.append(member.getName()).append('=');
+            if (value instanceof String)
+                b.append('"').append(value).append('"');
+            else if (value instanceof Annotation)
+                b.append(toString((Annotation) value));
+            else if (value.getClass().isArray()) {
+                int len = Array.getLength(value);
+                b.append('{');
+                for (int i = 0; i < len; i++) {
+                    if (i > 0)
+                        b.append(", ");
+                    Object element = Array.get(value, i);
+                    if (element instanceof Annotation)
+                        b.append(toString((Annotation) element));
+                    else if (element instanceof String)
+                        b.append('"').append(element).append('"');
+                    else
+                        b.append(element);
+                }
+                b.append('}');
+            } else
+                b.append(value);
+            first = false;
+        }
+        if (!first)
+            b.append(')');
+
+        return b.toString();
     }
 
     /**
@@ -679,6 +746,20 @@ public class Util {
             }
             b.append(EOLN);
         }
+    }
+
+    /**
+     * Returns a list of readable annotations.
+     *
+     * @param annos array of annotations that might be CDI/WELD proxies.
+     * @return a list of readable annotations.
+     */
+    @Trivial
+    public static List<String> toStringList(Annotation[] annos) {
+        List<String> list = new ArrayList<>(annos.length);
+        for (Annotation anno : annos)
+            list.add(toString(anno));
+        return list;
     }
 
     /**

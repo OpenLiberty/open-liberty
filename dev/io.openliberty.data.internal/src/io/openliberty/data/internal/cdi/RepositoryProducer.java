@@ -356,7 +356,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                     intercept = true;
                     configurator.add(anno);
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "add " + anno + " for " + configurator.getAnnotated().getJavaClass());
+                        Tr.debug(this, tc, "add " + Util.toString(anno) + " for " +
+                                           configurator.getAnnotated().getJavaClass());
                 }
             for (AnnotatedMethodConfigurator<? super R> method : configurator.methods())
                 for (Annotation anno : method.getAnnotated().getAnnotations())
@@ -364,7 +365,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                         intercept = true;
                         method.add(anno);
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
+                            Tr.debug(this, tc, "add " + Util.toString(anno) + " for " +
+                                               method.getAnnotated().getJavaMember());
                     }
 
             EntityHandlerFactory factory = futureEHFactory.get(INIT_TIMEOUT_SEC, //
