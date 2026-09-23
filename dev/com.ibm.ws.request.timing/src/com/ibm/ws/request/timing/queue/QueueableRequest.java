@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package com.ibm.ws.request.timing.queue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.requestContext.RequestContext;
 
 /**
@@ -40,6 +41,7 @@ public class QueueableRequest implements Delayed {
 			this.delay = 0;
 	}
 	
+	@Trivial
 	@Override
 	public int compareTo(Delayed delayed) {
 		if(this == delayed)
@@ -51,6 +53,7 @@ public class QueueableRequest implements Delayed {
 	/**
 	 * Returns the time remaining for the request to be picked up.
 	 */
+	@Trivial
 	@Override
 	public long getDelay(TimeUnit unit) {
 		return unit.convert((delay - TimeUnit.MILLISECONDS.convert(System.nanoTime() - queueTime, TimeUnit.NANOSECONDS)), TimeUnit.MILLISECONDS);
@@ -81,6 +84,7 @@ public class QueueableRequest implements Delayed {
 			this.delay = 0;
 	}
 	
+	@Trivial
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,6 +95,7 @@ public class QueueableRequest implements Delayed {
 		return result;
 	}
 
+	@Trivial
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
