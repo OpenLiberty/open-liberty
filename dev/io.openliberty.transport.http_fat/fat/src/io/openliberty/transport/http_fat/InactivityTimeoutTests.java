@@ -834,7 +834,7 @@ public class InactivityTimeoutTests {
      * (the default servlet-3.1 behaviour is to swallow it).
      *
      * Expected outcome (ChannelFW path):
-     * - "IOException during sync write: Socket operation timed out" appears in trace.
+     * - "IOException during sync write: Socket operation timed out"  or "Write timed out!" appears in trace.
      * Expected outcome (Netty path):
      * - "The connection is closing due to a write timeout" appears in trace.
      */
@@ -913,9 +913,13 @@ public class InactivityTimeoutTests {
                 // On the Netty path, WriteTimeoutHandler fails the write promise with a SocketTimeoutException.
                 // awaitChannelFuture() in NettyTCPWriteRequestContext wraps it as:
                 // IOException("Flush operation failed.", cause) logged as "IOException during sync write: Flush operation failed."
-                assertNotNull("The write timeout message was not found in trace!",
-                              server.waitForStringInTraceUsingMark(
-                                  "The connection is closing due to a write timeout; channel=", 30000));
+                // Depending on the Netty version/path, the message may be either:
+                //   "The connection is closing due to a write timeout; channel="
+                // or:
+                //   "Write timed out!!"
+                String nettyWriteTimeoutMsg = server.waitForStringInTraceUsingMark(
+                        "The connection is closing due to a write timeout; channel=|Write timed out!!", 30000);
+                assertNotNull("The write timeout message was not found in trace!", nettyWriteTimeoutMsg);
             } else {
                 // On ChannelFW, the write timeout surfaces as a SocketTimeoutException inside
                 // synchWrite(). With throwIOEForInboundConnections=true it is no longer swallowed,
