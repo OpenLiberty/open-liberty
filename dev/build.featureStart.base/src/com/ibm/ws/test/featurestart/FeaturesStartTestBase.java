@@ -46,6 +46,31 @@ import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+// Issue XXXXXX Need improvement to FeatureStart reporting of missing feature errors:
+//
+// For example, the following "could not resolve modeule errors" should be reported as "missing bundle" type errors.
+// The "Failed to stop feature" message is misleading.
+
+// [09/21/2026 00:30:18:689 UTC] 002 FeaturesStartTest3             forceStopServer                S Failed to stop feature [ mpContextPropagation-1.2 ]: Server [ features.start.3.server ] PID [ null ] Feature [ mpContextPropagation-1.2 ]
+// java.lang.Exception: Errors/warnings were found in server features.start.3.server logs:
+//  <br>[9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner               E CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
+//  <br>[9/21/26, 0:30:17:647 UTC] 0000001e LogService-56-com.ibm.ws.concurrent                          E CWWKE0702E: Could not resolve module: com.ibm.ws.concurrent [56]
+//  <br>[9/21/26, 0:30:17:649 UTC] 0000001e ogService-57-io.openliberty.concurrent.internal.basictrigger E CWWKE0702E: Could not resolve module: io.openliberty.concurrent.internal.basictrigger [57]
+//  <br>[9/21/26, 0:30:17:683 UTC] 0000001e LogService-59-com.ibm.ws.microprofile.contextpropagation.1.0 E CWWKE0702E: Could not resolve module: com.ibm.ws.microprofile.contextpropagation.1.0 [59]
+//  <br>[9/21/26, 0:30:17:684 UTC] 0000001e vice-60-io.openliberty.microprofile.context.cleared.internal E CWWKE0702E: Could not resolve module: io.openliberty.microprofile.context.cleared.internal [60]
+// 	at componenttest.topology.impl.LibertyServer.checkLogsForErrorsAndWarnings(LibertyServer.java:4006)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3811)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3646)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3640)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3616)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3523)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3498)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase.forceStopServer(FeaturesStartTestBase.java:325)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase$TestState.forceStopFeature(FeaturesStartTestBase.java:1176)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase.basicTestStartFeature(FeaturesStartTestBase.java:1268)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase.testStartFeature(FeaturesStartTestBase.java:1226)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTest3.test(FeaturesStartTest3.java:71)
+
 /**
  * Test to verify that Open Liberty can start with every valid
  * single feature.
@@ -100,15 +125,15 @@ public class FeaturesStartTestBase {
 
     private static Class<?> c;
 
-    private static void logInfo(String m, String msg) {
+    protected static void logInfo(String m, String msg) {
         Log.info(c, m, msg);
     }
 
-    private static void logError(String m, String msg) {
+    protected static void logError(String m, String msg) {
         Log.error(c, m, null, msg);
     }
 
-    private static void logError(String m, String msg, Throwable th) {
+    protected static void logError(String m, String msg, Throwable th) {
         Log.error(c, m, th, msg);
     }
 
@@ -136,12 +161,12 @@ public class FeaturesStartTestBase {
 
     //
 
-    protected static boolean isServerZOS(LibertyServer server) throws Exception {
-        return server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
+    protected static boolean isServerZOS(LibertyServer useServer) throws Exception {
+        return useServer.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
     }
 
-    public static int serverJavaLevel(LibertyServer server) throws Exception {
-        return JavaInfo.forServer(server).majorVersion();
+    public static int serverJavaLevel(LibertyServer useServer) throws Exception {
+        return JavaInfo.forServer(useServer).majorVersion();
     }
 
     //
@@ -194,7 +219,7 @@ public class FeaturesStartTestBase {
      * @return The PID of the running server. Null if the server
      *         is not running.
      */
-    private static String getPid() {
+    protected static String getPid() {
         String m = "getPid";
         try {
             return server.getPid();
@@ -284,7 +309,7 @@ public class FeaturesStartTestBase {
      * @param outOfLevel    True or false telling if the startup used
      *                          an unsupported java level.
      * @param pid           The PID of the running server.
-     * @param allowedErrors Errors allowed in the stop server command.
+     * @param useAllowedErrors Errors allowed in the stop server command.
      * @param failures      Storage for recording failures.
      * @param timingResult  Storage for timing data.
      *
@@ -293,7 +318,7 @@ public class FeaturesStartTestBase {
     public static boolean forceStopServer(String shortName,
                                           boolean outOfLevel,
                                           String pid,
-                                          String[] allowedErrors,
+                                          String[] useAllowedErrors,
                                           List<String> levelFailures, Map<String, String> failures,
                                           TimingResult timingResult,
                                           StartupResult startupResult) {
@@ -315,14 +340,14 @@ public class FeaturesStartTestBase {
                     }
                 }
                 logInfo(m, "Stopping: " + description);
-                if (allowedErrors != null) {
-                    logInfo(m, "Allowed errors [ " + Arrays.toString(allowedErrors) + " ]");
+                if (useAllowedErrors != null) {
+                    logInfo(m, "Allowed errors [ " + Arrays.toString(useAllowedErrors) + " ]");
                 }
 
                 long initialStopNs = timingResult.getTimeNs();
                 Exception boundException;
                 try {
-                    server.stopServer(allowedErrors);
+                    server.stopServer(useAllowedErrors);
                     boundException = null;
                 } catch (Exception e) {
                     boundException = e;
@@ -527,7 +552,7 @@ public class FeaturesStartTestBase {
         List<String> clientFeatures = new ArrayList<>();
         List<String> testFeatures = new ArrayList<>();
         List<String> nonPublicFeatures = new ArrayList<>();
-        List<String> stableFeatures = new ArrayList<>();
+        List<String> useStableFeatures = new ArrayList<>();
 
         // Features may be skipped for feature specific reasons.
         // For example, some features cannot be started by themselves.
@@ -549,19 +574,19 @@ public class FeaturesStartTestBase {
         Map<String, String> outOfLevelReasons = new HashMap<>();
 
         for (String name : featureNamesArray) {
-            FeatureData featureData = getFeatureData(name);
-            if (featureData.isClientOnly()) {
+            FeatureData useFeatureData = getFeatureData(name);
+            if (useFeatureData.isClientOnly()) {
                 clientFeatures.add(name);
                 continue;
-            } else if (featureData.isTest()) {
+            } else if (useFeatureData.isTest()) {
                 testFeatures.add(name);
                 continue;
-            } else if (!featureData.isPublic()) {
+            } else if (!useFeatureData.isPublic()) {
                 nonPublicFeatures.add(name);
                 continue;
 
             } else if ((TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) && isStable(name)) {
-                stableFeatures.add(name);
+                useStableFeatures.add(name);
                 continue;
             }
 
@@ -579,7 +604,7 @@ public class FeaturesStartTestBase {
             }
 
             selectedNames.add(name);
-            selectedFeatures.put(name, featureData);
+            selectedFeatures.put(name, useFeatureData);
 
             String outOfLevelReason = isLevelFiltered(name);
             if (outOfLevelReason != null) {
@@ -604,9 +629,9 @@ public class FeaturesStartTestBase {
             display(m, "    ", 80, testFeatures);
         }
 
-        if (!stableFeatures.isEmpty()) {
-            logInfo(m, "LITE mode: Skip stable features [ " + stableFeatures.size() + " ]:");
-            display(m, "    ", 80, stableFeatures);
+        if (!useStableFeatures.isEmpty()) {
+            logInfo(m, "LITE mode: Skip stable features [ " + useStableFeatures.size() + " ]:");
+            display(m, "    ", 80, useStableFeatures);
         }
 
         if (!filterReasons.isEmpty()) {
@@ -671,8 +696,8 @@ public class FeaturesStartTestBase {
 
         // Assign the range assuming an even split (residue == 0).
 
-        int firstFeatureNo = useBucketNo * bucketSize;
-        int lastFeatureNo = firstFeatureNo + bucketSize;
+        int useFirstFeatureNo = useBucketNo * bucketSize;
+        int useLastFeatureNo = useFirstFeatureNo + bucketSize;
 
         // But there may be leftover features.
         // Allocate these one per bucket, starting with the first bucket.
@@ -684,16 +709,16 @@ public class FeaturesStartTestBase {
         if (residue != 0) {
             if (useBucketNo < residue) {
                 // In effect, add one to the bucket size.
-                firstFeatureNo += useBucketNo;
-                lastFeatureNo += useBucketNo + 1;
+                useFirstFeatureNo += useBucketNo;
+                useLastFeatureNo += useBucketNo + 1;
             } else {
                 // In effect, add one to the bucket size **for preceeding buckets**
-                firstFeatureNo += residue;
-                lastFeatureNo += residue;
+                useFirstFeatureNo += residue;
+                useLastFeatureNo += residue;
             }
         }
 
-        return new int[] { firstFeatureNo, lastFeatureNo };
+        return new int[] { useFirstFeatureNo, useLastFeatureNo };
     }
 
     // Set the range for this bucket ...
@@ -837,7 +862,7 @@ public class FeaturesStartTestBase {
     private static List<String> runFeatureNames;
     private static List<String> skipFeatureNames;
 
-    private static TestState testState;
+    protected static TestState testState;
 
     public static List<Object[]> getParameters() {
         // @Parameterized.BeforeParam invocation is better,
@@ -925,8 +950,8 @@ public class FeaturesStartTestBase {
     }
 
     public static class TestState {
-        public final int firstFeatureNo;
-        public final int lastFeatureNo;
+        public final int testFirstFeatureNo;
+        public final int testLastFeatureNo;
         public final int numFeatures;
 
         public final List<String> successes;
@@ -940,8 +965,8 @@ public class FeaturesStartTestBase {
         public String nextShortName;
 
         public TestState(int firstFeatureNo, int lastFeatureNo, int numFeatures) {
-            this.firstFeatureNo = firstFeatureNo;
-            this.lastFeatureNo = lastFeatureNo;
+            this.testFirstFeatureNo = firstFeatureNo;
+            this.testLastFeatureNo = lastFeatureNo;
             this.numFeatures = numFeatures;
 
             this.successes = new ArrayList<>();
@@ -1171,10 +1196,10 @@ public class FeaturesStartTestBase {
                                      TimingResult timingResult,
                                      StartupResult startupResult) {
 
-            String[] allowedErrors = (isOutOfLevel ? JAVA_LEVEL_ALLOWED_ERRORS : getAllowedErrors(nextShortName));
+            String[] useAllowedErrors = (isOutOfLevel ? JAVA_LEVEL_ALLOWED_ERRORS : getAllowedErrors(nextShortName));
 
             if (forceStopServer(nextShortName, isOutOfLevel,
-                                startupResult.pid, allowedErrors,
+                                startupResult.pid, useAllowedErrors,
                                 levelExpectedFailures, failures,
                                 timingResult, startupResult)) {
 
@@ -1261,7 +1286,10 @@ public class FeaturesStartTestBase {
                 // In this case, do our best to stop the server.
                 // Make a dummy result that looks like an attempted startup.
                 if (startupResult == null) {
-                    startupResult = new StartupResult(StartupResult.DID_ATTEMPT, !StartupResult.DID_START, !StartupResult.HAD_FORBIDDEN_ERRORS, !StartupResult.MISSING_REQUIRED_ERRORS, getPid());
+                    startupResult = new StartupResult(
+                        StartupResult.DID_ATTEMPT, !StartupResult.DID_START,
+                        !StartupResult.HAD_FORBIDDEN_ERRORS, !StartupResult.MISSING_REQUIRED_ERRORS,
+                        getPid());
                 }
 
                 if (startupResult.attempted) {
@@ -1271,6 +1299,13 @@ public class FeaturesStartTestBase {
 
         } finally {
             display(m, timingResult);
+
+            if (startupResult == null) {
+                startupResult = new StartupResult(
+                    !StartupResult.DID_ATTEMPT, !StartupResult.DID_START,
+                    !StartupResult.HAD_FORBIDDEN_ERRORS, !StartupResult.MISSING_REQUIRED_ERRORS,
+                    getPid());
+            }
 
             if (!startupResult.attempted) {
                 Assert.assertTrue("Did not attempt [ " + useShortName + " ]", false);
