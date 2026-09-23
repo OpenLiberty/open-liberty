@@ -19,12 +19,12 @@ import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpServerKeepAliveHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.ApplicationProtocolNames;
@@ -109,12 +109,13 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             // HTTP/1 codec/read topology is installed before application dispatch can observe it.
             ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.ALPN_HTTP1);
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
-            
-            if(ctx.pipeline().get(FlowControlHandler.class) == null){
+
+            if (ctx.pipeline().get(FlowControlHandler.class) == null) {
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
             }
-            
-            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+
+            // Use LibertyHttpServerKeepAliveHandler (version-enforcing subclass) from #35538
+            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpServerKeepAliveHandler());
             // Turn on half closure for H1
             ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
             ctx.channel().config().setAutoRead(false);

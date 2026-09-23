@@ -32,6 +32,7 @@ import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpServerKeepAliveHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
 import io.netty.channel.Channel;
@@ -44,7 +45,6 @@ import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslHandler;
@@ -264,15 +264,22 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn off auto read for H1
                 ctx.channel().config().setAutoRead(false);
 
-                TimeoutHandler timeoutHandler = pipeline.get(TimeoutHandler.class);
-
-                // Add H1 handlers
-                // TODO we should decide if the TimeoutHandler is optional or not for this check
-                if(pipeline.get(ReadFlowHandler.class) == null){
-                    pipeline.addBefore((timeoutHandler != null) ? TimeoutHandler.NAME : HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                // Add LibertyHttpServerKeepAliveHandler (version-enforcement + keep-alive) from #35538
+                if (pipeline.get(LibertyHttpServerKeepAliveHandler.class) == null) {
+                    pipeline.addBefore("transportHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpServerKeepAliveHandler());
                 }
-                if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
+
+                // Add TimeoutHandler if not already present
+                TimeoutHandler timeoutHandler = pipeline.get(TimeoutHandler.class);
+                if (timeoutHandler == null) {
+                    pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, TimeoutHandler.NAME, new TimeoutHandler(httpConfig));
+                    timeoutHandler = pipeline.get(TimeoutHandler.class);
+                }
+
+                // Add ReadFlowHandler (autoread gating) from #34855
+                if (pipeline.get(ReadFlowHandler.class) == null) {
+                    pipeline.addBefore((timeoutHandler != null) ? TimeoutHandler.NAME : HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
 
                 establishHttp1Protocol(ctx, false);
@@ -341,16 +348,16 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private void addPreDispatcherHandlers(ChannelPipeline pipeline, boolean isHttp2) {
 
         if (!isHttp2) {
-            
-            if(pipeline.get(FlowControlHandler.class) == null){
+            if (pipeline.get(FlowControlHandler.class) == null) {
                 pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
             }
 
-            if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                pipeline.addAfter(FLOW_CONTROL_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            // Use LibertyHttpServerKeepAliveHandler (version-enforcing subclass) from #35538
+            if (pipeline.get(LibertyHttpServerKeepAliveHandler.class) == null) {
+                pipeline.addAfter(FLOW_CONTROL_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpServerKeepAliveHandler());
             }
-            
-            if(pipeline.get(ReadFlowHandler.class) == null) {
+
+            if (pipeline.get(ReadFlowHandler.class) == null) {
                 pipeline.addBefore(HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
             }
         }
