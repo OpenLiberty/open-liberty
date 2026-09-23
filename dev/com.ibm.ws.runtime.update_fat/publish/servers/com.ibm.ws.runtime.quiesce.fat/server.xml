@@ -5,5 +5,5 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
-
+    <executor coreThreads="20"/>
 </server>
