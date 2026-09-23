@@ -13,6 +13,9 @@
 -include= jar:${fileuri;${repo;org.apache.neethi:neethi;3.2.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.neethi:neethi;3.2.3;EXACT}!/!META-INF/maven/*
-
+   @${repo;org.apache.neethi:neethi;3.2.3;EXACT}!/!META-INF/maven/*, \
+   org/apache/neethi=${bin}/org/apache/neethi
+   
+instrument.disabled: true
+  
 -buildpath: org.apache.neethi:neethi;strategy=exact;version=3.2.3
