@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
+import test.TestConstants;
 import test.common.SharedOutputManager;
 
 import com.ibm.ws.logging.RoutedMessage;
@@ -41,8 +42,13 @@ import com.ibm.ws.logging.WsLogHandler;
 @RunWith(JMock.class)
 public class WsMessageRouterImplTest extends MessageRouterImplTest {
 
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
+            .logTo(TestConstants.BUILD_TMP)
+            .trace("*=all");
+    // Named differently from the parent's outputRule so JUnit does not apply the
+    // same singleton rule twice (which would break captureStreams()).
     @Rule
-    public TestRule outputRule = SharedOutputManager.getInstance();
+    public TestRule outputRule = outputMgr;
 
     /**
      * Mockery environment for LogHandlers.
@@ -592,6 +598,391 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
         // Earlier messages are routed to the handlers when they're set.
         msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
         msgRouter.setWsLogHandler("MYLOGHANDLER1", mockWsLogHandler1);
+    }
+
+    /**
+     * Test wildcard routing with a log level suffix (e.g. "ABCD*I").
+     * A message matching the prefix and level ("ABCD23891I") should be dispatched
+     * to the handler, while a message matching the prefix but a different level
+     * ("ABCD23891W") should not be dispatched to the handler.
+     */
+    @Test
+    public void testWildcardRoutingWithLevelSuffix() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // Subscribe handler to ABCD*I
+            Properties props = new Properties();
+            props.setProperty("ABCD*I", "+MYLOGHANDLER");
+            msgRouter.modified(props);
+
+            RoutedMessage matchingMsg = new TestRoutedMessage("ABCD23891I: Info message");
+            RoutedMessage nonMatchingMsg = new TestRoutedMessage("ABCD23891W: Warning message");
+
+            // Expect mockWsLogHandler to be called only for matchingMsg
+            setupWsLogHandlerExpectations(mockWsLogHandler, matchingMsg);
+
+            // matchingMsg routes to mockWsLogHandler and returns true (log normally)
+            assertTrue("Matching message should route and return true", msgRouter.route(matchingMsg, false));
+
+            // nonMatchingMsg does not match ABCD*I (level W != I), should not invoke mockWsLogHandler, returns true
+            assertTrue("Non-matching message should return true", msgRouter.route(nonMatchingMsg, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Test wildcard routing with a prefix-only pattern (e.g. "ABCD123*").
+     * All messages starting with "ABCD123" regardless of log level (I, W, E, A)
+     * should be dispatched to the handler, while messages with a different prefix
+     * should not be dispatched.
+     */
+    @Test
+    public void testWildcardRoutingPrefixOnlyAllLevels() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // Subscribe handler to ABCD123* (matches any level)
+            Properties props = new Properties();
+            props.setProperty("ABCD123*", "+MYLOGHANDLER");
+            msgRouter.modified(props);
+
+            RoutedMessage msgInfo = new TestRoutedMessage("ABCD1231I: Info message");
+            RoutedMessage msgWarn = new TestRoutedMessage("ABCD1232W: Warning message");
+            RoutedMessage msgError = new TestRoutedMessage("ABCD1233E: Error message");
+            RoutedMessage msgAudit = new TestRoutedMessage("ABCD1234A: Audit message");
+            RoutedMessage msgDifferentPrefix = new TestRoutedMessage("WXYZ1231I: Unrelated message");
+
+            // Expect mockWsLogHandler to be called for all messages matching ABCD123 prefix
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgInfo);
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgWarn);
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgError);
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgAudit);
+
+            // Route all messages
+            assertTrue("ABCD1231I should route to handler and return true", msgRouter.route(msgInfo, false));
+            assertTrue("ABCD1232W should route to handler and return true", msgRouter.route(msgWarn, false));
+            assertTrue("ABCD1233E should route to handler and return true", msgRouter.route(msgError, false));
+            assertTrue("ABCD1234A should route to handler and return true", msgRouter.route(msgAudit, false));
+
+            // Different prefix should not invoke mockWsLogHandler
+            assertTrue("WXYZ1231I should not route to handler and return true", msgRouter.route(msgDifferentPrefix, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Test subscribing to wildcard patterns via the API/method call
+     * addMsgToLogHandler() / updateMessageListForHandler().
+     * Subscribe handler to "ABCD*I,BCGA*" via addMsgToLogHandler.
+     * Verify matching messages are routed and non-matching messages are ignored.
+     */
+    @Test
+    public void testWildcardRoutingViaAddMsgToLogHandler() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // Subscribe handler via API methods
+            msgRouter.addMsgToLogHandler("ABCD*I", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("BCGA*", "MYLOGHANDLER");
+
+            RoutedMessage msgMatchLevel = new TestRoutedMessage("ABCD23891I: Info matching ABCD*I");
+            RoutedMessage msgMismatchLevel = new TestRoutedMessage("ABCD23891W: Warning not matching ABCD*I");
+            RoutedMessage msgMatchPrefix = new TestRoutedMessage("BCGA9999W: Warning matching BCGA*");
+            RoutedMessage msgMismatchPrefix = new TestRoutedMessage("BCGB9999W: Warning not matching BCGA*");
+
+            // Expect mockWsLogHandler to be called only for matching messages
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgMatchLevel);
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgMatchPrefix);
+
+            assertTrue("ABCD23891I should route to handler", msgRouter.route(msgMatchLevel, false));
+            assertTrue("ABCD23891W should not route to handler", msgRouter.route(msgMismatchLevel, false));
+            assertTrue("BCGA9999W should route to handler", msgRouter.route(msgMatchPrefix, false));
+            assertTrue("BCGB9999W should not route to handler", msgRouter.route(msgMismatchPrefix, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Test dynamic updating (add and remove) of wildcard patterns via
+     * addMsgToLogHandler() and removeMsgFromLogHandler() methods.
+     */
+    @Test
+    public void testWildcardRemovalViaApi() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // 1. Add subscription
+            msgRouter.addMsgToLogHandler("ABCD*I", "MYLOGHANDLER");
+
+            RoutedMessage msg1 = new TestRoutedMessage("ABCD23891I: Info message 1");
+            setupWsLogHandlerExpectations(mockWsLogHandler, msg1);
+            assertTrue("Message should route while subscribed", msgRouter.route(msg1, false));
+
+            // 2. Remove subscription
+            msgRouter.removeMsgFromLogHandler("ABCD*I", "MYLOGHANDLER");
+
+            // 3. Route again - should NOT be dispatched to mockWsLogHandler (no expectations set)
+            RoutedMessage msg2 = new TestRoutedMessage("ABCD23891I: Info message 2");
+            assertTrue("Message should not route after unsubscribing", msgRouter.route(msg2, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Scenario 1: Multi-Handler Wildcard Overlap & Deduplication.
+     * Multiple handlers subscribe to overlapping patterns:
+     *  - mockWsLogHandler subscribes to "ABCD*"
+     *  - mockWsLogHandler1 subscribes to "ABCD*I"
+     *  - mockWsLogHandler2 subscribes to "*" (global route-all)
+     *
+     * Verify:
+     *  1. "ABCD1234I" is delivered to all three handlers.
+     *  2. "ABCD1234W" is delivered to mockWsLogHandler and mockWsLogHandler2 (not mockWsLogHandler1).
+     *  3. "WXYZ1234I" is delivered only to mockWsLogHandler2 (*).
+     *  4. A handler registered under both "*" and "ABCD*" (e.g. mockWsLogHandler2) receives
+     *     each message only once (deduplication check).
+     */
+    @Test
+    public void testMultiHandlerWildcardOverlapAndDeduplication() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("HANDLER_PREFIX", mockWsLogHandler);
+            msgRouter.setWsLogHandler("HANDLER_LEVEL", mockWsLogHandler1);
+            msgRouter.setWsLogHandler("HANDLER_GLOBAL", mockWsLogHandler2);
+
+            // Subscriptions
+            msgRouter.addMsgToLogHandler("ABCD*", "HANDLER_PREFIX");
+            msgRouter.addMsgToLogHandler("ABCD*I", "HANDLER_LEVEL");
+            // Also subscribe HANDLER_GLOBAL to both '*' and 'ABCD*' to test deduplication
+            msgRouter.addMsgToLogHandler("*", "HANDLER_GLOBAL");
+            msgRouter.addMsgToLogHandler("ABCD*", "HANDLER_GLOBAL");
+
+            RoutedMessage msgInfo = new TestRoutedMessage("ABCD1234I: Info message");
+            RoutedMessage msgWarn = new TestRoutedMessage("ABCD1234W: Warning message");
+            RoutedMessage msgOther = new TestRoutedMessage("WXYZ1234I: Unrelated message");
+
+            // msgInfo (ABCD1234I) should be dispatched to:
+            // - HANDLER_PREFIX (matches ABCD*)
+            // - HANDLER_LEVEL (matches ABCD*I)
+            // - HANDLER_GLOBAL (matches * and ABCD*, must be called EXACTLY ONCE due to deduplication)
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgInfo);
+            setupWsLogHandlerExpectations(mockWsLogHandler1, msgInfo);
+            setupWsLogHandlerExpectations(mockWsLogHandler2, msgInfo);
+
+            // msgWarn (ABCD1234W) should be dispatched to:
+            // - HANDLER_PREFIX (matches ABCD*)
+            // - HANDLER_GLOBAL (matches *)
+            // NOT to HANDLER_LEVEL (W != I)
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgWarn);
+            setupWsLogHandlerExpectations(mockWsLogHandler2, msgWarn);
+
+            // msgOther (WXYZ1234I) should be dispatched to:
+            // - HANDLER_GLOBAL only (matches *)
+            setupWsLogHandlerExpectations(mockWsLogHandler2, msgOther);
+
+            assertTrue("msgInfo should route and return true", msgRouter.route(msgInfo, false));
+            assertTrue("msgWarn should route and return true", msgRouter.route(msgWarn, false));
+            assertTrue("msgOther should route and return true", msgRouter.route(msgOther, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Scenario 2: Early-Message Buffering and Replay with Wildcards.
+     * Messages are issued and buffered before any WsLogHandler registers.
+     * When a handler registers with wildcard subscriptions (e.g. "ABCD*I" and "BCGA*"),
+     * only earlier messages matching those wildcard patterns should be replayed.
+     */
+    @Test
+    public void testEarlyMessagesWildcardReplay() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+
+            // Set up early messages queue
+            Queue<RoutedMessage> earlierMessages = new ConcurrentLinkedQueue<RoutedMessage>();
+            msgRouter.setEarlierMessages(earlierMessages);
+
+            RoutedMessage msgMatchLevel = new TestRoutedMessage("ABCD23891I: Info matching ABCD*I");
+            RoutedMessage msgMismatchLevel = new TestRoutedMessage("ABCD23891W: Warning not matching ABCD*I");
+            RoutedMessage msgMatchPrefix = new TestRoutedMessage("BCGA9999W: Warning matching BCGA*");
+            RoutedMessage msgMismatchPrefix = new TestRoutedMessage("BCGB9999W: Warning not matching BCGA*");
+
+            // Route messages while no handlers are registered yet (all buffered into earlierMessages)
+            assertTrue(msgRouter.route(msgMatchLevel, false));
+            assertTrue(msgRouter.route(msgMismatchLevel, false));
+            assertTrue(msgRouter.route(msgMatchPrefix, false));
+            assertTrue(msgRouter.route(msgMismatchPrefix, false));
+
+            // Subscribe handler to ABCD*I and BCGA*
+            msgRouter.addMsgToLogHandler("ABCD*I", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("BCGA*", "MYLOGHANDLER");
+
+            // Expect only matching early messages to be replayed upon handler registration
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgMatchLevel);
+            setupWsLogHandlerExpectations(mockWsLogHandler, msgMatchPrefix);
+
+            // Register handler - triggers replay of matching earlierMessages
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Scenario 4: Invalid Wildcard Syntax Handling.
+     * Invalid patterns (e.g. "ABC**", "ABC**E", "ABC*EFJ", "XYZ**I") should be rejected,
+     * emit warning CWWKE0710W, and not route matching messages.
+     */
+    @Test
+    public void testInvalidWildcardEmitsWarningAndDoesNotRoute() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+                	outputMgr.resetStreams();
+        	outputMgr.restoreStreams();
+        	outputMgr.captureStreams();
+        try {
+
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // Subscribing invalid patterns via addMsgToLogHandler
+            msgRouter.addMsgToLogHandler("ABC**", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("ABC**E", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("ABC*EFJ", "MYLOGHANDLER");
+
+            // Subscribing invalid pattern via modified()
+            Properties props = new Properties();
+            props.setProperty("XYZ**I", "+MYLOGHANDLER");
+            msgRouter.modified(props);
+
+            // Each invalid pattern must produce a CWWKE0710W entry naming the offending pattern.
+            // '*' is a regex metacharacter — escape as \\* to match a literal asterisk.
+            assertTrue("Expected CWWKE0710W warning for ABC**",
+                       outputMgr.checkForMessages("CWWKE0710W.*ABC\\*\\*[^E]"));
+            assertTrue("Expected CWWKE0710W warning for ABC**E",
+                       outputMgr.checkForMessages("CWWKE0710W.*ABC\\*\\*E"));
+            assertTrue("Expected CWWKE0710W warning for ABC*EFJ",
+                       outputMgr.checkForMessages("CWWKE0710W.*ABC\\*EFJ"));
+
+            // Verify that messages with prefixes from invalid subscriptions are NOT dispatched to handler
+            RoutedMessage msg1 = new TestRoutedMessage("ABCDE1234I: Should not route");
+            RoutedMessage msg2 = new TestRoutedMessage("XYZAB1234I: Should not route");
+
+            assertTrue("msg1 should return true for normal logging without dispatching", msgRouter.route(msg1, false));
+            assertTrue("msg2 should return true for normal logging without dispatching", msgRouter.route(msg2, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Comprehensive routing test: mix of invalid wildcard patterns, valid wildcard patterns,
+     * and explicit (exact) message ID subscriptions, all registered against the same handler.
+     *
+     * Expectations:
+     *  - Each invalid pattern emits CWWKE0710W naming the offending pattern and is NOT routed.
+     *  - Valid prefix-only wildcard "GOOD*" routes any message starting with "GOOD", any level.
+     *  - Valid level-qualified wildcard "FINE*W" routes only WARNING messages starting with "FINE".
+     *  - Explicit exact ID "EXACT0001I" routes only that exact message ID.
+     *  - Messages that do not match any valid subscription are NOT dispatched to the handler.
+     */
+    @Test
+    public void testMixedValidInvalidAndExplicitRouting() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        outputMgr.resetStreams();
+        outputMgr.restoreStreams();
+        outputMgr.captureStreams();
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // --- Invalid patterns (via addMsgToLogHandler) ---
+            // These must emit CWWKE0710W and must not register any routing.
+            msgRouter.addMsgToLogHandler("BAD**",    "MYLOGHANDLER");  // double star
+            msgRouter.addMsgToLogHandler("BAD**W",   "MYLOGHANDLER");  // double star with level
+            msgRouter.addMsgToLogHandler("BAD*WXY",  "MYLOGHANDLER");  // trailing chars after level
+
+            // --- Valid wildcard patterns (via addMsgToLogHandler) ---
+            msgRouter.addMsgToLogHandler("GOOD*",   "MYLOGHANDLER");   // prefix-only, any level
+            msgRouter.addMsgToLogHandler("FINE*W",  "MYLOGHANDLER");   // prefix + WARNING level only
+
+            // --- Explicit exact message ID (via addMsgToLogHandler) ---
+            msgRouter.addMsgToLogHandler("EXACT0001I", "MYLOGHANDLER");
+
+            // --- Assert CWWKE0710W was emitted for each invalid pattern ---
+            assertTrue("Expected CWWKE0710W for BAD**",
+                       outputMgr.checkForMessages("CWWKE0710W.*BAD\\*\\*[^W]"));
+            assertTrue("Expected CWWKE0710W for BAD**W",
+                       outputMgr.checkForMessages("CWWKE0710W.*BAD\\*\\*W"));
+            assertTrue("Expected CWWKE0710W for BAD*WXY",
+                       outputMgr.checkForMessages("CWWKE0710W.*BAD\\*WXY"));
+
+            // --- Messages that match valid wildcard "GOOD*" (any level) ---
+            RoutedMessage goodInfo  = new TestRoutedMessage("GOOD1234I: Info message");
+            RoutedMessage goodWarn  = new TestRoutedMessage("GOOD1234W: Warning message");
+            RoutedMessage goodError = new TestRoutedMessage("GOOD1234E: Error message");
+            RoutedMessage goodAudit = new TestRoutedMessage("GOOD1234A: Audit message");
+
+            setupWsLogHandlerExpectations(mockWsLogHandler, goodInfo);
+            setupWsLogHandlerExpectations(mockWsLogHandler, goodWarn);
+            setupWsLogHandlerExpectations(mockWsLogHandler, goodError);
+            setupWsLogHandlerExpectations(mockWsLogHandler, goodAudit);
+
+            assertTrue("GOOD1234I should route via GOOD*",  msgRouter.route(goodInfo,  false));
+            assertTrue("GOOD1234W should route via GOOD*",  msgRouter.route(goodWarn,  false));
+            assertTrue("GOOD1234E should route via GOOD*",  msgRouter.route(goodError, false));
+            assertTrue("GOOD1234A should route via GOOD*",  msgRouter.route(goodAudit, false));
+
+            // --- Messages that match level-qualified wildcard "FINE*W" ---
+            RoutedMessage fineWarn    = new TestRoutedMessage("FINE1234W: Warning — matches FINE*W");
+            RoutedMessage fineInfo    = new TestRoutedMessage("FINE1234I: Info — does NOT match FINE*W");
+            RoutedMessage fineError   = new TestRoutedMessage("FINE1234E: Error — does NOT match FINE*W");
+
+            setupWsLogHandlerExpectations(mockWsLogHandler, fineWarn);
+            // fineInfo and fineError: no expectation — handler must NOT be called
+
+            assertTrue("FINE1234W should route via FINE*W",       msgRouter.route(fineWarn,  false));
+            assertTrue("FINE1234I should not route via FINE*W",   msgRouter.route(fineInfo,  false));
+            assertTrue("FINE1234E should not route via FINE*W",   msgRouter.route(fineError, false));
+
+            // --- Exact message ID subscription ---
+            RoutedMessage exactMatch    = new TestRoutedMessage("EXACT0001I: Exact match");
+            RoutedMessage exactNoMatch  = new TestRoutedMessage("EXACT0002I: Different suffix");
+
+            setupWsLogHandlerExpectations(mockWsLogHandler, exactMatch);
+            // exactNoMatch: no expectation — handler must NOT be called
+
+            assertTrue("EXACT0001I should route via exact subscription",       msgRouter.route(exactMatch,   false));
+            assertTrue("EXACT0002I should not route — no matching subscription", msgRouter.route(exactNoMatch, false));
+
+            // --- Messages whose prefix matches an invalid (rejected) pattern must NOT route ---
+            RoutedMessage badMsg1 = new TestRoutedMessage("BADDE1234I: Invalid prefix BAD**");
+            RoutedMessage badMsg2 = new TestRoutedMessage("BADDE1234W: Invalid prefix BAD**W");
+            RoutedMessage badMsg3 = new TestRoutedMessage("BADDE1234W: Invalid prefix BAD*WXY");
+            // No expectations set — handler must NOT be called for any of these
+
+            assertTrue("BAD** prefix should not route", msgRouter.route(badMsg1, false));
+            assertTrue("BAD**W prefix should not route", msgRouter.route(badMsg2, false));
+            assertTrue("BAD*WXY prefix should not route", msgRouter.route(badMsg3, false));
+
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
     }
 
 }

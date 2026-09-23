@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,17 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.osgi;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
@@ -39,6 +42,9 @@ import com.ibm.ws.logging.WsMessageRouter;
  */
 public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageRouter {
 
+	
+	protected final static boolean isBeta = ProductInfo.getBetaEdition(); 
+	
     private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     /**
      * Map of LogHandlerIDs to WsLogHandlers.
@@ -127,6 +133,57 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
     
     
     /**
+     * @return the Set of LogHandler IDs to route this already parsed message id
+     */
+    @Override
+    protected Set<String> getLogHandlersForMsgId(String msgId) {
+        if (msgId == null)
+            return null;
+        
+        Set<String> handlersToReturn = super.getLogHandlersForMsgId(msgId);
+        /*
+         * !Special case! 
+         * If the message Id was `*`.
+         * The use case was to explicitly find the handlers with `*` defined.
+         * The logic after does not apply, there will be no matches with handlers
+         * subscribed with wildcard prefix matching w/ optional log level.
+         */
+        if (msgId.equals("*")) { 
+        	return handlersToReturn;
+        }
+
+        //First is for runtime (instanitated at bundle startup for - good for perf if saved during server runtime). Second is for junits (while during beta).
+		if (isBeta == true || Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+			if (wildCardMsgIdToLogHandlerIds.size() > 0) {
+				Level msgLevelReadAsIs = parseLevel(msgId);
+
+				for (WildCardMessageAndLevel wmac : wildCardMsgIdToLogHandlerIds.keySet()) {
+
+					// IF NOT LEVEL.ALL (Default) need to check AND THEN IF NOT MATCHING - SKIP
+					Level wmacLevl = wmac.getLogLevel();
+					if (!wmacLevl.equals(Level.ALL) && !wmacLevl.equals(msgLevelReadAsIs)) {
+						continue;
+					}
+
+					/*
+					 * Use temp set so as not to directly manipulate source set from
+					 * original map.
+					 */
+					if (msgId.startsWith(wmac.getWildCardMessageID())) {
+						Set<String> merged = new CopyOnWriteArraySet<String>();
+						if (handlersToReturn != null)
+							merged.addAll(handlersToReturn);
+						merged.addAll(wildCardMsgIdToLogHandlerIds.get(wmac));
+						handlersToReturn = merged;
+					}
+				}
+			}
+		}
+        return handlersToReturn;
+    }
+   
+    
+    /**
      * Remove the LogHandler ref.
      */
     public void unsetWsLogHandler(String id, WsLogHandler ref) {
@@ -150,9 +207,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
     @Override
     public boolean route(RoutedMessage routedMessage, boolean messageHidden) {
 
-    	
 
-    	
         if (routedMessage == null) {
             return true;
         }
@@ -171,55 +226,6 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
                 routeToAll(routedMessage, routeAllMsgsToTheseLogHandlers, messageHidden);
             }
             Set<String> logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
-            
-            
-            String s_isDoWC = System.getProperty("doWC");
-            boolean isDoWC = false;
-            if (s_isDoWC != null) {
-            	isDoWC = Boolean.valueOf(s_isDoWC);
-            }
-            
-            
-            //only diff logic during routing - fence off
-            
-            if (s_isDoWC != null && isDoWC == true) {
-                if (wildCardMsgIdToLogHandlerIds.size() > 0){
-                	
-                	//NEED TO PARSE LOG LEVEL SEP .... BECAUSE INFO COULD ACTUALLY BE AN AUDIT
-                	//Level msgLevel = routedMessage.getLogRecord().getLevel();
-                	
-                	
-                	
-                	String parsedMessageID = parseMessageId(routedMessage.getFormattedMsg());
-
-                	
-                	//Don't check if we can't parse message ID.
-                	if ( parsedMessageID != null) {
-                		
-                		
-                		Level msgLevelReadAsIs = parseLevel(parsedMessageID);
-                		
-                    	for (WildCardMessageAndLevel wmac : wildCardMsgIdToLogHandlerIds.keySet()) {
-                    		
-                    		//IF NOT ALL (Default) need to check AND THEN IF NOT MATCHING - SKIP
-                    		Level wmacLevl = wmac.getLogLevel();
-                    		if (!wmacLevl.equals(Level.ALL) && !wmacLevl.equals(msgLevelReadAsIs)) {
-                    			continue;
-                    		}
-                    		
-                    		if (parsedMessageID.startsWith(wmac.getWildCardMessageID())){
-                    			if (logHandlerIds == null ) {
-                    				logHandlerIds = new HashSet<String>();
-                    			}
-                    			logHandlerIds.addAll(wildCardMsgIdToLogHandlerIds.get(wmac));
-                    		}
-                    	}
-                	}
-                }
-            }
-            
-
-
             
             if (logHandlerIds == null) {
                 // There are no routing requirements for this msgId.
