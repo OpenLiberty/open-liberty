@@ -72,6 +72,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpRequestValidationException;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -244,12 +245,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (!(msg.decoderResult().isFinished() && msg.decoderResult().isSuccess())) {
             if(context.channel().isActive()) {
                 if (msg.decoderResult().cause() != null) {
+                    Throwable failure = msg.decoderResult().cause();
                     // The legacy parser rejects this protocol condition without FFDC.
-                    if (!(msg.decoderResult().cause() instanceof ContentLengthNotAllowedException)
-                                    && !msg.decoderResult().cause().getMessage().contains("possibly HTTP/0.9")) {
-                        FFDCFilter.processException(msg.decoderResult().cause(), HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
+                    if (!(failure instanceof ContentLengthNotAllowedException)
+                                    && !isExpectedRequestValidationFailure(failure)
+                                    && !failure.getMessage().contains("possibly HTTP/0.9")) {
+                        FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
-                    sendErrorMessage(msg.decoderResult().cause());
+                    sendErrorMessage(failure);
                 } else {
                     sendErrorMessage(new Exception("HTTP request decoding failure!"));
                 }
@@ -372,6 +375,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             return;
         }
+    }
+
+    private static boolean isExpectedRequestValidationFailure(Throwable failure) {
+        return failure instanceof HttpRequestValidationException
+                        || (failure instanceof IllegalArgumentException
+                                        && failure.getCause() instanceof HttpRequestValidationException);
     }
 
     //TODO -> Utils candidate
