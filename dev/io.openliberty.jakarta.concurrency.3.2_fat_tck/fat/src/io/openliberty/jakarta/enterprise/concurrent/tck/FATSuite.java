@@ -26,11 +26,8 @@ import componenttest.topology.impl.JavaInfo;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, //Need to have a passing test for Java 8, 11, and 17
-// TODO enable tests once there is a SNAPSHOT or milestone release
-//      and when the concurrent-3.2 feature can reasonably pass the TCK.
-//      For now this bucket is only useful for locally testing changes to the TCK against Liberty.
-//                ConcurrentTckLauncherFull.class, //FULL MODE
-//                ConcurrentTckLauncherWeb.class //LITE MODE
+                ConcurrentTckLauncherFull.class, //FULL MODE
+                ConcurrentTckLauncherWeb.class //LITE MODE
 })
 public class FATSuite {
 
@@ -59,9 +56,10 @@ public class FATSuite {
                 return result = false;
             }
 
-            //default option
-            reason = "signature test can run as configured";
-            return result = true;
+            // Disable signature test because 3.2.0-M2 milestone TCK signature file is outdated and mismatched with 3.2 spec APIs.
+            // TODO enable signature tests once 3.2.0-M3 TCK is created
+            reason = "signature test disabled due to mismatched milestone 3.2.0-M2 TCK signature file";
+            return result = false;
 
         } finally {
             Log.info(testClass, "shouldRunSignatureTests", "Return: " + result + ", because " + reason);
