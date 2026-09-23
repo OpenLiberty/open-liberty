@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -204,7 +205,7 @@ public class JSFHtmlUnit {
     public void testUserAgentNeedsUpdateTrueCondition() throws Exception {
 
         try (WebClient webClient = new WebClient()) {
-            DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz").withZone(ZoneId.of("GMT"));
+            DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
             ZonedDateTime currentZonedMinusYear = ZonedDateTime.now().minusYears(1);
             String formattedZonedDateTimeMinusYear = currentZonedMinusYear.format(formatterZoned);
             Log.info(c, name.getMethodName(), "formattedZonedDateTimeMinusYear: " + formattedZonedDateTimeMinusYear);
@@ -244,7 +245,7 @@ public class JSFHtmlUnit {
     public void testUserAgentNeedsUpdateFalseCondition() throws Exception {
 
         try (WebClient webClient = new WebClient()) {
-            DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz").withZone(ZoneId.of("GMT"));
+            DateTimeFormatter formatterZoned = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US).withZone(ZoneId.of("GMT"));
             ZonedDateTime currentZonedPlusYear = ZonedDateTime.now().plusYears(1);
             String formattedZonedDatePlusYear = currentZonedPlusYear.format(formatterZoned);
             Log.info(c, name.getMethodName(), "formattedZonedDatePlusYear: " + formattedZonedDatePlusYear);
