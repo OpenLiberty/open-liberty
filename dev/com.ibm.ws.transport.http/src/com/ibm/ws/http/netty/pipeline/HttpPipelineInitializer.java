@@ -42,6 +42,7 @@ import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -293,8 +294,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 if (pipeline.get("h2cUpgradeHandler") != null) {
                     pipeline.remove("h2cUpgradeHandler");
                 }
-                if (pipeline.get("HttpServerUpgradeHandler#0") != null) {
-                    pipeline.remove("HttpServerUpgradeHandler#0");
+                HttpServerUpgradeHandler upgradeHandler = pipeline.get(HttpServerUpgradeHandler.class);
+                if (upgradeHandler != null) {
+                    pipeline.remove(upgradeHandler);
                 }
                 if (pipeline.get("upgradeCheckHandler") != null) {
                     pipeline.remove("upgradeCheckHandler");
