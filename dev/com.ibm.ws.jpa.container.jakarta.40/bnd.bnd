@@ -30,7 +30,7 @@ WS-TraceGroup: JPA
 # JPACompPUnitInfo is NOT re-specified — it lives entirely in com.ibm.ws.jpa.container.core
 # (gets transformed) and carries no API-version-sensitive descriptors.
 -includeresource: \
-    @${repo;com.ibm.ws.jpa.container.jakarta;latest}, \
+    @${repo;com.ibm.ws.jpa.container.jakarta;latest}!/(**/*.class|OSGI-INF/metatype/*|OSGI-INF/l10n/**), \
     com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class=\
         ${bin}/com/ibm/ws/jpa/management/AbstractJPAPUnitInfo.class, \
     com/ibm/ws/jpa/management/AbstractJPACompPUnitInfo.class=\
