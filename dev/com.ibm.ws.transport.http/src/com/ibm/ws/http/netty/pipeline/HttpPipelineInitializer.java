@@ -268,7 +268,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 if (pipeline.get(LibertyHttpServerKeepAliveHandler.class) == null) {
                     pipeline.addBefore("transportHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpServerKeepAliveHandler());
                 }
-                ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
 
                 // Add TimeoutHandler if not already present
                 TimeoutHandler timeoutHandler = pipeline.get(TimeoutHandler.class);
