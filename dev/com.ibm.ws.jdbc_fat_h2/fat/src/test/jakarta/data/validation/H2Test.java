@@ -121,14 +121,16 @@ public class H2Test extends FATServletClient {
             assertTrue("H2 logwriter output should be present in trace.log",
                        !h2LogWriterOutput.isEmpty());
 
-            // Verify exact Type:/Content: password filtering behavior
-            List<String> passwordTypeLines = server.findStringsInLogsAndTrace("Type: password");
-            assertTrue("Type: password should be present in trace.log",
-                       !passwordTypeLines.isEmpty());
+            // Verify exact Type:/Content: password filtering behavior if testDataSource() was not skipped (e.g. on IBM i)
+            if (!"OS/400".equalsIgnoreCase(System.getProperty("os.name"))) {
+                List<String> passwordTypeLines = server.findStringsInLogsAndTrace("Type: password");
+                assertTrue("Type: password should be present in trace.log",
+                           !passwordTypeLines.isEmpty());
 
-            List<String> filteredContent = server.findStringsInLogsAndTrace("Content: \\*\\*\\*\\*\\*\\*");
-            assertTrue("Filtered content markers (Content: ******) should be present in trace.log",
-                       !filteredContent.isEmpty());
+                List<String> filteredContent = server.findStringsInLogsAndTrace("Content: \\*\\*\\*\\*\\*\\*");
+                assertTrue("Filtered content markers (Content: ******) should be present in trace.log",
+                           !filteredContent.isEmpty());
+            }
 
             // Verify that all Content: lines are filtered (no unfiltered content should appear)
             List<String> unfilteredContent = server.findStringsInLogsAndTrace("Content: (?!\\*\\*\\*\\*\\*\\*).*");
