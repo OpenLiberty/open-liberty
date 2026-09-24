@@ -95,7 +95,7 @@ Import-Package: \
             com.ibm.wsspi.classloading,\
             org.jboss.logging;version="[3.6,4)", \
             org.jboss.jandex;version="[3.5,4)", \
-            !javax.activation, \
+            !jakarta.activation, \
             javax.crypto;resolution:=optional, \
             javax.crypto.spec;resolution:=optional, \
             jakarta.enterprise.context.spi;resolution:=optional, \
