@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2009 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cache.servlet;
 
@@ -17,6 +14,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
@@ -741,7 +739,7 @@ public class CacheHook {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 						Tr.debug(tc, "WIP wait for id: " + id);
 					try {
-						existingLatch.await();
+						existingLatch.await(5, TimeUnit.SECONDS);
 					} catch (InterruptedException ie) {
 						Thread.currentThread().interrupt();
 					}
