@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 IBM Corporation and others.
+ * Copyright (c) 2018,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -902,6 +902,58 @@ public class FATTest extends AbstractAppManagerTest {
             pathsToCleanup.add(server.getServerRoot() + "/apps");
         }
     }
+    /**
+     * This test verifies that restarting an application via ApplicationMBean sends the correct
+     * "application.start" notification instead of "application.update".
+     * 
+     * Reproduces issue #34736 where stopping and then starting an app via MBean incorrectly
+     * sent "application.update" notification instead of "application.start".
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testApplicationMBeanRestartNotification() throws Exception {
+        final String method = testName.getMethodName();
+        try {
+            // Setup: Start server with snoop application
+            server.setServerConfigurationFile("/appsConfigured/server.xml");
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, "apps", SNOOP_WAR);
+            server.startServer(method + ".log");
+            
+            // Wait for initial application start
+            assertNotNull("The snoop application never came up", 
+                         server.waitForStringInLog("CWWKZ0001I.* snoop"));
+            assertNotNull("Should see APPLICATION_START_SUCCESSFUL on initial start",
+                         server.waitForStringInLog("APPLICATION_START_SUCCESSFUL.*snoop"));
+            
+            // Get ApplicationMBean and stop the application
+            com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean snoopMBean = getApplicationMBean("snoop");
+            server.setMarkToEndOfLog();
+            snoopMBean.stop();
+            
+            // Verify application stopped
+            assertNotNull("The snoop application was not stopped",
+                         server.waitForStringInLogUsingMark("CWWKZ0009I.*snoop"));
+            
+            // Restart application via MBean - this should trigger "application.start" not "application.update"
+            server.setMarkToEndOfLog();
+            snoopMBean.start();
+            
+            // Verify correct notification: should see "application.start"
+            assertNotNull("Should see APPLICATION_START_SUCCESSFUL message after MBean restart",
+                         server.waitForStringInLogUsingMark("APPLICATION_START_SUCCESSFUL.*snoop"));
+            
+            // Verify no update message appears (this was the bug - it incorrectly sent update)
+            assertNull("Should NOT see APPLICATION_UPDATE_SUCCESSFUL message after MBean restart",
+                      server.waitForStringInLogUsingMark("APPLICATION_UPDATE_SUCCESSFUL", 2000));
+            
+            Log.info(c, method, "Test passed: Application restart via MBean correctly sent application.start notification");
+            
+        } finally {
+            pathsToCleanup.add(server.getServerRoot() + "/apps");
+        }
+    }
+
 
     private static String[] getAppIDs(int startId, int numApps) {
         String[] result = new String[numApps];
