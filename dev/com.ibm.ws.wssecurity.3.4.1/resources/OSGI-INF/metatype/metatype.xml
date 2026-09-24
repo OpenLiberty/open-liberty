@@ -86,7 +86,7 @@
     
     <OCD id="com.ibm.ws.wssecurity.sig.config" name="%sigprops" description="%sigprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
            <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
-           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%privateksa" description="%privateksa.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
            ibm:type="password" name="%ksp" description="%ksp.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%ksfile" description="%ksfile.desc" />
@@ -114,7 +114,7 @@
     
    <OCD id="com.ibm.ws.wssecurity.enc.config" name="%encprops" description="%encprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
            <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
-           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%publicksa" description="%publicksa.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
            ibm:type="password" name="%ksp" description="%ksp.desc" />
            <AD id="org.apache.ws.security.crypto.provider" required="false" type="String" name="%crypto" 
@@ -126,7 +126,6 @@
            name="%certprovider" description="%certprovider.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.x509crl.file" required="false" type="String" 
            name="%crl" description="%crl.desc" />  
-           <AD id="org.apache.ws.security.crypto.merlin.keystore.private.password" required="false" type="String" 
            ibm:type="password" name="%keypass" description="%keypass.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.truststore.file" required="false" type="String" 
            name="%tsfile" description="%tsfile.desc" />
