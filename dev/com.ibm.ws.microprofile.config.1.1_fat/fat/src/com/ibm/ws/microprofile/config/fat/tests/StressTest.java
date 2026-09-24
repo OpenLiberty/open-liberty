@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.config.fat.tests;
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.microprofile.appConfig.stress.test.StressTestServlet;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
@@ -62,9 +64,38 @@ public class StressTest extends FATServletClient {
                                                                           + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
                                                                  "services/org.eclipse.microprofile.config.spi.ConfigSource");
 
+        // DEBUG: Log WAR contents before deployment
+        Log.info(StressTest.class, "setUp", "=== WAR Archive Contents ===");
+        stress_war.getContent().forEach((path, node) -> {
+            Log.info(StressTest.class, "setUp", "  " + path.get());
+        });
+        
+        // DEBUG: Export to temp location for inspection on IBMi
+        String osName = System.getProperty("os.name");
+//        if (osName != null && osName.toLowerCase().contains("os/400")) {
+//            File tempWar = new File("/tmp/stress_debug.war");
+//            stress_war.as(ZipExporter.class).exportTo(tempWar, true);
+//            Log.info(StressTest.class, "setUp", "DEBUG: Exported WAR to " + tempWar.getAbsolutePath() + " for inspection");
+//        }
+
         ShrinkHelper.exportDropinAppToServer(server, stress_war, DeployOptions.SERVER_ONLY);
 
         server.startServer();
+        
+        // DEBUG: Verify deployed files on IBMi
+        if (osName != null && osName.toLowerCase().contains("os/400")) {
+            String dropinsPath = server.getServerRoot() + "/dropins/stress.war";
+            Log.info(StressTest.class, "setUp", "DEBUG: Checking deployed WAR at: " + dropinsPath);
+            File deployedWar = new File(dropinsPath);
+            if (deployedWar.exists()) {
+                Log.info(StressTest.class, "setUp", "DEBUG: Deployed WAR exists, size: " + deployedWar.length());
+            } else {
+                Log.info(StressTest.class, "setUp", "DEBUG: WARNING - Deployed WAR not found!");
+            }
+        }
+        
+        // Wait for application to be fully started
+        server.waitForStringInLog("CWWKZ0001I.*stress");
     }
 
     @AfterClass

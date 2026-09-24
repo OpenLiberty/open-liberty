@@ -14,6 +14,8 @@ package com.ibm.ws.microprofile.appConfig.stress.test;
 
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Iterator;
 
 import javax.servlet.annotation.WebServlet;
@@ -35,7 +37,130 @@ public class StressTestServlet extends FATServlet {
     public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
 
     @Test
-    public void testLargeConfigSources() throws Exception {
+    public void test1_Diagnostics() throws Exception {
+        System.out.println("=== Classloader Diagnostics ===");
+        
+        boolean classLoadSuccess = false;
+        
+        // Check if TestUtils class can be loaded
+        try {
+            Class<?> testUtilsClass = Class.forName("com.ibm.ws.microprofile.appConfig.test.utils.TestUtils");
+            System.out.println("SUCCESS: TestUtils class loaded: " + testUtilsClass.getName());
+            System.out.println("ClassLoader: " + testUtilsClass.getClassLoader());
+            
+            // Get the code source location
+            java.security.CodeSource codeSource = testUtilsClass.getProtectionDomain().getCodeSource();
+            if (codeSource != null) {
+                System.out.println("Code source location: " + codeSource.getLocation());
+            }
+            classLoadSuccess = true;
+        } catch (ClassNotFoundException e) {
+            System.out.println("ERROR: TestUtils class not found via Class.forName!");
+            e.printStackTrace();
+        } catch (NoClassDefFoundError e) {
+            System.out.println("ERROR: NoClassDefFoundError for TestUtils class!");
+            e.printStackTrace();
+        }
+        
+        // Check classloader hierarchy - ALWAYS run this
+        System.out.println("\n=== Classloader Hierarchy ===");
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        System.out.println("Current thread classloader: " + cl);
+        int level = 0;
+        while (cl != null && level < 10) {
+            System.out.println("  Level " + level + ": " + cl.getClass().getName());
+            if (cl instanceof java.net.URLClassLoader) {
+                java.net.URLClassLoader urlCl = (java.net.URLClassLoader) cl;
+                System.out.println("    URLs:");
+                for (java.net.URL url : urlCl.getURLs()) {
+                    System.out.println("      " + url);
+                }
+            }
+            cl = cl.getParent();
+            level++;
+        }
+        
+        // Check for testAppUtils.jar in WEB-INF/lib - ALWAYS run this
+        System.out.println("\n=== Resource Location Check ===");
+        try {
+            URL resourceUrl = getClass().getClassLoader().getResource("com/ibm/ws/microprofile/appConfig/test/utils/TestUtils.class");
+            System.out.println("TestUtils.class resource URL: " + resourceUrl);
+            
+            if (resourceUrl != null) {
+                if (resourceUrl.getProtocol().equals("jar")) {
+                    String jarPath = resourceUrl.getPath();
+                    System.out.println("JAR path from URL: " + jarPath);
+                    
+                    // Extract the actual file path
+                    if (jarPath.startsWith("file:")) {
+                        int endIndex = jarPath.indexOf("!");
+                        if (endIndex > 0) {
+                            String filePath = jarPath.substring(5, endIndex);
+                            System.out.println("Extracted file path: " + filePath);
+                            File jarFile = new File(filePath);
+                            System.out.println("JAR file exists: " + jarFile.exists());
+                            if (jarFile.exists()) {
+                                System.out.println("JAR file size: " + jarFile.length());
+                                System.out.println("JAR file readable: " + jarFile.canRead());
+                                System.out.println("JAR file absolute path: " + jarFile.getAbsolutePath());
+                            } else {
+                                System.out.println("ERROR: JAR file does not exist at: " + filePath);
+                                // Check parent directory
+                                File parentDir = jarFile.getParentFile();
+                                if (parentDir != null) {
+                                    System.out.println("Parent directory exists: " + parentDir.exists());
+                                    if (parentDir.exists()) {
+                                        System.out.println("Parent directory contents:");
+                                        File[] files = parentDir.listFiles();
+                                        if (files != null) {
+                                            for (File f : files) {
+                                                System.out.println("  - " + f.getName() + " (size: " + f.length() + ")");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("Resource protocol is not 'jar': " + resourceUrl.getProtocol());
+                }
+            } else {
+                System.out.println("ERROR: TestUtils.class resource URL is NULL - class not found in classpath!");
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR checking resource: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        // Only fail the test if class loading failed
+        if (!classLoadSuccess) {
+            throw new AssertionError("TestUtils class could not be loaded - see diagnostic output above");
+        }
+    }
+
+    @Test
+    public void test2_EnvironmentValidation() throws Exception {
+        System.out.println("=== Environment Validation ===");
+        System.out.println("OS Name: " + System.getProperty("os.name"));
+        System.out.println("OS Version: " + System.getProperty("os.version"));
+        System.out.println("Java Version: " + System.getProperty("java.version"));
+        System.out.println("File Encoding: " + System.getProperty("file.encoding"));
+        System.out.println("User Dir: " + System.getProperty("user.dir"));
+        
+        // Try to instantiate TestUtils directly
+        try {
+            TestUtils.class.getName();
+            System.out.println("SUCCESS: TestUtils class accessible");
+        } catch (NoClassDefFoundError e) {
+            System.out.println("ERROR: TestUtils class not accessible");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Test
+    public void test3_LargeConfigSources() throws Exception {
         int size = 10000;
         Config config = setupLargeConfigSource(size);
         try {
