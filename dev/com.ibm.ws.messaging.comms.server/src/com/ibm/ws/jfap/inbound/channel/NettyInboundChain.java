@@ -266,7 +266,9 @@ public class NettyInboundChain implements InboundChain{
             this.serverChan = _nettyFramework.startInbound(bootstrap, ep.getHost(), ep.getPort(), f ->{
                 if (f.isCancelled() || !f.isSuccess()) {
                     // The bind future failed asynchronously — the socket was never opened, so setting ischainStarted to false
-                    _isChainStarted = false;
+                    if (serverChan == f.channel()) {
+                            _isChainStarted = false;
+                    }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
                     }
@@ -278,7 +280,9 @@ public class NettyInboundChain implements InboundChain{
                     f.addListener(innerFuture -> {
                         if (innerFuture.isCancelled() || !innerFuture.isSuccess()) {
                             // Reseting the isChainStarted flag as the channel failed to be registered
-                            _isChainStarted = false;
+                            if (serverChan == f.channel()) {
+                                _isChainStarted = false;
+                            }
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 SibTr.debug(this, tc, "Channel exception during connect. Couldn't add quiesce handler: " + f.cause().getMessage());
                             }
@@ -290,6 +294,7 @@ public class NettyInboundChain implements InboundChain{
                                 }
                                 quiesceListener(chan);
                             }else {
+                                _currentConfig.isValidConfig = true;
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "adding quiesce", f);
                                 _nettyFramework.registerEndpointQuiesce(chan, new Callable<Void>() {
                                     @Override
