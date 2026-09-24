@@ -1887,7 +1887,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         };
 
         state.arm(success, error);
-        ReadFlowHandler.setBodyReadWanted(this.nettyContext, true);
+        ReadFlowHandler.setBodyReadWanted(this.nettyContext.channel(), true);
     }
 
     public void countDownFirstReadLatch(boolean force) {

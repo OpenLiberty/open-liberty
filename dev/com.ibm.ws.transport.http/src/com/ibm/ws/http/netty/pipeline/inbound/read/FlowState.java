@@ -12,8 +12,9 @@ package com.ibm.ws.http.netty.pipeline.inbound.read;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import io.netty.util.ReferenceCountUtil;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * This is used by the {@link ReadFlowHandler} to keep track of the state of read
@@ -111,6 +112,14 @@ public class FlowState {
      * <p>Event-loop-owned; must not be accessed from worker threads.
      */
     private ExchangeLifecycle activeLifecycle = null;
+
+    /**
+     * The {@link ChannelHandlerContext} for the {@link ReadFlowHandler} on this channel.
+     * Stored in {@link ReadFlowHandler#handlerAdded} so {@code admitRequest} always fires
+     * from the correct pipeline position. Only populated on HTTP/1 channels; HTTP/2
+     * channels never have a {@link ReadFlowHandler} or a {@link FlowState}.
+     */
+    ChannelHandlerContext readFlowHandlerContext = null;
 
     /**
      * FlowState constructor.

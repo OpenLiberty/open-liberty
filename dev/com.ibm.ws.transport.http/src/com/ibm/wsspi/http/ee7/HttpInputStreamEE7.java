@@ -152,7 +152,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 if (!isStreamingReadReady()){
                     rearmed = state.arm(successRef[0], errorRef[0]);
                     if (!isStreamingReadReady()) {
-                        ReadFlowHandler.setBodyReadWanted(context, true);
+                        ReadFlowHandler.setBodyReadWanted(context.channel(), true);
                         return;
                     }
                 }
@@ -193,7 +193,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 }
                 return false;
             }
-            ReadFlowHandler.setBodyReadWanted(context, true);
+            ReadFlowHandler.setBodyReadWanted(context.channel(), true);
             return false;
         } catch (IOException | RuntimeException | Error failure) {
             state.clear(registration);

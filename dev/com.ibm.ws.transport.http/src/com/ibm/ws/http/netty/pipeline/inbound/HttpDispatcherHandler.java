@@ -169,7 +169,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         Throwable lifecycleFailure = null;
         if (evt instanceof ChannelInputShutdownEvent){
             try {
-                FlowState state = ReadFlowHandler.state(ctx);
+                FlowState state = ReadFlowHandler.state(ctx.channel());
                 if(queue!=null && !queue.isEos() && !state.isRequestConsumed()){
                     try {
                         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);

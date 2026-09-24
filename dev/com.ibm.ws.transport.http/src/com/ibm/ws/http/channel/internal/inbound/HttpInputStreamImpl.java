@@ -723,8 +723,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 if (queue.isEos()){
                     this.readChannelComplete = true;
                     if (this.context != null){
-                        ReadFlowHandler.setBodyReadWanted(this.context, false);
-                        ReadFlowHandler.markRequestConsumed(this.context);
+                        ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
+                        ReadFlowHandler.markRequestConsumed(this.context.channel());
                     }
                     return false;
                 }
@@ -734,7 +734,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     if (context != null
                             && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())) {
                         try {
-                            ReadFlowHandler.setBodyReadWanted(context, false);
+                            ReadFlowHandler.setBodyReadWanted(context.channel(), false);
                         } catch (Throwable ignore) {
                         }
                         return false;
@@ -751,7 +751,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 }
 
                 if(!readRequested && !autoRead && queue.wantsInput() && context != null){
-                    ReadFlowHandler.setBodyReadWanted(context, true);
+                    ReadFlowHandler.setBodyReadWanted(context.channel(), true);
                     readRequested = true;
                 }
 
@@ -764,7 +764,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     if(inputShutdownPending){
                         if(this.context!=null){
                             try{
-                                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                                ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
                             } catch (Throwable ignore){}
                         }
                         return false;
@@ -861,8 +861,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private void completeStreamingFixedLengthRequest() {
         this.readChannelComplete = true;
         if (this.context != null){
-            ReadFlowHandler.setBodyReadWanted(this.context, false);
-            ReadFlowHandler.markRequestConsumed(this.context);
+            ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
+            ReadFlowHandler.markRequestConsumed(this.context.channel());
         }
         if(!queue.isEos()){
             queue.signalEos();
@@ -895,7 +895,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
         if(this.context != null){
             try{
-                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
             } catch(Throwable ignore){}
         }
 
