@@ -370,6 +370,7 @@ public class McpClient extends ExternalResource {
      * after it has been invalidated (e.g., by server config changes).
      */
     public void initializeSession() throws Exception {
+        sessionDeleted = false;
         try {
             before();
         } catch (Throwable t) {
@@ -384,9 +385,14 @@ public class McpClient extends ExternalResource {
     /**
      * Clean up the current session. This is useful when you need to manually clean up
      * a session that was initialized with initializeSession().
+     * Failures are silently ignored since the session may have already expired.
      */
     public void cleanupSession() {
-        after();
+        try {
+            after();
+        } catch (Exception e) {
+            // Ignore as session may have already expired
+        }
     }
 
     public void deleteSession() {
