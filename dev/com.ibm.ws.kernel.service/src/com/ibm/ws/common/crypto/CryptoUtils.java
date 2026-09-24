@@ -285,7 +285,7 @@ public class CryptoUtils {
         }
     }
 
-    private static boolean isZOS() {
+    public static boolean isZOS() {
         if (osVersionChecked) {
             return isZOS;
         } else {
