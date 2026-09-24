@@ -11,13 +11,18 @@
 
 bVersion=1.0
 
-Bundle-Name: Hibernate JPA Container
-Bundle-SymbolicName: io.openliberty.jpa.container.hibernate
-Bundle-Description: Container-managed Hibernate JPA support, version ${bVersion}
+Bundle-Name: Hibernate Jakarta Persistence Container
+Bundle-SymbolicName: io.openliberty.persistence.container.hibernate
+Bundle-Description: Container-managed Hibernate Jakarta Persistence support, version ${bVersion}
+
+javac.source: 21
+javac.target: 21
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 WS-TraceGroup: JPA
 
--dsannotations: com.ibm.ws.jpa.container.hibernate.HibernateJPAProvider
+-dsannotations: io.openliberty.persistence.container.hibernate.HibernatePersistenceProvider
 
 Import-Package: \
  org.hibernate.jpa;version="[8.0,9.0)", \
