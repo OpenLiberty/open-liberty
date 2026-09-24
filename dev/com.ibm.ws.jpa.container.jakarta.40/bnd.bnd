@@ -17,10 +17,10 @@ Bundle-Name: JPA Container Jakarta 4.0
 Bundle-SymbolicName: com.ibm.ws.jpa.container.jakarta.40
 Bundle-Description: Container-managed JPA support for JPA 4.0; version ${bVersion}
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 WS-TraceGroup: JPA
 
