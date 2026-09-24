@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,11 +68,15 @@ public class ServerXMLTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Add environment variable before server start for mapEnvVarApp test
+        server.addEnvVar("mpEnvKey", "correctEnvValue");
+
         DeployOptions[] options = { DeployOptions.SERVER_ONLY };
         ShrinkHelper.defaultApp(server, SERVER_XML_APP_NAME, options, "com.ibm.ws.microprofile.config13.serverXML.*");
         ShrinkHelper.defaultApp(server, DUPLICATE_IN_SERVER_XML_APP_NAME, options, "com.ibm.ws.microprofile.config13.duplicateInServerXML.*");
         ShrinkHelper.defaultApp(server, SERVER_XML_WEB_APP_NAME, options, "com.ibm.ws.microprofile.config13.serverXMLWebApp.*");
-        ShrinkHelper.defaultApp(server, MAP_ENV_VAR_APP_NAME, options, "com.ibm.ws.microprofile.config13.mapEnvVar.*");
+        ShrinkHelper.defaultApp(server, MAP_ENV_VAR_APP_NAME, options,
+                                new String[] { "com.ibm.ws.microprofile.config13.mapEnvVar.*", "com.ibm.ws.microprofile.config13.test.utils" });
 
         server.startServer();
     }
