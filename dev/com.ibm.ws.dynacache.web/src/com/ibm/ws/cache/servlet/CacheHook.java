@@ -733,13 +733,11 @@ public class CacheHook {
 							fragmentComposer, jspCache, cacheEntry, fragmentValue);
 				}
 			} else {
-				// Entry not in cache. Use a work-in-progress latch to prevent concurrent
-				// requests for the same ID from all executing the servlet simultaneously.
+				// Guard against concurrent requests for the same uncached ID all executing the servlet.
 				CountDownLatch newLatch = new CountDownLatch(1);
 				CountDownLatch existingLatch = inProgressMap.putIfAbsent(id, newLatch);
 				if (existingLatch != null) {
-					// Another thread is already computing this ID. Wait for it to finish,
-					// then re-check the cache — it should now be a hit.
+					// Another thread is already computing this ID — wait, then re-check cache.
 					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 						Tr.debug(tc, "WIP wait for id: " + id);
 					try {
@@ -747,7 +745,6 @@ public class CacheHook {
 					} catch (InterruptedException ie) {
 						Thread.currentThread().interrupt();
 					}
-					// Re-read from cache after the computing thread has finished.
 					cacheEntry = jspCache.getEntry(fragmentInfo);
 					if (cacheEntry != null) {
 						fragmentValue = cacheEntry.getValue();
@@ -756,7 +753,7 @@ public class CacheHook {
 								Tr.debug(tc, "WIP cache hit after wait id: " + id);
 							// didMiss stays false — handleCacheHit called below
 						} else {
-							// First thread did not populate (e.g. servlet threw). Fall through as a miss.
+							// First thread did not populate; fall through as miss.
 							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 								Tr.debug(tc, "WIP no value after wait, treating as miss id: " + id);
 							didMiss = true;
@@ -764,7 +761,7 @@ public class CacheHook {
 									fragmentComposer, jspCache, cacheEntry, fragmentValue);
 						}
 					} else {
-						// Entry still not present (first thread's response was not cacheable). Execute servlet.
+						// First thread's response was not cacheable; execute servlet.
 						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 							Tr.debug(tc, "WIP null entry after wait, treating as miss id: " + id);
 						didMiss = true;
@@ -780,7 +777,7 @@ public class CacheHook {
 						handleCacheMiss(servlet, request, response, fragmentInfo,
 								fragmentComposer, jspCache, cacheEntry, fragmentValue);
 					} finally {
-						// Always release waiting threads and remove from map.
+						// Release any waiting threads; clean up map entry.
 						inProgressMap.remove(id, newLatch);
 						newLatch.countDown();
 					}
