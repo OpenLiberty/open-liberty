@@ -76,6 +76,13 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     static final String KEY_AUTH_FILTER_REF = "authFilterRef";
     static final String KEY_EXP_DIFF_ALLOWED = "expirationDifferenceAllowed";
     static protected final String KEY_SERVICE_PID = "service.pid";
+    
+    // PQC configuration keys
+    static final String CFG_KEY_PQC_ENABLED = "pqcEnabled";
+    static final String CFG_KEY_PQC_ALGORITHM = "pqcAlgorithm";
+    static final String CFG_KEY_PQC_VALIDATION_MODE = "pqcValidationMode";
+    static final String CFG_KEY_PQC_KEYS_FILE = "pqcKeysFileName";
+    static final String CFG_KEY_PQC_KEYS_PASSWORD = "pqcKeysPassword";
     private final AtomicServiceReference<WsLocationAdmin> locationService = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_SERVICE);
     private final AtomicServiceReference<ExecutorService> executorService = new AtomicServiceReference<ExecutorService>(KEY_EXECUTOR_SERVICE);
     private final AtomicServiceReference<LTPAKeysChangeNotifier> ltpaKeysChangeNotifierService = new AtomicServiceReference<LTPAKeysChangeNotifier>(KEY_CHANGE_SERVICE);
@@ -109,6 +116,14 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private final Collection<File> currentlyDeletedFiles = new HashSet<File>();
     private static final Collection<File> allKeysFiles = new HashSet<File>();
     boolean isValidationKeysFileConfigured = false;
+    
+    // PQC configuration
+    private boolean pqcEnabled = false;
+    private String pqcAlgorithm = "ML-DSA-65";
+    private String pqcValidationMode = "hybrid";
+    private String pqcKeysFileName;
+    @Sensitive
+    private String pqcKeysPassword;
 
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorService.setReference(ref);
@@ -174,6 +189,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         String oldUpdateTrigger = updateTrigger;
         List<Properties> oldValidationKeys = new ArrayList<Properties>();
         oldValidationKeys.addAll(validationKeys);
+        
+        // Store old PQC configuration values
+        boolean oldPqcEnabled = pqcEnabled;
+        String oldPqcAlgorithm = pqcAlgorithm;
+        String oldPqcValidationMode = pqcValidationMode;
+        String oldPqcKeysFileName = pqcKeysFileName;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "oldValidationKeys: " + maskKeysPasswords(oldValidationKeys));
@@ -189,6 +210,34 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             } else if (isMonitorIntervalChanged(oldMonitorInterval)) {
                 unsetFileMonitorRegistration();
                 optionallyCreateFileMonitor();
+            } else if (isPqcConfigChanged(oldPqcEnabled, oldPqcAlgorithm, oldPqcValidationMode, oldPqcKeysFileName)) {
+                // PQC configuration changed - log the change and handle updates
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "PQC configuration changed. Old: [enabled=" + oldPqcEnabled +
+                             ", algorithm=" + oldPqcAlgorithm +
+                             ", validationMode=" + oldPqcValidationMode +
+                             ", keysFile=" + oldPqcKeysFileName + "]");
+                    Tr.debug(tc, "PQC configuration changed. New: [enabled=" + pqcEnabled +
+                             ", algorithm=" + pqcAlgorithm +
+                             ", validationMode=" + pqcValidationMode +
+                             ", keysFile=" + pqcKeysFileName + "]");
+                }
+                
+                // If PQC keys file changed or PQC was enabled/disabled, reload keys
+                if (oldPqcEnabled != pqcEnabled ||
+                    (oldPqcKeysFileName != null && !oldPqcKeysFileName.equals(pqcKeysFileName))) {
+                    Tr.audit(tc, "LTPA_PQC_CONFIG_CHANGED", pqcEnabled, pqcKeysFileName);
+                    // Reload LTPA infrastructure to pick up new PQC keys
+                    setupRuntimeLTPAInfrastructure();
+                } else {
+                    // Only algorithm or validation mode changed - log info message
+                    Tr.info(tc, "LTPA_PQC_SETTINGS_UPDATED", pqcAlgorithm, pqcValidationMode);
+                }
+                
+                // Clear cached PQC provider if algorithm changed
+                if (oldPqcAlgorithm != null && !oldPqcAlgorithm.equals(pqcAlgorithm)) {
+                    clearCachedPqcProvider();
+                }
             }
             debugLTPAConfig(); //prints debug for current LTPA config
         } catch (IllegalArgumentException e) {
@@ -240,6 +289,22 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         combineValidationKeys();
+        
+        // Load PQC configuration
+        Boolean pqcEnabledObj = (Boolean) props.get(CFG_KEY_PQC_ENABLED);
+        pqcEnabled = (pqcEnabledObj != null) ? pqcEnabledObj.booleanValue() : false;
+
+        String pqcAlg = (String) props.get(CFG_KEY_PQC_ALGORITHM);
+        pqcAlgorithm = (pqcAlg != null && !pqcAlg.isEmpty()) ? pqcAlg : "ML-DSA-65";
+
+        String pqcValMode = (String) props.get(CFG_KEY_PQC_VALIDATION_MODE);
+        pqcValidationMode = (pqcValMode != null && !pqcValMode.isEmpty()) ? pqcValMode : "hybrid";
+
+        pqcKeysFileName = (String) props.get(CFG_KEY_PQC_KEYS_FILE);
+        pqcKeysPassword = resolvePqcKeysPassword(props);
+        
+        // Validate PQC configuration
+        validatePqcConfiguration();
     }
 
     @Sensitive
@@ -265,6 +330,138 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         String formattedMessage = Tr.formatMessage(tc, "LTPA_KEYS_PASSWORD_ERROR");
         throw new IllegalArgumentException(formattedMessage);
+    }
+
+    /**
+     * Resolve the PQC keys password from configuration or environment variables.
+     * Falls back to primary keys password if PQC password not specified.
+     *
+     * @param props the configuration properties
+     * @return the resolved PQC keys password
+     * @throws IllegalArgumentException if no password can be resolved and PQC is enabled
+     */
+    @Sensitive
+    private String resolvePqcKeysPassword(Map<String, Object> props) {
+        // First, try pqcKeysPassword attribute
+        SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PQC_KEYS_PASSWORD);
+        String pqcPassword = sps == null ? null : new String(sps.getChars());
+        if (pqcPassword != null && !pqcPassword.isEmpty()) {
+            return pqcPassword;
+        }
+        
+        // Fall back to primary keys password
+        if (primaryKeyPassword != null && !primaryKeyPassword.isEmpty()) {
+            return primaryKeyPassword;
+        }
+        
+        // Fall back to environment variables (same as primary key resolution)
+        String ltpaKeysPassword = System.getenv("ltpa_keys_password");
+        if (ltpaKeysPassword != null && !ltpaKeysPassword.isEmpty()) {
+            return ltpaKeysPassword;
+        }
+        
+        String keystorePassword = System.getenv("keystore_password");
+        if (keystorePassword != null && !keystorePassword.isEmpty()) {
+            return keystorePassword;
+        }
+        
+        // If PQC is enabled, password is required
+        if (pqcEnabled) {
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "LTPA_PQC_KEYS_PASSWORD_ERROR"));
+        }
+        
+        // If PQC is not enabled, return null (password not needed)
+        return null;
+    }
+
+    /**
+     * Validates the PQC configuration settings.
+     *
+     * This method performs the following validations:
+     * 1. Validates pqcAlgorithm is one of: ML-DSA-44, ML-DSA-65, ML-DSA-87
+     * 2. Validates pqcValidationMode is one of: hybrid, pqc-required, classical-only
+     * 3. When PQC is enabled, validates pqcKeysFileName is specified
+     * 4. When PQC is enabled, checks PQC provider availability
+     *
+     * @throws IllegalArgumentException if validation fails with critical errors
+     */
+    private void validatePqcConfiguration() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validatePqcConfiguration", new Object[] { pqcEnabled, pqcAlgorithm, pqcValidationMode });
+        }
+
+        // Validate pqcAlgorithm
+        if (pqcAlgorithm != null && !pqcAlgorithm.isEmpty()) {
+            if (!pqcAlgorithm.equals("ML-DSA-44") &&
+                !pqcAlgorithm.equals("ML-DSA-65") &&
+                !pqcAlgorithm.equals("ML-DSA-87")) {
+                String errorMsg = Tr.formatMessage(tc, "CWWKS4200E", pqcAlgorithm);
+                Tr.error(tc, errorMsg);
+                throw new IllegalArgumentException(errorMsg);
+            }
+        }
+
+        // Validate pqcValidationMode
+        if (pqcValidationMode != null && !pqcValidationMode.isEmpty()) {
+            if (!pqcValidationMode.equals("hybrid") &&
+                !pqcValidationMode.equals("pqc-required") &&
+                !pqcValidationMode.equals("classical-only")) {
+                String errorMsg = Tr.formatMessage(tc, "CWWKS4201E", pqcValidationMode);
+                Tr.error(tc, errorMsg);
+                throw new IllegalArgumentException(errorMsg);
+            }
+        }
+
+        // If PQC is enabled, perform additional validations
+        if (pqcEnabled) {
+            // Validate pqcKeysFileName is specified
+            if (pqcKeysFileName == null || pqcKeysFileName.trim().isEmpty()) {
+                // Auto-generate default PQC keys file name based on primary keys file
+                if (primaryKeyImportFile != null && !primaryKeyImportFile.isEmpty()) {
+                    // Replace .keys with -pqc.keys
+                    if (primaryKeyImportFile.endsWith(".keys")) {
+                        pqcKeysFileName = primaryKeyImportFile.substring(0, primaryKeyImportFile.length() - 5) + "-pqc.keys";
+                    } else {
+                        pqcKeysFileName = primaryKeyImportFile + "-pqc.keys";
+                    }
+                    Tr.info(tc, "CWWKS4202I", pqcKeysFileName);
+                } else {
+                    String errorMsg = Tr.formatMessage(tc, "CWWKS4203E");
+                    Tr.error(tc, errorMsg);
+                    throw new IllegalArgumentException(errorMsg);
+                }
+            }
+
+            // Check PQC provider availability
+            try {
+                // Import PQCProviderFactory to check availability
+                Class<?> factoryClass = Class.forName("com.ibm.ws.security.token.ltpa.internal.pqc.PQCProviderFactory");
+                java.lang.reflect.Method getProviderMethod = factoryClass.getMethod("getProvider");
+                Object provider = getProviderMethod.invoke(null);
+                
+                if (provider == null) {
+                    Tr.warning(tc, "CWWKS4210W");
+                    // Don't throw exception, just warn and continue
+                    // The system will fall back to classical LTPA mode
+                }
+            } catch (ClassNotFoundException e) {
+                // PQC provider classes not available
+                Tr.warning(tc, "CWWKS4210W");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "PQC provider classes not found", e);
+                }
+            } catch (Exception e) {
+                // Other errors checking PQC provider availability
+                Tr.warning(tc, "CWWKS4210W");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Error checking PQC provider availability", e);
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validatePqcConfiguration");
+        }
     }
 
     /**
@@ -669,6 +866,86 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         return oldMonitorInterval != monitorInterval;
     }
 
+    /**
+     * Checks if any PQC configuration has changed.
+     *
+     * @param oldPqcEnabled Previous PQC enabled state
+     * @param oldPqcAlgorithm Previous PQC algorithm
+     * @param oldPqcValidationMode Previous PQC validation mode
+     * @param oldPqcKeysFileName Previous PQC keys file name
+     * @return true if any PQC configuration changed, false otherwise
+     */
+    private boolean isPqcConfigChanged(boolean oldPqcEnabled, String oldPqcAlgorithm,
+                                       String oldPqcValidationMode, String oldPqcKeysFileName) {
+        // Check if PQC enabled state changed
+        if (oldPqcEnabled != pqcEnabled) {
+            return true;
+        }
+        
+        // Check if PQC algorithm changed
+        if (oldPqcAlgorithm == null && pqcAlgorithm != null) {
+            return true;
+        }
+        if (oldPqcAlgorithm != null && !oldPqcAlgorithm.equals(pqcAlgorithm)) {
+            return true;
+        }
+        
+        // Check if PQC validation mode changed
+        if (oldPqcValidationMode == null && pqcValidationMode != null) {
+            return true;
+        }
+        if (oldPqcValidationMode != null && !oldPqcValidationMode.equals(pqcValidationMode)) {
+            return true;
+        }
+        
+        // Check if PQC keys file name changed
+        if (oldPqcKeysFileName == null && pqcKeysFileName != null) {
+            return true;
+        }
+        if (oldPqcKeysFileName != null && !oldPqcKeysFileName.equals(pqcKeysFileName)) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Clears the cached PQC provider instance to force re-initialization.
+     * This is called when the PQC algorithm changes to ensure the new algorithm
+     * is used for subsequent operations.
+     */
+    private void clearCachedPqcProvider() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "clearCachedPqcProvider");
+        }
+        
+        try {
+            // Use reflection to call PQCProviderFactory.clearCache()
+            // This avoids creating a hard dependency on the PQC provider classes
+            Class<?> factoryClass = Class.forName("com.ibm.ws.security.token.ltpa.internal.pqc.PQCProviderFactory");
+            java.lang.reflect.Method clearCacheMethod = factoryClass.getMethod("clearCache");
+            clearCacheMethod.invoke(null);
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Successfully cleared PQC provider cache");
+            }
+        } catch (ClassNotFoundException e) {
+            // PQC provider classes not available - this is expected if PQC is not enabled
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "PQC provider classes not found - cache clear skipped");
+            }
+        } catch (Exception e) {
+            // Log warning but don't fail - cache will be cleared on next provider access
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to clear PQC provider cache: " + e.getMessage());
+            }
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "clearCachedPqcProvider");
+        }
+    }
+
     protected void deactivate(ComponentContext context) {
         cc = null;
         if (registration != null) {
@@ -814,6 +1091,52 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Override
     public long getExpirationDifferenceAllowed() {
         return expirationDifferenceAllowed;
+    }
+
+    /**
+     * Check if Post-Quantum Cryptography is enabled.
+     *
+     * @return true if PQC is enabled, false otherwise
+     */
+    public boolean isPqcEnabled() {
+        return pqcEnabled;
+    }
+
+    /**
+     * Get the PQC signature algorithm.
+     *
+     * @return the PQC algorithm (ML-DSA-44, ML-DSA-65, or ML-DSA-87)
+     */
+    public String getPqcAlgorithm() {
+        return pqcAlgorithm;
+    }
+
+    /**
+     * Get the PQC token validation mode.
+     *
+     * @return the validation mode (hybrid, pqc-required, or classical-only)
+     */
+    public String getPqcValidationMode() {
+        return pqcValidationMode;
+    }
+
+    /**
+     * Get the PQC keys file name.
+     *
+     * @return the PQC keys file path
+     */
+    public String getPqcKeysFileName() {
+        return pqcKeysFileName;
+    }
+
+    /**
+     * Get the PQC keys password.
+     *
+     * @return the PQC keys password
+     */
+    @Sensitive
+    public String getPqcKeysPassword() {
+        return pqcKeysPassword;
     }
 
     /**
