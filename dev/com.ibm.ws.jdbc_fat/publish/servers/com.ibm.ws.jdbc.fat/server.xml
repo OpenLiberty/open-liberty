@@ -172,6 +172,16 @@
     <dataSource id="dsfat11derby" jndiName="jdbc/dsfat11" jdbcDriverRef="Derby" connectionManagerRef="conMgr5" badProperty="badValue1" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="11s" syncQueryTimeoutWithTransactionTimeout="false">
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
+    
+	<!-- This Derby-only datasource for expanded mixed pool testing and the current J2CA8040E behavior -->
+    <connectionManager id="conMgr5mixedpool"/>
+    <dataSource id="dsfat11amixedpoolderby" jndiName="jdbc/dsfat11amixedpoolderby" jdbcDriverRef="Derby" connectionManagerRef="conMgr5mixedpool" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="14s" syncQueryTimeoutWithTransactionTimeout="false">
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    <dataSource id="dsfat11bmixedpoolderby" jndiName="jdbc/dsfat11bmixedpoolderby" jdbcDriverRef="Derby" connectionManagerRef="conMgr5mixedpool" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="15s" syncQueryTimeoutWithTransactionTimeout="false">
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
  
     <!-- This is a Derby-only data source -->
     <dataSource id="dsfat12derby" jndiName="jdbc/dsfat12" containerAuthDataRef="derbyAuth2" jdbcDriverRef="Derby" >

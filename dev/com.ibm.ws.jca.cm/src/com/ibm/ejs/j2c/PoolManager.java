@@ -76,6 +76,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
     protected static final String alertResourceBundleName = "com.ibm.ws.j2c.resources.J2CAMessages";
 
     final String nl = CommonFunction.nl;
+    protected boolean mixedConnectionPool = false;
 
     final ConnectorServiceImpl connectorSvc;
     protected J2CGlobalConfigProperties gConfigProps;
@@ -1076,6 +1077,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             sbuff.append(nl);
             sbuff.append(" Connection Request Information = ");
             sbuff.append(requestInfo);
+            if (mixedConnectionPool) {
+                Tr.debug(this, tc, "Mixed connection pool, using managed connection factory " + managedConnectionFactory);
+            }
             Tr.debug(this, tc, sbuff.toString());
             Tr.debug(this, tc, "reserve(), Pool contents ==> " + this.toString2(1));
 
