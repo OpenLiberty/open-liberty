@@ -22,9 +22,7 @@ import java.util.logging.Logger;
 import java.io.InputStream;
 import java.net.Socket;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,124 +81,121 @@ public class MaxMessageSizeLimitTests {
         }
     }
 
-    /**
-     * Save the server configuration before each test, this should be the default
-     * server
-     * configuration.
-     *
-     * @throws Exception
-     */
-    @Before
-    public void beforeTest() throws Exception {
-        server.saveServerConfiguration();
-    }
-
-    /**
-     * Restore the server configuration to the default state after each test.
-     *
-     * @throws Exception
-     */
-    @After
-    public void afterTest() throws Exception {
-        // Restore the server to the default state.
-        server.setMarkToEndOfLog();
-        server.setTraceMarkToEndOfDefaultTrace();
-        server.restoreServerConfiguration();
-        server.waitForConfigUpdateInLogUsingMark(null);
-    }
-
     @Test
     public void testFileThatIsWithinLimit() throws Exception {
-        ServerConfiguration configuration = server.getServerConfiguration();
-        LOG.info("Server configuration that the test started with: " + configuration);
-
-        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
-        httpEndpoint.getHttpOptions().setMessageSizeLimit(3000); // Larger than our file content size
-
-        server.setMarkToEndOfLog();
-        server.setTraceMarkToEndOfDefaultTrace();
-        server.updateServerConfiguration(configuration);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*FileUpload.*");
-
-        String boundary = "-----------------" + System.currentTimeMillis();
-
-        URL url = new URL("http://" + server.getHostname() + ":" +
-                server.getHttpDefaultPort() + "/" + APP_NAME + "/FileUploadServlet");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setDoOutput(true); // Sending Data
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-
-        String fileName = "test.txt";
-        String fileContent = "Hello, world! This is some test file content!";
-
-        StringBuilder body = new StringBuilder();
-        body.append("--").append(boundary).append("\r\n");
-        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"");
-        body.append(fileName).append("\"\r\n");
-        body.append("Content-Type: text/plain\r\n\r\n");
-        body.append(fileContent).append("\r\n");
-        body.append("--").append(boundary).append("--\r\n");
-
-        // Send the request with file content
-        try (OutputStream os = conn.getOutputStream()) {
-            os.write(body.toString().getBytes(StandardCharsets.UTF_8));
-            os.flush();
-        }
-
+        server.saveServerConfiguration();
         try {
-            assertEquals("Expected HTTP 200", 200, conn.getResponseCode());
+            ServerConfiguration configuration = server.getServerConfiguration();
+            HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+            httpEndpoint.getHttpOptions().setMessageSizeLimit(3000);
+
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.updateServerConfiguration(configuration);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false,
+                    "CWWKT0016I:.*FileUpload.*");
+
+            LOG.info("Server configuration that the test started with: " + configuration);
+
+            String boundary = "-----------------" + System.currentTimeMillis();
+
+            URL url = new URL("http://" + server.getHostname() + ":" +
+                    server.getHttpDefaultPort() + "/" + APP_NAME + "/FileUploadServlet");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setDoOutput(true); // Sending Data
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+            String fileName = "test.txt";
+            String fileContent = "Hello, world! This is some test file content!";
+
+            StringBuilder body = new StringBuilder();
+            body.append("--").append(boundary).append("\r\n");
+            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"");
+            body.append(fileName).append("\"\r\n");
+            body.append("Content-Type: text/plain\r\n\r\n");
+            body.append(fileContent).append("\r\n");
+            body.append("--").append(boundary).append("--\r\n");
+
+            // Send the request with file content
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(body.toString().getBytes(StandardCharsets.UTF_8));
+                os.flush();
+            }
+
+            try {
+                assertEquals("Expected HTTP 200", 200, conn.getResponseCode());
+            } finally {
+                conn.disconnect();
+            }
+
         } finally {
-            conn.disconnect();
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(null);
+            server.waitForStringInLogUsingMark("CWWKO0219I", 10_000); // wait for port re-bind
         }
+
     }
 
     @Test
     public void testFileThatExceedsLimit() throws Exception {
-        ServerConfiguration configuration = server.getServerConfiguration();
-        LOG.info("Server configuration that the test started with: " + configuration);
-
-        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
-        httpEndpoint.getHttpOptions().setMessageSizeLimit(2); // Smaller than our file content size, should cause an
-                                                              // error
-
-        server.setMarkToEndOfLog();
-        server.setTraceMarkToEndOfDefaultTrace();
-        server.updateServerConfiguration(configuration);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*FileUpload.*");
-
-        String boundary = "-----------------" + System.currentTimeMillis();
-
-        URL url = new URL("http://" + server.getHostname() + ":" +
-                server.getHttpDefaultPort() + "/" + APP_NAME + "/FileUploadServlet");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setDoOutput(true); // Sending Data
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-
-        String fileName = "test.txt";
-        String fileContent = "This is test file content!";
-
-        StringBuilder body = new StringBuilder();
-        body.append("--").append(boundary).append("\r\n");
-        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"");
-        body.append(fileName).append("\"\r\n");
-        body.append("Content-Type: text/plain\r\n\r\n");
-        body.append(fileContent).append("\r\n");
-        body.append("--").append(boundary).append("--\r\n");
-
-        // Send the request with file content
-        try (OutputStream os = conn.getOutputStream()) {
-            os.write(body.toString().getBytes(StandardCharsets.UTF_8));
-            os.flush();
-        }
-
+        server.saveServerConfiguration();
         try {
-            assertEquals("Expected HTTP 413", 413, conn.getResponseCode());
+            ServerConfiguration configuration = server.getServerConfiguration();
+            LOG.info("Server configuration that the test started with: " + configuration);
+
+            HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+            httpEndpoint.getHttpOptions().setMessageSizeLimit(2); // Smaller than our file content size, should cause an
+                                                                  // error
+
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.updateServerConfiguration(configuration);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false,
+                    "CWWKT0016I:.*FileUpload.*");
+
+            String boundary = "-----------------" + System.currentTimeMillis();
+
+            URL url = new URL("http://" + server.getHostname() + ":" +
+                    server.getHttpDefaultPort() + "/" + APP_NAME + "/FileUploadServlet");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setDoOutput(true); // Sending Data
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+            String fileName = "test.txt";
+            String fileContent = "This is test file content!";
+
+            StringBuilder body = new StringBuilder();
+            body.append("--").append(boundary).append("\r\n");
+            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"");
+            body.append(fileName).append("\"\r\n");
+            body.append("Content-Type: text/plain\r\n\r\n");
+            body.append(fileContent).append("\r\n");
+            body.append("--").append(boundary).append("--\r\n");
+
+            // Send the request with file content
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(body.toString().getBytes(StandardCharsets.UTF_8));
+                os.flush();
+            }
+
+            try {
+                assertEquals("Expected HTTP 413", 413, conn.getResponseCode());
+            } finally {
+                conn.disconnect();
+            }
+
         } finally {
-            conn.disconnect();
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(null);
+            server.waitForStringInLogUsingMark("CWWKO0219I", 10_000); // wait for port re-bind
         }
 
     }
@@ -292,49 +287,61 @@ public class MaxMessageSizeLimitTests {
     @Test
     @AllowedFFDC({ "java.io.EOFException" })
     public void testBoundary_2GB_Chunk_IsAccepted() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            ServerConfiguration configuration = server.getServerConfiguration();
+            LOG.info("Server configuration that the test started with: " + configuration);
 
-        ServerConfiguration configuration = server.getServerConfiguration();
-        LOG.info("Server configuration that the test started with: " + configuration);
+            HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+            httpEndpoint.getHttpOptions().setMessageSizeLimit(-1); // Larger than our file content size
 
-        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
-        httpEndpoint.getHttpOptions().setMessageSizeLimit(-1); // Larger than our file content size
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.updateServerConfiguration(configuration);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false,
+                    "CWWKT0016I:.*FileUpload.*");
 
-        server.setMarkToEndOfLog();
-        server.setTraceMarkToEndOfDefaultTrace();
-        server.updateServerConfiguration(configuration);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*FileUpload.*");
+            try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
+                socket.setSoTimeout(5000);
+                OutputStream out = socket.getOutputStream();
 
-        try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
-            socket.setSoTimeout(5000);
-            OutputStream out = socket.getOutputStream();
+                // Send the exact boundary chunk-size line; follow with 1 byte + terminal chunk.
+                // The declared size (0x7FFFFFFF) won't match the 1-byte body, but we're only
+                // testing that the size value itself doesn't trigger a guard rejection.
+                String payload = "POST /FileUpload/ChunkSizeTestServlet?readBody=true HTTP/1.1\r\n" +
+                        "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
+                        "Transfer-Encoding: chunked\r\n" +
+                        "Connection: close\r\n" +
+                        "\r\n" +
+                        "7FFFFFFF\r\n" +
+                        "A\r\n" +
+                        "0\r\n\r\n";
 
-            // Send the exact boundary chunk-size line; follow with 1 byte + terminal chunk.
-            // The declared size (0x7FFFFFFF) won't match the 1-byte body, but we're only
-            // testing that the size value itself doesn't trigger a guard rejection.
-            String payload = "POST /FileUpload/ChunkSizeTestServlet?readBody=true HTTP/1.1\r\n" +
-                    "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
-                    "Transfer-Encoding: chunked\r\n" +
-                    "Connection: close\r\n" +
-                    "\r\n" +
-                    "7FFFFFFF\r\n" +
-                    "A\r\n" +
-                    "0\r\n\r\n";
+                out.write(payload.getBytes(StandardCharsets.US_ASCII));
+                out.flush();
+                LOG.info("[Boundary 2GB] Request dispatched");
 
-            out.write(payload.getBytes(StandardCharsets.US_ASCII));
-            out.flush();
-            LOG.info("[Boundary 2GB] Request dispatched");
+                try {
+                    String responseStr = drainResponse(socket);
+                    LOG.info("[Boundary 2GB] Response: "
+                            + responseStr.substring(0, Math.min(200, responseStr.length())));
 
-            try{
-                String responseStr = drainResponse(socket);
-            LOG.info("[Boundary 2GB] Response: " + responseStr.substring(0, Math.min(200, responseStr.length())));
+                    assertFalse("0x7FFFFFFF is the maximum accepted chunk size and must not be rejected",
+                            responseStr.contains("HTTP/1.1 400"));
+                } catch (java.net.SocketTimeoutException expected) {
+                    // Liberty accepted the chunk-size and is waiting for the 2 GB body.
+                    // Timeout is the expected outcome — the size was not rejected.
+                    LOG.info("[Boundary 2GB] Socket timed out waiting for body — chunk-size was accepted as expected.");
+                }
 
-            assertFalse("0x7FFFFFFF is the maximum accepted chunk size and must not be rejected",
-                    responseStr.contains("HTTP/1.1 400"));
-            } catch (java.net.SocketTimeoutException expected) {
-                // Liberty accepted the chunk-size and is waiting for the 2 GB body.
-                // Timeout is the expected outcome — the size was not rejected.
-                LOG.info("[Boundary 2GB] Socket timed out waiting for body — chunk-size was accepted as expected.");
             }
+
+        } finally {
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(null);
+            server.waitForStringInLogUsingMark("CWWKO0219I", 10_000); // wait for port re-bind
 
         }
     }
@@ -417,36 +424,49 @@ public class MaxMessageSizeLimitTests {
     @AllowedFFDC({ "com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException" })
 
     public void testChunkSizeExceedingMessageSizeLimitIsRejected() throws Exception {
-        ServerConfiguration configuration = server.getServerConfiguration();
-        HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
-        httpEndpoint.getHttpOptions().setMessageSizeLimit(400); // 100 bytes limit
+        server.saveServerConfiguration();
+        try {
+            ServerConfiguration configuration = server.getServerConfiguration();
+            HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+            httpEndpoint.getHttpOptions().setMessageSizeLimit(400); // 100 bytes limit
 
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(configuration);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*FileUpload.*");
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.updateServerConfiguration(configuration);
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false,
+                    "CWWKT0016I:.*FileUpload.*");
 
-        try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
-            socket.setSoTimeout(5000);
-            OutputStream out = socket.getOutputStream();
+            try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
+                socket.setSoTimeout(5000);
+                OutputStream out = socket.getOutputStream();
 
-            // chunk-size 0x1000 = 4096 bytes — valid 4 digits, but exceeds messageSizeLimit
-            // of 100
-            String payload = "POST /FileUpload/ChunkSizeTestServlet?readBody=true HTTP/1.1\r\n" +
-                    "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
-                    "Transfer-Encoding: chunked\r\n" +
-                    "Connection: close\r\n" +
-                    "\r\n" +
-                    "400\r\n";
+                // chunk-size 0x1000 = 4096 bytes — valid 4 digits, but exceeds messageSizeLimit
+                // of 100
+                String payload = "POST /FileUpload/ChunkSizeTestServlet?readBody=true HTTP/1.1\r\n" +
+                        "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
+                        "Transfer-Encoding: chunked\r\n" +
+                        "Connection: close\r\n" +
+                        "\r\n" +
+                        "400\r\n";
 
-            out.write(payload.getBytes(StandardCharsets.US_ASCII));
-            out.flush();
-            socket.shutdownOutput();
+                out.write(payload.getBytes(StandardCharsets.US_ASCII));
+                out.flush();
+                socket.shutdownOutput();
 
-            String responseStr = drainResponse(socket);
-            LOG.info("HTTP/1.1 response Received: " + responseStr);
-            assertTrue("Expected 400 Bad Request when chunk-size exceeds messageSizeLimit",
-                    responseStr.contains("HTTP/1.1 400"));
+                String responseStr = drainResponse(socket);
+                LOG.info("HTTP/1.1 response Received: " + responseStr);
+                assertTrue("Expected 400 Bad Request when chunk-size exceeds messageSizeLimit",
+                        responseStr.contains("HTTP/1.1 400"));
+            }
+
+        } finally {
+            server.setMarkToEndOfLog();
+            server.setTraceMarkToEndOfDefaultTrace();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(null);
+            server.waitForStringInLogUsingMark("CWWKO0219I", 10_000); // wait for port re-bind
         }
+
     }
 
     // Helper Method to drain response
