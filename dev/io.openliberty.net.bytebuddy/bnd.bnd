@@ -13,11 +13,6 @@ bVersion=1.0
 
 -include= jar:${fileuri;${repo;net.bytebuddy:byte-buddy;1.18.10;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 17
-javac.target: 17
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
-
 Bundle-SymbolicName: io.openliberty.net.bytebuddy; singleton:=true
 
 -includeresource: \
