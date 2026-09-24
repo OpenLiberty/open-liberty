@@ -30,6 +30,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class CryptoUtils {
     /**
      * When set true, property 'use.enhanced.security.algorithms' will enable the FIPS algorithms
@@ -60,23 +62,22 @@ public class CryptoUtils {
     public static boolean openJCEPlusProviderChecked = false;
 
     public static boolean unitTest = false;
-    public static boolean fipsChecked = false;
-    public static boolean fips140_3Checked = false;
-    public static boolean semeruFips140_3Checked = false;
-    public static boolean ibmJdk8Fips140_3Checked = false;
+    private static final AtomicBoolean fipsChecked = new AtomicBoolean(false);
+    private static final AtomicBoolean fips140_3Checked = new AtomicBoolean(false);
+    private static final AtomicBoolean semeruFips140_3Checked = new AtomicBoolean(false);
+    private static final AtomicBoolean ibmJdk8Fips140_3Checked = new AtomicBoolean(false);
+    public static volatile boolean isEnhancedSecurity = false;
+    private static final AtomicBoolean isEnhancedSecurityChecked = new AtomicBoolean(false);
 
-    public static boolean isEnhancedSecurity = false;
-    public static boolean isEnhancedSecurityChecked = false;
+    private static final AtomicBoolean javaVersionChecked = new AtomicBoolean(false);
+    public static volatile boolean isJava11orHigher = false;
 
-    public static boolean javaVersionChecked = false;
-    public static boolean isJava11orHigher = false;
-
-    public static boolean zOSAndJAVA11orHigherChecked = false;
-    public static boolean iszOSAndJava11orHigher = false;
+    private static final AtomicBoolean zOSAndJAVA11orHigherChecked = new AtomicBoolean(false);
+    private static volatile boolean iszOSAndJava11orHigher = false;
 
     public static String osName = System.getProperty("os.name");
-    public static boolean isZOS = false;
-    public static boolean osVersionChecked = false;
+    public static volatile boolean isZOS = false;
+    private static final AtomicBoolean osVersionChecked = new AtomicBoolean(false);
 
     public static String IBMJCE_PROVIDER = "com.ibm.crypto.provider.IBMJCE";
     public static String IBMJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.IBMJCEPlusFIPS";
@@ -446,7 +447,7 @@ public class CryptoUtils {
      * @return true if FIPS 140-3 is enabled for either Semeru or IBM JDK. Otherwise false.
      */
     public static boolean isFips140_3Enabled() {
-        if (fips140_3Checked)
+        if (fips140_3Checked.get())
             return fips140_3Enabled;
         else {
             fips140_3Enabled = isIbmJdk8Fips140_3Enabled() || isSemeruFips140_3Enabled();
@@ -455,7 +456,7 @@ public class CryptoUtils {
                 Tr.debug(tc, "isFips140_3Enabled: " + fips140_3Enabled);
             }
 
-            fips140_3Checked = true;
+            fips140_3Checked.set(true);
             return fips140_3Enabled;
         }
     }
