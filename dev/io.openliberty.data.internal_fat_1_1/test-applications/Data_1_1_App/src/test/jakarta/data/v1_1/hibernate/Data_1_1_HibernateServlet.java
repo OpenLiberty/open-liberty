@@ -14,15 +14,20 @@ package test.jakarta.data.v1_1.hibernate;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+import java.util.Map.Entry;
+
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityAgent;
+import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jakarta.data.v1_1.web.Fraction;
 import test.jakarta.data.v1_1.web.Fractions;
 
 @SuppressWarnings("serial")
@@ -50,6 +55,30 @@ public class Data_1_1_HibernateServlet extends FATServlet {
         assertEquals(true,
                      agent.isOpen());
 
+        // select all fractions that are equivalent to 1/2, ordered by name
+        TypedQuery<Fraction> query = agent
+                        .createQuery("""
+                                        FROM Fraction
+                                        WHERE denominator = 2 * numerator
+                                        ORDER BY name
+                                        """,
+                                     Fraction.class);
+        List<Fraction> results = query.getResultList();
+
+        assertEquals(List.of("Eight Sixteenths",
+                             "Five Tenths",
+                             "Four Eighths",
+                             "Nine Eighteenths",
+                             "One Half",
+                             "Seven Fourteenths",
+                             "Six Twelfths",
+                             "Ten Twentieths",
+                             "Three Sixths",
+                             "Two Fourths"),
+                     results.stream()
+                                     .map(f -> f.name)
+                                     .toList());
+
         assertEquals(true,
                      agent.isOpen());
         agent.close();
@@ -65,6 +94,31 @@ public class Data_1_1_HibernateServlet extends FATServlet {
     @Test
     public void testEntityAgentUsedByDefaultMethod() {
 
+        Entry<EntityAgent, List<Fraction>> entry = resourceAccessor
+                        .runQuery("""
+                                        FROM Fraction
+                                        WHERE LOCATE(SUBSTRING(name, 1, 3),
+                                                     SUBSTRING(name, 4))
+                                                    > 0
+                                        ORDER BY name
+                                        """,
+                                  Fraction.class);
+
+        EntityAgent agent = entry.getKey();
+        assertEquals(false,
+                     agent.isOpen());
+
+        List<Fraction> results = entry.getValue();
+
+        assertEquals(List.of("Eight Eighteenths",
+                             "Four Fourteenths",
+                             "Nine Nineteenths",
+                             "Seven Seventeenths",
+                             "Six Sixteenths",
+                             "Twelve Twentieths"),
+                     results.stream()
+                                     .map(f -> f.name)
+                                     .toList());
     }
 
 }

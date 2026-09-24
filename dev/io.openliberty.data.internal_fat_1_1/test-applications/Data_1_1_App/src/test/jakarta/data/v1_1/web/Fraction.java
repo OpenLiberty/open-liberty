@@ -50,7 +50,7 @@ public class Fraction {
 
     @Column(nullable = false)
     @Id
-    String name;
+    public String name;
 
     @Column(nullable = false)
     int numerator;
@@ -140,11 +140,11 @@ public class Fraction {
     @Embeddable
     public static record Digits(
 
-                    @Convert(converter = DigitConverter.class)
+                    @Convert(converter = DigitConverter.class) //
                     @Column(table = "Fraction") //
                     String nonrepeating,
 
-                    @Convert(converter = DigitConverter.class)
+                    @Convert(converter = DigitConverter.class) //
                     @Column(table = "Fraction") //
                     String repeating) {
 
@@ -167,7 +167,7 @@ public class Fraction {
 
     }
 
-	//Converter to handle Oracle storing "" as null
+    // Converter to handle Oracle storing "" as null
     @Converter
     public static class DigitConverter implements AttributeConverter<String, String> {
 
