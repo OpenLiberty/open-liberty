@@ -18,20 +18,43 @@
 plugins.apply 'jacoco'
 
 /**
+ * Configure repositories for JaCoCo dependencies.
+ * Prefer Artifactory when configured, fall back to Maven Central otherwise.
+ * This follows the standard Open Liberty repository pattern.
+ */
+repositories {
+    if (isUsingArtifactory) {
+        maven {
+            credentials {
+                username = userProps.getProperty("artifactory.download.user")
+                password = userProps.getProperty("artifactory.download.token")
+            }
+            url = "https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty"
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+        }
+    } else {
+        mavenCentral()
+    }
+}
+
+/**
  * Define dependencies for the Jacoco Ant plugin that is used to
  * generate coverage reports since Artifactory doesn't have the
  * POM and therefore can't resolve secondary dependencies.
  */
 dependencies {
-    jacocoAnt "org.jacoco:org.jacoco.agent:0.8.4",
-            "org.jacoco:org.jacoco.ant:0.8.4",
-            "org.jacoco:org.jacoco.core:0.8.4",
-            "org.jacoco:org.jacoco.report:0.8.4",
-            "org.ow2.asm:asm-all:5.2"
+    jacocoAnt "org.jacoco:org.jacoco.agent:0.8.11",
+            "org.jacoco:org.jacoco.ant:0.8.11",
+            "org.jacoco:org.jacoco.core:0.8.11",
+            "org.jacoco:org.jacoco.report:0.8.11",
+            "org.ow2.asm:asm:9.6"
 }
 
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "0.8.11"
 }
 
 test {

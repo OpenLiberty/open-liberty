@@ -43,6 +43,12 @@ ext {
 apply from: 'wlp-gradle/java.gradle'
 
 /**
+ * Apply JaCoCo code coverage plugin to all subprojects.
+ * See: https://docs.gradle.org/current/userguide/jacoco_plugin.html
+ */
+apply from: 'wlp-gradle/jacoco-aggregate.gradle'
+
+/**
  * Apply biz.aQute.bnd plugin to all subprojects containing a *.bnd file.
  * See: https://github.com/bndtools/bnd/blob/master/biz.aQute.bnd.gradle/README.md
  *

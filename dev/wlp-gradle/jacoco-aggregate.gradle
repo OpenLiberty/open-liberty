@@ -1,0 +1,237 @@
+/*
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - JaCoCo code coverage integration
+ *******************************************************************************/
+
+/**
+ * JaCoCo Code Coverage Configuration for Open Liberty
+ * 
+ * This script integrates JaCoCo code coverage support into the Open Liberty build.
+ * It applies the JaCoCo plugin to all subprojects and configures coverage reports.
+ */
+
+// Apply JaCoCo plugin to all subprojects
+subprojects {
+    apply plugin: 'jacoco'
+    
+    // Configure JaCoCo version
+    jacoco {
+        toolVersion = "0.8.11"  // Latest stable version
+    }
+    
+    // Configure test task to generate coverage data
+    test {
+        // Enable JaCoCo coverage
+        jacoco {
+            enabled = true
+            // Output directory for execution data
+            destinationFile = file("${buildDir}/jacoco/test.exec")
+            // Include all classes by default
+            includes = ['*']
+            excludes = []
+        }
+        
+        // Ensure coverage data is generated even if tests fail
+        finalizedBy jacocoTestReport
+    }
+    
+    // Configure JaCoCo test report
+    jacocoTestReport {
+        dependsOn test
+        
+        reports {
+            // Generate XML report (useful for CI/CD and SonarQube)
+            xml {
+                required = true
+                outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+            }
+            
+            // Generate HTML report (human-readable)
+            html {
+                required = true
+                outputLocation = file("${buildDir}/reports/jacoco/test/html")
+            }
+            
+            // Generate CSV report (for data analysis)
+            csv {
+                required = true
+                outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.csv")
+            }
+        }
+        
+        // Configure source sets
+        sourceDirectories.setFrom(files(sourceSets.main.allSource.srcDirs))
+        classDirectories.setFrom(files(sourceSets.main.output))
+        executionData.setFrom(files("${buildDir}/jacoco/test.exec"))
+        
+        doLast {
+            println "JaCoCo report generated for ${project.name}"
+            println "  HTML: ${reports.html.outputLocation.get().asFile}/index.html"
+            println "  XML:  ${reports.xml.outputLocation.get().asFile}"
+            println "  CSV:  ${reports.csv.outputLocation.get().asFile}"
+        }
+    }
+    
+    // Configure JaCoCo coverage verification
+    jacocoTestCoverageVerification {
+        dependsOn jacocoTestReport
+        
+        violationRules {
+            rule {
+                enabled = true
+                element = 'BUNDLE'
+                
+                limit {
+                    counter = 'LINE'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.0  // Set to 0.0 initially, increase as coverage improves
+                }
+                
+                limit {
+                    counter = 'BRANCH'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.0  // Set to 0.0 initially, increase as coverage improves
+                }
+            }
+            
+            rule {
+                enabled = true
+                element = 'CLASS'
+                
+                limit {
+                    counter = 'LINE'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.0
+                }
+                
+                // Exclude certain classes from coverage requirements
+                excludes = [
+                    '*.test.*',
+                    '*.Test',
+                    '*Test',
+                    '*.IT',
+                    '*IT'
+                ]
+            }
+        }
+    }
+}
+
+/**
+ * Root project task to generate aggregate coverage report
+ */
+task jacocoRootReport(type: JacocoReport) {
+    description = 'Generates an aggregate JaCoCo coverage report from all subprojects'
+    group = 'verification'
+    
+    dependsOn subprojects*.test
+    
+    // Collect execution data from all subprojects
+    executionData.setFrom(files(subprojects.collect { 
+        file("${it.buildDir}/jacoco/test.exec") 
+    }).findAll { it.exists() })
+    
+    // Collect source directories from all subprojects
+    sourceDirectories.setFrom(files(subprojects.collect { 
+        it.sourceSets.main.allSource.srcDirs 
+    }))
+    
+    // Collect class directories from all subprojects
+    classDirectories.setFrom(files(subprojects.collect { 
+        it.sourceSets.main.output 
+    }))
+    
+    reports {
+        xml {
+            required = true
+            outputLocation = file("${buildDir}/reports/jacoco/aggregate/jacocoAggregateReport.xml")
+        }
+        
+        html {
+            required = true
+            outputLocation = file("${buildDir}/reports/jacoco/aggregate/html")
+        }
+        
+        csv {
+            required = true
+            outputLocation = file("${buildDir}/reports/jacoco/aggregate/jacocoAggregateReport.csv")
+        }
+    }
+    
+    doLast {
+        println ""
+        println "=========================================="
+        println "Aggregate JaCoCo Coverage Report Generated"
+        println "=========================================="
+        println "HTML Report: ${reports.html.destination}/index.html"
+        println "XML Report:  ${reports.xml.destination}"
+        println "CSV Report:  ${reports.csv.destination}"
+        println "=========================================="
+    }
+}
+
+/**
+ * Task to run tests with coverage for all subprojects
+ */
+task testWithCoverage {
+    description = 'Runs all tests with JaCoCo coverage enabled'
+    group = 'verification'
+    
+    dependsOn subprojects*.test
+    finalizedBy jacocoRootReport
+    
+    doLast {
+        println "All tests completed with coverage data collected"
+    }
+}
+
+/**
+ * Task to run tests with coverage for a specific module
+ * Usage: ./gradlew testModuleWithCoverage -PmoduleName=<module-name>
+ */
+task testModuleWithCoverage {
+    description = 'Runs tests with coverage for a specific module'
+    group = 'verification'
+    
+    doLast {
+        def moduleName = project.findProperty('moduleName')
+        if (moduleName) {
+            def targetProject = project.findProject(":${moduleName}")
+            if (targetProject) {
+                println "Running tests with coverage for module: ${moduleName}"
+                targetProject.test.execute()
+                targetProject.jacocoTestReport.execute()
+            } else {
+                throw new GradleException("Module '${moduleName}' not found")
+            }
+        } else {
+            throw new GradleException("Please specify module name with -PmoduleName=<module-name>")
+        }
+    }
+}
+
+/**
+ * Task to clean all JaCoCo coverage data
+ */
+task cleanCoverage {
+    description = 'Cleans all JaCoCo coverage data and reports'
+    group = 'verification'
+    
+    doLast {
+        delete "${buildDir}/jacoco"
+        delete "${buildDir}/reports/jacoco"
+        subprojects.each { subproject ->
+            delete "${subproject.buildDir}/jacoco"
+            delete "${subproject.buildDir}/reports/jacoco"
+        }
+        println "All JaCoCo coverage data and reports cleaned"
+    }
+}
