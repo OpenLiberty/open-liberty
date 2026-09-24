@@ -14,6 +14,7 @@ package com.ibm.ws.wsat.service.impl;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
@@ -79,6 +80,19 @@ public class HandlerImpl {
     public WSATContext clientRequest() throws WSATException {
         WSATContext ctx = null;
 
+        // Refuse to export a WS-AT transaction when the server is quiescing.
+        // Returning false from isTranActive() would silently skip propagation for
+        // optional-policy endpoints, leaving the outbound call running outside the
+        // transaction without any indication to the caller.  Throwing here ensures
+        // both mandatory and optional policies fail consistently and the transaction
+        // can roll back cleanly on the coordinator side.
+        if (((EmbeddableTranManagerSet) EmbeddableTranManagerSet.instance()).isQuiesced()) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Server is quiescing; refusing WS-AT transaction propagation");
+            }
+            throw new WSATException("Cannot propagate WS-AT transaction: server is quiescing");
+        }
+
         // Called by the client-side out-bound web service interceptor to obtain the
         // information needed to build a CoordinationContext.  We should return null
         // if there is no transaction active.
@@ -96,36 +110,41 @@ public class HandlerImpl {
             // have one, this is the first time we have exported this tran, we need
             // need to set ourselves up as the coordinator.
             WSATTransaction wsatTran = WSATTransaction.getTran(globalId);
-            try {
-                if (!(wsatTran instanceof WSATTransaction)) {
-                    // First time we've seen this tran.  So invoke our (local-only) version
-                    // of WS-AT activation to configure ourselves as the coordinator and
-                    // get a CoordinationContext.
-                    ctx = registrationService.activate(globalId, timeout, false);
-                    if (TC.isDebugEnabled()) {
-                        Tr.debug(TC, "Created new WSAT global transaction: {0}", globalId);
-                    }
-
-                    // Activate returns a WSATContext but we also need the WSATTransaction.
-                    // This will have been created during the activation processing so we can
-                    // recover it here.
-                    wsatTran = WSATTransaction.getTran(globalId);
-
-                } else {
-                    // We've seen this transaction before.  We must return the existing
-                    // CoordinationContext details.
-                    ctx = wsatTran.getContext();
-                    if (TC.isDebugEnabled()) {
-                        Tr.debug(TC, "Using existing WSAT global transaction: {0}", globalId);
-                    }
+            if (!(wsatTran instanceof WSATTransaction)) {
+                // First time we've seen this tran.  So invoke our (local-only) version
+                // of WS-AT activation to configure ourselves as the coordinator and
+                // get a CoordinationContext.
+                ctx = registrationService.activate(globalId, timeout, false);
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Created new WSAT global transaction: {0}", globalId);
                 }
-            } finally {
-                tranService.exportTransaction();
-                // We need to be able to coordinate the response from the webservice call we
-                // are about to make.  Only way to do this is to store something in a ThreadLocal
-                // (since the response will happen on this same thread).
-                clientCall.set(wsatTran);
+
+                // Activate returns a WSATContext but we also need the WSATTransaction.
+                // This will have been created during the activation processing so we can
+                // recover it here.
+                wsatTran = WSATTransaction.getTran(globalId);
+                if (wsatTran == null) {
+                    // activate() succeeded but getTran() could not recover the WSATTransaction
+                    // (e.g. the quiesce guard in TransactionWrapper.getTransactionWrapper() fired).
+                    // Fail cleanly rather than exporting the transaction with a null ThreadLocal,
+                    // which would leave the transaction suspended off-thread permanently.
+                    throw new WSATException("Unable to obtain WSATTransaction after activation; server may be quiescing");
+                }
+            } else {
+                // We've seen this transaction before.  We must return the existing
+                // CoordinationContext details.
+                ctx = wsatTran.getContext();
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Using existing WSAT global transaction: {0}", globalId);
+                }
             }
+            // exportTransaction and clientCall.set are a paired operation: both must happen
+            // or neither must happen.  Only reached when wsatTran is confirmed non-null.
+            tranService.exportTransaction();
+            // We need to be able to coordinate the response from the webservice call we
+            // are about to make.  Only way to do this is to store something in a ThreadLocal
+            // (since the response will happen on this same thread).
+            clientCall.set(wsatTran);
         }
 
         // Return the context details so the interceptor can build the CoordinationContext
