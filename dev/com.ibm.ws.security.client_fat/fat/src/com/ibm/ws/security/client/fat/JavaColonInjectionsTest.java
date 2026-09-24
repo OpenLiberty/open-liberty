@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -68,6 +68,8 @@ public class JavaColonInjectionsTest {
         if ((idx = methodName.indexOf("_EE9_FEATURES")) != -1) {
             methodName = methodName.substring(0, idx);
         } else if ((idx = methodName.indexOf("_EE10_FEATURES")) != -1) {
+            methodName = methodName.substring(0, idx);
+        } else if ((idx = methodName.indexOf("_EE11_FEATURES")) != -1) {
             methodName = methodName.substring(0, idx);
         }
         List<String> strings = client.findStringsInCopiedLogs(methodName + "-PASSED");

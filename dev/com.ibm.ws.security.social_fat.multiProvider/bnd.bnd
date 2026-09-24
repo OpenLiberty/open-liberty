@@ -19,7 +19,12 @@ src: \
 
 fat.project: true
 
-tested.features: appsecurity-4.0, appsecurity-5.0, cdi-3.0, cdi-4.0, concurrent-2.0, expressionlanguage-4.0, expressionlanguage-5.0, jsonp-2.0, jsonp-2.1, jsp-2.3, pages-3.0, pages-3.1, restfulws-3.0, restfulws-3.1, restfulwsclient-3.0, restfulwsclient-3.1, securitylibertyinternals-1.0, servlet-5.0, servlet-6.0, transportsecurity-1.0
+tested.features: appsecurity-4.0, appsecurity-5.0, cdi-3.0, cdi-4.0, concurrent-2.0, \
+	expressionlanguage-4.0, expressionlanguage-5.0, jsonp-2.0, jsonp-2.1, jsp-2.3, \
+	pages-3.0, pages-3.1, restfulws-3.0, restfulws-3.1, restfulwsclient-3.0, \
+	restfulwsclient-3.1, securitylibertyinternals-1.0, servlet-5.0, servlet-6.0, \
+	transportsecurity-1.0, expressionlanguage-6.0, restfulwsclient-4.0, \
+	appsecurity-6.0, restfulws-4.0, cdi-4.1, pages-4.0, servlet-6.1
 
 -buildpath: \
 	com.ibm.json4j;version=latest,\

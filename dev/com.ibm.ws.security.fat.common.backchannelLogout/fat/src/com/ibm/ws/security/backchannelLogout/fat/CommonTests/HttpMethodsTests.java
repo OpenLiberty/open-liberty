@@ -35,6 +35,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -173,13 +174,19 @@ public class HttpMethodsTests extends BackChannelLogoutCommonTests {
         genericInvokeEndpoint(_testName, webClient, null, logutOutEndpoint,
                 Constants.DELETEMETHOD, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, parms, null, expectations405, testSettings);
 
-        // not implemented status
-        List<validationData> expectations501 = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.NOT_IMPLEMENTED_STATUS);
-        expectations501 = vData.addExpectation(expectations501, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "\"" + Constants.METHOD_NOT_IMPLEMENTED + "\" was not found in the reponse message", null, Constants.METHOD_NOT_IMPLEMENTED);
+        // EE11+ returns 405 (Method Not Allowed), earlier versions return 501 (Not Implemented)
+        List<validationData> expectationsPatch;
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            expectationsPatch = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.NOT_ALLOWED_STATUS);
+            expectationsPatch = vData.addExpectation(expectationsPatch, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "\"" + Constants.METHOD_NOT_ALLOWED + "\" was not found in the response message", null, Constants.METHOD_NOT_ALLOWED);
+        } else {
+            expectationsPatch = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.NOT_IMPLEMENTED_STATUS);
+            expectationsPatch = vData.addExpectation(expectationsPatch, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "\"" + Constants.METHOD_NOT_IMPLEMENTED + "\" was not found in the response message", null, Constants.METHOD_NOT_IMPLEMENTED);
+        }
 
         logTestCaseInServerSideLogs(Constants.PATCHMETHOD);
         genericInvokeEndpoint(_testName, webClient, null, logutOutEndpoint,
-                Constants.PATCHMETHOD, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, parms, null, expectations501, testSettings);
+                Constants.PATCHMETHOD, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, parms, null, expectationsPatch, testSettings);
 
         // forbidden status
         List<validationData> expectations403 = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.FORBIDDEN_STATUS);
