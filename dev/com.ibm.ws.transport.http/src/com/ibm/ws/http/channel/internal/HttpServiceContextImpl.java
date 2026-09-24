@@ -315,6 +315,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private boolean isPushPromise = false;
     private boolean isH2Connection = false;
 
+    /** Flag to track if HTTP/2 END_STREAM has been sent for this response */
+    private boolean h2EndStreamSent = false;
+
     private final CopyOnWriteArrayList<Frame> framesToWrite = new CopyOnWriteArrayList<Frame>();
 
     protected ChannelHandlerContext nettyContext;
@@ -1223,6 +1226,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.preferredEncoding = null;
 
         this.isFinalWrite = false;
+        this.h2EndStreamSent = false;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "clear");
@@ -2079,7 +2083,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 addBytesWritten(length);
                 boolean addEndOfStream = false;
                 if (!link.setAndGetIsGrpc() && msg.getContentLength() == getNumBytesWritten()) {
-                    addEndOfStream = true;
+                    //don't close the stream if trailers are pending
+                    if (msg.getTrailers() == null){ 
+                        addEndOfStream = true;
+                        this.h2EndStreamSent = true;
+                    }
+                    
                 }
 
                 ArrayList<Frame> bodyFrames = link.prepareBody(wsbb, length, addEndOfStream);
@@ -3197,10 +3206,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
             if (this instanceof HttpInboundServiceContextImpl) {
                 if (link instanceof H2HttpInboundLinkWrap) {
-                    if (framesToWrite != null && framesToWrite.size() > 0) {
+                    if (this.h2EndStreamSent) {
+                        needH2EOS = false;
+                    } else if (framesToWrite != null && framesToWrite.size() > 0) {
                         Frame lastFrame = framesToWrite.get(framesToWrite.size() - 1);
                         if (lastFrame != null && lastFrame.flagEndStreamSet()) {
                             needH2EOS = false;
+                            this.h2EndStreamSent = true;
                         }
                     }
                 } else {
@@ -3222,18 +3234,26 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     Tr.debug(tc, "sendFullOutgoing : preparing the final write");
                 }
                 if (msg.getTrailers() != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "sendFullOutgoing : creating trailers");
-                    }
-                    WsByteBuffer[] trailers = marshallOutgoingH2Trailers(h2Link.getWriteTable());
-                    if (trailers != null) {
-                        framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(trailers), true));
+                    if (this.h2EndStreamSent) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "sendFullOutgoing : trailers present but H2 stream already closed; skipping trailer frame");
+                        }
+                    } else{
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "sendFullOutgoing : creating trailers");
+                        }
+                        WsByteBuffer[] trailers = marshallOutgoingH2Trailers(h2Link.getWriteTable());
+                        if (trailers != null) {
+                            framesToWrite.addAll(h2Link.prepareHeaders(WsByteBufferUtils.asByteArray(trailers), true));
+                            this.h2EndStreamSent = true; 
+                        }
                     }
                 } else if (needH2EOS) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "sendFullOutgoing : adding HTTP/2 EOS flag");
                     }
                     framesToWrite.addAll(h2Link.prepareBody(null, 0, this.isFinalWrite));
+                    this.h2EndStreamSent = true;
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "sendFullOutgoing : final write prepared : " + framesToWrite);
