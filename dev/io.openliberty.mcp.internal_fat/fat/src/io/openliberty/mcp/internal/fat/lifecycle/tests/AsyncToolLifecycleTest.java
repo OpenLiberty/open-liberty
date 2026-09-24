@@ -29,9 +29,9 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncLifecycleTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
@@ -40,10 +40,9 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @SuppressWarnings("unchecked")
 @RunWith(FATRunner.class)
 public class AsyncToolLifecycleTest {
-    private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
 
-    @Server("mcp-server-async")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpAsyncServerSuite.server;
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolLifecycleTest");
@@ -53,18 +52,23 @@ public class AsyncToolLifecycleTest {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolLifecycleTest.war")
                                    .addPackage(AsyncLifecycleTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        server.startServer();
+        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("dropins/asyncToolLifecycleTest.war");
+        server.waitForStringInLog("CWWKZ0009I:.*asyncToolLifecycleTest");
+        server.removeInstalledAppForValidation("asyncToolLifecycleTest");
     }
 
     @Test
