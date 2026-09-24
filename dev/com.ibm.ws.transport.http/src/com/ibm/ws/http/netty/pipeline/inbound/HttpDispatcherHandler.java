@@ -149,7 +149,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         Throwable lifecycleFailure = null;
         if (evt instanceof ChannelInputShutdownEvent){
             try {
-                FlowState state = ReadFlowHandler.state(ctx);
+                FlowState state = ReadFlowHandler.state(ctx.channel());
                 if(queue!=null && !queue.isEos() && !state.isRequestConsumed()){
                     try {
                         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
@@ -675,7 +675,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             if (cause instanceof ReadTimeoutException
                 && ProtocolState.current(ctx.channel()) != NettyHttpConstants.ProtocolName.HTTP2
-                && !ReadFlowHandler.state(ctx).isResponseInFlight()) {
+                && !ReadFlowHandler.state(ctx.channel()).isResponseInFlight()) {
                 sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                 return;
             }

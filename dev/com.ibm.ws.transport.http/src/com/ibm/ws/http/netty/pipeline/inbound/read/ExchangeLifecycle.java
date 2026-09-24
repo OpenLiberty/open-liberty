@@ -223,7 +223,7 @@ public final class ExchangeLifecycle {
                         + context.channel().id());
             }
             cleanupState = CleanupState.FAILED;
-            ReadFlowHandler.onCleanupFailed(context,
+            ReadFlowHandler.onCleanupFailed(context.channel(),
                 new IllegalStateException("signalBodyDone: cleanup action not bound"));
             return;
         }
@@ -266,7 +266,7 @@ public final class ExchangeLifecycle {
                         + context.channel().id());
             }
             cleanupState = CleanupState.FAILED;
-            ReadFlowHandler.onCleanupFailed(context,
+            ReadFlowHandler.onCleanupFailed(context.channel(),
                 new IllegalStateException("signalAppDone: cleanup action not bound"));
             return;
         }
@@ -367,7 +367,7 @@ public final class ExchangeLifecycle {
             }
             // Delegate failure handling to the established connection-failure policy.
             // Return without calling onCleanupComplete.
-            ReadFlowHandler.onCleanupFailed(context, t);
+            ReadFlowHandler.onCleanupFailed(context.channel(), t);
             return;
         }
         // --- End cleanup failure catch boundary ---
@@ -386,7 +386,7 @@ public final class ExchangeLifecycle {
         // If this notification throws, A remains COMPLETE and the error is
         // routed through the connection-error path.
         try {
-            ReadFlowHandler.onCleanupComplete(context);
+            ReadFlowHandler.onCleanupComplete(context.channel());
         } catch (Throwable t) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "[LIFECYCLE] tryCleanup: notification failed (cleanup was COMPLETE) ch="
@@ -394,7 +394,7 @@ public final class ExchangeLifecycle {
             }
             // cleanupState remains COMPLETE — cleanup succeeded.
             // Route the notification/admission error through the connection-error path.
-            ReadFlowHandler.onCleanupNotificationFailed(context, t);
+            ReadFlowHandler.onCleanupNotificationFailed(context.channel(), t);
         }
     }
 }

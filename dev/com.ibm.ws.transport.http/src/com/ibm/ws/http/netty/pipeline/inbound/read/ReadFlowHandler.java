@@ -90,21 +90,28 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * @param context The current Netty {@link ChannelHandlerContext}.
      * @return The current flow state associated to the provided context.
      */
-    public static FlowState state(ChannelHandlerContext context) {
-        FlowState state = context.channel().attr(FLOW_KEY).get();
+    public static FlowState state(Channel channel) {
+        FlowState state = channel.attr(FLOW_KEY).get();
         if (state == null) {
             state = new FlowState();
-            context.channel().attr(FLOW_KEY).set(state);
+            channel.attr(FLOW_KEY).set(state);
         }
         return state;
     }
 
-    public static void markRequestConsumed(ChannelHandlerContext context) {
-        if (!context.executor().inEventLoop()) {
-            context.executor().execute(() -> markRequestConsumed(context));
+    public static void markRequestConsumed(Channel channel) {
+        if (!channel.eventLoop().inEventLoop()) {
+            channel.eventLoop().execute(() -> markRequestConsumed(channel));
             return;
         }
-        FlowState state = state(context);
+        FlowState state = state(channel);
+        ChannelHandlerContext flowCtx = state.readFlowHandlerContext;
+        if (flowCtx == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "[FLOW-PROOF] markRequestConsumed: readFlowHandlerContext is null ch=" + channel.id() + "; state update skipped");
+            }
+            return;
+        }
         state.setRequestConsumed(true);
         // Body is protocol-complete but admission requires all gates to be clear.
         // Use the single authoritative eligibility check: this covers both the
@@ -112,14 +119,14 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         if (!state.isAdmissionEligible()) {
             // Cleanup not yet done: onCleanupComplete will re-evaluate once both
             // lifecycle signals have arrived and isc.clear() has returned.
-            verifyNeedRead(context, state);
+            verifyNeedRead(flowCtx, state);
             return;
         }
         // All gates clear: safe to drain or schedule the next request.
         if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
-            drainPendingAdmission(context, state);
+            drainPendingAdmission(flowCtx, state);
         } else {
-            verifyNeedRead(context, state);
+            verifyNeedRead(flowCtx, state);
         }
     }
 
@@ -131,12 +138,19 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * been recorded, so it is safe to admit the next request — subject to the
      * remaining admission gates (requestConsumed, responseInFlight).
      */
-    static void onCleanupComplete(ChannelHandlerContext context) {
-        assert context.executor().inEventLoop()
+    static void onCleanupComplete(Channel channel) {
+        assert channel.eventLoop().inEventLoop()
             : "onCleanupComplete must be called on the event loop";
-        FlowState state = state(context);
+        FlowState state = state(channel);
+        ChannelHandlerContext flowCtx = state.readFlowHandlerContext;
+        if (flowCtx == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "[FLOW-PROOF] onCleanupComplete: readFlowHandlerContext is null ch=" + channel.id() + "; skipping admission");
+            }
+            return;
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "[FLOW-PROOF] CLEANUP_COMPLETE ch=" + context.channel().id()
+            Tr.debug(tc, "[FLOW-PROOF] CLEANUP_COMPLETE ch=" + channel.id()
                 + " requestConsumed=" + state.isRequestConsumed()
                 + " responseInFlight=" + state.isResponseInFlight()
                 + " hasPending=" + state.hasPendingAdmission());
@@ -153,9 +167,9 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         }
         // isAdmissionEligible() is now true (cleanup just completed).
         if (state.hasPendingAdmission()) {
-            drainPendingAdmission(context, state);
+            drainPendingAdmission(flowCtx, state);
         } else {
-            verifyNeedRead(context, state);
+            verifyNeedRead(flowCtx, state);
         }
     }
 
@@ -167,20 +181,22 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * is never admitted, all queued requests are released, and the connection is
      * closed by the established failure/closure policy.
      *
-     * @param context the channel handler context.
+     * @param channel the channel.
      * @param cause   the exception thrown by the cleanup action.
      */
-    public static void onCleanupFailed(ChannelHandlerContext context, Throwable cause) {
-        assert context.executor().inEventLoop()
+    public static void onCleanupFailed(Channel channel, Throwable cause) {
+        assert channel.eventLoop().inEventLoop()
             : "onCleanupFailed must be called on the event loop";
-        FlowState state = state(context);
-        Tr.debug(tc, "[FLOW-PROOF] CLEANUP_FAILED ch=" + context.channel().id()
-            + " cause=" + cause);
+        FlowState state = state(channel);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "[FLOW-PROOF] CLEANUP_FAILED ch=" + channel.id()
+                + " cause=" + cause);
+        }
         state.setKeepAliveAllowed(false);
         state.setStopReading(true);
         state.releaseQueue();
-        if (context.channel().isActive()) {
-            context.channel().close();
+        if (channel.isActive()) {
+            channel.close();
         }
     }
 
@@ -192,33 +208,41 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * <p>A's cleanup result ({@code COMPLETE}) is preserved.  The connection is closed
      * via the failure policy without touching the lifecycle state.
      *
-     * @param context the channel handler context.
+     * @param channel the channel.
      * @param cause   the exception thrown by the notification/admission path.
      */
-    public static void onCleanupNotificationFailed(ChannelHandlerContext context, Throwable cause) {
-        assert context.executor().inEventLoop()
+    public static void onCleanupNotificationFailed(Channel channel, Throwable cause) {
+        assert channel.eventLoop().inEventLoop()
             : "onCleanupNotificationFailed must be called on the event loop";
-        FlowState state = state(context);
-        Tr.debug(tc, "[FLOW-PROOF] CLEANUP_NOTIFICATION_FAILED ch=" + context.channel().id()
-            + " cause=" + cause);
+        FlowState state = state(channel);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "[FLOW-PROOF] CLEANUP_NOTIFICATION_FAILED ch=" + channel.id()
+                + " cause=" + cause);
+        }
         state.setKeepAliveAllowed(false);
         state.setStopReading(true);
         state.releaseQueue();
-        if (context.channel().isActive()) {
-            context.channel().close();
+        if (channel.isActive()) {
+            channel.close();
         }
     }
 
-    public static void setBodyReadWanted(ChannelHandlerContext context, boolean want) {
-        FlowState state = state(context);
+    public static void setBodyReadWanted(Channel channel, boolean want) {
+        FlowState state = state(channel);
+        ChannelHandlerContext flowCtx = state.readFlowHandlerContext;
+        if (flowCtx == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "[FLOW-PROOF] setBodyReadWanted: readFlowHandlerContext is null ch=" + channel.id() + "; read scheduling skipped");
+            }
+        }
         state.setBodyReadWanted(want);
-        if (want) {
-            requestRead(context);
+        if (want && flowCtx != null) {
+            requestRead(flowCtx);
         }
     }
 
-    public static void setClosedOrUpgraded(ChannelHandlerContext context) {
-        FlowState state = state(context);
+    public static void setClosedOrUpgraded(Channel channel) {
+        FlowState state = state(channel);
         state.setStopReading(true);
         state.setKeepAliveAllowed(false);
         state.setBodyReadWanted(false);
@@ -238,18 +262,24 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * @throws Exception if next handlers throw an exception.
      */
     @Override
+    public void handlerAdded(ChannelHandlerContext context) throws Exception {
+        state(context.channel()).readFlowHandlerContext = context;
+        super.handlerAdded(context);
+    }
+
+    @Override
     public void channelActive(ChannelHandlerContext context) throws Exception {
         if (context.channel().config().isAutoRead()) {
             context.channel().config().setAutoRead(false);
         }
-        state(context);
+        state(context.channel());
         super.channelActive(context);
         requestRead(context);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext context) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         state.setReadPending(false);
         state.setReadAgain(false);
         state.setStopReading(true);
@@ -259,7 +289,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         state.setReadPending(false);
         state.setReadAgain(false);
         state.releaseQueue();
@@ -289,7 +319,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
 
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         boolean hasFlowControl = (context.pipeline().get(FlowControlHandler.class) != null);
 
         if (hasFlowControl && state.isReadPending()) {
@@ -406,7 +436,16 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         // exchange they belong to.
         state.nextExchangeId();
 
-        context.fireChannelRead(message);
+        if (state.readFlowHandlerContext == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "[FLOW-PROOF] ADMIT_NO_HANDLER_CTX ch=" + context.channel().id()
+                    + " uri=" + request.uri() + "; closing channel");
+            }
+            ReferenceCountUtil.release(message);
+            context.channel().close();
+            return;
+        }
+        state.readFlowHandlerContext.fireChannelRead(message);
 
         if (requestEnd && !(message instanceof LastHttpContent)) {
             // Let the codec finish emitting terminal content before granting the
@@ -434,7 +473,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext context) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         super.channelReadComplete(context);
 
         if (context.pipeline().get(FlowControlHandler.class) != null) {
@@ -497,7 +536,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      */
     @Override
     public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
 
         if (message instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) message;
@@ -682,7 +721,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 // read timeout for each incoming body fragment — matching Channel
                 // Framework where every purge body read uses readTimeout.
                 context.fireUserEventTriggered(PurgeStartedEvent.INSTANCE);
-                ReadFlowHandler.setBodyReadWanted(context, true);
+                ReadFlowHandler.setBodyReadWanted(context.channel(), true);
             }
             return;
         }
@@ -795,7 +834,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             while ((next = state.peekPending()) != null && !(next instanceof HttpRequest)) {
                 state.pollPending();
                 try {
-                    context.fireChannelRead(next);
+                    state.readFlowHandlerContext.fireChannelRead(next);
                     // Downstream now owns the ref; do NOT release.
                 } catch (Exception e) {
                     // Fire did not complete; we still own the ref.
@@ -830,7 +869,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
 
         if (event == QuiesceHandler.QUIESCE_EVENT) {
             state.setQuiescing(true);
@@ -912,7 +951,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             return;
         }
 
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
 
         if (state.stoppedReading()) return;
         if (!context.channel().isActive()) return;

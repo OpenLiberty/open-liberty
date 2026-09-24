@@ -261,7 +261,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (!this.isc.isNettyHttp2Request()) {
             final HttpInboundServiceContextImpl iscForCleanup = this.isc;
             final ExchangeLifecycle lifecycle =
-                ReadFlowHandler.state(context).getActiveLifecycle();
+                ReadFlowHandler.state(context.channel()).getActiveLifecycle();
             if (lifecycle != null) {
                 lifecycle.bindCleanupAction(iscForCleanup::clear);
                 this.boundLifecycle = lifecycle;
@@ -317,7 +317,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (!this.isc.isNettyHttp2Request()) {
             final HttpInboundServiceContextImpl iscForCleanup = this.isc;
             final ExchangeLifecycle lifecycle =
-                ReadFlowHandler.state(ctx).getActiveLifecycle();
+                ReadFlowHandler.state(ctx.channel()).getActiveLifecycle();
             if (lifecycle != null) {
                 lifecycle.bindCleanupAction(iscForCleanup::clear);
                 this.boundLifecycle = lifecycle;
@@ -732,7 +732,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (this.nettyContext != null) {
-            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext.channel());
         }
 
         linkIsReady = false;
@@ -2128,7 +2128,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setBodyComplete();
             // HTTP/1 read-flow state is not authority for trusted HTTP/2 streams.
             if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
-                ReadFlowHandler.markRequestConsumed(nettyContext);
+                ReadFlowHandler.markRequestConsumed(nettyContext.channel());
             }
             // Signal body completion using the lifecycle captured at bind time.
             // Using boundLifecycle (not getActiveLifecycle()) prevents a race where
