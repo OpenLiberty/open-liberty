@@ -53,6 +53,11 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  * zip.reaper.slow.pend.min    (>0)     [ 100,000,000 ns ] [ 0.1s ]
  * zip.reaper.slow.pend.max    (>0)     [ 200,000,000 ns ] [ 0.2s ]
  *
+ * One property disables the time stamp and size checking when re-acquiring
+ * zip files:
+ * 
+ * zip.reaper.assume.valid    true | false   [ false ]
+ *
  * Property Details:
  *
  * zip.cache.debug.state      true | false   [ false ]
@@ -75,7 +80,7 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  * The zip cache service has three cache layers: A cache of zip file handles,
  * a cache of data for small classes (per zip file handle), and a cache of zip
  * files.
- *
+ * 
  * zip.cache.handle.max       -1 | (>0)      [ 255 ]
  *
  * This property sets the maximum number of zip file handles which are
@@ -146,6 +151,22 @@ import com.ibm.ws.artifact.zip.internal.SystemUtils;
  *
  * The short and long interval values are specified in nano-seconds (ns):
  * 1,000,000,000 ns is 1 s, 100,000,000 ns is 0.1 s.
+ * 
+ * zip.reaper.assume.valid    true | false   [ false ]
+ * 
+ * A zip file which has a pending close will have that close discarded if an
+ * open request is made before the pending close was processed.  Before
+ * re-acquiring the zip file, the zip file size and last modified time are
+ * checked against the zip file size and last modified time when the zip file
+ * was initially opened.  If either value has changed, instead of continuing
+ * use of the same, already opened zip file, the zip file is closed and
+ * re-opened.
+ * 
+ * Setting 'zip.reaper.assume.valid' disables the checks against the zip file
+ * size and last modified times.
+ * 
+ * This property is provided for experimental use, only, and is not approved
+ * for use in production environments.
  */
 public class ZipCachingProperties {
     private static final TraceComponent tc = Tr.register(ZipFileHandleImpl.class);
@@ -290,8 +311,11 @@ public class ZipCachingProperties {
      * closed, and displaying lifetime statistics for all.</li>
      * </ul>
      */
-    public static final String ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME =
+    public static final String ZIP_REAPER_DEBUG_STATE_PROPERTY_NAME =
         "zip.reaper.debug.state";
+    @Deprecated
+    public static final String ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME =
+        ZIP_REAPER_DEBUG_STATE_PROPERTY_NAME;
     public static final boolean ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE = false;
     public static final boolean ZIP_REAPER_DEBUG_STATE;
 
@@ -308,7 +332,7 @@ public class ZipCachingProperties {
             ZIP_REAPER_COLLECT_TIMINGS_DEFAULT_VALUE);
 
         ZIP_REAPER_DEBUG_STATE = getProperty(methodName,
-            ZIP_REAPDER_DEBUG_STATE_PROPERTY_NAME,
+            ZIP_REAPER_DEBUG_STATE_PROPERTY_NAME,
             ZIP_REAPER_DEBUG_STATE_DEFAULT_VALUE);
     }
 
@@ -360,6 +384,13 @@ public class ZipCachingProperties {
         ZipCachingProperties.NANO_IN_ONE / 5; // 0.2s
     public static final long ZIP_CACHE_REAPER_SLOW_PEND_MAX;
 
+    /** Don't let re-acquire do file size and last modified checks. */
+    public static final String ZIP_CACHE_REAPER_ASSUME_VALID_PROPERTY_NAME =
+        "zip.reaper.assume.valid";
+    /** Temporarily set this to true, to simplify testing. */
+    public static final boolean ZIP_CACHE_REAPER_ASSUME_VALID_DEFAULT_VALUE = true;
+    public static final boolean ZIP_CACHE_REAPER_ASSUME_VALID;
+    
     static {
         String methodName = "<static init>";
 
@@ -382,6 +413,10 @@ public class ZipCachingProperties {
         ZIP_CACHE_REAPER_SLOW_PEND_MAX = getProperty(methodName,
             ZIP_CACHE_REAPER_SLOW_PEND_MAX_PROPERTY_NAME,
             ZIP_CACHE_REAPER_SLOW_PEND_MAX_DEFAULT_VALUE);
+        
+        ZIP_CACHE_REAPER_ASSUME_VALID = getProperty(methodName,
+           ZIP_CACHE_REAPER_ASSUME_VALID_PROPERTY_NAME,
+           ZIP_CACHE_REAPER_ASSUME_VALID_DEFAULT_VALUE);
     }
 
     //
