@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -142,11 +142,13 @@ public class InvalidAppTests extends CommonWebServerTests {
     }
 
     @Test
+    @MaximumJavaLevel(javaLevel = 21) //https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/getting-started.html#getting-started.system-requirements
     public void testNoManifest20() throws Exception {
         assertNotNull("No error message for missing manifest.", server.waitForStringInLog("CWWKC0256E"));
     }
 
     @Test
+    @MaximumJavaLevel(javaLevel = 21) //https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/getting-started.html#getting-started.system-requirements
     public void testNoStartCLass20() throws Exception {
         assertNotNull("No error message for missing start class.", server.waitForStringInLog("CWWKC0257E"));
     }
