@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,6 +145,7 @@ public class ConfigAdminHealthCheckTest {
     }
 
     /*
+     * Co-authored-by-AI: IBM Bob 1.0.6
      * This test will start a server with the applications already loaded inside the dropins folder.
      * It will confirm that both the configAdmin and appTracker detect the application.
      */
@@ -153,14 +154,23 @@ public class ConfigAdminHealthCheckTest {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the dropins directory.");
         loadServerAndApplication(server1, APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app", false);
 
-        //Hitting health endpoint to trigger configAdmin app registration.
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        getJSONPayload(conReady);
+        // Wait for the health bundle's setConfigAdmin() to be invoked
+        // This ensures ConfigAdmin binding has occurred before we check for app detection
+        log("testMatchingAppNamesDropinsTest", "Waiting for ConfigAdmin binding to health bundle.");
+        String setConfigAdminLine = server1.waitForStringInTrace("invoking bind: setConfigAdmin", 10000);
+        assertNotNull("ConfigAdmin was not bound to health bundle.", setConfigAdminLine);
+        
+        log("testMatchingAppNamesDropinsTest", "ConfigAdmin binding detected, now checking app detection.");
 
-        String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp", 10000);
-        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
+        // Use helper method to check for ConfigAdmin detection with retry logic
+        String configAdminLine = checkConfigAdminDetectionWithRetry(server1, READY_ENDPOINT, 
+                                                                     " configAdminAppName = ConfigAdminDropinsCheckApp",
+                                                                     "testMatchingAppNamesDropinsTest");
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
+
+        // Check appTracker detection
+        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
         assertNotNull("App was not detected by appTracker.", stateMapLine);
 
     }
@@ -279,6 +289,7 @@ public class ConfigAdminHealthCheckTest {
 //    }
 
     /*
+     * Co-authored-by-AI: IBM Bob 1.0.6
      * This test will start a server with the two applications in a single EAR already loaded inside the dropins folder.
      * There's one slow and one quick starting application and the test will confirm that configAdmin detects the applications.
      */
@@ -299,19 +310,71 @@ public class ConfigAdminHealthCheckTest {
             assertTrue("Failure to start server. ", server1.isStarted());
         }
 
-        log("testReadinessEndpointOnServerStart", "Waiting for Application to start.");
+        log("testMultiWarDetectionDropinsTest", "Waiting for Application to start.");
         String line = server1.waitForStringInLog("Application MultiWarApps started", 30000);
-        log("testReadinessEndpointOnServerStart", "Application started. Line Found : " + line);
+        log("testMultiWarDetectionDropinsTest", "Application started. Line Found : " + line);
         assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
 
-        //Hitting health endpoint to trigger configAdmin app registration.
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        getJSONPayload(conReady);
+        // Wait for the health bundle's setConfigAdmin() to be invoked
+        // This ensures ConfigAdmin binding has occurred before we check for app detection
+        log("testMultiWarDetectionDropinsTest", "Waiting for ConfigAdmin binding to health bundle.");
+        String setConfigAdminLine = server1.waitForStringInTrace("invoking bind: setConfigAdmin", 10000);
+        assertNotNull("ConfigAdmin was not bound to health bundle.", setConfigAdminLine);
+        
+        log("testMultiWarDetectionDropinsTest", "ConfigAdmin binding detected, now checking app detection.");
 
-        String configAdminLine = server1.waitForStringInTrace("configAdminAppName = MultiWarApps");
+        // Use helper method to check for ConfigAdmin detection with retry logic
+        String configAdminLine = checkConfigAdminDetectionWithRetry(server1, READY_ENDPOINT, 
+                                                                     "configAdminAppName = MultiWarApps",
+                                                                     "testMultiWarDetectionDropinsTest");
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
 
+    }
+
+    /**
+     * Co-authored-by-AI: IBM Bob 1.0.6
+     * Helper method to check for ConfigAdmin app detection with retry logic for race condition.
+     * 
+     * This method implements a retry mechanism to handle the race condition where ConfigAdmin
+     * might be queried before the application has been registered in its internal state.
+     * Uses a loop-based approach with up to 3 attempts to ensure robustness.
+     * 
+     * @param server The Liberty server instance
+     * @param endpoint The health endpoint to hit (e.g., READY_ENDPOINT)
+     * @param appNamePattern The trace pattern to search for (e.g., "configAdminAppName = MyApp")
+     * @param testMethodName The name of the calling test method for logging
+     * @return The trace line if found, null otherwise
+     * @throws Exception if there's an error hitting the endpoint
+     */
+    private String checkConfigAdminDetectionWithRetry(LibertyServer server, String endpoint, 
+                                                       String appNamePattern, String testMethodName) throws Exception {
+        String configAdminLine = null;
+        String notFoundLine = null;
+        int maxAttempts = 3;
+
+        for (int attempt = 1; attempt <= maxAttempts && configAdminLine == null; attempt++) {
+            log(testMethodName, "Attempt " + attempt + " - checking ConfigAdmin status.");
+            
+            // Hit health endpoint to trigger ConfigAdmin query
+            HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server, endpoint);
+            getJSONPayload(conReady);
+            
+            // Wait for success message
+            configAdminLine = server.waitForStringInTrace(appNamePattern, 3000);
+            
+            if (configAdminLine == null) {
+                // Check if we got the "not found" message
+                notFoundLine = server.waitForStringInTrace("configAdmin could not find any configured apps", 1000);
+                
+                if (notFoundLine != null && attempt < maxAttempts) {
+                    log(testMethodName, 
+                        "ConfigAdmin query returned no apps (race condition). Will retry.");
+                }
+            }
+        }
+
+        return configAdminLine;
     }
 
     /**
