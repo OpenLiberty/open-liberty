@@ -74,7 +74,7 @@ dependencies {
     'org.hibernate:hibernate-search-elasticsearch:5.11.2.Final',
     'org.hibernate:hibernate-search-engine:5.11.2.Final',
     'org.hibernate:hibernate-search-orm:5.11.2.Final',
-    'org.jboss.logging:jboss-logging:3.6.3.Final',
+    project(':io.openliberty.org.jboss.logging36'),
     'org.hibernate.orm:hibernate-community-dialects:7.0.9.Final',
     'org.hibernate.models:hibernate-models:1.0.1',
     'net.bytebuddy:byte-buddy:1.18.10',
