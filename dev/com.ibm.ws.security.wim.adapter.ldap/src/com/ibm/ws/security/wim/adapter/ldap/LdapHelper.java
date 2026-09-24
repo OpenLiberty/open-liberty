@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1002,7 +1002,7 @@ public class LdapHelper {
     }
 
     /**
-     * Encode \ * ( ) for LDAP queries.
+     * Encode \ * ( ) + for LDAP queries.
      *
      * @param input          The principalName to encode
      * @param encodeAsterisk True if asterisks should also be encoded
@@ -1031,6 +1031,9 @@ public class LdapHelper {
                     break;
                 case ')':
                     sb.append("\\29");
+                    break;
+                case '+':
+                    sb.append("\\2b");
                     break;
                 case '\0':
                     sb.append("\\00");

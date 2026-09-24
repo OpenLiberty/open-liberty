@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,8 @@ public class EncodeSpecialCharactersTest {
     private static final String USER_DN = "uid=" + userUid + "," + DN;
     private static final String userSn = "user1sn)((testsn*";
     private static final String userCn = "user1cn";
+    private static final String userUidWithPlus = "user+test";
+    private static final String USER_DN_WITH_PLUS = "uid=user\\+test," + DN;
 
     /**
      * Setup the test case.
@@ -166,6 +168,17 @@ public class EncodeSpecialCharactersTest {
         entry.addAttribute("uid", userUid);
         entry.addAttribute("sn", userSn);
         entry.addAttribute("cn", userCn);
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
+
+        /*
+        * Create the user and group.
+        */
+        entry = new Entry(USER_DN_WITH_PLUS);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", userUidWithPlus);
+        entry.addAttribute("sn", "TestUser");
+        entry.addAttribute("cn", "Test User Plus");
         entry.addAttribute("userPassword", "password");
         ds.add(entry);
 
@@ -304,5 +317,72 @@ public class EncodeSpecialCharactersTest {
         assertEquals("There should be three entries :" + result.toString(), 1, result.getList().size());
         result = servlet.getUsers(userUid, 0);
         assertEquals("There should be three entries :" + result.toString(), 1, result.getList().size());
+    }
+
+    /**
+     * Test that users with plus signs in their username can
+     * successfully authenticate.
+     * This goes along LDAP Filter queries (RFC 4525)
+     */
+    @Test
+    public void testPlusSignInUsername() throws Exception{
+        updateLibertyServer(false,false);
+
+        assertDNsEqual("Authentication should succeed with plus sign in username.",
+        USER_DN_WITH_PLUS,
+        servlet.checkPassword(userUidWithPlus,"password"));
+
+        SearchResult result = servlet.getUsers(USER_DN_WITH_PLUS, 0);
+        assertEquals("Should find exactly one user with plus sign", 1, result.getList().size());
+    }
+
+    /**
+     * Test multiple plus signs in username
+     */
+    @Test
+    public void testMultiplePlusSignInUsername() throws Exception{
+        String userWithMultiplePlus = "user+test+extra";
+        String dnWithMultiplePlus = "uid=user\\+test\\+extra," + DN;
+
+        // Add test user
+        Entry entry = new Entry(dnWithMultiplePlus);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", userWithMultiplePlus);
+        entry.addAttribute("sn", "TestUser");
+        entry.addAttribute("cn", "Test User Multiple Plus");
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
+
+        updateLibertyServer(false,false);
+
+        assertDNsEqual("Authentication should succeed with plus sign in username.",
+        dnWithMultiplePlus,
+        servlet.checkPassword(userWithMultiplePlus,"password"));
+    }
+
+
+    /**
+     * Test multiple plus signs and other special characters in username
+     */
+    @Test
+    public void testPlusSignInUsernameOtherSpecialChars() throws Exception{
+        
+        String userWithMixedChars = "user+test(special)";
+        String dnWithMixedChars = "uid=user\\+test(special)," + DN;
+
+        // Add test user
+        Entry entry = new Entry(dnWithMixedChars);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", userWithMixedChars);
+        entry.addAttribute("sn", "TestUser");
+        entry.addAttribute("cn", "Test User Mixed Chars");
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
+
+        updateLibertyServer(false,false);
+
+        assertDNsEqual("Authentication should succeed with plus sign in username.",
+        dnWithMixedChars,
+        servlet.checkPassword(userWithMixedChars,"password"));
     }
 }
