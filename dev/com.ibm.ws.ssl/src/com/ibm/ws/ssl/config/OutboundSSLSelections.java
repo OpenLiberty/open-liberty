@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -94,48 +94,44 @@ public class OutboundSSLSelections {
                 String key = null;
                 String host = (String) outboundEntry.get("host");
 
+                // Use a local variable to avoid modifying the original sslCfgAlias
+                String currentSslCfgAlias = sslCfgAlias;
                 String certAlias = (String) outboundEntry.get("clientCertificate");
                 if (certAlias != null) {
-                    sslCfgAlias = sslCfgAlias + ":" + certAlias;
+                    currentSslCfgAlias = currentSslCfgAlias + ":" + certAlias;
                 }
 
                 Integer port = (Integer) outboundEntry.get("port");
                 if (port != null) {
                     key = host + "," + port.toString();
                     if (dynamicHostPortSelections.containsKey(key)) {
-                        if (!dynamicHostPortSelections.get(key).equals(sslCfgAlias)) {
+                        if (!dynamicHostPortSelections.get(key).equals(currentSslCfgAlias)) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "loadOutboundConnectionInfo", "Existing " + key + " : " + dynamicHostPortSelections.get(key) + ",  trying to add " + sslCfgAlias);
+                                Tr.debug(tc, "loadOutboundConnectionInfo", "Existing " + key + " : " + dynamicHostPortSelections.get(key) + ",  trying to add " + currentSslCfgAlias);
                             }
                             issueConflictWarning(host, port.toString(), dynamicHostPortSelections.get(key));
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "loadOutboundConnectionInfo", "Adding " + key + " to the host port list, sslCfgAlias " + sslCfgAlias);
+                            Tr.debug(tc, "loadOutboundConnectionInfo", "Adding " + key + " to the host and port list");
                         }
-                        dynamicHostPortSelections.put(key, sslCfgAlias);
+                        dynamicHostPortSelections.put(key, currentSslCfgAlias);
                     }
                 } else {
-                    // special check for host "*" and port "*"
-                    if (host.equals("*")) {
-                        if (!warningIssued && isDefaultOutboundRefSet(sslCfgAlias))
-                            continue;
-                    }
-
                     key = host + ",*";
                     if (dynamicHostSelections.containsKey(key)) {
-                        if (!dynamicHostSelections.get(key).equals(sslCfgAlias))
+                        if (!dynamicHostSelections.get(key).equals(currentSslCfgAlias))
                             issueConflictWarning(host, "*", dynamicHostSelections.get(key));
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "loadOutboundConnectionInfo", "Adding " + key + " to the host list");
                         }
-                        dynamicHostSelections.put(key, sslCfgAlias);
+                        dynamicHostSelections.put(key, currentSslCfgAlias);
                     }
                 }
 
                 newConnectionInfo.add(key);
-                dynamicSelections.put(key, sslCfgAlias);
+                dynamicSelections.put(key, currentSslCfgAlias);
             }
         }
 
