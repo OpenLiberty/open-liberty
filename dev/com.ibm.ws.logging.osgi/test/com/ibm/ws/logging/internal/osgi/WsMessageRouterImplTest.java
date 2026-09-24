@@ -896,6 +896,93 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     }
 
     /**
+     * Test that a structurally valid wildcard pattern whose level suffix character is NOT one
+     * of the recognised letters (I, A, W, E) is rejected, emits warning CWWKE0710W, and does
+     * not route matching messages.
+     *
+     * "ABCD*X" passes the structural check (exactly one '*' at second-to-last position) but
+     * 'X' is not a recognised log-level letter, so WildCardMessageAndLevel throws
+     * IllegalArgumentException and the pattern must be dropped entirely.
+     *
+     * Exercises the addMsgToLogHandler() path.
+     */
+    @Test
+    public void testInvalidLevelCharViaAddMsgToLogHandler() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        outputMgr.resetStreams();
+        outputMgr.restoreStreams();
+        outputMgr.captureStreams();
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // Structurally valid (one '*', second-to-last) but invalid level chars
+            msgRouter.addMsgToLogHandler("ABCD*X", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("ABCD*Z", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("ABCD*0", "MYLOGHANDLER");
+
+            // Each must emit CWWKE0710W naming the offending pattern
+            assertTrue("Expected CWWKE0710W warning for ABCD*X",
+                       outputMgr.checkForMessages("CWWKE0710W.*ABCD\\*X"));
+            assertTrue("Expected CWWKE0710W warning for ABCD*Z",
+                       outputMgr.checkForMessages("CWWKE0710W.*ABCD\\*Z"));
+            assertTrue("Expected CWWKE0710W warning for ABCD*0",
+                       outputMgr.checkForMessages("CWWKE0710W.*ABCD\\*0"));
+
+            // No handler invocation expected — mockWsLogHandler must NOT be called
+            RoutedMessage msg1 = new TestRoutedMessage("ABCD1234X: should not route");
+            RoutedMessage msg2 = new TestRoutedMessage("ABCD1234Z: should not route");
+            RoutedMessage msg3 = new TestRoutedMessage("ABCD12340: should not route");
+
+            assertTrue("ABCD*X pattern should not route", msgRouter.route(msg1, false));
+            assertTrue("ABCD*Z pattern should not route", msgRouter.route(msg2, false));
+            assertTrue("ABCD*0 pattern should not route", msgRouter.route(msg3, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Test that a structurally valid wildcard pattern whose level suffix character is NOT one
+     * of the recognised letters (I, A, W, E) is rejected, emits warning CWWKE0710W, and does
+     * not route matching messages.
+     *
+     * Exercises the modified() / MessageRouter.properties path.
+     */
+    @Test
+    public void testInvalidLevelCharViaModified() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        outputMgr.resetStreams();
+        outputMgr.restoreStreams();
+        outputMgr.captureStreams();
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // Structurally valid (one '*', second-to-last) but invalid level chars
+            Properties props = new Properties();
+            props.setProperty("CWWK*X", "+MYLOGHANDLER");
+            props.setProperty("CWWK*Z", "+MYLOGHANDLER");
+            msgRouter.modified(props);
+
+            // Each must emit CWWKE0710W naming the offending pattern
+            assertTrue("Expected CWWKE0710W warning for CWWK*X",
+                       outputMgr.checkForMessages("CWWKE0710W.*CWWK\\*X"));
+            assertTrue("Expected CWWKE0710W warning for CWWK*Z",
+                       outputMgr.checkForMessages("CWWKE0710W.*CWWK\\*Z"));
+
+            // No handler invocation expected — mockWsLogHandler must NOT be called
+            RoutedMessage msg1 = new TestRoutedMessage("CWWK01234X: should not route");
+            RoutedMessage msg2 = new TestRoutedMessage("CWWK01234Z: should not route");
+
+            assertTrue("CWWK*X pattern should not route", msgRouter.route(msg1, false));
+            assertTrue("CWWK*Z pattern should not route", msgRouter.route(msg2, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
      * Comprehensive routing test: mix of invalid wildcard patterns, valid wildcard patterns,
      * and explicit (exact) message ID subscriptions, all registered against the same handler.
      *

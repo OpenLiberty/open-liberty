@@ -23,6 +23,7 @@ import java.util.logging.LogRecord;
 import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
@@ -59,11 +60,13 @@ public class MessageRouterImpl implements MessageRouter {
     /**
      * Will parse Message ID with wild card for the optional. 
      * @param msgId The wildcard message ID to parse. This message ID MUST already be processed for proper syntax.
-     * @return The log level if present, or Level.ALL if no level was defined.
+     * @return The log level if present, or Level.ALL if * is the last character and null if invalid character. Caller must handle.
      */
     public static Level parseLevel(String msgId) {
 			char c = msgId.charAt(msgId.length() - 1);
 			switch (c) {
+			case '*':
+				return Level.ALL;
 			case 'I':
 				return Level.INFO;
 			case 'A':
@@ -73,7 +76,7 @@ public class MessageRouterImpl implements MessageRouter {
 			case 'E':
 				return WsLevel.ERROR;
 			default:
-				return Level.ALL;
+				return null;
 
 			}
 		}
@@ -93,7 +96,9 @@ public class MessageRouterImpl implements MessageRouter {
     		this.originalWildCardMessageID = wildCardID;
     		
     		logLevel = parseLevel(wildCardID);
-    		if (logLevel.equals(Level.ALL)) {
+    		if (logLevel == null) {
+    			throw new IllegalArgumentException();
+    		} else if (logLevel.equals(Level.ALL)) {
     			wildCardMessageIDStripped = wildCardID.substring(0, wildCardID.length() - 1);
     		} else {
     			wildCardMessageIDStripped = wildCardID.substring(0, wildCardID.length() - 2);
@@ -232,6 +237,7 @@ public class MessageRouterImpl implements MessageRouter {
      * 
      * @param props The contents of the MessageRouter.properties file.
      */
+    @FFDCIgnore(IllegalArgumentException.class)
     public synchronized void modified(Properties props) {
 
         for (Object key : props.keySet()) {
@@ -256,8 +262,19 @@ public class MessageRouterImpl implements MessageRouter {
                 
 
                 if (count == 1 && (lastStar == msgId.length() - 1 || lastStar == msgId.length() - 2)) {
+                    try {
+                    	wcmal = new WildCardMessageAndLevel(msgId);
+                    } catch (IllegalArgumentException iae) {
+                    	//Bad - continue;
+                    	if (ProductInfo.getBetaEdition()) {
+                        	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);;
+                        	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                        		Tr.debug(tc, String.format("Improper wildcard message ID detected from MessageRouter.properties for Message ID:[%s] for handlers Handler(s):[%s]", msgId, logHandlerIds), null);
+                        	}
+                    	}
+                    	continue;
+                    }
                     isWildCard = true;
-                    wcmal = new WildCardMessageAndLevel(msgId);
                 } else {
                 	//Only throw warning if we are beta. We can silently do the above logic because nobody is actually using props or know that his feature is supported.
                 	if (ProductInfo.getBetaEdition()) {
@@ -266,7 +283,6 @@ public class MessageRouterImpl implements MessageRouter {
                     		Tr.debug(tc, String.format("Improper wildcard message ID detected from MessageRouter.properties for Message ID:[%s] for handlers Handler(s):[%s]", msgId, logHandlerIds), null);
                     	}
                 	}
-
                     continue;
                 }
             }
@@ -318,6 +334,7 @@ public class MessageRouterImpl implements MessageRouter {
     /**
      * Add the specified log handler to the message ID's routing list.
      */
+    @FFDCIgnore(IllegalArgumentException.class)
     protected void addMsgToLogHandler(String msgId, String handlerId) {
         // The literal "*" and plain message IDs (no wildcard) go into the exact-ID map.
         if (msgId.equals("*") || msgId.indexOf('*') == -1) {
@@ -344,8 +361,20 @@ public class MessageRouterImpl implements MessageRouter {
             	}
                 return;
             } 
-
-            WildCardMessageAndLevel wcmal = new WildCardMessageAndLevel(msgId);
+            WildCardMessageAndLevel wcmal; 
+            try {
+            	wcmal = new WildCardMessageAndLevel(msgId);
+            } catch (IllegalArgumentException iae) {
+            	//Bad - return.
+            	if (ProductInfo.getBetaEdition()) {
+                	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);
+                	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                		Tr.debug(tc, String.format("Improper wildcard message ID detected from for Message ID:[%s] from handler:[%s]", msgId, handlerId), null);
+                	}
+            	}
+            	return;
+            }
+            //WildCardMessageAndLevel wcmal = new WildCardMessageAndLevel(msgId);
             Set<String> wcLogHandlerIdSet = getOrCreateWildCardLogHandlerIdSet(wcmal);
             wcLogHandlerIdSet.add(handlerId);
         }
@@ -354,6 +383,7 @@ public class MessageRouterImpl implements MessageRouter {
     /**
      * Remove the specified log handler from the message ID's routing list.
      */
+    @FFDCIgnore(IllegalArgumentException.class)
     protected void removeMsgFromLogHandler(String msgId, String handlerId) {
         if (msgId.indexOf('*') != -1 && !msgId.equals("*")) {
             // Validate: exactly one '*', at the last or second-to-last position.
@@ -366,11 +396,17 @@ public class MessageRouterImpl implements MessageRouter {
                 }
             }
             if (count > 1 || (lastIndexAsterisk != msgId.length() - 1 && lastIndexAsterisk != msgId.length() - 2)) {
-                // Invalid pattern — ignore silently.
+                // Invalid pattern — ignore silently. We don't quite care for removal.
                 return;
             }
 
-            WildCardMessageAndLevel wcmal = new WildCardMessageAndLevel(msgId);
+            WildCardMessageAndLevel wcmal; 
+            try {
+            	wcmal = new WildCardMessageAndLevel(msgId);
+            } catch (IllegalArgumentException iae) {
+            	//Bad -do nothing and return. We don't care when we're dealing with removal.
+            	return;
+            }
             Set<String> wcLogHandlerIdSet = getOrCreateWildCardLogHandlerIdSet(wcmal);
             wcLogHandlerIdSet.remove(handlerId);
         } else {
