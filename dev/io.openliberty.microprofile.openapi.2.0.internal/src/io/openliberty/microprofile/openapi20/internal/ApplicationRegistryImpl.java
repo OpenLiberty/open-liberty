@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -261,6 +261,29 @@ public class ApplicationRegistryImpl implements ApplicationRegistry, OpenAPIAppC
                 Tr.event(this, tc, "Finished creating OpenAPI provider");
             }
             return result;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public OpenAPIProvider getOpenAPIProvider(String applicationName) {
+        synchronized (this) {
+            ApplicationRecord record = applications.get(applicationName);
+            if (record == null) {
+                if (LoggingUtils.isDebugEnabled(tc)) {
+                    Tr.debug(this, tc, "getOpenAPIProvider(String): application not found: " + applicationName);
+                }
+                return null;
+            }
+
+            List<OpenAPIProvider> providers = record.providers;
+            if (providers.isEmpty()) {
+                return null;
+            } else if (providers.size() == 1) {
+                return providers.get(0);
+            } else {
+                return mergeProcessor.mergeDocuments(providers);
+            }
         }
     }
 

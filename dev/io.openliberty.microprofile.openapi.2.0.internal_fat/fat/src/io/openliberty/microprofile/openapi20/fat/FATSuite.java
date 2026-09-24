@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigServerXM
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeWithServletTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.SingleAppQueryParamTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.StartupWarningMessagesTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.ZOSConnectExtensionTest;
 import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
@@ -40,6 +41,7 @@ import io.openliberty.microprofile.openapi20.fat.version.OpenAPIVersionTest;
     MergeConfigBothTest.class,
     MergeTest.class,
     MergeWithServletTest.class,
+    SingleAppQueryParamTest.class,
     OpenAPIVersionTest.class,
     ShutdownTest.class,
     StartupWarningMessagesTest.class,
