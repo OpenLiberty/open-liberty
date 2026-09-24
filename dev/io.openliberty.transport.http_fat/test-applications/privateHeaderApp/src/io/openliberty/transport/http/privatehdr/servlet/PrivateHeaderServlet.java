@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  *   REMOTE_ADDR  — from HttpServletRequest.getRemoteAddr()
  *   HDR_WSRA     — raw value of the $WSRA header as seen by the servlet
  *                  (null when stripped before the servlet layer)
+ *   HDR_WSSN     — raw value of the $WSSN header as seen by the servlet
  */
 @WebServlet("/PrivateHeaderServlet")
 public class PrivateHeaderServlet extends HttpServlet {
@@ -43,6 +44,7 @@ public class PrivateHeaderServlet extends HttpServlet {
         writer.println("REQUEST_URL=" + request.getRequestURL().toString());
         writer.println("REMOTE_ADDR=" + request.getRemoteAddr());
         writer.println("HDR_WSRA=" + request.getHeader("$WSRA"));
+        writer.println("HDR_WSSN=" + request.getHeader("$WSSN"));
         writer.flush();
     }
 }

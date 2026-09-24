@@ -54,7 +54,6 @@ public class PrivateHeaderFilterTest {
 
     private static final String DEFAULT_CONFIG          = "privateHeader-default.xml";
     private static final String TRUST_SENSITIVE_CONFIG  = "privateHeader-trustSensitive.xml";
-    private static final String DESENSITIZE_CONFIG      = "privateHeader-desensitize.xml";
 
     @Server("PrivateHeaderFilter")
     public static LibertyServer server;
@@ -160,6 +159,7 @@ public class PrivateHeaderFilterTest {
         String serverPort = extractResponseField(response, "SERVER_PORT");
         assertEquals("SERVER_PORT should equal the real server port",
                 String.valueOf(server.getHttpDefaultPort()), serverPort);
+        assertEquals("$WSSN should be present as a non-sensitive header", "testServerName", extractResponseField(response, "HDR_WSSN"));
     }
 
     
@@ -253,15 +253,24 @@ public class PrivateHeaderFilterTest {
      */
     @Test
     public void testSensitiveWsraHonouredWhenTrustedOriginAll() throws Exception {
-        reconfigure(TRUST_SENSITIVE_CONFIG);
-    
-        String response = sendRawGet(SERVLET_PATH, "$WSRA: " + ALT_REMOTE_ADDR);
-        LOG.info("$WSRA trusted response:\n" + response);
+        server.saveServerConfiguration(); 
+        try {
+            reconfigure(TRUST_SENSITIVE_CONFIG);
 
-        assertEquals("$WSRA must be honoured when trustedSensitiveHeaderOrigin=*",
-                ALT_REMOTE_ADDR, extractResponseField(response, "REMOTE_ADDR"));
-        assertEquals("$WSRA header must be visible to the servlet",
-                ALT_REMOTE_ADDR, extractResponseField(response, "HDR_WSRA"));
+            String response = sendRawGet(SERVLET_PATH, "$WSRA: " + ALT_REMOTE_ADDR);
+            LOG.info("$WSRA trusted response:\n" + response);
+
+            assertEquals("$WSRA must be honoured when trustedSensitiveHeaderOrigin=*",
+                    ALT_REMOTE_ADDR, extractResponseField(response, "REMOTE_ADDR"));
+            assertEquals("$WSRA header must be visible to the servlet",
+                    ALT_REMOTE_ADDR, extractResponseField(response, "HDR_WSRA"));
+
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        }
 
     }
 
