@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.text.DateFormat;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.EmbeddedServerImpl;
@@ -513,6 +514,10 @@ public class KernelBootstrap {
             if ("json".equals(consoleFormat)) {
                 String jsonConsoleHeader = constructJSONHeader(consoleLogHeader, bootProps);
                 System.out.println(jsonConsoleHeader);
+            } else if ("simple".equals(consoleFormat)) {
+                String bsIsoDateFormat = bootProps.get("com.ibm.ws.logging.isoDateFormat");
+                boolean useIsoDateFormat = Boolean.parseBoolean(bsIsoDateFormat);
+                System.out.println(formatSimpleLogLine(consoleLogHeader, useIsoDateFormat));
             } else {
                 System.out.println(consoleLogHeader);
             }
@@ -633,6 +638,40 @@ public class KernelBootstrap {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         String datetime = dateFormat.format(System.currentTimeMillis());
         return datetime;
+    }
+
+    private static String getLocaleDatetime() {
+        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+        if (formatter instanceof SimpleDateFormat) {
+            SimpleDateFormat sdFormatter = (SimpleDateFormat) formatter;
+            String pattern = sdFormatter.toPattern();
+            int endOfSecsIndex = pattern.lastIndexOf('s') + 1;
+            String newPattern = pattern.substring(0, endOfSecsIndex) + ":SSS z";
+            if (endOfSecsIndex < pattern.length())
+                newPattern += pattern.substring(endOfSecsIndex);
+            newPattern = newPattern.replace('h', 'H').replace('K', 'H').replace('k', 'H').replace('a', ' ').trim();
+            sdFormatter.applyPattern(newPattern);
+            formatter = sdFormatter;
+        } else {
+            formatter = new SimpleDateFormat("yy.MM.dd HH:mm:ss:SSS z");
+        }
+        return formatter.format(System.currentTimeMillis());
+    }
+
+    private static String formatSimpleLogLine(String consoleLogHeader, boolean useIsoDateFormat) {
+        String timestamp;
+        if (useIsoDateFormat) {
+            timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                            .format(System.currentTimeMillis());
+        } else {
+            timestamp = getLocaleDatetime();
+        }
+
+        String threadId = String.format("%08x", Thread.currentThread().getId());
+
+        // Logger name padded to 60 chars (matches enhancedNameLength in BaseTraceFormatter)
+        String loggerName = String.format("%-60s", "SystemOut");
+        return "[" + timestamp + "] " + threadId + " " + loggerName + " O " + consoleLogHeader;
     }
 
     /**
