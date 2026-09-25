@@ -1,20 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2009 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.cache.servlet;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
@@ -42,7 +42,15 @@ import com.ibm.wsspi.webcontainer.WebContainerConstants;
 public class CacheHook {
 
    private static TraceComponent tc = Tr.register(CacheHook.class, "WebSphere Dynamic Cache", "com.ibm.ws.cache.resources.dynacache");
-   
+
+   /**
+    * Tracks cache IDs whose servlet is currently being executed for the first time.
+    * A concurrent request for the same ID will wait on the latch rather than
+    * re-executing the servlet, preventing duplicate execution and stale cache values.
+    */
+   private static final ConcurrentHashMap<String, CountDownLatch> inProgressMap =
+           new ConcurrentHashMap<String, CountDownLatch>();
+
    static WSThreadLocal <FragmentComposer> threadLocalFragmentComposer = new WSThreadLocal<FragmentComposer>();
    static WSThreadLocal <Boolean> threadLocalSkipCache = new WSThreadLocal <Boolean>();
    
@@ -723,12 +731,57 @@ public class CacheHook {
 							fragmentComposer, jspCache, cacheEntry, fragmentValue);
 				}
 			} else {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-					Tr.debug(tc, "CACHE MISS id: " + id);
-				didMiss = true;
-				handleCacheMiss(servlet, request, response, fragmentInfo,
-						fragmentComposer, jspCache, cacheEntry, fragmentValue);
-
+				// Guard against concurrent requests for the same uncached ID all executing the servlet.
+				CountDownLatch newLatch = new CountDownLatch(1);
+				CountDownLatch existingLatch = inProgressMap.putIfAbsent(id, newLatch);
+				if (existingLatch != null) {
+					// Another thread is already computing this ID — wait, then re-check cache.
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+						Tr.debug(tc, "WIP wait for id: " + id);
+					try {
+						if (!existingLatch.await(5, TimeUnit.SECONDS)) {
+							Tr.warning(tc, "WIP timeout waiting for id: " + id + " - proceeding as cache miss");
+						}
+					} catch (InterruptedException ie) {
+						Thread.currentThread().interrupt();
+					}
+					cacheEntry = jspCache.getEntry(fragmentInfo);
+					if (cacheEntry != null) {
+						fragmentValue = cacheEntry.getValue();
+						if (fragmentValue != null && !cacheEntry.isInvalid()) {
+							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+								Tr.debug(tc, "WIP cache hit after wait id: " + id);
+							// didMiss stays false — handleCacheHit called below
+						} else {
+							// First thread did not populate; fall through as miss.
+							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+								Tr.debug(tc, "WIP no value after wait, treating as miss id: " + id);
+							didMiss = true;
+							handleCacheMiss(servlet, request, response, fragmentInfo,
+									fragmentComposer, jspCache, cacheEntry, fragmentValue);
+						}
+					} else {
+						// First thread's response was not cacheable; execute servlet.
+						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+							Tr.debug(tc, "WIP null entry after wait, treating as miss id: " + id);
+						didMiss = true;
+						handleCacheMiss(servlet, request, response, fragmentInfo,
+								fragmentComposer, jspCache, cacheEntry, fragmentValue);
+					}
+				} else {
+					// This thread is first — execute servlet and populate cache.
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+						Tr.debug(tc, "CACHE MISS id: " + id);
+					didMiss = true;
+					try {
+						handleCacheMiss(servlet, request, response, fragmentInfo,
+								fragmentComposer, jspCache, cacheEntry, fragmentValue);
+					} finally {
+						// Release any waiting threads; clean up map entry.
+						inProgressMap.remove(id, newLatch);
+						newLatch.countDown();
+					}
+				}
 			}
 			// }
 			// handle cache hit outside the mutex...
