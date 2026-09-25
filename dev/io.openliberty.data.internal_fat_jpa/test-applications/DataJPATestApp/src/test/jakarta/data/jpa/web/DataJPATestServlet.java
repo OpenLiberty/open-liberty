@@ -1025,11 +1025,6 @@ public class DataJPATestServlet extends FATServlet {
     public void testEntityManager() throws Exception {
         counties.deleteByNameIn(List.of("Houston"));
 
-        // TODO enable after EclipseLink 34901 is fixed to allow @Version of
-        // type LocalDateTime on H2
-        if (isH2() && !isHibernate())
-            return;
-
         int[] houstonZipCodes = new int[] { 55919, 55921, 55931, 55941,
                                             55943, 55947, 55971, 55974 };
 
@@ -2670,11 +2665,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testForeignKey() {
-        // TODO enable after EclipseLink 34901 is fixed to allow @Version of
-        // type Instant on H2
-        if (isH2() && !isHibernate())
-            return;
-
         Manufacturer toyota = new Manufacturer();
         toyota.setName("Toyota");
         toyota.setNotes("testForeignKey-1");
@@ -3562,11 +3552,6 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testLowerId() {
         assertEquals(0, counties.deleteByNameIn(List.of("Freeborn", "Steele")));
-
-        // TODO enable after EclipseLink 34901 is fixed to allow @Version of
-        // type LocalDateTime on H2
-        if (isH2() && !isHibernate())
-            return;
 
         int[] freebornZipCodes = new int[] { 55912, 56007, 56009, 56016, 56020, //
                                              56026, 56029, 56032, 56035, 56036 };
@@ -4650,11 +4635,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testTimeAsVersion() throws Exception {
-        // TODO enable after EclipseLink 34901 is fixed to allow @Version of
-        // type LocalDateTime on H2
-        if (isH2() && !isHibernate())
-            return;
-
         /*
          * Reference Issue: https://github.com/eclipse-ee4j/eclipselink/issues/205
          * Without using the Eclipselink Oracle plugin the precision of Timestamp is 1 second
@@ -4756,11 +4736,6 @@ public class DataJPATestServlet extends FATServlet {
                                                         "Fillmore",
                                                         "Winona",
                                                         "Wabasha")));
-
-        // TODO enable after EclipseLink 34901 is fixed to allow @Version of
-        // type LocalDateTime on H2
-        if (isH2() && !isHibernate())
-            return;
 
         int[] olmstedZipCodes = new int[] { 55901, 55902, 55903, 55904, 55905,
                                             55906, 55920, 55923, 55929, 55932,
