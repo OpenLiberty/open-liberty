@@ -13,7 +13,7 @@
 package com.ibm.ws.security.saml20.fat.commonTest.actions;
 
 /**
- * The SAML FATs take too long to run if we try to run all of the tests with Jakarata EE9 enabled.
+ * The SAML FATs take too long to run if we try to run all of the tests with Jakarta EE9 enabled.
  *  So, we'll run the tests in lite mode with Jakarta EE9 and run the tests without it in full mode.
  */
 import com.ibm.websphere.simplicity.log.Log;
