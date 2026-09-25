@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.jmx.connector.server.rest.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.management.NotificationFilter;
@@ -39,6 +40,7 @@ import com.ibm.ws.jmx.connector.server.rest.notification.NotificationManager;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
+import com.ibm.wsspi.rest.handler.helper.RESTHandlerForbiddenError;
 import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
 
 @Component(service = { RESTHandler.class },
@@ -51,6 +53,9 @@ import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_NOTIFICATIONS_CLIENTID_REGISTRATIONS,
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_NOTIFICATIONS_CLIENTID_REGISTRATIONS_OBJECTNAME })
 public class NotificationRegistrationsHandler implements RESTHandler {
+
+    private static final String ADMINISTRATOR_ROLE_NAME = "Administrator";
+
     public static final TraceComponent tc = Tr.register(NotificationRegistrationsHandler.class);
 
     @Activate
@@ -76,6 +81,9 @@ public class NotificationRegistrationsHandler implements RESTHandler {
             if (RESTHelper.isGetMethod(method)) {
                 fetchRegistrations(request, response);
             } else if (RESTHelper.isPostMethod(method)) {
+                if (!request.isUserInRole(ADMINISTRATOR_ROLE_NAME)) {
+                    throw new RESTHandlerForbiddenError(Collections.singleton(ADMINISTRATOR_ROLE_NAME), "Forbidden");
+                }
                 clientNotificationCreation(request, response);
             } else if (RESTHelper.isDeleteMethod(method)) {
                 removeClientNotifications(request, response);
