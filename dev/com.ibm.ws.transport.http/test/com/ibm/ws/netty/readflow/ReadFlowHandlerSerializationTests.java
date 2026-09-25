@@ -897,7 +897,7 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
         assertTrue("B pending before upgrade", state().hasPendingAdmission());
 
-        ReadFlowHandler.setClosedOrUpgraded(channel.pipeline().context(ReadFlowHandler.class));
+        ReadFlowHandler.setClosedOrUpgraded(channel);
         channel.runPendingTasks();
 
         assertTrue("stoppedReading after upgrade", state().stoppedReading());
@@ -1269,7 +1269,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted once", 2, cap.requests.size());
 
         // Mark again — must be idempotent: B must not be dispatched twice, no crash.
-        ReadFlowHandler.markRequestConsumed(channel.pipeline().context(ReadFlowHandler.class));
+        ReadFlowHandler.markRequestConsumed(channel);
         channel.runPendingTasks();
 
         // The count must remain 2 — no duplicate admission.
@@ -1597,7 +1597,7 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("requestConsumed", state().isRequestConsumed());
 
         // Stale call — must be idempotent.
-        ReadFlowHandler.markRequestConsumed(channel.pipeline().context(ReadFlowHandler.class));
+        ReadFlowHandler.markRequestConsumed(channel);
         channel.runPendingTasks();
 
         assertEquals("no extra admission from stale call", 2, cap.requests.size());

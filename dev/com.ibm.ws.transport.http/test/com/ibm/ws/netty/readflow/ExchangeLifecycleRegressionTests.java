@@ -1042,7 +1042,7 @@ public class ExchangeLifecycleRegressionTests {
         // Now verify the isolation guarantee: invoking onCleanupNotificationFailed on a
         // COMPLETE lifecycle must not change it to FAILED and must not re-run cleanup.
         // This is the postcondition that tryCleanup's notification-failure catch enforces.
-        ReadFlowHandler.onCleanupNotificationFailed(ctx(), new RuntimeException("notification error"));
+        ReadFlowHandler.onCleanupNotificationFailed(channel, new RuntimeException("notification error"));
         channel.runPendingTasks();
 
         // A remains COMPLETE — not FAILED.
