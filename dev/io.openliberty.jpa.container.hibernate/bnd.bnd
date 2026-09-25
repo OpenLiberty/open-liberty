@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+Bundle-Name: Hibernate Jakarta Persistence Container
+Bundle-SymbolicName: io.openliberty.persistence.container.hibernate
+Bundle-Description: Container-managed Hibernate Jakarta Persistence support, version ${bVersion}
+
+javac.source: 21
+javac.target: 21
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+
+WS-TraceGroup: JPA
+
+-dsannotations: io.openliberty.persistence.container.hibernate.HibernatePersistenceProvider
+
+Import-Package: \
+ org.hibernate.jpa;version="[8.0,9.0)", \
+ *
+
+-buildpath: \
+	com.ibm.ws.jpa.container.core;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	io.openliberty.jakarta.persistence.4.0;version=latest,\
+	io.openliberty.persistence.4.0.thirdparty;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
