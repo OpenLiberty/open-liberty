@@ -739,7 +739,9 @@ public class CacheHook {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 						Tr.debug(tc, "WIP wait for id: " + id);
 					try {
-						existingLatch.await(5, TimeUnit.SECONDS);
+						if (!existingLatch.await(5, TimeUnit.SECONDS)) {
+							Tr.warning(tc, "WIP timeout waiting for id: " + id + " - proceeding as cache miss");
+						}
 					} catch (InterruptedException ie) {
 						Thread.currentThread().interrupt();
 					}
