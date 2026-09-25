@@ -20,7 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.internal.HttpChain;
+import com.ibm.ws.http.internal.AbstractHttpChain;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -42,7 +42,7 @@ import io.openliberty.netty.internal.exception.NettyException;
 /**
  *
  */
-public class NettyChain extends HttpChain {
+public class NettyChain extends AbstractHttpChain {
 
     private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -79,10 +79,6 @@ public class NettyChain extends HttpChain {
         final String root = endpointId + (isHttps ? "-ssl" : "");
 
         endpointName = root;
-        tcpName = "TCP-" + root;
-        sslName = isHttps ? "SSL-" + root : null;
-        httpName = "HTTP-" + root;
-        dispatcherName = "HTTPD-" + root;
         chainName = "CHAIN-" + root;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
