@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,39 @@ import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+
+// Issue XXXXXX Need improvement to FeatureStart reporting of missing feature errors:
+//
+// For example, the following "could not resolve modeule errors" should be reported as "missing bundle" type errors.
+// The "Failed to stop feature" message is misleading.
+
+// [09/21/2026 00:30:18:689 UTC] 002 FeaturesStartTest3             forceStopServer                S
+//   Failed to stop feature [ mpContextPropagation-1.2 ]: Server [ features.start.3.server ] PID [ null ] Feature [ mpContextPropagation-1.2 ]
+//
+// java.lang.Exception: Errors/warnings were found in server features.start.3.server logs:
+//  <br>[9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner               E
+//    CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
+//  <br>[9/21/26, 0:30:17:647 UTC] 0000001e LogService-56-com.ibm.ws.concurrent                          E
+//    CWWKE0702E: Could not resolve module: com.ibm.ws.concurrent [56]
+//  <br>[9/21/26, 0:30:17:649 UTC] 0000001e ogService-57-io.openliberty.concurrent.internal.basictrigger E
+//    CWWKE0702E: Could not resolve module: io.openliberty.concurrent.internal.basictrigger [57]
+//  <br>[9/21/26, 0:30:17:683 UTC] 0000001e LogService-59-com.ibm.ws.microprofile.contextpropagation.1.0 E
+//    CWWKE0702E: Could not resolve module: com.ibm.ws.microprofile.contextpropagation.1.0 [59]
+//  <br>[9/21/26, 0:30:17:684 UTC] 0000001e vice-60-io.openliberty.microprofile.context.cleared.internal E
+//    CWWKE0702E: Could not resolve module: io.openliberty.microprofile.context.cleared.internal [60]
+//
+// 	at componenttest.topology.impl.LibertyServer.checkLogsForErrorsAndWarnings(LibertyServer.java:4006)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3811)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3646)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3640)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3616)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3523)
+// 	at componenttest.topology.impl.LibertyServer.stopServer(LibertyServer.java:3498)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase.forceStopServer(FeaturesStartTestBase.java:325)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase$TestState.forceStopFeature(FeaturesStartTestBase.java:1176)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase.basicTestStartFeature(FeaturesStartTestBase.java:1268)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTestBase.testStartFeature(FeaturesStartTestBase.java:1226)
+// 	at com.ibm.ws.test.featurestart.FeaturesStartTest3.test(FeaturesStartTest3.java:71)
 
 /**
  * Test to verify that Open Liberty can start with every valid
@@ -100,15 +133,15 @@ public class FeaturesStartTestBase {
 
     private static Class<?> c;
 
-    private static void logInfo(String m, String msg) {
+    protected static void logInfo(String m, String msg) {
         Log.info(c, m, msg);
     }
 
-    private static void logError(String m, String msg) {
+    protected static void logError(String m, String msg) {
         Log.error(c, m, null, msg);
     }
 
-    private static void logError(String m, String msg, Throwable th) {
+    protected static void logError(String m, String msg, Throwable th) {
         Log.error(c, m, th, msg);
     }
 
@@ -136,12 +169,12 @@ public class FeaturesStartTestBase {
 
     //
 
-    protected static boolean isServerZOS(LibertyServer server) throws Exception {
-        return server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
+    protected static boolean isServerZOS(LibertyServer useServer) throws Exception {
+        return useServer.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
     }
 
-    public static int serverJavaLevel(LibertyServer server) throws Exception {
-        return JavaInfo.forServer(server).majorVersion();
+    public static int serverJavaLevel(LibertyServer useServer) throws Exception {
+        return JavaInfo.forServer(useServer).majorVersion();
     }
 
     //
@@ -194,7 +227,7 @@ public class FeaturesStartTestBase {
      * @return The PID of the running server. Null if the server
      *         is not running.
      */
-    private static String getPid() {
+    protected static String getPid() {
         String m = "getPid";
         try {
             return server.getPid();
@@ -284,7 +317,7 @@ public class FeaturesStartTestBase {
      * @param outOfLevel    True or false telling if the startup used
      *                          an unsupported java level.
      * @param pid           The PID of the running server.
-     * @param allowedErrors Errors allowed in the stop server command.
+     * @param useAllowedErrors Errors allowed in the stop server command.
      * @param failures      Storage for recording failures.
      * @param timingResult  Storage for timing data.
      *
@@ -293,8 +326,11 @@ public class FeaturesStartTestBase {
     public static boolean forceStopServer(String shortName,
                                           boolean outOfLevel,
                                           String pid,
-                                          String[] allowedErrors,
-                                          List<String> levelFailures, Map<String, String> failures,
+                                          String[] useAllowedErrors,
+                                          List<String> levelFailures,
+                                          Map<String, String> failures,
+                                          List<String> missingModules,
+                                          List<String> missingBundles,
                                           TimingResult timingResult,
                                           StartupResult startupResult) {
         String m = "forceStopServer";
@@ -315,14 +351,14 @@ public class FeaturesStartTestBase {
                     }
                 }
                 logInfo(m, "Stopping: " + description);
-                if (allowedErrors != null) {
-                    logInfo(m, "Allowed errors [ " + Arrays.toString(allowedErrors) + " ]");
+                if (useAllowedErrors != null) {
+                    logInfo(m, "Allowed errors [ " + Arrays.toString(useAllowedErrors) + " ]");
                 }
 
                 long initialStopNs = timingResult.getTimeNs();
                 Exception boundException;
                 try {
-                    server.stopServer(allowedErrors);
+                    server.stopServer(useAllowedErrors);
                     boundException = null;
                 } catch (Exception e) {
                     boundException = e;
@@ -527,7 +563,7 @@ public class FeaturesStartTestBase {
         List<String> clientFeatures = new ArrayList<>();
         List<String> testFeatures = new ArrayList<>();
         List<String> nonPublicFeatures = new ArrayList<>();
-        List<String> stableFeatures = new ArrayList<>();
+        List<String> useStableFeatures = new ArrayList<>();
 
         // Features may be skipped for feature specific reasons.
         // For example, some features cannot be started by themselves.
@@ -549,19 +585,19 @@ public class FeaturesStartTestBase {
         Map<String, String> outOfLevelReasons = new HashMap<>();
 
         for (String name : featureNamesArray) {
-            FeatureData featureData = getFeatureData(name);
-            if (featureData.isClientOnly()) {
+            FeatureData useFeatureData = getFeatureData(name);
+            if (useFeatureData.isClientOnly()) {
                 clientFeatures.add(name);
                 continue;
-            } else if (featureData.isTest()) {
+            } else if (useFeatureData.isTest()) {
                 testFeatures.add(name);
                 continue;
-            } else if (!featureData.isPublic()) {
+            } else if (!useFeatureData.isPublic()) {
                 nonPublicFeatures.add(name);
                 continue;
 
             } else if ((TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) && isStable(name)) {
-                stableFeatures.add(name);
+                useStableFeatures.add(name);
                 continue;
             }
 
@@ -579,7 +615,7 @@ public class FeaturesStartTestBase {
             }
 
             selectedNames.add(name);
-            selectedFeatures.put(name, featureData);
+            selectedFeatures.put(name, useFeatureData);
 
             String outOfLevelReason = isLevelFiltered(name);
             if (outOfLevelReason != null) {
@@ -604,9 +640,9 @@ public class FeaturesStartTestBase {
             display(m, "    ", 80, testFeatures);
         }
 
-        if (!stableFeatures.isEmpty()) {
-            logInfo(m, "LITE mode: Skip stable features [ " + stableFeatures.size() + " ]:");
-            display(m, "    ", 80, stableFeatures);
+        if (!useStableFeatures.isEmpty()) {
+            logInfo(m, "LITE mode: Skip stable features [ " + useStableFeatures.size() + " ]:");
+            display(m, "    ", 80, useStableFeatures);
         }
 
         if (!filterReasons.isEmpty()) {
@@ -671,8 +707,8 @@ public class FeaturesStartTestBase {
 
         // Assign the range assuming an even split (residue == 0).
 
-        int firstFeatureNo = useBucketNo * bucketSize;
-        int lastFeatureNo = firstFeatureNo + bucketSize;
+        int useFirstFeatureNo = useBucketNo * bucketSize;
+        int useLastFeatureNo = useFirstFeatureNo + bucketSize;
 
         // But there may be leftover features.
         // Allocate these one per bucket, starting with the first bucket.
@@ -684,16 +720,16 @@ public class FeaturesStartTestBase {
         if (residue != 0) {
             if (useBucketNo < residue) {
                 // In effect, add one to the bucket size.
-                firstFeatureNo += useBucketNo;
-                lastFeatureNo += useBucketNo + 1;
+                useFirstFeatureNo += useBucketNo;
+                useLastFeatureNo += useBucketNo + 1;
             } else {
                 // In effect, add one to the bucket size **for preceeding buckets**
-                firstFeatureNo += residue;
-                lastFeatureNo += residue;
+                useFirstFeatureNo += residue;
+                useLastFeatureNo += residue;
             }
         }
 
-        return new int[] { firstFeatureNo, lastFeatureNo };
+        return new int[] { useFirstFeatureNo, useLastFeatureNo };
     }
 
     // Set the range for this bucket ...
@@ -719,6 +755,8 @@ public class FeaturesStartTestBase {
         public final boolean attempted;
         public final boolean started;
         public final boolean hadForbiddenErrors;
+        public final boolean hadMissingModules;
+        public final boolean hadMissingBundles;
         public final boolean missingRequiredErrors;
         public final String pid;
         public boolean didStop;
@@ -726,11 +764,17 @@ public class FeaturesStartTestBase {
         public static final boolean DID_ATTEMPT = true;
         public static final boolean DID_START = true;
         public static final boolean HAD_FORBIDDEN_ERRORS = true;
+        public static final boolean HAD_MISSING_MODULES = true;        
+        public static final boolean HAD_MISSING_BUNDLES = true;        
         public static final boolean MISSING_REQUIRED_ERRORS = true;
         public static final boolean DID_STOP = true;
 
         public static StartupResult notAttemptedResult() {
-            return new StartupResult(!DID_ATTEMPT, !DID_START, !HAD_FORBIDDEN_ERRORS, !MISSING_REQUIRED_ERRORS, null);
+            return new StartupResult(
+                !DID_ATTEMPT, !DID_START,
+                !HAD_FORBIDDEN_ERRORS,
+                !HAD_MISSING_MODULES, !HAD_MISSING_BUNDLES,
+                !MISSING_REQUIRED_ERRORS, null);
         }
 
         /**
@@ -745,17 +789,26 @@ public class FeaturesStartTestBase {
          * @param attempted             True or false, telling if the startup was attempted.
          * @param started               True or false telling if the server was started.
          * @param hadForbiddenErrors    True or false telling if unexpected errors were present.
+         * @param hadMissingModules     True or false telling if there are unexpected missing modules.
+         * @param hadMissingBundles     True or false telling if there are unexpected missing bundles.
          * @param missingRequiredErrors True or false telling if required errors were missing.
          * @param pid                   The PID of the server process.
          */
         public StartupResult(boolean attempted, boolean started,
-                             boolean hadForbiddenErrors, boolean missingRequiredErrors,
+                             boolean hadForbiddenErrors,
+                             boolean hadMissingModules, boolean hadMissingBundles,
+                             boolean missingRequiredErrors,
                              String pid) {
             this.attempted = attempted;
             this.started = started;
+
             this.hadForbiddenErrors = hadForbiddenErrors;
+            this.hadMissingModules = hadMissingModules;
+            this.hadMissingBundles = hadMissingBundles;
             this.missingRequiredErrors = missingRequiredErrors;
+
             this.pid = pid;
+
             this.didStop = !DID_STOP;
         }
 
@@ -837,7 +890,7 @@ public class FeaturesStartTestBase {
     private static List<String> runFeatureNames;
     private static List<String> skipFeatureNames;
 
-    private static TestState testState;
+    protected static TestState testState;
 
     public static List<Object[]> getParameters() {
         // @Parameterized.BeforeParam invocation is better,
@@ -925,12 +978,15 @@ public class FeaturesStartTestBase {
     }
 
     public static class TestState {
-        public final int firstFeatureNo;
-        public final int lastFeatureNo;
+        public final int testFirstFeatureNo;
+        public final int testLastFeatureNo;
         public final int numFeatures;
 
         public final List<String> successes;
         public final Map<String, String> failures;
+        public final List<String> missingModules;
+        public final List<String> missingBundles;
+
         public final List<String> levelExpectedFailures;
         public final List<String> levelUnexpectedSuccesses;
 
@@ -940,12 +996,14 @@ public class FeaturesStartTestBase {
         public String nextShortName;
 
         public TestState(int firstFeatureNo, int lastFeatureNo, int numFeatures) {
-            this.firstFeatureNo = firstFeatureNo;
-            this.lastFeatureNo = lastFeatureNo;
+            this.testFirstFeatureNo = firstFeatureNo;
+            this.testLastFeatureNo = lastFeatureNo;
             this.numFeatures = numFeatures;
 
             this.successes = new ArrayList<>();
             this.failures = new LinkedHashMap<>();
+            this.missingModules = new ArrayList<>();            
+            this.missingBundles = new ArrayList<>();            
             this.levelExpectedFailures = new ArrayList<>();
             this.levelUnexpectedSuccesses = new ArrayList<>();
 
@@ -976,7 +1034,28 @@ public class FeaturesStartTestBase {
             if (!failures.isEmpty()) {
                 display(m, "    ", 80, failures.keySet());
             }
-
+            logInfo(m, "Missing modules [ " + missingModules.size() + " ]");
+            if (!missingModules.isEmpty()) {
+                display(m, "    ", 80, missingModules);
+            }                        
+            logInfo(m, "Missing bundles [ " + missingBundles.size() + " ]");
+            if (!missingBundles.isEmpty()) {
+                display(m, "    ", 80, missingBundles);
+            }            
+            if (!missingModules.isEmpty() || !missingBundles.isEmpty()) {
+                logInfo(m, "Missing modules and/or bundles have three common causes:");
+                logInfo(m, "(1) A bundle dependency is incorrectly specified.");
+                logInfo(m, "    Fix this by correcting the bundle dependency.");
+                logInfo(m, "(2) The liberty server package ZIP is missing a bundle jar.");
+                logInfo(m, "    Fix this by updating the packaging steps to include the missing jar.");
+                logInfo(m, "(3) The list of features which are present in the server package is incorrect.");
+                logInfo(m, "    Fix this by correcting the features list.");
+                logInfo(m, "    Possibly, the features list from a different server package is being used.");
+                logInfo(m, "    Fix this by making sure the features list is specific to the server package.");
+                logInfo(m, "Server features are located relative to the liberty home directory:");
+                logInfo(m, "    LIBERTY_HOME/lib/features/*.mf");
+            }
+            
             logInfo(m, "Unexpected successes [ " + levelUnexpectedSuccesses.size() + " ]");
             if (!levelUnexpectedSuccesses.isEmpty()) {
                 display(m, "    ", 80, levelUnexpectedSuccesses);
@@ -991,6 +1070,61 @@ public class FeaturesStartTestBase {
             display(m, timingResults);
         }
 
+        // When a feature is out-of-level, the server starts with
+        // logged errors.  The  messages log is expected to have the
+        // following pattern of messages:
+        //
+        // [2/7/23 23:08:18:611 EST] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager
+        //   A CWWKE0001I: The server features.start.1.server has been launched.
+        // [2/7/23 23:08:21:254 EST] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager
+        //   I CWWKE0002I: The kernel started after 3.066 seconds
+        //
+        // [2/7/23 23:08:21:809 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   I CWWKF0007I: Feature update started.
+        //
+        // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   E CWWKF0032E: The io.openliberty.servlet.api-6.0 feature requires a minimum Java
+        //   runtime environment version of JavaSE 11.
+        // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   E CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
+        //   a minimum Java runtime environment version of JavaSE 11.
+        // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   E CWWKF0032E: The io.openliberty.jsonpImpl-2.1.1 feature requires a minimum Java
+        //   runtime environment version of JavaSE 11.
+        //
+        // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   A CWWKF0012I: The server installed the following features: [appAuthentication-3.0,
+        //   distributedMap-1.0, jndi-1.0, jsonp-2.1, servlet-6.0, ssl-1.0, timedexit-1.0,
+        //   transportSecurity-1.0].
+        // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   I CWWKF0008I: Feature update completed in 9.858 seconds.
+        //
+        // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   A CWWKF0011I: The features.start.1.server server is ready to run a smarter planet.
+        //   The features.start.1.server server started in 12.922 seconds.
+        
+        // Missing bundles appear eventually as a stop failure.
+        // Reporting just the stop failure is confusing. The real failures
+        // are the missing bundles.
+        //
+        // For example:
+        // [09/21/2026 00:30:18:689 UTC] 002 FeaturesStartTest3 forceStopServer S
+        //   Failed to stop feature [ mpContextPropagation-1.2 ]: Server [ features.start.3.server ] PID [ null ] Feature [ mpContextPropagation-1.2 ]
+        // java.lang.Exception: Errors/warnings were found in server features.start.3.server logs:
+        // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
+        //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
+        // [9/21/26, 0:30:17:647 UTC] 0000001e LogService-56-com.ibm.ws.concurrent E
+        //   CWWKE0702E: Could not resolve module: com.ibm.ws.concurrent [56]
+        // [9/21/26, 0:30:17:649 UTC] 0000001e ogService-57-io.openliberty.concurrent.internal.basictrigger E
+        //   CWWKE0702E: Could not resolve module: io.openliberty.concurrent.internal.basictrigger [57]
+        // [9/21/26, 0:30:17:683 UTC] 0000001e LogService-59-com.ibm.ws.microprofile.contextpropagation.1.0 E
+        //   CWWKE0702E: Could not resolve module: com.ibm.ws.microprofile.contextpropagation.1.0 [59]
+        // [9/21/26, 0:30:17:684 UTC] 0000001e vice-60-io.openliberty.microprofile.context.cleared.internal E
+        //   CWWKE0702E: Could not resolve module: io.openliberty.microprofile.context.cleared.internal [60]        
+        //
+        // Per issue 35843, collected errors are examined and missing bundles are specifically reported.
+        // See: https://github.com/OpenLiberty/open-liberty/issues/35843
+        
         /**
          * Attempt to start a feature. Set the feature as the single configured feature
          * then start the server.
@@ -1031,46 +1165,16 @@ public class FeaturesStartTestBase {
             // 'attempted' is now true
 
             long initialStartNs = timingResult.getTimeNs();
-            boolean started;
-            boolean extraErrors = false;
-            boolean missingErrors = false;
+
+            boolean didStart;
+            boolean hadExtraErrors = false;
+            boolean hadMissingModules = false;
+            boolean hadMissingBundles = false;
+            boolean hadMissingErrors = false;
 
             try {
                 // Default start: Pre-clean and clean the server.
                 server.setConsoleLogName(nextShortName + ".log");
-
-                // When a feature is out-of-level, the server starts with
-                // logged errors.  The  messages log is expected to have the
-                // following pattern of messages:
-                //
-                // [2/7/23 23:08:18:611 EST] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager
-                //   A CWWKE0001I: The server features.start.1.server has been launched.
-                // [2/7/23 23:08:21:254 EST] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager
-                //   I CWWKE0002I: The kernel started after 3.066 seconds
-                //
-                // [2/7/23 23:08:21:809 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
-                //   I CWWKF0007I: Feature update started.
-                //
-                // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
-                //   E CWWKF0032E: The io.openliberty.servlet.api-6.0 feature requires a minimum Java
-                //   runtime environment version of JavaSE 11.
-                // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
-                //   E CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
-                //   a minimum Java runtime environment version of JavaSE 11.
-                // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
-                //   E CWWKF0032E: The io.openliberty.jsonpImpl-2.1.1 feature requires a minimum Java
-                //   runtime environment version of JavaSE 11.
-                //
-                // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
-                //   A CWWKF0012I: The server installed the following features: [appAuthentication-3.0,
-                //   distributedMap-1.0, jndi-1.0, jsonp-2.1, servlet-6.0, ssl-1.0, timedexit-1.0,
-                //   transportSecurity-1.0].
-                // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
-                //   I CWWKF0008I: Feature update completed in 9.858 seconds.
-                //
-                // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
-                //   A CWWKF0011I: The features.start.1.server server is ready to run a smarter planet.
-                //   The features.start.1.server server started in 12.922 seconds.
 
                 boolean preClean = true;
                 boolean cleanStart = true;
@@ -1082,10 +1186,10 @@ public class FeaturesStartTestBase {
                                               validateApps,
                                               expectStartFailure,
                                               validateTimedExit);
-                started = true;
+                didStart = true;
 
             } catch (Exception e) {
-                started = false;
+                didStart = false;
                 failures.put(nextShortName, "Start failure");
 
                 logError(m, "Failed to start feature [ " + nextShortName + " ]", e);
@@ -1111,34 +1215,55 @@ public class FeaturesStartTestBase {
             // Verify we DO get CWWKF0032E
             // boolean featureStarted = server.waitForStringInLog("CWWKF0032E", 5 * 1000) == null;
 
-            if (started) {
+            if (didStart) {
                 long initialVerifyNs = timingResult.getTimeNs();
                 try {
-                    List<String> errors = server.findStringsInLogs("CWWKF0032E");
+                    List<String> errors = server.findStringsInLogs("CWWKF0032E" + "|" + "CWWKE0702E" + "|" + "CWWKF0002E"); 
                     if (!errors.isEmpty()) {
                         if (isOutOfLevel) {
                             levelExpectedFailures.add(nextShortName);
                             logInfo(m, "Found expected out-of-level errors [ " + nextShortName + " ]");
 
                         } else {
-                            extraErrors = true;
+                            hadExtraErrors = true;
                             failures.put(nextShortName, "Unexpected errors");
 
-                            logError(m, "Found unexpected errors [ " + nextShortName + " ]");
-                            for (String error : errors) {
-                                logError(m, "  [ " + error + " ]");
+                            List<String> useFailures = collectFailures(errors);
+                            if ( (useFailures != null) && !useFailures.isEmpty() ) {
+                                logError(m, "Found unexpected failures [ " + nextShortName + " ]");
+                                for (String failure : useFailures) {
+                                    logError(m, "  [ " + failure + " ]");
+                                }
+                            }
+                            
+                            if (collectMissingModules(errors)) {
+                                hadMissingModules = true;
+                                
+                                logError(m, "Found missing modules [ " + nextShortName + " ]");
+                                for (String missingModule : missingModules) {
+                                    logError(m, "  [ " + missingModule + " ]");
+                                }                                
+                            }
+                            
+                            if (collectMissingBundles(errors)) {
+                                hadMissingBundles = true;
+                                
+                                logError(m, "Found missing bundles [ " + nextShortName + " ]");
+                                for (String missingBundle : missingBundles) {
+                                    logError(m, "  [ " + missingBundle + " ]");
+                                }                                
                             }
                         }
                     } else {
                         if (isOutOfLevel) {
-                            missingErrors = true;
+                            hadMissingErrors = true;
                             levelUnexpectedSuccesses.add(nextShortName);
 
                             logError(m, "Missing expected out-of-level errors [ " + nextShortName + " ]");
                         }
                     }
                 } catch (Exception e) {
-                    extraErrors = true;
+                    hadExtraErrors = true;
                     failures.put(nextShortName, "Verify exception");
 
                     logError(m, "Verify exception [ " + nextShortName + " ]", e);
@@ -1148,9 +1273,85 @@ public class FeaturesStartTestBase {
                 }
             }
 
-            return new StartupResult(StartupResult.DID_ATTEMPT, started, extraErrors, missingErrors, pid);
+            return new StartupResult(
+                StartupResult.DID_ATTEMPT, didStart,
+                hadExtraErrors,
+                hadMissingModules, hadMissingBundles,
+                hadMissingErrors,
+                pid);
         }
 
+        private List<String> collectFailures(List<String> errors) {
+            List<String> useFailures = null;
+            for ( String error : errors ) {
+                if ( error.indexOf("CWWKF0032E") != -1 ) {
+                    if ( useFailures == null ) {
+                        useFailures = new ArrayList<String>();
+                    }
+                    useFailures.add(error);
+                }
+            }
+            return useFailures;
+        }
+        
+        private boolean collectMissingModules(List<String> errors) {
+            boolean hadMissingModule = false;
+            for (String error : errors) {
+                if (extractMissingModule(error)) {
+                    hadMissingModule = true;
+                }
+            }
+            return hadMissingModule;
+        }
+
+        private boolean collectMissingBundles(List<String> errors) {
+            boolean hadMissingBundle = false;
+            for (String error : errors) {
+                if (extractMissingBundle(error)) {
+                    hadMissingBundle = true;
+                }
+            }
+            return hadMissingBundle;
+        }
+
+        // [9/21/26, 0:30:17:684 UTC] 0000001e vice-60-io.openliberty.microprofile.context.cleared.internal E
+        //   CWWKE0702E: Could not resolve module: io.openliberty.microprofile.context.cleared.internal [60]        
+        // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
+        //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
+
+        private static final String MISSING_MODULE_ERROR_TEXT = "CWWKE0702E: Could not resolve module: ";
+        private static final String MISSING_BUNDLE_ERROR_TEXT = "CWWKF0002E: A bundle could not be found for ";
+        
+        private boolean extractMissingModule(String error) {
+            String missingModule = extractTail(error, MISSING_MODULE_ERROR_TEXT);
+            if (missingModule != null) {
+                missingModules.add(missingModule);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        private boolean extractMissingBundle(String error) {
+            String missingBundle = extractTail(error, MISSING_BUNDLE_ERROR_TEXT);
+            if (missingBundle != null) {
+                missingBundles.add(missingBundle);
+                return true;
+            } else {
+                return false;
+            }
+        }        
+        
+        private String extractTail(String error, String prefix) {
+            int prefixOffset = error.indexOf(prefix);
+            if (prefixOffset == -1) {
+                return null;
+            }
+            int tailOffset = prefixOffset + prefix.length();
+            String tail = error.substring(tailOffset);
+            return tail;
+        }
+        
         /**
          * The allowed errors for when the feature start uses a dis-allowed java level.
          *
@@ -1171,11 +1372,11 @@ public class FeaturesStartTestBase {
                                      TimingResult timingResult,
                                      StartupResult startupResult) {
 
-            String[] allowedErrors = (isOutOfLevel ? JAVA_LEVEL_ALLOWED_ERRORS : getAllowedErrors(nextShortName));
+            String[] useAllowedErrors = (isOutOfLevel ? JAVA_LEVEL_ALLOWED_ERRORS : getAllowedErrors(nextShortName));
 
             if (forceStopServer(nextShortName, isOutOfLevel,
-                                startupResult.pid, allowedErrors,
-                                levelExpectedFailures, failures,
+                                startupResult.pid, useAllowedErrors,
+                                levelExpectedFailures, failures, missingModules, missingBundles,
                                 timingResult, startupResult)) {
 
                 startupResult.stopped();
@@ -1261,7 +1462,12 @@ public class FeaturesStartTestBase {
                 // In this case, do our best to stop the server.
                 // Make a dummy result that looks like an attempted startup.
                 if (startupResult == null) {
-                    startupResult = new StartupResult(StartupResult.DID_ATTEMPT, !StartupResult.DID_START, !StartupResult.HAD_FORBIDDEN_ERRORS, !StartupResult.MISSING_REQUIRED_ERRORS, getPid());
+                    startupResult = new StartupResult(
+                        StartupResult.DID_ATTEMPT, !StartupResult.DID_START,
+                        !StartupResult.HAD_FORBIDDEN_ERRORS,
+                        !StartupResult.HAD_MISSING_MODULES, !StartupResult.HAD_MISSING_BUNDLES,
+                        !StartupResult.MISSING_REQUIRED_ERRORS,
+                        getPid());
                 }
 
                 if (startupResult.attempted) {
@@ -1272,12 +1478,27 @@ public class FeaturesStartTestBase {
         } finally {
             display(m, timingResult);
 
+            if (startupResult == null) {
+                startupResult = new StartupResult(
+                    !StartupResult.DID_ATTEMPT, !StartupResult.DID_START,
+                    !StartupResult.HAD_FORBIDDEN_ERRORS,
+                    !StartupResult.HAD_MISSING_MODULES, !StartupResult.HAD_MISSING_BUNDLES,                    
+                    !StartupResult.MISSING_REQUIRED_ERRORS,
+                    getPid());
+            }
+
             if (!startupResult.attempted) {
                 Assert.assertTrue("Did not attempt [ " + useShortName + " ]", false);
             } else if (!startupResult.started) {
                 Assert.assertTrue("Failed to start [ " + useShortName + " ]", false);
             } else if (startupResult.hadForbiddenErrors) {
-                Assert.assertFalse("Start had forbidden errors [ " + useShortName + " ]", true);
+                if (startupResult.hadMissingModules) {
+                    Assert.assertFalse("Start had forbidden errors (missing modules) [ " + useShortName + " ]", true);
+                } else if (startupResult.hadMissingBundles) {
+                    Assert.assertFalse("Start had forbidden errors (missing bundles) [ " + useShortName + " ]", true);
+                } else {
+                    Assert.assertFalse("Start had forbidden errors [ " + useShortName + " ]", true);
+                }
             } else if (startupResult.missingRequiredErrors) {
                 Assert.assertFalse("Start missing required errors [ " + useShortName + " ]", true);
             } else if (!startupResult.didStop) {
