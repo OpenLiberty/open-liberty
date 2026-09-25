@@ -1,29 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>OpenAPI UI</title>
-    <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16" />
-    <script defer src="liberty-swagger-ui-bundle-b25efd16b32c99830a9a.js"></script><link href="liberty-swagger-ui-4b5c949d2f8f37a996be.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/custom-header.css" >
-  </head>
-
-  <body>
-    <div id="swagger"></div>
-    <script>
-    window.onload = function() {
-      const ui = SwaggerUI.SwaggerUI({
-        url: SwaggerUI.getDocsUrl(),
-        oauth2RedirectUrl: SwaggerUI.getOAuth2Url(),
-        dom_id: '#swagger',
-        plugins: [ SwaggerUI.LibertyLayout, SwaggerUI.Headerbar, SwaggerUI.FooterPlugin ],
-        layout: "LibertyLayout",
-        deepLinking: true,
-        enable_filter: true
-      });
-    };
-  </script>
+<!doctype html><html lang=en><head><meta charset=UTF-8><title>OpenAPI UI</title><link rel=icon type=image/png href=./favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=./favicon-16x16.png sizes=16x16><script defer src=liberty-swagger-ui-bundle-b89028f3ef13499484f3.js></script><link href=liberty-swagger-ui-13230650e7197a9a7770.css rel=stylesheet><link rel=stylesheet type=text/css href=css/custom-header.css></head><body>
+    <div id=swagger></div>
+    <script>window.onload=function(){SwaggerUI.SwaggerUI({url:SwaggerUI.getDocsUrl(),oauth2RedirectUrl:SwaggerUI.getOAuth2Url(),dom_id:"#swagger",plugins:[SwaggerUI.LibertyLayout,SwaggerUI.Headerbar,SwaggerUI.FooterPlugin],layout:"LibertyLayout",deepLinking:!0,enable_filter:!0})};</script>
   
-  </body>
-</html>
+  
+
+</body></html>
