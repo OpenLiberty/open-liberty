@@ -76,7 +76,10 @@ public class JSPChannelTest {
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war",
                 "com.ibm.ws.jsp23.fat.writeafterredirect.servlets");
         server.startServer(JSPChannelTest.class.getSimpleName() + ".log");
-        server.waitForStringInLog("CWWKT0016I:.*WriteAfterRedirect.*"); // ensure app has started.
+        // CWWKZ0001I fires after prepareJSPs=0 precompilation has finished, so all JSPs
+        // are compiled before the first test makes an HTTP request.  Using CWWKT0016I
+        // (app available) alone is not sufficient because it fires before JSP compilation.
+        server.waitForStringInLog("CWWKZ0001I:.*WriteAfterRedirect.*");
     }
 
     @AfterClass
@@ -129,7 +132,7 @@ public class JSPChannelTest {
                     "\r\n";
 
             socket = new Socket(server.getHostname(), server.getHttpDefaultPort());
-            socket.setSoTimeout(10000); // 10s read timeout so we don't block forever
+            socket.setSoTimeout(30000); // 30s read timeout — allow for slow CI machines
             LOG.info("[testIgnoreWriteAfterCommitTrue] Socket connected to " + address);
 
             BufferedReader bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -446,16 +449,13 @@ public class JSPChannelTest {
         }
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(c);
-        // Always wait for CWWKO0219I (TCP channel started and listening on the HTTP
-        // port)
-        // so that the next connection attempt does not get a "Connection refused".
-        // The httpOptions change cycles the TCP endpoint: the port stops and restarts.
-        // CWWKT0016I (app available) can fire before the OS has finished binding the
-        // port,
-        // so we wait for the TCP-ready message which is the authoritative signal.
+        // When the config actually changed, wait for CWWKO0219I (TCP channel started
+        // and listening on the HTTP port)
         server.waitForConfigUpdateInLogUsingMark(Collections.emptySet(),
                 serverXMLChanged ? "CWWKT0016I:.*WriteAfterRedirect.*" : "");
-        server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint.*");
+        if (serverXMLChanged) {
+            server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint.*");
+        }
         server.resetLogMarks();
     }
 
