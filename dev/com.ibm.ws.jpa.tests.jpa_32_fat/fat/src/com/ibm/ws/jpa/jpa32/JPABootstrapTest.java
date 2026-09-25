@@ -84,7 +84,10 @@ public class JPABootstrapTest extends FATServletClient {
     }
 
     private static void createApplication(String specLevel) throws Exception {
-        final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + specLevel + "/web/";
+        // Under Hibernate 8 use the jpa-4.0 resources which carry explicit <class>
+        // listings — Hibernate 8 does not scan WEB-INF/classes without them.
+        String resLevel = "hibernate40-cfg.xml".equals(FATSuite.repeatPhase) ? "4.0" : specLevel;
+        final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + resLevel + "/web/";
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + "_" + specLevel + ".war");
         app.addPackage("jpabootstrap.web");

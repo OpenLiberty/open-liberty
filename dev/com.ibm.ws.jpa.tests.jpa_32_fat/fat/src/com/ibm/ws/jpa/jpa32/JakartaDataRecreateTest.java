@@ -6,6 +6,9 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jpa.jpa32;
 
@@ -26,7 +29,6 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
@@ -76,13 +78,16 @@ public class JakartaDataRecreateTest {
         if (appStartTimeout < (180 * 1000)) {
             server.setAppStartTimeout(180 * 1000);
         }
-        
+
         createApplication(SPECLEVEL);
         server.startServer();
     }
 
     private static void createApplication(String specLevel) throws Exception {
-        final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + specLevel + "/web/";
+        // Hibernate 8 does not scan WEB-INF/classes — use jpa-4.0 resources which
+        // have explicit <class> listings in persistence.xml.
+        String resLevel = "hibernate40-cfg.xml".equals(FATSuite.repeatPhase) ? "4.0" : specLevel;
+        final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + resLevel + "/web/";
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + "_" + specLevel + ".war");
         app.addPackage("io.openliberty.jpa.data.tests.models");
@@ -91,7 +96,7 @@ public class JakartaDataRecreateTest {
                   "/",
                   Filters.includeAll());
         ShrinkHelper.exportAppToServer(server, app);
-        
+
         Application appRecord = new Application();
         appRecord.setLocation(APP_NAME + "_" + specLevel + ".war");
         appRecord.setName(APP_NAME + "_" + specLevel);
@@ -103,12 +108,11 @@ public class JakartaDataRecreateTest {
             loader.getCommonLibraryRefs().add("HibernateLib");
             cel.add(loader);
         }
-        
+
         ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server.updateServerConfiguration(sc);
         server.saveServerConfiguration();
-
     }
 
     @AfterClass
