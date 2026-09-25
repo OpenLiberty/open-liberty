@@ -53,6 +53,7 @@ import io.openliberty.classloading.classpath.test.war1.ClassPathDefaultLoaderSer
 import io.openliberty.classloading.classpath.test.war2.ClassPathDefaultLoaderServletTest2;
 import io.openliberty.classloading.classpath.test.war3.ClassPathDefaultLoaderServletTest3;
 import io.openliberty.classloading.classpath.util.TestUtils;
+import io.openliberty.classloading.dynamic.feature.lifecycle.test.app.DynamicFeatureLifecycleTestServlet;
 import io.openliberty.classloading.feature.message.test.app.ParentLastFeatureMessageTestServlet;
 import io.openliberty.classloading.lib.path.test.app.LibPathTestServlet;
 import io.openliberty.classloading.library.precedence.test.app.LibPrecedenceBeforeAppTestServlet;
@@ -60,6 +61,7 @@ import io.openliberty.classloading.library.test.app.LibraryUserTestServlet;
 import io.openliberty.classloading.libs.util.CodeSourceUtil;
 import io.openliberty.classloading.parent.library.inconsistent.test.app.ParentLibraryInconsistentTestServlet;
 import io.openliberty.classloading.platform.delegation.test.app.PlatformDelegationTestServlet;
+import io.openliberty.classloading.shared.feature.lib.LibraryFeatureApiImplState1;
 import io.openliberty.nativelib.test.app.NativeLibraryTestServlet;
 import io.openlibery.classloading.override.library.test.app.OverrideLibraryTestServlet;
 import io.openlibery.classloading.override.library.test.app.a.AOverride;
@@ -108,7 +110,10 @@ import test.bundle.api4.c.API_C4;
     LibraryPrecedenceBeforeAppTests.class,
     LibraryPrecedenceAfterAppTests.class,
     NativeLibraryTest.class,
-    LibraryServiceTests.class
+    LibraryServiceTests.class,
+    DynamicFeatureLifecycleTest.class,
+    DynamicFeatureSharedLibTest.class,
+    DynamicFeatureLibJarRemovedTest.class,
 })
 public class FATSuite {
     static final String CLASSPATH_TEST_WAR_LOADER_SERVER = "classpathTestWarLoader";
@@ -128,6 +133,9 @@ public class FATSuite {
     static final String LIB_PRECEDENCE_AFTER_APP_SERVER = "libPrecedenceAfterAppTest";
     static final String OVERRIDE_LIB_WAR_TEST_SERVER = "overrideLibWarTest";
     static final String LIBRARY_USER_TEST_SERVER = "libraryUserTest";
+    static final String DYNAMIC_FEATURE_LIFECYCLE_TEST_SERVER = "dynamicFeatureLifecycleTest";
+    static final String DYNAMIC_FEATURE_SHARED_LIB_TEST_SERVER = "dynamicFeatureSharedLibTest";
+    static final String DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST_SERVER = "dynamicFeatureLibJarRemovedTest";
 
     // ##### ARCHIVE NAMES #####
     // WAR archive names
@@ -142,6 +150,10 @@ public class FATSuite {
     public static final String TEST_LIB_PRECEDENCE_APP = "testLibPrecedence";
     public static final String TEST_OVERRIDE_LIB_APP = "testOverrideLib";
     public static final String TEST_LIBRARY_USER_APP = "testLibraryUser";
+    public static final String TEST_DYNAMIC_FEATURE_APP = "testDynamicFeatureApp";
+    public static final String TEST_DYNAMIC_FEATURE_SHARED_LIB = "testSharedFeatureLib";
+    // Servlet class name is shared across tests
+    static final String DYNAMIC_FEATURE_LIFECYCLE_SERVLET = "DynamicFeatureLifecycleTestServlet";
 
     // EJB archive names
     public static final String TEST_EJB1 = "testEjb1";
@@ -226,6 +238,8 @@ public class FATSuite {
     static final WebArchive TEST_OVERRIDE_LIB_WAR;
     static final WebArchive TEST_LIB_PRECEDENCE_WAR;
     static final WebArchive TEST_LIBRARY_USER_WAR;
+    static final WebArchive TEST_DYNAMIC_FEATURE_WAR;
+    static final JavaArchive TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
 
     // EJB archives
     static final JavaArchive TEST_EJB1_JAR;
@@ -373,6 +387,16 @@ public class FATSuite {
 
             TEST_LIBRARY_USER_WAR = ShrinkHelper.buildDefaultApp(TEST_LIBRARY_USER_APP + ".war",
                                                                    LibraryUserTestServlet.class.getPackage().getName());
+
+            // Single consolidated WAR: contains the servlet and the in-WAR impl classes.
+            // Used across all dynamic feature lifecycle tests.
+            TEST_DYNAMIC_FEATURE_WAR = ShrinkHelper.buildDefaultApp(TEST_DYNAMIC_FEATURE_APP + ".war",
+                                                                     DynamicFeatureLifecycleTestServlet.class.getPackage().getName(),
+                                                                     "io.openliberty.classloading.dynamic.feature.test.app");
+
+            // Shared library JAR: contains the four implementation classes for Tests 2 and 3.
+            TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR = ShrinkHelper.buildJavaArchive(TEST_DYNAMIC_FEATURE_SHARED_LIB + ".jar",
+                                                                     LibraryFeatureApiImplState1.class.getPackage().getName());
 
             TEST_RESOURCE_ADAPTOR_JAR = ShrinkHelper.buildJavaArchive(TEST_RESOURCE_ADAPTOR + ".jar",
                                                                       TestResourceAdapter.class.getPackage().getName()).
