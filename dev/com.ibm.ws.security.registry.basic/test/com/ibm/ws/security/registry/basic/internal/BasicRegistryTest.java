@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2018 IBM Corporation and others.
+ * Copyright (c) 2011,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -320,7 +320,25 @@ public class BasicRegistryTest {
             }
             @Override
             public Group[] group() {
-                return new Group[] {};
+                return new Group[] {
+                                     new Group() {
+                                         @Override
+                                         public String name() {
+                                             return "group2";
+                                         }
+                                         @Override
+                                         public Member[] member() {
+                                             return new Member[] {
+                                                                   new Member() {
+                                                                       @Override
+                                                                       public String name() {
+                                                                           return "USER2";
+                                                                       }
+                                                                   }
+                                             };
+                                         }
+                                     }
+                };
             }
             @Override
             public String config_id() {
@@ -409,6 +427,35 @@ public class BasicRegistryTest {
     public void checkPassword_validCredentials() throws Exception {
         assertEquals("user1", fullBasicRegistry().checkPassword("user1", "pass1"));
         assertEquals("user 2", fullBasicRegistry().checkPassword("user 2", "pass 2"));
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.registry.basic.internal.BasicRegistry#checkPassword(String, String)}.
+     * When ignoreCaseForAuthentication is enabled, checkPassword() shall return
+     * the user name as it is defined in the registry rather than the name as it
+     * was supplied by the caller.
+     */
+    @Test
+    public void checkPassword_ignoreCaseReturnsRegistryUserName() throws Exception {
+        assertEquals("USER2", ignoreCaseBasicRegistry().checkPassword("user2", "pass2"));
+        assertEquals("USER2", ignoreCaseBasicRegistry().checkPassword("UsEr2", "pass2"));
+        assertEquals("user1", ignoreCaseBasicRegistry().checkPassword("USER1", "pass1"));
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.registry.basic.internal.BasicRegistry#getUniqueGroupIdsForUser(String)}.
+     * Group membership is resolved by an exact name match, so the name returned
+     * by checkPassword() must resolve the groups of the user that was
+     * authenticated, whatever spelling the caller used.
+     */
+    @Test
+    public void getUniqueGroupIdsForUser_afterIgnoreCaseAuthentication() throws Exception {
+        BasicRegistry reg = ignoreCaseBasicRegistry();
+        String authenticatedName = reg.checkPassword("user2", "pass2");
+        List<String> groups = reg.getUniqueGroupIdsForUser(authenticatedName);
+        assertNotNull("Group list must never be null", groups);
+        assertEquals("Should be 1 entry", 1, groups.size());
+        assertTrue("Should contain group2", groups.contains("group2"));
     }
 
     /**

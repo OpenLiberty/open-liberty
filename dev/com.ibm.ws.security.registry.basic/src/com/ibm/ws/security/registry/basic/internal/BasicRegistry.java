@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2021 IBM Corporation and others.
+ * Copyright (c) 2011,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -311,12 +311,21 @@ public class BasicRegistry implements UserRegistry {
         }
         boolean valid = false;
 
+        // The name to hand back to the caller. When authenticating case
+        // insensitively this is the name as it is spelled in the registry
+        // rather than the name as it was supplied, so that the security name
+        // established at login matches the user and group entries. Group
+        // membership is resolved by an exact name match, so returning the
+        // supplied spelling leaves the user authenticated but in no groups.
+        String matchedUserName = userSecurityName;
+
         BasicPassword storedPassObj = null;
         if (state.ignoreCaseForAuthentication) {
             for (Map.Entry<String, BasicPassword> entry : state.users.entrySet()) {
                 String keyUserName = entry.getKey();
                 if (keyUserName.equalsIgnoreCase(userSecurityName)) {
                     storedPassObj = entry.getValue();
+                    matchedUserName = keyUserName;
                 }
             }
         } else {
@@ -349,7 +358,7 @@ public class BasicRegistry implements UserRegistry {
             }
         }
         if (valid) {
-            return userSecurityName;
+            return matchedUserName;
         } else {
             return null;
         }
