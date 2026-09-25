@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,17 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.osgi;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
@@ -37,7 +41,7 @@ import com.ibm.ws.logging.WsMessageRouter;
  * to change, especially since third-party code may implement the SPI).
  */
 public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageRouter {
-
+	
     private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     /**
      * Map of LogHandlerIDs to WsLogHandlers.
@@ -85,7 +89,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
         if (logHandlerIds != null && logHandlerIds.contains(logHandlerId)) {
             return true;
         } else {
-            logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
+            logHandlerIds = getLogHandlersForMessageWC(routedMessage.getFormattedMsg());
             return (logHandlerIds == null) ? false : logHandlerIds.contains(logHandlerId);
         }
     }
@@ -123,7 +127,56 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
 
         }
     }
-    
+
+	/**
+     * @return the Set of LogHandler IDs to route this already parsed message id
+     */
+    protected Set<String> getLogHandlersForMsgIdWC(String msgId) {
+        if (msgId == null)
+            return null;
+        
+        Set<String> handlersToReturn = super.getLogHandlersForMsgId(msgId);
+        /*
+         * !Special case! 
+         * If the message Id was `*`.
+         * The use case was to explicitly find the handlers with `*` defined.
+         * The logic after does not apply, there will be no matches with handlers
+         * subscribed with wildcard prefix matching w/ optional log level.
+         */
+        if (msgId.equals("*")) { 
+        	return handlersToReturn;
+        }
+
+        //Beta-guard
+		if (ProductInfo.getBetaEdition()) {
+			if (wildCardMsgIdToLogHandlerIds.size() > 0) {
+				Level msgLevelReadAsIs = parseLevel(msgId);
+
+				for (WildCardMessageAndLevel wmac : wildCardMsgIdToLogHandlerIds.keySet()) {
+
+					// IF NOT LEVEL.ALL (Default) need to check AND THEN IF NOT MATCHING - SKIP
+					Level wmacLevl = wmac.getLogLevel();
+					if (!wmacLevl.equals(Level.ALL) && !wmacLevl.equals(msgLevelReadAsIs)) {
+						continue;
+					}
+
+					/*
+					 * Use temp set so as not to directly manipulate source set from
+					 * original map.
+					 */
+					if (msgId.startsWith(wmac.getWildCardMessageID())) {
+						Set<String> merged = new CopyOnWriteArraySet<String>();
+						if (handlersToReturn != null)
+							merged.addAll(handlersToReturn);
+						merged.addAll(wildCardMsgIdToLogHandlerIds.get(wmac));
+						handlersToReturn = merged;
+					}
+				}
+			}
+		}
+        return handlersToReturn;
+    }
+   
     
     /**
      * Remove the LogHandler ref.
@@ -146,15 +199,22 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
 //        return (routedMessage != null && isValidMessage(routedMessage.getFormattedMsg()));
 //    }
 
-    /**
-     * {@inheritDoc}
-     */
+    
+    protected Set<String> getLogHandlersForMessageWC(String msg) {
+        if (msg == null)
+            return null;
+
+        return getLogHandlersForMsgIdWC(parseMessageId(msg));
+    }
+    
     @Override
     public boolean route(RoutedMessage routedMessage, boolean messageHidden) {
+
 
         if (routedMessage == null) {
             return true;
         }
+    
         //There can be many Reader locks, but only one writer lock.
         //This ReaderWriter lock is needed to avoid duplicate messages when the class is passing on the EarlyBuffer messages to the new WsLogHandler.
         RERWLOCK.readLock().lock();
@@ -168,7 +228,8 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
             if (routeAllMsgsToTheseLogHandlers != null) {
                 routeToAll(routedMessage, routeAllMsgsToTheseLogHandlers, messageHidden);
             }
-            Set<String> logHandlerIds = getLogHandlersForMessage(routedMessage.getFormattedMsg());
+            Set<String> logHandlerIds = getLogHandlersForMessageWC(routedMessage.getFormattedMsg());
+            
             if (logHandlerIds == null) {
                 // There are no routing requirements for this msgId.
                 // Return true to tell the caller to log the msg normally.
@@ -197,7 +258,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
             RERWLOCK.readLock().unlock();
         }
     }
-
+    
     /**
      * Route the message to all LogHandlers in the set.
      *
