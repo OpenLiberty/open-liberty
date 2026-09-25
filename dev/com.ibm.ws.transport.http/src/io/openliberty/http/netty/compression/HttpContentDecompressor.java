@@ -34,6 +34,9 @@ public class HttpContentDecompressor {
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(HttpContentDecompressor.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
+    private DecompressionHandler handler;
+    private ContentEncodingValues currentContentEncoding;
+
     /**
      * Decompresses the given buffer using the appropriate decompression handler based on the content encoding header
      * and HttpOption settings. It then process the payload data while validating against the configured tolerance
@@ -47,7 +50,13 @@ public class HttpContentDecompressor {
     public WsByteBuffer decompress(WsByteBuffer buffer, HttpChannelConfig config, String contentEncoding) throws DataFormatException{
         
         Objects.requireNonNull(config, "Http configuration must not be null");
-        DecompressionHandler handler = chooseHandler(contentEncoding, config);
+        if (handler == null || handler.isFinished()) {
+            // We can start a new handler
+            handler = chooseHandler(contentEncoding, config);
+        } else if(!handler.isFinished() && !ContentEncodingValues.find(contentEncoding).equals(currentContentEncoding)){
+            // Handler finished so we can set a new handler
+            throw new DataFormatException("Attempted changing content encoding when mid decompression!");
+        }
 
         return decompress(buffer, config, handler);
     }
@@ -65,6 +74,7 @@ public class HttpContentDecompressor {
             return new IdentityInputHandler();
         }
         ContentEncodingValues encoding = ContentEncodingValues.find(contentEncoding);
+        this.currentContentEncoding = encoding;
         if(ContentEncodingValues.GZIP.equals(encoding) || ContentEncodingValues.XGZIP.equals(encoding)){
             return new GzipInputHandler();
         } else if(ContentEncodingValues.DEFLATE.equals(encoding)){
