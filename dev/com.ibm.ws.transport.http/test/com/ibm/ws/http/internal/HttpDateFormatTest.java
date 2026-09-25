@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,9 @@ import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Year;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -254,5 +257,62 @@ public class HttpDateFormatTest {
                 Thread.sleep(50);
             }
         }
+    }
+
+    /**
+     * RFC 7231 §7.1.1.1: a 2-digit year that appears more than 50 years in the
+     * future must be interpreted as the most recent past year with the same digits.
+     */
+    @Test
+    public void testRFC1036TwoDigitYearRollover() throws Exception {
+        assertTwoDigitYearWindow((String input) -> formatter.parseRFC1036Time(input),
+                                 "Saturday, 28-Jul-%s 16:11:14 GMT");
+    }
+
+    @Test
+    public void testRFC2109TwoDigitYearRollover() throws Exception {
+        assertTwoDigitYearWindow((String input) -> formatter.parseRFC2109Time(input),
+                                 "Sat, 28-Jul-%s 16:11:14 GMT");
+    }
+
+    /**
+     * Verifies the full RFC 7231 §7.1.1.1 window for a 2-digit-year parser.
+     * The formatter base is (currentYear - 49), giving the window [currentYear-49, currentYear+50].
+     * RFC 7231 requires roll-back only for dates *more than* 50 years in the future (strict),
+     * so exactly 50 years out must NOT roll back.
+     * Iterates all 100 possible 2-digit values and checks each maps to the correct full year.
+     */
+    private void assertTwoDigitYearWindow(ParseFunction parser, String inputTemplate) throws Exception {
+        int fullCurrentYear = Year.now().getValue();
+        int baseYear = fullCurrentYear - 49; // formatter base: window is [currentYear-49, currentYear+50]
+
+        for (int i = 0; i < 100; ++i) {
+            int twoDigitValue = (fullCurrentYear + i) % 100; // wraps at 100
+            int expectedYear = baseYear + ((twoDigitValue - (baseYear % 100) + 100) % 100);
+            String input = String.format(inputTemplate, String.format("%02d", twoDigitValue));
+            Date parsed = parser.parse(input);
+            Date expected = Date.from(ZonedDateTime.of(expectedYear, 7, 28, 16, 11, 14, 0, ZoneOffset.UTC).toInstant());
+            assertEquals("Mismatch for 2-digit year " + String.format("%02d", twoDigitValue), expected, parsed);
+        }
+
+        // Explicit boundary checks per RFC 7231 §7.1.1.1:
+        // exactly 50 years out must NOT roll back; 51 years out must roll back.
+        int twoDigitAt50 = (fullCurrentYear + 50) % 100;
+        int twoDigitAt51 = (fullCurrentYear + 51) % 100;
+
+        Date parsedAt50 = parser.parse(String.format(inputTemplate, String.format("%02d", twoDigitAt50)));
+        assertEquals("Exactly 50 years out must not roll back",
+                     Date.from(ZonedDateTime.of(fullCurrentYear + 50, 7, 28, 16, 11, 14, 0, ZoneOffset.UTC).toInstant()),
+                     parsedAt50);
+
+        Date parsedAt51 = parser.parse(String.format(inputTemplate, String.format("%02d", twoDigitAt51)));
+        assertEquals("51 years out must roll back",
+                     Date.from(ZonedDateTime.of(fullCurrentYear - 49, 7, 28, 16, 11, 14, 0, ZoneOffset.UTC).toInstant()),
+                     parsedAt51);
+    }
+
+    @FunctionalInterface
+    private interface ParseFunction {
+        Date parse(String input) throws Exception;
     }
 }
