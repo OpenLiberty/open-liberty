@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 /*******************************************************************************
- * Copyright (c) 2024, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 -->
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
@@ -18,10 +16,10 @@
         xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
         version="3.2">
 
+    <!-- Explicit <class> listings required because Hibernate 8 does not scan WEB-INF/classes -->
     <persistence-unit name="RecreatePersistenceUnit">
-        <!-- Hibernate 8 requires explicit @Entity/@Embeddable class listings (no WEB-INF/classes scanning) -->
-        <!-- @Entity classes (34) -->
         <class>io.openliberty.jpa.data.tests.models.Account</class>
+        <class>io.openliberty.jpa.data.tests.models.AccountId</class>
         <class>io.openliberty.jpa.data.tests.models.Annuity</class>
         <class>io.openliberty.jpa.data.tests.models.AsciiCharacter</class>
         <class>io.openliberty.jpa.data.tests.models.Box</class>
@@ -32,9 +30,12 @@
         <class>io.openliberty.jpa.data.tests.models.CreditCard</class>
         <class>io.openliberty.jpa.data.tests.models.DemographicInfo</class>
         <class>io.openliberty.jpa.data.tests.models.DemographicInformation</class>
+        <class>io.openliberty.jpa.data.tests.models.Door</class>
         <class>io.openliberty.jpa.data.tests.models.ECEntity</class>
+        <class>io.openliberty.jpa.data.tests.models.Garage</class>
         <class>io.openliberty.jpa.data.tests.models.House</class>
         <class>io.openliberty.jpa.data.tests.models.Item</class>
+        <class>io.openliberty.jpa.data.tests.models.Kitchen</class>
         <class>io.openliberty.jpa.data.tests.models.Line</class>
         <class>io.openliberty.jpa.data.tests.models.NaturalNumber</class>
         <class>io.openliberty.jpa.data.tests.models.Package</class>
@@ -51,18 +52,12 @@
         <class>io.openliberty.jpa.data.tests.models.ShippingAddress</class>
         <class>io.openliberty.jpa.data.tests.models.Showtime</class>
         <class>io.openliberty.jpa.data.tests.models.Store</class>
+        <class>io.openliberty.jpa.data.tests.models.StreetAddress</class>
         <class>io.openliberty.jpa.data.tests.models.Student</class>
         <class>io.openliberty.jpa.data.tests.models.TaxPayer</class>
         <class>io.openliberty.jpa.data.tests.models.Triangle</class>
         <class>io.openliberty.jpa.data.tests.models.Vehicle</class>
-        <!-- @Embeddable classes (5) -->
-        <class>io.openliberty.jpa.data.tests.models.AccountId</class>
-        <class>io.openliberty.jpa.data.tests.models.Door</class>
-        <class>io.openliberty.jpa.data.tests.models.Garage</class>
-        <class>io.openliberty.jpa.data.tests.models.Kitchen</class>
-        <class>io.openliberty.jpa.data.tests.models.StreetAddress</class>
         <properties>
-            <!-- Drop and recreate the database schema automatically for clean test runs -->
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="hibernate.show_sql" value="true"/>
@@ -72,6 +67,7 @@
     <persistence-unit name="RecreatePersistenceUnitH2">
         <jta-data-source>jdbc/H2DataSource</jta-data-source>
         <class>io.openliberty.jpa.data.tests.models.Account</class>
+        <class>io.openliberty.jpa.data.tests.models.AccountId</class>
         <class>io.openliberty.jpa.data.tests.models.Annuity</class>
         <class>io.openliberty.jpa.data.tests.models.AsciiCharacter</class>
         <class>io.openliberty.jpa.data.tests.models.Box</class>
@@ -82,9 +78,12 @@
         <class>io.openliberty.jpa.data.tests.models.CreditCard</class>
         <class>io.openliberty.jpa.data.tests.models.DemographicInfo</class>
         <class>io.openliberty.jpa.data.tests.models.DemographicInformation</class>
+        <class>io.openliberty.jpa.data.tests.models.Door</class>
         <class>io.openliberty.jpa.data.tests.models.ECEntity</class>
+        <class>io.openliberty.jpa.data.tests.models.Garage</class>
         <class>io.openliberty.jpa.data.tests.models.House</class>
         <class>io.openliberty.jpa.data.tests.models.Item</class>
+        <class>io.openliberty.jpa.data.tests.models.Kitchen</class>
         <class>io.openliberty.jpa.data.tests.models.Line</class>
         <class>io.openliberty.jpa.data.tests.models.NaturalNumber</class>
         <class>io.openliberty.jpa.data.tests.models.Package</class>
@@ -101,17 +100,12 @@
         <class>io.openliberty.jpa.data.tests.models.ShippingAddress</class>
         <class>io.openliberty.jpa.data.tests.models.Showtime</class>
         <class>io.openliberty.jpa.data.tests.models.Store</class>
+        <class>io.openliberty.jpa.data.tests.models.StreetAddress</class>
         <class>io.openliberty.jpa.data.tests.models.Student</class>
         <class>io.openliberty.jpa.data.tests.models.TaxPayer</class>
         <class>io.openliberty.jpa.data.tests.models.Triangle</class>
         <class>io.openliberty.jpa.data.tests.models.Vehicle</class>
-        <class>io.openliberty.jpa.data.tests.models.AccountId</class>
-        <class>io.openliberty.jpa.data.tests.models.Door</class>
-        <class>io.openliberty.jpa.data.tests.models.Garage</class>
-        <class>io.openliberty.jpa.data.tests.models.Kitchen</class>
-        <class>io.openliberty.jpa.data.tests.models.StreetAddress</class>
         <properties>
-            <!-- Drop and recreate the database schema automatically for clean test runs -->
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.logging.parameters" value="true"/>
         </properties>

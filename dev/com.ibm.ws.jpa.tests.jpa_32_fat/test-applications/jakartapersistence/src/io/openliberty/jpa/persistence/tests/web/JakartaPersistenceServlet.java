@@ -317,6 +317,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     @SkipIfSysProp({
                      DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
     })
@@ -379,6 +380,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testNotEqualToInCriteriaQuery() throws Exception {
         deleteAllEntities(User.class);
 
@@ -437,6 +439,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testEqualToInCriteriaQuery() throws Exception {
         deleteAllEntities(User.class);
 
@@ -595,6 +598,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test // Verifies that a JPQL query using an alias returns the correct hexadecimal value for a persisted AsciiCharacter
+    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testAsciiCharacterQueryReturnsHexadecimalWithAlias() throws Exception {
         deleteAllEntities(AsciiCharacter.class);
         
@@ -811,6 +815,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testConcatInWhereCriteriaQuery() throws Exception {
         deleteAllEntities(ConcatEntity.class);
 
@@ -866,6 +871,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testConcatCriteriaQuery() throws Exception {
         deleteAllEntities(ConcatEntity.class);
 
@@ -909,6 +915,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802
     @SkipIfSysProp({
         DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
@@ -949,6 +956,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802
     @SkipIfSysProp({
         DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
@@ -1351,6 +1359,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     @SkipIfSysProp({
         DB_Postgres    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32848
     })
@@ -1381,6 +1390,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_EMLevel_Bypass() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1397,13 +1407,13 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
             
-            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
-            update.setParameter(1, id);
-            update.executeUpdate();
+            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+              .setParameter(1, id)
+              .executeUpdate();
             
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1417,6 +1427,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testCacheRetrieveMode_EMLevel_Use_Default() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
         String id = "testCacheRetrieveMode_EMLevel_Use_Default";
@@ -1433,9 +1444,9 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             //Default cache retrieve mode is USE — no  need to set explicitly
             
-            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
-            update.setParameter(1, id);
-            update.executeUpdate();
+            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+              .setParameter(1, id)
+              .executeUpdate();
             
             entity = em.find(PersistenceUnitEntity.class, id);
             tx.commit();
@@ -1449,6 +1460,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_QueryLevel_Bypass() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1462,15 +1474,15 @@ public class JakartaPersistenceServlet extends FATServlet {
         tx.begin();
         PersistenceUnitEntity entity;
         try {
-            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
-            update.setParameter(1, id);
-            update.executeUpdate();
+            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+              .setParameter(1, id)
+              .executeUpdate();
 
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
 
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1496,15 +1508,15 @@ public class JakartaPersistenceServlet extends FATServlet {
         tx.begin();
         PersistenceUnitEntity entity;
         try {
-            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
-            update.setParameter(1, id);
-            update.executeUpdate();
+            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+              .setParameter(1, id)
+              .executeUpdate();
 
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             //Default cache retrieve mode is USE — no  need to set explicitly
 
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1533,15 +1545,15 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
 
-            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
-            update.setParameter(1, id);
-            update.executeUpdate();
+            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+              .setParameter(1, id)
+              .executeUpdate();
 
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheRetrieveMode(CacheRetrieveMode.USE);
 
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1555,6 +1567,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_QueryOverridesEM_BypassOverridesUse() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1570,15 +1583,15 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             em.setCacheRetrieveMode(CacheRetrieveMode.USE);
 
-            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
-            update.setParameter(1, id);
-            update.executeUpdate();
+            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+              .setParameter(1, id)
+              .executeUpdate();
 
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
 
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
 
             tx.commit();
         } catch (Exception e) {
@@ -1605,9 +1618,9 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -1637,9 +1650,9 @@ public class JakartaPersistenceServlet extends FATServlet {
         
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         }
@@ -1665,10 +1678,10 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheStoreMode(CacheStoreMode.BYPASS);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         }
@@ -1693,12 +1706,12 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             
             //Default cache store mode is USE — no  need to set explicitly
             
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         }
@@ -1725,10 +1738,10 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheStoreMode(CacheStoreMode.USE);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -1757,10 +1770,10 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheStoreMode(CacheStoreMode.BYPASS);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         }
@@ -1788,9 +1801,9 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -1818,10 +1831,10 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheStoreMode(CacheStoreMode.REFRESH);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         }
@@ -1849,10 +1862,10 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheStoreMode(CacheStoreMode.REFRESH);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -1882,10 +1895,10 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         PersistenceUnitEntity entity;
         try {
-            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            TypedQuery<PersistenceUnitEntity> query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1", PersistenceUnitEntity.class);
             query.setParameter(1, id);
             query.setCacheStoreMode(CacheStoreMode.BYPASS);
-            entity = (PersistenceUnitEntity) query.getSingleResult();
+            entity = query.getSingleResult();
         } catch (Exception e) {
             throw e;
         } finally {
@@ -2019,16 +2032,16 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     /**
      * Utility method to drop all entities from table.
-     *
-     * Order to tests is not guaranteed and thus we should be pessimistic and
-     * delete all entities when we reuse an entity between tests.
-     *
-     * @param clazz - the entity class
+     * Uses SELECT + remove() so the same code works under both JPA 3.2 and JPA 4.0:
+     * createQuery(String, Class) and em.remove() exist in both versions.
      */
-    private void deleteAllEntities(Class<?> clazz) throws Exception {
+    private <T> void deleteAllEntities(Class<T> clazz) throws Exception {
         tx.begin();
-        em.createQuery("DELETE FROM " + clazz.getSimpleName())
-                        .executeUpdate();
+        List<T> entities = em.createQuery("SELECT e FROM " + clazz.getSimpleName() + " e", clazz)
+                             .getResultList();
+        for (T entity : entities) {
+            em.remove(entity);
+        }
         tx.commit();
     }
     
