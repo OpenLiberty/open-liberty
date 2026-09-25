@@ -446,16 +446,13 @@ public class JSPChannelTest {
         }
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(c);
-        // Always wait for CWWKO0219I (TCP channel started and listening on the HTTP
-        // port)
-        // so that the next connection attempt does not get a "Connection refused".
-        // The httpOptions change cycles the TCP endpoint: the port stops and restarts.
-        // CWWKT0016I (app available) can fire before the OS has finished binding the
-        // port,
-        // so we wait for the TCP-ready message which is the authoritative signal.
+        // When the config actually changed, wait for CWWKO0219I (TCP channel started
+        // and listening on the HTTP port)
         server.waitForConfigUpdateInLogUsingMark(Collections.emptySet(),
                 serverXMLChanged ? "CWWKT0016I:.*WriteAfterRedirect.*" : "");
-        server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint.*");
+        if (serverXMLChanged) {
+            server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint.*");
+        }
         server.resetLogMarks();
     }
 
