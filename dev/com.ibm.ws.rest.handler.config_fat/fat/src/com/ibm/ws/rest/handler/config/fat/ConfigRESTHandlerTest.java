@@ -167,9 +167,12 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         JsonArray wsEndpointPropsArray = wsBnd.getJsonArray("webservice-endpoint-properties");
         assertEquals(err, 1, wsEndpointPropsArray.size());
         JsonObject wsEndpointProps = wsEndpointPropsArray.getJsonObject(0);
-        assertEquals(err, "test", wsEndpointProps.getString("someAttribute"));
         assertEquals(err, "application[bogus]/webservices-bnd[default-0]/webservice-endpoint-properties[default-0]",
                      wsEndpointProps.getString("uid"));
+        String wsEndpointError = wsEndpointProps.getString("error");
+        assertTrue(err, wsEndpointError.startsWith("CWWKO1531E") && wsEndpointError.contains("webservice-endpoint-properties"));
+        // Attributes for unknown/undefined configuration elements (feature not enabled) are not returned
+        assertNull(err, wsEndpointProps.get("someAttribute"));
 
         JsonArray appBndArray = app.getJsonArray("application-bnd");
         assertEquals(err, 1, appBndArray.size());
@@ -201,9 +204,10 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         String error;
         error = j.getString("error");
         assertTrue(err, error.startsWith("CWWKO1531E") && error.contains("mongo"));
-        assertEquals(err, "H2Lib", j.getString("libraryRef"));
-        assertEquals(err, "pwd1", j.getString("password")); //TODO Don't reveal password here
-        assertEquals(err, "u1", j.getString("user"));
+        // Attributes for unknown/undefined configuration elements (feature not enabled) are not returned
+        assertNull(err, j.get("libraryRef"));
+        assertNull(err, j.get("password"));
+        assertNull(err, j.get("user"));
 
         j = json2.getJsonObject(0);
         assertEquals(err, "mongoDB", j.getString("configElementName"));
@@ -212,8 +216,9 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "mongo/db", j.getString("jndiName"));
         error = j.getString("error");
         assertTrue(err, error.startsWith("CWWKO1531E") && error.contains("mongoDB"));
-        assertEquals(err, "builder", j.getString("mongoRef"));
-        assertEquals(err, "testdb", j.getString("databaseName"));
+        // Attributes for unknown/undefined configuration elements (feature not enabled) are not returned
+        assertNull(err, j.get("mongoRef"));
+        assertNull(err, j.get("databaseName"));
     }
 
     // Invoke /ibm/api/config/dataSource REST API to display information for all configured data sources.
