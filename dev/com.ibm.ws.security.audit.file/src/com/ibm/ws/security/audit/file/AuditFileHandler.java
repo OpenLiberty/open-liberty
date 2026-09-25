@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStoreException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import javax.crypto.SecretKey;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
@@ -56,9 +60,11 @@ import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValueStringPair;
 import com.ibm.ws.security.audit.encryption.AuditEncryptionImpl;
+import com.ibm.ws.security.audit.crypto.AuditPQCKeyLoader;
 import com.ibm.ws.security.audit.encryption.AuditSigningImpl;
 import com.ibm.ws.security.audit.event.AuditMgmtEvent;
 import com.ibm.ws.security.audit.logutils.FileLog;
+import com.ibm.ws.security.token.ltpa.pqc.PQCRuntimeSupport;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
@@ -143,6 +149,8 @@ public class AuditFileHandler implements SynchronousHandler {
     private byte[] encryptedSignerSharedKey = null;
     private java.security.cert.X509Certificate signerCert = null;
     private byte[] signerCertBytes = null;
+    private int retries = 0;
+    private boolean foundKeyStore = false;
 
     private final static String encryptionOpenTag = "<EncryptionInformation>\n";
     private final static String encryptionCloseTag = "</EncryptionInformation>\n";
@@ -670,8 +678,6 @@ public class AuditFileHandler implements SynchronousHandler {
     @FFDCIgnore(KeyStoreException.class)
     public void setSignerKeys() throws KeyStoreException, AuditSigningException {
         KeyStoreService service = null;
-        int retries = 0;
-        boolean foundKeyStore = false;
         if (getSign().booleanValue()) {
             service = keyStoreServiceRef.getService();
             try {
@@ -710,6 +716,70 @@ public class AuditFileHandler implements SynchronousHandler {
             throw new AuditSigningException(ase);
         }
 
+        // Check if PQC mode is enabled and PQC support is available
+if (PQCRuntimeSupport.isPQCSupported()) {
+    if (tc.isDebugEnabled()) {
+        Tr.debug(tc, "PQC mode enabled, using ML-KEM for key encapsulation and ML-DSA for signing");
+    }
+
+    try {
+       
+        // =========================
+        // 2. LOAD ML-KEM (ENCAPSULATION)
+        // =========================
+        String mlkemPemFilePath =
+            "/Users/niyathar/libertyGit/open-liberty/dev/build.image/wlp/usr/servers/defaultServer/resources/security/AuditEncryptionKeyStore.pem";
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Loading ML-KEM key pair: " + mlkemPemFilePath);
+        }
+
+        java.security.KeyPair mlkemKeyPair =
+            AuditPQCKeyLoader.loadKeyPair(mlkemPemFilePath);
+
+        PublicKey mlkemPublicKey = mlkemKeyPair.getPublic();
+        PrivateKey mlkemPrivateKey = mlkemKeyPair.getPrivate();
+
+        // =========================
+        // 3. ML-KEM ENCAPSULATION FOR SIGNING
+        // =========================
+        Object encap =
+            PQCRuntimeSupport.encapsulate(mlkemPublicKey);
+
+        SecretKey mlkemSharedSecret =
+            PQCRuntimeSupport.extractSharedSecret(encap);
+
+        // Initialize signedSharedKey for signing operations
+        signedSharedKey = mlkemSharedSecret;
+
+        encryptedSignerSharedKey =
+            PQCRuntimeSupport.extractEncapsulation(encap);
+
+        // =========================
+        // 4. ASSIGN SIGNING KEYS
+        // =========================
+        publicSignerKey = mlkemPublicKey;
+        privateSignerKey = mlkemPrivateKey;
+    
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "PQC signing setup complete");
+            Tr.debug(tc, "Encapsulation length: " + encryptedSignerSharedKey.length);
+        }
+
+    } catch (Exception e) {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Error initializing PQC cryptography.", e);
+        }
+
+        Tr.error(tc, "FAILURE_INITIALIZING_SIGNING_CONFIGURATION",
+            new Object[] { e.getMessage() });
+
+        throw new AuditSigningException(
+            "Failed to initialize PQC cryptography: " + e.getMessage(), e
+        );
+    }
+}else {
         // Generate a second shared key to sign the audit records with.  Use the public key from securityAdmin certificate
         // that was generated with Audit initialized to encrypt this shared key.
 
@@ -751,6 +821,7 @@ public class AuditFileHandler implements SynchronousHandler {
             throw new AuditSigningException(e.getMessage());
 
         }
+        }
 
     }
 
@@ -759,70 +830,134 @@ public class AuditFileHandler implements SynchronousHandler {
 
         final int MAX_RETRIES = 10;
         KeyStoreService service = null;
-        if (getEncrypt().booleanValue()) {
-            service = keyStoreServiceRef.getService();
+        
+        // Check if PQC mode is enabled and PQC support is available FIRST
+        // to avoid accessing the keystore when using PEM files
+        if (PQCRuntimeSupport.isPQCSupported()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "PQC mode enabled, using ML-KEM for shared key generation and encryption");
+            }
+            
+            // Create AuditEncryptionImpl without keystore location for PQC mode
+            try {
+                ae = new AuditEncryptionImpl(encryptKeyStoreId, null, null, null, null, encryptAlias);
+            } catch (AuditEncryptionException aee) {
+                Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { aee.getMessage() });
+                throw new AuditEncryptionException(aee);
+            }
+            
+            try {
+                // Load the ML-KEM public key from PEM file instead of keystore
+                // Derive PEM file path from keystore location by replacing extension
+                String pemFilePath = "/Users/niyathar/libertyGit/open-liberty/dev/build.image/wlp/usr/servers/defaultServer/resources/security/AuditEncryptionKeyStore.pem";
+                
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Loading ML-KEM key pair from PEM file: " + pemFilePath);
+                }
+                
+                java.security.KeyPair keyPair = AuditPQCKeyLoader.loadKeyPair(pemFilePath);
+                PublicKey mlkemPublicKey = keyPair.getPublic();
+                
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Successfully loaded ML-KEM public key from PEM file");
+                    Tr.debug(tc, "Public key algorithm: " + mlkemPublicKey.getAlgorithm());
+                }
+                
+                // Use ML-KEM encapsulation to generate shared secret and encapsulation
+                Object secretKeyWithEncap = PQCRuntimeSupport.encapsulate(mlkemPublicKey);
+                
+                // Extract the shared secret (this will be used as the AES key)
+                SecretKey mlkemSharedSecret = PQCRuntimeSupport.extractSharedSecret(secretKeyWithEncap);
+                sharedKey = mlkemSharedSecret;
+                
+                // Extract the encapsulation (this is what gets stored/transmitted)
+                encryptedSharedKey = PQCRuntimeSupport.extractEncapsulation(secretKeyWithEncap);
+                
+                publicKey = mlkemPublicKey;
+                sharedKeyAlias = ae.generateAliasForSharedKey();
+                
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Successfully generated ML-KEM shared key and encapsulation");
+                    Tr.debug(tc, "Shared key algorithm: " + mlkemSharedSecret.getAlgorithm());
+                    Tr.debug(tc, "Encapsulation length: " + encryptedSharedKey.length);
+                }
+                
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Error generating ML-KEM shared key.", e);
+                }
+                Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { e.getMessage() });
+                throw new AuditEncryptionException("Failed to generate ML-KEM shared key: " + e.getMessage(), e);
+            }
+            
+        } else {
+            // Traditional RSA mode - access keystore
+            if (getEncrypt().booleanValue()) {
+                service = keyStoreServiceRef.getService();
 
-            for (int retries = 0; retries < MAX_RETRIES; retries++) {
-                try {
-
-                    encryptKeyStoreLocation = service.getKeyStoreLocation(encryptKeyStoreId);
-                    break;
-
-                } catch (KeyStoreException e) {
-                    if (retries == MAX_RETRIES - 1) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Exception with keystore.", e.getMessage());
-                        Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { e.getMessage() });
-                        throw new KeyStoreException(e);
-                    }
+                for (int retries = 0; retries < MAX_RETRIES; retries++) {
                     try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e1) {
-                        // ignore it
+
+                        encryptKeyStoreLocation = service.getKeyStoreLocation(encryptKeyStoreId);
+                        break;
+
+                    } catch (KeyStoreException e) {
+                        if (retries == MAX_RETRIES - 1) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Exception with keystore.", e.getMessage());
+                            Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { e.getMessage() });
+                            throw new KeyStoreException(e);
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e1) {
+                            // ignore it
+                        }
                     }
                 }
+
             }
 
-        }
+            // Initialize AuditEncryptionImpl for traditional RSA mode
+            try {
+                ae = new AuditEncryptionImpl(encryptKeyStoreId, encryptKeyStoreLocation, null, null, null, encryptAlias);
+            } catch (AuditEncryptionException aee) {
+                Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { aee.getMessage() });
+                throw new AuditEncryptionException(aee);
+            }
 
-        try {
-            ae = new AuditEncryptionImpl(encryptKeyStoreId, encryptKeyStoreLocation, null, null, null, encryptAlias);
-        } catch (AuditEncryptionException aee) {
-            Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { aee.getMessage() });
-            throw new AuditEncryptionException(aee);
-        }
+            try {
+                sharedKey = ae.generateSharedKey();
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Error generating key.", new Object[] { e });
+                Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { e.getMessage() });
+                throw new AuditEncryptionException(e.getMessage(), e);
+            }
 
-        try {
-            sharedKey = ae.generateSharedKey();
-        } catch (Exception e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Error generating key.", new Object[] { e });
-            Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { e.getMessage() });
-            throw new AuditEncryptionException(e.getMessage(), e);
-        }
+            sharedKeyAlias = ae.generateAliasForSharedKey();
 
-        sharedKeyAlias = ae.generateAliasForSharedKey();
+            try {
+                cert = service.getX509CertificateFromKeyStore(encryptKeyStoreId, encryptAlias);
+                publicKey = cert.getPublicKey();
+                encryptedSharedKey = ae.encryptSharedKey(sharedKey, publicKey);
 
-        try {
-            cert = service.getX509CertificateFromKeyStore(encryptKeyStoreId, encryptAlias);
-            publicKey = cert.getPublicKey();
-            encryptedSharedKey = ae.encryptSharedKey(sharedKey, publicKey);
-
-        } catch (java.io.IOException ioe) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception opening keystore.", ioe.getMessage());
-            Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { ioe.getMessage() });
-            throw new AuditEncryptionException(ioe.getMessage());
-        } catch (CertificateException ce) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception with certificate.", ce.getMessage());
-            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreId });
-            throw new AuditEncryptionException(ce.getMessage());
-        } catch (KeyStoreException ke) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception with keystore.", ke.getMessage());
-            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreId });
-            throw new AuditEncryptionException(ke.getMessage());
+            } catch (java.io.IOException ioe) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception opening keystore.", ioe.getMessage());
+                Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { ioe.getMessage() });
+                throw new AuditEncryptionException(ioe.getMessage());
+            } catch (CertificateException ce) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception with certificate.", ce.getMessage());
+                Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreId });
+                throw new AuditEncryptionException(ce.getMessage());
+            } catch (KeyStoreException ke) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception with keystore.", ke.getMessage());
+                Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreId });
+                throw new AuditEncryptionException(ke.getMessage());
+            }
         }
     }
 
@@ -859,11 +994,11 @@ public class AuditFileHandler implements SynchronousHandler {
         header = header.concat(encryptedSharedKeyCloseTag);
 
         header = header.concat(encryptionCertAliasOpenTag);
-        header = header.concat(encryptAlias);
+        header = header.concat(encryptAlias != null ? encryptAlias : "");
         header = header.concat(encryptionCertAliasCloseTag);
 
         header = header.concat(encryptionKeyStoreOpenTag);
-        header = header.concat(encryptKeyStoreLocation);
+        header = header.concat(encryptKeyStoreLocation != null ? encryptKeyStoreLocation : "");
         header = header.concat(encryptionKeyStoreCloseTag);
 
         header = header.concat(encryptionCertificateOpenTag);
@@ -895,11 +1030,11 @@ public class AuditFileHandler implements SynchronousHandler {
         header = header.concat(signingSharedKeyCloseTag);
 
         header = header.concat(signingCertAliasOpenTag);
-        header = header.concat(signerAlias);
+        header = header.concat(signerAlias != null ? signerAlias : "");
         header = header.concat(signingCertAliasCloseTag);
 
         header = header.concat(signingKeyStoreOpenTag);
-        header = header.concat(signerKeyStoreLocation);
+        header = header.concat(signerKeyStoreLocation != null ? signerKeyStoreLocation : "");
         header = header.concat(signingKeyStoreCloseTag);
 
         header = header.concat(signingCertificateOpenTag);

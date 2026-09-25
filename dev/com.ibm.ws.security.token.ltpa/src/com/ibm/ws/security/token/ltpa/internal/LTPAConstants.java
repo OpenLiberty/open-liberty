@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,18 @@ public class LTPAConstants {
      * Used to identify the validation LTPA keys
      */
     public static final String VALIDATION_KEYS = "ltpa_validation_keys";
+
+    /**
+     * Used to identify the primary PQC keys (RSA + ML-KEM) for LTPA3 tokens.
+     * @deprecated Use {@link #PRIMARY_HYBRID_KEYS} instead
+     */
+    @Deprecated
+    protected static final String PRIMARY_PQC_KEYS = "primary_pqc_keys";
+
+    /**
+     * Used to identify the primary hybrid keys (RSA + ML-DSA + ML-KEM) for LTPA3 tokens.
+     */
+    protected static final String PRIMARY_HYBRID_KEYS = "primary_hybrid_keys";
 
     /**
      * Used to identify the unique identifier of a user.
