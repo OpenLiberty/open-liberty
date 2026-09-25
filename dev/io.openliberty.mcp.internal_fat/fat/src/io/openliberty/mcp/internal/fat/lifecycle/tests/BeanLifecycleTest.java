@@ -118,4 +118,67 @@ public class BeanLifecycleTest {
                    lifecycleMessages, contains(containsString("@PostConstruct ClassTool"), containsString("[LOGGED] Class Tool logged"), containsString("@PreDestroy ClassTool")));
 
     }
+
+    // Negative Tests
+
+    /**
+     * Verifies that a {@code @Dependent}-scoped bean is not reused across successive tool calls —
+     * each invocation must produce its own {@code @PostConstruct}/{@code @PreDestroy} pair,
+     * in the correct order.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testDependentBeanIsNotReusedAcrossSuccessiveCalls() throws Exception {
+        server.setMarkToEndOfLog();
+
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-1",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "sayHello",
+                            "arguments": {
+                              "name": "First"
+                            }
+                          }
+                        }
+                        """;
+
+        client.callMCP(request);
+
+        String request2 = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "sayHello",
+                            "arguments": {
+                              "name": "Second"
+                            }
+                          }
+                        }
+                        """;
+
+        client.callMCP(request2);
+
+        // Wait for both @PreDestroy events - each call must destroy its own instance
+        assertNotNull("First @PreDestroy must fire",
+                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool"));
+        assertNotNull("Second @PreDestroy must fire",
+                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool"));
+
+        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
+
+        assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
+                   lifecycleMessages,
+                   contains(containsString("@PostConstruct ClassTool"),
+                            containsString("[LOGGED] Class Tool logged"),
+                            containsString("@PreDestroy ClassTool"),
+                            containsString("@PostConstruct ClassTool"),
+                            containsString("[LOGGED] Class Tool logged"),
+                            containsString("@PreDestroy ClassTool")));
+    }
 }

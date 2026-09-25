@@ -66,6 +66,22 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
                     }
                     """;
 
+    /**
+     * Calls the {@code businessErrorTool} which always throws {@code ToolCallException}
+     * for the given input, so it produces status "error" and a non-null error type.
+     */
+    private static final String BUSINESS_ERROR_REQUEST = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 10,
+                      "method": "tools/call",
+                      "params": {
+                        "name": "businessErrorTool",
+                        "arguments": {"input": "bad-value"}
+                      }
+                    }
+                    """;
+
     /** Lists all tools — no tool name, should produce status "ok". */
     private static final String TOOLS_LIST_REQUEST = """
                     {
@@ -231,5 +247,44 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
         client.callMCP(PING_REQUEST);
         client.deleteSession();
         runTest(server, SERVLET, "testSessionMBeanInfoContainsAllInterfaceAttributes");
+    }
+
+    // Negative Tests
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Verifies that an operation MBean for a tool that threw a {@code ToolCallException} exposes
+     * {@code RpcResponseStatusCode} as {@code "error"} and {@code ErrorType} as {@code "tool_error"}.
+     */
+    @Test
+    public void testErrorToolMBeanHasErrorStatusAndNonNullErrorType() throws Exception {
+        client.callMCP(BUSINESS_ERROR_REQUEST);
+        runTest(server, SERVLET, "testErrorToolMBeanHasErrorStatusAndNonNullErrorType");
+    }
+
+    // --- Bean Lifecycle ---
+
+    /**
+     * Verifies that the session MBean is registered with a positive count and duration
+     * after the session is explicitly ended via DELETE.
+     */
+    @Test
+    public void testSessionMBeanPresentAfterSessionDeleted() throws Exception {
+        client.callMCP(PING_REQUEST);
+        client.deleteSession();
+        runTest(server, SERVLET, "testSessionMBeanPresentAfterSessionDeleted");
+    }
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Verifies that every registered operation MBean exposes a non-null, non-blank
+     * {@code McpMethodName} attribute.
+     */
+    @Test
+    public void testAllOperationMBeansHaveNonEmptyMethodName() throws Exception {
+        client.callMCP(ADD_REQUEST);
+        runTest(server, SERVLET, "testAllOperationMBeansHaveNonEmptyMethodName");
     }
 }
