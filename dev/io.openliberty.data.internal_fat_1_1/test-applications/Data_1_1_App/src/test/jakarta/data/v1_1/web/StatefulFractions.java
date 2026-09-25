@@ -32,6 +32,17 @@ import jakarta.transaction.Transactional;
 @Repository(dataStore = "MyDataStore")
 public interface StatefulFractions {
 
+    default boolean atLeastJPA4() {
+        try (EntityManager manager = manager()) {
+            manager.getClass()
+                            .getClassLoader() //
+                            .loadClass("jakarta.persistence.EntityHandler");
+            return true;
+        } catch (ClassNotFoundException x) {
+            return false;
+        }
+    }
+
     int deleteByDenominator(int denominator);
 
     @Detach
@@ -70,4 +81,5 @@ public interface StatefulFractions {
             }
         });
     }
+
 }

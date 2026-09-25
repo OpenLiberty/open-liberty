@@ -269,10 +269,11 @@ public interface DataVersionCompatibility {
     /**
      * List of valid return types for resource accessor methods.
      *
-     * @param stateful true for a stateful repository; false for stateless.
+     * @param stateful true for a stateful repository; false for stateless;
+     *                     null for both stateful and stateless
      * @return valid return types.
      */
-    Set<Class<?>> resourceAccessorTypes(boolean stateful);
+    Set<Class<?>> resourceAccessorTypes(Boolean stateful);
 
     /**
      * Returns the names of special parameter types that are valid for repository

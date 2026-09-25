@@ -34,6 +34,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import test.jakarta.data.v1_1.hibernate.Data_1_1_HibernateServlet;
 import test.jakarta.data.v1_1.web.Data_1_1_Servlet;
 
 @RunWith(FATRunner.class)
@@ -64,7 +65,9 @@ public class Data_1_1_HibernateTest extends FATServletClient {
                     DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.1.1.hibernate")
-    @TestServlets({ @TestServlet(servlet = Data_1_1_Servlet.class,
+    @TestServlets({ @TestServlet(servlet = Data_1_1_HibernateServlet.class,
+                                 contextRoot = "Data_1_1_App"),
+                    @TestServlet(servlet = Data_1_1_Servlet.class,
                                  contextRoot = "Data_1_1_App")
     })
     public static LibertyServer server;

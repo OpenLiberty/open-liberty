@@ -75,7 +75,8 @@ import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
 
 @SuppressWarnings("serial")
-@WebServlet("/*")
+@WebServlet(loadOnStartup = 1, // ensure data from init is available to other servlets
+            value = "/*")
 public class Data_1_1_Servlet extends FATServlet {
 
     /**
@@ -86,6 +87,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Advertisements ads;
+
+    // Do not use this until after the init method.
+    static boolean atLeastJPA4;
 
     @Inject
     Fractions fractions;
@@ -107,6 +111,17 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
+        // TODO look into whether a transaction ought to be required here
+        try {
+            tx.begin();
+            atLeastJPA4 = statefulFractions.atLeastJPA4();
+            tx.commit();
+        } catch (Exception x) {
+            throw new ServletException(x);
+        }
+
+        System.out.println("Persistence provider supports JPA 4.0+? " + atLeastJPA4);
+
         // Fractions including 1/2, 1/3, 2/3, ... 19/20
         Set<Fraction> fractionsToAdd = new HashSet<Fraction>();
         for (int d = 2; d <= 20; d++)
@@ -1382,7 +1397,7 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testJakartaQueryWithRestrictionAndOrder() {
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         Restriction<Fraction> ninthsAndTenths = //
@@ -1603,7 +1618,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDB2() && isHibernatePersistence())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         // Populate with 18/23.
@@ -2087,7 +2102,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         // Populate with 14/23.
@@ -2141,7 +2156,7 @@ public class Data_1_1_Servlet extends FATServlet {
         if (isHibernatePersistence() && isSQLServer())
             return;
 
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         PageRequest page2Req = PageRequest.ofSize(8).pageNumber(2);
@@ -2271,7 +2286,7 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryReturnsFirstEntity() {
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         assertEquals("Seven Twentieths",
@@ -2288,7 +2303,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         assertEquals(List.of("1/2",
@@ -2353,7 +2368,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
