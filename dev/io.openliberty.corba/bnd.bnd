@@ -15,15 +15,27 @@ Bundle-Name: CORBA and RMI APIs
 Bundle-Description: OMG CORBA and Java RMI APIs used by the Java ORB
 Bundle-SymbolicName: io.openliberty.corba.2.4
 
-Import-Package: \
-  javax.rmi, \
-  javax.rmi.CORBA, \
-  org.omg.*
+Import-Package: *
 
+# Packages sourced from yoko-spec-corba and yoko-rmi-spec:
+#   javax.rmi, javax.rmi.CORBA          - RMI-IIOP API (yoko-rmi-spec)
+#   org.omg.*                           - OMG CORBA API (yoko-spec-corba)
+#   org.apache.geronimo.interop         - ApacheVMCID interface (yoko-spec-corba)
+#   org.apache.yoko                     - ApacheVMCID class (yoko-spec-corba)
+#   org.apache.yoko.rmispec.util        - DelegateType, UtilLoader (yoko-rmi-spec)
+# org.apache.yoko.osgi sources live in yoko-osgi (an implementation submodule),
+# but are included here so that users linking against a non-Yoko ORB can
+# satisfy the ProviderLocator references in org.omg.CORBA.ORB at compile time.
 Export-Package: \
   javax.rmi, \
   javax.rmi.CORBA, \
   org.omg.*
+
+Private-Package: \
+  org.apache.geronimo.interop, \
+  org.apache.yoko, \
+  org.apache.yoko.rmispec.util, \
+  org.apache.yoko.osgi
 
 
 publish.wlp.jar.suffix: dev/api/spec
@@ -31,5 +43,4 @@ publish.wlp.jar.suffix: dev/api/spec
 instrument.disabled: true
 
 -buildpath: \
-  io.openliberty.yoko.rmi.spec;version=latest, \
-  io.openliberty.yoko.spec.corba;version=latest  
+  io.openliberty.yoko.core;version=latest

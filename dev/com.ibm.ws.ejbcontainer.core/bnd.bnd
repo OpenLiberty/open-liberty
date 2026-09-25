@@ -59,8 +59,7 @@ globalize.quotation.excludes: \
 	INVALID_ASYNC_METHOD_INTF_VALID_SPECIFIED_CNTR0205E
 
 -buildpath: \
-	io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.ejbcontainer.remote.portable.core;version=latest,\
@@ -87,7 +86,3 @@ globalize.quotation.excludes: \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1,\
-	io.openliberty.yoko.core;version=latest,\
-	io.openliberty.yoko.osgi;version=latest,\
-	io.openliberty.yoko.rmi.impl;version=latest,\
-	io.openliberty.yoko.util;version=latest
