@@ -80,7 +80,12 @@ public class JSF22APARSeleniumTests {
         if (jsf22APARSeleniumServer != null && jsf22APARSeleniumServer.isStarted()) {
             jsf22APARSeleniumServer.stopServer();
         }
-        Log.info(c, "Tear Down", driver.getCurrentUrl());
+        // Guard against logging on a dead session masking the real failure
+        try {
+            Log.info(c, "Tear Down", driver.getCurrentUrl());
+        } catch (Exception e) {
+            Log.info(c, "Tear Down", "Could not get current URL, driver may be inactive: " + e.getMessage());
+        }
     }
 
     /*
