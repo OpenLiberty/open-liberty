@@ -41,3 +41,7 @@
 
 # Allow list of IBM Bob rules. Rules added here are intended for use by everyone, so be intentional about any rules that are added.
 !.bob/rules/contributing.md
+
+
+
+**/.project
