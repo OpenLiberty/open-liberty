@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpUpgradeHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConnectionUpgrade;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -139,6 +140,19 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                             vc.getStateMap().put(TransportConstants.UPGRADED_LISTENER, null);
                             
                             upgradedCon.setVirtualConnection(vc);
+
+                            // For Netty transport, install NettyServletUpgradeHandler into the pipeline before writing the 101 response,
+                            // as the client may send post-upgrade data immediately after receiving the 101 response; without the handler
+                            // already installed, the data arrives as a raw ByteBuf and is silently dropped.
+                            if (dispatcherLink instanceof HttpDispatcherLink) {
+                                HttpDispatcherLink httpDispLink = (HttpDispatcherLink) dispatcherLink;
+                                if (httpDispLink.isUsingNetty()) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "finishConnection, calling prepareForUpgrade on Netty pipeline before sending 101");
+                                    }
+                                    httpDispLink.prepareForUpgrade();
+                                }
+                            }
 
                             doUpgradeInit = true;
                         }
