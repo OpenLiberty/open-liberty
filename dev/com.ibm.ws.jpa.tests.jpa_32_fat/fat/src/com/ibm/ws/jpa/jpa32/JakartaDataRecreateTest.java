@@ -6,19 +6,18 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jpa.jpa32;
 
-import java.io.File;
+import java.util.HashSet;
 
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -79,33 +78,25 @@ public class JakartaDataRecreateTest {
         if (appStartTimeout < (180 * 1000)) {
             server.setAppStartTimeout(180 * 1000);
         }
-        
+
         createApplication(SPECLEVEL);
         server.startServer();
     }
 
     private static void createApplication(String specLevel) throws Exception {
-        WebArchive app;
+        // Hibernate 8 does not scan WEB-INF/classes — use jpa-4.0 resources which
+        // have explicit <class> listings in persistence.xml.
+        String resLevel = "hibernate40-cfg.xml".equals(FATSuite.repeatPhase) ? "4.0" : specLevel;
+        final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + resLevel + "/web/";
 
-        if ("hibernate40-cfg.xml".equals(FATSuite.repeatPhase)) {
-            // Recompiled against JPA 4.0 API 
-            // The jakartadata servlet uses createQuery(String) which changed return type
-            // in JPA 4.0, causing NoSuchMethodError if deployed as a 3.2-compiled WAR.
-            File war40 = new File("publish/shared/jpa40war/jakartadata_jpa40compiled.war");
-            app = ShrinkWrap.create(ZipImporter.class, APP_NAME + "_" + specLevel + ".war")
-                            .importFrom(war40)
-                            .as(WebArchive.class);
-        } else {
-            final String resPath = "test-applications/" + APP_NAME + "/resources/jpa-" + specLevel + "/web/";
-            app = ShrinkWrap.create(WebArchive.class, APP_NAME + "_" + specLevel + ".war");
-            app.addPackage("io.openliberty.jpa.data.tests.models");
-            app.addPackage("io.openliberty.jpa.data.tests.web");
-            app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
-                      "/",
-                      Filters.includeAll());
-        }
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + "_" + specLevel + ".war");
+        app.addPackage("io.openliberty.jpa.data.tests.models");
+        app.addPackage("io.openliberty.jpa.data.tests.web");
+        app.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath).as(GenericArchive.class),
+                  "/",
+                  Filters.includeAll());
         ShrinkHelper.exportAppToServer(server, app);
-        
+
         Application appRecord = new Application();
         appRecord.setLocation(APP_NAME + "_" + specLevel + ".war");
         appRecord.setName(APP_NAME + "_" + specLevel);
@@ -117,12 +108,11 @@ public class JakartaDataRecreateTest {
             loader.getCommonLibraryRefs().add("HibernateLib");
             cel.add(loader);
         }
-        
+
         ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server.updateServerConfiguration(sc);
         server.saveServerConfiguration();
-
     }
 
     @AfterClass

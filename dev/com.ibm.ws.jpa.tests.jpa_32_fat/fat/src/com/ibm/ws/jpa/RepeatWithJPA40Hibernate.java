@@ -37,10 +37,6 @@ public class RepeatWithJPA40Hibernate extends JakartaEE12Action {
 
     @Override
     public void setup() throws Exception {
-        // Override the jakarta.persistence import version to [4.0,5) so the
-        // transformed WARs resolve against the JPA 4.0 API bundle instead of
-        // the JPA 3.2 API bundle (which is [3.2,4) by default in JakartaEE12Action).
-        withLocalVersionTransformAppend("jpa40-versions.properties");
         super.setup();
         FATSuite.repeatPhase = "hibernate40-cfg.xml";
         FATSuite.provider = JPAPersistenceProvider.HIBERNATE;
