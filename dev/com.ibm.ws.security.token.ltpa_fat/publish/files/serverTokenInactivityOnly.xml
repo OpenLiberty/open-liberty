@@ -50,7 +50,9 @@
         </application-bnd>
     </application>
 
-    <authentication id="Basic" cacheEnabled="true" />
+    <!-- cacheEnabled=false ensures every SSO request exercises the full LTPA token
+         validation path. -->
+    <authentication id="Basic" cacheEnabled="false" />
 
     <httpSession securityIntegrationEnabled="false"/>
 

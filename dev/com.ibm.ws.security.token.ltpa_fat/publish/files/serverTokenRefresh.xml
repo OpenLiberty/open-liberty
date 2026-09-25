@@ -51,7 +51,10 @@
         </application-bnd>
     </application>
 
-    <authentication id="Basic" cacheEnabled="true" />
+    <!-- cacheEnabled=false ensures every SSO request exercises the full LTPA token
+         validation and refresh path. A cached auth result would bypass that path
+         entirely, making refresh assertions vacuous. -->
+    <authentication id="Basic" cacheEnabled="false" />
     
     <httpSession securityIntegrationEnabled="false"/>
 
@@ -73,5 +76,3 @@
     <ssl id="defaultSSLConfig" />
     
 </server>
-
-<!-- Made with Bob -->
