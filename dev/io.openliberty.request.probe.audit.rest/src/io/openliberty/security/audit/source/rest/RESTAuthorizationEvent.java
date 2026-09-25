@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
+import com.ibm.ws.rest.handler.helper.LibertyServletRESTRequest;
 import com.ibm.ws.security.audit.source.utils.AuditUtils;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
@@ -69,7 +70,14 @@ public class RESTAuthorizationEvent extends AuditEvent {
             if (req.getUserPrincipal() != null && req.getUserPrincipal().getName() != null)
                 set(AuditEvent.TARGET_CREDENTIAL_TOKEN, req.getUserPrincipal().getName());
             set(AuditEvent.TARGET_METHOD, req.getMethod());
-            String sessionID = req.getSessionId();
+            String sessionID;
+            if (AuditUtils.isGenerateNewSession()) {
+                sessionID = req.getSessionId();
+            } else {
+                sessionID = (request instanceof LibertyServletRESTRequest)
+                    ? ((LibertyServletRESTRequest) request).getSessionForAudit()
+                    : null;
+            }
             if (sessionID != null) {
                 set(AuditEvent.TARGET_SESSION, sessionID);
             }
