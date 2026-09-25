@@ -45,6 +45,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * Test class for the securityUtility createLTPAKeys command.
@@ -815,13 +817,13 @@ public class SecurityUtilityCreateLTPAKeysTest {
     }
     
     /**
-     * Test LTPA key creation with a base64Key which has two `//` characters in it. This 
-     * ensures the key is not Path normalized when the server starts. 
+     * Test LTPA key creation with a base64Key which has two `//` characters in it. This
+     * ensures the key is not Path normalized when the server starts.
      * @throws Exception
      */
     @Test
     public void testCreateLTPAKeysWithPasswordEncodingAndNotNormalizedBase64Key() throws Exception {
-    	String key = "3ORhx1L0ME//P2JDl1elDjOqhhagCoMAZ4XFbhQxJoM=";
+        String key = "3ORhx1L0ME//P2JDl1elDjOqhhagCoMAZ4XFbhQxJoM=";
         // Run createLTPAKeys with passwordEncoding=aes for the test server
         ProgramOutput commandOutput = testMachine.execute(
             securityUtilityPath,
@@ -839,8 +841,8 @@ public class SecurityUtilityCreateLTPAKeysTest {
         assertEquals("createLTPAKeys should succeed", SUCCESS_RC, commandOutput.getReturnCode());
 
         // Build server.xml using the snippet
-		String ltpaSnippet = getLtpaOverride(commandOutput, key);
-		writeStringToServerOverride(ltpaSnippet, ltpaTestServer);
+        String ltpaSnippet = getLtpaOverride(commandOutput, key);
+        writeStringToServerOverride(ltpaSnippet, ltpaTestServer);
         // Start the server
         ltpaTestServer.startServer();
 
@@ -848,5 +850,215 @@ public class SecurityUtilityCreateLTPAKeysTest {
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
                       ltpaTestServer.waitForLTPAConfigReady(5000, true));
         ltpaTestServer.stopServer();
+    }
+
+    //--------------------------------------------------------------------------
+    // Test Methods - useEncryptionKey paths
+    //--------------------------------------------------------------------------
+
+    /**
+     * Verifies that createLTPAKeys --useEncryptionKey=true --passwordBase64Key=&lt;b64key&gt; --file=...
+     * succeeds (RC=0), creates the output file, and that the stdout snippet
+     * contains the wlp.aes.encryption.key hint and useEncryptionKey="true".
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void testCreateLTPAKeys_withPasswordBase64Key() throws Exception {
+        // Generate a fresh random 256-bit AES key for this test.
+        byte[] keyBytes = new byte[32];
+        new SecureRandom().nextBytes(keyBytes);
+        String base64Key = Base64.getEncoder().encodeToString(keyBytes);
+
+        File ltpaFile = new File(libertyInstallRoot + "/" + CUSTOM_LTPA_KEY_FILE);
+        assertFalse("Output file must not exist before the test", ltpaFile.exists());
+
+        ProgramOutput commandOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] {
+                "createLTPAKeys",
+                "--useEncryptionKey=true",
+                "--passwordBase64Key=" + base64Key,
+                "--file=" + CUSTOM_LTPA_KEY_FILE
+            },
+            libertyInstallRoot,
+            testEnvironment);
+
+        Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
+        Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
+
+        assertEquals("createLTPAKeys should succeed with --useEncryptionKey + --passwordBase64Key",
+                     SUCCESS_RC, commandOutput.getReturnCode());
+        assertTrue("Output LTPA file must be created: " + ltpaFile.getAbsolutePath(),
+                   ltpaFile.exists());
+
+        String stdout = commandOutput.getStdout();
+        assertTrue("stdout must contain wlp.aes.encryption.key hint", stdout.contains("wlp.aes.encryption.key"));
+        assertTrue("stdout must contain useEncryptionKey=\"true\"",    stdout.contains("useEncryptionKey=\"true\""));
+    }
+
+    /**
+     * Verifies that createLTPAKeys --useEncryptionKey=true --aesConfigFile=&lt;file&gt; --file=...
+     * succeeds (RC=0), creates the output file, and that the stdout snippet contains
+     * a key hint and useEncryptionKey="true". The config file is generated first via generateAESKey.
+     */
+    @Test
+    public void testCreateLTPAKeys_withAesConfigFile() throws Exception {
+        // Use generateAESKey to produce a config file containing wlp.aes.encryption.key.
+        File aesConfigFile = new File(ltpaTestServer.pathToAutoFVTTestFiles, "aes_config_test.xml");
+        aesConfigFile.delete();
+
+        ProgramOutput genOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] {
+                "generateAESKey",
+                "--createConfigFile=" + aesConfigFile.getAbsolutePath()
+            },
+            libertyInstallRoot,
+            testEnvironment);
+
+        Log.info(thisClass, testName.getMethodName(), "generateAESKey stdout:\n" + genOutput.getStdout());
+        assertEquals("generateAESKey should succeed", SUCCESS_RC, genOutput.getReturnCode());
+        assertTrue("AES config file must be created: " + aesConfigFile.getAbsolutePath(),
+                   aesConfigFile.exists());
+
+        File ltpaFile = new File(libertyInstallRoot + "/" + CUSTOM_LTPA_KEY_FILE);
+        assertFalse("Output LTPA file must not exist before the test", ltpaFile.exists());
+
+        ProgramOutput commandOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] {
+                "createLTPAKeys",
+                "--useEncryptionKey=true",
+                "--aesConfigFile=" + aesConfigFile.getAbsolutePath(),
+                "--file=" + CUSTOM_LTPA_KEY_FILE
+            },
+            libertyInstallRoot,
+            testEnvironment);
+
+        Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
+        Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
+
+        assertEquals("createLTPAKeys should succeed with --useEncryptionKey + --aesConfigFile",
+                     SUCCESS_RC, commandOutput.getReturnCode());
+        assertTrue("Output LTPA file must be created: " + ltpaFile.getAbsolutePath(),
+                   ltpaFile.exists());
+
+        String stdout = commandOutput.getStdout();
+        // generateAESKey with no --key writes a base64 key → wlp.aes.encryption.key hint.
+        assertTrue("stdout must contain an encryption key hint",
+                   stdout.contains("wlp.aes.encryption.key") || stdout.contains("wlp.password.encryption.key"));
+        assertTrue("stdout must contain useEncryptionKey=\"true\"",
+                   stdout.contains("useEncryptionKey=\"true\""));
+
+        // Cleanup the config file (not in standard tearDown list).
+        aesConfigFile.delete();
+    }
+
+    /**
+     * Verifies that createLTPAKeys --useEncryptionKey=true with no AES key configuration
+     * (no --passwordKey, --passwordBase64Key, or --aesConfigFile) fails with RC=1.
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void testCreateLTPAKeys_useEncryptionKeyTrue_noConfig() throws Exception {
+        ProgramOutput commandOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] {
+                "createLTPAKeys",
+                "--useEncryptionKey=true",
+                "--file=" + CUSTOM_LTPA_KEY_FILE
+            },
+            libertyInstallRoot,
+            testEnvironment);
+
+        Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
+        Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
+
+        assertEquals("createLTPAKeys should fail when --useEncryptionKey=true with no AES config",
+                     FAILURE_RC, commandOutput.getReturnCode());
+        // The error output must mention the missing AES config.
+        String out = commandOutput.getStdout() + commandOutput.getStderr();
+        assertTrue("Error output must mention missing AES config or --passwordKey",
+                   out.contains("--passwordKey") || out.contains("useEncryptionKey") || out.contains("missingAesConfig"));
+    }
+
+    /**
+     * Verifies that createLTPAKeys --useEncryptionKey=true --passwordKey=&lt;key&gt; --file=...
+     * returns RC=5 (ERR_FILE_EXISTS) when the target file already exists.
+     */
+    @Test
+    public void testCreateLTPAKeys_passwordKey_fileExistsError() throws Exception {
+        // Pre-create the target file so the command sees it already exists.
+        File ltpaFile = new File(libertyInstallRoot + "/" + CUSTOM_LTPA_KEY_FILE);
+        ltpaFile.createNewFile();
+        assertTrue("Target file must exist before the test", ltpaFile.exists());
+
+        ProgramOutput commandOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] {
+                "createLTPAKeys",
+                "--useEncryptionKey=true",
+                "--passwordKey=myTestEncryptionKey",
+                "--file=" + CUSTOM_LTPA_KEY_FILE
+            },
+            libertyInstallRoot,
+            testEnvironment);
+
+        Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
+        Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
+
+        assertEquals("createLTPAKeys should fail with FILE_EXISTS_RC when target file already exists",
+                     FILE_EXISTS_RC, commandOutput.getReturnCode());
+    }
+
+    /**
+     * End-to-end round-trip: generateAESKey (no --key, raw Base64 output) feeds directly into
+     * createLTPAKeys --useEncryptionKey=true --passwordBase64Key=... --file=...
+     * Verifies RC=0 and that the output file is created.
+     */
+    @Test
+    public void testCreateLTPAKeys_generatedAesKey_roundTrip() throws Exception {
+        // Step 1: generate a raw Base64 key (no --createConfigFile → key printed to stdout).
+        ProgramOutput genOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] { "generateAESKey" },
+            libertyInstallRoot,
+            testEnvironment);
+
+        Log.info(thisClass, testName.getMethodName(), "generateAESKey stdout:\n" + genOutput.getStdout());
+        assertEquals("generateAESKey should succeed", SUCCESS_RC, genOutput.getReturnCode());
+
+        String generatedKey = genOutput.getStdout().trim();
+        assertFalse("generateAESKey must produce non-empty output", generatedKey.isEmpty());
+        // Sanity-check: Base64-decode must yield 32 bytes (AES-256).
+        byte[] decoded = Base64.getDecoder().decode(generatedKey);
+        assertEquals("Generated key must be 32 bytes (AES-256)", 32, decoded.length);
+
+        // Step 2: create the LTPA file using the generated key.
+        File ltpaFile = new File(libertyInstallRoot + "/" + CUSTOM_LTPA_KEY_FILE);
+        assertFalse("Output LTPA file must not exist before the test", ltpaFile.exists());
+
+        ProgramOutput commandOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] {
+                "createLTPAKeys",
+                "--useEncryptionKey=true",
+                "--passwordBase64Key=" + generatedKey,
+                "--file=" + CUSTOM_LTPA_KEY_FILE
+            },
+            libertyInstallRoot,
+            testEnvironment);
+
+        Log.info(thisClass, testName.getMethodName(), "createLTPAKeys stdout:\n" + commandOutput.getStdout());
+        Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
+
+        assertEquals("createLTPAKeys should succeed with the key produced by generateAESKey",
+                     SUCCESS_RC, commandOutput.getReturnCode());
+        assertTrue("Output LTPA file must be created: " + ltpaFile.getAbsolutePath(),
+                   ltpaFile.exists());
+
+        String stdout = commandOutput.getStdout();
+        assertTrue("stdout must contain wlp.aes.encryption.key hint", stdout.contains("wlp.aes.encryption.key"));
+        assertTrue("stdout must contain useEncryptionKey=\"true\"",    stdout.contains("useEncryptionKey=\"true\""));
     }
 }
