@@ -13,7 +13,6 @@
 package com.ibm.ws.logging.internal.osgi;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
@@ -32,7 +31,6 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 import test.TestConstants;
 import test.common.SharedOutputManager;

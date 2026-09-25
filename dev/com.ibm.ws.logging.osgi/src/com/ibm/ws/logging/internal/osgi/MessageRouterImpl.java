@@ -58,83 +58,100 @@ public class MessageRouterImpl implements MessageRouter {
     protected final ConcurrentMap<WildCardMessageAndLevel, Set<String>> wildCardMsgIdToLogHandlerIds = new ConcurrentHashMap<WildCardMessageAndLevel, Set<String>>();
     
     /**
-     * Will parse Message ID with wild card for the optional. 
-     * @param msgId The wildcard message ID to parse. This message ID MUST already be processed for proper syntax.
-     * @return The log level if present, or Level.ALL if * is the last character and null if invalid character. Caller must handle.
+     * Parses the last character of a wildcard message ID to determine the log level.
+     *
+     * @param msgId The wildcard message ID to parse. Must already be validated for proper syntax.
+     * @return {@code Level.ALL} if {@code *} is the last character (no level suffix),
+     *         the matching {@link Level} for a recognised level letter (I, A, W, E),
+     *         or {@code null} if the last character is not a recognised level letter.
+     *         Callers must handle the {@code null} case.
      */
-    public static Level parseLevel(String msgId) {
-			char c = msgId.charAt(msgId.length() - 1);
-			switch (c) {
-			case '*':
-				return Level.ALL;
-			case 'I':
-				return Level.INFO;
-			case 'A':
-				return WsLevel.AUDIT;
-			case 'W':
-				return Level.WARNING;
-			case 'E':
-				return WsLevel.ERROR;
-			default:
-				return null;
+    protected static Level parseLevel(String msgId) {
+        char c = msgId.charAt(msgId.length() - 1);
+        switch (c) {
+            case '*':
+                return Level.ALL;
+            case 'I':
+                return Level.INFO;
+            case 'A':
+                return WsLevel.AUDIT;
+            case 'W':
+                return Level.WARNING;
+            case 'E':
+                return WsLevel.ERROR;
+            default:
+                return null;
+        }
+    }
 
-			}
-		}
-    
+    /**
+     * Key type for {@link #wildCardMsgIdToLogHandlerIds}.
+     *
+     * <p>Holds the <em>stripped prefix</em> (the part of the original wildcard pattern before
+     * the {@code *} character) and the parsed {@link Level}. Two instances are considered equal
+     * when both the stripped prefix and the level are equal, which ensures that patterns such as
+     * {@code "ABCD*I"} and {@code "ABCD*W"} are stored as distinct keys even though they share
+     * the same prefix.
+     *
+     * <p>Invariants:
+     * <ul>
+     *   <li>{@code wildCardMessageIDStripped} is the prefix up to but not including {@code *}.</li>
+     *   <li>{@code logLevel} is {@link Level#ALL} when no level suffix was supplied (e.g. {@code "ABCD123*"}),
+     *       or the specific level for patterns such as {@code "ABCD*E"}.</li>
+     *   <li>The constructor throws {@link IllegalArgumentException} if the last character is not a
+     *       recognised level letter and not {@code *}, so callers must catch that exception and
+     *       treat the pattern as invalid.</li>
+     * </ul>
+     */
     static class WildCardMessageAndLevel {
-    	
-    	private String originalWildCardMessageID;
-    	private String wildCardMessageIDStripped;
-    	private Level logLevel = null;
-    	
-    	
-    	public WildCardMessageAndLevel(String wildCardID ) {
-    		
-    		//Just know we have single asterisk, check for log level
-    		
-    		//raw value (e.g., ABCD*:E) --- already filtered for double star
-    		this.originalWildCardMessageID = wildCardID;
-    		
-    		logLevel = parseLevel(wildCardID);
-    		if (logLevel == null) {
-    			throw new IllegalArgumentException();
-    		} else if (logLevel.equals(Level.ALL)) {
-    			wildCardMessageIDStripped = wildCardID.substring(0, wildCardID.length() - 1);
-    		} else {
-    			wildCardMessageIDStripped = wildCardID.substring(0, wildCardID.length() - 2);
-    		}
-    	}
 
-		public String getUnprocessedWildCardMessageID() {
-			return originalWildCardMessageID;
-		}
+        private String originalWildCardMessageID;
+        private String wildCardMessageIDStripped;
+        private Level logLevel = null;
 
-		public String getWildCardMessageID() {
-			return wildCardMessageIDStripped;
-		}
+        public WildCardMessageAndLevel(String wildCardID) {
+            // raw value (e.g., ABCD*E) — already filtered for double star
+            this.originalWildCardMessageID = wildCardID;
 
-		public Level getLogLevel() {
-			return logLevel;
-		}
-		
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof WildCardMessageAndLevel)) return false;
-			WildCardMessageAndLevel other = (WildCardMessageAndLevel) o;
-			if (wildCardMessageIDStripped == null ? other.wildCardMessageIDStripped != null : !wildCardMessageIDStripped.equals(other.wildCardMessageIDStripped)) return false;
-			if (logLevel == null ? other.logLevel != null : !logLevel.equals(other.logLevel)) return false;
-			return true;
-		}
+            logLevel = parseLevel(wildCardID);
+            if (logLevel == null) {
+                throw new IllegalArgumentException();
+            } else if (logLevel.equals(Level.ALL)) {
+                wildCardMessageIDStripped = wildCardID.substring(0, wildCardID.length() - 1);
+            } else {
+                wildCardMessageIDStripped = wildCardID.substring(0, wildCardID.length() - 2);
+            }
+        }
 
-		@Override
-		public int hashCode() {
-			int result = wildCardMessageIDStripped != null ? wildCardMessageIDStripped.hashCode() : 0;
-			result = 31 * result + (logLevel != null ? logLevel.hashCode() : 0);
-			return result;
-		}
+        public String getUnprocessedWildCardMessageID() {
+            return originalWildCardMessageID;
+        }
 
-		  }
+        public String getWildCardMessageID() {
+            return wildCardMessageIDStripped;
+        }
+
+        public Level getLogLevel() {
+            return logLevel;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof WildCardMessageAndLevel)) return false;
+            WildCardMessageAndLevel other = (WildCardMessageAndLevel) o;
+            if (wildCardMessageIDStripped == null ? other.wildCardMessageIDStripped != null : !wildCardMessageIDStripped.equals(other.wildCardMessageIDStripped)) return false;
+            if (logLevel == null ? other.logLevel != null : !logLevel.equals(other.logLevel)) return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = wildCardMessageIDStripped != null ? wildCardMessageIDStripped.hashCode() : 0;
+            result = 31 * result + (logLevel != null ? logLevel.hashCode() : 0);
+            return result;
+        }
+    }
     
     /**
      * CTOR, protected.
@@ -187,7 +204,7 @@ public class MessageRouterImpl implements MessageRouter {
      * @return The set of LogHandlerId's associated with the given wildcard pattern.
      *         If the set doesn't exist in the map, it is created.
      */
-    protected Set<String> getOrCreateWildCardLogHandlerIdSet(WildCardMessageAndLevel wmac) {
+    protected synchronized Set<String> getOrCreateWildCardLogHandlerIdSet(WildCardMessageAndLevel wmac) {
 
         Set<String> wildCardLogHandlerIdSet = wildCardMsgIdToLogHandlerIds.get(wmac);
 
@@ -267,8 +284,8 @@ public class MessageRouterImpl implements MessageRouter {
                     } catch (IllegalArgumentException iae) {
                     	//Bad - continue;
                     	if (ProductInfo.getBetaEdition()) {
-                        	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);;
-                        	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                    	   	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);
+                    	   	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
                         		Tr.debug(tc, String.format("Improper wildcard message ID detected from MessageRouter.properties for Message ID:[%s] for handlers Handler(s):[%s]", msgId, logHandlerIds), null);
                         	}
                     	}
@@ -278,8 +295,8 @@ public class MessageRouterImpl implements MessageRouter {
                 } else {
                 	//Only throw warning if we are beta. We can silently do the above logic because nobody is actually using props or know that his feature is supported.
                 	if (ProductInfo.getBetaEdition()) {
-                    	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);;
-                    	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                	   	Tr.warning(tc, "MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W", msgId);
+                	   	if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
                     		Tr.debug(tc, String.format("Improper wildcard message ID detected from MessageRouter.properties for Message ID:[%s] for handlers Handler(s):[%s]", msgId, logHandlerIds), null);
                     	}
                 	}
@@ -374,7 +391,6 @@ public class MessageRouterImpl implements MessageRouter {
             	}
             	return;
             }
-            //WildCardMessageAndLevel wcmal = new WildCardMessageAndLevel(msgId);
             Set<String> wcLogHandlerIdSet = getOrCreateWildCardLogHandlerIdSet(wcmal);
             wcLogHandlerIdSet.add(handlerId);
         }
