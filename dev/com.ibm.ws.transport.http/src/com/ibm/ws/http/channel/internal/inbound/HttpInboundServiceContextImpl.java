@@ -281,6 +281,28 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     }
 
     /**
+     * Netty-path hook called by {@code prepareNettyHeadersToSend} before the
+     * {@code isPersistent()} check that injects {@code Connection: close}.
+     *
+     * <p>Mirrors the error-code rule from the inbound {@link #updatePersistence}
+     * override: any 4xx/5xx response disables persistence so that
+     * {@code Connection: close} is added to the outgoing headers.
+     */
+    @Override
+    protected void updatePersistenceForNettyResponse() {
+        if (getResponse().getStatusCode().isErrorCode()) {
+            // 346196.4 - error code turns off persistence (mirrors legacy updatePersistence override)
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "updatePersistenceForNettyResponse: error status code disabling persistence.");
+            }
+            setPersistent(false);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "updatePersistenceForNettyResponse updated: " + isPersistent());
+        }
+    }
+
+    /**
      * When a body is not allowed to be sent on an outgoing message, certain
      * headers need modification -- except for an outgoing Response to a HEAD
      * request.
