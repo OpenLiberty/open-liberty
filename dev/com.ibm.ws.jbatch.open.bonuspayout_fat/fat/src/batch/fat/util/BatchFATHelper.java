@@ -53,7 +53,7 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 public abstract class BatchFATHelper {
 
     protected final String DFLT_CTX_ROOT = "batchFAT";
-    public final static String DFLT_PERSISTENCE_DDL = "common/batch-derby.ddl";
+    public final static String DFLT_PERSISTENCE_DDL = "common/batch-h2.ddl";
     public final static String DFLT_SERVER_XML = "common/server.xml";
     public final static String DFLT_PERSISTENCE_JNDI = "jdbc/batch";
     public final static String DFLT_PERSISTENCE_SCHEMA = "JBATCH";

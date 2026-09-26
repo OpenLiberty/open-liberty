@@ -100,7 +100,7 @@ public class BatchInjectionTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWKY0011W");
+        server1.stopServer("CWWKY0011W","DSRA8020E");
     }
 
 }
