@@ -25,6 +25,15 @@
         <AD id="expiration"  name="%expiration" description="%expiration.desc"
             required="false" type="String" ibm:type="duration(m)"
             default="120m" />
+        <AD id="refreshThreshold"  name="%refreshThreshold" description="%refreshThreshold.desc"
+            required="false" type="String" ibm:type="duration(m)"
+            ibm:beta="true" />
+        <AD id="inactivityTimeout"  name="%inactivityTimeout" description="%inactivityTimeout.desc"
+            required="false" type="String" ibm:type="duration(m)"
+            ibm:beta="true" />
+        <AD id="dynamicExpirationValidation" name="%dynamicExpirationValidation" description="%dynamicExpirationValidation.desc"
+            required="false" type="Boolean" default="false"
+            ibm:beta="true" />
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
             required="false" type="String" ibm:type="duration" 
             default="0ms" />
