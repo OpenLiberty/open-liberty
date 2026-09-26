@@ -408,7 +408,9 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public StatusCodes getStatusCode() {
-        return StatusCodes.getByOrdinal(getStatusCodeAsInt());
+        int code = getStatusCodeAsInt();
+        StatusCodes val = StatusCodes.getByOrdinal(code);
+        return (val != null) ? val : StatusCodes.makeUndefinedValue(code);
     }
 
     @Override

@@ -1460,6 +1460,20 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     }
 
     /**
+     * Netty-path equivalent of the {@code updatePersistence(msg)} call that the
+     * legacy path makes inside {@code formatHeaders}.  The Netty path bypasses
+     * {@code formatHeaders} entirely, so this hook allows subclasses to apply the
+     * same persistence rules (e.g. error status codes disable keep-alive) before
+     * {@code prepareNettyHeadersToSend} evaluates {@code isPersistent()}.
+     *
+     * <p>The base implementation is a no-op; {@link HttpInboundServiceContextImpl}
+     * overrides it to apply the inbound-specific rules.
+     */
+    protected void updatePersistenceForNettyResponse() {
+        // no-op in base class
+    }
+
+    /**
      * Update the "content-length" vs "chunked encoding" flags for the inbound
      * message by querying the given message headers.
      *
@@ -2342,6 +2356,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     private void prepareNettyHeadersToSend() {
         NettyResponseMessage responseMessage = (NettyResponseMessage) getResponse();
         HttpResponse response = responseMessage.getResponse();
+
+        // Mirror the legacy formatHeaders path: evaluate the response status to
+        // decide whether this connection should persist.  In the legacy path this
+        // is done by updatePersistence(msg) inside formatHeaders; the Netty path
+        // skips formatHeaders entirely, so isPersistent() would otherwise remain
+        // true for error responses and Connection: close would never be added.
+        updatePersistenceForNettyResponse();
 
         // check compression and set up the Content-Encoding header if need be
         if (null != this.compressHandler) {
