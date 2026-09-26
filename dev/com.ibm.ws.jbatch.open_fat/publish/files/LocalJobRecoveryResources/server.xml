@@ -24,7 +24,7 @@
 
 	<dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
 		<jdbcDriver libraryRef="H2Lib" />
-	       <properties.h2 URL="jdbc:h2:${server.config.dir}/../resources/LocalRecoveryDB;DB_CLOSE_DELAY=-1;MODE=LEGACY;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
+	       <properties.h2 URL="jdbc:h2:${server.config.dir}/../resources/LocalRecoveryDB;OPTIMIZE_REUSE_RESULTS=0;DB_CLOSE_DELAY=-1;MODE=LEGACY;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
 	</dataSource>
 	
 	<!-- ssl keystore to enable SSL port for batch rest connector -->

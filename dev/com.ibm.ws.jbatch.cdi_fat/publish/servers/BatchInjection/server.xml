@@ -22,7 +22,7 @@
  <!-- Data source for batch tables -->
  <dataSource id="DefaultDataSource">
  	<jdbcDriver libraryRef="H2Lib" />
- 	<properties.h2 URL="jdbc:h2:mem:BatchDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
+ 	<properties.h2 URL="jdbc:h2:mem:BatchDB;OPTIMIZE_REUSE_RESULTS=0;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
  </dataSource>
  
  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>

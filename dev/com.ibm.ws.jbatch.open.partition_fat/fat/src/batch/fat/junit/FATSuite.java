@@ -52,7 +52,8 @@ public class FATSuite extends TestContainerSuite {
     private static H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
                     .withDatabaseName("BatchDB")
                     .withConfig("INIT", "CREATE SCHEMA IF NOT EXISTS JBATCH")
-                    .withConfig("NON_KEYWORDS", "VALUE");
+                    .withConfig("NON_KEYWORDS", "VALUE")
+                    .withConfig("OPTIMIZE_REUSE_RESULTS", "0");
 
     @ClassRule
     public static JdbcDatabaseContainer<?> jdbcContainer = DatabaseContainerFactory.createH2(Optional.of(h2Database));
