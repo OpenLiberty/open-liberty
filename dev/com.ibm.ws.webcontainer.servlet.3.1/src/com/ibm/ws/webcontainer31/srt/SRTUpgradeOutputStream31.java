@@ -10,12 +10,13 @@
 package com.ibm.ws.webcontainer31.srt;
 
 import java.io.IOException;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.transport.access.TransportConstants;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer31.async.ThreadContextManager;
 import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer31.upgrade.UpgradeAsyncWriteCallback;
@@ -23,8 +24,6 @@ import com.ibm.ws.webcontainer31.upgrade.UpgradeWriteListenerRunnable;
 import com.ibm.ws.webcontainer31.util.UpgradeOutputByteBufferUtil;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
-
-import com.ibm.ws.transport.access.TransportConstants;
 
 
 /**
@@ -65,7 +64,7 @@ public class SRTUpgradeOutputStream31 extends ServletOutputStream
     /* (non-Javadoc)
      * @see java.io.OutputStream#close()
      */
-    public void close() throws java.io.IOException{
+    public void close() throws IOException{
         synchronized(this){
             if(_outHelper.isOutputStream_closed()){
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -137,7 +136,7 @@ public class SRTUpgradeOutputStream31 extends ServletOutputStream
         }
 
         try {
-            com.ibm.ws.webcontainer.osgi.WebContainer.getExecutorService().execute(wlRunnable);
+            WebContainer.getExecutorService().execute(wlRunnable);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
                 Tr.debug(tc, "setWriteListener: An exception occurred during the execute : " + e);

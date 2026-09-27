@@ -11,12 +11,9 @@ package com.ibm.ws.http.channel.internal.outbound;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -26,9 +23,9 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
-import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
@@ -42,10 +39,9 @@ import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.exception.WriteBeyondContentLengthException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
-import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.AttributeKey;
+import io.netty.util.AsciiString;
 
 /**
  * HTTP transport output stream that wraps the bytebuffer usage and the HTTP
@@ -932,7 +928,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         String conn = resp.getHeader(HttpHeaderKeys.HDR_CONNECTION).asString();
         String upg = resp.getHeader("Upgrade").asString();
         return conn != null
-               && io.netty.util.AsciiString.containsIgnoreCase(conn, "upgrade")
+               && AsciiString.containsIgnoreCase(conn, "upgrade")
                && upg != null && !upg.isEmpty();
     }
 
@@ -955,7 +951,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         //TODO -> find a way to make it thrown upon writeAndFlush of 101
         ctx.executor().execute(() ->
             ctx.pipeline().fireUserEventTriggered(
-                com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
+                HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
 
         try {
             promise.get(750, TimeUnit.MILLISECONDS); 

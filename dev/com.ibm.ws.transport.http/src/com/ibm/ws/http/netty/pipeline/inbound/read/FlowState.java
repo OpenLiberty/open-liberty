@@ -12,8 +12,8 @@ package com.ibm.ws.http.netty.pipeline.inbound.read;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import io.netty.util.ReferenceCountUtil;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * This is used by the {@link ReadFlowHandler} to keep track of the state of read

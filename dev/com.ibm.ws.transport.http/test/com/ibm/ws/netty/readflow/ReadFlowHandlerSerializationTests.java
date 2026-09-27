@@ -11,10 +11,9 @@ package com.ibm.ws.netty.readflow;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.netty.buffer.ByteBuf;
 
 import org.junit.After;
 import org.junit.Test;
@@ -22,6 +21,7 @@ import org.junit.Test;
 import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -187,7 +187,7 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     private void fail(ChannelPromise p) {
-        p.setFailure(new java.io.IOException("simulated write failure"));
+        p.setFailure(new IOException("simulated write failure"));
         channel.runPendingTasks();
     }
 

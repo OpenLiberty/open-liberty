@@ -21,21 +21,17 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
-import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpObjectDecoder;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodecFactory;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.DecoratingHttp2ConnectionEncoder;
 import io.netty.handler.codec.http2.DefaultHttp2Connection;
@@ -60,7 +56,6 @@ import io.netty.handler.codec.http2.LibertyDefaultHttp2HeadersDecoder;
 import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.quiesce.QuiesceStrategy;
-import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 /**
@@ -107,7 +102,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             HttpToHttp2ConnectionHandler handler = buildHttp2ConnectionHandler(httpConfig, channel);
             return new Http2ServerUpgradeCodec(handler) {
                 @Override
-                public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
+                public void upgradeTo(ChannelHandlerContext ctx, FullHttpRequest request) {
                     // Call upgrade
                     super.upgradeTo(ctx, request);
                     // Successful topology installation is the trusted h2c transition boundary.
@@ -136,7 +131,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             // WebSocket upgrade detected
             return new UpgradeCodec() {
                 @Override
-                public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
+                public void upgradeTo(ChannelHandlerContext ctx, FullHttpRequest request) {
                     ctx.fireChannelRead(ReferenceCountUtil.retain(request));
                     QuiesceHandler quiesceHandler = ctx.pipeline().get(QuiesceHandler.class);
                     if (quiesceHandler != null) {

@@ -11,38 +11,28 @@ package com.ibm.ws.http.netty.inbound;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
-import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
-import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConstants;
-
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -52,17 +42,8 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 
-import io.openliberty.http.options.TcpOption;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.concurrent.EventExecutor;
-
-//autoread design, will organize imports later
-import java.util.concurrent.CompletableFuture;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-
 import io.openliberty.http.netty.channel.ReadOnlySocket;
 import io.openliberty.http.options.TcpOption;
 
@@ -567,8 +548,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         if(vc == null){
             return false;
         }
-        Object upgradeConn = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_CONNECTION);
-        Object webConn = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
+        Object upgradeConn = vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION);
+        Object webConn = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
         return "true".equalsIgnoreCase(String.valueOf(upgradeConn)) && webConn != null;
     }
 
@@ -660,7 +641,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     }
 
     private static int copyInto(WsByteBuffer buf, byte[] src, int off, int len) {
-        final java.nio.ByteBuffer bb = buf.getWrappedByteBuffer();
+        final ByteBuffer bb = buf.getWrappedByteBuffer();
         final int can = Math.min(bb.remaining(), len);
         if (can > 0) {
             bb.put(src, off, can);

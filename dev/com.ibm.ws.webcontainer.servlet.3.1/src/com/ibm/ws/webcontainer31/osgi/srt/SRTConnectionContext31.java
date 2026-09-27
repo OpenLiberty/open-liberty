@@ -16,7 +16,6 @@
 package com.ibm.ws.webcontainer31.osgi.srt;
 
 import java.io.IOException;
-
 import javax.servlet.http.HttpUpgradeHandler;
 
 import com.ibm.websphere.ras.Tr;
@@ -24,12 +23,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConnectionUpgrade;
 import com.ibm.ws.transport.access.TransportConstants;
-import com.ibm.ws.webcontainer31.async.ThreadContextManager;
-import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
-import com.ibm.ws.webcontainer31.osgi.response.IResponse31Impl;
+import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletResponse;
+import com.ibm.ws.webcontainer31.async.ThreadContextManager;
+import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
+import com.ibm.ws.webcontainer31.osgi.response.IResponse31Impl;
 import com.ibm.ws.webcontainer31.srt.SRTServletRequest31;
 import com.ibm.ws.webcontainer31.srt.SRTServletResponse31;
 import com.ibm.ws.webcontainer31.upgrade.HttpUpgradeHandlerWrapper;
@@ -39,8 +39,9 @@ import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
+import com.ibm.wsspi.webcontainer.util.FFDCWrapper;
 
-public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext
+public class SRTConnectionContext31 extends SRTConnectionContext
 {
 
     private final static TraceComponent tc = Tr.register(SRTConnectionContext31.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
@@ -140,7 +141,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable t) {
                     // TODO reasonable to catch throwable here?
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(t, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "122", this);
+                    FFDCWrapper.processException(t, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "122", this);
                 }
 
                 try
@@ -192,7 +193,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
                     // System.out.println("DEBUG: servlet throwable caught, store fatal flag...");
                     // IResponse31Impl irImpl = (IResponse31Impl) _response.getIResponse();
                     // vc = irImpl.getVC();
@@ -212,7 +213,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "96", this);
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "96", this);
                     WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext)_request.getWebAppDispatcherContext();
                     dispatchContext.getWebApp().logError("Error while finishing the connection", th);
                 }
@@ -229,7 +230,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "64", this);
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "64", this);
                 }		
 
                 try
@@ -238,7 +239,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "74", this);
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "74", this);
                     WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext)_request.getWebAppDispatcherContext();
                     dispatchContext.getWebApp().logError("Error while finishing the connection", th);
                 }

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
-import java.util.ArrayDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 

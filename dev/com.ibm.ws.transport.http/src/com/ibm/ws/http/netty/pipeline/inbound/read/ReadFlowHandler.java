@@ -9,6 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound.read;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -29,12 +33,7 @@ import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 import io.openliberty.netty.internal.impl.QuiesceHandler;
-import com.ibm.ws.http.netty.NettyHttpConstants;
 
 /**
  * Netty handler that handles read gating when Netty's auto-read is disabled. It

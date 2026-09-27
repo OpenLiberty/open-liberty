@@ -10,6 +10,7 @@
 package com.ibm.ws.http.channel.internal;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Comparator;
@@ -2430,7 +2431,7 @@ public class HttpChannelConfig {
      */
     protected void parsePurgeRemainingResponseBody() {
 
-        String option = AccessController.doPrivileged(new java.security.PrivilegedAction<String>() {
+        String option = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
                 return (System.getProperty(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE));

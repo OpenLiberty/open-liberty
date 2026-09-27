@@ -11,7 +11,6 @@ package io.openliberty.http.netty.timeout;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -21,13 +20,6 @@ import com.ibm.ws.http.internal.netty.protocol.ProtocolChangedEvent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
-import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-
-import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
-import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
-import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
-import io.openliberty.http.netty.timeout.exception.TimeoutException;
-import io.openliberty.http.options.TcpOption;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -44,6 +36,10 @@ import io.netty.handler.codec.http2.Http2HeadersFrame;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
+import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
+import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
+import io.openliberty.http.options.TcpOption;
 
 public class TimeoutHandler extends ChannelDuplexHandler {
 

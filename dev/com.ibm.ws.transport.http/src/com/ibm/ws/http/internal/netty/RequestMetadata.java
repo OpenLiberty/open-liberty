@@ -18,7 +18,6 @@ import com.ibm.ws.http.netty.ProtocolState;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
-
 import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /** Protocol and stream details captured once for an inbound request. */

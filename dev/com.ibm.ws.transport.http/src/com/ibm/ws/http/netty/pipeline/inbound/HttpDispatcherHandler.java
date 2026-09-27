@@ -9,22 +9,21 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound;
 
+import java.io.EOFException;
 import java.net.InetSocketAddress;
-import java.util.Map;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.util.ArrayDeque;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
-import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
@@ -38,21 +37,22 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
+import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
-import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -60,8 +60,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
-import io.netty.channel.socket.ChannelInputShutdownReadComplete;
-import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.ContentLengthNotAllowedException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -78,27 +76,20 @@ import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
-import io.netty.handler.codec.http.TooLongHttpHeaderException;
 import io.netty.handler.codec.http.TooLongHttpLineException;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Error;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.Http2Stream;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
-
-import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
-
 import io.openliberty.netty.internal.impl.QuiesceHandler;
-import java.io.EOFException;
-import io.netty.channel.socket.DuplexChannelConfig;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
@@ -116,8 +107,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     private BodyQueue queue;
     private HttpDispatcherLink link;
 
-    private final java.util.ArrayDeque<HttpContent> earlyContents = new java.util.ArrayDeque<>();
-    private final java.util.ArrayDeque<ByteBuf> earlyUpgradeBytes = new java.util.ArrayDeque<>();
+    private final ArrayDeque<HttpContent> earlyContents = new ArrayDeque<>();
+    private final ArrayDeque<ByteBuf> earlyUpgradeBytes = new ArrayDeque<>();
 
     private final AtomicBoolean commitScheduled = new AtomicBoolean(false);
     private final AtomicBoolean upgradeCommitted = new AtomicBoolean(false);
@@ -356,7 +347,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         final CharSequence upg = req.headers().get(HttpHeaderNames.UPGRADE);
         if (upg == null || conn == null)
             return false;
-        return io.netty.util.AsciiString.containsIgnoreCase(conn, "upgrade");
+        return AsciiString.containsIgnoreCase(conn, "upgrade");
     }
 
     private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request,
