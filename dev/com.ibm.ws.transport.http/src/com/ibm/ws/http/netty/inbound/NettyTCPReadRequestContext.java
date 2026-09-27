@@ -97,6 +97,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         this.connectionContext = connectionContext;
         this.nettyChannel = nettyChannel;
         this.config = config;
+        int configuredTimeout = (int) config.get(TcpOption.INACTIVITY_TIMEOUT);
+        this.channelDefaultTimeout = configuredTimeout == 0 ? NO_TIMEOUT : configuredTimeout;
     }
 
     @Override

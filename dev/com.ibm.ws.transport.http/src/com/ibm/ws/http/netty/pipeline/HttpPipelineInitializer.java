@@ -349,6 +349,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
                 pipeline.addAfter(FLOW_CONTROL_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             }
+
+            if (pipeline.get(TimeoutHandler.class) == null) {
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, TimeoutHandler.NAME, new TimeoutHandler(httpConfig));
+            }
             
             if(pipeline.get(ReadFlowHandler.class) == null) {
                 pipeline.addBefore(HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);

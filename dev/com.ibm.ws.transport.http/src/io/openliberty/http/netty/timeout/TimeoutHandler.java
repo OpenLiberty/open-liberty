@@ -41,6 +41,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http2.Http2DataFrame;
 import io.netty.handler.codec.http2.Http2HeadersFrame;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
 
@@ -240,22 +241,25 @@ public class TimeoutHandler extends ChannelDuplexHandler {
                     arm(context, Phase.READ);
                     return;
                 }
-                if (firstRequest) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "The connection closed due to idle timeout");
-                    }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The connection is closing due an idle read timeout");
+                }
+                if (firstRequest && context.pipeline().get(SslHandler.class) != null) {
                     context.close();
                 } else {
-                    context.fireExceptionCaught(new ReadTimeoutException(readTimeout, LEGACY_UNIT));
+                    context.fireExceptionCaught(new ReadTimeoutException(readTimeout, LEGACY_UNIT,
+                                                                        context.channel().localAddress(), context.channel().remoteAddress()));
                 }
                 break;
 
             case PERSIST:
-                context.fireExceptionCaught(new PersistTimeoutException(persistTimeout, LEGACY_UNIT));
+                context.fireExceptionCaught(new PersistTimeoutException(persistTimeout, LEGACY_UNIT,
+                                                                       context.channel().localAddress(), context.channel().remoteAddress()));
                 //context.close();
                 break;
             case H2_IDLE:
-                context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout, LEGACY_UNIT));
+                context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout, LEGACY_UNIT,
+                                                                      context.channel().localAddress(), context.channel().remoteAddress()));
                 break;
             default:
         }

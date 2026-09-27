@@ -524,7 +524,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "close ENTER, vc ->" + this.vc + " hc: " + this.hashCode());
         }
 
-        if (this.vc == null) {
+        VirtualConnection finalVc = this.vc;
+
+        if (finalVc == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close, Connection must be already closed since vc is null");
                 Tr.debug(tc, "Getting the values of the atomic booleans for the connection decrement: decrementNeededForUpgradedConnection: "+decrementNeededForUpgradedConnection.get() +" closeCompleted: "+closeCompleted.get() +" hc: " + this.hashCode());
@@ -546,7 +548,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // This is added for Upgrade Servlet3.1 WebConnection
         // The only API available from connectionLink are close and destroy ,
         // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
-        String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+        String closeNonUpgraded = (String) (finalVc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
         if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close, CLOSE_NON_UPGRADED_STREAMS");
@@ -564,11 +566,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
 
                 currentBuffer = null;
-                vc.getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, newBuffer);
+                finalVc.getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, newBuffer);
             }
 
             if(deferCloseNonUpgrade()){
-                vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "DEFERRED_CLOSE_NON_UPGRADED_STREAMS");
+                finalVc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "DEFERRED_CLOSE_NON_UPGRADED_STREAMS");
                 if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "close, deferring CLOSE_NON_UPGRADED_STREAMS until upgrade ready");
                 }
@@ -581,7 +583,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "close, Error closing in streams" + errorinClosing);
             }
 
-            vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
+            finalVc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close EXIT");
@@ -590,7 +592,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        String upgradedListener = (String) (this.vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
+        String upgradedListener = (String) (finalVc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "close, upgradedListener ->" + upgradedListener);
         }
@@ -604,11 +606,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 // The first one will come in, check this new variable, then set it to false. The false will cause
                 // the other close to not happen.
 
-                String fromWebConnection = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));// Add a new variable here
+                String fromWebConnection = (String) (finalVc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));// Add a new variable here
 
                 if (fromWebConnection != null && fromWebConnection.equalsIgnoreCase("true")) {
                     closeCalledFromWebConnection = true;
-                    this.vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");// Add a new variable here
+                    finalVc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");// Add a new variable here
                 }
             }
 
@@ -626,7 +628,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         } else {
             if (upgradedListener == null) {
-                String toClose = (String) (this.vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
+                String toClose = (String) (finalVc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
                 if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
                     WebConnCanCloseSync.lock();
                     try {
@@ -651,7 +653,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (usingNetty) {
-            nettyClose(this.vc, e);
+            nettyClose(finalVc, e);
         }
 
         // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.

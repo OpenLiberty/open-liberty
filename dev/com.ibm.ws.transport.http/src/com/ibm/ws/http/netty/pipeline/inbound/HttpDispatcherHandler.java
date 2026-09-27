@@ -53,6 +53,8 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -84,10 +86,10 @@ import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.Http2Stream;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
-import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
@@ -703,9 +705,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             sendErrorMessage(cause);
             return;
         } else if (cause instanceof TimeoutException) {
-            Tr.debug(tc, "Idle timeout; closing channel");
-            if (cause instanceof ReadTimeoutException)
-                sendErrorMessage(cause);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Idle timeout; closing channel");
+            }
+            if (cause instanceof ReadTimeoutException
+                && ProtocolState.current(ctx.channel()) != NettyHttpConstants.ProtocolName.HTTP2
+                && !ReadFlowHandler.state(ctx).isResponseInFlight()) {
+                sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                return;
+            }
         } else if(cause instanceof TooLongFrameException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
@@ -737,13 +745,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
     }
 
-    private void sendErrorMessage(StatusCodes code, Throwable cause) {
+    private ChannelFuture sendErrorMessage(StatusCodes code, Throwable cause) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Sending a " + code +  " for throwable [" + cause + "]");
         }
         loadErrorPage(code.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
-        this.context.writeAndFlush(errorResponse);
+        return this.context.writeAndFlush(errorResponse);
     }
 
     private void sendErrorMessage(Throwable cause) {
