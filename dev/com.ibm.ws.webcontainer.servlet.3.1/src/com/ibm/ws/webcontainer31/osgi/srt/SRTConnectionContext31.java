@@ -158,6 +158,9 @@ public class SRTConnectionContext31 extends SRTConnectionContext
                             // Do NOT rethrow – treat as benign
                         } else {
                             // Anything else is still unexpected
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "finishConnection: unexpected IOException while finishing upgrade response", ioe);
+                            }
                             throw ioe;
                         }
                     }

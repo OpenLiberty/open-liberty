@@ -848,7 +848,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     public void setObserver(HttpOutputStreamObserver obs) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "obs  ->" + this.obs);
+            Tr.debug(tc, "obs  ->" + obs);
         }
         this.obs = obs;
         
