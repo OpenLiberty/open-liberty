@@ -248,7 +248,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
         this.nettyContext = ctx;
         this.isc = new HttpInboundServiceContextImpl(ctx, nettyVc, config, requestMetadata);
-        //this.isc.setHttpConfig(config);
         this.isc.setStartTime();
 
         this.nettyHeaderOnly = new DefaultFullHttpRequest(headers.protocolVersion(), headers.method(), headers.uri(), Unpooled.EMPTY_BUFFER, headers.headers(), EmptyHttpHeaders.INSTANCE);
@@ -268,7 +267,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         if (!(hasBody || expect100)) {
             this.isc.setBodyComplete();
-            //ReadFlowHandler.markRequestConsumed(ctx);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "initStreaming: request has no body; wait for LastHttpContent");
             }

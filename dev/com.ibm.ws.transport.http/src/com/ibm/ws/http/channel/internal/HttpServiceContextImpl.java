@@ -3454,9 +3454,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 sendNettyFinalContent();
             }
         }
-        // if (isNettyUpgrade101()) {
-        //     triggerNettyUpgradeEvent();
-        // }
         setMessageSent();
     }
 
@@ -6634,15 +6631,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         //TODO: discuss what if we want to set a task to timeout installing the upgrade handler
         // and log the promise as failed
-        // final ScheduledFuture<?> upgradeInstallTimeout = nettyContext.executor().schedule(() -> {
-        //     if(!promise.isDone()){
-        //         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //             Tr.debug(tc, "triggerNettyUpgradeEvent: timed out waiting for upgrade handler installation");
-        //         }
-        //         promise.completeExceptionally(new IOException("Upgrade failed: Upgrade handler not installed"));
-        //     }
-        // }, 1000, TimeUnit.MILLISECONDS);
-        // promise.whenComplete((v, t) -> upgradeInstallTimeout.cancel(false));
     }
     
     /**

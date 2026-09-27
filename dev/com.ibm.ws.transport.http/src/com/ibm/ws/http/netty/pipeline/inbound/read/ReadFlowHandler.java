@@ -358,10 +358,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 state.setResponseInFlight(true);
 
                 // TODO check if !(message instanceof LastHttpContent) is still valid for selfContained
-                // // No body; see if we need another read
-                // if(noBodyExpected && !(message instanceof LastHttpContent)){
-                //     // Capture exchange id so a stale callback from a previous
-                //     // exchange (e.g. reused promise) is ignored.
                 boolean responseKeepAlive = HttpUtil.isKeepAlive(response);
                 state.setKeepAliveAllowed(responseKeepAlive && !state.isQuiescing());
 

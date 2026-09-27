@@ -150,24 +150,9 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             resetRead(context);
         }
 
-        //else{
-
-        //     switch (phase) {
-        //         case TCP_IDLE:
-        //             arm(context, Phase.READ);
-        //             break;
-        //         case READ:
-        //             resetRead(context);
-        //             break;
-        //         default:
-        //     }
-        // }
-
         super.channelRead(context, message);
 
         if (isRequestEnd(message)) {
-          //  cancel();
-            
             if (phase == Phase.READ){
                 cancel();
             }
@@ -250,7 +235,6 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             case PERSIST:
                 context.fireExceptionCaught(new PersistTimeoutException(persistTimeout, LEGACY_UNIT,
                                                                        context.channel().localAddress(), context.channel().remoteAddress()));
-                //context.close();
                 break;
             case H2_IDLE:
                 context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout, LEGACY_UNIT,

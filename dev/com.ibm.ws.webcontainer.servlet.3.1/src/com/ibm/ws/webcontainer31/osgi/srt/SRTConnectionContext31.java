@@ -194,18 +194,7 @@ public class SRTConnectionContext31 extends SRTConnectionContext
                 catch (Throwable th)
                 {
                     FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
-                    // System.out.println("DEBUG: servlet throwable caught, store fatal flag...");
-                    // IResponse31Impl irImpl = (IResponse31Impl) _response.getIResponse();
-                    // vc = irImpl.getVC();
-                    // try {
-                    //     if (vc != null) {
-                    //         vc.getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "true");
-                    //         System.out.println("DEBUG: servlet stored flag in vc");
-                    //     }
-                    // } catch (Throwable ignore) {
-                    //     // best-effort only; don't let this mask the original error
-                    // }
-                }               
+                }
 
                 try
                 {

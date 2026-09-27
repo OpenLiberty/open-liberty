@@ -160,7 +160,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         // If we're logically upgraded but the upgrade handler is not yet in place,
         // DO NOT touch HttpInputStreamImpl. Just report "no data" for now.
         if (logicalUpg && !handlerReady) {
-            //return 0L;
 
             final int effectiveTimeout = normalizeTimeout(timeout);
             if(effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT){
@@ -526,22 +525,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         if(h != null) return h;
 
         // //TODO lazy initialization due to wsoc not triggering upgrade event. Find missing location to throw event .
-        // if(isWsocUpgrade()){
-        //     Tr.debug(tc, "Installing upgrade handler for WSOC upgrade");
-        //     h = new NettyServletUpgradeHandler(nettyChannel);
-        //     h.setTCPReadContext(this);
-        //     h.setVC(vc);
-        //     if(nettyChannel.pipeline().get("ServletUpgradeHandler") == null){
-        //         nettyChannel.pipeline().addLast("ServletUpgradeHandler", h);
-        //     }
-        //     return h;
-        //}
-        //if (h == null) {
 
         // Dispatcher must install it; reaching here means the upgrade signal was not received.
         throw new IllegalStateException("Channel marked upgraded but no NettyServletUpgradeHandler in pipeline");
-       // }
-        //return h;
     }
 
     private boolean isWsocUpgrade(){
