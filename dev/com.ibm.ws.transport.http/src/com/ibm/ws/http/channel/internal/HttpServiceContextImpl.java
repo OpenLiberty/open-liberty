@@ -2390,7 +2390,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     final protected void sendHeaders(HttpResponse response) throws IOException {
         if (headersSent()) {
-            Tr.event(tc, "Invalid call to sendHeaders after already sent");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Invalid call to sendHeaders after already sent");
+            }
             return;
         }
 
@@ -2657,7 +2659,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         String responseMimeTypeWildCard = null;
         if (responseMimeType != null) {
             responseMimeTypeWildCard = responseMimeType.split("/")[0] + "/*";
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "Response MimeType wildcard set as: " + responseMimeTypeWildCard);
             }
         }
@@ -2665,14 +2667,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         //Don't compress if less than 2048 bytes
         long contentLength = getResponse().getContentLength();
         if (contentLength != HeaderStorage.NOTSET && contentLength < 2048) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "Response body CL is less than 2048 bytes, do not attempt to compress.");
             }
             isCompliant = false;
         }
 
         else if (responseMimeType == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "No content type defined for this response, do not attempt to compress.");
             }
             isCompliant = false;
@@ -2682,7 +2684,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         //compressed.
         else if (this.getHttpConfig().getExcludedCompressionContentTypes().contains(responseMimeType) ||
                  this.getHttpConfig().getExcludedCompressionContentTypes().contains(responseMimeTypeWildCard)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "The Content-Type: " + responseMimeType + " is configured to be excluded from compression.");
             }
             isCompliant = false;
@@ -2692,7 +2694,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         //compressed. Check for wildcard too. By default, this is text-only content-types
         else if (!this.getHttpConfig().getCompressionContentTypes().contains(responseMimeType) &&
                  !this.getHttpConfig().getCompressionContentTypes().contains(responseMimeTypeWildCard)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "The Content-Type: " + getResponse().getMIMEType() + " is not configured as a compressable content type");
             }
             isCompliant = false;
@@ -3085,8 +3087,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             prepareNettyHeadersToSend();
             if (isNettyHttp2Request()) {
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
-                if (Objects.isNull(handler)) {
-                } else if (handler.connection().remote().allowPushTo()) {
+                if (handler != null && handler.connection().remote().allowPushTo()) {
                     for (HeaderField header : msg.getAllHeaders()) {
                         if (header.getName().equalsIgnoreCase("link") &&
                             header.asString().toLowerCase().contains("rel=preload") &&
@@ -3133,7 +3134,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @param uri
      */
     private void handleNettyPreload(String uri) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleNettyPreload(): Found preload for URI " + uri);
         }
         HttpToHttp2ConnectionHandler handler = this.nettyContext.pipeline().get(HttpToHttp2ConnectionHandler.class);
@@ -3157,7 +3158,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             headers.authority(auth);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleNettyPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
             Tr.debug(tc, "handleNettyPreload(): Sending push promise frame for currentStream " + currentStreamId + " on promisedStream " + nextPromisedStreamId + " with headers "
                          + headers);
@@ -3413,8 +3414,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (isNettyHttp2Request()) {
 
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
-                if (Objects.isNull(handler)) {
-                } else if (handler.connection().remote().allowPushTo()) {
+                if (handler != null && handler.connection().remote().allowPushTo()) {
                     for (HeaderField header : msg.getAllHeaders()) {
                         if (header.getName().equalsIgnoreCase("link") &&
                             header.asString().toLowerCase().contains("rel=preload") &&
@@ -3938,30 +3938,37 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
                     }
 
-                    Tr.debug(tc,"UPGRADE LOG -> sendNettyHeaders detected 101, attaching event to listener");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,"sendNettyHeaders detected 101, attaching event to listener");
+                    }
 
                     future.addListener(f -> {
                         if(f.isSuccess()){
-                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush success, firing event. Autoread = " 
-                                + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc,"101 writeAndFlush success, firing event. Autoread = "
+                                    + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
+                            }
                             
                             nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
                         } else {
                             if (isWebSocketUpgrade) {
                                 nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
                             }
-                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush failed: " + String.valueOf(f.cause()));
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc,"101 writeAndFlush failed: " + String.valueOf(f.cause()));
+                            }
                         }
                         
                     });
                 
                 } else {
-                    Tr.debug(tc," UPGRADE LOG -> status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,"status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
+                    }
                 }
             }
         });
 
-        
     }
 
     /**
@@ -6462,7 +6469,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
             }
 

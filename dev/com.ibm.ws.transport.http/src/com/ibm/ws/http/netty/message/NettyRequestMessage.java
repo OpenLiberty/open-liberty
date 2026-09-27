@@ -857,7 +857,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
         headers.authority(auth);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "pushNewRequest(): Method is GET, authority is " + auth + ", scheme is " + scheme);
         }
 

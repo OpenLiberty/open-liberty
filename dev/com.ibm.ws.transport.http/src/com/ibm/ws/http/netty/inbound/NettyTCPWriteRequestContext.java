@@ -51,7 +51,6 @@ import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.netty.handler.stream.ChunkedInput;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 
-
 //auto read design, will organize later
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import java.util.concurrent.CompletableFuture;
@@ -301,8 +300,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     continue;
                 }
 
-                
-
                 if (isH2) {
                     
                     writtenBytes += buffer.remaining();
@@ -344,7 +341,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             });
             awaitChannelFuture(writePromise, "Flush operation failed.");
 
-
         } catch (InterruptedException e) {
             // Restore interrupt status
             Thread.currentThread().interrupt();
@@ -353,7 +349,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
         return writtenBytes;
     }
-
 
     @Override
     public VirtualConnection write(long numBytes, TCPWriteCompletedCallback callback, boolean forceQueue, int timeout) {
@@ -588,7 +583,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     }
 
     private void fireUpgradeCommitted(){
-        Tr.debug(tc,"[NettyTCPWriteRequestContext.fireUpgradeCommitted");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,"Firing upgrade committed event");
+        }
         Boolean fired = nettyChannel.attr(UPGRADE_COMMIT_EVENT_FIRED).get();
         if(Boolean.TRUE.equals(fired)){
             return;

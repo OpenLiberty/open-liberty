@@ -48,7 +48,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
     public HttpInputStreamEE7(HttpInboundServiceContext context) {
         super(context);
     }
-
     // public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
     //     super(context, request);
     // }
@@ -253,7 +252,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 }
                 return false;
             }
-
 
             if (available() <= 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

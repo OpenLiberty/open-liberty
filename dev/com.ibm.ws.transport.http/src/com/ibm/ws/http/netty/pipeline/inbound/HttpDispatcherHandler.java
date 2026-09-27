@@ -130,12 +130,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     // NEW: per-request marker to avoid double-enqueue when FullHttpRequest is used
     private boolean aggregatedBodyEnqueued;
 
-    private enum CommitTrigger {
-        FLUSH_OBSERVER, EARLY_BYTES, RETRY_TASK
-    }
-
-    private final AtomicReference<CommitTrigger> commitTrigger = new AtomicReference<>(null);
-
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
 
     public HttpDispatcherHandler(NettyHttpChannelConfig config) {
@@ -143,7 +137,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         this.config = Objects.requireNonNull(config);
         this.errorResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
     }
-
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
@@ -157,15 +150,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
         if (evt instanceof Upgrade101CommittedEvent) {
-            Tr.debug(tc,"[UPGRADE-SYSOUT] >>> Upgrade101CommittedEvent RECEIVED <<< autoRead(before)="
-                + ctx.channel().config().isAutoRead()
-                + " upgradingNow=" + upgradingNow
-                + " upgradeCommitted=" + upgradeCommitted.get()
-                + " commitTrigger=" + commitTrigger.get()
-                + " pipeline(before)=" + ctx.pipeline().names());
-            commitTrigger.compareAndSet(null, CommitTrigger.FLUSH_OBSERVER);
             upgradingNow = true;
-                onUpgradeCommitted(ctx);
+            onUpgradeCommitted(ctx);
             return;
         }
 
@@ -223,7 +209,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 final ByteBuf snapshot = buf.retainedSlice(buf.readerIndex(), buf.readableBytes());
                 earlyUpgradeBytes.add(snapshot);
 
-                commitTrigger.compareAndSet(null, CommitTrigger.EARLY_BYTES);
                 if (commitScheduled.compareAndSet(false, true)) {
                     ctx.executor().execute(() -> {
                         if (upgradingNow && !upgradeCommitted.get())
@@ -285,7 +270,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     if (content.isReadable()) {
                         content.retain();
                         earlyUpgradeBytes.add(content);
-                        Tr.debug(tc, "HTTP: parked aggregated upgrade body bytes=" + content.readableBytes());
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "HTTP: parked aggregated upgrade body bytes=" + content.readableBytes());
+                        }
                     }
                 }
 
@@ -397,7 +384,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         commitScheduled.set(false);
         upgradeCommitted.set(false);
-        commitTrigger.set(null);
 
         // Verify if the request expects 100 continue
         // At this point, the validation of the message size is already done by the aggregator
@@ -436,12 +422,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     v.getStateMap().put(NettyHttpConstants.VC_HTTP2_STREAM_ID, streamId);
                 }
             }
-            else{
-                //System.out.println("DEBUG: vc was null, not expected");
-            }
         } catch (Throwable t) {
             // be defensive; don't let VC issues kill the request setup
-            Tr.debug(tc, "Failed to attach HttpInputStream to VC state", t);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to attach HttpInputStream to VC state", t);
+            }
         }
         //if H2
 
@@ -450,17 +435,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         } else {
             ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(body);
         }
-        
 
         if (upg && !requestMetadata.isHttp2()) {
-            //upgradingNow = true;
             if(commitScheduled.compareAndSet(false, true)){
                HttpDispatcher.getExecutorService().execute(() -> requestLink.ready()); 
             }
             return;
         }
 
-        
         final String contentEncoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
         body.nettyConfigureStreaming(queue, ctx, contentEncoding, cl, chunked);
 
@@ -511,13 +493,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private void onUpgradeCommitted(ChannelHandlerContext ctx) {
-        Tr.debug(tc,"[UPGRADE-SYSOUT] onUpgradeCommitted ENTER autoRead(before)="
-            + ctx.channel().config().isAutoRead()
-            + " upgradingNow=" + upgradingNow
-            + " upgradeCommitted(before)=" + upgradeCommitted.get()
-            + " commitTrigger=" + commitTrigger.get()
-            + " pipeline(before)=" + ctx.pipeline().names());
-        
         if (!ctx.executor().inEventLoop()) {
             ctx.executor().execute(() -> onUpgradeCommitted(ctx));
             return;
@@ -569,7 +544,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                             upgrade.channelRead(upgCtx, d.retain());
                         }
                     } catch (Exception e) {
-                        Tr.debug(tc, "deliver early HttpContent failed: " + e);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "deliver early HttpContent failed: " + e);
+                        }
                     } finally {
                         early.release();
                     }
@@ -582,7 +559,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                             upgrade.channelRead(upgCtx, raw.retain());
                         }
                     } catch (Exception e) {
-                        Tr.debug(tc, "deliver early raw bytes failed: " + e);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "deliver early raw bytes failed: " + e);
+                        }
                     } finally {
                         raw.release();
                     }
@@ -609,17 +588,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             firePendingAsyncRead(ctx);
 
             if (ProtocolState.current(ctx.channel()) == NettyHttpConstants.ProtocolName.WEBSOCKET) {
-                if (!ctx.channel().config().isAutoRead()){
-                    Tr.debug(tc, "[UPGRADE-SYSOUT]: enable auto read for websoc");
+                if (!ctx.channel().config().isAutoRead()) {
                     ctx.channel().config().setAutoRead(true);
                 }
-
-            }
-            else {
-                if(ctx.channel().config().isAutoRead()){
-                 Tr.debug(tc, "[UPGRADE-SYSOUT] onupgradeCommitted, ensuring autoread disabled");
-                 ctx.channel().config().setAutoRead(false);
-             }
+            } else {
+                if (ctx.channel().config().isAutoRead()) {
+                    ctx.channel().config().setAutoRead(false);
+                }
             }
 
         } finally{
@@ -795,7 +770,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             try {
                 body = provider.accessPage(host, local.getPort(), null, null);
             } catch (Throwable t) {
-                Tr.debug(tc, "Exception while calling into provider, t=" + t);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception while calling into provider, t=" + t);
+                }
             }
             if (body != null) {
                 errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
@@ -1020,7 +997,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                         if (u != null)
                             flushParkedToUpgrade(u);
                     } catch (Exception ignore) {
-                        //System.out.println("Exception in flushedParkToUpgrade: " + e);
+                        // Preserve best-effort delivery of bytes parked before the pipeline switch.
                     } finally {
                         postFlipDrainerInstalled.set(false);
                     }
@@ -1042,13 +1019,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private void setUpgradeReadyPromise(ChannelHandlerContext context){
-        Tr.debug(tc,"UPGRADE LOG -> setUpgradeReadyPromise");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,"setUpgradeReadyPromise");
+        }
         CompletableFuture<Void> promise = context.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
         if(promise == null){
             context.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(new CompletableFuture<>());
         }
     }
-
 
     private void firePendingAsyncRead(ChannelHandlerContext ctx) {
         AsyncReadDispatchState.forChannel(ctx.channel()).signal();

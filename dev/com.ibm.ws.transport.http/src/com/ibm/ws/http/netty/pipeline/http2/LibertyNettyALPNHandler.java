@@ -67,7 +67,6 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             // if(ctx.pipeline().get(ReadFlowHandler.class) == null) {
             //     ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, ReadFlowHandler.NAME, new ReadFlowHandler());
             // }
-
             if (ctx.pipeline().get(TimeoutHandler.class) == null) {
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
 

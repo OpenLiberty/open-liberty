@@ -153,8 +153,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         } else if(phase == Phase.READ){
             resetRead(context);
         }
-        
-        
+
         //else{
 
         //     switch (phase) {
@@ -369,7 +368,6 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         if(context == null){
             return;
         }
-
 
         handler.armPersistIfNeeded(context);
     }

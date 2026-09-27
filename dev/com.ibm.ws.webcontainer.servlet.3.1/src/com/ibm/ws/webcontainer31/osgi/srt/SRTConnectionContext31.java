@@ -40,7 +40,6 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 
-
 public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext
 {
 
@@ -58,7 +57,6 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
     protected SRTServletResponse newSRTServletResponse() {
         return new SRTServletResponse31(this);
     }
-
 
     @Override
     public void finishConnection()
@@ -110,7 +108,6 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                         connection.setVirtualConnection(vc);
 
                         doInit = true;                            
-
 
                     }
                     else{
@@ -246,8 +243,6 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                     dispatchContext.getWebApp().logError("Error while finishing the connection", th);
                 }
             }
-
-
 
             dispatchContextFinish();
         }

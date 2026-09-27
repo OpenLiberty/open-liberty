@@ -2644,7 +2644,9 @@ public class HttpChannelConfig {
      */
     private int minLimit(int input, int min) {
         if (input < min) {
-            Tr.debug(tc, "Config: " + input + " too small.");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Config: " + input + " too small.");
+            }
 
             return min;
         }
@@ -2661,7 +2663,9 @@ public class HttpChannelConfig {
      */
     private long minLimit(long input, long min) {
         if (input < min) {
-            Tr.debug(tc, "Config: " + input + " too small.");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Config: " + input + " too small.");
+            }
 
             return min;
         }

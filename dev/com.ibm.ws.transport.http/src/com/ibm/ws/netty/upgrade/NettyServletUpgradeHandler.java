@@ -82,7 +82,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     private final AtomicBoolean readPending = new AtomicBoolean(false);
 
-
     public NettyServletUpgradeHandler(Channel channel) {
         this.channel = channel;
         this.queue = new CoalescingBufferQueue(channel);        
@@ -130,8 +129,10 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
             UpgradeReadOperation operation = asyncRead.get();
             if (operation != null && operation.callback != null && queuedBytes.get() >= operation.minimumBytes) {
-                Tr.debug(tc, "[UPGRADE-ASYNC] async threshold met; firing callback. bytes=" + queuedBytes.get() +
-                    " minBytesToRead=" + operation.minimumBytes);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "async threshold met; firing callback. bytes=" + queuedBytes.get() +
+                        " minBytesToRead=" + operation.minimumBytes);
+                }
                 fireAsyncReadComplete(operation);
             } else if (operation == null && queuedBytes.get() > 0) {
                 signalReadReady();
@@ -204,15 +205,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     private void requestRead(){
-        Tr.debug(tc, "[UPGRADE-SYSOUT] NettyServletUpgradeHandler.requestRead autoRead="
-            + channel.config().isAutoRead()
-            + " active=" + channel.isActive()
-            + " peerClosed=" + peerClosed.get()
-            + " readPending=" + readPending.get()
-            + " waitingThreads=" + waitingThreads.get()
-            + " isReadingAsync=" + isAsyncReadArmed()
-            + " minBytesToRead=" + minimumBytesToRead()
-            + " queuedBytes=" + queuedBytes.get());
         if(peerClosed.get()){
             return;
         }
@@ -301,7 +293,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                     copied += can;
                 }
 
-            
                 if (copied > 0) {
                     queuedBytes.addAndGet(-copied);
                 }
@@ -411,7 +402,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
         ByteBuf out = (promise == null) ? queue.remove(size, new VoidChannelPromise(channel, true)) : queue.remove(size, promise);
 
-
         return out;
     }
 
@@ -436,11 +426,13 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             return;
         }
 
-        Tr.debug(tc, "[UPGRADE-ASYNC] queueAsyncRead : " +
-            "minBytesToRead = " + operation.minimumBytes + ", " +
-            "queuedBytes = " + queuedBytes.get() + ", " +
-            "autoRead = " + channel.config().isAutoRead() + ", " +
-            "readPending = " + readPending.get() );
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "queueAsyncRead : " +
+                "minBytesToRead = " + operation.minimumBytes + ", " +
+                "queuedBytes = " + queuedBytes.get() + ", " +
+                "autoRead = " + channel.config().isAutoRead() + ", " +
+                "readPending = " + readPending.get() );
+        }
 
         if (timeoutMillis > 0) {
             ScheduledFuture<?> timeout = channel.eventLoop().schedule(
@@ -519,11 +511,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         if (executor != null) {
             AsyncReadDispatchState.forChannel(channel).submitReady(callbackTask, null);
         }
-    }
-
-    private int minimumBytesToRead() {
-        UpgradeReadOperation operation = asyncRead.get();
-        return operation == null ? 1 : operation.minimumBytes;
     }
 
     public boolean peerClosedConnection() {

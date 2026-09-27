@@ -186,8 +186,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         return handler;
     }
 
-   
-
     /**
      * Utility method for building and H2C pipeline
      *
@@ -276,9 +274,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
 
                 establishHttp1Protocol(ctx, false);
-      
 
-                Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
+                }
 
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
 
@@ -362,8 +361,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HttpDispatcherHandler.NAME, RemoteIpHandler.NAME, new RemoteIpHandler(httpConfig));
         }
-        
-        
+
     }
 
     public static class HttpPipelineBuilder {
@@ -371,7 +369,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         private final NettyChain chain;
         private final EnumMap<ConfigElement, Map<String, Object>> configOptions = new EnumMap<>(ConfigElement.class);
         private final Set<ConfigElement> activeConfigs = EnumSet.noneOf(ConfigElement.class);
-
 
         public HttpPipelineBuilder(NettyChain chain) {
             this.chain = Objects.requireNonNull(chain, "Netty chain cannot be null");
@@ -426,7 +423,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             }
 
             NettyHttpChannelConfig httpConfig = configBuilder.build();
-
 
             return new HttpPipelineInitializer(chain, httpConfig, configOptions);
         }

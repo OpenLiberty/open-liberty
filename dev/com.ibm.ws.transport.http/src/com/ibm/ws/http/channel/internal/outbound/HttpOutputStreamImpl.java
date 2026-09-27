@@ -502,23 +502,27 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         } else {
             // response headers already committed (written)
             // or response has been freed on previous error
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Response headers already committed or response cleared; " + this.isc);
             }
             return;
         }
         try {
             final boolean is101 = isUpgrade101();
-            Tr.debug(tc, "flushHeaders: willFireObserver=" + (obs != null && !this.WCheadersWritten)
-                         + " WCheadersWritten=" + this.WCheadersWritten);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushHeaders: willFireObserver=" + (obs != null && !this.WCheadersWritten)
+                             + " WCheadersWritten=" + this.WCheadersWritten);
+                Tr.debug(tc, "flushHeaders -> isUpgrade101: " + isUpgrade101() );
+            }
 
-            Tr.debug(tc, "flushHeaders -> isUpgrade101: " + isUpgrade101() );
-
-            
             this.isc.sendResponseHeaders();
-            Tr.debug(tc, "HttpOutputStreamImpl, checking isUpgrade101: " + is101);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HttpOutputStreamImpl, checking isUpgrade101: " + is101);
+            }
             if (is101) {
-                Tr.debug(tc,"is101 true; calling awaitUpgradedPipelineInstalled");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,"is101 true; calling awaitUpgradedPipelineInstalled");
+                }
                 // Now tell the dispatcher to flip and wait briefly so the upgrade handler is in place.
                 awaitUpgradePipelineInstalled(); // fires UPGRADE_101_COMMITTED_EVENT and waits up to ~750ms
             }
@@ -597,7 +601,9 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
 
-                    Tr.debug(tc,"HttpOutputStreamImpl flushBuffers(); is 101: " + is101);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,"HttpOutputStreamImpl flushBuffers(); is 101: " + is101);
+                    }
                     if (is101) {
                         this.isc.finishResponseMessage(null); // <— CHANGED: don’t skip for 101
                         awaitUpgradePipelineInstalled();
@@ -659,7 +665,9 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             Throwable th = ioe.getCause();
             if (th instanceof FlowControlException || th instanceof StreamClosedException) {
                 // http/2 stream write failed - we don't want to pass this back up to FFDC
-                Tr.debug(tc, "HTTP/2 stream could not write; setting error on this output stream");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HTTP/2 stream could not write; setting error on this output stream");
+                }
                 return;
             }
             throw ioe;
@@ -940,7 +948,9 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
         }
 
-        Tr.debug(tc,"awaitUpgradePipelineInstalled() should fire 101 event now");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,"awaitUpgradePipelineInstalled() should fire 101 event now");
+        }
 
         //TODO -> find a way to make it thrown upon writeAndFlush of 101
         ctx.executor().execute(() ->
@@ -950,9 +960,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         try {
             promise.get(750, TimeUnit.MILLISECONDS); 
         } catch (TimeoutException te) {
-            Tr.debug(tc, "awaitUpgradePipelineInstalled: timed out waiting for pipeline switch; proceeding");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "awaitUpgradePipelineInstalled: timed out waiting for pipeline switch; proceeding");
+            }
         } catch (Exception e) {
-            Tr.debug(tc, "awaitUpgradePipelineInstalled: interrupted/failure; proceeding " + e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "awaitUpgradePipelineInstalled: interrupted/failure; proceeding " + e);
+            }
             Thread.currentThread().interrupt();
         }
     }

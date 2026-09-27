@@ -105,7 +105,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<HttpRequest> {
             context.channel().attr(NettyHttpConstants.FORWARDED_BY_KEY).set(forwardedBy.toArray(new String[forwardedBy.size()]));
             context.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).set(forwardedFor.toArray(new String[forwardedFor.size()]));
 
-            Tr.debug(tc, "channelRead0", this);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "channelRead0", this);
+            }
 
         }
 
@@ -266,7 +268,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<HttpRequest> {
                 nodeName = extract;
             }
         }
-        Tr.debug(tc, "Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
+        }
         list.add(nodeName);
     }
 
@@ -385,7 +389,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<HttpRequest> {
             }
         }
 
-        Tr.debug(tc, "ValidateProto value is valid: " + valid);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "ValidateProto value is valid: " + valid);
+        }
         Tr.exit(tc, "validateProto");
         return valid;
 

@@ -66,8 +66,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.openliberty.http.netty.channel.ReadOnlySocket;
 import io.openliberty.http.options.TcpOption;
 
-
-
 /**
  *
  */
@@ -157,7 +155,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         return in;
     }
 
-
     @Override
     public long read(long numBytes, int timeout) throws IOException {
         if(nettyChannel.eventLoop().inEventLoop()){
@@ -165,7 +162,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         if(aborted) throw new IOException("I/O Aborted");
-
 
         if (!nettyChannel.isActive()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -256,7 +252,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         final int effectiveTimeout = normalizeTimeout(timeout);
         final long deadlineNs = (effectiveTimeout == NO_TIMEOUT) ? Long.MAX_VALUE : System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(effectiveTimeout);
 
-        
         requestRead();
 
         final byte[] scratch = new byte[8192];
@@ -319,11 +314,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         final long need = Math.max(1L, numBytes);
         final long deadlineNs = (t == NO_TIMEOUT) ? Long.MAX_VALUE : System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(t);
 
-         
-      
             requestRead();
 
-    
             if (h.containsQueuedData() && h.queuedDataSize() >= need) {
                 long copied = h.setToBuffer();
                 return copied;
@@ -344,7 +336,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
                 if (h.containsQueuedData() && h.queuedDataSize() >= need) {
                     long copied = h.setToBuffer();
-                    Tr.debug(tc, "(Fast path) UPG sync read: need=" + need + " copied=" + copied + " queuedAfter=" + h.queuedDataSize());
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "(Fast path) UPG sync read: need=" + need + " copied=" + copied + " queuedAfter=" + h.queuedDataSize());
+                    }
                     return copied;
                 }
 
@@ -378,7 +372,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         if (logicalUpg && handlerReady) {
 
-            
             if (effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT) {
                 ensureBuffersOrJIT(numBytes, true);
             }
@@ -387,7 +380,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         if (logicalUpg && !handlerReady) {
             installAsyncHttpReadCallbacks(numBytes, callback, effectiveTimeout);
-
 
             if (effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT) {
                 awaitUpgradePipeline(effectiveTimeout);
@@ -565,9 +557,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         //}
         //if (h == null) {
 
-            //Dispatcher must install it, this is a bad state meaning we did not get upgrade signal in 
-            //the dispatcher.
-            throw new IllegalStateException("Channel marked upgraded but no NettyServletUpgradeHandler in pipeline");
+        // Dispatcher must install it; reaching here means the upgrade signal was not received.
+        throw new IllegalStateException("Channel marked upgraded but no NettyServletUpgradeHandler in pipeline");
        // }
         //return h;
     }
@@ -603,8 +594,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         final int n = in.read(scratch, 0, toRead);
 
         if (n <= 0) return 0L;
-
-
 
         int off = 0;
         ByteBuffer bb;
@@ -699,14 +688,18 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private void requestRead(){
         ChannelHandlerContext context = readFlowContext();
         if (context != null){
-            Tr.debug(tc, "[READGATE] requestRead via ReadFlowHandler");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "requestRead via ReadFlowHandler");
+            }
             ReadFlowHandler.requestRead(context);
             return;
         }
 
         NettyServletUpgradeHandler upgradeHandler = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
         if(upgradeHandler != null){
-            Tr.debug(tc, "[READGATE] requestRead via NettyServletUpgradeHandler");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "requestRead via NettyServletUpgradeHandler");
+            }
             upgradeHandler.requestReadIfNeeded();
             return;
         }
@@ -725,7 +718,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             return true;
         }
         if(nettyChannel.eventLoop().inEventLoop()){
-            Tr.debug(tc," CRITICAL ERROR: waiting on upgrade on netty thread");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc,"Cannot wait for the upgrade pipeline on the Netty event loop");
+            }
             return false;
         }
 
