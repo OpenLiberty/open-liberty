@@ -530,15 +530,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         throw new IllegalStateException("Channel marked upgraded but no NettyServletUpgradeHandler in pipeline");
     }
 
-    private boolean isWsocUpgrade(){
-        if(vc == null){
-            return false;
-        }
-        Object upgradeConn = vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION);
-        Object webConn = vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
-        return "true".equalsIgnoreCase(String.valueOf(upgradeConn)) && webConn != null;
-    }
-
     private long nonUpgradedImmediateDrain() throws IOException {
         requestRead();
 

@@ -341,7 +341,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
     }
 
-    //TODO -> Utils candidate
     private static boolean isUpgrade(HttpRequest req) {
         final CharSequence conn = req.headers().get(HttpHeaderNames.CONNECTION);
         final CharSequence upg = req.headers().get(HttpHeaderNames.UPGRADE);
@@ -890,7 +889,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         throw new RuntimeException(failure);
     }
 
-    //TODO -> Pipeline utils candidate
     private static void removeIfPresent(ChannelPipeline pipeline, Class<? extends ChannelHandler> handlerType) {
         try {
             ChannelHandler h = pipeline.get(handlerType);

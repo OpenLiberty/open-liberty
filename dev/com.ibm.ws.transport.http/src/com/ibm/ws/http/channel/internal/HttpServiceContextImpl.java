@@ -131,7 +131,6 @@ import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
-import io.netty.util.AsciiString;
 import io.openliberty.http.constants.HttpGenerics;
 
 /**
@@ -6590,73 +6589,5 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "getGRPCEndStream(): returning: " + ret);
         }
         return ret;
-    }
-
-    private boolean isNettyUpgrade101() {
-        if (nettyResponse == null || nettyContext == null) {
-            return false;
-        }
-
-        if (!nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
-            return false;
-        }
-
-        // Check Connection: Upgrade and Upgrade: <token>
-        final CharSequence conn = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
-        final CharSequence upg = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
-        if (conn == null || upg == null || upg.length() == 0) {
-            return false;
-        }
-
-        return AsciiString.containsIgnoreCase(conn, "upgrade");
-    }
-
-    private void triggerNettyUpgradeEvent() {
-        if (nettyContext == null) {
-            return;
-        }
-        CompletableFuture<Void> promise = getUpgradeReadyPromise();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "triggerNettyUpgradeEvent: firing 101 Event");
-        }
-
-        if(nettyContext.executor().inEventLoop()) {
-            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
-        } else {
-            nettyContext.executor().execute(() ->
-                nettyContext.pipeline().fireUserEventTriggered(
-                    HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
-        }
-
-        //TODO: discuss what if we want to set a task to timeout installing the upgrade handler
-        // and log the promise as failed
-    }
-    
-    /**
-     * Prepares the channel upgrade promise. This promise is completed by the 
-     * {@link HttpDispatcherHandler} after the pipeline handlers are changed to handle 
-     * the upgraded connection.
-     * 
-     * @return the channel upgrade promise
-     */
-    private CompletableFuture<Void> getUpgradeReadyPromise() {
-        CompletableFuture<Void> promise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-        if (promise != null) {
-            return promise;
-        }
-
-        promise = new CompletableFuture<>();
-        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
-        
-        //If channel closes before the upgrade handler is installed, fail this promise
-        final CompletableFuture<Void> finalPromise = promise;
-        nettyContext.channel().closeFuture().addListener(f -> {
-            if (!finalPromise.isDone()) {
-                finalPromise.completeExceptionally(new IllegalStateException("Channel closed before upgrade handler was installed"));
-            }
-        });
-
-        return promise;
     }
 }

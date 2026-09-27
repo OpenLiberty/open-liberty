@@ -77,7 +77,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     private String streamID = "-1";
     private boolean http10Request;
 
-    //autoread design, will cleanup later
     private static final AttributeKey<Boolean> UPGRADE_COMMIT_EVENT_FIRED = 
                 AttributeKey.valueOf("upgradeCommitFired");
 

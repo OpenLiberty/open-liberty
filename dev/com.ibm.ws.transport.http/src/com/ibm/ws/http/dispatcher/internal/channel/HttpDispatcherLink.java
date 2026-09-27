@@ -749,9 +749,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         try {
             ((NettyRequestMessage)isc.getRequest()).verifyRequest();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                String ae = isc.getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString();
-            }
         } catch (IllegalArgumentException iae) {
             //no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

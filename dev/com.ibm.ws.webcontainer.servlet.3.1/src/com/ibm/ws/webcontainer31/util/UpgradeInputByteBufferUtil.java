@@ -202,7 +202,7 @@ public class UpgradeInputByteBufferUtil {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                         Tr.debug(tc, "WC immediateRead: amountToRead=" + amountToRead + " buffer.remaining()="+ _buffer.remaining());
                     } 
-                    } catch (IOException readException){
+                } catch (IOException readException){
                     //If we encounter an exception here we need to return the 1 byte that we already have.
                     //Returned true immediately and the next read will catch the exception and propagate it properly
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
