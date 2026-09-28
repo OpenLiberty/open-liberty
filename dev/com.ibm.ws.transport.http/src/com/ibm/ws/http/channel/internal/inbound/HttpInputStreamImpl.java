@@ -625,6 +625,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         firstReadCompleteforMulti = false;
         dataAlreadyReadFromChannel = false;
 
+        WsByteBuffer currentBuffer = this.buffer;
         if (this.buffer != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "cleanupforMultiRead", "remove buffer ->" + this.buffer);
@@ -636,6 +637,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             for (Iterator<WsByteBuffer> i = postDataBuffer.iterator(); i.hasNext();) {
 
                 WsByteBuffer postbuffer = i.next();
+                if (postbuffer == currentBuffer) {
+                    continue;
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "cleanupforMultiRead", "postbuffer released ->" + postbuffer);
                 }
