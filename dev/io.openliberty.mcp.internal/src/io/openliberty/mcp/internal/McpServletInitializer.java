@@ -86,7 +86,7 @@ public class McpServletInitializer implements ServletContainerInitializer {
         }
 
         Dynamic reg = context.addServlet("io.openliberty.mcp.servlet", McpServlet.class);
-        reg.addMapping(path);
+        reg.addMapping(path, path + "/*");
         reg.setAsyncSupported(true);
         reg.setInitParameter(STATELESS_INIT_PARAM, String.valueOf(configProps.stateless()));
 

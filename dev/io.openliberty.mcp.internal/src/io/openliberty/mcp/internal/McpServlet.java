@@ -54,6 +54,7 @@ import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import io.openliberty.mcp.internal.requests.McpToolListParams;
 import io.openliberty.mcp.internal.requests.ProgressImpl;
 import io.openliberty.mcp.internal.requests.RequestId;
+import io.openliberty.mcp.internal.responses.McpInfoResponse;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 import io.openliberty.mcp.internal.security.Authorizer;
@@ -114,13 +115,22 @@ public class McpServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if ("/info".equals(req.getPathInfo())) {
+            int sessions = sessionStores.getCurrent().activeSessionCount();
+            int tools = ToolRegistry.get().getAllTools().size();
+            McpInfoResponse info = new McpInfoResponse(sessions, tools);
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write(jsonb.toJson(info));
+            return;
+        }
         McpTransport transport = new McpTransport(req, resp, jsonb, mcpConfig.asyncTimeoutMs());
         String excpetionMessage = Tr.formatMessage(tc, "get.disallowed");
         HttpResponseException e = new HttpResponseException(
                                                             HttpServletResponse.SC_METHOD_NOT_ALLOWED,
                                                             excpetionMessage).withHeader("Allow", "POST");
         transport.sendHttpException(e);
-
     }
 
     @Override

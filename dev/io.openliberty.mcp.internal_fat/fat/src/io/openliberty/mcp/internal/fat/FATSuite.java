@@ -67,6 +67,7 @@ import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
+import io.openliberty.mcp.internal.fat.tool.InfoEndpointTest;
 import io.openliberty.mcp.internal.fat.tool.LocaleTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
@@ -108,6 +109,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 HttpTest.class,
                 GenericToolTest.class,
                 InactiveCdiTest.class,
+                InfoEndpointTest.class,
                 IntrospectorMultiAppTest.class,
                 InvalidAsyncTimeoutTest.class,
                 LocaleTest.class,

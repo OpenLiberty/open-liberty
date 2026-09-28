@@ -170,6 +170,15 @@ public class McpSessionStore {
     }
 
     /**
+     * Returns the number of currently active sessions.
+     *
+     * @return the count of active sessions
+     */
+    public int activeSessionCount() {
+        return sessions.size();
+    }
+
+    /**
      * Ends all active sessions and records their metrics.
      * Called during application shutdown.
      */
