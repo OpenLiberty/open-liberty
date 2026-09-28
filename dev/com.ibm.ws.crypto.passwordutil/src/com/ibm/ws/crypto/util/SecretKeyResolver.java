@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.security.crypto;
+package com.ibm.ws.crypto.util;
 
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -20,8 +20,6 @@ import java.security.spec.InvalidKeySpecException;
  * Interface for resolving an opaque hardware-backed AES key (e.g. from ICSF/CKDS
  * via the IBMJCECCA security provider on z/OS). Implementations must not call
  * {@code getEncoded()} on the returned key — key material never leaves hardware.
- *
- * @ibm-spi
  */
 public interface SecretKeyResolver {
 

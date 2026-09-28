@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,16 +28,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.crypto.ltpakeyutil.AesLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.AESKeyManager;
 import com.ibm.ws.crypto.util.AesConfigFileParser;
 import com.ibm.ws.crypto.util.ICSFSecretKeyResolver;
+import com.ibm.ws.crypto.util.UnsupportedConfigurationException;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 import com.ibm.ws.security.utility.utils.SAFEncryptionKey;
+import com.ibm.wsspi.security.crypto.PasswordEncryptException;
 
 /**
  * Usage options:
@@ -68,6 +73,23 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
 
     /** Constant for the ICSF keyring type value (matches zosPasswordEncryptionKey type="ICSF"). */
     private static final String KEYRING_TYPE_ICSF = "ICSF";
+
+    /** Pre-formatted XML attribute used in every AES-encrypted LTPA key snippet. */
+    private static final String LTPA_USE_ENCRYPTION_KEY_ATTR = "useEncryptionKey=\"true\"";
+
+    /**
+     * Pairs a derived AES {@link Key} with the server.xml hint comment or snippet
+     * that tells the operator how to configure the matching key at runtime.
+     */
+    private static final class AesKeyResolution {
+        final Key key;
+        final String hint;
+
+        AesKeyResolution(Key key, String hint) {
+            this.key  = key;
+            this.hint = hint;
+        }
+    }
 
     /**
      * @param scriptName The name of the script to which this task belongs
@@ -288,7 +310,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
         // The server needs both a zosPasswordEncryptionKey element (to load the ICSF key
         // at runtime) and an ltpa element with useEncryptionKey="true".
         String zosSnippet = String.format("    <zosPasswordEncryptionKey type=\"ICSF\" label=\"%s\" />", keyLabel);
-        String ltpaSnippet = buildLtpaSnippet(serverName, path, "useEncryptionKey=\"true\"");
+        String ltpaSnippet = buildLtpaSnippet(serverName, path, LTPA_USE_ENCRYPTION_KEY_ATTR);
         stdout.println(getMessage("createLTPAKeys.createdFile", path, zosSnippet + "\n" + ltpaSnippet));
         return SecurityUtilityReturnCodes.OK;
     }
@@ -301,53 +323,91 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     private SecurityUtilityReturnCodes handleEncryptionKeyPath(String path, String serverName,
                                                                String keyring, String keyringType, String keyLabel,
                                                                String[] args) throws Exception {
-        Key aesKey;
-        String hintLine;
+        AesKeyResolution resolution = resolveAesKeyAndHint(keyring, keyringType, keyLabel, args);
 
-        // Non-ICSF SAF keyring: all three SAF args are present and keyringType is not ICSF
-        // (the ICSF branch is already handled by handleICSFPath before reaching here).
-        if (keyring != null && keyringType != null && !KEYRING_TYPE_ICSF.equalsIgnoreCase(keyringType) && keyLabel != null) {
-            // SAF keyring: extract private key bytes, derive AES key via PBKDF2 (same as --passwordKey).
-            SAFEncryptionKey ek = new SAFEncryptionKey(keyring, keyringType, keyLabel);
-            aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, ek.getKey());
-            hintLine = String.format("    <zosPasswordEncryptionKey type=\"%s\" keyring=\"%s\" label=\"%s\" />",
-                                     keyringType, keyring, keyLabel);
-        } else {
-            String base64Key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
-            String aesConfigFile = getArgumentValue(BaseCommandTask.ARG_AES_CONFIG_FILE, args, null);
-
-            if (base64Key != null) {
-                // --passwordBase64Key: Base64-decode directly to AES_V2 key.
-                aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V2, base64Key);
-                hintLine = "    <!-- Ensure the variable wlp.aes.encryption.key is set to the value supplied via --passwordBase64Key -->";
-            } else if (aesConfigFile != null) {
-                // --aesConfigFile: parse the file; it contains either a base64 key (PROPERTY_AES_KEY)
-                // or a password key (PROPERTY_CRYPTO_KEY).
-                Map<String, String> fileProps = AesConfigFileParser.parseAesEncryptionFile(aesConfigFile);
-                String fileBase64Key = fileProps.get(PasswordUtil.PROPERTY_AES_KEY);
-                if (fileBase64Key != null) {
-                    aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V2, fileBase64Key);
-                    hintLine = "    <!-- Set variable: wlp.aes.encryption.key=<your base64 key from " + aesConfigFile + "> -->";
-                } else {
-                    // PROPERTY_CRYPTO_KEY — password-derived key (AES_V1 PBKDF2).
-                    String cryptoKey = fileProps.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
-                    aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, cryptoKey);
-                    hintLine = "    <!-- Set variable: wlp.password.encryption.key=<your key from " + aesConfigFile + "> -->";
-                }
-            } else {
-                // --passwordKey: PBKDF2 hash of the supplied string.
-                String keyStr = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
-                aesKey = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, keyStr);
-                hintLine = "    <!-- Ensure the variable wlp.password.encryption.key is set to the value supplied via --passwordKey -->";
-            }
-        }
-
-        LTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(aesKey);
+        LTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(resolution.key);
         ltpaKeyFileUtil.createLTPAKeysFile(path, encryptor);
 
-        String ltpaSnippet = buildLtpaSnippet(serverName, path, "useEncryptionKey=\"true\"");
-        stdout.println(getMessage("createLTPAKeys.createdFile", path, hintLine + "\n" + ltpaSnippet));
+        String ltpaSnippet = buildLtpaSnippet(serverName, path, LTPA_USE_ENCRYPTION_KEY_ATTR);
+        stdout.println(getMessage("createLTPAKeys.createdFile", path, resolution.hint + "\n" + ltpaSnippet));
         return SecurityUtilityReturnCodes.OK;
+    }
+
+    /**
+     * Resolves the AES {@link Key} and server.xml hint from the appropriate source:
+     * a SAF keyring, {@code --passwordBase64Key}, {@code --aesConfigFile}, or {@code --passwordKey}.
+     *
+     * <p>The ICSF branch is handled upstream in {@link #handleICSFPath} and never reaches here,
+     * so the SAF condition does not need to re-check for ICSF.
+     */
+    private AesKeyResolution resolveAesKeyAndHint(String keyring, String keyringType,
+                                                  String keyLabel, String[] args) throws Exception {
+        // SAF keyring (non-ICSF): all three z/OS args are present.
+        // ICSF is already dispatched in handleTask before this method is called.
+        if (keyring != null && keyringType != null && keyLabel != null) {
+            SAFEncryptionKey ek = new SAFEncryptionKey(keyring, keyringType, keyLabel);
+            Key k = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, ek.getKey());
+            String hint = String.format("    <zosPasswordEncryptionKey type=\"%s\" keyring=\"%s\" label=\"%s\" />",
+                                        keyringType, keyring, keyLabel);
+            return new AesKeyResolution(k, hint);
+        }
+
+        String base64Key    = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
+        String aesConfigFile = getArgumentValue(BaseCommandTask.ARG_AES_CONFIG_FILE,    args, null);
+
+        if (base64Key != null) {
+            // --passwordBase64Key: Base64-decode directly to an AES_V2 key.
+            Key k = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V2, base64Key);
+            String hint = "    <!-- Ensure the variable " + AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY
+                          + " is set to the value supplied via " + BaseCommandTask.ARG_PASSWORD_BASE64_KEY + " -->";
+            return new AesKeyResolution(k, hint);
+        }
+
+        if (aesConfigFile != null) {
+            // --aesConfigFile: delegate to a focused helper so this method stays readable.
+            return resolveAesKeyFromConfigFile(aesConfigFile);
+        }
+
+        // --passwordKey fallback: PBKDF2 hash of the supplied string.
+        String keyStr = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
+        if (keyStr == null || keyStr.isEmpty()) {
+            throw new IllegalArgumentException(getMessage("missingArg", BaseCommandTask.ARG_PASSWORD_KEY));
+        }
+        Key k = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, keyStr);
+        String hint = "    <!-- Ensure the variable " + AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY
+                      + " is set to the value supplied via " + BaseCommandTask.ARG_PASSWORD_KEY + " -->";
+        return new AesKeyResolution(k, hint);
+    }
+
+    /**
+     * Parses an AES config file and returns the resolved key and hint.
+     * The file contains either {@code wlp.aes.encryption.key} (base64, AES_V2) or
+     * {@code wlp.password.encryption.key} (password-derived, AES_V1 PBKDF2).
+     */
+    private AesKeyResolution resolveAesKeyFromConfigFile(String aesConfigFile)
+            throws PasswordEncryptException, UnsupportedConfigurationException,
+                   UnsupportedCryptoAlgorithmException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Map<String, String> fileProps = AesConfigFileParser.parseAesEncryptionFile(aesConfigFile);
+
+        String fileBase64Key = fileProps.get(PasswordUtil.PROPERTY_AES_KEY);
+        if (fileBase64Key != null) {
+            Key k = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V2, fileBase64Key);
+            String hint = "    <!-- Set variable: " + AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY
+                          + "=<your base64 key from " + aesConfigFile + "> -->";
+            return new AesKeyResolution(k, hint);
+        }
+
+        // PROPERTY_CRYPTO_KEY — password-derived key (AES_V1 PBKDF2).
+        String cryptoKey = fileProps.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
+        if (cryptoKey == null) {
+            throw new IllegalArgumentException(getMessage("encode.aesConfigFileMissingEncryptionVariables",
+                                                          AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY,
+                                                          AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY));
+        }
+        Key k = AESKeyManager.getKey(AESKeyManager.KeyVersion.AES_V1, cryptoKey);
+        String hint = "    <!-- Set variable: " + AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY
+                      + "=<your key from " + aesConfigFile + "> -->";
+        return new AesKeyResolution(k, hint);
     }
 
     /**

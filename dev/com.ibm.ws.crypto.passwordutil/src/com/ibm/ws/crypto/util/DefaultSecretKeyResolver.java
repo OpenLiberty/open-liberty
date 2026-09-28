@@ -16,8 +16,6 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.ibm.wsspi.security.crypto.SecretKeyResolver;
-
 /**
  * Default software-backed {@link SecretKeyResolver} used for each AES key version.
  * <p>

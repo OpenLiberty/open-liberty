@@ -466,14 +466,14 @@ reEncryptLTPAKeys.desc=\
 \tDecrypt an existing LTPA keys file and re-encrypt the same key material,\n\
 \twriting the result to a new file. The current file and new file may be\n\
 \tthe same path for an in-place update.\n\
-\tExactly two of --currentPassword, --newPassword, and --ckdsLabel must be\n\
-\tspecified.
+\tSpecify source and target encryption using either two passwords, or one\n\
+\tpassword combined with one AES key option (--key, --base64Key, or --ckdsLabel).
 #Note to translator the word "reEncryptLTPAKeys" should not be translated
 reEncryptLTPAKeys.usage.options=\
 \t{0} reEncryptLTPAKeys --currentFile=inputFile --newFile=outputFile\n\
 \t(--currentPassword=password --newPassword=password |\n\
-\t --currentPassword=password --ckdsLabel=label |\n\
-\t --ckdsLabel=label --newPassword=password)
+\t --currentPassword=password (--key=key | --base64Key=key | --ckdsLabel=label) |\n\
+\t (--key=key | --base64Key=key | --ckdsLabel=label) --newPassword=password)
 reEncryptLTPAKeys.required-key.currentFile=\
 \ \ \ \ --currentFile=inputFile
 reEncryptLTPAKeys.required-desc.currentFile=\
@@ -487,12 +487,24 @@ reEncryptLTPAKeys.option-key.currentPassword=\
 \ \ \ \ --currentPassword=password
 reEncryptLTPAKeys.option-desc.currentPassword=\
 \tThe plaintext password used to decrypt the current LTPA keys file.\n\
-\tRequired unless --ckdsLabel is used as the source (decryption) key.
+\tRequired unless an AES key option is used as the source (decryption) key.
 reEncryptLTPAKeys.option-key.newPassword=\
 \ \ \ \ --newPassword=password
 reEncryptLTPAKeys.option-desc.newPassword=\
 \tThe plaintext password used to encrypt the new LTPA keys file.\n\
-\tRequired unless --ckdsLabel is used as the target (encryption) key.
+\tRequired unless an AES key option is used as the target (encryption) key.
+reEncryptLTPAKeys.option-key.key=\
+\ \ \ \ --key=key
+reEncryptLTPAKeys.option-desc.key=\
+\tThe passphrase string used to generate an AES-128 key (AES_V1).\n\
+\tUsed as the source (decryption) key when --currentPassword is omitted,\n\
+\tor as the target (encryption) key when --newPassword is omitted.
+reEncryptLTPAKeys.option-key.base64Key=\
+\ \ \ \ --base64Key=key
+reEncryptLTPAKeys.option-desc.base64Key=\
+\tThe base64-encoded 256-bit AES key string (AES_V2).\n\
+\tUsed as the source (decryption) key when --currentPassword is omitted,\n\
+\tor as the target (encryption) key when --newPassword is omitted.
 reEncryptLTPAKeys.option-key.ckdsLabel=\
 \ \ \ \ --ckdsLabel=label
 reEncryptLTPAKeys.option-desc.ckdsLabel=\
