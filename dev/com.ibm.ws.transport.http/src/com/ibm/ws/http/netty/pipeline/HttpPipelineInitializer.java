@@ -142,6 +142,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreDispatcherHandlers(pipeline, true);
         pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        pipeline.channel().attr(NettyHttpConstants.SSL_HANDLER).set(handler);
         // Turn off half closure with H2
         pipeline.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, false);
     }
@@ -151,6 +152,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         pipeline.addFirst(HTTP_SSL_HANDLER_NAME, handler);
         pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        pipeline.channel().attr(NettyHttpConstants.SSL_HANDLER).set(handler);
         setupHttp11Pipeline(pipeline);
     }
 

@@ -40,6 +40,8 @@ import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.logging.AccessLog;
 import com.ibm.wsspi.http.logging.DebugLog;
 
+import io.netty.util.AsciiString;
+
 /**
  * Class to handle parsing the configuration data and storing/supplying the
  * various configuration parameters to the rest of the code.
@@ -110,6 +112,7 @@ public class HttpChannelConfig {
     private boolean bRemoveServerHeader = false;
     /** PK15848 - Server header value to give to response messages */
     private byte[] baServerHeaderValue = null;
+    private AsciiString nettyServerHeaderValue = null;
     /** Range in milliseconds to allow cached Date header values to be used */
     private long lDateHeaderRange = 1000L;
     /** PK20531 - Whether Set-Cookie should update Cache-Control header */
@@ -2147,6 +2150,7 @@ public class HttpChannelConfig {
                 option = "WebSphere Application Server";
             }
             this.baServerHeaderValue = GenericUtils.getEnglishBytes(option);
+            this.nettyServerHeaderValue = new AsciiString(baServerHeaderValue);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Config: server header value [" + option + "]");
             }
@@ -2898,6 +2902,10 @@ public class HttpChannelConfig {
     public byte[] getServerHeaderValue() {
         // @PK15848
         return this.baServerHeaderValue;
+    }
+
+    public AsciiString getNettyServerHeaderValue() {
+        return this.nettyServerHeaderValue;
     }
 
     /**
