@@ -96,16 +96,27 @@ public class PUnitEHFactory extends EntityHandlerFactory {
         try {
             return emf.unwrap(DataSource.class);
         } catch (PersistenceException x) {
-            return provider.compat //
-                            .unwrapEntityManagerToDataSource(emf) //
-                            .orElseThrow(() //
-                            -> exc(UnsupportedOperationException.class,
-                                   "CWWKD1063.unsupported.resource",
-                                   repoMethod.getName(),
-                                   repoInterface.getName(),
-                                   repoMethod.getReturnType().getName(),
-                                   DataSource.class.getName()));
         }
+
+        // No known Jakarta Persistence providers can unwrap EntityManager
+        // as a DataSource, but the code to attempt this was present in
+        // data-1.0 and is preserved for that feature version only.
+        if (!provider.compat.atLeast(1, 1)) {
+            EntityManager em = provider.compat.createEntityManager(emf);
+            try {
+                return em.unwrap(DataSource.class);
+            } catch (PersistenceException xx) {
+            } finally {
+                em.close();
+            }
+        }
+
+        throw exc(UnsupportedOperationException.class,
+                  "CWWKD1063.unsupported.resource",
+                  repoMethod.getName(),
+                  repoInterface.getName(),
+                  repoMethod.getReturnType().getName(),
+                  DataSource.class.getName());
     }
 
     /**

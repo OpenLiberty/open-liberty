@@ -591,7 +591,7 @@ public class DataExtension implements Extension {
                                                            Object... args) {
         // Avoid logging errors that might be due to server shutdown, and
         // avoid logging various usage errors that are already raised to the
-        // appliaction
+        // application
         if (!FrameworkState.isStopping() &&
             !exceptionType.equals(EmptyResultException.class) &&
             !exceptionType.equals(EntityExistsException.class) &&

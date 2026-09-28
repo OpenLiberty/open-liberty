@@ -17,7 +17,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -47,6 +46,23 @@ import jakarta.persistence.EntityManagerFactory;
  * Capability that is specific to the version of Jakarta Data.
  */
 public class Data_1_0 implements DataVersionCompatibility {
+    /**
+     * Persistence 3.2 method:
+     * EntityManager.createQuery(String qlString)
+     */
+    static final Method EM_createQuery_ql;
+
+    /**
+     * Persistence 3.2 method:
+     * EntityManager.createQuery(String qlString, Class<T> resultClass)
+     */
+    static final Method EM_createQuery_ql_rc;
+
+    /**
+     * Persistence 3.2 method:
+     * EntityManagerFactory.createEntityManager()
+     */
+    private static final Method EMF_createEntityManager;
 
     /**
      * Annotations that represent lifecycle operations that are allowed for
@@ -87,6 +103,20 @@ public class Data_1_0 implements DataVersionCompatibility {
                     Set.of(Limit.class, Order.class, PageRequest.class,
                            Sort.class, Sort[].class);
 
+    static {
+        try {
+            // Jakarta Persistence 3.2 methods:
+            EM_createQuery_ql = EntityManager.class //
+                            .getMethod("createQuery", String.class);
+            EM_createQuery_ql_rc = EntityManager.class //
+                            .getMethod("createQuery", String.class, Class.class);
+            EMF_createEntityManager = EntityManagerFactory.class //
+                            .getMethod("createEntityManager");
+        } catch (NoSuchMethodException x) {
+            throw new ExceptionInInitializerError(x);
+        }
+    }
+
     @Override
     @Trivial
     public boolean atLeast(int major, int minor) {
@@ -99,10 +129,20 @@ public class Data_1_0 implements DataVersionCompatibility {
         throw new UnsupportedOperationException();
     }
 
+    @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
     public EntityManager createEntityManager(EntityManagerFactory emf) {
-        return emf.createEntityManager();
+        try {
+            return (EntityManager) EMF_createEntityManager.invoke(emf);
+        } catch (IllegalAccessException x) {
+            throw new RuntimeException(x); // should never occur
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            else
+                throw new RuntimeException(x);
+        }
     }
 
     @Override
@@ -227,26 +267,6 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Trivial
     public Set<Class<?>> specialParamTypes() {
         return SPECIAL_PARAM_TYPES;
-    }
-
-    @FFDCIgnore(InvocationTargetException.class)
-    @Override
-    @Trivial
-    public Optional<DataSource> //
-                    unwrapEntityManagerToDataSource(EntityManagerFactory emf) { //
-        Optional<DataSource> ds;
-        try (AutoCloseable em = createEntityManager(emf)) {
-            Class<? extends AutoCloseable> EntityManager = em.getClass();
-            Method em_unwrap = EntityManager.getMethod("unwrap", Class.class);
-            ds = Optional.of((DataSource) em_unwrap.invoke(em, DataSource.class));
-        } catch (InvocationTargetException x) {
-            // skip FFDC for "not supported" error from provider
-            ds = Optional.empty();
-        } catch (Exception x) {
-            // auto FFDC
-            ds = Optional.empty();
-        }
-        return ds;
     }
 
 }

@@ -393,14 +393,18 @@ public class QueryInfo_1_1 extends QueryInfo {
                                                                ? Object.class //
                                                                : null;
 
-        // TODO Persistence 4.0 API
-        //if (entityHandler instanceof EntityHandler handler) ...
+        // TODO use Persistence 4.0 API directly once the requirement for
+        // data-1.1 to be able to run with persistence-3.2 during betas is removed
 
         jakarta.persistence.Query query;
         try {
             if (entityHandler instanceof EntityManager em) {
-                if (resultClass == null)
-                    query = em.createNativeQuery(ql);
+                if (resultClass == null) // em.createNativeQuery(ql);
+                    query = (jakarta.persistence.Query) em.getClass() //
+                                    .getMethod("createNativeQuery",
+                                               String.class) //
+                                    .invoke(em,
+                                            ql);
                 else // em.createNativeQuery(ql, resultClass);
                     query = (jakarta.persistence.Query) entityHandler.getClass() //
                                     .getMethod("createNativeQuery",
@@ -452,13 +456,16 @@ public class QueryInfo_1_1 extends QueryInfo {
                         ? null //
                         : method.getAnnotation(QUERY_OPTIONS_CLASS);
 
-        // TODO Persistence 4.0 API
+        // TODO use Persistence 4.0 API directly once the requirement for
+        // data-1.1 to be able to run with persistence-3.2 during betas is removed
         //if (entityHandler instanceof EntityHandler handler) ...
         //    handler.createNativeStatement(ql)
 
         try {
             if (entityHandler instanceof EntityManager em) {
-                query = em.createNativeQuery(ql);
+                query = (jakarta.persistence.Query) em.getClass() //
+                                .getMethod("createNativeQuery", String.class) //
+                                .invoke(em, ql);
             } else {
                 query = (jakarta.persistence.Query) entityHandler.getClass() //
                                 .getMethod("createNativeStatement", String.class) //
