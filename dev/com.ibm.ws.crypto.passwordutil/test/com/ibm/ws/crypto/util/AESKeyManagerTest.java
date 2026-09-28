@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.wsspi.security.crypto.KeyStringResolver;
-import com.ibm.wsspi.security.crypto.SecretKeyResolver;
 
 /**
  *

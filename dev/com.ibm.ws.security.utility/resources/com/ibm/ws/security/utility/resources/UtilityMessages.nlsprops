@@ -119,7 +119,9 @@ reEncryptLTPAKeys.fileNotFound=The {0} Lightweight Third Party Authentication (L
 reEncryptLTPAKeys.badPassword=The server could not decrypt the {0} Lightweight Third Party Authentication (LTPA) keys file. Ensure that the existing password is correct.
 reEncryptLTPAKeys.success=The server re-encrypted the {0} Lightweight Third Party Authentication (LTPA) keys file successfully.
 reEncryptLTPAKeys.ckdsWithBothPasswords=You cannot use the {0} argument with both {1} and {2}. Specify {0} with either {1} or {2}.
-reEncryptLTPAKeys.twoKeyArgsRequired=The command requires exactly two key arguments. Specify exactly two of the following arguments: {0}, {1}, {2}.
+reEncryptLTPAKeys.twoKeyArgsRequired=The command requires exactly two key arguments. Specify either both passwords ({0} and {1}), or one password combined with one AES key option ({2}, {3}, or {4}).
+reEncryptLTPAKeys.multipleAesKeysNotSupported=Multiple AES key options cannot be specified together. Specify at most one of {0}, {1}, or {2}.
+reEncryptLTPAKeys.passwordIntermediaryRequired=Direct key-to-key re-encryption is not supported. Specify either {0} or {1} as a password intermediary.
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 configureFIPS.notIbmSdkNorSemeru=The Java installation is either not from IBM Semeru Runtimes nor IBM SDK, or if it is, it does not support FIPS 140-3.\n\

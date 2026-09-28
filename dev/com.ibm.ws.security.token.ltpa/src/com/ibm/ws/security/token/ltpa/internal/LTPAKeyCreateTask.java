@@ -37,7 +37,7 @@ import com.ibm.ws.security.token.ltpa.LTPAValidationKeysInfo;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
-import com.ibm.wsspi.security.crypto.SecretKeyResolver;
+import com.ibm.ws.crypto.util.SecretKeyResolver;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
 /**
@@ -68,7 +68,7 @@ class LTPAKeyCreateTask implements Runnable {
             if (AESKeyManager.isKeyConfigured(KeyVersion.AES_V2)) {
                 if (AESKeyManager.hasCustomSecretKeyResolver()) {
                     // A custom SecretKeyResolver is registered; getDescription() identifies the key source.
-                    Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_ICSF", AESKeyManager.getResolverFor(KeyVersion.AES_V2).getDescription());
+                    Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_CUSTOM_RESOLVER", AESKeyManager.getResolverFor(KeyVersion.AES_V2).getDescription());
                 } else {
                     // AES_V2 is configured via the wlp.aes.encryption.key system property.
                     Tr.info(tc, "LTPA_AES_ENCRYPTION_KEY_PROPERTY", AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY);
