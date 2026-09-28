@@ -366,7 +366,8 @@ public class McpMXBeanAccessServlet extends FATServlet {
                      "error", statusCode);
 
         String errorType = operationStats.getErrorType();
-        assertNotNull("ErrorType must not be null for a business-error tool call", errorType);
+        assertEquals("ErrorType must be 'tool_error' for a ToolCallException",
+                     "tool_error", errorType);
     }
 
     // --- Bean Lifecycle ---

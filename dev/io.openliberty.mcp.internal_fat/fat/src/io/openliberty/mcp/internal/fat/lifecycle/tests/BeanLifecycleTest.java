@@ -15,7 +15,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -164,10 +166,19 @@ public class BeanLifecycleTest {
         client.callMCP(request2);
 
         // Wait for both @PreDestroy events - each call must destroy its own instance
-        assertNotNull("First @PreDestroy must fire",
-                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool"));
-        assertNotNull("Second @PreDestroy must fire",
-                      server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool"));
+        long startTime = System.nanoTime();
+        boolean found = false;
+        while (System.nanoTime() - startTime < Duration.ofSeconds(30).toNanos()) {
+            List<String> predestroyMessages = server.findStringsInLogsUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool", server.getDefaultLogFile());
+
+            if (predestroyMessages.size() >= 2) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            fail("Not found two PreDestroy messages");
+        }
 
         List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());

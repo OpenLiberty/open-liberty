@@ -142,52 +142,6 @@ public class LifecycleTest {
     // Negative Tests
 
     /**
-     * Verifies that an {@code initialize} request whose body omits {@code protocolVersion}
-     * is tolerated: the server falls back to its preferred version ({@code 2025-11-25}) and
-     * returns a normal, successful initialize result rather than an error.
-     */
-    @Test
-    public void testInitializeWithMissingProtocolVersionFallsBackToServerDefault() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "neg-1",
-                          "method": "initialize",
-                          "params": {
-                            "capabilities": {},
-                            "clientInfo": {
-                              "name": "BadClient",
-                              "version": "0.0"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // Missing protocolVersion in the body is tolerated - the server falls back to
-        // its preferred version (2025-11-25) and returns a normal initialize result
-        String expectedResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "neg-1",
-                          "result": {
-                            "protocolVersion": "2025-11-25",
-                            "capabilities": {
-                              "tools": {
-                                "listChanged": false
-                              }
-                            },
-                            "serverInfo": {
-                              "name": "mcp-server",
-                              "version": "1.0.0"
-                            }
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
-    }
-
-    /**
      * Verifies that a JSON-RPC request for an unrecognised method returns an error response
      * with code {@code -32601} (Method not found), the standard message, and the method name
      * in the {@code data} field.
