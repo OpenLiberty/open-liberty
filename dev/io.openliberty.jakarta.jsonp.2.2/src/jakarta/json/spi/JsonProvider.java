@@ -24,12 +24,10 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,24 +80,6 @@ public abstract class JsonProvider {
     private static final Logger LOG = Logger.getLogger(JsonProvider.class.getName());
 
     /**
-     * Cache of discovered providers keyed by the context classloader. Weak keys allow the entry
-     * to be evicted when the classloader (e.g. a WAR's classloader) is no longer reachable,
-     * preventing classloader leaks on application undeploy.
-     *
-     * <p>Soft values allow the JVM to reclaim the cached provider under memory pressure, while
-     * keeping it alive under normal conditions. This avoids the strong reference cycle that would
-     * exist if the value were held strongly when a provider's class is defined by the same
-     * classloader used as the map key (e.g. a provider bundled in WEB-INF/lib):
-     * value &rarr; its Class &rarr; its ClassLoader == key. A strong cycle would prevent the
-     * weak key from ever being enqueued, leaking the WAR classloader on undeploy.
-     *
-     * <p>All accesses are guarded by explicit {@code synchronized (CLASSLOADER_CACHE)} blocks in
-     * {@link #provider()}.
-     */
-    private static final Map<ClassLoader, SoftReference<JsonProvider>> CLASSLOADER_CACHE =
-            new WeakHashMap<>();
-
-    /**
      * Default constructor.
      */
     protected JsonProvider() {
@@ -108,7 +88,8 @@ public abstract class JsonProvider {
     /**
      * Creates a JSON provider object.
      *
-     * <p>Implementation discovery consists of following steps:
+     * <p>Discovery results are cached per context class loader; subsequent calls may return the
+     * same instance. Implementation discovery consists of the following steps:
      * <ol>
      * <li>If the system property {@value #JSONP_PROVIDER_FACTORY} exists,
      *    then its value is assumed to be the provider factory class.
@@ -124,7 +105,6 @@ public abstract class JsonProvider {
      *    its own Jakarta JSON Processing implementation as the last resort.</li>
      * </ol>
      *
-     *
      * @see ServiceLoader
      * @return a JSON provider
      */
@@ -134,25 +114,24 @@ public abstract class JsonProvider {
             cl = JsonProvider.class.getClassLoader();
         }
 
-        final String factoryClassName = System.getProperty(JSONP_PROVIDER_FACTORY);
+        // 1. System property: dynamic per-JVM override. Re-read on every call to reflect dynamic
+        //    runtime changes; freshly instantiated to bypass caching.
+        String factoryClassName = System.getProperty(JSONP_PROVIDER_FACTORY);
         if (factoryClassName != null) {
-            return newInstance(factoryClassName, cl);
+            return JsonProviderCache.getForClassName(factoryClassName, cl);
         }
 
-        synchronized (CLASSLOADER_CACHE) {
-            SoftReference<JsonProvider> ref = CLASSLOADER_CACHE.get(cl);
-            JsonProvider cached = (ref != null) ? ref.get() : null;
-            if (cached != null) {
-                return cached;
-            }
+        // 2. Cache lookup: TCCL -> provider class -> instance.
+        JsonProvider cached = JsonProviderCache.get(cl);
+        if (cached != null) {
+            return cached;
         }
+
+        // 3. Miss: discover outside the lock. Concurrent first callers may each discover once; harmless.
         LOG.log(Level.FINE, "Cache miss for classloader [{0}]; starting discovery", cl);
         JsonProvider discovered = discover(cl);
-        synchronized (CLASSLOADER_CACHE) {
-            SoftReference<JsonProvider> existingRef = CLASSLOADER_CACHE.putIfAbsent(cl, new SoftReference<>(discovered));
-            JsonProvider existing = (existingRef != null) ? existingRef.get() : null;
-            return existing != null ? existing : discovered;
-        }
+        JsonProvider shared = JsonProviderCache.put(cl, discovered);
+        return (shared != null) ? shared : discovered;
     }
 
     private static JsonProvider discover(ClassLoader cl) {
@@ -180,29 +159,7 @@ public abstract class JsonProvider {
         // else no provider found — load the platform default via the spec bundle's own classloader
         LOG.fine("Trying to create the platform default provider");
         ClassLoader specCL = JsonProvider.class.getClassLoader();
-        return newInstance(DEFAULT_PROVIDER, specCL != null ? specCL : cl);
-    }
-
-    /**
-     * Creates a new instance from the specified class
-     * @param className name of the class to instantiate
-     * @param cl the classloader to use for resolving the provider class
-     * @return the JsonProvider instance
-     * @throws JsonException for issues during creation of an instance of the JsonProvider
-     */
-    private static JsonProvider newInstance(String className, ClassLoader cl) {
-        try {
-            @SuppressWarnings("unchecked")
-            Class<JsonProvider> clazz = (Class<JsonProvider>) Class.forName(className, true, cl);
-            return clazz.getConstructor().newInstance();
-        } catch (ClassNotFoundException x) {
-            throw new JsonException(
-                    "Provider " + className + " not found", x);
-        } catch (Exception x) {
-            throw new JsonException(
-                    "Provider " + className + " could not be instantiated: " + x,
-                    x);
-        }
+        return JsonProviderCache.instantiateDefault(DEFAULT_PROVIDER, specCL != null ? specCL : cl);
     }
 
     /**
