@@ -23,6 +23,8 @@ import com.ibm.ws.crypto.ltpakeyutil.AesLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.PasswordLTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
+import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.ws.crypto.util.ICSFSecretKeyResolver;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -31,15 +33,15 @@ import com.ibm.ws.security.utility.utils.ConsoleWrapper;
  * Task: reEncryptLTPAKeys
  *
  * Reads an existing LTPA keys file and re-encrypts the same key material
- * with a new password or CKDS label, writing the result to a new file.
+ * with a new password or AES key (passphrase key, Base64 key, or CKDS label),
+ * writing the result to a new file.
  * <p>
- * Exactly two of the three key-material arguments must be supplied:
+ * Passwords serve as the common intermediary. Supported combinations are:
  * <ul>
- *   <li>Password → password: {@code --currentPassword} + {@code --newPassword}</li>
- *   <li>Password → CKDS:     {@code --currentPassword} + {@code --ckdsLabel}</li>
- *   <li>CKDS → password:     {@code --ckdsLabel}       + {@code --newPassword}</li>
+ *   <li>Password → Password: {@code --currentPassword} + {@code --newPassword}</li>
+ *   <li>Password → AES Key:  {@code --currentPassword} + ({@code --key} | {@code --base64Key} | {@code --ckdsLabel})</li>
+ *   <li>AES Key → Password:  ({@code --key} | {@code --base64Key} | {@code --ckdsLabel}) + {@code --newPassword}</li>
  * </ul>
- * Specifying all three is not supported.
  */
 public class ReEncryptLTPAKeysTask extends BaseCommandTask {
 
@@ -47,6 +49,8 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
     static final String ARG_NEW_FILE         = "--newFile";
     static final String ARG_CURRENT_PASSWORD = "--currentPassword";
     static final String ARG_NEW_PASSWORD     = "--newPassword";
+    static final String ARG_KEY              = "--key";
+    static final String ARG_BASE64_KEY       = "--base64Key";
     static final String ARG_CKDS_LABEL       = "--ckdsLabel";
 
     private final LTPAKeyFileUtility ltpaKeyFileUtil;
@@ -91,28 +95,27 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
                arg.equals(ARG_NEW_FILE)          ||
                arg.equals(ARG_CURRENT_PASSWORD)  ||
                arg.equals(ARG_NEW_PASSWORD)       ||
+               arg.equals(ARG_KEY)               ||
+               arg.equals(ARG_BASE64_KEY)        ||
                arg.equals(ARG_CKDS_LABEL);
     }
 
     /** {@inheritDoc} */
     @Override
     void checkRequiredArguments(String[] args) {
-        boolean currentFileFound     = false;
-        boolean newFileFound         = false;
-        boolean currentPasswordFound = false;
-        boolean newPasswordFound     = false;
-        boolean ckdsLabelFound       = false;
-
-        for (String arg : args) {
-            String key = arg.split("=")[0];
-            if (key.equals(ARG_CURRENT_FILE))     currentFileFound     = true;
-            if (key.equals(ARG_NEW_FILE))          newFileFound         = true;
-            if (key.equals(ARG_CURRENT_PASSWORD))  currentPasswordFound = true;
-            if (key.equals(ARG_NEW_PASSWORD))      newPasswordFound     = true;
-            if (key.equals(ARG_CKDS_LABEL))        ckdsLabelFound       = true;
-        }
-
         StringBuilder message = new StringBuilder();
+        checkFileArguments(args, message);
+        checkEncryptionArguments(args, message);
+
+        String msg = message.toString().trim();
+        if (!msg.isEmpty()) {
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+    private void checkFileArguments(String[] args, StringBuilder message) {
+        boolean currentFileFound = hasArgument(args, ARG_CURRENT_FILE);
+        boolean newFileFound     = hasArgument(args, ARG_NEW_FILE);
 
         if (!currentFileFound) {
             message.append(" ").append(getMessage("missingArg", ARG_CURRENT_FILE));
@@ -120,23 +123,52 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
         if (!newFileFound) {
             message.append(" ").append(getMessage("missingArg", ARG_NEW_FILE));
         }
+    }
 
-        // Exactly 2 of the 3 key-material args must be present.
-        int keyArgCount = (currentPasswordFound ? 1 : 0) + (newPasswordFound ? 1 : 0) + (ckdsLabelFound ? 1 : 0);
-        if (keyArgCount == 3) {
-            // All three supplied — ambiguous; ckdsLabel can only serve one side.
+    private void checkEncryptionArguments(String[] args, StringBuilder message) {
+        boolean currentPasswordFound = hasArgument(args, ARG_CURRENT_PASSWORD);
+        boolean newPasswordFound     = hasArgument(args, ARG_NEW_PASSWORD);
+        boolean keyFound             = hasArgument(args, ARG_KEY);
+        boolean base64KeyFound       = hasArgument(args, ARG_BASE64_KEY);
+        boolean ckdsLabelFound       = hasArgument(args, ARG_CKDS_LABEL);
+
+        int passwordCount = (currentPasswordFound ? 1 : 0) + (newPasswordFound ? 1 : 0);
+        int aesKeyCount   = (keyFound ? 1 : 0) + (base64KeyFound ? 1 : 0) + (ckdsLabelFound ? 1 : 0);
+
+        if (aesKeyCount > 1) {
+            message.append(" ").append(getMessage("reEncryptLTPAKeys.multipleAesKeysNotSupported",
+                                                   ARG_KEY, ARG_BASE64_KEY, ARG_CKDS_LABEL));
+        } else if (passwordCount == 2 && aesKeyCount == 1) {
+            String specifiedAesKey = getSpecifiedAesKey(keyFound, base64KeyFound);
             message.append(" ").append(getMessage("reEncryptLTPAKeys.ckdsWithBothPasswords",
-                                                   ARG_CKDS_LABEL, ARG_CURRENT_PASSWORD, ARG_NEW_PASSWORD));
-        } else if (keyArgCount < 2) {
-            // Fewer than 2 supplied — can't determine both source and target encryptors.
+                                                   specifiedAesKey, ARG_CURRENT_PASSWORD, ARG_NEW_PASSWORD));
+        } else if (passwordCount == 0 && aesKeyCount >= 1) {
+            message.append(" ").append(getMessage("reEncryptLTPAKeys.passwordIntermediaryRequired",
+                                                   ARG_CURRENT_PASSWORD, ARG_NEW_PASSWORD));
+        } else if (passwordCount + aesKeyCount < 2) {
             message.append(" ").append(getMessage("reEncryptLTPAKeys.twoKeyArgsRequired",
-                                                   ARG_CURRENT_PASSWORD, ARG_NEW_PASSWORD, ARG_CKDS_LABEL));
+                                                   ARG_CURRENT_PASSWORD, ARG_NEW_PASSWORD,
+                                                   ARG_KEY, ARG_BASE64_KEY, ARG_CKDS_LABEL));
         }
+    }
 
-        String msg = message.toString().trim();
-        if (!msg.isEmpty()) {
-            throw new IllegalArgumentException(msg);
+    private static boolean hasArgument(String[] args, String targetKey) {
+        for (String arg : args) {
+            if (arg.split("=")[0].equals(targetKey)) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    private static String getSpecifiedAesKey(boolean keyFound, boolean base64KeyFound) {
+        if (keyFound) {
+            return ARG_KEY;
+        }
+        if (base64KeyFound) {
+            return ARG_BASE64_KEY;
+        }
+        return ARG_CKDS_LABEL;
     }
 
     /**
@@ -155,26 +187,35 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
         this.stdin  = stdin;
         this.stdout = stdout;
 
-        validateArgumentList(args, Arrays.asList(new String[0]));
+        validateArgumentList(args, java.util.Collections.emptyList());
 
         String currentFile     = getArgumentValue(ARG_CURRENT_FILE,     args, null);
         String newFile         = getArgumentValue(ARG_NEW_FILE,          args, null);
         String currentPassword = getArgumentValue(ARG_CURRENT_PASSWORD,  args, null);
         String newPassword     = getArgumentValue(ARG_NEW_PASSWORD,      args, null);
+        String key             = getArgumentValue(ARG_KEY,               args, null);
+        String base64Key       = getArgumentValue(ARG_BASE64_KEY,        args, null);
         String ckdsLabel       = getArgumentValue(ARG_CKDS_LABEL,        args, null);
 
         byte[] currentBytes = (currentPassword != null) ? currentPassword.getBytes(StandardCharsets.UTF_8) : null;
         byte[] newBytes     = (newPassword     != null) ? newPassword.getBytes(StandardCharsets.UTF_8)     : null;
         try {
-            // Source encryptor: prefer currentPassword; fall back to ckdsLabel.
-            LTPAKeyEncryptor currentEncryptor = (currentBytes != null)
-                    ? new PasswordLTPAKeyEncryptor(currentBytes)
-                    : buildCkdsEncryptor(ckdsLabel);
+            LTPAKeyEncryptor currentEncryptor;
+            LTPAKeyEncryptor newEncryptor;
 
-            // Target encryptor: prefer newPassword; fall back to ckdsLabel.
-            LTPAKeyEncryptor newEncryptor = (newBytes != null)
-                    ? new PasswordLTPAKeyEncryptor(newBytes)
-                    : buildCkdsEncryptor(ckdsLabel);
+            if (currentBytes != null && newBytes != null) {
+                // Password -> Password
+                currentEncryptor = new PasswordLTPAKeyEncryptor(currentBytes);
+                newEncryptor     = new PasswordLTPAKeyEncryptor(newBytes);
+            } else if (currentBytes != null) {
+                // Password -> AES Key
+                currentEncryptor = new PasswordLTPAKeyEncryptor(currentBytes);
+                newEncryptor     = buildAesEncryptor(key, base64Key, ckdsLabel);
+            } else {
+                // AES Key -> Password
+                currentEncryptor = buildAesEncryptor(key, base64Key, ckdsLabel);
+                newEncryptor     = new PasswordLTPAKeyEncryptor(newBytes);
+            }
 
             ltpaKeyFileUtil.reEncryptLTPAKeysFile(currentFile, currentEncryptor, newFile, newEncryptor);
         } finally {
@@ -187,15 +228,26 @@ public class ReEncryptLTPAKeysTask extends BaseCommandTask {
     }
 
     /**
-     * Builds an {@link LTPAKeyEncryptor} backed by a CKDS hardware key.
+     * Builds an {@link LTPAKeyEncryptor} for whichever AES key argument is provided.
      *
-     * @param label the CKDS key label
-     * @return an {@link AesLTPAKeyEncryptor} backed by the CKDS key
-     * @throws Exception if the IBMJCECCA provider or key label is not available
+     * @param key        the AES_V1 passphrase key (or null)
+     * @param base64Key  the AES_V2 base64-encoded key (or null)
+     * @param ckdsLabel  the ICSF CKDS hardware key label (or null)
+     * @return an {@link AesLTPAKeyEncryptor} backed by the resolved AES key
+     * @throws Exception if key resolution or decryption fails
      */
-    private LTPAKeyEncryptor buildCkdsEncryptor(String label) throws Exception {
-        Key key = new ICSFSecretKeyResolver(label).getKey();
-        return new AesLTPAKeyEncryptor(key);
+    private LTPAKeyEncryptor buildAesEncryptor(String key, String base64Key, String ckdsLabel) throws Exception {
+        if (key != null) {
+            Key aesKey = AESKeyManager.getKey(KeyVersion.AES_V1, key);
+            return new AesLTPAKeyEncryptor(aesKey);
+        } else if (base64Key != null) {
+            Key aesKey = AESKeyManager.getKey(KeyVersion.AES_V2, base64Key);
+            return new AesLTPAKeyEncryptor(aesKey);
+        } else if (ckdsLabel != null) {
+            Key aesKey = new ICSFSecretKeyResolver(ckdsLabel).getKey();
+            return new AesLTPAKeyEncryptor(aesKey);
+        }
+        throw new IllegalStateException("No AES key option provided");
     }
 
     /** {@inheritDoc} */

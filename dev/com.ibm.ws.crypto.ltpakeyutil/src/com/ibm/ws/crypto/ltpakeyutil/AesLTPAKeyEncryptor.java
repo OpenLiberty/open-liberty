@@ -15,13 +15,13 @@ package com.ibm.ws.crypto.ltpakeyutil;
 import java.security.Key;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 
 import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * An {@link LTPAKeyEncryptor} that encrypts and decrypts LTPA key material
- * using a raw AES {@link Key}. The cipher is always {@code AES/CBC/PKCS5Padding}.
+ * using a raw AES {@link Key}. The cipher is always {@code AES/GCM/NoPadding}.
  *
  * <p>A fresh random 16-byte IV is generated on every {@link #encrypt} call and
  * prepended to the ciphertext. {@link #decrypt} reads the first 16 bytes as the
@@ -35,7 +35,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  */
 public class AesLTPAKeyEncryptor implements LTPAKeyEncryptor {
 
-    private static final String AES_CIPHER = CryptoUtils.AES_CBC_CIPHER;
+    private static final String AES_CIPHER = CryptoUtils.AES_GCM_CIPHER;
 
     private static final int IV_LENGTH = CryptoUtils.AES_IV_LENGTH_BYTES;
 
@@ -56,7 +56,7 @@ public class AesLTPAKeyEncryptor implements LTPAKeyEncryptor {
     public byte[] encrypt(byte[] data) throws Exception {
         byte[] iv = CryptoUtils.generateRandomBytes(IV_LENGTH);
         Cipher cipher = Cipher.getInstance(AES_CIPHER);
-        cipher.init(Cipher.ENCRYPT_MODE, aesKey, new IvParameterSpec(iv));
+        cipher.init(Cipher.ENCRYPT_MODE, aesKey, new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, iv));
         byte[] encrypted = cipher.doFinal(data);
         byte[] result = new byte[IV_LENGTH + encrypted.length];
         System.arraycopy(iv, 0, result, 0, IV_LENGTH);
@@ -67,7 +67,10 @@ public class AesLTPAKeyEncryptor implements LTPAKeyEncryptor {
     /** {@inheritDoc} */
     @Override
     public byte[] decrypt(byte[] encryptedData) throws Exception {
-        IvParameterSpec iv = new IvParameterSpec(encryptedData, 0, IV_LENGTH);
+        if (encryptedData == null || encryptedData.length < IV_LENGTH + 1) {
+            throw new IllegalArgumentException("Encrypted data is too short to contain a valid IV and ciphertext (minimum " + (IV_LENGTH + 1) + " bytes)");
+        }
+        GCMParameterSpec iv = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, encryptedData, 0, IV_LENGTH);
         Cipher cipher = Cipher.getInstance(AES_CIPHER);
         cipher.init(Cipher.DECRYPT_MODE, aesKey, iv);
         return cipher.doFinal(encryptedData, IV_LENGTH, encryptedData.length - IV_LENGTH);

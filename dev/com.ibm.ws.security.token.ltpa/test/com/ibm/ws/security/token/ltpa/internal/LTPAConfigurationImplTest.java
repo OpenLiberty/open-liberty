@@ -752,14 +752,11 @@ public class LTPAConfigurationImplTest {
     }
 
     /**
-     * useEncryptionKey=true with keysPassword also set: CWWKS4123W must be logged to
-     * tell the operator that keysPassword is being ignored.
+     * useEncryptionKey=true with keysPassword also set: CWWKS4123E must be logged to
+     * tell the operator that keysPassword and useEncryptionKey cannot be used together.
      */
     @Test
-    public void useEncryptionKey_true_withPasswordAlsoSet_logsWarning() {
-        setupExecutorServiceExpectations(1);
-        setupLocationServiceExpectations(1);
-
+    public void useEncryptionKey_true_withPasswordAlsoSet_logsError() {
         final String validKey = "pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=";
         AESKeyManager.setKeyStringResolver(key -> {
             if (AESKeyManager.PROPERTY_WLP_BASE64_AES_ENCRYPTION_KEY.equals(key)) {
@@ -779,10 +776,8 @@ public class LTPAConfigurationImplTest {
         config.setLtpaKeysChangeNotifier(ltpaKeysChangeNotifierRef);
         config.activate(cc, aesProps);
 
-        assertTrue("CWWKS4123W must be logged when both keysPassword and useEncryptionKey=true are set",
-                   outputMgr.checkForStandardOut("CWWKS4123W"));
-        assertTrue("isUseEncryptionKey() must still be true", config.isUseEncryptionKey());
-        assertEquals("primaryKeyPassword must be null despite keysPassword being set", null, config.getPrimaryKeyPassword());
+        assertTrue("CWWKS4123E must be logged when both keysPassword and useEncryptionKey=true are set",
+                   outputMgr.checkForStandardErr("CWWKS4123E"));
 
         config.deactivate(cc);
         config.unsetExecutorService(executorServiceRef);

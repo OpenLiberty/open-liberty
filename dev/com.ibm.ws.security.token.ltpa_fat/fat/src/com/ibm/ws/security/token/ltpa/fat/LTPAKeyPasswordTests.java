@@ -481,7 +481,7 @@ public class LTPAKeyPasswordTests {
      */
     @Test
     @Mode(TestMode.LITE)
-    @ExpectedFFDC({ "javax.crypto.BadPaddingException",
+    @ExpectedFFDC({ "javax.crypto.AEADBadTagException",
                     "javax.security.auth.login.CredentialException",
                     "java.lang.IllegalArgumentException",
                     "com.ibm.websphere.security.auth.TokenCreationFailedException" })
@@ -500,7 +500,7 @@ public class LTPAKeyPasswordTests {
      * valid Base64 AES key. The decryption of the LTPA file fails; expects CWWKS4106E.
      */
     @Test
-    @ExpectedFFDC({ "javax.crypto.BadPaddingException",
+    @ExpectedFFDC({ "javax.crypto.AEADBadTagException",
                     "javax.security.auth.login.CredentialException",
                     "java.lang.IllegalArgumentException",
                     "com.ibm.websphere.security.auth.TokenCreationFailedException" })

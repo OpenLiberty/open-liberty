@@ -32,24 +32,23 @@ import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.wsspi.security.crypto.EncryptedInfo;
-import com.ibm.wsspi.security.crypto.SecretKeyResolver;
 
 /**
  * Value-object that encapsulates a single AES encrypt or decrypt operation.
  *
  * <p>Use the static factory methods to obtain an instance:
  * <ul>
- *   <li>{@link #forEncrypt(KeyVersion, SecretKeyResolver)} — for an encipher operation</li>
- *   <li>{@link #forDecrypt(byte[])} — reads the wire-format version byte and resolves the
- *       {@link KeyVersion} and {@link SecretKeyResolver} automatically</li>
- *   <li>{@link #forDecrypt(KeyVersion, SecretKeyResolver)} — testing overload; bypasses
- *       wire-byte dispatch and uses the supplied resolver directly</li>
+ * <li>{@link #forEncrypt(KeyVersion, SecretKeyResolver)} — for an encipher operation</li>
+ * <li>{@link #forDecrypt(byte[])} — reads the wire-format version byte and resolves the
+ * {@link KeyVersion} and {@link SecretKeyResolver} automatically</li>
+ * <li>{@link #forDecrypt(KeyVersion, SecretKeyResolver)} — testing overload; bypasses
+ * wire-byte dispatch and uses the supplied resolver directly</li>
  * </ul>
  *
  * <p>Wire format:
  * <ul>
- *   <li>V0 (AES-CBC): {@code [0x00, ciphertext]}</li>
- *   <li>V1/V2 (AES-GCM): {@code [wireByte, IV_len, IV_bytes..., ciphertext]}</li>
+ * <li>V0 (AES-CBC): {@code [0x00, ciphertext]}</li>
+ * <li>V1/V2 (AES-GCM): {@code [wireByte, IV_len, IV_bytes..., ciphertext]}</li>
  * </ul>
  *
  * <p>The plaintext payload (before encryption) always uses the seed layout:
@@ -96,10 +95,13 @@ public final class AesCipher {
      * @param encryptedBytes the full AES-encrypted payload (must be non-null and non-empty)
      * @return a configured {@link AesCipher} ready to {@link #decrypt(byte[])}
      * @throws InvalidPasswordCipherException      if FIPS rejects V0, the payload is malformed,
-     *                                             or the version byte is not recognised
+     *                                                 or the version byte is not recognised
      * @throws UnsupportedCryptoAlgorithmException if the algorithm is unavailable at the JVM level
      */
     public static AesCipher forDecrypt(byte[] encryptedBytes) throws InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
+        if (encryptedBytes == null || encryptedBytes.length == 0) {
+            throw new InvalidPasswordCipherException("Encrypted payload is empty");
+        }
         byte versionByte = encryptedBytes[0];
         KeyVersion version = KeyVersion.fromWireByte(versionByte);
 
@@ -141,8 +143,8 @@ public final class AesCipher {
      *
      * @param plainBytes the plaintext password bytes
      * @return an {@link EncryptedInfo} wrapping the encrypted wire-format bytes
-     * @throws InvalidKeySpecException            if the key material is invalid
-     * @throws InvalidPasswordCipherException     if the cipher operation fails
+     * @throws InvalidKeySpecException             if the key material is invalid
+     * @throws InvalidPasswordCipherException      if the cipher operation fails
      * @throws UnsupportedCryptoAlgorithmException if the algorithm is not available
      */
     public EncryptedInfo encrypt(byte[] plainBytes) throws InvalidKeySpecException, InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
@@ -164,8 +166,8 @@ public final class AesCipher {
      *
      * @param encryptedBytes the full AES-encrypted payload including version byte
      * @return the decrypted plaintext bytes
-     * @throws InvalidKeySpecException            if the key material is invalid
-     * @throws InvalidPasswordCipherException     if the cipher operation fails
+     * @throws InvalidKeySpecException             if the key material is invalid
+     * @throws InvalidPasswordCipherException      if the cipher operation fails
      * @throws UnsupportedCryptoAlgorithmException if the algorithm is not available
      */
     public byte[] decrypt(byte[] encryptedBytes) throws InvalidKeySpecException, InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException {
@@ -258,8 +260,11 @@ public final class AesCipher {
 
     private byte[] decryptGcm(byte[] encryptedBytes) throws InvalidKeySpecException, InvalidPasswordCipherException, UnsupportedCryptoAlgorithmException, NoSuchAlgorithmException {
         try {
-            int ivLen = encryptedBytes[1];
+            int ivLen = encryptedBytes[1] & 0xFF;
             int cipherStart = ivLen + 2;
+            if (ivLen == 0 || cipherStart >= encryptedBytes.length) {
+                throw new InvalidPasswordCipherException("Malformed GCM ciphertext: invalid IV length " + ivLen);
+            }
             GCMParameterSpec iv = new GCMParameterSpec(CryptoUtils.GCM_TAG_LENGTH, encryptedBytes, 2, ivLen);
             Key key = resolver.getKey();
             Cipher c = Cipher.getInstance(CryptoUtils.AES_GCM_CIPHER);
@@ -296,7 +301,10 @@ public final class AesCipher {
         if (decrypted == null) {
             return null;
         }
-        int seedSize = decrypted[0];
+        int seedSize = decrypted[0] & 0xFF;
+        if (seedSize + 1 > decrypted.length) {
+            throw new IllegalArgumentException("Malformed decrypted payload: seed size " + seedSize + " exceeds buffer length " + decrypted.length);
+        }
         byte[] result = new byte[decrypted.length - seedSize - 1];
         System.arraycopy(decrypted, seedSize + 1, result, 0, result.length);
         return result;

@@ -260,10 +260,10 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         Boolean useEncryptionKeyProp = (Boolean) props.get(CFG_KEY_USE_ENCRYPTION_KEY);
         useEncryptionKey = useEncryptionKeyProp != null ? useEncryptionKeyProp : false;
         if (useEncryptionKey) {
-            // Warn if keysPassword was also explicitly set — it will be ignored.
             SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
             if (sps != null && sps.getChars() != null && sps.getChars().length > 0) {
-                Tr.warning(tc, "LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY");
+                String formattedMessage = Tr.formatMessage(tc, "LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY");
+                throw new IllegalArgumentException(formattedMessage);
             }
             resolveAndValidateAesKey();
             tryToReEncryptLtpaKeys = false;

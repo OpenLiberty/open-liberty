@@ -24,7 +24,6 @@ import javax.crypto.SecretKeyFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.crypto.CryptoUtils;
-import com.ibm.wsspi.security.crypto.SecretKeyResolver;
 
 /**
  * {@link SecretKeyResolver} that retrieves a hardware-backed AES key from the
@@ -127,6 +126,6 @@ public class ICSFSecretKeyResolver implements SecretKeyResolver {
     /** {@inheritDoc} */
     @Override
     public String getDescription() {
-        return "ICSFSecretKeyResolver [label=" + label + "]";
+        return "ICSF Cryptographic Key Data Set (CKDS) hardware key with label " + label;
     }
 }

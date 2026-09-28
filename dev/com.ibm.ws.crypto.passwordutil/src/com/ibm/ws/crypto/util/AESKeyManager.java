@@ -29,7 +29,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.wsspi.security.crypto.KeyStringResolver;
-import com.ibm.wsspi.security.crypto.SecretKeyResolver;
 
 /**
  *

@@ -29,7 +29,6 @@ import org.junit.Test;
 import com.ibm.ws.crypto.util.InvalidPasswordCipherException;
 import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.wsspi.security.crypto.EncryptedInfo;
-import com.ibm.wsspi.security.crypto.SecretKeyResolver;
 
 /**
  * Unit tests for {@link AesCipher}.

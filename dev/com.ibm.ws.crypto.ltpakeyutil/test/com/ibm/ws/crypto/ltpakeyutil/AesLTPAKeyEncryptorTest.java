@@ -116,8 +116,8 @@ public class AesLTPAKeyEncryptorTest {
         byte[] plaintext = "SomeKeyMaterial".getBytes("UTF-8");
         byte[] ciphertext = encryptor.encrypt(plaintext);
 
-        // IV is 16 bytes; AES/CBC/PKCS5Padding pads to a 16-byte block boundary,
-        // so the minimum ciphertext length after the IV is 16 bytes.
+        // IV is 16 bytes; AES/GCM/NoPadding appends a 16-byte (128-bit) authentication tag,
+        // so the minimum ciphertext length after the IV is plaintext.length + 16 bytes.
         assertTrue("Encrypted output must be longer than IV_LENGTH (16) bytes",
                    ciphertext.length > 16);
     }
