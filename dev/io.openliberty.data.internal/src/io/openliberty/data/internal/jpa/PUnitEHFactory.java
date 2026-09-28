@@ -96,17 +96,15 @@ public class PUnitEHFactory extends EntityHandlerFactory {
         try {
             return emf.unwrap(DataSource.class);
         } catch (PersistenceException x) {
-            try {
-                EntityManager em = provider.compat.createEntityManager(emf);
-                return em.unwrap(DataSource.class);
-            } catch (PersistenceException xx) {
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1063.unsupported.resource",
-                          repoMethod.getName(),
-                          repoInterface.getName(),
-                          repoMethod.getReturnType().getName(),
-                          DataSource.class.getName());
-            }
+            return provider.compat //
+                            .unwrapEntityManagerToDataSource(emf) //
+                            .orElseThrow(() //
+                            -> exc(UnsupportedOperationException.class,
+                                   "CWWKD1063.unsupported.resource",
+                                   repoMethod.getName(),
+                                   repoInterface.getName(),
+                                   repoMethod.getReturnType().getName(),
+                                   DataSource.class.getName()));
         }
     }
 

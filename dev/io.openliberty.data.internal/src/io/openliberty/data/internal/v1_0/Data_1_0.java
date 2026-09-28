@@ -14,13 +14,16 @@ package io.openliberty.data.internal.v1_0;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.sql.DataSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.DataVersionCompatibility;
 import io.openliberty.data.internal.QueryInfo;
@@ -224,6 +227,26 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Trivial
     public Set<Class<?>> specialParamTypes() {
         return SPECIAL_PARAM_TYPES;
+    }
+
+    @FFDCIgnore(InvocationTargetException.class)
+    @Override
+    @Trivial
+    public Optional<DataSource> //
+                    unwrapEntityManagerToDataSource(EntityManagerFactory emf) { //
+        Optional<DataSource> ds;
+        try (AutoCloseable em = createEntityManager(emf)) {
+            Class<? extends AutoCloseable> EntityManager = em.getClass();
+            Method em_unwrap = EntityManager.getMethod("unwrap", Class.class);
+            ds = Optional.of((DataSource) em_unwrap.invoke(em, DataSource.class));
+        } catch (InvocationTargetException x) {
+            // skip FFDC for "not supported" error from provider
+            ds = Optional.empty();
+        } catch (Exception x) {
+            // auto FFDC
+            ds = Optional.empty();
+        }
+        return ds;
     }
 
 }

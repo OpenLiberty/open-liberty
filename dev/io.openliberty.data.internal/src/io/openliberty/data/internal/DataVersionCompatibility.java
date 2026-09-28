@@ -17,8 +17,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+
+import javax.sql.DataSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -298,4 +301,18 @@ public interface DataVersionCompatibility {
      * @return the Jakarta Data defined special parameter types.
      */
     Set<Class<?>> specialParamTypes();
+
+    /**
+     * Attempts to unwrap an EntityManager as a DataSource. No known Jakarta
+     * Persistence providers allow this, but the code to attempt this was
+     * present in data-1.0 and is preserved for that feature version only.
+     *
+     * @param emf the entity manager factory
+     * @return possibly an unwrapped DataSource, otherwise empty
+     */
+    @Trivial
+    default Optional<DataSource> //
+                    unwrapEntityManagerToDataSource(EntityManagerFactory emf) {
+        return Optional.empty();
+    }
 }
