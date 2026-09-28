@@ -10,6 +10,7 @@ package org.jboss.resteasy.plugins.providers;
 import org.jboss.resteasy.core.messagebody.AsyncBufferedMessageBodyWriter;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages;
 import org.jboss.resteasy.util.NoContent;
+import org.jboss.resteasy.util.XmlSupport; // Liberty Change (RESTEASY-3785)
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -21,7 +22,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -65,7 +65,14 @@ public class SourceProvider implements MessageBodyReader<Source>, AsyncBufferedM
    {
       return -1;
    }
-
+    
+   /** // Liberty Change start (RESTEASY-3785)
+    * Writes a {@link Source} to the output stream. For {@link StreamSource} instances, the source is wrapped with a
+    * configured {@link org.xml.sax.XMLReader} via {@link XmlSupport#newXmlReader()}. For other
+    * {@code Source} types (e.g. {@link SAXSource}), the caller is responsible for providing a configured
+    * {@code XMLReader}. The {@link TransformerFactory} used for serialization is always configured with
+    * processing enabled.
+    */ // Liberty Change end (RESTEASY-3785)
    public void writeTo(Source source, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException
    {
       LogMessages.LOGGER.debugf("Provider : %s,  Method : writeTo", getClass().getName());
@@ -82,14 +89,14 @@ public class SourceProvider implements MessageBodyReader<Source>, AsyncBufferedM
                inputStream = new InputSource(stream.getInputStream());
             }
 
-            inputStream.setCharacterStream(inputStream.getCharacterStream());
-            inputStream.setPublicId(stream.getPublicId());
+            inputStream.setPublicId(stream.getPublicId()); // Liberty Change (RESTEASY-3785)
             inputStream.setSystemId(source.getSystemId());
-            source = new SAXSource(SAXParserFactory.newInstance().newSAXParser().getXMLReader(), inputStream);
+            source = new SAXSource(XmlSupport.newXmlReader(), inputStream); // Liberty Change (RESTEASY-3785)
          }
 
          StreamResult sr = new StreamResult(entityStream);
-         TransformerFactory.newInstance().newTransformer().transform(source, sr);
+         final TransformerFactory tf = XmlSupport.newTransformerFactory(); // Liberty Change (RESTEASY-3785)
+         tf.newTransformer().transform(source, sr); // Liberty Change (RESTEASY-3785)
 
       }
       catch (SAXException ex)
@@ -104,5 +111,5 @@ public class SourceProvider implements MessageBodyReader<Source>, AsyncBufferedM
       {
          throw new InternalServerErrorException(ex);
       }
-   }
+    }
 }

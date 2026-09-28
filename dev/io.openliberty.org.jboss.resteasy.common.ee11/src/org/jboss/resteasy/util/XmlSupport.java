@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// source: https://github.com/resteasy/resteasy/blob/dc48c6f46f39af987652e04254f5ec8ac996bc26/resteasy-core/src/main/java/org/jboss/resteasy/util/XmlSupport.java
+// https://issues.redhat.com/browse/RESTEASY-3785
+
 package org.jboss.resteasy.util;
 
 import java.util.Set;
@@ -17,6 +20,8 @@ import javax.xml.transform.TransformerFactory;
 import org.jboss.resteasy.core.ResteasyContext;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages;
+import com.ibm.websphere.ras.Tr; // Liberty Change
+import com.ibm.websphere.ras.TraceComponent; // Liberty Change
 import org.jboss.resteasy.spi.ResteasyConfiguration;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -29,6 +34,7 @@ import org.xml.sax.XMLReader;
  * @author <a href="mailto:jperkins@ibm.com">James R. Perkins</a>
  */
 public class XmlSupport {
+    private static final TraceComponent tc = Tr.register(XmlSupport.class); // Liberty Change
     private static final Set<String> ALREADY_LOGGED = ConcurrentHashMap.newKeySet(2);
 
     private XmlSupport() {
@@ -193,7 +199,7 @@ public class XmlSupport {
             transformerFactory.setAttribute(name, value);
         } catch (IllegalArgumentException e) {
             if (ALREADY_LOGGED.add(name)) {
-                LogMessages.LOGGER.transformerPropertyNotSupported(e, name, value);
+                Tr.warning(tc, "TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W", name, value); // Liberty Change
             }
         }
     }
