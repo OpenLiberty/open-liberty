@@ -1809,7 +1809,7 @@
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
-      <version>4.0.0-M6</version>
+      <version>4.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>jakarta.resource</groupId>
