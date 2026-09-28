@@ -9,6 +9,7 @@ triggers:
   triggerRank: 50
   groups: ["LibertyDev"]
   keyword: "!build"
+  baseRepo: "open-liberty"
   aliasKeywords:
     - "!pb"
     - "#pb"
@@ -76,6 +77,7 @@ triggers:
   triggerRank: 50
   groups: ["LibertyDev"]
   keyword: "!fullbuild"
+  baseRepo: "open-liberty"
   aliasKeywords:
     - "#fullbuild"
     - "!fullpb"
