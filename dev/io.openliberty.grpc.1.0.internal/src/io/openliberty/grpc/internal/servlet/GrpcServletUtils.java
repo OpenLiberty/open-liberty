@@ -17,9 +17,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -87,15 +89,9 @@ public class GrpcServletUtils {
                 if (clazz != null) {
                     index = requestPath.indexOf('/');
                     String methodName = requestPath.substring(index + 1);
-                    if (methodName.contains("_")) {
-                        // Underscore-containing names are converted to
-                        // camelCase by protoc-gen-grpc-java
-                        methodName = convertToCamelCase(methodName);
-                    } else if (!methodName.isEmpty()) {
-                        // Standard PascalCase proto RPC names are lowercased only on the first character
-                        // by protoc-gen-grpc-java. Need to normalize for a strict matching of method
-                        // name to avoid ambiguity when requests make it to the server.
-                        methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
+                    if (!methodName.isEmpty()) {
+                        // Normalize method names the same way protoc-gen-grpc-java does
+                        methodName = toJavaMethodName(methodName);
                     }
                     // Match on both name and signature
                     Method candidate = null;
@@ -257,31 +253,60 @@ public class GrpcServletUtils {
     }
 
     /**
-     * Given a String, remove any underscores and convert to camel case
-     * Examples:
-     *    "some_method_name" -> "someMethodName",
-     *    "some_MeTHod_NAME" -> "someMethodName"
-     *
-     * @param String name
-     * @return String
+     * Java reserved keywords — mirrors the java_keywords set in protoc-gen-grpc-java's
+     * java_generator.cpp (Java SE 8 list, which is what the code generator targets).
+     * When MixedLower produces one of these names it appends "_"; we must do the same
+     * so that our reflection-based lookup matches the generated ImplBase method name.
      */
-    private static String convertToCamelCase(String name) {
-        final StringBuilder builder = new StringBuilder(name.length());
-        boolean firstSection = true;
-        for (String section : name.split("_")) {
-            if (!section.isEmpty()) {
-                if (firstSection) {
-                    firstSection = false;
-                    builder.append(Character.toLowerCase(section.charAt(0)));
-                } else {
-                    builder.append(Character.toUpperCase(section.charAt(0)));
-                }
-                if (section.length() > 1) {
-                    builder.append(section.substring(1));
-                }
+    private static final Set<String> JAVA_KEYWORDS = new HashSet<>(Arrays.asList(
+        "abstract", "assert",   "boolean",  "break",        "byte",
+        "case",     "catch",    "char",     "class",        "const",
+        "continue", "default",  "do",       "double",       "else",
+        "enum",     "extends",  "final",    "finally",      "float",
+        "for",      "goto",     "if",       "implements",   "import",
+        "instanceof", "int",    "interface","long",         "native",
+        "new",      "package",  "private",  "protected",    "public",
+        "return",   "short",    "static",   "strictfp",     "super",
+        "switch",   "synchronized", "this", "throw",        "throws",
+        "transient","try",      "void",     "volatile",     "while",
+        // reserved literals also treated as keywords by the generator
+        "true",     "false"
+    ));
+
+    /**
+     * Converts a proto RPC name to the Java method name that protoc-gen-grpc-java
+     * generates on the service ImplBase class, matching the MixedLower function in
+     * java_generator.cpp exactly:
+     *  - The first character is lowercased.
+     *  - Each underscore is consumed and the immediately following character is
+     *    uppercased (matching MixedLower's after_underscore flag).
+     *  - All other characters are copied verbatim.
+     *  - If the resulting identifier is a Java reserved keyword, a trailing "_" is
+     *    appended (e.g. proto RPC "New" -> Java method "new_").
+     * Examples:
+     *    "SayHello"         -> "sayHello"
+     *    "some_method_name" -> "someMethodName"
+     *    "New"              -> "new_"
+     *    "Return"           -> "return_"
+     *
+     * @param name the proto RPC method name extracted from the request path
+     * @return the corresponding Java method name on the generated ImplBase class
+     */
+    private static String toJavaMethodName(String name) {
+        final StringBuilder builder = new StringBuilder(name.length() + 1);
+        builder.append(Character.toLowerCase(name.charAt(0)));
+        boolean afterUnderscore = false;
+        for (int i = 1; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (c == '_') {
+                afterUnderscore = true;
+            } else {
+                builder.append(afterUnderscore ? Character.toUpperCase(c) : c);
+                afterUnderscore = false;
             }
         }
-        return builder.toString();
+        String result = builder.toString();
+        return JAVA_KEYWORDS.contains(result) ? result + "_" : result;
     }
 
     /**
