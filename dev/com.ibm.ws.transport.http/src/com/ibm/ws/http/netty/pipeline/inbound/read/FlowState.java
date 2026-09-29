@@ -48,6 +48,7 @@ public class FlowState {
     private volatile boolean peerInputShutdown;
     private volatile boolean quiescing;
     private volatile boolean readAgain;
+    private volatile boolean purging;
     private volatile boolean readPending;
     private volatile boolean requestConsumed;
     private volatile boolean responseInFlight;
@@ -130,6 +131,7 @@ public class FlowState {
         this.keepAliveAllowed = true;
         this.peerInputShutdown = false;
         this.quiescing = false;
+        this.purging = false;
         this.readAgain = false;
         this.readPending = false;
         this.requestConsumed = true;
@@ -222,6 +224,14 @@ public class FlowState {
         this.peerInputShutdown = peerInputShutdown;
     }
 
+    public boolean isPurging() {
+        return purging;
+    }
+
+    public void setPurging(boolean purging) {
+        this.purging = purging;
+    }
+
     public void setQuiescing(boolean quiescing) {
         this.quiescing = quiescing;
     }
@@ -276,6 +286,7 @@ public class FlowState {
      * {@code HttpRequest} is forwarded downstream.
      */
     public long nextExchangeId() {
+        purging = false;
         exchangeWriteFailed = false;
         activeLifecycle = new ExchangeLifecycle();
         return ++activeExchangeId;

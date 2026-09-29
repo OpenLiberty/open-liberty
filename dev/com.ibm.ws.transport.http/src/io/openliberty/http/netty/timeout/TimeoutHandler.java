@@ -196,6 +196,20 @@ public class TimeoutHandler extends ChannelDuplexHandler {
 
     }
 
+    @Override
+    public void read(ChannelHandlerContext context) throws Exception {
+        // Arm the READ timer at the moment a socket read is issued, matching
+        // Channel Framework where read(1, callback, false, readTimeout) starts
+        // the deadline at call time rather than on arrival of the next chunk.
+        // Only applies when already in READ phase (body reads mid-request).
+        // PERSIST is intentionally excluded: the persist timer is a single
+        // one-shot deadline armed from RequestConsumedEvent, not reset per-read.
+        if (phase == Phase.READ) {
+            arm(context, Phase.READ);
+        }
+        super.read(context);
+    }
+
     private void arm(ChannelHandlerContext context, Phase newPhase) {
         int timeout = timeoutForPhase(newPhase);
         if (timeout <= 0) {
