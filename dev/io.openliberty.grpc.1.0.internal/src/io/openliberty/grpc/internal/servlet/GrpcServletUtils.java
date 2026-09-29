@@ -97,12 +97,26 @@ public class GrpcServletUtils {
                         // name to avoid ambiguity when requests make it to the server.
                         methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
                     }
-                    Method[] methods = clazz.getMethods();
-                    for (Method m : methods) {
-                        if (m.getName().equals(methodName)) {
-                            // TODO: we're only checking the method name here; should we check signature?
-                            return m;
+                    // Match on both name and signature
+                    Method candidate = null;
+                    for (Method m : clazz.getMethods()) {
+                        if (!m.getName().equals(methodName)) {
+                            continue;
                         }
+                        Class<?>[] params = m.getParameterTypes();
+                        if (params.length == 0 ||
+                            !io.grpc.stub.StreamObserver.class.isAssignableFrom(params[params.length - 1])) {
+                            continue;
+                        }
+                        if (candidate != null) {
+                            // More than one same-named method, so it is ambiguous
+                            // Deny this rather than guess
+                            throw new GrpcMethodNotFoundException(requestPath);
+                        }
+                        candidate = m;
+                    }
+                    if (candidate != null) {
+                        return candidate;
                     }
                     // Service is registered but the method name could not be resolved.
                     throw new GrpcMethodNotFoundException(requestPath);
