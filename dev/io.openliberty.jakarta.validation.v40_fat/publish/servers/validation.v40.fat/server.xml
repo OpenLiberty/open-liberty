@@ -23,5 +23,6 @@
 
     <application location="val40.war" />
     <application location="val40attr.war" />
+    <application location="val40init.war" />
 
 </server>
