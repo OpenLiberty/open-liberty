@@ -20,23 +20,30 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import val40.web.Validation40TestServlet;
+import val40attr.web.ConstraintDescriptorTestServlet;
 
 @RunWith(FATRunner.class)
 public class Validation40Test extends FATServletClient {
 
-    public static final String APP_NAME = "val40";
+    public static final String APP_NAME      = "val40";
+    public static final String APP_NAME_ATTR = "val40attr";
 
     @Server("validation.v40.fat")
-    @TestServlet(servlet = Validation40TestServlet.class, contextRoot = APP_NAME)
+    @TestServlets({
+        @TestServlet(servlet = Validation40TestServlet.class,         contextRoot = APP_NAME),
+        @TestServlet(servlet = ConstraintDescriptorTestServlet.class, contextRoot = APP_NAME_ATTR),
+    })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "val40.web");
+        ShrinkHelper.defaultApp(server, APP_NAME,      "val40.web");
+        ShrinkHelper.defaultApp(server, APP_NAME_ATTR, "val40attr.web");
 
         server.startServer();
     }
@@ -45,5 +52,4 @@ public class Validation40Test extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer();
     }
-
 }
