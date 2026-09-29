@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2025 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.message.BodyQueue;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.http.channel.HttpConstants;
@@ -29,9 +31,13 @@ import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpUtil;
 import io.openliberty.http.netty.compression.HttpContentDecompressor;
+
+import com.ibm.ws.http.netty.NettyHttpConstants;
 
 /**
  * Wrapper for an incoming HTTP request message body that provides the input
@@ -57,13 +63,30 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private boolean enableMultiReadofPostData = false; // custom property
     private ArrayList<WsByteBuffer> postDataBuffer;
     protected boolean firstReadCompleteforMulti = false;
-    private boolean readChannelComplete = false;
+    protected boolean readChannelComplete = false;
     private int postDataIndex = 0;
     protected long bytesReadFromStore = 0L;
 
     private HttpInputStreamObserver obs = null;
     private FullHttpRequest nettyRequest = null;
     private ByteBuf nettyBody = null;
+    private HttpContentDecompressor decompressor;
+
+    //Netty streaming (autoread off) state
+    protected volatile BodyQueue queue;
+    protected volatile ChannelHandlerContext context;
+    protected volatile boolean autoRead = false;
+    protected volatile boolean streaming;
+    private volatile String contentEncoding;
+    private volatile long rawBytesRead = 0L;
+
+    private volatile long decodedBytesRead;
+    private volatile long decodedBytesProduced = 0L;
+
+    private volatile long remainingContentLength = -1L;
+    private volatile boolean isChunked = false;
+    private final Object streamingReadLock = new Object();
+    private volatile boolean streamingTransferInProgress = false; 
 
     public HttpInputStreamImpl(HttpInboundServiceContext context) {
         this.isc = context;
@@ -72,42 +95,40 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
-    public HttpInputStreamImpl(HttpInboundServiceContext context, FullHttpRequest request) {
-        this.isc = context;
-        this.nettyRequest = request;
-        
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "HttpInputStreamImpl ENTRY, constructor for Netty inputStream, isc [" + isc + "], nettyRequest [" + nettyRequest + "], this [" + this + "]");
-        }
-        
-        this.nettyBody = nettyRequest.content();
-        buffer = ChannelFrameworkFactory.getBufferManager().wrap(nettyBody.nioBuffer()).position(nettyBody.readerIndex());
-        // Check if the request content is compressed
-        String contentEncoding = nettyRequest.headers().get(HttpHeaderNames.CONTENT_ENCODING);
-    
-        // If the content is compressed, use legacy decompression handler
-        if (contentEncoding != null && isCompressed(contentEncoding.toLowerCase())) {
-            HttpChannelConfig config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
-
-
-            HttpContentDecompressor decompressor = new HttpContentDecompressor();
-            try{
-                this.buffer = decompressor.decompress(buffer, config, contentEncoding);
-            
-            } catch (DataFormatException dfe) {
-                FFDCFilter.processException(dfe, getClass().getName(), "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Received exception during decompress; " + dfe);
-                }
-                    // TODO -> handle
-            }
-            
-        }
-        this.bytesRead += buffer.remaining();
+    private boolean isCompressed(String encoding) {
+        return HttpConstants.GZIP.equalsIgnoreCase(encoding) ||  HttpConstants.X_GZIP.equalsIgnoreCase(encoding) 
+            || HttpConstants.DEFLATE.equalsIgnoreCase(encoding);
     }
 
-    private boolean isCompressed(String encoding) {
-        return HttpConstants.GZIP.equals(encoding) || HttpConstants.DEFLATE.equals(encoding) || HttpConstants.X_GZIP.equals(encoding);
+    public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding) {
+        // delegate with unknown CL + not chunked
+        nettyConfigureStreaming(queue, context, contentEncoding, -1L, false);
+    }
+
+    /* call from dispatcher handler when headers are parsed and auto-read off */
+    public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding, long contentLength, boolean chunked){
+        
+        this.context = context;
+        this.autoRead = (context != null) && context.channel().config().isAutoRead();
+        
+        this.contentEncoding = (contentEncoding == null) ? null: contentEncoding.toLowerCase();
+        this.decompressor = new HttpContentDecompressor();
+
+        this.readChannelComplete = false;
+        this.rawBytesRead = 0L;
+
+        this.remainingContentLength = contentLength;
+        this.isChunked = chunked;
+        this.streamingTransferInProgress = false;
+
+        this.bytesRead = 0L;   
+        this.decodedBytesRead = 0L;          
+        this.decodedBytesProduced = 0L;
+
+        if(queue != null){
+            this.queue = queue;
+            this.streaming = true;
+        }
     }
 
     /*
@@ -162,6 +183,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 this.buffer.release();
                 this.buffer = null;
             }
+            //Netty streaming (auto read off)
+            if(streaming){
+                return fillFromStreamingNetty();
+            }
             if (Objects.nonNull(this.nettyRequest)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "checkBuffer, No need to read from channel because in Netty we have everything from the request so returning false");
@@ -193,7 +218,15 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @return
      * @throws IOException
      */
+    protected boolean checkMultiReadBufferIfAvailable() throws IOException {
+        return checkMultiReadBuffer(false);
+    }
+
     private boolean checkMultiReadBuffer() throws IOException {
+        return checkMultiReadBuffer(true);
+    }
+
+    private boolean checkMultiReadBuffer(boolean waitForInput) throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "checkMultiReadBuffer", " firstReadCompleteforMulti [" + firstReadCompleteforMulti + "] " + this);
         }
@@ -227,7 +260,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     Tr.debug(tc, "checkMultiReadBuffer, requires more data, checking readRemainingFromChannel.");
                 }
                 //get remaining from channel now as read needs more than the stored
-                readRemainingFromChannel();
+                readRemainingFromChannel(waitForInput);
             }
             if (postDataBuffer.size() > postDataIndex) {
                 this.buffer = postDataBuffer.get(postDataIndex);
@@ -242,7 +275,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 return true;
             }
         } else { // multiRead enabled and first read
-            if (getBufferFromChannel()) {
+            if (getBufferFromChannel(waitForInput)) {
                 // store the channel buffer
                 postDataBuffer.add(postDataIndex, this.buffer.duplicate());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -252,7 +285,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 postDataIndex++;
 
                 // record the new amount of data read from the channel
-                this.bytesRead += this.buffer.remaining();
+                if(!streaming){
+                    this.bytesRead += this.buffer.remaining();
+                }
                 return true;
             }
         }
@@ -267,14 +302,17 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @throws IOException
      */
     private void readRemainingFromChannel() throws IOException {
+        readRemainingFromChannel(true);
+    }
+
+    private void readRemainingFromChannel(boolean waitForInput) throws IOException {
         if (!readChannelComplete) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "readRemainingFromChannel, data not completely read during first read");
             }
             int localIx = postDataIndex;
-            while (getBufferFromChannel()) {
-
+            while (getBufferFromChannel(waitForInput)) {
                 postDataBuffer.add(postDataIndex, this.buffer.duplicate());
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -283,13 +321,17 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                                  + " ,index ->" + postDataIndex);
                 }
                 postDataIndex++;
-
+            
+                if(!streaming)
                 this.bytesRead += this.buffer.remaining(); // record the new amount of data read from the channel
 
                 this.buffer.release(); // release any buffers read
                 this.buffer = null;
             }
             postDataIndex = localIx;
+            if (!waitForInput && !readChannelComplete) {
+                return;
+            }
             readChannelComplete = true;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "readRemainingFromChannel, all buffer read and stored from channel , now read it from store");
@@ -302,8 +344,15 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @throws IOException
      */
     private boolean getBufferFromChannel() throws IOException {
+        return getBufferFromChannel(true);
+    }
+
+    private boolean getBufferFromChannel(boolean waitForInput) throws IOException {
 
         try {
+            if(streaming){
+                return fillFromStreamingNetty(waitForInput);
+            }
             this.buffer = this.isc.getRequestBodyBuffer();
             if (null != this.buffer) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -321,16 +370,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
         return false;
     }
-
-//    @Override
-//    public int available() throws IOException {
-//        validate();
-//        int rc = (null == this.buffer) ? 0 : this.buffer.remaining();
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "available: " + rc);
-//        }
-//        return rc;
-//    }
 
     @Override
     public int available() throws IOException {
@@ -439,9 +478,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             rc = this.buffer.get() & 0x000000FF;
             this.bytesToCaller++;
         }
-        // if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        // Tr.debug(tc, "read() rc=" + rc);
-        // }
         return rc;
     }
 
@@ -466,10 +502,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         int avail = this.buffer.remaining();
         int amount = (length > avail) ? avail : length;
         this.buffer.get(output, offset, amount);
-        // if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        // Tr.debug(tc, "read(byte[],int,int) rc=" + amount);
-        // }
         this.bytesToCaller += amount;
+
+
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "read(byte[],int,int)", this);
         }
@@ -579,23 +615,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             firstReadCompleteforMulti = false;
             readChannelComplete = false;
             dataAlreadyReadFromChannel = false;
-            if (Objects.nonNull(this.nettyRequest)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Setting up Netty multiread!");
-                }
-                if (buffer == null) {
-                    throw new UnsupportedOperationException("We should have data when working with Netty");
-                }
-                postDataBuffer.add(postDataIndex, this.buffer);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "setupforMultiRead, Netty buffer ->" + postDataBuffer.get(postDataIndex)
-                                 + " ,buffersize ->" + postDataBuffer.size() + " ,index ->" + postDataIndex);
-                }
-                postDataIndex = 0;
-                // Set first read complete and read from channel complete
-                firstReadCompleteforMulti = true;
-                readChannelComplete = true;
-            }
         }
     }
 
@@ -613,6 +632,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "cleanupforMultiRead", "remove buffer ->" + this.buffer);
             }
+            this.buffer.release();
             this.buffer = null;
         }
         if (postDataBuffer != null) {
@@ -633,4 +653,228 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
+    protected boolean isMultiReadOfPostDataEnabled() {
+        return enableMultiReadofPostData || dataAlreadyReadFromChannel;
+    }
+
+    boolean isStreamingNetty() {
+        return streaming;
+    }
+
+    public boolean fillFromStreamingNettyIfAvailable() throws IOException{
+        synchronized (streamingReadLock){
+            if (this.buffer != null && this.buffer.hasRemaining()){
+                return true;
+            }
+            return fillFromStreamingNettyLocked(false);
+        }
+    }
+
+    public boolean fillFromStreamingNetty() throws IOException{
+        return fillFromStreamingNetty(true);
+    }
+
+    public boolean fillFromStreamingNetty(boolean waitForInput) throws IOException{
+        synchronized (streamingReadLock){
+            return fillFromStreamingNettyLocked(waitForInput);
+        }
+    }
+
+    private boolean fillFromStreamingNettyLocked(boolean waitForInput) throws IOException{
+        if (queue == null){
+            return false;
+        }
+
+        if (waitForInput && context != null && context.executor().inEventLoop()){
+            throw new IllegalStateException("Blocking request read on event loop group thread");
+        }
+
+        if (this.buffer != null && this.buffer.hasRemaining()){
+            return true;
+        }
+        if (this.buffer != null){
+            this.buffer.release();
+            this.buffer = null;
+        }
+
+        long token = queue.signalToken();
+        boolean readRequested = false;
+
+        while(true){
+            streamingTransferInProgress = true; 
+            ByteBuf fragment = queue.poll();
+            if (fragment == null){
+                streamingTransferInProgress = false; 
+                if (queue.isEos()){
+                    this.readChannelComplete = true;
+                    if (this.context != null){
+                        ReadFlowHandler.setBodyReadWanted(this.context, false);
+                        ReadFlowHandler.markRequestConsumed(this.context);
+                    }
+                    return false;
+                }
+
+                Throwable error = queue.error();
+                if (error != null) {
+                    if (context != null
+                            && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())) {
+                        try {
+                            ReadFlowHandler.setBodyReadWanted(context, false);
+                        } catch (Throwable ignore) {
+                        }
+                        return false;
+                    }
+
+                    if (error instanceof IOException) {
+                        throw (IOException) error;
+                    }
+                    throw new IOException("Error while reading body", error);
+                }
+
+                if (!waitForInput){
+                    return false;
+                }
+
+                if(!readRequested && !autoRead && queue.wantsInput() && context != null){
+                    ReadFlowHandler.setBodyReadWanted(context, true);
+                    readRequested = true;
+                }
+
+                if(context != null && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())){
+                    return false;
+                }
+
+                try{
+                    boolean inputShutdownPending = context != null && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get());
+                    if(inputShutdownPending){
+                        if(this.context!=null){
+                            try{
+                                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                            } catch (Throwable ignore){}
+                        }
+                        return false;
+                    }
+                    token = queue.awaitChange(token);
+                } catch (InterruptedException ie){
+                    Thread.currentThread().interrupt();
+                    throw new IOException("Interrupted while waiting for request body", ie);
+                }
+
+                //Signal received; run loop again
+                readRequested = false;
+                continue;
+            }
+
+            try{
+                int len = fragment.readableBytes();
+                boolean fixedLengthComplete = false;
+
+                this.rawBytesRead += len;
+                this.bytesRead = this.rawBytesRead;
+
+                if(!isChunked && remainingContentLength >= 0){
+                    remainingContentLength -= len;
+                    if (remainingContentLength <= 0){
+                        fixedLengthComplete = true; 
+                    }
+                }
+
+                WsByteBuffer fragmentSource = ChannelFrameworkFactory.getBufferManager().allocate(len);
+                int position = fragmentSource.position();
+                fragmentSource.limit(position+len);
+                fragment.readBytes(fragmentSource.getWrappedByteBuffer());
+                fragmentSource.flip();
+
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "stream.fragment: rawBytes=" + len + ", content-encoding=" + contentEncoding);
+                }
+
+                //Stream decompression if content-encoding is present
+                WsByteBuffer out = fragmentSource;
+                if(contentEncoding !=null && isCompressed(contentEncoding)){
+                    HttpChannelConfig config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
+                    try{
+                        out = decompressor.decompress(fragmentSource, config, contentEncoding);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "stream.decompress: produced=%d", out != null ? out.remaining() : 0);
+                        }
+                    }catch(DataFormatException dfe){
+                        IllegalHttpBodyException exception = new IllegalHttpBodyException(dfe.getMessage());
+                        exception.initCause(dfe);
+                        FFDCFilter.processException(exception, getClass().getName(), "1");
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Received exception during decompress; " + dfe);
+                        }
+                        throw exception;
+                    }
+                }
+                if(out !=null && out.hasRemaining()){
+                    this.buffer = out;
+                    this.decodedBytesProduced += this.buffer.remaining();
+                    if (fixedLengthComplete){
+                        completeStreamingFixedLengthRequest();
+                    }
+                    return true;
+                } 
+                if (fixedLengthComplete){
+                    completeStreamingFixedLengthRequest();
+                }
+                //No data produced, compression might need more data
+                token = queue.signalToken();
+                readRequested = false;
+                continue; //fetch another fragment
+
+            } finally {
+                streamingTransferInProgress = false;
+                fragment.release();
+            }
+        }
+    }
+
+    private void completeStreamingFixedLengthRequest() {
+        this.readChannelComplete = true;
+        if (this.context != null){
+            ReadFlowHandler.setBodyReadWanted(this.context, false);
+            ReadFlowHandler.markRequestConsumed(this.context);
+        }
+        if(!queue.isEos()){
+            queue.signalEos();
+        }
+    }
+
+    protected boolean isStreamingEndReadyForCallback(){
+        synchronized (streamingReadLock){
+            return isStreamingEndReadyForCallbackLocked();
+        }
+    }
+
+    private boolean isStreamingEndReadyForCallbackLocked(){
+        return queue != null && queue.isEos() && !streamingTransferInProgress 
+            && (this.buffer == null || !this.buffer.hasRemaining());
+    }
+
+    protected boolean isStreamingReadReadyForCallback() throws IOException {
+        synchronized (streamingReadLock) {
+            return fillFromStreamingNettyLocked(false) || isStreamingEndReadyForCallbackLocked();
+        }
+    }
+
+    public void signalEOS(){
+        
+        BodyQueue q = this.queue;
+        if (q != null){
+            q.signalEos();
+        }
+
+        if(this.context != null){
+            try{
+                ReadFlowHandler.setBodyReadWanted(this.context, false);
+            } catch(Throwable ignore){}
+        }
+
+        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "signaled EOS to waiting body readers");
+        }
+    }
 }

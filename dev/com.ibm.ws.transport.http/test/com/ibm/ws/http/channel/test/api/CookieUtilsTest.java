@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,52 @@ public class CookieUtilsTest {
         outputMgr.resetStreams();
     }
 
+    @Test
+    public void testPartitionedPolicyPreservesApplicationFlagWithoutSameSite() {
+        HttpCookie cookie = new HttpCookie("name", "value");
+        cookie.setAttribute("partitioned", "");
+
+        CookieUtils.enforcePartitionedPolicy(cookie);
+
+        assertEquals("", cookie.getAttribute("partitioned"));
+        assertEquals("name=value; Partitioned", CookieUtils.toString(cookie, HttpHeaderKeys.HDR_SET_COOKIE, true));
+    }
+
+    @Test
+    public void testPartitionedPolicySuppressesConfigFlagWithoutSameSiteNone() {
+        HttpCookie cookie = new HttpCookie("name", "value");
+        cookie.setAttribute("partitioned", "true");
+
+        CookieUtils.enforcePartitionedPolicy(cookie);
+
+        assertEquals("false", cookie.getAttribute("partitioned"));
+        assertEquals("name=value", CookieUtils.toString(cookie, HttpHeaderKeys.HDR_SET_COOKIE, true));
+    }
+
+    @Test
+    public void testPartitionedPolicySuppressesApplicationFlagWithSameSiteLax() {
+        HttpCookie cookie = new HttpCookie("name", "value");
+        cookie.setAttribute("samesite", "Lax");
+        cookie.setAttribute("partitioned", "");
+
+        CookieUtils.enforcePartitionedPolicy(cookie);
+
+        assertEquals("false", cookie.getAttribute("partitioned"));
+        assertEquals("name=value; SameSite=Lax", CookieUtils.toString(cookie, HttpHeaderKeys.HDR_SET_COOKIE, true));
+    }
+
+    @Test
+    public void testPartitionedPolicyPreservesApplicationFlagWithSameSiteNone() {
+        HttpCookie cookie = new HttpCookie("name", "value");
+        cookie.setAttribute("samesite", "None");
+        cookie.setAttribute("partitioned", "");
+
+        CookieUtils.enforcePartitionedPolicy(cookie);
+
+        assertEquals("", cookie.getAttribute("partitioned"));
+        assertEquals("name=value; SameSite=None; Partitioned", CookieUtils.toString(cookie, HttpHeaderKeys.HDR_SET_COOKIE, true));
+    }
+
     /**
      * Primary tests for the CookieUtils class.
      */
@@ -128,6 +174,18 @@ public class CookieUtilsTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable("testMain", t);
         }
+    }
+
+    @Test
+    public void testPartitionedPolicyPreservesConfigFlagWithSameSiteNone() {
+        HttpCookie cookie = new HttpCookie("name", "value");
+        cookie.setAttribute("SameSite", "None");
+        cookie.setAttribute("Partitioned", "true");
+
+        CookieUtils.enforcePartitionedPolicy(cookie);
+
+        assertEquals("true", cookie.getAttribute("partitioned"));
+        assertEquals("name=value; SameSite=None; Partitioned", CookieUtils.toString(cookie, HttpHeaderKeys.HDR_SET_COOKIE, true));
     }
 
 }

@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
@@ -48,7 +49,6 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.openliberty.http.constants.HttpGenerics;
 import io.openliberty.http.netty.cookie.CookieDecoder;
 import io.openliberty.http.netty.cookie.CookieEncoder;
@@ -814,7 +814,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public VersionValues getVersionValue() {
-        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (isTrustedHttp2Request()) {
             return VersionValues.V20;
         }
         return VersionValues.find(message.protocolVersion().text());
@@ -822,10 +822,19 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public String getVersion() {
-        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        if (isTrustedHttp2Request()) {
             return VersionValues.V20.getName();
         }
         return this.message.protocolVersion().text();
+    }
+
+    /**
+     * Identifies whether this request is verified HTTP/2 via the service context,
+     * rather than relying solely on a client-supplied STREAM_ID header.
+     */
+    protected final boolean isTrustedHttp2Request() {
+        HttpServiceContext sc = getServiceContext();
+        return sc instanceof HttpServiceContextImpl && ((HttpServiceContextImpl) sc).isNettyHttp2Request();
     }
 
     @Override

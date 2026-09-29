@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.junit.Assert.assertNull;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
@@ -414,8 +415,14 @@ public class CookieTests {
     public static class EdgeCaseTests{
 
         @Before
-        public void setup(){
+        public void setup() throws Exception{
             CookieTests.commonSetup();
+            setEE11Mode(false);
+        }
+
+        @After
+        public void tearDown() throws Exception{
+            setEE11Mode(false);
         }
 
         @Test 

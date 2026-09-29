@@ -113,6 +113,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     /** Host string parsed from Host header */
     private transient String sHdrHost = null;
 
+    private HttpTrailers trailers = null;
+
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
         init(request, isc, nettyContext);
 
@@ -349,12 +351,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             return !request.method().equals(HttpMethod.TRACE); // Trace method does not have a body
         }
         return false;
-    }
-
-    @Override
-    public VersionValues getVersionValue() {
-        return VersionValues.find(request.protocolVersion().text());
-
     }
 
     @Override
@@ -777,7 +773,12 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public HttpTrailers getTrailers() {
-        return new NettyTrailers(this.request.trailingHeaders());
+        
+        return (this.trailers != null) ? trailers: new NettyTrailers(this.request.trailingHeaders());
+    }
+
+    public void setTrailers(HttpHeaders trailers){
+        this.trailers = new NettyTrailers(trailers);
     }
 
     @Override
@@ -813,7 +814,24 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         Http2Connection connection = handler.connection();
 
         int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
-        int currentStreamId = this.request.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+        // Immutable request-scoped snapshot is the only parent-stream authority (not mutable headers).
+        final int currentStreamId;
+        if (context instanceof HttpServiceContextImpl) {
+            HttpServiceContextImpl serviceContext = (HttpServiceContextImpl) context;
+            if (serviceContext.isNettyHttp2Request()) {
+                currentStreamId = serviceContext.getNettyHttp2StreamId();
+            } else {
+                currentStreamId = -1;
+            }
+        } else {
+            currentStreamId = -1;
+        }
+        if (currentStreamId <= 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "pushNewRequest(): missing immutable HTTP/2 stream snapshot; push ignored");
+            }
+            return;
+        }
 
         Http2Headers headers = new DefaultHttp2Headers().clear();
         String scheme = "https";
