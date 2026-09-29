@@ -88,7 +88,12 @@ public class StartCommandTest {
     @Test
     public void testIsServerEnvCreatedForImplicitServerCreate() throws Exception {
 
-        ProgramOutput po = LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "start");
+        // Pass startWaitSeconds=60 to extend the --status:start polling window to 60s.
+        // On slow Windows CI machines, JVM startup + implicit server create can exceed
+        // the default 30s, causing ERROR_SERVER_START (rc=22).  Using JVM_ARGS avoids
+        // touching the server directory before the command runs, so the test still
+        // exercises the full implicit-create path (no defaultServer exists at this point).
+        ProgramOutput po = LibertyServerUtils.executeLibertyCmd(bootstrap, 60, "server", "start");
         assertEquals("Unexpected return code from server start command STDOUT: \" + po.getStdout() + \" STDERR: \" + po.getStderr()", 0, po.getReturnCode());
 
         try {
