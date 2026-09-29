@@ -14,6 +14,7 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.NEGATIVE_TIMEOUT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.POSITIVE_TIMEOUT_MS;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -247,7 +248,7 @@ public class StatelessModeTest extends FATServletClient {
         toolStatus.signalShouldEnd(LATCH_NAME);
 
         // Tool should complete normally
-        String response = future.get(15, TimeUnit.SECONDS);
+        String response = future.get(POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         String expected = """
                             {"id":"1","jsonrpc":"2.0","result":{"content":[{"type":"text", "text": "If this String is returned, then the tool was not cancelled"}],"isError":false}}
@@ -314,7 +315,7 @@ public class StatelessModeTest extends FATServletClient {
         // Now release the tool manually
         toolStatus.signalShouldEnd(LATCH_NAME);
 
-        String response = future.get(15, TimeUnit.SECONDS);
+        String response = future.get(POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         String expected = """
                             {"id":"1","jsonrpc":"2.0","result":{"content":[{"type":"text", "text": "If this String is returned, then the tool was not cancelled"}],"isError":false}}
@@ -490,10 +491,10 @@ public class StatelessModeTest extends FATServletClient {
                         {"id":"1","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"stateless-mode"}],"isError":false}}
                         """;
 
-        String secondResponse = secondFuture.get(10, TimeUnit.SECONDS);
+        String secondResponse = secondFuture.get(POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponseString, secondResponse, true);
 
-        String firstResponse = future.get(10, TimeUnit.SECONDS);
+        String firstResponse = future.get(POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponseString, firstResponse, true);
     }
 

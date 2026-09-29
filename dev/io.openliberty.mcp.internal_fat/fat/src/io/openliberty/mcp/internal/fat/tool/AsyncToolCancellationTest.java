@@ -36,6 +36,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -116,7 +117,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
         toolStatus.awaitStarted(latchName);
         client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
 
-        String response = future.get(10, TimeUnit.SECONDS);
+        String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
@@ -166,7 +167,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
         toolStatus.awaitStarted(latchName);
         client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
 
-        String response = future.get(10, TimeUnit.SECONDS);
+        String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         // Verify the response indicates cancellation
         String expectedResponseString = """
@@ -177,7 +178,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
         // Verify that the internal server error message (CWMCM0010E) was NOT logged
         // This error message is only logged for non-business exceptions, and OperationCancelledException
         // should be handled specially without logging
-        String errorLog = server.waitForStringInLog("CWMCM0010E.*asyncCancellationTool", 2000);
+        String errorLog = server.waitForStringInLog("CWMCM0010E.*asyncCancellationTool", TestConstants.NEGATIVE_TIMEOUT_MS);
         if (errorLog != null) {
             throw new AssertionError("OperationCancelledException should not be logged as an error. Found: " + errorLog);
         }
