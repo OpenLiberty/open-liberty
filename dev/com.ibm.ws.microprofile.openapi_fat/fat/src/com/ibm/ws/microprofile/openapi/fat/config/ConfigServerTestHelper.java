@@ -85,8 +85,8 @@ public class ConfigServerTestHelper {
     public void assertUiPath(String path) throws Exception {
         // Check that we get something back
         String uiHTML = new OpenAPIConnection(server, path).download();
-        // Check that it appears to be the UI HTML
-        assertThat(uiHTML, containsString("oauth2RedirectUrl: SwaggerUI.getMpOAuth2Url()"));
+        // Check that it appears to be the UI HTML & also make whitespace irrelevant
+        assertThat(uiHTML.replaceAll("\\s+", ""), containsString("oauth2RedirectUrl:SwaggerUI.getMpOAuth2Url()"));
     }
 
     /**
