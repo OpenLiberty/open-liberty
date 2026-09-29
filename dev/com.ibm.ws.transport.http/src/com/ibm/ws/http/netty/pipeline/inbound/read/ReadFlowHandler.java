@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2026 IBM Corporation and others.
+ * Copyright 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,10 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound.read;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -29,12 +33,7 @@ import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 import io.openliberty.netty.internal.impl.QuiesceHandler;
-import com.ibm.ws.http.netty.NettyHttpConstants;
 
 /**
  * Netty handler that handles read gating when Netty's auto-read is disabled. It
@@ -205,11 +204,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             // request (and any content that follows) until the exchange ends.
             // ----------------------------------------------------------------
             if (state.isResponseInFlight() || state.hasPendingAdmission()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "[FLOW-PROOF] GATE_INBOUND_REQUEST ch=" + context.channel().id()
-                        + " uri=" + request.uri()
-                        + " queueSize=" + (state.hasPendingAdmission() ? "non-empty" : "0"));
-                }
                 // The pipeline delivers this message with a single ref owned by us.
                 // We are parking it instead of forwarding, so no retain is needed —
                 // we already own the reference.
@@ -305,9 +299,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         FlowState state = state(context);
         super.channelReadComplete(context);
 
-        Tr.debug(tc, "[FLOW-PROOF] READ_COMPLETE_CLEAR_PENDING ch=" + context.channel().id()
-            + " readAgain=" + state.isReadAgain());
-
         if (context.pipeline().get(FlowControlHandler.class) != null) {
             if (state.isReadPending()) {
                 state.setReadPending(false);
@@ -367,10 +358,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 state.setResponseInFlight(true);
 
                 // TODO check if !(message instanceof LastHttpContent) is still valid for selfContained
-                // // No body; see if we need another read
-                // if(noBodyExpected && !(message instanceof LastHttpContent)){
-                //     // Capture exchange id so a stale callback from a previous
-                //     // exchange (e.g. reused promise) is ignored.
                 boolean responseKeepAlive = HttpUtil.isKeepAlive(response);
                 state.setKeepAliveAllowed(responseKeepAlive && !state.isQuiescing());
 
@@ -475,7 +462,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         if (state.isExchangeWriteFailed()) {
             return; // already handled
         }
-        Tr.debug(tc, "[FLOW-PROOF] POISON_EXCHANGE ch=" + context.channel().id());
         state.setExchangeWriteFailed();
         state.setKeepAliveAllowed(false);
         state.setStopReading(true);
@@ -500,9 +486,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                                            boolean succeeded, long completedExchangeId) {
         // Stale callback guard.
         if (state.getActiveExchangeId() != completedExchangeId) {
-            Tr.debug(tc, "[FLOW-PROOF] STALE_COMPLETION_IGNORED ch=" + context.channel().id()
-                + " expected=" + state.getActiveExchangeId()
-                + " got=" + completedExchangeId);
             return;
         }
 
@@ -510,9 +493,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         // a successful terminal flush does not rescue an exchange whose preceding
         // header or body write already failed.
         if (!succeeded || state.isExchangeWriteFailed()) {
-            Tr.debug(tc, "[FLOW-PROOF] WRITE_FAILED_CLOSE ch=" + context.channel().id()
-                + " terminalSucceeded=" + succeeded
-                + " poisoned=" + state.isExchangeWriteFailed());
             state.setResponseInFlight(false);
             state.setKeepAliveAllowed(false);
             state.setStopReading(true);
@@ -578,8 +558,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             }
             if (!(head instanceof HttpRequest)) {
                 // Defensive: should not happen; discard until we find a request.
-                Tr.debug(tc, "[FLOW-PROOF] DRAIN_UNEXPECTED_HEAD ch=" + context.channel().id()
-                    + " type=" + head.getClass().getSimpleName());
                 state.pollPending();
                 ReferenceCountUtil.safeRelease(head);
                 return;
@@ -594,7 +572,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             try {
                 admitRequest(context, state, request, request);
             } catch (Exception e) {
-                Tr.debug(tc, "[FLOW-PROOF] DRAIN_ADMIT_ERROR ch=" + context.channel().id() + " err=" + e);
                 ReferenceCountUtil.safeRelease(request); // fire didn't happen; release ourselves
                 state.releaseQueue();
                 context.channel().close();
@@ -612,7 +589,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                     context.fireChannelRead(next);
                     // Downstream now owns the ref; do NOT release.
                 } catch (Exception e) {
-                    Tr.debug(tc, "[FLOW-PROOF] DRAIN_CONTENT_ERROR ch=" + context.channel().id() + " err=" + e);
                     // Fire did not complete; we still own the ref.
                     ReferenceCountUtil.safeRelease(next);
                     state.releaseQueue();
@@ -740,33 +716,15 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         final boolean needRead = needReadForBody || needReadForNextRequest;
 
         if (!needRead) {
-            Tr.debug(tc, "[FLOW-PROOF] NO_READ_NEEDED ch=" + context.channel().id()
-                + " bodyWanted=" + state.isBodyReadWanted()
-                + " reqConsumed=" + state.isRequestConsumed()
-                + " respInFlight=" + state.isResponseInFlight()
-                + " keepAlive=" + state.isKeepAliveAllowed()
-                + " hasPending=" + state.hasPendingAdmission()
-                + " readPending=" + state.isReadPending());
             return;
         }
 
         if (state.isReadPending()) {
             state.setReadAgain(true);
-            Tr.debug(tc, "[FLOW-PROOF] READ_SUPPRESSED_PENDING ch=" + context.channel().id()
-                + " bodyWanted=" + state.isBodyReadWanted()
-                + " reqConsumed=" + state.isRequestConsumed()
-                + " respInFlight=" + state.isResponseInFlight()
-                + " keepAlive=" + state.isKeepAliveAllowed()
-                + " readPending=" + state.isReadPending());
             return;
         }
 
         state.setReadPending(true);
-        Tr.debug(tc, "[FLOW-PROOF] ISSUING_READ ch=" + context.channel().id()
-            + " bodyWanted=" + state.isBodyReadWanted()
-            + " reqConsumed=" + state.isRequestConsumed()
-            + " respInFlight=" + state.isResponseInFlight()
-            + " keepAlive=" + state.isKeepAliveAllowed());
         context.read();
     }
 

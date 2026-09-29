@@ -10,7 +10,6 @@
 package com.ibm.ws.webcontainer31.async;
 
 import java.io.IOException;
-
 import javax.servlet.AsyncContext;
 
 import com.ibm.websphere.ras.Tr;

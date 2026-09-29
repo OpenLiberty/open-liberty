@@ -110,7 +110,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private long bytesWritten;
 
     private FullHttpRequest nettyRequest;
-    private io.netty.handler.codec.http.HttpResponse nettyResponse;
+    private HttpResponse nettyResponse;
     private NettyRequestMessage requestMessage;
     private HttpResponseMessage response;
 

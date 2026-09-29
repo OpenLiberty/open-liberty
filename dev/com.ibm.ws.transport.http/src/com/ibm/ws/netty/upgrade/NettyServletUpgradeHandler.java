@@ -13,32 +13,30 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 
-import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -48,10 +46,8 @@ import io.netty.channel.CoalescingBufferQueue;
 import io.netty.channel.VoidChannelPromise;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
-import io.netty.util.concurrent.ScheduledFuture;
-import io.openliberty.netty.internal.impl.QuiesceState;
-
 import io.netty.util.ReferenceCountUtil;
+import io.netty.util.concurrent.ScheduledFuture;
 
 /**
  *
@@ -81,7 +77,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     private TCPReadRequestContext readContext;
 
     private final AtomicBoolean readPending = new AtomicBoolean(false);
-
 
     public NettyServletUpgradeHandler(Channel channel) {
         this.channel = channel;
@@ -130,8 +125,10 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
             UpgradeReadOperation operation = asyncRead.get();
             if (operation != null && operation.callback != null && queuedBytes.get() >= operation.minimumBytes) {
-                Tr.debug(tc, "[UPGRADE-ASYNC] async threshold met; firing callback. bytes=" + queuedBytes.get() +
-                    " minBytesToRead=" + operation.minimumBytes);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "async threshold met; firing callback. bytes=" + queuedBytes.get() +
+                        " minBytesToRead=" + operation.minimumBytes);
+                }
                 fireAsyncReadComplete(operation);
             } else if (operation == null && queuedBytes.get() > 0) {
                 signalReadReady();
@@ -204,15 +201,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     private void requestRead(){
-        Tr.debug(tc, "[UPGRADE-SYSOUT] NettyServletUpgradeHandler.requestRead autoRead="
-            + channel.config().isAutoRead()
-            + " active=" + channel.isActive()
-            + " peerClosed=" + peerClosed.get()
-            + " readPending=" + readPending.get()
-            + " waitingThreads=" + waitingThreads.get()
-            + " isReadingAsync=" + isAsyncReadArmed()
-            + " minBytesToRead=" + minimumBytesToRead()
-            + " queuedBytes=" + queuedBytes.get());
         if(peerClosed.get()){
             return;
         }
@@ -285,7 +273,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 for (WsByteBuffer b : buffers) {
                     if (b == null || remaining == 0)
                         break;
-                    final java.nio.ByteBuffer dst = b.getWrappedByteBuffer();
+                    final ByteBuffer dst = b.getWrappedByteBuffer();
                     final int can = Math.min(dst.remaining(), remaining);
                     if (can <= 0)
                         continue;
@@ -301,7 +289,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                     copied += can;
                 }
 
-            
                 if (copied > 0) {
                     queuedBytes.addAndGet(-copied);
                 }
@@ -411,7 +398,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
         ByteBuf out = (promise == null) ? queue.remove(size, new VoidChannelPromise(channel, true)) : queue.remove(size, promise);
 
-
         return out;
     }
 
@@ -436,11 +422,13 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             return;
         }
 
-        Tr.debug(tc, "[UPGRADE-ASYNC] queueAsyncRead : " +
-            "minBytesToRead = " + operation.minimumBytes + ", " +
-            "queuedBytes = " + queuedBytes.get() + ", " +
-            "autoRead = " + channel.config().isAutoRead() + ", " +
-            "readPending = " + readPending.get() );
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "queueAsyncRead : " +
+                "minBytesToRead = " + operation.minimumBytes + ", " +
+                "queuedBytes = " + queuedBytes.get() + ", " +
+                "autoRead = " + channel.config().isAutoRead() + ", " +
+                "readPending = " + readPending.get() );
+        }
 
         if (timeoutMillis > 0) {
             ScheduledFuture<?> timeout = channel.eventLoop().schedule(
@@ -519,11 +507,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         if (executor != null) {
             AsyncReadDispatchState.forChannel(channel).submitReady(callbackTask, null);
         }
-    }
-
-    private int minimumBytesToRead() {
-        UpgradeReadOperation operation = asyncRead.get();
-        return operation == null ? 1 : operation.minimumBytes;
     }
 
     public boolean peerClosedConnection() {

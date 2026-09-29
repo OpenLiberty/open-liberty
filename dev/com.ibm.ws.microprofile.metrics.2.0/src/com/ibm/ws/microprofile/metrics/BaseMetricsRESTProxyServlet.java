@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.rest.handler.helper.ServletRESTRequestImpl;
 import com.ibm.ws.rest.handler.helper.ServletRESTResponseImpl;
 import com.ibm.wsspi.rest.handler.RESTHandlerContainer;
@@ -73,6 +74,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
      * @param request The HttpServletRequest from which we'll get the OSGi BundleContext
      * @throws ServletException When the RESTHandlerContainer service is unavailable
      */
+    @FFDCIgnore(IllegalStateException.class)
     private synchronized void getAndSetRESTHandlerContainer(HttpServletRequest request) throws ServletException {
         if (REST_HANDLER_CONTAINER == null) {
             // Get the bundle context

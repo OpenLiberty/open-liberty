@@ -24,7 +24,6 @@ import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
-import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http2.GrpcServletServices;
@@ -32,8 +31,6 @@ import com.ibm.wsspi.channelfw.InterChannelCallback;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.channel.exception.BodyCompleteException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
-
-import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  *
@@ -48,10 +45,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
     public HttpInputStreamEE7(HttpInboundServiceContext context) {
         super(context);
     }
-
-    // public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
-    //     super(context, request);
-    // }
 
     /*
      * (non-Javadoc)
@@ -253,7 +246,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 }
                 return false;
             }
-
 
             if (available() <= 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

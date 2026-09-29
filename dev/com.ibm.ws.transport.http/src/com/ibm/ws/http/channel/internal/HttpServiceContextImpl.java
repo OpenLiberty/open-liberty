@@ -24,14 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
 
@@ -41,6 +37,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.genericbnf.internal.GenericConstants;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
+import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2StreamProcessor;
 import com.ibm.ws.http.channel.h2internal.H2VirtualConnectionImpl;
@@ -64,7 +61,6 @@ import com.ibm.ws.http.netty.inbound.NettyTCPWriteRequestContext;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.http2.GrpcServletServices;
@@ -97,8 +93,8 @@ import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
 import com.ibm.wsspi.http.channel.exception.BodyCompleteException;
 import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.exception.MessageTooLargeException;
-import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.ConnectionValues;
+import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
@@ -112,7 +108,6 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -120,13 +115,12 @@ import io.netty.channel.VoidChannelPromise;
 import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -137,10 +131,7 @@ import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
-import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.openliberty.http.constants.HttpGenerics;
-import io.netty.util.AsciiString;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -328,7 +319,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     protected ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
-    private io.netty.handler.codec.http.HttpResponse nettyResponse;
+    private HttpResponse nettyResponse;
     /** Request protocol and stream metadata, set once before executor publication. */
     private volatile RequestMetadata nettyRequestMetadata;
 
@@ -382,7 +373,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
-    public void setNettyResponse(io.netty.handler.codec.http.HttpResponse response) {
+    public void setNettyResponse(HttpResponse response) {
         this.nettyResponse = response;
     }
 
@@ -2390,7 +2381,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     final protected void sendHeaders(HttpResponse response) throws IOException {
         if (headersSent()) {
-            Tr.event(tc, "Invalid call to sendHeaders after already sent");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Invalid call to sendHeaders after already sent");
+            }
             return;
         }
 
@@ -2657,7 +2650,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         String responseMimeTypeWildCard = null;
         if (responseMimeType != null) {
             responseMimeTypeWildCard = responseMimeType.split("/")[0] + "/*";
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "Response MimeType wildcard set as: " + responseMimeTypeWildCard);
             }
         }
@@ -2665,14 +2658,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         //Don't compress if less than 2048 bytes
         long contentLength = getResponse().getContentLength();
         if (contentLength != HeaderStorage.NOTSET && contentLength < 2048) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "Response body CL is less than 2048 bytes, do not attempt to compress.");
             }
             isCompliant = false;
         }
 
         else if (responseMimeType == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "No content type defined for this response, do not attempt to compress.");
             }
             isCompliant = false;
@@ -2682,7 +2675,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         //compressed.
         else if (this.getHttpConfig().getExcludedCompressionContentTypes().contains(responseMimeType) ||
                  this.getHttpConfig().getExcludedCompressionContentTypes().contains(responseMimeTypeWildCard)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "The Content-Type: " + responseMimeType + " is configured to be excluded from compression.");
             }
             isCompliant = false;
@@ -2692,7 +2685,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         //compressed. Check for wildcard too. By default, this is text-only content-types
         else if (!this.getHttpConfig().getCompressionContentTypes().contains(responseMimeType) &&
                  !this.getHttpConfig().getCompressionContentTypes().contains(responseMimeTypeWildCard)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isCompressionCompliant", "The Content-Type: " + getResponse().getMIMEType() + " is not configured as a compressable content type");
             }
             isCompliant = false;
@@ -3085,8 +3078,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             prepareNettyHeadersToSend();
             if (isNettyHttp2Request()) {
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
-                if (Objects.isNull(handler)) {
-                } else if (handler.connection().remote().allowPushTo()) {
+                if (handler != null && handler.connection().remote().allowPushTo()) {
                     for (HeaderField header : msg.getAllHeaders()) {
                         if (header.getName().equalsIgnoreCase("link") &&
                             header.asString().toLowerCase().contains("rel=preload") &&
@@ -3133,7 +3125,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @param uri
      */
     private void handleNettyPreload(String uri) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleNettyPreload(): Found preload for URI " + uri);
         }
         HttpToHttp2ConnectionHandler handler = this.nettyContext.pipeline().get(HttpToHttp2ConnectionHandler.class);
@@ -3157,7 +3149,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             headers.authority(auth);
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleNettyPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
             Tr.debug(tc, "handleNettyPreload(): Sending push promise frame for currentStream " + currentStreamId + " on promisedStream " + nextPromisedStreamId + " with headers "
                          + headers);
@@ -3413,8 +3405,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (isNettyHttp2Request()) {
 
                 HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
-                if (Objects.isNull(handler)) {
-                } else if (handler.connection().remote().allowPushTo()) {
+                if (handler != null && handler.connection().remote().allowPushTo()) {
                     for (HeaderField header : msg.getAllHeaders()) {
                         if (header.getName().equalsIgnoreCase("link") &&
                             header.asString().toLowerCase().contains("rel=preload") &&
@@ -3462,9 +3453,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 sendNettyFinalContent();
             }
         }
-        // if (isNettyUpgrade101()) {
-        //     triggerNettyUpgradeEvent();
-        // }
         setMessageSent();
     }
 
@@ -3938,30 +3926,37 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                         nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
                     }
 
-                    Tr.debug(tc,"UPGRADE LOG -> sendNettyHeaders detected 101, attaching event to listener");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,"sendNettyHeaders detected 101, attaching event to listener");
+                    }
 
                     future.addListener(f -> {
                         if(f.isSuccess()){
-                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush success, firing event. Autoread = " 
-                                + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc,"101 writeAndFlush success, firing event. Autoread = "
+                                    + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
+                            }
                             
                             nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
                         } else {
                             if (isWebSocketUpgrade) {
                                 nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
                             }
-                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush failed: " + String.valueOf(f.cause()));
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc,"101 writeAndFlush failed: " + String.valueOf(f.cause()));
+                            }
                         }
                         
                     });
                 
                 } else {
-                    Tr.debug(tc," UPGRADE LOG -> status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,"status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
+                    }
                 }
             }
         });
 
-        
     }
 
     /**
@@ -5308,7 +5303,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // we have no way of communicating back to the application channel
             // that the parse error was encountered, so just log it and return
             // back out
-            com.ibm.ws.ffdc.FFDCFilter.processException(mhe, getClass().getName() + ".parseTrailers", "1915", this);
+            FFDCFilter.processException(mhe, getClass().getName() + ".parseTrailers", "1915", this);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "parseTrailers caught exception: " + mhe);
             }
@@ -6462,7 +6457,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
             }
 
@@ -6520,7 +6515,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         H2StreamProcessor existingSP = ((H2HttpInboundLinkWrap) link).muxLink.getStreamProcessor(streamId);
         if (existingSP != null) {
             try {
-                existingSP.processNextFrame(pushPromiseFrame, com.ibm.ws.http.channel.h2internal.Constants.Direction.WRITING_OUT);
+                existingSP.processNextFrame(pushPromiseFrame, Direction.WRITING_OUT);
             } catch (Http2Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(tc, "handleH2LinkPreload(): Protocol exception when sending the push_promise frame: " + e);
@@ -6594,82 +6589,5 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "getGRPCEndStream(): returning: " + ret);
         }
         return ret;
-    }
-
-    private boolean isNettyUpgrade101() {
-        if (nettyResponse == null || nettyContext == null) {
-            return false;
-        }
-
-        if (!nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
-            return false;
-        }
-
-        // Check Connection: Upgrade and Upgrade: <token>
-        final CharSequence conn = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
-        final CharSequence upg = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
-        if (conn == null || upg == null || upg.length() == 0) {
-            return false;
-        }
-
-        return AsciiString.containsIgnoreCase(conn, "upgrade");
-    }
-
-    private void triggerNettyUpgradeEvent() {
-        if (nettyContext == null) {
-            return;
-        }
-        CompletableFuture<Void> promise = getUpgradeReadyPromise();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "triggerNettyUpgradeEvent: firing 101 Event");
-        }
-
-        if(nettyContext.executor().inEventLoop()) {
-            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
-        } else {
-            nettyContext.executor().execute(() ->
-                nettyContext.pipeline().fireUserEventTriggered(
-                    HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
-        }
-
-        //TODO: discuss what if we want to set a task to timeout installing the upgrade handler
-        // and log the promise as failed
-        // final ScheduledFuture<?> upgradeInstallTimeout = nettyContext.executor().schedule(() -> {
-        //     if(!promise.isDone()){
-        //         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //             Tr.debug(tc, "triggerNettyUpgradeEvent: timed out waiting for upgrade handler installation");
-        //         }
-        //         promise.completeExceptionally(new IOException("Upgrade failed: Upgrade handler not installed"));
-        //     }
-        // }, 1000, TimeUnit.MILLISECONDS);
-        // promise.whenComplete((v, t) -> upgradeInstallTimeout.cancel(false));
-    }
-    
-    /**
-     * Prepares the channel upgrade promise. This promise is completed by the 
-     * {@link HttpDispatcherHandler} after the pipeline handlers are changed to handle 
-     * the upgraded connection.
-     * 
-     * @return the channel upgrade promise
-     */
-    private CompletableFuture<Void> getUpgradeReadyPromise() {
-        CompletableFuture<Void> promise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-        if (promise != null) {
-            return promise;
-        }
-
-        promise = new CompletableFuture<>();
-        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
-        
-        //If channel closes before the upgrade handler is installed, fail this promise
-        final CompletableFuture<Void> finalPromise = promise;
-        nettyContext.channel().closeFuture().addListener(f -> {
-            if (!finalPromise.isDone()) {
-                finalPromise.completeExceptionally(new IllegalStateException("Channel closed before upgrade handler was installed"));
-            }
-        });
-
-        return promise;
     }
 }

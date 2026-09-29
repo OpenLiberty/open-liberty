@@ -28,9 +28,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
-import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.genericbnf.BNFHeaders;
@@ -45,7 +43,6 @@ import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
 import com.ibm.wsspi.http.channel.values.SchemeValues;
-import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 
 import io.netty.channel.ChannelFuture;
@@ -857,7 +854,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         }
         headers.authority(auth);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "pushNewRequest(): Method is GET, authority is " + auth + ", scheme is " + scheme);
         }
 

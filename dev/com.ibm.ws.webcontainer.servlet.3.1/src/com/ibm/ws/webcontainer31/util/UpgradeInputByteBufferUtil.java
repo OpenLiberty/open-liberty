@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
 package com.ibm.ws.webcontainer31.util;
 
 import java.io.IOException;
-
 import javax.servlet.ReadListener;
 import javax.servlet.http.WebConnection;
 
@@ -203,7 +202,7 @@ public class UpgradeInputByteBufferUtil {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                         Tr.debug(tc, "WC immediateRead: amountToRead=" + amountToRead + " buffer.remaining()="+ _buffer.remaining());
                     } 
-                    } catch (IOException readException){
+                } catch (IOException readException){
                     //If we encounter an exception here we need to return the 1 byte that we already have.
                     //Returned true immediately and the next read will catch the exception and propagate it properly
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){

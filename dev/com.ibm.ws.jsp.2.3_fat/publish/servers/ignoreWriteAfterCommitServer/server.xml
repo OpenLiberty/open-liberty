@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2025 IBM Corporation and others.
+    Copyright (c) 2025, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -15,7 +15,13 @@
         <feature>jsp-2.3</feature>
     </featureManager>
 
-        <!-- httpEndpoint needed to that we an have the httpOptions included for the test  -->
+    <!-- Precompile all JSPs at startup (prepareJSPs=0 means compile everything).
+         This eliminates first-request JSP compilation latency, which would otherwise
+         cause the socket read timeout in testIgnoreWriteAfterCommitTrue to fire before
+         the 302 response arrives on a cold server. -->
+    <jspEngine prepareJSPs="0"/>
+
+    <!-- httpEndpoint needed so that we can have the httpOptions included for the test -->
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"

@@ -11,27 +11,22 @@ package com.ibm.ws.netty.cookie;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-import com.ibm.ws.http.channel.internal.HttpConfigConstants.SameSite;
-import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
-import io.openliberty.http.netty.cookie.CookieDecoder;
 import io.openliberty.http.netty.cookie.CookieEncoder;
 
 /**

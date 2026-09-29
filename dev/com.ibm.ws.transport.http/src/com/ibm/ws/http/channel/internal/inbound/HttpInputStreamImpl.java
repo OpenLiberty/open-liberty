@@ -22,6 +22,7 @@ import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -33,11 +34,7 @@ import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpUtil;
 import io.openliberty.http.netty.compression.HttpContentDecompressor;
-
-import com.ibm.ws.http.netty.NettyHttpConstants;
 
 /**
  * Wrapper for an incoming HTTP request message body that provides the input
@@ -628,6 +625,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         firstReadCompleteforMulti = false;
         dataAlreadyReadFromChannel = false;
 
+        WsByteBuffer currentBuffer = this.buffer;
         if (this.buffer != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "cleanupforMultiRead", "remove buffer ->" + this.buffer);
@@ -639,6 +637,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             for (Iterator<WsByteBuffer> i = postDataBuffer.iterator(); i.hasNext();) {
 
                 WsByteBuffer postbuffer = i.next();
+                if (postbuffer == currentBuffer) {
+                    continue;
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "cleanupforMultiRead", "postbuffer released ->" + postbuffer);
                 }

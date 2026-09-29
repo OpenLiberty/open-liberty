@@ -31,7 +31,6 @@ import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
 import io.netty.channel.Channel;
@@ -40,14 +39,13 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
-import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
+import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.ReferenceCountUtil;
@@ -187,8 +185,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         return handler;
     }
 
-   
-
     /**
      * Utility method for building and H2C pipeline
      *
@@ -277,9 +273,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
 
                 establishHttp1Protocol(ctx, false);
-      
 
-                Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
+                }
 
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
 
@@ -351,6 +348,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
                 pipeline.addAfter(FLOW_CONTROL_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             }
+
+            if (pipeline.get(TimeoutHandler.class) == null) {
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, TimeoutHandler.NAME, new TimeoutHandler(httpConfig));
+            }
             
             if(pipeline.get(ReadFlowHandler.class) == null) {
                 pipeline.addBefore(HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
@@ -360,8 +361,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HttpDispatcherHandler.NAME, RemoteIpHandler.NAME, new RemoteIpHandler(httpConfig));
         }
-        
-        
+
     }
 
     public static class HttpPipelineBuilder {
@@ -369,7 +369,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         private final NettyChain chain;
         private final EnumMap<ConfigElement, Map<String, Object>> configOptions = new EnumMap<>(ConfigElement.class);
         private final Set<ConfigElement> activeConfigs = EnumSet.noneOf(ConfigElement.class);
-
 
         public HttpPipelineBuilder(NettyChain chain) {
             this.chain = Objects.requireNonNull(chain, "Netty chain cannot be null");
@@ -424,7 +423,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             }
 
             NettyHttpChannelConfig httpConfig = configBuilder.build();
-
 
             return new HttpPipelineInitializer(chain, httpConfig, configOptions);
         }

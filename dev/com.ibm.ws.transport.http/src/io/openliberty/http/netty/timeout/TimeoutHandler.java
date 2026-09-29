@@ -11,7 +11,6 @@ package io.openliberty.http.netty.timeout;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -21,13 +20,6 @@ import com.ibm.ws.http.internal.netty.protocol.ProtocolChangedEvent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
-import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-
-import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
-import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
-import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
-import io.openliberty.http.netty.timeout.exception.TimeoutException;
-import io.openliberty.http.options.TcpOption;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -41,8 +33,13 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http2.Http2DataFrame;
 import io.netty.handler.codec.http2.Http2HeadersFrame;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
+import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
+import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
+import io.openliberty.http.options.TcpOption;
 
 public class TimeoutHandler extends ChannelDuplexHandler {
 
@@ -152,26 +149,10 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         } else if(phase == Phase.READ){
             resetRead(context);
         }
-        
-        
-        //else{
-
-        //     switch (phase) {
-        //         case TCP_IDLE:
-        //             arm(context, Phase.READ);
-        //             break;
-        //         case READ:
-        //             resetRead(context);
-        //             break;
-        //         default:
-        //     }
-        // }
 
         super.channelRead(context, message);
 
         if (isRequestEnd(message)) {
-          //  cancel();
-            
             if (phase == Phase.READ){
                 cancel();
             }
@@ -240,22 +221,24 @@ public class TimeoutHandler extends ChannelDuplexHandler {
                     arm(context, Phase.READ);
                     return;
                 }
-                if (firstRequest) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "The connection closed due to idle timeout");
-                    }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The connection is closing due an idle read timeout");
+                }
+                if (firstRequest && context.pipeline().get(SslHandler.class) != null) {
                     context.close();
                 } else {
-                    context.fireExceptionCaught(new ReadTimeoutException(readTimeout, LEGACY_UNIT));
+                    context.fireExceptionCaught(new ReadTimeoutException(readTimeout, LEGACY_UNIT,
+                                                                        context.channel().localAddress(), context.channel().remoteAddress()));
                 }
                 break;
 
             case PERSIST:
-                context.fireExceptionCaught(new PersistTimeoutException(persistTimeout, LEGACY_UNIT));
-                //context.close();
+                context.fireExceptionCaught(new PersistTimeoutException(persistTimeout, LEGACY_UNIT,
+                                                                       context.channel().localAddress(), context.channel().remoteAddress()));
                 break;
             case H2_IDLE:
-                context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout, LEGACY_UNIT));
+                context.fireExceptionCaught(new H2IdleTimeoutException(h2InactivityTimeout, LEGACY_UNIT,
+                                                                      context.channel().localAddress(), context.channel().remoteAddress()));
                 break;
             default:
         }
@@ -365,7 +348,6 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         if(context == null){
             return;
         }
-
 
         handler.armPersistIfNeeded(context);
     }

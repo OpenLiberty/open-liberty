@@ -9,55 +9,39 @@
  *******************************************************************************/
 package com.ibm.ws.netty.cookie;
 
+import static com.ibm.ws.http.netty.message.NettyBaseMessage.MessageType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.doReturn;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
 
 import java.lang.reflect.Field;
-import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.message.NettyRequestMessage;
-import com.ibm.wsspi.channelfw.VirtualConnection;
-import com.ibm.wsspi.genericbnf.HeaderField;
-import com.ibm.wsspi.http.HttpCookie;
-import com.ibm.wsspi.http.channel.HttpServiceContext;
-import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
-import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.ws.http.netty.message.NettyBaseMessage;
 import com.ibm.ws.http.netty.message.NettyBaseMessage.MessageType;
-import static com.ibm.ws.http.netty.message.NettyBaseMessage.MessageType.*;
+import com.ibm.wsspi.http.HttpCookie;
+import com.ibm.wsspi.http.channel.HttpServiceContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-
-import com.ibm.wsspi.http.channel.HttpServiceContext;
 
 /**
  * Provides a series of tests verifying the cookie parsing (inbound)

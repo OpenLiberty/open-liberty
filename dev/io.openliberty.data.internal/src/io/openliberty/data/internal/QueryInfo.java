@@ -420,7 +420,7 @@ public abstract class QueryInfo {
                      "          element: " + singleTypeElementType,
                      "return array type: " + returnArrayType,
                      "type if known:     " + methodType,
-                     "anno if known:     " + methodTypeAnno);
+                     "anno if known:     " + Util.toString(methodTypeAnno));
         }
 
         this.producer = repositoryProducer;
@@ -2671,7 +2671,7 @@ public abstract class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "generateParamBasedQuery",
                      q,
-                     methodAnno == null ? null : methodAnno.annotationType().getSimpleName(),
+                     Util.toString(methodAnno),
                      countPages,
                      constraints.keySet(),
                      jpqlParams == null ? null : jpqlParams.keySet());
@@ -2775,7 +2775,7 @@ public abstract class QueryInfo {
                         // will be added to the spec. Deferring NLS message
                         // until then.
                         throw new MappingException("One or more of the " +
-                                                   Arrays.toString(annosForAllParams[p]) +
+                                                   Util.toStringList(annosForAllParams[p]) +
                                                    " annotations specifes an operation" +
                                                    " that cannot be used on parameter " +
                                                    (p + 1) + " of the " + method.getName() +

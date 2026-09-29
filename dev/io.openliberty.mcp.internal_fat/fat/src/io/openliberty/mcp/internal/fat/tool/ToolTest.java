@@ -2567,7 +2567,7 @@ public class ToolTest extends FATServletClient {
         client.callMCP(request);
 
         assertNotNull(server.waitForStringInTrace(Pattern.quote(redactedSessionId)));
-        assertNull(server.waitForStringInTrace(sessionId, 3000)); // wait 3 seconds to confirm full session Id not found in trace
+        assertNull(server.waitForStringInTrace(sessionId, TestConstants.NEGATIVE_TIMEOUT_MS)); // negative check to confirm full session Id not found in trace
     }
 
     @Test

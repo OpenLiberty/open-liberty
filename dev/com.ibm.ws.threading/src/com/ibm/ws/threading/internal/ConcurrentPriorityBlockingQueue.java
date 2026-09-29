@@ -270,6 +270,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         return count;
     }
 
+    @Trivial
     @Override
     public boolean isEmpty() {
         return size.get() <= 0;
@@ -446,6 +447,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         return offer(item); // size is unlimited so all adds are non-blocking
     }
 
+    @Trivial
     @Override
     public T peek() {
         Head<T> head = currentHead.get();
@@ -567,6 +569,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         return false;
     }
 
+    @Trivial
     @Override
     public final int size() {
         int s = size.get();

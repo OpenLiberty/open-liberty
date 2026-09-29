@@ -56,15 +56,18 @@ public class StatefulPersistenceContext {
 
         for (Iterator<Entry<EntityHandlerFactory, EntityManager>> it = //
                         entityManagers.entrySet().iterator(); //
-                        it.hasNext();)
-            try {
-                Entry<EntityHandlerFactory, EntityManager> entry = it.next();
-                DataProvider provider = entry.getKey().provider;
-                EntityManager em = entry.getValue();
+                        it.hasNext();) {
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "flush and close " + em);
+            Entry<EntityHandlerFactory, EntityManager> entry = it.next();
+            DataProvider provider = entry.getKey().provider;
+            EntityManager em = entry.getValue();
+            it.remove();
 
+            boolean isOpen = em.isOpen();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush and close " + em + "? " + isOpen);
+
+            if (isOpen) {
                 // TODO consider having the spec provide a way for the user
                 // to request a flush when they want changes persisted,
                 // and then we could make this into an error path and
@@ -126,9 +129,8 @@ public class StatefulPersistenceContext {
                         em.close();
                     }
                 }
-            } finally {
-                it.remove();
             }
+        }
     }
 
     /**
