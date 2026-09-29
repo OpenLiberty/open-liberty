@@ -86,10 +86,10 @@ public abstract class JsonProvider {
     }
 
     /**
-     * Creates a JSON provider object.
+     * Creates a JSON provider object. Returns one instance per context class loader; subsequent
+     * calls with the same thread context class loader may return the same instance.
      *
-     * <p>Discovery results are cached per context class loader; subsequent calls may return the
-     * same instance. Implementation discovery consists of the following steps:
+     * <p>Implementation discovery consists of the following steps:
      * <ol>
      * <li>If the system property {@value #JSONP_PROVIDER_FACTORY} exists,
      *    then its value is assumed to be the provider factory class.
@@ -118,7 +118,7 @@ public abstract class JsonProvider {
         //    runtime changes; freshly instantiated to bypass caching.
         String factoryClassName = System.getProperty(JSONP_PROVIDER_FACTORY);
         if (factoryClassName != null) {
-            return JsonProviderCache.getForClassName(factoryClassName, cl);
+            return JsonProviderCache.newInstance(factoryClassName, cl);
         }
 
         // 2. Cache lookup: TCCL -> provider class -> instance.
@@ -130,8 +130,7 @@ public abstract class JsonProvider {
         // 3. Miss: discover outside the lock. Concurrent first callers may each discover once; harmless.
         LOG.log(Level.FINE, "Cache miss for classloader [{0}]; starting discovery", cl);
         JsonProvider discovered = discover(cl);
-        JsonProvider shared = JsonProviderCache.put(cl, discovered);
-        return (shared != null) ? shared : discovered;
+        return JsonProviderCache.put(cl, discovered);
     }
 
     private static JsonProvider discover(ClassLoader cl) {
@@ -159,7 +158,7 @@ public abstract class JsonProvider {
         // else no provider found — load the platform default via the spec bundle's own classloader
         LOG.fine("Trying to create the platform default provider");
         ClassLoader specCL = JsonProvider.class.getClassLoader();
-        return JsonProviderCache.instantiateDefault(DEFAULT_PROVIDER, specCL != null ? specCL : cl);
+        return JsonProviderCache.newInstance(DEFAULT_PROVIDER, specCL != null ? specCL : cl);
     }
 
     /**

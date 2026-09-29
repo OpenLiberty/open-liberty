@@ -17,8 +17,7 @@
 package jakarta.json.spi;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
@@ -28,139 +27,100 @@ import jakarta.json.JsonException;
 
 /**
  * Provider cache used by {@link JsonProvider#provider()}.
+
+ * <p>{@code CACHE} maps each thread context class loader (TCCL) to a weak reference to the
+ * canonical {@link JsonProvider} instance for that loader. Weak values prevent {@code CACHE}
+ * from being the sole reason an instance stays alive.
  *
- * <p>{@code CLASSLOADER_CACHE} maps a thread context classloader to a weak reference to the
- * resolved provider {@code Class}. Weak keys allow entries to be evicted when the classloader is
- * collected; weak values refer to the provider {@code Class}, which is strongly owned by its
- * defining classloader ({@code ClassLoader.classes}) and therefore lives exactly as long as
- * that loader.
- *
- * <p>The provider instance is stored by {@code INSTANCES}, a {@code ClassValue} that anchors
- * exactly one {@link JsonProvider} instance inside each provider {@code Class}'s own internal map
- * ({@code Class.classValueMap}). The result is that the entire graph (loader + class + instance) is
- * collected as a unit when the container drops the loader.
- *
- * <p>All accesses to {@code CLASSLOADER_CACHE} are guarded by {@code synchronized} blocks.
- * {@code ClassValue.get} is lock-free after the first computation.
+ * <p>{@code ANCHOR} is a {@link ClassValue} that associates each provider {@code Class} with a
+ * {@code WeakHashMap<ClassLoader, JsonProvider>}. The map is stored inside the provider's own
+ * {@code Class} via {@code Class.classValueMap}, so it is owned by the provider's defining loader,
+ * not by a static field. This prevents the JsonProvider from being gc'd while the TCCL still exists.
+
  */
 final class JsonProviderCache {
 
     private static final Logger LOG = Logger.getLogger(JsonProviderCache.class.getName());
 
-    /** TCCL → weak reference to the resolved provider Class. */
-    private static final Map<ClassLoader, WeakReference<Class<? extends JsonProvider>>> CLASSLOADER_CACHE =
-            new WeakHashMap<>();
+    private static final Map<ClassLoader, WeakReference<JsonProvider>> CACHE = new WeakHashMap<>();
 
-    /** provider Class → singleton instance, stored inside the Class itself via {@code Class.classValueMap}. */
-    private static final ClassValue<JsonProvider> INSTANCES = new ClassValue<>() {
+    private static final ClassValue<Map<ClassLoader, JsonProvider>> ANCHOR = new ClassValue<>() {
         @Override
-        protected JsonProvider computeValue(Class<?> type) {
-            return instantiate(type.asSubclass(JsonProvider.class));
+        protected Map<ClassLoader, JsonProvider> computeValue(Class<?> type) {
+            return Collections.synchronizedMap(new WeakHashMap<>());
         }
     };
 
     private JsonProviderCache() {
     }
 
-    /**
-     * Returns the cached provider instance for the given classloader, or {@code null} on a miss.
-     */
+
     static JsonProvider get(ClassLoader cl) {
-        Class<? extends JsonProvider> type;
-        synchronized (CLASSLOADER_CACHE) {
-            WeakReference<Class<? extends JsonProvider>> ref = CLASSLOADER_CACHE.get(cl);
-            type = (ref != null) ? ref.get() : null;
+        synchronized (CACHE) {
+            WeakReference<JsonProvider> ref = CACHE.get(cl);
+            return (ref != null) ? ref.get() : null;
         }
-        return (type != null) ? INSTANCES.get(type) : null;
     }
 
     /**
-     * Stores the provider class for the given classloader and returns the canonical shared instance.
-     * If the provider is not re-instantiable by the cache rules, returns {@code null} and leaves
-     * the entry uncached (the caller should return the already-discovered instance as-is).
+     * Stores the discovered instance as the canonical provider for the given class loader and
+     * returns it.
+     *
+     * <p>If a concurrent first caller already anchored an instance for this TCCL, that canonical
+     * instance is returned instead of {@code discovered}.
      */
     static JsonProvider put(ClassLoader cl, JsonProvider discovered) {
-        Class<? extends JsonProvider> type = discovered.getClass();
-        JsonProvider shared;
-        try {
-            shared = INSTANCES.get(type);
-        } catch (JsonException e) {
-            LOG.log(Level.FINE, "Provider " + type.getName() + " is not cacheable", e);
-            return null;
-        }
-        synchronized (CLASSLOADER_CACHE) {
-            WeakReference<Class<? extends JsonProvider>> existing = CLASSLOADER_CACHE.get(cl);
-            if (existing == null || existing.get() == null) {
-                CLASSLOADER_CACHE.put(cl, new WeakReference<>(type));
+        Map<ClassLoader, JsonProvider> anchor = ANCHOR.get(discovered.getClass());
+        JsonProvider instance;
+        synchronized (CACHE) {
+            WeakReference<JsonProvider> ref = CACHE.get(cl);
+            instance = (ref != null) ? ref.get() : null;
+            if (instance == null) {
+                instance = anchor.putIfAbsent(cl, discovered);
+                if (instance == null) {
+                    instance = discovered;
+                }
+                CACHE.put(cl, new WeakReference<>(instance));
             }
         }
-        return shared;
+        return instance;
     }
 
     /**
-     * Resolves a provider class name and instantiates it directly, bypassing {@code INSTANCES}.
-     * Used for the system-property override path in {@link JsonProvider#provider()}.
+     * Resolves {@code className} and returns a fresh instance. Used for the system-property
+     * override and the platform default fallback paths.
      */
-    static JsonProvider getForClassName(String className, ClassLoader cl) {
-        return instantiate(resolve(className, cl));
-    }
-
-    /**
-     * Resolves the platform default provider class and returns its canonical shared instance
-     * from {@code INSTANCES}. Convenience for the final fallback in discovery; keeps
-     * {@link #resolve} and {@link #instantiate} private.
-     */
-    static JsonProvider instantiateDefault(String className, ClassLoader cl) {
-        return INSTANCES.get(resolve(className, cl));
+    static JsonProvider newInstance(String className, ClassLoader cl) {
+        Class<? extends JsonProvider> type = resolve(className, cl);
+        try {
+            return type.getConstructor().newInstance();
+        } catch (Exception x) {
+            throw new JsonException("Provider " + className + " could not be instantiated: " + x, x);
+        }
     }
 
     /**
      * Resolves a provider class name to a {@code Class}, trying {@code cl} first and falling back
-     * to the API's own classloader for compatibility with pre-2.2 behaviour.
+     * to the API's own class loader for compatibility with pre-2.2 behavior.
      */
     private static Class<? extends JsonProvider> resolve(String className, ClassLoader cl) {
+        Class<?> raw;
         try {
-            Class<?> raw = Class.forName(className, false, cl);
-            Class<? extends JsonProvider> typed = raw.asSubclass(JsonProvider.class);
-            Class.forName(className, true, cl);
-            return typed;
+            raw = Class.forName(className, false, cl);
         } catch (ClassNotFoundException x) {
             try {
                 // Compatibility: before 2.2 the class was resolved by the API's own loader.
-                Class<?> raw = Class.forName(className, false, JsonProvider.class.getClassLoader());
-                Class<? extends JsonProvider> typed = raw.asSubclass(JsonProvider.class);
-                Class.forName(className, true, JsonProvider.class.getClassLoader());
-                return typed;
+                raw = Class.forName(className, false, JsonProvider.class.getClassLoader());
             } catch (ClassNotFoundException y) {
                 JsonException je = new JsonException("Provider " + className + " not found", x);
                 je.addSuppressed(y);
                 throw je;
             }
+        }
+        try {
+            return raw.asSubclass(JsonProvider.class);
         } catch (ClassCastException x) {
             throw new JsonException("Provider " + className + " is not a " + JsonProvider.class.getName(), x);
-        }
-    }
-
-    /**
-     * Instantiates the given provider class. A {@code public static provider()} factory method
-     * declared directly on the class takes precedence over the public no-arg constructor.
-     * Uses {@code getDeclaredMethod} (not {@code getMethod}) to avoid finding the inherited
-     * static {@link JsonProvider#provider()} and recursing.
-     */
-    private static JsonProvider instantiate(Class<? extends JsonProvider> type) {
-        try {
-            try {
-                Method factory = type.getDeclaredMethod("provider");
-                int mods = factory.getModifiers();
-                if (Modifier.isPublic(mods) && Modifier.isStatic(mods)
-                        && JsonProvider.class.isAssignableFrom(factory.getReturnType())) {
-                    return (JsonProvider) factory.invoke(null);
-                }
-            } catch (NoSuchMethodException ignored) {
-            }
-            return type.getConstructor().newInstance();
-        } catch (Exception x) {
-            throw new JsonException("Provider " + type.getName() + " could not be instantiated: " + x, x);
         }
     }
 }
