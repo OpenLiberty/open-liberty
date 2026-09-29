@@ -91,7 +91,8 @@ public interface FileServiceMXBean {
      * &lt;/remoteFileAccess&gt;
      * </pre>
      * <p>
-     * The default is an empty list.
+     * The default is a list containing 3 entries: ${wlp.install.dir},
+     * ${wlp.user.dir} and ${server.output.dir}.
      * 
      * @return a list of Strings containing the absolute paths which are read-accessible.
      */
@@ -112,8 +113,7 @@ public interface FileServiceMXBean {
      * &lt;/remoteFileAccess&gt;
      * </pre>
      * <p>
-     * The default is a list containing 3 entries: ${wlp.install.dir},
-     * ${wlp.user.dir} and ${server.output.dir}.
+     * The default is an empty list.
      * 
      * @return a list of Strings containing the absolute paths which are write-accessible.
      */
