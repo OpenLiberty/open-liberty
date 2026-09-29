@@ -17,7 +17,7 @@
     </featureManager>
 
     <httpEndpoint id="defaultHttpEndpoint"
-          host="localhost"
+          host="*"
           httpPort="${bvt.prop.HTTP_default}"
           httpsPort="${bvt.prop.HTTP_default.secure}" >
           <tcpOptions portOpenRetries="60"/>
