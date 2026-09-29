@@ -30,6 +30,7 @@ public interface CurrentDate<T> extends TemporalExpression<T, LocalDate> {
 }
 
 class CurrentDateInstance implements CurrentDate<Object> {
+    @Nonnull
     static final CurrentDate<?> instance = new CurrentDateInstance();
 
     private CurrentDateInstance() {

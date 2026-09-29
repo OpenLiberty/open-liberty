@@ -19,6 +19,7 @@ import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.tools.ToolCallException;
+import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -37,6 +38,7 @@ public class AsyncErrorHandlingTools {
             case "NonBusinessException" -> () -> new NonBusinessException("NonBusinessException");
             case "SpecificBusinessException" -> () -> new SpecificBusinessException("SpecificBusinessException");
             case "ToolCallException" -> () -> new ToolCallException("ToolCallException");
+            case "ToolCallUnauthorizedException" -> () -> new ToolCallUnauthorizedException("ToolCallUnauthorizedException");
             default -> throw new ToolCallException("Invalid exception type: " + exception);
         };
 

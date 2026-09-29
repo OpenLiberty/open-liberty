@@ -17,7 +17,8 @@ src: \
     test-applications/obsFoldApp/src,\
     test-applications/InactivityTimeout.war/src,\
     test-applications/FileUpload.war,\
-    test-applications/ConfigTest.war/src
+    test-applications/ConfigTest.war/src,\
+    test-applications/HeaderCasing.war/src
 
 fat.project: true
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,9 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -52,5 +55,24 @@ public class NoParamNameTest extends FATServletClient {
         String expectedErrorHeader = "CWMCM0003E: The (.+?) MCP tool method has one or more arguments without a name specified.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.noparamtool.NoParamTools.missingToolArgAnnotation");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Missing arguments found in MCP Tool: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    /**
+     * When a tool method has multiple arguments all without names, CWMCM0003E must be logged
+     * exactly once (not once per missing argument), and CWMCM0002E must not appear at all.
+     */
+    @Test
+    public void testMultipleUnnamedArgsReportedOnce() throws Exception {
+        String methodName = "io.openliberty.mcp.internal.fat.noparamtool.NoParamTools.multipleUnnamedArgs";
+        String missingNamePattern = "CWMCM0003E.*" + methodName;
+
+        List<String> occurrences = server.findStringsInLogs(missingNamePattern);
+        assertEquals("CWMCM0003E should be logged exactly once for " + methodName + " but was logged " + occurrences.size() + " times",
+                     1, occurrences.size());
+
+        String duplicateArgPattern = "CWMCM0002E.*" + methodName;
+        List<String> duplicateOccurrences = server.findStringsInLogs(duplicateArgPattern);
+        assertTrue("CWMCM0002E should not be logged for " + methodName + " (missing names are not real duplicates) but was found: " + duplicateOccurrences,
+                   duplicateOccurrences.isEmpty());
     }
 }

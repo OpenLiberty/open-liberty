@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -93,6 +93,18 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
     // Flag tells us if the message for a call to a beta method has been issued
     private static boolean issuedBetaMessage = false;
 
+    /** Ensures CWWKW0065I / CWWKW0066I is logged only once across all endpoint invocations. */
+    private static boolean issuedIgnoreUnexpectedElementsMessage = false;
+
+    /** Ensures CWWKW0067I / CWWKW0069I is logged only once across all endpoint invocations. */
+    private static boolean issuedSchemaValidationMessage = false;
+
+    /**
+     * Constructs the endpoint with the Liberty endpoint metadata and module runtime data.
+     *
+     * @param endpointInfo        Liberty metadata describing the JAX-WS endpoint
+     * @param jaxWsModuleMetaData runtime metadata for the JAX-WS module (classloader, bus, etc.)
+     */
     public AbstractJaxWsWebEndpoint(EndpointInfo endpointInfo, JaxWsModuleMetaData jaxWsModuleMetaData) {
         this.endpointInfo = endpointInfo;
         this.jaxWsModuleMetaData = jaxWsModuleMetaData;
@@ -282,7 +294,15 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
     }
 
     /**
-     * 
+     * Applies webService configuration from the Liberty server.xml to the CXF endpoint.
+     *
+     * <p>Called on each request invocation (within the beta fence in {@link #invoke}).
+     * Resolves configuration values in order: named config matching the endpoint's portName
+     * first, falling back to the global default. Applies the resolved values as CXF
+     * endpoint properties controlling JAXB validation behaviour.</p>
+     *
+     * <p>Info-level NLS messages are emitted once per JVM lifetime via static flags;
+     * subsequent activations are recorded at debug level only.</p>
      */
     private void configureWebServicesConfig() {
         
@@ -312,13 +332,17 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         Object ignoreUnexpectedElements = null;
 
         Object enableDefaultValidation = null;
-                
+
+        boolean ignoreUnexpectedResolvedFromNamed = false;
+        boolean schemaValidationResolvedFromNamed = false;
+
         // if portName != null, try to get the values from configuration using it
         if (portName != null) {
             // if portName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
             if(WebServicesConfigHolder.getEnableSchemaValidation(portName) != null) {
                 
                 enableSchemaValidation = WebServicesConfigHolder.getEnableSchemaValidation(portName);
+                schemaValidationResolvedFromNamed = true;
                 
             } else if (WebServicesConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP) != null) {
                 
@@ -331,6 +355,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             if(WebServicesConfigHolder.getIgnoreUnexpectedElements(portName) != null) {
                 
                 ignoreUnexpectedElements = WebServicesConfigHolder.getIgnoreUnexpectedElements(portName);
+                ignoreUnexpectedResolvedFromNamed = true;
                 
             } else if (WebServicesConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP) != null) {
                 
@@ -370,6 +395,17 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         if ( enableSchemaValidation != null) {
             cxfEndpointInfo.setProperty("schema-validation-enabled",  enableSchemaValidation);
 
+            if ((boolean) enableSchemaValidation == true && !issuedSchemaValidationMessage) {
+                if (schemaValidationResolvedFromNamed) {
+                    Tr.info(tc, "info.schema.validation.provider.named", portName); // CWWKW0069I
+                } else {
+                    Tr.info(tc, "info.schema.validation.global"); // CWWKW0067I
+                }
+                issuedSchemaValidationMessage = true;
+            } else if ((boolean) enableSchemaValidation == true && debug) {
+                Tr.debug(tc, "enableSchemaValidation is active for port " + portName + " (message already issued)");
+            }
+
             if (debug) {
                 Tr.debug(tc, "Set schema-validation-enabled to " + enableSchemaValidation);
 
@@ -390,7 +426,18 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             
             // Set our custom validation event handler
             IgnoreUnexpectedElementValidationEventHandler unexpectedElementValidationEventHandler = new IgnoreUnexpectedElementValidationEventHandler();
-            cxfEndpointInfo.setProperty(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler); 
+            cxfEndpointInfo.setProperty(JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER, unexpectedElementValidationEventHandler);
+
+            if (!issuedIgnoreUnexpectedElementsMessage) {
+                if (ignoreUnexpectedResolvedFromNamed) {
+                    Tr.info(tc, "info.ignore.unexpected.elements.provider.named", portName); // CWWKW0065I
+                } else {
+                    Tr.info(tc, "info.ignore.unexpected.elements.global"); // CWWKW0066I
+                }
+                issuedIgnoreUnexpectedElementsMessage = true;
+            } else if (debug) {
+                Tr.debug(tc, "ignoreUnexpectedElements is active for port " + portName + " (message already issued)");
+            }
 
             if (debug) {
                 Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + ignoreUnexpectedElements);

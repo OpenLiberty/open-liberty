@@ -797,11 +797,14 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         }
 
         try {
-            long length = GenericUtils.asLongValue(value);
+            long length = GenericUtils.asLongValue(value, false);
             // PK24115 - don't allow -1 to be set explicitly
             if (0 > length) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Invalid Content-Length: " + Long.toString(length));
+                }
+                if (null != this.myHSC && this.myHSC.getHttpConfig().isRequestSmugglingProtectionEnabled()) {
+                    this.myHSC.setPersistent(false);
                 }
                 return false;
             }
@@ -832,9 +835,16 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
             this.myContentLength = length;
         } catch (NumberFormatException nfe) {
+            // If the issue is caught in an incoming request, we need to close the connection to avoid possible vulnerabilities
+            if (isIncoming() && null != this.myHSC && this.myHSC.getHttpConfig().isRequestSmugglingProtectionEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setContentLength(b): error parsing value: " + nfe.getMessage());
+                }
+                throw new IllegalArgumentException(nfe);
+            }
             // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Format exception in value");
+                Tr.debug(tc, "Format exception in value, operation will be ignored.");
             }
             return false;
         }

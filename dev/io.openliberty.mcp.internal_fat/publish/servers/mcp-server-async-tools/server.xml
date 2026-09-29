@@ -1,0 +1,19 @@
+<server description="Async Liberty server for AsyncToolsTest">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcp-1.0</feature>
+    <feature>concurrent-3.0</feature>
+  </featureManager>
+
+  <application location="asyncToolsTest.war">
+  </application>
+  
+  <application location="asyncToolsTestShortTimeout.war">
+    <mcp asyncTimeout="5s"/>
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+
+</server>

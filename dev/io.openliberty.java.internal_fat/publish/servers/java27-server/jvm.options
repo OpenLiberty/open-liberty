@@ -1,0 +1,11 @@
+# No preview features are used in this FAT (all tested JEPs are finalized).
+# Uncomment the line below if preview features are needed in future:
+# --enable-preview
+
+# JEP 534: Compact Object Headers by Default (Java 27 default, set explicitly to
+# make the FAT self-contained and immune to any container-level override).
+-XX:+UseCompactObjectHeaders
+
+# JEP 536: Set at JVM startup so jdk.InitialSystemProperty captures this key.
+# Value is a clearly-labelled test fixture — not a real credential.
+-Djep536.test.password=test-fixture-value

@@ -10,12 +10,14 @@
 package io.openliberty.mcp.internal.fat.tool.toolManagerApp;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolResponse;
 
-import org.mcpjava.server.tools.Tool;
 import io.openliberty.mcp.tools.ToolCallException;
+import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
 import io.openliberty.mcp.tools.ToolManager;
 import io.openliberty.mcp.tools.ToolManager.ToolAnnotations;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -72,6 +74,11 @@ public class ToolManagerStartupTestBean {
                    .setDescription("Test tool with arguments")
                    .setAnnotations(new ToolAnnotations("Anno Title", true, false, false, false))
                    .setHandler(a -> ToolResponse.ofText("OK"))
+                   .putMetadata("hasArgs", true)
+                   .putMetadata("hasStructuredOutput", false)
+                   .putMetadata("argCount", 3)
+                   .putMetadata("foo", Map.of("foo", List.of("bar", "baz"),
+                                              "qux", 7))
                    .register();
 
         JsonObject inputSchema = Json.createObjectBuilder()
@@ -115,9 +122,41 @@ public class ToolManagerStartupTestBean {
                    .register();
     }
 
+    @SuppressWarnings("unused")
+    private void createNullDefaultValueTool(@Observes Startup startup) {
+        toolManager.newTool("tool-with-null-default")
+                   .addArgument("value", null, false, String.class)
+                   .setDescription("Tool with a non-required arg that has no default value")
+                   .setHandler(a -> {
+                       String val = (String) a.args().get("value");
+                       return ToolResponse.ofText(val == null ? "null" : val);
+                   })
+                   .register();
+    }
+
     private static record PojoInput(String foo, int bar) {};
 
     private static record PojoOutput(String baz, List<Boolean> qux) {}
+
+    @SuppressWarnings("unused")
+    private void createSyncUnauthorizedTool(@Observes Startup startup) {
+        toolManager.newTool("sync-unauthorized-tool")
+                   .addArgument("message", null, true, String.class)
+                   .setHandler(a -> {
+                       throw new ToolCallUnauthorizedException((String) a.args().get("message"));
+                   })
+                   .register();
+    }
+
+    @SuppressWarnings("unused")
+    private void createAsyncUnauthorizedTool(@Observes Startup startup) {
+        toolManager.newTool("async-unauthorized-tool")
+                   .addArgument("message", null, true, String.class)
+                   .setAsyncHandler(a -> {
+                       throw new ToolCallUnauthorizedException((String) a.args().get("message"));
+                   })
+                   .register();
+    }
 
     @SuppressWarnings("unused")
     private void createSyncTestTool(@Observes Startup startup) {

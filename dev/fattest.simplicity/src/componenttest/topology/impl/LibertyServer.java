@@ -1471,7 +1471,70 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
         return ltpaReady;
+    }
 
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready` in the specified file
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param logFile Name of the log file to check
+     * @return the matching line in the log
+     * @throws Exception is thrown the LTPA Config ready message is not found in the specified file within the default time period
+     */
+    public String waitForLTPAConfigReady(String logFile) throws Exception {
+        return waitForLTPAConfigReady(LOG_SEARCH_TIMEOUT, logFile);
+    }
+
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready`in the specified file
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param logFile Name of the log file to check
+     * @param timeout Time to wait for
+     * @return the matching line in the log
+     * @throws Exception is thrown the LTPA Config ready message is not found in the specified file within the specified time period
+     */
+    public String waitForLTPAConfigReady(int timeout, String logFile) throws Exception {
+        return waitForLTPAConfigReady(timeout, false, logFile);
+    }
+
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready`in the specified file
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param suppressException
+     * @param logFile Name of the log file to check
+     * @return the matching line in the log, or null if suppressException is `true`
+     * @throws Exception is thrown the LTPA Config ready message is not found in the specified file and suppressException is false
+     */
+    public String waitForLTPAConfigReady(boolean suppressException, String logFile) throws Exception {
+        return waitForLTPAConfigReady(LOG_SEARCH_TIMEOUT, suppressException, logFile);
+    }
+
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready` in the time specified in the specified file
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @param suppressException if wait times out, whether to suppress the exception and return null instead
+     * @param logFile Remote Log file to check for LTPA Config Ready Message ID e.g. `trace.log`
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if LTPA config ready message is not received in the provided period and suppressException is 'false'
+     */
+    public String waitForLTPAConfigReady(int timeout, boolean suppressException, String logFile) throws Exception {
+        String ltpaReady = waitForStringInLogUsingMark("CWWKS4105I:.*", timeout, getMatchingLogFile(logFile));
+        if(ltpaReady == null){
+            RuntimeException rx = new RuntimeException("Timed out waiting for the LTPA Config to be ready");
+            Log.error(c, "waitForLTPAConfigReady", rx);
+            if(!suppressException) {
+                throw rx;
+            }
+        }
+        return ltpaReady;
     }
 
     /**

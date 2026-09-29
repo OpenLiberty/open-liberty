@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 ZOSAIO_DEACTIVATED=CWWKO0230I: Nativn\u00ed podpora asynchronn\u00edho I/O pro z/OS byla deaktivov\u00e1na.
 ZOSAIO_DEACTIVATED.explanation=Slu\u017eba Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS, kter\u00e1 poskytuje z\u00e1kladn\u00ed funkce bal\u00edku asynchronn\u00edho I/O na \u00farovni opera\u010dn\u00edho syst\u00e9mu, je deaktivov\u00e1na.
 ZOSAIO_DEACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: Obslu\u017en\u00e1 rutina kan\u00e1lu {0} Netty byla odstran\u011bna z potrub\u00ed aktivn\u00edho p\u0159ipojen\u00ed.
+netty.handler.removed.from.pipeline.explanation=O\u0161et\u0159ova\u010d kan\u00e1lu typu \u201e Netty \u201c, kter\u00fd je nezbytn\u00fd pro spr\u00e1vnou funkci p\u0159ipojen\u00ed, byl neo\u010dek\u00e1van\u011b odstran\u011bn, zat\u00edmco byl kan\u00e1l aktivn\u00ed.
+netty.handler.removed.from.pipeline.useraction=Pokud se tato zpr\u00e1va st\u00e1le zobrazuje, shrom\u00e1\u017ed\u011bte diagnostick\u00e9 \u00fadaje a obra\u0165te se na podporu slu\u017eby IBM.
+
+read.timeout=CWWKO1713W: Do\u0161lo k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu p\u0159i \u010dten\u00ed z adresy HTTP : {0}
+read.timeout.explanation=P\u0159\u00edchoz\u00ed p\u0159ipojen\u00ed typu \u201e HTTP \u201c neobdr\u017eelo data v r\u00e1mci nastaven\u00e9 lh\u016fty pro \u010dten\u00ed.
+read.timeout.useraction=Zkontrolujte s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo zvy\u0161te hodnotu \u010dasov\u00e9ho limitu pro \u010dten\u00ed v konfiguraci koncov\u00e9ho bodu HTTP.
+
+write.timeout=CWWKO1714W: Do\u0161lo k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu p\u0159i z\u00e1pisu do souboru \u201e HTTP \u201c: {0}
+write.timeout.explanation=Operace z\u00e1pisu do slu\u017eby HTTP nebyla dokon\u010dena v r\u00e1mci nastaven\u00e9ho \u010dasov\u00e9ho limitu pro z\u00e1pis.
+write.timeout.useraction=Zkontrolujte s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo zvy\u0161te hodnotu \u010dasov\u00e9ho limitu pro z\u00e1pis v konfiguraci koncov\u00e9ho bodu HTTP.
+
+h2.idle.timeout=CWWKO1715W: Spojen\u00ed s webem HTTP/2 bylo ukon\u010deno z d\u016fvodu vypr\u0161en\u00ed \u010dasov\u00e9ho limitu ne\u010dinnosti: {0}
+h2.idle.timeout.explanation=Spojen\u00ed s webem HTTP/2 bylo neaktivn\u00ed d\u00e9le, ne\u017e \u010dinila nastaven\u00e1 doba ne\u010dinnosti, a proto server toto spojen\u00ed uzav\u0159el.
+h2.idle.timeout.useraction=Zkontrolujte s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo zvy\u0161te hodnotu \u010dasov\u00e9ho limitu ne\u010dinnosti p\u0159ipojen\u00ed typu \u201e HTTP/2 \u201c v konfiguraci koncov\u00e9ho bodu \u201e HTTP \u201c.

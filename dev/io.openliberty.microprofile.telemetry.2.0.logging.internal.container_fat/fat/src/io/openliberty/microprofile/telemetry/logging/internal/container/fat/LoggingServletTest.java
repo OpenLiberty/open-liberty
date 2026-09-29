@@ -24,7 +24,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -58,15 +59,13 @@ public class LoggingServletTest {
 
     public static final int WAIT_TIMEOUT = 5; // 5 seconds
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
-    public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from(TestUtils.IMAGE_NAME)
-                                    .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
-                    .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml"), 0644))
+    public static GenericContainer<?> container = new GenericContainer<>(TestUtils.IMAGE_NAME)
+                    .withCopyFileToContainer(MountableFile.forHostPath(new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml").toPath()),
+                                             "/etc/otelcol-contrib/config.yaml")
                     .withLogConsumer(new SimpleLogConsumer(LoggingServletTest.class, "opentelemetry-collector-contrib"))
-                    .withExposedPorts(4317, 4318);
+                    .withExposedPorts(4317, 4318)
+                    .waitingFor(Wait.forLogMessage(".*Everything is ready.*", 1));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -98,7 +97,7 @@ public class LoggingServletTest {
     public void testMessageLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_MSG_SOURCES, messageLogFile, server);
@@ -135,7 +134,7 @@ public class LoggingServletTest {
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_TRACE_SOURCE, messageLogFile, server);
@@ -175,7 +174,7 @@ public class LoggingServletTest {
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_FFDC_SOURCE, messageLogFile, server);
@@ -224,7 +223,7 @@ public class LoggingServletTest {
     public void testAuditEventLogs() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_AUDIT_SOURCE, messageLogFile, server);
@@ -277,7 +276,7 @@ public class LoggingServletTest {
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         RemoteFile messageLogFile = server.getDefaultLogFile();
         setConfig(SERVER_XML_ACCESS_SOURCE, messageLogFile, server);

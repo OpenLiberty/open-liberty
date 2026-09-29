@@ -75,7 +75,7 @@ public class VerifySignatureUtility {
             defaultKeyID = properties.getProperty("com.ibm.websphere.productPublicKeyId");
         } catch (IOException e) {
             // openliberty.properties file is missing or invalidly formatted
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE", propertiesFile.getAbsolutePath()));
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE", propertiesFile.getAbsolutePath()), e);
         }
 
         return defaultKeyID;
@@ -165,7 +165,7 @@ public class VerifySignatureUtility {
                     }
                 }
             } catch (IOException e) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL", e.getMessage()));
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_DOWNLOAD_KEY_FROM_KEY_URL", e.getMessage()), e);
 
             }
         }
@@ -310,7 +310,7 @@ public class VerifySignatureUtility {
             return pgpPubRingCollection;
 
         } catch (IOException e) {
-            throw new InstallException(e.getMessage());
+            throw new InstallException(e.getMessage(),e);
         }
     }
 

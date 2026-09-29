@@ -3,11 +3,11 @@
   <featureManager>
     <feature>servlet-6.0</feature>
     <feature>cdi-4.0</feature>
-    <feature>mcpServer-1.0</feature>
+    <feature>mcp-1.0</feature>
   </featureManager>
   
   <application location="dynamicMcpPathUpdateTest.war">
-  	<mcpServer path="/dynamic-mcp"/>
+  	<mcp path="/dynamic-mcp"/>
   </application>
 
   <include location="../fatTestPorts.xml" />

@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.kernel.boot.internal.KernelUtils;
+
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
@@ -105,20 +105,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * are replaced with this value.
      */
     final static int MINIMUM_POOL_SIZE = 4;
-
-    /**
-     * Amount of time to wait for quiesce work to complete before continuing with shutdown.
-     */
-    final static int MINIMUM_QUIESCE_TIMEOUT = 30;
-    protected int quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
-
-    /**
-     * @return the quiesceTimeout
-     */
-    @Override
-    public int getQuiesceTimeout() {
-        return quiesceTimeout;
-    }
 
     /**
      * The most recently provided component config for the executor.
@@ -214,8 +200,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         return threadPool;
     }
 
-    public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-
     // Default to use ConcurrentPriorityBlockingQueue, but make it possible to easily switch to using BoundedBuffer
     public static final boolean useBoundedBuffer = Boolean.valueOf(System.getProperty("io.openliberty.threading.useBoundedBuffer", "false"));
 
@@ -241,14 +225,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         int coreThreads = Integer.parseInt(String.valueOf(componentConfig.get("coreThreads")));
         int maxThreads = Integer.parseInt(String.valueOf(componentConfig.get("maxThreads")));
-        if (isBeta) {
-            String quiesceTimeoutString = (String) (componentConfig.get("quiesceTimeout"));
-            try {
-                quiesceTimeout = Integer.valueOf(KernelUtils.parseDuration(quiesceTimeoutString, TimeUnit.SECONDS));
-            } catch (NumberFormatException nfe) {
-                Tr.warning(tc, "CWWKE1206.quiesce.timeout.not.valid", quiesceTimeoutString);
-            }
-        }
 
         if (maxThreads <= 0) {
             maxThreads = Integer.MAX_VALUE;
@@ -256,10 +232,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         if (coreThreads < 0) {
             coreThreads = 2 * CpuInfo.getAvailableProcessors().get();
-        }
-
-        if (quiesceTimeout < MINIMUM_QUIESCE_TIMEOUT) {
-            quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
         }
 
         // Make sure coreThreads is not bigger than maxThreads, subject to MINIMUM_POOL_SIZE limit
@@ -637,16 +609,19 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     }
 
     @Override
+    @Deprecated
     public boolean quiesceThreads() {
         throw new UnsupportedOperationException();
     }
-    /*
-     * (non-Javadoc)
+    /**
+     * Quiesce all threads in the executor service.
      *
+     * @param quiesceTimeoutMillis the timeout in milliseconds to wait for threads to complete
+     * @return true if all threads completed within the timeout, false otherwise
      * @see com.ibm.ws.threading.ThreadQuiesce#quiesceThreads()
      */
     @Override
-    public boolean quiesceThreads(long startTime) {
+    public boolean quiesceThreads(long quiesceTimeoutMillis) {
         this.serverStopping = true;
 
         // Wait for all pre-quiesce work to complete.
@@ -655,15 +630,10 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         // and signal it. If count is already 0, we return immediately.
         quiesceLatch = new CountDownLatch(1);
         if (activeThreadCount.get() != 0) {
-            long endTime = startTime + (quiesceTimeout * 1000);
-            long waitTime = endTime - System.currentTimeMillis();
-            if (waitTime <= 0) {
-                return false;
-            }
             try {
                 // Wait for all active threads to finish.  The last thread that finishes
                 // will call the latch.
-                if (!quiesceLatch.await(waitTime, TimeUnit.MILLISECONDS)) {
+                if (!quiesceLatch.await(quiesceTimeoutMillis, TimeUnit.MILLISECONDS)) {
                     // If we time out, quiesce has failed.
                     return false;
                 }

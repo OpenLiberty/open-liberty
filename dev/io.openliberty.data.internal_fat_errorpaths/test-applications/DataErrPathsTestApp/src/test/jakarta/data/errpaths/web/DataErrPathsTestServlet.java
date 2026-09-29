@@ -1220,10 +1220,8 @@ public class DataErrPathsTestServlet extends FATServlet {
             voters.addPollingLocation(null);
             fail("Should not be able to insert a null entity.");
         } catch (NullPointerException x) {
-            if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1015E") ||
-                !x.getMessage().contains("addPollingLocation"))
-                throw x;
+            // might be CWWKD1015E, or
+            // might be raised by Jakarta Data's new PreInsertEvent(null)
         }
     }
 

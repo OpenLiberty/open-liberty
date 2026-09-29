@@ -33,8 +33,8 @@ public class Application extends ConfigElement {
     private ApplicationBnd applicationBnd;
     @XmlElement(name = "resourceAdapter")
     private ConfigElementList<ResourceAdapter> resourceAdapters;
-    @XmlElement(name = "mcpServer")
-    private ConfigElementList<McpServer> mcpServers;
+    @XmlElement(name = "mcp")
+    private ConfigElementList<Mcp> mcps;
 
     //@XmlElement(name = "library")
     //private List<Library> libraries;
@@ -142,13 +142,13 @@ public class Application extends ConfigElement {
     }
 
     /**
-     * @return configuration for MCP servers in the application
+     * @return configuration for MCP elements in the application
      */
-    public ConfigElementList<McpServer> getMcpServers() {
-        if (mcpServers == null) {
-            mcpServers = new ConfigElementList<McpServer>();
+    public ConfigElementList<Mcp> getMcps() {
+        if (mcps == null) {
+            mcps = new ConfigElementList<Mcp>();
         }
-        return mcpServers;
+        return mcps;
     }
 
     @Override
@@ -166,8 +166,8 @@ public class Application extends ConfigElement {
             buf.append(applicationBnd.toString());
         if (resourceAdapters != null)
             buf.append(resourceAdapters);
-        if (mcpServers != null)
-            buf.append(mcpServers);
+        if (mcps != null)
+            buf.append(mcps);
         buf.append("}");
 
         return buf.toString();
@@ -182,8 +182,8 @@ public class Application extends ConfigElement {
             clone.applicationBnd = this.applicationBnd.clone();
         if (this.resourceAdapters != null)
             clone.resourceAdapters = this.resourceAdapters.clone();
-        if (this.mcpServers != null)
-            clone.mcpServers = this.mcpServers.clone();
+        if (this.mcps != null)
+            clone.mcps = this.mcps.clone();
 
         return clone;
     }

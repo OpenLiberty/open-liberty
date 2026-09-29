@@ -12,11 +12,11 @@
  *******************************************************************************/
 package jakarta.data.page;
 
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.data.messages.Messages;
 
 /**
@@ -90,6 +90,10 @@ public interface PageRequest {
 
     @Nonnull
     public PageRequest pageNumber(long pageNum);
+
+    default long pageOffset() {
+        return pageNumber() - 1;
+    }
 
     @Nonnull
     public default PageRequest pageOffset(long offset) {

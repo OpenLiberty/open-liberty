@@ -168,7 +168,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             }
             boolean dataAvailable = upgradeHandler.containsQueuedData() || upgradeHandler.awaitReadReady(numBytes, timeout, TimeUnit.MILLISECONDS);
             if (!dataAvailable || !nettyChannel.isActive()) {
-                throw new SocketTimeoutException("Failed to read data within the specified timeout.");
+                InetSocketAddress local = (InetSocketAddress) nettyChannel.localAddress();
+                InetSocketAddress remote = (InetSocketAddress) nettyChannel.remoteAddress();
+                throw new SocketTimeoutException(Tr.formatMessage(tc, "netty.socket.timeout",
+                        local.getHostName(), local.getAddress().getHostAddress(), local.getPort(),
+                        remote.getHostName(), remote.getAddress().getHostAddress(), remote.getPort()));
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Finished read in synchronous thread for channel: " + nettyChannel);
@@ -206,7 +210,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Timeout exception on channel: " + nettyChannel);
             }
-            throw new SocketTimeoutException("Read operation timed out.");
+            InetSocketAddress local = (InetSocketAddress) nettyChannel.localAddress();
+            InetSocketAddress remote = (InetSocketAddress) nettyChannel.remoteAddress();
+            throw new SocketTimeoutException(Tr.formatMessage(tc, "netty.socket.timeout",
+                    local.getHostName(), local.getAddress().getHostAddress(), local.getPort(),
+                    remote.getHostName(), remote.getAddress().getHostAddress(), remote.getPort()));
         }
     }
 

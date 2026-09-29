@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=Le nombre total d'\u00e9l\u00e9ments n'est pas disponible
 011.unknown.attr.type=L''instance {0} a \u00e9t\u00e9 obtenue d''une mani\u00e8re qui ne permet pas d''identifier le type d''attribut. Pour les classes statiques du m\u00e9tamod\u00e8le, utilisez une m\u00e9thode.of d\u00e9finie sur un sous-type Attribute pour fournir la classe d''entit\u00e9 et le type d''attribut de l''entit\u00e9.
 012.unknown.decl.type=L''instance {0} a \u00e9t\u00e9 obtenue d''une mani\u00e8re qui ne permet pas d''identifier la classe d''entit\u00e9s qui d\u00e9clare l''attribut. Pour les classes statiques du m\u00e9tamod\u00e8le, utilisez une m\u00e9thode.of d\u00e9finie sur un sous-type Attribute pour fournir la classe d''entit\u00e9 et le type d''attribut de l''entit\u00e9.
+013.arg.invalid=L''argument \u00ab {0} \u00bb ne peut pas prendre la valeur \u00ab {1} \u00bb.
+014.mode.disallows.offset=Une requ\u00eate de page ne peut pas inclure \u00e0 la fois un d\u00e9calage et un mode \u00ab {0} \u00bb.
+015.cursor.uncomputable=L'op\u00e9ration demand\u00e9e n'est pas disponible, car il est impossible de calculer un curseur \u00e0 partir de crit\u00e8res de tri comportant une expression.

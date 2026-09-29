@@ -45,6 +45,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -54,6 +55,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.tool.metaKeyApp.MetaKeyValidationTestServlet;
 import io.openliberty.mcp.internal.fat.tool.progressApp.ProgressTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
@@ -64,6 +66,7 @@ import io.openliberty.mcp.internal.fat.utils.TestConstants;
 @RunWith(FATRunner.class)
 public class ToolTest extends FATServletClient {
 
+    @TestServlet(contextRoot = "metaKeyTest", servlet = MetaKeyValidationTestServlet.class)
     @Server("mcp-server")
     public static LibertyServer server;
 
@@ -101,8 +104,12 @@ public class ToolTest extends FATServletClient {
         WebArchive progressWar = ShrinkWrap.create(WebArchive.class, "progressTest.war")
                                            .addPackage(ProgressTools.class.getPackage());
 
+        WebArchive metaKeyWar = ShrinkWrap.create(WebArchive.class, "metaKeyTest.war")
+                                          .addPackage(MetaKeyValidationTestServlet.class.getPackage());
+
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, progressWar, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, metaKeyWar, SERVER_ONLY);
 
         server.startServer();
 
@@ -3047,6 +3054,96 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testOutputSchemaFromOnToolResponseToolCall() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testOutputSchemaFromOnToolResponse",
+                            "arguments": { "name": "Paris" }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+        String expected = """
+                        {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "isError": false,
+                            "structuredContent": {
+                              "name": "Paris",
+                              "country": "England",
+                              "population": 8000,
+                              "isCapital": false
+                            }
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expected, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    @Test
+    public void testOutputSchemaFromOverridesReturnTypeToolCall() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testOutputSchemaFromOverridesReturnType",
+                            "arguments": { "name": "Lyon" }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+        // Returns String — schema is City (from outputSchemaFrom) but response is plain text
+        String expected = """
+                        {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "isError": false,
+                            "content": [{ "type": "text", "text": "Lyon" }]
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expected, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    @Test
+    public void testSchemaAnnotationTakesPrecedenceOverOutputSchemaFromToolCall() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom",
+                            "arguments": { "name": "Paris" }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+        // @Schema wins over outputSchemaFrom=City — structuredContent has cityName, not City fields
+        String expected = """
+                        {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "isError": false,
+                            "structuredContent": {
+                              "cityName": "Paris"
+                            }
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expected, response, JSONCompareMode.NON_EXTENSIBLE);
     }
 
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ quiesce.end.useraction=Semmit sem kell tennie.
 
 quiece.warning=CWWKE1102W: A fokozatos le\u00e1ll\u00edt\u00e1s m\u0171velete nem fejez\u0151d\u00f6tt be. A kiszolg\u00e1l\u00f3 most le\u00e1ll.
 quiece.warning.explanation=A folyamat nem tudta lecsendest\u00e1lni az \u00f6sszes szolg\u00e1ltat\u00e1st a felf\u00fcggeszt\u00e9si id\u0151korl\u00e1ton bel\u00fcl.
-quiece.warning.useraction=Nyugodtan figyelmen k\u00edv\u00fcl hagyhatja a nem el\u00e9rhet\u0151 sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok eredm\u00e9nyek\u00e9nt kapott hiba\u00fczeneteket. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor n\u00f6velje a 'quiesceTimeout' id\u0151tartamot a 'quiesceTimeout' attrib\u00fatum hozz\u00e1ad\u00e1s\u00e1val a 'executor' elemhez a 'server.xml' f\u00e1jlban.
+quiece.warning.useraction=Ne vegye figyelembe azokat a hiba\u00fczeneteket, amelyek abb\u00f3l ad\u00f3dnak, hogy a sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok nem \u00e9rhet\u0151k el. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, n\u00f6velje az \u201e quiesceTimeout \u201d id\u0151tartam\u00e1t \u00fagy, hogy a \u201e server.xml \u201d f\u00e1jlban a \u201eserver\u201d elemhez hozz\u00e1adja az \u201e quiesceTimeout \u201d attrib\u00fatumot.
 
 client.quiesce.begin=CWWKE1103I: V\u00e1rakoz\u00e1s az \u00fcgyf\u00e9l {0} m\u00e1sodperceire, hogy az eln\u00e9m\u00edt\u00e1s.
 client.quiesce.begin.explanation=Az \u00fcgyf\u00e9l v\u00e1rja a szolg\u00e1ltat\u00e1sok le\u00e1ll\u00edt\u00e1s\u00e1t, miel\u0151tt le\u00e1ll.
@@ -59,6 +59,6 @@ quiesce.listeners.not.complete=CWWKE1106W: {0} rendszerz\u00e1r\u00e1si m\u0171v
 quiesce.listeners.not.complete.explanation=N\u00e9h\u00e1ny, a rendszerz\u00e1r\u00e1si m\u0171velet k\u00f6zben ind\u00edtott m\u0171velet nem fejez\u0151d\u00f6tt be. 
 quiesce.listeners.not.complete.useraction=Nincs teend\u0151.
 
-quiesce.waiting.on.threads=CWWKE1107W: {0} sz\u00e1l nem fejez\u0151d\u00f6tt be a fokozatos le\u00e1ll\u00edt\u00e1si id\u0151szakban. 
+quiesce.waiting.on.threads=CWWKE1107W: A le\u00e1ll\u00e1si id\u0151szak alatt \u00f6sszesen {0} sz\u00e1l nem fejez\u0151d\u00f6tt be.
 quiesce.waiting.on.threads.explanation=N\u00e9h\u00e1ny, a kiszolg\u00e1l\u00f3 rendszerz\u00e1r\u00e1si m\u0171velete el\u0151tt akt\u00edv sz\u00e1l a fokozatos le\u00e1ll\u00edt\u00e1si id\u0151szak v\u00e9g\u00e9n m\u00e9g mindig akt\u00edv volt.
-quiesce.waiting.on.threads.useraction=Nincs teend\u0151. 
+quiesce.waiting.on.threads.useraction=Nincs teend\u0151.

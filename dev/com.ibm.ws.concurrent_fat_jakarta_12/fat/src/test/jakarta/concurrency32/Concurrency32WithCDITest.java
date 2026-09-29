@@ -12,21 +12,33 @@
  *******************************************************************************/
 package test.jakarta.concurrency32;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import test.jakarta.concurrency32cdi.ejb.error.ScheduleMethodBean;
 import test.jakarta.concurrency32cdi.web.Concurrency32CDITestServlet;
 
 @RunWith(FATRunner.class)
@@ -34,6 +46,8 @@ import test.jakarta.concurrency32cdi.web.Concurrency32CDITestServlet;
 public class Concurrency32WithCDITest extends FATServletClient {
 
     public static final String APP_NAME = "Concurrency32CDITestApp";
+    public static final String APP_RESOURCES = //
+                    "test-applications/" + APP_NAME + "/resources";
 
     @Server("com.ibm.ws.concurrent.fat.jakarta.ee12.cdi")
     @TestServlet(servlet = Concurrency32CDITestServlet.class,
@@ -47,14 +61,21 @@ public class Concurrency32WithCDITest extends FATServletClient {
                         .buildDefaultApp("Concurrency32CDITestWeb",
                                          "test.jakarta.concurrency32cdi.web");
         ShrinkHelper.addDirectory(concurrency32CDITestWeb,
-                                  "test-applications/Concurrency32CDITestWeb/resources");
+                                  APP_RESOURCES + "/Concurrency32CDITestWeb");
+
+        JavaArchive concurrency32CDITestEJB = ShrinkHelper
+                        .buildJavaArchive("Concurrency32CDITestEJB",
+                                          "test.jakarta.concurrency32cdi.ejb");
+        ShrinkHelper.addDirectory(concurrency32CDITestEJB,
+                                  APP_RESOURCES + "/Concurrency32CDITestEJB");
 
         EnterpriseArchive concurrency32CDITestApp = ShrinkWrap
                         .create(EnterpriseArchive.class,
-                                "Concurrency32CDITestApp.ear");
+                                APP_NAME + ".ear");
         concurrency32CDITestApp.addAsModule(concurrency32CDITestWeb);
+        concurrency32CDITestApp.addAsModule(concurrency32CDITestEJB);
         ShrinkHelper.addDirectory(concurrency32CDITestApp,
-                                  "test-applications/Concurrency32CDITestApp/resources");
+                                  APP_RESOURCES);
         ShrinkHelper.exportAppToServer(server,
                                        concurrency32CDITestApp);
 
@@ -64,6 +85,67 @@ public class Concurrency32WithCDITest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted())
-            server.stopServer();
+            server.stopServer(// @Schedule on EJB method
+                              "CNTR0344E",
+                              // @Schedule on EJB method
+                              "CNTR4006E",
+                              // Scheduled method with args
+                              "CWWKC1413E.*neverDueToMethodParameter");
+    }
+
+    @Test
+    public void testScheduledMethodCannotHaveParameters() throws Exception {
+        String searchPattern = "CWWKC1413E.*neverDueToMethodParameter";
+        assertEquals(1,
+                     server.findStringsInLogs(searchPattern).size());
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    @AllowedFFDC({ "com.ibm.ejs.container.EJBConfigurationException",
+                   "com.ibm.wsspi.injectionengine.InjectionException",
+                   "jakarta.ejb.EJBException",
+                   "jakarta.servlet.UnavailableException",
+                   "org.jboss.weld.exceptions.CreationException"
+    })
+    public void testScheduleOnEJBMethodFailsToInstall() throws Exception {
+        JavaArchive scheduleOnEJBErrorEJB = ShrinkWrap
+                        .create(JavaArchive.class, "ScheduleOnEJBErrorEJB.jar")
+                        .addClass(ScheduleMethodBean.class);
+
+        EnterpriseArchive scheduleOnEJBErrorApp = ShrinkWrap
+                        .create(EnterpriseArchive.class, "ScheduleOnEJBError.ear")
+                        .addAsModule(scheduleOnEJBErrorEJB);
+
+        server.setTraceMarkToEndOfDefaultTrace();
+        ShrinkHelper.exportDropinAppToServer(server,
+                                             scheduleOnEJBErrorApp,
+                                             DeployOptions.DISABLE_VALIDATION);
+
+        boolean testRan = false;
+        try {
+            runTest(server, APP_NAME, "testMethod");
+            testRan = true;
+        } catch (AssertionError e) {
+            // Expected: application should not have deployed
+        }
+
+        assertEquals("Test application should not have been installed and allowed to run.",
+                     false,
+                     testRan);
+
+        // An error will either be raised by EJB or Concurrency depending on timing
+        // TODO the Concurrency error still needs an NLS message
+        String searchFor = "CNTR0344E" + // EJB
+                           "|" + // or
+                           "ScheduleMethodBean.*scope"; // Concurrency
+        String line = server.waitForStringInLogUsingMark(searchFor);
+        assertNotNull("Container or Concurrency error message not found in log",
+                      line);
+
+        if (line.contains("CNTR0344E"))
+            // Also wait for FFDC so it doen't interfere with subsequent tests
+            server.waitForStringsInLogUsingMark(List.of("CNTR4006E",
+                                                        "FFDC1015I.*WELD-000079"));
     }
 }

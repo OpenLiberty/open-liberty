@@ -30,7 +30,15 @@ public class McpMetricReader {
     InMemoryMetricReader reader = PullExporterAutoConfigurationCustomizerProvider.exporter;
 
     // Helper method to get cancel operation with specific status
+    public HistogramPointData getCancelOperationPoint(String status) {
+        return getCancelOperationPoint(status, null, false);
+    }
+
     public HistogramPointData getCancelOperationPoint(String status, String errorType) {
+        return getCancelOperationPoint(status, errorType, true);
+    }
+
+    private HistogramPointData getCancelOperationPoint(String status, String errorType, boolean filterOnErrorType) {
         Optional<MetricData> metric = getMetricData("mcp.server.operation.duration");
         assertTrue("mcp.server.operation.duration metric not found", metric.isPresent());
 
@@ -41,6 +49,7 @@ public class McpMetricReader {
                                                       .filter(point -> "notifications/cancelled".equals(getStringAttribute(point.getAttributes(), "mcp.method.name")))
                                                       .filter(point -> status.equals(getStringAttribute(point.getAttributes(), "rpc.response.status_code")))
                                                       .filter(point -> {
+                                                          if (!filterOnErrorType) return true;
                                                           String actualErrorType = getStringAttribute(point.getAttributes(), "error.type");
                                                           return errorType == null ? actualErrorType == null : errorType.equals(actualErrorType);
                                                       })
@@ -49,22 +58,6 @@ public class McpMetricReader {
         assertTrue("Expected at least one cancel point with status=" + status + ", errorType=" + errorType,
                    !cancelPoints.isEmpty());
         return cancelPoints.get(0);
-    }
-
-    // Helper to find cancel operation point (returns Optional)
-    public Optional<HistogramPointData> findCancelOperationPoint(String status) {
-        Optional<MetricData> metric = getMetricData("mcp.server.operation.duration");
-        if (metric.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return metric.get()
-                     .getHistogramData()
-                     .getPoints()
-                     .stream()
-                     .filter(point -> "notifications/cancelled".equals(getStringAttribute(point.getAttributes(), "mcp.method.name")))
-                     .filter(point -> status.equals(getStringAttribute(point.getAttributes(), "rpc.response.status_code")))
-                     .findFirst();
     }
 
     public HistogramPointData getOperationPoint(String methodName) {

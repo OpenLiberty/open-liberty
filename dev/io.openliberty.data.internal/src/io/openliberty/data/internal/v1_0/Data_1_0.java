@@ -38,6 +38,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Capability that is specific to the version of Jakarta Data.
@@ -77,13 +78,6 @@ public class Data_1_0 implements DataVersionCompatibility {
                            EntityManager.class);
 
     /**
-     * Classes that are valid as return types of resource accessor methods for a
-     * stateless repository.
-     */
-    private static final Set<Class<?>> RESOURCE_ACCESSOR_CLASSES_STATELESS = //
-                    RESOURCE_ACCESSOR_CLASSES_STATEFUL;
-
-    /**
      * Types that are valid as repository method special parameters.
      */
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = //
@@ -94,6 +88,18 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Trivial
     public boolean atLeast(int major, int minor) {
         return major == 1 && minor == 0;
+    }
+
+    @Override
+    @Trivial
+    public AutoCloseable createEntityAgent(EntityManagerFactory emf) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    @Trivial
+    public EntityManager createEntityManager(EntityManagerFactory emf) {
+        return emf.createEntityManager();
     }
 
     @Override
@@ -198,9 +204,8 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Set<Class<?>> resourceAccessorTypes(boolean stateful) {
-        return stateful ? RESOURCE_ACCESSOR_CLASSES_STATEFUL //
-                        : RESOURCE_ACCESSOR_CLASSES_STATELESS;
+    public Set<Class<?>> resourceAccessorTypes(Boolean stateful) {
+        return RESOURCE_ACCESSOR_CLASSES_STATEFUL;
     }
 
     @Override

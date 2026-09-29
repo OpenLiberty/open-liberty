@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) contributors to https://github.com/quarkiverse/quarkus-mcp-server
- * Copyright (c) 2025 IBM Corporation and others
+ * Copyright (c) 2025, 2026 IBM Corporation and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.tools;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,23 +30,30 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.features.FeatureManager;
 import io.openliberty.mcp.tools.ToolManager.ToolInfo;
+import jakarta.inject.Inject;
 
 /**
- * This manager can be used to obtain metadata and register a new tool programmatically.
+ * Allows registering new tools, removing tools and getting information about registered tools.
+ * <p>
+ * An instance can be obtained by injecting with {@link Inject @Inject}.
+ * <p>
+ * In an enterprise application, each web module has its own {@code ToolManager}. Calling methods on the {@code ToolManager} will affect the current web module.
  */
 public interface ToolManager extends FeatureManager<ToolInfo> {
 
     /**
+     * Gets information about a tool.
      *
-     * @param name
+     * @param name the name of the tool
      * @return the tool with the given name, or {@code null}
      */
     ToolInfo getTool(String name);
 
     /**
+     * Adds a tool.
      *
-     * @param name The name must be unique
-     * @return a new definition builder
+     * @param name the name of the tool. Must be unique.
+     * @return a new tool definition builder
      * @throws IllegalArgumentException if a tool with the given name already exits
      * @see ToolDefinition#register()
      */
@@ -63,83 +71,116 @@ public interface ToolManager extends FeatureManager<ToolInfo> {
      */
     interface ToolInfo extends FeatureManager.FeatureInfo {
 
+        /**
+         * The user-readable title for the tool
+         *
+         * @return the title
+         */
         String title();
 
+        /**
+         * Information about the arguments that the tool expects
+         *
+         * @return the tool arguments
+         */
         List<ToolArgument> arguments();
 
+        /**
+         * The <a href="https://modelcontextprotocol.org/specification/2025-11-25/schema#toolannotations">MCP annotations</a> of the tool
+         *
+         * @return the tool annotations
+         */
         Optional<ToolAnnotations> annotations();
 
     }
 
     /**
-     * {@link ToolInfo} definition.
+     * A builder to define a new tool. Created with {@link ToolManager#newTool(String)}.
      * <p>
      * This construct is not thread-safe and should not be reused.
      */
     interface ToolDefinition extends FeatureDefinition<ToolInfo, ToolArguments, ToolResponse, ToolDefinition> {
 
         /**
+         * Adds an argument to the tool.
          *
-         * @param name
-         * @param description
-         * @param required
-         * @param type
-         * @return self
+         * @param name the argument name
+         * @param description the argument description
+         * @param required whether the argument is required
+         * @param type the argument type
+         * @return self this builder
          */
         default ToolDefinition addArgument(String name, String description, boolean required, java.lang.reflect.Type type) {
             return addArgument(name, description, required, type, null);
         }
 
         /**
+         * Adds an argument to the tool.
          *
-         * @param name
-         * @param description
-         * @param required
-         * @param type
-         * @param defaultValue
-         * @return self
+         * @param name the argument name
+         * @param description the argument description
+         * @param required whether the argument is required
+         * @param type the argument type
+         * @param defaultValue the default value for the argument
+         * @return self this builder
          */
         ToolDefinition addArgument(String name, String description, boolean required, java.lang.reflect.Type type,
                                    String defaultValue);
 
         /**
+         * Sets the annotations of the tool
          *
-         * @param annotations
-         * @return self
+         * @param annotations the tool annotations
+         * @return self this builder
          */
         ToolDefinition setAnnotations(ToolAnnotations annotations);
 
         /**
+         * Sets the human-readable title of the tool
          *
-         * @param title
-         * @return self
+         * @param title the title
+         * @return self this builder
          */
         ToolDefinition setTitle(String title);
 
         /**
-         * Generate the output schema for structured content from the given class.
+         * Sets the class to use to generate the output schema for structured content.
+         * <p>
+         * The class will be inspected and a schema generated which will match the JSON which JSON-B would generate for a class of this type.
+         * <p>
+         * Ignored if {@link #setOutputSchema(Object)} is called.
          *
-         * @param outputSchema
-         * @return self
+         * @param from the class to use to generate the schema
+         * @return self this builder
          */
         ToolDefinition generateOutputSchema(Class<?> from);
 
         /**
-         * @param schema
-         * @return self
+         * Sets the output schema for structured content.
+         * <p>
+         * JSON-B will be used to convert {@code schema} to JSON.
+         *
+         * @param schema the output schema
+         * @return self this builder
          */
         ToolDefinition setOutputSchema(Object schema);
 
         /**
-         * If not set the input schema is generated automatically.
+         * Sets the input schema for this tool.
+         * <p>
+         * If not set, the input schema is generated automatically from the tool argument types.
+         * <p>
+         * JSON-B will be used to convert {@code schema} to JSON.
          *
-         * @param schema
-         * @return self
+         * @param schema the input schema
+         * @return self this builder
          */
         ToolDefinition setInputSchema(Object schema);
 
         /**
-         * @return the tool info
+         * Add the new tool to the tool manager.
+         *
+         * @return the tool info for the newly created tool
          * @throws IllegalArgumentException if a tool with the given name already exits
          */
         @Override
@@ -147,16 +188,64 @@ public interface ToolManager extends FeatureManager<ToolInfo> {
 
     }
 
+    /**
+     * The input to a tool handler, providing access to the arguments.
+     */
     public interface ToolArguments extends RequestFeatureArguments {
 
+        /**
+         * The tool arguments.
+         * <p>
+         * Every required argument will be present in the map and each argument can be safely cast to {@link ToolArgument#type()}.
+         *
+         * @return a map from the argument names to the argument values
+         */
         Map<String, Object> args();
 
     }
 
-    record ToolArgument(String name, String description, boolean required, java.lang.reflect.Type type, String defaultValue) {}
+    /**
+     * Information about a tool argument
+     */
+    interface ToolArgument {
+        /**
+         * Gets the argument name
+         *
+         * @return the argument name
+         */
+        String name();
+
+        /**
+         * Gets the argument description
+         *
+         * @return the argument description
+         */
+        String description();
+
+        /**
+         * Whether the argument is required
+         *
+         * @return {@code true} if the argument is required
+         */
+        boolean required();
+
+        /**
+         * The argument type
+         *
+         * @return the type of the argument
+         */
+        Type type();
+
+        /**
+         * The default value
+         *
+         * @return the default value, or {@code null} if the argument does not have a default value
+         */
+        String defaultValue();
+    }
 
     /**
-     * @see Tool#annotations()
+     * The <a href="https://modelcontextprotocol.org/specification/2025-11-25/schema#toolannotations">MCP annotations</a> of a tool.
      */
     record ToolAnnotations(String title, boolean readOnlyHint, boolean destructiveHint, boolean idempotentHint,
                            boolean openWorldHint) {}

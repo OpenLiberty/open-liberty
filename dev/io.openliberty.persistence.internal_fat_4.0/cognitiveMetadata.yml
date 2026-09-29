@@ -1,0 +1,4 @@
+---
+# YML metadata file made use of by the Cognitive Ecosystem.
+# Reference: https://github.com/OpenLiberty/open-liberty/tree/integration/dev/build.example_fat/cognitiveMetadata.yml
+functionalArea: JPA

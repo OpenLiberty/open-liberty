@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,8 +37,6 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import javax.sql.DataSource;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -75,7 +72,6 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
 
 /**
  * CDI extension to handle the injection of repository implementations
@@ -220,6 +216,7 @@ public class DataExtension implements Extension {
         List<QueryInfo> queriesWithQueryAnno = new ArrayList<>();
         ArrayList<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
         Boolean stateful = null;
+        Set<Class<?>> allAccessorTypes = provider.compat.resourceAccessorTypes(null);
 
         RepositoryProducer<Object> producer = new RepositoryProducer<>( //
                         repositoryInterface, beanMgr, provider, this, //
@@ -232,10 +229,22 @@ public class DataExtension implements Extension {
             // Check for resource accessor methods:
             Class<?> returnType = method.getReturnType();
             if (method.getParameterCount() == 0 &&
-                (EntityManager.class.equals(returnType)
-                 || DataSource.class.equals(returnType)
-                 || Connection.class.equals(returnType))) {
-                // TODO use compat to obtain above types, and identify stateless from EntityAgent type
+                allAccessorTypes.contains(returnType)) {
+                boolean canBeStateful = provider.compat //
+                                .resourceAccessorTypes(true).contains(returnType);
+                boolean canBeStateless = provider.compat //
+                                .resourceAccessorTypes(false).contains(returnType);
+                if (canBeStateless && !canBeStateful)
+                    if (stateful == Boolean.TRUE)
+                        ; // TODO error
+                    else
+                        stateful = false;
+                else if (canBeStateful && !canBeStateless)
+                    if (stateful == Boolean.FALSE)
+                        ; // TODO error
+                    else
+                        stateful = true;
+
                 QueryInfo queryInfo = provider.compat //
                                 .createQueryInfo(producer, //
                                                  repositoryInterface, //

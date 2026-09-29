@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1436,16 +1436,20 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
 
         if (netty == null) {
-            throw new IllegalStateException("Netty framework is not initialized");
+            Tr.error(tc, "endpoint.netty.not.initialized", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.netty.not.initialized", name));
         }
         if (chfw == null) {
-            throw new IllegalStateException("Channel framework is not initialized");
+            Tr.error(tc, "endpoint.channel.not.initialized", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.channel.not.initialized", name));
         }
         if (executorService.getService() == null) {
-            throw new IllegalStateException("Executor service is not available");
-        }   
+            Tr.error(tc, "endpoint.executor.not.available", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.executor.not.available", name));
+        }
         if (eventService.getService() == null) {
-            throw new IllegalStateException("Event service is not available");
+            Tr.error(tc, "endpoint.event.not.available", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.event.not.available", name));
         }
 
         // Check SSL components only if HTTPS is configured

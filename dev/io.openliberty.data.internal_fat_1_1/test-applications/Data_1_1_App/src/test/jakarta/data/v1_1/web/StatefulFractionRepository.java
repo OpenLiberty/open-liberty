@@ -14,12 +14,16 @@ package test.jakarta.data.v1_1.web;
 
 import java.util.List;
 
+import jakarta.data.constraint.Between;
+import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.stateful.Merge;
 import jakarta.data.repository.stateful.Persist;
 import jakarta.data.repository.stateful.Refresh;
 import jakarta.data.repository.stateful.Remove;
+import jakarta.data.restrict.Restriction;
 import jakarta.transaction.Transactional;
 
 /**
@@ -35,6 +39,10 @@ public interface StatefulFractionRepository //
 
     @Merge
     Fraction[] multiMerge(Fraction... fractions);
+
+    @Delete
+    long omit(@By(_Fraction.NUMERATOR) Between<Integer> range,
+              Restriction<Fraction> filter);
 
     @Persist
     @Transactional

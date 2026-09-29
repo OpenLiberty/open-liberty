@@ -29,7 +29,16 @@ import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.data.event.PostDeleteEvent;
+import jakarta.data.event.PostInsertEvent;
+import jakarta.data.event.PostUpdateEvent;
+import jakarta.data.event.PostUpsertEvent;
+import jakarta.data.event.PreDeleteEvent;
+import jakarta.data.event.PreInsertEvent;
+import jakarta.data.event.PreUpdateEvent;
+import jakarta.data.event.PreUpsertEvent;
 import jakarta.data.exceptions.MappingException;
+import jakarta.enterprise.util.TypeLiteral;
 import jakarta.persistence.Inheritance;
 
 /**
@@ -76,8 +85,25 @@ public class EntityInfo {
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
     public final boolean isHibernate;
-    final String name; // entity name to use in query language. If a record, the name will be [RecordName]Entity.
+
+    /**
+     * Entity name to use in query language.
+     * If a record, the name will be [RecordName]Entity.
+     */
+    final String name;
+
+    // for life cycle events in Data 1.1+. Otherwise null.
+    final TypeLiteral<PostDeleteEvent<Object>> postDeleteLiteral;
+    final TypeLiteral<PostInsertEvent<Object>> postInsertLiteral;
+    final TypeLiteral<PostUpdateEvent<Object>> postUpdateLiteral;
+    final TypeLiteral<PostUpsertEvent<Object>> postUpsertLiteral;
+    final TypeLiteral<PreDeleteEvent<Object>> preDeleteLiteral;
+    final TypeLiteral<PreInsertEvent<Object>> preInsertLiteral;
+    final TypeLiteral<PreUpdateEvent<Object>> preUpdateLiteral;
+    final TypeLiteral<PreUpsertEvent<Object>> preUpsertLiteral;
+
     final Class<?> recordClass; // null if not a record
+
     final String versionAttributeName; // null if unversioned
 
     // embeddable class -> fully qualified attribute names of embeddable, or
@@ -115,6 +141,28 @@ public class EntityInfo {
         this.versionAttributeName = versionAttributeName;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
+
+        @SuppressWarnings("unchecked")
+        Class<Object> entityType = (Class<Object>) getType();
+        if (entityHandlerFactory.provider.compat.atLeast(1, 1)) {
+            postDeleteLiteral = new EventTypeLiteral<>(PostDeleteEvent.class, entityType);
+            postInsertLiteral = new EventTypeLiteral<>(PostInsertEvent.class, entityType);
+            postUpdateLiteral = new EventTypeLiteral<>(PostUpdateEvent.class, entityType);
+            postUpsertLiteral = new EventTypeLiteral<>(PostUpsertEvent.class, entityType);
+            preDeleteLiteral = new EventTypeLiteral<>(PreDeleteEvent.class, entityType);
+            preInsertLiteral = new EventTypeLiteral<>(PreInsertEvent.class, entityType);
+            preUpdateLiteral = new EventTypeLiteral<>(PreUpdateEvent.class, entityType);
+            preUpsertLiteral = new EventTypeLiteral<>(PreUpsertEvent.class, entityType);
+        } else {
+            postDeleteLiteral = null;
+            postInsertLiteral = null;
+            postUpdateLiteral = null;
+            postUpsertLiteral = null;
+            preDeleteLiteral = null;
+            preInsertLiteral = null;
+            preUpdateLiteral = null;
+            preUpsertLiteral = null;
+        }
 
         validate();
     }

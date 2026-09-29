@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.threading.listeners.CompletionListener;
 
 public class NonCancelableResultFuture<T> implements Future<T> {
@@ -91,11 +92,13 @@ public class NonCancelableResultFuture<T> implements Future<T> {
         return _result;
     }
 
+    @Trivial
     @Override
     public boolean isCancelled() {
         return false;
     }
 
+    @Trivial
     @Override
     public boolean isDone() {
         return _done;

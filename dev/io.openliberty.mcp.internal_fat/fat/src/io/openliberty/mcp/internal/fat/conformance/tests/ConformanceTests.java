@@ -61,7 +61,7 @@ public class ConformanceTests extends FATServletClient {
     // Node.js specific
     private static final String INSTALL_MCP_CONFORMANCE_PACKAGE = "npm ci --omit=dev";
     private static final String CHECK_MCP_CONFORMANCE_PACKAGE_VERSION = "npx --no-install @modelcontextprotocol/conformance --version";
-    private static final String MCP_CONFORMANCE_TEST_VERSION = "0.1.9";
+    private static final String MCP_CONFORMANCE_TEST_VERSION = "0.1.16";
 
     // Artifactory
     private static final String PATH_TO_ARTIFACTORY_NPM_MIRROR = "/artifactory/api/npm/wasliberty-npm-remote/";
@@ -76,7 +76,7 @@ public class ConformanceTests extends FATServletClient {
 
     // Container config
     private static String MCP_SERVER_URL_FROM_CONTAINER;
-    private static final String DOCKER_REGISTRY = "public.ecr.aws/docker/library/node:20-alpine";
+    private static final String DOCKER_REGISTRY = "public.ecr.aws/docker/library/node:22-alpine";
 
     @Server("mcp-conformance-server")
     public static LibertyServer server;
@@ -127,8 +127,12 @@ public class ConformanceTests extends FATServletClient {
     }
 
     private static String runCommandInContainer(String command) throws IOException, InterruptedException {
+        Log.info(ConformanceTests.class, "runCommandInContainer", "Running command " + command);
         Container.ExecResult result = container.execInContainer("sh", "-c", command);
-        assertEquals(0, result.getExitCode());
+        Log.info(ConformanceTests.class, "runCommandInContainer", "Exit code " + result.getExitCode());
+        Log.info(ConformanceTests.class, "runCommandInContainer", "Stdout: " + result.getStdout());
+        Log.info(ConformanceTests.class, "runCommandInContainer", "Stderr: " + result.getStderr());
+        assertEquals("Bad exit code for command: " + command, 0, result.getExitCode());
         return result.getStdout();
     }
 
@@ -160,10 +164,13 @@ public class ConformanceTests extends FATServletClient {
     @Test
     public void testModelContextProtocolConformance() throws Exception {
         checkMCPServerConformanceWithTest("server-initialize");
+        checkMCPServerConformanceWithTest("ping");
         checkMCPServerConformanceWithTest("tools-list");
         checkMCPServerConformanceWithTest("tools-call-simple-text");
         checkMCPServerConformanceWithTest("tools-call-image");
         checkMCPServerConformanceWithTest("tools-call-audio");
+        checkMCPServerConformanceWithTest("tools-call-embedded-resource");
+        checkMCPServerConformanceWithTest("tools-call-mixed-content");
         checkMCPServerConformanceWithTest("tools-call-error");
     }
 
@@ -176,7 +183,7 @@ public class ConformanceTests extends FATServletClient {
      */
     private void checkMCPServerConformanceWithTest(String scenarioName) throws IOException, InterruptedException {
         String m = "checkMCPServerConformanceWithTest";
-        String command = "npx --no-install @modelcontextprotocol/conformance@0.1.9 server --url " + MCP_SERVER_URL_FROM_CONTAINER + " --scenario " + scenarioName;
+        String command = "npx --no-install @modelcontextprotocol/conformance@0.1.16 server --url " + MCP_SERVER_URL_FROM_CONTAINER + " --scenario " + scenarioName;
         Log.info(getClass(), m, "Running test command: " + command);
         Container.ExecResult result = container.execInContainer("sh", "-c", command);
         Log.info(getClass(), m, "Stdout: " + result.getStdout());

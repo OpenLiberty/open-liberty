@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ import com.ibm.ws.wsat.webservice.client.wscoor.CoordinationContext;
  */
 public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessage> implements SoapInterceptor {
 
-    final TraceComponent tc = Tr.register(
+    private static final TraceComponent tc = Tr.register(
                                           CoorContextInInterceptor.class, WSCoorConstants.TRACE_GROUP, null);
 
     private String ctxId = null;

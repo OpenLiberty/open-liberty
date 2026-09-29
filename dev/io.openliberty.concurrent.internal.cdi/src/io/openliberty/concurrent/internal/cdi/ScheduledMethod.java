@@ -1,0 +1,143 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.concurrent.internal.cdi;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
+
+import jakarta.enterprise.concurrent.Schedule;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.control.RequestContextController;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Instance.Handle;
+import jakarta.enterprise.inject.spi.CDI;
+
+/**
+ * A task that can be scheduled to run a method at the appropriate time,
+ * according to the method's Schedule annotation.
+ */
+public class ScheduledMethod<T> extends ScheduledMethodAbstract {
+    private final Class<T> beanClass;
+    private final Annotation[] beanQualifierAnnos;
+    private final Class<? extends Annotation> beanScopeClass;
+
+    /**
+     * Constructor for Schedule directly annotating a bean method.
+     * This constructor also schedules the first execution.
+     *
+     * @param method            the bean method annotated with a Schedule
+     * @param schedule          the Schedule annotation
+     * @param contextDescriptor captured thread context
+     * @param managedExecutor   managed executor or managed scheduled executor
+     * @param beanScopeClass    class of the bean's scope (such as ApplicationScoped)
+     * @param beanClass         class of the bean that has the scheduled method
+     * @param beanAnnos         qualifier annotations on the bean class (if any)
+     */
+    ScheduledMethod(Method method,
+                    Schedule schedule,
+                    ThreadContextDescriptor contextDescriptor,
+                    WSManagedExecutorService managedExecutor,
+                    Class<? extends Annotation> beanScopeClass,
+                    Class<T> beanClass,
+                    Annotation... beanQualifierAnnos) {
+        super(method, //
+              contextDescriptor, //
+              managedExecutor, //
+              List.of(ScheduleCronTrigger.create(schedule)), //
+              List.of(schedule.skipIfLateBy()));
+
+        this.beanClass = beanClass;
+        this.beanQualifierAnnos = beanQualifierAnnos;
+        this.beanScopeClass = beanScopeClass;
+
+        // Intentionally placed as last line of constructuor to ensure
+        // intialization is complete before the first task execution runs
+        ScheduledFuture<?> nextExec = ConcurrencyExtensionMetadata //
+                        .scheduledExecutor.schedule(this,
+                                                    computeDelayNanos(),
+                                                    TimeUnit.NANOSECONDS);
+        nextExecutionFuture.set(nextExec);
+        if (future.isCancelled())
+            nextExec.cancel(true);
+    }
+
+    /**
+     * Invokes the bean method that is annotated Schedule.
+     *
+     * @return completion stage that is returned by the bean method, otherwise null
+     * @throws InvocationTargetException if the bean method raises a declared
+     *                                       exception
+     * @throws Exception                 if another error occurs attempting to
+     *                                       invoke the bean method
+     */
+    @Override
+    protected CompletionStage<?> invokeMethod() //
+                    throws InvocationTargetException, Exception {
+
+        // Activate a request context for the duration of this invocation
+        // when the bean is @RequestScoped, so that the CDI proxy can
+        // resolve a contextual instance on the timer thread where no
+        // request context would otherwise be active.
+        RequestContextController requestContext = null;
+        if (RequestScoped.class.equals(beanScopeClass)) {
+            requestContext = CDI.current() //
+                            .select(RequestContextController.class) //
+                            .get();
+            if (!requestContext.activate())
+                requestContext = null;
+        }
+
+        Handle<T> handle = null;
+        Object result;
+        try {
+            Instance<T> instance = CDI.current().select(beanClass,
+                                                        beanQualifierAnnos);
+
+            // invoke the bean method
+            if (Dependent.class.equals(beanScopeClass)) {
+                handle = instance.getHandle();
+                result = method.invoke(handle.get());
+            } else {
+                result = method.invoke(instance.get());
+            }
+        } finally {
+            if (handle != null)
+                handle.destroy();
+            if (requestContext != null)
+                requestContext.deactivate();
+        }
+
+        if (result instanceof CompletionStage<?> cs)
+            return cs;
+        else if (result == null)
+            return null;
+        else
+            throw new ClassCastException("The " + method.getName() + " method of the " +
+                                         beanClass.getName() +
+                                         " managed bean class is annotated " +
+                                         "Schedule, but has the return type: " +
+                                         method.getReturnType().getName() +
+                                         ". Managed bean methods annotated Schedule" +
+                                         " must have one of the following return types: " +
+                                         "void, CompletionStage, CompletableFuture"); // TODO NLS
+    }
+}

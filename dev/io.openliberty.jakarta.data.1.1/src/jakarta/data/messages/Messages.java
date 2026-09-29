@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
  * Method signatures are copied from Jakarta Data.
  */
 public class Messages {
+    @Nonnull
     private static final ResourceBundle messages = //
                     ResourceBundle.getBundle("jakarta.data.messages.DataMessages");
 

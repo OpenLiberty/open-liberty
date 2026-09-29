@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=No se dispone de un recuento total de elementos
 011.unknown.attr.type=La instancia {0} se ha obtenido de una forma que no identifica el tipo de atributo. Para las clases est\u00e1ticas del metamodelo, utilice un m\u00e9todo.of que est\u00e9 definido en un subtipo Attribute para proporcionar la clase de entidad y el tipo de atributo de entidad.
 012.unknown.decl.type=La instancia {0} se obtuvo de una forma que no identifica la clase de entidad que declara el atributo. Para las clases est\u00e1ticas del metamodelo, utilice un m\u00e9todo.of que est\u00e9 definido en un subtipo Attribute para proporcionar la clase de entidad y el tipo de atributo de entidad.
+013.arg.invalid=El argumento \u00ab {0} \u00bb no puede tener el valor \u00ab {1} \u00bb.
+014.mode.disallows.offset=Una solicitud de p\u00e1gina no puede incluir a la vez un desplazamiento y el modo \u00ab {0} \u00bb.
+015.cursor.uncomputable=La operaci\u00f3n solicitada no est\u00e1 disponible, ya que no es posible calcular un cursor a partir de criterios de ordenaci\u00f3n que incluyan una expresi\u00f3n.

@@ -46,14 +46,10 @@ import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
 import com.ibm.websphere.simplicity.config.WebApplication;
 
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 public abstract class AbstractSpringTests extends JavaLevel {
-
-    @Rule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("SpringBootTests");
 
     // All current FAT application names.
     public static final String SPRING_BOOT_40_APP_BASE = "io.openliberty.springboot.fat40.app-0.0.1-SNAPSHOT.jar";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,16 @@ public class WebServiceConfigImpl extends WebServiceConfig {
         propertiesToRemove.add(WebServiceConfigConstants.PORT_NAME_PROP);
     }
     
-    // Flag tells us if the message for a call to a beta method has been issued
+    /** Ensures the beta-edition info message is logged only once per class. */
     private static boolean issuedBetaMessage = false;
-    
+
+    /**
+     * Guards all lifecycle methods against invocation outside of a beta Liberty edition.
+     * Throws {@link UnsupportedOperationException} on non-beta builds; logs a one-time
+     * debug message on beta builds.
+     *
+     * @throws UnsupportedOperationException if not running a beta edition
+     */
     private void betaFenceCheck() throws UnsupportedOperationException {
         // Not running beta edition, throw exception
         if (!ProductInfo.getBetaEdition()) { 
@@ -61,6 +68,14 @@ public class WebServiceConfigImpl extends WebServiceConfig {
 
     
     
+    /**
+     * OSGi DS activation constructor. Called when a {@code <webService>} element
+     * is added to the server.xml. Validates the properties, filters them to only the
+     * recognised config attributes, and registers them with {@link WebServicesConfigHolder}
+     * keyed by portName (or the global default key if no portName is specified).
+     *
+     * @param properties the component properties supplied by OSGi config admin
+     */
     @Deprecated
     @Activate
     public WebServiceConfigImpl(Map<String, Object> properties) {
@@ -76,14 +91,27 @@ public class WebServiceConfigImpl extends WebServiceConfig {
         
         String portName = getPortName(properties); // find portName
         
+        // Add info message for config without any attribute set
+        Map<String, Object> filteredProperties = filterProps(properties);
+        if (filteredProperties.isEmpty()) {
+            Tr.info(tc, "info.no.attributes.webservice");
+        }
+
         // Add config for portName
         WebServicesConfigHolder.addConfig(this.toString(), portName,
-                                                filterProps(properties));
+                                                filteredProperties);
     }
     
+    /**
+     * OSGi DS modification callback. Called when an existing {@code <webService>}
+     * element in the server.xml is changed. Removes the previous registration and
+     * re-registers with the updated properties.
+     *
+     * @param properties the updated component properties supplied by OSGi config admin
+     */
     @Deprecated
     @Modified
-    protected void modified(Map<String, Object> properties) {        
+    protected void modified(Map<String, Object> properties) {
 
         betaFenceCheck();
         
@@ -105,10 +133,20 @@ public class WebServiceConfigImpl extends WebServiceConfig {
         
         // Re-add modfied config
         String portName = getPortName(properties);
-        WebServicesConfigHolder.addConfig(this.toString(), portName,
-                                                filterProps(properties));
+
+        // Add info message for config without any attribute set
+        Map<String, Object> filteredProperties = filterProps(properties);
+        if (filteredProperties.isEmpty()) {
+            Tr.info(tc, "info.no.attributes.webservice");
+        }
+        WebServicesConfigHolder.addConfig(this.toString(), portName, filteredProperties);
     }
 
+    /**
+     * OSGi DS deactivation callback. Called when the {@code <webService>} element
+     * is removed from the server.xml. Removes the registration from
+     * {@link WebServicesConfigHolder}.
+     */
     @Deprecated
     @Deactivate
     protected void deactivate() {

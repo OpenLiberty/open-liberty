@@ -26,7 +26,9 @@ import io.openliberty.mcp.internal.fat.isolation.MultiAppIsolationTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.AsyncToolLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
+import io.openliberty.mcp.internal.fat.monitor.McpMonitorMXBeanAccessTest;
 import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
+import io.openliberty.mcp.internal.fat.oidc.tests.AuthorizationFlowTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
@@ -45,6 +47,7 @@ import io.openliberty.mcp.internal.fat.security.PermitAllTests;
 import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
+import io.openliberty.mcp.internal.fat.statelessMode.StatelessConfigChangeOnRestoreTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
 import io.openliberty.mcp.internal.fat.timeout.ConfigurableAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.timeout.InvalidAsyncTimeoutTest;
@@ -64,8 +67,8 @@ import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
+import io.openliberty.mcp.internal.fat.tool.LocaleTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
-import io.openliberty.mcp.internal.fat.tool.MpMetricsOperationsTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
@@ -75,6 +78,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
+import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
 
 /**
  *
@@ -106,29 +110,25 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 InactiveCdiTest.class,
                 IntrospectorMultiAppTest.class,
                 InvalidAsyncTimeoutTest.class,
-                // LocaleTest.class, // Commented out test until message translation is updated
+                LocaleTest.class,
                 LifecycleTest.class,
+                McpMonitorMXBeanAccessTest.class,
                 McpMonitorTest.class,
                 McpUrlPathTest.class,
                 MultiAppIsolationTest.class,
                 MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
-                // TestContainer Tests
-                ConformanceTests.class,
-                OidcTests.class,
-
-                CustomServerInfoTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
+                StatelessConfigChangeOnRestoreTest.class,
                 StatelessModeTest.class,
                 TelemetryOperationsTest.class,
                 TelemetrySessionsTest.class,
-                MpMetricsOperationsTest.class,
                 ToolErrorHandlingTest.class,
                 ToolManagerTest.class,
-                ToolTest.class,
+                UnsupportedAnnotationWarningTest.class,
                 // Authorisation Tests
                 AdminsRoleAllowedTests.class,
                 DenyAllTests.class,
@@ -143,8 +143,14 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 PermitAllTestsStateless.class,
                 DenyAllTestsStateless.class,
                 NoClassAnnotationTestsStateless.class,
-                AdminsRoleAllowedTestsStateless.class
-
+                AdminsRoleAllowedTestsStateless.class,
+                // Tool test must be last the last test on "mcp-server" because
+                // it has special repeats in lite mode which would affect later tests
+                ToolTest.class,
+                // TestContainer Tests
+                ConformanceTests.class,
+                OidcTests.class,
+                AuthorizationFlowTests.class
 })
 
 public class FATSuite extends TestContainerSuite {

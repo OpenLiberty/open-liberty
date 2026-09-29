@@ -49,8 +49,9 @@ import io.openliberty.mcp.internal.sessions.McpSession;
  */
 public final class McpSessionMetrics {
     private McpSession mcpSession;
-    private McpTransport transport;
     private String protocol;
+    private String jsonrpcProtocolVersion;
+    private String mcpProtocolVersion;
 
     private long startTimeNanos;
 
@@ -84,20 +85,33 @@ public final class McpSessionMetrics {
         this.errorType = errorType;
     }
 
-    /**
-     * @return the transport
-     */
-    public McpTransport getTransport() {
-        return transport;
-    }
-
     public void setTransport(McpTransport transport) {
-        this.transport = transport;
         if (transport != null) {
             this.appName = transport.getAppName();
-            // Request will be long gone when the session ends, so extract necessary info now
+            // Extract all required info eagerly since there is no need to hold onto the
+            // transport for the session lifetime
             this.protocol = transport.getReq().getProtocol();
+            if (transport.getMcpRequest() != null) {
+                this.jsonrpcProtocolVersion = transport.getMcpRequest().jsonrpc();
+            }
+            if (transport.getProtocolVersion() != null) {
+                this.mcpProtocolVersion = transport.getProtocolVersion().getVersion();
+            }
         }
+    }
+
+    /**
+     * @return the JSON-RPC protocol version extracted at session initialization time
+     */
+    public String getJsonrpcProtocolVersion() {
+        return jsonrpcProtocolVersion;
+    }
+
+    /**
+     * @return the MCP protocol version extracted at session initialization time
+     */
+    public String getMcpProtocolVersion() {
+        return mcpProtocolVersion;
     }
 
     /**

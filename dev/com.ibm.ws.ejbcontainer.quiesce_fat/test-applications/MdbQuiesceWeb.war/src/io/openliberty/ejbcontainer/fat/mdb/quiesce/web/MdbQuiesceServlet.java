@@ -43,6 +43,12 @@ public class MdbQuiesceServlet extends FATServlet {
     @Resource(lookup = "jms/MdbQuiesceEjbServerQueue")
     private Queue ejbServerQueue;
 
+    @Resource(lookup = "jms/MdbQuiesceEjbInvalidQueue")
+    private Queue ejbInvalidQueue;
+
+    @Resource(lookup = "jms/MdbQuiesceEjbInvalidServerQueue")
+    private Queue ejbInvalidServerQueue;
+
     @Resource(lookup = "jms/MdbQuiesceWebDefaultQueue")
     private Queue webDefaultQueue;
 
@@ -72,6 +78,8 @@ public class MdbQuiesceServlet extends FATServlet {
             sendMessage(qs, ejbDefaultQueue, "Test message for EJB Default MDB");
             sendMessage(qs, ejbBndQueue, "Test message for EJB Bnd MDB");
             sendMessage(qs, ejbServerQueue, "Test message for EJB Server MDB");
+            sendMessage(qs, ejbInvalidQueue, "Test message for EJB Invalid MDB");
+            sendMessage(qs, ejbInvalidServerQueue, "Test message for EJB Invalid Server MDB");
 
             // Send to Web module queues
             sendMessage(qs, webDefaultQueue, "Test message for Web Default MDB");

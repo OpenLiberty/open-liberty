@@ -40,12 +40,12 @@ OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Az OpenID Connect \u00fcgyf\u00e9
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Tegye a k\u00f6vetkez\u0151t: El\u0151sz\u00f6r gondoskodj\u00e9k arr\u00f3l, hogy az OpenID Connect szolg\u00e1ltat\u00f3 t\u00e1mogassa az SSL protokollt. Ha az OpenID Connector szolg\u00e1ltat\u00f3 nem t\u00e1mogatja az SSL kommunik\u00e1ci\u00f3t, akkor az OpenID Connect \u00fcgyf\u00e9lszolg\u00e1ltat\u00e1s seg\u00edts\u00e9g\u00e9vel \u00e1ll\u00edtsa be az enforceHTTPS param\u00e9tert false \u00e9rt\u00e9kre az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
-OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: A(z) [{2}] OpenID Connect \u00fcgyf\u00e9l aktu\u00e1lis [{0}] \u00e1llapota \u00e9s az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e1lasz\u00e1ban l\u00e9v\u0151 [{1}] \u00e1llapot param\u00e9ter nem egyezik meg.  Ez a felt\u00e9tel nem megengedett.
+OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: A(z) [{2}] OpenID Connect \u00fcgyf\u00e9l aktu\u00e1lis [{0}] \u00e1llapota \u00e9s az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e1lasz\u00e1ban kapott [{1}] \u00e1llapotparam\u00e9ter nem egyezik.  Ez a felt\u00e9tel nem megengedett.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Az OpenID Connect \u00fcgyf\u00e9l (\u00e9rintett f\u00e9l vagy RP) k\u00e9r\u00e9st k\u00fcld\u00f6tt egy OpenID Connect szolg\u00e1ltat\u00f3nak (OP), \u00e9s az OP olyan \u00e1llapotparam\u00e9tert tartalmaz\u00f3 v\u00e1laszt k\u00fcld\u00f6tt vissza, amely nem egyezik az RP k\u00fcld\u00e9skori \u00e1llapot\u00e1val. Az OP csak a k\u00fcld\u00f6tt \u00e1llapottal azonos \u00e1llapotot szerepeltethet a v\u00e1laszban.  Az \u00e1llapot a webhelyek k\u00f6z\u00f6tti k\u00e9r\u00e9shamis\u00edt\u00e1s megakad\u00e1lyoz\u00e1sa \u00e9rdek\u00e9ben ker\u00fcl ilyen m\u00f3don alkalmaz\u00e1sra. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OP URL helyes-e. Ellen\u0151rizze az OP napl\u00f3it, hogy biztosan megkapta-e a k\u00e9r\u00e9st.
 
 # This is not in use any more, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE IN BOTH BUNDLES
-OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l nem tudta hiteles\u00edteni az azonos\u00edt\u00f3 tokent, mert a token nem tartalmazott t\u00e1rgy (subject) azonos\u00edt\u00f3t. 
+OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: A(z) [{0}]  OpenID Connect \u00fcgyf\u00e9l nem tudta hiteles\u00edteni az azonos\u00edt\u00f3 tokent, mert az alany azonos\u00edt\u00f3ja nem szerepelt a tokenben. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Az azonos\u00edt\u00f3 token hiteles\u00edt\u00e9se \u00e9rdek\u00e9ben az OpenID Connect \u00fcgyf\u00e9lnek (\u00e9rintett f\u00e9l vagy RP) rendelkeznie kell alany (subject) azonos\u00edt\u00f3val. Az OpenID Connect szolg\u00e1ltat\u00f3 (OP) v\u00e1lasz\u00e1ban kapott azonos\u00edt\u00f3 token nem tartalmazott alany (subject) azonos\u00edt\u00f3t, \u00edgy a hiteles\u00edt\u00e9s meghi\u00fasult. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 (OP) olyan azonos\u00edt\u00f3 tokent adjon vissza, amely tartalmaz alany (subject) azonos\u00edt\u00f3t.
 
@@ -55,19 +55,19 @@ OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Az OpenID Connect \u00fcgyf\u00e9l (\
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9l (RP) rendszer\u00f3r\u00e1ja szinkronban van az OpenID Connect szolg\u00e1ltat\u00f3 (OP) rendszer\u00f3r\u00e1j\u00e1val (amennyiben ezek k\u00e9t k\u00fcl\u00f6nb\u00f6z\u0151 rendszeren tal\u00e1lhat\u00f3k). Tekintse meg a hiba ut\u00e1n megjelen\u0151 \u00fczenetben javasolt felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9st is.
 
 #used_by_client_project and clients projects. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: A(z) [{1}] OpenID Connect \u00fcgyf\u00e9l nem tudott l\u00e9trehozni egy SSL kontextust [{0}] miatt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SSL szolg\u00e1ltat\u00e1sa megfelel\u0151en be van \u00e1ll\u00edtva.
+OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: A(z) [{1}] OpenID Connect \u00fcgyf\u00e9l nem tudott l\u00e9trehozni SSL kontextust [{0}] miatt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az SSL szolg\u00e1ltat\u00e1sa megfelel\u0151en be van \u00e1ll\u00edtva.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Az OpenID Connect \u00fcgyf\u00e9l (\u00e9rintett f\u00e9l vagy er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3) konfigur\u00e1ci\u00f3ja az HTTPS s\u00e9ma haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, de nem l\u00e9tes\u00edthet\u0151 HTTPS kapcsolat. Lehet, hogy az SSL szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve. Lehet, hogy a keyStore elem hi\u00e1nyzik vagy helytelen\u00fcl van megadva.  
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a server.xml f\u00e1jlban a helyes SSL inform\u00e1ci\u00f3k tal\u00e1lhat\u00f3k. Tekintse meg az \u00fczenet el\u0151tt megjelen\u0151 hiba \u00e1ltal javasolt felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9st.
 
 #1708 is used in clients.common bundle. don't use it.
 
 #used_by_client_project, present in clients.common bundle. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Az OpenID Connect k\u00e9r\u00e9st a felhaszn\u00e1l\u00f3 elutas\u00edtotta, vagy valamilyen m\u00e1sik hiba a k\u00e9r\u00e9s elutas\u00edt\u00e1s\u00e1t eredm\u00e9nyezte.
+OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Az OpenID Connect k\u00e9r\u00e9st a felhaszn\u00e1l\u00f3 elutas\u00edtotta, illetve valamilyen egy\u00e9b hiba a k\u00e9r\u00e9s elutas\u00edt\u00e1s\u00e1t eredm\u00e9nyezte.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=A felhaszn\u00e1l\u00f3 a k\u00e9r\u00e9s megszak\u00edt\u00e1s\u00e1val a k\u00e9r\u00e9s hat\u00f3k\u00f6rj\u00f3v\u00e1hagy\u00e1si \u0171rlapj\u00e1n elutas\u00edtotta az OpenID Connect k\u00e9r\u00e9st, illetve valamilyen egy\u00e9b hiba t\u00f6rt\u00e9nt, ami megakad\u00e1lyozta a hozz\u00e1f\u00e9r\u00e9st az OpenID Connect k\u00e9r\u00e9shez.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=A felhaszn\u00e1l\u00f3nak enged\u00e9lyeznie kell az OpenID Connect szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra az \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt hat\u00f3k\u00f6r\u00f6k megoszt\u00e1s\u00e1t az OpenID Connect k\u00e9r\u00e9s sikere \u00e9rdek\u00e9ben. Ha a felhaszn\u00e1l\u00f3 j\u00f3v\u00e1hagyta a k\u00e9r\u00e9st, akkor az OP napl\u00f3kban keressen tov\u00e1bbi hib\u00e1kat.
 
 #used_by_client_project
-OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: A k\u00e9r\u00e9st a felhaszn\u00e1l\u00f3 elutas\u00edtotta, vagy valamilyen m\u00e1sik hiba a k\u00e9r\u00e9s elutas\u00edt\u00e1s\u00e1t eredm\u00e9nyezte.
+OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: A k\u00e9r\u00e9st a felhaszn\u00e1l\u00f3 elutas\u00edtotta, vagy valamilyen egy\u00e9b hiba a k\u00e9r\u00e9s elutas\u00edt\u00e1s\u00e1t eredm\u00e9nyezte.
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=A felhaszn\u00e1l\u00f3 a k\u00e9r\u00e9s megszak\u00edt\u00e1s\u00e1val a k\u00e9r\u00e9s hat\u00f3k\u00f6rj\u00f3v\u00e1hagy\u00e1si \u0171rlapj\u00e1n elutas\u00edtotta az OpenID Connect k\u00e9r\u00e9st, illetve valamilyen egy\u00e9b hiba t\u00f6rt\u00e9nt, ami megakad\u00e1lyozta a hozz\u00e1f\u00e9r\u00e9st az OpenID Connect k\u00e9r\u00e9shez.
 OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=A felhaszn\u00e1l\u00f3nak enged\u00e9lyeznie kell az OpenID Connect szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra az \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt hat\u00f3k\u00f6r\u00f6k megoszt\u00e1s\u00e1t az OpenID Connect k\u00e9r\u00e9s sikere \u00e9rdek\u00e9ben. Ha a felhaszn\u00e1l\u00f3 j\u00f3v\u00e1hagyta a k\u00e9r\u00e9st, akkor az OP napl\u00f3kban keressen tov\u00e1bbi hib\u00e1kat.
 
@@ -79,22 +79,22 @@ OSGI_SERVICE_ERROR.explanation=A megadott OSGi szolg\u00e1ltat\u00e1s nem \u00e9
 OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a "clean" param\u00e9terrel.
 
 #used_by_client_project
-PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token lej\u00e1rt. A lej\u00e1rati id\u0151 ("exp") [{0}], a jelenlegi id\u0151 pedig [{1}].
+PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token lej\u00e1rt. A lej\u00e1rati id\u0151pont ("exp") [{0}], az aktu\u00e1lis id\u0151pont pedig [{1}].
 PROPAGATION_TOKEN_EXPIRED_ERR.explanation=A hozz\u00e1f\u00e9r\u00e9si token lej\u00e1rt, \u00e9s a fut\u00e1si k\u00f6rnyezet nem folytathat\u00f3 a hozz\u00e1f\u00e9r\u00e9si token terjeszt\u00e9s\u00e9vel.
 PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Gondoskodjon r\u00f3la, hogy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si token legyen megadva, \u00e9s azt is, hogy a rendszerek k\u00f6z\u00f6tt szinkroniz\u00e1lva legyen az id\u0151.
 
 #used_by_client_project
-PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nytelen. A kiad\u00e1si id\u0151pont ("iat") param\u00e9ter [{0}] \u00e9rt\u00e9ke az aktu\u00e1lis [{1}] id\u0151pont ut\u00e1n van, \u00e9s ez a helyzet nem enged\u00e9lyezett.
+PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nytelen. A kiad\u00e1si id\u0151pont ("iat") param\u00e9ter [{0}] \u00e9rt\u00e9ke az aktu\u00e1lis [{1}] id\u0151pont ut\u00e1n van, \u00e9s ez az \u00e1llapot nem enged\u00e9lyezett.
 PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.explanation=A hozz\u00e1f\u00e9r\u00e9si token kiad\u00e1si id\u0151pontja az aktu\u00e1lis id\u0151pont ut\u00e1n van. Ez nem megengedett.
 PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.useraction=Biztos\u00edtsa, hogy a hozz\u00e1f\u00e9r\u00e9si token ne egy j\u00f6v\u0151beli id\u0151pontra vonatkoz\u00f3an legyen kibocs\u00e1tva, \u00e9s/vagy szinkroniz\u00e1lja az id\u0151t a rendszerek k\u00f6z\u00f6tt.
 
 #used_by_client_project
-PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token nem tartalmazza a(z) [{0}] ig\u00e9nyl\u00e9st. A sz\u00fcks\u00e9ges ig\u00e9nyl\u00e9sek: [{1}].
+PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token nem tartalmazza a(z) [{0}] ig\u00e9nyt. A sz\u00fcks\u00e9ges ig\u00e9nyl\u00e9sek: [{1}].
 PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=A hozz\u00e1f\u00e9r\u00e9si token nem tartalmazza az \u00f6sszes sz\u00fcks\u00e9ges ig\u00e9nyt. 
 PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Gondoskodj\u00e9k arr\u00f3l, hogy a megadott hozz\u00e1f\u00e9r\u00e9si token tartalmazza a sz\u00fcks\u00e9ges ig\u00e9nyeket.
 
 #used_by_client_project
-PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token nem haszn\u00e1lhat\u00f3. A nem-el\u0151tte ("nbf") param\u00e9ter [{0}] \u00e9rt\u00e9ke az aktu\u00e1lis [{1}] id\u0151pont ut\u00e1n van, \u00e9s ez a helyzet nem enged\u00e9lyezett.
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 hozz\u00e1f\u00e9r\u00e9si token nem haszn\u00e1lhat\u00f3. A nem kor\u00e1bban ("nbf") param\u00e9ter [{0}] \u00e9rt\u00e9ke az aktu\u00e1lis [{1}] id\u0151pont ut\u00e1n van, \u00e9s ez az \u00e1llapot nem megengedett.
 PROPAGATION_TOKEN_NBF_ERR.explanation=A hozz\u00e1f\u00e9r\u00e9si tokenben a nem kor\u00e1bban ig\u00e9ny az aktu\u00e1lis id\u0151pont ut\u00e1n van, \u00e9s a fut\u00e1si k\u00f6rnyezet jelenleg nem haszn\u00e1lhatja a hozz\u00e1f\u00e9r\u00e9si tokent.
 PROPAGATION_TOKEN_NBF_ERR.useraction=Biztos\u00edtsa, hogy a hozz\u00e1f\u00e9r\u00e9si tokenben az "nbf" ig\u00e9ny ne j\u00f6v\u0151beli id\u0151pontra legyen be\u00e1ll\u00edtva, \u00e9s/vagy szinkroniz\u00e1lja a rendszerek k\u00f6z\u00f6tt az id\u0151t, illetve k\u00fcldje el \u00fajra a k\u00e9r\u00e9st k\u00e9s\u0151bb.
 
@@ -111,22 +111,22 @@ OIDC_PROPAGATION_FAIL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a 
 # 1722 is used in clients.common bundle, do not use here.
 
 #used_by_client_project
-PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: Egy invalid_client hiba t\u00f6rt\u00e9nt, mik\u00f6zben az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 megk\u00eds\u00e9relte \u00e9rv\u00e9nyes\u00edteni a(z) [{0}] \u00fcgyf\u00e9lazonos\u00edt\u00f3val \u00e9s [{1}] \u00e9rv\u00e9nyes\u00edt\u00e9si URL c\u00edmmel rendelkez\u0151 hozz\u00e1f\u00e9r\u00e9si tokent.
+PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: Invalid_client hiba t\u00f6rt\u00e9nt, mik\u00f6zben az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 megk\u00eds\u00e9relte \u00e9rv\u00e9nyes\u00edteni a(z) [{0}] \u00fcgyf\u00e9l-azonos\u00edt\u00f3val \u00e9s [{1}] \u00e9rv\u00e9nyes\u00edt\u00e9si URL-c\u00edmmel rendelkez\u0151 hozz\u00e1f\u00e9r\u00e9si tokent.
 PROPAGATION_TOKEN_INVALID_CLIENTID.explanation=A biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token nem ellen\u0151rizhet\u0151 az OpenID Connect szolg\u00e1ltat\u00f3 \u00e1ltal visszaadott invalid_client hiba miatt, \u00e9s a fut\u00e1si k\u00f6rnyezet nem tudja folytatni a hiteles\u00edt\u00e9si folyamatot.
 PROPAGATION_TOKEN_INVALID_CLIENTID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 tartalmazza az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ban l\u00e9v\u0151 \u00fcgyf\u00e9l-azonos\u00edt\u00f3nak megfelel\u0151 \u00fcgyf\u00e9l-azonos\u00edt\u00f3t, \u00e9s lehet\u0151s\u00e9g szerint tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3n tal\u00e1lhat\u00f3 napl\u00f3kat.
 
 #used_by_client_project
-PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem tudta teljes\u00edteni a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a konfigur\u00e1ci\u00f3ban tal\u00e1lhat\u00f3 [{0}] kibocs\u00e1t\u00f3azonos\u00edt\u00f3 (issuerIdentifier) nem tartalmazza a(z) [{1}] "iss" ig\u00e9nyl\u00e9st a hozz\u00e1f\u00e9r\u00e9si tokenben.
+PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem tudta teljes\u00edteni a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a konfigur\u00e1ci\u00f3ban tal\u00e1lhat\u00f3 [{0}] kibocs\u00e1t\u00f3azonos\u00edt\u00f3 (issuerIdentifier) nem tartalmazza a(z) [{1}] "iss" ig\u00e9nyt a hozz\u00e1f\u00e9r\u00e9si tokenben.
 PROPAGATION_TOKEN_ISS_ERROR.explanation=A biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token nem ellen\u0151rizhet\u0151, mert a hozz\u00e1f\u00e9r\u00e9si tokenben l\u00e9v\u0151 "iss" ig\u00e9nyl\u00e9s nem felel meg az issuerIdentifier konfigur\u00e1ci\u00f3s attrib\u00fatumnak, \u00e9s a fut\u00e1si k\u00f6rnyezet nem tudja folytatni a hiteles\u00edt\u00e9si folyamatot.
 PROPAGATION_TOKEN_ISS_ERROR.useraction=Ellen\u0151rizze, hogy az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 olyan issuerIdentifier attrib\u00fatummal rendelkezik-e, amely a hozz\u00e1f\u00e9r\u00e9si tokenben tartalmazza az "iss" ig\u00e9nyt. 
 
 #used_by_client_project
-PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem tudta \u00e9rv\u00e9nyes\u00edteni a hozz\u00e1f\u00e9r\u00e9si tokent, mert a(z) [{0}] validationEndpointUrl nem egy \u00e9rv\u00e9nyes URL c\u00edm volt, vagy nem tudta v\u00e9grehajtani az \u00e9rv\u00e9nyes\u00edt\u00e9st.
+PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem tudta \u00e9rv\u00e9nyes\u00edteni a hozz\u00e1f\u00e9r\u00e9si tokent, mert a(z) [{0}] validationEndpointUrl nem egy \u00e9rv\u00e9nyes URL-c\u00edm volt, illetve nem tudta v\u00e9grehajtani az \u00e9rv\u00e9nyes\u00edt\u00e9st.
 PROPAGATION_TOKEN_INVALID_VALIDATION_URL.explanation=A megadott hozz\u00e1f\u00e9r\u00e9si token nem \u00e9rv\u00e9nyes\u00edthet\u0151, mert az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban megadott validationEndpointUrl \u00e9rv\u00e9nytelen, \u00e9s a fut\u00e1si k\u00f6rnyezet nem tudja folytatni a hiteles\u00edt\u00e9si folyamatot.
 PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy egy \u00e9rv\u00e9nyes \u00e9rt\u00e9k van megadva a validationEndpointUrl attrib\u00fatumhoz az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban.
 
 #used_by_client_project
-PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 visszautas\u00edtotta a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9s nem tartalmazta a sz\u00fcks\u00e9ges terjeszt\u00e9si tokent, mint pl. a hozz\u00e1f\u00e9r\u00e9si vagy jwt token.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 visszautas\u00edtotta a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a k\u00e9r\u00e9s nem tartalmazza a sz\u00fcks\u00e9ges terjeszt\u00e9si tokent, pl. egy hozz\u00e1f\u00e9r\u00e9si vagy jwt tokent.
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=A k\u00e9r\u00e9snek tartalmaznia kell a sz\u00fcks\u00e9ges terjeszt\u00e9si tokent, p\u00e9ld\u00e1ul egy hozz\u00e1f\u00e9r\u00e9si tokent vagy jwt tokent, hogy az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 feldolgozhassa a token hiteles\u00edt\u00e9s\u00e9t \u00e9s terjeszt\u00e9s\u00e9t.
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Biztos\u00edtsa, hogy a k\u00e9r\u00e9s tartalmazzon \u00e9rv\u00e9nyes terjeszt\u00e9si tokent.
 
@@ -142,14 +142,14 @@ PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Ellen\u0151rizze az er\u0151forr\u00e1
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem tudta teljes\u00edteni a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a(z) [{0}] \u00e9rv\u00e9nyes\u00edt\u00e9si m\u00f3dszer nem volt megfelel\u0151 a(z) [{1}] \u00e9rv\u00e9nyes\u00edt\u00e9si URL c\u00edmhez.
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem tudta teljes\u00edteni a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mert a(z) [{0}] \u00e9rv\u00e9nyes\u00edt\u00e9si m\u00f3dszer nem volt megfelel\u0151 a(z) [{1}] \u00e9rv\u00e9nyes\u00edt\u00e9si URL-c\u00edmhez.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban megadott validationEndpointUrl nem a megfelel\u0151 v\u00e9gpont a megadott validationMethod eset\u00e9n.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Friss\u00edtse az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3t vagy a validationMethod, vagy a validationEndpointUrl m\u00f3dos\u00edt\u00e1s\u00e1val.
  
 # 1730 used in clients.common, don't use here.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a hozz\u00e1f\u00e9r\u00e9si token nem tartalmazta a(z) [{1}] attrib\u00fatum \u00e1ltal megadott [{0}] ig\u00e9nyl\u00e9st.
+PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a hozz\u00e1f\u00e9r\u00e9si token nem tartalmazza a(z) [{1}] attrib\u00fatum \u00e1ltal megadott [{0}] ig\u00e9nyt.
 PROPAGATION_TOKEN_MISSING_REALM.explanation=A biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token nem tartalmazza a tartom\u00e1ny azonos\u00edt\u00e1s\u00e1ra szolg\u00e1l\u00f3 megadott ig\u00e9nyt, \u00e9s a fut\u00e1si k\u00f6rnyezet nem tudja folytatni a hiteles\u00edt\u00e9si folyamatot.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t. 1) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 megadja-e a realmName attrib\u00fatumot. 2) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 (OP) a megadott ig\u00e9nnyel bocs\u00e1tja-e ki a hozz\u00e1f\u00e9r\u00e9si tokent. 3) Ellen\u0151rizze, hogy az OP ki tudja-e bocs\u00e1tani a hozz\u00e1f\u00e9r\u00e9si tokent az "iss" ig\u00e9nnyel. 
 
@@ -168,7 +168,7 @@ BAD_INBOUND_PRPAGATION_SUPPORTED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3
 #1734 used by clients.common bundle, don't use here. 
 
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 meghi\u00fas\u00edtotta a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a(z) [{0}] \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpont v\u00e1lasza tartalmazza a(z) [{1}] ig\u00e9nyl\u00e9st, de a(z) [{2}] attrib\u00fatum TRUE \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 nem teljes\u00edtette a hiteles\u00edt\u00e9si k\u00e9r\u00e9st, mivel a(z) [{0}] \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpont v\u00e1lasza tartalmazza a(z) [{1}] ig\u00e9nyt, de a(z) [{2}] attrib\u00fatum TRUE \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Mivel az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban "disableIssChecking" (kibocs\u00e1t\u00f3 ellen\u0151rz\u00e9s tilt\u00e1sa) van megadva, az er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3 olyan json v\u00e1laszt v\u00e1r az \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpontr\u00f3l, amely nem tartalmaz "iss" ig\u00e9nyt.  
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t. 1)M\u00f3dos\u00edtsa az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s \u00e1ll\u00edtsa a "disableIssChecking" param\u00e9tert"FALSE" \u00e9rt\u00e9kre 2) Int\u00e9zze \u00fagy, hogy az \u00e9rv\u00e9nyes\u00edt\u00e9si v\u00e9gpont ne bocs\u00e1sson ki "iss" ig\u00e9nyt.
 
@@ -185,20 +185,20 @@ OIDC_CLIENT_JWT_JDK7.useraction=Telep\u00edtsen olyan Java v\u00e1ltozatot, amel
 #present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
 #0=signatureAlgorithm, 1=exception or error message if any
 #used_by_client_project and clients project
-OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Az al\u00e1\u00edr\u00e1si algoritmus [{0}] \u00e1ltal megk\u00f6vetelt al\u00e1\u00edr\u00e1si kulcs nem volt el\u00e9rhet\u0151. {1}
+OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: A(z) [{0}] al\u00e1\u00edr\u00e1si algoritmus \u00e1ltal megk\u00f6vetelt al\u00e1\u00edr\u00e1si kulcs nem volt el\u00e9rhet\u0151. {1}
 OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Nem tal\u00e1lhat\u00f3 al\u00e1\u00edr\u00e1si kulcs, vagy nem tal\u00e1lhat\u00f3 olyan kulcs, amely a be\u00e1ll\u00edtott al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja. Ennek oka hi\u00e1nyz\u00f3, rosszul form\u00e1zott vagy pontatlan inform\u00e1ci\u00f3kat tartalmaz\u00f3 \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3 vagy token lehet.
 OIDC_CLIENT_NO_VERIFYING_KEY.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) Ha JWK-t haszn\u00e1l a tokenek al\u00e1\u00edr\u00e1s\u00e1ra \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re, akkor gondoskodjon arr\u00f3l, hogy a jwkEndpointUrl attrib\u00fatum megfelel\u0151en legyen konfigur\u00e1lva, \u00e9s a JWT \u00e9s JWK ig\u00e9nyek helyesek legyenek. 2) Ha X.509 tan\u00fas\u00edtv\u00e1nyokat haszn\u00e1l a tokenek al\u00e1\u00edr\u00e1s\u00e1ra \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re, akkor gondoskodjon arr\u00f3l, hogy a signatureAlgorithm, trustStoreRef \u00e9s trustStoreAlias attrib\u00fatumok megfelel\u0151en legyenek konfigur\u00e1lva. 3) Ha megosztott kulcsokat haszn\u00e1l a tokenek al\u00e1\u00edr\u00e1s\u00e1ra \u00e9s \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re, akkor gondoskodjon a clientId \u00e9s clientSecret attrib\u00fatumok megfelel\u0151 konfigur\u00e1l\u00e1s\u00e1r\u00f3l.
 
 #0=More specific error message, 1=clientId
 #used_by_client_project
-OIDC_CLIENT_BAD_RS_TOKEN=CWWKS1740W: A(z) [{1}] \u00fcgyf\u00e9l bej\u00f6v\u0151 terjeszt\u00e9si tokene nem \u00e9rv\u00e9nyes a k\u00f6vetkez\u0151 miatt: [{0}]. A k\u00e9r\u00e9s hiteles\u00edt\u00e9s\u00e9re az OpenID Connect seg\u00edts\u00e9g\u00e9vel ker\u00fcl sor.
+OIDC_CLIENT_BAD_RS_TOKEN=CWWKS1740W: A(z) [{1}] \u00fcgyf\u00e9l bej\u00f6v\u0151 terjeszt\u00e9si tokenje nem \u00e9rv\u00e9nyes a k\u00f6vetkez\u0151 miatt: [{0}]. A k\u00e9r\u00e9s hiteles\u00edt\u00e9s\u00e9re az OpenID Connect seg\u00edts\u00e9g\u00e9vel ker\u00fcl sor.
 OIDC_CLIENT_BAD_RS_TOKEN.explanation=A token nem ellen\u0151rizhet\u0151 a bej\u00f6v\u0151 terjeszt\u00e9si k\u00e9r\u00e9shez. Az \u00fcgyf\u00e9l folytatja a hiteles\u00edt\u00e9si k\u00eds\u00e9rletet az OpenID Connect seg\u00edts\u00e9g\u00e9vel.
 OIDC_CLIENT_BAD_RS_TOKEN.useraction=Ha a hiba v\u00e1rt, akkor nincs teend\u0151. Egy\u00e9bk\u00e9nt gondoskodjon arr\u00f3l, hogy a bej\u00f6v\u0151 terjeszt\u00e9si k\u00f6rnyezet megfelel\u0151en legyen be\u00e1ll\u00edtva.
 
 # Do not translate "signatureAlgorithm"
 #0=OIDC client ID, 1="none"
 #used_by_client_project
-OIDC_CLIENT_NONE_ALG=CWWKS1741W: A(z) [{0}] OpenID Connect client signatureAlgorithm be\u00e1ll\u00edt\u00e1sa [{1}].
+OIDC_CLIENT_NONE_ALG=CWWKS1741W: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l signatureAlgorithm be\u00e1ll\u00edt\u00e1sa [{1}].
 OIDC_CLIENT_NONE_ALG.explanation=Mivel a signatureAlgorithm be\u00e1ll\u00edt\u00e1sa "none", al\u00e1\u00edr\u00e1s n\u00e9lk\u00fcli tokent v\u00e1r a rendszer, ami nem \u00e1ltal\u00e1nos gyakorlat.
 OIDC_CLIENT_NONE_ALG.useraction=Ha a bej\u00f6v\u0151 tokenek al\u00e1\u00edr\u00e1sa nem elv\u00e1rt, akkor nincs teend\u0151. Ellenkez\u0151 esetben v\u00e1lasszon ki egy t\u00e1mogatott signatureAlgorithm \u00e9rt\u00e9ket, amely lehet p\u00e9ld\u00e1ul az RS256 vagy HS256.
 
@@ -212,7 +212,7 @@ OIDC_CLIENT_NONE_ALG.useraction=Ha a bej\u00f6v\u0151 tokenek al\u00e1\u00edr\u0
 # do not translate WASOidcCode
 # 0: the content of WASOidcCode, 1: client ID
 #used_by_client_project and clients project
-OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: A WASOidcCode cookie [{0}] az OpenID Connect \u00fcgyf\u00e9lnek [{1}] k\u00fcld\u00f6tt k\u00e9r\u00e9sben \u00e9rv\u00e9nytelen. Lehet, hogy m\u00f3dos\u00edtott\u00e1k az \u00e9rt\u00e9k\u00e9t.
+OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: A(z) [{0}] WASOidcCode cookie a(z) [{1}] OpenID Connect \u00fcgyf\u00e9lnek k\u00fcld\u00f6tt k\u00e9r\u00e9sben \u00e9rv\u00e9nytelen. Lehet, hogy m\u00f3dos\u00edtott\u00e1k az \u00e9rt\u00e9k\u00e9t.
 OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=Az OpenID Connect \u00fcgyf\u00e9l (\u00e9rintett f\u00e9l vagy RP) \u00e9rv\u00e9nytelen WASOidcCode cookie-t kapott. Lehet, hogy m\u00f3dos\u00edtott\u00e1k az \u00e9rt\u00e9k\u00e9t.
 OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a cookie-t nem m\u00f3dos\u00edtott\u00e1k, \u00e9s a dek\u00f3dolt cookie tartalom megfelel\u0151en form\u00e1zott JSON objektummal kezd\u0151dik.
 
@@ -220,12 +220,12 @@ OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, 
 
 # do not translate GET
 # present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: A(z) [{0}] GET k\u00e9r\u00e9se \u00e9rv\u00e9nytelen. 500-as v\u00e1laszk\u00f3d \u00e9rkezett vissza.
+OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: \u00c9rv\u00e9nytelen GET k\u00e9r\u00e9s a k\u00f6vetkez\u0151h\u00f6z: [{0}]. 500-as v\u00e1laszk\u00f3d \u00e9rkezett vissza.
 OIDC_CLIENT_BAD_GET_REQUEST.explanation=K\u00e9r\u00e9s \u00e9rkezett, amely nem felelt meg egy v\u00e1rt URL c\u00edmnek, vagy nem tartalmazta a sz\u00fcks\u00e9ges param\u00e9tereket.
 OIDC_CLIENT_BAD_GET_REQUEST.useraction=Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1t. Ezt az \u00fczenetet okozhatja egy b\u00f6ng\u00e9sz\u0151vel kapcsolatos probl\u00e9ma is. 
 
 # present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: A(z) [{0}] k\u00e9r\u00e9se \u00e9rv\u00e9nytelen. A k\u00f6telez\u0151 state param\u00e9ter hi\u00e1nyzik. 500-as v\u00e1laszk\u00f3d \u00e9rkezett vissza.
+OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: \u00c9rv\u00e9nytelen k\u00e9r\u00e9s a k\u00f6vetkez\u0151h\u00f6z: [{0}]. A sz\u00fcks\u00e9ges \u00e1llapotparam\u00e9ter hi\u00e1nyzik. 500-as v\u00e1laszk\u00f3d \u00e9rkezett vissza.
 OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=K\u00e9r\u00e9s \u00e9rkezett, amely nem tartalmazott egy k\u00f6telez\u0151 \u00e1llapotparam\u00e9tert.
 OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1t. Ezt az \u00fczenetet okozhatja egy b\u00f6ng\u00e9sz\u0151vel kapcsolatos probl\u00e9ma is.
 
@@ -233,31 +233,31 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Ellen\u0151rizze az OpenID Connect s
 
 # do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: \u00c9rv\u00e9nytelen k\u00e9r\u00e9s a k\u00f6vetkez\u0151h\u00f6z: [{0}]. Egy WASReqURLOidc kezdet\u0171 nev\u0171 k\u00f6telez\u0151 cookie hi\u00e1nyzik. Lehets\u00e9ges, hogy az \u00fcgyf\u00e9l el\u00e9r\u00e9s\u00e9hez haszn\u00e1lt hosztn\u00e9v nem egyezik meg a szolg\u00e1ltat\u00f3n\u00e1l regisztr\u00e1lt n\u00e9vvel. Egy 500-as v\u00e1laszk\u00f3d \u00e9rkezett vissza.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: \u00c9rv\u00e9nytelen k\u00e9r\u00e9s a k\u00f6vetkez\u0151h\u00f6z: [{0}]. Egy, a nev\u00e9ben WASReqURLOidc kezdet\u0171 k\u00f6telez\u0151 cookie hi\u00e1nyzik. Lehets\u00e9ges, hogy az \u00fcgyf\u00e9l el\u00e9r\u00e9s\u00e9re haszn\u00e1lt hosztn\u00e9v nem egyezik meg a szolg\u00e1ltat\u00f3n\u00e1l regisztr\u00e1lt n\u00e9vvel. 500-as v\u00e1laszk\u00f3d \u00e9rkezett vissza.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=K\u00e9r\u00e9s \u00e9rkezett, amely nem tartalmazott egy k\u00f6telez\u0151 cookie-t.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3i \u00e9s az \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3kat. A hi\u00e1nyz\u00f3 cookie-t okozhatja, hogy az \u00fcgyf\u00e9l el\u00e9r\u00e9se olyan hosztn\u00e9vvel t\u00f6rt\u00e9nik, ami elt\u00e9r a szolg\u00e1ltat\u00f3n regisztr\u00e1lt \u00e1tir\u00e1ny\u00edt\u00e1si hosztn\u00e9vt\u0151l. Ha a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban a webAppSecurity elem sameSiteCookie attrib\u00fatuma Strict \u00e9rt\u00e9kre van \u00e1ll\u00edtva, akkor pr\u00f3b\u00e1lja meg Lax vagy None \u00e9rt\u00e9kre \u00e1ll\u00edtani.
 
-OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Az OpenId Connect \u00fcgyf\u00e9l (\u00e9rdekelt f\u00e9l vagy RP) [{2}] konfigur\u00e1ci\u00f3ja a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9t URL [{0}] \u00e9s a t\u00f6bbi v\u00e9gpontot is megadja. Az RP a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9sb\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3kat fogja haszn\u00e1lni \u00e9s a t\u00f6bbi konfigur\u00e1lt v\u00e9gpontot [{1}] figyelmen k\u00edv\u00fcl hagyja.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Az OpenId Connect \u00fcgyf\u00e9l (\u00e9rintett f\u00e9l vagy RP) [{2}] konfigur\u00e1ci\u00f3ja a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9t URL [{0}] \u00e9s a t\u00f6bbi v\u00e9gpontot is megadja. Az RP a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9sb\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3kat fogja haszn\u00e1lni \u00e9s a t\u00f6bbi konfigur\u00e1lt v\u00e9gpontot [{1}] figyelmen k\u00edv\u00fcl hagyja.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Az OpenId Connect \u00fcgyf\u00e9l a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont seg\u00edts\u00e9g\u00e9vel l\u00e9p kapcsolatba a szolg\u00e1ltat\u00f3val \u00e9s a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3k haszn\u00e1lat\u00e1val l\u00e9p kapcsolatba a t\u00f6bbi v\u00e9gponttal (p\u00e9ld\u00e1ul jogosults\u00e1g, token \u00e9s userinfo).
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.useraction=Vagy a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpontot, vagy a t\u00f6bbi v\u00e9gpontot (p\u00e9ld\u00e1ul a jogosults\u00e1g, token \u00e9s userinfo) \u00e1ll\u00edtsa be, a kett\u0151t egyszerre ne.
 
-OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: Az OpenId Connect \u00fcgyf\u00e9l (\u00e9rdekelt f\u00e9l vagy RP) [{2}] konfigur\u00e1ci\u00f3ja a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9t URL [{0}] \u00e9s a kibocs\u00e1t\u00f3 azonos\u00edt\u00f3j\u00e1t [{1}] is megadja. Az RP a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9sb\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3kat fogja haszn\u00e1lni \u00e9s a kibocs\u00e1t\u00f3-azonos\u00edt\u00f3t figyelmen k\u00edv\u00fcl hagyja.
+OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER=CWWKS1522W: Az OpenId Connect \u00fcgyf\u00e9l (\u00e9rintett f\u00e9l vagy RP) [{2}] konfigur\u00e1ci\u00f3ja a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9t URL [{0}] \u00e9s a kibocs\u00e1t\u00f3 azonos\u00edt\u00f3j\u00e1t [{1}] is megadja. Az RP a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9sb\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3kat fogja haszn\u00e1lni \u00e9s a be\u00e1ll\u00edtott kibocs\u00e1t\u00f3-azonos\u00edt\u00f3t figyelmen k\u00edv\u00fcl hagyja.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.explanation=Az OpenId Connect \u00fcgyf\u00e9l a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont seg\u00edts\u00e9g\u00e9vel l\u00e9p kapcsolatba a szolg\u00e1ltat\u00f3val \u00e9s a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3k haszn\u00e1lja.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_ISSUER.useraction=Vagy a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpontot, vagy a kibocs\u00e1t\u00f3azonos\u00edt\u00f3t \u00e1ll\u00edtsa be, a kett\u0151t egyszerre ne.
 
-OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: Az OpenId Connect \u00fcgyf\u00e9l (\u00e9rdekelt f\u00e9l vagy RP) [{3}] konfigur\u00e1ci\u00f3ja a(z) [{0}] \u00e9rt\u00e9ket adja meg (a(z) [{1}] alap\u00e9rtelmezett \u00e9rt\u00e9ke) \u00e9s a felt\u00e9rk\u00e9pez\u00e9s k\u00f6vetkezt\u00e9ben ez a k\u00f6vetkez\u0151re v\u00e1ltozott: [{2}].
+OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT=CWWKS1523I: Az OpenId Connect \u00fcgyf\u00e9l (\u00e9rintett f\u00e9l vagy RP) [{3}] konfigur\u00e1ci\u00f3ja a(z) [{0}] \u00e9rt\u00e9ket adja meg (a(z) [{1}] alap\u00e9rtelmezett \u00e9rt\u00e9ke), \u00e9s a felt\u00e9rk\u00e9pez\u00e9s k\u00f6vetkezt\u00e9ben ez a k\u00f6vetkez\u0151re v\u00e1ltozott: [{2}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.explanation=Ha az OpenID Connect szolg\u00e1ltat\u00f3 nem nem t\u00e1mogatja az RP alap\u00e9rtelmez\u00e9seket, akkor az RP kapacit\u00e1s\u00e1t\u00f3l f\u00fcgg\u0151en az alap\u00e9rtelmez\u00e9sek olyan \u00e9rt\u00e9kre m\u00f3dos\u00edthat\u00f3k, amit az OP t\u00e1mogat.
 OIDC_CLIENT_DISCOVERY_OVERRIDE_DEFAULT.useraction=Inform\u00e1ci\u00f3s \u00fczenet. Nincs teend\u0151.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: Az OpenID Connect \u00fcgyf\u00e9l [{0}] nem tudta lek\u00e9rdezni az Open ID Connect szolg\u00e1ltat\u00f3 v\u00e9gpont inform\u00e1ci\u00f3it a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9n [{1}] kereszt\u00fcl. Friss\u00edtse az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t a helyes HTTPS felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edmmel. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS1524E: A(z) [{0}] OpenID Connect \u00fcgyf\u00e9l nem tudta lek\u00e9rdezni az Open ID Connect szolg\u00e1ltat\u00f3 v\u00e9gpont inform\u00e1ci\u00f3it a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edm\u00e9n [{1}] kereszt\u00fcl. Friss\u00edtse az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t a helyes HTTPS felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edmmel. 
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Az OpenID Connect \u00fcgyf\u00e9l \u00fagy van be\u00e1ll\u00edtva, hogy az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e9gpontokat a felt\u00e9rk\u00e9pez\u00e9si URL c\u00edmen kereszt\u00fcl t\u00e9rk\u00e9pezze fel, de a felt\u00e9rk\u00e9pez\u00e9si folyamat meghi\u00fasult. Az OpenID Connect \u00fcgyf\u00e9l addig nem fogja tudni feldolgozni a hiteles\u00edt\u00e9si k\u00e9r\u00e9seket, am\u00edg a discoveryEndpointURL konfigur\u00e1ci\u00f3j\u00e1t ki nem jav\u00edtj\u00e1k vagy a felt\u00e9rk\u00e9pez\u00e9s sikeres nem lesz.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t kijav\u00edtva biztos\u00edtsa, hogy 1) a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL-c\u00edme a helyes OpenID Connect szolg\u00e1ltat\u00f3ra hivatkozzon, 2) a felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL-c\u00edme HTTPS c\u00edm legyen \u00e9s 3) az SSL szolg\u00e1ltat\u00e1s \u00e9s kulcst\u00e1rol\u00f3 elemei helyesen legyenek be\u00e1ll\u00edtva megb\u00edzhat\u00f3 OpenID Connect szolg\u00e1ltat\u00f3val. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpontja m\u0171k\u00f6d\u0151k\u00e9pes.
 
-OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Nem \u00e9rkezett vissza sikeres v\u00e1lasz a k\u00f6vetkez\u0151 URL c\u00edmr\u0151l: [{0}]. Ez a(z) [{1}] v\u00e1lasz \u00e1llapot \u00e9s a(z) [{2}] hiba a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9sb\u0151l.
+OIDC_CLIENT_DISC_RESPONSE_ERROR=CWWKS1525E: Nem \u00e9rkezett vissza sikeres v\u00e1lasz a k\u00f6vetkez\u0151 URL-c\u00edmr\u0151l: [{0}]. Ez a(z) [{1}] v\u00e1lasz \u00e1llapota \u00e9s a(z) [{2}] hiba a felt\u00e9rk\u00e9pez\u00e9si k\u00e9r\u00e9sb\u0151l.
 OIDC_CLIENT_DISC_RESPONSE_ERROR.explanation=Az OpenID Connect \u00fcgyf\u00e9l nem tudta el\u00e9rni az OpenID Connect szolg\u00e1ltat\u00f3 felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpontj\u00e1t; az \u00fczenet tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmazhat a hib\u00e1val kapcsolatban.
 OIDC_CLIENT_DISC_RESPONSE_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 el\u00e9rhet\u0151 \u00e9s a megadott felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont helyes.
 
-OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: Az OpenID Connect \u00fcgyf\u00e9l [{0}] konfigur\u00e1ci\u00f3ja a(z) [{1}] felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL c\u00edmr\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3kkal ker\u00fclt l\u00e9trehoz\u00e1sra. Ezek az inform\u00e1ci\u00f3k lehet\u0151v\u00e9 teszik az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra, hogy egy\u00fcttm\u0171k\u00f6dj\u00f6n az OpenID Connect szolg\u00e1ltat\u00f3val a k\u00e9r\u00e9sek, mint p\u00e9ld\u00e1ul authorization \u00e9s token feldolgoz\u00e1s\u00e1hoz.
+OIDC_CLIENT_DISCOVERY_COMPLETE=CWWKS1526I: Az OpenID Connect \u00fcgyf\u00e9l [{0}] konfigur\u00e1ci\u00f3ja a(z) [{1}] felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpont URL-c\u00edmr\u0151l sz\u00e1rmaz\u00f3 inform\u00e1ci\u00f3kkal ker\u00fclt l\u00e9trehoz\u00e1sra. Ezek az inform\u00e1ci\u00f3k lehet\u0151v\u00e9 teszik az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra, hogy egy\u00fcttm\u0171k\u00f6dj\u00f6n az OpenID Connect szolg\u00e1ltat\u00f3val a k\u00e9r\u00e9sek, mint p\u00e9ld\u00e1ul jogosults\u00e1g \u00e9s token feldolgoz\u00e1s\u00e1ban.
 OIDC_CLIENT_DISCOVERY_COMPLETE.explanation=Az OpenID Connect \u00fcgyf\u00e9l felveszi a kapcsolatot az OpenID Connect szolg\u00e1ltat\u00f3 felt\u00e9rk\u00e9pez\u00e9si v\u00e9gpontj\u00e1val, hogy inform\u00e1ci\u00f3kat szerezzen be, mint p\u00e9ld\u00e1ul az authorizationEndpointUrl, tokenEndpointUrl, userInfoEndpointUrl, jwkEndpointUrl. Ezek az inform\u00e1ci\u00f3k lehet\u0151v\u00e9 teszik az OpenID Connect \u00fcgyf\u00e9l sz\u00e1m\u00e1ra, hogy egy\u00fcttm\u0171k\u00f6dj\u00f6n az OpenID Connect szolg\u00e1ltat\u00f3val jogosults\u00e1g, token, jwk, userinfo k\u00e9r\u00e9sek k\u00fcld\u00e9se \u00e9rdek\u00e9ben.
 OIDC_CLIENT_DISCOVERY_COMPLETE.useraction=Inform\u00e1ci\u00f3s \u00fczenet. Nincs teend\u0151.
 
@@ -292,5 +292,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ellen\u0151rizze az O
 REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: A hiteles\u00edt\u00e9si k\u00e9r\u00e9s meghi\u00fasult, mert az OpenID Connect szolg\u00e1ltat\u00f3 a k\u00f6vetkez\u0151 {0} hib\u00e1t adta vissza: {1}
 REDIRECT_URI_CONTAINED_ERROR.explanation=A megadott v\u00e1lasz\u00e1llapot azt jelezte, hogy a hiteles\u00edt\u00e9s nem volt sikeres. Az \u00fczenetben megadott hiba \u00e9s hibale\u00edr\u00e1s tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmaz.
 REDIRECT_URI_CONTAINED_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
+
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: A v\u00e9dett er\u0151forr\u00e1s metaadatai nem tartalmazhatnak signed_metadata JWT-t, mivel a [ {0} ] JWT-k\u00e9sz\u00edt\u0151 nem tudta l\u00e9trehozni a tokent: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=A konfigur\u00e1lt JWT-gener\u00e1tor kiv\u00e9telt dobott az al\u00e1\u00edrt metaadat-token l\u00e9trehoz\u00e1sa k\u00f6zben. A szerver a metadata dokumentumot a signed_metadata mez\u0151 n\u00e9lk\u00fcl adja vissza.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=A hiba ok\u00e1r\u00f3l tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a JWT-gener\u00e1tor be\u00e1ll\u00edt\u00e1sait \u00e9s a szerver napl\u00f3it.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

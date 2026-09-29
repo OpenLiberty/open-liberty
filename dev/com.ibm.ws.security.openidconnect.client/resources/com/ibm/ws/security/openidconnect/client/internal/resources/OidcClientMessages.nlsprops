@@ -293,4 +293,9 @@ REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: An authentication request failed becaus
 REDIRECT_URI_CONTAINED_ERROR.explanation=The specified response status indicated that the authentication was not successful. The error and error description that are provided in the message contain additional information.
 REDIRECT_URI_CONTAINED_ERROR.useraction=For more information, see the error in the message.
 
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: The protected resource metadata cannot include a signed_metadata JWT because the [{0}] JWT builder failed to build the token: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=The configured JWT builder created an exception when building the signed metadata token. The server returns the metadata document without the signed_metadata field.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=Check the JWT builder configuration and the server logs for more information about the failure.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

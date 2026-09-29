@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,16 +29,29 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 /**
+ * ORB initializer for transaction support. Registers transaction interceptors
+ * and policy factories.
+ *
+ * <p>Yoko resolves ORBInitializer implementations by calling
+ * {@link org.apache.yoko.osgi.locator.LocalFactory#forName} to load the class, then
+ * instantiating it via reflection using the no-args constructor. The factory access
+ * needed by the interceptors at runtime is performed via the OSGi service registry
+ * through {@code ServiceCaller<TransactionHandlerContext>} held by each interceptor.
+ *
  * @version $Revision: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
 public class TransactionInitializer extends LocalObject implements ORBInitializer {
     private static final long serialVersionUID = 1L;
     private static final Encoding CDR_1_2_ENCODING = new Encoding(ENCODING_CDR_ENCAPS.value, (byte) 1, (byte) 2);
-    private static final TraceComponent tc = Tr.register(TransactionInitializer.class);
+    private static final TraceComponent tc = Tr.register(TransactionInitializer.class, "IIOP", null);
 
+    /**
+     * No-args constructor — Yoko always instantiates ORBInitializer implementations via
+     * reflection using the no-args constructor. Factory access is performed at interceptor
+     * call time via the OSGi service registry.
+     */
     public TransactionInitializer() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "TransactionInitializer.<init>");
+        // Intentionally empty
     }
 
     /**
@@ -47,14 +60,12 @@ public class TransactionInitializer extends LocalObject implements ORBInitialize
      * interceptors, then those initial services shall be registered at
      * this point via calls to
      * <code>ORBInitInfo.register_initial_reference</code>.
-     * 
+     *
      * @param orbInitInfo provides initialization attributes and operations by
      *            which Interceptors can be registered.
      */
     @Override
-    public void pre_init(ORBInitInfo orbInitInfo) {
-
-    }
+    public void pre_init(ORBInitInfo orbInitInfo) {}
 
     /**
      * Called during ORB initialization. If a service must resolve initial

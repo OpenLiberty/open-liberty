@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,15 @@ public class StartCommandTest {
         // since we are not using the normal LibertyServer class for this server,
         // we need to make sure to explicitly clean up.  We do this before running
         // the test in order to preserve the contents on disk.
+
+        // Stop any leftover server before attempting directory deletion.
+        // On Windows, a running server holds console.log open which prevents
+        // directory deletion.  This can happen if a previous test received
+        // ERROR_SERVER_START (rc=22) and its finally-block stop did not complete
+        // before the server finished starting.  On all platforms, stopping first
+        // also prevents a leftover running server from causing the next test to
+        // see REDUNDANT_ACTION_STATUS instead of a clean start.
+        LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "stop");
 
         if (LibertyFileManager.libertyFileExists(machine, defaultServerPath)) {
             LibertyFileManager.deleteLibertyDirectoryAndContents(machine, defaultServerPath);

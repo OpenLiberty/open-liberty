@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
+import com.ibm.ws.kernel.feature.internal.FeatureManager;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureDefinitionUtils.ProvisioningDetails;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -62,57 +63,84 @@ public class FeatureIntrospector implements Introspector {
      */
     @Override
     public void introspect(PrintWriter out) throws Exception {
+        FeatureManager managerContext = ((FeatureManager) this.provisioner);
+        managerContext.getFeatureRepository().init();
+        try {
+            doIntrospect(out, managerContext);
+        } finally {
+            managerContext.getFeatureRepository().dispose();
+        }
+    }
+
+    private void doIntrospect(PrintWriter out, FeatureManager managerContext) {
         Set<String> features = this.provisioner.getInstalledFeatures();
         for (String feature : features) {
             FeatureDefinition featureDef = this.provisioner.getFeatureDefinition(feature);
-            out.println(featureDef.getFeatureName());
-            out.println("    Visibility: " + featureDef.getVisibility());
-            out.println("    Version: " + featureDef.getVersion());
-            out.println("    Simple Name: " + featureDef.getFeatureName());
-            out.println("    Symbolic Name: " + featureDef.getSymbolicName());
-            if (featureDef instanceof ProvisioningFeatureDefinition) {
+            introspectFeature(out, featureDef);
+        }
+        Collection<ProvisioningFeatureDefinition> kernelFeatures = managerContext.getKernelFeatures();
+        out.println("Kernel Features:");
+        for (ProvisioningFeatureDefinition kernelFeature : kernelFeatures) {
+            introspectFeature(out, kernelFeature);
+        }
 
-                ProvisioningFeatureDefinition proFeatDef = (ProvisioningFeatureDefinition) featureDef;
+    }
 
-                String bundleRepType = proFeatDef.getBundleRepositoryType();
-                out.println("    Bundle Repository Type: " + (bundleRepType == null || bundleRepType.isEmpty() ? "core" : bundleRepType));
-                out.println("    Auto Feature: " + proFeatDef.isAutoFeature());
-                out.println("    Singleton: " + proFeatDef.isSingleton());
+    private void introspectFeature(PrintWriter out, FeatureDefinition featureDef) {
+        out.println(featureDef.getFeatureName());
+        out.println("    Visibility: " + featureDef.getVisibility());
+        out.println("    Version: " + featureDef.getVersion());
+        out.println("    Simple Name: " + featureDef.getFeatureName());
+        out.println("    Symbolic Name: " + featureDef.getSymbolicName());
+        if (featureDef instanceof ProvisioningFeatureDefinition) {
 
-                if (proFeatDef instanceof SubsystemFeatureDefinitionImpl) {
-                    SubsystemFeatureDefinitionImpl subSysFeatureDef = (SubsystemFeatureDefinitionImpl) proFeatDef;
-                    ProvisioningDetails details = subSysFeatureDef.getProvisioningDetails();
-                    boolean detailsAreSet = false;
-                    try {
-                        //Create provisioning details if not already set
-                        if (details == null) {
-                            try {
-                                details = new ProvisioningDetails(subSysFeatureDef.getImmutableAttributes().featureFile, null);
-                                details.setImmutableAttributes(subSysFeatureDef.getImmutableAttributes());
-                                subSysFeatureDef.setProvisioningDetails(details);
-                                detailsAreSet = true;
-                            } catch (IOException e) {
-                                //AutoFFDC is fine here
-                            }
+            ProvisioningFeatureDefinition proFeatDef = (ProvisioningFeatureDefinition) featureDef;
+
+            String bundleRepType = proFeatDef.getBundleRepositoryType();
+            out.println("    Bundle Repository Type: " + (bundleRepType == null || bundleRepType.isEmpty() ? "core" : bundleRepType));
+            out.println("    Auto Feature: " + proFeatDef.isAutoFeature());
+            out.println("    Singleton: " + proFeatDef.isSingleton());
+
+            String apiPackages = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_API_PACKAGE);
+            out.println("    Api Packages: " + (apiPackages == null || apiPackages.isEmpty() ? "none" : apiPackages));
+            String apiServices = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_API_SERVICE);
+            out.println("    Api Services: " + (apiServices == null || apiServices.isEmpty() ? "none" : apiServices));
+            String spiPackages = proFeatDef.getHeader(FeatureDefinitionUtils.IBM_SPI_PACKAGE);
+            out.println("    Spi Packages: " + (spiPackages == null || spiPackages.isEmpty() ? "none" : spiPackages));
+
+            if (proFeatDef instanceof SubsystemFeatureDefinitionImpl) {
+                SubsystemFeatureDefinitionImpl subSysFeatureDef = (SubsystemFeatureDefinitionImpl) proFeatDef;
+                ProvisioningDetails details = subSysFeatureDef.getProvisioningDetails();
+                boolean detailsAreSet = false;
+                try {
+                    //Create provisioning details if not already set
+                    if (details == null) {
+                        try {
+                            details = new ProvisioningDetails(subSysFeatureDef.getImmutableAttributes().featureFile, null);
+                            details.setImmutableAttributes(subSysFeatureDef.getImmutableAttributes());
+                            subSysFeatureDef.setProvisioningDetails(details);
+                            detailsAreSet = true;
+                        } catch (IOException e) {
+                            //AutoFFDC is fine here
                         }
-                        boolean isSuperseded = details.isSuperseded();
-                        out.println("    Superseded: " + isSuperseded);
-                        if (isSuperseded) {
-                            out.println("        Superseded by: " + details.getSupersededBy());
-                        }
-                        Collection<FeatureResource> constituents = details.getConstituents(null);
-                        out.println("    Constituents: ");
-                        for (FeatureResource constituent : constituents) {
-                            List<String> tolerates = constituent.getTolerates();
-                            String toleratesString = tolerates == null ? "" : ": tolerates:=" + tolerates;
-                            out.println("        " + constituent.getSymbolicName() + " " + toleratesString);
-                            out.println("            attributes: " + constituent.getAttributes().toString());
-                            out.println("            directives: " + constituent.getDirectives().toString());
-                        }
-                    } finally {
-                        if (detailsAreSet) {
-                            subSysFeatureDef.setProvisioningDetails(null);
-                        }
+                    }
+                    boolean isSuperseded = details.isSuperseded();
+                    out.println("    Superseded: " + isSuperseded);
+                    if (isSuperseded) {
+                        out.println("        Superseded by: " + details.getSupersededBy());
+                    }
+                    Collection<FeatureResource> constituents = details.getConstituents(null);
+                    out.println("    Constituents: ");
+                    for (FeatureResource constituent : constituents) {
+                        List<String> tolerates = constituent.getTolerates();
+                        String toleratesString = tolerates == null ? "" : ": tolerates:=" + tolerates;
+                        out.println("        " + constituent.getSymbolicName() + " " + toleratesString);
+                        out.println("            attributes: " + constituent.getAttributes().toString());
+                        out.println("            directives: " + constituent.getDirectives().toString());
+                    }
+                } finally {
+                    if (detailsAreSet) {
+                        subSysFeatureDef.setProvisioningDetails(null);
                     }
                 }
             }

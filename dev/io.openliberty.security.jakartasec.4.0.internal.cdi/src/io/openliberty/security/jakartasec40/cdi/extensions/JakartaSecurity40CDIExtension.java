@@ -257,12 +257,37 @@ public class JakartaSecurity40CDIExtension implements Extension {
                         moduleName = location.substring(0, warIndex + 4);
                     }
                 } else {
-                    // Fallback: extract from the last path component
-                    int lastSlash = location.lastIndexOf('/');
-                    if (lastSlash >= 0) {
-                        moduleName = location.substring(lastSlash + 1);
-                    } else {
-                        moduleName = location;
+                    // No .war found in code source path — this occurs with liberty:dev (Maven/Gradle)
+                    // and loose XML deployment where classes live in target/classes or similar.
+                    // Path parsing cannot recover the correct module name in this case.
+                    // Use the J2EE module name from the tracker's module metadata map instead,
+                    // which is populated at deployment time and is available at CDI startup.
+                    // For single-module applications this is unambiguous; for multi-module EARs
+                    // the .war path above will have already matched, so this path is safe.
+                    String fallbackReason = null;
+                    try {
+                        HttpAuthenticationMechanismsTracker metadataTracker = new HttpAuthenticationMechanismsTracker();
+                        metadataTracker.initialize(applicationName);
+                        Map<String, ModuleProperties> modMap = metadataTracker.getModuleMap(applicationName);
+                        if (modMap != null && modMap.size() == 1) {
+                            moduleName = modMap.keySet().iterator().next();
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "HAM module name resolved from tracker metadata: ["
+                                             + moduleName + "] for app [" + applicationName + "]");
+                            }
+                        } else {
+                            fallbackReason = "tracker inconclusive (modMap=" + (modMap != null ? modMap.keySet() : "null") + ")";
+                        }
+                    } catch (Exception ex) {
+                        fallbackReason = "tracker lookup failed (" + ex.getMessage() + ")";
+                    }
+                    if (fallbackReason != null) {
+                        // Multi-module, empty map, or exception — fall back to last path component as before
+                        int lastSlash = location.lastIndexOf('/');
+                        moduleName = (lastSlash >= 0) ? location.substring(lastSlash + 1) : location;
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "HAM module name " + fallbackReason + ", using path component: [" + moduleName + "]");
+                        }
                     }
                 }
             } catch (Exception e) {

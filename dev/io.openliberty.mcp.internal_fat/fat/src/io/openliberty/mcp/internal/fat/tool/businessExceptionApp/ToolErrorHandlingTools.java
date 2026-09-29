@@ -15,6 +15,7 @@ import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.tools.ToolCallException;
+import io.openliberty.mcp.tools.ToolCallUnauthorizedException;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
@@ -80,6 +81,11 @@ public class ToolErrorHandlingTools {
                                       @ToolArg(name = "input", required = true) String input,
                                       @ToolArg(name = "count", required = false) Integer count) {
         return input.repeat(count);
+    }
+
+    @Tool(name = "unauthorizedTool", title = "Unauthorized Tool", description = "Tool that throws ToolCallUnauthorizedException")
+    public String unauthorizedTool(@ToolArg(name = "input", description = "input") String input) {
+        throw new ToolCallUnauthorizedException("Not authorized to call this tool for input: " + input);
     }
 
 }

@@ -25,6 +25,7 @@ import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -70,14 +71,26 @@ public class TCPUtils {
     }
 
     private static AbstractBootstrap createBootstrap(NettyFrameworkImpl framework, Map<String, Object> tcpOptions, boolean isInbound) throws NettyException {
-        BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, isInbound);
+        TCPConfigurationImpl config = new TCPConfigurationImpl(tcpOptions, isInbound);
         ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config, framework);
         AbstractBootstrap bs;
+        EventLoopGroup acceptGroup;
+        if (config.getAcceptThread()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "acceptThread: true - using dedicated accept EventLoopGroup for " + config.getExternalName());
+            }
+            acceptGroup = framework.getDedicatedAcceptGroup();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "acceptThread: false - using shared accept EventLoopGroup for " + config.getExternalName());
+            }
+            acceptGroup = framework.getSharedAcceptGroup();
+        }
         if (isInbound) {
             bs = new ServerBootstrapExtended()
                 .applyConfiguration(config)
                 .setBaseInitializer(tcpInitializer)
-                .group(framework.getParentGroup(), framework.getChildGroup())
+                .group(acceptGroup, framework.getChildGroup())
                 .channel(framework.getServerSocketChannelClass());
         } else {
             bs = new BootstrapExtended()
@@ -124,10 +137,20 @@ public class TCPUtils {
                 channel.attr(ConfigConstants.PORT_KEY).set(inetPort);
                 channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInbound());
 
-                // Listener to stop channel on close
-                // This should just log that the channel stopped
-                channel.closeFuture().addListener(innerFuture -> logChannelStopped(innerFuture, channel));
+                // If this channel was assigned a dedicated accept EventLoopGroup, promote it
+                // from the pending set to the channel-keyed map now that the channel is known.
+                EventLoopGroup acceptGroup = channel.eventLoop().parent();
+                if (acceptGroup != null) {
+                    framework.registerDedicatedAcceptGroup(channel, acceptGroup);
+                }
 
+                // Listener to stop channel on close: log the stop and delegate to
+                // framework.stop() so that any dedicated accept EventLoopGroup is
+                // also cleaned up via the central stop path.
+                channel.closeFuture().addListener(innerFuture -> {
+                    logChannelStopped(innerFuture, channel);
+                    framework.stop(channel);
+                });
                 if (config.isInbound()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Adding new channel group for " + channel);
@@ -290,13 +313,21 @@ public class TCPUtils {
                                                             })
                                     .channel();
                 }
-                framework.runWhenServerStarted(new Callable<ChannelFuture>() {
-                    @Override
-                    public ChannelFuture call() {
-                        return open(framework, channel, config, inetHost, inetPort, openListener,
-                                    config.getPortOpenRetries());
+                if (config.getWaitToAccept()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found waitToAccept enabled, channel will be bound even if the server is not completely started.");
                     }
-                });
+                    open(framework, channel, config, inetHost, inetPort, openListener,
+                        config.getPortOpenRetries());
+                } else {
+                    framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+                        @Override
+                        public ChannelFuture call() {
+                            return open(framework, channel, config, inetHost, inetPort, openListener,
+                                        config.getPortOpenRetries());
+                        }
+                    });
+                }
                 return channel;
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

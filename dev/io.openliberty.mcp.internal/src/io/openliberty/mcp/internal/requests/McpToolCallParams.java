@@ -168,4 +168,12 @@ public class McpToolCallParams {
         return String.join(" ", messages);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "McpToolCallParams@" + Integer.toHexString(System.identityHashCode(this))
+               + "[name=" + name
+               + ", arguments=" + arguments + "]";
+    }
+
 }

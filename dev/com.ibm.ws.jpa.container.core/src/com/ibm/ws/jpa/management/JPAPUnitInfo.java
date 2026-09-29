@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ import javax.persistence.ValidationMode;
 import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -59,7 +58,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
 /**
  * Internal representation of a persistence unit in the form of a PersistenceUnitInfo object.
  */
-public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
+public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo {
     private static final String CLASS_NAME = JPAPUnitInfo.class.getName();
 
     private static final TraceComponent tc = Tr.register(JPAPUnitInfo.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
@@ -74,9 +73,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // Name of this persistence unit.  getModJarName returns an archive name,
     // not a module name.
     protected final JPAPuId ivArchivePuId;
-
-    // Transaction Type, i.e. JTA or ResourceLocal
-    private PersistenceUnitTransactionType ivTxType = null;
 
     // Persistence unit description.
     private String ivDesc = null;
@@ -140,6 +136,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // ValidataionMode
     private ValidationMode ivValidationMode = null; // F743-8705
 
+    // DefaultToOneFetchType (JPA 4.0)
+    private javax.persistence.FetchType ivDefaultToOneFetchType = javax.persistence.FetchType.EAGER;
+
     // EntityManagerFactory associated with this persistence unit (non java:comp/env).
     private EntityManagerFactory ivEMFactory = null; // d510184
 
@@ -195,7 +194,6 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
         ivApplInfo = applInfo;
         ivArchivePuId = puId;
-        ivTxType = PersistenceUnitTransactionType.JTA;
         ivQualifierClassNames = new ArrayList<String>();
         ivJarFileURLs = new ArrayList<URL>();
         ivManagedClassNames = new ArrayList<String>();
@@ -242,26 +240,14 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     }
 
     /**
-     * (non-Javadoc)
-     *
-     * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
+     * Name-based overload called by {@link JPAPxmlInfo} via
+     * {@link JaxbPUnit#getTransactionTypeName()}.  Accepts the plain enum constant name
+     * ({@code "JTA"}, {@code "RESOURCE_LOCAL"}, or {@code null} for the runtime default)
+     * so that no {@code javax.persistence.spi.PersistenceUnitTransactionType} value is
+     * passed at the call site — safe at JPA 3.x and 4.0.
      */
-    @Override
-    public final PersistenceUnitTransactionType getTransactionType() {
-        return ivTxType;
-    }
-
-    final void setTransactionType(PersistenceUnitTransactionType newValue) {
-        if (newValue == null) {
-            // if newValue is not specified, default to PersistenceUnitTransactionType.JTA
-            // if running on the server environment, to PersistenceUnitTransactionType.RESOURCE_LOCAL
-            // if running on the client environment.
-            boolean serverRT = ivApplInfo.getJPAComponent().isServerRuntime();
-
-            ivTxType = (serverRT) ? PersistenceUnitTransactionType.JTA : PersistenceUnitTransactionType.RESOURCE_LOCAL;
-        } else {
-            ivTxType = newValue;
-        }
+    final void setTransactionType(String name) {
+        setTransactionTypeByName(name, ivApplInfo.getJPAComponent().isServerRuntime());
     }
 
     /**
@@ -1217,7 +1203,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         sbuf.append("\t Archive name         : ").append(ivArchivePuId.getModJarName());
         sbuf.append("\t Application name     : ").append(ivArchivePuId.getApplName());
         sbuf.append("\n Root URL             : ").append(ivPUnitRootURL);
-        sbuf.append("\n Transaction Type     : ").append(ivTxType);
+        sbuf.append("\n Transaction Type     : ").append(isJtaTransactionType() ? "JTA" : "RESOURCE_LOCAL");
         sbuf.append("\n Description          : ").append(ivDesc);
         sbuf.append("\n Provider class name  : ").append(ivProviderClassName);
         sbuf.append("\n Scope                : ").append(ivScopeClassName);
@@ -1226,6 +1212,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         sbuf.append("\n ExcludeUnlistedClass : ").append(ivExcludeUnlistedClasses);
         sbuf.append("\n SharedCacheMode      : ").append(ivCaching); // d597764
         sbuf.append("\n ValidationMode       : ").append(ivValidationMode); // d597764
+        sbuf.append("\n DefaultToOneFetchType: ").append(ivDefaultToOneFetchType);
         sbuf.append("\n Properties           : ").append(ivProperties);
 
         boolean first;
@@ -1502,5 +1489,35 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // F743-8705
     void setValidationMode(ValidationMode mode) {
         ivValidationMode = mode;
+    }
+
+    /**
+     * Returns all class names in the persistence unit.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getAllClassNames() {
+        return getManagedClassNames();
+    }
+
+    /**
+     * Returns the default fetch type for to-one associations.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will implement it correctly.
+     */
+    public javax.persistence.FetchType getDefaultToOneFetchType() {
+        return ivDefaultToOneFetchType;
+    }
+
+    /**
+     * Internal method used to populate the Persistence Unit Info metadata from persistence.xml.
+     * Sets the default fetch type for to-one associations (JPA 4.0).
+     */
+    void setDefaultToOneFetchType(javax.persistence.FetchType fetchType) {
+        if (fetchType != null) {
+            ivDefaultToOneFetchType = fetchType;
+        }
     }
 }

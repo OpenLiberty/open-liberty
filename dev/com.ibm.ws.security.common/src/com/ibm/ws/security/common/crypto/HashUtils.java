@@ -1,29 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2016,2022 IBM Corporation and others.
+ * Copyright (c) 2016,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.common.crypto;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.security.common.TraceConstants;
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.common.crypto.MessageDigestUtils;
+import com.ibm.ws.common.crypto.MessageDigestUtils.Base64Option;
+import com.ibm.ws.security.common.TraceConstants;
 
 public class HashUtils {
 
@@ -67,13 +64,10 @@ public class HashUtils {
      */
     @Sensitive
     private static String digest(@Sensitive String input, String algorithm, Charset charset) {
-        MessageDigest md;
         String output = null;
         if (input != null && input.length() > 0) {
             try {
-                md = MessageDigest.getInstance(algorithm);
-                md.update(input.getBytes(charset));
-                output = Base64.getEncoder().encodeToString(md.digest());
+                output = MessageDigestUtils.getHashedValue(input, algorithm, charset, Base64Option.JAVA_BASIC);
             } catch (NoSuchAlgorithmException nsae) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Exception instanciating MessageDigest. The algorithm is " + algorithm + nsae);

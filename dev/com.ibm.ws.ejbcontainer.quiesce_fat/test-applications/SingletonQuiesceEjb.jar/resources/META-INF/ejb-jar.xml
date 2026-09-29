@@ -44,5 +44,13 @@
                 <env-entry-value>true</env-entry-value>
             </env-entry>
         </session>
+        <session>
+            <ejb-name>StartupSingletonQuiesceInvalid</ejb-name>
+            <env-entry>
+                <env-entry-name>io.openliberty.ejb.destroyOnQuiesce</env-entry-name>
+                <env-entry-type>java.lang.Boolean</env-entry-type>
+                <env-entry-value>notABooleanDD</env-entry-value>
+            </env-entry>
+        </session>
     </enterprise-beans>
 </ejb-jar>

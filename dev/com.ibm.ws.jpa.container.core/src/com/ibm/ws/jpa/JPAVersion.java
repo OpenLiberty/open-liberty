@@ -19,7 +19,8 @@ public enum JPAVersion {
     JPA22(8, "2.2"),
     JPA30(9, "3.0"),
     JPA31(10, "3.1"),
-    JPA32(11, "3.2");
+    JPA32(11, "3.2"),
+    JPA40(12, "4.0");
 
     private final int jeeSpecLevel;
     private final String versionStr;

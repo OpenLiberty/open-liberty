@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <server description="Sample Liberty server with Telemetry Enabled">
     <featureManager>
-        <feature>mcpserver-1.0</feature>
+        <feature>mcp-1.0</feature>
         <feature>componenttest-2.0</feature>
         <feature>monitor-1.0</feature>
         <feature>cdi-4.0</feature>

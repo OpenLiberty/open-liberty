@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -187,6 +187,15 @@ abstract class JaxbPUnit {
     }
 
     /**
+     * Gets the default fetch type for to-one associations.
+     * Not available prior to JPA 4.0 persistence schema.
+     * Returns null when not specified; JPAPUnitInfo will use EAGER as the default.
+     */
+    javax.persistence.FetchType getDefaultToOneFetchType() {
+        return null;
+    }
+
+    /**
      * Gets the value of the properties property.
      *
      * @return value of the properties property.
@@ -206,6 +215,20 @@ abstract class JaxbPUnit {
      * @return value of the transactionType property.
      */
     abstract PersistenceUnitTransactionType getTransactionType();
+
+    /**
+     * Returns the transaction type name ("JTA" or "RESOURCE_LOCAL") as read directly from
+     * this persistence unit's JAXB model, or {@code null} if none is set in persistence.xml.
+     *
+     * <p>This method is intentionally <em>abstract</em> and implemented in each subclass by
+     * reading the JAXB-internal enum (e.g. {@code com.ibm.ws.jpa.pxml20.PersistenceUnitTransactionType})
+     * so that the API-level {@code PersistenceUnitTransactionType} (which lives in the spi package
+     * pre-JPA-4.0 and in the top-level package from JPA 4.0 onwards) is <em>never referenced</em>
+     * inside this method's bytecode.  This prevents a {@code NoClassDefFoundError} at runtime
+     * when the JPA 4.0 API bundle is wired and {@code jakarta.persistence.spi.PersistenceUnitTransactionType}
+     * no longer exists.
+     */
+    abstract String getTransactionTypeName();
 
     @Override
     public String toString() {

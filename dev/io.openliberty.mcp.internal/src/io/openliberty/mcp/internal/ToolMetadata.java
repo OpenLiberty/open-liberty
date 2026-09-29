@@ -18,12 +18,15 @@ import java.lang.reflect.TypeVariable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
+import org.mcpjava.server.MetaField;
 import org.mcpjava.server.content.ContentBlock;
 import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
@@ -31,8 +34,8 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.WrapBusinessError;
-import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
-import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
+import io.openliberty.mcp.internal.ToolRegistry.ToolArgumentImpl;
+import io.openliberty.mcp.internal.ToolValidation.ToolValidationError;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
@@ -80,7 +83,9 @@ public record ToolMetadata(String name,
                            Function<ToolArguments, CompletionStage<ToolResponse>> asyncHandler,
                            Optional<MethodMetadata> methodMetadata,
                            SecurityRequirement securityRequirement,
-                           Instant createdAt) implements ToolManager.ToolInfo {
+                           Instant createdAt,
+                           Map<String, Object> metadata,
+                           List<ToolValidationError> validationErrors) implements ToolManager.ToolInfo {
 
     public static final String MISSING_TOOL_ARG_NAME = "<<<MISSING TOOL_ARG NAME>>>";
 
@@ -109,6 +114,7 @@ public record ToolMetadata(String name,
      * @return the created tool metadata
      */
     public static ToolMetadata createFrom(Tool annotation, Bean<?> bean, AnnotatedMethod<?> method, BeanManager bm, Jsonb jsonb) {
+        List<ToolValidationError> validationErrors = new ArrayList<>();
         String name = annotation.name().equals(Tool.ELEMENT_NAME) ? method.getJavaMember().getName() : annotation.name();
         String title = annotation.title().isEmpty() ? null : annotation.title();
         String description = annotation.description().isEmpty() ? null : annotation.description();
@@ -124,7 +130,7 @@ public record ToolMetadata(String name,
             Type javaType = bean.getBeanClass();
             genericMap = TypeUtility.generateGenericMap(javaType);
         }
-        List<ToolMethodArgument> methodArguments = getArguments(method, genericMap);
+        List<ToolMethodArgument> methodArguments = getArguments(bean, method, genericMap, validationErrors);
 
         WrapBusinessError wrapAnnotation = method.getAnnotation(WrapBusinessError.class);
         List<Class<? extends Throwable>> businessExceptions = (wrapAnnotation != null) ? List.of(wrapAnnotation.value()) : Collections.emptyList();
@@ -138,11 +144,18 @@ public record ToolMetadata(String name,
                                            && pt.getActualTypeArguments()[0] instanceof Class<?>)
                                        && ContentBlock.class.isAssignableFrom((Class<?>) pt.getActualTypeArguments()[0]);
 
+        Class<?> outputSchemaFromClass = annotation.outputSchemaFrom();
+        boolean hasOutputSchemaFrom = outputSchemaFromClass != Void.class;
+
         boolean hasOutputSchema = annotation.structuredContent()
                                   && !hasContentListReturn
                                   && !ToolResponse.class.isAssignableFrom(unwrappedOutputClass)
                                   && !ContentBlock.class.isAssignableFrom(unwrappedOutputClass)
                                   && !String.class.isAssignableFrom(unwrappedOutputClass);
+
+        if (!hasOutputSchema && hasOutputSchemaFrom && annotation.structuredContent()) {
+            hasOutputSchema = true;
+        }
 
         if (!hasOutputSchema && ToolResponse.class.isAssignableFrom(unwrappedOutputClass) && annotation.structuredContent()
             && method.isAnnotationPresent(Schema.class)
@@ -153,16 +166,19 @@ public record ToolMetadata(String name,
         if (TypeUtility.hasGenericParams(unwrappedOutputType)) {
             unwrappedOutputType = TypeUtility.createResolvedType(unwrappedOutputType, genericMap);
         }
-        JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method, unwrappedOutputType) : null;
+        Type effectiveOutputType = hasOutputSchemaFrom ? outputSchemaFromClass : unwrappedOutputType;
+        JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method, effectiveOutputType) : null;
 
         outputSchema = (outputSchema == null || outputSchema.isEmpty()) ? null : outputSchema;
 
         if (outputSchema != null && !(method.isAnnotationPresent(Schema.class) && method.getAnnotation(Schema.class).value() != Schema.UNSET)
             && !checkConcreteType(outputSchema).equals("object")) {
-            throw new UnsupportedTypeException(unwrappedOutputType);
+            validationErrors.add(new ToolValidationError("CWMCM0025E.unsupported.output", effectiveOutputType, ToolMetadata.getToolQualifiedName(bean, method)));
         }
 
         Optional<ToolAnnotations> annotations = readAnnotations(annotation.annotations());
+
+        Map<String, Object> metaMap = getMetaMapFromAnnotations(bean, method, jsonb, validationErrors);
 
         MethodMetadata methodMetadata = new MethodMetadata(name,
                                                            bean,
@@ -193,7 +209,9 @@ public record ToolMetadata(String name,
                                 asyncHandler,
                                 Optional.of(methodMetadata),
                                 SecurityRequirement.createFrom(method),
-                                Instant.now());
+                                Instant.now(),
+                                metaMap,
+                                validationErrors.isEmpty() ? Collections.emptyList() : validationErrors);
     }
 
     /**
@@ -222,15 +240,17 @@ public record ToolMetadata(String name,
         return nameArray;
     }
 
-    public static List<ToolMethodArgument> getArguments(AnnotatedMethod<?> method, Map<TypeVariable<?>, Type> genericMap) {
+    public static List<ToolMethodArgument> getArguments(Bean<?> bean, AnnotatedMethod<?> method, Map<TypeVariable<?>, Type> genericMap,
+                                                        List<ToolValidationError> validationErrors) {
         List<ToolMethodArgument> result = new ArrayList<>();
-        ArrayList<String> genericParams = new ArrayList<>();
         for (AnnotatedParameter<?> param : method.getParameters()) {
             if (TypeUtility.hasGenericParams(param.getBaseType())) {
                 Type baseType = param.getBaseType();
                 boolean unresolvedGenericParam = hasUnresolvableTypeVariables(baseType, genericMap);
                 if (unresolvedGenericParam) {
-                    genericParams.add(param.getJavaParameter().getName());
+                    validationErrors.add(new ToolValidationError("CWMCM0018E.generic.arguments",
+                                                                 ToolMetadata.getToolQualifiedName(bean, method),
+                                                                 resolveArgumentName(param, param.getAnnotation(ToolArg.class))));
                 } else {
                     Type argType = TypeUtility.createResolvedType(param.getBaseType(), genericMap);
                     addArgumentMetadata(param, argType, result);
@@ -238,9 +258,6 @@ public record ToolMetadata(String name,
             } else {
                 addArgumentMetadata(param, param.getBaseType(), result);
             }
-        }
-        if (!genericParams.isEmpty()) {
-            throw new GenericArgumentException(genericParams);
         }
         return result.isEmpty() ? Collections.emptyList() : result;
     }
@@ -273,14 +290,15 @@ public record ToolMetadata(String name,
         String argName = resolveArgumentName(param, argAnnotation);
         String description = argAnnotation != null ? argAnnotation.description() : "";
         boolean required = isArgumentRequired(argAnnotation, param.getBaseType());
-        String defaultValue = argAnnotation != null ? argAnnotation.defaultValue() : "";
+        String rawDefault = argAnnotation != null ? argAnnotation.defaultValue() : "";
+        String defaultValue = (rawDefault == null || rawDefault.isEmpty()) ? null : rawDefault;
 
         result.add(new ToolMethodArgument(param,
-                                          new ToolArgument(argName,
-                                                           description,
-                                                           required,
-                                                           argumentType,
-                                                           defaultValue)));
+                                          new ToolArgumentImpl(argName,
+                                                               description,
+                                                               required,
+                                                               argumentType,
+                                                               defaultValue)));
     }
 
     private static boolean hasUnresolvableTypeVariables(Type baseType, Map<TypeVariable<?>, Type> genericMap) {
@@ -378,7 +396,52 @@ public record ToolMetadata(String name,
      * Used for error reporting cases, such as Generic args
      */
     public static String getToolQualifiedName(Bean<?> bean, AnnotatedMethod<?> method) {
-        return bean.getBeanClass() + "." + method.getJavaMember().getName();
+        return bean.getBeanClass().getName() + "." + method.getJavaMember().getName();
+    }
+
+    private static Map<String, Object> getMetaMapFromAnnotations(Bean<?> bean, AnnotatedMethod<?> method, Jsonb jsonb, List<ToolValidationError> validationErrors) {
+        Set<MetaField> metaFields = method.getAnnotations(MetaField.class);
+        if (metaFields.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        for (MetaField metaField : method.getAnnotations(MetaField.class)) {
+            String prefix = metaField.prefix();
+            if (!prefix.isEmpty()) {
+                if (!prefix.endsWith("/")) {
+                    prefix = prefix + "/";
+                }
+                if (!ToolValidation.isValidMetaPrefix(prefix)) {
+                    validationErrors.add(new ToolValidationError("CWMCM0040E.invalid.metadata.prefix", prefix, getToolQualifiedName(bean, method)));
+                    continue;
+                }
+            }
+            String name = metaField.name();
+            if (!ToolValidation.isValidMetaName(name)) {
+                validationErrors.add(new ToolValidationError("CWMCM0041E.invalid.metadata.name", name, getToolQualifiedName(bean, method)));
+                continue;
+            }
+            String key = prefix.isEmpty() ? name : prefix + name;
+            Object value = getValue(metaField, key, jsonb, bean, method, validationErrors);
+            result.put(key, value);
+        }
+
+        return result;
+    }
+
+    private static Object getValue(MetaField metaField, String key, Jsonb jsonb, Bean<?> bean, AnnotatedMethod<?> method, List<ToolValidationError> validationErrors) {
+        try {
+            return switch (metaField.type()) {
+                case BOOLEAN -> Boolean.valueOf(metaField.value());
+                case INT -> Integer.valueOf(metaField.value());
+                case STRING -> metaField.value();
+                case JSON -> jsonb.fromJson(metaField.value(), Object.class);
+            };
+        } catch (Exception e) {
+            validationErrors.add(new ToolValidationError("CWMCM0042E.metadata.value.conversion.error", key, getToolQualifiedName(bean, method), metaField.type(), e.toString()));
+            return null;
+        }
     }
 
     /**

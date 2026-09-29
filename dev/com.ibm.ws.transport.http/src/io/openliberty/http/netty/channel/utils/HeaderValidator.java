@@ -11,6 +11,7 @@ package io.openliberty.http.netty.channel.utils;
 
 import java.util.regex.Pattern;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  * Processes and validates HTTP header names and values in compliance with 
@@ -30,8 +31,6 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
  * whitespaces from both names and values.
  */
 public class HeaderValidator {
-
-    private static boolean disabledUntilRFE = true;
     
         /**
          * Defines a pattern for valid header names (token characters or "tchars") as specified in 
@@ -79,14 +78,31 @@ public class HeaderValidator {
             if(type == FieldType.NAME && token == null){
                 throw new IllegalArgumentException("Header name must not be null");
             }
+            
+            // For addHeader (appendHeader), null values should throw IllegalArgumentException
+            // to match CHFW behavior - but only when validation is enabled
+            if(type == FieldType.VALUE && token == null && config.isHeaderValidationEnabled()){
+                throw new IllegalArgumentException("Null input provided: " + token);
+            }
+            
             String normalized = (token == null) ? "": token.trim();
-    
-            if(!disabledUntilRFE && type == FieldType.NAME){
-            normalized = normalized.toLowerCase();
-        }
+            
+            // For header names with validation enabled, we need to call normalizeHeaderName
+            // to match CHFW behavior which validates through HttpHeaderKeys.find()
+            if(type == FieldType.NAME && token != null && config.isHeaderValidationEnabled()){
+               if(token.isEmpty() || normalized.isEmpty()){
+                   // Empty or whitespace-only name - validate the original to get CHFW exception
+                   // This will throw StringIndexOutOfBoundsException for empty strings
+                   // or IllegalArgumentException for whitespace-only strings
+                   normalizeHeaderName(token);
+               } else {
+                   // Normal case - normalize the trimmed name
+                   normalized = normalizeHeaderName(normalized);
+               }
+            }
         
-        return validate(normalized, type, config);
-
+            return validate(normalized, type, config);
+    
     }
 
     /**
@@ -109,7 +125,9 @@ public class HeaderValidator {
         if(!config.isHeaderValidationEnabled()){
             return token;
         }
-        if (type == FieldType.NAME && !TCHAR_PATTERN.matcher(token).matches()) {
+        
+        // For header names, only validate if not empty (empty is caught earlier with proper exception)
+        if (type == FieldType.NAME && !token.isEmpty() && !TCHAR_PATTERN.matcher(token).matches()) {
             throw new IllegalArgumentException("Invalid header name: " + token);
         }
 
@@ -134,8 +152,12 @@ public class HeaderValidator {
                 if (i + 1 < token.length()) {
                     char next = token.charAt(i + 1);
                     if (next != SPACE && next != TAB) {
-                        error = "Invalid LF not followed by whitespace in header " + token;
+                        error = "Invalid LF not followed by whitespace";
                     }
+                } else {
+                    // LF at end of string (already checked for trailing LF above, but this handles edge case)
+                    // This matches CHFW behavior
+                    error = "Invalid LF not followed by whitespace";
                 }
             }
             if (c >= 32 && c < 127) {
@@ -163,5 +185,37 @@ public class HeaderValidator {
         return sb.toString();
     }
 
+    /**
+     * Normalize a header name to match the standard casing defined in HttpHeaderKeys.
+     * This ensures consistency between CHFW and Netty header handling.
+     * 
+     * For standard headers (e.g., "content-type", "CONTENT-TYPE"), this returns the 
+     * properly cased version ("Content-Type"). For custom headers, it returns the 
+     * casing from the first occurrence, matching CHFW behavior.
+     * 
+     * @param headerName The header name to normalize (case-insensitive)
+     * @return The normalized header name with proper casing, or the original name if null
+     */
+    private static String normalizeHeaderName(String headerName) {
+        if (headerName == null) {
+            return null;
+        }
+        
+        // Use HttpHeaderKeys.find to get the normalized header name
+        // This leverages the same matcher logic that CHFW uses
+        // Pass false for returnNullForInvalidName to throw exceptions for:
+        // - Empty strings (StringIndexOutOfBoundsException from KeyMatcher.add)
+        // - Invalid characters like whitespace and special chars (IllegalArgumentException)
+        HttpHeaderKeys key = HttpHeaderKeys.find(headerName, false);
+        
+        if (key != null) {
+            // Return the properly cased name from the HttpHeaderKeys constant
+            return key.getName();
+        }
+        
+        // If not found (shouldn't happen with returnNullForInvalidName=false),
+        // return the original name
+        return headerName;
+    }
     
 }

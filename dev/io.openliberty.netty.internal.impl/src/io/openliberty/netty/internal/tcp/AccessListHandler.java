@@ -59,7 +59,7 @@ public class AccessListHandler extends ChannelInboundHandlerAdapter {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unallowed removal of handler: " + NettyConstants.ACCESSLIST_HANDLER_NAME + " from channel: " + ctx.channel());
             }
-            ctx.fireExceptionCaught(new NettyException("Removed from channel pipeline handler: " + NettyConstants.ACCESSLIST_HANDLER_NAME));
+            ctx.fireExceptionCaught(new NettyException(Tr.formatMessage(tc, TCPMessageConstants.NETTY_HANDLER_REMOVED_FROM_PIPELINE, NettyConstants.ACCESSLIST_HANDLER_NAME)));
         }
     }
 

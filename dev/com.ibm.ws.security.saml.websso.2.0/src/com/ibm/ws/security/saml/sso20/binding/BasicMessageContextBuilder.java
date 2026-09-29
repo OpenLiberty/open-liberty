@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ws.security.saml.sso20.binding;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.shibboleth.utilities.java.support.primitive.NonnullSupplier;
 
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.messaging.context.MessageContext;
@@ -160,7 +162,7 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
 
     HTTPPostDecoder getSamlHttpPostDecoder(String acsUrl, HttpServletRequest req) throws ComponentInitializationException {
         HTTPPostDecoder decoder = new Saml20HTTPPostDecoder(acsUrl);
-        decoder.setHttpServletRequest(req);
+        decoder.setHttpServletRequestSupplier(NonnullSupplier.of(req));
         decoder.setParserPool(XMLObjectProviderRegistrySupport.getParserPool());
         decoder.initialize();
         return decoder;

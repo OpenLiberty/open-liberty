@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2022 IBM Corporation and others.
+ * Copyright (c) 2017,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,9 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 
 import com.ibm.ws.threading.PolicyExecutor;
@@ -69,4 +72,18 @@ public interface WSManagedExecutorService {
      * @return CompletableFuture that represents the invocation of the asynchronous method.
      */
     <I, T> CompletableFuture<T> newAsyncMethod(BiFunction<I, CompletableFuture<T>, CompletionStage<T>> invoker, I invocation);
+
+    /**
+     * Construct a CompletableFuture that represents the completion of all
+     * executions of a scheduled method, to be performed asynchronously.
+     *
+     * @param <T>            type of result
+     * @param method         the scheduled method
+     * @param nextExecFuture reference that is periodically updated with the future
+     *                           for the next execution of the scheduled method
+     * @return CompletableFuture that represents the completion of all executions
+     */
+    <T> CompletableFuture<T> newScheduledMethod(Method method,
+                                                AtomicReference<Future<?>> nextExecFuture);
+
 }

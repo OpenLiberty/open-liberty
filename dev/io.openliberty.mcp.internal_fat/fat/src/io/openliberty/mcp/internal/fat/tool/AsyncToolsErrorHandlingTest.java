@@ -10,7 +10,10 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -89,6 +92,26 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     public void testAsyncToolThrowsToolCallException() throws Exception {
         String response = callTool("ToolCallException", "THROWN");
         assertUserError(response, "ToolCallException");
+    }
+
+    @Test
+    public void testAsyncToolThrowsToolCallUnauthorizedException() throws Exception {
+        callToolExpect403("ToolCallUnauthorizedException", "THROWN");
+    }
+
+    @Test
+    public void testAsyncToolFailsWithToolCallUnauthorizedException() throws Exception {
+        callToolExpect403("ToolCallUnauthorizedException", "FAILED");
+    }
+
+    @Test
+    public void testAsyncToolFailsWithDelayedToolCallUnauthorizedException() throws Exception {
+        callToolExpect403("ToolCallUnauthorizedException", "FAILED_DELAY");
+    }
+
+    @Test
+    public void testAsyncToolMultistageFailsWithToolCallUnauthorizedException() throws Exception {
+        callToolExpect403("ToolCallUnauthorizedException", "FAILED_MULTISTAGE");
     }
 
     @Test
@@ -177,6 +200,33 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     };
 
     private void doTest(Class<?> exceptionToThrow, FailureMechanism failureMechanism) {}
+
+    private void callToolExpect403(String exceptionToThrow, String failureMechanism) throws Exception {
+        String request = String.format("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 3,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "asyncErrorTool",
+                            "arguments": {
+                              "exception": "%s",
+                              "failureMechanism": "%s"
+                            }
+                          }
+                        }
+                        """,
+                                       exceptionToThrow,
+                                       failureMechanism);
+        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+        Log.info(AsyncToolsErrorHandlingTest.class, "callToolExpect403", response.toString());
+
+        assertEquals(403, response.statusCode());
+        assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
+        assertTrue("Response body must contain the exception message",
+                   response.body().contains("ToolCallUnauthorizedException"));
+        assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
+    }
 
     private void assertUserError(String response, String errorMessage) {
         String expected = String.format("""

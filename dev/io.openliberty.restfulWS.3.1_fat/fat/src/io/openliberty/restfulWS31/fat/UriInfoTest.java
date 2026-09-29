@@ -1,0 +1,51 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.restfulWS31.fat;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import io.openliberty.restfulWS31.fat.uriInfo.UriInfoServlet;
+
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+
+
+@RunWith(FATRunner.class)
+public class UriInfoTest extends FATServletClient {
+
+    private static final String app = "uriInfo";
+
+    @Server("uriInfo")
+    @TestServlet(servlet = UriInfoServlet.class, contextRoot = app)
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        ShrinkHelper.defaultDropinApp(server, app,
+                                      "io.openliberty.restfulWS31.fat.uriInfo");
+        server.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
+    }
+}

@@ -30,20 +30,22 @@ import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MetricsT
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MultiAppMetricsTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.nack.KafkaNackTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.validation.KafkaValidationTests;
+import io.openliberty.microprofile.reactive.messaging.fat.startup.TestMessageOnStartupTest;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTest;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTestWithJAXRS;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        KafkaNackTest.class,
-        KafkaValidationTests.class,
-        MetricsTest.class,
-        MultiAppMetricsTest.class,
-        ReactiveMessagingTelemetryTest.class,
-        ReactiveMessagingTelemetryTestWithJAXRS.class,
-        KafkaEmitterTest.class,
-        KafkaEmitterRestfulTest.class,
-        KafkaEmitterNackRestfulTest.class
+                KafkaNackTest.class,
+                KafkaValidationTests.class,
+                MetricsTest.class,
+                MultiAppMetricsTest.class,
+                ReactiveMessagingTelemetryTest.class,
+                ReactiveMessagingTelemetryTestWithJAXRS.class,
+                KafkaEmitterTest.class,
+                KafkaEmitterRestfulTest.class,
+                KafkaEmitterNackRestfulTest.class,
+                TestMessageOnStartupTest.class
 })
 public class KafkaTests {
 

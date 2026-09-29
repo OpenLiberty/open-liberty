@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,16 +16,21 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_D
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeThat;
+
+import java.util.function.Function;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,6 +41,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
  *
@@ -61,6 +67,9 @@ public class HttpTest {
     }
 
     private static final String ENDPOINT = "/httpTest/mcp";
+
+    @Rule
+    public McpClient client = new McpClient(server, "/httpTest");
 
     @Test
     public void testGetRequestWithoutAcceptHeaderReturns405() throws Exception {
@@ -167,6 +176,43 @@ public class HttpTest {
 
     @Test
     public void testPingWithoutSessionId() throws Exception {
+        callPing(200, req -> req);
+    }
+
+    @Test
+    public void testInvalidNotificationReturns202() throws Exception {
+        // A JSON-RPC notification (no "id" field) with an unknown method triggers a
+        // METHOD_NOT_FOUND JSONRPCException. Per the JSON-RPC spec, notifications must
+        // not receive any response — the server should return 202 with no body.
+        String notification = """
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/unknownMethod"
+                        }
+                        """;
+
+        client.callMCPNotification(notification);
+    }
+
+    @Test
+    public void testInvalidLocalhostOriginHeaderReturns403() throws Exception {
+        assumeThat(server.getHostname(), equalTo("localhost")); // Test is not valid if the server is not local
+        server.setMarkToEndOfLog();
+        callPing(403, req -> req.requestProp("Origin", "http://evil.example.com"));
+        callPing(403, req -> req.requestProp("Origin", "something odd"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0044I: The server did not process a local MCP request because the Origin header value was not valid."));
+    }
+
+    @Test
+    public void testValidLocalhostOriginHeaderReturns200() throws Exception {
+        assumeThat(server.getHostname(), equalTo("localhost")); // Test is not valid if the server is not local
+        callPing(200, req -> req); // No extra headers
+        callPing(200, req -> req.requestProp("Origin", "http://localhost"));
+        callPing(200, req -> req.requestProp("Origin", "http://127.0.0.1"));
+        callPing(200, req -> req.requestProp("Origin", "http://[::1]"));
+    }
+
+    void callPing(int expectedResponseCode, Function<HttpRequest, HttpRequest> requestCustomizer) throws Exception {
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -175,17 +221,20 @@ public class HttpTest {
                         }
                         """;
 
-        HttpRequest httpRequest = new HttpRequest(server, ENDPOINT)
-                                                                   .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+        HttpRequest httpRequest = new HttpRequest(server, ENDPOINT).requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                    .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                                    .jsonBody(request)
                                                                    .method("POST")
-                                                                   .expectCode(200);
+                                                                   .expectCode(expectedResponseCode);
+        httpRequest = requestCustomizer.apply(httpRequest);
         String response = httpRequest.run(String.class);
 
-        assertTrue("Expected 'result' field in ping response", response.contains("\"result\""));
+        if (expectedResponseCode == 200) {
+            // Also validate ping response
+            assertTrue("Expected 'result' field in ping response", response.contains("\"result\""));
 
-        String contentType = httpRequest.getResponseHeader("Content-Type");
-        assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
+            String contentType = httpRequest.getResponseHeader("Content-Type");
+            assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
+        }
     }
 }

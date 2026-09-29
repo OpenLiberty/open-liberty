@@ -99,17 +99,38 @@ public class ConfigRefresher {
      * If the server.xml does not exist, no config updates will be made.
      * Otherwise, make config updates as normal.
      */
-    public void refreshConfigurationIfServerXMLExists(){
-        if(!serverXMLConfig.hasConfigRoot() || !serverXMLConfig.configRootFile().exists()){
+    public void refreshConfigurationIfServerXMLExists() {
+        if (!serverXMLConfig.hasConfigRoot() || !serverXMLConfig.configRootFile().exists()) {
             Tr.error(tc, "error.config.root.deleted");
-        }
-        else{
+        } else {
             refreshConfiguration();
         }
     }
 
     public void refreshConfiguration() {
         doRefresh(null);
+    }
+
+    @FFDCIgnore(InterruptedException.class)
+    private RuntimeUpdateManager getRuntimeUpdateManger() {
+        try {
+            // There is a circularity between config and the RuntimeUpdateManager implementation.
+            // The config bundle starts earlier, before the runtime.update bundle.
+            // It is possible that we get an event for config updates as soon as the config
+            // bundle sets up file monitoring of the server.xml.  At this point the
+            // RuntimeUpdateManager service may not be registered.  For this case we need to
+            // wait for the service before throwing an exception.
+            // The config refresh happens in an async thread so it should be safe to block here
+            // without causing a deadlock for the rest of the runtime bundles to be activated.
+            RuntimeUpdateManager runtimeUpdateManager = runtimeUpdateManagerTracker.waitForService(30000);
+            if (runtimeUpdateManager == null) {
+                throw new IllegalStateException("The RuntimeUpdateManager service could not be obtained");
+            }
+            return runtimeUpdateManager;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("The RuntimeUpdateManager service could not be obtained", e);
+        }
     }
 
     private synchronized void doRefresh(Map<String, DeltaType> variableDelta) {
@@ -120,7 +141,7 @@ public class ConfigRefresher {
 
         configStartTime = System.nanoTime();
 
-        RuntimeUpdateManager runtimeUpdateManager = runtimeUpdateManagerTracker.getService();
+        RuntimeUpdateManager runtimeUpdateManager = getRuntimeUpdateManger();
         RuntimeUpdateNotification configUpdatesDelivered = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED);
         futuresForChanges = null;
 

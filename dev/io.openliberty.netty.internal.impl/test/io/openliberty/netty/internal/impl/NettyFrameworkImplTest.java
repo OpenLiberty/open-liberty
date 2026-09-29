@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class NettyFrameworkImplTest {
     private List<Channel> testChannels = null;
     NettyFrameworkImpl framework = null;
     Map<String, Object> options;
+    static Map<String, Object> configMap;
 
     private final String LOCALHOST = "localhost";
     private final int TCP_PORT = 9080;
@@ -66,7 +67,20 @@ public class NettyFrameworkImplTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        outputMgr.trace("io.openliberty.netty*=all");
         outputMgr.captureStreams();
+        configMap = new HashMap<String, Object>();
+        configMap.put(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+        configMap.put(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, (Long)0L);
+        configMap.put(NettyConstants.USE_NATIVE_TRANSPORT, true);
+        configMap.put(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+        configMap.put(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+        configMap.put(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+        configMap.put(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+        configMap.put(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+        configMap.put(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+        configMap.put(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+        configMap.put(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
     }
 
     @Before
@@ -76,7 +90,7 @@ public class NettyFrameworkImplTest {
         testChannels = new ArrayList<Channel>();
         framework = new NettyFrameworkImpl();
         framework.setExecutorService(GlobalEventExecutor.INSTANCE);
-        framework.activate(null, null);
+        framework.activate(null, configMap);
         options = new HashMap<String, Object>();
     }
 
@@ -84,6 +98,7 @@ public class NettyFrameworkImplTest {
     public void tearDown() throws Exception {
         // Skip tear down if beta edition is not set
         if (!ProductInfo.getBetaEdition()) {
+            System.out.println("Beta edition is disabled!! Skipping tests...");
             return;
         }
         framework.deactivate(null, null);

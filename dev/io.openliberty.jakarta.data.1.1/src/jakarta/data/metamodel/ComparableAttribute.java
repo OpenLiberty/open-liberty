@@ -40,11 +40,13 @@ public interface ComparableAttribute<T, V extends Comparable<?>> //
     }
 
     @Override
+    @Nonnull
     default Sort<T> asc() {
         return Sort.asc(this);
     }
 
     @Override
+    @Nonnull
     default Sort<T> desc() {
         return Sort.desc(this);
     }

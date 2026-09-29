@@ -81,19 +81,23 @@ public class NioSocketIOChannel extends SocketIOChannel {
         long dataRead = 0;
 
         if (wsBuffArray.length == 1) {
-            // Add null check to prevent NPE from race condition
-            if (wsBuffArray[0] == null) {
+            // Snapshot wsBuffArray[0] into a local variable to eliminate the TOCTOU race:
+            // a concurrent thread (e.g. connection teardown) can null the shared array slot
+            // between our null-check and the subsequent method calls on it.
+            // A local variable is thread-private and cannot be nulled by another thread.
+            WsByteBuffer buf0 = wsBuffArray[0];
+            if (buf0 == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "wsBuffArray[0] is null, likely due to concurrent JIT buffer cleanup. Returning early.");
+                    Tr.debug(this, tc, "wsBuffArray[0] is null, likely due to concurrent connection teardown. Returning early.");
                 }
                 return dataRead;
             }
 
-            if ((!wsBuffArray[0].isDirect()) && (wsBuffArray[0].hasArray())) {
+            if ((!buf0.isDirect()) && (buf0.hasArray())) {
                 // To avoid lots of casting use a local var.
                 // Can't cast the array
                 try {
-                    WsByteBufferImpl wsBuffImpl = (WsByteBufferImpl) wsBuffArray[0];
+                    WsByteBufferImpl wsBuffImpl = (WsByteBufferImpl) buf0;
                     wsBuffImpl.setParmsToDirectBuffer();
 
                     dataRead = read(wsBuffImpl.oWsBBDirect);
@@ -103,10 +107,10 @@ public class NioSocketIOChannel extends SocketIOChannel {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Reading with a non-WsByteBufferImpl, may hurt performance");
                     }
-                    dataRead = read(wsBuffArray[0].getWrappedByteBufferNonSafe());
+                    dataRead = read(buf0.getWrappedByteBufferNonSafe());
                 }
             } else {
-                dataRead = read(wsBuffArray[0].getWrappedByteBufferNonSafe());
+                dataRead = read(buf0.getWrappedByteBufferNonSafe());
             }
         } else {
             ByteBuffer readBuffArray[] = req.preProcessReadBuffers();
@@ -122,12 +126,24 @@ public class NioSocketIOChannel extends SocketIOChannel {
         long bytesWritten = 0;
 
         if (wsBuffArray.length == 1) {
-            if ((!wsBuffArray[0].isDirect()) && (wsBuffArray[0].hasArray())) {
+            // Snapshot wsBuffArray[0] into a local variable to eliminate the TOCTOU race:
+            // a concurrent thread (e.g. connection teardown) can null the shared array slot
+            // at any point before or during the method calls below.
+            // A local variable is thread-private and cannot be nulled by another thread.
+            WsByteBuffer buf0 = wsBuffArray[0];
+            if (buf0 == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "wsBuffArray[0] is null, likely due to concurrent connection teardown. Returning early.");
+                }
+                return bytesWritten;
+            }
+
+            if ((!buf0.isDirect()) && (buf0.hasArray())) {
                 // To avoid lots of casting use a local var.
                 // Can't cast the array
                 WsByteBufferImpl wsBuffImpl = null;
                 try {
-                    wsBuffImpl = (WsByteBufferImpl) wsBuffArray[0];
+                    wsBuffImpl = (WsByteBufferImpl) buf0;
 
                     wsBuffImpl.copyToDirectBuffer();
 
@@ -138,11 +154,11 @@ public class NioSocketIOChannel extends SocketIOChannel {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Writing with a non-WsByteBufferImpl, may hurt performance");
                     }
-                    bytesWritten = write(wsBuffArray[0].getWrappedByteBufferNonSafe());
+                    bytesWritten = write(buf0.getWrappedByteBufferNonSafe());
                 }
             } else {
 
-                bytesWritten = write(wsBuffArray[0].getWrappedByteBufferNonSafe());
+                bytesWritten = write(buf0.getWrappedByteBufferNonSafe());
             }
         } else {
 

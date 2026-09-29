@@ -8,4 +8,5 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0")
+@com.ibm.websphere.ras.annotation.TraceOptions(messageBundle = "io.openliberty.mcp.internal.resources.CWMCM", traceGroup = "MCP")
 package io.openliberty.mcp.internal.spi;
