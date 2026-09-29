@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ import static org.junit.Assume.assumeThat;
 
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
-@SkipIfSysProp({SkipIfSysProp.OS_IBMI, SkipIfSysProp.OS_ISERIES})
+@SkipIfSysProp({SkipIfSysProp.OS_IBMI})
 public class FIPS1403SecurityUtilityTests {
 
     private static final Class<?> thisClass = FIPS1403SecurityUtilityTests.class;

@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ ******************************************************************************/
 package io.openliberty.security.fips.fat.tests.fips1403.security.utility;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
@@ -23,7 +32,7 @@ import static org.junit.Assume.assumeThat;
 
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
-@SkipIfSysProp({SkipIfSysProp.OS_IBMI, SkipIfSysProp.OS_ISERIES})
+@SkipIfSysProp({SkipIfSysProp.OS_ZOS, SkipIfSysProp.OS_IBMI})
 public class FIPS1403SecurityUtilityInvalidEnvTets {
 
     private static final String SERVER_NAME = "FIPSServer";
