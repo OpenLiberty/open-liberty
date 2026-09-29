@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright 2019,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,6 +145,18 @@ public class WSATTransaction {
     public WSATCoordinator getCoordinator() {
         synchronized (coordinatorLock) {
             return coordinator;
+        }
+    }
+
+    /*
+     * Returns true if this participant transaction has been successfully registered
+     * with the remote coordinator.  The coordinator EPR is set by registerParticipant()
+     * only after the registration web-service call succeeds, so a null coordinator
+     * means registration has not yet completed (or previously failed).
+     */
+    public boolean isRegistered() {
+        synchronized (coordinatorLock) {
+            return coordinator != null;
         }
     }
 

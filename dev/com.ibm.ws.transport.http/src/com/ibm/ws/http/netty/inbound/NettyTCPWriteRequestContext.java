@@ -12,24 +12,22 @@ package com.ibm.ws.http.netty.inbound;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.LinkedList;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -41,23 +39,16 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelPromise;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.LastHttpContent;
-import io.netty.handler.codec.http2.StreamSpecificHttpContent;
-import io.netty.handler.stream.ChunkedInput;
-import io.netty.handler.timeout.WriteTimeoutHandler;
-
-
-//auto read design, will organize later
-import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-import java.util.concurrent.CompletableFuture;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http2.StreamSpecificHttpContent;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.AsciiString;
 import io.netty.util.AttributeKey;
 
@@ -86,7 +77,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     private String streamID = "-1";
     private boolean http10Request;
 
-    //autoread design, will cleanup later
     private static final AttributeKey<Boolean> UPGRADE_COMMIT_EVENT_FIRED = 
                 AttributeKey.valueOf("upgradeCommitFired");
 
@@ -301,8 +291,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     continue;
                 }
 
-                
-
                 if (isH2) {
                     
                     writtenBytes += buffer.remaining();
@@ -344,7 +332,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             });
             awaitChannelFuture(writePromise, "Flush operation failed.");
 
-
         } catch (InterruptedException e) {
             // Restore interrupt status
             Thread.currentThread().interrupt();
@@ -353,7 +340,6 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
         return writtenBytes;
     }
-
 
     @Override
     public VirtualConnection write(long numBytes, TCPWriteCompletedCallback callback, boolean forceQueue, int timeout) {
@@ -588,7 +574,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     }
 
     private void fireUpgradeCommitted(){
-        Tr.debug(tc,"[NettyTCPWriteRequestContext.fireUpgradeCommitted");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,"Firing upgrade committed event");
+        }
         Boolean fired = nettyChannel.attr(UPGRADE_COMMIT_EVENT_FIRED).get();
         if(Boolean.TRUE.equals(fired)){
             return;

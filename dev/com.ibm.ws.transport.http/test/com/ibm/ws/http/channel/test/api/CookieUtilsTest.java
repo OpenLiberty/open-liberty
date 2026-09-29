@@ -21,12 +21,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
 import com.ibm.ws.http.internal.HttpDateFormatImpl;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+
+import test.common.SharedOutputManager;
 
 /**
  * Test methods from the CookiesUtils class.

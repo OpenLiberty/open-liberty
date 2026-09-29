@@ -9,22 +9,21 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound;
 
+import java.io.EOFException;
 import java.net.InetSocketAddress;
-import java.util.Map;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.util.ArrayDeque;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
-import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
@@ -39,10 +38,13 @@ import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
+import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
@@ -50,18 +52,16 @@ import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
-import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
-import io.netty.channel.socket.ChannelInputShutdownReadComplete;
-import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.ContentLengthNotAllowedException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -78,27 +78,20 @@ import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
-import io.netty.handler.codec.http.TooLongHttpHeaderException;
 import io.netty.handler.codec.http.TooLongHttpLineException;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Error;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.Http2Stream;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
-import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
-
-import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
-
 import io.openliberty.netty.internal.impl.QuiesceHandler;
-import java.io.EOFException;
-import io.netty.channel.socket.DuplexChannelConfig;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
@@ -116,8 +109,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     private BodyQueue queue;
     private HttpDispatcherLink link;
 
-    private final java.util.ArrayDeque<HttpContent> earlyContents = new java.util.ArrayDeque<>();
-    private final java.util.ArrayDeque<ByteBuf> earlyUpgradeBytes = new java.util.ArrayDeque<>();
+    private final ArrayDeque<HttpContent> earlyContents = new ArrayDeque<>();
+    private final ArrayDeque<ByteBuf> earlyUpgradeBytes = new ArrayDeque<>();
 
     private final AtomicBoolean commitScheduled = new AtomicBoolean(false);
     private final AtomicBoolean upgradeCommitted = new AtomicBoolean(false);
@@ -130,12 +123,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     // NEW: per-request marker to avoid double-enqueue when FullHttpRequest is used
     private boolean aggregatedBodyEnqueued;
 
-    private enum CommitTrigger {
-        FLUSH_OBSERVER, EARLY_BYTES, RETRY_TASK
-    }
-
-    private final AtomicReference<CommitTrigger> commitTrigger = new AtomicReference<>(null);
-
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
 
     public HttpDispatcherHandler(NettyHttpChannelConfig config) {
@@ -143,7 +130,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         this.config = Objects.requireNonNull(config);
         this.errorResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
     }
-
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
@@ -157,15 +143,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
 
         if (evt instanceof Upgrade101CommittedEvent) {
-            Tr.debug(tc,"[UPGRADE-SYSOUT] >>> Upgrade101CommittedEvent RECEIVED <<< autoRead(before)="
-                + ctx.channel().config().isAutoRead()
-                + " upgradingNow=" + upgradingNow
-                + " upgradeCommitted=" + upgradeCommitted.get()
-                + " commitTrigger=" + commitTrigger.get()
-                + " pipeline(before)=" + ctx.pipeline().names());
-            commitTrigger.compareAndSet(null, CommitTrigger.FLUSH_OBSERVER);
             upgradingNow = true;
-                onUpgradeCommitted(ctx);
+            onUpgradeCommitted(ctx);
             return;
         }
 
@@ -223,7 +202,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 final ByteBuf snapshot = buf.retainedSlice(buf.readerIndex(), buf.readableBytes());
                 earlyUpgradeBytes.add(snapshot);
 
-                commitTrigger.compareAndSet(null, CommitTrigger.EARLY_BYTES);
                 if (commitScheduled.compareAndSet(false, true)) {
                     ctx.executor().execute(() -> {
                         if (upgradingNow && !upgradeCommitted.get())
@@ -296,7 +274,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     if (content.isReadable()) {
                         content.retain();
                         earlyUpgradeBytes.add(content);
-                        Tr.debug(tc, "HTTP: parked aggregated upgrade body bytes=" + content.readableBytes());
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "HTTP: parked aggregated upgrade body bytes=" + content.readableBytes());
+                        }
                     }
                 }
 
@@ -374,13 +354,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
     }
 
-    //TODO -> Utils candidate
     private static boolean isUpgrade(HttpRequest req) {
         final CharSequence conn = req.headers().get(HttpHeaderNames.CONNECTION);
         final CharSequence upg = req.headers().get(HttpHeaderNames.UPGRADE);
         if (upg == null || conn == null)
             return false;
-        return io.netty.util.AsciiString.containsIgnoreCase(conn, "upgrade");
+        return AsciiString.containsIgnoreCase(conn, "upgrade");
     }
 
     private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request,
@@ -408,7 +387,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         commitScheduled.set(false);
         upgradeCommitted.set(false);
-        commitTrigger.set(null);
 
         // Verify if the request expects 100 continue
         // At this point, the validation of the message size is already done by the aggregator
@@ -447,12 +425,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     v.getStateMap().put(NettyHttpConstants.VC_HTTP2_STREAM_ID, streamId);
                 }
             }
-            else{
-                //System.out.println("DEBUG: vc was null, not expected");
-            }
         } catch (Throwable t) {
             // be defensive; don't let VC issues kill the request setup
-            Tr.debug(tc, "Failed to attach HttpInputStream to VC state", t);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to attach HttpInputStream to VC state", t);
+            }
         }
         //if H2
 
@@ -461,17 +438,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         } else {
             ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(body);
         }
-        
 
         if (upg && !requestMetadata.isHttp2()) {
-            //upgradingNow = true;
             if(commitScheduled.compareAndSet(false, true)){
                HttpDispatcher.getExecutorService().execute(() -> requestLink.ready()); 
             }
             return;
         }
 
-        
         final String contentEncoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
         body.nettyConfigureStreaming(queue, ctx, contentEncoding, cl, chunked);
 
@@ -522,13 +496,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private void onUpgradeCommitted(ChannelHandlerContext ctx) {
-        Tr.debug(tc,"[UPGRADE-SYSOUT] onUpgradeCommitted ENTER autoRead(before)="
-            + ctx.channel().config().isAutoRead()
-            + " upgradingNow=" + upgradingNow
-            + " upgradeCommitted(before)=" + upgradeCommitted.get()
-            + " commitTrigger=" + commitTrigger.get()
-            + " pipeline(before)=" + ctx.pipeline().names());
-        
         if (!ctx.executor().inEventLoop()) {
             ctx.executor().execute(() -> onUpgradeCommitted(ctx));
             return;
@@ -580,7 +547,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                             upgrade.channelRead(upgCtx, d.retain());
                         }
                     } catch (Exception e) {
-                        Tr.debug(tc, "deliver early HttpContent failed: " + e);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "deliver early HttpContent failed: " + e);
+                        }
                     } finally {
                         early.release();
                     }
@@ -593,7 +562,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                             upgrade.channelRead(upgCtx, raw.retain());
                         }
                     } catch (Exception e) {
-                        Tr.debug(tc, "deliver early raw bytes failed: " + e);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "deliver early raw bytes failed: " + e);
+                        }
                     } finally {
                         raw.release();
                     }
@@ -620,17 +591,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             firePendingAsyncRead(ctx);
 
             if (ProtocolState.current(ctx.channel()) == NettyHttpConstants.ProtocolName.WEBSOCKET) {
-                if (!ctx.channel().config().isAutoRead()){
-                    Tr.debug(tc, "[UPGRADE-SYSOUT]: enable auto read for websoc");
+                if (!ctx.channel().config().isAutoRead()) {
                     ctx.channel().config().setAutoRead(true);
                 }
-
-            }
-            else {
-                if(ctx.channel().config().isAutoRead()){
-                 Tr.debug(tc, "[UPGRADE-SYSOUT] onupgradeCommitted, ensuring autoread disabled");
-                 ctx.channel().config().setAutoRead(false);
-             }
+            } else {
+                if (ctx.channel().config().isAutoRead()) {
+                    ctx.channel().config().setAutoRead(false);
+                }
             }
 
         } finally{
@@ -716,9 +683,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             sendErrorMessage(cause);
             return;
         } else if (cause instanceof TimeoutException) {
-            Tr.debug(tc, "Idle timeout; closing channel");
-            if (cause instanceof ReadTimeoutException)
-                sendErrorMessage(cause);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Idle timeout; closing channel");
+            }
+            if (cause instanceof ReadTimeoutException
+                && ProtocolState.current(ctx.channel()) != NettyHttpConstants.ProtocolName.HTTP2
+                && !ReadFlowHandler.state(ctx).isResponseInFlight()) {
+                sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
+                return;
+            }
         } else if(cause instanceof TooLongFrameException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
@@ -750,13 +723,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
     }
 
-    private void sendErrorMessage(StatusCodes code, Throwable cause) {
+    private ChannelFuture sendErrorMessage(StatusCodes code, Throwable cause) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Sending a " + code +  " for throwable [" + cause + "]");
         }
         loadErrorPage(code.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
-        this.context.writeAndFlush(errorResponse);
+        return this.context.writeAndFlush(errorResponse);
     }
 
     private void sendErrorMessage(Throwable cause) {
@@ -800,7 +773,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             try {
                 body = provider.accessPage(host, local.getPort(), null, null);
             } catch (Throwable t) {
-                Tr.debug(tc, "Exception while calling into provider, t=" + t);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Exception while calling into provider, t=" + t);
+                }
             }
             if (body != null) {
                 errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
@@ -927,7 +902,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         throw new RuntimeException(failure);
     }
 
-    //TODO -> Pipeline utils candidate
     private static void removeIfPresent(ChannelPipeline pipeline, Class<? extends ChannelHandler> handlerType) {
         try {
             ChannelHandler h = pipeline.get(handlerType);
@@ -1025,7 +999,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                         if (u != null)
                             flushParkedToUpgrade(u);
                     } catch (Exception ignore) {
-                        //System.out.println("Exception in flushedParkToUpgrade: " + e);
+                        // Preserve best-effort delivery of bytes parked before the pipeline switch.
                     } finally {
                         postFlipDrainerInstalled.set(false);
                     }
@@ -1047,13 +1021,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private void setUpgradeReadyPromise(ChannelHandlerContext context){
-        Tr.debug(tc,"UPGRADE LOG -> setUpgradeReadyPromise");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,"setUpgradeReadyPromise");
+        }
         CompletableFuture<Void> promise = context.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
         if(promise == null){
             context.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(new CompletableFuture<>());
         }
     }
-
 
     private void firePendingAsyncRead(ChannelHandlerContext ctx) {
         AsyncReadDispatchState.forChannel(ctx.channel()).signal();

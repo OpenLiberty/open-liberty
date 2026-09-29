@@ -10,6 +10,7 @@
 package com.ibm.ws.http.channel.internal;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Comparator;
@@ -2430,7 +2431,7 @@ public class HttpChannelConfig {
      */
     protected void parsePurgeRemainingResponseBody() {
 
-        String option = AccessController.doPrivileged(new java.security.PrivilegedAction<String>() {
+        String option = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
                 return (System.getProperty(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE));
@@ -2644,7 +2645,9 @@ public class HttpChannelConfig {
      */
     private int minLimit(int input, int min) {
         if (input < min) {
-            Tr.debug(tc, "Config: " + input + " too small.");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Config: " + input + " too small.");
+            }
 
             return min;
         }
@@ -2661,7 +2664,9 @@ public class HttpChannelConfig {
      */
     private long minLimit(long input, long min) {
         if (input < min) {
-            Tr.debug(tc, "Config: " + input + " too small.");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Config: " + input + " too small.");
+            }
 
             return min;
         }

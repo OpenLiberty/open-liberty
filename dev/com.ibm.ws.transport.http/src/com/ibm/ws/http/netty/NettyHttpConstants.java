@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
-import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 
 import io.netty.util.AttributeKey;
 

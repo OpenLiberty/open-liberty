@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import io.openliberty.data.internal.Util;
+
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 import jakarta.data.Limit;
@@ -463,7 +465,7 @@ public class Fail {
                       paramIndex + 1, // switch to 1-based
                       info.method.getName(),
                       info.repositoryInterface.getName(),
-                      Arrays.toString(paramAnnos),
+                      Util.toStringList(paramAnnos),
                       paramType.getClass().getName());
         else
             throw exc(UnsupportedOperationException.class,
@@ -471,7 +473,7 @@ public class Fail {
                       paramIndex + 1, // switch to 1-based
                       info.method.getName(),
                       info.repositoryInterface.getName(),
-                      Arrays.toString(paramAnnos));
+                      Util.toStringList(paramAnnos));
     }
 
     /**
