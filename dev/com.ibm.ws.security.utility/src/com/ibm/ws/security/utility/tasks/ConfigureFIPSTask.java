@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
     static final String ENABLE_FIPS140_3_ENV_VAR = "ENABLE_FIPS140_3";
 
     static final String LIBERTY_PROFILE_FILE_NAME = "FIPS140-3-Liberty.properties";
+    static final String LIBERTY_ZOS_PROFILE_FILE_NAME = "FIPS140-3-Liberty-zos.properties";
     static final String APP_PROFILE_FILE_NAME = "FIPS140-3-Liberty-Application.properties";
 
     static final String PROFILE_NAME_HOLDER = "PROFILE_NAME_HOLDER";
