@@ -16,7 +16,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/val40/src,\
-	test-applications/val40attr/src
+	test-applications/val40attr/src,\
+	test-applications/val40init/src
 
 fat.project: true
 
