@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,10 +64,16 @@ public class GrpcServletUtils {
     /**
      * Given a request path use GrpcServletServices.getServletGrpcServices to map
      * the target service class, and using that Class map the target
-     * java.lang.reflect.Method
-     * 
+     * java.lang.reflect.Method.
+     *
+     * Returns null if the service is not registered (unknown path). Throws
+     * GrpcMethodNotFoundException if the service IS registered but the method cannot
+     * be resolved. An unknown service is handled further up the stack, while an
+     * unresolvable method on a known service should be rejected.
+     *
      * @param String requestPath in the format of "service.Name/MethodName"
-     * @return Method invoked by the request
+     * @return Method invoked by the request, or null if the service is not registered
+     * @throws GrpcMethodNotFoundException if the service is registered but the method cannot be resolved
      */
     public static Method getTargetMethod(String requestPath) {
         int index = requestPath.indexOf('/');
@@ -82,7 +88,14 @@ public class GrpcServletUtils {
                     index = requestPath.indexOf('/');
                     String methodName = requestPath.substring(index + 1);
                     if (methodName.contains("_")) {
+                        // Underscore-containing names are converted to
+                        // camelCase by protoc-gen-grpc-java
                         methodName = convertToCamelCase(methodName);
+                    } else if (!methodName.isEmpty()) {
+                        // Standard PascalCase proto RPC names are lowercased only on the first character
+                        // by protoc-gen-grpc-java. Need to normalize for a strict matching of method
+                        // name to avoid ambiguity when requests make it to the server.
+                        methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
                     }
                     Method[] methods = clazz.getMethods();
                     for (Method m : methods) {
@@ -91,6 +104,8 @@ public class GrpcServletUtils {
                             return m;
                         }
                     }
+                    // Service is registered but the method name could not be resolved.
+                    throw new GrpcMethodNotFoundException(requestPath);
                 }
             }
         }
@@ -253,5 +268,22 @@ public class GrpcServletUtils {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Thrown by getTargetMethod() when the target gRPC service is registered but
+     * the requested method name cannot be resolved to a Java method. This is
+     * distinct from a null return, which means the service itself is not registered.
+     */
+    public static class GrpcMethodNotFoundException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        public GrpcMethodNotFoundException(String requestPath) {
+            super();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "gRPC method not found for registered service: " + requestPath);
+            }
+        }
     }
 }
