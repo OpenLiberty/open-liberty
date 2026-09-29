@@ -21,8 +21,12 @@ package org.apache.myfaces.view.facelets.impl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -30,7 +34,10 @@ import java.util.regex.Pattern;
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.application.ProjectStage;
+import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewResource;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.facelets.Facelet;
 import javax.faces.view.facelets.FaceletCache;
@@ -40,6 +47,7 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.ResourceResolver;
 
+import org.apache.myfaces.context.InvalidFileException;
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
 import org.apache.myfaces.view.facelets.FaceletFactory;
@@ -74,8 +82,10 @@ public final class DefaultFaceletFactory extends FaceletFactory
 
     private Map<String, URL> _relativeLocations;
 
-    private javax.faces.view.facelets.ResourceResolver _resolver;
+    private ResourceResolver _resolver;
     private DefaultResourceResolver _defaultResolver;
+
+    private volatile Set<String> _allowedSuffixes;
     
     private FaceletCache<Facelet> _faceletCache;
     private AbstractFaceletCache<Facelet> _abstractFaceletCache;
@@ -276,34 +286,197 @@ public final class DefaultFaceletFactory extends FaceletFactory
     }
 
     /**
-     * Resolves a path based on the passed URL. If the path starts with '/', then resolve the path against
-     * {@link javax.faces.context.ExternalContext#getResource(java.lang.String)
-     * javax.faces.context.ExternalContext#getResource(java.lang.String)}. Otherwise create a new URL via
-     * {@link URL#URL(java.net.URL, java.lang.String) URL(URL, String)}.
-     * 
-     * @param source
-     *            base to resolve from
-     * @param path
-     *            relative path to the source
+     * Resolves a path to a URL, validating scheme, traversal, and extension.
+     * Absolute paths (starting with '/') are resolved via ExternalContext;
+     * relative paths are resolved against the source URL.
+     * @param context FacesContext
+     * @param source base URL for relative resolution
+     * @param path path to resolve
      * @return resolved URL
-     * @throws IOException
+     * @throws IOException if path is invalid or not found
      */
     public URL resolveURL(FacesContext context, URL source, String path) throws IOException
     {
-        if (path.startsWith("/"))
+        if (!isAllowedScheme(path))
         {
+            throw new InvalidFileException(InvalidFileException.Reason.DISALLOWED_SCHEME,
+                    "Remote or disallowed scheme in path: " + path);
+        }
+
+        URL resolved;
+        String normalizedPath;
+        boolean absoluteContextPath = path.startsWith("/");
+
+        if (absoluteContextPath)
+        {
+            // Absolute context-relative path via ExternalContext (scoped to WAR by container)
             context.getAttributes().put(LAST_RESOURCE_RESOLVED, null);
-            URL url = resolveURL(context, path);
-            if (url == null)
+            resolved = resolveURL(context, path);
+            if (resolved == null)
             {
                 throw new FileNotFoundException(path + " Not Found in ExternalContext as a Resource");
             }
-            return url;
+            normalizedPath = path;
         }
         else
         {
-            return new URL(source, path);
+            // Relative path resolved against source URL
+            if (source == null)
+            {
+                // Fall back to ExternalContext if no base URL available
+                resolved = resolveURL(context, path);
+                if (resolved == null)
+                {
+                    throw new FileNotFoundException("Cannot resolve relative path '" + path);
+                }
+                normalizedPath = path;
+            }
+            else
+            {
+                resolved = new URL(source, path);
+                normalizedPath = resolved.getPath();
+            }
         }
+
+        // Skip validation in UnitTest stage (uses synthetic paths)
+        if (context.isProjectStage(ProjectStage.UnitTest))
+        {
+            return resolved;
+        }
+
+        // Traversal guard: relative paths must stay within base (absolute paths already scoped by container)
+        if (!absoluteContextPath && source != null && !isWithinBase(resolved))
+        {
+            throw new InvalidFileException(InvalidFileException.Reason.PATH_TRAVERSAL,
+                    "Path escapes application base: " + path);
+        }
+
+        // Extension must be a configured Facelet suffix
+        if (!mappingAllowed(context, normalizedPath))
+        {
+            throw new InvalidFileException(InvalidFileException.Reason.INVALID_EXTENSION,
+                    "Invalid path provided: " + path);
+        }
+
+        return resolved;
+    }
+
+    // Path-validation helpers    
+    private static final Set<String> ALLOWED_SCHEMES = Collections.unmodifiableSet(
+                        new HashSet<>(Arrays.asList("file", "jar", "wsjar", "zip")));
+
+    /** Returns true for relative/container schemes; false for all others */
+    private boolean isAllowedScheme(String path)
+    {
+        int colon = path.indexOf(':');
+
+        if (colon < 1)
+        {
+            return true; // relative path
+        }
+
+        String scheme = path.substring(0, colon).toLowerCase();
+        return ALLOWED_SCHEMES.contains(scheme);
+    } 
+
+    /** Verifies that resolved URL is contained within the application base. */
+    private boolean isWithinBase(URL resolved)
+    {
+        URL base = getBaseUrl();
+        if (base == null)
+        {
+            return true;
+        }
+        
+        // Compare path components (scheme-agnostic): extract path after "!" for jar URLs
+        String basePath = extractResourcePath(base.toExternalForm());
+        String resolvedPath = extractResourcePath(resolved.toExternalForm());
+        
+        if (!basePath.endsWith("/"))
+        {
+            basePath = basePath + "/";
+        }
+        return resolvedPath.startsWith(basePath);
+    }
+    
+    /** Extract the in-archive path from jar/wsjar/file URLs (path after "!" for jar URLs). */
+    private String extractResourcePath(String urlStr)
+    {
+        int jarSep = urlStr.indexOf('!');
+        if (jarSep >= 0)
+        {
+            // jar: or wsjar: URL — extract path after "!"
+            return urlStr.substring(jarSep + 1);
+        }
+        // Regular file: URL — extract path component
+        int fileIdx = urlStr.indexOf("file:");
+        if (fileIdx >= 0)
+        {
+            return urlStr.substring(fileIdx + 5);
+        }
+        return urlStr;
+    }
+
+    /** Returns true if normalizedPath ends with a configured Facelet extension. */
+    private boolean mappingAllowed(FacesContext context, String normalizedPath)
+    {
+        if (normalizedPath == null || normalizedPath.isEmpty())
+        {
+            return false;
+        }
+        int dotIndex = normalizedPath.lastIndexOf('.');
+        if (dotIndex < 0)
+        {
+            return false;
+        }
+        String ext = normalizedPath.substring(dotIndex);
+
+        if (!getAllowedSuffixes(context).contains(ext))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /** Returns cached set of allowed Facelet suffixes built from init parameters. */
+    private Set<String> getAllowedSuffixes(FacesContext context)
+    {
+        if (_allowedSuffixes == null)
+        {
+            ExternalContext ec = context.getExternalContext();
+
+            String suffixParam = ec.getInitParameter(ViewHandler.FACELETS_SUFFIX_PARAM_NAME);
+            if (suffixParam == null)
+            {
+                suffixParam = ViewHandler.DEFAULT_FACELETS_SUFFIX;
+            }
+            Set<String> allowed = new HashSet<>(Arrays.asList(suffixParam.trim().split("\\s+")));
+
+            String mappingsParam = ec.getInitParameter(ViewHandler.FACELETS_VIEW_MAPPINGS_PARAM_NAME);
+            if (mappingsParam == null)
+            {
+                mappingsParam = ec.getInitParameter("facelets.VIEW_MAPPINGS");
+            }
+            if (mappingsParam != null)
+            {
+                for (String token : mappingsParam.split(";"))
+                {
+                    token = token.trim();
+                    if (token.startsWith("*."))
+                    {
+                        allowed.add(token.substring(1));
+                    }
+                }
+            }
+
+            if (log.isLoggable(Level.FINE))
+            {
+                log.fine("Allowed Facelet suffixes: " + allowed);
+            }
+
+            _allowedSuffixes = allowed;
+        }
+        return _allowedSuffixes;
     }
 
     /**
