@@ -3540,6 +3540,20 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     }
 
     /**
+     * Records the CRLF position for 
+     *
+     * @param buff the current parse buffer
+     */
+    private void recordCRLFPosition(WsByteBuffer buff) {
+        if (HeaderStorage.NOTSET != this.headerChangeLimit) {
+            int pos = findCurrentBufferPosition(buff);
+            this.lastCRLFPosition = pos - 1;
+            this.lastCRLFBufferIndex = this.parseIndex;
+            this.lastCRLFisCR = false;
+        }
+    }
+
+    /**
      * Parse a CRLF delimited token and return the length of the token.
      *
      * @param buff
@@ -3595,12 +3609,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
                     } else {
                         rc = TokenCodes.TOKEN_RC_CRLF;
-                        if (HeaderStorage.NOTSET != this.headerChangeLimit) {
-                            int pos = findCurrentBufferPosition(buff);
-                            this.lastCRLFPosition = pos - 1; // Should this be - 2?
-                            this.lastCRLFBufferIndex = this.parseIndex;
-                            this.lastCRLFisCR = false;
-                        }
+                        recordCRLFPosition(buff);
                         break;
                     }
                 } else {
@@ -3630,12 +3639,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         this.pendingLFBeforeResume = false;
                         this.bytePosition--;
                         rc = TokenCodes.TOKEN_RC_CRLF;
-                        if (HeaderStorage.NOTSET != this.headerChangeLimit) {
-                            int pos = findCurrentBufferPosition(buff);
-                            this.lastCRLFPosition = pos - 1;
-                            this.lastCRLFBufferIndex = this.parseIndex;
-                            this.lastCRLFisCR = false;
-                        }
+                        recordCRLFPosition(buff);
                         break;
                     }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
