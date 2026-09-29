@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,14 +45,13 @@ import static org.junit.Assume.assumeThat;
 
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
-@SkipIfSysProp({SkipIfSysProp.OS_IBMI, SkipIfSysProp.OS_ISERIES})
+@SkipIfSysProp({SkipIfSysProp.OS_IBMI})
 public class FIPS1403ServerTest {
 
     private static final Class<?> c = FIPS1403ServerTest.class;
 
     public static final String SERVER_NAME = "FIPSServer";
     public static String expectedProvider="InvalidProvider";
-    public static boolean isIBMJava8 = false;
     public static JavaInfo ji;
     public static boolean GLOBAL_FIPS=false;
     public static final String OPEN_JCE_PLUS_FIPS_PROVIDER = "OpenJCEPlusFIPS";

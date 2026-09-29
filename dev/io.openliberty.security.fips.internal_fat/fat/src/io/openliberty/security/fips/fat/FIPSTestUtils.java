@@ -87,11 +87,11 @@ public class FIPSTestUtils {
                         String line;
                         boolean fipsCompatible = false;
                         while ((line = reader.readLine()) != null) {
-                            if(line.contains("RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate")){
+                            if (line.contains("RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate")){
                                 String[] dateElements = line.split("=")[1].trim().split("-");
-                                LocalDate now =  LocalDate.now();
+                                LocalDate now = LocalDate.now();
                                 LocalDate sunsetDate = LocalDate.of(Integer.parseInt(dateElements[0]), Integer.parseInt(dateElements[1]), Integer.parseInt(dateElements[2]));
-                                if(sunsetDate.isBefore(now)){
+                                if (sunsetDate.isBefore(now)){
                                     Log.warning(FIPSTestUtils.class, "Restricted FIPS Profile Date has passed - you need to update Java");
                                     fipsCompatible = false;
                                     break;
