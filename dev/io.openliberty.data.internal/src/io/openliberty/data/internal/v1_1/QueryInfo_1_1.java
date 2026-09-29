@@ -148,11 +148,6 @@ public class QueryInfo_1_1 extends QueryInfo {
     }
 
     /**
-     * Empty size 0 array that indicates no Constraint values.
-     */
-    private static final Object[] NO_VALUES = new Object[0];
-
-    /**
      * Construct partially complete query information.
      *
      * @param repositoryProducer    producer of the repository bean instance.
@@ -1247,6 +1242,91 @@ public class QueryInfo_1_1 extends QueryInfo {
         query.setTimeout(timeout == -1 ? 0 : timeout);
     }
 
+    @Override
+    @Trivial
+    protected int setPositionalParameters(jakarta.persistence.Query query,
+                                          int paramNum,
+                                          Object arg) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        if (arg instanceof Constraint) {
+            Object p1; // Literal or List of values
+            Object p2 = null; // unused or Literal or Character
+
+            if (arg instanceof AtLeast c) {
+                p1 = c.bound();
+            } else if (arg instanceof AtMost c) {
+                p1 = c.bound();
+            } else if (arg instanceof Between c) {
+                p1 = c.lowerBound();
+                p2 = c.upperBound();
+            } else if (arg instanceof EqualTo c) {
+                p1 = c.expression();
+            } else if (arg instanceof GreaterThan c) {
+                p1 = c.bound();
+            } else if (arg instanceof In<?> c) {
+                p1 = toListOfValues(c.expressions());
+            } else if (arg instanceof LessThan c) {
+                p1 = c.bound();
+            } else if (arg instanceof Like c) {
+                p1 = c.pattern();
+                p2 = c.escape();
+            } else if (arg instanceof NotBetween c) {
+                p1 = c.lowerBound();
+                p2 = c.upperBound();
+            } else if (arg instanceof NotEqualTo c) {
+                p1 = c.expression();
+            } else if (arg instanceof NotIn<?> c) {
+                p1 = toListOfValues(c.expressions());
+            } else if (arg instanceof NotLike c) {
+                p1 = c.pattern();
+                p2 = c.escape();
+            } else if (arg instanceof NotNull ||
+                       arg instanceof Null) {
+                return paramNum;
+            } else {
+                throw new UnsupportedOperationException("Constraint: " +
+                                                        arg.getClass().getName());
+            }
+
+            if (p1 instanceof Literal literal) {
+                Object val = literal.value();
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(val));
+                query.setParameter(paramNum++, val);
+            } else if (p1 instanceof List<?>) {
+                // In or NotIn a list
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(p1));
+                query.setParameter(paramNum++, p1);
+            } else {
+                // Constraint on non-Literal - should be unreachable
+                throw new UnsupportedOperationException(p1.getClass().getName());
+            }
+
+            if (p2 instanceof Literal literal) {
+                Object val = literal.value();
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(val));
+                query.setParameter(paramNum++, val);
+            } else if (p2 instanceof Character) {
+                // Like or NotLike
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(p2));
+                query.setParameter(paramNum++, p2);
+            } else if (p2 != null) {
+                // Constraint on non-Literal - should be unreachable
+                throw new UnsupportedOperationException(p2.getClass().getName());
+            }
+        } else { // normal positional parameter
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "[q] set ?" + paramNum + ' ' + loggable(arg));
+            query.setParameter(paramNum++, arg);
+        }
+
+        return paramNum;
+    }
+
     /**
      * Configures the query options that are intended for JPQL DELETE and UPDATE
      * statements.
@@ -1351,61 +1431,26 @@ public class QueryInfo_1_1 extends QueryInfo {
         return constraint;
     }
 
-    @Override
-    @Trivial // avoid logging customer data
-    public Object[] toConstraintValues(Object constraintOrValue) {
-        // TODO 1.1 this is not the correct implementation (doesn't account for
-        // other types of expressions than literals) and is only here temporarily
-        // so that we can complete remove some experimental code elsewhere without
-        // breaking tests.
-        boolean isList = false;
-        Object[] values;
-        if (constraintOrValue instanceof AtLeast c)
-            values = new Object[] { c.bound() };
-        else if (constraintOrValue instanceof AtMost c)
-            values = new Object[] { c.bound() };
-        else if (constraintOrValue instanceof Between c)
-            values = new Object[] { c.lowerBound(), c.upperBound() };
-        else if (constraintOrValue instanceof EqualTo c)
-            values = new Object[] { c.expression() };
-        else if (constraintOrValue instanceof GreaterThan c)
-            values = new Object[] { c.bound() };
-        else if (isList = constraintOrValue instanceof In)
-            values = ((In) constraintOrValue).expressions().toArray();
-        else if (constraintOrValue instanceof LessThan c)
-            values = new Object[] { c.bound() };
-        else if (constraintOrValue instanceof Like c)
-            values = new Object[] { c.pattern(), c.escape() };
-        else if (constraintOrValue instanceof NotBetween c)
-            values = new Object[] { c.lowerBound(), c.upperBound() };
-        else if (constraintOrValue instanceof NotEqualTo c)
-            values = new Object[] { c.expression() };
-        else if (isList = constraintOrValue instanceof NotIn)
-            values = ((NotIn) constraintOrValue).expressions().toArray();
-        else if (constraintOrValue instanceof NotLike c)
-            values = new Object[] { c.pattern(), c.escape() };
-        else if (constraintOrValue instanceof NotNull ||
-                 constraintOrValue instanceof Null)
-            values = NO_VALUES;
-        else if (constraintOrValue instanceof Constraint)
-            throw new UnsupportedOperationException("Constraint: " +
-                                                    constraintOrValue.getClass().getName());
-        else
-            return null;
+    /**
+     * Converts a list of Literal expressions to a list of respective values
+     * represented by the Literal expressions, in the same order.
+     *
+     * @param expressions list of Literal expressions
+     * @return list of values
+     */
+    @Trivial
+    private List<Object> //
+                    toListOfValues(List<? extends Expression<?, ?>> expressions) {
+        List<Object> list = new ArrayList<>(expressions.size());
 
-        for (int i = 0; i < values.length; i++)
-            if (values[i] instanceof Literal literal)
-                values[i] = literal.value();
-            else if (values[i] instanceof Character)
-                ; // the escape character for Like and NotLike
+        for (Object exp : expressions)
+            if (exp instanceof Literal literal)
+                list.add(literal.value());
             else
-                // non-Literal constraint - should be unreachable
-                throw new UnsupportedOperationException(values[i].getClass().getName());
+                // Constraint on non-Literal - should be unreachable
+                throw new UnsupportedOperationException(exp.getClass().getName());
 
-        if (isList)
-            values = new Object[] { List.of(values) };
-
-        return values;
+        return list;
     }
 
 }

@@ -26,6 +26,8 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -48,6 +50,7 @@ import jakarta.persistence.TypedQuery;
  * QueryInfo implementation for Jakarta Data 1.0.
  */
 public class QueryInfo_1_0 extends QueryInfo {
+    private static final TraceComponent tc = Tr.register(QueryInfo_1_0.class);
 
     /**
      * Construct partially complete query information.
@@ -289,8 +292,15 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
-    public Object[] toConstraintValues(Object value) {
-        return null;
+    protected int setPositionalParameters(jakarta.persistence.Query query,
+                                          int paramNum,
+                                          Object arg) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "[q] set ?" + paramNum + ' ' + loggable(arg));
+
+        query.setParameter(paramNum++, arg);
+
+        return paramNum;
     }
 
 }
