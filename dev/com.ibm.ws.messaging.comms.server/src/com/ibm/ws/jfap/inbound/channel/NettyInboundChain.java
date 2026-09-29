@@ -261,6 +261,8 @@ public class NettyInboundChain implements InboundChain{
             bootstrap = _nettyFramework.createTCPBootstrapInbound(options);
             bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
             NettyInboundChain parent = this;
+            // setting _isChainStarted=true here so the Netty I/O thread callback (innerFuture) can 
+            _isChainStarted = true;
             this.serverChan = _nettyFramework.startInbound(bootstrap, ep.getHost(), ep.getPort(), f ->{
                 if (f.isCancelled() || !f.isSuccess()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -302,9 +304,10 @@ public class NettyInboundChain implements InboundChain{
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(parent, tc, "ready");
                 }
             });
-            _isChainStarted = true;
 
         } catch (Exception e) {
+            // Reset flag so getActivePort() correctly returns -1 if the channel was never successfully opened.
+            _isChainStarted = false;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 SibTr.debug(this, tc, "Problem in starting the chain  " + newConfig,e);
             }
@@ -381,6 +384,9 @@ public class NettyInboundChain implements InboundChain{
          */
         public int getActivePort() {
             if (configPort < 0)
+                return -1;
+            // the channel is not actually listening so returning -1
+            if (!_isChainStarted || serverChan == null || !serverChan.isActive())
                 return -1;
 
             return configPort;
