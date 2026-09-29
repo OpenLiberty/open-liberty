@@ -298,4 +298,5 @@ public interface DataVersionCompatibility {
      * @return the Jakarta Data defined special parameter types.
      */
     Set<Class<?>> specialParamTypes();
+
 }

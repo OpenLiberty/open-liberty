@@ -14,6 +14,7 @@ package io.openliberty.data.internal.v1_0;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.Set;
@@ -21,6 +22,7 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.DataVersionCompatibility;
 import io.openliberty.data.internal.QueryInfo;
@@ -44,6 +46,23 @@ import jakarta.persistence.EntityManagerFactory;
  * Capability that is specific to the version of Jakarta Data.
  */
 public class Data_1_0 implements DataVersionCompatibility {
+    /**
+     * Persistence 3.2 method:
+     * EntityManager.createQuery(String qlString)
+     */
+    static final Method EM_createQuery_ql;
+
+    /**
+     * Persistence 3.2 method:
+     * EntityManager.createQuery(String qlString, Class<T> resultClass)
+     */
+    static final Method EM_createQuery_ql_rc;
+
+    /**
+     * Persistence 3.2 method:
+     * EntityManagerFactory.createEntityManager()
+     */
+    private static final Method EMF_createEntityManager;
 
     /**
      * Annotations that represent lifecycle operations that are allowed for
@@ -84,6 +103,20 @@ public class Data_1_0 implements DataVersionCompatibility {
                     Set.of(Limit.class, Order.class, PageRequest.class,
                            Sort.class, Sort[].class);
 
+    static {
+        try {
+            // Jakarta Persistence 3.2 methods:
+            EM_createQuery_ql = EntityManager.class //
+                            .getMethod("createQuery", String.class);
+            EM_createQuery_ql_rc = EntityManager.class //
+                            .getMethod("createQuery", String.class, Class.class);
+            EMF_createEntityManager = EntityManagerFactory.class //
+                            .getMethod("createEntityManager");
+        } catch (NoSuchMethodException x) {
+            throw new ExceptionInInitializerError(x);
+        }
+    }
+
     @Override
     @Trivial
     public boolean atLeast(int major, int minor) {
@@ -96,10 +129,20 @@ public class Data_1_0 implements DataVersionCompatibility {
         throw new UnsupportedOperationException();
     }
 
+    @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
     public EntityManager createEntityManager(EntityManagerFactory emf) {
-        return emf.createEntityManager();
+        try {
+            return (EntityManager) EMF_createEntityManager.invoke(emf);
+        } catch (IllegalAccessException x) {
+            throw new RuntimeException(x); // should never occur
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            else
+                throw new RuntimeException(x);
+        }
     }
 
     @Override
