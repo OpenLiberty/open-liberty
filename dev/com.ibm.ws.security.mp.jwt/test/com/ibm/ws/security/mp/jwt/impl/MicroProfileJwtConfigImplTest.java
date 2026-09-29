@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,13 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -22,6 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Version;
+import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.security.test.common.CommonTestClass;
 
@@ -106,6 +112,74 @@ public class MicroProfileJwtConfigImplTest extends CommonTestClass {
         });
         boolean result = config.isRuntimeVersionAtLeast(minimumVersionRequired);
         assertFalse("Runtime version [" + thisRuntimeVersion + "] should NOT have been considered at or above [" + minimumVersionRequired + "].", result);
+    }
+
+    private Map<String, Object> buildMinimalProps() {
+        Map<String, Object> props = new HashMap<String, Object>();
+        // Provide the mpConfigProxy cardinality minimum that initProps expects
+        props.put("MpConfigProxy.cardinality.minimum", "0");
+        return props;
+    }
+
+    @Test
+    public void test_realmIdentifier_defaultValue() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                allowing(runtimeVersion).getVersion();
+                will(returnValue(io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion.VERSION_1_1));
+            }
+        });
+        Map<String, Object> props = buildMinimalProps();
+        // Simulate OSGi metatype default injection
+        props.put(MicroProfileJwtConfigImpl.KEY_realmIdentifier, "realm");
+        config.initProps(null, props);
+        assertEquals("Expected default realmIdentifier to be 'realm'",
+                     "realm", config.getRealmIdentifier());
+    }
+
+    @Test
+    public void test_realmIdentifier_customValue() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                allowing(runtimeVersion).getVersion();
+                will(returnValue(io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion.VERSION_1_1));
+            }
+        });
+        Map<String, Object> props = buildMinimalProps();
+        props.put(MicroProfileJwtConfigImpl.KEY_realmIdentifier, "tenant");
+        config.initProps(null, props);
+        assertEquals("Expected realmIdentifier to be 'tenant'",
+                     "tenant", config.getRealmIdentifier());
+    }
+
+    @Test
+    public void test_realmName_notSet() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                allowing(runtimeVersion).getVersion();
+                will(returnValue(io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion.VERSION_1_1));
+            }
+        });
+        Map<String, Object> props = buildMinimalProps();
+        // realmName intentionally absent — no default in metatype
+        config.initProps(null, props);
+        assertNull("Expected realmName to be null when not configured",
+                   config.getRealmName());
+    }
+
+    @Test
+    public void test_realmName_setValue() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                allowing(runtimeVersion).getVersion();
+                will(returnValue(io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion.VERSION_1_1));
+            }
+        });
+        Map<String, Object> props = buildMinimalProps();
+        props.put(MicroProfileJwtConfigImpl.KEY_realmName, "CorporateRealm");
+        config.initProps(null, props);
+        assertEquals("Expected realmName to be 'CorporateRealm'",
+                     "CorporateRealm", config.getRealmName());
     }
 
 }
