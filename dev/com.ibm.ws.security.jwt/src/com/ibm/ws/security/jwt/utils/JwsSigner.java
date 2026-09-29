@@ -16,7 +16,6 @@ import java.security.AccessController;
 import java.security.Key;
 import java.security.PrivilegedAction;
 
-import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 
@@ -64,11 +63,7 @@ public class JwsSigner {
 
 		// Set the signature algorithm on the JWT/JWS that will integrity
 		// protect the claims
-		String signatureAlgorithm = jwtData.getSignatureAlgorithm();
-        if ("none".equals(signatureAlgorithm)) {
-            jws.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS);
-        }
-		jws.setAlgorithmHeaderValue(signatureAlgorithm);
+		jws.setAlgorithmHeaderValue(jwtData.getSignatureAlgorithm());
 		jws.setDoKeyValidation(false);
 
 		// Sign the JWS and produce the compact serialization or the complete
