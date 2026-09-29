@@ -22,10 +22,8 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
-import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.HttpServiceContext;
 import com.ibm.wsspi.http.channel.HttpTrailers;
@@ -34,7 +32,6 @@ import com.ibm.wsspi.http.channel.values.ConnectionValues;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
-import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
 import io.netty.handler.codec.http.DefaultHttpHeaders;
@@ -47,10 +44,8 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.openliberty.http.netty.channel.utils.HeaderValidator;
 import io.openliberty.http.netty.channel.utils.HeaderValidator.FieldType;
-import io.openliberty.http.netty.cookie.CookieEncoder;
 
 /**
  *
@@ -75,13 +70,12 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
         this.trailers = new DefaultHttpHeaders().clear();
-        this.nettyTrailerWrapper = new NettyTrailers(this.trailers);
-
-        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-            String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-            nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
-
-        }
+        this.nettyTrailerWrapper = new NettyTrailers(this.trailers, new Runnable() {
+            @Override
+            public void run() {
+                forceChunkedEncodingForTrailers();
+            }
+        });
 
         if (isc instanceof HttpInboundServiceContextImpl) {
             incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());
@@ -201,6 +195,20 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public boolean isChunkedEncodingSet() {
         return HttpUtil.isTransferEncodingChunked(nettyResponse);
+    }
+
+    @Override
+    public void setContentLength(long length) {
+        if (isChunkedEncodingSet() || nettyTrailerWrapper.hasTrailersToSend()) {
+            forceChunkedEncodingForTrailers();
+            return;
+        }
+        super.setContentLength(length);
+    }
+
+    void forceChunkedEncodingForTrailers() {
+        HttpUtil.setTransferEncodingChunked(nettyResponse, true);
+        headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
     }
 
     @Override

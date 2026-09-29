@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.http.channel.compression.DecompressionHandler;
@@ -33,6 +32,9 @@ public class HttpContentDecompressor {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(HttpContentDecompressor.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    private DecompressionHandler handler;
+    private ContentEncodingValues currentContentEncoding;
 
     /**
      * Decompresses the given buffer using the appropriate decompression handler based on the content encoding header
@@ -47,7 +49,13 @@ public class HttpContentDecompressor {
     public WsByteBuffer decompress(WsByteBuffer buffer, HttpChannelConfig config, String contentEncoding) throws DataFormatException{
         
         Objects.requireNonNull(config, "Http configuration must not be null");
-        DecompressionHandler handler = chooseHandler(contentEncoding, config);
+        if (handler == null || handler.isFinished()) {
+            // We can start a new handler
+            handler = chooseHandler(contentEncoding, config);
+        } else if(!handler.isFinished() && !ContentEncodingValues.find(contentEncoding).equals(currentContentEncoding)){
+            // Handler finished so we can set a new handler
+            throw new DataFormatException("Attempted changing content encoding when mid decompression!");
+        }
 
         return decompress(buffer, config, handler);
     }
@@ -65,6 +73,7 @@ public class HttpContentDecompressor {
             return new IdentityInputHandler();
         }
         ContentEncodingValues encoding = ContentEncodingValues.find(contentEncoding);
+        this.currentContentEncoding = encoding;
         if(ContentEncodingValues.GZIP.equals(encoding) || ContentEncodingValues.XGZIP.equals(encoding)){
             return new GzipInputHandler();
         } else if(ContentEncodingValues.DEFLATE.equals(encoding)){

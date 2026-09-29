@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -20,11 +23,14 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -32,7 +38,10 @@ import com.ibm.wsspi.genericbnf.exception.MessageSentException;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.exception.WriteBeyondContentLengthException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
-import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.AsciiString;
 
 /**
  * HTTP transport output stream that wraps the bytebuffer usage and the HTTP
@@ -489,13 +498,31 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         } else {
             // response headers already committed (written)
             // or response has been freed on previous error
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Response headers already committed or response cleared; " + this.isc);
             }
             return;
         }
         try {
+            final boolean is101 = isUpgrade101();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushHeaders: willFireObserver=" + (obs != null && !this.WCheadersWritten)
+                             + " WCheadersWritten=" + this.WCheadersWritten);
+                Tr.debug(tc, "flushHeaders -> isUpgrade101: " + isUpgrade101() );
+            }
+
             this.isc.sendResponseHeaders();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HttpOutputStreamImpl, checking isUpgrade101: " + is101);
+            }
+            if (is101) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,"is101 true; calling awaitUpgradedPipelineInstalled");
+                }
+                // Now tell the dispatcher to flip and wait briefly so the upgrade handler is in place.
+                awaitUpgradePipelineInstalled(); // fires UPGRADE_101_COMMITTED_EVENT and waits up to ~750ms
+            }
+
         } catch (MessageSentException mse) {
             FFDCFilter.processException(mse, getClass().getName(),
                                         "flushHeaders", new Object[] { this, this.isc });
@@ -564,10 +591,21 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
         try {
             WsByteBuffer[] content = (writingBody) ? this.output : null;
+
+            final boolean is101 = isUpgrade101();
             if (isClosed() || this.isClosing) {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
-                    this.isc.finishResponseMessage(content);
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,"HttpOutputStreamImpl flushBuffers(); is 101: " + is101);
+                    }
+                    if (is101) {
+                        this.isc.finishResponseMessage(null); // <— CHANGED: don’t skip for 101
+                        awaitUpgradePipelineInstalled();
+                    } else {
+                        this.isc.finishResponseMessage(content);
+                    }
                     this.isClosing = false;
                     this.hasFinished = true;
                 }
@@ -614,10 +652,18 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received exception during write: " + ioe);
             }
+            if (isUpgrade101() && !this.hasFinished) {
+                try {
+                    this.isc.finishResponseMessage(null);
+                } catch (Throwable ignore) {}
+                this.hasFinished = true;
+            }
             Throwable th = ioe.getCause();
             if (th instanceof FlowControlException || th instanceof StreamClosedException) {
                 // http/2 stream write failed - we don't want to pass this back up to FFDC
-                Tr.debug(tc, "HTTP/2 stream could not write; setting error on this output stream");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HTTP/2 stream could not write; setting error on this output stream");
+                }
                 return;
             }
             throw ioe;
@@ -681,7 +727,27 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             validate();
             this.closed = true;
             this.ignoreFlush = false;
-            flushBuffers();
+            if (isUpgrade101()) {
+                // Make sure WC is notified; this triggers access logging like legacy
+                if (!this.hasFinished && this.isc != null) {
+                    HttpResponseMessage responseMessage = this.isc.getResponse();
+                    if (responseMessage != null && !responseMessage.isCommitted()) {
+                        if (obs != null && !this.WCheadersWritten) {
+                            obs.alertOSFirstFlush();
+                        }
+                        responseMessage.setCommitted();
+                    }
+                    try {
+                        this.isc.finishResponseMessage(null);
+                    } catch (Throwable ignore) {
+                    }
+                    this.hasFinished = true;
+                }
+                // do NOT just clear and return; allow the link/service-context to perform its normal end-of-response actions
+                // We'll still clear buffers in finally.
+            } else {
+                flushBuffers();
+            }
         } catch (IOException ioe) {
             this.closed = true;
             this.ignoreFlush = false;
@@ -785,6 +851,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             Tr.debug(tc, "obs  ->" + obs);
         }
         this.obs = obs;
+        
     }
 
     @Override
@@ -843,6 +910,61 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             throw this.error;
         }
 
+    }
+
+    private boolean isUpgrade101() {
+        // isc/response exist because we just validated earlier in flushHeaders()
+        ChannelHandlerContext ctx = ((HttpInboundServiceContextImpl) isc).getNettyContext();
+        if (ctx == null)
+            return false;
+
+        HttpResponseMessage resp = this.isc.getResponse();
+        if (resp == null)
+            return false;
+        int sc = resp.getStatusCodeAsInt(); // or getStatusCodeAsInt()
+        if (sc != 101)
+            return false;
+
+        String conn = resp.getHeader(HttpHeaderKeys.HDR_CONNECTION).asString();
+        String upg = resp.getHeader("Upgrade").asString();
+        return conn != null
+               && AsciiString.containsIgnoreCase(conn, "upgrade")
+               && upg != null && !upg.isEmpty();
+    }
+
+    private void awaitUpgradePipelineInstalled() {
+        if (!(isc instanceof HttpInboundServiceContextImpl)) return;
+
+        ChannelHandlerContext ctx = ((HttpInboundServiceContextImpl) isc).getNettyContext();
+        if (ctx == null) return;
+
+        CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise == null) {
+            promise = new CompletableFuture<>();
+            ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,"awaitUpgradePipelineInstalled() should fire 101 event now");
+        }
+
+        //TODO -> find a way to make it thrown upon writeAndFlush of 101
+        ctx.executor().execute(() ->
+            ctx.pipeline().fireUserEventTriggered(
+                HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
+
+        try {
+            promise.get(750, TimeUnit.MILLISECONDS); 
+        } catch (TimeoutException te) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "awaitUpgradePipelineInstalled: timed out waiting for pipeline switch; proceeding");
+            }
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "awaitUpgradePipelineInstalled: interrupted/failure; proceeding " + e);
+            }
+            Thread.currentThread().interrupt();
+        }
     }
     
 }

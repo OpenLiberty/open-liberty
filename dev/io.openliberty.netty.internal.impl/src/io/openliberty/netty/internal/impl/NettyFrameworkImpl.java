@@ -28,7 +28,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -41,14 +40,15 @@ import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 import io.netty.channel.Channel;
-import io.netty.channel.IoHandlerFactory;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.IoHandlerFactory;
 import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
@@ -69,7 +69,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
-
 import io.openliberty.channel.config.ChannelFrameworkConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -77,12 +76,11 @@ import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tcp.LibertyNioServerSocketChannel;
+import io.openliberty.netty.internal.tcp.LibertyNioSocketChannel;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
-
-import io.openliberty.netty.internal.tcp.LibertyNioServerSocketChannel;
-import io.openliberty.netty.internal.tcp.LibertyNioSocketChannel;
 
 /**
  * Liberty NettyFramework implementation bundle
@@ -432,7 +430,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     for (Channel channel : activeChannelMap.keySet()) {
                         // Fire custom user event to let know that the endpoint is being stopped
                         channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+
+                        ChannelGroup group = activeChannelMap.get(channel);
+                        if (group != null) {
+                            for (Channel child : group) {
+                                child.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+                            }
+                        }
                     }
+                    
 
                     // Schedule quiesce tasks
                     quiesce.startTasks();
@@ -480,6 +486,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (child != null) {
             child.awaitUninterruptibly();
         }
+
+        activeChannelMap.clear();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Event loops finished clean up!");
         }
@@ -719,23 +728,27 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             ChannelFuture closeFuture = channel.close();
             ChannelGroup group = activeChannelMap.get(channel);
             if (group != null) {
-                if (!QuiesceState.isQuiesceInProgress()) {
+                if (group.isEmpty()) {
+                    activeChannelMap.remove(channel);
+                } else if (!FrameworkState.isStopping() || getDefaultChainQuiesceTimeout() <= 0){
                     group.close().addListener(innerFuture -> {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "channel group" + group + " has closed...");
                         }
                     });
+                    activeChannelMap.remove(channel);
                 }
-                activeChannelMap.remove(channel);
             }
-            // If this channel owned a dedicated accept EventLoopGroup, shut it down now
-            // that the channel is closing.
-            EventLoopGroup dedicatedGroup = dedicatedAcceptGroups.remove(channel);
-            if (dedicatedGroup != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Shutting down dedicated accept EventLoopGroup for stopped channel: " + channel);
+            if (!activeChannelMap.containsKey(channel)){
+                // If this channel owned a dedicated accept EventLoopGroup, shut it down now
+                // that the channel is closing.
+                EventLoopGroup dedicatedGroup = dedicatedAcceptGroups.remove(channel);
+                if (dedicatedGroup != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Shutting down dedicated accept EventLoopGroup for stopped channel: " + channel);
+                    }
+                    dedicatedGroup.shutdownGracefully();
                 }
-                dedicatedGroup.shutdownGracefully();
             }
             return closeFuture;
         }

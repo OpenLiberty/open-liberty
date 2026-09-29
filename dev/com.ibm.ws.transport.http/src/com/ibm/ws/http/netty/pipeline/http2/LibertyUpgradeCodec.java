@@ -18,22 +18,20 @@ import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
-import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
+import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
+import com.ibm.ws.http.netty.ProtocolState;
+import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpObjectDecoder;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodecFactory;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.DecoratingHttp2ConnectionEncoder;
 import io.netty.handler.codec.http2.DefaultHttp2Connection;
@@ -58,7 +56,6 @@ import io.netty.handler.codec.http2.LibertyDefaultHttp2HeadersDecoder;
 import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.quiesce.QuiesceStrategy;
-import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 /**
@@ -76,7 +73,11 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
      * Helper method for creating H2C Upgrade handler
      */
     public static CleartextHttp2ServerUpgradeHandler createCleartextUpgradeHandler(HttpChannelConfig httpConfig, Channel channel) {
-        HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        int maxLineLength = Integer.MAX_VALUE;
+        if(httpConfig.getMessageSizeLimit() != -1 && httpConfig.getMessageSizeLimit() < Integer.MAX_VALUE) {
+            maxLineLength = (int)httpConfig.getMessageSizeLimit();
+        }
+        HttpServerCodec sourceCodec = new HttpServerCodec(maxLineLength, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
         LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel);
         int maxContentlength = (httpConfig.getMessageSizeLimit() >= Integer.MAX_VALUE || httpConfig.getMessageSizeLimit() < 0) ? Integer.MAX_VALUE : (int) httpConfig.getMessageSizeLimit();
         final HttpServerUpgradeHandler upgradeHandler = new HttpServerUpgradeHandler(sourceCodec, codec, maxContentlength);
@@ -101,12 +102,12 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             HttpToHttp2ConnectionHandler handler = buildHttp2ConnectionHandler(httpConfig, channel);
             return new Http2ServerUpgradeCodec(handler) {
                 @Override
-                public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
-                    ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
-                    ctx.pipeline().get(TimeoutHandler.class).markProtocol(ctx.pipeline(), NettyHttpConstants.ProtocolName.HTTP2);
-                    
+                public void upgradeTo(ChannelHandlerContext ctx, FullHttpRequest request) {
                     // Call upgrade
                     super.upgradeTo(ctx, request);
+                    // Successful topology installation is the trusted h2c transition boundary.
+                    ProtocolState.establish(ctx.channel(), ProtocolName.HTTP2,
+                                            ProtocolSource.H2C_UPGRADE);
                     // Set as stream 1 as defined in RFC
                     request.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 1);
                     if (Constants.SPEC_INITIAL_WINDOW_SIZE != httpConfig.getH2ConnectionWindowSize()) {
@@ -130,18 +131,17 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             // WebSocket upgrade detected
             return new UpgradeCodec() {
                 @Override
-                public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
-                             
+                public void upgradeTo(ChannelHandlerContext ctx, FullHttpRequest request) {
                     ctx.fireChannelRead(ReferenceCountUtil.retain(request));
                     QuiesceHandler quiesceHandler = ctx.pipeline().get(QuiesceHandler.class);
                     if (quiesceHandler != null) {
                         quiesceHandler.setQuiesceTask(QuiesceStrategy.WEBSOCKET_CLOSE.getTask());
                     }
-                    ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(NettyHttpConstants.ProtocolName.WEBSOCKET.name());
                 }
 
                 @Override
                 public boolean prepareUpgradeResponse(ChannelHandlerContext ctx, FullHttpRequest upgradeRequest, HttpHeaders upgradeHeaders) {
+                    ctx.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(Boolean.TRUE);
                     //Abort upgrade, pass through inbound pipeline like no upgrade was performed.
                     return false;
                 }

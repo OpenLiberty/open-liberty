@@ -22,12 +22,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.net.ssl.SSLEngine;
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.Extension;
@@ -37,6 +36,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.wsoc.Constants;
@@ -46,15 +46,11 @@ import com.ibm.ws.wsoc.WebSocketContainerManager;
 import com.ibm.ws.wsoc.external.HandshakeResponseExt;
 import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-import com.ibm.wsspi.channelfw.ConnectionLink;
-import com.ibm.wsspi.channelfw.ConnectionReadyCallback;
-import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
@@ -69,7 +65,6 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.openliberty.http.options.HttpOption;
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -251,7 +246,9 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         // PH10279
         // client side needs to store query string and path parameters for later retrieval from the session object
         if (poi != null) {
-            Tr.debug(tc, "set query parms to " + endpointAddress.getURI().getQuery());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "set query parms to " + endpointAddress.getURI().getQuery());
+            }
             if (Objects.nonNull(queryString) && !queryString.isEmpty()) {
                 poi.setQueryString(endpointAddress.getURI().getQuery());
             }
@@ -262,7 +259,9 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 parameterMap.put(entry.getKey(), entry.getValue());
             }
             poi.setParameterMap(parameterMap);
-            Tr.debug(tc, "set ParameterMap " + parameterMap);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "set ParameterMap " + parameterMap);
+            }
         }
     }
 
@@ -279,37 +278,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
             Tr.error(tc, "client.no.response", endpointAddress.getURI().toString());
             throw new IOException(Tr.formatMessage(tc, "client.no.response", endpointAddress.getURI().toString()));
         }
-        if (StatusCodes.SWITCHING_PROTOCOLS.getIntCode() != resp.status().code()) {
-            String msg = Tr.formatMessage(tc, "client.invalid.returncode", resp.status().code(),
-                                          endpointAddress.getURI().toString());
-            Tr.error(tc, "client.invalid.returncode", resp.status().code(),
-                     endpointAddress.getURI().toString());
-            throw new IOException(msg);
-        }
-
-        String acceptKey;
-        try {
-            acceptKey = Utils.makeAcceptResponseHeaderValue(websocketKey);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IOException(e);
-        }
-
-        String key = resp.headers().get(Constants.MC_HEADER_NAME_SEC_WEBSOCKET_ACCEPT);
-        if (key != null) {
-            if (!key.equals(acceptKey)) {
-                String msg = Tr.formatMessage(tc, "client.invalid.acceptkey", resp.status().code(),
-                                              endpointAddress.getURI().toString());
-                Tr.error(tc, "client.invalid.acceptkey", resp.status().code(),
-                         endpointAddress.getURI().toString());
-                throw new IOException(msg);
-            }
-        } else {
-            String msg = Tr.formatMessage(tc, "client.invalid.acceptkey", resp.status().code(),
-                                          endpointAddress.getURI().toString());
-            Tr.error(tc, "client.invalid.acceptkey", resp.status().code(),
-                     endpointAddress.getURI().toString());
-            throw new IOException(msg);
-        }
+        validateUpgradeResponse(resp);
 
         if (config != null) {
             Collection<String> names = resp.headers().names();
@@ -358,6 +327,32 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         return null;
     }
 
+    private void validateUpgradeResponse(FullHttpResponse response) throws IOException {
+        if (StatusCodes.SWITCHING_PROTOCOLS.getIntCode() != response.status().code()) {
+            String msg = Tr.formatMessage(tc, "client.invalid.returncode", response.status().code(),
+                                          endpointAddress.getURI().toString());
+            Tr.error(tc, "client.invalid.returncode", response.status().code(),
+                     endpointAddress.getURI().toString());
+            throw new IOException(msg);
+        }
+
+        final String acceptKey;
+        try {
+            acceptKey = Utils.makeAcceptResponseHeaderValue(websocketKey);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        }
+
+        String key = response.headers().get(Constants.MC_HEADER_NAME_SEC_WEBSOCKET_ACCEPT);
+        if (!acceptKey.equals(key)) {
+            String msg = Tr.formatMessage(tc, "client.invalid.acceptkey", response.status().code(),
+                                          endpointAddress.getURI().toString());
+            Tr.error(tc, "client.invalid.acceptkey", response.status().code(),
+                     endpointAddress.getURI().toString());
+            throw new IOException(msg);
+        }
+    }
+
     private void updatePipelineToWebsocket() {
         // Add wsoc related handlers
         NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(connection);
@@ -403,13 +398,15 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 if (Objects.isNull(engine) && (WsocOutboundChain.getCurrentSslOptions() == null || WsocOutboundChain.getNettyTlsProvider() == null)) { // This shouldn't happen
                     throw new IllegalStateException("Secure address requested but no SSL Options configured");
                 }
-                if (tc.isDebugEnabled())
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(ch, tc, "initChannel", "Adding SSL Support");
+                }
                 InetSocketAddress remoteAddress = requestor.endpointAddress.getRemoteAddress();
                 String host = remoteAddress.getHostString();
                 int port = remoteAddress.getPort();
-                if (tc.isDebugEnabled())
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Create SSL", new Object[] { WsocOutboundChain.getNettyTlsProvider(), host, port, WsocOutboundChain.getCurrentSslOptions() });
+                }
                 SslHandler handler = WsocOutboundChain.getNettyTlsProvider().getOutboundSSLContext(WsocOutboundChain.getCurrentSslOptions(), host, Integer.toString(port), ch);
                 if (handler == null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -422,7 +419,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 pipeline.addFirst("SSLHandler", handler);
 
             }
-            ch.attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
+            ProtocolState.establish(ch, NettyHttpConstants.ProtocolName.HTTP1,
+                                    ProtocolState.ProtocolSource.OUTBOUND_HTTP1_HANDSHAKE);
             ch.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(true);
             // ADD HTTP CODEC for first upgrade request
             pipeline.addLast(new HttpClientCodec());
@@ -432,9 +430,16 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 @Override
                 protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse res) throws Exception {
                     requestor.resp = res;
-                    ctx.pipeline().remove(this);
-                    requestor.updatePipelineToWebsocket();
-                    requestor.responsePromise.setSuccess();
+                    try {
+                        requestor.validateUpgradeResponse(res);
+                        ctx.pipeline().remove(this);
+                        requestor.updatePipelineToWebsocket();
+                        ProtocolState.establish(ctx.channel(), NettyHttpConstants.ProtocolName.WEBSOCKET,
+                                                ProtocolState.ProtocolSource.WEBSOCKET_UPGRADE);
+                        requestor.responsePromise.setSuccess();
+                    } catch (IOException e) {
+                        requestor.responsePromise.setSuccess();
+                    }
                 }
 
                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
