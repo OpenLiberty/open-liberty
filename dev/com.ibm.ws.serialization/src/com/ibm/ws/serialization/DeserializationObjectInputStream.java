@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ws.serialization;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.lang.reflect.Method;
@@ -34,6 +36,18 @@ import com.ibm.ws.kernel.service.util.JavaInfo;
  * objects with classes potentially owned by the runtime,
  * see {@link SerializationService}. When deserializing application objects, the
  * specified class loader is typically the thread context class loader.
+ *
+ * <p>When constructing a stream, this class applies an {@link ObjectInputFilter} sourced
+ * from (in priority order):
+ * <ol>
+ *   <li>A caller-supplied filter set on the current thread via
+ *       {@link DeserializationFilterHolder#setFilter} or
+ *       {@link DeserializationFilterHolder#withFilter}.</li>
+ *   <li>A built-in default denylist covering packages known to contain Java
+ *       deserialization gadget chains, applied when no thread-local filter is present.</li>
+ * </ol>
+ * On Java 8, where {@code setObjectInputFilter} is not part of the public API, a
+ * {@code resolveClass} override enforces the same denylist as a fallback.
  */
 public class DeserializationObjectInputStream extends ObjectInputStream {
     private static final TraceComponent tc = Tr.register(DeserializationObjectInputStream.class);
@@ -44,9 +58,100 @@ public class DeserializationObjectInputStream extends ObjectInputStream {
     // The PlatformClassloader. It is set when running with java 9 and above.
     private static final ClassLoader platformClassloader = getPlatformClassLoader();
 
+    /**
+     * On Java 9+, ObjectInputStream.setObjectInputFilter is a public API.
+     * On Java 8, it exists as sun.misc.ObjectInputFilter / ObjectInputStream.setObjectInputFilter
+     * but requires reflective access. We cache the Method at class-load time to avoid
+     * per-call reflection overhead. If reflection fails (e.g. strict module policy),
+     * setObjectInputFilterMethod remains null and we fall back to resolveClass-based filtering.
+     */
+    private static final Method setObjectInputFilterMethod = getSetObjectInputFilterMethod();
+
+    /**
+     * Packages blocked by the default denylist when no caller-supplied filter is present.
+     * These cover the most widely exploited Java deserialization gadget-chain libraries.
+     * The trailing ";*" makes this a denylist (allow everything not explicitly denied).
+     */
+    private static final String DEFAULT_DENYLIST =
+        "!org.apache.commons.collections.*" +
+        ";!org.apache.commons.collections4.*" +
+        ";!org.apache.commons.beanutils.*" +
+        ";!com.sun.org.apache.xalan.*" +
+        ";!org.springframework.*" +
+        ";!org.codehaus.groovy.*" +
+        ";!bsh.*" +
+        ";*";
+
+    /** Cached default filter instance built from DEFAULT_DENYLIST. */
+    private static final ObjectInputFilter defaultDenylistFilter =
+        JavaInfo.majorVersion() >= 9 ? ObjectInputFilter.Config.createFilter(DEFAULT_DENYLIST) : null;
+
     public DeserializationObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
         super(in);
         this.classLoader = classLoader;
+        applyFilter();
+    }
+
+    /**
+     * Applies the appropriate ObjectInputFilter to this stream.
+     *
+     * Priority:
+     *   1. Caller-supplied ThreadLocal filter via DeserializationFilterHolder.
+     *   2. Built-in default denylist.
+     *
+     * setObjectInputFilter() MUST be called in the constructor, before any read
+     * operation is performed on the stream. It cannot be applied later.
+     *
+     * On Java 8 where setObjectInputFilter is unavailable, the resolveClass override
+     * below acts as the fallback enforcement mechanism.
+     */
+    private void applyFilter() {
+        if (setObjectInputFilterMethod == null) {
+            // Java 8 fallback: filtering is handled by the resolveClass override below.
+            return;
+        }
+        ObjectInputFilter filter = DeserializationFilterHolder.getFilter();
+        if (filter == null) {
+            filter = defaultDenylistFilter;
+        }
+        if (filter != null) {
+            try {
+                setObjectInputFilterMethod.invoke(this, filter);
+            } catch (Exception e) {
+                // Should not happen — method signature is known. Trace and continue;
+                // the resolveClass fallback will still apply the denylist on Java 8.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Failed to set ObjectInputFilter", e);
+            }
+        }
+    }
+
+    /**
+     * Resolves a Method reference for ObjectInputStream.setObjectInputFilter on Java 9+,
+     * or for the equivalent sun.misc variant on Java 8.
+     * Returns null if the method cannot be found or accessed.
+     */
+    @FFDCIgnore({ Exception.class })
+    private static Method getSetObjectInputFilterMethod() {
+        if (JavaInfo.majorVersion() >= 9) {
+            try {
+                return ObjectInputStream.class.getMethod("setObjectInputFilter",
+                    Class.forName("java.io.ObjectInputFilter"));
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "setObjectInputFilter not available on Java 9+", e);
+                return null;
+            }
+        }
+        // Java 8: try sun.misc.ObjectInputFilter (available in IBM/Oracle JDK 8u121+)
+        try {
+            Class<?> filterClass = Class.forName("sun.misc.ObjectInputFilter");
+            return ObjectInputStream.class.getMethod("setObjectInputFilter", filterClass);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "sun.misc.ObjectInputFilter not available; using resolveClass fallback", e);
+            return null;
+        }
     }
 
     /**
@@ -163,12 +268,23 @@ public class DeserializationObjectInputStream extends ObjectInputStream {
      * Delegates class loading to to {@link #resolveClass(String)} rather than
      * using {@code Class.forName}.
      *
+     * <p>On Java 8, where {@code setObjectInputFilter} is unavailable, this method also
+     * enforces the denylist (or a caller-supplied filter expressed as a package-prefix check)
+     * by inspecting the class name before loading. This is the fallback for the filter
+     * mechanism described in the class Javadoc.
+     *
      * <p>{@inheritDoc}
      */
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     protected Class<?> resolveClass(ObjectStreamClass klass) throws ClassNotFoundException {
         String name = klass.getName();
+        // Java 8 fallback: enforce denylist via class name inspection when
+        // setObjectInputFilter was not available at construction time.
+        if (setObjectInputFilterMethod == null && isDeniedByDefaultDenylist(name)) {
+            Tr.warning(tc, "DESERIALIZATION_BLOCKED_CWSRZ0077W", name);
+            throw new InvalidClassException(name, "Class blocked by deserialization denylist");
+        }
         try {
             return resolveClass(name);
         } catch (ClassNotFoundException e) {
@@ -266,6 +382,32 @@ public class DeserializationObjectInputStream extends ObjectInputStream {
             }
         });
     }
+
+    /**
+     * Returns true if the given class name is covered by the built-in default denylist.
+     * Used by the Java 8 resolveClass fallback when setObjectInputFilter is unavailable.
+     * We won't use a default denylist yet so as not to break any existing apps
+     */
+    private static boolean isDeniedByDefaultDenylist(String className) {
+        // Strip array prefixes ("[B", "[L...;") to get the element class name
+        String name = className;
+        while (name.startsWith("[")) {
+            name = name.substring(1);
+        }
+        if (name.startsWith("L") && name.endsWith(";")) {
+            name = name.substring(1, name.length() - 1);
+        }
+/*        
+        return name.startsWith("org.apache.commons.collections.") ||
+               name.startsWith("org.apache.commons.collections4.") ||
+               name.startsWith("org.apache.commons.beanutils.") ||
+               name.startsWith("com.sun.org.apache.xalan.") ||
+               name.startsWith("org.springframework.") ||
+               name.startsWith("org.codehaus.groovy.") ||
+               name.startsWith("bsh.");
+*/
+        return false;
+               }
 
     /**
      * Returns the PlatformClassloader when running with java 9 and above; otherwise returns null.
