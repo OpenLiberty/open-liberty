@@ -175,6 +175,8 @@ public class BeanLifecycleTest {
                 found = true;
                 break;
             }
+
+            Thread.sleep(100);
         }
         if (!found) {
             fail("Not found two PreDestroy messages");

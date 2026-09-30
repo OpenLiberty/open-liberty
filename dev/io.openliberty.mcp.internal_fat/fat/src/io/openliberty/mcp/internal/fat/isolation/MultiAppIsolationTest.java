@@ -74,10 +74,21 @@ public class MultiAppIsolationTest extends FATServletClient {
         server.stopServer();
     }
 
+    /**
+     * Asserts that a JSON-RPC response is a success: no {@code "error"} key is present
+     * and a {@code "result"} key is present. Fails with a clear message
+     * when the caller tries to unwrap {@code "result"} on an error response.
+     */
+    private static void assertSuccessResponse(String context, JSONObject response) {
+        assertFalse(context + ": must not contain a JSON-RPC error", response.has("error"));
+        assertTrue(context + ": must contain a result object", response.has("result"));
+    }
+
     @Test
     public void testAlphaToolListReturnsAlphaToolsOnly() throws Exception {
         String alphaToolCallResponse = alphaClient.listAllTools();
         JSONObject jsonResponse = new JSONObject(alphaToolCallResponse);
+        assertSuccessResponse("Alpha tools/list", jsonResponse);
         JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
 
         boolean foundAlphaTool = false;
@@ -106,6 +117,7 @@ public class MultiAppIsolationTest extends FATServletClient {
     public void testBetaToolListReturnsBetaToolsOnly() throws Exception {
         String betaToolCallResponse = betaClient.listAllTools();
         JSONObject jsonResponse = new JSONObject(betaToolCallResponse);
+        assertSuccessResponse("Beta tools/list", jsonResponse);
         JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
 
         boolean foundAlphaTool = false;
@@ -401,8 +413,12 @@ public class MultiAppIsolationTest extends FATServletClient {
         String alphaResponse = alphaClient.listAllTools();
         String betaResponse = betaClient.listAllTools();
 
-        JSONArray alphaTools = new JSONObject(alphaResponse).getJSONObject("result").getJSONArray("tools");
-        JSONArray betaTools = new JSONObject(betaResponse).getJSONObject("result").getJSONArray("tools");
+        JSONObject alphaJson = new JSONObject(alphaResponse);
+        JSONObject betaJson = new JSONObject(betaResponse);
+        assertSuccessResponse("Alpha tools/list", alphaJson);
+        assertSuccessResponse("Beta tools/list", betaJson);
+        JSONArray alphaTools = alphaJson.getJSONObject("result").getJSONArray("tools");
+        JSONArray betaTools = betaJson.getJSONObject("result").getJSONArray("tools");
 
         // Alpha must not expose betaOnlyTool's schema
         for (int i = 0; i < alphaTools.length(); i++) {
@@ -428,10 +444,15 @@ public class MultiAppIsolationTest extends FATServletClient {
         String alphaResponse = alphaClient.listAllTools();
         String betaResponse = betaClient.listAllTools();
 
+        JSONObject alphaJson = new JSONObject(alphaResponse);
+        JSONObject betaJson = new JSONObject(betaResponse);
+        assertSuccessResponse("Alpha tools/list", alphaJson);
+        assertSuccessResponse("Beta tools/list", betaJson);
+
         JSONObject alphaShared = null;
         JSONObject betaShared = null;
 
-        JSONArray alphaTools = new JSONObject(alphaResponse).getJSONObject("result").getJSONArray("tools");
+        JSONArray alphaTools = alphaJson.getJSONObject("result").getJSONArray("tools");
         for (int i = 0; i < alphaTools.length(); i++) {
             JSONObject t = alphaTools.getJSONObject(i);
             if ("sharedToolName".equals(t.getString("name"))) {
@@ -440,7 +461,7 @@ public class MultiAppIsolationTest extends FATServletClient {
             }
         }
 
-        JSONArray betaTools = new JSONObject(betaResponse).getJSONObject("result").getJSONArray("tools");
+        JSONArray betaTools = betaJson.getJSONObject("result").getJSONArray("tools");
         for (int i = 0; i < betaTools.length(); i++) {
             JSONObject t = betaTools.getJSONObject(i);
             if ("sharedToolName".equals(t.getString("name"))) {
@@ -494,19 +515,38 @@ public class MultiAppIsolationTest extends FATServletClient {
                         }
                         """;
 
-        String alphaResponse = alphaClient.callMCP(alphaRequest);
-        String betaResponse = betaClient.callMCP(betaRequest);
+        String expectedAlphaResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-1",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "alpha-response: ping"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+        String expectedBetaResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-2",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "beta-response: ping"
+                              }
+                            ]
+                          }
+                        }
+                        """;
 
-        // Both must succeed with isError:false
-        assertFalse("Alpha response must not indicate an error",
-                    new JSONObject(alphaResponse).getJSONObject("result").getBoolean("isError"));
-        assertFalse("Beta response must not indicate an error",
-                    new JSONObject(betaResponse).getJSONObject("result").getBoolean("isError"));
-
-        // Responses must not cross-contaminate; each must contain its own app prefix
-        assertTrue("Alpha response text must come from alphaOnlyTool",
-                   alphaResponse.contains("alpha-response"));
-        assertTrue("Beta response text must come from betaOnlyTool",
-                   betaResponse.contains("beta-response"));
+        JSONAssert.assertEquals(expectedAlphaResponse, alphaClient.callMCP(alphaRequest), true);
+        JSONAssert.assertEquals(expectedBetaResponse, betaClient.callMCP(betaRequest), true);
     }
 }

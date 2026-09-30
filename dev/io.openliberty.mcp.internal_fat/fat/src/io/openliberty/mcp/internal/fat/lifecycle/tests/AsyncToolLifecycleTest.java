@@ -296,6 +296,8 @@ public class AsyncToolLifecycleTest {
                 found = true;
                 break;
             }
+
+            Thread.sleep(100);
         }
         if (!found) {
             fail("Not found two PreDestroy messages");
