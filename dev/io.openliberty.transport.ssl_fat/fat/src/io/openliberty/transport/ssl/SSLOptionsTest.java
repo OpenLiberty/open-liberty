@@ -274,9 +274,7 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(DEFAULT_SSLOPTIONS_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Requires info trace
-        assertNotNull("We need to wait for the SSL port to open (first time)",
-                      server.waitForDefaultHTTPEndpointSSLStart(true));
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, TRUSTSTORE, PASSWORD);
@@ -286,9 +284,7 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(SSLOPTIONS_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Requires info trace
-        assertNotNull("We need to wait for the SSL port to start (again)",
-                      server.waitForDefaultHTTPEndpointSSLStart(true));
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, ALTERNATE_TRUSTSTORE, PASSWORD);
