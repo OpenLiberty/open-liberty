@@ -504,16 +504,16 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             return;
         }
         try {
-            final boolean is101 = isUpgrade101();
+            final boolean is101 = isNettyUpgrade101();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "flushHeaders: willFireObserver=" + (obs != null && !this.WCheadersWritten)
                              + " WCheadersWritten=" + this.WCheadersWritten);
-                Tr.debug(tc, "flushHeaders -> isUpgrade101: " + isUpgrade101() );
+                Tr.debug(tc, "flushHeaders -> isNettyUpgrade101: " + isNettyUpgrade101() );
             }
 
             this.isc.sendResponseHeaders();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HttpOutputStreamImpl, checking isUpgrade101: " + is101);
+                Tr.debug(tc, "HttpOutputStreamImpl, checking isNettyUpgrade101: " + is101);
             }
             if (is101) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -592,7 +592,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         try {
             WsByteBuffer[] content = (writingBody) ? this.output : null;
 
-            final boolean is101 = isUpgrade101();
+            final boolean is101 = isNettyUpgrade101();
             if (isClosed() || this.isClosing) {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
@@ -652,7 +652,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received exception during write: " + ioe);
             }
-            if (isUpgrade101() && !this.hasFinished) {
+            if (isNettyUpgrade101() && !this.hasFinished) {
                 try {
                     this.isc.finishResponseMessage(null);
                 } catch (Throwable ignore) {}
@@ -727,7 +727,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             validate();
             this.closed = true;
             this.ignoreFlush = false;
-            if (isUpgrade101()) {
+            if (isNettyUpgrade101()) {
                 // Make sure WC is notified; this triggers access logging like legacy
                 if (!this.hasFinished && this.isc != null) {
                     HttpResponseMessage responseMessage = this.isc.getResponse();
@@ -912,7 +912,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
     }
 
-    private boolean isUpgrade101() {
+    private boolean isNettyUpgrade101() {
         // isc/response exist because we just validated earlier in flushHeaders()
         ChannelHandlerContext ctx = ((HttpInboundServiceContextImpl) isc).getNettyContext();
         if (ctx == null)
