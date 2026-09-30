@@ -83,12 +83,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
 
     private ReadFlowHandler() {}
 
-    /**
-     * Returns the {@link FlowState} for the given channel, creating one on first access.
-     *
-     * @param channel the channel whose flow state to retrieve.
-     * @return the flow state for the channel.
-     */
+    /** Returns the {@link FlowState} for the given channel, creating one on first access. */
     public static FlowState state(Channel channel) {
         FlowState state = channel.attr(FLOW_KEY).get();
         if (state == null) {
@@ -129,12 +124,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Called on the event loop by {@link ExchangeLifecycle} once {@code isc.clear()}
-     * and all associated release work have completed for the current exchange.
-     *
-     * <p>At this point both body-completion and application-cleanup-readiness have
-     * been recorded, so it is safe to admit the next request — subject to the
-     * remaining admission gates (requestConsumed, responseInFlight).
+     * Called on the event loop by {@link ExchangeLifecycle} once cleanup has
+     * completed; admits the next request when all other gates are clear.
      */
     static void onCleanupComplete(Channel channel) {
         assert channel.eventLoop().inEventLoop()
@@ -170,15 +161,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Called on the event loop by {@link ExchangeLifecycle} when cleanup fails
-     * (i.e. the {@link ExchangeLifecycle.CleanupAction} threw an exception).
-     *
-     * <p>Cleanup failure is fatal: the lifecycle is left in FAILED state so B
-     * is never admitted, all queued requests are released, and the connection is
-     * closed.
-     *
-     * @param channel the channel.
-     * @param cause   the exception thrown by the cleanup action.
+     * Called on the event loop when cleanup fails. Closes the connection and
+     * releases all queued requests without admitting a next exchange.
      */
     public static void onCleanupFailed(Channel channel, Throwable cause) {
         assert channel.eventLoop().inEventLoop()
@@ -190,15 +174,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Called on the event loop by {@link ExchangeLifecycle} when the cleanup action
-     * succeeded (lifecycle is now COMPLETE) but the subsequent admission notification
-     * threw an exception.
-     *
-     * <p>A's cleanup result (COMPLETE) is preserved. The connection is closed
-     * without touching the lifecycle state.
-     *
-     * @param channel the channel.
-     * @param cause   the exception thrown by the notification/admission path.
+     * Called on the event loop when cleanup succeeded but the admission
+     * notification threw. Closes the connection without altering lifecycle state.
      */
     public static void onCleanupNotificationFailed(Channel channel, Throwable cause) {
         assert channel.eventLoop().inEventLoop()
@@ -288,12 +265,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         state.setReadAgain(false);
         state.releaseQueue();
 
-        // A ReadTimeoutException fired by TimeoutHandler during an async body purge
-        // must not produce a 408 response. The purge state is identified by
-        // state.isPurging()=true combined with isRequestConsumed=false. This matches
-        // Channel Framework where HttpIgnoreBodyCallback.error() calls
-        // HttpInboundLink.close(vc, exception) — an error-state close with no response
-        // sent to the client.
+        // A ReadTimeoutException during body purge must not produce a 408;
+        // close silently to match Channel Framework error-state close behaviour.
         if (cause instanceof ReadTimeoutException
                 && state.isPurging()
                 && !state.isRequestConsumed()) {
@@ -346,15 +319,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             HttpRequest request = (HttpRequest) message;
 
             // ----------------------------------------------------------------
-            // Admission gate: if a prior exchange is still active, park this
-            // request (and any content that follows) until the exchange ends.
-            // An exchange is still active when:
-            //  - the response is still being written (responseInFlight), OR
-            //  - the request body has not yet been fully consumed/drained
-            //    (requestConsumed=false — body purge in progress), OR
-            //  - a prior request is already waiting in the queue, OR
-            //  - the exchange cleanup (isc.clear) has not yet completed
-            //    (!cleanupComplete — lifecycle signals still pending).
+            // Admission gate: park if the prior exchange is still active
+            // (response in flight, body not yet consumed, or cleanup pending).
             // ----------------------------------------------------------------
             if (state.isResponseInFlight() || !state.isRequestConsumed() || state.hasPendingAdmission()
                     || !state.isAdmissionEligible()) {
@@ -382,22 +348,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         // --------------------------------------------------------------------
         // HttpContent (body chunk or LastHttpContent)
         // --------------------------------------------------------------------
-        //
-        // Parking rule for body content:
-        //
-        //   Park when ALL of:
-        //     (a) there is a queued request waiting for admission, AND
-        //     (b) EITHER the active exchange's body is already consumed
-        //         (requestConsumed=true — A is done, so content belongs to B),
-        //         OR  the queue head is already body content (B's body has
-        //             already started accumulating and this is its next chunk).
-        //
-        //   Forward otherwise — content belongs to the active exchange (A's body
-        //   arriving before B's HttpRequest, or A's body during the purge phase
-        //   after A's response has completed).
-        //
-        // This preserves correct ordering for pipelined requests with bodies
-        // while allowing the body-purge path to drain A's remaining body.
         if (message instanceof LastHttpContent) {
             if (shouldParkBodyContent(state)) {
                 state.enqueuePending((HttpObject) message);
@@ -407,10 +357,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             state.setRequestConsumed(true);
             state.setPurging(false);
             super.channelRead(context, message);
-            // Drain any queued requests that were waiting for this body to finish,
-            // or issue a socket read if keep-alive is still allowed.
-            // Must check isAdmissionEligible() — lifecycle cleanup may not be done
-            // even though the body just completed.
+            // Drain queued requests or issue a read; isAdmissionEligible() guards
+            // against admitting before lifecycle cleanup completes.
             if (state.hasPendingAdmission() && !state.isResponseInFlight()
                     && state.isAdmissionEligible()) {
                 drainPendingAdmission(context, state);
@@ -486,12 +434,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         state.setReadPending(false);
         state.setReadAgain(false);
 
-        // Reschedule a read if:
-        //   (a) readAgain was explicitly requested, OR
-        //   (b) connection is eligible for reuse (normal keep-alive path), OR
-        //   (c) body purge is in progress: purge has been initiated but body is
-        //       not yet fully consumed — without this the purge stalls after
-        //       a non-terminal fragment is received.
+        // Reschedule a read for: (a) explicit readAgain, (b) normal keep-alive,
+        // or (c) active purge that has not yet consumed the full body.
         final boolean needsReadForPurge = state.isPurging() && !state.isRequestConsumed();
 
         if (context.pipeline().get(FlowControlHandler.class) != null) {
@@ -714,11 +658,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         state.setReadPending(false);
         state.setReadAgain(false);
 
-        // The current request body must be fully drained before the next request
-        // is admitted. If the application did not read the body, an async purge
-        // will have been started by HttpDispatcherLink.nettyClose(); it drives
-        // further reads via setBodyReadWanted and calls markRequestConsumed when
-        // done, which re-enters verifyNeedRead/drainPendingAdmission.
+        // Body must be fully drained before the next request is admitted.
+        // HttpDispatcherLink.nettyClose() starts the async purge if needed.
         if (!state.isRequestConsumed()) {
             // Purge is in progress (or body read is still needed). Ensure reads
             // are scheduled so the remaining body chunks can arrive.
@@ -730,9 +671,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             return;
         }
 
-        // Drain the admission queue before issuing a socket read; the next
-        // request may already be fully decoded and waiting.  But only do so
-        // after all gates are clear — lifecycle cleanup may still be pending.
+        // Drain the admission queue before issuing a socket read; check all
+        // gates first — lifecycle cleanup may still be pending.
         if (!state.isAdmissionEligible()) {
             // Lifecycle cleanup pending — onCleanupComplete will re-trigger.
             return;
@@ -745,22 +685,9 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Drains queued requests from the pending-admission queue onto the pipeline.
-     *
-     * <p>The drain loop admits exactly one {@code HttpRequest} (and all of the
-     * already-arrived {@code HttpContent} objects that follow it in the queue) and
-     * then stops. The next request will be drained when the newly-admitted exchange
-     * completes.
-     *
-     * <p>If additional content is still expected (i.e. more body chunks have not
-     * arrived yet) a read is scheduled so the rest of the body can arrive; this
-     * does <em>not</em> count as a new physical read for the next request.
-     *
-     * <p>Re-entrance is guarded by {@link FlowState#isDraining()}.
-     *
-     * <p>Enforces all admission gates before dequeuing: channel active, no response
-     * in flight, no write failure, body consumed, and lifecycle cleanup complete.
-     * The re-entrance guard ({@link FlowState#isDraining()}) is checked first.
+     * Drains one {@code HttpRequest} (plus any buffered body content) from the
+     * pending-admission queue. Re-entrance is guarded by {@link FlowState#isDraining()}.
+     * All admission gates are enforced before dequeuing.
      */
     public static void drainPendingAdmission(ChannelHandlerContext context, FlowState state) {
         if (state.isDraining()) {
@@ -770,7 +697,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             state.releaseQueue();
             return;
         }
-        // Enforce all central admission prerequisites before dequeuing anything.
         if (state.isResponseInFlight()) {
             // Response write not yet complete — onResponseComplete will re-trigger.
             return;
@@ -976,13 +902,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Returns {@code true} if an arriving body chunk should be parked for the queued
-     * request rather than forwarded to the active exchange.
-     *
-     * <p>Parks when a queued request exists and either (a) the active exchange body
-     * is already consumed, or (b) the queue head is already body content (B's body
-     * has started accumulating). Forwards when A's body is still in progress so the
-     * purge can drain it.
+     * Returns {@code true} when an arriving body chunk should be parked for the
+     * queued request rather than forwarded to the active exchange.
      */
     private static boolean shouldParkBodyContent(FlowState state) {
         if (!state.hasPendingAdmission()) {

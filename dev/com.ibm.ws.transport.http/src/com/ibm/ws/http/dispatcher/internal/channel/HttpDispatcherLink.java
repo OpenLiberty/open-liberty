@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -180,18 +181,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private AtomicBoolean closeNonUpgradedDeferred = new AtomicBoolean(false);
 
     /**
-     * The per-exchange {@link ExchangeLifecycle} instance captured at bind time
-     * (inside {@link #init} / {@link #initStreaming}, on the event loop).
-     *
-     * <p>This field is written once per exchange during synchronous event-loop
-     * initialisation, before any worker thread can fire a callback.  Signal
-     * methods ({@link #setBodyComplete}, {@link #signalAppDoneOnEventLoop}) read
-     * this field rather than calling {@code getActiveLifecycle()} at signal time,
-     * so a delayed callback belonging to exchange A always reaches A's lifecycle
-     * even after the link has been recycled for exchange B.
-     *
-     * <p>{@code null} before the first Netty initialisation or for HTTP/2 requests
-     * that do not participate in the HTTP/1 lifecycle coordinator.
+     * Per-exchange {@link ExchangeLifecycle} captured at bind time (event loop).
+     * Written once before any worker thread fires; {@code null} for HTTP/2 requests.
      */
     private volatile ExchangeLifecycle boundLifecycle;
 
@@ -307,13 +298,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
         // Release any application-unread body storage unconditionally to avoid leaks.
-        // drainAndRelease() must run on the event loop (mutual exclusion with enqueueRetained).
-        // submitDrain() dispatches there if needed.
-        //
-        //   (a) Body not yet protocol-complete: drain buffered fragments and schedule
-        //       remaining reads via ReadFlowHandler. isc.clear() fires in setBodyComplete().
-        //   (b) Body protocol-complete but application-unread: release retained queue
-        //       fragments. drainAndRelease is idempotent when the queue is empty.
+        // drainAndRelease() runs on the event loop (mutual exclusion with enqueueRetained).
         HttpInputStreamImpl body = (this.request != null) ? this.request.getBody() : null;
         BodyQueue bodyQueue = (body != null) ? body.getBodyQueue() : null;
 
@@ -322,14 +307,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Body not fully read; starting async purge: draining BodyQueue.");
                 }
-                // submitDrain() marks future arrivals as discard-only and releases
-                // already-buffered fragments on the event loop. Read scheduling is
-                // owned by ReadFlowHandler.onResponseComplete (setBodyReadWanted path).
-                // isc.clear() fires unconditionally in setBodyComplete().
+                // submitDrain() discards buffered fragments; isc.clear() fires in setBodyComplete().
                 submitDrain(bodyQueue);
             } else {
-                // Teardown path: drain queued fragments and unblock any reader
-                // that is blocked inside BodyQueue.awaitChange().
+                // Teardown path: drain queued fragments and unblock any blocked reader.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Skipping body drain; releasing queue and signaling EOS.");
                 }
@@ -339,8 +320,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
             }
         } else {
-            // Protocol-complete: release any retained but application-unread
-            // queue fragments. This is a no-op when the body was fully read.
+            // Protocol-complete: release any retained application-unread fragments (no-op if empty).
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Body protocol-complete; releasing any unread queue fragments.");
             }
@@ -416,8 +396,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "nettyClose: upgraded connection; not closing channel");
             }
 
-            // Signal app-done on the event loop so the lifecycle coordinator can
-            // perform isc.clear() exactly once, serialised with setBodyComplete().
+            // Signal app-done so the lifecycle coordinator can perform isc.clear() once.
             signalAppDoneOnEventLoop();
             return;
         }
@@ -429,10 +408,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing || requestTrailersRequireClose) {
             this.nettyContext.channel().close();
         } else {
-            // Signal app-done on the event loop so the lifecycle coordinator can
-            // perform isc.clear() exactly once, serialised with setBodyComplete().
-            // The coordinator handles both orderings (body-first and response-first)
-            // without a check-then-set race.
+            // Signal app-done so the lifecycle coordinator can perform isc.clear() once.
             signalAppDoneOnEventLoop();
         }
         return;
@@ -440,12 +416,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     /**
-     * Binds the cleanup action to the active exchange lifecycle and captures the
-     * instance in {@link #boundLifecycle}. Both steps run synchronously on the event
-     * loop, after the ISC is configured and before any application worker can deliver
-     * signals. Capturing the instance (not just the action) means that
-     * {@link #setBodyComplete()} and {@link #signalAppDoneOnEventLoop()} always signal
-     * the correct lifecycle even after this link is recycled for a later exchange.
+     * Binds the ISC cleanup action to the active {@link ExchangeLifecycle} and
+     * captures the instance in {@link #boundLifecycle}. Runs on the event loop.
      */
     private void bindLifecycle(ChannelHandlerContext ctx) {
         if (this.isc.isNettyHttp2Request()) return;
@@ -458,15 +430,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
 
     /**
-     * Submits {@link BodyQueue#drainAndRelease()} to the Netty I/O event loop.
-     *
-     * <p>{@code drainAndRelease} must run on the event loop so that it is
-     * mutually exclusive with {@code enqueueRetained} (also on the event loop).
-     * If this method is already called on the event loop it invokes the drain
-     * directly; otherwise it submits a task via the channel's executor.
-     *
-     * <p>A {@code null} queue is silently ignored (no body, or streaming not
-     * configured).
+     * Submits {@link BodyQueue#drainAndRelease()} to the event loop (or runs it
+     * inline if already on the loop). A {@code null} queue is silently ignored.
      */
     private void submitDrain(BodyQueue bodyQueue) {
         if (bodyQueue == null) {
@@ -487,13 +452,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     /**
      * Returns {@code true} when the remaining request body should be drained
-     * asynchronously before the connection is reused.
-     *
-     * <p>Mirrors Channel Framework's {@code HttpInboundLink.close()} logic: drain
-     * is skipped only for genuine termination conditions (error state, quiesce,
-     * server shutdown, or an explicitly non-keepalive exchange). An early response
-     * with an unread body is no longer a reason to skip draining — doing so was the
-     * root cause of the 30-second {@code PersistTimeoutException} stall.
+     * before the connection is reused. Drain is skipped only for genuine
+     * termination conditions: error, quiesce, or non-keepalive exchange.
      */
     private boolean shouldDrainRequestBodyBeforeNettyClose(Exception closeCause) {
         // Non-null exception = error state; matches Channel Framework's errorState check.
@@ -521,8 +481,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (requestReference != null && !HttpUtil.isKeepAlive(requestReference)) {
             return false;
         }
-        // If an explicit Connection: close was set on the response (by policy, not by
-        // the old forced-close code which is now removed), honour it.
+        // If the response carries Connection: close, reuse is not possible.
         if (this.isc != null && this.isc.getNettyResponse() != null) {
             if (!HttpUtil.isKeepAlive(this.isc.getNettyResponse())) {
                 return false;
@@ -2103,10 +2062,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (!this.isc.isNettyHttp2Request() && this.nettyContext != null) {
                 ReadFlowHandler.markRequestConsumed(nettyContext.channel());
             }
-            // Signal body completion using the lifecycle captured at bind time.
-            // Using boundLifecycle (not getActiveLifecycle()) prevents a race where
-            // the link is recycled for exchange B before this task runs: a stale
-            // body-done notification for A always reaches A's lifecycle instance.
+            // Signal body-done using the lifecycle captured at bind time to avoid
+            // signalling exchange B's lifecycle after the link is recycled.
             final ExchangeLifecycle lc = this.boundLifecycle;
             if (lc != null && !this.isc.isNettyHttp2Request() && this.nettyContext != null) {
                 final ChannelHandlerContext capturedCtx = this.nettyContext;
@@ -2115,7 +2072,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 } else {
                     try {
                         capturedCtx.executor().execute(() -> lc.signalBodyDone(capturedCtx));
-                    } catch (java.util.concurrent.RejectedExecutionException ree) {
+                    } catch (RejectedExecutionException ree) {
                         // Event loop is shutting down; nothing further to do.
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "[LIFECYCLE] setBodyComplete: executor rejected, ch=" +
@@ -2128,22 +2085,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     /**
-     * Signals app-done on the {@link ExchangeLifecycle} captured at bind time
-     * ({@link #boundLifecycle}).
-     *
-     * <p>Using the captured instance (rather than {@code getActiveLifecycle()})
-     * means that a delayed worker callback for exchange A always reaches A's
-     * lifecycle, even if the link has already been recycled for exchange B.
-     *
-     * <p>Called from {@link #nettyClose} on reusable keep-alive connections.
+     * Signals app-done on the {@link ExchangeLifecycle} captured at bind time.
+     * Using the captured instance avoids signalling a recycled exchange.
      */
     private void signalAppDoneOnEventLoop() {
         if (this.nettyContext == null) {
             return;
         }
-        // Capture both context and lifecycle instance on the calling thread.
-        // boundLifecycle is written once on the event loop during init and is
-        // safely published via volatile; worker threads see the correct value.
         final ChannelHandlerContext capturedCtx = this.nettyContext;
         final ExchangeLifecycle lc = this.boundLifecycle;
         if (lc == null) {
@@ -2154,7 +2102,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         } else {
             try {
                 capturedCtx.executor().execute(() -> lc.signalAppDone(capturedCtx));
-            } catch (java.util.concurrent.RejectedExecutionException ree) {
+            } catch (RejectedExecutionException ree) {
                 // Event loop is shutting down; channel will be closed independently.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "[LIFECYCLE] signalAppDoneOnEventLoop: executor rejected, ch=" +
