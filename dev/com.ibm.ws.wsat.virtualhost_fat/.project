@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+    <name>com.ibm.ws.wsat.virtualhost_fat</name>
+    <comment></comment>
+    <projects/>
+    <buildSpec>
+        <buildCommand>
+            <name>org.eclipse.jdt.core.javabuilder</name>
+            <arguments/>
+        </buildCommand>
+        <buildCommand>
+            <name>bndtools.core.bndbuilder</name>
+            <arguments/>
+        </buildCommand>
+    </buildSpec>
+    <natures>
+        <nature>org.eclipse.jdt.core.javanature</nature>
+        <nature>bndtools.core.bndnature</nature>
+    </natures>
+</projectDescription>
