@@ -7,25 +7,6 @@
     <feature>appSecurity-5.0</feature>
   </featureManager>
 
-  <!-- Apps are deployed dynamically by the stateless auth suite test classes.
-       Each app is pre-declared here so that the <mcp stateless="true"/> config
-       is applied when the WAR is dropped into the apps/ directory. -->
-  <application location="permitAllToolsStateless.war">
-    <mcp stateless="true"/>
-  </application>
-
-  <application location="denyAllToolsStateless.war">
-    <mcp stateless="true"/>
-  </application>
-
-  <application location="noClassAnnotationToolsStateless.war">
-    <mcp stateless="true"/>
-  </application>
-
-  <application location="adminsRoleToolsStateless.war">
-    <mcp stateless="true"/>
-  </application>
-
   <include location="../fatTestPorts.xml" />
   
 	<basicRegistry id="basic" realm="BasicRealm">

@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.PermitAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -35,12 +34,12 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class PermitAllTests extends AbstractPermitAll {
 
-    // Server is managed by McpAuthServerSuite — do NOT add @Server here.
-    public static LibertyServer server = McpAuthServerSuite.server;
+    // Do NOT copy McpAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(PermitAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/permitAllTools");
+    public McpClient client = new McpClient(McpAuthServerSuite.server, "/permitAllTools");
 
     /** {@inheritDoc} */
     @Override
@@ -50,17 +49,17 @@ public class PermitAllTests extends AbstractPermitAll {
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setMarkToEndOfLog();
+        McpAuthServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "permitAllTools.war").addClass(PermitAllTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        ShrinkHelper.exportDropinAppToServer(McpAuthServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAuthServerSuite.server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("dropins/permitAllTools.war");
-        server.waitForStringInLog("CWWKZ0009I:.*permitAllTools");
-        server.removeInstalledAppForValidation("permitAllTools");
+        McpAuthServerSuite.server.setMarkToEndOfLog();
+        McpAuthServerSuite.server.deleteFileFromLibertyServerRoot("dropins/permitAllTools.war");
+        McpAuthServerSuite.server.waitForStringInLog("CWWKZ0009I:.*permitAllTools");
+        McpAuthServerSuite.server.removeInstalledAppForValidation("permitAllTools");
     }
 }

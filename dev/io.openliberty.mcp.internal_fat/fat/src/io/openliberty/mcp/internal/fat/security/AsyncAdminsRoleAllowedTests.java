@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.ExpectedTestResult;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.Scenario;
@@ -39,27 +38,27 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class AsyncAdminsRoleAllowedTests extends FATServletClient {
 
-    // Server is managed by McpAsyncAuthServerSuite — do NOT add @Server here.
-    public static LibertyServer server = McpAsyncAuthServerSuite.server;
+    // Do NOT copy McpAsyncAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(AsyncAdminsRoleAllowedTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncAdminsRoleTools");
+    public McpClient client = new McpClient(McpAsyncAuthServerSuite.server, "/asyncAdminsRoleTools");
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setMarkToEndOfLog();
+        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncAdminsRoleTools.war").addClass(AsyncAdminsRoleTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        ShrinkHelper.exportDropinAppToServer(McpAsyncAuthServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAsyncAuthServerSuite.server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("dropins/asyncAdminsRoleTools.war");
-        server.waitForStringInLog("CWWKZ0009I:.*asyncAdminsRoleTools");
-        server.removeInstalledAppForValidation("asyncAdminsRoleTools");
+        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
+        McpAsyncAuthServerSuite.server.deleteFileFromLibertyServerRoot("dropins/asyncAdminsRoleTools.war");
+        McpAsyncAuthServerSuite.server.waitForStringInLog("CWWKZ0009I:.*asyncAdminsRoleTools");
+        McpAsyncAuthServerSuite.server.removeInstalledAppForValidation("asyncAdminsRoleTools");
     }
 
     @Test

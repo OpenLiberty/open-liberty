@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.DenyAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -35,12 +34,12 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class DenyAllTests extends AbstractDenyAll {
 
-    // Server is managed by McpAuthServerSuite — do NOT add @Server here.
-    public static LibertyServer server = McpAuthServerSuite.server;
+    // Do NOT copy McpAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(DenyAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/denyAllTools");
+    public McpClient client = new McpClient(McpAuthServerSuite.server, "/denyAllTools");
 
     /** {@inheritDoc} */
     @Override
@@ -50,18 +49,18 @@ public class DenyAllTests extends AbstractDenyAll {
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setMarkToEndOfLog();
+        McpAuthServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "denyAllTools.war").addClass(DenyAllTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        ShrinkHelper.exportDropinAppToServer(McpAuthServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAuthServerSuite.server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("dropins/denyAllTools.war");
-        server.waitForStringInLog("CWWKZ0009I:.*denyAllTools");
-        server.removeInstalledAppForValidation("denyAllTools");
+        McpAuthServerSuite.server.setMarkToEndOfLog();
+        McpAuthServerSuite.server.deleteFileFromLibertyServerRoot("dropins/denyAllTools.war");
+        McpAuthServerSuite.server.waitForStringInLog("CWWKZ0009I:.*denyAllTools");
+        McpAuthServerSuite.server.removeInstalledAppForValidation("denyAllTools");
     }
 
 }

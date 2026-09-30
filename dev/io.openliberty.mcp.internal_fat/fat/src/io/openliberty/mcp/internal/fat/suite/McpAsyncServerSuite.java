@@ -40,11 +40,6 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
  *
  * <p>Test classes must call {@code server.setMarkToEndOfLog()} as the very first
  * line of {@code @BeforeClass} to isolate their log searches from earlier tests.
- *
- * <p><b>Important:</b> test classes must reference {@code McpAsyncServerSuite.server}
- * directly — never copy it into a static field. The suite's {@code @ClassRule} assigns
- * {@code server} inside {@code before()}, which runs <em>after</em> test-class static
- * initializers execute, so a static copy would always capture {@code null}.
  */
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -55,38 +50,22 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
 })
 public class McpAsyncServerSuite {
 
-    public static LibertyServer server;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer("mcp-server-async");
 
     @ClassRule
-    public static ExternalResource serverLifecycle = new ServerLifecycle();
-
-    static class ServerLifecycle extends ExternalResource {
+    public static ExternalResource serverLifecycle = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
-            // getLibertyServer is called here rather than in a static initializer so
-            // that it runs on every repeat.  Between repeats the JakartaEEAction deletes
-            // the server root; calling getLibertyServer again re-copies the server files
-            // from the autoFVT source directory before the next repeat starts the server.
-            server = LibertyServerFactory.getLibertyServer("mcp-server-async");
             server.startServer();
         }
 
         @Override
         protected void after() {
             try {
-                server.stopServer(
-                    // AsyncToolsErrorHandlingTest
-                    "CWMCM0010E",
-                    // asyncToolsTestShortTimeout.war is declared in server.xml but deployed by
-                    // AsyncToolsTest after startup, so Liberty warns at startup (CWWKZ0014W) and
-                    // at shutdown when still configured but already removed (CWWKZ0059E)
-                    "CWWKZ0014W",
-                    "CWWKZ0059E",
-                    // AsyncToolsTest / AsyncToolCallEventTraceTest / AsyncToolLifecycleTest
-                    "Method call caused runtime exception. This is expected if the input was 'throw error'");
+                server.stopServer();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-    }
+    };
 }

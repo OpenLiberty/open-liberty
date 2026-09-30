@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
@@ -21,10 +20,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Mcp;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.suite.McpStatelessAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.AdminsRoleTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -38,12 +36,12 @@ public class AdminsRoleAllowedTestsStateless extends AbstractRolesAllowed {
 
     private static final String APP_NAME = "adminsRoleToolsStateless";
 
-    // Server is managed by McpStatelessAuthServerSuite — do NOT add @Server here.
-    public static LibertyServer server = McpStatelessAuthServerSuite.server;
+    // Do NOT copy McpStatelessAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(AdminsRoleAllowedTestsStateless.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/" + APP_NAME, StateMode.STATELESS);
+    public McpClient client = new McpClient(McpStatelessAuthServerSuite.server, "/" + APP_NAME, StateMode.STATELESS);
 
     /** {@inheritDoc} */
     @Override
@@ -53,17 +51,22 @@ public class AdminsRoleAllowedTestsStateless extends AbstractRolesAllowed {
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setMarkToEndOfLog();
+        McpStatelessAuthServerSuite.server.setMarkToEndOfLog();
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(AdminsRoleTools.class);
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
-        assertNotNull(server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
+        McpStatelessAuthServerSuite.deployWithConfiguration(war, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setStateless("true");
+            app.getMcps().add(mcp);
+        });
+
+        assertNotNull(McpStatelessAuthServerSuite.server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("apps/" + APP_NAME + ".war");
-        server.waitForStringInLog("CWWKZ0009I:.*" + APP_NAME);
-        server.removeInstalledAppForValidation(APP_NAME);
+        McpStatelessAuthServerSuite.server.setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
+        McpStatelessAuthServerSuite.undeployWithConfiguration(war);
     }
 }

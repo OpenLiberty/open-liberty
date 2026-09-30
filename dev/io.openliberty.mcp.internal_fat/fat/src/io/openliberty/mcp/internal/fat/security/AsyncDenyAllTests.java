@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.ExpectedTestResult;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.Scenario;
@@ -39,27 +38,27 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class AsyncDenyAllTests extends FATServletClient {
 
-    // Server is managed by McpAsyncAuthServerSuite — do NOT add @Server here.
-    public static LibertyServer server = McpAsyncAuthServerSuite.server;
+    // Do NOT copy McpAsyncAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(AsyncDenyAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncDenyAllTools");
+    public McpClient client = new McpClient(McpAsyncAuthServerSuite.server, "/asyncDenyAllTools");
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setMarkToEndOfLog();
+        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncDenyAllTools.war").addClass(AsyncDenyAllTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        ShrinkHelper.exportDropinAppToServer(McpAsyncAuthServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAsyncAuthServerSuite.server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("dropins/asyncDenyAllTools.war");
-        server.waitForStringInLog("CWWKZ0009I:.*asyncDenyAllTools");
-        server.removeInstalledAppForValidation("asyncDenyAllTools");
+        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
+        McpAsyncAuthServerSuite.server.deleteFileFromLibertyServerRoot("dropins/asyncDenyAllTools.war");
+        McpAsyncAuthServerSuite.server.waitForStringInLog("CWWKZ0009I:.*asyncDenyAllTools");
+        McpAsyncAuthServerSuite.server.removeInstalledAppForValidation("asyncDenyAllTools");
     }
 
     @Test
