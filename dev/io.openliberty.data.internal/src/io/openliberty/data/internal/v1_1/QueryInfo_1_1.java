@@ -1265,7 +1265,7 @@ public class QueryInfo_1_1 extends QueryInfo {
             } else if (arg instanceof GreaterThan c) {
                 p1 = c.bound();
             } else if (arg instanceof In<?> c) {
-                p1 = toListOfValues(c.expressions());
+                p1 = Literal.of(toListOfValues(c.expressions()));
             } else if (arg instanceof LessThan c) {
                 p1 = c.bound();
             } else if (arg instanceof Like c) {
@@ -1277,7 +1277,7 @@ public class QueryInfo_1_1 extends QueryInfo {
             } else if (arg instanceof NotEqualTo c) {
                 p1 = c.expression();
             } else if (arg instanceof NotIn<?> c) {
-                p1 = toListOfValues(c.expressions());
+                p1 = Literal.of(toListOfValues(c.expressions()));
             } else if (arg instanceof NotLike c) {
                 p1 = c.pattern();
                 p2 = c.escape();
@@ -1289,34 +1289,25 @@ public class QueryInfo_1_1 extends QueryInfo {
                                                         arg.getClass().getName());
             }
 
-            if (p1 instanceof Literal literal) {
-                Object val = literal.value();
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(val));
-                query.setParameter(paramNum++, val);
-            } else if (p1 instanceof List<?>) {
-                // In or NotIn a list
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(p1));
-                query.setParameter(paramNum++, p1);
-            } else {
-                // Constraint on non-Literal - should be unreachable
+            if (p1 instanceof Literal literal1)
+                p1 = literal1.value();
+            else // Constraint on non-Literal - should be unreachable
                 throw new UnsupportedOperationException(p1.getClass().getName());
-            }
 
-            if (p2 instanceof Literal literal) {
-                Object val = literal.value();
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(val));
-                query.setParameter(paramNum++, val);
-            } else if (p2 instanceof Character) {
-                // Like or NotLike
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(p1));
+            query.setParameter(paramNum++, p1);
+
+            if (p2 != null) {
+                if (p2 instanceof Literal literal2)
+                    p2 = literal2.value();
+                else if (!(p2 instanceof Character /* Like or NotLike escape */))
+                    // Constraint on non-Literal - should be unreachable
+                    throw new UnsupportedOperationException(p2.getClass().getName());
+
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(p2));
                 query.setParameter(paramNum++, p2);
-            } else if (p2 != null) {
-                // Constraint on non-Literal - should be unreachable
-                throw new UnsupportedOperationException(p2.getClass().getName());
             }
         } else { // normal positional parameter
             if (trace && tc.isDebugEnabled())
