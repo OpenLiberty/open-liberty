@@ -90,6 +90,7 @@ import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
+import io.openliberty.netty.internal.impl.QuiesceState;
 
 /**
  * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
@@ -351,7 +352,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request,
                                        RequestMetadata requestMetadata) {
-         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+        // Mirror Channel Framework's HttpInboundLink.handleNewInformation() isStopped() guard:
+        // if the server is quiescing, reject new requests immediately with a 503
+        if (QuiesceState.isQuiesceInProgress()
+                || Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.QUIESCING).get())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "beginStreamingRequest: server quiescing, rejecting request with 503");
+            }
+            sendErrorMessage(StatusCodes.UNAVAILABLE, null);
+            return;
+        }
+
+        ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
 
         final CharSequence ae = request.headers().get(HttpHeaderNames.ACCEPT_ENCODING);
         if (ae != null)

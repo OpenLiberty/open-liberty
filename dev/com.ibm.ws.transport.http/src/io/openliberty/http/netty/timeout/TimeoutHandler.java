@@ -71,6 +71,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
 
     private boolean firstRequest = true;
     private boolean readRetried = false;
+    private boolean purgeInProgress = false;
 
     private ScheduledFuture<?> currentTimeout;
 
@@ -153,11 +154,8 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             resetRead(context);
         }
 
-        // Snapshot the active timer before forwarding downstream.
-        // Forwarding LastHttpContent can synchronously admit a pipelined request B
-        // via ReadFlowHandler, which re-enters channelRead(HttpRequest_B) and
-        // installs a new timer (cancel + arm). After the forward returns we must
-        // only cancel the OLD timer — never B's newly-installed one.
+        // Snapshot before forwarding: LastHttpContent admission may synchronously
+        // install B's timer; we must cancel only A's, not the replacement.
         final ScheduledFuture<?> timerBeforeForward = currentTimeout;
 
         super.channelRead(context, message);
@@ -198,12 +196,9 @@ public class TimeoutHandler extends ChannelDuplexHandler {
 
     @Override
     public void read(ChannelHandlerContext context) throws Exception {
-        // Arm the READ timer at the moment a socket read is issued, matching
-        // Channel Framework where read(1, callback, false, readTimeout) starts
-        // the deadline at call time rather than on arrival of the next chunk.
-        // Only applies when already in READ phase (body reads mid-request).
-        // PERSIST is intentionally excluded: the persist timer is a single
-        // one-shot deadline armed from RequestConsumedEvent, not reset per-read.
+        // Re-arm the read timer on each socket read so the deadline resets per
+        // fragment during body reads. PERSIST is excluded — it's a one-shot
+        // deadline armed from RequestConsumedEvent, not per-read.
         if (phase == Phase.READ) {
             arm(context, Phase.READ);
         }
@@ -246,7 +241,11 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             case TCP_IDLE:
 
             case READ:
-                if (firstRequest && !readRetried) {
+                // Only retry on the very first request arriving slowly over TCP.
+                // Skip the retry if a body purge is in progress — the purge timer
+                // was armed by PurgeStartedEvent and the connection should be
+                // closed immediately on expiry, not given a second window.
+                if (firstRequest && !readRetried && !purgeInProgress) {
                     readRetried = true;
                     arm(context, Phase.READ);
                     return;
@@ -365,6 +364,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             // Async body purge has begun after the response completed. Arm the
             // read timeout so each arriving body fragment is bounded — matching
             // Channel Framework where every purge body read uses readTimeout.
+            purgeInProgress = true;
             arm(context, Phase.READ);
             super.userEventTriggered(context, event);
             return;
@@ -373,6 +373,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             // request. Cancel any in-progress read timeout and transition to
             // PERSIST — matching Channel Framework's sequencing where the persist
             // timeout governs the keep-alive read issued after purge finishes.
+            purgeInProgress = false;
             cancel();
             armPersistIfNeeded(context);
             super.userEventTriggered(context, event);
