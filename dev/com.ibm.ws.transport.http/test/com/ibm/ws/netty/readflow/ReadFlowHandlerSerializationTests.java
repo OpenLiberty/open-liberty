@@ -46,21 +46,8 @@ import io.netty.util.ReferenceCountUtil;
 
 /**
  * Unit tests for HTTP/1.1 exchange serialisation in {@link ReadFlowHandler}.
- *
- * Uses Netty's {@link EmbeddedChannel} for deterministic, synchronous event-loop
- * execution. Controllable {@link ChannelPromise} objects are used where write
- * outcomes need to be varied — no timing sleeps.
- *
- * Pipeline: ReadFlowHandler → CapturingHandler
- *
- * Ownership conventions used throughout:
- *   - {@code EmbeddedChannel.writeInbound(msg)} does NOT retain {@code msg}; it
- *     calls {@code pipeline.fireChannelRead(msg)} which hands the sole ref to the
- *     first handler. That handler either forwards it (transferring ownership) or
- *     parks it (taking ownership without an extra retain).
- *   - {@code EmbeddedChannel.writeOutbound(msg)} passes the message down the
- *     outbound pipeline. {@link ReadFlowHandler#write} intercepts it for promise
- *     listeners and then forwards via {@code super.write}.
+ * Uses {@link EmbeddedChannel} for deterministic, synchronous event-loop execution.
+ * Pipeline: ReadFlowHandler → CapturingHandler.
  */
 public class ReadFlowHandlerSerializationTests {
 
@@ -73,9 +60,6 @@ public class ReadFlowHandlerSerializationTests {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Pipeline / helper factory
-    // -----------------------------------------------------------------------
 
     private CapturingHandler buildChannel() {
         CapturingHandler cap = new CapturingHandler();
@@ -106,11 +90,7 @@ public class ReadFlowHandlerSerializationTests {
         return new DefaultLastHttpContent(Unpooled.copiedBuffer(data));
     }
 
-    /**
-     * A self-contained 200 OK with Content-Length:0. This is a
-     * {@link DefaultFullHttpResponse} (also implements {@link LastHttpContent}).
-     * It should complete the exchange on its single write.
-     */
+    /** 200 OK, Content-Length:0. {@link DefaultFullHttpResponse} — completes on its own write. */
     private static HttpResponse fullOkNoBody() {
         DefaultFullHttpResponse r = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.EMPTY_BUFFER);
@@ -119,11 +99,7 @@ public class ReadFlowHandlerSerializationTests {
         return r;
     }
 
-    /**
-     * A streaming (non-full) 200 OK with chunked transfer encoding.
-     * Exchange completes only when the separate {@link LastHttpContent} write
-     * succeeds.
-     */
+    /** 200 OK, chunked. Completes only when the separate {@link LastHttpContent} write succeeds. */
     private static HttpResponse streamingOk() {
         DefaultHttpResponse r = new DefaultHttpResponse(
                 HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
@@ -132,11 +108,7 @@ public class ReadFlowHandlerSerializationTests {
         return r;
     }
 
-    /**
-     * A streaming (non-full) 200 OK with an explicit Content-Length body.
-     * Even though Content-Length is known, this is not a FullHttpResponse;
-     * the exchange must NOT complete until the terminal LastHttpContent write.
-     */
+    /** 200 OK, Content-Length set but NOT a FullHttpResponse; completes only on terminal write. */
     private static HttpResponse contentLengthOk(int len) {
         DefaultHttpResponse r = new DefaultHttpResponse(
                 HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
@@ -171,10 +143,7 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
     }
 
-    /**
-     * Write outbound using a manually-controlled promise so we can force
-     * success or failure independently.
-     */
+    /** Write outbound with a manually-controlled promise for independent success/failure. */
     private ChannelPromise writeOutManual(Object msg) {
         ChannelPromise p = channel.newPromise();
         channel.pipeline().write(msg, p);
@@ -193,15 +162,8 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * Signals both body-done and app-done on the currently active lifecycle,
-     * simulating the wiring that {@code HttpDispatcherLink} provides in production.
-     *
-     * <p>In production, these signals flow from {@code HttpDispatcherLink} on the
-     * event loop.  In tests that do not have a real dispatcher, we deliver them
-     * manually so that the admission gate opens after the response write completes.
-     *
-     * <p>Call this after A's terminal response write has resolved whenever the
-     * test is verifying that B is admitted (i.e. A's exchange has ended).
+     * Signals bodyDone and appDone on the active lifecycle so the admission gate
+     * opens for the next exchange.
      */
     private void completeExchangeLifecycle() {
         ExchangeLifecycle lc = state().getActiveLifecycle();
@@ -220,18 +182,12 @@ public class ReadFlowHandlerSerializationTests {
         channel.runPendingTasks();
     }
 
-    /**
-     * Convenience: write the response outbound AND complete the exchange lifecycle.
-     * Use wherever a test expects B to be admitted immediately after the response.
-     */
+    /** Writes the response outbound and completes the exchange lifecycle. */
     private void writeOutAndComplete(Object msg) {
         writeOut(msg);
         completeExchangeLifecycle();
     }
 
-    // -----------------------------------------------------------------------
-    // Test 1 — B arrives before A's delayed terminal write; B stays undispatched
-    // -----------------------------------------------------------------------
     @Test
     public void testRequestBGatedUntilResponseATerminalWriteSucceeds() {
         CapturingHandler cap = buildChannel();
@@ -267,10 +223,6 @@ public class ReadFlowHandlerSerializationTests {
         assertFalse("pending queue empty after drain", state().hasPendingAdmission());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 2 — Zero-length ordinary response: must wait for a separate terminal
-    // write, NOT complete on the header write alone.
-    // -----------------------------------------------------------------------
     @Test
     public void testZeroLengthOrdinaryResponseWaitsForTerminalWrite() {
         CapturingHandler cap = buildChannel();
@@ -298,10 +250,6 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted after terminal write", 2, cap.requests.size());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 3 — FullHttpResponse (body-bearing): completes on its own write;
-    //           informational response does NOT release B.
-    // -----------------------------------------------------------------------
     @Test
     public void testFullHttpResponseCompletesOnOwnWrite() {
         CapturingHandler cap = buildChannel();
@@ -342,10 +290,6 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted after FullHttpResponse write", 2, cap.requests.size());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 4 — 204 No Content completes on its header write (no separate
-    //           LastHttpContent expected from the codec for 204).
-    // -----------------------------------------------------------------------
     @Test
     public void test204CompletesOnHeaderWrite() {
         CapturingHandler cap = buildChannel();
@@ -363,10 +307,6 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted after 204", 2, cap.requests.size());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 5 — Write-failure cases: header fail, body-chunk fail, terminal fail,
-    //           and body-chunk fail followed by terminal success (still must close).
-    // -----------------------------------------------------------------------
     @Test
     public void testEarlierHeaderWriteFailurePreventsConnectionReuse() {
         CapturingHandler cap = buildChannel();
@@ -452,29 +392,10 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B never dispatched", 1, cap.requests.size());
     }
 
-    // -----------------------------------------------------------------------
-    // Tests 5e–5j — Async body purge / incomplete-body regression coverage
-    //
-    // Root cause: prepareNettyCloseForIncompleteRequestBody() forced
-    // Connection:close and set RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE,
-    // which caused the drain to be skipped in nettyClose. With requestConsumed
-    // remaining false and no further reads scheduled, the connection stalled
-    // until a 30-second PersistTimeoutException fired.
-    //
-    // Fix: onResponseComplete now gates on requestConsumed. When the body is
-    // still unread, it calls setBodyReadWanted(true) so the existing
-    // requestRead() path delivers remaining body chunks. Once LastHttpContent
-    // arrives, markRequestConsumed fires, which calls verifyNeedRead /
-    // drainPendingAdmission — reusing those methods as intended.
-    // -----------------------------------------------------------------------
 
     /**
-     * 5e — Early error response with unread body: B must NOT be admitted until
-     * the remaining body bytes are drained (LastHttpContent arrives).
-     *
-     * This is the direct regression for the PersistTimeoutException stall:
-     * A sends a 400 error response before consuming its 3-byte request body.
-     * B must wait for A's body to finish — not just A's terminal write.
+     * Early error response with unread body: B is gated until the request body
+     * is fully drained, not just until A's terminal write.
      */
     @Test
     public void testEarlyErrorResponseGatesBUntilBodyDrained() {
@@ -513,7 +434,7 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * 5f — Body arrives in multiple fragments; response terminal write happens
+     * Body arrives in multiple fragments; response terminal write happens
      * between the first and last fragment. B must wait for the final fragment.
      */
     @Test
@@ -546,11 +467,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted after last fragment", 2, cap.requests.size());
     }
 
-    /**
-     * 5g — Body fully received BEFORE the response terminal write. Since
-     * requestConsumed is already true when onResponseComplete fires, B is
-     * admitted immediately without waiting (via drainPendingAdmission).
-     */
+    /** Body fully received before the response: B is admitted immediately on the terminal write. */
     @Test
     public void testBodyFullyReceivedBeforeResponseTerminalWriteAdmitsBImmediately() {
         CapturingHandler cap = buildChannel();
@@ -575,7 +492,7 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * 5h — Explicit Connection:close on response: no purge needed, channel must
+     * Explicit Connection:close on response: no purge needed, channel must
      * close after the terminal write. B is never admitted.
      */
     @Test
@@ -601,11 +518,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B never admitted", 1, cap.requests.size());
     }
 
-    /**
-     * 5i-pre — B arrives AFTER A's response completes but BEFORE A's body is fully
-     * drained. The !requestConsumed gate must park B even though responseInFlight
-     * is already false and the pending queue was empty at that moment.
-     */
+    /** B arrives in the purge window (response done, body outstanding): the !requestConsumed gate parks B. */
     @Test
     public void testBArrivingDuringPurgeWindowIsGated() {
         CapturingHandler cap = buildChannel();
@@ -636,7 +549,7 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * 5i — Three pipelined requests where A has an unread body and B/C are queued.
+     * Three pipelined requests where A has an unread body and B/C are queued.
      * B must not be dispatched until A's body is drained; C must not be dispatched
      * until B's response is complete.
      */
@@ -677,8 +590,7 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * 5j — Fully-consumed normal request: keep-alive reuse works as before;
-     * no regression from the purge path changes.
+     * Fully-consumed normal request: keep-alive reuse works as expected.
      */
     @Test
     public void testNormalKeepAliveRequestUnaffectedByPurgeChanges() {
@@ -702,9 +614,6 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("channel still alive after B", channel.isActive());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 6 — Queued reference-counted content released on drain and on close.
-    // -----------------------------------------------------------------------
     @Test
     public void testQueuedContentReleasedOnChannelClose() {
         buildChannel();
@@ -759,9 +668,6 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B's ref released by downstream", 0, reqB.refCnt());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 7 — Fragmented request body continues streaming during active exchange.
-    // -----------------------------------------------------------------------
     @Test
     public void testFragmentedBodyContinuesStreamingDuringActiveExchange() {
         CapturingHandler cap = buildChannel();
@@ -784,10 +690,6 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("channel still active", channel.isActive());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 8 — Pending read demand satisfied from queue (no duplicate socket
-    //           reads when admission queue holds the next request).
-    // -----------------------------------------------------------------------
     @Test
     public void testPendingReadDemandSatisfiedByQueueDrain() {
         CapturingHandler cap = buildChannel();
@@ -811,9 +713,6 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("channel alive", channel.isActive());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 9 — Multiple requests from same read window remain serialised.
-    // -----------------------------------------------------------------------
     @Test
     public void testMultipleRequestsFromSameReadRemainSerialized() {
         CapturingHandler cap = buildChannel();
@@ -837,9 +736,6 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("/c", cap.requests.get(2).uri());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 10 — Queued body chunks replayed with their request after drain.
-    // -----------------------------------------------------------------------
     @Test
     public void testQueuedBodyChunksReplayedWithRequest() {
         CapturingHandler cap = buildChannel();
@@ -863,9 +759,6 @@ public class ReadFlowHandlerSerializationTests {
         assertFalse("B body content forwarded", cap.contents.isEmpty());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 11 — Exchange id advances monotonically; stale guard logic works.
-    // -----------------------------------------------------------------------
     @Test
     public void testExchangeIdAdvancesAndStaleGuardWorks() {
         FlowState state = new FlowState();
@@ -883,9 +776,10 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("stale: id1 != activeExchangeId", state.getActiveExchangeId() != id1);
     }
 
-    // -----------------------------------------------------------------------
-    // Test 12 — setClosedOrUpgraded stops reading and releases queue.
-    // -----------------------------------------------------------------------
+    /**
+     * {@code setClosedOrUpgraded} stops reading, disallows keep-alive, and
+     * releases the pending admission queue.
+     */
     @Test
     public void testUpgradeOrCloseSetsStopReadingAndReleasesQueue() {
         CapturingHandler cap = buildChannel();
@@ -905,21 +799,7 @@ public class ReadFlowHandlerSerializationTests {
         assertFalse("queue released after upgrade", state().hasPendingAdmission());
     }
 
-    // -----------------------------------------------------------------------
-    // Regression tests for the two HTTP/1.1 pipelining blockers
-    // -----------------------------------------------------------------------
-
-    /**
-     * Blocker 1a — plain (non-full) 204 No Content response.
-     *
-     * A {@link DefaultHttpResponse} (not a {@code FullHttpResponse}) with status
-     * 204 must NOT complete the exchange on its header write.  The shortcut that
-     * previously used {@code !isResponseBodyPermitted(code)} was removed;
-     * completion now requires an actual terminal write.
-     *
-     * B must remain blocked until the separate {@link LastHttpContent} write
-     * succeeds.
-     */
+    /** Plain (non-full) 204 response: exchange must not complete on the header write alone. */
     @Test
     public void testPlain204HeaderWriteDoesNotAdmitB() {
         CapturingHandler cap = buildChannel();
@@ -950,9 +830,8 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * Blocker 1b — plain (non-full) 304 Not Modified response.
-     *
-     * Same contract as 204: the exchange must not complete on the header write.
+     * Plain (non-full) 304 Not Modified response: same contract as 204,
+     * the exchange must not complete on the header write alone.
      */
     @Test
     public void testPlain304HeaderWriteDoesNotAdmitB() {
@@ -980,11 +859,8 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * Blocker 1c — plain (non-full) response to a HEAD request.
-     *
-     * The handler must not use {@code state.isHeadRequest()} as a shortcut
-     * for self-contained detection.  A plain {@link DefaultHttpResponse} for
-     * a HEAD request completes only on the terminal write.
+     * Plain (non-full) response to a HEAD request: the exchange completes only
+     * on the terminal write, not on the header write.
      */
     @Test
     public void testPlainHeadResponseHeaderWriteDoesNotAdmitB() {
@@ -1020,10 +896,8 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * Blocker 1d — informational (100 Continue) response does NOT release B.
-     *
-     * Informational responses must not touch {@code responseInFlight} and must
-     * not trigger admission of the next request.
+     * Informational (100 Continue) response must not touch {@code responseInFlight}
+     * and must not trigger admission of the next request.
      */
     @Test
     public void testInformationalResponseDoesNotReleaseB() {
@@ -1061,15 +935,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted after real response", 2, cap.requests.size());
     }
 
-    /**
-     * Blocker 2a — raw ByteBuf failure followed by terminal success.
-     *
-     * When a fixed-length HTTP/1 body is written as a raw {@link ByteBuf}
-     * (as done by {@code NettyTCPWriteRequestContext} for Content-Length responses)
-     * and that write fails, the exchange must be poisoned.  Even if the terminal
-     * {@link LastHttpContent} write subsequently succeeds, B must never be admitted
-     * and the connection must be closed.
-     */
+    /** Raw {@link ByteBuf} write failure poisons the exchange; subsequent terminal success does not rescue it. */
     @Test
     public void testRawByteBufFailurePoisonsExchange() {
         CapturingHandler cap = buildChannel();
@@ -1097,12 +963,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B never dispatched", 1, cap.requests.size());
     }
 
-    /**
-     * Blocker 2b — raw ByteBuf failure: terminal success does not rescue the exchange.
-     *
-     * Even if the terminal write has already been enqueued and its promise resolves
-     * successfully after the raw body write fails, B must still not be admitted.
-     */
+    /** Raw ByteBuf failure then terminal success: B is still never admitted. */
     @Test
     public void testRawByteBufFailureThenTerminalSuccessDoesNotAdmitB() {
         CapturingHandler cap = buildChannel();
@@ -1124,12 +985,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B never dispatched regardless of later terminal", 1, cap.requests.size());
     }
 
-    /**
-     * Blocker 2c — raw ByteBuf write succeeds; full exchange completes normally.
-     *
-     * A raw ByteBuf write that succeeds must not interfere with normal admission.
-     * B must be admitted after the terminal write succeeds.
-     */
+    /** Raw ByteBuf write succeeds: exchange completes normally and B is admitted after the terminal write. */
     @Test
     public void testRawByteBufSuccessAllowsNormalCompletion() {
         CapturingHandler cap = buildChannel();
@@ -1158,22 +1014,9 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("channel still active", channel.isActive());
     }
 
-    // -----------------------------------------------------------------------
-    // Regression tests for stalled-purge: purge reads must continue after
-    // each non-terminal fragment.
-    // -----------------------------------------------------------------------
-
     /**
-     * Stalled-purge regression — body arrives across multiple read cycles
-     * after the response has completed.
-     *
-     * After response completion, {@code onResponseComplete} calls
-     * {@code setBodyReadWanted(true)} which schedules one read.  When a
-     * non-terminal fragment arrives and {@code channelReadComplete} fires,
-     * the handler MUST reschedule another read.  Without the fix, the
-     * {@code channelReadComplete} branch did not honour the
-     * {@code bodyReadWanted && !requestConsumed} condition and the purge
-     * stalled indefinitely.
+     * Body arrives across multiple read cycles after the response completes;
+     * the handler must reschedule a read after each non-terminal fragment.
      */
     @Test
     public void testPurgeReadsRescheduledAfterNonTerminalFragment() {
@@ -1204,10 +1047,7 @@ public class ReadFlowHandlerSerializationTests {
         assertTrue("channel still active after purge", channel.isActive());
     }
 
-    /**
-     * Stalled-purge regression — three body fragments, response complete
-     * before the first fragment.  B must not be admitted until all three arrive.
-     */
+    /** Three body fragments arrive after the response; B is admitted only after the last. */
     @Test
     public void testPurgeMultipleFragmentsAllRescheduled() {
         CapturingHandler cap = buildChannel();
@@ -1245,10 +1085,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted after all fragments purged", 2, cap.requests.size());
     }
 
-    /**
-     * Verifies idempotent cleanup: marking request consumed twice must not
-     * cause a double admission or crash.
-     */
+    /** Calling markRequestConsumed twice is idempotent; no double admission. */
     @Test
     public void testMarkRequestConsumedIsIdempotent() {
         CapturingHandler cap = buildChannel();
@@ -1276,15 +1113,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("no duplicate admission", 2, cap.requests.size());
     }
 
-    /**
-     * Already-buffered body data that arrives at the dispatcher BEFORE the
-     * response is written (response-first ordering is tested in existing tests;
-     * this checks the symmetric body-first ordering).
-     *
-     * Body arrives completely, THEN the response terminal write fires.
-     * B must be admitted immediately after the terminal write — no extra read
-     * cycle needed.
-     */
+    /** Body fully buffered before the response write: B is admitted immediately on the terminal write. */
     @Test
     public void testBufferedBodyBeforeResponseAdmitsBImmediately() {
         CapturingHandler cap = buildChannel();
@@ -1340,11 +1169,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B never admitted", 1, cap.requests.size());
     }
 
-    /**
-     * Explicit {@code Connection: close} response during purge: channel must
-     * close immediately after the terminal write; no purge reads are attempted
-     * since keepAliveAllowed=false.
-     */
+    /** Connection:close during purge: channel closes immediately; no purge reads attempted. */
     @Test
     public void testConnectionCloseSkipsPurge() {
         CapturingHandler cap = buildChannel();
@@ -1366,10 +1191,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B never admitted", 1, cap.requests.size());
     }
 
-    /**
-     * Fully-consumed normal request: purge changes must not regress the
-     * normal keep-alive flow.  Same-socket reuse must work as expected.
-     */
+    /** Fully-consumed normal request: keep-alive reuse is unaffected. */
     @Test
     public void testFullyConsumedRequestKeepAliveUnchanged() {
         CapturingHandler cap = buildChannel();
@@ -1427,13 +1249,8 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * Response-first ordering vs purge-first ordering: verifies both orderings
-     * produce the correct outcome.
-     *
-     * <p>Case A: response terminal write occurs, then body LastHttpContent arrives.
-     * <p>Case B: body LastHttpContent arrives first, then response terminal write.
-     *
-     * Both cases must result in B being admitted exactly once.
+     * Both orderings (response-first and body-first) result in B admitted
+     * exactly once.
      */
     @Test
     public void testResponseFirstAndPurgeFirstOrderingBothWork() {
@@ -1477,33 +1294,7 @@ public class ReadFlowHandlerSerializationTests {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Finding 3 / Test C — cleanup ordering: B not admitted until cleanup done
-    //
-    // isc.clear() now runs unconditionally inside setBodyComplete(), which is
-    // called from HttpDispatcherHandler (event loop) when LastHttpContent
-    // arrives. setBodyComplete() calls isc.clear() and then markRequestConsumed().
-    //
-    // The observable invariant at the ReadFlowHandler level: markRequestConsumed
-    // (and therefore B admission) is only triggered AFTER the terminal body
-    // fragment has been processed. A test that observes B admission implicitly
-    // verifies the clear-before-admit sequence because:
-    //   1. LastHttpContent arrives → forwarded to dispatcher
-    //   2. Dispatcher calls setBodyComplete() → isc.clear() → markRequestConsumed
-    //   3. markRequestConsumed → possibly drainPendingAdmission → B forwarded
-    //
-    // We verify both orderings (response-first and body-first) and also verify
-    // that B cannot be admitted by LastHttpContent arrival alone when the
-    // response is still in flight.
-    // -----------------------------------------------------------------------
-
-    /**
-     * C1 — response completes first, body arrives later.
-     *
-     * After A's terminal response write, B must remain gated because
-     * {@code requestConsumed=false}. Only after the terminal body fragment
-     * (which triggers the cleanup + markRequestConsumed sequence) is B admitted.
-     */
+    /** Response first, body later: B is gated until markRequestConsumed fires on the terminal fragment. */
     @Test
     public void testCleanupOrderingResponseFirstBodySecond() {
         CapturingHandler cap = buildChannel();
@@ -1538,14 +1329,7 @@ public class ReadFlowHandlerSerializationTests {
         assertFalse("no pending admission after B", state().hasPendingAdmission());
     }
 
-    /**
-     * C2 — body fully drained first, response arrives later.
-     *
-     * Even when the body has been completely received before the response
-     * write, B must remain gated until the response completes. Once the
-     * response terminal write fires, both conditions are satisfied and B
-     * is admitted immediately (no extra read cycle needed).
-     */
+    /** Body drained first, response later: B is gated until the terminal response write then admitted immediately. */
     @Test
     public void testCleanupOrderingBodyFirstResponseSecond() {
         CapturingHandler cap = buildChannel();
@@ -1571,12 +1355,8 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * C3 — stale A callback cannot affect B.
-     *
-     * After B is admitted, a second call to {@code markRequestConsumed} (as
-     * might arrive from a stale callback or a double invocation of
-     * {@code setBodyComplete}) must not cause a second admission of B or admit
-     * a phantom request C.
+     * Stale markRequestConsumed call after B is admitted must not cause a
+     * second admission of B or admit a phantom request C.
      */
     @Test
     public void testStaleMarkRequestConsumedDoesNotAdmitExtraRequest() {
@@ -1605,11 +1385,8 @@ public class ReadFlowHandlerSerializationTests {
     }
 
     /**
-     * C4 — early error response with unread body; B is gated until body complete.
-     *
-     * Even when A returns a 4xx early, B must wait for A's body to arrive.
-     * The cleanup sequence (isc.clear + markRequestConsumed) only fires when
-     * setBodyComplete() is called, which requires the terminal body fragment.
+     * Early error response with unread body: B is gated until the terminal
+     * body fragment arrives and markRequestConsumed fires.
      */
     @Test
     public void testEarlyErrorResponseGatesBUntilBodyComplete() {
@@ -1641,15 +1418,7 @@ public class ReadFlowHandlerSerializationTests {
         assertEquals("B admitted after body complete", 2, cap.requests.size());
     }
 
-    // -----------------------------------------------------------------------
-    // Inner capturing handler
-    // -----------------------------------------------------------------------
-
-    /**
-     * Records every inbound {@link HttpRequest} and {@link HttpContent}.
-     * Releases each message after recording so the reference count drops to
-     * zero as expected by tests that check for leaks.
-     */
+    /** Records inbound {@link HttpRequest} and {@link HttpContent}; releases each after recording. */
     private static class CapturingHandler extends ChannelDuplexHandler {
         final List<HttpRequest> requests = new ArrayList<>();
         final List<HttpContent> contents = new ArrayList<>();

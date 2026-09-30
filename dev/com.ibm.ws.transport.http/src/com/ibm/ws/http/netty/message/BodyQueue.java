@@ -28,42 +28,17 @@ final public class BodyQueue {
     private final ByteBufAllocator allocator;
 
     /**
-     * Total bytes received, counting every fragment regardless of whether it
-     * was queued or discarded by the purge path.  Incremented unconditionally
-     * in {@link #enqueueRetained} before the routing decision so that
-     * size-limit enforcement is accurate across the purge boundary.
-     *
-     * <p>Written only on the event loop; read from worker threads for limit
-     * checks. Declared {@code volatile} to ensure worker-thread reads see the
-     * latest value without an additional memory barrier.
+     * Total bytes received across all fragments, including those discarded during
+     * purge. Volatile so worker-thread limit checks see the latest event-loop write.
      */
     private volatile long bytesReceived;
 
     /**
-     * Set to {@code true} once the purge lifecycle begins.
+     * True once {@link #drainAndRelease()} has been called. Subsequent calls to
+     * {@link #enqueueRetained} discard without retaining.
      *
-     * <h3>Thread model and race freedom</h3>
-     * Both {@link #enqueueRetained} and {@link #drainAndRelease} run on the
-     * same Netty I/O event loop (single-threaded). Because they are serialised
-     * by the event loop's execution model, no concurrent modification of this
-     * flag or the queue is possible — no lock is required for the
-     * enqueue/purge transition.
-     *
-     * <p>Declared {@code volatile} solely so that worker-thread callers of
-     * {@link #isPurging()} (e.g. {@code HttpInputStreamImpl} on an application
-     * thread after waking from {@link #awaitChange}) see the most recently
-     * written value promptly, without a monitor acquire.
-     *
-     * <h3>Ownership contract</h3>
-     * <ul>
-     *   <li>The caller of {@link #enqueueRetained} owns the incoming reference.
-     *       The queue must not release a reference it did not acquire.</li>
-     *   <li>When purging, the queue skips retain-and-enqueue.  The caller's
-     *       {@code finally} block releases the enclosing {@code HttpContent}.</li>
-     *   <li>When not purging, the queue retains the buffer and owns that
-     *       reference until it is transferred via {@link #poll()} or released
-     *       by {@link #drainAndRelease()}.</li>
-     * </ul>
+     * <p>{@code volatile} so worker threads blocked in {@link #awaitChange} see
+     * the transition promptly without requiring a monitor acquire.
      */
     private volatile boolean purging = false;
 

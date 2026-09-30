@@ -10,21 +10,12 @@
 package com.ibm.ws.http.netty.pipeline.inbound.read;
 
 /**
- * Pipeline user event fired by {@link ReadFlowHandler} when the current
- * request body has been fully consumed (or purged) and the connection is
- * ready to accept the next request.
- *
- * <p>{@link io.openliberty.http.netty.timeout.TimeoutHandler} listens for
- * this event and transitions to the persistence-wait phase, matching the
- * Channel Framework sequencing where the persist timeout governs the TCP
- * read issued <em>after</em> body purge completes, not after the response
- * write completes.
- *
+ * Fired by {@link ReadFlowHandler} when the current request body has been
+ * fully consumed (or purged) and the connection is ready for the next request.
  * <p>Singleton — always reference {@link #INSTANCE}.
  */
 public final class RequestConsumedEvent {
 
-    /** Singleton — allocate once, reuse across all exchanges. */
     public static final RequestConsumedEvent INSTANCE = new RequestConsumedEvent();
 
     private RequestConsumedEvent() {}

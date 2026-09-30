@@ -100,25 +100,20 @@ public class FlowState {
     private boolean exchangeWriteFailed = false;
 
     /**
-     * Per-exchange lifecycle coordinator.  Tracks body-completion and
-     * application-cleanup-readiness signals and performs {@code isc.clear()}
-     * exactly once when both have been recorded.  Replaced by
-     * {@link #nextExchangeId()} at the start of each new exchange.
+     * Per-exchange lifecycle coordinator. Replaced by {@link #nextExchangeId()} at the
+     * start of each new exchange.
      *
-     * <p>{@code null} before the first request is admitted (representing "no
-     * exchange has ever been active on this connection").  A {@code null} value
-     * is distinct from an admitted exchange whose cleanup has not yet finished:
-     * the former allows immediate admission; the latter blocks it.
+     * <p>{@code null} means no exchange has ever been admitted (immediate admission
+     * allowed). See {@link #isAdmissionEligible()} for the authoritative check.
      *
      * <p>Event-loop-owned; must not be accessed from worker threads.
      */
     private ExchangeLifecycle activeLifecycle = null;
 
     /**
-     * The {@link ChannelHandlerContext} for the {@link ReadFlowHandler} on this channel.
-     * Stored in {@link ReadFlowHandler#handlerAdded} so {@code admitRequest} always fires
-     * from the correct pipeline position. Only populated on HTTP/1 channels; HTTP/2
-     * channels never have a {@link ReadFlowHandler} or a {@link FlowState}.
+     * The {@link ChannelHandlerContext} for {@link ReadFlowHandler}, stored in
+     * {@link ReadFlowHandler#handlerAdded} so that {@code fireChannelRead} always
+     * fires from the correct pipeline position.
      */
     ChannelHandlerContext readFlowHandlerContext = null;
 
@@ -312,11 +307,9 @@ public class FlowState {
      *       ({@link ExchangeLifecycle#isCleanupComplete()} returns {@code true}).</li>
      * </ol>
      *
-     * <p>This is the single authoritative admission-eligibility check.  All
-     * code paths that may admit a request — inbound {@code HttpRequest} gate,
-     * {@link ReadFlowHandler#markRequestConsumed}, terminal-content handler,
-     * {@link ReadFlowHandler#onCleanupComplete}, and {@code channelReadComplete}
-     * tasks — must use this method rather than accessing the lifecycle directly.
+     * <p>This is the single authoritative admission-eligibility check; all
+     * code paths that may admit a request must call this rather than
+     * inspecting the lifecycle directly.
      *
      * <p>Must be called on the event loop.
      */

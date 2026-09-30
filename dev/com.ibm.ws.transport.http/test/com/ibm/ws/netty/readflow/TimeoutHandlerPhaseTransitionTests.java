@@ -56,31 +56,13 @@ import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Regression tests for the timeout phase transitions driven by
+ * Regression tests for {@link TimeoutHandler} phase transitions driven by
  * {@link PurgeStartedEvent} and {@link RequestConsumedEvent}.
- *
- * <p>Pipeline: TimeoutHandler → ReadFlowHandler → CapturingHandler
- *
- * <p>Uses {@link EmbeddedChannel#advanceTimeBy} for deterministic scheduling —
- * no wall-clock sleeps.
- *
- * <h3>Expected phase sequence during purge</h3>
- * <pre>
- *   response terminal write completes → (no timer if purge pending)
- *   PurgeStartedEvent                 → READ phase (readTimeout)
- *   each HttpContent fragment         → resetRead (readTimeout resets)
- *   LastHttpContent arrives           → READ cancelled
- *   RequestConsumedEvent              → PERSIST phase (persistTimeout)
- *   next HttpRequest arrives          → PERSIST cancelled
- * </pre>
+ * Uses {@link EmbeddedChannel#advanceTimeBy} for deterministic scheduling.
  */
 public class TimeoutHandlerPhaseTransitionTests {
 
-    /** Values passed to PROPNAME_READ_TIMEOUT / PROPNAME_PERSIST_TIMEOUT.
-     *  Those properties are in SECONDS; HttpChannelConfig multiplies by 1000
-     *  internally. TimeoutHandler.readTimeout / persistTimeout are therefore
-     *  already in milliseconds.  The *_MS constants are what advanceTimeBy
-     *  should use — i.e. 1000 × the seconds values. */
+    /** Timeout values in seconds (properties) and milliseconds (advanceTimeBy). */
     private static final int READ_TIMEOUT_SEC    = 5;
     private static final int PERSIST_TIMEOUT_SEC = 3;
     private static final int READ_TIMEOUT_MS    = READ_TIMEOUT_SEC    * 1000;
@@ -99,20 +81,7 @@ public class TimeoutHandlerPhaseTransitionTests {
     // Helpers
     // -----------------------------------------------------------------------
 
-    /**
-     * Build a channel matching the real production pipeline order:
-     * TimeoutHandler → ReadFlowHandler → ExceptionCapture → CapturingHandler.
-     *
-     * <p>In production the order is:
-     * ... → TimeoutHandler → ReadFlowHandler → HttpDispatcherHandler
-     *
-     * <p>fireExceptionCaught travels tail-ward: TimeoutHandler fires
-     * ReadTimeoutException → ReadFlowHandler.exceptionCaught sees it first →
-     * if purging, closes silently; otherwise propagates to ExceptionCapture.
-     *
-     * <p>ExceptionCapture sits after ReadFlowHandler so it records only
-     * exceptions that ReadFlowHandler did not suppress.
-     */
+    /** Builds the pipeline: TimeoutHandler → ReadFlowHandler → ExceptionCapture → CapturingHandler. */
     private CapturingHandler buildChannel() {
         NettyHttpChannelConfig cfg = new NettyConfigBuilder()
                 .with(NettyHttpChannelConfig.ConfigElement.HTTP_OPTIONS, httpOpts(READ_TIMEOUT_SEC, PERSIST_TIMEOUT_SEC))
@@ -128,8 +97,7 @@ public class TimeoutHandlerPhaseTransitionTests {
     /** Captured exceptions from TimeoutHandler.fireExceptionCaught. */
     private ExceptionCapture exceptions;
 
-    /** Build the config map expected by NettyHttpChannelConfig.
-     *  PROPNAME_READ_TIMEOUT and PROPNAME_PERSIST_TIMEOUT are in SECONDS. */
+    /** Config map for NettyHttpChannelConfig; timeout values are in seconds. */
     private static Map<String, Object> httpOpts(int readSec, int persistSec) {
         Map<String, Object> m = new HashMap<>();
         m.put(HttpConfigConstants.PROPNAME_READ_TIMEOUT,    readSec);
@@ -178,11 +146,8 @@ public class TimeoutHandlerPhaseTransitionTests {
     }
 
     /**
-     * Signals both body-done and app-done on the currently active lifecycle,
-     * simulating the wiring that {@code HttpDispatcherLink} provides in production.
-     *
-     * <p>Must be called after A's exchange is complete (body consumed AND response
-     * written) to allow the admission gate to open for the next exchange.
+     * Signals bodyDone and appDone on the active lifecycle so the admission gate
+     * opens for the next exchange.
      */
     private void completeExchangeLifecycle() {
         ExchangeLifecycle lc = state().getActiveLifecycle();
@@ -203,21 +168,16 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.runPendingTasks();
     }
 
-    /**
-     * Convenience: write outbound AND complete the exchange lifecycle.
-     * Use wherever a test expects the next request to be admitted immediately.
-     */
+    /** Writes an outbound message and completes the active exchange lifecycle. */
     private void writeOutAndComplete(Object msg) {
         writeOut(msg);
         completeExchangeLifecycle();
     }
 
-    // -----------------------------------------------------------------------
-    // Test 1 — PurgeStartedEvent arms READ phase
-    //
-    // When the response completes before the request body, ReadFlowHandler
-    // fires PurgeStartedEvent. TimeoutHandler must transition to READ.
-    // -----------------------------------------------------------------------
+    /**
+     * When the response completes before the request body, ReadFlowHandler fires
+     * {@link PurgeStartedEvent}. TimeoutHandler must transition to READ phase.
+     */
     @Test
     public void testPurgeStartedEventArmsReadPhase() throws Exception {
         buildChannel();
@@ -233,12 +193,10 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertEquals("Phase must be READ after PurgeStartedEvent", "READ", phase(channel));
     }
 
-    // -----------------------------------------------------------------------
-    // Test 2 — Each body fragment resets the read timer
-    //
-    // While in READ phase, each arriving HttpContent chunk resets the timer.
-    // Advancing by less than readTimeout before each fragment must not fire.
-    // -----------------------------------------------------------------------
+    /**
+     * While in READ phase, each arriving {@link HttpContent} chunk resets the timer.
+     * Advancing by less than readTimeout before each fragment must not fire.
+     */
     @Test
     public void testPurgeFragmentsResetReadTimer() throws Exception {
         buildChannel();
@@ -264,17 +222,10 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertNull("No timeout after reset by fragment", extractException(channel));
     }
 
-    // -----------------------------------------------------------------------
-    // Test 3 — Purge read timeout closes channel silently (no ReadTimeoutException,
-    //          no 408 response)
-    //
-    // When the read timeout fires while an async body purge is in progress,
-    // ReadFlowHandler.exceptionCaught intercepts the ReadTimeoutException
-    // (identified by !isRequestConsumed && isBodyReadWanted) and closes the
-    // channel silently instead of propagating the exception to HttpDispatcherHandler.
-    // This matches Channel Framework where HttpIgnoreBodyCallback.error() calls
-    // HttpInboundLink.close(vc, exception) — an error-state close, no 408 sent.
-    // -----------------------------------------------------------------------
+    /**
+     * Read timeout during purge: {@code ReadFlowHandler} closes the channel silently
+     * without propagating the exception downstream.
+     */
     @Test
     public void testPurgeReadTimeoutClosesChannelSilentlyNoException() throws Exception {
         buildChannel();
@@ -297,7 +248,7 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertTrue("Channel must be active before timeout", channel.isActive());
 
         // Advance past read timeout — ReadFlowHandler intercepts ReadTimeoutException
-        // because isBodyReadWanted=true && !isRequestConsumed, closes silently.
+        // because isPurging=true && !isRequestConsumed, closes silently.
         channel.advanceTimeBy(READ_TIMEOUT_MS + 100, TimeUnit.MILLISECONDS);
         channel.runScheduledPendingTasks();
         channel.runPendingTasks();
@@ -308,14 +259,10 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertFalse("Channel must be closed after purge read timeout", channel.isActive());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 3b — Non-purge read timeout still propagates ReadTimeoutException
-    //
-    // When the body stalls during an active request (response not yet sent,
-    // isBodyReadWanted=true but isResponseInFlight=true), ReadFlowHandler must
-    // NOT intercept the exception — it propagates to HttpDispatcherHandler
-    // which sends a 408.
-    // -----------------------------------------------------------------------
+    /**
+     * Read timeout on a stalled incoming body (response not yet sent): exception
+     * propagates downstream unintercepted.
+     */
     @Test
     public void testNonPurgeReadTimeoutStillPropagatesReadTimeoutException() throws Exception {
         buildChannel();
@@ -330,13 +277,8 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertNull("No timeout mid-persist", exceptions.get());
 
         // Second exchange — headers arrive, body NOT yet sent and NO response yet.
-        // isBodyReadWanted will be set true by the application-read path, but
-        // isRequestConsumed=false and isResponseInFlight=true (no response written).
-        // ReadFlowHandler's purge guard requires BOTH !isRequestConsumed AND
-        // isBodyReadWanted — the guard also relies on the fact that during a true
-        // purge isResponseInFlight is already false (response was already sent).
-        // Here we simulate the body-read stall: TimeoutHandler fires READ timeout
-        // because a body-bearing request is admitted and the body never arrives.
+        // isPurging=false here (response never completed), so ReadFlowHandler's
+        // purge guard does NOT intercept: exception propagates normally.
         channel.writeInbound(requestWithBody("/b", 6));
         channel.runPendingTasks();
         assertEquals("READ phase for incoming body (no response yet)", "READ", phase(channel));
@@ -345,19 +287,15 @@ public class TimeoutHandlerPhaseTransitionTests {
         channel.advanceTimeBy(READ_TIMEOUT_MS + 100, TimeUnit.MILLISECONDS);
         channel.runScheduledPendingTasks();
 
-        // isBodyReadWanted=false here (no app read was issued in this test),
-        // so ReadFlowHandler's purge guard does NOT intercept: exception propagates.
         Throwable t = exceptions.get();
         assertNotNull("ReadTimeoutException must propagate on non-purge stall", t);
         assertTrue("Must be ReadTimeoutException", t instanceof ReadTimeoutException);
     }
 
-    // -----------------------------------------------------------------------
-    // Test 4 — RequestConsumedEvent transitions READ → PERSIST
-    //
-    // When LastHttpContent arrives, READ is cancelled and RequestConsumedEvent
-    // transitions the phase to PERSIST.
-    // -----------------------------------------------------------------------
+    /**
+     * When {@link LastHttpContent} arrives, READ is cancelled and
+     * {@link RequestConsumedEvent} transitions the phase to PERSIST.
+     */
     @Test
     public void testRequestConsumedEventTransitionsToPersist() throws Exception {
         buildChannel();
@@ -375,12 +313,11 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertEquals("Phase must be PERSIST after purge completes", "PERSIST", phase(channel));
     }
 
-    // -----------------------------------------------------------------------
-    // Test 5 — Persist timeout fires after purge if no next request arrives
-    //
-    // After purge completes and PERSIST is armed, the persist timeout must
-    // fire if the client is silent. It must NOT be the read timeout.
-    // -----------------------------------------------------------------------
+    /**
+     * After purge completes and PERSIST is armed, the persist timeout must fire
+     * if the client is silent. It must be a {@link PersistTimeoutException}, not
+     * a read timeout.
+     */
     @Test
     public void testPersistTimeoutFiresAfterPurgeIfClientSilent() throws Exception {
         buildChannel();
@@ -412,12 +349,10 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertTrue("Must be PersistTimeoutException", t instanceof PersistTimeoutException);
     }
 
-    // -----------------------------------------------------------------------
-    // Test 6 — Persist timeout does NOT fire within its window
-    //
-    // If the next request arrives before the persist timeout expires, no
-    // exception fires and the phase transitions to OFF/READ as normal.
-    // -----------------------------------------------------------------------
+    /**
+     * If the next request arrives before the persist timeout expires, no
+     * exception fires and the phase transitions back to OFF/READ as normal.
+     */
     @Test
     public void testPersistTimeoutCancelledByNextRequest() throws Exception {
         CapturingHandler cap = buildChannel();
@@ -445,13 +380,10 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertTrue("Channel still alive", channel.isActive());
     }
 
-    // -----------------------------------------------------------------------
-    // Test 7 — Body fully consumed BEFORE response: PERSIST armed immediately
-    //
-    // If the body is already consumed when the response terminal write
-    // completes, no PurgeStartedEvent fires and PERSIST is armed directly
-    // by RequestConsumedEvent from verifyNeedRead.
-    // -----------------------------------------------------------------------
+    /**
+     * Body consumed before the response: no purge READ phase, PERSIST is armed
+     * directly via {@link RequestConsumedEvent}.
+     */
     @Test
     public void testBodyConsumedBeforeResponseArmsPersistDirectly() throws Exception {
         buildChannel();
@@ -470,13 +402,11 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertEquals("PERSIST phase immediately", "PERSIST", phase(channel));
     }
 
-    // -----------------------------------------------------------------------
-    // Test 8 — Multi-fragment purge: read timer resets on each fragment,
-    //          PERSIST only armed after all fragments consumed
-    //
-    // Three fragments arrive across separate read cycles. The read timer
-    // must reset on each one, and PERSIST must not be armed until the last.
-    // -----------------------------------------------------------------------
+    /**
+     * Three body fragments arrive across separate read cycles during purge.
+     * The read timer must reset on each fragment, and PERSIST must not be
+     * armed until the terminal fragment arrives.
+     */
     @Test
     public void testMultiFragmentPurgeReadTimerResetsEachTime() throws Exception {
         buildChannel();
@@ -509,12 +439,10 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertNull("No timeout at PERSIST start", extractException(channel));
     }
 
-    // -----------------------------------------------------------------------
-    // Test 9 — Fully consumed request (no purge): no READ phase, just PERSIST
-    //
-    // Normal keep-alive: app reads the body, then the response is written.
-    // There should be no READ phase for purge; PERSIST arms after response.
-    // -----------------------------------------------------------------------
+    /**
+     * Normal keep-alive: body fully consumed before the response is written.
+     * No purge READ phase must occur — the handler goes straight to PERSIST.
+     */
     @Test
     public void testNormalKeepAliveNeverEntersPurgeReadPhase() throws Exception {
         buildChannel();
@@ -531,12 +459,10 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertEquals("PERSIST directly, no purge READ phase", "PERSIST", phase(channel));
     }
 
-    // -----------------------------------------------------------------------
-    // Test 10 — PurgeStartedEvent and RequestConsumedEvent fire exactly once
-    //
-    // A capturing user-event handler counts the events. Both must fire
-    // exactly once per exchange, and not at all on normal fully-consumed flow.
-    // -----------------------------------------------------------------------
+    /**
+     * {@link PurgeStartedEvent} and {@link RequestConsumedEvent} each fire exactly
+     * once per exchange where the body was not consumed before the response.
+     */
     @Test
     public void testPurgeEventsFireExactlyOncePerExchange() {
         EventCapture events = new EventCapture();
@@ -597,31 +523,10 @@ public class TimeoutHandlerPhaseTransitionTests {
     }
 
 
-    // -----------------------------------------------------------------------
-    // Test 11 — Pipelined admission: no spurious timeout, channel stays alive
-    //
-    // When A's LastHttpContent is forwarded downstream, ReadFlowHandler admits
-    // the queued request B from the pending queue. The admission path fires B's
-    // HttpRequest via readFlowHandlerContext.fireChannelRead, which starts below
-    // TimeoutHandler — so TimeoutHandler does not see B's HttpRequest and does
-    // not arm a timer at drain time.
-    //
-    // This matches Channel Framework behaviour: in CF, pipelining dispatches B
-    // on a new thread via handlePipeLining() → ready() → processRequest(), where
-    // the read timer is armed at the TCP read() call, not when the HttpRequest
-    // message is parsed. CF gives no guarantee that a body-read timer is running
-    // at the exact moment B's headers are decoded from a pre-buffered pipeline.
-    //
-    // The invariants we DO require (matching CF):
-    //   1. The channel stays alive after the drain — no spurious exception/close.
-    //   2. B was actually admitted (cap.requests.size() == 2).
-    //   3. No spurious timeout exception is fired on the pipeline.
-    //
-    // When B's body chunks subsequently arrive on the wire they pass through
-    // TimeoutHandler.channelRead normally, which re-arms READ via resetRead()
-    // if phase is already READ, or arms it fresh when the next HttpRequest
-    // arrives from the socket.
-    // -----------------------------------------------------------------------
+    /**
+     * Pipelined admission: B is drained from the queue below {@code TimeoutHandler},
+     * so no timer is armed at drain time. Channel stays alive, no spurious timeout.
+     */
     @Test
     public void testPipelinedNextRequestTimerNotCancelledByPriorTerminalContent()
             throws Exception {
@@ -654,20 +559,15 @@ public class TimeoutHandlerPhaseTransitionTests {
         assertFalse("requestConsumed=false for B (body not yet consumed)", state().isRequestConsumed());
 
         // The channel must be alive and no spurious exception must have been fired.
-        // (Matches CF: handlePipeLining dispatches B on a new thread; no timer is
-        // guaranteed to be running at the moment B's headers are decoded from the
-        // pre-buffered pipeline — the timer is armed when the TCP read() is issued.)
         assertTrue("channel alive after pipelined admission", channel.isActive());
         assertNull("no spurious timeout after pipelined admission", extractException(channel));
     }
 
-    // -----------------------------------------------------------------------
-    // Test 12 — Pipelined bodyless next request: timer reset correctly
-    //
-    // Same as Test 11 but B is a bodyless GET. After admission, TimeoutHandler
-    // must NOT be in READ phase (no body), so no timer is armed. This verifies
-    // the timer snapshot check does not break the bodyless-request path.
-    // -----------------------------------------------------------------------
+    /**
+     * Pipelined admission where B is a bodyless GET. After admission,
+     * {@code TimeoutHandler} must not be in READ phase (no body to time),
+     * and no spurious exception must be fired.
+     */
     @Test
     public void testPipelinedBodylessNextRequestNoTimerArmed() throws Exception {
         CapturingHandler cap = buildChannel();
@@ -696,10 +596,6 @@ public class TimeoutHandlerPhaseTransitionTests {
         // anyway, so no exception either way. Just assert channel is alive.
         assertTrue("channel alive", channel.isActive());
     }
-
-    // -----------------------------------------------------------------------
-    // Helpers
-    // -----------------------------------------------------------------------
 
     private static Throwable extractException(EmbeddedChannel ch) {
         try {

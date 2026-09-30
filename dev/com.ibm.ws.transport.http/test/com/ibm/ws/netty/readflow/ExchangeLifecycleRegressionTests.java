@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ExchangeLifecycle;
-import com.ibm.ws.http.netty.pipeline.inbound.read.ExchangeLifecycle.CleanupAction;
 import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
@@ -52,43 +51,9 @@ import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.ReferenceCountUtil;
 
 /**
- * Regression tests for the per-exchange lifecycle coordinator ({@link ExchangeLifecycle})
- * and its integration with the next-request admission gate in {@link ReadFlowHandler}.
- *
- * <h3>Defects addressed</h3>
- * <ul>
- *   <li><strong>Unarmed bypass in {@code isCleanupComplete()}</strong> — the old
- *       implementation returned {@code !armed || cleanupComplete}, meaning a freshly
- *       created lifecycle (before either signal) reported cleanup complete.  This
- *       allowed B to be admitted immediately without waiting for A's cleanup.
- *       Fixed: {@code isCleanupComplete()} returns {@code true} only when the
- *       {@code COMPLETE} state has been reached.</li>
- *   <li><strong>"No prior exchange" not separate from "active exchange"</strong> —
- *       {@code FlowState.activeLifecycle} was pre-initialised to {@code new ExchangeLifecycle()},
- *       so the first request consulted a lifecycle that was never armed.  Fixed:
- *       {@code activeLifecycle} starts as {@code null}; {@link FlowState#isAdmissionEligible()}
- *       returns {@code true} when {@code null}.</li>
- *   <li><strong>Admission bypass in LastHttpContent handler</strong> — the terminal-body
- *       branch called {@code drainPendingAdmission()} without checking lifecycle cleanup.
- *       Fixed: now guarded by {@code isAdmissionEligible()}.</li>
- *   <li><strong>Admission bypass in {@code markRequestConsumed()}</strong> — could
- *       drain before {@code isc.clear()} had run.  Fixed: guarded by {@code isAdmissionEligible()}.</li>
- *   <li><strong>Cleanup failure misclassified as admission failure</strong> — Fixed:
- *       {@code tryCleanup} catches only the CleanupAction; {@code onCleanupComplete} runs
- *       outside the catch boundary.  Admission/notification failures use
- *       {@link ReadFlowHandler#onCleanupNotificationFailed}.</li>
- *   <li><strong>Signal ISC read on worker thread</strong> — Fixed: lifecycle is looked up
- *       on the event loop inside the submitted task; ISC is bound via
- *       {@code bindCleanupAction} before dispatch.</li>
- * </ul>
- *
- * <h3>Test structure</h3>
- * <p>Tests A–D exercise the production {@link ExchangeLifecycle} coordinator directly
- * using an {@link EmbeddedChannel} as the event-loop execution context (synchronous,
- * deterministic). Tests E–H exercise admission-gate integration via the full
- * {@link ReadFlowHandler} pipeline, also on an {@code EmbeddedChannel}.
- * Test I exercises cleanup failure/success paths using a real {@link CleanupAction}.
- * Test G tests buffered-byte accounting on {@link BodyQueue}.
+ * Regression tests for {@link ExchangeLifecycle} and the next-request admission
+ * gate: signal ordering, exactly-once cleanup, stale callbacks, all admission
+ * prerequisites, cleanup failure paths, and {@link BodyQueue} byte accounting.
  */
 public class ExchangeLifecycleRegressionTests {
 
@@ -113,10 +78,7 @@ public class ExchangeLifecycleRegressionTests {
     // Helper: minimal EmbeddedChannel carrying a ReadFlowHandler pipeline
     // -----------------------------------------------------------------------
 
-    /**
-     * Builds a channel with ReadFlowHandler + a capturing downstream handler.
-     * Registers the handler for teardown release.
-     */
+    /** Builds the channel pipeline and registers the handler for teardown release. */
     private CapturingHandler buildChannel() {
         CapturingHandler cap = new CapturingHandler();
         allCapturingHandlers.add(cap);
@@ -138,12 +100,7 @@ public class ExchangeLifecycleRegressionTests {
     // Lifecycle signal helpers
     // -----------------------------------------------------------------------
 
-    /**
-     * Ensures the current exchange lifecycle has a cleanup action bound.
-     * If the lifecycle is not yet bound, a no-op action is bound so that tests
-     * which do not need to inspect the cleanup action can call signal helpers
-     * without violating the UNBOUND contract.
-     */
+    /** Binds a no-op cleanup action if the lifecycle is UNBOUND, satisfying the contract. */
     private void ensureBound() {
         ExchangeLifecycle lc = state().getActiveLifecycle();
         if (lc != null) {
@@ -155,11 +112,7 @@ public class ExchangeLifecycleRegressionTests {
         }
     }
 
-    /**
-     * Signals bodyDone on the lifecycle belonging to the current exchange.
-     * Binds a no-op cleanup action first if the lifecycle is UNBOUND, so tests
-     * that do not explicitly bind still satisfy the contract.
-     */
+    /** Signals bodyDone on the current lifecycle, binding a no-op first if UNBOUND. */
     private void signalBodyDone() {
         ensureBound();
         ExchangeLifecycle lc = state().getActiveLifecycle();
@@ -168,20 +121,14 @@ public class ExchangeLifecycleRegressionTests {
         channel.runPendingTasks();
     }
 
-    /**
-     * Signals bodyDone on a specific lifecycle instance.
-     * The caller is responsible for ensuring the lifecycle is already bound.
-     */
+    /** Signals bodyDone directly on {@code lc}. */
     private void signalBodyDone(ExchangeLifecycle lc) {
         ChannelHandlerContext c = ctx();
         lc.signalBodyDone(c);
         channel.runPendingTasks();
     }
 
-    /**
-     * Signals appDone on the lifecycle belonging to the current exchange.
-     * Binds a no-op cleanup action first if the lifecycle is UNBOUND.
-     */
+    /** Signals appDone on the current lifecycle, binding a no-op first if UNBOUND. */
     private void signalAppDone() {
         ensureBound();
         ExchangeLifecycle lc = state().getActiveLifecycle();
@@ -190,10 +137,7 @@ public class ExchangeLifecycleRegressionTests {
         channel.runPendingTasks();
     }
 
-    /**
-     * Signals appDone on a specific lifecycle instance.
-     * The caller is responsible for ensuring the lifecycle is already bound.
-     */
+    /** Signals appDone directly on {@code lc}. */
     private void signalAppDone(ExchangeLifecycle lc) {
         ChannelHandlerContext c = ctx();
         lc.signalAppDone(c);
@@ -237,16 +181,9 @@ public class ExchangeLifecycleRegressionTests {
         channel.runPendingTasks();
     }
 
-    // -----------------------------------------------------------------------
-    // Test A0 — First request is admitted with no prior lifecycle (isAdmissionEligible=true)
-    // -----------------------------------------------------------------------
-
-    /**
-     * A0 — Before any exchange: activeLifecycle is null, isAdmissionEligible returns true.
-     * First HttpRequest must be admitted without consulting a lifecycle.
-     */
+    /** Before the first exchange there is no lifecycle; isAdmissionEligible is true and the first request is admitted immediately. */
     @Test
-    public void testA0_firstRequestAdmittedWithNoPriorLifecycle() {
+    public void testFirstRequestAdmittedWithNoPriorLifecycle() {
         CapturingHandler cap = buildChannel();
         FlowState s = state();
 
@@ -264,15 +201,9 @@ public class ExchangeLifecycleRegressionTests {
         assertNotNull("lifecycle installed for A", s.getActiveLifecycle());
     }
 
-    // -----------------------------------------------------------------------
-    // Test A1 — Freshly admitted exchange starts with cleanup incomplete
-    // -----------------------------------------------------------------------
-
-    /**
-     * A1 — After admission, before any signal, lifecycle reports cleanup incomplete.
-     */
+    /** Freshly admitted lifecycle reports cleanup incomplete until both signals arrive. */
     @Test
-    public void testA1_freshlyAdmittedExchangeCleanupIncomplete() {
+    public void testFreshlyAdmittedExchangeCleanupIncomplete() {
         buildChannel();
 
         FullHttpRequest reqA = bodylessGet("/a");
@@ -287,16 +218,9 @@ public class ExchangeLifecycleRegressionTests {
         assertFalse("not eligible for admission mid-exchange", state().isAdmissionEligible());
     }
 
-    // -----------------------------------------------------------------------
-    // Test A2 — Body arrival alone must not clear application state
-    // -----------------------------------------------------------------------
-
-    /**
-     * A2 — bodyDone fires first (bodyless/full request), then appDone fires.
-     * cleanupComplete must be false after bodyDone alone and true only after appDone.
-     */
+    /** bodyDone first: cleanup remains incomplete until appDone also fires. */
     @Test
-    public void testA2_bodyDoneFirst_cleanupOnlyAfterBothSignals() {
+    public void testBodyDoneFirst_cleanupOnlyAfterBothSignals() {
         buildChannel();
         FullHttpRequest reqA = bodylessGet("/a");
         channel.writeInbound(reqA);
@@ -315,11 +239,9 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("isAdmissionEligible after cleanup", state().isAdmissionEligible());
     }
 
-    /**
-     * A3 — Duplicate bodyDone must be idempotent; cleanup still waits for appDone.
-     */
+    /** Duplicate bodyDone is ignored; cleanup still waits for appDone. */
     @Test
-    public void testA3_duplicateBodyDoneIsIdempotent() {
+    public void testDuplicateBodyDoneIsIdempotent() {
         buildChannel();
         channel.writeInbound(bodylessGet("/a"));
         channel.runPendingTasks();
@@ -334,15 +256,9 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("cleanup complete after appDone", lc.isCleanupComplete());
     }
 
-    // -----------------------------------------------------------------------
-    // Test B — Both orderings clean exactly once
-    // -----------------------------------------------------------------------
-
-    /**
-     * B1 — bodyDone first, appDone second: cleanupComplete fires once after appDone.
-     */
+    /** bodyDone then appDone: cleanup fires exactly once. */
     @Test
-    public void testB1_bodyFirstAppSecond_cleanupOnlyAfterAppDone() {
+    public void testBodyFirstAppSecond_cleanupOnlyAfterAppDone() {
         buildChannel();
         channel.writeInbound(bodylessGet("/b1"));
         channel.runPendingTasks();
@@ -356,11 +272,9 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("cleanup fires once both signals present", lc.isCleanupComplete());
     }
 
-    /**
-     * B2 — appDone first (early response), bodyDone second: cleanup fires after bodyDone.
-     */
+    /** appDone first (early response), bodyDone second: cleanup fires after bodyDone. */
     @Test
-    public void testB2_appFirstBodySecond_cleanupOnlyAfterBodyDone() {
+    public void testAppFirstBodySecond_cleanupOnlyAfterBodyDone() {
         buildChannel();
         channel.writeInbound(bodylessGet("/b2"));
         channel.runPendingTasks();
@@ -374,15 +288,9 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("cleanup fires after body arrives", lc.isCleanupComplete());
     }
 
-    // -----------------------------------------------------------------------
-    // Test C — Idempotent signals / exactly-once cleanup
-    // -----------------------------------------------------------------------
-
-    /**
-     * C1 — Duplicate appDone must be idempotent.
-     */
+    /** Duplicate appDone is ignored; cleanup still waits for bodyDone. */
     @Test
-    public void testC1_duplicateAppDoneIsIdempotent() {
+    public void testDuplicateAppDoneIsIdempotent() {
         buildChannel();
         channel.writeInbound(bodylessGet("/c1"));
         channel.runPendingTasks();
@@ -397,14 +305,9 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("cleanup complete", lc.isCleanupComplete());
     }
 
-    /**
-     * C2 — Both signals delivered; then duplicates of each must not trigger
-     * a second cleanup. cleanupComplete is a one-way latch.
-     *
-     * Uses a counting CleanupAction to verify cleanup runs exactly once.
-     */
+    /** After both signals, duplicate signals must not trigger a second cleanup. */
     @Test
-    public void testC2_noDuplicateCleanupAfterComplete() {
+    public void testNoDuplicateCleanupAfterComplete() {
         buildChannel();
         channel.writeInbound(bodylessGet("/c2"));
         channel.runPendingTasks();
@@ -425,19 +328,12 @@ public class ExchangeLifecycleRegressionTests {
         assertEquals("cleanup still called exactly once after duplicates", 1, cleanupCount.get());
     }
 
-    // -----------------------------------------------------------------------
-    // Test D — Stale callbacks
-    // -----------------------------------------------------------------------
-
     /**
-     * D1 — Stale callback for exchange A must not affect exchange B's lifecycle.
-     *
-     * Exchange A fully completes (lifecycle closed). Exchange B starts (new lifecycle
-     * installed via nextExchangeId). A stale delayed callback for A calls
-     * signalBodyDone on A's (old, captured) lifecycle. B's lifecycle must be unaffected.
+     * A stale bodyDone signal on A's completed lifecycle must not affect B's
+     * pending lifecycle.
      */
     @Test
-    public void testD1_staleCallbackForADoesNotAffectB() {
+    public void testStaleCallbackForADoesNotAffectB() {
         buildChannel();
 
         // Admit A (bodyless GET).
@@ -479,14 +375,9 @@ public class ExchangeLifecycleRegressionTests {
                     state().isAdmissionEligible());
     }
 
-    /**
-     * D2 — Concurrent bodyDone + appDone: cleanup fires exactly once.
-     *
-     * Both orderings verified over 500 iterations using separate lifecycle instances.
-     * Uses a counting CleanupAction to verify exactly-once semantics.
-     */
+    /** Both signal orderings produce exactly-once cleanup, verified over 500 iterations. */
     @Test
-    public void testD2_bothOrderingsCleanupExactlyOnce() throws Exception {
+    public void testBothOrderingsCleanupExactlyOnce() throws Exception {
         buildChannel();
         final ChannelHandlerContext c = ctx();
 
@@ -531,17 +422,9 @@ public class ExchangeLifecycleRegressionTests {
         assertEquals("all app-first orderings cleaned up", iterations, appFirstCompleted);
     }
 
-    // -----------------------------------------------------------------------
-    // Test E — Admission during cleanup: B stays blocked until cleanupComplete
-    // -----------------------------------------------------------------------
-
-    /**
-     * E1 — B is queued; A's lifecycle completes; B is admitted exactly once.
-     *
-     * Uses a counting CleanupAction to verify cleanup runs before B's dispatch.
-     */
+    /** Queued B is admitted exactly once after A's lifecycle completes; cleanup runs before dispatch. */
     @Test
-    public void testE1_admissionGatedOnLifecycleComplete() {
+    public void testAdmissionGatedOnLifecycleComplete() {
         CapturingHandler cap = buildChannel();
 
         // Admit request A (bodyless GET).
@@ -586,12 +469,9 @@ public class ExchangeLifecycleRegressionTests {
         // releaseAll() handled by teardown
     }
 
-    /**
-     * E2 — Response-first ordering: appDone fires before bodyDone.
-     * B must remain blocked until bodyDone also arrives.
-     */
+    /** appDone fires before bodyDone (response-first): B stays blocked until bodyDone. */
     @Test
-    public void testE2_responseFirstBodySecond_BAdmittedAfterBodyDone() {
+    public void testResponseFirstBodySecond_BAdmittedAfterBodyDone() {
         CapturingHandler cap = buildChannel();
 
         channel.writeInbound(bodylessGet("/a"));
@@ -622,11 +502,9 @@ public class ExchangeLifecycleRegressionTests {
         // releaseAll() handled by teardown
     }
 
-    /**
-     * E3 — Terminal-content (LastHttpContent) cannot admit queued B while lifecycle pending.
-     */
+    /** LastHttpContent arrival alone cannot admit B while the lifecycle is still pending. */
     @Test
-    public void testE3_lastHttpContentDoesNotAdmitBWhileLifecyclePending() {
+    public void testLastHttpContentDoesNotAdmitBWhileLifecyclePending() {
         CapturingHandler cap = buildChannel();
 
         // A with a streaming body.
@@ -666,13 +544,9 @@ public class ExchangeLifecycleRegressionTests {
                      2, cap.admitted.stream().filter(m -> m instanceof HttpRequest).count());
     }
 
-    /**
-     * E4 — Direct incoming B (not queued) obeys the same gate as queued B.
-     *
-     * B arrives after the response write completes but before lifecycle signals.
-     */
+    /** A directly-arriving B (not pre-queued) obeys the same lifecycle gate as a queued B. */
     @Test
-    public void testE4_directIncomingBObeysLifecycleGate() {
+    public void testDirectIncomingBObeysLifecycleGate() {
         CapturingHandler cap = buildChannel();
 
         channel.writeInbound(bodylessGet("/a"));
@@ -699,14 +573,9 @@ public class ExchangeLifecycleRegressionTests {
         // releaseAll() handled by teardown
     }
 
-    /**
-     * E5 — drainPendingAdmission: each prerequisite independently blocks drain.
-     *
-     * Verifies central admission enforcement: attempt drain while each gate is
-     * unsatisfied; assert no request is dequeued or dispatched.
-     */
+    /** Each admission prerequisite (responseInFlight, requestConsumed, lifecycle) independently blocks drain. */
     @Test
-    public void testE5_centralAdmissionEnforcesAllPrerequisites() {
+    public void testCentralAdmissionEnforcesAllPrerequisites() {
         CapturingHandler cap = buildChannel();
 
         // Admit A.
@@ -752,16 +621,9 @@ public class ExchangeLifecycleRegressionTests {
         // releaseAll() handled by teardown
     }
 
-    // -----------------------------------------------------------------------
-    // Test F — Stale callback: A's delayed lifecycle signal must not corrupt B
-    // -----------------------------------------------------------------------
-
-    /**
-     * F1 — A's stale signalAppDone arrives after B is admitted.
-     * B's lifecycle must not be affected.
-     */
+    /** A stale appDone on A's lifecycle after B is admitted must not affect B. */
     @Test
-    public void testF1_staleAppDoneForADoesNotCorruptB() {
+    public void testStaleAppDoneForADoesNotCorruptB() {
         CapturingHandler cap = buildChannel();
 
         // Admit A.
@@ -799,15 +661,9 @@ public class ExchangeLifecycleRegressionTests {
         // releaseAll() handled by teardown
     }
 
-    /**
-     * F2 — Exchange binding: resources bound to A are used even after B begins.
-     *
-     * A CleanupAction that records which ISC-like object it sees is bound to A.
-     * After B is admitted (with a different spy bound to B), a delayed A signal
-     * fires. Verify A's spy is called (not B's), and B's state is unaffected.
-     */
+    /** Resources (CleanupAction) bound to A are used by A's delayed signal; B's spy is never called. */
     @Test
-    public void testF2_exchangeBindingUsesCorrectResources() {
+    public void testExchangeBindingUsesCorrectResources() {
         CapturingHandler cap = buildChannel();
 
         // Admit A.
@@ -848,18 +704,9 @@ public class ExchangeLifecycleRegressionTests {
         // releaseAll() handled by teardown
     }
 
-    // -----------------------------------------------------------------------
-    // Test I — Cleanup failure/success paths via real CleanupAction
-    // -----------------------------------------------------------------------
-
-    /**
-     * I1 — Cleanup action throws: lifecycle enters FAILED state, connection is
-     * closed, B is never admitted.
-     *
-     * Uses a real CleanupAction that throws, exercising the production scheduled path.
-     */
+    /** Throwing cleanup action transitions lifecycle to FAILED, closes the connection, and blocks B forever. */
     @Test
-    public void testI1_cleanupActionThrows_lifecycleFailed_BNeverAdmitted() {
+    public void testCleanupActionThrows_lifecycleFailed_BNeverAdmitted() {
         CapturingHandler cap = buildChannel();
 
         // Admit A.
@@ -904,14 +751,9 @@ public class ExchangeLifecycleRegressionTests {
         assertEquals("B never admitted after cleanup failure", 1, cap.admitted.size());
     }
 
-    /**
-     * I2 — FAILED state: duplicate signals do not retry cleanup.
-     *
-     * After cleanup fails, subsequent body/app signals must be ignored.
-     * No retry, no transition to COMPLETE, no admission.
-     */
+    /** FAILED lifecycle ignores duplicate signals and does not retry cleanup. */
     @Test
-    public void testI2_failedStateIgnoresDuplicateSignals_noRetry() {
+    public void testFailedStateIgnoresDuplicateSignals_noRetry() {
         buildChannel();
         channel.writeInbound(bodylessGet("/a"));
         channel.runPendingTasks();
@@ -923,7 +765,6 @@ public class ExchangeLifecycleRegressionTests {
             throw new RuntimeException("test failure");
         });
 
-        // Trigger both signals to cause cleanup failure.
         signalBodyDone();
         signalAppDone();
         channel.runPendingTasks();
@@ -931,45 +772,41 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("lifecycle FAILED", lc.isCleanupFailed());
         assertFalse("lifecycle not COMPLETE", lc.isCleanupComplete());
         assertEquals("cleanup attempted once", 1, cleanupAttempts.get());
+    }
 
-        // Duplicate signals after FAILED — must not retry.
-        // Channel is closed after failure; use a fresh channel to get an active context
-        // for the standalone state-machine test.
-        EmbeddedChannel standalone2Channel = new EmbeddedChannel(ReadFlowHandler.INSTANCE);
+    /** Standalone FAILED lifecycle ignores duplicate signals (separate channel, not re-thrown). */
+    @Test
+    public void testStandaloneFailedStateIgnoresDuplicateSignals() {
+        EmbeddedChannel standaloneChannel = new EmbeddedChannel(ReadFlowHandler.INSTANCE);
         try {
-        ChannelHandlerContext standaloneCtx =
-            standalone2Channel.pipeline().context(ReadFlowHandler.class);
+            ChannelHandlerContext standaloneCtx =
+                standaloneChannel.pipeline().context(ReadFlowHandler.class);
 
-        ExchangeLifecycle standalone = new ExchangeLifecycle();
-        AtomicInteger standaloneCount = new AtomicInteger(0);
-        standalone.bindCleanupAction(() -> {
-            standaloneCount.incrementAndGet();
-            throw new RuntimeException("retry attempt");
-        });
-        standalone.signalBodyDone(standaloneCtx);
-        standalone.signalAppDone(standaloneCtx);
-        assertTrue("standalone: FAILED after first pair", standalone.isCleanupFailed());
-        assertEquals("standalone: cleanup called once", 1, standaloneCount.get());
+            ExchangeLifecycle standalone = new ExchangeLifecycle();
+            AtomicInteger standaloneCount = new AtomicInteger(0);
+            standalone.bindCleanupAction(() -> {
+                standaloneCount.incrementAndGet();
+                throw new RuntimeException("retry attempt");
+            });
+            standalone.signalBodyDone(standaloneCtx);
+            standalone.signalAppDone(standaloneCtx);
+            assertTrue("standalone: FAILED after first pair", standalone.isCleanupFailed());
+            assertEquals("standalone: cleanup called once", 1, standaloneCount.get());
 
-        // Now send duplicate signals.
-        standalone.signalBodyDone(standaloneCtx);
-        standalone.signalAppDone(standaloneCtx);
-        assertEquals("standalone: cleanup NOT called again after FAILED", 1, standaloneCount.get());
-        assertTrue("standalone: still FAILED", standalone.isCleanupFailed());
-        assertFalse("standalone: not COMPLETE", standalone.isCleanupComplete());
+            // Duplicate signals must not retry.
+            standalone.signalBodyDone(standaloneCtx);
+            standalone.signalAppDone(standaloneCtx);
+            assertEquals("standalone: cleanup NOT called again after FAILED", 1, standaloneCount.get());
+            assertTrue("standalone: still FAILED", standalone.isCleanupFailed());
+            assertFalse("standalone: not COMPLETE", standalone.isCleanupComplete());
         } finally {
-            try { standalone2Channel.finishAndReleaseAll(); } catch (Throwable ignored) {}
+            try { standaloneChannel.finishAndReleaseAll(); } catch (Throwable ignored) {}
         }
     }
 
-    /**
-     * I3 — Successful cleanup count/order: cleanup called exactly once, before B dispatch.
-     *
-     * Uses a counting CleanupAction. Verifies call count and that B sees COMPLETE
-     * only after cleanup has run.
-     */
+    /** Successful cleanup runs exactly once and completes before B is dispatched. */
     @Test
-    public void testI3_successfulCleanup_calledExactlyOnce_beforeBDispatch() {
+    public void testSuccessfulCleanup_calledExactlyOnce_beforeBDispatch() {
         CapturingHandler cap = buildChannel();
 
         channel.writeInbound(bodylessGet("/a"));
@@ -998,29 +835,12 @@ public class ExchangeLifecycleRegressionTests {
     }
 
     /**
-     * I4 — Notification failure: cleanup succeeds, coordinator's catch boundary
-     * preserves COMPLETE state and routes to the notification-failure handler.
-     *
-     * <p>The coordinator's {@code tryCleanup} wraps the {@code onCleanupComplete}
-     * call in its own try/catch.  We provoke that catch by removing the
-     * {@code ReadFlowHandler} from the pipeline between cleanup and notification:
-     * {@code onCleanupComplete} calls {@code state(context)}, which re-initialises
-     * a fresh {@link FlowState} on a handler-less context — causing
-     * {@code isRequestConsumed()} to return {@code true} and
-     * {@code hasPendingAdmission()} to return {@code false}, so the drain never
-     * happens and no exception fires through the notification path.
-     *
-     * <p>Because Netty's pipeline swallows exceptions from downstream handlers
-     * (routing them to {@code exceptionCaught} rather than re-throwing to the
-     * drain caller), the most reliable way to verify that A remains {@code COMPLETE}
-     * after any notification-path failure is to invoke
-     * {@link ReadFlowHandler#onCleanupNotificationFailed} directly on the already-
-     * {@code COMPLETE} lifecycle and assert that the state is preserved.  This
-     * validates the isolation guarantee without requiring a synthetic production-path
-     * exception that is not reachable in normal Netty channel execution.
+     * Cleanup succeeds but the notification path fails: the coordinator's catch
+     * boundary must preserve COMPLETE state and route to
+     * {@link ReadFlowHandler#onCleanupNotificationFailed} without flipping A to FAILED.
      */
     @Test
-    public void testI4_cleanupSucceedsNotificationFailed_AStaysComplete() {
+    public void testCleanupSucceedsNotificationFailed_AStaysComplete() {
         buildChannel();
         channel.writeInbound(bodylessGet("/a"));
         channel.runPendingTasks();
@@ -1054,15 +874,9 @@ public class ExchangeLifecycleRegressionTests {
         assertFalse("channel closed", channel.isActive());
     }
 
-    // -----------------------------------------------------------------------
-    // Test G — Buffered-byte accounting (BodyQueue)
-    // -----------------------------------------------------------------------
-
-    /**
-     * G1 — Serial enqueue/poll: accounting exact.
-     */
+    /** Serial enqueue/poll: {@code bytesRead} and {@code wantsInput} are exact. */
     @Test
-    public void testG1_serialEnqueuePollAccountingIsExact() {
+    public void testSerialEnqueuePollAccountingIsExact() {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
         ByteBuf b1 = Unpooled.buffer(10).writeBytes(new byte[10]);
         ByteBuf b2 = Unpooled.buffer(20).writeBytes(new byte[20]);
@@ -1084,14 +898,9 @@ public class ExchangeLifecycleRegressionTests {
         b1.release(); b2.release(); b3.release();
     }
 
-    /**
-     * G2 — Concurrent enqueue + poll on the SAME queue: final buffered count correct.
-     *
-     * Uses threshold assertions on the actual concurrent queue (not a fresh one)
-     * and does not use wantsInput() after EOS as proof of buffered count.
-     */
+    /** Concurrent enqueue + poll: all fragments polled, buffered counter reaches zero. */
     @Test(timeout = 15000)
-    public void testG2_concurrentEnqueuePollCountConverges() throws Exception {
+    public void testConcurrentEnqueuePollCountConverges() throws Exception {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
         final int fragmentSize = 100;
         final int totalFragments = 500;
@@ -1171,11 +980,9 @@ public class ExchangeLifecycleRegressionTests {
         for (ByteBuf b : callerRefs) b.release();
     }
 
-    /**
-     * G3 — drainAndRelease after partial poll: no double-release.
-     */
+    /** drainAndRelease after a partial poll releases only remaining queue refs; polled ref is untouched. */
     @Test
-    public void testG3_drainAfterPartialPollNoDoubleRelease() {
+    public void testDrainAfterPartialPollNoDoubleRelease() {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
 
         ByteBuf a = Unpooled.buffer(8).writeBytes(new byte[8]);
@@ -1201,15 +1008,9 @@ public class ExchangeLifecycleRegressionTests {
         a.release(); b.release(); c.release();
     }
 
-    // -----------------------------------------------------------------------
-    // Test H — Purge wakeup regressions
-    // -----------------------------------------------------------------------
-
-    /**
-     * H1 — Wakeup via purge: a reader blocked in awaitChange wakes when purge starts.
-     */
+    /** Blocked reader wakes when purge starts. */
     @Test(timeout = 5000)
-    public void testH1_purgeWakesBlockedReader() throws Exception {
+    public void testPurgeWakesBlockedReader() throws Exception {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
         AtomicBoolean woke = new AtomicBoolean(false);
         AtomicReference<Throwable> err = new AtomicReference<>();
@@ -1235,12 +1036,9 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("reader woke after purge", woke.get());
     }
 
-    /**
-     * H2 — Purge before token capture: reader enters awaitChange AFTER
-     * drainAndRelease; !purging predicate must cause immediate return.
-     */
+    /** Purge before token capture: awaitChange returns immediately via the !purging predicate. */
     @Test(timeout = 5000)
-    public void testH2_purgeBeforeTokenCapture() throws Exception {
+    public void testPurgeBeforeTokenCapture() throws Exception {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
 
         // Purge first.
@@ -1266,15 +1064,9 @@ public class ExchangeLifecycleRegressionTests {
         assertTrue("awaitChange returned immediately", returned.get());
     }
 
-    // -----------------------------------------------------------------------
-    // Test J — Binding-contract enforcement (new requirements)
-    // -----------------------------------------------------------------------
-
-    /**
-     * J1 — Missing binding: signals on UNBOUND lifecycle route to cleanup failure.
-     */
+    /** Signals on an UNBOUND lifecycle route to cleanup failure and close the channel. */
     @Test
-    public void testJ1_missingBinding_signalRouteToCleanupFailure() {
+    public void testMissingBinding_signalRouteToCleanupFailure() {
         buildChannel();
         channel.writeInbound(bodylessGet("/a"));
         channel.runPendingTasks();
@@ -1291,56 +1083,41 @@ public class ExchangeLifecycleRegressionTests {
         assertFalse("channel closed after UNBOUND failure", channel.isActive());
     }
 
-    /**
-     * J2 — Null binding rejected: bindCleanupAction(null) throws IllegalArgumentException.
-     */
+    /** bindCleanupAction(null) throws IllegalArgumentException. */
     @Test(expected = IllegalArgumentException.class)
-    public void testJ2_nullBindingRejected() {
+    public void testNullBindingRejected() {
         ExchangeLifecycle lc = new ExchangeLifecycle();
         lc.bindCleanupAction(null); // must throw
     }
 
-    /**
-     * J3 — Duplicate binding rejected: second bindCleanupAction throws IllegalStateException.
-     */
+    /** Second bindCleanupAction on an already-bound lifecycle throws IllegalStateException. */
     @Test(expected = IllegalStateException.class)
-    public void testJ3_duplicateBindingRejected() {
+    public void testDuplicateBindingRejected() {
         ExchangeLifecycle lc = new ExchangeLifecycle();
         lc.bindCleanupAction(() -> {});    // first bind — ok
         lc.bindCleanupAction(() -> {});    // second bind — must throw
     }
 
-    /**
-     * J4 — Late binding rejected: bindCleanupAction after signalBodyDone throws.
-     */
+    /** Second bind after a signal has been delivered also throws IllegalStateException. */
     @Test(expected = IllegalStateException.class)
-    public void testJ4_lateBindingAfterBodyDone_rejected() throws Exception {
-        buildChannel();
-        channel.writeInbound(bodylessGet("/a"));
-        channel.runPendingTasks();
-
-        ExchangeLifecycle lc = state().getActiveLifecycle();
-        // Force bodyDone flag by directly calling signalBodyDone (UNBOUND path closes channel,
-        // but we need to test binding rejection; use a fresh lifecycle not wired to a channel).
+    public void testDuplicateBindingAfterSignalRejected() throws Exception {
         EmbeddedChannel ch2 = new EmbeddedChannel(ReadFlowHandler.INSTANCE);
         try {
             ExchangeLifecycle lc2 = new ExchangeLifecycle();
-            lc2.bindCleanupAction(() -> {}); // bind first
+            lc2.bindCleanupAction(() -> {}); // first bind — ok
             ChannelHandlerContext ctx2 = ch2.pipeline().context(ReadFlowHandler.class);
-            lc2.signalBodyDone(ctx2);        // advance state
+            lc2.signalBodyDone(ctx2);        // advance state (lifecycle now bound + bodyDone)
 
-            // Now attempt to bind again — must be rejected as duplicate (already BOUND).
+            // Second bind — must throw (already bound).
             lc2.bindCleanupAction(() -> {});
         } finally {
             try { ch2.finishAndReleaseAll(); } catch (Throwable ignored) {}
         }
     }
 
-    /**
-     * J5 — Explicit no-op bound: lifecycle completes with zero side effects.
-     */
+    /** Explicit no-op action: lifecycle reaches COMPLETE with no side effects. */
     @Test
-    public void testJ5_explicitNoOpBound_lifecycleCompletes() {
+    public void testExplicitNoOpBound_lifecycleCompletes() {
         buildChannel();
         channel.writeInbound(bodylessGet("/a"));
         channel.runPendingTasks();
@@ -1356,15 +1133,11 @@ public class ExchangeLifecycleRegressionTests {
     }
 
     /**
-     * J6 — Stale-callback acceptance test: use production init + notification path.
-     *
-     * Finish A, start B (via writeInbound so B's lifecycle is installed by admitRequest),
-     * then deliver a delayed/repeated notification belonging to A's captured lifecycle.
-     * Assert that A's stale callback cannot signal B's lifecycle, cannot clear B's ISC,
-     * alter B's read demand, or corrupt admission state.
+     * Repeated stale callbacks on A's lifecycle after B is admitted must not signal
+     * B's lifecycle, alter read demand, or corrupt admission state.
      */
     @Test
-    public void testJ6_staleCallbackCannotAffectB_productionPath() {
+    public void testStaleCallbackCannotAffectB_productionPath() {
         CapturingHandler cap = buildChannel();
 
         // Admit A via the pipeline.
@@ -1411,18 +1184,9 @@ public class ExchangeLifecycleRegressionTests {
         assertEquals("no spurious admissions", 2, cap.admitted.size());
     }
 
-    // -----------------------------------------------------------------------
-    // Capturing downstream handler
-    // -----------------------------------------------------------------------
-
     /**
-     * Records every inbound message forwarded past the ReadFlowHandler.
-     * Does NOT auto-release so tests can inspect messages.
-     *
-     * <strong>Ownership:</strong> Call {@link #releaseAll()} or
-     * {@link ReferenceCountUtil#safeRelease} explicitly for each message.
-     * {@code finishAndReleaseAll()} in teardown releases Netty queues but NOT
-     * the references stored in {@link #admitted}.
+     * Records every inbound message forwarded past ReadFlowHandler.
+     * Does NOT auto-release; call {@link #releaseAll()} when done.
      */
     static class CapturingHandler extends io.netty.channel.ChannelInboundHandlerAdapter {
         final List<Object> admitted = new ArrayList<>();
@@ -1446,10 +1210,8 @@ public class ExchangeLifecycleRegressionTests {
     }
 
     /**
-     * Downstream handler that throws a {@link RuntimeException} on the
-     * {@code N+1}-th {@code channelRead} call (0-based: throws after
-     * {@code throwAfter} successful reads).  Used to inject a notification
-     * failure into the coordinator's catch boundary in test I4.
+     * Throws on the {@code N+1}-th {@code channelRead} to inject a notification
+     * failure into the coordinator's catch boundary.
      */
     static class ThrowingCapturingHandler extends CapturingHandler {
         private final int throwAfter;

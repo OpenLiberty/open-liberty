@@ -10,21 +10,12 @@
 package com.ibm.ws.http.netty.pipeline.inbound.read;
 
 /**
- * Pipeline user event fired by {@link ReadFlowHandler} when an async body
- * purge begins — i.e. the response has completed but the request body has
- * not yet been fully received from the wire.
- *
- * <p>{@link io.openliberty.http.netty.timeout.TimeoutHandler} listens for
- * this event and arms the {@code READ} phase so that each arriving body
- * fragment is governed by the read timeout, matching Channel Framework's
- * behaviour where every body buffer read during purge uses
- * {@code readTimeout} rather than {@code persistTimeout}.
- *
+ * Fired by {@link ReadFlowHandler} when an async body purge begins — the
+ * response has completed but the request body has not yet been fully received.
  * <p>Singleton — always reference {@link #INSTANCE}.
  */
 public final class PurgeStartedEvent {
 
-    /** Singleton — allocate once, reuse across all exchanges. */
     public static final PurgeStartedEvent INSTANCE = new PurgeStartedEvent();
 
     private PurgeStartedEvent() {}

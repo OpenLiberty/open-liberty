@@ -251,22 +251,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         isc.setNettyResponse(new DefaultHttpResponse(nettyRequest.protocolVersion(), HttpResponseStatus.OK, DefaultHttpHeadersFactory.headersFactory().withValidation(false)));
         this.nettyConnectionLink = new NettyConnectionLink(context.channel());
         super.init(nettyVc);
-
-        // Bind the cleanup action to the active exchange lifecycle and capture the
-        // lifecycle instance in boundLifecycle.  Both steps run synchronously on the
-        // event loop, after the ISC is configured and before any application worker
-        // can deliver signals.  Capturing the instance (not just the cleanup action)
-        // means that setBodyComplete() and signalAppDoneOnEventLoop() always signal
-        // the correct lifecycle even after this link is recycled for exchange B.
-        if (!this.isc.isNettyHttp2Request()) {
-            final HttpInboundServiceContextImpl iscForCleanup = this.isc;
-            final ExchangeLifecycle lifecycle =
-                ReadFlowHandler.state(context.channel()).getActiveLifecycle();
-            if (lifecycle != null) {
-                lifecycle.bindCleanupAction(iscForCleanup::clear);
-                this.boundLifecycle = lifecycle;
-            }
-        }
+        bindLifecycle(context);
     }
 
     public void initStreaming(ChannelHandlerContext ctx,
@@ -311,18 +296,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.nettyConnectionLink = new NettyConnectionLink(ctx.channel());
         super.init(nettyVc);
         this.linkIsReady = true;
-
-        // Bind the cleanup action to the active exchange lifecycle and capture the
-        // instance in boundLifecycle.  See comment in init() for rationale.
-        if (!this.isc.isNettyHttp2Request()) {
-            final HttpInboundServiceContextImpl iscForCleanup = this.isc;
-            final ExchangeLifecycle lifecycle =
-                ReadFlowHandler.state(ctx.channel()).getActiveLifecycle();
-            if (lifecycle != null) {
-                lifecycle.bindCleanupAction(iscForCleanup::clear);
-                this.boundLifecycle = lifecycle;
-            }
-        }
+        bindLifecycle(ctx);
     }
 
     public void nettyClose(VirtualConnection conn, Exception e) {
@@ -332,33 +306,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
-        // Release any application-unread body storage unconditionally so that
-        // queued fragments are not leaked regardless of whether the protocol
-        // body was already completely received (isBodyComplete) or not.
+        // Release any application-unread body storage unconditionally to avoid leaks.
+        // drainAndRelease() must run on the event loop (mutual exclusion with enqueueRetained).
+        // submitDrain() dispatches there if needed.
         //
-        // BodyQueue.drainAndRelease() must run on the Netty I/O event loop so
-        // that it is mutually exclusive with enqueueRetained() (also on the
-        // event loop). submitDrain() dispatches to the event loop if not already
-        // there, or calls drainAndRelease() directly if already on the loop.
-        //
-        // Three distinct states must be handled:
-        //
-        //   (a) Body not yet protocol-complete (!isBodyComplete):
-        //       The connection may be reused (shouldDrain=true) or torn down.
-        //       - Reuse: drain buffered fragments and let ReadFlowHandler drive
-        //         the remaining reads. isc.clear() fires unconditionally in
-        //         setBodyComplete() once the terminal body arrives.
-        //       - Teardown: drain queued fragments and unblock any reader.
-        //
-        //   (b) Body protocol-complete (isBodyComplete) but application-unread:
-        //       All wire bytes have arrived and the BodyQueue may still hold
-        //       retained fragments. Release them now; no further reads are needed.
-        //       The stream buffer inside HttpInputStreamImpl (if partially
-        //       consumed) is also released by drainAndRelease via the
-        //       isPurging() check in fillFromStreamingNettyLocked.
-        //
-        //   (c) Body protocol-complete and fully application-read:
-        //       Queue is empty; drainAndRelease is a no-op.
+        //   (a) Body not yet protocol-complete: drain buffered fragments and schedule
+        //       remaining reads via ReadFlowHandler. isc.clear() fires in setBodyComplete().
+        //   (b) Body protocol-complete but application-unread: release retained queue
+        //       fragments. drainAndRelease is idempotent when the queue is empty.
         HttpInputStreamImpl body = (this.request != null) ? this.request.getBody() : null;
         BodyQueue bodyQueue = (body != null) ? body.getBodyQueue() : null;
 
@@ -483,6 +438,24 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return;
 
     }
+
+    /**
+     * Binds the cleanup action to the active exchange lifecycle and captures the
+     * instance in {@link #boundLifecycle}. Both steps run synchronously on the event
+     * loop, after the ISC is configured and before any application worker can deliver
+     * signals. Capturing the instance (not just the action) means that
+     * {@link #setBodyComplete()} and {@link #signalAppDoneOnEventLoop()} always signal
+     * the correct lifecycle even after this link is recycled for a later exchange.
+     */
+    private void bindLifecycle(ChannelHandlerContext ctx) {
+        if (this.isc.isNettyHttp2Request()) return;
+        ExchangeLifecycle lifecycle = ReadFlowHandler.state(ctx.channel()).getActiveLifecycle();
+        if (lifecycle != null) {
+            lifecycle.bindCleanupAction(this.isc::clear);
+            this.boundLifecycle = lifecycle;
+        }
+    }
+
 
     /**
      * Submits {@link BodyQueue#drainAndRelease()} to the Netty I/O event loop.

@@ -24,42 +24,15 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 
 /**
- * Regression tests for the BodyQueue purge-path defects described in the
- * review findings.
- *
- * <h3>Finding 1 – Purge-path double release</h3>
- * The old code called {@code ReferenceCountUtil.safeRelease(buf)} when purging,
- * releasing a reference the queue did not own. The dispatcher's {@code finally}
- * block already releases {@code HttpContent}, which owns the underlying buffer.
- * Two releases → illegal reference count. Fix: do NOT release when discarding.
- *
- * <h3>Finding 2 – Fully-received but application-unread bodies</h3>
- * When the body was fully received ({@code signalEos()} called) but the
- * application never polled any fragment, retained queue fragments leaked.
- * Fix: {@code drainAndRelease()} must release retained refs even when EOS
- * was already set.
- *
- * <h3>Finding 3 – Purge race against concurrent enqueue</h3>
- * A producer that passed the {@code purging.get()==false} check before
- * {@code drainAndRelease()} set the flag could enqueue after the drain loop.
- * Fix: two-pass drain. Also, readers blocked inside {@code awaitChange()} must
- * see the purge flag after wakeup.
- *
- * <h3>Finding 5 – Cumulative byte accounting during purge</h3>
- * The old purge branch returned before incrementing {@code bytesRead}, so size
- * limits could be bypassed. Fix: count before routing decision.
+ * Regression tests for {@link BodyQueue} purge-path reference counting,
+ * EOS drain behaviour, {@code awaitChange} wakeup ordering, and cumulative
+ * byte accounting.
  */
 public class BodyQueuePurgeRegressionTests {
 
-    // -----------------------------------------------------------------------
-    // Finding 1: correct reference counting in the purge discard path
-    // -----------------------------------------------------------------------
-
     /**
-     * The caller owns the buffer reference and will release it. When
-     * {@code drainAndRelease} has set {@code purging=true}, a subsequent
-     * {@code enqueueRetained} must NOT release the buffer — only skip the
-     * retain-and-enqueue step. After the call, refCnt must still be 1.
+     * While purging, {@code enqueueRetained} must skip retain without releasing
+     * the caller's buffer. refCnt must remain 1.
      */
     @Test
     public void testEnqueueRetainedDuringPurgeDoesNotReleaseCallerBuffer() {
@@ -82,10 +55,8 @@ public class BodyQueuePurgeRegressionTests {
     }
 
     /**
-     * Converse: when NOT purging, {@code enqueueRetained} retains the buffer.
-     * The queue then owns that extra ref, and {@code drainAndRelease} must
-     * release it (exactly once). After drain, the original caller can release
-     * its own ref normally.
+     * When not purging, {@code enqueueRetained} retains the buffer; drain releases
+     * that ref exactly once, leaving the caller's ref intact.
      */
     @Test
     public void testEnqueueRetainedNotPurgingRetainsBuffer() {
@@ -138,18 +109,10 @@ public class BodyQueuePurgeRegressionTests {
         b.release();
     }
 
-    // -----------------------------------------------------------------------
-    // Finding 2: fully-received but application-unread bodies are drained
-    // -----------------------------------------------------------------------
-
     /**
-     * EOS is signalled (body fully received) but fragments were never polled.
-     * {@code drainAndRelease()} must still release the retained refs.
-     *
-     * Note: {@code isEos()} returns {@code true} only when BOTH the EOS flag is
-     * set AND the queue is empty (the application-facing "no more data" predicate).
-     * Here we verify that the EOS flag was accepted and that the retained buffer
-     * ref is still present before the drain.
+     * EOS signalled but fragments never polled: {@code drainAndRelease()} must
+     * still release the retained refs. {@code isEos()} becomes true only after
+     * the queue is empty.
      */
     @Test
     public void testDrainReleasesFragmentsWhenEosAlreadySet() {
@@ -174,11 +137,7 @@ public class BodyQueuePurgeRegressionTests {
         buf.release(); // caller releases
     }
 
-    /**
-     * EOS already set and queue already empty (body was fully consumed by the
-     * application): {@code drainAndRelease()} must be safe (no-op on the drain,
-     * sets purging).
-     */
+    /** EOS set and queue already empty: {@code drainAndRelease()} is a safe no-op. */
     @Test
     public void testDrainOnEmptyEosQueueIsSafe() {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
@@ -190,20 +149,9 @@ public class BodyQueuePurgeRegressionTests {
         assertTrue("isPurging after drain on empty EOS queue", queue.isPurging());
     }
 
-    // -----------------------------------------------------------------------
-    // Finding 3: purge race against concurrent enqueue
-    // -----------------------------------------------------------------------
-
     /**
-     * Ordering A: enqueue completes, THEN drain runs.
-     *
-     * The event-loop serialization model guarantees these two operations are
-     * mutually exclusive on the same thread, so the drain always sees any buffer
-     * that was enqueued before it ran.  This test verifies that invariant by
-     * calling them sequentially in order A→B: enqueue then drain.
-     *
-     * After drain: the queue-retained ref must be released; the caller's ref
-     * must survive; no buffer is stranded.
+     * Enqueue then drain: drain sees the buffer, releases the queue ref,
+     * and the caller's ref survives.
      */
     @Test
     public void testEnqueueBeforeDrainBufferReleasedByDrain() {
@@ -226,17 +174,8 @@ public class BodyQueuePurgeRegressionTests {
     }
 
     /**
-     * Ordering B: drain runs, THEN enqueue is called.
-     *
-     * This is the critical case the old two-pass code tried (and failed) to
-     * handle.  With the event-loop serialization model these two operations
-     * cannot interleave: drainAndRelease() and enqueueRetained() both run on
-     * the event loop, so "drain runs then enqueue is called" is a sequential,
-     * not concurrent, ordering.
-     *
-     * After drain: purging=true.  A subsequent enqueueRetained must discard
-     * without retaining.  The caller's ref must remain at 1 — no double-release,
-     * no stranded queue-owned ref.
+     * Drain then enqueue: after {@code purging=true}, a subsequent
+     * {@code enqueueRetained} discards without retaining; caller's ref stays at 1.
      */
     @Test
     public void testDrainBeforeEnqueueDiscardWithNoRetain() {
@@ -293,11 +232,8 @@ public class BodyQueuePurgeRegressionTests {
     }
 
     /**
-     * Reader blocked in {@code awaitChange()} sees the purge flag after
-     * {@code drainAndRelease()} signals and returns false.
-     *
-     * This is a deterministic multi-thread test: the reader waits on the
-     * signal lock; drainAndRelease() wakes it; the reader re-checks purging.
+     * Reader blocked in {@code awaitChange()} is woken by {@code drainAndRelease()}
+     * and sees {@code isPurging() == true} after wakeup.
      */
     @Test(timeout = 5000)
     public void testAwaitChangeWakesUpOnPurge() throws Exception {
@@ -337,22 +273,13 @@ public class BodyQueuePurgeRegressionTests {
         assertTrue("reader must see isPurging() after wakeup", seenPurge.get());
     }
 
-    // -----------------------------------------------------------------------
-    // Finding 2: reader/purge interleavings — awaitChange predicate includes
-    // !purging so all three timing windows are covered deterministically.
-    // -----------------------------------------------------------------------
-
     /**
-     * Interleaving B1 — reader already blocked in {@code awaitChange()} when
-     * purge begins.
+     * Reader already blocked in {@code awaitChange()} when purge begins.
      *
      * The reader captures its token before drain starts, then enters
      * {@code wait()}. {@code drainAndRelease()} calls {@code signalChange()},
      * which wakes the reader. The {@code !purging} predicate in
      * {@code awaitChange} causes it to exit.
-     *
-     * This case was handled correctly by the old code (the signal woke the
-     * reader); it is retained here to guard regressions.
      */
     @Test(timeout = 5000)
     public void testReaderAlreadyWaitingWhenPurgeBegins() throws Exception {
@@ -390,20 +317,9 @@ public class BodyQueuePurgeRegressionTests {
     }
 
     /**
-     * Interleaving B2 — purge occurs after the entry {@code isPurging()} check
-     * but before {@code signalToken()} is called.
-     *
-     * The reader sees {@code purging=false} at the fast-path entry check, then
-     * drain completes (setting {@code purging=true} and incrementing the signal),
-     * and only then does the reader capture the token.  Without {@code !purging}
-     * in the predicate, {@code awaitChange} would observe {@code signal==token}
-     * and block forever — no further signal is ever sent.
-     *
-     * With the fix, {@code awaitChange} exits immediately because
-     * {@code !purging} is already false when evaluated.
-     *
-     * This is the exact window described in Finding 2. The test uses a
-     * {@link CountDownLatch} pair to inject the drain at precisely this point.
+     * Purge completes between the entry {@code isPurging()} check and
+     * {@code signalToken()}: {@code awaitChange} must return immediately
+     * via the {@code !purging} predicate rather than blocking indefinitely.
      */
     @Test(timeout = 5000)
     public void testPurgeAfterEntryCheckBeforeTokenCapture() throws Exception {
@@ -419,10 +335,10 @@ public class BodyQueuePurgeRegressionTests {
         // then signal the drain thread to run, then call signalToken().
         Thread reader = new Thread(() -> {
             try {
-                // Step 1: entry check (simulated — queue.isPurging() == false here)
+                // Step 1: pass the entry check — isPurging() is false at this point.
                 assertFalse("isPurging false at entry check", queue.isPurging());
 
-                // Step 2: yield to allow drain to run
+                // Step 2: signal the drain thread and wait for it to complete.
                 afterEntryCheck.countDown();
                 drainComplete.await();          // wait for drain to finish
 
@@ -453,18 +369,9 @@ public class BodyQueuePurgeRegressionTests {
     }
 
     /**
-     * Interleaving B3 — purge occurs after {@code signalToken()} but before
-     * {@code awaitChange} enters {@code wait()}.
-     *
-     * The reader captures the token, then drain runs (sets {@code purging=true}
-     * and increments the signal), then the reader calls {@code awaitChange(token)}.
-     * At this point {@code signal > token}, so the while predicate is false
-     * immediately and {@code wait()} is never entered — the reader exits promptly.
-     *
-     * This case is handled by the existing {@code signal != lastToken} part of the
-     * predicate; the {@code !purging} clause provides defence-in-depth for the
-     * window where the signal happens to match (e.g. on a wrapped counter), but
-     * the fundamental exit path here is the token mismatch.
+     * Purge completes after token capture but before {@code awaitChange} enters
+     * {@code wait()}: the token mismatch ({@code signal > token}) causes immediate
+     * return without blocking.
      */
     @Test(timeout = 5000)
     public void testPurgeAfterTokenCaptureBeforeAwait() throws Exception {
@@ -501,19 +408,8 @@ public class BodyQueuePurgeRegressionTests {
     }
 
     /**
-     * Interleaving B4 — partial buffer left in {@link
-     * com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl} when purge
-     * begins: the buffer must be released and the reader must not block.
-     *
-     * This is the "partially consumed stream-owned buffer" case from Finding 2.
-     * We simulate it at the BodyQueue level: the reader has already polled a
-     * fragment (owns a retained ref), then purge fires. The reader must release
-     * the buffer and return false, not block.
-     *
-     * The BodyQueue itself does not hold the stream buffer — that is owned by
-     * HttpInputStreamImpl. This test verifies that awaitChange exits when
-     * purging=true so that HttpInputStreamImpl's post-wait purge check fires
-     * promptly and can release its buffer without requiring another fragment.
+     * Reader holds a polled fragment and is waiting in {@code awaitChange()};
+     * purge must wake it so the consumer can release the buffer without blocking.
      */
     @Test(timeout = 5000)
     public void testReaderWithConsumedBufferExitsOnPurge() throws Exception {
@@ -562,16 +458,7 @@ public class BodyQueuePurgeRegressionTests {
         frag.release(); // caller release
     }
 
-    // -----------------------------------------------------------------------
-    // Finding 5: cumulative byte accounting during purge
-    // -----------------------------------------------------------------------
-
-    /**
-     * Bytes discarded by the purge path must still be counted by
-     * {@code bytesRead()}. Multiple fragments — first two enqueued normally,
-     * then purge starts, last fragment arrives and is discarded. The total
-     * must include all three fragments.
-     */
+    /** Fragments discarded during purge are still counted by {@code bytesRead()}. */
     @Test
     public void testBytesReadCountsDiscardedPurgeFragments() {
         BodyQueue queue = new BodyQueue(UnpooledByteBufAllocator.DEFAULT);
@@ -603,13 +490,8 @@ public class BodyQueuePurgeRegressionTests {
     }
 
     /**
-     * The size limit check in the dispatcher uses {@code queue.bytesRead() + sizeOfCurrentChunk}.
-     * Verify that multiple individually-acceptable fragments whose combined size
-     * exceeds the limit are correctly counted even when later fragments arrive
-     * after purge begins.
-     *
-     * This test validates the accounting model; the actual rejection decision
-     * lives in the dispatcher.
+     * {@code bytesRead()} tracks cumulative bytes across the purge boundary;
+     * post-purge discards are included in the total.
      */
     @Test
     public void testCumulativeBytesTrackAcrossPurgeBoundary() {
@@ -673,10 +555,6 @@ public class BodyQueuePurgeRegressionTests {
         buf2.release();
         buf3.release();
     }
-
-    // -----------------------------------------------------------------------
-    // Edge cases: drainAndRelease idempotency and error/EOS signalling
-    // -----------------------------------------------------------------------
 
     /**
      * Calling {@code drainAndRelease()} twice must not double-release any buffer
