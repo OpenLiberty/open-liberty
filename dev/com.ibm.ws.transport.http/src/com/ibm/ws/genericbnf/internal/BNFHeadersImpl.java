@@ -3540,7 +3540,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     }
 
     /**
-     * Records the CRLF position for 
+     * Records the position of the most recently parsed CRLF sequence
      *
      * @param buff the current parse buffer
      */
@@ -3595,8 +3595,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                             // Setting pendingLFBeforeResume here so the next call knows the first
                             // byte it reads (the LF) completes this CRLF pair.
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "findCRLFTokenLength: CR is last byte of read buffer"
-                                    + " — setting pendingLFBeforeResume, deferring CRLF check to next call."
+                                Tr.debug(tc, "findCRLFTokenLength: CR last byte of buffer, setting pendingLFBeforeResume."
                                     + " buffPos=" + findCurrentBufferPosition(buff)
                                     + " byteLimit=" + this.byteLimit);
                             }
@@ -3626,33 +3625,35 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 break; // out of while
             } else if (BNFHeaders.LF == b) {
                 // This means a bare LF was found, verify if we should reject it
-                if (this.rejectHeaderLineFolding) {
-                    // check if pendingLFBeforeResume is set
-                    if (this.pendingLFBeforeResume) {
-                        //This LF is completing that split CRLF pair
-                        // treating it as a valid terminator rather than a bare LF.
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "findCRLFTokenLength: LF completes deferred CRLF pair"
-                                + " (CR was last byte of previous read buffer) — treating as valid CRLF."
-                                + " buffPos=" + findCurrentBufferPosition(buff));
-                        }
-                        this.pendingLFBeforeResume = false;
-                        this.bytePosition--;
-                        rc = TokenCodes.TOKEN_RC_CRLF;
-                        recordCRLFPosition(buff);
-                        break;
-                    }
+                if (this.rejectHeaderLineFolding && !this.pendingLFBeforeResume) {
+                    // A bare LF with no preceding CR in the same read is only valid when
+                    // pendingLFBeforeResume is set, meaning the CR arrived at the end of
+                    // the previous OS read and was deferred. Any other bare LF while
+                    // rejectHeaderLineFolding is enabled is obsolete line folding.
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "findCRLFTokenLength: bare LF detected with rejectHeaderLineFolding=true"
-                            + " — throwing MalformedMessageException."
+                            + " - throwing MalformedMessageException."
                             + " buffPos=" + findCurrentBufferPosition(buff)
                             + " pendingLF=" + this.pendingLFBeforeResume);
                     }
                     throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
-                } else {
+                }
+                if (this.pendingLFBeforeResume) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "findCRLFTokenLength: Found LF which we are treating as a delimiter");
+                        Tr.debug(tc, "findCRLFTokenLength: LF completes deferred CRLF pair"
+                            + " (CR was last byte of previous read buffer) - treating as valid CRLF."
+                            + " buffPos=" + findCurrentBufferPosition(buff));
                     }
+                    this.pendingLFBeforeResume = false;
+                    // Un-consume the LF so parseCRLFs will then read and count it as the
+                    // first LF of a potential end-of-headers CRLF-CRLF sequence.
+                    this.bytePosition--;
+                    rc = TokenCodes.TOKEN_RC_CRLF;
+                    recordCRLFPosition(buff);
+                    break;
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "findCRLFTokenLength: Found LF which we are treating as a delimiter");
                 }
                 // update counter if linefeed found
                 rc = TokenCodes.TOKEN_RC_DELIM;
