@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2022 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ public class GeneratorOptions {
     private SchemaVersion schemaVersion = SchemaVersion.v1_0;
     private OutputVersion outputVersion = OutputVersion.v1;
     private boolean compactOutput = false;
+    private boolean anyAttribute = true;
 
     /**
      * @return
@@ -128,7 +129,11 @@ public class GeneratorOptions {
                         System.out.println(MessageFormat.format(messages.getString("error.unknownOutputVersion"), argValue));
                         return(ReturnCode.BAD_ARGUMENT);
                     }
-                	
+                } else if (argToLower.contains("-strict")) {
+                    // If strict parsing is enabled we want the schema to only support attributes that are
+                    // in metatype. AnyAttribute says add the any attribute which allows non-metatype approved
+                    // options to be set which is why we need to negate the strict option.
+                    anyAttribute = !processBooleanArg(argToLower);
                 }  else {
                     System.out.println(MessageFormat.format(messages.getString("error.unknownArgument"), arg));
                     return(ReturnCode.BAD_ARGUMENT);
@@ -351,6 +356,10 @@ public class GeneratorOptions {
     public boolean getCompactOutput() {
     	return compactOutput;
     }
+
+    public boolean isAnyAttribute() {
+        return anyAttribute;
+    }
     
     public void setSchemaVersion(SchemaVersion v) {
       schemaVersion = v;
@@ -362,5 +371,9 @@ public class GeneratorOptions {
     
     public void setCompactOutput(boolean compactOutput) {
     	this.compactOutput = compactOutput;
+    }
+
+    public void setAnyAttribute(boolean any) {
+        this.anyAttribute = any;
     }
 }
