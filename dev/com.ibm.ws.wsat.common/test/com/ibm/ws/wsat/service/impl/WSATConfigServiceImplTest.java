@@ -118,12 +118,14 @@ public class WSATConfigServiceImplTest {
     }
 
     /**
-     * Mock BundleContext: returns a configurable list of VirtualHost ServiceReferences.
+     * Mock BundleContext: returns a configurable list of VirtualHost ServiceReferences
+     * and a configurable VirtualHost service instance for getService().
      * Does NOT declare throws — MockProxy wraps checked exceptions as
      * UndeclaredThrowableException if the method throws, so we keep it clean.
      */
     public static class MockBundleContext extends MockProxy {
         public List<ServiceReference<VirtualHost>> vhRefs = Collections.emptyList();
+        public VirtualHost vhService = null; // returned by getService()
         public int getServiceReferencesCallCount = 0;
 
         // Matches BundleContext.getServiceReferences(Class<S>, String) throws InvalidSyntaxException
@@ -135,6 +137,17 @@ public class WSATConfigServiceImplTest {
                 return (Collection<ServiceReference<S>>) (Collection<?>) vhRefs;
             }
             return Collections.emptyList();
+        }
+
+        // Matches BundleContext.getService(ServiceReference<S>)
+        @SuppressWarnings("unchecked")
+        public <S> S getService(ServiceReference<S> reference) {
+            return (S) vhService;
+        }
+
+        // Matches BundleContext.ungetService(ServiceReference<?>)
+        public boolean ungetService(ServiceReference<?> reference) {
+            return true;
         }
     }
 
@@ -284,6 +297,8 @@ public class WSATConfigServiceImplTest {
 
         // BundleContext returns customVhRef when asked for the VH with id=wsatHost
         mockBundleCc.vhRefs = Collections.singletonList(customVhRef);
+        // getService(customVhRef) must return the customVH instance
+        mockBundleCc.vhService = customVH.asMock(VirtualHost.class);
         // locateService("httpOptions", customVhRef) must return customVH
         mockCc.register("httpOptions", customVH.asMock(VirtualHost.class));
 
@@ -429,6 +444,9 @@ public class WSATConfigServiceImplTest {
         ServiceReference<VirtualHost> customVhRef =
             new MockServiceRef<VirtualHost>().mkRef();
         mockBundleCc.vhRefs = Collections.singletonList(customVhRef);
+        // getService(customVhRef) must return the customVH instance so the
+        // non-null check in modified() succeeds and configuredVirtualHost is set
+        mockBundleCc.vhService = customVH.asMock(VirtualHost.class);
 
         // Wire a default VH first so modified() doesn't NPE before the VH lookup
         setupDefaultHttpOptions();
