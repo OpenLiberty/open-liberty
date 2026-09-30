@@ -2108,7 +2108,12 @@ case "$ACTION" in
 
   # Stop the server.
   stop)
-    serverEnv
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
     if checkServer true
     then
       PID=
@@ -2116,6 +2121,7 @@ case "$ACTION" in
         PID=`cat "${X_PID_FILE}"`
       fi
 
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --stop "$@"
       rc=$?
 
@@ -2136,11 +2142,17 @@ case "$ACTION" in
 
   # Check if server is running
   status)
-    serverEnv
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
     if checkServer true
     then
       serverPIDStatus
       mkdirs "${X_LOG_DIR}"
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status
       rc=$?
 
@@ -2188,10 +2200,16 @@ case "$ACTION" in
 
   # dump the server's configs/logs/status to a zip file
   dump)
-    serverEnv
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
     # Check to see if the server exists
     if checkServer true
     then
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --dump "$@"
       exit $?
     else
@@ -2201,9 +2219,15 @@ case "$ACTION" in
 
   # dump JVM status
   javadump)
-    serverEnv
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
     if checkServer true
     then
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --javadump "$@"
       exit $?
     else
@@ -2213,10 +2237,16 @@ case "$ACTION" in
 
   # pause the server
   pause)
-    serverEnv
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
     # Check to see if the server exists
     if checkServer true
     then
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --pause "$@"
       exit $?
     else
@@ -2226,10 +2256,16 @@ case "$ACTION" in
 
   # resume the server
   resume)
-    serverEnv
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
     # Check to see if the server exists
     if checkServer true
     then
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --resume "$@"
       exit $?
     else
