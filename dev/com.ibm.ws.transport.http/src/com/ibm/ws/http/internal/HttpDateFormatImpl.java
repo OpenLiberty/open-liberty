@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2025 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.internal;
 
@@ -17,6 +14,7 @@ import java.text.ParsePosition;
 import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -462,9 +460,9 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      *
      * @param format
      * @param input
-     * @return Date
+     * @return Instant
      */
-    private Date attemptParse(DateTimeFormatter format, String input) {
+    private Instant attemptParse(DateTimeFormatter format, String input) {
         ParsePosition pos = new ParsePosition(0);
         try {
             TemporalAccessor accessor = format.parse(input, pos);
@@ -472,7 +470,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
                 // invalid format matching
                 return null;
             }
-            return Date.from(Instant.from(accessor));
+            return Instant.from(accessor);
         } catch (DateTimeException e) {
             return null;
         }
@@ -486,11 +484,11 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc1123 parsing [" + input + "]");
         }
-        Date d = attemptParse(c1123Time.formatter, input);
-        if (null == d) {
+        Instant instant = attemptParse(c1123Time.formatter, input);
+        if (null == instant) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
-        return d;
+        return Date.from(instant);
     }
 
     /*
@@ -501,11 +499,11 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc1036 parsing [" + input + "]");
         }
-        Date d = attemptParse(c1036Time.formatter, input);
-        if (null == d) {
+        Instant instant = attemptParse(c1036Time.formatter, input);
+        if (null == instant) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
-        return d;
+        return Date.from(correctTwoDigitYear(instant));
     }
 
     /*
@@ -516,11 +514,11 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc2109 parsing [" + input + "]");
         }
-        Date d = attemptParse(c2109Time.formatter, input);
-        if (null == d) {
+        Instant instant = attemptParse(c2109Time.formatter, input);
+        if (null == instant) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
-        return d;
+        return Date.from(correctTwoDigitYear(instant));
     }
 
     /*
@@ -531,11 +529,11 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "ascii parsing [" + input + "]");
         }
-        Date d = attemptParse(cAsciiTime.formatter, input);
-        if (null == d) {
+        Instant instant = attemptParse(cAsciiTime.formatter, input);
+        if (null == instant) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
-        return d;
+        return Date.from(instant);
     }
 
     /*
@@ -569,14 +567,14 @@ public class HttpDateFormatImpl implements HttpDateFormat {
             data = input.substring(0, i);
         }
 
-        Date parsedDate = attemptParse(c1123Time.formatter, data);
-        if (null == parsedDate) {
-            parsedDate = attemptParse(c1036Time.formatter, data);
-            if (null == parsedDate) {
-                parsedDate = attemptParse(cAsciiTime.formatter, data);
-                if (null == parsedDate) {
-                    parsedDate = attemptParse(c2109Time.formatter, data);
-                    if (null == parsedDate) {
+        Instant parsedInstant = attemptParse(c1123Time.formatter, data);
+        if (null == parsedInstant) {
+            parsedInstant = correctTwoDigitYear(attemptParse(c1036Time.formatter, data));
+            if (null == parsedInstant) {
+                parsedInstant = attemptParse(cAsciiTime.formatter, data);
+                if (null == parsedInstant) {
+                    parsedInstant = correctTwoDigitYear(attemptParse(c2109Time.formatter, data));
+                    if (null == parsedInstant) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Time does not match supported formats");
                         }
@@ -585,7 +583,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
                 }
             }
         }
-        return parsedDate;
+        return Date.from(parsedInstant);
     }
 
     /*
@@ -594,5 +592,20 @@ public class HttpDateFormatImpl implements HttpDateFormat {
     @Override
     public Date parseTime(byte[] inBytes) throws ParseException {
         return parseTime(GenericUtils.getEnglishString(inBytes));
+    }
+
+    private Instant correctTwoDigitYear(Instant parsed) {
+        if (null == parsed) {
+            return null;
+        }
+        ZonedDateTime parsedDateTime = parsed.atZone(CachedTime.gmt);
+        ZonedDateTime now = Instant.now().atZone(CachedTime.gmt);
+        // Do quick check on the year and only fall through to the more expensive logic if needed
+        if (parsedDateTime.getYear() - now.getYear() >= 50 && 
+        		parsedDateTime.isAfter(now.plusYears(50))) {
+            return parsedDateTime.minusYears(100).toInstant();
+        }
+
+        return parsed;
     }
 }
