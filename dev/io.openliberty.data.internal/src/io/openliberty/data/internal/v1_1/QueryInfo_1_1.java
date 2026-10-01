@@ -116,7 +116,6 @@ import jakarta.data.spi.expression.path.NavigablePath;
 import jakarta.data.spi.expression.path.Path;
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.CacheStoreMode;
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PessimisticLockScope;
@@ -447,6 +446,9 @@ public class QueryInfo_1_1 extends QueryInfo {
                 throw new DataException(x.getCause());
             }
 
+        if (eagerlyFetch != null)
+            query.setHint(LOADGRAPH, eagerlyFetch);
+
         return query;
     }
 
@@ -538,6 +540,10 @@ public class QueryInfo_1_1 extends QueryInfo {
                             .invoke(entityHandler, jpql, resultType);
             if (options != null)
                 setReadOptions(options, query, false, entityHandler);
+
+            if (eagerlyFetch != null)
+                query.setHint(LOADGRAPH, eagerlyFetch);
+
             return query;
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
@@ -1116,6 +1122,69 @@ public class QueryInfo_1_1 extends QueryInfo {
 
     @Override
     @Trivial
+    protected void initEntityGraph() {
+        String graphName = "";
+        if (QUERY_OPTIONS_CLASS != null) {
+            Annotation queryOptions = method.getAnnotation(QUERY_OPTIONS_CLASS);
+            if (queryOptions != null)
+                try {
+                    graphName = (String) QUERY_OPTIONS_CLASS //
+                                    .getMethod("entityGraph") //
+                                    .invoke(queryOptions);
+                } catch (IllegalAccessException | NoSuchMethodException x) {
+                    throw new RuntimeException(x); // should be impossible
+                } catch (InvocationTargetException x) {
+                    if (x.getCause() instanceof RuntimeException rx)
+                        throw rx;
+                    throw new DataException(x.getCause());
+                }
+        }
+
+        Fetching[] fetches = method.getAnnotationsByType(Fetching.class);
+
+        if (fetches.length > 0 || graphName.length() > 0) {
+            // TODO first look for a reusable instance from entityInfo
+
+            if (QUERY_OPTIONS_CLASS == null) // JPA 3.2
+                try (EntityManager em = entityInfo.factory.createEntityManager()) {
+                    if (graphName.length() > 0)
+                        eagerlyFetch = em.getEntityGraph(graphName);
+                    else
+                        eagerlyFetch = em.createEntityGraph(entityInfo.entityClass);
+                } catch (IllegalArgumentException x) {
+                    // TODO better error for graphName not found
+                    throw x;
+                }
+            else // JPA 4+
+                try (jakarta.persistence.EntityAgent agent = //
+                                (jakarta.persistence.EntityAgent) //
+                                entityInfo.factory.createEntityAgent()) {
+                    if (graphName.length() > 0)
+                        eagerlyFetch = agent.getEntityGraph(graphName);
+                    else
+                        eagerlyFetch = agent.createEntityGraph(entityInfo.entityClass);
+                } catch (IllegalArgumentException x) {
+                    // TODO better error for graphName not found
+                    throw x;
+                }
+
+            if (fetches.length > 0)
+                for (Fetching fetch : fetches) {
+                    String attr = fetch.value();
+                    if (attr.contains("."))
+                        // TODO implement
+                        throw new UnsupportedOperationException("@Fetching(" + attr + ")");
+                    else
+                        eagerlyFetch.addAttributeNode(attr);
+                }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "using entity graph", eagerlyFetch);
+        }
+    }
+
+    @Override
+    @Trivial
     public int inspectMethodParam(int p,
                                   Class<?> paramType,
                                   Annotation[] paramAnnos,
@@ -1203,9 +1272,6 @@ public class QueryInfo_1_1 extends QueryInfo {
             Tr.debug(this, tc, "setReadOptions", Util.toString(options), query);
 
         Class<?> QueryOptions = options.getClass();
-        String entityGraph = (String) QueryOptions //
-                        .getMethod("entityGraph") //
-                        .invoke(options);
         Object flush = QueryOptions //
                         .getMethod("flush") //
                         .invoke(options); // QueryFlushMode
@@ -1232,14 +1298,6 @@ public class QueryInfo_1_1 extends QueryInfo {
         for (QueryHint hint : hints)
             query.setHint(hint.name(),
                           hint);
-        if (entityGraph.length() > 0) {
-            // TODO Persistence 4.0: entityHandler.getEntityGraph(options.entityGraph());
-            EntityGraph<?> loadGraph = (EntityGraph<?>) entityHandler.getClass() //
-                            .getMethod("getEntityGraph", String.class) //
-                            .invoke(entityHandler, entityGraph);
-            query.setHint(LOADGRAPH,
-                          loadGraph);
-        }
 
         query.setHint(LOCK_SCOPE,
                       lockScope);
