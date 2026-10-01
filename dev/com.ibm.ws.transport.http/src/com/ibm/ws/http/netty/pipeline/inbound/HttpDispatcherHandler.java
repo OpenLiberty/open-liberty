@@ -34,6 +34,7 @@ import com.ibm.ws.http.internal.netty.RequestMetadata;
 import com.ibm.ws.http.internal.netty.exception.InvalidRequestMetadataException;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
@@ -44,6 +45,7 @@ import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
@@ -70,6 +72,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpRequestValidationException;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -220,12 +223,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (!(msg.decoderResult().isFinished() && msg.decoderResult().isSuccess())) {
             if(context.channel().isActive()) {
                 if (msg.decoderResult().cause() != null) {
+                    Throwable failure = msg.decoderResult().cause();
                     // The legacy parser rejects this protocol condition without FFDC.
-                    if (!(msg.decoderResult().cause() instanceof ContentLengthNotAllowedException)
-                                    && !msg.decoderResult().cause().getMessage().contains("possibly HTTP/0.9")) {
-                        FFDCFilter.processException(msg.decoderResult().cause(), HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
+                    if (!(failure instanceof ContentLengthNotAllowedException)
+                                    && !isExpectedRequestValidationFailure(failure)
+                                    && !failure.getMessage().contains("possibly HTTP/0.9")) {
+                        FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
-                    sendErrorMessage(msg.decoderResult().cause());
+                    sendErrorMessage(failure);
                 } else {
                     sendErrorMessage(new Exception("HTTP request decoding failure!"));
                 }
@@ -238,6 +243,17 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         if (msg instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) msg;
+
+            ProtocolName connectionProtocol = ProtocolState.current(ctx.channel());
+            if ((connectionProtocol == ProtocolName.HTTP1 || connectionProtocol == ProtocolName.HTTP10)
+                            && !HttpVersion.HTTP_1_0.equals(req.protocolVersion())
+                            && !HttpVersion.HTTP_1_1.equals(req.protocolVersion())) {
+                UnsupportedProtocolVersionException cause = new UnsupportedProtocolVersionException(
+                                "Unsupported: " + req.protocolVersion().text());
+                sendErrorMessage(StatusCodes.UNSUPPORTED_VERSION, cause);
+                ReferenceCountUtil.release(req);
+                return;
+            }
 
             upgradingNow = false;
             streamingInitialized = false;
@@ -339,6 +355,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             return;
         }
+    }
+
+    private static boolean isExpectedRequestValidationFailure(Throwable failure) {
+        return failure instanceof HttpRequestValidationException
+                        || (failure instanceof IllegalArgumentException
+                                        && failure.getCause() instanceof HttpRequestValidationException);
     }
 
     private static boolean isUpgrade(HttpRequest req) {
