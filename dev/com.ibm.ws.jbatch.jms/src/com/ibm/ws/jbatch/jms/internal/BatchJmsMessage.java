@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,16 @@ package com.ibm.ws.jbatch.jms.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -30,6 +36,8 @@ import javax.jms.ObjectMessage;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.jbatch.jms.internal.dispatcher.StartPartitionPayload;
+import com.ibm.wsspi.kernel.service.jms.JmsDeserializationContext;
+import com.ibm.wsspi.kernel.service.jms.JmsDeserializationContext.FilterHandle;
 
 /**
  * Convenience wrapper around a jms message.
@@ -257,9 +265,14 @@ public class BatchJmsMessage {
     
     /**
      * @return the serialized payload as a StartPartitionPayload object.
+     *
+     * Installs a byte[]-only filter at the JMS ObjectMessage layer (outer deser).
+     * The inner deser of byte[] to the domain type is guarded by DESER_ALLOWLIST.
      */
     public Serializable getObjectPayload() throws JMSException {
-        return ((ObjectMessage)message).getObject();
+        try (FilterHandle handle = JmsDeserializationContext.setFilter(clazz -> clazz == byte[].class)) {
+            return ((ObjectMessage) message).getObject();
+        }
     }
     
     /**
@@ -309,28 +322,63 @@ public class BatchJmsMessage {
     }
     
     /**
-     * @return the de-serialized object 
+     * Allowlist of class names permitted during deserialization of batch JMS payloads.
+     * Only the exact types used by StartPartitionPayload and PartitionReplyMsg (and their
+     * field types) are allowed. Any other class causes an InvalidClassException before
+     * instantiation, preventing deserialization of untrusted types.
+     */
+    private static final Set<String> DESER_ALLOWLIST = Collections.unmodifiableSet(
+        new HashSet<>(Arrays.asList(
+            "com.ibm.ws.jbatch.jms.internal.dispatcher.StartPartitionPayload",
+            "com.ibm.jbatch.container.ws.PartitionReplyMsg",
+            "com.ibm.jbatch.container.ws.PartitionReplyMsg$PartitionReplyMsgType",
+            "com.ibm.jbatch.container.ws.PartitionPlanConfig",
+            "com.ibm.jbatch.container.ws.TopLevelNameInstanceExecutionInfo",
+            // javax.* used by EE8/9, jakarta.* used by EE10/11 repeat actions
+            "javax.batch.runtime.BatchStatus",
+            "jakarta.batch.runtime.BatchStatus",
+            // java.lang.Enum is the base class serialized for all enum values
+            "java.lang.Enum",
+            "java.util.Properties",
+            "java.util.Hashtable",
+            "java.util.Date",
+            "java.lang.String",
+            "[B",
+            "[Ljava.lang.String;"
+        ))
+    );
+
+    /**
+     * @return the de-serialized object, using an allowlist-filtering ObjectInputStream
+     * to prevent deserialization of unexpected types.
      */
     private Object deserializeFromBytes(byte[] bytes)  {
     	Object retVal = null;
-//        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-//        return new ObjectInputStream(bais).readObject();
-//
-		try{
-			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-			ObjectInputStream ois = null;
-			try {
-				ois = new ObjectInputStream(bais);
-				retVal =  ois.readObject();
-			} finally {
-				ois.close();
-				}	
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException("Problem while trying to deserialize the payload");
-		} catch (IOException e) {
-			throw new IllegalStateException("Problem while trying to deserialize the payload");
-		}
-		return retVal;
+  try{
+   ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+   ObjectInputStream ois = null;
+   try {
+    ois = new ObjectInputStream(bais) {
+                    @Override
+                    protected Class<?> resolveClass(ObjectStreamClass desc)
+                            throws IOException, ClassNotFoundException {
+                        if (!DESER_ALLOWLIST.contains(desc.getName())) {
+                            throw new InvalidClassException(
+                                "Unauthorized deserialization attempt: " + desc.getName());
+                        }
+                        return super.resolveClass(desc);
+                    }
+                };
+    retVal =  ois.readObject();
+   } finally {
+    ois.close();
+    }
+  } catch (ClassNotFoundException e) {
+   throw new IllegalStateException("Problem while trying to deserialize the payload");
+  } catch (IOException e) {
+   throw new IllegalStateException("Problem while trying to deserialize the payload");
+  }
+  return retVal;
     }
 
     /**
