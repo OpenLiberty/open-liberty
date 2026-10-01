@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* *****************************************************************************
  * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -6,10 +6,7 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * *****************************************************************************/
 package com.ibm.wsspi.kernel.service.jms;
 
 import java.util.function.Predicate;
@@ -54,7 +51,7 @@ public enum JmsDeserializationContext {
      * @return a handle to close when deserialization is complete
      * @throws IllegalStateException if a filter is already set on this thread
      */
-    public static FilterHandle setFilter(Predicate<Class<?>>  filter) {
+    public static FilterHandle setFilter(Predicate<Class<?>> filter) {
         if (THREAD_FILTER.get() != null) {
             throw new IllegalStateException("A deserialization filter is already set on this thread");
         }
@@ -65,12 +62,11 @@ public enum JmsDeserializationContext {
     }
 
     /**
-     * Returns the deserialization filter currently active on the calling thread,
-     * or {@code null} if none is set.
+     * Returns the deserialization filter currently active on the calling thread.
      *
      * @return current active filter
      */
-    public static Predicate<Class<?>>  currentFilter() {
+    public static Predicate<Class<?>> currentFilter() {
         return Optional.ofNullable(THREAD_FILTER.get()).orElse(clazz -> true);
     }
 }
