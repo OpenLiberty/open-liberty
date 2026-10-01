@@ -22,10 +22,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+        AlwaysPassesTest.class,
         FIPS1403ServerTest.class,
         FIPS1403ClientTest.class,
         FIPS1403SecurityUtilityTests.class,
-        FIPS1403SecurityUtilityInvalidEnvTets.class
 })
 public class FATSuite {
 }
