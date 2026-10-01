@@ -34,6 +34,7 @@ import com.ibm.ws.http.internal.netty.RequestMetadata;
 import com.ibm.ws.http.internal.netty.exception.InvalidRequestMetadataException;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
@@ -44,6 +45,7 @@ import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
@@ -238,6 +240,17 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         if (msg instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) msg;
+
+            ProtocolName connectionProtocol = ProtocolState.current(ctx.channel());
+            if ((connectionProtocol == ProtocolName.HTTP1 || connectionProtocol == ProtocolName.HTTP10)
+                            && !HttpVersion.HTTP_1_0.equals(req.protocolVersion())
+                            && !HttpVersion.HTTP_1_1.equals(req.protocolVersion())) {
+                UnsupportedProtocolVersionException cause = new UnsupportedProtocolVersionException(
+                                "Unsupported: " + req.protocolVersion().text());
+                sendErrorMessage(StatusCodes.UNSUPPORTED_VERSION, cause);
+                ReferenceCountUtil.release(req);
+                return;
+            }
 
             upgradingNow = false;
             streamingInitialized = false;
