@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
-import com.ibm.ws.security.saml.sso20.internal.utils.UnsolicitedResponseCache;
+import com.ibm.ws.security.saml.sso20.internal.utils.SamlResponseReplayCache;
 import com.ibm.ws.security.saml.sso20.rs.RsSamlConfigImpl;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.webcontainer.security.WebProviderAuthenticatorHelper;
@@ -84,7 +84,7 @@ public class SsoServiceImpl implements SsoSamlService {
 
     static final HashMap<String, Cache> acsCookieCacheMap = new HashMap<String, Cache>();
 
-    static final HashMap<String, UnsolicitedResponseCache> replayCacheMap = new HashMap<String, UnsolicitedResponseCache>();
+    static final HashMap<String, SamlResponseReplayCache> replayCacheMap = new HashMap<String, SamlResponseReplayCache>();
 
     protected SsoConfig samlConfig = new SsoConfigImpl();
 
@@ -182,7 +182,7 @@ public class SsoServiceImpl implements SsoSamlService {
             }
         }
         if (replayCacheMap.get(providerId) == null) {
-            UnsolicitedResponseCache cache = new UnsolicitedResponseCache(0, 0, getSamlConfig().getClockSkew());
+            SamlResponseReplayCache cache = new SamlResponseReplayCache(0, 0, getSamlConfig().getClockSkew());
             synchronized (acsCookieCacheMap) {
                 replayCacheMap.put(providerId, cache); // SsoServiceImpl
             }
@@ -272,10 +272,10 @@ public class SsoServiceImpl implements SsoSamlService {
     }
 
     @Override
-    public UnsolicitedResponseCache getUnsolicitedResponseCache(String providerId) {
-        UnsolicitedResponseCache cache = replayCacheMap.get(providerId);
+    public SamlResponseReplayCache getSamlResponseReplayCache(String providerId) {
+        SamlResponseReplayCache cache = replayCacheMap.get(providerId);
         if (cache == null) {
-            cache = new UnsolicitedResponseCache(0, 0, this.getSamlConfig().getClockSkew());
+            cache = new SamlResponseReplayCache(0, 0, this.getSamlConfig().getClockSkew());
             synchronized (replayCacheMap) {
                 replayCacheMap.put(providerId, cache); //
             }
