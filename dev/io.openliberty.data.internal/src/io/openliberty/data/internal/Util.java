@@ -80,9 +80,19 @@ public class Util {
                             Update.class.getSimpleName());
 
     /**
+     * Query hint and map key for a fetch graph.
+     */
+    public static final String FETCHGRAPH = "jakarta.persistence.fetchgraph";
+
+    /**
      * Query hint and map key for a load graph.
      */
-    static final String LOADGRAPH = "jakarta.persistence.loadgraph";
+    public static final String LOADGRAPH = "jakarta.persistence.loadgraph";
+
+    /**
+     * Query hint and map key for a lock scope.
+     */
+    public static final String LOCK_SCOPE = "jakarta.persistence.lock.scope";
 
     /**
      * List of valid prefixes for Query by Method Name methods of a stateful

@@ -3382,11 +3382,14 @@ public abstract class QueryInfo {
             }
         }
 
-        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
-        if (orderBy.length > 0 &&
-            methodAnno != null &&
-            !(methodAnno instanceof Delete))
-            conflicts.add(OrderBy.class.getName());
+        if (methodAnno != null && !(methodAnno instanceof Delete)) {
+            // OrderBy
+            if (method.getAnnotationsByType(OrderBy.class).length > 0)
+                conflicts.add(OrderBy.class.getName());
+
+            // QueryOptions or Fetching
+            identifyQueryOptionsAndFetchingConflicts(method, conflicts);
+        }
 
         for (Class<? extends Annotation> annoClass : compat.queryLanguageAnnoTypes())
             methodAnno = inspect.apply(method.getAnnotation(annoClass), methodAnno);
@@ -3585,6 +3588,20 @@ public abstract class QueryInfo {
             }
         }
         return returnValue;
+    }
+
+    /**
+     * Identifies conflicts between the QueryOptions or Fetching annotation(s)
+     * and other incompatible annotations present on the repository method.
+     * This method is only invoked when there are known to be annotations on the
+     * repository method that would be incompatible with QueryOptions or Fetching.
+     *
+     * @param method    repository method
+     * @param conflicts list of conflicting annotation names
+     */
+    protected void identifyQueryOptionsAndFetchingConflicts(Method method,
+                                                            List<String> conflicts) {
+        // QueryOptions and Fetching annotations do not exist in Data 1.0
     }
 
     /**

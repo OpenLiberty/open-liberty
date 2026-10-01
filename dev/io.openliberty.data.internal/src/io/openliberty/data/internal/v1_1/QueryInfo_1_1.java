@@ -23,6 +23,8 @@ import static io.openliberty.data.internal.QueryType.PERSIST;
 import static io.openliberty.data.internal.QueryType.REFRESH;
 import static io.openliberty.data.internal.QueryType.REMOVE;
 import static io.openliberty.data.internal.QueryType.SAVE;
+import static io.openliberty.data.internal.Util.LOADGRAPH;
+import static io.openliberty.data.internal.Util.LOCK_SCOPE;
 import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_CLASS;
 import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_VALUE;
 import static io.openliberty.data.internal.v1_1.Data_1_1.NATIVE_QUERY_CLASS;
@@ -87,6 +89,7 @@ import jakarta.data.expression.TemporalExpression;
 import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Fetching;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
 import jakarta.data.repository.OrderBy;
@@ -1074,6 +1077,18 @@ public class QueryInfo_1_1 extends QueryInfo {
 
     @Override
     @Trivial
+    protected void identifyQueryOptionsAndFetchingConflicts(Method method,
+                                                            List<String> conflicts) {
+        if (method.getAnnotationsByType(Fetching.class).length > 0)
+            conflicts.add(Fetching.class.getSimpleName());
+
+        if (QUERY_OPTIONS_CLASS != null &&
+            method.isAnnotationPresent(QUERY_OPTIONS_CLASS))
+            conflicts.add(QUERY_OPTIONS_CLASS.getSimpleName());
+    }
+
+    @Override
+    @Trivial
     protected void identifyType() {
         if (entityParamType != null && methodTypeAnno instanceof Delete)
             setType(Delete.class, LC_DELETE);
@@ -1222,11 +1237,11 @@ public class QueryInfo_1_1 extends QueryInfo {
             EntityGraph<?> loadGraph = (EntityGraph<?>) entityHandler.getClass() //
                             .getMethod("getEntityGraph", String.class) //
                             .invoke(entityHandler, entityGraph);
-            query.setHint("jakarta.persistence.loadgraph",
+            query.setHint(LOADGRAPH,
                           loadGraph);
         }
 
-        query.setHint("jakarta.persistence.lock.scope",
+        query.setHint(LOCK_SCOPE,
                       lockScope);
 
         query.setCacheStoreMode(cacheStoreMode);
