@@ -4620,7 +4620,7 @@ public abstract class QueryInfo {
      * @return loggable value.
      */
     @Trivial
-    final Object loggable(Object value) {
+    protected final Object loggable(Object value) {
         return entityInfo.factory.provider.loggable(repositoryInterface,
                                                     method,
                                                     value);
@@ -6009,23 +6009,9 @@ public abstract class QueryInfo {
                         Tr.debug(this, tc, "[r] set ?" + paramNum + ' ' + loggable(value));
                     query.setParameter(paramNum++, value);
                 }
-                if (deferredConstraints.containsKey(a))
-                    // Handled above: Constraint with non-Literal Expression
-                    // supplied at execution time
-                    continue;
-                value = args[a];
-                Object[] constraintValues = toConstraintValues(value);
-                if (constraintValues == null) { // Normal positional parameter
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "[q] set ?" + paramNum + ' ' + loggable(value));
-                    query.setParameter(paramNum++, value);
-                } else { // Literal Expression from a Constraint
-                    for (Object cvalue : constraintValues) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(cvalue));
-                        query.setParameter(paramNum++, cvalue);
-                    }
-                }
+
+                if (!deferredConstraints.containsKey(a))
+                    paramNum = setPositionalParameters(query, paramNum, args[a]);
             }
 
             // Additional generated positional parameters
@@ -6107,6 +6093,20 @@ public abstract class QueryInfo {
             query.setParameter(p++, version);
         }
     }
+
+    /**
+     * Assigns the values of 0, 1, or 2 positional parameters corresponding to
+     * the given arg value supplied to a repository method. The value might be
+     * a Constraint subtype or a literal value.
+     *
+     * @param query    the query to which to assign the positional parameters
+     * @param paramNum the number of positional parameter to assign first
+     * @param arg      value supplied to the repository method
+     * @return the next paramNum value to use
+     */
+    protected abstract int setPositionalParameters(jakarta.persistence.Query query,
+                                                   int paramNum,
+                                                   Object arg);
 
     /**
      * Initialize this query information for the specified type of annotated repository operation.
@@ -6207,18 +6207,6 @@ public abstract class QueryInfo {
         }
         return combined;
     }
-
-    /**
-     * Temporary method that obtains the literal value(s) from a constraint if the
-     * supplied value is a constraint for a literal expression.
-     * TODO 1.1 come up with better approach
-     *
-     * @param constraintOrValue a jakarta.data.constraint.Constraint subtype or a
-     *                              literal value.
-     * @return array of literal values obtained from the constraint.
-     *         Null if not a constraint.
-     */
-    protected abstract Object[] toConstraintValues(Object constraintOrValue);
 
     /**
      * Functional interface that can be supplied to stream.mapToDouble.
