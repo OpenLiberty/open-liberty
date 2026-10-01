@@ -14,6 +14,7 @@ import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
@@ -122,6 +123,7 @@ public class FIPS1403ServerTest {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel=11)
     public void serverFIPS140_3DirectoryQuotedTest() throws Exception {
         server.copyFileToLibertyServerRoot("publish/resources", "resources" , LIBERTY_APPLICATION_FIPS_PROFILE_FILENAME);
         Path path = Paths.get(server.getServerRoot() + "/"+ SERVER_ENV_FILE);
@@ -137,6 +139,7 @@ public class FIPS1403ServerTest {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel=11)
     public void serverFIPS140_3DirectorySpaceNoQuotesTest() throws Exception {
         assumeThat(server.getMachine().getOperatingSystem(), is(OperatingSystem.WINDOWS));
         String testDir = "resources/test dir";
@@ -148,6 +151,7 @@ public class FIPS1403ServerTest {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel=11)
     public void serverFIPS140_3DirectorySpaceQuotesTest() throws Exception {
         assumeThat(server.getMachine().getOperatingSystem(), not(OperatingSystem.WINDOWS));
         String testDir = "resources/test dir";
@@ -160,6 +164,7 @@ public class FIPS1403ServerTest {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel=11)
     public void serverFIPS140_3DirectorySpaceSlashTest() throws Exception {
         assumeThat(server.getMachine().getOperatingSystem(), not(OperatingSystem.WINDOWS));
         String testDir = "resources/test\\ dir";
