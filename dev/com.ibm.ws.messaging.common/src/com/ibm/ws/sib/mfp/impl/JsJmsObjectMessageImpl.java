@@ -457,7 +457,7 @@ final class JsJmsObjectMessageImpl extends JsJmsMessageImpl implements JsJmsObje
                                     }
                                 });
 
-                ois = new DeserializationObjectInputStream(bais, cl);
+                ois = new JmsDeserializationObjectInputStream(bais, cl);
 
                 // Deserialize the object and set the local variables appropriately
                 obj = (Serializable) ois.readObject();

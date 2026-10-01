@@ -14,7 +14,6 @@ package com.ibm.ws.sib.mfp.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InvalidClassException;
 import java.io.ObjectStreamClass;
 
 import com.ibm.websphere.ras.TraceComponent;
@@ -44,7 +43,7 @@ import java.util.function.Predicate;
  * <p>When no filter is set on the calling thread, all classes are permitted
  * (fully backward-compatible default).
  */
-class JmsDeserializationObjectInputStream extends DeserializationObjectInputStream {
+public class JmsDeserializationObjectInputStream extends DeserializationObjectInputStream {
 
     private static final TraceComponent tc = SibTr.register(
             JmsDeserializationObjectInputStream.class,
@@ -55,7 +54,7 @@ class JmsDeserializationObjectInputStream extends DeserializationObjectInputStre
     // Constructor
     // -----------------------------------------------------------------------
 
-    JmsDeserializationObjectInputStream(InputStream in, ClassLoader classLoader)
+    public JmsDeserializationObjectInputStream(InputStream in, ClassLoader classLoader)
             throws IOException {
         super(in, classLoader);
     }
@@ -66,16 +65,15 @@ class JmsDeserializationObjectInputStream extends DeserializationObjectInputStre
 
     @Override
     protected Class<?> resolveClass(ObjectStreamClass desc)
-            throws IOException, ClassNotFoundException {
+            throws ClassNotFoundException {
 
         Class<?> resolvedClass = super.resolveClass(desc);
 
-        Predicate<Class<?>>  filter = JmsDeserializationContext.currentFilter();
+        Predicate<Class<?>> filter = JmsDeserializationContext.currentFilter();
         if (filter != null && !filter.test(resolvedClass)) {
             String className = desc.getName();
-            String msg = "Class '" + className + "' rejected by deserialization filter";
-            SibTr.warning(tc, msg);
-            throw new InvalidClassException(className, "rejected by deserialization filter");
+            SibTr.warning(tc, "Class '" + className + "' rejected by deserialization filter");
+            throw new ClassNotFoundException(className + " rejected by JMS deserialization filter");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
