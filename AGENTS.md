@@ -53,6 +53,12 @@ $ ./gradlew com.ibm.ws.kernel.boot:test
 $ ./gradlew build.example_fat:buildandrun
 ```
 
+For concise output suitable for an LLM's context window, add `-Pllm` along with Gradle's quiet flags:
+
+```bash
+$ ./gradlew build.example_fat:buildandrun -Pllm -q --console=plain --warning-mode=none
+```
+
 ## Git Commit Message Format
 
 ### Rule: AI Co-authorship Attribution

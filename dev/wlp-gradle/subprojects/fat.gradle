@@ -739,12 +739,18 @@ task runfat(type: Exec) {
     args "-f", new File(autoFvtDir, 'TestBuild.xml')
   }
 
+  if (project.hasProperty('llm')) {
+    args '-q', '-e', '-Dllm=true', '-Djunit.output.to.formatters=false'
+  }
+
   doLast {
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
-    if(new File(autoFvtDir, "output/fail.log").exists())
-      throw new GradleException("The FAT bucket has test failures! See the logs and results for details.")
+    if (new File(autoFvtDir, "output/fail.log").exists())
+      throw new GradleException("The FAT bucket has test failures!\n" +
+          "Test log: ${autoFvtDir.absolutePath}/results/output.txt\n" +
+          "Server logs: ${autoFvtDir.absolutePath}/output/servers")
   }
 }
 
