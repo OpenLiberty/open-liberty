@@ -1,4 +1,4 @@
-/*******************************************************************************
+/* *****************************************************************************
  * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -9,20 +9,23 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * *****************************************************************************/
 package com.ibm.ws.sib.mfp.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectStreamClass;
 
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
+import static com.ibm.ws.sib.utils.ras.SibTr.debug;
+import static com.ibm.ws.sib.utils.ras.SibTr.register;
+import static com.ibm.ws.sib.utils.ras.SibTr.warning;
+import static com.ibm.wsspi.kernel.service.jms.JmsDeserializationContext.currentFilter;
+import static com.ibm.ws.sib.mfp.MfpConstants.MSG_BUNDLE;
+import static com.ibm.ws.sib.mfp.MfpConstants.MSG_GROUP;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.serialization.DeserializationObjectInputStream;
-import com.ibm.ws.sib.mfp.MfpConstants;
-import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.kernel.service.jms.JmsDeserializationContext;
-
-import java.util.function.Predicate;
 
 /**
  * A subclass of {@link DeserializationObjectInputStream} that adds class-level
@@ -43,43 +46,24 @@ import java.util.function.Predicate;
  * <p>When no filter is set on the calling thread, all classes are permitted
  * (fully backward-compatible default).
  */
-public class JmsDeserializationObjectInputStream extends DeserializationObjectInputStream {
+public final class JmsDeserializationObjectInputStream extends DeserializationObjectInputStream {
 
-    private static final TraceComponent tc = SibTr.register(
-            JmsDeserializationObjectInputStream.class,
-            MfpConstants.MSG_GROUP,
-            MfpConstants.MSG_BUNDLE);
+    private static final TraceComponent tc = register(JmsDeserializationObjectInputStream.class, MSG_GROUP, MSG_BUNDLE);
 
-    // -----------------------------------------------------------------------
-    // Constructor
-    // -----------------------------------------------------------------------
-
-    public JmsDeserializationObjectInputStream(InputStream in, ClassLoader classLoader)
-            throws IOException {
+    public JmsDeserializationObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
         super(in, classLoader);
     }
 
-    // -----------------------------------------------------------------------
-    // resolveClass override — filtering logic
-    // -----------------------------------------------------------------------
-
     @Override
-    protected Class<?> resolveClass(ObjectStreamClass desc)
-            throws ClassNotFoundException {
-
+    protected Class<?> resolveClass(ObjectStreamClass desc) throws ClassNotFoundException {
         Class<?> resolvedClass = super.resolveClass(desc);
 
-        Predicate<Class<?>> filter = JmsDeserializationContext.currentFilter();
-        if (filter != null && !filter.test(resolvedClass)) {
-            String className = desc.getName();
-            SibTr.warning(tc, "Class '" + className + "' rejected by deserialization filter");
-            throw new ClassNotFoundException(className + " rejected by JMS deserialization filter");
-        }
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Applying deserialization filter to class '" + desc.getName() + "'");
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            SibTr.debug(tc, "Class '" + desc.getName() + "' permitted for deserialization");
-        }
+        if (currentFilter().test(resolvedClass)) return resolvedClass;
 
-        return resolvedClass;
+        // ACCESS DENIED!
+        warning(tc, "Class '" + desc.getName() + "' rejected by deserialization filter");
+        throw new ClassNotFoundException(desc.getName() + " rejected by JMS deserialization filter");
     }
 }

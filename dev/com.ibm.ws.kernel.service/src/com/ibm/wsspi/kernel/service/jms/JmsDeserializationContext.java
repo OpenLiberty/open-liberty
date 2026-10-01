@@ -9,8 +9,8 @@
  * *****************************************************************************/
 package com.ibm.wsspi.kernel.service.jms;
 
+import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.Optional;
 
 /**
  * Context singleton for installing a per-thread {@link Predicate}
@@ -27,7 +27,14 @@ import java.util.Optional;
 public enum JmsDeserializationContext {
     ;
 
-    private static final ThreadLocal<Predicate<Class<?>> > THREAD_FILTER = new ThreadLocal<>();
+    /**
+     * The default deserialization filter used when no filter has been installed on the
+     * current thread. This predicate permits all classes (returns {@code true} for every
+     * input), preserving fully backward-compatible behaviour.
+     */
+    public static final Predicate<Class<?>> ALLOW_ALL = clazz -> true;
+
+    private static final ThreadLocal<Predicate<Class<?>>> THREAD_FILTER = new ThreadLocal<>();
 
     /**
      * A handle returned by {@link #setFilter(Predicate<Class<?>>)}.
@@ -49,9 +56,11 @@ public enum JmsDeserializationContext {
      *
      * @param filter the filter to install; must not be {@code null}
      * @return a handle to close when deserialization is complete
+     * @throws NullPointerException if {@code filter} is {@code null}
      * @throws IllegalStateException if a filter is already set on this thread
      */
     public static FilterHandle setFilter(Predicate<Class<?>> filter) {
+        Objects.requireNonNull(filter, "filter must not be null");
         if (THREAD_FILTER.get() != null) {
             throw new IllegalStateException("A deserialization filter is already set on this thread");
         }
@@ -62,11 +71,13 @@ public enum JmsDeserializationContext {
     }
 
     /**
-     * Returns the deserialization filter currently active on the calling thread.
+     * Returns the deserialization filter currently active on the calling thread,
+     * or {@link #ALLOW_ALL} if no filter has been installed.
      *
-     * @return current active filter
+     * @return the active filter, never {@code null}
      */
     public static Predicate<Class<?>> currentFilter() {
-        return Optional.ofNullable(THREAD_FILTER.get()).orElse(clazz -> true);
+        Predicate<Class<?>> f = THREAD_FILTER.get();
+        return null == f ? ALLOW_ALL : f;
     }
 }
