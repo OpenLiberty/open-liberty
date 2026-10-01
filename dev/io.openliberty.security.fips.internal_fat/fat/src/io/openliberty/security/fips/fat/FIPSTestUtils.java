@@ -83,7 +83,7 @@ public class FIPSTestUtils {
 
                 Log.info(FIPSTestUtils.class, method_name, "Checking " + path.toAbsolutePath() + "for FIPS security");
                 if (path.toFile().exists()) {
-                    try (BufferedReader reader = Files.newBufferedReader(path)) {
+                    try (BufferedReader reader = Files.newBufferedReader(path, CHARSET)) {
                         String line;
                         boolean fipsCompatible = false;
                         int count =1 ;
