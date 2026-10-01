@@ -25,7 +25,6 @@ import java.security.PrivilegedAction;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIApiConstants;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.serialization.DeserializationObjectInputStream;
 import com.ibm.ws.sib.mfp.JmsBodyType;
 import com.ibm.ws.sib.mfp.JsJmsObjectMessage;
 import com.ibm.ws.sib.mfp.MessageDecodeFailedException;

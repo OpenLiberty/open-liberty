@@ -15,7 +15,6 @@ package com.ibm.ws.sib.api.jms.impl;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.api.jms.ApiJmsConstants;
-import com.ibm.ws.serialization.DeserializationObjectInputStream;
 import com.ibm.ws.sib.mfp.JsJmsMessage;
 import com.ibm.ws.sib.mfp.JsJmsObjectMessage;
 import com.ibm.ws.sib.mfp.MessageCreateFailedException;
@@ -35,6 +34,7 @@ import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import com.ibm.ws.sib.mfp.impl.JmsDeserializationObjectInputStream;
 
 /**
  * @author matrober
@@ -335,7 +335,7 @@ public class JmsObjectMessageImpl extends JmsMessageImpl implements ObjectMessag
                             return Thread.currentThread().getContextClassLoader();
                         }
                     });
-                    ois = new DeserializationObjectInputStream(bais, cl);
+                    ois = new JmsDeserializationObjectInputStream(bais, cl);
                     obj = (Serializable) ois.readObject();
                 } catch (Exception e) {
                     // No FFDC code needed
