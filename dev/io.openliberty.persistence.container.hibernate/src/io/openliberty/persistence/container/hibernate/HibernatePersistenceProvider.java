@@ -7,7 +7,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
-
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.persistence.container.hibernate;
 
@@ -20,7 +21,7 @@ import com.ibm.ws.jpa.JPAProviderIntegration;
 public class HibernatePersistenceProvider extends AbstractJPAProviderIntegration {
     public HibernatePersistenceProvider() {
         super();
-        providersUsed.add(PROVIDER_HIBERNATE); 
+        providersUsed.add(PROVIDER_HIBERNATE);
     }
 
     /**
