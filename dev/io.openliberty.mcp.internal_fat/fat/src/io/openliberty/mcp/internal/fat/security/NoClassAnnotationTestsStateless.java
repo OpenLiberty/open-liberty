@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
@@ -21,7 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Mcp;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -55,15 +54,17 @@ public class NoClassAnnotationTestsStateless extends AbstractNoClassAnnotation {
     public static void setup() throws Exception {
         server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(NoClassAnnotationTools.class);
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+        McpStatelessAuthServerSuite.deployWithConfiguration(war, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setStateless("true");
+            app.getMcps().add(mcp);
+        });
         assertNotNull(server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("apps/" + APP_NAME + ".war");
-        server.waitForStringInLog("CWWKZ0009I:.*" + APP_NAME);
-        server.removeInstalledAppForValidation(APP_NAME);
+        McpStatelessAuthServerSuite.undeployWithConfiguration(APP_NAME);
     }
 }

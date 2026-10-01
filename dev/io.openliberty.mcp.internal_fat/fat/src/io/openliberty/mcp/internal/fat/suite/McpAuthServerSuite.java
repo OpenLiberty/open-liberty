@@ -9,11 +9,16 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.suite;
 
+import java.util.function.Consumer;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.websphere.simplicity.config.Application;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -38,11 +43,11 @@ import io.openliberty.mcp.internal.fat.tool.AuthCancellationTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    PermitAllTests.class,
-    DenyAllTests.class,
-    NoClassAnnotationTests.class,
-    AdminsRoleAllowedTests.class,
-    AuthCancellationTest.class,
+                PermitAllTests.class,
+                DenyAllTests.class,
+                NoClassAnnotationTests.class,
+                AdminsRoleAllowedTests.class,
+                AuthCancellationTest.class,
 })
 public class McpAuthServerSuite {
 
@@ -60,11 +65,40 @@ public class McpAuthServerSuite {
         protected void after() {
             try {
                 server.stopServer(
-                    // AuthCancellationTest
-                    "CWMCM0010E");
+                                  // AuthCancellationTest
+                                  "CWMCM0010E");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     };
+
+    /**
+     * Delegates to {@link McpDeployHelper#deployWithConfiguration}.
+     *
+     * @see McpDeployHelper#deployWithConfiguration(LibertyServer, WebArchive, Consumer)
+     */
+    public static void deployWithConfiguration(WebArchive war,
+                                               Consumer<Application> configurator)
+                    throws Exception {
+        McpDeployHelper.deployWithConfiguration(server, war, configurator);
+    }
+
+    /**
+     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, String)}.
+     *
+     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, String)
+     */
+    public static void undeployWithConfiguration(String appName) throws Exception {
+        McpDeployHelper.undeployWithConfiguration(server, appName);
+    }
+
+    /**
+     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)}.
+     *
+     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)
+     */
+    public static void undeployWithConfiguration(WebArchive war) throws Exception {
+        McpDeployHelper.undeployWithConfiguration(server, war);
+    }
 }

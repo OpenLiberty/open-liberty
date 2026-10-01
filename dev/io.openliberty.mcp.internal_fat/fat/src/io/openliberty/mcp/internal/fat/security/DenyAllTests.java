@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
@@ -20,8 +19,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
 import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
@@ -34,12 +31,14 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class DenyAllTests extends AbstractDenyAll {
 
+    private static final String APP_NAME = "denyAllTools";
+
     // Do NOT copy McpAuthServerSuite.server into a local static field — it would capture null
     // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(DenyAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(McpAuthServerSuite.server, "/denyAllTools");
+    public McpClient client = new McpClient(McpAuthServerSuite.server, "/" + APP_NAME);
 
     /** {@inheritDoc} */
     @Override
@@ -50,17 +49,19 @@ public class DenyAllTests extends AbstractDenyAll {
     @BeforeClass
     public static void setup() throws Exception {
         McpAuthServerSuite.server.setMarkToEndOfLog();
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "denyAllTools.war").addClass(DenyAllTools.class);
-        ShrinkHelper.exportDropinAppToServer(McpAuthServerSuite.server, war, SERVER_ONLY);
-        assertNotNull(McpAuthServerSuite.server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(DenyAllTools.class);
+        McpAuthServerSuite.deployWithConfiguration(war, app -> {
+            // no extra <mcp> config needed for this app
+        });
+
+        assertNotNull(McpAuthServerSuite.server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + APP_NAME));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         McpAuthServerSuite.server.setMarkToEndOfLog();
-        McpAuthServerSuite.server.deleteFileFromLibertyServerRoot("dropins/denyAllTools.war");
-        McpAuthServerSuite.server.waitForStringInLog("CWWKZ0009I:.*denyAllTools");
-        McpAuthServerSuite.server.removeInstalledAppForValidation("denyAllTools");
+        McpAuthServerSuite.undeployWithConfiguration(APP_NAME);
     }
 
 }

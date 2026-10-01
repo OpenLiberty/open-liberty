@@ -67,8 +67,11 @@ public class AsyncToolLifecycleTest {
     @AfterClass
     public static void teardown() throws Exception {
         McpAsyncServerSuite.server.setMarkToEndOfLog();
+        // Delete the dropin WAR first — Liberty detects the removal and logs CWWKZ0009I.
+        // Wait for the stop mark-based (avoids matching an earlier CWWKZ0001I from setup).
+        // Then deregister; removeInstalledAppForValidation immediately sees CWWKZ0009I.
         McpAsyncServerSuite.server.deleteFileFromLibertyServerRoot("dropins/asyncToolLifecycleTest.war");
-        McpAsyncServerSuite.server.waitForStringInLog("CWWKZ0009I:.*asyncToolLifecycleTest");
+        McpAsyncServerSuite.server.waitForStringInLogUsingMark("CWWKZ0009I:.*asyncToolLifecycleTest");
         McpAsyncServerSuite.server.removeInstalledAppForValidation("asyncToolLifecycleTest");
     }
 

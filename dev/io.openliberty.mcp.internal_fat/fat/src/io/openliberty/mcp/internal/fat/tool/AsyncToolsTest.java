@@ -28,6 +28,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONParser;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Mcp;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -58,6 +59,7 @@ public class AsyncToolsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.addIgnoredErrors(List.of("Method call caused runtime exception. This is expected if the input was 'throw error'"));
         server.setMarkToEndOfLog();
 
         // asyncToolsTest.war has no special server.xml config — use dropins so Liberty
@@ -65,29 +67,35 @@ public class AsyncToolsTest extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolsTest.war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
-
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        // asyncToolsTestShortTimeout.war is declared in server.xml with <mcp asyncTimeout="5s"/>
-        // so it must go to apps/ where Liberty will pick it up via that declaration.
+        // asyncToolsTestShortTimeout.war needs <mcp asyncTimeout="5s"/> — use
+        // McpDeployHelper which writes the WAR first then adds the <application>
+        // entry (avoids CWWKZ0014W) and registers the app for validation.
         WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, "asyncToolsTestShortTimeout.war")
                                                .addPackage(AsyncTools.class.getPackage())
                                                .addPackage(ToolStatus.class.getPackage());
+        McpAsyncServerSuite.deployWithConfiguration(shortTimeoutWar, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setAsyncTimeout("5s");
+            app.getMcps().add(mcp);
+        });
 
-        ShrinkHelper.exportAppToServer(server, shortTimeoutWar, SERVER_ONLY);
-
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*asyncToolsTest[^S]"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*asyncToolsTestShortTimeout"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         server.setMarkToEndOfLog();
-        server.deleteFileFromLibertyServerRoot("dropins/asyncToolsTest.war");
-        server.deleteFileFromLibertyServerRoot("apps/asyncToolsTestShortTimeout.war");
-        server.waitForStringInLog("CWWKZ0009I:.*asyncToolsTest");
-        server.waitForStringInLog("CWWKZ0009I:.*asyncToolsTestShortTimeout");
+
+        // McpDeployHelper removes the <application> entry first, waits for stop via
+        // removeInstalledAppForValidation, then deletes the WAR (avoids CWWKZ0059E).
+        McpAsyncServerSuite.undeployWithConfiguration("asyncToolsTestShortTimeout");
+
+        // dropins WAR has no server.xml entry — deregister (waits for stop) then delete.
         server.removeInstalledAppForValidation("asyncToolsTest");
-        server.removeInstalledAppForValidation("asyncToolsTestShortTimeout");
+        server.deleteFileFromLibertyServerRoot("dropins/asyncToolsTest.war");
     }
 
     @Test

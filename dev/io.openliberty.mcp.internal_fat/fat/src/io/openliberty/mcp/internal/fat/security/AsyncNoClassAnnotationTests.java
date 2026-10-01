@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
@@ -21,8 +20,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
@@ -38,27 +35,31 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class AsyncNoClassAnnotationTests extends FATServletClient {
 
+    private static final String APP_NAME = "asyncNoClassAnnotationTools";
+
     // Do NOT copy McpAsyncAuthServerSuite.server into a local static field — it would capture null
     // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(AsyncNoClassAnnotationTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(McpAsyncAuthServerSuite.server, "/asyncNoClassAnnotationTools");
+    public McpClient client = new McpClient(McpAsyncAuthServerSuite.server, "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
         McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncNoClassAnnotationTools.war").addClass(AsyncNoClassAnnotationTools.class);
-        ShrinkHelper.exportDropinAppToServer(McpAsyncAuthServerSuite.server, war, SERVER_ONLY);
-        assertNotNull(McpAsyncAuthServerSuite.server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(AsyncNoClassAnnotationTools.class);
+        McpAsyncAuthServerSuite.deployWithConfiguration(war, app -> {
+            // no extra <mcp> config needed for this app
+        });
+
+        assertNotNull(McpAsyncAuthServerSuite.server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + APP_NAME));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
-        McpAsyncAuthServerSuite.server.deleteFileFromLibertyServerRoot("dropins/asyncNoClassAnnotationTools.war");
-        McpAsyncAuthServerSuite.server.waitForStringInLog("CWWKZ0009I:.*asyncNoClassAnnotationTools");
-        McpAsyncAuthServerSuite.server.removeInstalledAppForValidation("asyncNoClassAnnotationTools");
+        McpAsyncAuthServerSuite.undeployWithConfiguration(APP_NAME);
     }
 
     @Test

@@ -64,8 +64,11 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         server.setMarkToEndOfLog();
+        // Delete the dropin WAR first — Liberty detects the removal and logs CWWKZ0009I.
+        // Wait for the stop mark-based (avoids matching an earlier CWWKZ0001I from setup).
+        // Then deregister; removeInstalledAppForValidation immediately sees CWWKZ0009I.
         server.deleteFileFromLibertyServerRoot("dropins/asyncToolErrorHandling.war");
-        server.waitForStringInLog("CWWKZ0009I:.*asyncToolErrorHandling");
+        server.waitForStringInLogUsingMark("CWWKZ0009I:.*asyncToolErrorHandling");
         server.removeInstalledAppForValidation("asyncToolErrorHandling");
     }
 

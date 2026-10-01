@@ -66,7 +66,6 @@ public class DenyAllTestsStateless extends AbstractDenyAll {
     @AfterClass
     public static void teardown() throws Exception {
         McpStatelessAuthServerSuite.server.setMarkToEndOfLog();
-        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
-        McpStatelessAuthServerSuite.undeployWithConfiguration(war);
+        McpStatelessAuthServerSuite.undeployWithConfiguration(APP_NAME);
     }
 }

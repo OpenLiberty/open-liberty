@@ -9,11 +9,16 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.suite;
 
+import java.util.function.Consumer;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.websphere.simplicity.config.Application;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -35,6 +40,10 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
  *
  * <p>Test classes must call {@code server.setMarkToEndOfLog()} as the very first
  * line of {@code @BeforeClass} to isolate their log searches from earlier tests.
+ *
+ * <p>Test classes should use {@link #deployWithConfiguration} and
+ * {@link #undeployWithConfiguration} to deploy WARs that require an
+ * {@code <application>} entry in server.xml.
  */
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -46,13 +55,12 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
 })
 public class McpAsyncAuthServerSuite {
 
-    public static LibertyServer server;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer("mcp-server-async-auth");
 
     @ClassRule
     public static ExternalResource serverLifecycle = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
-            server = LibertyServerFactory.getLibertyServer("mcp-server-async-auth");
             server.startServer();
             server.waitForLTPAConfigReady();
         }
@@ -66,4 +74,32 @@ public class McpAsyncAuthServerSuite {
             }
         }
     };
+
+    /**
+     * Delegates to {@link McpDeployHelper#deployWithConfiguration}.
+     *
+     * @see McpDeployHelper#deployWithConfiguration(LibertyServer, WebArchive, Consumer)
+     */
+    public static void deployWithConfiguration(WebArchive war,
+                                               Consumer<Application> configurator) throws Exception {
+        McpDeployHelper.deployWithConfiguration(server, war, configurator);
+    }
+
+    /**
+     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, String)}.
+     *
+     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, String)
+     */
+    public static void undeployWithConfiguration(String appName) throws Exception {
+        McpDeployHelper.undeployWithConfiguration(server, appName);
+    }
+
+    /**
+     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)}.
+     *
+     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)
+     */
+    public static void undeployWithConfiguration(WebArchive war) throws Exception {
+        McpDeployHelper.undeployWithConfiguration(server, war);
+    }
 }

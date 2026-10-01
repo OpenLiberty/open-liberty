@@ -9,9 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.suite;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-
 import java.util.function.Consumer;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -21,9 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -81,60 +76,30 @@ public class McpStatelessAuthServerSuite {
     };
 
     /**
-     * Deploys {@code war} to the server's {@code apps/} directory and adds a
-     * matching {@code <application>} element to server.xml, letting the caller
-     * configure it via {@code configurator}.
+     * Delegates to {@link McpDeployHelper#deployWithConfiguration}.
      *
-     * <p>The WAR is written to disk <em>before</em> the server configuration is
-     * updated, which prevents Liberty from emitting {@code CWWKZ0014W} (app
-     * declared in server.xml before the WAR file exists).
-     *
-     * @param war the archive to deploy; its name is used as the file name
-     * @param configurator callback that receives the new {@link Application} element
-     *     so the caller can set properties (e.g. {@code <mcp stateless="true"/>})
+     * @see McpDeployHelper#deployWithConfiguration(LibertyServer, WebArchive, Consumer)
      */
     public static void deployWithConfiguration(WebArchive war,
-                                               Consumer<Application> configurator)
-                    throws Exception {
-        // Write WAR to disk first — file must exist before config references it.
-        // DISABLE_VALIDATION skips ShrinkHelper's own app-started check; the
-        // <application> entry does not exist yet so Liberty won't start the app
-        // until step 2. The caller's waitForStringInLogUsingMark handles readiness.
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY, DISABLE_VALIDATION);
-
-        // Add <application> entry config updated only after WAR is on disk
-        ServerConfiguration config = server.getServerConfiguration();
-        Application app = new Application();
-        app.setLocation(war.getName());
-        configurator.accept(app);
-        config.getApplications().add(app);
-        server.updateServerConfiguration(config);
+                                               Consumer<Application> configurator) throws Exception {
+        McpDeployHelper.deployWithConfiguration(server, war, configurator);
     }
 
     /**
-     * Removes the {@code <application>} entry for {@code war} from server.xml,
-     * waits for the app to stop, then deletes the WAR file.
+     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, String)}.
      *
-     * <p>The config is removed <em>before</em> the file is deleted, which prevents
-     * Liberty from emitting {@code CWWKZ0059E} (app still configured when WAR
-     * is removed from disk).
+     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, String)
+     */
+    public static void undeployWithConfiguration(String appName) throws Exception {
+        McpDeployHelper.undeployWithConfiguration(server, appName);
+    }
+
+    /**
+     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)}.
      *
-     * @param war the archive that was previously deployed via
-     *     {@link #deployWithConfiguration}
+     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)
      */
     public static void undeployWithConfiguration(WebArchive war) throws Exception {
-        String appName = war.getName().replace(".war", "");
-
-        // Now remove from server.xml first( triggers graceful app stop)
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getApplications().removeBy("location", war.getName());
-        server.updateServerConfiguration(config);
-
-        //  Wait for app to stop before touching the file
-        server.waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName);
-
-        // Delete WAR only after app has fully stopped
-        server.deleteFileFromLibertyServerRoot("apps/" + war.getName());
-        server.removeInstalledAppForValidation(appName);
+        McpDeployHelper.undeployWithConfiguration(server, war);
     }
 }

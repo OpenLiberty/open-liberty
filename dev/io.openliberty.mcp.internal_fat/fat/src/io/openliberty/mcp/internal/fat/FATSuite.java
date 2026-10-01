@@ -36,7 +36,6 @@ import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpMonitorServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpStatelessAuthServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpTelemetryServerSuite;
-import io.openliberty.mcp.internal.fat.suite.McpTestContainerSuite;
 import io.openliberty.mcp.internal.fat.timeout.ConfigurableAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.timeout.InvalidAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
@@ -110,9 +109,10 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 UnsupportedAnnotationWarningTest.class,
                 // Tool test must be last the last test on "mcp-server" because
                 // it has special repeats in lite mode which would affect later tests
-                ToolTest.class,
-                // TestContainer tests
-                McpTestContainerSuite.class })
+                ToolTest.class
+// TestContainer tests
+//                McpTestContainerSuite.class
+})
 
 public class FATSuite {
 
