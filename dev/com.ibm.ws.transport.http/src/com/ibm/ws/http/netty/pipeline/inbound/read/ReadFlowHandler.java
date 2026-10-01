@@ -357,7 +357,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 // Mark the response as in-flight for every non-informational response.
                 state.setResponseInFlight(true);
 
-                // TODO check if !(message instanceof LastHttpContent) is still valid for selfContained
                 boolean responseKeepAlive = HttpUtil.isKeepAlive(response);
                 state.setKeepAliveAllowed(responseKeepAlive && !state.isQuiescing());
 
