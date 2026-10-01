@@ -1444,11 +1444,6 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>jandex</artifactId>
-      <version>3.3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>jandex</artifactId>
       <version>3.5.3</version>
     </dependency>
     <dependency>
@@ -2084,12 +2079,7 @@
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy-agent</artifactId>
-      <version>1.17.8</version>
-    </dependency>
-    <dependency>
-      <groupId>net.bytebuddy</groupId>
-      <artifactId>byte-buddy</artifactId>
-      <version>1.17.8</version>
+      <version>1.18.10</version>
     </dependency>
     <dependency>
       <groupId>net.bytebuddy</groupId>
@@ -4050,11 +4040,6 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.5.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-      <version>3.6.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>
