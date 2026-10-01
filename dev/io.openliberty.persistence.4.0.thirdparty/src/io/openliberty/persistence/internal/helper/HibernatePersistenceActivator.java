@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.persistence.internal.helper;
 
+import java.lang.reflect.Field;
 import java.util.Hashtable;
 
 import jakarta.persistence.spi.PersistenceProvider;
@@ -36,8 +37,17 @@ public class HibernatePersistenceActivator implements BundleActivator {
 
     private ServiceRegistration<?> hibernateSvcReg = null;
 
+    /** Fully-qualified name of the classloader holder in io.openliberty.persistence.container.hibernate */
+    private static final String LIBERTY_BUNDLE_HELPER = "io.openliberty.persistence.hibernate.LibertyHibernateBundle";
+
     @Override
     public void start(BundleContext context) throws Exception {
+        // Publish our OSGi classloader via reflection so that AbstractJPAProviderIntegration
+        // can inject it as the first entry in Hibernate's AggregatedClassLoader.
+        // Reflection is used to avoid a compile-time dependency from the thirdparty bundle
+        // onto the Liberty container bundle (io.openliberty.persistence.container.hibernate).
+        setLibertyBundleClassLoader(context, HibernatePersistenceActivator.class.getClassLoader());
+
         // Register Hibernate as a JPA PersistenceProvider in the OSGi service registry.
         // JakartaPersistenceActivator tracks this service and exposes it via
         // PersistenceProviderResolverHolder so Liberty's JPA container can discover
@@ -53,7 +63,6 @@ public class HibernatePersistenceActivator implements BundleActivator {
         // WebSphereLibertyJtaPlatform; for newer versions it is overridden by
         // detection in AbstractJPAProviderIntegration.
         System.setProperty(HIBERNATE_JTA_PLATFORM, LIBERTY_JTA_PLATFORM_CLASS);
-
     }
 
     @Override
@@ -63,5 +72,30 @@ public class HibernatePersistenceActivator implements BundleActivator {
             hibernateSvcReg = null;
         }
         System.clearProperty(HIBERNATE_JTA_PLATFORM);
+        setLibertyBundleClassLoader(context, null);
+    }
+
+    /**
+     * Sets the {@code classLoader} field on {@code LibertyHibernateBundle} in the Liberty
+     * container bundle via reflection. Using reflection avoids a compile-time dependency
+     * from this thirdparty bundle onto {@code io.openliberty.persistence.container.hibernate}.
+     */
+    private void setLibertyBundleClassLoader(BundleContext context, ClassLoader cl) {
+        try {
+            // Load through the container bundle's classloader so OSGi wires correctly
+            Class<?> helperClass = context.getBundle().getBundleContext()
+                    .getBundle("io.openliberty.persistence.container.hibernate") != null
+                            ? Class.forName(LIBERTY_BUNDLE_HELPER, true,
+                                    context.getBundle().getBundleContext()
+                                            .getBundle("io.openliberty.persistence.container.hibernate")
+                                            .adapt(ClassLoader.class))
+                            : null;
+            if (helperClass != null) {
+                Field f = helperClass.getField("classLoader");
+                f.set(null, cl);
+            }
+        } catch (Exception e) {
+            // Non-fatal: classloader injection is best-effort
+        }
     }
 }

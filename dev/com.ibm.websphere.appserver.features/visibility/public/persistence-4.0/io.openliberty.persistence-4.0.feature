@@ -57,7 +57,7 @@ Subsystem-Name: Jakarta Persistence 4.0
   io.openliberty.jsonp-2.2, \
   com.ibm.websphere.appserver.transaction-2.1
 -bundles=io.openliberty.persistence.4.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.hibernate.orm:hibernate-core:8.0.0.Beta1", \
- io.openliberty.jpa.container.hibernate, \
+ io.openliberty.persistence.container.hibernate, \
  io.openliberty.org.jboss.logging36, \
  io.openliberty.io.smallrye.jandex3, \
  io.openliberty.net.bytebuddy
