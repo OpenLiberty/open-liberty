@@ -30,10 +30,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.AsyncErrorHandlingTools;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.NonBusinessException;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -44,24 +44,32 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class AsyncToolsErrorHandlingTest extends FATServletClient {
 
-    @Server("mcp-server-async")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpAsyncServerSuite.server;
 
     @Rule
     public McpClient client = new McpClient(server, "/asyncToolErrorHandling");
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolErrorHandling.war")
                                    .addPackage(AsyncErrorHandlingTools.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
-        server.startServer();
+        server.waitForStringInLog("MCP server endpoint: .*/mcp$");
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0010E"); // Tool threw non-business exception
+        server.setMarkToEndOfLog();
+        // Delete the dropin WAR first — Liberty detects the removal and logs CWWKZ0009I.
+        // Wait for the stop mark-based (avoids matching an earlier CWWKZ0001I from setup).
+        // Then deregister; removeInstalledAppForValidation immediately sees CWWKZ0009I.
+        server.deleteFileFromLibertyServerRoot("dropins/asyncToolErrorHandling.war");
+        server.waitForStringInLogUsingMark("CWWKZ0009I:.*asyncToolErrorHandling");
+        server.removeInstalledAppForValidation("asyncToolErrorHandling");
     }
 
     @Before

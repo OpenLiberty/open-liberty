@@ -22,11 +22,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.monitor.mxbeanAccessApp.McpMXBeanAccessServlet;
+import io.openliberty.mcp.internal.fat.suite.McpMonitorServerSuite;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -47,8 +47,8 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     private static final String APP_NAME = "mcpMXBeanAccessTest";
     private static final String SERVLET = APP_NAME + "/McpMXBeanAccessServlet";
 
-    @Server("mcp-server-monitor-only")
-    public static LibertyServer server;
+    // Server is managed by McpMonitorServerSuite — do NOT add @Server here.
+    public static LibertyServer server = McpMonitorServerSuite.server;
 
     @Rule
     public McpClient client = new McpClient(server, "/" + APP_NAME);
@@ -86,22 +86,23 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage())
                                    .addPackage(McpMXBeanAccessServlet.class.getPackage())
                                    .addAsManifestResource(McpMonitorMXBeanAccessTest.class.getResource("permissions.xml"), "permissions.xml");
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        server.startServer();
-        assertNotNull("Server should be ready (CWWKF0011I)",
-                      server.waitForStringInLog("CWWKF0011I"));
+        assertNotNull("App should start and register MCP endpoint",
+                      server.waitForStringInLogUsingMark("MCP server endpoint: .*/" + APP_NAME + "/mcp"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("CWMCM0010E");
-        }
+        server.setMarkToEndOfLog();
+        server.deleteFileFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
+        server.waitForStringInLog("CWWKZ0009I:.*" + APP_NAME);
+        server.removeInstalledAppForValidation(APP_NAME);
     }
 
     /**

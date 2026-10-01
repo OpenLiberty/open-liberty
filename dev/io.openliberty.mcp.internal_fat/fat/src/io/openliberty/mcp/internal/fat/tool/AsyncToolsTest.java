@@ -28,13 +28,14 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONParser;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Mcp;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
@@ -43,9 +44,9 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AsyncToolsTest extends FATServletClient {
 
-    private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async-tools")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server here as that
+    // would cause FATRunner to stop the shared server after this class completes.
+    public static LibertyServer server = McpAsyncServerSuite.server;
 
     @Rule
     public McpClient client = new McpClient(server, "/asyncToolsTest");
@@ -58,26 +59,43 @@ public class AsyncToolsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        server.addIgnoredErrors(List.of("Method call caused runtime exception. This is expected if the input was 'throw error'"));
+        server.setMarkToEndOfLog();
+
+        // asyncToolsTest.war has no special server.xml config — use dropins so Liberty
+        // picks it up reliably without needing an <application> declaration.
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolsTest.war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
-
-        // Same app deployed a second time, but has different config in server.xml
+        // asyncToolsTestShortTimeout.war needs <mcp asyncTimeout="5s"/> — use
+        // McpDeployHelper which writes the WAR first then adds the <application>
+        // entry (avoids CWWKZ0014W) and registers the app for validation.
         WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, "asyncToolsTestShortTimeout.war")
                                                .addPackage(AsyncTools.class.getPackage())
                                                .addPackage(ToolStatus.class.getPackage());
+        McpAsyncServerSuite.deployWithConfiguration(shortTimeoutWar, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setAsyncTimeout("5s");
+            app.getMcps().add(mcp);
+        });
 
-        ShrinkHelper.exportAppToServer(server, shortTimeoutWar, SERVER_ONLY);
-
-        server.startServer();
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*asyncToolsTest[^S]"));
+        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*asyncToolsTestShortTimeout"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        server.setMarkToEndOfLog();
+
+        // McpDeployHelper removes the <application> entry first, waits for stop via
+        // removeInstalledAppForValidation, then deletes the WAR (avoids CWWKZ0059E).
+        McpAsyncServerSuite.undeployWithConfiguration("asyncToolsTestShortTimeout");
+
+        // dropins WAR has no server.xml entry — deregister (waits for stop) then delete.
+        server.removeInstalledAppForValidation("asyncToolsTest");
+        server.deleteFileFromLibertyServerRoot("dropins/asyncToolsTest.war");
     }
 
     @Test

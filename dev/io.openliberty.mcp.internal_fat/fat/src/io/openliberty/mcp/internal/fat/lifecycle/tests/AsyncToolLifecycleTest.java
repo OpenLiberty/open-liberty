@@ -29,9 +29,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncLifecycleTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
@@ -40,36 +39,45 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @SuppressWarnings("unchecked")
 @RunWith(FATRunner.class)
 public class AsyncToolLifecycleTest {
-    private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
 
-    @Server("mcp-server-async")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server here.
+    // Do NOT copy McpAsyncServerSuite.server into a static field here:
+    // the suite's @BeforeClass runs after test-class static initializers,
+    // so a static copy would capture null.
+    @Rule
+    public ToolStatusClient toolStatus = new ToolStatusClient(McpAsyncServerSuite.server, "/asyncToolLifecycleTest");
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolLifecycleTest");
-
-    @Rule
-    public McpClient client = new McpClient(server, "/asyncToolLifecycleTest");
+    public McpClient client = new McpClient(McpAsyncServerSuite.server, "/asyncToolLifecycleTest");
 
     @BeforeClass
     public static void setup() throws Exception {
+        McpAsyncServerSuite.server.addIgnoredErrors(List.of("Method call caused runtime exception. This is expected if the input was 'throw error'"));
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolLifecycleTest.war")
                                    .addPackage(AsyncLifecycleTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(McpAsyncServerSuite.server, war, SERVER_ONLY);
 
-        server.startServer();
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
+        // Delete the dropin WAR first — Liberty detects the removal and logs CWWKZ0009I.
+        // Wait for the stop mark-based (avoids matching an earlier CWWKZ0001I from setup).
+        // Then deregister; removeInstalledAppForValidation immediately sees CWWKZ0009I.
+        McpAsyncServerSuite.server.deleteFileFromLibertyServerRoot("dropins/asyncToolLifecycleTest.war");
+        McpAsyncServerSuite.server.waitForStringInLogUsingMark("CWWKZ0009I:.*asyncToolLifecycleTest");
+        McpAsyncServerSuite.server.removeInstalledAppForValidation("asyncToolLifecycleTest");
     }
 
     @Test
     public void testAsyncDependentBeanLifecycleForCompleteCompletionStage() throws Exception {
-        server.setMarkToEndOfLog();
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -102,10 +110,10 @@ public class AsyncToolLifecycleTest {
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
         // Fetch all lifecycle-related log messages
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = McpAsyncServerSuite.server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", McpAsyncServerSuite.server.getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
@@ -117,7 +125,7 @@ public class AsyncToolLifecycleTest {
 
     @Test
     public void testAsyncDependentBeanLifecycleForAsyncStage() throws Exception {
-        server.setMarkToEndOfLog();
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -150,10 +158,10 @@ public class AsyncToolLifecycleTest {
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
         // Fetch all lifecycle-related log messages
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = McpAsyncServerSuite.server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", McpAsyncServerSuite.server.getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
@@ -166,7 +174,7 @@ public class AsyncToolLifecycleTest {
 
     @Test
     public void testAsyncDependentBeanLifecycleWhenToolThrowsException() throws Exception {
-        server.setMarkToEndOfLog();
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -190,9 +198,9 @@ public class AsyncToolLifecycleTest {
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = McpAsyncServerSuite.server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", McpAsyncServerSuite.server.getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
