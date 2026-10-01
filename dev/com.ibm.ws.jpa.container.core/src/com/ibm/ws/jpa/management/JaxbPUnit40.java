@@ -158,6 +158,22 @@ public class JaxbPUnit40 extends JaxbPUnit {
         return null;
     }
 
+    /**
+     * Returns the package names listed by {@code <package-descriptor>} elements.
+     */
+    @Override
+    public java.util.List<String> getPackageDescriptors() {
+        return ivPUnit.getPackageDescriptor();
+    }
+
+    /**
+     * Returns the module names listed by {@code <module-descriptor>} elements.
+     */
+    @Override
+    public java.util.List<String> getModuleDescriptors() {
+        return ivPUnit.getModuleDescriptor();
+    }
+
     @Override
     public Properties getProperties() {
         Properties rtnProperties = null;
