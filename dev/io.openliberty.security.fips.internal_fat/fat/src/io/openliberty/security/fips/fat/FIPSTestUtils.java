@@ -77,16 +77,18 @@ public class FIPSTestUtils {
                 Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");
             }
         }  else {
+                Log.debug(FIPSTestUtils.class, "JavaHome=" + javaInfo.javaHome());
                 String javaSecurityPath = javaInfo.javaHome() + "/conf/security/java.security";
                 Path path = Paths.get(javaSecurityPath);
 
                 Log.info(FIPSTestUtils.class, method_name, "Checking " + path.toAbsolutePath() + "for FIPS security");
                 if (path.toFile().exists()) {
-
                     try (BufferedReader reader = Files.newBufferedReader(path)) {
                         String line;
                         boolean fipsCompatible = false;
+                        int count =1 ;
                         while ((line = reader.readLine()) != null) {
+                            Log.debug(FIPSTestUtils.class, "Line "+ count +":" + line);
                             if (line.contains("RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate")){
                                 String[] dateElements = line.split("=")[1].trim().split("-");
                                 LocalDate now = LocalDate.now();
@@ -109,6 +111,9 @@ public class FIPSTestUtils {
                         validEnv = false;
                         Log.error(FIPSTestUtils.class, method_name, e, "unable to read java.security file, skipping the tests");
                     }
+                } else {
+                    validEnv = false;
+                    Log.warning(FIPSTestUtils.class, "unable to locate java.security file at " + path.toAbsolutePath() + ", skipping the tests");
                 }
             }
 
