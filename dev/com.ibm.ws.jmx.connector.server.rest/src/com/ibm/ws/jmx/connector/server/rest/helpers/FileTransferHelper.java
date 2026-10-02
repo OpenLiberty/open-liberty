@@ -21,6 +21,7 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
@@ -700,6 +701,19 @@ public class FileTransferHelper {
     public void downloadInternal(RESTRequest request, RESTResponse response, String filePath, long startOffset, long endOffset, boolean legacyFileTransfer) {
         //Process and validate path
         final String processedPath = processAndValidateFilePath(filePath, true);
+
+        final FileServiceMXBean fileService = getFileService();
+        List<String> readableFilePatterns = fileService.getReadableFilePatterns();
+        File theFile = new File(processedPath);
+        if (FileUtils.fileIsFile(theFile) && !FileServiceUtil.isFileMatched(theFile.getName(), readableFilePatterns)) {
+            Object[] params = new String[] { processedPath };
+            IOException ioe = new IOException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                           APIConstants.TRACE_BUNDLE_FILE_TRANSFER,
+                                                                           "SERVER_ACCESS_DENIED_ERROR",
+                                                                           params,
+                                                                           "CWWKX0121E: Access denied to the " + processedPath + " path."));
+            throw ErrorHelper.createRESTHandlerJsonException(ioe, null, APIConstants.STATUS_BAD_REQUEST);
+        }
 
         //Write contents of file into stream
         writeResponseFromFile(processedPath, startOffset, endOffset, request, response, legacyFileTransfer);

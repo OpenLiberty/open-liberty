@@ -15,6 +15,7 @@ package com.ibm.ws.filetransfer.internal.mbean;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,11 +83,13 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
     private static final String WRITE_LIST_CONFIGURATION = "writeDir";
     private static final String BLOCK_LIST_CONFIGURATION = "blockDir";
     private static final String DISABLE_BLOCK_LIST_CONFIGURATION = "disableBlockList";
+    private static final String READABLE_FILES_CONFIGURATION = "readableFilePattern";
     private static final String EMPTY_PATH_STRING = "";
 
     private List<String> ReadList;
     private List<String> WriteList;
     private List<String> BlockList;
+    private List<String> ReadableFilePatterns;
 
     public FileService() throws NotCompliantMBeanException {
         super(FileServiceMXBean.class, true);
@@ -177,9 +180,8 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
                                                                    "CWWKX7911E: OSGi service is not available."));
             }
 
-            ReadList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_INSTALL_DIR)));
-            ReadList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_USER_DIR)));
             ReadList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)));
+            ReadList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR)));
         }
 
         //write lists
@@ -216,6 +218,29 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
             BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
             BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/collective"));
+        }
+
+        // ReadableFiles
+        Object readableFilesConfig = properties.get(READABLE_FILES_CONFIGURATION);
+        if (readableFilesConfig instanceof String[]) {
+            ReadableFilePatterns = new ArrayList<String>();
+            String[] configs = (String[])readableFilesConfig;
+            for (String config: configs) {
+                int pos = config.lastIndexOf('*');
+                if (pos == -1 || pos == 0) {
+                    ReadableFilePatterns.add(config);
+                } else {
+                    // There is a wild card char which is not at the start of the string
+                    // This is currently not supported
+                    // TODO should this be a translated message?
+                    Tr.debug(this, tc, "Unsupported file pattern " + config);
+                }
+            }
+        } else {
+            ReadableFilePatterns = new ArrayList<String>();
+            ReadableFilePatterns.add("*.xml");
+            ReadableFilePatterns.add("*.log");
+            ReadableFilePatterns.add("*.xsd");
         }
 
         //START DEBUG
@@ -257,6 +282,18 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             }
             Tr.debug(this, tc, "blockList: " + sb.toString());
 
+            //Log the ReadableFiles list
+            sb = sb.delete(0, sb.length());
+            if (ReadableFilePatterns.isEmpty()) {
+                sb.append("empty");
+            } else {
+                for (String readableFilePattern : ReadableFilePatterns) {
+                    sb.append(readableFilePattern);
+                    sb.append("   ");
+                }
+            }
+            Tr.debug(this, tc, "ReadableFilePatterns: " + sb.toString());
+
         } //END DEBUG
 
         //Publish values
@@ -274,6 +311,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
         publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_READ_LIST, ReadList.toArray(new String[ReadList.size()]));
         publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_WRITE_LIST, WriteList.toArray(new String[WriteList.size()]));
         publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_BLOCK_LIST, BlockList.toArray(new String[BlockList.size()]));
+        publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_READABLE_FILES_LIST, ReadableFilePatterns.toArray(new String[ReadableFilePatterns.size()]));
     }
 
     @Reference(name = KEY_LOCATION_ADMIN, service = WsLocationAdmin.class)
@@ -334,6 +372,12 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
     /** {@inheritDoc} */
     @Override
+    public List<String> getReadableFilePatterns() {
+        return ReadableFilePatterns;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public MetaData getMetaData(String path, String requestOptions) {
 
         if (path == null || EMPTY_PATH_STRING.equals(path)) {
@@ -356,6 +400,12 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
         if (!FileUtils.fileExists(pathFile)) { // d92777   
             return null;
         }
+
+        if (FileUtils.fileIsFile(pathFile) && !FileServiceUtil.isFileMatched(pathFile.getName(), getReadableFilePatterns())) {
+            logAccessDenied(path);
+            return null;
+        }
+
         Boolean directory = null;
         Boolean readOnly = null;
         Date lastModified = null;
@@ -435,9 +485,13 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         File[] entries = FileUtils.listFiles(dir);
         for (int i = 0; i < entries.length; i++) {
-            v.add(getMetaData(entries[i].getPath(), requestOptions));
-            if (FileUtils.fileIsDirectory(entries[i]) && recurse) {
-                v = processDir(entries[i], recurse, requestOptions, v);
+            File entry = entries[i];
+            if (FileUtils.fileIsFile(entry) && !FileServiceUtil.isFileMatched(entry.getName(), getReadableFilePatterns())) {
+                continue;
+            }
+            v.add(getMetaData(entry.getPath(), requestOptions));
+            if (FileUtils.fileIsDirectory(entry) && recurse) {
+                v = processDir(entry, recurse, requestOptions, v);
             }
         }
         return v;
@@ -451,7 +505,10 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         // Validate source path
         String normalizedSourcePath = normalizePath(sourcePath);
-        if (FileServiceUtil.isPathContained(getBlockList(), normalizedSourcePath) || !FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath)) {
+        File normalizedSourceFile = new File(normalizedSourcePath);
+        if (FileServiceUtil.isPathContained(getBlockList(), normalizedSourcePath)
+             || !FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath)
+             || ( FileUtils.fileIsFile(normalizedSourceFile) && !FileServiceUtil.isFileMatched(normalizedSourceFile.getName(), getReadableFilePatterns()))) {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "ARCHIVE_CREATE_SOURCE_DENIED_WARNING", sourcePath);
             }
@@ -471,7 +528,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
         }
 
         // Create the archive
-        FileServiceUtil ftau = new FileServiceUtil();
+        FileServiceUtil ftau = new FileServiceUtil(this);
         rc = ftau.createArchive(normalizedSourcePath, normalizedTargetPath);
 
         if (rc == true) {
@@ -500,6 +557,13 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             }
             rc = false;
         }
+        File normalizedSourceFile = new File(normalizedSourcePath);
+        if (FileUtils.fileIsFile(normalizedSourceFile) && !FileServiceUtil.isFileMatched(normalizedSourceFile.getName(), getReadableFilePatterns())) {
+            if (tc.isWarningEnabled()) {
+                Tr.warning(tc, "ARCHIVE_EXPAND_SOURCE_DENIED_WARNING", sourcePath);
+            }
+            rc = false;
+        }
 
         // Validate target path
         String normalizedTargetPath = normalizePath(targetPath);
@@ -514,7 +578,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
         }
 
         // Expand the archive
-        FileServiceUtil ftau = new FileServiceUtil();
+        FileServiceUtil ftau = new FileServiceUtil(this);
         rc = ftau.expandArchive(normalizedSourcePath, normalizedTargetPath);
 
         if (rc == true) {

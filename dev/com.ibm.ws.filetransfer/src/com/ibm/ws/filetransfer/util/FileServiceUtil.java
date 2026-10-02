@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -33,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.filetransfer.internal.mbean.FileService;
 import com.ibm.ws.filetransfer.routing.archiveExpander.ArchiveExpander;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
@@ -40,6 +45,11 @@ public class FileServiceUtil {
 
     private static final TraceComponent tc = Tr.register(FileServiceUtil.class);
     private String _parentOfOriginalSourcePath = null;
+    private FileService fs = null;
+
+    public FileServiceUtil(FileService fs) {
+        this.fs = fs;
+    }
 
     /**
      * Archive the specified sourcePath entity to the specified targetPath location.
@@ -141,7 +151,10 @@ public class FileServiceUtil {
             File entity = new File(src, entities[i]);
 
             if (FileUtils.fileIsFile(entity)) {
-
+                if (!isFileMatched(entity.getName(), fs.getReadableFilePatterns())) {
+                    Tr.error(tc, "ACCESS_DENIED_ERROR", entity);
+                    continue;
+                }
                 archiveFile(entity, out);
 
             } else if (FileUtils.fileIsDirectory(entity)) {
@@ -234,8 +247,33 @@ public class FileServiceUtil {
     }
 
     /**
+     * Returns true if fileName is matched by the any of the patterns
+     * in matchList. fileName should only be the file name (not including any
+     * leading path segments). Match patterns can be:
+     *   '*' - matches any file name
+     *   '*(suffix)' - matches any file ending in '(suffix)'
+     *   Any other pattern - treated as an exact match
+     */
+    public static boolean isFileMatched(String fileName, List<String> matchList) {
+        for (String pattern: matchList) {
+            if (pattern.length() == 1 && pattern.equals("*")) {
+                return true;
+            }
+            if (pattern.startsWith("*")) {
+                if (fileName.endsWith(pattern.substring(1))) {
+                    return true;
+                }
+            }
+            if (pattern.equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns true if the targetPath is contained within one of the allowedPaths.
-     * 
+     *
      * Assumption: the "allowedPaths" point to directories, and the "targetPath" is already normalized.
      */
     public static boolean isPathContained(List<String> allowedPaths, String targetPath) {
