@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ import static org.junit.Assume.assumeThat;
 
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
-@SkipIfSysProp({SkipIfSysProp.OS_ZOS, SkipIfSysProp.OS_IBMI})
+@SkipIfSysProp({SkipIfSysProp.OS_IBMI})
 public class FIPS1403ClientTest {
 
     public static final String CLIENT_NAME = "FIPSClient";
@@ -75,6 +75,7 @@ public class FIPS1403ClientTest {
 
     @Test
     public void clientJFIPS140_3JVMArgsTest() throws Exception {
+        // if FIPS140-3 is defined at a global level, the LibertyClient class will apply the settings for us
         if (!GLOBAL_CLIENT_FIPS) {
             Log.info(FIPS1403ClientTest.class,"setup","Setting FIPS140-3 JVM Options");
             HashMap<String, String> opts = new HashMap<>();
@@ -101,11 +102,9 @@ public class FIPS1403ClientTest {
     
     @Test
     public void clientFIPS140_3EnvTest() throws Exception {
-        assumeThat(GLOBAL_CLIENT_FIPS, is(false));
-        if(!GLOBAL_CLIENT_FIPS) {
-            client.copyFileToLibertyClientRoot("publish/resources", "resources" , STANDALONE_FIPS_PROFILE_FILENAME);
-            client.addEnvVar(ENABLE_FIPS140_3_ENV_VAR, client.getClientRoot()+"/resources/" + STANDALONE_FIPS_PROFILE_FILENAME);
-        }
+        client.copyFileToLibertyClientRoot("publish/resources", "resources" , STANDALONE_FIPS_PROFILE_FILENAME);
+        client.addEnvVar(ENABLE_FIPS140_3_ENV_VAR, client.getClientRoot()+"/resources/" + STANDALONE_FIPS_PROFILE_FILENAME);
+        // if global.client.fips_140-3=true is specified, the client will still use the envVar setting instead of applying the default args
         client.startClient();
         checkClientLogForFipsEnablementMessage(client, expectedProvider);
     }
