@@ -44,6 +44,10 @@ public class LTPA extends ConfigElement {
     @XmlAttribute
     public String updateTrigger;
 
+    // Attribute to enable AES encryption key-based decryption of the LTPA keys file
+    @XmlAttribute
+    public String useEncryptionKey;
+
     // Inherit ValidationKeys
     @XmlElement(name = "validationKeys")
     private ConfigElementList<ValidationKeys> validationKeys;
@@ -70,6 +74,7 @@ public class LTPA extends ConfigElement {
         buf.append(", monitorValidationKeysDir=").append(monitorValidationKeysDir);
         buf.append(", monitorInterval=").append(monitorInterval);
         buf.append(", updateTrigger=").append(updateTrigger);
+        buf.append(", useEncryptionKey=").append(useEncryptionKey);
 
         // Elements
         if (this.validationKeys != null)
