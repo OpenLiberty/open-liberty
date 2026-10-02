@@ -54,7 +54,7 @@ public class McpTransport {
     public static final String MCP_SESSION_ID_HEADER = "Mcp-Session-Id";
     private static final TraceComponent tc = Tr.register(McpTransport.class);
     private static final String MCP_HEADER = "MCP-Protocol-Version";
-    private static final List<String> REQUIRED_MCP_MIME_TYPES = List.of("text/event-stream", "application/json");
+    private static final String APPLICATION_JSON_MIME = "application/json";
     private HttpServletRequest req;
     private HttpServletResponse res;
     private Jsonb jsonb;
@@ -143,12 +143,8 @@ public class McpTransport {
             String reqHeaderAcceptedTypes = req.getHeader("Accept");
             if (reqHeaderAcceptedTypes == null)
                 return false;
-            for (String mcpMime : REQUIRED_MCP_MIME_TYPES) {
-                if (!HeaderValidation.acceptContains(reqHeaderAcceptedTypes, mcpMime))
-                    return false;
-            }
 
-            return true;
+            return HeaderValidation.acceptContains(reqHeaderAcceptedTypes, APPLICATION_JSON_MIME);
         } catch (Exception e) {
             sendError(e);
             return false;
