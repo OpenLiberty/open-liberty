@@ -60,6 +60,7 @@ import jakarta.data.restrict.Restrict;
 import jakarta.data.restrict.Restriction;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -1027,6 +1028,41 @@ public class Data_1_1_Servlet extends FATServlet {
                      page2.numberOfElements());
         assertEquals(false,
                      page2.hasTotals());
+    }
+
+    /**
+     * The Fetching annotation requests eager loading of a value that would
+     * normally be loaded lazily.
+     */
+    @Test
+    public void testFetching1() {
+        // TODO skipped until Hibernate bug is fixed:
+        // NoClassDefFoundError: jakarta/persistence/BatchSize
+        //   at org.hibernate.engine.spi.FetchOptions.batchSize(FetchOptions.java:81)
+        if (isHibernatePersistence())
+            return;
+
+        Fraction f5_8 = fractions.withRoundedValues(5, 8)
+                        .orElseThrow();
+        assertEquals(BigDecimal.valueOf(630, 3),
+                     f5_8.rounded.get(1));
+
+        // EclipseLink eagerly loads the collection regardless, so we can only
+        // test for an exception on Hibernate
+        if (isHibernatePersistence()) {
+            Fraction f3_8 = fractions.withoutRoundedValues(3, 8)
+                            .orElseThrow();
+            try {
+                assertEquals(BigDecimal.valueOf(380, 3),
+                             f3_8.rounded.get(1));
+            } catch (PersistenceException x) {
+                if ("org.hibernate.LazyInitializationException" //
+                                .equals(x.getClass().getName()))
+                    ; // expected
+                else
+                    throw x;
+            }
+        }
     }
 
     /**
