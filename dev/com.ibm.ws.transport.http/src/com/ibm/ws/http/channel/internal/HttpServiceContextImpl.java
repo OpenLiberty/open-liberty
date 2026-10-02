@@ -61,7 +61,6 @@ import com.ibm.ws.http.netty.inbound.NettyTCPWriteRequestContext;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -1453,6 +1452,20 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     }
 
     /**
+     * Netty-path equivalent of the {@code updatePersistence(msg)} call that the
+     * legacy path makes inside {@code formatHeaders}.  The Netty path bypasses
+     * {@code formatHeaders} entirely, so this hook allows subclasses to apply the
+     * same persistence rules (e.g. error status codes disable keep-alive) before
+     * {@code prepareNettyHeadersToSend} evaluates {@code isPersistent()}.
+     *
+     * <p>The base implementation is a no-op; {@link HttpInboundServiceContextImpl}
+     * overrides it to apply the inbound-specific rules.
+     */
+    protected void updatePersistenceForNettyResponse() {
+        // no-op in base class
+    }
+
+    /**
      * Update the "content-length" vs "chunked encoding" flags for the inbound
      * message by querying the given message headers.
      *
@@ -2336,6 +2349,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         NettyResponseMessage responseMessage = (NettyResponseMessage) getResponse();
         HttpResponse response = responseMessage.getResponse();
 
+        // Mirror the legacy formatHeaders path: evaluate the response status to
+        // decide whether this connection should persist.  In the legacy path this
+        // is done by updatePersistence(msg) inside formatHeaders; the Netty path
+        // skips formatHeaders entirely, so isPersistent() would otherwise remain
+        // true for error responses and Connection: close would never be added.
+        updatePersistenceForNettyResponse();
+
         // check compression and set up the Content-Encoding header if need be
         if (null != this.compressHandler) {
             ContentEncodingValues ce = this.compressHandler.getContentEncoding();
@@ -2372,6 +2392,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "sendHeaders: Adding close connection header due to keep alive disabled or exceeded number of maximum persistent requests");
             }
             getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
+        }
+        // If persistence was explicitly disabled (e.g. by an error path or updatePersistence),
+        // reflect that as Connection: close in the response headers so that
+        // HttpServerKeepAliveHandler can manage the connection lifecycle natively.
+        if (!isNettyHttp2Request() && !isPersistent()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "sendHeaders: Adding close connection header due to isPersistent=false");
+            }
+            getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION, ConnectionValues.CLOSE.getName());
         }
         if (HttpUtil.isContentLengthSet(response)) {
             this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
@@ -3114,7 +3143,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyWrite(sendHeaders, false);
         } else if (isHeadRequest && sendHeaders) {
             // If a HEAD request is found, the response is self-contained
-            prepareNettyCloseForIncompleteRequestBody(false);
             sendNettyHeaders();
         }
     }
@@ -3440,7 +3468,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyWrite(sendHeaders, true);
         } else if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             // Skip writing data and send headers and last http content only
-            prepareNettyCloseForIncompleteRequestBody(true);
             if(sendHeaders){
                 sendNettyHeaders();
             }
@@ -3794,8 +3821,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if(!(getTSC().getWriteInterface() instanceof NettyTCPWriteRequestContext))
             throw new RuntimeException("Writing on Netty requires a NettyTCPWriteRequestContext");
 
-        prepareNettyCloseForIncompleteRequestBody(finalWrite);
-
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing " + writeBuffers.length + " buffers on netty channel.");
@@ -3834,39 +3859,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
-    private void prepareNettyCloseForIncompleteRequestBody(boolean finalWrite) {
-        if (!finalWrite || nettyResponse == null) {
-            return;
-        }
-        if (isNettyHttp2Request()) {
-            return;
-        }
-        if (!hasUnconsumedNettyRequestBody()) {
-            return;
-        }
-
-        // A finalized response cannot safely leave an HTTP/1.x connection reusable while
-        // unread request-body bytes may still be on the wire. Mark the response state as
-        // close-delimited before the write path so close cleanup does not block draining.
-        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
-        setPersistent(false);
-        nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-    }
-
-    /**
-     * Determines whether an HTTP/1.x response must close because request entity
-     * bytes may still be unread. Protocol completion remains owned by
-     * {@code LastHttpContent}; consuming the declared fixed-length entity is
-     * sufficient only for this response-close decision.
-     */
-    private boolean hasUnconsumedNettyRequestBody() {
-        // Incomplete-body forced-close is an HTTP/1 keep-alive concern only.
-        if (isNettyHttp2Request()) {
-            return false;
-        }
-        return !isBodyComplete() && !ReadFlowHandler.state(nettyContext).isRequestConsumed();
-    }
-
     private void sendNettyFinalContent() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
@@ -3877,24 +3869,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         String streamId = Integer.toString(getNettyHttp2StreamId());
 
         DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
-        boolean closeAfterFinalContent = "-1".equals(streamId)
-                                        && (!isPersistent()
-                                            || resp.getResponse().headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
-                                            || !trailers.isEmpty()
-                                            || hasUnconsumedNettyRequestBody());
 
-        if (closeAfterFinalContent && hasUnconsumedNettyRequestBody()) {
-            this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
-            setPersistent(false);
-            resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-        }
-
-        // Sending last http content since all data was written
+        // Sending last http content since all data was written.
+        // Connection-close is owned by HttpServerKeepAliveHandler: it reads the
+        // Connection header (set by prepareNettyHeadersToSend or by explicit policy)
+        // and attaches ChannelFutureListener.CLOSE to this write automatically.
         this.nettyContext.channel().eventLoop().execute(() -> {
-            ChannelFuture future = nettyContext.channel().writeAndFlush(lastContent);
-            if (closeAfterFinalContent) {
-                future.addListener(ChannelFutureListener.CLOSE);
-            }
+            nettyContext.channel().writeAndFlush(lastContent);
         });
     }
 

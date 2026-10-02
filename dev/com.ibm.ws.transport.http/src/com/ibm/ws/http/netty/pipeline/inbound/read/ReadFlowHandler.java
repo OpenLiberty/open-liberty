@@ -33,6 +33,7 @@ import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 /**
@@ -82,39 +83,137 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
 
     private ReadFlowHandler() {}
 
-    /**
-     * Returns the current state of the flow handler. The first time this method
-     * is invoked, it will initialize a new {@link FlowState} object and associate
-     * it to the {@link Channel} using the {@link AttributeKey}.
-     *
-     * @param context The current Netty {@link ChannelHandlerContext}.
-     * @return The current flow state associated to the provided context.
-     */
-    public static FlowState state(ChannelHandlerContext context) {
-        FlowState state = context.channel().attr(FLOW_KEY).get();
+    /** Returns the {@link FlowState} for the given channel, creating one on first access. */
+    public static FlowState state(Channel channel) {
+        FlowState state = channel.attr(FLOW_KEY).get();
         if (state == null) {
             state = new FlowState();
-            context.channel().attr(FLOW_KEY).set(state);
+            channel.attr(FLOW_KEY).set(state);
         }
         return state;
     }
 
-    public static void markRequestConsumed(ChannelHandlerContext context) {
-        FlowState state = state(context);
+    public static void markRequestConsumed(Channel channel) {
+        if (!channel.eventLoop().inEventLoop()) {
+            channel.eventLoop().execute(() -> markRequestConsumed(channel));
+            return;
+        }
+        FlowState state = state(channel);
+        ChannelHandlerContext flowCtx = state.readFlowHandlerContext;
+        if (flowCtx == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "markRequestConsumed: readFlowHandlerContext is null ch=" + channel.id() + "; state update skipped");
+            }
+            return;
+        }
         state.setRequestConsumed(true);
-        verifyNeedRead(context, state);
-    }
-
-    public static void setBodyReadWanted(ChannelHandlerContext context, boolean want) {
-        FlowState state = state(context);
-        state.setBodyReadWanted(want);
-        if (want) {
-            requestRead(context);
+        state.setPurging(false);
+        // Use the single authoritative eligibility check — covers both the
+        // "no prior exchange" and "cleanup complete" paths.
+        if (!state.isAdmissionEligible()) {
+            // Cleanup not yet done — onCleanupComplete will re-evaluate.
+            verifyNeedRead(flowCtx, state);
+            return;
+        }
+        // All gates clear: safe to drain or schedule the next request.
+        if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+            drainPendingAdmission(flowCtx, state);
+        } else {
+            verifyNeedRead(flowCtx, state);
         }
     }
 
-    public static void setClosedOrUpgraded(ChannelHandlerContext context) {
-        FlowState state = state(context);
+    /**
+     * Called on the event loop by {@link ExchangeLifecycle} once cleanup has
+     * completed; admits the next request when all other gates are clear.
+     */
+    static void onCleanupComplete(Channel channel) {
+        assert channel.eventLoop().inEventLoop()
+            : "onCleanupComplete must be called on the event loop";
+        FlowState state = state(channel);
+        ChannelHandlerContext flowCtx = state.readFlowHandlerContext;
+        if (flowCtx == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "onCleanupComplete: readFlowHandlerContext is null ch=" + channel.id() + "; skipping admission");
+            }
+            return;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "onCleanupComplete ch=" + channel.id()
+                + " requestConsumed=" + state.isRequestConsumed()
+                + " responseInFlight=" + state.isResponseInFlight()
+                + " hasPending=" + state.hasPendingAdmission());
+        }
+        if (!state.isRequestConsumed()) {
+            // Purge still in progress — markRequestConsumed will re-trigger.
+            return;
+        }
+        if (state.isResponseInFlight()) {
+            // Response write not yet complete — onResponseComplete will drain.
+            return;
+        }
+        // isAdmissionEligible() is now true (cleanup just completed).
+        if (state.hasPendingAdmission()) {
+            drainPendingAdmission(flowCtx, state);
+        } else {
+            verifyNeedRead(flowCtx, state);
+        }
+    }
+
+    /**
+     * Called on the event loop when cleanup fails. Closes the connection and
+     * releases all queued requests without admitting a next exchange.
+     */
+    public static void onCleanupFailed(Channel channel, Throwable cause) {
+        assert channel.eventLoop().inEventLoop()
+            : "onCleanupFailed must be called on the event loop";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "onCleanupFailed ch=" + channel.id() + " cause=" + cause);
+        }
+        closeOnError(channel);
+    }
+
+    /**
+     * Called on the event loop when cleanup succeeded but the admission
+     * notification threw. Closes the connection without altering lifecycle state.
+     */
+    public static void onCleanupNotificationFailed(Channel channel, Throwable cause) {
+        assert channel.eventLoop().inEventLoop()
+            : "onCleanupNotificationFailed must be called on the event loop";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "onCleanupNotificationFailed ch=" + channel.id()
+                + " cause=" + cause);
+        }
+        closeOnError(channel);
+    }
+
+    /**
+     * Closes the channel on a fatal lifecycle error: disallows keep-alive,
+     * stops reads, releases the pending queue, and closes the channel if active.
+     */
+    private static void closeOnError(Channel channel) {
+        FlowState state = state(channel);
+        state.setKeepAliveAllowed(false);
+        state.setStopReading(true);
+        state.releaseQueue();
+        if (channel.isActive()) {
+            channel.close();
+        }
+    }
+
+    public static void setBodyReadWanted(Channel channel, boolean want) {
+        FlowState state = state(channel);
+        state.setBodyReadWanted(want);
+        ChannelHandlerContext flowCtx = state.readFlowHandlerContext;
+        if (want && flowCtx != null) {
+            requestRead(flowCtx);
+        } else if (want && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setBodyReadWanted: context is null, read scheduling skipped ch=" + channel.id());
+        }
+    }
+
+    public static void setClosedOrUpgraded(Channel channel) {
+        FlowState state = state(channel);
         state.setStopReading(true);
         state.setKeepAliveAllowed(false);
         state.setBodyReadWanted(false);
@@ -134,18 +233,24 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * @throws Exception if next handlers throw an exception.
      */
     @Override
+    public void handlerAdded(ChannelHandlerContext context) throws Exception {
+        state(context.channel()).readFlowHandlerContext = context;
+        super.handlerAdded(context);
+    }
+
+    @Override
     public void channelActive(ChannelHandlerContext context) throws Exception {
         if (context.channel().config().isAutoRead()) {
             context.channel().config().setAutoRead(false);
         }
-        state(context);
+        state(context.channel());
         super.channelActive(context);
         requestRead(context);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext context) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         state.setReadPending(false);
         state.setReadAgain(false);
         state.setStopReading(true);
@@ -155,10 +260,24 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         state.setReadPending(false);
         state.setReadAgain(false);
         state.releaseQueue();
+
+        // A ReadTimeoutException during body purge must not produce a 408;
+        // close silently to match Channel Framework error-state close behaviour.
+        if (cause instanceof ReadTimeoutException
+                && state.isPurging()
+                && !state.isRequestConsumed()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ReadTimeoutException during body purge; closing silently ch="
+                        + context.channel().id());
+            }
+            context.close();
+            return;
+        }
+
         super.exceptionCaught(context, cause);
     }
 
@@ -185,7 +304,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
 
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         boolean hasFlowControl = (context.pipeline().get(FlowControlHandler.class) != null);
 
         if (hasFlowControl && state.isReadPending()) {
@@ -200,10 +319,16 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             HttpRequest request = (HttpRequest) message;
 
             // ----------------------------------------------------------------
-            // Admission gate: if a prior exchange is still active, park this
-            // request (and any content that follows) until the exchange ends.
+            // Admission gate: park if the prior exchange is still active
+            // (response in flight, body not yet consumed, or cleanup pending).
             // ----------------------------------------------------------------
-            if (state.isResponseInFlight() || state.hasPendingAdmission()) {
+            if (state.isResponseInFlight() || !state.isRequestConsumed() || state.hasPendingAdmission()
+                    || !state.isAdmissionEligible()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "[FLOW-PROOF] GATE_INBOUND_REQUEST ch=" + context.channel().id()
+                        + " uri=" + request.uri()
+                        + " queueSize=" + (state.hasPendingAdmission() ? "non-empty" : "0"));
+                }
                 // The pipeline delivers this message with a single ref owned by us.
                 // We are parking it instead of forwarding, so no retain is needed —
                 // we already own the reference.
@@ -224,23 +349,27 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         // HttpContent (body chunk or LastHttpContent)
         // --------------------------------------------------------------------
         if (message instanceof LastHttpContent) {
-            // If the pending queue is non-empty this content belongs to a queued
-            // request: park it with its request so it can be replayed together.
-            // We own the reference delivered by the pipeline; no retain needed.
-            if (state.hasPendingAdmission()) {
+            if (shouldParkBodyContent(state)) {
                 state.enqueuePending((HttpObject) message);
                 return;
             }
 
             state.setRequestConsumed(true);
+            state.setPurging(false);
             super.channelRead(context, message);
-            verifyNeedRead(context, state);
+            // Drain queued requests or issue a read; isAdmissionEligible() guards
+            // against admitting before lifecycle cleanup completes.
+            if (state.hasPendingAdmission() && !state.isResponseInFlight()
+                    && state.isAdmissionEligible()) {
+                drainPendingAdmission(context, state);
+            } else {
+                verifyNeedRead(context, state);
+            }
             return;
         }
 
-        // Plain body chunk: park if it belongs to a queued request.
-        // We own the reference delivered by the pipeline; no retain needed.
-        if (message instanceof HttpObject && state.hasPendingAdmission()) {
+        // Plain body chunk: same parking rule.
+        if (message instanceof HttpObject && shouldParkBodyContent(state)) {
             state.enqueuePending((HttpObject) message);
             return;
         }
@@ -268,7 +397,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         // exchange they belong to.
         state.nextExchangeId();
 
-        context.fireChannelRead(message);
+        assert state.readFlowHandlerContext != null : "readFlowHandlerContext null at admit time: " + context.channel().id();
+        state.readFlowHandlerContext.fireChannelRead(message);
 
         if (requestEnd && !(message instanceof LastHttpContent)) {
             // Let the codec finish emitting terminal content before granting the
@@ -296,16 +426,25 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext context) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
         super.channelReadComplete(context);
 
+        boolean readPending = state.isReadPending();
+        boolean readAgain = state.isReadAgain();
+        state.setReadPending(false);
+        state.setReadAgain(false);
+
+        // Reschedule a read for: (a) explicit readAgain, (b) normal keep-alive,
+        // or (c) active purge that has not yet consumed the full body.
+        final boolean needsReadForPurge = state.isPurging() && !state.isRequestConsumed();
+
         if (context.pipeline().get(FlowControlHandler.class) != null) {
-            if (state.isReadPending()) {
-                state.setReadPending(false);
-                state.setReadAgain(false);
+            if (readPending || readAgain || needsReadForPurge) {
                 // A queued request may already be decoded and waiting; drain it
-                // before issuing another socket read.
-                if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+                // before issuing another socket read — but only once all gates clear.
+                if (state.hasPendingAdmission() && !state.isResponseInFlight()
+                        && state.isRequestConsumed()
+                        && state.isAdmissionEligible()) {
                     drainPendingAdmission(context, state);
                 } else {
                     requestRead(context);
@@ -314,14 +453,15 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             return;
         }
 
-        boolean readAgain = state.isReadAgain();
-        state.setReadPending(false);
-        state.setReadAgain(false);
-        if (readAgain || (state.isRequestConsumed() && !state.isResponseInFlight() && state.isKeepAliveAllowed())) {
+        if (readAgain
+                || (state.isRequestConsumed() && !state.isResponseInFlight() && state.isKeepAliveAllowed())
+                || needsReadForPurge) {
             context.executor().execute(() -> {
                 // Prefer draining an already-decoded queued request over issuing
-                // a new socket read.
-                if (state.hasPendingAdmission() && !state.isResponseInFlight()) {
+                // a new socket read — but only once all admission gates are clear.
+                if (state.hasPendingAdmission() && !state.isResponseInFlight()
+                        && state.isRequestConsumed()
+                        && state.isAdmissionEligible()) {
                     drainPendingAdmission(context, state);
                 } else {
                     requestRead(context);
@@ -346,7 +486,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      */
     @Override
     public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
 
         if (message instanceof HttpResponse) {
             HttpResponse response = (HttpResponse) message;
@@ -517,8 +657,25 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         state.setReadPending(false);
         state.setReadAgain(false);
 
-        // Drain the admission queue before issuing a socket read; the next
-        // request may already be fully decoded and waiting.
+        // Body must be fully drained before the next request is admitted.
+        // HttpDispatcherLink.nettyClose() starts the async purge if needed.
+        if (!state.isRequestConsumed()) {
+            // Purge is in progress (or body read is still needed). Ensure reads
+            // are scheduled so the remaining body chunks can arrive.
+            if (!state.stoppedReading() && context.channel().isActive()) {
+                // Fire from pipeline head to reach upstream handlers (e.g. TimeoutHandler).
+                context.channel().pipeline().fireUserEventTriggered(PurgeStartedEvent.INSTANCE);
+                ReadFlowHandler.setBodyReadWanted(context.channel(), true);
+            }
+            return;
+        }
+
+        // Drain the admission queue before issuing a socket read; check all
+        // gates first — lifecycle cleanup may still be pending.
+        if (!state.isAdmissionEligible()) {
+            // Lifecycle cleanup pending — onCleanupComplete will re-trigger.
+            return;
+        }
         if (state.hasPendingAdmission()) {
             drainPendingAdmission(context, state);
         } else {
@@ -527,25 +684,37 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     }
 
     /**
-     * Drains queued requests from the pending-admission queue onto the pipeline.
-     *
-     * <p>The drain loop admits exactly one {@code HttpRequest} (and all of the
-     * already-arrived {@code HttpContent} objects that follow it in the queue) and
-     * then stops. The next request will be drained when the newly-admitted exchange
-     * completes.
-     *
-     * <p>If additional content is still expected (i.e. more body chunks have not
-     * arrived yet) a read is scheduled so the rest of the body can arrive; this
-     * does <em>not</em> count as a new physical read for the next request.
-     *
-     * <p>Re-entrance is guarded by {@link FlowState#isDraining()}.
+     * Drains one {@code HttpRequest} (plus any buffered body content) from the
+     * pending-admission queue. Re-entrance is guarded by {@link FlowState#isDraining()}.
+     * All admission gates are enforced before dequeuing.
      */
-    static void drainPendingAdmission(ChannelHandlerContext context, FlowState state) {
+    public static void drainPendingAdmission(ChannelHandlerContext context, FlowState state) {
         if (state.isDraining()) {
             return;
         }
         if (!context.channel().isActive() || state.stoppedReading()) {
             state.releaseQueue();
+            return;
+        }
+        if (state.isResponseInFlight()) {
+            // Response write not yet complete — onResponseComplete will re-trigger.
+            return;
+        }
+        if (state.isExchangeWriteFailed()) {
+            // A prior write failure poisons this exchange; close, do not admit.
+            state.setKeepAliveAllowed(false);
+            state.releaseQueue();
+            if (context.channel().isActive()) {
+                context.channel().close();
+            }
+            return;
+        }
+        if (!state.isRequestConsumed()) {
+            // Body purge still in progress — markRequestConsumed will re-trigger.
+            return;
+        }
+        if (!state.isAdmissionEligible()) {
+            // Lifecycle cleanup pending — onCleanupComplete will re-trigger.
             return;
         }
 
@@ -585,7 +754,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             while ((next = state.peekPending()) != null && !(next instanceof HttpRequest)) {
                 state.pollPending();
                 try {
-                    context.fireChannelRead(next);
+                    state.readFlowHandlerContext.fireChannelRead(next);
                     // Downstream now owns the ref; do NOT release.
                 } catch (Exception e) {
                     // Fire did not complete; we still own the ref.
@@ -620,7 +789,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
 
         if (event == QuiesceHandler.QUIESCE_EVENT) {
             state.setQuiescing(true);
@@ -668,6 +837,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
                 context.close();
                 return;
             }
+        } else if (event instanceof PurgeStartedEvent) {
+            state.setPurging(true);
+        } else if (event instanceof RequestConsumedEvent) {
+            state.setPurging(false);
         } else if (event == SslHandshakeCompletionEvent.SUCCESS) {
             // on handshake success, do the first read for the request if not auto reading
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -702,7 +875,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             return;
         }
 
-        FlowState state = state(context);
+        FlowState state = state(context.channel());
 
         if (state.stoppedReading()) return;
         if (!context.channel().isActive()) return;
@@ -727,12 +900,29 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         context.read();
     }
 
+    /**
+     * Returns {@code true} when an arriving body chunk should be parked for the
+     * queued request rather than forwarded to the active exchange.
+     */
+    private static boolean shouldParkBodyContent(FlowState state) {
+        if (!state.hasPendingAdmission()) {
+            return false;
+        }
+        // Active exchange body not yet done: content belongs to current exchange.
+        if (!state.isRequestConsumed() && state.peekPending() instanceof HttpRequest) {
+            return false;
+        }
+        return true;
+    }
+
     private static void verifyNeedRead(ChannelHandlerContext context, FlowState state) {
         if (state.stoppedReading()) return;
         if (!context.channel().isActive()) return;
 
         if (state.isRequestConsumed() && !state.isResponseInFlight() && state.isKeepAliveAllowed()
                 && !state.hasPendingAdmission()) {
+            // Fire from pipeline head to reach upstream handlers (e.g. TimeoutHandler).
+            context.channel().pipeline().fireUserEventTriggered(RequestConsumedEvent.INSTANCE);
             requestRead(context);
         }
     }
