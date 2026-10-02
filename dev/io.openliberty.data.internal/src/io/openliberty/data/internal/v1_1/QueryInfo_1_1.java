@@ -116,6 +116,7 @@ import jakarta.data.spi.expression.path.NavigablePath;
 import jakarta.data.spi.expression.path.Path;
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.CacheStoreMode;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PessimisticLockScope;
@@ -1145,7 +1146,7 @@ public class QueryInfo_1_1 extends QueryInfo {
         if (fetches.length > 0 || graphName.length() > 0) {
             // TODO first look for a reusable instance from entityInfo
 
-            if (QUERY_OPTIONS_CLASS == null) // JPA 3.2
+            if (QUERY_OPTIONS_CLASS == null) { // JPA 3.2
                 try (EntityManager em = entityInfo.factory.createEntityManager()) {
                     if (graphName.length() > 0)
                         eagerlyFetch = em.getEntityGraph(graphName);
@@ -1155,18 +1156,40 @@ public class QueryInfo_1_1 extends QueryInfo {
                     // TODO better error for graphName not found
                     throw x;
                 }
-            else // JPA 4+
-                try (jakarta.persistence.EntityAgent agent = //
-                                (jakarta.persistence.EntityAgent) //
-                                entityInfo.factory.createEntityAgent()) {
+            } else { // JPA 4+
+                AutoCloseable agent = null;
+                try {
+                    agent = entityInfo.factory.createEntityAgent();
                     if (graphName.length() > 0)
-                        eagerlyFetch = agent.getEntityGraph(graphName);
+                        eagerlyFetch = (EntityGraph<?>) agent.getClass() //
+                                        .getMethod("getEntityGraph", String.class) //
+                                        .invoke(agent, graphName);
                     else
-                        eagerlyFetch = agent.createEntityGraph(entityInfo.entityClass);
+                        eagerlyFetch = (EntityGraph<?>) agent.getClass() //
+                                        .getMethod("createEntityGraph", Class.class) //
+                                        .invoke(agent, entityInfo.entityClass);
+                } catch (IllegalAccessException | NoSuchMethodException x) {
+                    throw new RuntimeException(x); // should be impossible
                 } catch (IllegalArgumentException x) {
                     // TODO better error for graphName not found
                     throw x;
+                } catch (InvocationTargetException x) {
+                    // TODO better error for IllegalArgumentException that means
+                    // the graphName is not found
+                    if (x.getCause() instanceof RuntimeException rx)
+                        throw rx;
+                    throw new DataException(x.getCause());
+                } finally {
+                    if (agent != null)
+                        try {
+                            agent.close();
+                        } catch (RuntimeException x) {
+                            throw x;
+                        } catch (Exception x) {
+                            throw new RuntimeException(x); // should be impossible
+                        }
                 }
+            }
 
             if (fetches.length > 0)
                 for (Fetching fetch : fetches) {
