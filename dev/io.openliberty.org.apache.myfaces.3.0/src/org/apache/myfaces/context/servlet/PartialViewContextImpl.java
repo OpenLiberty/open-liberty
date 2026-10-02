@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,8 +73,16 @@ public class PartialViewContextImpl extends PartialViewContext
      * will be changed for 2.1 to the official marker
      */
     private static final String PARTIAL_IFRAME = "org.apache.myfaces.partial.iframe";
-    
-    private static final  Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet( 
+
+    // Upper bounds for the attacker-controllable jakarta.faces.partial.render / .execute client id lists.
+    // A legitimate ajax request references only a handful of short client ids, so these caps never affect
+    // real traffic; they keep an unauthenticated caller from driving unbounded memory/CPU when the ids are
+    // expanded into a PartialVisitContext (quadratic resource exhaustion). See also the nesting-depth
+    // backstop in PartialVisitContext#_addSubtreeClientId.
+    private static final int MAX_CLIENT_IDS = 256;
+    private static final int MAX_CLIENT_ID_LENGTH = 256;
+
+    private static final Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet(
             EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
     
     // unrendered have to be skipped, transient definitely must be added to our list!
@@ -245,19 +254,9 @@ public class PartialViewContextImpl extends PartialViewContext
                     //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
             {
-
-                String[] clientIds
-                        = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(executeMode), ' ');
-
                 //The collection must be mutable
-                List<String> tempList = new ArrayList<String>();
-                for (String clientId : clientIds)
-                {
-                    if (clientId.length() > 0)
-                    {
-                        tempList.add(clientId);
-                    }
-                }
+                Collection<String> tempList = parseClientIds(executeMode);
+
                 // The "jakarta.faces.source" parameter needs to be added to the list of
                 // execute ids if missing (otherwise, we'd never execute an action associated
                 // with, e.g., a button).
@@ -269,7 +268,9 @@ public class PartialViewContextImpl extends PartialViewContext
                 {
                     source = source.trim();
 
-                    if (!tempList.contains(source))
+                    // jakarta.faces.source is attacker-controlled as well; apply the same length bound so it
+                    // cannot bypass the cap and be expanded into an oversized PartialVisitContext.
+                    if (source.length() <= MAX_CLIENT_ID_LENGTH)
                     {
                         tempList.add(source);
                     }
@@ -283,6 +284,40 @@ public class PartialViewContextImpl extends PartialViewContext
             }
         }
         return _executeClientIds;
+    }
+
+    /**
+     * Splits a space separated jakarta.faces.partial.render / .execute request parameter into its client ids.
+     * <p>
+     * The result is a mutable, insertion-ordered, duplicate-free collection. Empty tokens are dropped, client
+     * ids longer than {@link #MAX_CLIENT_ID_LENGTH} are rejected and at most {@link #MAX_CLIENT_IDS} ids are
+     * returned. These bounds keep an unauthenticated caller from expanding this attacker-controlled parameter
+     * into an oversized PartialVisitContext; legitimate requests stay well below the limits.
+     */
+    private Collection<String> parseClientIds(String mode)
+    {
+        String[] clientIds = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(mode), ' ');
+
+        // LinkedHashSet: collapse duplicate client ids once, here, instead of carrying them through the
+        // request, while preserving order.
+        Collection<String> result = new LinkedHashSet<>();
+        for (String clientId : clientIds)
+        {
+            int length = clientId.length();
+            if (length == 0 || length > MAX_CLIENT_ID_LENGTH)
+            {
+                // skip empty tokens and reject implausibly long client ids
+                continue;
+            }
+
+            result.add(clientId);
+
+            if (result.size() >= MAX_CLIENT_IDS)
+            {
+                break;
+            }
+        }
+        return result;
     }
 
     private String _replaceTabOrEnterCharactersWithSpaces(String mode)
@@ -318,19 +353,8 @@ public class PartialViewContextImpl extends PartialViewContext
                     //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(renderMode))
             {
-                String[] clientIds
-                        = StringUtils.splitShortString(_replaceTabOrEnterCharactersWithSpaces(renderMode), ' ');
-
                 //The collection must be mutable
-                List<String> tempList = new ArrayList<String>();
-                for (String clientId : clientIds)
-                {
-                    if (clientId.length() > 0)
-                    {
-                        tempList.add(clientId);
-                    }
-                }
-                _renderClientIds = tempList;
+                _renderClientIds = parseClientIds(renderMode);
             }
             else
             {
