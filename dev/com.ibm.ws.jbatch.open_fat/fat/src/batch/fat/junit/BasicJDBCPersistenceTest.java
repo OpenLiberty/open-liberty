@@ -25,16 +25,12 @@ public class BasicJDBCPersistenceTest extends BatchFATHelper {
         BatchFATHelper.setConfig(DFLT_SERVER_XML, BasicJDBCPersistenceTest.class);
 
         BatchAppUtils.addDropinsBatchFATWar(server);
-        BatchAppUtils.addDropinsBonusPayoutWar(server);
-        BatchAppUtils.addDropinsDbServletAppWar(server);
 
         server.startServer();
         FatUtils.waitForSmarterPlanet(server);
 
         //wait for the security keys get generated.
         FatUtils.waitForLTPA(server);
-
-        createDefaultRuntimeTables();
     }
 
     @After

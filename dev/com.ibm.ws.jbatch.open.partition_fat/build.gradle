@@ -15,7 +15,7 @@
 addRequiredLibraries {
 	dependsOn copyJdbcDrivers
 	dependsOn addJakartaTransformer
-  dependsOn copyTestContainers
+	dependsOn copyTestContainers
 }
 
 dependencies {
