@@ -674,6 +674,24 @@ addPlatformSpecificJvmFlags()
                   ;;
           esac
       fi
+      # Add --add-exports for FIPS 140-3 collective provider on z/OS IBM Semeru Java 17 and 21,
+      # where com.ibm.crypto.plus.provider resides inside java.base.
+      # (z/OS only supports LTS releases 11, 17, 21, 25; in Java 25 OpenJCEPlus moves to its
+      # own module and this is no longer needed.)
+      if ( [ "${JAVA_VERSION_MAJOR}" -eq 17 ] || [ "${JAVA_VERSION_MAJOR}" -eq 21 ] ) 2>/dev/null; then
+          case "${SERVER_JVM_OPTIONS_QUOTED}" in
+              *--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED*) ;;
+              *)
+                  SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED'"
+                  ;;
+          esac
+          case "${JVM_OPTIONS_QUOTED}" in
+              *--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED*) ;;
+              *)
+                  JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED'"
+                  ;;
+          esac
+      fi
   fi
 }
 
