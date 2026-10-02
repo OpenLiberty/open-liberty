@@ -200,22 +200,22 @@ public class JwtComponent implements JwtConfig {
         }
 
         if (workloadIdentityClaim.equals("iss") && issuerUrl != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER, issuerUrl, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER, issuerUrl, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER });
+            Tr.error(tc, msg);
         } else if (workloadIdentityClaim.equals("aud") && audiences != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES, audiences, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES, audiences, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES });
+            Tr.error(tc, msg);
         } else if (workloadIdentityClaim.equals("scope") && scope != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE, scope, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE, scope, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE });
+            Tr.error(tc, msg);
         } else if (workloadIdentityClaim.equals("jti") && jti) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI, jti, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI, jti, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI });
+            Tr.error(tc, msg);
         }
 
         if (claims != null && claims.contains(workloadIdentityClaim)) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS, claims, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS, claims, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS });
+            Tr.error(tc, msg);
         }
     }
 

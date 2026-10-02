@@ -409,4 +409,18 @@ JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Cannot load trusted certificate entri
 JWT_ERROR_GETTING_CERT_ENTRIES.explanation=An error occurred while the system was attempting to retrieve the list of trusted certificate entries from the specified truststore. The truststore might be missing from the configuration, or an issue might be preventing access to the truststore.
 JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Verify that the truststore is configured correctly in your server configuration and that it is accessible. Check the error message for more information about the failure.
 
+# Do not translate "JSON Web Token", "JWT"
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED=CWWKS6071E: An attempt to overwrite or remove the [{0}] workload identity claim from the JSON Web Token (JWT) was ignored by the [{1}] JWT builder.
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED.explanation=The application used the JWT builder API to try to overwrite or remove the claim that is configured as the workload identity. The operation is not performed because the workload identity claim is protected and the server-generated value remains in the JWT.
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED.useraction=Remove any JWT builder API calls that attempt to overwrite or remove the workload identity claim.
 
+# Do not translate "JSON Web Token", "JWT", "workloadIdentityClaim"
+# 0=Builder config ID, 1=workloadIdentityClaim value (claim name), 2=conflicting attribute name, 3=conflicting attribute value
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG=CWWKS6072E: The [{0}] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [{1}] and the {2} attribute with a value of [{3}]. The JWT builder will set the [{1}] claim to the workload identity and the {2} attribute will be ignored.
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG.explanation=When the workloadIdentityClaim attribute specifies a claim name that is also populated by another configuration attribute, the workload identity value takes precedence and the other value is ignored in the resulting JWT.
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG.useraction=Choose a claim name for the workloadIdentityClaim attribute that is not already used by another JWT builder configuration attribute, or remove the conflicting attribute from the configuration.
+
+# Do not translate "JSON Web Token", "JWT"
+JWT_BUILDER_CHECKPOINT_NOT_SUPPORTED=CWWKS6073E: The [{0}] JSON Web Token (JWT) builder cannot be invoked during the server checkpoint phase when workload identity is enabled.
+JWT_BUILDER_CHECKPOINT_NOT_SUPPORTED.explanation=The JWT builder cannot build JWTs while taking a server checkpoint because the workload identity cannot be generated until the process is restored.
+JWT_BUILDER_CHECKPOINT_NOT_SUPPORTED.useraction=Configure the application to invoke the JWT builder only after the server has restored from checkpoint.
