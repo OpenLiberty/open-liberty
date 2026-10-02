@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,40 +49,35 @@ public class FIPSTestUtils {
     /**
      * IBM SDK 8 and Semeru Runtimes >=11 support FIPS, Any other Vendor and Version combination is not supported
      * So check the java information of the server to determine whether to run the actual tests
-     *
+     * <p>
      * If JAVA_HOME for a server is updated via setting JAVA_HOME in a .env file, then the systems JAVA_HOME is what will be picked up
-     *
-     *
+     * <p>
+     * <p>
      * There is a Semeru JDK 8 that does not support fips, so ensure that if running is skipped
      *
      * @param javaInfo
      * @return
      */
-    public static boolean validFIPS140_3Environment(JavaInfo javaInfo){
+    public static boolean validFIPS140_3Environment(JavaInfo javaInfo) {
         String method_name = "validFIPS140_3Environment";
         boolean validEnv = true;
-        // s390 Linux is now under test and should now be able to run this bucket
-        // z/OS requires additional work for this to run against expectations
-        if (System.getProperty("os.name").equalsIgnoreCase("Z/OS")){
-           validEnv = false;
-           Log.warning(FIPSTestUtils.class, "z/OS is not supported for running these tests yet");
-        } else {
-            if (javaInfo.majorVersion() == 8) {
-                String dir = javaInfo.javaHome();
-                // z/OS Java 8 path does not include JRE
-                if (!System.getProperty("os.name").equalsIgnoreCase("z/OS") && !dir.endsWith("jre")) {
-                    dir = dir + "/jre";
-                }
-                Log.info(FIPSTestUtils.class, method_name, "Checking Directory "+ dir + "for FIPS directory");
-                Set<String> dirs = Stream.of(new File(dir).listFiles())
-                        .filter(File::isDirectory)
-                        .map(File::getName)
-                        .collect(Collectors.toSet());
-                if (!dirs.contains("fips140-3")) {
-                    validEnv = false;
-                    Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");
-                }
-            } else {
+        if (javaInfo.majorVersion() == 8) {
+            String dir = javaInfo.javaHome();
+            // z/OS Java 8 path does not include JRE
+            if (!System.getProperty("os.name").equalsIgnoreCase("z/OS") && !dir.endsWith("jre")) {
+                dir = dir + "/jre";
+            }
+            Log.info(FIPSTestUtils.class, method_name, "Checking Directory "+ dir + "for FIPS directory");
+            Set<String> dirs = Stream.of(new File(dir).listFiles())
+                    .filter(File::isDirectory)
+                    .map(File::getName)
+                    .collect(Collectors.toSet());
+            if (!dirs.contains("fips140-3")) {
+                validEnv = false;
+                Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");
+            }
+        }  else {
+                Log.debug(FIPSTestUtils.class, "JavaHome=" + javaInfo.javaHome());
                 String javaSecurityPath = javaInfo.javaHome() + "/conf/security/java.security";
                 Path path = Paths.get(javaSecurityPath);
 
@@ -91,14 +86,14 @@ public class FIPSTestUtils {
                     try (BufferedReader reader = Files.newBufferedReader(path, CHARSET)) {
                         String line;
                         boolean fipsCompatible = false;
+                        int count =1 ;
                         while ((line = reader.readLine()) != null) {
-                            // As we are now beyond 2026-09-21 - all the FIPS tests now fail
-                            //RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate = 2026-09-21
-                            if(line.contains("RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate")){
+                            Log.debug(FIPSTestUtils.class, "Line "+ count +":" + line);
+                            if (line.contains("RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3.desc.sunsetDate")){
                                 String[] dateElements = line.split("=")[1].trim().split("-");
-                                LocalDate now =  LocalDate.now();
+                                LocalDate now = LocalDate.now();
                                 LocalDate sunsetDate = LocalDate.of(Integer.parseInt(dateElements[0]), Integer.parseInt(dateElements[1]), Integer.parseInt(dateElements[2]));
-                                if(sunsetDate.isBefore(now)){
+                                if (sunsetDate.isBefore(now)){
                                     Log.warning(FIPSTestUtils.class, "Restricted FIPS Profile Date has passed - you need to update Java");
                                     fipsCompatible = false;
                                     break;
@@ -116,17 +111,20 @@ public class FIPSTestUtils {
                         validEnv = false;
                         Log.error(FIPSTestUtils.class, method_name, e, "unable to read java.security file, skipping the tests");
                     }
+                } else {
+                    validEnv = false;
+                    Log.warning(FIPSTestUtils.class, "unable to locate java.security file at " + path.toAbsolutePath() + ", skipping the tests");
                 }
             }
-        }
+
         return validEnv;
     }
 
-    public static void checkServerLogForFipsEnablementMessage(LibertyServer server, String expectedProvider){
+    public static void checkServerLogForFipsEnablementMessage(LibertyServer server, String expectedProvider) {
         assertNotNull("Expected FIPS 140-3 enabled message to be found in Server logs, but was not found.", server.waitForStringInLog("CWWKS5903I:.*" + expectedProvider));
     }
 
-    public static void checkClientLogForFipsEnablementMessage(LibertyClient client, String expectedProvider){
+    public static void checkClientLogForFipsEnablementMessage(LibertyClient client, String expectedProvider) {
         // Check the copied logs as they are reliable
         assertNotNull("Expected FIPS 140-3 enabled message to be found in Client logs, but was not found.", client.waitForStringInCopiedLog("CWWKS5903I:.*" + expectedProvider));
     }
