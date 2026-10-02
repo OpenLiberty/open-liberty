@@ -107,6 +107,9 @@ public class MaxMessageSizeLimitTests {
         server.setTraceMarkToEndOfDefaultTrace();
         server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(null);
+        if (!server.findStringsInLogsUsingMark("CWWKO0220I", server.getDefaultLogFile()).isEmpty()) {
+            server.waitForStringInLogUsingMark("CWWKO0219I");
+        }
     }
 
     @Test
@@ -277,10 +280,9 @@ public class MaxMessageSizeLimitTests {
 
             assertFalse("SENTINEL-HIT must not appear — subsequent request must not be processed",
                     responseStr.contains("SENTINEL-HIT"));
-            // Connection must be closed — only 1 response allowed (the ChunkSizeTestServlet 200 or
-            // no response)
+            // Connection must be closed — only 1 response allowed (the ChunkSizeTestServlet 200)
             assertTrue("Expected at most 1 HTTP response — no second pipelined response",
-                    countOccurrences(responseStr, "HTTP/1.1") <= 1);
+                    countOccurrences(responseStr, "HTTP/1.1") == 1);
         }
     }
 
@@ -303,6 +305,8 @@ public class MaxMessageSizeLimitTests {
         server.setTraceMarkToEndOfDefaultTrace();
         server.updateServerConfiguration(configuration);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*FileUpload.*");
+
+        boolean timedOut = false;
 
         try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
             socket.setSoTimeout(5000);
@@ -333,9 +337,14 @@ public class MaxMessageSizeLimitTests {
             } catch (java.net.SocketTimeoutException expected) {
                 // Liberty accepted the chunk-size and is waiting for the 2 GB body.
                 // Timeout is the expected outcome — the size was not rejected.
+                timedOut = true;
                 LOG.info("[Boundary 2GB] Socket timed out waiting for body — chunk-size was accepted as expected.");
             }
 
+        }
+        if(timedOut) {
+                // The close has occurred, so Liberty can observe EOF and finish the request.
+                server.waitForStringInLogUsingMark("FFDC1015I:.*EOFException.*SRTServletRequest.finish");
         }
     }
 
