@@ -1,1 +1,6 @@
 # These entries are necessary to include as parameters when starting the JVM and running with Java versions 24 or higher
+
+# JEP 472 (Java 24+): native access (e.g. System.loadLibrary) is restricted by default.
+# Liberty uses System.loadLibrary on z/OS (NativeMethodHelper) and other platforms (AsyncLibrary),
+# so this flag is required to avoid warnings on Java 24/25 and a hard failure in a future Java release.
+--enable-native-access=ALL-UNNAMED
