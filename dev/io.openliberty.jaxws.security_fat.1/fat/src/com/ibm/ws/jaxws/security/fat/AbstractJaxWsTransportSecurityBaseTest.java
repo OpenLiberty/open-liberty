@@ -314,6 +314,7 @@ abstract public class AbstractJaxWsTransportSecurityBaseTest {
         }
 
         String responseContent = sb.toString();
+        System.out.println("Received responseContent: " + responseContent); // Need to see response received to diagnose the issues
         if (exact) { // the response content must contain all the expect strings
             for (String expectStr : expectedResponses) {
                 if (!responseContent.contains(expectStr)) {

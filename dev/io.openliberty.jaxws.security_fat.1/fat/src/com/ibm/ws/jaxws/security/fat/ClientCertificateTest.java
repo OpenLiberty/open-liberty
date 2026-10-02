@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -283,9 +281,9 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                        "bindings/enableCNCheck.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "disableCNCheck"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "disableCNCheck"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "disableCNCheck")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Could not send Message.IOException invoking "),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "Could not send Message.IOException invoking "),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "Could not send Message.IOException invoking ")));
 
         server.waitForDefaultHTTPEndpointSSLStart();
 
