@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,16 +34,11 @@ import com.ibm.ws.test.featurestart.utils.NamedParameterized;
 public class FeaturesStartTest4 extends FeaturesStartTestBase {
     public static final String SERVER_NAME_4 = "features.start.4.server";
 
-    public static final int NUM_BUCKETS = 4;
     public static final int BUCKET_NO = 4;
-    public static final int SPARSITY = 0;
 
     static {
         try {
-            FeaturesStartTestBase.setParameters(FeaturesStartTest4.class,
-                                                SERVER_NAME_4,
-                                                NUM_BUCKETS, BUCKET_NO, SPARSITY);
-            FeaturesStartTestBase.setupFeatures();
+            FeaturesStartTestBase.setParameters(FeaturesStartTest4.class, SERVER_NAME_4, BUCKET_NO);
         } catch (Exception e) {
             throw new RuntimeException("Feature parameters failure", e);
         }

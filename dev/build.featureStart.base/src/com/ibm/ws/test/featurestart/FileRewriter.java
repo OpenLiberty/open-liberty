@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Unused server configuration utility.
+ * 
+ * This provided a faster rewrite of the server configuration file when
+ * changing the configured features of the server.
+ * 
+ * The utility is no longer used. It was replaced by
+ * {@link componenttest.topology.impl.LibertyServer#updateFeatures()}.
+ */
 public class FileRewriter {
 
     public static List<String> update(String targetPath,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,20 +58,29 @@ public class NamedParameterized extends Suite {
     public static String generateParmsText(Object[] parms) {
         if ((parms == null) || (parms.length == 0)) {
             return "()";
-        } else if (parms.length == 1) {
-            return "(" + parms[0] + ")";
+
         } else {
-            StringBuilder builder = new StringBuilder('(');
+            String[] parmText = new String[parms.length];
+            int len = 2 + (parms.length - 1) * 2; // Parens, delimiters
+            for ( int parmNo = 0; parmNo < parms.length; parmNo++ ) {
+                String nextText = (parmText[parmNo] = String.valueOf(parms[parmNo]));
+                len += nextText.length();
+            }
+
+            StringBuilder builder = new StringBuilder(len);
+            builder.append('(');
             boolean isFirst = true;
-            for (Object parm : parms) {
+            for (Object nextText : parmText) {
                 if (!isFirst) {
                     builder.append(',');
                     builder.append(' ');
                 } else {
                     isFirst = false;
                 }
-                builder.append(parm);
+                builder.append(nextText);
             }
+            builder.append(')');
+            
             return builder.toString();
         }
     }
