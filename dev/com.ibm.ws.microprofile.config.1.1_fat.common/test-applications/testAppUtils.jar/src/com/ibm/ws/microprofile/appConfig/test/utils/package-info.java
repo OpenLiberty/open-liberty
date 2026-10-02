@@ -1,25 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-addRequiredLibraries.dependsOn addJakartaTransformer
 
-configurations {
-  requiredLibs {
-    transitive = false
-  }
-}
+@Version("1.0.0")
+package com.ibm.ws.microprofile.appConfig.test.utils;
 
-dependencies {
-  requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'config11')
-  requiredLibs project(':io.openliberty.microprofile.config.internal_repeat_tests') // For ConfigRepeatActions
-  requiredLibs project(':com.ibm.ws.microprofile.config.1.1_fat.common')
-}
+import org.osgi.annotation.versioning.Version;
