@@ -33,6 +33,7 @@ import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -48,6 +49,7 @@ public class LTPAToken2 implements Token, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String DELIM = "%";
+    private static final long MILLIS_PER_MINUTE = 60 * 1000;
     private static final MessageDigest md1JCE;
     private static final MessageDigest md2JCE;
     private static final Object lockObj1;
@@ -57,7 +59,14 @@ public class LTPAToken2 implements Token, Serializable {
     private byte signature[];
     private byte[] encryptedBytes = null;
     private UserData userData;
+    private final long expirationInMinutes;
     private long expirationInMilliseconds;
+
+    private final long refreshThresholdInMinutes; //Token time remaining threshold
+    private boolean triggerRefresh = false;
+
+    private final long inactivityTimeoutInMinutes;
+    private final boolean dynamicExpirationValidation;
     private final byte[] sharedKey;
     private final LTPAPrivateKey privateKey;
     private final LTPAPublicKey publicKey;
@@ -79,18 +88,30 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param tokenBytes The byte representation of the LTPA2 token
-     * @param sharedKey  The LTPA shared key
-     * @param privateKey The LTPA private key
-     * @param publicKey  The LTPA public key
+     * @param tokenBytes                    The byte representation of the LTPA2 token
+     * @param sharedKey                     The LTPA shared key
+     * @param privateKey                    The LTPA private key
+     * @param publicKey                     The LTPA public key
+     * @param expDiffAllowed                The LTPA expiration difference allowed
+     * @param expirationInMinutes           The LTPA token expiration in minutes
+     * @param refreshThresholdInMinutes     The LTPA token expiration remaining threshold
+     * @param inactivityTimeoutInMinutes    The LTPA token inactivity timeout in minutes
+     * @param dynamicExpirationValidation   Whether dynamic expiration validation is enabled
      */
-    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed) throws InvalidTokenException {
+
+    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed,
+                      long expirationInMinutes, long refreshThresholdInMinutes, long inactivityTimeoutInMinutes,
+                      boolean dynamicExpirationValidation) throws InvalidTokenException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
         this.encryptedBytes = tokenBytes.clone();
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.expirationInMinutes = expirationInMinutes;
+        this.refreshThresholdInMinutes = refreshThresholdInMinutes;
+        this.inactivityTimeoutInMinutes = inactivityTimeoutInMinutes;
+        this.dynamicExpirationValidation = dynamicExpirationValidation;
         this.expirationInMilliseconds = 0;
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
@@ -100,20 +121,29 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param tokenBytes The byte representation of the LTPA2 token
-     * @param sharedKey  The LTPA shared key
-     * @param privateKey The LTPA private key
-     * @param publicKey  The LTPA public key
-     * @param attributes The list of attributes will be removed from the LTPA2 token
+     * @param tokenBytes                    The byte representation of the LTPA2 token
+     * @param sharedKey                     The LTPA shared key
+     * @param privateKey                    The LTPA private key
+     * @param publicKey                     The LTPA public key
+     * @param expirationInMinutes           The LTPA token expiration in minutes
+     * @param refreshThresholdInMinutes     The LTPA token expiration time remaining threshold
+     * @param inactivityTimeoutInMinutes    The LTPA token inactivity timeout in minutes
+     * @param dynamicExpirationValidation   Whether dynamic expiration validation is enabled
+     * @param attributes                    The list of attributes will be removed from the LTPA2 token
      */
     public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed,
-                      String... attributes) throws InvalidTokenException, TokenExpiredException {
+                      long expirationInMinutes, long refreshThresholdInMinutes, long inactivityTimeoutInMinutes,
+                      boolean dynamicExpirationValidation, String... attributes) throws InvalidTokenException, TokenExpiredException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
         this.encryptedBytes = tokenBytes.clone();
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.expirationInMinutes = expirationInMinutes;
+        this.refreshThresholdInMinutes = refreshThresholdInMinutes;
+        this.inactivityTimeoutInMinutes = inactivityTimeoutInMinutes;
+        this.dynamicExpirationValidation = dynamicExpirationValidation;
         this.expirationInMilliseconds = 0;
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
@@ -130,41 +160,102 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param accessID            The unique user identifier
-     * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
-     * @param sharedKey           The LTPA shared key
-     * @param privateKey          The LTPA private key
-     * @param publicKey           The LTPA public key
+     * @param accessID                      The unique user identifier
+     * @param expirationInMinutes           Expiration limit of the LTPA2 token in minutes
+     * @param refreshThresholdInMinutes     Refresh threshold in minutes
+     * @param inactivityTimeoutInMinutes    Inactivity timeout in minutes
+     * @param dynamicExpirationValidation   Whether dynamic expiration validation is enabled.
+     *                                      When {@code true}, the stored token expiration is set to
+     *                                      {@code creationTime + inactivityTimeout} instead of
+     *                                      {@code creationTime + expiration}.
+     * @param sharedKey                     The LTPA shared key
+     * @param privateKey                    The LTPA private key
+     * @param publicKey                     The LTPA public key
      */
-    protected LTPAToken2(String accessID, long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey) {
+    protected LTPAToken2(String accessID, long expirationInMinutes, long refreshThresholdInMinutes, long inactivityTimeoutInMinutes,
+                         boolean dynamicExpirationValidation,
+                         @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey) {
         this.signature = null;
         this.encryptedBytes = null;
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.userData = new UserData(accessID);
-        setExpiration(expirationInMinutes);
+        this.expirationInMinutes = expirationInMinutes;
+        this.refreshThresholdInMinutes = refreshThresholdInMinutes;
+        this.inactivityTimeoutInMinutes = inactivityTimeoutInMinutes;
+        this.dynamicExpirationValidation = dynamicExpirationValidation;
+        setCreationTime();
+        // When dynamicExpirationValidation is enabled AND both inactivityTimeout and
+        // refreshThreshold are configured, store creationTime + inactivityTimeout as the
+        // token expiration so the recipient sees the inactivity window deadline.
+        // Without refreshThreshold the sliding window is disabled so we fall back to
+        // the absolute expiration, matching the behaviour of validateExpiration().
+        if (dynamicExpirationValidation && inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) {
+            setExpiration(inactivityTimeoutInMinutes);
+        } else {
+            setExpiration(expirationInMinutes);
+        }
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
     }
 
     /**
      * An LTPA2 token constructor (Used for the clone).
      *
-     * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
-     * @param sharedKey           The LTPA shared key
-     * @param privateKey          The LTPA private key
-     * @param publicKey           The LTPA public key
-     * @param userdata            The UserData
+     * <p>When {@code dynamicExpirationValidation} is {@code false}, pass the original
+     * token's absolute expiration as {@code originalExpirationInMillis} so the cloned
+     * token preserves the same hard deadline.
+     *
+     * <p>When {@code dynamicExpirationValidation} is {@code true}, pass {@code 0L} as
+     * the sentinel so the cloned token recomputes its stored expiration from the
+     * <em>new</em> {@code creationTime + inactivityTimeout}.  This is correct because
+     * under dynamic-expiration mode the stored field carries the inactivity deadline
+     * (not the absolute one), and that deadline must be anchored to the fresh creation
+     * time, not the original token's creation time.
+     *
+     * @param expirationInMinutes           Expiration limit of the LTPA2 token in minutes (config value, kept for future clones)
+     * @param refreshThresholdInMinutes     The LTPA token expiration time remaining threshold
+     * @param inactivityTimeoutInMinutes    The LTPA token inactivity timeout in minutes
+     * @param dynamicExpirationValidation   Whether dynamic expiration validation is enabled
+     * @param originalExpirationInMillis    Absolute expiration in ms to preserve (pass {@code 0L} when dynamicExpirationValidation=true)
+     * @param sharedKey                     The LTPA shared key
+     * @param privateKey                    The LTPA private key
+     * @param publicKey                     The LTPA public key
+     * @param userdata                      The UserData
      */
-    protected LTPAToken2(long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, UserData userdata) {
+    protected LTPAToken2(long expirationInMinutes, long refreshThresholdInMinutes, long inactivityTimeoutInMinutes,
+                         boolean dynamicExpirationValidation, long originalExpirationInMillis,
+                         @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, UserData userdata) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.entry(this, tc, "call by the clone() method, userData: " + userdata);
+            Tr.debug(this, tc, "expire: " + new Date(originalExpirationInMillis));
+        }
         this.signature = null;
         this.encryptedBytes = null;
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.userData = userdata;
-        setExpiration(expirationInMinutes);
+        this.expirationInMinutes = expirationInMinutes;
+        this.refreshThresholdInMinutes = refreshThresholdInMinutes;
+        this.inactivityTimeoutInMinutes = inactivityTimeoutInMinutes;
+        this.dynamicExpirationValidation = dynamicExpirationValidation;
+        setCreationTime();
+        // When dynamicExpirationValidation=true AND both inactivityTimeout and refreshThreshold
+        // are configured, recompute the stored expiration from the new creationTime plus the
+        // inactivity window — exactly as the creation constructor does.
+        // Without refreshThreshold the sliding window is disabled; preserve the original deadline.
+        if (dynamicExpirationValidation && inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) {
+            setExpiration(inactivityTimeoutInMinutes);
+        } else if (originalExpirationInMillis > 0) {
+            setExpirationFromMilliseconds(originalExpirationInMillis);
+        } else {
+            setExpiration(expirationInMinutes);
+        }
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.exit(this, tc, "call by the clone() method,  userData: " + this.userData);
+        }
     }
 
     /**
@@ -175,11 +266,6 @@ public class LTPAToken2 implements Token, Serializable {
     private final void encrypt() throws Exception {
         String signStr = Base64Coder.toString(Base64Coder.base64Encode(signature));
         String ud = userData.toString();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "encrypt: userData" + ud);
-        }
-
         byte[] accessID = Base64Coder.getBytes(ud);
         StringBuilder sb = new StringBuilder(DELIM);
         sb.append(getExpiration()).append(DELIM).append(signStr);
@@ -223,6 +309,7 @@ public class LTPAToken2 implements Token, Serializable {
             String tokenString = toSimpleString(tokenData);
             String[] fields = LTPATokenizer.parseToken(tokenString);
             String[] expirationArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_EXPIRATION);
+
             if (expirationArray != null && expirationArray[expirationArray.length - 1] != null) {
                 // the new expiration value inside the signature for LTPAToken2
                 expirationInMilliseconds = Long.parseLong(expirationArray[expirationArray.length - 1]);
@@ -248,6 +335,9 @@ public class LTPAToken2 implements Token, Serializable {
             } else {
                 // the old expiration value outside of the signature for LTPAToken
                 expirationInMilliseconds = Long.parseLong(fields[1]);
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "token expire: " + expirationInMilliseconds + " time: " + new Date(expirationInMilliseconds));
             }
             // the signature will always be the last field, but the fields array length may be 2 or 3.
             byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[fields.length - 1]));
@@ -338,23 +428,167 @@ public class LTPAToken2 implements Token, Serializable {
     }
 
     /**
-     * Checks if the token has expired.
+     * Validates token expiration and checks if refresh is needed.
      *
-     * @throws TokenExpiredException
+     * @throws TokenExpiredException if the token has expired
      */
     public final void validateExpiration() throws TokenExpiredException {
-        Date d = new Date();
-        Date expD = new Date(getExpiration());
-        boolean expired = d.after(expD);
+        long currentTime = System.currentTimeMillis();
+        Date currentD = new Date(currentTime);
+
+        // Determine the effective expiration time.
+        // When dynamicExpirationValidation is enabled, ignore the expiration stored in the token
+        // and recompute it from the creation time + the server-configured expiration (in minutes).
+        long effectiveExpiration;
+        if (dynamicExpirationValidation) {
+            String[] creationTimeArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+            if (creationTimeArray != null && creationTimeArray[creationTimeArray.length - 1] != null) {
+                long creationTime = Long.parseLong(creationTimeArray[creationTimeArray.length - 1]);
+                effectiveExpiration = creationTime + (expirationInMinutes * MILLIS_PER_MINUTE);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "dynamicExpirationValidation: recomputed expiration from creationTime "
+                                       + new Date(creationTime) + " + " + expirationInMinutes + "m = "
+                                       + new Date(effectiveExpiration));
+                }
+            } else {
+                // No creation time in token — fall back to the stored expiration value.
+                effectiveExpiration = expirationInMilliseconds;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "dynamicExpirationValidation: no creationTime found, using stored expiration");
+                }
+            }
+        } else {
+            effectiveExpiration = expirationInMilliseconds;
+        }
+
+        // Check absolute expiration (always enforced)
+        Date expD = new Date(effectiveExpiration);
+        boolean expired = currentTime > effectiveExpiration;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Current time = " + d + ", expiration time = " + expD);
+            Tr.debug(this, tc, "current time    = " + currentD);
+            Tr.debug(this, tc, "absolute expiration time = " + expD);
         }
         if (expired) {
-            String msg = "The token has expired: current time = \"" + d + "\", expire time = \"" + expD + "\"";
+            String msg = "The token has exceeded absolute expiration: current time = \"" + currentD + "\", expire time = \"" + expD + "\"";
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, msg);
             }
-            throw new TokenExpiredException(expirationInMilliseconds, msg);
+            throw new TokenExpiredException(effectiveExpiration, msg);
+        }
+
+        // Check inactivity timeout only when the refresh feature is fully configured
+        // (both inactivityTimeout and refreshThreshold positive). Without both, the
+        // token falls back to absolute-expiration-only behaviour.
+        if (inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) { // mirrors LTPAConfiguration.isTokenRefreshEnabled()
+            // Get creation time from token
+            String[] creationTimeArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+            if (creationTimeArray != null && creationTimeArray[creationTimeArray.length - 1] != null) {
+                long creationTime = Long.parseLong(creationTimeArray[creationTimeArray.length - 1]);
+                long inactivityTimeout = getInactivityTimeout(creationTime);
+
+                boolean inactivityExpired = currentTime > inactivityTimeout;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "creation time = " + new Date(creationTime));
+                    Tr.debug(this, tc, "inactivity timeout = " + new Date(inactivityTimeout));
+                }
+                if (inactivityExpired) {
+                    String msg = "The token has exceeded inactivity timeout: current time = \"" +
+                                 currentD + "\", inactivity timeout = \"" + new Date(inactivityTimeout) + "\"";
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, msg);
+                    }
+                    throw new TokenExpiredException(inactivityTimeout, msg);
+                }
+            }
+        }
+
+        // Check if token needs refresh
+        checkRefreshNeeded(currentTime);
+    }
+
+    /**
+     * Compute the inactivity timeout for this token given its creation time.
+     * The result is capped at the absolute expiration so inactivity can never
+     * extend beyond the token's hard deadline.
+     *
+     * @param creationTime the WSTOKEN_CREATION_TIME value in milliseconds
+     * @return the effective inactivity timeout time in milliseconds
+     */
+    private long getInactivityTimeout(long creationTime) {
+        long timeout = creationTime + (inactivityTimeoutInMinutes * MILLIS_PER_MINUTE);
+        // Cap at the true absolute deadline so inactivity can never extend beyond it.
+        // When dynamicExpirationValidation=true the stored expirationInMilliseconds is
+        // creationTime + inactivityTimeout (a short value), NOT the hard expiration.
+        // In that case we must compute the real ceiling from creationTime + expirationInMinutes.
+        long absoluteDeadline = dynamicExpirationValidation
+                ? creationTime + (expirationInMinutes * MILLIS_PER_MINUTE)
+                : expirationInMilliseconds;
+        if (timeout > absoluteDeadline) {
+            timeout = absoluteDeadline;
+        }
+        return timeout;
+    }
+
+    /**
+     * Determine whether the token should be proactively refreshed.
+     * Sets {@link #triggerRefresh} to {@code true} if the inactivity time remaining
+     * until inactivity expiry is at or below the configured refresh threshold.
+     *
+     * @param currentTime the current wall-clock time in milliseconds (from {@link #validateExpiration})
+     */
+    private void checkRefreshNeeded(long currentTime) {
+        triggerRefresh = false;
+
+        // Beta guard: Token refresh is only available in beta edition
+        if (!ProductInfo.getBetaEdition()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "LTPA token refresh is only available in beta edition");
+            }
+            return;
+        }
+
+        // Only refresh when both inactivityTimeout and refreshThreshold are configured
+        // — mirrors LTPAConfiguration.isTokenRefreshEnabled().
+        if (inactivityTimeoutInMinutes <= 0 || refreshThresholdInMinutes <= 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Token refresh not enabled (inactivityTimeout=" + inactivityTimeoutInMinutes +
+                             ", refreshThreshold=" + refreshThresholdInMinutes + ")");
+            }
+            return;
+        }
+
+        // Get creation time from token
+        String[] creationTimeArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+        if (creationTimeArray == null || creationTimeArray[creationTimeArray.length - 1] == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Creation time not found in token, refresh not applicable");
+            }
+            return;
+        }
+
+        long creationTime = Long.parseLong(creationTimeArray[creationTimeArray.length - 1]);
+        long inactivityTimeout = getInactivityTimeout(creationTime);
+
+        long inactivityTimeRemaining = inactivityTimeout - currentTime;
+        long thresholdInMillis = getRefreshThreshold();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Creation time: " + new Date(creationTime));
+            Tr.debug(this, tc, "Current time: " + new Date(currentTime));
+            Tr.debug(this, tc, "Inactivity timeout: " + new Date(inactivityTimeout));
+            Tr.debug(this, tc, "Inactivity time remaining (ms): " + inactivityTimeRemaining);
+            Tr.debug(this, tc, "Refresh threshold (ms): " + thresholdInMillis);
+        }
+
+        if (inactivityTimeRemaining <= thresholdInMillis) {
+            triggerRefresh = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Token refresh triggered: inactivity time remaining (" + inactivityTimeRemaining + "ms) <= threshold (" + thresholdInMillis + "ms)");
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "LTPA token refresh = " + triggerRefresh);
         }
     }
 
@@ -411,14 +645,40 @@ public class LTPAToken2 implements Token, Serializable {
     }
 
     /**
-     * Make a deep copy of the LTPA2 token when necessary
+     * Make a deep copy of the LTPA2 token when necessary.
+     *
+     * <p>When {@code dynamicExpirationValidation=false} the clone preserves the original
+     * absolute expiration deadline unchanged.
+     *
+     * <p>When {@code dynamicExpirationValidation=true} the stored expiration field
+     * in the original token is {@code originalCreationTime + inactivityTimeout} — a
+     * stale value that must <em>not</em> be inherited.  We pass {@code 0L} as the
+     * sentinel so the clone constructor recomputes it from the new creation time.
      *
      * @return Object A new copy of the LTPA2 token
      */
     @Override
     public final Object clone() {
-        UserData userdata = (UserData) userData.clone();
-        return new LTPAToken2(getExpiration(), sharedKey, privateKey, publicKey, userdata);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.entry(this, tc, "userData: " + userData);
+        }
+
+        // Clone userData first, then remove expire and creation time from the copy.
+        // This avoids mutating this.userData (the original validated token) which
+        // would corrupt it if referenced after clone() returns.
+        UserData ud = (UserData) userData.clone();
+        ud.removeAttributes("expire");
+        ud.removeAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+
+        // dynamicExpirationValidation=false: pass the original absolute deadline so the
+        //   clone does not recompute expiration from now.
+        // dynamicExpirationValidation=true:  pass 0L as sentinel; the clone constructor
+        //   will call setExpiration(inactivityTimeoutInMinutes) anchored to the new
+        //   creationTime that setCreationTime() stamps inside the constructor.
+        long expiryForClone = dynamicExpirationValidation ? 0L : expirationInMilliseconds;
+        return new LTPAToken2(expirationInMinutes, refreshThresholdInMinutes, inactivityTimeoutInMinutes,
+                              dynamicExpirationValidation, expiryForClone,
+                              sharedKey, privateKey, publicKey, ud);
     }
 
     /**
@@ -451,16 +711,50 @@ public class LTPAToken2 implements Token, Serializable {
     }
 
     /**
-     * Set expiration limit of the LTPA2 token
+     * Set expiration limit of the LTPA2 token, computing the deadline from now.
+     * Used when minting a brand-new token.
      *
      * @param expirationInMinutes the expiration limit of the LTPA2 token in minutes
      */
     private final void setExpiration(long expirationInMinutes) {
-        expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
+        setExpirationFromMilliseconds(System.currentTimeMillis() + expirationInMinutes * MILLIS_PER_MINUTE);
+    }
+
+    /**
+     * Set expiration using a pre-computed absolute deadline in milliseconds.
+     * Used by the clone constructor to preserve the original token's absolute expiration.
+     *
+     * @param expirationMillis the absolute expiration time in milliseconds
+     */
+    private final void setExpirationFromMilliseconds(long expirationMillis) {
+        expirationInMilliseconds = expirationMillis;
+
         signature = null;
         if (userData != null) {
             encryptedBytes = null;
             userData.addAttribute("expire", Long.toString(expirationInMilliseconds));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Date expiredD = new Date(expirationInMilliseconds);
+                Tr.exit(this, tc, "useData expire: " + expirationInMilliseconds + " expire: " + expiredD);
+            }
+        } else {
+            encryptedBytes = null;
+        }
+    }
+
+    /**
+     * Set creation time of the LTPA2 token
+     */
+    private final void setCreationTime() {
+        long creationTime = System.currentTimeMillis();
+        signature = null;
+        if (userData != null) {
+            encryptedBytes = null;
+            userData.addAttribute(AttributeNameConstants.WSTOKEN_CREATION_TIME, Long.toString(creationTime));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Date creationD = new Date(creationTime);
+                Tr.debug(this, tc, "Creation time: " + creationTime + " time: " + creationD);
+            }
         } else {
             encryptedBytes = null;
         }
@@ -504,6 +798,19 @@ public class LTPAToken2 implements Token, Serializable {
             b[i] = (byte) sb.charAt(i);
         }
         return b;
+    }
+
+    private long getRefreshThreshold() {
+        return refreshThresholdInMinutes * MILLIS_PER_MINUTE;
+    }
+
+    @Override
+    public boolean shouldRefreshToken() {
+        // Re-evaluate on every call so that callers who update WSTOKEN_CREATION_TIME
+        // (e.g. by backdating in tests, or by the framework after a request) see the
+        // correct answer without having to call isValid() first.
+        //checkRefreshNeeded(System.currentTimeMillis());
+        return triggerRefresh;
     }
 
 }
