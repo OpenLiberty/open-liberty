@@ -20,7 +20,6 @@
 	<ssl id="supportedClientAuthenticationSSLConfig"
 		clientAuthenticationSupported="true"
 		keyStoreRef="defaultKeyStore"
-		sslProtocol="TLSv1.3"
-		namedGroups="X25519MLKEM768" />
+		sslProtocol="TLSv1.3" />
 
 </server>

@@ -1,2 +1,2 @@
--Djdk.tls.namedGroups=X25519MLKEM768,X25519,secp256r1,secp384r1
+-Djdk.tls.namedGroups=
 -Djavax.net.debug=all
