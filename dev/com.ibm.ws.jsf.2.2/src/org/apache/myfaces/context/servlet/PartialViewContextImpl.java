@@ -254,7 +254,7 @@ public class PartialViewContextImpl extends PartialViewContext
                     //!PartialViewContext.NO_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode) &&
                     !PartialViewContext.ALL_PARTIAL_PHASE_CLIENT_IDS.equals(executeMode))
             {
-
+                //The collection must be mutable
                 Collection<String> tempList = parseClientIds(executeMode);
 
                 // The "javax.faces.source" parameter needs to be added to the list of
