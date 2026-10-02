@@ -49,6 +49,14 @@ import org.apache.myfaces.core.api.shared.lang.Assert;
 public class PartialVisitContext extends VisitContext
 {
 
+    // Maximum NamingContainer nesting depth (number of separators) registered per client id.
+    // The number of separators in a client id equals its NamingContainer nesting depth; real views never
+    // nest more than a handful deep. Without a bound, a crafted client id made of many separators would make
+    // _addSubtreeClientId retain substring(0, i) for every separator, i.e. O(depth^2) characters and copies,
+    // which is an unauthenticated memory/CPU exhaustion vector. This keeps the work linear and acts
+    // as a backstop for any caller; the primary input caps live in PartialViewContextImpl.
+    private static final int MAX_NAMING_CONTAINER_DEPTH = 64;
+
     // The client ids to visit
     private final Collection<String> _clientIds;
 
@@ -331,7 +339,9 @@ public class PartialVisitContext extends VisitContext
 
         int length = clientId.length();
 
-        for (int i = 0; i < length; i++)
+        // Bound the nesting depth we register to keep this method linear (see MAX_NAMING_CONTAINER_DEPTH).
+        int depth = 0;
+        for (int i = 0; i < length && depth < MAX_NAMING_CONTAINER_DEPTH; i++)
         {
             if (clientId.charAt(i) == separator)
             {
@@ -352,6 +362,8 @@ public class PartialVisitContext extends VisitContext
 
                 // Stash away the client id
                 c.add(clientId);
+
+                depth++;
             }
         }
     }
