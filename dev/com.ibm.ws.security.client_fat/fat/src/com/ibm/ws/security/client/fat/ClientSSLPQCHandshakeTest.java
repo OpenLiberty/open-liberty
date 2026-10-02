@@ -28,6 +28,8 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MaximumJavaLevel;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -56,6 +58,12 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
      * rather than merely advertised.
      */
     private static final String SERVER_HELLO_PQC_NAMED_GROUP = "\"named group\": X25519MLKEM768";
+
+    /**
+     * Search string that identifies the non-PQC X25519 group in the ServerHello key_share
+     * extension of the server trace, confirming a non-PQC group was negotiated.
+     */
+    private static final String SERVER_HELLO_NON_PQC_NAMED_GROUP = "\"named group\": X25519";
 
     /** Baseline server jvm.options captured in {@link #before()} and restored in {@link #after()}. */
     private Map<String, String> originalServerJvmOptions;
@@ -162,6 +170,7 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
+    @MinimumJavaLevel(javaLevel = 17)
     public void testPQCHandshakeNoNamedGroupsOnServerAndClient() {
         try {
             // No jvm.options manipulation needed — the published defaults for both server and
@@ -192,26 +201,27 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
 
     /**
      * Test description:
-     * - Server is restarted with classical-only named groups: -Djdk.tls.namedGroups appended to
+     * - Server is restarted with non PQC only named groups: -Djdk.tls.namedGroups appended to
      *   the baseline jvm.options as x25519,secp256r1,secp384r1 — no PQC group on the server.
      * - Client uses its published jvm.options default: -Djdk.tls.namedGroups= is empty,
      *   so the JDK falls back to its built-in defaults which include X25519MLKEM768.
      *
      * Expected results:
-     * - The SSL handshake succeeds using TLS 1.3 with a classical key exchange group.
+     * - The SSL handshake succeeds using TLS 1.3 with a non PQC key exchange group.
      * - The server trace shows "Ignore unsupported named group: X25519MLKEM768", confirming
-     *   the server explicitly discarded the PQC group and fell back to a classical group.
+     *   the server explicitly discarded the PQC group and fell back to a non PQC group.
      * - The client does not report an error.
      */
     @Test
-    public void testPQCHandshakeServerClassicalOnlyClientNoNamedGroupConfig() {
+    @MinimumJavaLevel(javaLevel = 17)
+    public void testPQCHandshakeNonPQCServerNoNamedGroupClient() {
         try {
-            Log.info(c, name.getMethodName(), "Restarting server with classical-only named groups");
+            Log.info(c, name.getMethodName(), "Restarting server with non PQC only named groups");
             testServer.setMarkToEndOfLog();
             if (testServer.isStarted())
                 testServer.stopServer();
 
-            // Append the classical-only override onto the captured baseline — no ML-KEM hybrid.
+            // Append the non PQC only override onto the captured baseline — no ML-KEM hybrid.
             // The client keeps its published default (empty namedGroups → JDK built-in defaults,
             // which include X25519MLKEM768), so the server will discard it and fall back.
             Map<String, String> serverOpts = testServer.getJvmOptionsAsMap();
@@ -225,24 +235,69 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
             assertNotNull("LTPA configuration did not report it was ready",
                           testServer.waitForStringInLogUsingMark("CWWKS4105I"));
 
-            Log.info(c, name.getMethodName(), "Starting client with no named group configuration against classical-only server");
+            Log.info(c, name.getMethodName(), "Starting client with no named group configuration against non PQC only server");
 
             // No client jvm.options manipulation needed — the published client.jvm.options already
             // has -Djdk.tls.namedGroups= empty, so JDK built-in defaults (including PQC) apply.
             ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientPQC", "client_pqc_enabled.xml", "CWWKF0040E");
             String output = programOutput.getStdout();
 
-            assertFalse("Client should not report an error — both sides share classical groups and handshake should succeed.",
+            assertFalse("Client should not report an error — both sides share non PQC groups and handshake should succeed.",
                         output.contains(ERRORSTRING));
 
-            // The server rejected the client's X25519MLKEM768 key share and fell back to a classical group.
+            // The server rejected the client's X25519MLKEM768 key share and fell back to a non PQC group.
             // This log line is written by the server JVM when it discards a group it does not support,
             // confirming PQC was not negotiated.
             List<String> ignoredPQCLines = testServer.findStringsInTrace("Ignore unsupported named group: X25519MLKEM768");
-            assertFalse("Server trace should show X25519MLKEM768 was ignored when server is restricted to classical named groups only",
+            assertFalse("Server trace should show X25519MLKEM768 was ignored when server is restricted to non PQC named groups only",
                         ignoredPQCLines.isEmpty());
 
-            Log.info(c, name.getMethodName(), "Handshake succeeded with classical group: server classical-only restriction correctly prevented PQC negotiation");
+            Log.info(c, name.getMethodName(), "Handshake succeeded with non PQC group: server non PQC only restriction correctly prevented PQC negotiation");
+
+        } catch (Exception e) {
+            Log.error(c, name.getMethodName(), e, "Unexpected exception was thrown.");
+            fail("Exception was thrown: " + e);
+        }
+    }
+
+    /**
+     * Test description:
+     * - Neither client nor server has explicit named group configuration.
+     * - Both sides use their published jvm.options defaults: -Djdk.tls.namedGroups= is empty,
+     *   so the JDK falls back to its built-in default named groups on both ends.
+     * - On Java 8 we expect the JDK to default to non-PQC named groups,
+     *   so no PQC trace evidence is expected.
+     *
+     * Expected results:
+     * - The SSL handshake succeeds using non-PQC named groups.
+     * - The server trace ServerHello key_share shows "named group": X25519, confirming
+     *   both sides defaulted to a non-PQC named group.
+     * - The client does not report an error.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    @MaximumJavaLevel(javaLevel = 8)
+    public void testPQCHandshakeNoNamedGroupsOnServerAndClientJava8() {
+        try {
+            // No jvm.options manipulation needed — the published defaults for both server and
+            // client already have -Djdk.tls.namedGroups= empty, so JDK built-in defaults apply.
+            // The server is already running from before(); the client uses the same published defaults.
+            Log.info(c, name.getMethodName(), "Running default-config test (Java 8): no named groups on either side");
+
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientPQC", "client_pqc_enabled.xml", "CWWKF0040E");
+            String output = programOutput.getStdout();
+
+            assertFalse("Client should not report an error — both sides should negotiate using JDK default non-PQC named groups.",
+                        output.contains(ERRORSTRING));
+
+            // On Java 8 we expect the JDK to default to non-PQC named groups.
+            // Confirm X25519 was selected in the ServerHello key_share.
+            List<String> serverTraceLines = testServer.findStringsInTrace(SERVER_HELLO_NON_PQC_NAMED_GROUP);
+            assertFalse("Server trace ServerHello key_share should show \"named group\": X25519 " +
+                        "when both client and server rely on Java 8 JDK default non-PQC named groups",
+                        serverTraceLines.isEmpty());
+
+            Log.info(c, name.getMethodName(), "Handshake succeeded with no named group config on either side using Java 8 non-PQC defaults");
 
         } catch (Exception e) {
             Log.error(c, name.getMethodName(), e, "Unexpected exception was thrown.");
