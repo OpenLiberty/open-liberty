@@ -1,0 +1,8 @@
+#Tue Sep 29 10:04:36 EDT 2026
+com.ibm.websphere.ltpa.version=1.0
+com.ibm.websphere.ltpa.3DESKey=E6GUJmjV0+x852zX1aNRflMv46SI/rIPRVDa9KJQN6aUcIseA8ApwQch8xN58WeOspFLMBPlg1I\=
+com.ibm.websphere.ltpa.PrivateKey=Y4Tx+njdeWsGO998e2id/vv4K2h6xuzhyt/MBrv307eh94P/5AcEA0urTnTEqm+AoGqEAarx0jU1w+F5Vz2HGsukyrywnq3hJXtTJ31dbHKSfJaoq28pjHmwBrevkUEl4i2461ZqqMBeQKgA4hfF3QCFAvEVYykszFRJJzWIs0/pjvEM2funB4dlBmLrCczoH/JjqU9RKA91rMtPVePUGyeXh2g6ODcaLqlijc+8CL66kv1EKstKaAdyRt88PTEY7JEOTUdISr5G67w+vYw8U/CTfYkdRpjvFY8WL1kULFzvmyblvMsy/8ETLpdGKc8H7cLz80Pt7Q/05c2SYL9daN081RCn6XcJ04zJ9bi06IHu3drfUN2ixkcmn/tn7K6NuOOO6gycw3R+
+com.ibm.websphere.CreationHost=localhost
+com.ibm.websphere.ltpa.Realm=defaultRealm
+com.ibm.websphere.ltpa.PublicKey=AJ1fSpoU4h3tnYdaer6tjDw3/3iaaxqzOIBV23VHfUfYH0r7KNIBf8Y9XMr+v4cAmLUBj21a5dHs2Gz/uBsk9PRm2od56nFte/tkOGQLQB/TF+X1HlqmHJ/mWpVpND+aZpJP4E9aJlkwMq+GYirRBlERJLjQW8+QpcABmoTZ+zdDAQAB
+com.ibm.websphere.CreationDate=Tue Sep 29 10\:04\:36 EDT 2026

@@ -28,6 +28,7 @@ import com.ibm.ws.security.utility.tasks.CreateSSLCertificateTask;
 import com.ibm.ws.security.utility.tasks.EncodeTask;
 import com.ibm.ws.security.utility.tasks.GenerateAesKeyTask;
 import com.ibm.ws.security.utility.tasks.HelpTask;
+import com.ibm.ws.security.utility.tasks.ReEncryptLTPAKeysTask;
 import com.ibm.ws.security.utility.tasks.TLSProfilerTask;
 import com.ibm.ws.security.utility.utils.CommandUtils;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -169,6 +170,7 @@ public class SecurityUtility extends UtilityTemplate {
         util.registerTask(new EncodeTask(SCRIPT_NAME));
         util.registerTask(new CreateSSLCertificateTask(certCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new CreateLTPAKeysTask(ltpaKeyFileCreator, fileUtil, SCRIPT_NAME));
+        util.registerTask(new ReEncryptLTPAKeysTask(ltpaKeyFileCreator, SCRIPT_NAME));
         util.registerTask(new TLSProfilerTask(fileUtil, SCRIPT_NAME));
         util.registerTask(new ConfigureFIPSTask(fileUtil, SCRIPT_NAME));
         util.registerTask(new GenerateAesKeyTask(fileUtil, SCRIPT_NAME));

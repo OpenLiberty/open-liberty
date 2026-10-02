@@ -14,6 +14,7 @@ package com.ibm.ws.security.utility.tasks;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -35,6 +36,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.AesConfigFileParser;
 import com.ibm.ws.security.utility.IFileUtility;
@@ -653,6 +655,243 @@ public class CreateLTPAKeysTaskTest {
         assertEquals("FAIL: The task did not report execution OK",
                      SecurityUtilityReturnCodes.OK,
                      task.handleTask(stdin, stdout, stderr, args));
+    }
+
+    // -----------------------------------------------------------------------
+    // checkRequiredArguments — new --useEncryptionKey validation
+    // -----------------------------------------------------------------------
+
+    /**
+     * --useEncryptionKey=true + --password is a conflict error.
+     */
+    @Test
+    public void checkRequiredArguments_useEncryptionKey_passwordConflict() {
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "createLTPAKeys", "--useEncryptionKey=true", "--password=Liberty", "--passwordKey=mykey" };
+        try {
+            task.checkRequiredArguments(args);
+            fail("Expected IllegalArgumentException for useEncryptionKey + password conflict");
+        } catch (IllegalArgumentException e) {
+            assertTrue("Expected passwordConflict message, got: " + e.getMessage(),
+                       e.getMessage().contains("--useEncryptionKey=true") && e.getMessage().contains("--password"));
+        }
+    }
+
+    /**
+     * --useEncryptionKey=true with no AES config is an error.
+     */
+    @Test
+    public void checkRequiredArguments_useEncryptionKey_missingAesConfig() {
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "createLTPAKeys", "--useEncryptionKey=true", "--file=ltpa.keys" };
+        try {
+            task.checkRequiredArguments(args);
+            fail("Expected IllegalArgumentException for useEncryptionKey + no AES config");
+        } catch (IllegalArgumentException e) {
+            assertTrue("Expected missingAesConfig message, got: " + e.getMessage(),
+                       e.getMessage().contains("--passwordKey") || e.getMessage().contains("--useEncryptionKey"));
+        }
+    }
+
+    /**
+     * --useEncryptionKey=true + --passwordKey is valid (no exception).
+     */
+    @Test
+    public void checkRequiredArguments_useEncryptionKey_withPasswordKey_valid() {
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "createLTPAKeys", "--useEncryptionKey=true", "--passwordKey=mykey" };
+        // Should not throw
+        task.checkRequiredArguments(args);
+    }
+
+    /**
+     * No --password and no --useEncryptionKey=true is still an error.
+     */
+    @Test
+    public void checkRequiredArguments_noPassword_noUseEncryptionKey() {
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "createLTPAKeys", "--file=ltpa.keys" };
+        try {
+            task.checkRequiredArguments(args);
+            fail("Expected IllegalArgumentException for missing --password");
+        } catch (IllegalArgumentException e) {
+            assertTrue("Expected --password in message, got: " + e.getMessage(),
+                       e.getMessage().contains("--password"));
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // handleICSFWithPasswordPath — ICSF + password (no --useEncryptionKey)
+    // -----------------------------------------------------------------------
+
+    /**
+     * ICSF + password: LTPA file created with password bytes; snippet contains keysPassword.
+     * Uses Mockito to stub AESKeyManager.setSecretKeyResolver and PasswordUtil.encode.
+     */
+    @Test
+    public void handleTask_icsf_withPassword_fileCreated() throws Exception {
+        // Subclass overrides isZOS() so the z/OS arg check passes on non-z/OS test machines.
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME) {
+            @Override
+            boolean isZOS() { return true; }
+        };
+        String[] args = new String[] { "securityUtility",
+                                       "--keyringType=ICSF",
+                                       "--keyLabel=MY.ICSF.LABEL",
+                                       "--password=Liberty",
+                                       "--file=ltpa.keys" };
+
+        try (MockedStatic<com.ibm.ws.crypto.util.AESKeyManager> aesKeyManager =
+                Mockito.mockStatic(com.ibm.ws.crypto.util.AESKeyManager.class, Mockito.CALLS_REAL_METHODS);
+             MockedStatic<PasswordUtil> passwordUtil =
+                Mockito.mockStatic(PasswordUtil.class, Mockito.CALLS_REAL_METHODS)) {
+
+            aesKeyManager.when(() -> com.ibm.ws.crypto.util.AESKeyManager.setSecretKeyResolver(Mockito.any())).thenAnswer(inv -> null);
+            passwordUtil.when(() -> PasswordUtil.encode(Mockito.eq("Liberty"), Mockito.eq("aes"), Mockito.<Map<String, String>>any()))
+                        .thenReturn("{aes}encodedViaICSF");
+
+            mock.checking(new Expectations() {
+                {
+                    one(fileUtil).exists("ltpa.keys");
+                    will(returnValue(false));
+
+                    one(ltpaKeyFileUtil).createLTPAKeysFile(with("ltpa.keys"), with(any(byte[].class)));
+
+                    one(stdout).println(with(stringContaining("keysPassword", "{aes}encodedViaICSF")));
+                }
+            });
+
+            assertEquals(SecurityUtilityReturnCodes.OK,
+                         task.handleTask(stdin, stdout, stderr, args));
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // handleEncryptionKeyPath — --useEncryptionKey=true paths
+    // -----------------------------------------------------------------------
+
+    /**
+     * --useEncryptionKey=true + --passwordKey: file created via encryptor; snippet has
+     * wlp.password.encryption.key hint and useEncryptionKey="true".
+     */
+    @Test
+    public void handleTask_useEncryptionKey_passwordKey_fileCreated() throws Exception {
+        // A valid 32-char key string for AES_V1 PBKDF2 — actual value doesn't matter for snippet assertion.
+        String passwordKey = "myTestEncryptionKey";
+
+        // No z/OS args used here, standard task is fine.
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "securityUtility",
+                                       "--useEncryptionKey=true",
+                                       "--passwordKey=" + passwordKey,
+                                       "--file=ltpa.keys" };
+
+        try (MockedStatic<com.ibm.ws.crypto.util.AESKeyManager> aesKeyManager =
+                Mockito.mockStatic(com.ibm.ws.crypto.util.AESKeyManager.class, Mockito.CALLS_REAL_METHODS)) {
+
+            javax.crypto.spec.SecretKeySpec fakeKey =
+                new javax.crypto.spec.SecretKeySpec(new byte[32], "AES");
+            aesKeyManager.when(() -> com.ibm.ws.crypto.util.AESKeyManager.getKey(
+                    com.ibm.ws.crypto.util.AESKeyManager.KeyVersion.AES_V1, passwordKey))
+                         .thenReturn(fakeKey);
+
+            mock.checking(new Expectations() {
+                {
+                    one(fileUtil).exists("ltpa.keys");
+                    will(returnValue(false));
+
+                    one(ltpaKeyFileUtil).createLTPAKeysFile(with("ltpa.keys"), with(any(LTPAKeyEncryptor.class)));
+
+                    one(stdout).println(with(stringContaining("wlp.password.encryption.key", "useEncryptionKey=\"true\"")));
+                }
+            });
+
+            assertEquals(SecurityUtilityReturnCodes.OK,
+                         task.handleTask(stdin, stdout, stderr, args));
+        }
+    }
+
+    /**
+     * --useEncryptionKey=true + --passwordBase64Key: snippet has wlp.aes.encryption.key hint.
+     */
+    @Test
+    public void handleTask_useEncryptionKey_passwordBase64Key_fileCreated() throws Exception {
+        // Valid 32-byte Base64 key (256-bit).
+        String base64Key = "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=";
+
+        // No z/OS args used here, standard task is fine.
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "securityUtility",
+                                       "--useEncryptionKey=true",
+                                       "--passwordBase64Key=" + base64Key,
+                                       "--file=ltpa.keys" };
+
+        mock.checking(new Expectations() {
+            {
+                one(fileUtil).exists("ltpa.keys");
+                will(returnValue(false));
+
+                one(ltpaKeyFileUtil).createLTPAKeysFile(with("ltpa.keys"), with(any(LTPAKeyEncryptor.class)));
+
+                one(stdout).println(with(stringContaining("wlp.aes.encryption.key", "useEncryptionKey=\"true\"")));
+            }
+        });
+
+        assertEquals(SecurityUtilityReturnCodes.OK,
+                     task.handleTask(stdin, stdout, stderr, args));
+    }
+
+    /**
+     * --useEncryptionKey=true + ICSF (regression): snippet contains zosPasswordEncryptionKey
+     * and useEncryptionKey="true". This is the existing handleICSFPath.
+     */
+    @Test
+    public void handleTask_useEncryptionKey_icsf_regression() throws Exception {
+        // Subclass overrides isZOS() so the z/OS arg check passes on non-z/OS test machines.
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME) {
+            @Override
+            boolean isZOS() { return true; }
+        };
+        String[] args = new String[] { "securityUtility",
+                                       "--useEncryptionKey=true",
+                                       "--keyringType=ICSF",
+                                       "--keyLabel=MY.ICSF.LABEL",
+                                       "--file=ltpa.keys" };
+
+        try (MockedStatic<com.ibm.ws.crypto.util.AESKeyManager> aesKeyManager =
+                Mockito.mockStatic(com.ibm.ws.crypto.util.AESKeyManager.class, Mockito.CALLS_REAL_METHODS)) {
+
+            javax.crypto.spec.SecretKeySpec fakeKey =
+                new javax.crypto.spec.SecretKeySpec(new byte[32], "AES");
+            aesKeyManager.when(() -> com.ibm.ws.crypto.util.AESKeyManager.setSecretKeyResolver(Mockito.any())).thenAnswer(inv -> null);
+            aesKeyManager.when(() -> com.ibm.ws.crypto.util.AESKeyManager.getKeyViaResolver(
+                    com.ibm.ws.crypto.util.AESKeyManager.KeyVersion.AES_V2))
+                         .thenReturn(fakeKey);
+
+            mock.checking(new Expectations() {
+                {
+                    one(fileUtil).exists("ltpa.keys");
+                    will(returnValue(false));
+
+                    one(ltpaKeyFileUtil).createLTPAKeysFile(with("ltpa.keys"), with(any(LTPAKeyEncryptor.class)));
+
+                    one(stdout).println(with(stringContaining("zosPasswordEncryptionKey", "MY.ICSF.LABEL", "useEncryptionKey=\"true\"")));
+                }
+            });
+
+            assertEquals(SecurityUtilityReturnCodes.OK,
+                         task.handleTask(stdin, stdout, stderr, args));
+        }
+    }
+
+    /**
+     * --useEncryptionKey=true is now recognised as a known argument.
+     */
+    @Test
+    public void isKnownArgument_useEncryptionKey() {
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertTrue("FAIL: Did not recognize the --useEncryptionKey flag",
+                   task.isKnownArgument("--useEncryptionKey"));
     }
 
 }
