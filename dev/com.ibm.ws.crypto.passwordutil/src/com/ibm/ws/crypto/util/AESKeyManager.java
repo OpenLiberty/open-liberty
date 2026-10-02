@@ -228,12 +228,8 @@ public class AESKeyManager {
      * given version. Use this when a caller-supplied key string must override the configured
      * property — for example an explicit {@code cryptoKey} or {@code base64Key} argument passed
      * at encrypt time. The returned resolver is a lightweight one-shot adapter; it is not cached.
-     *
-     * @param version  the key version that defines how {@code keyString} is decoded/derived
-     * @param keyString the explicit key string to resolve
-     * @return a resolver that returns the key derived from {@code keyString}
      */
-    public static SecretKeyResolver resolverForKey(KeyVersion version, String keyString) {
+    private static SecretKeyResolver resolverForKey(KeyVersion version, String keyString) {
         return () -> getKey(version, keyString);
     }
 
@@ -282,25 +278,47 @@ public class AESKeyManager {
      */
     public static EncipherContext resolverForEncipher(String base64Key, String cryptoKey) {
         if (base64Key != null) {
-            return new EncipherContext(KeyVersion.AES_V2, resolverForKey(KeyVersion.AES_V2, base64Key));
+            return resolverForEncipher(KeyVersion.AES_V2, base64Key);
         } else if (hasCustomSecretKeyResolver()) {
-            return new EncipherContext(KeyVersion.AES_V2, getResolverFor(KeyVersion.AES_V2));
+            SecretKeyResolver customResolver = getResolverFor(KeyVersion.AES_V2);
+            return new EncipherContext(KeyVersion.AES_V2, customResolver,
+                                       "custom SecretKeyResolver (" + customResolver.getDescription() + ")");
         } else {
-            return new EncipherContext(KeyVersion.AES_V1, resolverForKey(KeyVersion.AES_V1, cryptoKey));
+            return resolverForEncipher(KeyVersion.AES_V1, cryptoKey);
         }
+    }
+
+    /**
+     * Returns an {@link EncipherContext} for the given {@link KeyVersion} and explicit key string.
+     * Use this when the caller already knows the target version — for example the forced
+     * {@link KeyVersion#AES_V0} path for the {@code {aes-128}} algorithm tag.
+     * The log description is derived from {@link KeyVersion#resolverProperty}.
+     *
+     * @param version   the key version to use
+     * @param keyString the explicit key string, or {@code null} to use the version's configured property
+     * @return an {@link EncipherContext} wrapping the version and a resolver for {@code keyString}
+     */
+    public static EncipherContext resolverForEncipher(KeyVersion version, String keyString) {
+        return new EncipherContext(version, resolverForKey(version, keyString), version.resolverProperty);
     }
 
     /**
      * Immutable pair of {@link KeyVersion} and {@link SecretKeyResolver} for a single encipher
      * operation. Returned by {@link #resolverForEncipher(String, String)}.
+     *
+     * <p>{@link #logDescription} is a human-readable description of the key source selected,
+     * suitable for use directly in a FINE log message.
      */
     public static final class EncipherContext {
         public final KeyVersion version;
         public final SecretKeyResolver resolver;
+        /** Human-readable description of which key source was selected; may be {@code null}. */
+        public final String logDescription;
 
-        EncipherContext(KeyVersion version, SecretKeyResolver resolver) {
+        EncipherContext(KeyVersion version, SecretKeyResolver resolver, String logDescription) {
             this.version = version;
             this.resolver = resolver;
+            this.logDescription = logDescription;
         }
     }
 

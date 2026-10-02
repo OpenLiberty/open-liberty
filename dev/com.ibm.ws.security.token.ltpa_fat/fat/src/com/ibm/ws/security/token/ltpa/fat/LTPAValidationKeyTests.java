@@ -17,11 +17,15 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -104,6 +108,15 @@ public class LTPAValidationKeyTests {
     List<String> PREBUILT_KEYS = Arrays.asList(DIFFERENT_PW_VALIDATION_KEY_PATH, BAD_SHARED_VALIDATION_KEY2_PATH,
                                                VALIDATION_KEY3_PATH,
                                                VALIDATION_KEY2_PATH, VALIDATION_KEY1_PATH, BAD_PRIVATE_VALIDATION_KEY2_PATH);
+
+    // AES-encrypted key files created with: securityUtility createLTPAKeys --useEncryptionKey=true --passwordKey=myLtpaEncryptionKey
+    // Both files use the same wlp.password.encryption.key value so each server can decrypt the other's primary key as a validation key.
+    private static final String ALT_AES_SERVER1_KEY_PATH = "alternateAES/server1AES.keys"; // pragma: allowlist secret
+    private static final String ALT_AES_SERVER2_KEY_PATH = "alternateAES/server2AES.keys"; // pragma: allowlist secret
+    private static final String AES_SERVER1_KEY_PATH = "resources/security/server1AES.keys";
+    private static final String AES_SERVER2_KEY_PATH = "resources/security/server2AES.keys";
+    private static final String WLP_PASSWORD_ENCRYPTION_KEY_NAME = "wlp.password.encryption.key";
+    private static final String TEST_PASSWORD_ENCRYPTION_KEY = "myLtpaEncryptionKey"; // pragma: allowlist secret
 
     // Define the paths to the alternate key files
     private static String ALT_VALIDATION_KEY1_VER1_PATH = "alternate/validation1.keys";
@@ -1093,14 +1106,175 @@ public class LTPAValidationKeyTests {
         } else {
             setLTPAKeyPasswordElement(ltpa, "{xor}Lz4sLCgwLTs=");
         }
-        updateConfigDynamically(server, serverConfig);
-        server.stopServer(serverShutdownMessages);
+        // Remove useEncryptionKey if it was set by a test
+        setLTPAUseEncryptionKeyElement(ltpa, null);
+
+        if (server.isStarted()) {
+            // Step 1: Stop the server first. This avoids any race where the file monitor
+            // detects a key-file swap while the server is still running under a mismatched
+            // configuration (e.g. useEncryptionKey=true config + 3DES key file, or vice
+            // versa), which would cause AEADBadTagException or BadPaddingException FFDCs.
+            server.stopServer(serverShutdownMessages);
+        }
+
+        // Step 2: With the server stopped, safely restore a password-decryptable primary key
+        // (same files setUp always places) so the next test starts with a clean state.
+        String altKeyPath = (server == server1) ? ALT_VALIDATION_KEY1_PATH : ALT_VALIDATION_KEY2_PATH;
+        String renamedKeyPath = (server == server1) ? VALIDATION_KEY1_PATH : VALIDATION_KEY2_PATH;
+        copyFileToServerResourcesSecurityDir(altKeyPath, server);
+        renameServerFileInLibertyRoot(renamedKeyPath, DEFAULT_KEY_PATH, false, server);
+
+        // Step 3: Write the restored server.xml (keysPassword back, useEncryptionKey gone)
+        // directly with no live reload since the server is stopped.
+        server.updateServerConfiguration(serverConfig);
+
+        // Step 4: Remove wlp.password.encryption.key from bootstrap.properties if it was set by a test
+        removeBootstrapPropertiesFromServer(server, WLP_PASSWORD_ENCRYPTION_KEY_NAME);
+        // Step 5: Clean up AES key files that may have been placed by the useEncryptionKey test
+        deleteFileIfExists(AES_SERVER1_KEY_PATH, false, server);
+        deleteFileIfExists(AES_SERVER2_KEY_PATH, false, server);
 
         Log.info(thisClass, "resetServer", "exiting");
     }
 
+    /**
+     * Verify that an SSO cookie from server #1 (primary key AES-encrypted with
+     * {@code wlp.password.encryption.key}) can be validated on server #2 using server #1's
+     * primary key as a validation key, where both servers are configured with
+     * {@code useEncryptionKey="true"} and the same {@code wlp.password.encryption.key} value.
+     * Server #2's primary key is in turn held as a validation key on server #1 so that
+     * both servers can accept tokens issued by the other.
+     *
+     * Steps:
+     * <OL>
+     * <LI> Configure server #1 with an AES-encrypted primary key (server1AES.keys) and
+     *      server #2's AES-encrypted key as a validation key, with {@code useEncryptionKey="true"}
+     *      and {@code monitorValidationKeysDir="true"} on both servers
+     * <LI> Configure server #2 with an AES-encrypted primary key (server2AES.keys) and
+     *      server #1's AES-encrypted key as a validation key
+     * <LI> Access a simple servlet with form login using valid credentials on server #1 and
+     *      retrieve the SSO cookie
+     * <LI> Attempt to access the simple servlet on server #2 using the SSO cookie from server #1
+     * </OL>
+     *
+     * Expected Results:
+     * <OL>
+     * <LI> Both servers start successfully and load their AES-encrypted primary keys (CWWKS4105I)
+     * <LI> Successful authentication and SSO cookie retrieval on server #1
+     * <LI> Successful authentication on server #2 using server #1's SSO cookie via the validation key
+     * </OL>
+     */
+    @Test
+    public void testValidationKeys_useEncryptionKey_crossServerSSO() throws Exception {
+
+        // All configuration changes are made while both servers are stopped so that when they start
+        // everything is already consistent: useEncryptionKey=true, keysPassword absent, the AES-
+        // encrypted primary key already in place as ltpa.keys, and wlp.password.encryption.key in
+        // bootstrap.properties. This avoids any transient decryption failures from live reloads.
+
+        // Step 1: Stop both servers.
+        server1.stopServer(serverShutdownMessages);
+        server2.stopServer(serverShutdownMessages);
+
+        // Step 2: Write wlp.password.encryption.key to bootstrap.properties on both servers.
+        addBootstrapPropertyToServer(WLP_PASSWORD_ENCRYPTION_KEY_NAME, TEST_PASSWORD_ENCRYPTION_KEY, server1);
+        addBootstrapPropertyToServer(WLP_PASSWORD_ENCRYPTION_KEY_NAME, TEST_PASSWORD_ENCRYPTION_KEY, server2);
+
+        // Step 3: Replace ltpa.keys with the AES-encrypted primary key on each server while stopped.
+        copyFileToServerResourcesSecurityDir(ALT_AES_SERVER1_KEY_PATH, server1);
+        renameServerFileInLibertyRoot(AES_SERVER1_KEY_PATH, DEFAULT_KEY_PATH, false, server1);
+        copyFileToServerResourcesSecurityDir(ALT_AES_SERVER2_KEY_PATH, server2);
+        renameServerFileInLibertyRoot(AES_SERVER2_KEY_PATH, DEFAULT_KEY_PATH, false, server2);
+
+        // Step 4: Copy the other server's primary key into each server's resources/security/ so it
+        // will be present as a validation key on startup (monitorValidationKeysDir="true").
+        copyFileToServerResourcesSecurityDir(ALT_AES_SERVER2_KEY_PATH, server1);
+        copyFileToServerResourcesSecurityDir(ALT_AES_SERVER1_KEY_PATH, server2);
+
+        // Step 5: Update server.xml on both servers while stopped — set useEncryptionKey=true and
+        // clear keysPassword (mutually exclusive with useEncryptionKey per CWWKS4123E).
+        // resetServer() restores keysPassword during @After cleanup.
+        ServerConfiguration server1Config = server1.getServerConfiguration();
+        LTPA ltpa1 = server1Config.getLTPA();
+        setLTPAUseEncryptionKeyElement(ltpa1, "true");
+        ltpa1.keysPassword = null;
+        server1.updateServerConfiguration(server1Config);
+
+        ServerConfiguration server2Config = server2.getServerConfiguration();
+        LTPA ltpa2 = server2Config.getLTPA();
+        setLTPAUseEncryptionKeyElement(ltpa2, "true");
+        ltpa2.keysPassword = null;
+        server2.updateServerConfiguration(server2Config);
+
+        // Step 6: Start both servers. They read the AES-encrypted ltpa.keys and the validation key
+        // on first boot — exactly one successful CWWKS4105I per server, no transient failures.
+        server1.startServer(true);
+        server2.startServer(true);
+        assertNotNull("Server1 did not load AES-encrypted LTPA keys on startup.",
+                      server1.waitForStringInLog("CWWKS4105I"));
+        assertNotNull("Server2 did not load AES-encrypted LTPA keys on startup.",
+                      server2.waitForStringInLog("CWWKS4105I"));
+
+        // Authenticate on server1 and obtain the SSO cookie
+        server1FlClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String server1Cookie = server1FlClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO cookie from server1 is missing.", server1Cookie);
+
+        // Validate the server1 SSO cookie on server2 using the validation key
+        server2FlClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, server1Cookie);
+    }
+
     private void renameKeyAndWaitForLtpaConfigReady(String oldName, String newName, LibertyServer serv) throws Exception {
         renameKeyAndWaitForMessage(oldName, newName, serv, "CWWKS4105I");
+    }
+
+    // Function to configure useEncryptionKey on the LTPA element
+    public boolean setLTPAUseEncryptionKeyElement(LTPA ltpa, String value) {
+        if (value == null ? ltpa.useEncryptionKey != null : !value.equals(ltpa.useEncryptionKey)) {
+            ltpa.useEncryptionKey = value;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Appends {@code key=value} as a raw line to bootstrap.properties for the given server
+     * without going through {@link java.util.Properties#store}, which would re-escape backslashes
+     * and equals signs in the existing content.
+     */
+    private static void addBootstrapPropertyToServer(String key, String value, LibertyServer server) throws Exception {
+        String bootstrapPath = server.getServerRoot() + File.separator + "bootstrap.properties";
+        String line = System.lineSeparator() + key + "=" + value;
+        Files.write(Paths.get(bootstrapPath),
+                    line.getBytes(StandardCharsets.UTF_8),
+                    java.nio.file.StandardOpenOption.APPEND);
+    }
+
+    /**
+     * Removes lines whose key prefix matches any of {@code keys} from bootstrap.properties for the
+     * given server, operating on raw text so existing content is never re-escaped.
+     */
+    private static void removeBootstrapPropertiesFromServer(LibertyServer server, String... keys) throws Exception {
+        String bootstrapPath = server.getServerRoot() + File.separator + "bootstrap.properties";
+        java.nio.file.Path path = Paths.get(bootstrapPath);
+        if (!path.toFile().exists())
+            return;
+        Set<String> prefixes = new HashSet<>(Arrays.asList(keys));
+        List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+        List<String> kept = new ArrayList<>();
+        for (String line : lines) {
+            String trimmed = line.trim();
+            boolean remove = false;
+            for (String k : prefixes) {
+                if (trimmed.startsWith(k + "=") || trimmed.equals(k)) {
+                    remove = true;
+                    break;
+                }
+            }
+            if (!remove)
+                kept.add(line);
+        }
+        Files.write(path, kept, StandardCharsets.UTF_8);
     }
 
     private void renameKeyAndWaitForMessage(String oldName, String newName, LibertyServer serv, String messageRegex) throws Exception {

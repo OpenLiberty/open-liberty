@@ -273,38 +273,15 @@ public class PasswordCipherUtil {
 
         EncryptedInfo info = null;
         byte[] encrypted_bytes = null;
-
-        if (AES.equalsIgnoreCase(crypto_algorithm) || AES_256.equalsIgnoreCase(crypto_algorithm)) {
-            String cryptoKey = null;
-            String base64Key = null;
-            if (properties != null) {
-                cryptoKey = properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
-                base64Key = properties.get(PasswordUtil.PROPERTY_AES_KEY);
-            }
-            AESKeyManager.EncipherContext ctx = AESKeyManager.resolverForEncipher(base64Key, cryptoKey);
-            if (logger.isLoggable(Level.FINE)) {
-                if (base64Key != null)
-                    logger.fine("Encrypting password using " + PasswordUtil.PROPERTY_AES_KEY);
-                else if (AESKeyManager.hasCustomSecretKeyResolver())
-                    logger.fine("Encrypting password using hardware SecretKeyResolver (AES_V2)");
-                else
-                    logger.fine("Encrypting password using " + PasswordUtil.PROPERTY_CRYPTO_KEY);
-            }
+        String alg = crypto_algorithm != null ? crypto_algorithm.toLowerCase() : null;
+        if (alg != null && alg.startsWith(AES)) {
+            AESKeyManager.EncipherContext ctx = resolveAesEncipherContext(alg, properties);
             info = AesCipher.forEncrypt(ctx.version, ctx.resolver).encrypt(decrypted_bytes);
-
-        } else if (AES_128.equalsIgnoreCase(crypto_algorithm)) {
-            String cryptoKey = null;
-            if (properties != null) {
-                cryptoKey = properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
-            }
-            AESKeyManager.EncipherContext ctx = new AESKeyManager.EncipherContext(
-                    AESKeyManager.KeyVersion.AES_V0, AESKeyManager.resolverForKey(AESKeyManager.KeyVersion.AES_V0, cryptoKey));
-            info = AesCipher.forEncrypt(ctx.version, ctx.resolver).encrypt(decrypted_bytes);
-        } else if (XOR.equalsIgnoreCase(crypto_algorithm)) {
+        } else if (XOR.equals(alg)) {
             encrypted_bytes = xor(decrypted_bytes);
             if (encrypted_bytes != null)
                 info = new EncryptedInfo(encrypted_bytes, "");
-        } else if (HASH.equalsIgnoreCase(crypto_algorithm)) {
+        } else if (HASH.equals(alg)) {
             char[] decrypted_chars = null;
             try {
                 String originalString = new String(decrypted_bytes, StandardCharsets.UTF_8);
@@ -313,7 +290,7 @@ public class PasswordCipherUtil {
                 throw new InvalidPasswordCipherException();
             }
             info = generateHash(decrypted_chars, properties);
-        } else if (crypto_algorithm != null && crypto_algorithm.equalsIgnoreCase(CUSTOM)) {
+        } else if (CUSTOM.equals(alg)) {
             CustomPasswordEncryption cpe = getCustomImpl();
             if (cpe != null) {
                 try {
@@ -329,7 +306,7 @@ public class PasswordCipherUtil {
                 throw new UnsupportedCryptoAlgorithmException();
             }
         } else {
-            logger.logp(Level.SEVERE, PasswordCipherUtil.class.getName(), "encipher", "PASSWORDUTIL_UNKNOWN_ALGORITHM", new Object[] { crypto_algorithm,
+            logger.logp(Level.SEVERE, PasswordCipherUtil.class.getName(), "encipher", "PASSWORDUTIL_UNKNOWN_ALGORITHM", new Object[] { alg,
                                                                                                                                        formatSupportedCryptoAlgorithms() });
             throw new UnsupportedCryptoAlgorithmException();
         }
@@ -338,6 +315,31 @@ public class PasswordCipherUtil {
             throw new InvalidPasswordCipherException("The output is null.");
         }
         return info;
+    }
+
+    /**
+     * Resolves the {@link AESKeyManager.EncipherContext} for the given algorithm and properties,
+     * or returns {@code null} if the algorithm is not an AES variant.
+     *
+     * @param alg        the lowercase encryption algorithm tag, must start with {@code "aes"}
+     * @param properties optional caller-supplied properties; may be {@code null}
+     * @return an {@link AESKeyManager.EncipherContext} for the given AES variant, never {@code null}
+     * @throws UnsupportedCryptoAlgorithmException if {@code alg} is an unrecognised AES variant
+     */
+    private static AESKeyManager.EncipherContext resolveAesEncipherContext(String alg, Map<String, String> properties) throws UnsupportedCryptoAlgorithmException {
+        String cryptoKey = properties != null ? properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY) : null;
+        String base64Key = properties != null ? properties.get(PasswordUtil.PROPERTY_AES_KEY) : null;
+        AESKeyManager.EncipherContext ctx;
+        if (AES.equals(alg) || AES_256.equals(alg)) {
+            ctx = AESKeyManager.resolverForEncipher(base64Key, cryptoKey);
+        } else if (AES_128.equals(alg)) {
+            ctx = AESKeyManager.resolverForEncipher(AESKeyManager.KeyVersion.AES_V0, cryptoKey);
+        } else {
+            throw new UnsupportedCryptoAlgorithmException();
+        }
+        if (logger.isLoggable(Level.FINE))
+            logger.fine("Encrypting password using " + ctx.logDescription);
+        return ctx;
     }
 
     /**
