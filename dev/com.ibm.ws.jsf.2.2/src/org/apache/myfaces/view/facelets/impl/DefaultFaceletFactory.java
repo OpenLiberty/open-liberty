@@ -49,6 +49,8 @@ import javax.faces.view.facelets.FaceletException;
 import javax.faces.view.facelets.FaceletHandler;
 import javax.faces.view.facelets.ResourceResolver;
 
+import org.apache.myfaces.config.RuntimeConfig;
+import org.apache.myfaces.config.element.FaceletsProcessing;
 import org.apache.myfaces.context.InvalidFileException;
 import org.apache.myfaces.shared.resource.ResourceLoaderUtils;
 import org.apache.myfaces.view.facelets.AbstractFaceletCache;
@@ -475,6 +477,16 @@ public final class DefaultFaceletFactory extends FaceletFactory
                     {
                         allowed.add(token.substring(1));
                     }
+                }
+            }
+
+            // Extensions from <facelets-processing> entries in faces-config.xml
+            for (FaceletsProcessing fp : RuntimeConfig.getCurrentInstance(ec).getFaceletProcessingConfigurations())
+            {
+                String ext = fp.getFileExtension();
+                if (ext != null && !ext.isEmpty())
+                {
+                    allowed.add(ext);
                 }
             }
 

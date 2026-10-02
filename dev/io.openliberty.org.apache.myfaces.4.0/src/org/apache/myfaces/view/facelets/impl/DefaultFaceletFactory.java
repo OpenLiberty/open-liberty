@@ -49,6 +49,7 @@ import jakarta.faces.view.facelets.FaceletException;
 
 import org.apache.myfaces.context.InvalidFileException;
 import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
 import org.apache.myfaces.resource.ResourceLoaderUtils;
 import org.apache.myfaces.core.api.shared.lang.Assert;
@@ -445,6 +446,16 @@ public final class DefaultFaceletFactory extends FaceletFactory
                     {
                         allowed.add(token.substring(1));
                     }
+                }
+            }
+
+            // Extensions from <facelets-processing> entries in faces-config.xml
+            for (var fp : RuntimeConfig.getCurrentInstance(context).getFaceletProcessingConfigurations())
+            {
+                String ext = fp.getFileExtension();
+                if (ext != null && !ext.isEmpty())
+                {
+                    allowed.add(ext);
                 }
             }
 
