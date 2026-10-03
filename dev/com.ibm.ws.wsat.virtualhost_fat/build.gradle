@@ -11,9 +11,8 @@ dependencies {
     requiredLibs(project(":com.ibm.ws.transaction.fat.util")) {
         transitive = false
     }
-    requiredLibs(project(":com.ibm.ws.wsat.common_fat")) {
-        transitive = false
-    }
+    requiredLibs project(":com.ibm.ws.wsat.common_fat"),
+                 project(":com.ibm.ws.transaction.test.util")
 }
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
@@ -23,6 +22,22 @@ task addDerbyToSharedDir(type: Copy) {
     into new File(sharedDir, 'derby')
     rename 'derby-.*.jar', 'derby.jar'
 }
+
+// Copy testCoordinator and testParticipant application classes from wsat.common_fat
+// so that ShrinkHelper.defaultDropinApp() can find them at runtime.
+// Mirrors the pattern used by wsat.recovery_fat.multi.* depending on recovery_fat.lps.
+autoFVT {
+    def baseProject = project(':com.ibm.ws.wsat.common_fat')
+    doLast {
+        copy {
+            from baseProject.autoFvtDir
+            into autoFvtDir
+            include 'test-applications/**'
+        }
+    }
+}
+
+autoFVT.dependsOn project(':com.ibm.ws.wsat.common_fat').autoFVT
 
 addRequiredLibraries {
     dependsOn addDerbyToSharedDir, addJakartaTransformer
