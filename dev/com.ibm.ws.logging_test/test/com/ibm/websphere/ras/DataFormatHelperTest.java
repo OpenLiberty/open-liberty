@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Test;
-import org.omg.CORBA.portable.UnknownException;
 
 import test.common.junit.matchers.RegexMatcher;
 
@@ -46,6 +45,20 @@ public class DataFormatHelperTest {
         Assert.assertThat(DataFormatHelper.sensitiveToString(new TestToString()), sensitiveToStringMatcher(TestToString.class));
     }
 
+    /**
+     * An exception that, like org.omg.CORBA.portable.UnknownException, embeds
+     * cause information inside its own message rather than relying solely on the
+     * standard JVM cause chain. Used to verify that throwableToString handles
+     * such exceptions without depending on any third-party library's formatting.
+     */
+    private static class WrapperException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        WrapperException(Throwable cause) {
+            super(cause == null ? null : "wrappedEx: " + cause, cause);
+        }
+    }
+
     private static class TestToString {
         @Override
         public String toString() {
@@ -71,20 +84,18 @@ public class DataFormatHelperTest {
                                            "Caused by: java\\.lang\\.Throwable: cause message\\r?\\n" +
                                            AT_LINES));
 
-        Assert.assertThat(DataFormatHelper.throwableToString(new UnknownException(null)),
-                          new RegexMatcher("org\\.omg\\.CORBA\\.portable\\.UnknownException: [^\\n]*\\n" +
+        Assert.assertThat(DataFormatHelper.throwableToString(new WrapperException(null)),
+                          new RegexMatcher(Pattern.quote(WrapperException.class.getName()) + "\\r?\\n" +
                                            AT_LINES));
-        Assert.assertThat(DataFormatHelper.throwableToString(new UnknownException(new Throwable("cause message"))),
-                          new RegexMatcher("org\\.omg\\.CORBA\\.portable\\.UnknownException: [^\\n]*\\n" +
+        Assert.assertThat(DataFormatHelper.throwableToString(new WrapperException(new Throwable("cause message"))),
+                          new RegexMatcher(Pattern.quote(WrapperException.class.getName()) + ": wrappedEx: java\\.lang\\.Throwable: cause message\\r?\\n" +
                                            AT_LINES +
-                                           "originalEx: java\\.lang\\.Throwable: cause message\\r?\\n" +
+                                           "Caused by: java\\.lang\\.Throwable: cause message\\r?\\n" +
                                            AT_LINES));
-        Assert.assertThat(DataFormatHelper.throwableToString(new UnknownException(new UnknownException(new Throwable("cause message")))),
-                          new RegexMatcher("org\\.omg\\.CORBA\\.portable\\.UnknownException: [^\\n]*\\n" +
+        Assert.assertThat(DataFormatHelper.throwableToString(new WrapperException(new WrapperException(new Throwable("cause message")))),
+                          new RegexMatcher(Pattern.quote(WrapperException.class.getName()) + ": wrappedEx: " + Pattern.quote(WrapperException.class.getName()) + ": wrappedEx: java\\.lang\\.Throwable: cause message\\r?\\n" +
                                            AT_LINES +
-                                           "originalEx: org\\.omg\\.CORBA\\.portable\\.UnknownException: [^\\n]*\\n" +
-                                           AT_LINES +
-                                           "originalEx: java\\.lang\\.Throwable: cause message\\r?\\n" +
-                                           AT_LINES));
+                                           "(?:Caused by: [^\\n]*\\n" +
+                                           AT_LINES + ")+"));
     }
 }
