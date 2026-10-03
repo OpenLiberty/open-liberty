@@ -1,0 +1,44 @@
+<server>
+    <featureManager>
+        <feature>wsAtomicTransaction-1.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <!--
+        Two HTTP endpoints: the default-host endpoint (defined by fatTestPorts.xml
+        on ${bvt.prop.HTTP_default}) and a second endpoint on ${bvt.prop.HTTP_secondary}.
+        The WS-AT WAB is restricted to wsatHost (secondary port only) via virtualHostRef.
+    -->
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Second HTTP endpoint on the secondary FAT port -->
+    <httpEndpoint id="wsatEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="-1"/>
+
+    <!--
+        Override default_host to cover the primary port only.
+        Without this, default_host auto-generates hostAlias entries for ALL active
+        endpoints (including wsatEndpoint), which would allow the WS-AT WAB to remain
+        reachable on the default-host port and cause FAT-1 to fail.
+    -->
+    <virtualHost id="default_host">
+        <hostAlias>*:${bvt.prop.HTTP_default}</hostAlias>
+    </virtualHost>
+
+    <!--
+        wsatHost covers the secondary port only.
+        The WS-AT WAB and EPR publication are bound exclusively to this virtual host.
+    -->
+    <virtualHost id="wsatHost">
+        <hostAlias>*:${bvt.prop.HTTP_secondary}</hostAlias>
+    </virtualHost>
+
+    <!-- Bind the WS-AT web service WAB and EPR URLs to wsatHost -->
+    <wsAtomicTransaction virtualHostRef="wsatHost"/>
+
+    <logging traceSpecification="Transaction=all:wsat=all"
+             traceFileName="trace.log" maxFileSize="200" maxFiles="5"
+             traceFormat="BASIC"/>
+</server>
