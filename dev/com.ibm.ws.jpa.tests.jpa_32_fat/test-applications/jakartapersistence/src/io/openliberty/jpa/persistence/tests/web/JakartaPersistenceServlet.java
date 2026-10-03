@@ -31,8 +31,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import componenttest.annotation.OnlyIfSysProp;
-import componenttest.annotation.SkipForRepeat;
 import static componenttest.annotation.OnlyIfSysProp.DB_Not_Default;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.SkipIfSysProp;
 import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
@@ -65,7 +65,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -258,9 +257,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipIfSysProp({
-                     DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
-    })
     public void testNullPrecedenceWithJPQL() throws Exception {
         deleteAllEntities(Product.class);
         Product product1 = Product.of("testSnapshot", "product1", 10.50f);
