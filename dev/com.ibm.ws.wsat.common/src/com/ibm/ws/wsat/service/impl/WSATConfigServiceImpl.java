@@ -81,6 +81,11 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private boolean clientAuth;
     private String configuredVirtualHostId = "default_host";
     private ServiceReference<VirtualHost> configuredVirtualHostRef = null;
+    // The actual VirtualHost service instance for the configured non-default virtual host.
+    // Obtained via BundleContext.getService() (not locateService) so it works regardless
+    // of whether the reference was DS-bound. Null when using default_host.
+    private VirtualHost configuredVirtualHost = null;
+    private ComponentContext savedComponentContext = null;
 
     private static WSATConfigService INSTANCE;
 
@@ -156,7 +161,15 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     protected void deactivate(ComponentContext cc) {
         // Remove the variable from VariableRegistry on deactivation
         unregisterVirtualHostVariable();
-        
+
+        // Release the directly-obtained VirtualHost service
+        if (configuredVirtualHostRef != null && savedComponentContext != null) {
+            savedComponentContext.getBundleContext().ungetService(configuredVirtualHostRef);
+            configuredVirtualHostRef = null;
+            configuredVirtualHost = null;
+        }
+        savedComponentContext = null;
+
         httpOptions.deactivate(cc);
         variableRegistryRef.deactivate(cc);
     }
@@ -166,38 +179,47 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         httpOptions.activate(cc);
         handlerService.activate(cc);
         variableRegistryRef.activate(cc);
-        
+        savedComponentContext = cc;
+
         // Read the configured virtual host reference from server.xml
         String virtualHostRef = (String) properties.get("virtualHostRef");
         if (virtualHostRef == null || virtualHostRef.isEmpty()) {
             virtualHostRef = "default_host";  // Use default if not configured
         }
-        
+
         if (TC.isDebugEnabled()) {
             Tr.debug(TC, "Configured virtual host: {0}", virtualHostRef);
         }
-        
+
         // Register the virtual host variable for WABInstaller to resolve
         registerVirtualHostVariable(virtualHostRef);
-        
-        // If the configured virtual host is different from what we're currently using,
-        // look it up and update our reference
+
+        // If the configured virtual host has changed, resolve the new VirtualHost service
+        // directly via BundleContext.getService() so getWSATUrl() can use it without going
+        // through AtomicServiceReference (which requires a DS-bound reference to work).
         if (!virtualHostRef.equals(configuredVirtualHostId)) {
             configuredVirtualHostId = virtualHostRef;
-            
+
+            // Release the previously-held service, if any
+            if (configuredVirtualHostRef != null) {
+                cc.getBundleContext().ungetService(configuredVirtualHostRef);
+                configuredVirtualHostRef = null;
+                configuredVirtualHost = null;
+            }
+
             if (!"default_host".equals(virtualHostRef)) {
-                // Look up the configured virtual host
                 ServiceReference<VirtualHost> newRef = lookupVirtualHost(cc, virtualHostRef);
                 if (newRef != null) {
-                    // Update to use the configured virtual host
-                    if (configuredVirtualHostRef != null) {
-                        httpOptions.unsetReference(configuredVirtualHostRef);
-                    }
-                    httpOptions.setReference(newRef);
-                    configuredVirtualHostRef = newRef;
-                    
-                    if (TC.isDebugEnabled()) {
-                        Tr.debug(TC, "Updated to use virtual host: {0}", virtualHostRef);
+                    VirtualHost vh = cc.getBundleContext().getService(newRef);
+                    if (vh != null) {
+                        configuredVirtualHostRef = newRef;
+                        configuredVirtualHost = vh;
+                        if (TC.isDebugEnabled()) {
+                            Tr.debug(TC, "Updated to use virtual host: {0}", virtualHostRef);
+                        }
+                    } else {
+                        Tr.warning(TC, "Configured virtual host {0} could not be resolved, using default_host", virtualHostRef);
+                        configuredVirtualHostId = "default_host";
                     }
                 } else {
                     Tr.warning(TC, "Configured virtual host {0} not found, using default_host", virtualHostRef);
@@ -343,6 +365,11 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     public String getWSATUrl() {
         if (proxy != null && proxy.length() > 0)
             return proxy + WSATContextRoot;
+        else if (configuredVirtualHost != null)
+            // Use the directly-obtained VirtualHost instance for the configured virtual host.
+            // This bypasses AtomicServiceReference.getService() which requires a DS-bound
+            // reference and would always return the default_host VirtualHost otherwise.
+            return configuredVirtualHost.getUrlString(WSATContextRoot, enabled);
         else
             return httpOptions.getService().getUrlString(WSATContextRoot, enabled);
     }
