@@ -18,7 +18,7 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}">
-        <tcpOptions portOpenRetries="60"/>
+        <tcpOptions soReuseAddr="true" portOpenRetries="60"/>
     </httpEndpoint>
 
     <keyStore id="defaultKeyStore" password="Liberty"/>
