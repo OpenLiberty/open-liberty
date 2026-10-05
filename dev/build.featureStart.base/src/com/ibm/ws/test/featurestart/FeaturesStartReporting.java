@@ -14,7 +14,7 @@ public class FeaturesStartReporting {
     /**
      * Display a table of collections.
      *
-     * @param m      The method requesting the display.
+     * @param m The method requesting the display.
      * @param prefix A prefix to display on each line.
      * @param nestedPrefix A prefix to display on each nested line.
      * @param length The length at which to wrap the emitted lines.
@@ -35,7 +35,7 @@ public class FeaturesStartReporting {
      * Display values as a comma-delimited list, with values split across lines
      * at the specified length.
      *
-     * @param m      The method requesting the display.
+     * @param m The method requesting the display.
      * @param prefix A prefix to display on each line.
      * @param length The length at which to wrap the emitted lines.
      * @param values The values which are to be displayed.

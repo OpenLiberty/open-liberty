@@ -1,5 +1,6 @@
 package com.ibm.ws.test.featurestart;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,7 +16,12 @@ import com.ibm.ws.test.featurestart.features.FeatureLevels;
 
 import componenttest.topology.impl.LibertyServer;
 
+/**
+ * Core test steps and results processing.
+ */
 public class FeaturesStartResults {
+    // Logging ...
+    
     public static void logInfo(String m, String msg) {
         FeaturesStartTestBase.logInfo(m, msg);
     }
@@ -28,44 +34,7 @@ public class FeaturesStartResults {
         FeaturesStartTestBase.logError(m, msg, e);
     }
 
-    // Timing utilities ...
-    
-    protected static String format(String description, long ns) {
-        return FeaturesStartTiming.format(description, ns);
-    }
-    
-    protected static String formatStat(String description, long stat, String shortName) {
-        return FeaturesStartTiming.formatStat(description, stat, shortName);
-    }
-    
-    protected static TimingSummary statistics(
-        String description,
-        Map<String, TimingResult> timingResults,
-        ToLongFunction<TimingResult> producer) {
-        
-        return FeaturesStartTiming.statistics(description, timingResults, producer);
-    }
-
-    // Display utilities ...
-    
-    protected static void display(
-        String m,
-        String head, int width,
-        Collection<String> featureShortNames,
-        StringBuilder builder) {
-            
-        FeaturesStartReporting.display(m, head, width, featureShortNames, builder);
-    }
-
-    public static void display(String m,
-            String prefix, String nestedPrefix, int length,
-            Map<String, ? extends Collection<String>> values,
-            StringBuilder builder) {
-        
-        FeaturesStartReporting.display(m, prefix, nestedPrefix, length, values, builder);
-    }
-
-    //
+    // Core results data ...
     
     public FeaturesStartResults(
             FeaturesStartServer server,
@@ -90,19 +59,23 @@ public class FeaturesStartResults {
         this.successes = new LinkedHashSet<>();
         this.failures = new LinkedHashSet<>();
             
-        this.failuresUnexpectedLevelSuccesses = new LinkedHashSet<>();
-            
-        this.failuresMissingModules = new LinkedHashMap<>();            
-        this.failuresMissingBundles = new LinkedHashMap<>();
-        this.failuresOther = new LinkedHashMap<>();
+        this.failuresAbsent = new LinkedHashSet<>();
+        this.failuresPresent = new LinkedHashSet<>();
+        
+        this.failuresAbsentFeatureSpecified = new LinkedHashMap<>();
+        this.failuresAbsentOutOfLevel = new LinkedHashMap<>();
+
+        this.failuresPresentMissingModule = new LinkedHashMap<>();            
+        this.failuresPresentMissingBundle = new LinkedHashMap<>();
+        this.failuresPresentOther = new LinkedHashMap<>();
 
         // Timing records:
 
         this.timingResults = new HashMap<>(parameters.numFeatures);            
     }
 
-    //
-    
+    // Test data ...
+
     protected final FeaturesStartServer server;
     protected final FeaturesStartFeatures features;
     protected final FeaturesStartParameters parameters;
@@ -126,10 +99,14 @@ public class FeaturesStartResults {
         lastShortName = nextShortName;
         nextShortName = featureShortName;
 
-        setErrors();
+        setFeatureData();
     }
 
-    // Java runtime error:
+    // A java error occurs when attempting to start an out-of-level feature.
+    // When the feature is known to not be supported for a particular java level, the
+    // java error is expected and does not fail the startup test.
+    //
+    // Java errors for other cases are true errors.
     //
     // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
     //   E CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
@@ -137,79 +114,110 @@ public class FeaturesStartResults {
 
     protected static final String JAVA_LEVEL_ERROR = "CWWKF0032E";
 
-    // The missing module error occurs specifically when a java runtime error occurs:
-
+    // A missing module error occurs when attempting to start an out-of-level feature.
+    // When the feature is known to not be supported for a particular java level, the
+    // missing module error is expected and does not fail the startup test.
+    //
+    // Missing module errors for other cases are true errors.
+    //
+    // TODO: Testing does not current check what specific module was not resolved.
+    //
+    // [9/21/26, 0:30:17:647 UTC] 0000001e LogService-56-com.ibm.ws.concurrent E
+    //   CWWKE0702E: Could not resolve module: com.ibm.ws.concurrent [56]
+    //
     // [2/8/23 12:22:13:451 EST] 00000024 LogService-25-io.openliberty.java11.internal
     //   E CWWKE0702E: Could not resolve module: io.openliberty.java11.internal [25]
-            
-    protected static final String MISSING_MODULE_ERROR = "CWWKE0702E: Could not resolve module: ";
-    protected static final String MISSING_BUNDLE_ERROR = "CWWKF0002E: A bundle could not be found for ";
 
-    protected static final String[] OUT_OF_LEVEL_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR };
-    protected static final String OUT_OF_LEVEL_ERRORS_TEXT = asString(OUT_OF_LEVEL_ERRORS);
-    protected static final String OUT_OF_LEVEL_ERRORS_REGEX = asRegEx(OUT_OF_LEVEL_ERRORS);
-
-    protected static final String[] MISSING_ERRORS = { MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR };
-    protected static final String MISSING_ERRORS_TEXT = asString(MISSING_ERRORS);
-    protected static final String MISSING_ERRORS_REGEX = asRegEx(MISSING_ERRORS);
-
+    // Missing bundle errors are always errors:
     //
+    // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
+    //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
 
-    public String[] nextIgnoredErrors;
-    public String nextIgnoredErrorsRegEx;
+    protected static final String MISSING_MODULE_ERROR = "CWWKE0702E";
+    protected static final String MISSING_BUNDLE_ERROR = "CWWKF0002E";
+
+    protected static final String[] OUT_OF_LEVEL_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR };
+
+    protected static final String OUT_OF_LEVEL_REGEX = asRegEx(JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR);
+    protected static final String CLEAN_REGEX = asRegEx(MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR);
+    
+    // Next feature dependent data ...
+
+    public String nextErrorsCase;
+
+    public boolean nextIsClean;
     public boolean nextIsOutOfLevel;
-    public boolean nextIsOther;
+    public boolean nextIsFeatureSpecified;
 
-    protected void setErrors() {
+    public String[] nextExpectedErrors;
+
+    public String nextIgnoredRegEx;
+    
+    protected void setFeatureData() {
         String m = "setErrors";
         
-        boolean isOutOfLevel = features.outOfLevelFeatureNames.contains(nextShortName);
-        boolean isOther;
-        
-        String[] errors;
-        String errorsList;
-        String errorsRegEx;
-
         String errorsCase;
 
-        if ( isOutOfLevel ) {
-            isOther = false;
+        boolean isOutOfLevel;
+        boolean isClean;
+        boolean isFeatureSpecified;
+        
+        String[] expectedErrors;
 
-            errors = OUT_OF_LEVEL_ERRORS;
-            errorsList = OUT_OF_LEVEL_ERRORS_TEXT;
-            errorsRegEx = OUT_OF_LEVEL_ERRORS_REGEX;
-
+        String ignoredRegEx;
+        
+        if ( features.outOfLevelFeatureNames.contains(nextShortName) ) {
             errorsCase = "Out-of-level (expected)";
-
+            isOutOfLevel = true;
+            isClean = false;
+            isFeatureSpecified = false;
+            expectedErrors = OUT_OF_LEVEL_ERRORS;
+            ignoredRegEx = OUT_OF_LEVEL_REGEX;
+            
         } else {
             String[] featureAllowedErrors = features.getAllowedErrors(nextShortName);
             if ( featureAllowedErrors != null ) {
-                isOther = true;
-
-                errors = asArray(featureAllowedErrors, MISSING_ERRORS);
-                errorsList = asString(errors);
-                errorsRegEx = asRegEx(errors);
-
                 errorsCase = "Feature specified (expected)";
 
-            } else {
-                isOther = false;
-                
-                errors = MISSING_ERRORS;
-                errorsList = MISSING_ERRORS_TEXT;
-                errorsRegEx = MISSING_ERRORS_REGEX;
+                isOutOfLevel = false;
+                isClean = false;
+                isFeatureSpecified = true;
+                expectedErrors = featureAllowedErrors;
 
+                ignoredRegEx = asRegEx( asArray(featureAllowedErrors, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR) );
+                
+                // TODO: If either of the missing errors is explicitly allowed for the
+                //       feature, the ignored errors list will have redundant entries.
+                //       This should be harmless and has been allowed.
+
+            } else {
                 errorsCase = "Clean";                
+                isOutOfLevel = false;
+                isClean  = true;
+                isFeatureSpecified = false;
+                expectedErrors = null;
+                
+                ignoredRegEx = CLEAN_REGEX;
             }
         }
 
-        nextIgnoredErrors = errors;
-        nextIgnoredErrorsRegEx = errorsRegEx;
+        nextErrorsCase = errorsCase;
+        
+        nextIsClean = isClean;
         nextIsOutOfLevel = isOutOfLevel;
-        nextIsOther = isOther;
+        nextIsFeatureSpecified = isFeatureSpecified;
+        nextExpectedErrors = expectedErrors;
 
-        logInfo(m, "Feature errors: " + errorsCase);
-        logInfo(m, "    " + errorsList);
+        nextIgnoredRegEx = ignoredRegEx;
+        
+        if ( expectedErrors != null ) {
+            logInfo(m, "Feature case [ " + errorsCase + " ] expects errors:");
+            for ( String expectedError : expectedErrors ) {
+                logInfo(m, "    " + expectedError);
+            }
+        } else {
+            logInfo(m, "Feature case [ " + errorsCase + " ] expects to run cleanly");
+        }
     }
 
     // Error detection utility:
@@ -220,7 +228,17 @@ public class FeaturesStartResults {
     //
     // For example, the following "could not resolve module errors" should be reported as "missing bundle" type errors.
     // The "Failed to stop feature" message is misleading.
-
+    //
+    // Missing content generates errors 0702E (missing module) and 0002E (missing bundle):
+    //
+    // [9/21/26, 0:30:17:684 UTC] 0000001e vice-60-io.openliberty.microprofile.context.cleared.internal E
+    //   CWWKE0702E: Could not resolve module: io.openliberty.microprofile.context.cleared.internal [60]
+    //
+    // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
+    //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
+    //
+    // For example (using a prior implementation of FeatureStartTestBase):
+    //
     // [09/21/2026 00:30:18:689 UTC] 002 FeaturesStartTest3             forceStopServer                S
     //   Failed to stop feature [ mpContextPropagation-1.2 ]: Server [ features.start.3.server ] PID [ null ] Feature [ mpContextPropagation-1.2 ]
     //
@@ -281,115 +299,126 @@ public class FeaturesStartResults {
     // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
     //   A CWWKF0011I: The features.start.1.server server is ready to run a smarter planet.
     //   The features.start.1.server server started in 12.922 seconds.
-    
-    // Missing bundles appear eventually as a stop failure.
-    // Reporting just the stop failure is confusing. The real failures
-    // are the missing bundles.
-    //
-    // For example:
-    // [09/21/2026 00:30:18:689 UTC] 002 FeaturesStartTest3 forceStopServer S
-    //   Failed to stop feature [ mpContextPropagation-1.2 ]: Server [ features.start.3.server ] PID [ null ] Feature [ mpContextPropagation-1.2 ]
-    // java.lang.Exception: Errors/warnings were found in server features.start.3.server logs:
-    // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
-    //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
-    // [9/21/26, 0:30:17:647 UTC] 0000001e LogService-56-com.ibm.ws.concurrent E
-    //   CWWKE0702E: Could not resolve module: com.ibm.ws.concurrent [56]
-    // [9/21/26, 0:30:17:649 UTC] 0000001e ogService-57-io.openliberty.concurrent.internal.basictrigger E
-    //   CWWKE0702E: Could not resolve module: io.openliberty.concurrent.internal.basictrigger [57]
-    // [9/21/26, 0:30:17:683 UTC] 0000001e LogService-59-com.ibm.ws.microprofile.contextpropagation.1.0 E
-    //   CWWKE0702E: Could not resolve module: com.ibm.ws.microprofile.contextpropagation.1.0 [59]
-    // [9/21/26, 0:30:17:684 UTC] 0000001e vice-60-io.openliberty.microprofile.context.cleared.internal E
-    //   CWWKE0702E: Could not resolve module: io.openliberty.microprofile.context.cleared.internal [60]        
-    //
-    // Per issue 35843, collected errors are examined and missing bundles are specifically reported.
-    // See: https://github.com/OpenLiberty/open-liberty/issues/35843
-    
-    // Missing content errors 0702E and 0002E.
+        
+    // Result tables ...
 
-    // [9/21/26, 0:30:17:684 UTC] 0000001e vice-60-io.openliberty.microprofile.context.cleared.internal E
-    //   CWWKE0702E: Could not resolve module: io.openliberty.microprofile.context.cleared.internal [60]
+    private static boolean addToSet(Map<String, Set<String>> storage, String key, String value) {
+        Set<String> subStorage = storage.computeIfAbsent(
+            key,
+            (useKey -> new LinkedHashSet<String>()));
+        return subStorage.add(value);
+    }
+
+    private static void addToList(Map<String, List<String>> storage, String key, String value) {
+        List<String> subStorage = storage.computeIfAbsent(
+            key,
+            (useKey -> new ArrayList<String>()));
+        subStorage.add(value);
+    }
+
+    // Test result tables:
     //
-    // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
-    //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
-    
-    // Result tables:
+    // Keys are feature short names.
+    //
+    // Each feature is recorded to either successes or failures. Failures
+    // are further categorized:
+    //
+    // Result -> Success | Failure
+    //
+    // Failure -> Expected Error | Unexpected Error
+    //
+    // Expected Error -> Feature Specified Error | Out-Of-Level Error
+    //
+    // Unexpected Error -> Missing Module | Missing Bundle | Other Error
 
     public final Set<String> successes;
     public final Set<String> failures;
 
-    public final Set<String> failuresUnexpectedLevelSuccesses; 
-    public final Map<String, Set<String>> failuresMissingModules;
-    public final Map<String, Set<String>> failuresMissingBundles;
-    public final Map<String, Set<String>> failuresOther;
+    public final Set<String> failuresAbsent;
+    public final Set<String> failuresPresent;
 
-    // Result tables ...
+    public final Map<String, Set<String>> failuresAbsentFeatureSpecified;
+    public final Map<String, Set<String>> failuresAbsentOutOfLevel;
+
+    public final Map<String, List<String>> failuresPresentOther;
+    public final Map<String, List<String>> failuresPresentMissingModule;
+    public final Map<String, List<String>> failuresPresentMissingBundle;
 
     public boolean didSucceed() {
         return successes.contains(nextShortName); 
     }
 
+    // Result -> Success | Failure
+
     private void recordSuccess(String m) {
         successes.add(nextShortName);
-        logInfo(m, "Success [ " + nextShortName + " ]");
+        logInfo(m, "Success [ " + nextShortName + " ] (" + nextErrorsCase + ")");
     }
 
+    protected void recordFailure(String m, String explanation) {
+        failures.add(nextShortName);
+        logInfo(m,
+            "Feature failure [ " + nextShortName + "] (" + nextErrorsCase + ")" +
+            ": " + explanation );
+    }
+    
     public boolean didFail() {
         return failures.contains(nextShortName); 
     }
+    
+    // Failure -> Missing Expected Error | Unexpected Error
+    //
+    // Expected Error -> Feature Specified Missing Error | Out-Of-Level Missing Error
+    //
+    // Unexpected Error -> Missing Module Error | Missing Bundle Error | Other Error
 
-    protected void recordFailure(String m) {
-        if ( failures.add(nextShortName) ) {
-            logInfo(m, "Failure [ " + nextShortName + " ]");
-        }
+    protected void recordAbsentError(String m, String explanation) {
+        failuresAbsent.add(nextShortName);
+        recordFailure(m, explanation);
     }
 
-    protected void recordMissingModule(String m, String moduleName) {
-        recordFailure(m);
-
-        Set<String> featureMissingModules = 
-                failuresMissingModules.computeIfAbsent(nextShortName, (useShortName -> new LinkedHashSet<String>()));
-        featureMissingModules.add(moduleName);
-
-        logError(m, "Feature [ " + nextShortName + " ]: Missing module [ " + moduleName + " ]");
+    protected void recordPresentError(String m, String explanation) {
+        failuresPresent.add(nextShortName);
+        recordFailure(m, explanation);
+    }    
+    
+    protected void recordAbsentOutOfLevelError(String m, String expectedError) {
+        addToSet(failuresAbsentOutOfLevel, nextShortName, expectedError);
+        recordAbsentError(m, "Missing expected error [ " + expectedError + " ]");
     }
 
-    protected void recordMissingBundle(String m, String bundleName) {
-        recordFailure(m);
-
-        Set<String> featureMissingBundles = 
-                failuresMissingBundles.computeIfAbsent(nextShortName, (useShortName -> new LinkedHashSet<String>()));
-        featureMissingBundles.add(bundleName);
-
-        logError(m, "Feature [ " + nextShortName + " ]: Missing bundle [ " + bundleName + " ]");            
+    protected void recordAbsentFeatureError(String m, String expectedError) {
+        addToSet(failuresAbsentFeatureSpecified, nextShortName, expectedError);
+        recordAbsentError(m, "Missing expected error [ " + expectedError + " ]");
     }
 
-    private void rawRecordOtherFailure(String m, String failure) {
-        Set<String> featureOtherFailures = 
-                failuresOther.computeIfAbsent(nextShortName, (useShortName -> new LinkedHashSet<String>()));
-        featureOtherFailures.add(failure);
-    }
-
-    protected void recordOtherFailure(String m, String failure) {
-        recordFailure(m);            
-        rawRecordOtherFailure(m, failure);
-        logError(m, "Feature failure [ " + nextShortName + " ]: " + failure);
-    }
-
-    protected void recordOtherFailure(String m, String failure, Exception e) {
-        recordFailure(m);
-        failure = "Feature failure [ " + nextShortName + " ]: " + failure;
-        rawRecordOtherFailure(m, failure + ": " + e);
-        logError(m, failure, e);
+    protected void recordPresentOtherError(String m, String unexpectedError) {
+        addToList(failuresPresentOther, nextShortName, unexpectedError);
+        recordPresentError(m, "Unexpected error [ " + unexpectedError + " ]");
     }
     
-    protected void recordUnexpectedSuccess(String m) {
-        recordFailure(m);
-        failuresUnexpectedLevelSuccesses.add(nextShortName);
-        logError(m, "Unexpected success [ " + nextShortName + " ]");
-    }
+    protected void recordPresentOtherError(String m, String unexpectedError, Exception e) {
+        addToList(failuresPresentOther, nextShortName, unexpectedError);
 
+        // An exception must be logged using Log.error.
+
+        logError(m,
+            "Feature failure [ " + nextShortName + "] (" + nextErrorsCase + ")" + ": " + unexpectedError,
+            e);
+
+        recordPresentError(m, "Unexpected error [ " + unexpectedError + " ]: " + e);
+    }    
+
+    protected void recordPresentMissingModule(String m, String missingModule) {
+        addToList(failuresPresentMissingModule, nextShortName, missingModule);
+        recordPresentError(m, "Unexpected missing module [ " + missingModule + " ]");
+    }
     
-    
+    protected void recordPresentMissingBundle(String m, String missingBundle) {
+        addToList(failuresPresentMissingBundle, nextShortName, missingBundle);
+        recordPresentError(m, "Unexpected missing module [ " + missingBundle + " ]");
+    }    
+
     // Timing results ...
 
     public final Map<String, TimingResult> timingResults;
@@ -464,7 +493,7 @@ public class FeaturesStartResults {
         StartupResult result = startFeature(timingResult);
         if ( result.attempted ) {
             stopFeature(timingResult, result);
-            scanServerMessages(timingResult, result);
+            processServerMessages(timingResult, result);
         }
 
         if ( !didFail() ) {
@@ -489,7 +518,7 @@ public class FeaturesStartResults {
         Exception updateException =
             timingResult.runUpdate( () -> server.updateFeature(lastShortName, nextShortName) );
         if ( updateException != null ) {
-            recordOtherFailure(m, "Feature update failure", updateException);
+            recordPresentOtherError(m, "Feature update failure", updateException);
             return StartupResult.notAttemptedResult();
         }
 
@@ -499,7 +528,7 @@ public class FeaturesStartResults {
             didStart = true;
         } else {
             didStart = false;
-            recordOtherFailure(m, "Start failure", startException);
+            recordPresentOtherError(m, "Start failure", startException);
         }
 
         // The PID may or may not be available:
@@ -555,12 +584,13 @@ public class FeaturesStartResults {
                 }
 
                 logInfo(m, "Stopping: " + description);
-                Exception stopException = timingResult.runStop( () -> server.stop(nextIgnoredErrorsRegEx) );
+                
+                Exception stopException = timingResult.runStop( () -> server.stop(nextIgnoredRegEx) );
                 if ( stopException == null ) {
                     logInfo(m, "Stopped: " + description);
                 } else {
                     stopFailed = true;
-                    recordOtherFailure(m, "Stop Exception [ " + stopException + " ]");
+                    recordPresentOtherError(m, "Stop Exception [ " + stopException + " ]");
                 }
 
             } else {
@@ -575,7 +605,7 @@ public class FeaturesStartResults {
                     logInfo(m, "Killed: " + description);
                 } else {
                     killFailed = true;                        
-                    recordOtherFailure(m, "Kill exception", killException);
+                    recordPresentOtherError(m, "Kill exception", killException);
                 }
             } else {
                 logInfo(m, "Server not killed: null PID: " + description);
@@ -585,58 +615,126 @@ public class FeaturesStartResults {
         return ( !stopFailed && !killFailed);
     }
 
-    protected void scanServerMessages(TimingResult timingResult, StartupResult startupResult) {
-        String m = "scanServerMessages";
+    protected void processServerMessages(TimingResult timingResult, StartupResult startupResult) {
+        String m = "processServerMessages";
         
         timingResult.runVerify( () -> {
-            List<String> errors;
+            List<String> errorMessages;
             try {
-                errors = server.findMessages(nextIgnoredErrorsRegEx);
+                // Collect up the messages which were previously ignored.
+                errorMessages = server.findMessages(nextIgnoredRegEx);
             } catch ( Exception e ) {
-                recordOtherFailure(m, "Verify exception", e);
+                recordPresentOtherError(m, "Verify exception", e);
                 return;
-            }                    
+            }
 
-            if ( errors.isEmpty() ) {
+            if ( errorMessages.isEmpty() ) {
                 if ( nextIsOutOfLevel ) {
-                    recordUnexpectedSuccess(m);
-                } else if ( nextIsOther ) {
-                    recordOtherFailure(m, "Unexpected success of feature");
+                    for ( String expectedError : nextExpectedErrors ) {
+                        recordAbsentOutOfLevelError(m, expectedError);
+                    }
+                } else if ( nextIsFeatureSpecified ) { 
+                    for ( String expectedError : nextExpectedErrors ) {
+                        recordAbsentFeatureError(m, expectedError);
+                    }
                 } else {
                     // Nothing to do ... possible success!
                 }
 
             } else {
-                String missingModule;
-                String missingBundle;
-                String javaError;
-
-                for ( String error : errors ) {
-                    if ( (missingModule = extractMissingModule(error)) != null ) {
-                        if ( nextIsOutOfLevel ) {
-                            logInfo(m, "Feature [ " + nextShortName + " ] has expected missing module [ " + missingModule + " ]");
-                        } else {
-                            recordMissingModule(m, missingModule);
-                        }
-
-                    } else if ( (missingBundle = extractMissingBundle(error)) != null ) {
-                        recordMissingBundle(m, missingBundle);
-
-                    } else if ( (javaError = extractJavaError(error)) != null ) {
-                        if ( nextIsOutOfLevel ) {
-                            logInfo(m, "Feature [ " + nextShortName + " ] has expected java error: " + javaError);
-                        } else {
-                            recordOtherFailure(m, "Unexpected java error: " + javaError);
-                        }
-
-                    } else {
-                        recordOtherFailure(m, "Unexpected error: " + error);
+                if ( nextIsClean ) {
+                    for ( String errorMessage : errorMessages ) {
+                        processExtraMessage(m, errorMessage); 
                     }
+                } else {
+                    processExpected(errorMessages);
                 }
             }
         } );
     }
 
+    protected void processExpected(List<String> messages) {
+        String m = "processExpected";
+
+        String[] expectedErrors = nextExpectedErrors;
+        
+        int numMessages = messages.size();
+        int numErrors = expectedErrors.length;
+        
+        boolean[] matchedMessages = new boolean[numMessages];
+        int numMatchedMessages = 0;
+        
+        boolean[] matchedErrors = new boolean[numErrors];
+        int numMatchedErrors = 0;
+
+        boolean[][] matches = new boolean[numMessages][numErrors];
+        
+        for ( int messageNo = 0; messageNo < numMessages; messageNo++ ) {
+            String nextMessage = messages.get(messageNo);
+            for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
+                String nextError = expectedErrors[errorNo];
+                if ( nextMessage.contains(nextError) ) {
+                    matches[messageNo][errorNo] = true;
+                    matchedMessages[messageNo] = true;
+                    
+                    numMatchedMessages++;
+                    if ( !matchedErrors[errorNo] ) {
+                        matchedErrors[errorNo] = true;
+                        numMatchedErrors++;
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        if ( (numMatchedErrors == numErrors) && (numMatchedMessages == numMessages) ) {
+            return;
+        }
+
+        if ( numMatchedErrors != numErrors ) {
+            for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
+                if ( !matchedErrors[errorNo] ) {
+                    recordAbsentError(m, expectedErrors[errorNo] );
+                }
+            }
+        }
+
+        if ( numMatchedMessages != numMessages ) {
+            for ( int messageNo = 0; messageNo < numMessages; messageNo++ ) {
+                if ( !matchedMessages[messageNo] ) {
+                    String extraMessage = messages.get(messageNo);
+
+                    recordPresentOtherError(m, extraMessage);
+
+                    String missingModule;
+                    if ( ( missingModule = extractMissingModule(extraMessage)) != null ) {
+                        recordPresentMissingModule(m, missingModule);
+                    } else {
+                        String missingBundle;
+                        if ( ( missingBundle = extractMissingBundle(extraMessage)) != null ) {
+                            recordPresentMissingBundle(m, missingBundle);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected void processExtraMessage(String m, String extraMessage) {
+        recordPresentOtherError(m, extraMessage);
+
+        String missingModule;
+        if ( ( missingModule = extractMissingModule(extraMessage)) != null ) {
+            recordPresentMissingModule(m, missingModule);
+        } else {
+            String missingBundle;
+            if ( ( missingBundle = extractMissingBundle(extraMessage)) != null ) {
+                recordPresentMissingBundle(m, missingBundle);
+            }
+        }
+    }    
+        
     protected String extractMissingModule(String error) {
         String missingModule = extractTail(error, MISSING_MODULE_ERROR, !INCLUDE_PREFIX);
         if ( missingModule != null ) {
@@ -661,97 +759,6 @@ public class FeaturesStartResults {
 
     //
 
-    public void displayTestResults() {
-        String m = "displayTestResults";
-
-        StringBuilder builder = new StringBuilder();
-
-        logInfo(m, "Successes [ " + successes.size() + " ]");
-        if ( !successes.isEmpty() ) {
-            display(m, "    ", 80, successes, builder);
-        }
-
-        logInfo(m, "Failures [ " + failures.size() + " ]");
-        if ( !failures.isEmpty() ) {
-            display(m, "    ", 80, failures, builder);
-        }
-
-        logInfo(m, "Other failures [ " + failuresOther.size() + " ]");
-        if ( !failuresOther.isEmpty() ) {
-            display(m, "    > ", "      > ", 80, failuresOther, builder);
-        }                        
-
-        logInfo(m, "Missing modules [ " + failuresMissingModules.size() + " ]");
-        if ( !failuresMissingModules.isEmpty() ) {
-            display(m, "    > ", "      > ", 80, failuresMissingModules, builder);
-        }                        
-        logInfo(m, "Missing bundles [ " + failuresMissingBundles.size() + " ]");
-        if ( !failuresMissingBundles.isEmpty() ) {
-            display(m, "    > ", "      > ", 80, failuresMissingBundles, builder);
-        }            
-        if ( !failuresMissingModules.isEmpty() || !failuresMissingBundles.isEmpty() ) {
-            logInfo(m, "Missing modules and/or bundles have three common causes:");
-            logInfo(m, "(1) A bundle dependency is incorrectly specified.");
-            logInfo(m, "    Fix this by correcting the bundle dependency.");
-            logInfo(m, "(2) The liberty server package ZIP is missing a bundle jar.");
-            logInfo(m, "    Fix this by updating the packaging steps to include the missing jar.");
-            logInfo(m, "(3) The list of features which are present in the server package is incorrect.");
-            logInfo(m, "    Fix this by correcting the features list.");
-            logInfo(m, "    Possibly, the features list from a different server package is being used.");
-            logInfo(m, "    Fix this by making sure the features list is specific to the server package.");
-            logInfo(m, "");                
-            logInfo(m, "Server features are located relative to the liberty home directory:");
-            logInfo(m, "    LIBERTY_HOME/lib/features/*.mf");
-        }
-
-        logInfo( m, "Unexpected java level successes [ " + failuresUnexpectedLevelSuccesses.size() + " ]" );
-        if ( !failuresUnexpectedLevelSuccesses.isEmpty() ) {
-            display(m, "    ", 80, failuresUnexpectedLevelSuccesses, builder);
-
-            logInfo(m, "Features [ " + failuresUnexpectedLevelSuccesses + " ] started on java [ " + server.getJavaLevel() + " ].");
-            logInfo(m, "");
-            logInfo(m, "If these are test-only features, add 'IBM-Test-Feature: true' to the feature manifests. ");
-            logInfo(m, "Feature required java levels are specified in resource [ " + FeatureLevels.REQUIRED_LEVELS_NAME + " ]");
-        }
-    }
-
-    public void displayTimingResults() {
-        String m = "displayTimingResults";
-
-        Map<String, TimingSummary> summaries = new LinkedHashMap<>();
-
-        summaries.put("Update", statistics("Update", timingResults, (TimingResult result) -> result.getUpdateNs()));
-        summaries.put("Start", statistics("Start", timingResults, (TimingResult result) -> result.getStartNs()));
-        summaries.put("PID", statistics("PID", timingResults, (TimingResult result) -> result.getPidNs()));
-        summaries.put("Verify", statistics("Verify", timingResults, (TimingResult result) -> result.getVerifyNs()));
-        summaries.put("Stop", statistics("Stop", timingResults, (TimingResult result) -> result.getStopNs()));
-        summaries.put("Kill", statistics("Kill", timingResults, (TimingResult result) -> result.getKillNs()));
-        summaries.put("Total", statistics("Total", timingResults, (TimingResult result) -> result.getTotalNs()));
-
-        logInfo(m, "Timing Summary:");
-
-        StringBuilder builder = new StringBuilder();
-        summaries.forEach((description, summary) -> {
-            builder.append("[ ");
-            builder.append(description);
-            builder.append(" ]: ");
-
-            if (summary.count == 0) {
-                builder.append("** NONE **");
-                logInfo(m, builder.toString());
-                builder.setLength(0);
-
-            } else {
-                builder.append(format("Avg", summary.avg) + " ( " + summary.count + " ): ");
-                builder.append(format("Total", summary.sum));
-                logInfo(m, builder.toString());
-                builder.setLength(0);
-
-                logInfo(m, "  " + formatStat("Min", summary.min, summary.minShort));
-                logInfo(m, "  " + formatStat("Max", summary.max, summary.maxShort));
-            }
-        });
-    }
     
     // "io.openliberty.java11.internal [25]" ==> "io.openliberty.java11.internal"
     
@@ -819,43 +826,168 @@ public class FeaturesStartResults {
         return allElements;
     }
 
-    protected static String asRegEx(String[] elements) {
-        if ( (elements == null) || (elements.length == 0) ) {
-            return "";
-        } else if ( elements.length == 1 ) {
-            return elements[0];
-        } else if ( elements.length == 2 ) {
-            return elements[0] + "|" + elements[1];            
-        } else {
-            StringBuilder builder = new StringBuilder();
-            for ( int elementNo = 0; elementNo < elements.length; elementNo++ ) {
-                if ( elementNo > 0 ) {
-                    builder.append("|");
-                }
-                builder.append(elements[elementNo]);
+    protected static String asString(String... elements) {
+        return asArray( "{ ", ", ", " }", elements );
+    }
+
+    protected static String asRegEx(String... elements) {
+        return asArray( NO_PREFIX, "|", NO_SUFFIX, elements );
+    }
+
+    protected static final String NO_PREFIX = null;
+    protected static final String NO_SUFFIX = null;
+
+    protected static String asArray(String prefix, String delim, String suffix, String... elements) {
+        int totalLen = 0;
+        if ( prefix != null ) {
+            totalLen += prefix.length();
+        }
+        if ( suffix != null ) {
+            totalLen += suffix.length();
+        }
+        for ( int elementNo = 0; elementNo < elements.length; elementNo++ ) {
+            if ( elementNo > 0 ) {
+                totalLen += delim.length();
             }
-            return builder.toString();
+            totalLen += elements[elementNo].length();
+        }
+
+        StringBuilder builder = new StringBuilder(totalLen);
+        for ( int elementNo = 0; elementNo < elements.length; elementNo++ ) {
+            if ( elementNo > 0 ) {
+                builder.append(delim);
+            }
+            builder.append(elements[elementNo]);
+        }
+        return builder.toString();
+    }
+
+    // Reports ...
+    
+    public void displayTestResults() {
+        String m = "displayTestResults";
+
+        StringBuilder builder = new StringBuilder();
+
+        display(m, 80, "Successes", "    ", successes, builder);
+        display(m, 80, "Failures", "    ", failures, builder);
+
+        display(m, 80, "Missing expected error", "    ", failuresAbsent, builder);
+        display(m, 80, "Unexpected error", "    ", failuresPresent, builder);
+
+        if ( display(m, 80, "Missing modules", "    > ", "      > ", failuresPresentMissingModule, builder) ||
+             display(m, 80, "Missing bundlers", "    > ", "      > ", failuresPresentMissingBundle, builder) ) {
+
+            logInfo(m, "Missing modules and/or bundles have three common causes:");
+            logInfo(m, "(1) A bundle dependency is incorrectly specified.");
+            logInfo(m, "    Fix this by correcting the bundle dependency.");
+            logInfo(m, "(2) The liberty server package ZIP is missing a bundle jar.");
+            logInfo(m, "    Fix this by updating the packaging steps to include the missing jar.");
+            logInfo(m, "(3) The list of features which are present in the server package is incorrect.");
+            logInfo(m, "    Fix this by correcting the features list.");
+            logInfo(m, "    Possibly, the features list from a different server package is being used.");
+            logInfo(m, "    Fix this by making sure the features list is specific to the server package.");
+            logInfo(m, "");                
+            logInfo(m, "Server features are located relative to the liberty home directory:");
+            logInfo(m, "    LIBERTY_HOME/lib/features/*.mf");
+        }
+
+        if ( display(m, 80, "Missing feature specified errors", "    > ", "      > ", failuresAbsentOutOfLevel, builder) ) {                
+            logInfo(m, "Features unexpectedly started on java level [ " + server.getJavaLevel() + " ]");
+            logInfo(m, "If these are test-only features, add 'IBM-Test-Feature: true' to the feature manifests. ");
+            logInfo(m, "Feature required java levels are specified in resource [ " + FeatureLevels.REQUIRED_LEVELS_NAME + " ]");
+        }
+
+        display(m, 80, "Missing java level", "    > ", "      > ", failuresAbsentFeatureSpecified, builder);
+    }
+
+    public void displayTimingResults() {
+        String m = "displayTimingResults";
+
+        Map<String, TimingSummary> summaries = new LinkedHashMap<>();
+
+        summaries.put("Update", statistics("Update", timingResults, (TimingResult result) -> result.getUpdateNs()));
+        summaries.put("Start", statistics("Start", timingResults, (TimingResult result) -> result.getStartNs()));
+        summaries.put("PID", statistics("PID", timingResults, (TimingResult result) -> result.getPidNs()));
+        summaries.put("Verify", statistics("Verify", timingResults, (TimingResult result) -> result.getVerifyNs()));
+        summaries.put("Stop", statistics("Stop", timingResults, (TimingResult result) -> result.getStopNs()));
+        summaries.put("Kill", statistics("Kill", timingResults, (TimingResult result) -> result.getKillNs()));
+        summaries.put("Total", statistics("Total", timingResults, (TimingResult result) -> result.getTotalNs()));
+
+        logInfo(m, "Timing Summary:");
+
+        StringBuilder builder = new StringBuilder();
+        summaries.forEach((description, summary) -> {
+            builder.append("[ ");
+            builder.append(description);
+            builder.append(" ]: ");
+
+            if (summary.count == 0) {
+                builder.append("** NONE **");
+                logInfo(m, builder.toString());
+                builder.setLength(0);
+
+            } else {
+                builder.append(format("Avg", summary.avg) + " ( " + summary.count + " ): ");
+                builder.append(format("Total", summary.sum));
+                logInfo(m, builder.toString());
+                builder.setLength(0);
+
+                logInfo(m, "  " + formatStat("Min", summary.min, summary.minShort));
+                logInfo(m, "  " + formatStat("Max", summary.max, summary.maxShort));
+            }
+        });
+    }
+
+    // Timing reporting ...
+    
+    protected static String format(String description, long ns) {
+        return FeaturesStartTiming.format(description, ns);
+    }
+    
+    protected static String formatStat(String description, long stat, String shortName) {
+        return FeaturesStartTiming.formatStat(description, stat, shortName);
+    }
+
+    protected static TimingSummary statistics(
+        String description,
+        Map<String, TimingResult> timingResults,
+        ToLongFunction<TimingResult> producer) {
+
+        return FeaturesStartTiming.statistics(description, timingResults, producer);
+    }
+
+    // Reporting ...
+    
+    protected static boolean display(
+        String m, int width,
+        String title, String prefix,
+        Collection<String> values,
+        StringBuilder builder) {
+            
+        logInfo( m, title + " [" + values.size() + " ]" );
+
+        if ( !values.isEmpty () ) {
+            FeaturesStartReporting.display(m, prefix, width, values, builder);
+            return true;
+        } else {
+            return false;
         }
     }
 
-    protected static String asString(String[] elements) {
-        if ( (elements == null) || (elements.length == 0) ) {
-            return "{ }";
-        } else if ( elements.length == 1 ) {
-            return "{ " + elements[0] + " }";
-        } else if ( elements.length == 2 ) {
-            return "{ " + elements[0] + ", " + elements[1] + " }";            
+    public static boolean display(
+        String m, int width,
+        String title, String prefix, String nestedPrefix,
+        Map<String, ? extends Collection<String>> values,
+        StringBuilder builder) {
+        
+        logInfo( m, title + " [" + values.size() + " ]" );
+        
+        if ( !values.isEmpty() ) {
+            FeaturesStartReporting.display(m, prefix, nestedPrefix, width, values, builder);
+            return true;
         } else {
-            StringBuilder builder = new StringBuilder();
-            builder.append("{ ");
-            for ( int elementNo = 0; elementNo < elements.length; elementNo++ ) {
-                if ( elementNo > 0 ) {
-                    builder.append(", ");
-                }
-                builder.append(elements[elementNo]);
-            }
-            builder.append(" }");
-            return builder.toString();
+            return false;
         }
-    }
+    }    
 }

@@ -243,13 +243,29 @@ public class FeaturesStartTestBase {
             Assert.assertTrue("Failed to start [ " + featureShortName + " ]", false);
 
         } else if ( results.failures.contains(featureShortName) ) {
-            if ( results.failuresMissingModules.containsKey(featureShortName) ) {
-                Assert.assertFalse("Missing modules for [ " + featureShortName + " ]", true);
-            } else if ( results.failuresMissingBundles.containsKey(featureShortName) ) {
-                Assert.assertFalse("Missing bundles for [ " + featureShortName + " ]", true);
+            String failureCase;
+            if ( results.failuresAbsent.contains(featureShortName) ) {
+                if ( results.failuresAbsentFeatureSpecified.containsKey(featureShortName) ) {
+                    failureCase = "Missing feature specified error";
+                } else if ( results.failuresAbsentOutOfLevel.containsKey(featureShortName) ) {
+                    failureCase = "Missing out-of-level error";
+                } else {
+                    failureCase = "Strange mis-reported missing error";                    
+                }
+            } else if ( results.failuresPresent.contains(featureShortName) ) {
+                if ( results.failuresPresentMissingBundle.containsKey(featureShortName) ) {
+                    failureCase = "Missing bundle";
+                } else if ( results.failuresPresentMissingModule.containsKey(featureShortName) ) {
+                    failureCase = "Missing module";                    
+                } else if ( results.failuresPresentOther.containsKey(featureShortName) ) {
+                    failureCase = "Unexpected error";                    
+                } else {
+                    failureCase = "Strange mis-reported present error";
+                }
             } else {
-                Assert.assertFalse("Other errors for [ " + featureShortName + " ]", true);
+                failureCase = "Strange mis-reported error";                
             }
+            Assert.assertTrue(failureCase + " [ " + featureShortName + " ]", false);
 
         } else if ( !testResult.stopped ) {
             Assert.assertTrue("Failed to stop [ " + featureShortName + " ]", false);
