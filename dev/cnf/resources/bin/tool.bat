@@ -1,12 +1,11 @@
 @rem ***************************************************************************
-@rem Copyright (c) 2017 IBM Corporation and others.
+@rem Copyright (c) 2017, 2026 IBM Corporation and others.
 @rem All rights reserved. This program and the accompanying materials
 @rem are made available under the terms of the Eclipse Public License 2.0
 @rem which accompanies this distribution, and is available at
 @rem http://www.eclipse.org/legal/epl-2.0/
 @rem
-@rem Contributors:
-@rem     IBM Corporation - initial API and implementation
+@rem SPDX-License-Identifier: EPL-2.0
 @rem ***************************************************************************
 @echo off
 
@@ -54,7 +53,7 @@ if NOT defined JAVA_HOME (
 )
 
 @REM If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
-if exist "%JAVA_HOME%\lib\modules" set JVM_ARGS=--add-opens java.base/java.lang=ALL-UNNAMED !JVM_ARGS!
+if exist "%JAVA_HOME%\lib\modules" set JVM_ARGS=@TOOL_EXTRA_OPENS_AND_EXPORTS@ !JVM_ARGS!
 
 @REM If ENABLE_FIPS140_3 is specified and has a value, add FIPS140-3
 if defined ENABLE_FIPS140_3 (
