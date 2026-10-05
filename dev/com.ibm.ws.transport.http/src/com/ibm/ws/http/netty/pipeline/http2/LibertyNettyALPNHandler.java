@@ -18,11 +18,11 @@ import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpKeepAliveHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
-import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.ApplicationProtocolNames;
@@ -95,7 +95,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, h);
             }
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
-            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpKeepAliveHandler(httpConfig));
             if(ctx.pipeline().get(FlowControlHandler.class) == null){
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
             }
