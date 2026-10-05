@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2025 IBM Corporation and others.
+ * Copyright (c) 2017,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -189,8 +189,8 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
                 // Work around the <library> element marking its id attribute as internal when its
                 // id is actually a configurable external.
                 keys.add(key);
-            } else if ((metaTypeName != null && !metaTypeName.equalsIgnoreCase("internal")) || !registryEntryExists) {
-                // add attributes with a name that is not internal or any attributes if there is an error in the config
+            } else if (metaTypeName != null && !metaTypeName.equalsIgnoreCase("internal")) {
+                // add attributes with a name that is not internal
                 keys.add(key);
             } else {
                 int prefixEnd = -1;
@@ -221,8 +221,8 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
                         f.put(suffix, config.get(key));
                     }
                 } else {
-                    // Add MetaTypes with null name.  This includes child first config and invalid config.
-                    if (metaTypeName == null) {
+                    // Add MetaTypes with null name if registry entry exists, or if it represents identifying attributes (id, jndiName) or nested child element(s) (PIDs)
+                    if (metaTypeName == null && (registryEntryExists || "id".equals(key) || "jndiName".equals(key) || isPidReference(config.get(key)))) {
                         keys.add(key);
                     }
                 }
@@ -262,7 +262,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
         if (keys.remove("jndiName"))
             json.put("jndiName", config.get("jndiName"));
 
-        if (!registryEntryExists) { //registry entry doesn't exist - config service can't find the specified pid
+        if (!registryEntryExists) { // no active feature defines this element; only identifying attributes above are included in the response
             json.put("error", Tr.formatMessage(tc, locale, "CWWKO1531_NOT_FOUND", configElementName));
         }
 
@@ -284,9 +284,8 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
                         String key = prop.getKey();
                         String metaTypeName = configHelper.getMetaTypeAttributeName(pid, key);
                         Integer cardinality = configHelper.getMetaTypeAttributeCardinality(pid, key);
-                        if (metaTypeName == null // add unknown attributes added by the user
-                            || !metaTypeName.equalsIgnoreCase("internal") // add externalized attributes
-                            || !registryEntryExistsForFlattenedConfig) { // or all attributes if there is an error in the config
+                        if (registryEntryExistsForFlattenedConfig && (metaTypeName == null // add unknown attributes added by the user
+                            || !metaTypeName.equalsIgnoreCase("internal"))) { // add externalized attributes
                             Object value = prop.getValue();
 
                             // App-defined JCA resources store custom property values as String, which might need conversion
@@ -456,6 +455,27 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
      */
     private static final boolean isGenerated(String id) {
         return id.matches(".*//.*\\[.*\\].*");
+    }
+
+    /**
+     * Returns true if the specified value is a PID reference (String, array, or Collection of PID strings ending in _<digits>)
+     * representing nested child elements.
+     */
+    @Trivial
+    private static final boolean isPidReference(Object value) {
+        if (value instanceof String) {
+            return ((String) value).matches(".*_\\d+");
+        } else if (value instanceof String[]) {
+            String[] array = (String[]) value;
+            return array.length > 0 && array[0] != null && array[0].matches(".*_\\d+");
+        } else if (value instanceof Collection<?>) {
+            Collection<?> col = (Collection<?>) value;
+            if (!col.isEmpty()) {
+                Object first = col.iterator().next();
+                return first instanceof String && ((String) first).matches(".*_\\d+");
+            }
+        }
+        return false;
     }
 
     /**

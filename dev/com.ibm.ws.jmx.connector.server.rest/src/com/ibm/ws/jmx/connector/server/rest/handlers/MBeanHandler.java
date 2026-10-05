@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package com.ibm.ws.jmx.connector.server.rest.handlers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.management.MBeanAttributeInfo;
@@ -44,6 +45,7 @@ import com.ibm.ws.jmx.connector.server.rest.helpers.RESTHelper;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
+import com.ibm.wsspi.rest.handler.helper.RESTHandlerForbiddenError;
 import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
 
 @Component(service = { RESTHandler.class },
@@ -54,6 +56,8 @@ import com.ibm.wsspi.rest.handler.helper.RESTHandlerMethodNotAllowedError;
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_MBEANS_FACTORY,
                        RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + APIConstants.PATH_MBEANS_OBJECTNAME })
 public class MBeanHandler implements RESTHandler {
+
+    private static final String ADMINISTRATOR_ROLE_NAME = "Administrator";
 
     public static final TraceComponent tc = Tr.register(MBeanHandler.class);
 
@@ -76,6 +80,9 @@ public class MBeanHandler implements RESTHandler {
             }
         } else {
             if (RESTHelper.isPostMethod(method)) {
+                if (!request.isUserInRole(ADMINISTRATOR_ROLE_NAME)) {
+                    throw new RESTHandlerForbiddenError(Collections.singleton(ADMINISTRATOR_ROLE_NAME), "Forbidden");
+                }
                 createMBean(request, response);
             } else {
                 throw new RESTHandlerMethodNotAllowedError("POST");
