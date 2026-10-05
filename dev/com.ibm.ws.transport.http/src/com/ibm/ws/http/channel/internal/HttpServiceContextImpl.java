@@ -2383,16 +2383,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (isNettyHttp2Request()) {
             responseMessage.setHeader(streamIdHeader, Integer.toString(getNettyHttp2StreamId()));
         }
-        String closeNonUpgraded = (String) (this.myVC.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
-        // Shouldn't close upgraded requests
-        boolean upgradedRequest = closeNonUpgraded != null && "true".equalsIgnoreCase(closeNonUpgraded);
-        if (!upgradedRequest && (!myChannelConfig.isKeepAliveEnabled() || (myChannelConfig.getMaximumPersistentRequests() != -1 && nettyContext.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get() >= myChannelConfig.getMaximumPersistentRequests()))) {
-            // Keep alive disabled or exceeded maximum number of keep alive requests
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "sendHeaders: Adding close connection header due to keep alive disabled or exceeded number of maximum persistent requests");
-            }
-            getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
-        }
         // If persistence was explicitly disabled (e.g. by an error path or updatePersistence),
         // reflect that as Connection: close in the response headers so that
         // HttpServerKeepAliveHandler can manage the connection lifecycle natively.
