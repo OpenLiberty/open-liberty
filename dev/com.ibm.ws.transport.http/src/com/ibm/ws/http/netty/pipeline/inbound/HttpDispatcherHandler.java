@@ -136,7 +136,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
         context = ctx;
-        ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(0);
         ctx.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(0);
         ctx.channel().attr(NettyHttpConstants.HTTP_CONFIG).set(config);
     }
@@ -394,8 +393,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
             ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
         }
-        int num = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
-        ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(num + 1);
 
         this.link = new HttpDispatcherLink();
 
@@ -818,8 +815,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
             ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
         }
-        int num = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
-        ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(num + 1);
         link.init(ctx, request, config, requestMetadata);
         link.ready();
     }
