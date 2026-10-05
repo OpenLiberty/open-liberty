@@ -113,11 +113,11 @@ LTPA_AES_ENCRYPTION_KEY_NOT_CONFIGURED.explanation=The useEncryptionKey attribut
 LTPA_AES_ENCRYPTION_KEY_NOT_CONFIGURED.useraction=Try one of these actions to enable LTPA token encryption. Either set the wlp.aes.encryption.key system property to a valid base64-encoded 256-bit AES key, or set the wlp.password.encryption.key system property to a passphrase from which an AES key is derived.
 
 LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY=CWWKS4123E: The keysPassword attribute is set on the <ltpa /> element, but the useEncryptionKey attribute is also set to true. The keysPassword and useEncryptionKey attributes cannot be used together.
-LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY.explanation=The keysPassword attribute is used for password-based encryption, while useEncryptionKey is used for Advanced Encryption Standard (AES) key encryption. These two configuration options are mutually exclusive and cannot be specified at the same time.
+LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY.explanation=The keysPassword attribute is used for password-based encryption, but useEncryptionKey is used for Advanced Encryption Standard (AES) key encryption. These two configuration options are mutually exclusive and cannot be specified at the same time.
 LTPA_KEYS_PASSWORD_IGNORED_WHEN_USE_ENCRYPTION_KEY.useraction=Try one of the following actions: remove the keysPassword attribute from the <ltpa /> element to use AES key encryption, or set the useEncryptionKey attribute to false (or remove it) to use password-based encryption.
 
-LTPA_AES_ENCRYPTION_KEY_CUSTOM_RESOLVER=CWWKS4124I: Lightweight Third Party Authentication (LTPA) key material is protected by an Advanced Encryption Standard (AES) key obtained from {0}.
-LTPA_AES_ENCRYPTION_KEY_CUSTOM_RESOLVER.explanation=The useEncryptionKey attribute is set to true and the server resolves the Advanced Encryption Standard (AES) key from a custom key resolver.
+LTPA_AES_ENCRYPTION_KEY_CUSTOM_RESOLVER=CWWKS4124I: Lightweight Third Party Authentication (LTPA) key material is protected by an Advanced Encryption Standard (AES) key that is obtained from {0}.
+LTPA_AES_ENCRYPTION_KEY_CUSTOM_RESOLVER.explanation=The useEncryptionKey attribute is set to true, so the server uses a custom key resolver to obtain the AES key that protects LTPA key material. A custom key resolver is a user-provided implementation that supplies the encryption key at run time.
 LTPA_AES_ENCRYPTION_KEY_CUSTOM_RESOLVER.useraction=No action is required.
 
 LTPA_AES_ENCRYPTION_KEY_PROPERTY=CWWKS4125I: Lightweight Third Party Authentication (LTPA) key material is protected by the Advanced Encryption Standard (AES) key that is obtained from the {0} system property.
