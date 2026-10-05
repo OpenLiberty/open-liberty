@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Collections;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -51,7 +52,9 @@ public class DynamicMcpPathUpdateUsingServerXMLIncludesTest extends FATServletCl
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage());
-        ShrinkHelper.exportAppToServer(server, war, new DeployOptions[] {SERVER_ONLY, DISABLE_VALIDATION});
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
+                                          .addAsModule(war);
+        ShrinkHelper.exportAppToServer(server, ear, new DeployOptions[] {SERVER_ONLY, DISABLE_VALIDATION});
         server.startServer();
     }
 
