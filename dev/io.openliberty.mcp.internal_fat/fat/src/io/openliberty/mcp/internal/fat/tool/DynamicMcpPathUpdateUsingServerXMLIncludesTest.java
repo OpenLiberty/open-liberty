@@ -27,9 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.Application;
-import com.ibm.websphere.simplicity.config.Mcp;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +37,9 @@ import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
 @RunWith(FATRunner.class)
 public class DynamicMcpPathUpdateUsingServerXMLIncludesTest extends FATServletClient {
+
+    private static final String INCLUDE_FILE = "server-dynamic-app.xml";
+
     @Server("mcp-server-dynamic-xml-includes")
     public static LibertyServer server;
 
@@ -50,20 +50,15 @@ public class DynamicMcpPathUpdateUsingServerXMLIncludesTest extends FATServletCl
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage());
         ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
-        server.saveServerConfiguration();
         server.startServer();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         try {
-            server.setMarkToEndOfLog();
-            server.restoreServerConfiguration();
-            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+            server.deleteFileFromLibertyServerRoot(INCLUDE_FILE);
         } finally {
-            server.stopServer(
-                              "SRVE0190E" //File not found: /dynamic-mcp
-            );
+            server.stopServer();
         }
     }
 
@@ -161,47 +156,26 @@ public class DynamicMcpPathUpdateUsingServerXMLIncludesTest extends FATServletCl
     }
 
     @Test
-    public void testAppRestartsWhenMcpServerPathcConfigChanges() throws Exception {
+    public void testMcpEndpointBecomesAvailableWhenIncludeFileIsDroppedIn() throws Exception {
 
-        String initialEndpoint = "/dynamic-mcp";
-        String updatedEndpoint = "/dynamic-mcp-updated";
+        String includedEndpoint = "/dynamic-mcp-updated";
 
-        //Initialize session
-        String sessionId = initializeSession(initialEndpoint);
+        // Step 1: server has no application configured (optional include absent),
+        //         so the MCP endpoint should not be reachable
+        assertEndpointNotFound(includedEndpoint);
 
-        //confirm endpoint is live with listTools call
-        String toolResponse = toolsList(initialEndpoint, sessionId);
-        assertNotNull("Expected tool/list response", toolResponse);
-
-        //clean up session
-        deleteSession(initialEndpoint, sessionId);
-
-        //set the log mark before updating config
+        // Step 2: drop server-dynamic-app.xml into the server config directory so
+        //         the optional include is picked up and triggers a config update
         server.setMarkToEndOfLog();
-
-        //dynamically update the endpoint path to a new path
-        ServerConfiguration config = server.getServerConfiguration();
-        Application app = config.getApplications().getBy("location", APP_NAME + ".war");
-
-        assertNotNull("Expected to find the application in server config", app);
-
-        Mcp mcp = app.getMcps().get(0);
-        mcp.setPath(updatedEndpoint);
-        server.updateServerConfiguration(config);
+        server.copyFileToLibertyServerRoot(INCLUDE_FILE);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
 
-        //initialize session
-        String sessionId2 = initializeSession(updatedEndpoint);
+        // Step 3: verify the endpoint defined in server-dynamic-app.xml is now live
+        String sessionId = initializeSession(includedEndpoint);
 
-        //confirm endpoint is live with listTools call
-        String toolResponse2 = toolsList(updatedEndpoint, sessionId2);
-        assertNotNull("Expected tool/list response", toolResponse2);
+        String toolResponse = toolsList(includedEndpoint, sessionId);
+        assertNotNull("Expected tool/list response", toolResponse);
 
-        //confirm old path is no longer available
-        assertEndpointNotFound(initialEndpoint);
-
-        //clean up session
-        deleteSession(updatedEndpoint, sessionId2);
+        deleteSession(includedEndpoint, sessionId);
     }
-
 }
