@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.ProtocolState;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.wsoc.Constants;
@@ -362,7 +363,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
             throw new UnsupportedOperationException("Found Null Http Codec!");
         }
 
-        connection.pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
+        connection.pipeline().addLast(HttpPipelineInitializer.SERVLET_UPGRADE_HANDLER_NAME, upgradeHandler);
 
         // Remove HTTP Codecs
         connection.pipeline().remove(HttpClientCodec.class);
