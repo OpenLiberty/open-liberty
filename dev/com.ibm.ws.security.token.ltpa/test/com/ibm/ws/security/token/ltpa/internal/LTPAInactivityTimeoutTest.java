@@ -661,7 +661,159 @@ public class LTPAInactivityTimeoutTest {
         assertTrue("Legacy token must be valid", validated.isValid());
     }
 
+    // ── Hard session cap tests ────────────────────────────────────────────────
+
+    /**
+     * A newly created token must have a {@code sessionStart} attribute that is
+     * recent (within 1 second of the current time).
+     */
+    @Test
+    public void testTokenCreationSetsSessionStart() throws Exception {
+        tokenFactory = createInitializedTokenFactory(120, 60, 30, true);
+        Token token = tokenFactory.createToken(createBasicTokenData());
+
+        String[] sessionStartValues = token.getAttributes(AttributeNameConstants.WSTOKEN_SESSION_START);
+        assertNotNull("sessionStart must be set on a newly created token", sessionStartValues);
+        assertTrue("sessionStart must have at least one value", sessionStartValues.length > 0);
+
+        long sessionStart = Long.parseLong(sessionStartValues[0]);
+        long now = System.currentTimeMillis();
+        assertTrue("sessionStart must be recent (within 1 second)",
+                   Math.abs(now - sessionStart) < 1000);
+    }
+
+    /**
+     * The {@code sessionStart} attribute must be carried forward unchanged through
+     * a token clone (refresh).  The cloned token's {@code creationTime} will differ,
+     * but its {@code sessionStart} must equal the original.
+     */
+    @Test
+    public void testClonePreservesSessionStart() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+
+        tokenFactory = createInitializedTokenFactory(120, 10, 5, true);
+        Token originalToken = tokenFactory.createToken(createBasicTokenData());
+
+        String[] origSessionStart = originalToken.getAttributes(AttributeNameConstants.WSTOKEN_SESSION_START);
+        assertNotNull("Original token must have sessionStart", origSessionStart);
+        long originalSessionStartMs = Long.parseLong(origSessionStart[origSessionStart.length - 1]);
+
+        // Backdate creationTime so a refresh is triggered
+        backdateCreationTime(originalToken, 6 * 60 * 1000L);
+        byte[] backdatedBytes = originalToken.getBytes();
+
+        Thread.sleep(50); // ensure cloned creationTime is measurably newer
+
+        Token clonedToken = tokenFactory.validateTokenBytes(backdatedBytes);
+        assertNotNull("validateTokenBytes() must return a cloned token", clonedToken);
+
+        String[] clonedSessionStart = clonedToken.getAttributes(AttributeNameConstants.WSTOKEN_SESSION_START);
+        assertNotNull("Cloned token must carry the sessionStart attribute", clonedSessionStart);
+        long clonedSessionStartMs = Long.parseLong(clonedSessionStart[clonedSessionStart.length - 1]);
+
+        assertEquals("sessionStart must be identical in the original and the clone",
+                     originalSessionStartMs, clonedSessionStartMs);
+
+        // Sanity: creationTime must have changed
+        String[] clonedCreation = clonedToken.getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+        assertNotNull("Cloned token must have creationTime", clonedCreation);
+        long clonedCreationMs = Long.parseLong(clonedCreation[clonedCreation.length - 1]);
+        assertTrue("Cloned creationTime must be newer than the backdated original",
+                   clonedCreationMs > originalSessionStartMs);
+    }
+
+    /**
+     * When {@code dynamicExpirationValidation=true} and the refresh feature is enabled,
+     * a token whose {@code sessionStart + expiration} is in the past must be rejected
+     * with {@link TokenExpiredException} even when its inactivity window has been
+     * kept alive by continuous refreshes.
+     *
+     * We simulate "many refreshes" by backdating {@code sessionStart} past the
+     * hard cap while keeping {@code creationTime} recent (so inactivity would still pass).
+     */
+    @Test
+    public void testHardSessionCapRejectedWhenSessionStartPastExpiration() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+
+        // expiration=10min, inactivity=5min, threshold=2min, dynamicExpiration=true
+        tokenFactory = createInitializedTokenFactory(10, 5, 2, true);
+        Token token = tokenFactory.createToken(createBasicTokenData());
+        byte[] tokenBytes = token.getBytes();
+
+        // Validate once to get a properly round-tripped token
+        Token validated = tokenFactory.validateTokenBytes(tokenBytes);
+        assertNotNull(validated);
+
+        // Backdate sessionStart by 11 minutes — past the 10-minute hard cap.
+        // Leave creationTime recent so inactivity alone would pass.
+        backdateSessionStart(validated, 11 * 60 * 1000L);
+
+        byte[] backdatedBytes = validated.getBytes();
+
+        try {
+            tokenFactory.validateTokenBytes(backdatedBytes);
+            fail("Expected TokenExpiredException due to hard session cap being exceeded");
+        } catch (TokenExpiredException e) {
+            // Expected — hard session cap enforced
+            assertTrue("Exception message must mention the session cap",
+                       e.getMessage().contains("hard session cap"));
+        }
+    }
+
+    /**
+     * When {@code dynamicExpirationValidation=false} the session-cap check must NOT fire.
+     * The normal absolute-expiration check remains the sole guard.
+     */
+    @Test
+    public void testHardSessionCapNotAppliedWhenDynamicExpirationDisabled() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+
+        // dynamicExpirationValidation=false — no session cap
+        tokenFactory = createInitializedTokenFactory(120, 10, 5, false);
+        Token token = tokenFactory.createToken(createBasicTokenData());
+        byte[] tokenBytes = token.getBytes();
+
+        Token validated = tokenFactory.validateTokenBytes(tokenBytes);
+        assertNotNull(validated);
+
+        // Token should remain valid (session cap check is gated on dynamicExpirationValidation)
+        assertTrue("Token must be valid when dynamicExpirationValidation=false",
+                   validated.isValid());
+    }
+
+    /**
+     * When inactivity timeout is 0 (refresh feature disabled) the hard session cap
+     * must not fire, even with {@code dynamicExpirationValidation=true}.
+     */
+    @Test
+    public void testHardSessionCapNotAppliedWhenInactivityDisabled() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+
+        // inactivityTimeout=0 → refresh feature disabled → no session cap
+        tokenFactory = createInitializedTokenFactory(120, 0, 5, true);
+        Token token = tokenFactory.createToken(createBasicTokenData());
+
+        assertTrue("Token must be valid when inactivity is disabled (no session cap applies)",
+                   token.isValid());
+    }
+
+
     // ── Helper methods ────────────────────────────────────────────────────────
+
+    /**
+     * Backdates the WSTOKEN_SESSION_START attribute inside the token's userData by the
+     * given number of milliseconds, simulating a session that started that long ago.
+     *
+     * @param token          the token whose sessionStart to adjust
+     * @param backdateMillis how many milliseconds into the past to move sessionStart
+     */
+    private void backdateSessionStart(Token token, long backdateMillis) throws Exception {
+        String[] current = token.getAttributes(AttributeNameConstants.WSTOKEN_SESSION_START);
+        assertNotNull("Token must have a sessionStart attribute to backdate", current);
+        long sessionStart = Long.parseLong(current[current.length - 1]);
+        long backdated = sessionStart - backdateMillis;
+        token.addAttribute(AttributeNameConstants.WSTOKEN_SESSION_START, Long.toString(backdated));
+    }
 
     /**
      * Backdates the WSTOKEN_CREATION_TIME attribute inside the token's userData by the
