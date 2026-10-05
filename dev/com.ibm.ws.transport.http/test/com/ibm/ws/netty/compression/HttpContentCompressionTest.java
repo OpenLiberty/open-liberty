@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.DataFormatException;
 import java.util.zip.GZIPOutputStream;
 
@@ -231,6 +232,156 @@ public class HttpContentCompressionTest {
         assertEquals("The output buffer should be empty if the input is empty", 0, result.remaining());
     }
 
+    @Test
+    public void decodesActualGzipPayload() throws Exception {
+        byte[] expected = "actual gzip decoder control".getBytes("UTF-8");
+        WsByteBuffer result = new HttpContentDecompressor().decompress(buffer(compressWithGzip(expected)), createMockConfig(true, 200, 3), "gzip");
+        try {
+            byte[] actual = new byte[result.remaining()];
+            result.get(actual);
+            assertArrayEquals(expected, actual);
+        } finally {
+            result.release();
+        }
+    }
+
+    @Test
+    public void usesIntegerRatioAndStrictLimit() throws Exception {
+        assertEquals(150, decode(new HttpContentDecompressor(), scripted(100, 150), createMockConfig(true, 1, 0), 100));
+        assertEquals(200, decode(new HttpContentDecompressor(), scripted(100, 200), createMockConfig(true, 2, 0), 100));
+    }
+
+    @Test
+    public void ignoresRatioWhenNoBytesWereRead() throws Exception {
+        assertEquals(200, decode(new HttpContentDecompressor(), scripted(0, 200), createMockConfig(true, 1, 0), 100));
+    }
+
+    @Test
+    public void ignoresRatioWhenDecoderReturnsNoChunks() throws Exception {
+        AtomicInteger call = new AtomicInteger();
+        DecompressionHandler handler = mock(DecompressionHandler.class);
+        when(handler.isEnabled()).thenReturn(true);
+        when(handler.decompress(any(WsByteBuffer.class))).thenAnswer(invocation -> {
+            if (call.getAndIncrement() == 0) {
+                return Collections.emptyList();
+            }
+            return Collections.singletonList(output(200));
+        });
+        when(handler.getBytesRead()).thenReturn(1L);
+        when(handler.getBytesWritten()).thenReturn(200L);
+
+        HttpContentDecompressor decompressor = new HttpContentDecompressor();
+        assertEquals(0, decode(decompressor, handler, createMockConfig(true, 1, 0), 100));
+        expectRejected(decompressor, handler, createMockConfig(true, 1, 0), createMockInputBuffer(100, true, false));
+    }
+
+    @Test
+    public void toleranceAccumulatesAcrossDecodeCalls() throws Exception {
+        HttpContentDecompressor decompressor = new HttpContentDecompressor();
+        DecompressionHandler handler = scripted(100, 200);
+        HttpChannelConfig config = createMockConfig(true, 1, 3);
+        for (int cycle = 0; cycle < 3; cycle++) {
+            assertEquals(200, decode(decompressor, handler, config, 100));
+        }
+        expectRejected(decompressor, handler, config, createMockInputBuffer(100, true, false));
+    }
+
+    @Test
+    public void belowLimitCycleDoesNotResetTolerance() throws Exception {
+        HttpContentDecompressor decompressor = new HttpContentDecompressor();
+        DecompressionHandler handler = varying(new long[] { 100, 1100, 1200 }, new int[] { 200, 1, 2500 });
+        HttpChannelConfig config = createMockConfig(true, 1, 1);
+        assertEquals(200, decode(decompressor, handler, config, 100));
+        assertEquals(1, decode(decompressor, handler, config, 1000));
+        expectRejected(decompressor, handler, config, createMockInputBuffer(100, true, false));
+    }
+
+    @Test
+    public void newWrapperHasFreshTolerance() throws Exception {
+        HttpChannelConfig config = createMockConfig(true, 1, 1);
+        for (int request = 0; request < 2; request++) {
+            HttpContentDecompressor decompressor = new HttpContentDecompressor();
+            DecompressionHandler handler = scripted(100, 200);
+            assertEquals(200, decode(decompressor, handler, config, 100));
+            expectRejected(decompressor, handler, config, createMockInputBuffer(100, true, false));
+        }
+    }
+
+    @Test
+    public void successfulDecodeReleasesInputAndOutputOnce() throws Exception {
+        WsByteBuffer input = createMockInputBuffer(100, true, false);
+        WsByteBuffer output = output(100);
+        assertEquals(100, decode(new HttpContentDecompressor(), createMockHandler(Collections.singletonList(output), 100, 100),
+                                 createMockConfig(true, 2, 0), input));
+        verify(input, times(1)).release();
+        verify(output, times(1)).release();
+    }
+
+    @Test
+    public void toleranceRejectionReleasesCurrentInputAndOutputOnce() throws Exception {
+        WsByteBuffer input = createMockInputBuffer(100, true, false);
+        WsByteBuffer output = output(200);
+        expectRejected(new HttpContentDecompressor(), createMockHandler(Collections.singletonList(output), 100, 200),
+                       createMockConfig(true, 1, 0), input);
+        verify(input, times(1)).release();
+        verify(output, times(1)).release();
+    }
+
+    @Test
+    public void laterRejectionReleasesEarlierAndCurrentOutputOnce() throws Exception {
+        WsByteBuffer input = createMockInputBuffer(100, true, true, false);
+        WsByteBuffer first = output(100);
+        WsByteBuffer second = output(500);
+        AtomicInteger call = new AtomicInteger();
+        DecompressionHandler handler = mock(DecompressionHandler.class);
+        when(handler.isEnabled()).thenReturn(true);
+        when(handler.decompress(input)).thenAnswer(invocation -> Collections.singletonList(call.getAndIncrement() == 0 ? first : second));
+        when(handler.getBytesRead()).thenAnswer(invocation -> call.get() * 50L);
+        when(handler.getBytesWritten()).thenAnswer(invocation -> call.get() == 1 ? 100L : 600L);
+
+        expectRejected(new HttpContentDecompressor(), handler, createMockConfig(true, 2, 0), input);
+        verify(input, times(1)).release();
+        verify(first, times(1)).release();
+        verify(second, times(1)).release();
+    }
+
+    @Test
+    public void decoderFailureReleasesActiveInputOnce() throws Exception {
+        WsByteBuffer input = createMockInputBuffer(100, true, false);
+        DecompressionHandler handler = mock(DecompressionHandler.class);
+        when(handler.isEnabled()).thenReturn(true);
+        when(handler.decompress(input)).thenThrow(new DataFormatException("decoder failure"));
+
+        expectRejected(new HttpContentDecompressor(), handler, createMockConfig(true, 200, 3), input);
+        verify(input, times(1)).release();
+    }
+
+    @Test
+    public void malformedGzipReleasesActiveInputOnce() throws Exception {
+        WsByteBuffer input = spy(buffer(new byte[] { 0x1f, (byte) 0x8b, 0x00, 0x00 }));
+        try {
+            new HttpContentDecompressor().decompress(input, createMockConfig(true, 200, 3), "gzip");
+            fail("Malformed gzip should have been rejected");
+        } catch (DataFormatException expected) {
+        }
+        verify(input, times(1)).release();
+    }
+
+    @Test
+    public void disabledDecompressionRetainsInputOwnership() throws Exception {
+        WsByteBuffer input = createMockInputBuffer(100, true, false);
+        assertSame(input, new HttpContentDecompressor().decompress(input, createMockConfig(false, 200, 3), "gzip"));
+        verify(input, never()).release();
+    }
+
+    @Test
+    public void emptyInputRetainsInputOwnership() throws Exception {
+        WsByteBuffer input = createMockInputBuffer(0, false);
+        DecompressionHandler handler = createMockHandler(Collections.emptyList(), 0, 0);
+        assertSame(input, new HttpContentDecompressor().decompress(input, createMockConfig(true, 200, 3), handler));
+        verify(input, never()).release();
+    }
+
     /**
      * Creates a mock for {@HttpChannelConfig} with the desired decompression HttpOptions.
      * @param decompressionEnabled sets the AutoDecompression HttpOption
@@ -256,7 +407,7 @@ public class HttpContentCompressionTest {
     private WsByteBuffer createMockInputBuffer(int remaining, Boolean... hasRemainingSequence) {
         WsByteBuffer inputBuffer = mock(WsByteBuffer.class);
         when(inputBuffer.remaining()).thenReturn(remaining);
-        when(inputBuffer.hasRemaining()).thenReturn(hasRemainingSequence[0], hasRemainingSequence);
+        when(inputBuffer.hasRemaining()).thenReturn(hasRemainingSequence[0], Arrays.copyOfRange(hasRemainingSequence, 1, hasRemainingSequence.length));
         doNothing().when(inputBuffer).release();
         return inputBuffer;
     }
@@ -281,6 +432,77 @@ public class HttpContentCompressionTest {
         return handler;
     }
 
+    private int decode(HttpContentDecompressor decompressor, DecompressionHandler handler,
+                       HttpChannelConfig config, int inputSize) throws Exception {
+        return decode(decompressor, handler, config, createMockInputBuffer(inputSize, true, false));
+    }
+
+    private int decode(HttpContentDecompressor decompressor, DecompressionHandler handler,
+                       HttpChannelConfig config, WsByteBuffer input) throws Exception {
+        WsByteBuffer result = decompressor.decompress(input, config, handler);
+        try {
+            return result.remaining();
+        } finally {
+            result.release();
+        }
+    }
+
+    private void expectRejected(HttpContentDecompressor decompressor, DecompressionHandler handler,
+                                HttpChannelConfig config, WsByteBuffer input) throws Exception {
+        try {
+            WsByteBuffer unexpected = decompressor.decompress(input, config, handler);
+            try {
+                fail("Decompression should have been rejected");
+            } finally {
+                unexpected.release();
+            }
+        } catch (DataFormatException expected) {
+        }
+    }
+
+    private DecompressionHandler scripted(long bytesRead, int bytesWritten) throws Exception {
+        AtomicInteger cycles = new AtomicInteger();
+        DecompressionHandler handler = mock(DecompressionHandler.class);
+        when(handler.isEnabled()).thenReturn(true);
+        when(handler.decompress(any(WsByteBuffer.class))).thenAnswer(invocation -> {
+            cycles.incrementAndGet();
+            return Collections.singletonList(output(bytesWritten));
+        });
+        when(handler.getBytesRead()).thenAnswer(invocation -> bytesRead * cycles.get());
+        when(handler.getBytesWritten()).thenAnswer(invocation -> (long) bytesWritten * cycles.get());
+        return handler;
+    }
+
+    private DecompressionHandler varying(long[] cumulativeRead, int[] outputSizes) throws Exception {
+        AtomicInteger call = new AtomicInteger();
+        DecompressionHandler handler = mock(DecompressionHandler.class);
+        when(handler.isEnabled()).thenReturn(true);
+        when(handler.decompress(any(WsByteBuffer.class))).thenAnswer(invocation ->
+                        Collections.singletonList(output(outputSizes[call.getAndIncrement()])));
+        when(handler.getBytesRead()).thenAnswer(invocation -> cumulativeRead[call.get() - 1]);
+        when(handler.getBytesWritten()).thenAnswer(invocation -> {
+            long total = 0;
+            for (int index = 0; index < call.get(); index++) {
+                total += outputSizes[index];
+            }
+            return total;
+        });
+        return handler;
+    }
+
+    private WsByteBuffer output(int size) {
+        WsByteBuffer output = mock(WsByteBuffer.class);
+        when(output.remaining()).thenReturn(size);
+        when(output.getWrappedByteBuffer()).thenReturn(ByteBuffer.allocate(size));
+        return output;
+    }
+
+    private WsByteBuffer buffer(byte[] bytes) {
+        WsByteBufferImpl buffer = new WsByteBufferImpl();
+        buffer.setByteBuffer(ByteBuffer.wrap(bytes));
+        return buffer;
+    }
+
     /**
      * Helper method to quickly compress data with the GZIP algorithm
      * @param data
@@ -295,5 +517,4 @@ public class HttpContentCompressionTest {
         return baos.toByteArray();
     }
 
-  
 }

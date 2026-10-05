@@ -35,6 +35,7 @@ public class HttpContentDecompressor {
 
     private DecompressionHandler handler;
     private ContentEncodingValues currentContentEncoding;
+    private int cyclesAboveDecompressionRatio;
 
     /**
      * Decompresses the given buffer using the appropriate decompression handler based on the content encoding header
@@ -94,32 +95,39 @@ public class HttpContentDecompressor {
         }
         LinkedList<WsByteBuffer> tempBuffers = new LinkedList<>();
         tempBuffers.add(buffer);
-        int cyclesAboveDecompressionRatio = 0;
         List<WsByteBuffer> storage = new ArrayList<>();
 
         try{
             while(!tempBuffers.isEmpty()){
                 WsByteBuffer temp = tempBuffers.removeFirst();
-                while(temp.hasRemaining()){
-                    List<WsByteBuffer> decompressionChunks = handler.decompress(temp);
-                    if(!decompressionChunks.isEmpty()){
-                        if(handler.getBytesRead() > 0){
-                            double ratio = (double) handler.getBytesWritten() / handler.getBytesRead();
-                            if(ratio > config.getDecompressionRatioLimit()){
-                                cyclesAboveDecompressionRatio++;
-                                if(cyclesAboveDecompressionRatio > config.getDecompressionTolerance()){
-                                    if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                                        Tr.debug(tc, "Decompression ratio tolerance reached. Cycles: "+ cyclesAboveDecompressionRatio);
+                try {
+                    while(temp.hasRemaining()){
+                        List<WsByteBuffer> decompressionChunks = handler.decompress(temp);
+                        if(!decompressionChunks.isEmpty()){
+                            storage.addAll(decompressionChunks);
+                            if(handler.getBytesRead() > 0){
+                                long ratio = handler.getBytesWritten() / handler.getBytesRead();
+                                if(ratio > config.getDecompressionRatioLimit()){
+                                    cyclesAboveDecompressionRatio++;
+                                    if(cyclesAboveDecompressionRatio > config.getDecompressionTolerance()){
+                                        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                                            Tr.debug(tc, "Decompression ratio tolerance reached. Cycles: "+ cyclesAboveDecompressionRatio);
+                                        }
+                                        throw new DataFormatException("Decompression tolerance reached");
                                     }
-                                    throw new DataFormatException("Decompression tolerance reached");
                                 }
                             }
                         }
-                        storage.addAll(decompressionChunks);
                     }
+                } finally {
+                    temp.release();
                 }
-            temp.release();
             }
+        } catch (DataFormatException failure) {
+            for (WsByteBuffer chunk : storage) {
+                chunk.release();
+            }
+            throw failure;
         }finally{
             while(!tempBuffers.isEmpty()){
                 tempBuffers.removeFirst().release();
