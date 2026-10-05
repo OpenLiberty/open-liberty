@@ -17,6 +17,7 @@ import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -487,11 +488,42 @@ public class TCPUtils {
                     open(framework, channel, config, inetHost, inetPort, openListener,
                         config.getPortOpenRetries(), false);
                 } else {
+                    final long bindTimeoutMs = framework.getDefaultChainQuiesceTimeout();
                     framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                         @Override
                         public ChannelFuture call() {
-                            return open(framework, channel, config, inetHost, inetPort, openListener,
-                                        config.getPortOpenRetries(), false);
+                            // Wrap openListener so that the Callable only returns (and the
+                            // StartTaskRunnable latch counts down) after the terminal bind
+                            // outcome — success or final failure after all retries.
+                            // openListener (channelFutureHandler) is dispatched onto a
+                            // *separate* Liberty executor thread via generateOpenListenerWrapper,
+                            // so blocking this Callable thread on the CompletableFuture does
+                            // not deadlock: the completer runs on a different thread.
+                            // Without this, task.get() in StartTaskRunnable returns the first-
+                            // attempt ChannelFuture object immediately (before any retries
+                            // complete), latch.await() in setServerStarted() unblocks too early,
+                            // CWWKF0011I fires, and tests get "Connection refused" on Linux CI.
+                            java.util.concurrent.CompletableFuture<ChannelFuture> bindDone =
+                                new java.util.concurrent.CompletableFuture<>();
+                            ChannelFutureListener wrappedListener = openListener == null ? null :
+                                f -> {
+                                    bindDone.complete(f);
+                                    openListener.operationComplete(f);
+                                };
+                            ChannelFuture firstFuture = open(framework, channel, config, inetHost, inetPort,
+                                                             wrappedListener, config.getPortOpenRetries(), false);
+                            if (firstFuture == null) {
+                                // channel was already closed — nothing to wait for
+                                bindDone.complete(null);
+                            }
+                            try {
+                                return bindDone.get(bindTimeoutMs, TimeUnit.MILLISECONDS);
+                            } catch (Exception e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "startHelper deferred bind wait interrupted or timed out: " + e.getMessage());
+                                }
+                                return firstFuture;
+                            }
                         }
                     });
                 }
