@@ -417,7 +417,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                     ch.close();
                     return;
                 }
-                pipeline.addFirst("SSLHandler", handler);
+                pipeline.addFirst(HttpPipelineInitializer.HTTP_SSL_HANDLER_NAME, handler);
 
             }
             ProtocolState.establish(ch, NettyHttpConstants.ProtocolName.HTTP1,
