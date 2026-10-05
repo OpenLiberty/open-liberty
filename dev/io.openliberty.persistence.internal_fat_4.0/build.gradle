@@ -35,9 +35,10 @@ dependencies {
     // Hibernate runtime dependencies
     hibernateJPA40("net.bytebuddy:byte-buddy:1.18.10")           { transitive = false }
     hibernateJPA40("org.antlr:antlr4-runtime:4.13.2")            { transitive = false }
-    hibernateJPA40("org.jboss.logging:jboss-logging:3.6.3.Final") { transitive = false }
-    hibernateJPA40("org.hibernate.models:hibernate-models:1.2.0") { transitive = false }
-    hibernateJPA40("io.smallrye:jandex:3.6.0")                   { transitive = false }
+    hibernateJPA40("org.jboss.logging:jboss-logging:3.6.3.Final")             { transitive = false }
+    hibernateJPA40("org.hibernate.models:hibernate-models:1.3.0")             { transitive = false }
+    hibernateJPA40("org.hibernate.models:hibernate-models-bytebuddy:1.3.0")   { transitive = false }
+    hibernateJPA40("io.smallrye:jandex:3.6.0")                                { transitive = false }
 
 }
 
