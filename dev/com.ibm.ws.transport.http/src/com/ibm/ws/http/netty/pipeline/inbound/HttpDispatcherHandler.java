@@ -90,6 +90,7 @@ import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
+import io.openliberty.netty.internal.impl.QuiesceState;
 
 /**
  * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
@@ -149,7 +150,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         Throwable lifecycleFailure = null;
         if (evt instanceof ChannelInputShutdownEvent){
             try {
-                FlowState state = ReadFlowHandler.state(ctx);
+                FlowState state = ReadFlowHandler.state(ctx.channel());
                 if(queue!=null && !queue.isEos() && !state.isRequestConsumed()){
                     try {
                         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
@@ -351,7 +352,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request,
                                        RequestMetadata requestMetadata) {
-         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+        // Mirror Channel Framework's HttpInboundLink.handleNewInformation() isStopped() guard:
+        // if the server is quiescing, reject new requests immediately with a 503
+        if (QuiesceState.isQuiesceInProgress()
+                || Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.QUIESCING).get())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "beginStreamingRequest: server quiescing, rejecting request with 503");
+            }
+            sendErrorMessage(StatusCodes.UNAVAILABLE, null);
+            return;
+        }
+
+        ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
 
         final CharSequence ae = request.headers().get(HttpHeaderNames.ACCEPT_ENCODING);
         if (ae != null)
@@ -675,7 +687,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             if (cause instanceof ReadTimeoutException
                 && ProtocolState.current(ctx.channel()) != NettyHttpConstants.ProtocolName.HTTP2
-                && !ReadFlowHandler.state(ctx).isResponseInFlight()) {
+                && !ReadFlowHandler.state(ctx.channel()).isResponseInFlight()) {
                 sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                 return;
             }
@@ -827,9 +839,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
 
         AsyncReadDispatchState asyncReadState = AsyncReadDispatchState.forChannel(context.channel());
-        boolean asyncReadInProgress =
-            Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get()) ||
-            asyncReadState.hasOutstandingCallback();
         Throwable lifecycleFailure = null;
         try {
             asyncReadState.fail();
@@ -837,24 +846,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             lifecycleFailure = t;
         }
 
+        // Channel closed while request body was still in flight: signal an error so
+        // any thread blocked in BodyQueue.awaitChange() unblocks immediately. The
+        // forced-close path that used to signal EOS here has been removed; a genuine
+        // premature close is always an error from the body reader's perspective.
         try {
-            boolean responseCloseBeforeRequestBodyComplete =
-                Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).get());
             if (queue != null && !queue.isEos()) {
-                if (responseCloseBeforeRequestBodyComplete && !asyncReadInProgress) {
-                    queue.signalEos();
-                    if (link != null)
-                        link.setBodyComplete();
-                } else {
-                    context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
-                    queue.signalError(new EOFException("Channel closed before request body completed."));
-                }
+                context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
+                queue.signalError(new EOFException("Channel closed before request body completed."));
             }
-        } catch (Throwable t) {
-            lifecycleFailure = mergeLifecycleFailure(lifecycleFailure, t);
-        }
-        try {
-            context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.FALSE);
         } catch (Throwable t) {
             lifecycleFailure = mergeLifecycleFailure(lifecycleFailure, t);
         }

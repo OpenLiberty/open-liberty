@@ -12,6 +12,7 @@ package com.ibm.ws.http.netty.pipeline.inbound.read;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.util.ReferenceCountUtil;
 
@@ -47,6 +48,7 @@ public class FlowState {
     private volatile boolean peerInputShutdown;
     private volatile boolean quiescing;
     private volatile boolean readAgain;
+    private volatile boolean purging;
     private volatile boolean readPending;
     private volatile boolean requestConsumed;
     private volatile boolean responseInFlight;
@@ -98,6 +100,24 @@ public class FlowState {
     private boolean exchangeWriteFailed = false;
 
     /**
+     * Per-exchange lifecycle coordinator. Replaced by {@link #nextExchangeId()} at the
+     * start of each new exchange.
+     *
+     * <p>{@code null} means no exchange has ever been admitted (immediate admission
+     * allowed). See {@link #isAdmissionEligible()} for the authoritative check.
+     *
+     * <p>Event-loop-owned; must not be accessed from worker threads.
+     */
+    private ExchangeLifecycle activeLifecycle = null;
+
+    /**
+     * The {@link ChannelHandlerContext} for {@link ReadFlowHandler}, stored in
+     * {@link ReadFlowHandler#handlerAdded} so that {@code fireChannelRead} always
+     * fires from the correct pipeline position.
+     */
+    ChannelHandlerContext readFlowHandlerContext = null;
+
+    /**
      * FlowState constructor.
      */
     public FlowState() {
@@ -106,6 +126,7 @@ public class FlowState {
         this.keepAliveAllowed = true;
         this.peerInputShutdown = false;
         this.quiescing = false;
+        this.purging = false;
         this.readAgain = false;
         this.readPending = false;
         this.requestConsumed = true;
@@ -198,6 +219,14 @@ public class FlowState {
         this.peerInputShutdown = peerInputShutdown;
     }
 
+    public boolean isPurging() {
+        return purging;
+    }
+
+    public void setPurging(boolean purging) {
+        this.purging = purging;
+    }
+
     public void setQuiescing(boolean quiescing) {
         this.quiescing = quiescing;
     }
@@ -237,13 +266,55 @@ public class FlowState {
 
     /**
      * Allocates a new exchange id, records it as the active exchange, resets the
-     * per-exchange write-failure flag, and returns the new value. Must be called
-     * on the event loop, immediately before the {@code HttpRequest} is forwarded
-     * downstream.
+     * per-exchange write-failure flag, and returns the new value.  Also installs a
+     * fresh {@link ExchangeLifecycle} for the new exchange.
+     *
+     * <p>The cleanup action must be bound before application dispatch via
+     * {@link ExchangeLifecycle#bindCleanupAction(CleanupAction)}.  This two-phase
+     * approach allows {@code admitRequest} to allocate the lifecycle before forwarding
+     * the request downstream while letting the downstream initialiser (e.g.
+     * {@code HttpDispatcherLink.init}) bind the ISC-backed cleanup action once the
+     * ISC has been configured — all synchronously on the event loop, before any
+     * worker thread can call back.
+     *
+     * <p>Must be called on the event loop, immediately before the
+     * {@code HttpRequest} is forwarded downstream.
      */
     public long nextExchangeId() {
+        purging = false;
         exchangeWriteFailed = false;
+        activeLifecycle = new ExchangeLifecycle();
         return ++activeExchangeId;
+    }
+
+    /**
+     * Returns the {@link ExchangeLifecycle} for the currently active exchange,
+     * or {@code null} if no exchange has ever been admitted on this connection.
+     * Must be accessed on the event loop only.
+     */
+    public ExchangeLifecycle getActiveLifecycle() {
+        return activeLifecycle;
+    }
+
+    /**
+     * Returns {@code true} when the next request is eligible for admission.
+     *
+     * <p>Two cases allow admission:
+     * <ol>
+     *   <li>No exchange has ever been admitted ({@code activeLifecycle == null}).
+     *       This is the "first request" path.</li>
+     *   <li>The active exchange's lifecycle has successfully completed cleanup
+     *       ({@link ExchangeLifecycle#isCleanupComplete()} returns {@code true}).</li>
+     * </ol>
+     *
+     * <p>This is the single authoritative admission-eligibility check; all
+     * code paths that may admit a request must call this rather than
+     * inspecting the lifecycle directly.
+     *
+     * <p>Must be called on the event loop.
+     */
+    public boolean isAdmissionEligible() {
+        return activeLifecycle == null || activeLifecycle.isCleanupComplete();
     }
 
     /**
