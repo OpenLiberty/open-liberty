@@ -464,7 +464,7 @@ configureFIPS.option-desc.4.disable=\
 # Note to translator: 'LTPA' and 'ltpa.keys' should not be translated
 reEncryptLTPAKeys.desc=\
 \tDecrypt an existing LTPA keys file and re-encrypt the same key material,\n\
-\twriting the result to a new file. The current file and new file may be\n\
+\twriting the result to a new file. The current file and new file can be\n\
 \tthe same path for an in-place update.\n\
 \tSpecify source and target encryption using either two passwords, or one\n\
 \tpassword combined with one AES key option (--key, --base64Key, or --ckdsLabel).
@@ -487,12 +487,12 @@ reEncryptLTPAKeys.option-key.currentPassword=\
 \ \ \ \ --currentPassword=password
 reEncryptLTPAKeys.option-desc.currentPassword=\
 \tThe plaintext password used to decrypt the current LTPA keys file.\n\
-\tRequired unless an AES key option is used as the source (decryption) key.
+\tRequired unless you use an AES key option as the source (decryption) key.
 reEncryptLTPAKeys.option-key.newPassword=\
 \ \ \ \ --newPassword=password
 reEncryptLTPAKeys.option-desc.newPassword=\
 \tThe plaintext password used to encrypt the new LTPA keys file.\n\
-\tRequired unless an AES key option is used as the target (encryption) key.
+\tRequired unless you use an AES key option as the target (encryption) key.
 reEncryptLTPAKeys.option-key.key=\
 \ \ \ \ --key=key
 reEncryptLTPAKeys.option-desc.key=\
@@ -511,7 +511,7 @@ reEncryptLTPAKeys.option-desc.ckdsLabel=\
 \tThe ICSF Cryptographic Key Data Set (CKDS) label of a hardware AES key.\n\
 \tUsed as the source (decryption) key when --currentPassword is omitted,\n\
 \tor as the target (encryption) key when --newPassword is omitted.\n\
-\tCannot be specified together with both --currentPassword and --newPassword.
+\tDo not specify --ckdsLabel together with both --currentPassword and --newPassword.
 
 # -------- Generate AES-256 KEY OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
