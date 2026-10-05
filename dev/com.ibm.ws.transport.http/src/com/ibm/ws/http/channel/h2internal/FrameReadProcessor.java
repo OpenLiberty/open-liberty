@@ -111,6 +111,14 @@ public class FrameReadProcessor {
                     return;
                 }
 
+                if ((currentFrame.getFrameType().equals(FrameTypes.RST_STREAM)
+                     || currentFrame.getFrameType().equals(FrameTypes.WINDOW_UPDATE))
+                    && streamId < muxLink.getHighestClientStreamId()) {
+                    // tolerate RST_STREAM and WINDOW_UPDATE frames received for a recently-closed
+                    // client-initiated stream that has been evicted from the stream table
+                    return;
+                }
+
                 if (!currentFrame.getFrameType().equals(FrameTypes.PRIORITY)) {
                     muxLink.updateHighestStreamId(streamId);
                 }
