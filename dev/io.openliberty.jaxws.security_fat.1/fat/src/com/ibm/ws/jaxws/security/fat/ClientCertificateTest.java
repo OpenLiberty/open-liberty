@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -280,10 +280,11 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
         prepareForTest("serverConfigs/" + CUSTOMIZE_SSL_ENABLE_CN_CHECK, "clientCert_provider_web.xml",
                        "bindings/enableCNCheck.xml");
 
+        String expectedResponseString = isJavaVersionAtLeast(25) ? "Wrong HTTPS hostname: should be <127.0.0.1>" : "disableCNCheck";
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Could not send Message.IOException invoking "),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "Could not send Message.IOException invoking "),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "Could not send Message.IOException invoking ")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", expectedResponseString),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", expectedResponseString),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", expectedResponseString)));
 
         server.waitForDefaultHTTPEndpointSSLStart();
 
@@ -353,5 +354,16 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
         server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, null);
+    }
+
+    public static boolean isJavaVersionAtLeast(int requiredMajor) {
+        String spec = System.getProperty("java.specification.version");
+        int major;
+        if (spec.startsWith("1.")) {
+            major = Integer.parseInt(spec.substring(2)); // "1.8" → 8
+        } else {
+            major = Integer.parseInt(spec); // "21" → 21
+        }
+        return major >= requiredMajor;
     }
 }
