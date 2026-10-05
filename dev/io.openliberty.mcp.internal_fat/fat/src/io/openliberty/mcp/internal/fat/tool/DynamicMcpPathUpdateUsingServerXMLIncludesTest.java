@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
@@ -27,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -49,7 +51,7 @@ public class DynamicMcpPathUpdateUsingServerXMLIncludesTest extends FATServletCl
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage());
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, war, new DeployOptions[] {SERVER_ONLY, DISABLE_VALIDATION});
         server.startServer();
     }
 
@@ -160,7 +162,7 @@ public class DynamicMcpPathUpdateUsingServerXMLIncludesTest extends FATServletCl
 
         String includedEndpoint = "/dynamic-mcp-updated";
 
-        // Step 1: server has no application configured (optional include absent),
+        // Step 1: server has no application configured (the optional include is absent),
         //         so the MCP endpoint should not be reachable
         assertEndpointNotFound(includedEndpoint);
 
