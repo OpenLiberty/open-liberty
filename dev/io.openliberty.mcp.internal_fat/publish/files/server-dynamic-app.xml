@@ -1,5 +1,7 @@
 <server>
   <application location="dynamicMcpPathUpdateTest.war">
-  	<mcp path="/dynamic-mcp"/>
+  	<mcp path="/dynamic-mcp-updated">
+  	    <info name="ibm-mq-mcp-server" version="1.0.0"/>
+        </mcp>
   </application>
 </server>

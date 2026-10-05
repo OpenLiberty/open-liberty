@@ -49,6 +49,7 @@ import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateUsingServerXMLIncludesTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
@@ -88,6 +89,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 DeploymentProblemTest.class,
                 DualConfigurableMcpPathTest.class,
                 DynamicMcpPathUpdateTest.class,
+                DynamicMcpPathUpdateUsingServerXMLIncludesTest.class,
                 EncoderTest.class,
                 ToolCallEventTraceTest.class,
                 ExceptionLoggingTest.class,
