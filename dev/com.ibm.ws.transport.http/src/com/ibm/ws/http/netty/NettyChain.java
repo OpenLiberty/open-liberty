@@ -267,6 +267,14 @@ public class NettyChain extends AbstractHttpChain {
 
                 serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
+                // NOTE: Do NOT move notifyStarted()/postEvent() into channelFutureHandler().
+                // Moving them there shifts the ENDPOINT_STARTED OSGi event timing, which
+                // causes WSATConfigServiceImpl to activate synchronously on the OSGi Start
+                // Level thread during startup, deadlocking the server (CWWKF0011I never fires).
+                // CHFW fires chainStarted() → CWWKT0016I BEFORE the port bind (CWWKO0219I)
+                // and this Netty path must preserve the same ordering.
+                // The "Connection refused" race on Linux CI is a pre-existing timing issue
+                // with waitToAccept=false and the test harness, not caused by this ordering.
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
                 postEvent(topic, currentConfig, null);
