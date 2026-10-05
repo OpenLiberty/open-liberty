@@ -51,6 +51,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.security.crypto.KeyStringResolver;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
@@ -259,6 +260,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         primaryKeyImportFile = (String) props.get(CFG_KEY_IMPORT_FILE);
         Boolean useEncryptionKeyProp = (Boolean) props.get(CFG_KEY_USE_ENCRYPTION_KEY);
         useEncryptionKey = useEncryptionKeyProp != null ? useEncryptionKeyProp : false;
+        if (useEncryptionKey && !ProductInfo.getBetaEdition()) {
+            useEncryptionKey = false;
+        }
         if (useEncryptionKey) {
             SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
             if (sps != null && sps.getChars() != null && sps.getChars().length > 0) {

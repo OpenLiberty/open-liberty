@@ -27,6 +27,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import com.ibm.ws.crypto.util.InvalidPasswordCipherException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.wsspi.security.crypto.EncryptedInfo;
 
@@ -42,6 +43,7 @@ public class AesCipherTest {
 
     @After
     public void resetResolvers() {
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         AESKeyManager.setKeyStringResolver(null);
         AESKeyManager.setSecretKeyResolver(null);
     }
@@ -114,6 +116,7 @@ public class AesCipherTest {
 
     @Test
     public void testForDecryptDispatchesViaWireByte_V2() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         byte[] rawKey = Base64.getDecoder().decode(VALID_BASE64_KEY);
         final Key aesKey = new SecretKeySpec(rawKey, "AES");
         AESKeyManager.setSecretKeyResolver(() -> aesKey);

@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.security.crypto.KeyStringResolver;
 
 /**
@@ -93,6 +94,7 @@ public class AESKeyManagerTest {
     /** Restore default (no-op) resolver and clear any SecretKeyResolver after each test. */
     @After
     public void resetResolvers() {
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         AESKeyManager.setKeyStringResolver(null);
         AESKeyManager.setSecretKeyResolver(null);
     }
@@ -160,18 +162,37 @@ public class AESKeyManagerTest {
 
     /**
      * V2 with a hardware SecretKeyResolver registered: isKeyConfigured must return true
-     * regardless of what the KeyStringResolver returns.
+     * regardless of what the KeyStringResolver returns when beta is enabled.
      */
     @Test
     public void testIsKeyConfigured_V2_hardwareResolver() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         AESKeyManager.setSecretKeyResolver(new SecretKeyResolver() {
             @Override
             public Key getKey() {
                 throw new UnsupportedOperationException("hardware key — never decoded");
             }
         });
-        assertTrue("V2 should be configured when a hardware SecretKeyResolver is registered",
+        assertTrue("V2 should be configured when a hardware SecretKeyResolver is registered in beta",
                    AESKeyManager.isKeyConfigured(KeyVersion.AES_V2));
+    }
+
+    /**
+     * Custom SecretKeyResolver is ignored and falls back to DefaultSecretKeyResolver when beta is disabled.
+     */
+    @Test
+    public void testSetSecretKeyResolver_betaDisabled_fallsBackToDefault() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        AESKeyManager.setSecretKeyResolver(new SecretKeyResolver() {
+            @Override
+            public Key getKey() {
+                throw new UnsupportedOperationException("hardware key — never decoded");
+            }
+        });
+        assertFalse("Custom resolver must not be registered when beta is disabled",
+                    AESKeyManager.hasCustomSecretKeyResolver());
+        assertFalse("V2 should not be configured via custom resolver when beta is disabled",
+                    AESKeyManager.isKeyConfigured(KeyVersion.AES_V2));
     }
 
     // -----------------------------------------------------------------------
@@ -203,6 +224,7 @@ public class AESKeyManagerTest {
      */
     @Test
     public void testGetKeyViaResolver_V2_hardwareResolver() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         final Key sentinel = new java.security.Key() {
             @Override public String getAlgorithm() { return "AES"; }
             @Override public String getFormat() { return "NONE"; }

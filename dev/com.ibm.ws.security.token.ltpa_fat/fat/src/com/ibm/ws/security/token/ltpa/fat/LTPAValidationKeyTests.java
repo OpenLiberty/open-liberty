@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -1097,6 +1098,10 @@ public class LTPAValidationKeyTests {
     private void resetServer(LibertyServer server) throws Exception {
         Log.info(thisClass, "resetServer", "entering");
 
+        // Clear any beta JVM option set by the useEncryptionKey test so subsequent tests
+        // do not start the server in beta mode unintentionally.
+        server.setJvmOptions(Collections.emptyList());
+
         ServerConfiguration serverConfig = server.getServerConfiguration();
         LTPA ltpa = serverConfig.getLTPA();
         if (fips140_3Enabled) {
@@ -1169,6 +1174,11 @@ public class LTPAValidationKeyTests {
         // everything is already consistent: useEncryptionKey=true, keysPassword absent, the AES-
         // encrypted primary key already in place as ltpa.keys, and wlp.password.encryption.key in
         // bootstrap.properties. This avoids any transient decryption failures from live reloads.
+
+        // useEncryptionKey is beta-gated: the server JVM must see com.ibm.ws.beta.edition=true.
+        // Set this before the startServer calls below; resetServer() in @After clears it.
+        server1.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+        server2.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         // Step 1: Stop both servers.
         server1.stopServer(serverShutdownMessages);
