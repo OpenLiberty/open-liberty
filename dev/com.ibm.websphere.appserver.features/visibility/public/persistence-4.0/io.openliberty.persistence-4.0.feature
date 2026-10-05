@@ -12,42 +12,27 @@ IBM-API-Package: \
  org.hibernate.boot.model.naming; type="third-party", \
  org.hibernate.boot.model.relational; type="third-party", \
  org.hibernate.boot.registry; type="third-party", \
- org.hibernate.boot.registry.classloading.spi; type="internal", \
  org.hibernate.boot.registry.selector; type="third-party", \
- org.hibernate.boot.registry.selector.spi; type="internal", \
- org.hibernate.boot.spi; type="internal", \
  org.hibernate.cache; type="third-party", \
- org.hibernate.cache.spi; type="internal", \
  org.hibernate.cfg; type="third-party", \
  org.hibernate.context; type="third-party", \
- org.hibernate.context.spi; type="internal", \
  org.hibernate.dialect; type="third-party", \
  org.hibernate.engine; type="third-party", \
  org.hibernate.engine.jdbc; type="third-party", \
- org.hibernate.engine.jdbc.spi; type="internal", \
- org.hibernate.engine.spi; type="internal", \
- org.hibernate.engine.transaction.spi; type="internal", \
- org.hibernate.event.spi; type="internal", \
  org.hibernate.id; type="third-party", \
- org.hibernate.integrator.spi; type="internal", \
  org.hibernate.jpa; type="third-party", \
  org.hibernate.loader; type="third-party", \
  org.hibernate.mapping; type="third-party", \
  org.hibernate.metamodel; type="third-party", \
- org.hibernate.metamodel.spi; type="internal", \
  org.hibernate.persister.entity; type="third-party", \
  org.hibernate.proxy; type="third-party", \
  org.hibernate.query; type="third-party", \
  org.hibernate.query.criteria; type="third-party", \
- org.hibernate.query.spi; type="internal", \
- org.hibernate.resource.transaction.spi; type="internal", \
  org.hibernate.service; type="third-party", \
- org.hibernate.service.spi; type="internal", \
  org.hibernate.sql; type="third-party", \
  org.hibernate.stat; type="third-party", \
  org.hibernate.tool.schema; type="third-party", \
- org.hibernate.type; type="third-party", \
- org.hibernate.type.spi; type="internal"
+ org.hibernate.type; type="third-party"
 IBM-ShortName: persistence-4.0
 WLP-AlsoKnownAs: jpa-4.0
 Subsystem-Name: Jakarta Persistence 4.0
