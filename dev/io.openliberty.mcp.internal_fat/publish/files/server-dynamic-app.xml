@@ -1,0 +1,5 @@
+<server>
+  <application location="dynamicMcpPathUpdateTest.war">
+  	<mcp path="/dynamic-mcp"/>
+  </application>
+</server>
