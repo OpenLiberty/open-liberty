@@ -60,7 +60,10 @@ Subsystem-Name: Jakarta Persistence 4.0
  io.openliberty.persistence.container.hibernate, \
  io.openliberty.org.jboss.logging36, \
  io.openliberty.io.smallrye.jandex3, \
- io.openliberty.net.bytebuddy
+ io.openliberty.net.bytebuddy, \
+ io.openliberty.org.antlr4.runtime, \
+ io.openliberty.org.hibernate.models, \
+ io.openliberty.org.hibernate.models.bytebuddy
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

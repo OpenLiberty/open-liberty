@@ -15,11 +15,6 @@ bVersion=1.0
 
 # Hibernate version info
 hibernateVersion=8.0.0.Beta1
-hibernateModelsGroupId=org.hibernate.models
-hibernateModelsVersion=1.3.0
-byteBuddyVersion=1.18.10
-antlrArtifactId=antlr4
-antlrVersion=4.13.2
 
 Bundle-SymbolicName: io.openliberty.persistence.4.0.thirdparty
 Bundle-Description: Hibernate JPA
@@ -157,10 +152,7 @@ DynamicImport-Package: \
  jakarta.xml.bind.util
 
 Include-Resource: \
-  @${repo;org.hibernate.orm:hibernate-core;${hibernateVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class), \
-  @${repo;${hibernateModelsGroupId}:hibernate-models;${hibernateModelsVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class), \
-  @${repo;${hibernateModelsGroupId}:hibernate-models-bytebuddy;${hibernateModelsVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class), \
-  @${repo;org.antlr:${antlrArtifactId};${antlrVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class)
+  @${repo;org.hibernate.orm:hibernate-core;${hibernateVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class)
 
 Private-Package: io.openliberty.persistence.internal.helper
 
@@ -179,10 +171,6 @@ Service-Component: \
 
 -buildpath: \
     org.hibernate.orm:hibernate-core;version=${hibernateVersion},\
-    ${hibernateModelsGroupId}:hibernate-models;version=${hibernateModelsVersion},\
-    ${hibernateModelsGroupId}:hibernate-models-bytebuddy;version=${hibernateModelsVersion},\
-    io.openliberty.net.bytebuddy;version=latest,\
-    org.antlr:${antlrArtifactId};version=${antlrVersion},\
     io.openliberty.org.jboss.logging36;version=latest,\
     io.openliberty.io.smallrye.jandex3;version=latest,\
     io.openliberty.jakarta.persistence.4.0;version=latest,\
