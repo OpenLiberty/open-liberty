@@ -54,6 +54,7 @@ import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -401,7 +402,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         final FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
         boolean requestTrailersRequireClose = requestTrailersRequireClose(requestReference);
-        if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing || requestTrailersRequireClose) {
+        if (nettyContext.pipeline().get(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME) == null || quiescing || requestTrailersRequireClose) {
             this.nettyContext.channel().close();
         }else {
 
@@ -452,7 +453,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 return false;
             }
         }
-        return this.nettyContext.pipeline().get("httpKeepAlive") != null;
+        return this.nettyContext.pipeline().get(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME) != null;
     }
 
     /*

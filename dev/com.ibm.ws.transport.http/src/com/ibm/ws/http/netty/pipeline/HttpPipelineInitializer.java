@@ -287,14 +287,14 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
 
                 // Remove non-H1 handlers
-                if (pipeline.get("h2cUpgradeHandler") != null) {
-                    pipeline.remove("h2cUpgradeHandler");
+                if (pipeline.get(HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME) != null) {
+                    pipeline.remove(HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME);
                 }
-                if (pipeline.get("HttpServerUpgradeHandler#0") != null) {
-                    pipeline.remove("HttpServerUpgradeHandler#0");
+                if (pipeline.get(CleartextHttp2ServerUpgradeHandler.class) != null) {
+                    pipeline.remove(CleartextHttp2ServerUpgradeHandler.class);
                 }
-                if (pipeline.get("upgradeCheckHandler") != null) {
-                    pipeline.remove("upgradeCheckHandler");
+                if (pipeline.get(NO_UPGRADE_OCURRED_HANDLER_NAME) != null) {
+                    pipeline.remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
                 }
 
             }
