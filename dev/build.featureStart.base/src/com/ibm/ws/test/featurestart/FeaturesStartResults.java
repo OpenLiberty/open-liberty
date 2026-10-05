@@ -384,12 +384,12 @@ public class FeaturesStartResults {
     
     protected void recordAbsentOutOfLevelError(String m, String expectedError) {
         addToSet(failuresAbsentOutOfLevel, nextShortName, expectedError);
-        recordAbsentError(m, "Missing expected error [ " + expectedError + " ]");
+        recordAbsentError(m, "Missing expected out-of-level error [ " + expectedError + " ]");
     }
 
     protected void recordAbsentFeatureError(String m, String expectedError) {
         addToSet(failuresAbsentFeatureSpecified, nextShortName, expectedError);
-        recordAbsentError(m, "Missing expected error [ " + expectedError + " ]");
+        recordAbsentError(m, "Missing expected feature error [ " + expectedError + " ]");
     }
 
     protected void recordPresentOtherError(String m, String unexpectedError) {
@@ -416,7 +416,7 @@ public class FeaturesStartResults {
     
     protected void recordPresentMissingBundle(String m, String missingBundle) {
         addToList(failuresPresentMissingBundle, nextShortName, missingBundle);
-        recordPresentError(m, "Unexpected missing module [ " + missingBundle + " ]");
+        recordPresentError(m, "Unexpected missing bundle [ " + missingBundle + " ]");
     }    
 
     // Timing results ...
