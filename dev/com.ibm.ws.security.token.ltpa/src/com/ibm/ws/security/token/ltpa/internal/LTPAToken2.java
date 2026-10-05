@@ -186,6 +186,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.inactivityTimeoutInMinutes = inactivityTimeoutInMinutes;
         this.dynamicExpirationValidation = dynamicExpirationValidation;
         setCreationTime();
+        setSessionStart();
         // When dynamicExpirationValidation is enabled AND both inactivityTimeout and
         // refreshThreshold are configured, store creationTime + inactivityTimeout as the
         // token expiration so the recipient sees the inactivity window deadline.
@@ -476,6 +477,31 @@ public class LTPAToken2 implements Token, Serializable {
             throw new TokenExpiredException(effectiveExpiration, msg);
         }
 
+        // Check hard session cap when dynamicExpirationValidation is enabled and the refresh
+        // feature is fully configured (both inactivityTimeout and refreshThreshold positive).
+        // The session-start attribute is written once at token-creation time and is never
+        // reset during a refresh/clone, so this deadline is a true hard ceiling regardless
+        // of how many times the token has been refreshed.
+        if (dynamicExpirationValidation && inactivityTimeoutInMinutes > 0 && refreshThresholdInMinutes > 0) {
+            String[] sessionStartArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_SESSION_START);
+            if (sessionStartArray != null && sessionStartArray[sessionStartArray.length - 1] != null) {
+                long sessionStart = Long.parseLong(sessionStartArray[sessionStartArray.length - 1]);
+                long sessionCap = sessionStart + (expirationInMinutes * MILLIS_PER_MINUTE);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "session start = " + new Date(sessionStart));
+                    Tr.debug(this, tc, "session cap (sessionStart + expiration) = " + new Date(sessionCap));
+                }
+                if (currentTime > sessionCap) {
+                    String msg = "The token has exceeded the hard session cap: current time = \"" + currentD +
+                                 "\", session cap = \"" + new Date(sessionCap) + "\"";
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, msg);
+                    }
+                    throw new TokenExpiredException(sessionCap, msg);
+                }
+            }
+        }
+
         // Check inactivity timeout only when the refresh feature is fully configured
         // (both inactivityTimeout and refreshThreshold positive). Without both, the
         // token falls back to absolute-expiration-only behaviour.
@@ -655,6 +681,11 @@ public class LTPAToken2 implements Token, Serializable {
      * stale value that must <em>not</em> be inherited.  We pass {@code 0L} as the
      * sentinel so the clone constructor recomputes it from the new creation time.
      *
+     * <p>The {@code sessionStart} attribute ({@link AttributeNameConstants#WSTOKEN_SESSION_START})
+     * is intentionally <em>not</em> removed here.  It was written once when the session
+     * was first established and must survive all refreshes so that
+     * {@link #validateExpiration()} can enforce the hard session cap.
+     *
      * @return Object A new copy of the LTPA2 token
      */
     @Override
@@ -664,6 +695,8 @@ public class LTPAToken2 implements Token, Serializable {
         }
 
         // Clone userData first, then remove expire and creation time from the copy.
+        // WSTOKEN_SESSION_START is deliberately kept so the hard session cap survives
+        // through all refreshes.
         // This avoids mutating this.userData (the original validated token) which
         // would corrupt it if referenced after clone() returns.
         UserData ud = (UserData) userData.clone();
@@ -754,6 +787,31 @@ public class LTPAToken2 implements Token, Serializable {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Date creationD = new Date(creationTime);
                 Tr.debug(this, tc, "Creation time: " + creationTime + " time: " + creationD);
+            }
+        } else {
+            encryptedBytes = null;
+        }
+    }
+
+    /**
+     * Stamp the session-start time on a newly-created token.
+     *
+     * <p>This is called <em>only</em> from the new-token constructor, never from the
+     * clone constructor, so the attribute is written once and carried forward unchanged
+     * through all subsequent refreshes.  When {@code dynamicExpirationValidation=true}
+     * this value is compared against {@code now} in {@link #validateExpiration()} to
+     * enforce the hard session cap: {@code now > sessionStart + expirationInMinutes}
+     * causes a {@link TokenExpiredException} regardless of how many times the token
+     * has been refreshed.
+     */
+    private final void setSessionStart() {
+        long sessionStart = System.currentTimeMillis();
+        signature = null;
+        if (userData != null) {
+            encryptedBytes = null;
+            userData.addAttribute(AttributeNameConstants.WSTOKEN_SESSION_START, Long.toString(sessionStart));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Session start: " + sessionStart + " time: " + new Date(sessionStart));
             }
         } else {
             encryptedBytes = null;
