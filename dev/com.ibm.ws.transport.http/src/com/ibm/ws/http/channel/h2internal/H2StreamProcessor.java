@@ -182,15 +182,6 @@ public class H2StreamProcessor {
     private final Queue<PendingDataWrite> pendingWriteQueue = new ConcurrentLinkedQueue<PendingDataWrite>();
     private volatile ScheduledFuture<?> writeTimeoutFuture = null;
     private final AtomicBoolean retryInProgress = new AtomicBoolean(false);
-    // Set to true when a WINDOW_UPDATE signal arrives while a retry is already running.
-    // The retry's finally block checks this flag and reschedules if it was set, ensuring
-    // the dropped signal is never lost.
-    private final AtomicBoolean windowUpdatePending = new AtomicBoolean(false);
-    // Sticky flag: once any DATA frame is deferred for flow control, stays true until
-    // retryDeferredWrite() fully drains the queue and confirms no reschedule is needed.
-    // Forces all subsequent DATA frames (including END_STREAM) onto the deferred path
-    // to serialize behind the original write and avoid concurrent write-tree access.
-    private final AtomicBoolean dataWriteDeferred = new AtomicBoolean(false);
 
     /**
      * Create a stream processor initialized in idle state
@@ -517,6 +508,14 @@ public class H2StreamProcessor {
                             try {
                                 processPINGFrame();
                             } catch (Http2Exception e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "processNextFrame: verifyReadFrameSequence threw " + e.getClass().getSimpleName()
+                                                + " on stream " + myID + " state " + state
+                                                + " frameType " + frameType + " direction " + direction
+                                                + " isReadFrame " + currentFrame.isReadFrame()
+                                                + " errorCode " + e.getErrorString()
+                                                + " msg: " + e.getMessage());
+                                }
                                 if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
                                     addFrame = ADDITIONAL_FRAME.GOAWAY;
                                     addFrameException = e;
@@ -565,6 +564,12 @@ public class H2StreamProcessor {
                         processWindowUpdateFrame();
                     }
                 } catch (Http2Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "processNextFrame: processWindowUpdateFrame threw " + e.getClass().getSimpleName()
+                                     + " on stream " + myID + " state " + state
+                                     + " errorCode " + e.getErrorString()
+                                     + " msg: " + e.getMessage());
+                    }
                     if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
                         if (e.isConnectionError()) {
                             addFrame = ADDITIONAL_FRAME.GOAWAY;
@@ -887,7 +892,10 @@ public class H2StreamProcessor {
         FrameWindowUpdate castFrame = (FrameWindowUpdate) currentFrame;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "processWindowUpdateFrame: streamID: " + castFrame.getStreamId() + " desired increment: " + castFrame.getWindowSizeIncrement());
+            Tr.debug(tc, "processWindowUpdateFrame: streamID: " + castFrame.getStreamId()
+                         + " desired increment: " + castFrame.getWindowSizeIncrement()
+                         + " isReadFrame: " + castFrame.isReadFrame()
+                         + " currentStreamWindowLimit: " + streamWindowUpdateWriteLimit);
         }
 
         if (myID == 0) {
@@ -1007,13 +1015,11 @@ public class H2StreamProcessor {
             return;
         }
 
-        // Only schedule if no retry is currently in progress.
-        // If a retry is running, record that a window update arrived so the finally
-        // block can reschedule rather than silently dropping the signal.
+        // Only schedule if no retry is currently in progress
+        // The retry itself will check for more work in its finally block
         if (retryInProgress.get()) {
-            windowUpdatePending.set(true);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "flushDataWaitingForWindowUpdate: stream: " + myID + " retry already in progress, flagging windowUpdatePending");
+                Tr.debug(tc, "flushDataWaitingForWindowUpdate: stream: " + myID + " retry already in progress, will be picked up");
             }
             return;
         }
@@ -1585,7 +1591,6 @@ public class H2StreamProcessor {
                 throw new Http2Exception("Error writing data to stream: " + myID);
         }
         
-        dataWriteDeferred.set(true);
         pendingWriteQueue.offer(pendingWrite);
         // Schedule timeout for the FIRST pending write only
         // Subsequent writes will be processed when earlier ones complete
@@ -1629,7 +1634,7 @@ public class H2StreamProcessor {
                              data.getPayloadLength(), myID);
 
             synchronized (this) {
-                streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
+                streamWindowUpdateWriteLimit -= data.getPayloadLength();
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1782,7 +1787,6 @@ public class H2StreamProcessor {
 
                 // Create a fresh FrameData from our defensive copy
                 FrameData retryFrame = pending.createFrameForRetry(myID);
-                this.currentFrame = retryFrame;
                 WriteResult result = performDataWrite(retryFrame);
 
                 if (result == WriteResult.COMPLETE) {
@@ -1822,27 +1826,20 @@ public class H2StreamProcessor {
         }
         } finally {
             retryInProgress.set(false);
-            // Reschedule if a WINDOW_UPDATE signal was dropped while this retry was running
-            // (windowUpdatePending = true), or if the window is now open for the next queued
-            // frame. This closes the race where flushDataWaitingForWindowUpdate records a
-            // signal but cannot schedule because retryInProgress was true at that moment.
-            boolean pendingUpdate = windowUpdatePending.getAndSet(false);
-            synchronized (this) {
-                if (!pendingWriteQueue.isEmpty()) {
-                    PendingDataWrite next = pendingWriteQueue.peek();
-                    if (next != null && (pendingUpdate || !isWindowLimitExceeded(next.payloadLength))) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " rescheduling after exit"
-                                     + (pendingUpdate ? " (windowUpdatePending was set)" : " (window now open)"));
-                        }
-                        ExecutorService executor = CHFWBundle.getExecutorService();
-                        executor.execute(() -> {
-                            retryDeferredWrite();
-                        });
+            // Check if more work arrived while we were finishing up
+            // This prevents a race where a window update comes in just as we're exiting
+            if (!pendingWriteQueue.isEmpty()) {
+                // Peek at next item to see if window is now available
+                PendingDataWrite pending = pendingWriteQueue.peek();
+                if (pending != null && !isWindowLimitExceeded(pending.payloadLength)) {
+                    // Window opened up while we were exiting - schedule another retry
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " detected window opened during exit, scheduling another retry");
                     }
-                } else {
-                    // Queue is truly empty and no reschedule needed - safe to clear sticky flag
-                    dataWriteDeferred.set(false);
+                    ExecutorService executor = CHFWBundle.getExecutorService();
+                    executor.execute(() -> {
+                        retryDeferredWrite();
+                    });
                 }
             }
         }
@@ -1877,8 +1874,6 @@ public class H2StreamProcessor {
             // Clear the entire queue on timeout
             pendingWriteQueue.clear();
             writeTimeoutFuture = null;
-            // Clear sticky flag since queue is now empty
-            dataWriteDeferred.set(false);
         }
 
         // Purposely do NOT decrement queued bytes if a write timeout ocurred for the stream
@@ -1896,10 +1891,7 @@ public class H2StreamProcessor {
             fce.setConnectionError(false);
 
             FrameRstStream rst = new FrameRstStream(myID, fce.getErrorCode(), false);
-            synchronized (this) {
-                this.currentFrame = rst;
-            }
-            attemptFrameWrite();
+            attemptFrameWrite(rst);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleWriteTimeout: stream: " + myID + " sent RST_STREAM due to timeout");
@@ -1929,8 +1921,6 @@ public class H2StreamProcessor {
                     totalBytesCleared += pending.payloadLength;
                 }
                 pendingWriteQueue.clear();
-                // Clear sticky flag since queue is now empty
-                dataWriteDeferred.set(false);
             }
             if (writeTimeoutFuture != null) {
                 writeTimeoutFuture.cancel(false);
@@ -1989,6 +1979,12 @@ public class H2StreamProcessor {
     private void verifyReadFrameSequence() throws ProtocolException, StreamClosedException {
 
         if (!currentFrame.isReadFrame()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "verifyReadFrameSequence: frame " + currentFrame.getFrameType()
+                             + " on stream " + myID + " has direction WRITE (not READ)"
+                             + " - this is a protocol error. Frame details: streamId=" + currentFrame.getStreamId()
+                             + " frameDirection=" + (currentFrame.isWriteFrame() ? "WRITE" : "READ/UNKNOWN"));
+            }
             throw new ProtocolException("Write frame was given for Read frame processing");
         }
 
@@ -2617,10 +2613,13 @@ public class H2StreamProcessor {
      * @return WriteResult indicating COMPLETE, DEFERRED, or FAILED
      */
     private WriteResult attemptFrameWrite() throws FlowControlException, Http2Exception {
+        return attemptFrameWrite(this.currentFrame);
+    }
+
+    private WriteResult attemptFrameWrite(Frame currentFrame) throws FlowControlException, Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "attemptFrameWrite entry: stream: " + myID);
         }
-        Frame currentFrame = this.currentFrame;
 
         // Check if stream is closed
         if (!currentFrame.getFrameType().equals(FrameTypes.GOAWAY) && isStreamClosed()) {
@@ -2633,13 +2632,11 @@ public class H2StreamProcessor {
         if (currentFrame.isWriteFrame() && currentFrame.getInitialized()) {
             if (currentFrame.getFrameType() == FrameTypes.DATA) {
                 FrameData data = (FrameData) currentFrame;
-                // Check flow control window or if any write was previously deferred
-                // Using sticky flag instead of isEmpty() to avoid race where executor
-                // drains queue between check and defer, causing END_STREAM to bypass queue
-                if (dataWriteDeferred.get() || isWindowLimitExceeded(data)) {
+                // Check flow control window or if pending writes are present
+                 if (!pendingWriteQueue.isEmpty() || isWindowLimitExceeded(data)) {
                     // DEFER the write instead of blocking - this is the key change
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "attemptFrameWrite: stream: " + myID + " dataWriteDeferred=" + dataWriteDeferred.get() + " or window limit exceeded. Deferring write");
+                        Tr.debug(tc, "attemptFrameWrite: stream: " + myID + " pending writes found: " + pendingWriteQueue.size() + ", or window limit exceeded. Deferring write");
                     }
                     return deferDataWrite(data);
                 }
