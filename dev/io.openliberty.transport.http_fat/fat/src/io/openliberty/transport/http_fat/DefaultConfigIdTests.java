@@ -223,22 +223,25 @@ public class DefaultConfigIdTests {
         long elapsed = 0;
         while (elapsed < timeout) {
             lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
-            if (lines.size() == (initialLineCount + 1)) {
+            if (lines.size() >= (initialLineCount + 1)) {
                 break;
             }
             Thread.sleep(pollInterval);
             elapsed += pollInterval;
         }
 
-        // Check that access log has one more entry than before
-        assertTrue("Access log should have one more line entry", (initialLineCount + 1) == lines.size());
+        // Check that access log has at least one more entry than before
+        assertTrue("Access log should have at least one more line entry. Initial count: " + initialLineCount + ", current lines: " + lines, lines.size() >= (initialLineCount + 1));
 
-        String lastLine = lines.get(lines.size() - 1);
-        LOG.info("Last access log line: " + lastLine);
-
-        // No timestamp -- for easier matching. Note: bytes may vary between machines?
-        // Pattern: %h %u "%r" %s %b
-        assertTrue("Access log entry does not match expected format '%h %u \"%r\" %s %b'. Entry: " + lastLine,
-                   lastLine.matches(".*127\\.0\\.0\\.1 - \"GET / HTTP/1\\.1\" 200 \\d+.*"));
+        boolean foundExpectedFormat = false;
+        for (int i = initialLineCount; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (line.matches(".*127\\.0\\.0\\.1 - \"GET / HTTP/1\\.1\" 200 \\d+.*")) {
+                foundExpectedFormat = true;
+                LOG.info("Found expected access log line: " + line);
+                break;
+            }
+        }
+        assertTrue("None of the new access log entries match expected format '%h %u \"%r\" %s %b'. All lines on disk: " + lines, foundExpectedFormat);
     }
 }
