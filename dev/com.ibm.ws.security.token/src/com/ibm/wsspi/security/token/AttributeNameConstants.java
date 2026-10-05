@@ -82,6 +82,12 @@ public class AttributeNameConstants {
     // Used to track when the current token instance was created (updated on refresh).
     // Combined with inactivityTimeout configuration to calculate inactivity expiration.
     public static final String WSTOKEN_CREATION_TIME = "creationTime";
+    // The original session-start time in milliseconds since epoch.
+    // Written once when the token is first created and preserved unchanged through all
+    // refreshes (clones). Used to enforce the hard session cap when
+    // dynamicExpirationValidation=true: the session cannot outlive
+    // sessionStart + expirationInMinutes regardless of how many times the token is refreshed.
+    public static final String WSTOKEN_SESSION_START = "sessionStart";
 
     // PropagationToken attributes
     // append each new caller at the end with | delimiter
