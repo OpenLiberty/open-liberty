@@ -1634,7 +1634,7 @@ public class H2StreamProcessor {
                              data.getPayloadLength(), myID);
 
             synchronized (this) {
-                streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
+                streamWindowUpdateWriteLimit -= data.getPayloadLength();
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1787,7 +1787,6 @@ public class H2StreamProcessor {
 
                 // Create a fresh FrameData from our defensive copy
                 FrameData retryFrame = pending.createFrameForRetry(myID);
-                this.currentFrame = retryFrame;
                 WriteResult result = performDataWrite(retryFrame);
 
                 if (result == WriteResult.COMPLETE) {
@@ -1892,10 +1891,7 @@ public class H2StreamProcessor {
             fce.setConnectionError(false);
 
             FrameRstStream rst = new FrameRstStream(myID, fce.getErrorCode(), false);
-            synchronized (this) {
-                this.currentFrame = rst;
-            }
-            attemptFrameWrite();
+            attemptFrameWrite(rst);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleWriteTimeout: stream: " + myID + " sent RST_STREAM due to timeout");
@@ -2617,10 +2613,13 @@ public class H2StreamProcessor {
      * @return WriteResult indicating COMPLETE, DEFERRED, or FAILED
      */
     private WriteResult attemptFrameWrite() throws FlowControlException, Http2Exception {
+        return attemptFrameWrite(this.currentFrame);
+    }
+
+    private WriteResult attemptFrameWrite(Frame currentFrame) throws FlowControlException, Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "attemptFrameWrite entry: stream: " + myID);
         }
-        Frame currentFrame = this.currentFrame;
 
         // Check if stream is closed
         if (!currentFrame.getFrameType().equals(FrameTypes.GOAWAY) && isStreamClosed()) {
