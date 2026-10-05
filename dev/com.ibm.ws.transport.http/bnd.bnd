@@ -25,6 +25,7 @@ WS-TraceGroup: HttpTransport
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
+
 # Note on SPI Packages
 # "com.ibm.websphere.appserver.spi.httptransport" is channel SPI bundle.
 # It only exposes com.ibm.wsspi.http and com.ibm.wsspi.http.ee8
