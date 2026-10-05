@@ -52,7 +52,7 @@
             ibm:flat="true" cardinality="2147483647"/>
         <AD id="useEncryptionKey" name="%useEncryptionKey" description="%useEncryptionKey.desc"
             required="false" type="Boolean"
-            default="false" />
+            default="false" ibm:beta="true" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.token.ltpa.LTPAConfiguration">

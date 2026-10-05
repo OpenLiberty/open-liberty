@@ -28,6 +28,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.security.crypto.KeyStringResolver;
 
 /**
@@ -241,7 +242,12 @@ public class AESKeyManager {
      * @param resolver the resolver to install, or null to revert to the standard char[]-based path
      */
     public static void setSecretKeyResolver(SecretKeyResolver resolver) {
-        SecretKeyResolver effective = (resolver != null) ? resolver : new DefaultSecretKeyResolver(KeyVersion.AES_V2);
+        SecretKeyResolver effective;
+        if (resolver != null && !(resolver instanceof DefaultSecretKeyResolver) && !ProductInfo.getBetaEdition()) {
+            effective = new DefaultSecretKeyResolver(KeyVersion.AES_V2);
+        } else {
+            effective = (resolver != null) ? resolver : new DefaultSecretKeyResolver(KeyVersion.AES_V2);
+        }
         KeyVersion.AES_V2.secretKeyResolver.set(effective);
         // Invalidate any cached AES_V2 key so the next encrypt/decrypt starts clean
         KeyVersion.AES_V2._key.set(null);

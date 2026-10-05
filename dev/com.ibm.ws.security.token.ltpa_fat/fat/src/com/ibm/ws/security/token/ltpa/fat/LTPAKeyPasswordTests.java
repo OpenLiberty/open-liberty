@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -167,6 +168,9 @@ public class LTPAKeyPasswordTests {
             formLoginClient.resetClientState();
             server.stopServer(serverShutdownMessages.toArray(new String[0]));
         } finally {
+            // Clear any beta JVM option set by useEncryptionKey tests so it does not
+            // bleed into subsequent password-path tests.
+            server.setJvmOptions(Collections.emptyList());
             serverShutdownMessages.clear();
             server.deleteFileFromLibertyServerRoot(LTPA_KEYS_LOCATION);
             server.deleteFileFromLibertyServerRoot(LTPA_KEYS_BACKUP_LOCATION);
@@ -409,6 +413,7 @@ public class LTPAKeyPasswordTests {
     @Test
     @Mode(TestMode.LITE)
     public void testUseEncryptionKey_wlpPasswordEncryptionKey_serverStarts() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
         server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
         addBootstrapProperty(WLP_PASSWORD_ENCRYPTION_KEY_NAME, TEST_PASSWORD_ENCRYPTION_KEY);
@@ -424,6 +429,7 @@ public class LTPAKeyPasswordTests {
      */
     @Test
     public void testUseEncryptionKey_wlpAesEncryptionKey_serverStarts() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         copyLtpaKeysIntoServer(LTPA_KEYS_BASE64KEY);
         server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
         addBootstrapProperty(WLP_AES_ENCRYPTION_KEY_NAME, TEST_AES_ENCRYPTION_KEY_B64);
@@ -440,6 +446,7 @@ public class LTPAKeyPasswordTests {
      */
     @Test
     public void testUseEncryptionKey_wlpPasswordEncryptionKey_stopRestart() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
         server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
         addBootstrapProperty(WLP_PASSWORD_ENCRYPTION_KEY_NAME, TEST_PASSWORD_ENCRYPTION_KEY);
@@ -461,6 +468,7 @@ public class LTPAKeyPasswordTests {
      */
     @Test
     public void testUseEncryptionKey_wlpAesEncryptionKey_stopRestart() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         copyLtpaKeysIntoServer(LTPA_KEYS_BASE64KEY);
         server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
         addBootstrapProperty(WLP_AES_ENCRYPTION_KEY_NAME, TEST_AES_ENCRYPTION_KEY_B64);
@@ -486,6 +494,7 @@ public class LTPAKeyPasswordTests {
                     "java.lang.IllegalArgumentException",
                     "com.ibm.websphere.security.auth.TokenCreationFailedException" })
     public void testUseEncryptionKey_wrongPasswordEncryptionKey_fails() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
         server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
         addBootstrapProperty(WLP_PASSWORD_ENCRYPTION_KEY_NAME, "wrongEncryptionKey"); // pragma: allowlist secret
@@ -505,6 +514,7 @@ public class LTPAKeyPasswordTests {
                     "java.lang.IllegalArgumentException",
                     "com.ibm.websphere.security.auth.TokenCreationFailedException" })
     public void testUseEncryptionKey_wrongAesEncryptionKey_fails() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         // A valid 256-bit Base64 key that is NOT the one used to encrypt the test file.
         String wrongKey = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; // pragma: allowlist secret
         copyLtpaKeysIntoServer(LTPA_KEYS_BASE64KEY);
@@ -527,6 +537,7 @@ public class LTPAKeyPasswordTests {
                     "com.ibm.websphere.security.auth.TokenCreationFailedException",
                     "javax.security.auth.login.CredentialException" })
     public void testUseEncryptionKey_noKeyVariable_fails() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
         server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
         // No bootstrap properties added — neither key variable is present.
@@ -549,6 +560,7 @@ public class LTPAKeyPasswordTests {
      */
     @Test
     public void testUseEncryptionKey_monitorValidationKeysDir_sameKey_validationKeyLoads() throws Exception {
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
         copyLtpaKeysIntoServerAs(LTPA_KEYS_PASSWORDKEY, VALIDATION_KEYS_LOCATION);
         server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY_MONITOR_DIR);
@@ -559,6 +571,40 @@ public class LTPAKeyPasswordTests {
         verifySuccessfulFormLogin();
     }
 
+
+    // -----------------------------------------------------------------------
+    // useEncryptionKey beta-gating negative test
+    // -----------------------------------------------------------------------
+
+    /**
+     * Verifies that {@code useEncryptionKey="true"} is silently ignored on a non-beta Liberty
+     * JVM. Without the beta flag, {@code LTPAConfigurationImpl.loadConfig()} resets
+     * {@code useEncryptionKey} to {@code false} and falls back to the password path.
+     *
+     * <p>Observable effect: because no {@code keysPassword}, {@code ltpa_keys_password}, or
+     * {@code keystore_password} is configured, Liberty immediately logs {@code CWWKS4118E}
+     * (password not set) — it never even attempts to read the key file. Form-login fails.
+     *
+     * <p>No {@code server.setJvmOptions} call is made — the server JVM runs without
+     * {@code -Dcom.ibm.ws.beta.edition=true}, which is the condition under test.
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException",
+                    "com.ibm.websphere.security.auth.TokenCreationFailedException",
+                    "javax.security.auth.login.CredentialException" })
+    public void testUseEncryptionKey_withoutBeta_treatedAsPasswordPath_fails() throws Exception {
+        // No server.setJvmOptions — beta edition is intentionally NOT enabled.
+        copyLtpaKeysIntoServer(LTPA_KEYS_PASSWORDKEY);
+        server.addDropinOverrideConfiguration(LTPA_CONFIG_USE_ENCRYPTION_KEY);
+        // No password configured anywhere — useEncryptionKey is silently ignored, the server
+        // falls back to the password path, and immediately fails with CWWKS4118E because no
+        // keysPassword / env variable is present.
+        server.startServer(true);
+
+        verifyLtpaPasswordNotSetErrorMessageFound();
+        verifyUnsuccessfulFormLogin();
+    }
 
     // -----------------------------------------------------------------------
     // Helper methods

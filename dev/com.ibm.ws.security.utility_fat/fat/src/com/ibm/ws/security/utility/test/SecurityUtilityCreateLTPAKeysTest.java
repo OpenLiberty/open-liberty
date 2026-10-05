@@ -69,6 +69,8 @@ public class SecurityUtilityCreateLTPAKeysTest {
     
     // Test environment properties
     private static Properties testEnvironment;
+    /** Environment forwarding {@code -Dcom.ibm.ws.beta.edition=true} to the securityUtility JVM. */
+    private static Properties betaEnvironment;
     private static String libertyInstallRoot;
     
     // Command return codes
@@ -98,6 +100,11 @@ public class SecurityUtilityCreateLTPAKeysTest {
         libertyInstallRoot = ltpaTestServer.getInstallRoot();
         securityUtilityPath = libertyInstallRoot + "/bin/securityUtility";
         testEnvironment = new Properties();
+        // Beta-gated features (--useEncryptionKey, --keyringType, --keyLabel, --keyring) require
+        // com.ibm.ws.beta.edition=true in the securityUtility child JVM. Only tests that exercise
+        // those arguments use betaEnvironment; all other tests use the plain testEnvironment.
+        betaEnvironment = new Properties();
+        betaEnvironment.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
         testMachine = ltpaTestServer.getMachine();
 
         // Ensure resources/security directory exists for the test server
@@ -881,7 +888,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
                 "--file=" + CUSTOM_LTPA_KEY_FILE
             },
             libertyInstallRoot,
-            testEnvironment);
+            betaEnvironment);
 
         Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
         Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
@@ -933,7 +940,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
                 "--file=" + CUSTOM_LTPA_KEY_FILE
             },
             libertyInstallRoot,
-            testEnvironment);
+            betaEnvironment);
 
         Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
         Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
@@ -969,7 +976,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
                 "--file=" + CUSTOM_LTPA_KEY_FILE
             },
             libertyInstallRoot,
-            testEnvironment);
+            betaEnvironment);
 
         Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
         Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
@@ -1002,7 +1009,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
                 "--file=" + CUSTOM_LTPA_KEY_FILE
             },
             libertyInstallRoot,
-            testEnvironment);
+            betaEnvironment);
 
         Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
         Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
@@ -1047,7 +1054,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
                 "--file=" + CUSTOM_LTPA_KEY_FILE
             },
             libertyInstallRoot,
-            testEnvironment);
+            betaEnvironment);
 
         Log.info(thisClass, testName.getMethodName(), "createLTPAKeys stdout:\n" + commandOutput.getStdout());
         Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
@@ -1060,5 +1067,42 @@ public class SecurityUtilityCreateLTPAKeysTest {
         String stdout = commandOutput.getStdout();
         assertTrue("stdout must contain wlp.aes.encryption.key hint", stdout.contains("wlp.aes.encryption.key"));
         assertTrue("stdout must contain useEncryptionKey=\"true\"",    stdout.contains("useEncryptionKey=\"true\""));
+    }
+
+    //--------------------------------------------------------------------------
+    // Test Methods - beta-gating negative tests
+    //--------------------------------------------------------------------------
+
+    /**
+     * Verifies that {@code createLTPAKeys --useEncryptionKey=true} is rejected as an unknown
+     * argument when the securityUtility JVM does NOT have {@code com.ibm.ws.beta.edition=true}.
+     * The command must exit with RC=1 and emit an error message that names the argument.
+     *
+     * <p>This test uses the plain {@code testEnvironment} (no {@code JVM_ARGS} beta flag),
+     * which is the non-beta path exercised by all password-based tests in this class.
+     */
+    @Test
+    @Mode(TestMode.LITE)
+    public void testCreateLTPAKeys_useEncryptionKey_rejectedWithoutBeta() throws Exception {
+        ProgramOutput commandOutput = testMachine.execute(
+            securityUtilityPath,
+            new String[] {
+                "createLTPAKeys",
+                "--useEncryptionKey=true",
+                "--passwordKey=anyKey",
+                "--file=" + CUSTOM_LTPA_KEY_FILE
+            },
+            libertyInstallRoot,
+            testEnvironment);  // no beta flag
+
+        Log.info(thisClass, testName.getMethodName(), "stdout:\n" + commandOutput.getStdout());
+        Log.info(thisClass, testName.getMethodName(), "stderr:\n" + commandOutput.getStderr());
+        Log.info(thisClass, testName.getMethodName(), "Return code: " + commandOutput.getReturnCode());
+
+        assertEquals("createLTPAKeys must fail (RC=1) when --useEncryptionKey is used without beta",
+                     FAILURE_RC, commandOutput.getReturnCode());
+        String out = commandOutput.getStdout() + commandOutput.getStderr();
+        assertTrue("Error output must mention --useEncryptionKey as the invalid argument",
+                   out.contains("--useEncryptionKey") || out.contains("useEncryptionKey"));
     }
 }

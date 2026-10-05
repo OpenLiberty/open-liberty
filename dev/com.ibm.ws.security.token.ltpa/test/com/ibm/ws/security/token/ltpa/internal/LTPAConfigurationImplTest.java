@@ -43,6 +43,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
@@ -229,7 +230,8 @@ public class LTPAConfigurationImplTest {
         ltpaConfig.deactivate(cc);
         ltpaConfig.unsetExecutorService(executorServiceRef);
         ltpaConfig.unsetLocationService(locateServiceRef);
-        // Reset AESKeyManager static state modified by useEncryptionKey tests
+        // Reset beta edition property and AESKeyManager static state modified by useEncryptionKey tests
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         AESKeyManager.setKeyStringResolver(null);
         AESKeyManager.setSecretKeyResolver(null);
         outputMgr.resetStreams();
@@ -686,7 +688,35 @@ public class LTPAConfigurationImplTest {
      * isUseEncryptionKey() returns true.
      */
     @Test
+    public void useEncryptionKey_true_whenBetaDisabled_treatedAsFalse() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+
+        Map<String, Object> aesProps = new HashMap<>(props);
+        aesProps.put(LTPAConfiguration.CFG_KEY_USE_ENCRYPTION_KEY, Boolean.TRUE);
+
+        LTPAConfigurationImplTestDouble config = new LTPAConfigurationImplTestDouble();
+        config.setExecutorService(executorServiceRef);
+        config.setLocationService(locateServiceRef);
+        config.setLtpaKeysChangeNotifier(ltpaKeysChangeNotifierRef);
+        config.activate(cc, aesProps);
+
+        assertFalse("isUseEncryptionKey() must be false when beta is disabled", config.isUseEncryptionKey());
+        assertEquals("Password path must be used when beta is disabled", PWD, config.getPrimaryKeyPassword());
+
+        config.deactivate(cc);
+        config.unsetExecutorService(executorServiceRef);
+        config.unsetLocationService(locateServiceRef);
+    }
+
+    /**
+     * useEncryptionKey=true with AES V2 configured: starts successfully, password is null,
+     * isUseEncryptionKey() returns true when beta is enabled.
+     */
+    @Test
     public void useEncryptionKey_true_withConfiguredV2_startsSuccessfully() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         setupExecutorServiceExpectations(1);
         setupLocationServiceExpectations(1);
 
@@ -724,6 +754,7 @@ public class LTPAConfigurationImplTest {
      */
     @Test
     public void useEncryptionKey_true_noKeyConfigured_logsError() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         // Default (no-op) resolver returns the placeholder — neither V2 nor V1 is configured.
         // No executor call expected beyond the one already registered in setUp.
         Map<String, Object> aesProps = new HashMap<>(props);
@@ -757,6 +788,7 @@ public class LTPAConfigurationImplTest {
      */
     @Test
     public void useEncryptionKey_true_withPasswordAlsoSet_logsError() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         final String validKey = "pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=";
         AESKeyManager.setKeyStringResolver(key -> {
             if (AESKeyManager.PROPERTY_WLP_BASE64_AES_ENCRYPTION_KEY.equals(key)) {

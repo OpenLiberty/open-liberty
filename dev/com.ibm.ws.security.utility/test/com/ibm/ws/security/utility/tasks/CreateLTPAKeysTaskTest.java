@@ -13,6 +13,7 @@
 package com.ibm.ws.security.utility.tasks;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -36,6 +37,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.AesConfigFileParser;
@@ -107,6 +109,7 @@ public class CreateLTPAKeysTaskTest {
 
     @After
     public void tearDown() {
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         mock.assertIsSatisfied();
     }
 
@@ -730,6 +733,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_icsf_withPassword_fileCreated() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         // Subclass overrides isZOS() so the z/OS arg check passes on non-z/OS test machines.
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME) {
             @Override
@@ -776,6 +780,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_useEncryptionKey_passwordKey_fileCreated() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         // A valid 32-char key string for AES_V1 PBKDF2 — actual value doesn't matter for snippet assertion.
         String passwordKey = "myTestEncryptionKey";
 
@@ -816,6 +821,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_useEncryptionKey_passwordBase64Key_fileCreated() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         // Valid 32-byte Base64 key (256-bit).
         String base64Key = "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=";
 
@@ -847,6 +853,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_useEncryptionKey_icsf_regression() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         // Subclass overrides isZOS() so the z/OS arg check passes on non-z/OS test machines.
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME) {
             @Override
@@ -885,13 +892,83 @@ public class CreateLTPAKeysTaskTest {
     }
 
     /**
-     * --useEncryptionKey=true is now recognised as a known argument.
+     * --useEncryptionKey is recognized as a known argument when beta is enabled.
      */
     @Test
-    public void isKnownArgument_useEncryptionKey() {
+    public void isKnownArgument_useEncryptionKey_betaEnabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
-        assertTrue("FAIL: Did not recognize the --useEncryptionKey flag",
+        assertTrue("FAIL: Did not recognize the --useEncryptionKey flag in beta mode",
                    task.isKnownArgument("--useEncryptionKey"));
+    }
+
+    /**
+     * --useEncryptionKey is NOT recognized as a known argument when beta is disabled.
+     */
+    @Test
+    public void isKnownArgument_useEncryptionKey_betaDisabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertFalse("FAIL: Recognized the --useEncryptionKey flag when beta is disabled",
+                    task.isKnownArgument("--useEncryptionKey"));
+    }
+
+    // -----------------------------------------------------------------------
+    // isKnownArgument — keyring / keyringType / keyLabel beta toggle
+    // -----------------------------------------------------------------------
+
+    /** --keyring is recognized when beta is enabled. */
+    @Test
+    public void isKnownArgument_keyring_betaEnabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertTrue("FAIL: Did not recognize --keyring in beta mode",
+                   task.isKnownArgument("--keyring"));
+    }
+
+    /** --keyring is NOT recognized when beta is disabled. */
+    @Test
+    public void isKnownArgument_keyring_betaDisabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertFalse("FAIL: Recognized --keyring when beta is disabled",
+                    task.isKnownArgument("--keyring"));
+    }
+
+    /** --keyringType is recognized when beta is enabled. */
+    @Test
+    public void isKnownArgument_keyringType_betaEnabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertTrue("FAIL: Did not recognize --keyringType in beta mode",
+                   task.isKnownArgument("--keyringType"));
+    }
+
+    /** --keyringType is NOT recognized when beta is disabled. */
+    @Test
+    public void isKnownArgument_keyringType_betaDisabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertFalse("FAIL: Recognized --keyringType when beta is disabled",
+                    task.isKnownArgument("--keyringType"));
+    }
+
+    /** --keyLabel is recognized when beta is enabled. */
+    @Test
+    public void isKnownArgument_keyLabel_betaEnabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertTrue("FAIL: Did not recognize --keyLabel in beta mode",
+                   task.isKnownArgument("--keyLabel"));
+    }
+
+    /** --keyLabel is NOT recognized when beta is disabled. */
+    @Test
+    public void isKnownArgument_keyLabel_betaDisabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertFalse("FAIL: Recognized --keyLabel when beta is disabled",
+                    task.isKnownArgument("--keyLabel"));
     }
 
 }
