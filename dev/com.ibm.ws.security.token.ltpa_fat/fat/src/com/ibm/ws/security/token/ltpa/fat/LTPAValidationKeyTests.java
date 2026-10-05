@@ -119,6 +119,15 @@ public class LTPAValidationKeyTests {
     private static final String WLP_PASSWORD_ENCRYPTION_KEY_NAME = "wlp.password.encryption.key";
     private static final String TEST_PASSWORD_ENCRYPTION_KEY = "myLtpaEncryptionKey"; // pragma: allowlist secret
 
+    // AES-encrypted key files created with: securityUtility createLTPAKeys --useEncryptionKey=true --passwordBase64Key=<TEST_AES_ENCRYPTION_KEY_B64>
+    // Both files use the same wlp.aes.encryption.key value so each server can decrypt the other's primary key as a validation key.
+    private static final String ALT_AES_BASE64_SERVER1_KEY_PATH = "alternateAESBase64/server1AESBase64.keys"; // pragma: allowlist secret
+    private static final String ALT_AES_BASE64_SERVER2_KEY_PATH = "alternateAESBase64/server2AESBase64.keys"; // pragma: allowlist secret
+    private static final String AES_BASE64_SERVER1_KEY_PATH = "resources/security/server1AESBase64.keys";
+    private static final String AES_BASE64_SERVER2_KEY_PATH = "resources/security/server2AESBase64.keys";
+    private static final String WLP_AES_ENCRYPTION_KEY_NAME = "wlp.aes.encryption.key";
+    private static final String TEST_AES_ENCRYPTION_KEY_B64 = "ZOYs2pmTFQTzIyIqe2bmbWLSBrH+b2oAH2Fegz4jLII="; // pragma: allowlist secret
+
     // Define the paths to the alternate key files
     private static String ALT_VALIDATION_KEY1_VER1_PATH = "alternate/validation1.keys";
     private static String ALT_VALIDATION_KEY1_PATH = "alternate/validation1.keys";
@@ -1131,11 +1140,13 @@ public class LTPAValidationKeyTests {
         // directly with no live reload since the server is stopped.
         server.updateServerConfiguration(serverConfig);
 
-        // Step 4: Remove wlp.password.encryption.key from bootstrap.properties if it was set by a test
-        removeBootstrapPropertiesFromServer(server, WLP_PASSWORD_ENCRYPTION_KEY_NAME);
-        // Step 5: Clean up AES key files that may have been placed by the useEncryptionKey test
+        // Step 4: Remove wlp.password.encryption.key and wlp.aes.encryption.key from bootstrap.properties if set by a test
+        removeBootstrapPropertiesFromServer(server, WLP_PASSWORD_ENCRYPTION_KEY_NAME, WLP_AES_ENCRYPTION_KEY_NAME);
+        // Step 5: Clean up AES key files that may have been placed by the useEncryptionKey tests
         deleteFileIfExists(AES_SERVER1_KEY_PATH, false, server);
         deleteFileIfExists(AES_SERVER2_KEY_PATH, false, server);
+        deleteFileIfExists(AES_BASE64_SERVER1_KEY_PATH, false, server);
+        deleteFileIfExists(AES_BASE64_SERVER2_KEY_PATH, false, server);
 
         Log.info(thisClass, "resetServer", "exiting");
     }
@@ -1221,6 +1232,96 @@ public class LTPAValidationKeyTests {
         assertNotNull("Server1 did not load AES-encrypted LTPA keys on startup.",
                       server1.waitForStringInLog("CWWKS4105I"));
         assertNotNull("Server2 did not load AES-encrypted LTPA keys on startup.",
+                      server2.waitForStringInLog("CWWKS4105I"));
+
+        // Authenticate on server1 and obtain the SSO cookie
+        server1FlClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+        String server1Cookie = server1FlClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO cookie from server1 is missing.", server1Cookie);
+
+        // Validate the server1 SSO cookie on server2 using the validation key
+        server2FlClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, server1Cookie);
+    }
+
+    /**
+     * Verify that an SSO cookie retrieved from authentication on one server can be validated on a
+     * second server using a validation key where both servers are configured with
+     * {@code useEncryptionKey="true"} and the same {@code wlp.aes.encryption.key} value (a raw
+     * Base64-encoded AES key, as opposed to the plain-text {@code wlp.password.encryption.key}).
+     * The LTPA key files for both servers were created with the {@code --passwordBase64Key} parameter.
+     * Server #2's primary key is held as a validation key on server #1 so that both servers can
+     * accept tokens issued by the other.
+     *
+     * Steps:
+     * <OL>
+     * <LI> Configure server #1 with an AES-encrypted primary key (server1AESBase64.keys) and
+     *      server #2's AES-encrypted key as a validation key, with {@code useEncryptionKey="true"}
+     *      and {@code monitorValidationKeysDir="true"} on both servers
+     * <LI> Configure server #2 with an AES-encrypted primary key (server2AESBase64.keys) and
+     *      server #1's AES-encrypted key as a validation key
+     * <LI> Write {@code wlp.aes.encryption.key} (not {@code wlp.password.encryption.key}) to
+     *      bootstrap.properties on both servers
+     * <LI> Access a simple servlet with form login using valid credentials on server #1 and
+     *      retrieve the SSO cookie
+     * <LI> Attempt to access the simple servlet on server #2 using the SSO cookie from server #1
+     * </OL>
+     *
+     * Expected Results:
+     * <OL>
+     * <LI> Both servers start successfully and load their AES-encrypted primary keys (CWWKS4105I)
+     * <LI> Successful authentication and SSO cookie retrieval on server #1
+     * <LI> Successful authentication on server #2 using server #1's SSO cookie via the validation key
+     * </OL>
+     */
+    @Test
+    public void testValidationKeys_useEncryptionKey_base64Key_crossServerSSO() throws Exception {
+
+        // All configuration changes are made while both servers are stopped so that when they start
+        // everything is already consistent: useEncryptionKey=true, keysPassword absent, the AES-
+        // encrypted primary key already in place as ltpa.keys, and wlp.aes.encryption.key in
+        // bootstrap.properties. This avoids any transient decryption failures from live reloads.
+
+        // Step 1: Stop both servers.
+        server1.stopServer(serverShutdownMessages);
+        server2.stopServer(serverShutdownMessages);
+
+        // Step 2: Write wlp.aes.encryption.key to bootstrap.properties on both servers.
+        addBootstrapPropertyToServer(WLP_AES_ENCRYPTION_KEY_NAME, TEST_AES_ENCRYPTION_KEY_B64, server1);
+        addBootstrapPropertyToServer(WLP_AES_ENCRYPTION_KEY_NAME, TEST_AES_ENCRYPTION_KEY_B64, server2);
+
+        // Step 3: Replace ltpa.keys with the Base64-AES-encrypted primary key on each server while stopped.
+        copyFileToServerResourcesSecurityDir(ALT_AES_BASE64_SERVER1_KEY_PATH, server1);
+        renameServerFileInLibertyRoot(AES_BASE64_SERVER1_KEY_PATH, DEFAULT_KEY_PATH, false, server1);
+        copyFileToServerResourcesSecurityDir(ALT_AES_BASE64_SERVER2_KEY_PATH, server2);
+        renameServerFileInLibertyRoot(AES_BASE64_SERVER2_KEY_PATH, DEFAULT_KEY_PATH, false, server2);
+
+        // Step 4: Copy the other server's primary key into each server's resources/security/ so it
+        // will be present as a validation key on startup (monitorValidationKeysDir="true").
+        copyFileToServerResourcesSecurityDir(ALT_AES_BASE64_SERVER2_KEY_PATH, server1);
+        copyFileToServerResourcesSecurityDir(ALT_AES_BASE64_SERVER1_KEY_PATH, server2);
+
+        // Step 5: Update server.xml on both servers while stopped — set useEncryptionKey=true and
+        // clear keysPassword (mutually exclusive with useEncryptionKey per CWWKS4123E).
+        // resetServer() restores keysPassword during @After cleanup.
+        ServerConfiguration server1Config = server1.getServerConfiguration();
+        LTPA ltpa1 = server1Config.getLTPA();
+        setLTPAUseEncryptionKeyElement(ltpa1, "true");
+        ltpa1.keysPassword = null;
+        server1.updateServerConfiguration(server1Config);
+
+        ServerConfiguration server2Config = server2.getServerConfiguration();
+        LTPA ltpa2 = server2Config.getLTPA();
+        setLTPAUseEncryptionKeyElement(ltpa2, "true");
+        ltpa2.keysPassword = null;
+        server2.updateServerConfiguration(server2Config);
+
+        // Step 6: Start both servers. They read the Base64-AES-encrypted ltpa.keys and the validation
+        // key on first boot — exactly one successful CWWKS4105I per server, no transient failures.
+        server1.startServer(true);
+        server2.startServer(true);
+        assertNotNull("Server1 did not load Base64-AES-encrypted LTPA keys on startup.",
+                      server1.waitForStringInLog("CWWKS4105I"));
+        assertNotNull("Server2 did not load Base64-AES-encrypted LTPA keys on startup.",
                       server2.waitForStringInLog("CWWKS4105I"));
 
         // Authenticate on server1 and obtain the SSO cookie
