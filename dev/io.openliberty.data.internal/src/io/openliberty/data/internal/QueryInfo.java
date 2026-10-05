@@ -100,6 +100,7 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Update;
 import jakarta.enterprise.event.Event;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
@@ -161,6 +162,14 @@ public abstract class QueryInfo {
      * whether a query has named parameters.
      */
     private static final Set<String> UNKNOWN = Collections.emptySet();
+
+    /**
+     * Entity graph for eager fetching. This is computed from
+     * QueryOptions.entityGraph and any Fetching annotations.
+     * Null if neither of these annotations are present or the repository
+     * method type does not support them.
+     */
+    protected EntityGraph<?> eagerlyFetch;
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -930,6 +939,7 @@ public abstract class QueryInfo {
                                                 returnArrayType, //
                                                 singleType, //
                                                 singleTypeElementType);
+        info.eagerlyFetch = eagerlyFetch;
         info.entityInfo = entityInfo;
         info.entityVar = entityVar;
         info.entityVar_ = entityVar_;
@@ -3382,11 +3392,14 @@ public abstract class QueryInfo {
             }
         }
 
-        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
-        if (orderBy.length > 0 &&
-            methodAnno != null &&
-            !(methodAnno instanceof Delete))
-            conflicts.add(OrderBy.class.getName());
+        if (methodAnno != null && !(methodAnno instanceof Delete)) {
+            // OrderBy
+            if (method.getAnnotationsByType(OrderBy.class).length > 0)
+                conflicts.add(OrderBy.class.getName());
+
+            // QueryOptions or Fetching
+            identifyQueryOptionsAndFetchingConflicts(method, conflicts);
+        }
 
         for (Class<? extends Annotation> annoClass : compat.queryLanguageAnnoTypes())
             methodAnno = inspect.apply(method.getAnnotation(annoClass), methodAnno);
@@ -3588,6 +3601,21 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Identifies conflicts between the QueryOptions or Fetching annotation(s)
+     * and other incompatible annotations present on the repository method.
+     * This method is only invoked when there are known to be annotations on the
+     * repository method that would be incompatible with QueryOptions or Fetching.
+     *
+     * @param method    repository method
+     * @param conflicts list of conflicting annotation names
+     */
+    @Trivial
+    protected void identifyQueryOptionsAndFetchingConflicts(Method method,
+                                                            List<String> conflicts) {
+        // QueryOptions and Fetching annotations do not exist in Data 1.0
+    }
+
+    /**
      * Identifies the repository method type based on life cycle annotations.
      * For example (Insert, Update, Save, Delete, Detach, Merge, ...).
      */
@@ -3781,6 +3809,10 @@ public abstract class QueryInfo {
                 generateOrderBy(q);
             }
 
+            // EntityGraph for QueryOptions.entityGraph + any Fetching annos
+            if (type == FIND || type == FIND_AND_DELETE)
+                initEntityGraph();
+
             ql = q == null ? ql : q.toString();
 
             validate(validateNumberOfMethodArgs);
@@ -3823,6 +3855,16 @@ public abstract class QueryInfo {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "found sort criteria position (1-based): " + (index + 1));
+    }
+
+    /**
+     * Initialize the EntityGraph for eager fetch.
+     * Only invoke this method for types of repository methods on which
+     * QueryOptions and Fetching annotations are valid.
+     */
+    @Trivial
+    protected void initEntityGraph() {
+        // QueryOptions.entityGraph and Fetching require Data 1.1+
     }
 
     /**

@@ -23,6 +23,8 @@ import static io.openliberty.data.internal.QueryType.PERSIST;
 import static io.openliberty.data.internal.QueryType.REFRESH;
 import static io.openliberty.data.internal.QueryType.REMOVE;
 import static io.openliberty.data.internal.QueryType.SAVE;
+import static io.openliberty.data.internal.Util.LOADGRAPH;
+import static io.openliberty.data.internal.Util.LOCK_SCOPE;
 import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_CLASS;
 import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_VALUE;
 import static io.openliberty.data.internal.v1_1.Data_1_1.NATIVE_QUERY_CLASS;
@@ -87,6 +89,7 @@ import jakarta.data.expression.TemporalExpression;
 import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Fetching;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
 import jakarta.data.repository.OrderBy;
@@ -439,6 +442,9 @@ public class QueryInfo_1_1 extends QueryInfo {
                 throw new DataException(x.getCause());
             }
 
+        if (eagerlyFetch != null)
+            query.setHint(LOADGRAPH, eagerlyFetch);
+
         return query;
     }
 
@@ -530,6 +536,10 @@ public class QueryInfo_1_1 extends QueryInfo {
                             .invoke(entityHandler, jpql, resultType);
             if (options != null)
                 setReadOptions(options, query, false, entityHandler);
+
+            if (eagerlyFetch != null)
+                query.setHint(LOADGRAPH, eagerlyFetch);
+
             return query;
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
@@ -1069,6 +1079,18 @@ public class QueryInfo_1_1 extends QueryInfo {
 
     @Override
     @Trivial
+    protected void identifyQueryOptionsAndFetchingConflicts(Method method,
+                                                            List<String> conflicts) {
+        if (method.getAnnotationsByType(Fetching.class).length > 0)
+            conflicts.add(Fetching.class.getSimpleName());
+
+        if (QUERY_OPTIONS_CLASS != null &&
+            method.isAnnotationPresent(QUERY_OPTIONS_CLASS))
+            conflicts.add(QUERY_OPTIONS_CLASS.getSimpleName());
+    }
+
+    @Override
+    @Trivial
     protected void identifyType() {
         if (entityParamType != null && methodTypeAnno instanceof Delete)
             setType(Delete.class, LC_DELETE);
@@ -1092,6 +1114,91 @@ public class QueryInfo_1_1 extends QueryInfo {
             setType(Refresh.class, REFRESH);
         else if (methodTypeAnno instanceof Remove)
             setType(Remove.class, REMOVE);
+    }
+
+    @Override
+    @Trivial
+    protected void initEntityGraph() {
+        String graphName = "";
+        if (QUERY_OPTIONS_CLASS != null) {
+            Annotation queryOptions = method.getAnnotation(QUERY_OPTIONS_CLASS);
+            if (queryOptions != null)
+                try {
+                    graphName = (String) QUERY_OPTIONS_CLASS //
+                                    .getMethod("entityGraph") //
+                                    .invoke(queryOptions);
+                } catch (IllegalAccessException | NoSuchMethodException x) {
+                    throw new RuntimeException(x); // should be impossible
+                } catch (InvocationTargetException x) {
+                    if (x.getCause() instanceof RuntimeException rx)
+                        throw rx;
+                    throw new DataException(x.getCause());
+                }
+        }
+
+        Fetching[] fetches = method.getAnnotationsByType(Fetching.class);
+
+        if (fetches.length > 0 || graphName.length() > 0) {
+            // TODO first look for a reusable instance from entityInfo
+
+            if (QUERY_OPTIONS_CLASS == null) { // JPA 3.2
+                try (EntityManager em = entityInfo.factory.createEntityManager()) {
+                    if (graphName.length() > 0)
+                        eagerlyFetch = em.getEntityGraph(graphName);
+                    else
+                        eagerlyFetch = em.createEntityGraph(entityInfo.entityClass);
+                } catch (IllegalArgumentException x) {
+                    // TODO better error for graphName not found
+                    throw x;
+                }
+            } else { // JPA 4+
+                AutoCloseable agent = null;
+                try {
+                    agent = entityInfo.factory.createEntityAgent();
+                    if (graphName.length() > 0)
+                        eagerlyFetch = (EntityGraph<?>) agent.getClass() //
+                                        .getMethod("getEntityGraph", String.class) //
+                                        .invoke(agent, graphName);
+                    else
+                        eagerlyFetch = (EntityGraph<?>) agent.getClass() //
+                                        .getMethod("createEntityGraph", Class.class) //
+                                        .invoke(agent, entityInfo.entityClass);
+                } catch (IllegalAccessException | NoSuchMethodException x) {
+                    throw new RuntimeException(x); // should be impossible
+                } catch (IllegalArgumentException x) {
+                    // TODO better error for graphName not found
+                    throw x;
+                } catch (InvocationTargetException x) {
+                    // TODO better error for IllegalArgumentException that means
+                    // the graphName is not found
+                    if (x.getCause() instanceof RuntimeException rx)
+                        throw rx;
+                    throw new DataException(x.getCause());
+                } finally {
+                    if (agent != null)
+                        try {
+                            agent.close();
+                        } catch (RuntimeException x) {
+                            throw x;
+                        } catch (Exception x) {
+                            throw new RuntimeException(x); // should be impossible
+                        }
+                }
+            }
+
+            if (fetches.length > 0)
+                for (Fetching fetch : fetches) {
+                    String attr = fetch.value();
+                    if (attr.contains("."))
+                        // TODO implement
+                        throw new UnsupportedOperationException("@Fetching(" + attr + ")");
+                    else
+                        eagerlyFetch.addAttributeNode(attr);
+                }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "using entity graph", eagerlyFetch);
+        }
     }
 
     @Override
@@ -1183,9 +1290,6 @@ public class QueryInfo_1_1 extends QueryInfo {
             Tr.debug(this, tc, "setReadOptions", Util.toString(options), query);
 
         Class<?> QueryOptions = options.getClass();
-        String entityGraph = (String) QueryOptions //
-                        .getMethod("entityGraph") //
-                        .invoke(options);
         Object flush = QueryOptions //
                         .getMethod("flush") //
                         .invoke(options); // QueryFlushMode
@@ -1212,16 +1316,8 @@ public class QueryInfo_1_1 extends QueryInfo {
         for (QueryHint hint : hints)
             query.setHint(hint.name(),
                           hint);
-        if (entityGraph.length() > 0) {
-            // TODO Persistence 4.0: entityHandler.getEntityGraph(options.entityGraph());
-            EntityGraph<?> loadGraph = (EntityGraph<?>) entityHandler.getClass() //
-                            .getMethod("getEntityGraph", String.class) //
-                            .invoke(entityHandler, entityGraph);
-            query.setHint("jakarta.persistence.loadgraph",
-                          loadGraph);
-        }
 
-        query.setHint("jakarta.persistence.lock.scope",
+        query.setHint(LOCK_SCOPE,
                       lockScope);
 
         query.setCacheStoreMode(cacheStoreMode);
