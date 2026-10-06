@@ -64,6 +64,8 @@ public class InitialRequest {
     String postParams = "";
     @JsonProperty("savedPostParams")
     HashMap savedPostParams = null;
+    @JsonProperty("birthTimeMillis")
+    long birthTimeMillis = 0;
 
     public static final String ATTRIB_HASH_MAP = "ServletRequestWrapperHashmap";
     public static final String COOKIE_NAME_SAVED_PARAMS = "WASSamlParams_IR_";
@@ -82,13 +84,14 @@ public class InitialRequest {
     }
 
     public InitialRequest(HttpServletRequest request, String reqUrl, String requestURL, String method, String inResponseTo, String formlogout,
-                          HashMap savedPostParams) throws SamlException {
+                          HashMap savedPostParams, long birthTimeMillis) throws SamlException {
 
         this.reqUrl = reqUrl;
         this.requestURL = requestURL;
         this.method = method;
         this.strInResponseToId = inResponseTo;
         this.formLogoutExitPage = formlogout;
+        this.birthTimeMillis = birthTimeMillis;
         if (this.formLogoutExitPage != null) {
             isFormLogoutExitPage = true;
         }
@@ -130,6 +133,10 @@ public class InitialRequest {
 
     public HashMap getPostParamsMap() {
         return this.savedPostParams;
+    }
+
+    public long getBirthTimeMillis() {
+        return this.birthTimeMillis;
     }
 
     public void setPostParamsMap(HttpServletRequest request) {

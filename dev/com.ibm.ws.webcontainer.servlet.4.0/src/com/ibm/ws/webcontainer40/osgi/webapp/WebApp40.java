@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -253,6 +253,9 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
         if (EncodingUtils.isCharsetSupported(encoding)) {
             this.config.setModuleRequestEncoding(encoding);
         } else {
+            if (encoding.length() > 100)
+                encoding = encoding.substring(0, 100);
+
             String msg = nls.getFormattedMessage("unsupported.request.encoding.[{0}]", new Object[] { encoding }, "Unsupported encoding specified --> " + encoding);
             logger.logp(Level.SEVERE, CLASS_NAME, "setRequestCharacterEncoding", msg);
         }
