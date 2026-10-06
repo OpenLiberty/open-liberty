@@ -8,4 +8,8 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
+    
+    <!-- Need to add javaPermissions for FAT test issue happened when invoking JAXBContext.newInstance(Book.class) -->
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.util.PropertyPermission" name="javax.xml.bind.JAXBContext" actions="read"/>
 </server>

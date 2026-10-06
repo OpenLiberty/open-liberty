@@ -34,6 +34,7 @@ import com.ibm.ws.http.internal.netty.RequestMetadata;
 import com.ibm.ws.http.internal.netty.exception.InvalidRequestMetadataException;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
@@ -44,6 +45,7 @@ import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
@@ -70,6 +72,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpRequestValidationException;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -90,6 +93,7 @@ import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
+import io.openliberty.netty.internal.impl.QuiesceState;
 
 /**
  * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
@@ -149,7 +153,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         Throwable lifecycleFailure = null;
         if (evt instanceof ChannelInputShutdownEvent){
             try {
-                FlowState state = ReadFlowHandler.state(ctx);
+                FlowState state = ReadFlowHandler.state(ctx.channel());
                 if(queue!=null && !queue.isEos() && !state.isRequestConsumed()){
                     try {
                         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
@@ -220,12 +224,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (!(msg.decoderResult().isFinished() && msg.decoderResult().isSuccess())) {
             if(context.channel().isActive()) {
                 if (msg.decoderResult().cause() != null) {
+                    Throwable failure = msg.decoderResult().cause();
                     // The legacy parser rejects this protocol condition without FFDC.
-                    if (!(msg.decoderResult().cause() instanceof ContentLengthNotAllowedException)
-                                    && !msg.decoderResult().cause().getMessage().contains("possibly HTTP/0.9")) {
-                        FFDCFilter.processException(msg.decoderResult().cause(), HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
+                    if (!(failure instanceof ContentLengthNotAllowedException)
+                                    && !isExpectedRequestValidationFailure(failure)
+                                    && !failure.getMessage().contains("possibly HTTP/0.9")) {
+                        FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
-                    sendErrorMessage(msg.decoderResult().cause());
+                    sendErrorMessage(failure);
                 } else {
                     sendErrorMessage(new Exception("HTTP request decoding failure!"));
                 }
@@ -238,6 +244,17 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         if (msg instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) msg;
+
+            ProtocolName connectionProtocol = ProtocolState.current(ctx.channel());
+            if ((connectionProtocol == ProtocolName.HTTP1 || connectionProtocol == ProtocolName.HTTP10)
+                            && !HttpVersion.HTTP_1_0.equals(req.protocolVersion())
+                            && !HttpVersion.HTTP_1_1.equals(req.protocolVersion())) {
+                UnsupportedProtocolVersionException cause = new UnsupportedProtocolVersionException(
+                                "Unsupported: " + req.protocolVersion().text());
+                sendErrorMessage(StatusCodes.UNSUPPORTED_VERSION, cause);
+                ReferenceCountUtil.release(req);
+                return;
+            }
 
             upgradingNow = false;
             streamingInitialized = false;
@@ -341,6 +358,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
     }
 
+    private static boolean isExpectedRequestValidationFailure(Throwable failure) {
+        return failure instanceof HttpRequestValidationException
+                        || (failure instanceof IllegalArgumentException
+                                        && failure.getCause() instanceof HttpRequestValidationException);
+    }
+
     private static boolean isUpgrade(HttpRequest req) {
         final CharSequence conn = req.headers().get(HttpHeaderNames.CONNECTION);
         final CharSequence upg = req.headers().get(HttpHeaderNames.UPGRADE);
@@ -351,7 +374,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request,
                                        RequestMetadata requestMetadata) {
-         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+        // Mirror Channel Framework's HttpInboundLink.handleNewInformation() isStopped() guard:
+        // if the server is quiescing, reject new requests immediately with a 503
+        if (QuiesceState.isQuiesceInProgress()
+                || Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.QUIESCING).get())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "beginStreamingRequest: server quiescing, rejecting request with 503");
+            }
+            sendErrorMessage(StatusCodes.UNAVAILABLE, null);
+            return;
+        }
+
+        ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
 
         final CharSequence ae = request.headers().get(HttpHeaderNames.ACCEPT_ENCODING);
         if (ae != null)
@@ -675,7 +709,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             if (cause instanceof ReadTimeoutException
                 && ProtocolState.current(ctx.channel()) != NettyHttpConstants.ProtocolName.HTTP2
-                && !ReadFlowHandler.state(ctx).isResponseInFlight()) {
+                && !ReadFlowHandler.state(ctx.channel()).isResponseInFlight()) {
                 sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                 return;
             }
@@ -827,9 +861,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
 
         AsyncReadDispatchState asyncReadState = AsyncReadDispatchState.forChannel(context.channel());
-        boolean asyncReadInProgress =
-            Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get()) ||
-            asyncReadState.hasOutstandingCallback();
         Throwable lifecycleFailure = null;
         try {
             asyncReadState.fail();
@@ -837,24 +868,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             lifecycleFailure = t;
         }
 
+        // Channel closed while request body was still in flight: signal an error so
+        // any thread blocked in BodyQueue.awaitChange() unblocks immediately. The
+        // forced-close path that used to signal EOS here has been removed; a genuine
+        // premature close is always an error from the body reader's perspective.
         try {
-            boolean responseCloseBeforeRequestBodyComplete =
-                Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).get());
             if (queue != null && !queue.isEos()) {
-                if (responseCloseBeforeRequestBodyComplete && !asyncReadInProgress) {
-                    queue.signalEos();
-                    if (link != null)
-                        link.setBodyComplete();
-                } else {
-                    context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
-                    queue.signalError(new EOFException("Channel closed before request body completed."));
-                }
+                context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
+                queue.signalError(new EOFException("Channel closed before request body completed."));
             }
-        } catch (Throwable t) {
-            lifecycleFailure = mergeLifecycleFailure(lifecycleFailure, t);
-        }
-        try {
-            context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.FALSE);
         } catch (Throwable t) {
             lifecycleFailure = mergeLifecycleFailure(lifecycleFailure, t);
         }

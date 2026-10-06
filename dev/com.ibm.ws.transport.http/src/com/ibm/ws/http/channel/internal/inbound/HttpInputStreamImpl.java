@@ -686,6 +686,21 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             return false;
         }
 
+        // If the purge lifecycle has started, the application cannot read further
+        // body data — the queue is being drained by the purge path.
+        // This check at entry handles the fast path; the wait loop also re-checks
+        // after each wakeup so a reader already inside awaitChange() sees the
+        // ownership transition immediately when drainAndRelease() signals.
+        if (queue.isPurging()) {
+            // Release any partially-consumed stream buffer so that ownership
+            // ends cleanly; the purge path owns remaining queue fragments.
+            if (this.buffer != null) {
+                this.buffer.release();
+                this.buffer = null;
+            }
+            return false;
+        }
+
         if (waitForInput && context != null && context.executor().inEventLoop()){
             throw new IllegalStateException("Blocking request read on event loop group thread");
         }
@@ -709,8 +724,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 if (queue.isEos()){
                     this.readChannelComplete = true;
                     if (this.context != null){
-                        ReadFlowHandler.setBodyReadWanted(this.context, false);
-                        ReadFlowHandler.markRequestConsumed(this.context);
+                        ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
+                        ReadFlowHandler.markRequestConsumed(this.context.channel());
                     }
                     return false;
                 }
@@ -720,7 +735,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     if (context != null
                             && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())) {
                         try {
-                            ReadFlowHandler.setBodyReadWanted(context, false);
+                            ReadFlowHandler.setBodyReadWanted(context.channel(), false);
                         } catch (Throwable ignore) {
                         }
                         return false;
@@ -737,7 +752,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 }
 
                 if(!readRequested && !autoRead && queue.wantsInput() && context != null){
-                    ReadFlowHandler.setBodyReadWanted(context, true);
+                    ReadFlowHandler.setBodyReadWanted(context.channel(), true);
                     readRequested = true;
                 }
 
@@ -750,7 +765,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     if(inputShutdownPending){
                         if(this.context!=null){
                             try{
-                                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                                ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
                             } catch (Throwable ignore){}
                         }
                         return false;
@@ -759,6 +774,17 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 } catch (InterruptedException ie){
                     Thread.currentThread().interrupt();
                     throw new IOException("Interrupted while waiting for request body", ie);
+                }
+
+                // Re-check purge flag after every wakeup. drainAndRelease() calls
+                // signalChange() so this reader wakes up and exits here even if it
+                // was already inside the wait when the purge started.
+                if (queue.isPurging()) {
+                    if (this.buffer != null) {
+                        this.buffer.release();
+                        this.buffer = null;
+                    }
+                    return false;
                 }
 
                 //Signal received; run loop again
@@ -836,8 +862,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private void completeStreamingFixedLengthRequest() {
         this.readChannelComplete = true;
         if (this.context != null){
-            ReadFlowHandler.setBodyReadWanted(this.context, false);
-            ReadFlowHandler.markRequestConsumed(this.context);
+            ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
+            ReadFlowHandler.markRequestConsumed(this.context.channel());
         }
         if(!queue.isEos()){
             queue.signalEos();
@@ -870,12 +896,22 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
         if(this.context != null){
             try{
-                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
             } catch(Throwable ignore){}
         }
 
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
             Tr.debug(tc, "signaled EOS to waiting body readers");
         }
+    }
+
+    /**
+     * Returns the {@link BodyQueue} backing this stream, or {@code null} if
+     * not in Netty streaming mode. Used by the purge lifecycle to drain
+     * already-buffered fragments when the application has finished its
+     * response without consuming the body.
+     */
+    public BodyQueue getBodyQueue() {
+        return this.queue;
     }
 }

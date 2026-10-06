@@ -26,46 +26,71 @@ final public class BodyQueue {
     private volatile boolean eos;
     private volatile Throwable error;
     private final ByteBufAllocator allocator;
-    private long bytesRead;
+
+    /** Total bytes received, including fragments discarded during purge. */
+    private volatile long bytesReceived;
+
+    /**
+     * True once {@link #drainAndRelease()} has been called; subsequent
+     * {@link #enqueueRetained} calls discard without retaining.
+     */
+    private volatile boolean purging = false;
 
     private final Object signalLock = new Object();
     private long signal;
 
-    public BodyQueue(ByteBufAllocator allocator){
+    public BodyQueue(ByteBufAllocator allocator) {
         this(allocator, DEFAULT_HIGH, DEFAULT_LOW);
     }
 
-    public BodyQueue(ByteBufAllocator allocator, int high, int low){
+    public BodyQueue(ByteBufAllocator allocator, int high, int low) {
         this.allocator = allocator;
         this.highWater = Math.max(high, low);
         this.lowWater = low;
     }
 
-    public void enqueueRetained(ByteBuf buf){
+    /**
+     * Enqueues a retained copy of {@code buf} on the event loop. Discards
+     * without retaining when purging; the caller's release handles cleanup.
+     *
+     * @param buf the buffer to enqueue; caller retains ownership.
+     */
+    public void enqueueRetained(ByteBuf buf) {
+        int readable = buf.readableBytes();
+
+        // Count unconditionally so size-limit enforcement is accurate whether
+        // or not this fragment is actually retained.
+        bytesReceived += readable;
+
+        // If a purge is in progress the queue does not acquire a reference.
+        // The caller's finally block releases the enclosing HttpContent.
+        // Do NOT call release() here: we did not retain, so we do not release.
+        if (purging) {
+            return;
+        }
         queue.add(buf.retain());
-        bytesRead += buf.readableBytes();
-        buffered.addAndGet(buf.readableBytes());
+        buffered.addAndGet(readable);
         signalChange();
     }
 
-    public ByteBuf poll(){
+    public ByteBuf poll() {
         ByteBuf b = queue.poll();
-        if(b!=null){
+        if (b != null) {
             buffered.addAndGet(-b.readableBytes());
         }
         return b;
     }
 
-    public boolean wantsInput(){
+    public boolean wantsInput() {
         return error == null && !eos && buffered.get() < lowWater;
     }
 
-    public boolean isEos(){
+    public boolean isEos() {
         return eos && queue.isEmpty();
     }
 
-    private void signalChange(){
-        synchronized (signalLock){
+    private void signalChange() {
+        synchronized (signalLock) {
             signal++;
             signalLock.notifyAll();
         }
@@ -77,35 +102,72 @@ final public class BodyQueue {
         }
     }
 
+    /**
+     * Blocks until the queue state changes, EOS/error is signalled, or purge
+     * mode is entered. Callers must re-check {@link #isPurging()} after return.
+     */
     public long awaitChange(long lastToken) throws InterruptedException {
         synchronized (signalLock) {
-            while (signal == lastToken && !eos && error == null) {
+            while (signal == lastToken && !eos && error == null && !purging) {
                 signalLock.wait();
             }
             return signal;
         }
     }
 
+    /**
+     * Returns the total bytes received, including fragments discarded during
+     * purge, for use in cumulative body-size limit enforcement.
+     */
     public long bytesRead() {
-        return bytesRead;
+        return bytesReceived;
     }
 
-    public void signalEos(){
+    /** Returns the number of bytes currently retained in the queue. */
+    public int bufferedBytes() {
+        return buffered.get();
+    }
+
+    public void signalEos() {
         eos = true;
         signalChange();
     }
 
-    public void signalError(Throwable t){
+    public void signalError(Throwable t) {
         error = t;
         signalChange();
     }
 
-    public Throwable error(){
+    public Throwable error() {
         return error;
     }
 
-    public void wakeReaders(){
+    public void wakeReaders() {
         signalChange();
     }
 
+    /**
+     * Marks the queue as purging and releases all retained fragments. Must be
+     * called on the event loop (mutually exclusive with {@link #enqueueRetained}).
+     * Wakes any reader blocked in {@link #awaitChange} via {@link #signalChange()}.
+     */
+    public void drainAndRelease() {
+        purging = true;
+
+        ByteBuf buf;
+        while ((buf = queue.poll()) != null) {
+            buffered.addAndGet(-buf.readableBytes());
+            buf.release();
+        }
+
+        signalChange();
+    }
+
+    /**
+     * Returns {@code true} if this queue has been put into purge mode via
+     * {@link #drainAndRelease()}.
+     */
+    public boolean isPurging() {
+        return purging;
+    }
 }

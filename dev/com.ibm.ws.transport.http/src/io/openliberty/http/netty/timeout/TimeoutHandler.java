@@ -20,6 +20,13 @@ import com.ibm.ws.http.internal.netty.protocol.ProtocolChangedEvent;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
+import com.ibm.ws.http.netty.pipeline.inbound.read.PurgeStartedEvent;
+import com.ibm.ws.http.netty.pipeline.inbound.read.RequestConsumedEvent;
+
+import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
+import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
+import io.openliberty.http.options.TcpOption;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -36,10 +43,6 @@ import io.netty.handler.codec.http2.Http2HeadersFrame;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
-import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
-import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
-import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
-import io.openliberty.http.options.TcpOption;
 
 public class TimeoutHandler extends ChannelDuplexHandler {
 
@@ -68,6 +71,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
 
     private boolean firstRequest = true;
     private boolean readRetried = false;
+    private boolean purgeInProgress = false;
 
     private ScheduledFuture<?> currentTimeout;
 
@@ -150,10 +154,18 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             resetRead(context);
         }
 
+        // Snapshot before forwarding: LastHttpContent admission may synchronously
+        // install B's timer; we must cancel only A's, not the replacement.
+        final ScheduledFuture<?> timerBeforeForward = currentTimeout;
+
         super.channelRead(context, message);
 
         if (isRequestEnd(message)) {
-            if (phase == Phase.READ){
+            // Cancel only if the timer has not been replaced by a downstream
+            // pipelined-request admission. If B was admitted, currentTimeout ≠
+            // timerBeforeForward (cancel set it to null, arm set it to a new value),
+            // so this guard is false and we leave B's timer alone.
+            if (phase == Phase.READ && currentTimeout == timerBeforeForward) {
                 cancel();
             }
             firstRequest = false;
@@ -172,12 +184,25 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
                 if (!serverKeepAlive) {
                     context.close();
-                } else {
-                    armPersistIfNeeded(context);
                 }
+                // Persist timeout is armed via RequestConsumedEvent fired by
+                // ReadFlowHandler — either immediately (body already consumed)
+                // or after purge completes. TimeoutHandler stays decoupled from
+                // FlowState entirely.
             }
         }); //-> TODO: move over to keep-alive handler when implemented
 
+    }
+
+    @Override
+    public void read(ChannelHandlerContext context) throws Exception {
+        // Re-arm the read timer on each socket read so the deadline resets per
+        // fragment during body reads. PERSIST is excluded — it's a one-shot
+        // deadline armed from RequestConsumedEvent, not per-read.
+        if (phase == Phase.READ) {
+            arm(context, Phase.READ);
+        }
+        super.read(context);
     }
 
     private void arm(ChannelHandlerContext context, Phase newPhase) {
@@ -216,7 +241,11 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             case TCP_IDLE:
 
             case READ:
-                if (firstRequest && !readRetried) {
+                // Only retry on the very first request arriving slowly over TCP.
+                // Skip the retry if a body purge is in progress — the purge timer
+                // was armed by PurgeStartedEvent and the connection should be
+                // closed immediately on expiry, not given a second window.
+                if (firstRequest && !readRetried && !purgeInProgress) {
                     readRetried = true;
                     arm(context, Phase.READ);
                     return;
@@ -331,25 +360,30 @@ public class TimeoutHandler extends ChannelDuplexHandler {
                     cancel();
                 }
             }
+        } else if (event instanceof PurgeStartedEvent) {
+            // Async body purge has begun after the response completed. Arm the
+            // read timeout so each arriving body fragment is bounded — matching
+            // Channel Framework where every purge body read uses readTimeout.
+            purgeInProgress = true;
+            arm(context, Phase.READ);
+            super.userEventTriggered(context, event);
+            return;
+        } else if (event instanceof RequestConsumedEvent) {
+            // Body purge has completed; the connection is now ready for the next
+            // request. Cancel any in-progress read timeout and transition to
+            // PERSIST — matching Channel Framework's sequencing where the persist
+            // timeout governs the keep-alive read issued after purge finishes.
+            purgeInProgress = false;
+            cancel();
+            armPersistIfNeeded(context);
+            super.userEventTriggered(context, event);
+            return;
         }
         super.userEventTriggered(context, event);
     }
 
     private static ProtocolName currentProtocol(ChannelHandlerContext context) {
         return ProtocolState.current(context.channel());
-    }
-
-    public static void armPersistTimeout(Channel channel){
-        TimeoutHandler handler = channel.pipeline().get(TimeoutHandler.class);
-        if(handler == null || handler.streamOnly){
-            return;
-        }
-        ChannelHandlerContext context = handler.parentContext;
-        if(context == null){
-            return;
-        }
-
-        handler.armPersistIfNeeded(context);
     }
 
     public static ReadOpToken armReadOp(Channel channel, int timeout, Runnable callback){
