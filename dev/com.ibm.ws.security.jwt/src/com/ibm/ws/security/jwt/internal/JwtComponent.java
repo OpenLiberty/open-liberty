@@ -181,7 +181,7 @@ public class JwtComponent implements JwtConfig {
         loadJweConfigOptions(props);
 
         if (isJwkCapableSigAlgorithm()) {
-            initializeJwkProvider(this);
+            initializeJwkProvider();
         }
 
         // expiresInSeconds wins if present
@@ -226,17 +226,10 @@ public class JwtComponent implements JwtConfig {
         return (KeyAlgorithmChecker.isRSAlgorithm(sigAlg) || KeyAlgorithmChecker.isESAlgorithm(sigAlg));
     }
 
-    private void initializeJwkProvider(JwtConfig jwtConfig) {
-
-        if (jwtConfig == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "No config object found");
-            }
-            return;
-        }
-        if (jwtConfig.isJwkEnabled()) {
-            jwkProvider = new JWKProvider(jwtConfig.getJwkSigningKeySize(), jwtConfig.getSignatureAlgorithm(),
-                    jwtConfig.getJwkRotationTime(), jwtConfig.getJwkMaxKeys());
+    private void initializeJwkProvider() {
+        if (isJwkEnabled()) {
+            jwkProvider = new JWKProvider(getJwkSigningKeySize(), getSignatureAlgorithm(),
+                    getJwkRotationTime(), getJwkMaxKeys());
         }
     }
 
@@ -414,18 +407,15 @@ public class JwtComponent implements JwtConfig {
         return jwkProvider != null ? jwkProvider.getJWK() : null;
     }
 
-    @Override
-    public long getJwkRotationTime() {
+    private long getJwkRotationTime() {
         return jwkRotationTime;
     }
 
-    @Override
-    public int getJwkSigningKeySize() {
+    private int getJwkSigningKeySize() {
         return jwkSigningKeySize;
     }
 
-    @Override
-    public int getJwkMaxKeys() {
+    private int getJwkMaxKeys() {
         return jwkMaxKeys;
     }
 

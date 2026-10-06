@@ -365,26 +365,6 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	}
 
 	/** {@inheritDoc} */
-	@Override
-	public long getJwkRotationTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int getJwkSigningKeySize() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int getJwkMaxKeys() {
-		return 0;
-	}
-
-	/** {@inheritDoc} */
 
 	@Override
 	public String getResolvedHostAndPortUrl() {
