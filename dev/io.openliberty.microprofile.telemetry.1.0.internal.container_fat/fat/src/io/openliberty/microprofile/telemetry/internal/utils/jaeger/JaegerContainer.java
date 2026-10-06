@@ -13,7 +13,10 @@
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
 import java.io.File;
+import java.time.Duration;
+
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -61,6 +64,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
         withCopyFileToContainer(MountableFile.forHostPath(tlsCert.toPath()), "/etc/certificate.crt");
         withCopyFileToContainer(MountableFile.forHostPath(tlsKey.toPath()), "/etc/private.key");
         Log.info(c, "JaegerContainer", "creating JaegerContainer with grpc client cert and key");
+        waitingFor(Wait.forHttp("/api/services").forPort(HTTP_QUERY_PORT).withStartupTimeout(Duration.ofSeconds(60)));
     }
 
     public JaegerContainer(File otelCollectorTlsCert, File otelCollectorTlsKey, File jaegerQueryTlsCert, File jaegerQueryTlsKey) {
@@ -87,6 +91,8 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
         withCopyFileToContainer(MountableFile.forHostPath(otelCollectorTlsCert.toPath()), "/etc/otelCollectorCertificate.crt");
         withCopyFileToContainer(MountableFile.forHostPath(otelCollectorTlsKey.toPath()), "/etc/otelCollectorPrivateKey.key");
+
+        waitingFor(Wait.forHttp("/api/services").forPort(HTTP_QUERY_PORT).withStartupTimeout(Duration.ofSeconds(60)));
 
         Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
 
