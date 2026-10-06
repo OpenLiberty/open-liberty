@@ -287,7 +287,7 @@ fi
 
 # If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
 if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
-  JVM_ARGS="--add-opens java.base/java.lang=ALL-UNNAMED ${JVM_ARGS}"
+  JVM_ARGS="@TOOL_EXTRA_OPENS_AND_EXPORTS@ ${JVM_ARGS}"
 fi
 
 # If ENABLE_FIPS140_3 is set by the user then add appropiate FIPS140-3 JVM options
