@@ -488,7 +488,12 @@ public class TCPUtils {
                     open(framework, channel, config, inetHost, inetPort, openListener,
                         config.getPortOpenRetries(), false);
                 } else {
-                    final long bindTimeoutMs = framework.getDefaultChainQuiesceTimeout();
+                    // Timeout must cover the full port-retry window:
+                    // (portOpenRetries + 1) attempts × 1 s each, plus a 5 s buffer.
+                    // chainQuiesceTimeout (30 s) is shorter than the max retry window
+                    // (61 s with portOpenRetries=60) and must NOT be used here.
+                    final long bindTimeoutMs = ((long) config.getPortOpenRetries() + 1L)
+                                               * timeBetweenRetriesMsec + 5000L;
                     framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                         @Override
                         public ChannelFuture call() {
