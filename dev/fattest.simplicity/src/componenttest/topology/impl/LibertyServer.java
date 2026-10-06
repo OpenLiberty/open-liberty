@@ -259,6 +259,15 @@ public class LibertyServer implements LogMonitorClient {
     protected static final int SERVER_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 15 : 120) * 1000;
     protected static final int SERVER_STOP_TIMEOUT = SERVER_START_TIMEOUT;
 
+    // The stop tool waits for the server process to exit before returning; default budget is
+    // 30 seconds (SERVER_STOP_WAIT_TIME_DEFAULT). If server stop takes longer than 30 seconds
+    // the tool exits RC 21 (ERROR_SERVER_STOP / CWWKE0968W), causing stopServer() to throw a
+    // RuntimeException. Passing --timeout aligns that internal budget with SERVER_STOP_TIMEOUT.
+    // We use the larger of SERVER_STOP_TIMEOUT (in seconds) and 30 so that local runs (15s)
+    // are no worse than the current default. The Windows service path (runAsAWindowService)
+    // uses its own registration timeout and is not affected by this argument.
+    protected static final String SERVER_STOP_TIMEOUT_ARG = "--timeout=" + Math.max(SERVER_STOP_TIMEOUT / 1000, 30);
+
     // How long to wait for an app to start before failing out
     protected int APP_START_TIMEOUT = (FAT_TEST_LOCALRUN ? 12 : 120) * 1000;
 
@@ -1203,9 +1212,9 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Check logs for SSL endpoint Stop and Start messages from the log
-     * 
+     *
      * This does not initiate an SSL Restart.
-     * 
+     *
      * @throws Exception
      */
     public void waitForSSLRestart() throws Exception {
@@ -1213,7 +1222,7 @@ public class LibertyServer implements LogMonitorClient {
         String thisMethod = "waitForSSLRestart";
         // look for the "CWWKO0220I: TCP Channel defaultHttpEndpoint-ssl has stopped listening for requests on host " message
         // if we find it, then wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
-        String sslStopMsg = waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500 );
+        String sslStopMsg = waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
         if (sslStopMsg != null) {
             String sslStartMsg = waitForDefaultHTTPEndpointSSLStart(true);
             if (sslStartMsg == null) {
@@ -1234,7 +1243,7 @@ public class LibertyServer implements LogMonitorClient {
      * @return the matching line in the log, or null if no matches appear before the timeout expires
      * @throws Exception is thrown if endpoint does not start within the default time period
      */
-    public String waitForEndpointOnPortToStart(int port) throws Exception{
+    public String waitForEndpointOnPortToStart(int port) throws Exception {
         return waitForEndpointOnPortToStart(port, LOG_SEARCH_TIMEOUT);
     }
 
@@ -1246,43 +1255,42 @@ public class LibertyServer implements LogMonitorClient {
      * @return the matching line in the log, or null if no matches appear before the timeout expires
      * @throws Exception is thrown if endpoint does not start within the provided time
      */
-    public String waitForEndpointOnPortToStart(int port, int timeout) throws Exception{
+    public String waitForEndpointOnPortToStart(int port, int timeout) throws Exception {
         return waitForEndpointOnPortToStart(port, timeout, false);
     }
 
     /**
      * Wait for endpoint on provided port to start
      *
-     * @param port 
+     * @param port
      * @param suppressException if set to 'true', method return null if the message is not found instead of throwing an exception
      * @return the matching line in the log, or null if no matches appear before the timeout expires
      * @throws Exception is thrown if endpoint does not start within the default timeout period and if suppressException is 'false'
      */
-    public String waitForEndpointOnPortToStart(int port, boolean suppressException) throws Exception{
+    public String waitForEndpointOnPortToStart(int port, boolean suppressException) throws Exception {
         return waitForEndpointOnPortToStart(port, LOG_SEARCH_TIMEOUT, suppressException);
     }
 
     /**
      * Wait for endpoint on provided port to start
-     * 
+     *
      * @param port
      * @param timeout a timeout, in milliseconds
      * @param suppressException if set to 'true', method return null if the message is not found instead of throwing an exception
      * @return the matching line in the log, or null if no matches appear before the timeout expires
      * @throws Exception is thrown if endpoint does not start within the provided time and if suppressException is 'false'
      */
-    public String waitForEndpointOnPortToStart(int port, int timeout, boolean suppressException) throws Exception{
+    public String waitForEndpointOnPortToStart(int port, int timeout, boolean suppressException) throws Exception {
         String endpointStarted = waitForStringInLogUsingMark("CWWKO0219I:.*" + port, timeout);
-        if(endpointStarted == null){
+        if (endpointStarted == null) {
             RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize endpoint on port: " + port);
             Log.error(c, "waitForEndpointOnPortToStart", rx);
-            if(!suppressException){
+            if (!suppressException) {
                 throw rx;
             }
         }
         return endpointStarted;
     }
-
 
     /**
      * Wait for the server to state that it is listening on its default SSL Endpoint
@@ -1313,9 +1321,9 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Wait for the server to state that it is listening on its default SSL Endpoint
-     * 
+     *
      * Method does respect if a Mark has been taken in the logs
-     * 
+     *
      * @param timeout a timeout, in milliseconds
      * @return the matching line in the log, or null if no matches appear before the default timeout expires
      * @throws Exception if SSL Endpoint has not been logged as started within the default timeout
@@ -1337,10 +1345,10 @@ public class LibertyServer implements LogMonitorClient {
     public String waitForDefaultHTTPEndpointSSLStart(int timeout, boolean suppressException) throws Exception {
         //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
         String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*", timeout);
-        if (sslStartMsg == null){
+        if (sslStartMsg == null) {
             RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint-ssl");
             Log.error(c, "waitForDefaultHTTPEndpointSSLStart", rx);
-            if(!suppressException) {
+            if (!suppressException) {
                 throw rx;
             }
         }
@@ -1349,9 +1357,9 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Wait for the server to state that it is listening on its default non-SSL Endpoint
-     * 
+     *
      * Method does respect if a Mark has been taken in the logs
-     * 
+     *
      * @return the matching line in the log, or null if no matches appear before the default timeout expires
      * @throws Exception if SSL endpoint has not been logged as started within the default time period
      */
@@ -1399,11 +1407,11 @@ public class LibertyServer implements LogMonitorClient {
         //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host"
         // space is required to prevent confusion with the SSL endpoint
         String endpointStartMessage = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint ", timeout);
-        if(endpointStartMessage == null){
+        if (endpointStartMessage == null) {
             // highly unlikely unless something is really wrong.
             RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint");
             Log.error(c, "waitForDefaultHTTPEndpointStart", rx);
-            if(!suppressException) {
+            if (!suppressException) {
                 throw rx;
             }
         }
@@ -1420,7 +1428,7 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception if LTPA Config ready message is not received within the default timeout period
      */
     public String waitForLTPAConfigReady() throws Exception {
-       return waitForLTPAConfigReady(LOG_SEARCH_TIMEOUT);
+        return waitForLTPAConfigReady(LOG_SEARCH_TIMEOUT);
     }
 
     /**
@@ -1449,7 +1457,6 @@ public class LibertyServer implements LogMonitorClient {
         return waitForLTPAConfigReady(LOG_SEARCH_TIMEOUT, suppressException);
     }
 
-
     /**
      * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready` in the time specified
      *
@@ -1463,10 +1470,10 @@ public class LibertyServer implements LogMonitorClient {
     public String waitForLTPAConfigReady(int timeout, boolean suppressException) throws Exception {
         // wait for "CWWKS4105I: LTPA configuration is ready"
         String ltpaReady = waitForStringInLogUsingMark("CWWKS4105I", timeout);
-        if(ltpaReady == null){
+        if (ltpaReady == null) {
             RuntimeException rx = new RuntimeException("Timed out waiting for the LTPA Config to be ready");
             Log.error(c, "waitForLTPAConfigReady", rx);
-            if(!suppressException) {
+            if (!suppressException) {
                 throw rx;
             }
         }
@@ -1527,10 +1534,10 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String waitForLTPAConfigReady(int timeout, boolean suppressException, String logFile) throws Exception {
         String ltpaReady = waitForStringInLogUsingMark("CWWKS4105I:.*", timeout, getMatchingLogFile(logFile));
-        if(ltpaReady == null){
+        if (ltpaReady == null) {
             RuntimeException rx = new RuntimeException("Timed out waiting for the LTPA Config to be ready");
             Log.error(c, "waitForLTPAConfigReady", rx);
-            if(!suppressException) {
+            if (!suppressException) {
                 throw rx;
             }
         }
@@ -1585,13 +1592,13 @@ public class LibertyServer implements LogMonitorClient {
      * @return the matching line in the log, or null if no matches appear before the provided timeout expires
      * @throws Exception if LTPA keys created ready message is not received within the provided timeout period and suppressException is 'false'
      */
-    public String waitForLTPAKeysCreated(int timeout, boolean suppressException) throws Exception{
+    public String waitForLTPAKeysCreated(int timeout, boolean suppressException) throws Exception {
         // wait for "CWWKS4104A: LTPA keys created"
         String ltpaKeysCreated = waitForStringInLogUsingMark("CWWKS4104A", timeout);
-        if(ltpaKeysCreated == null){
+        if (ltpaKeysCreated == null) {
             RuntimeException rx = new RuntimeException("Timed out waiting for the LTPA keys to be created");
             Log.error(c, "waitForLTPAKeysCreated", rx);
-            if(!suppressException) {
+            if (!suppressException) {
                 throw rx;
             }
         }
@@ -1883,36 +1890,46 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected void checkPortsOpen(boolean retry) {
+    protected void checkPortsOpen() {
+        if (getHttpDefaultPort() > 0) {
+            checkPortOpen(getHttpDefaultPort(), true);
+        }
+        if (getIiopDefaultPort() > 0) {
+            checkPortOpen(getIiopDefaultPort(), true);
+        }
+    }
+
+    private void checkPortOpen(int port, boolean retry) {
+        final String method = "checkPortsOpen";
         ServerSocket socket = null;
         try {
             // Create unbounded socket
             socket = new ServerSocket();
-            // This allows the socket to close and others to bind to it even if its in TIME_WAIT state
+            // setReuseAddress(true) allows binding even if the port is in TIME_WAIT state,
+            // so a successful bind here confirms no process is actively holding the port.
             socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress(getHttpDefaultPort()));
+            socket.bind(new InetSocketAddress(port));
         } catch (Exception ex) {
-            Log.error(c, "checkPortsOpen", ex, "http default port (" + httpDefaultPort + ") is currently bound");
-            printProcessHoldingPort(getHttpDefaultPort());
+            Log.error(c, method, ex, "Port " + port + " is currently bound");
+            printProcessHoldingPort(port);
             if (retry) {
-                Log.info(c, "checkPortsOpen", "Waiting 5 seconds and trying again");
+                Log.info(c, method, "Waiting 5 seconds and trying again");
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException ie) {
-                    // Not a lot to do
+                    Thread.currentThread().interrupt();
                 }
                 // Do this out of the try block, even if we are interrupted we want to try once more
-                checkPortsOpen(false);
+                checkPortOpen(port, false);
             }
         } finally {
-            if (null != socket) {
+            if (socket != null) {
                 try {
                     // With setReuseAddress set to true we should free up our socket and allow
                     // someone else to bind to it even if we are in TIME_WAIT state.
                     socket.close();
                 } catch (IOException ioe) {
-                    // not a lot to do
-                    Log.error(c, "checkPortsOpen", ioe, "Failed to close socket. Port " + httpDefaultPort + " will still be bound.");
+                    Log.error(c, method, ioe, "Failed to close socket for port " + port);
                 }
             }
         }
@@ -2071,7 +2088,7 @@ public class LibertyServer implements LogMonitorClient {
         if (additionalSystemProperties != null && additionalSystemProperties.size() > 0) {
             useEnvVars.putAll(additionalSystemProperties);
         }
-        checkPortsOpen(true);
+        checkPortsOpen();
 
         final String cmd = installRoot + "/bin/server";
         ArrayList<String> parametersList = new ArrayList<String>();
@@ -3379,7 +3396,7 @@ public class LibertyServer implements LogMonitorClient {
                 //since this is going to connect to the secure port, that needs to be ready
                 //before an attempt to make the JMX connection
                 Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
-                assertNotNull("CWWKO0219I.*ssl not received",waitForDefaultHTTPEndpointSSLStart());
+                assertNotNull("CWWKO0219I.*ssl not received", waitForDefaultHTTPEndpointSSLStart());
 
                 assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
 
@@ -3710,9 +3727,9 @@ public class LibertyServer implements LogMonitorClient {
             String cmd = installRoot + "/bin/server";
             String[] parameters;
             if (forceStop) {
-                parameters = new String[] { "stop", serverToUse, "--force" };
+                parameters = new String[] { "stop", serverToUse, "--force", SERVER_STOP_TIMEOUT_ARG };
             } else {
-                parameters = new String[] { "stop", serverToUse };
+                parameters = new String[] { "stop", serverToUse, SERVER_STOP_TIMEOUT_ARG };
             }
 
             // Need to ensure JAVA_HOME is set correctly - can't rely on user's environment to be
