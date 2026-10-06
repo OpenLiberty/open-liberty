@@ -183,8 +183,11 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     @Test
     public void testToolCallDuration() throws Exception {
+        int waitMs = 300;
+        int toleranceMs = 20; // Accounts for OS timer resolution and scheduling jitter
+
         long startTime = System.nanoTime();
-        String response = client.callMCP(WAITING_TOOL_REQUEST.formatted(300));
+        String response = client.callMCP(WAITING_TOOL_REQUEST.formatted(waitMs));
         Duration clientCallDuration = Duration.ofNanos(System.nanoTime() - startTime);
         String expectedResponseString = """
                         {"id":3,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "OK"}], "isError": false}}
@@ -193,7 +196,7 @@ public class TelemetryOperationsTest extends FATServletClient {
 
         Duration metricDuration = getDurationMetric("waitingTool");
 
-        assertThat(metricDuration, greaterThanOrEqualTo(Duration.ofMillis(300)));
+        assertThat(metricDuration, greaterThanOrEqualTo(Duration.ofMillis(waitMs - toleranceMs)));
         assertThat(metricDuration, lessThanOrEqualTo(clientCallDuration));
     }
 
