@@ -28,7 +28,7 @@
     
     <enterpriseApplication type="ear" id="enterpriseApp" name="enterpriseApp" location="enterpriseApp.ear" >
       <resourceAdapter id="enterpriseRA">
-        <properties.enterpriseApp.enterpriseRA />
+        <properties.enterpriseApp.enterpriseRA generalConfigProp="PROP_SET"/>
       </resourceAdapter>
     </enterpriseApplication>
 
