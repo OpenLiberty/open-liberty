@@ -62,6 +62,7 @@ public class JaegerOtlpTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
         server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
+        server.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "5000"); // Fail fast on slow connections; default 10s stalls the BSP retry cycle
 
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
@@ -72,6 +73,10 @@ public class JaegerOtlpTest extends JaegerBaseTest {
 
     @AfterClass
     public static void teardown() throws Exception {
+        // Give the BSP time to flush pending spans before the JVM shuts down.
+        // Without this, the server can stop before the 100ms BSP batch window fires,
+        // causing 0 spans to reach Jaeger (root cause of the Aug 2026 failures).
+        Thread.sleep(2000);
         server.stopServer();
     }
 
