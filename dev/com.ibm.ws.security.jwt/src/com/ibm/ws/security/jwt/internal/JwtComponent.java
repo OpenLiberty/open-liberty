@@ -40,6 +40,7 @@ import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
@@ -53,6 +54,8 @@ import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 public class JwtComponent implements JwtConfig {
 
     private static final TraceComponent tc = Tr.register(JwtComponent.class);
+
+    private static boolean issuedBetaMessage = false;
 
     private String issuer = null;
     private String issuerUrl = null;
@@ -191,7 +194,25 @@ public class JwtComponent implements JwtConfig {
             valid = valid * 3600;
         }
 
-        checkWorkloadIdentityClaimConflicts();
+        if (isRunningBetaMode()) {
+            checkIfJwtOutlivesJwk();
+            checkWorkloadIdentityClaimConflicts();
+        }
+    }
+
+    private void checkIfJwtOutlivesJwk() {
+        if (!isJwkEnabled) {
+            return;
+        }
+
+        // jwkRotationTime is in milliseconds; valid is in seconds.
+        // A signing key stays in the JWK set for jwkMaxKeys rotation periods.
+        // If that window < token lifetime, tokens can outlive their signing key.
+        long keyWindowInSeconds = (jwkRotationTime / 1000L) * jwkMaxKeys;
+        if (keyWindowInSeconds < valid) {
+            long jwkRotationTimeInMinutes = jwkRotationTime / 60000L;
+            Tr.warning(tc, "JWK_KEY_COVERAGE_WINDOW_TOO_SHORT", new Object[] { issuer, jwkRotationTimeInMinutes, jwkMaxKeys, valid });
+        }
     }
 
     private void checkWorkloadIdentityClaimConflicts() {
@@ -517,6 +538,18 @@ public class JwtComponent implements JwtConfig {
     @Override
     public long getNbfOffsetTime() {
         return nbfOffsetTime;
+    }
+
+    private boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class BuilderImpl for the first time.");
+                issuedBetaMessage = true;
+            }
+            return true;
+        }
     }
 
 }
