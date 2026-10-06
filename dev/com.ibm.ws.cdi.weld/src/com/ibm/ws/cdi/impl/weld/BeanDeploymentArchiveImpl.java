@@ -890,6 +890,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
         this.ejbDescriptors.add(ejbDescriptor);
         Class<?> beanClass = ejbDescriptor.getBeanClass();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "addBeanDeploymentArchive: EjbDescriptor's beanClass " + beanClass.getName() + " " + System.identityHashCode(beanClass));
+        }
+
         Set<EjbDescriptor<?>> ejbDescriptors = ejbDescriptorMap.get(beanClass);
         if (ejbDescriptors == null) {
             ejbDescriptors = new HashSet<EjbDescriptor<?>>();
