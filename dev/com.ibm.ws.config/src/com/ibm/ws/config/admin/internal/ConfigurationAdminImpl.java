@@ -161,6 +161,12 @@ class ConfigurationAdminImpl implements ConfigurationAdmin {
     @Override
     @FFDCIgnore(SecurityException.class)
     public ExtendedConfiguration[] listConfigurations(String filterString) throws InvalidSyntaxException {
+        
+        boolean isAppManagerFilter = filterString != null && filterString.contains("(service.factoryPid=com.ibm.ws.app.manager)");
+        
+        if (isAppManagerFilter && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, ">>ConfigurationAdminImpl.listConfigurations entry: filterString=" + filterString);
+        
         if (filterString == null)
             filterString = "(" + Constants.SERVICE_PID + "=*)"; //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -168,10 +174,25 @@ class ConfigurationAdminImpl implements ConfigurationAdmin {
             this.caFactory.checkConfigurationPermission();
         } catch (SecurityException e) {
             filterString = "(&(" + ConfigurationAdmin.SERVICE_BUNDLELOCATION + "=" + bundle.getLocation() + ")" + filterString + ")";
+            if (isAppManagerFilter && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, ">>ConfigurationAdminImpl.listConfigurations: SecurityException caught, modified filterString=" + filterString);
         }
-        return caFactory.getConfigurationStore().listConfigurations(FrameworkUtil.createFilter(filterString));
+        
+        ExtendedConfiguration[] result = caFactory.getConfigurationStore().listConfigurations(FrameworkUtil.createFilter(filterString));
+        
+        if (isAppManagerFilter && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (result == null) {
+                Tr.debug(tc, ">>ConfigurationAdminImpl.listConfigurations exit: returning null");
+            } else {
+                Tr.debug(tc, ">>ConfigurationAdminImpl.listConfigurations exit: returning " + result.length + " configurations");
+                for (int i = 0; i < result.length; i++) {
+                    Tr.debug(tc, "  [" + i + "]: " + (result[i] != null ? result[i].getPid() : "null"));
+                }
+            }
+        }
+        
+        return result;
     }
-
 
 	//
 	//
