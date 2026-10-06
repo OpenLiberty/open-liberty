@@ -129,7 +129,6 @@ checkCriuUnprivileged()
 ##
 createServer()
 {
-  JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
   javaCmd '' "${SERVER_NAME}" --create "$@"
   rc=$?
 
@@ -685,20 +684,22 @@ serverEnvAndJVMOptions()
   return 0
 }
 
-## installEnvAndJVMOptions: Set variables for a non-server or nonexistent server command
-##                          and populate JVM_OPTIONS_QUOTED.
-##                          Used by commands like 'create' where the server does not yet
-##                          exist so server-level server.env files cannot be read.
-installEnvAndJVMOptions()
+## initializeClientJVMOptions: Set the minimum JVM options needed for client
+##   commands (stop, status, dump, javadump, create, pause, resume).
+##   Intentionally does NOT load jvm.options files -- those contain server JVM
+##   options (e.g. heap settings) that should not apply to the short-lived
+##   client JVM that signals the running server.
+##   On z/OS Java 24+, addPlatformSpecificJvmFlags adds
+##   --enable-native-access=ALL-UNNAMED, required because these commands open
+##   a debug log (e.g. stop.log) which triggers NativeMethodHelper via
+##   TaggedFileOutputStream on z/OS.
+initializeClientJVMOptions()
 {
-  installEnv
   initializeBaseJVMOptions
-  loadJVMOptionsFiles || return $?
   detectJavaHome
   loadJavaVersionSpecificOptions
   addPlatformSpecificJvmFlags
-  enableFIPS140_3
-  return 0
+  JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
 }
 
 # Resolve symbolic links in a path iteratively
@@ -2104,18 +2105,16 @@ case "$ACTION" in
   ;;
 
   create)
-    if ! installEnvAndJVMOptions; then
-      exit $?
-    fi
+    installEnv
+    initializeClientJVMOptions
     createServer "$@"
     exit $rc
   ;;
 
   # Stop the server.
   stop)
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnv
+    initializeClientJVMOptions
     if checkServer true
     then
       PID=
@@ -2144,9 +2143,8 @@ case "$ACTION" in
 
   # Check if server is running
   status)
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnv
+    initializeClientJVMOptions
     if checkServer true
     then
       serverPIDStatus
@@ -2196,9 +2194,8 @@ case "$ACTION" in
 
   # dump the server's configs/logs/status to a zip file
   dump)
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnv
+    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
@@ -2212,9 +2209,8 @@ case "$ACTION" in
 
   # dump JVM status
   javadump)
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnv
+    initializeClientJVMOptions
     if checkServer true
     then
       JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
@@ -2227,9 +2223,8 @@ case "$ACTION" in
 
   # pause the server
   pause)
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnv
+    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
@@ -2243,9 +2238,8 @@ case "$ACTION" in
 
   # resume the server
   resume)
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnv
+    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
