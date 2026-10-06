@@ -120,8 +120,15 @@ public class CryptoUtils {
     public static final int AES_128_KEY_LENGTH_BYTES = 16;
     public static final int AES_256_KEY_LENGTH_BYTES = 32;
 
-    /** AES IV length is always 128 bits (16 bytes), regardless of key size. */
+    /** AES CBC IV length: must equal the AES block size (128 bits / 16 bytes). */
     public static final int AES_IV_LENGTH_BYTES = 16;
+
+    /**
+     * Recommended GCM IV length: 96 bits (12 bytes) per NIST SP 800-38D §8.2.1.
+     * A 96-bit IV is processed directly as the counter block; any other length
+     * requires an extra GHASH pass and reduces the security margin.
+     */
+    public static final int GCM_IV_LENGTH_BYTES = 12;
 
     public static final int DESEDE_KEY_LENGTH_BYTES = 24;
 

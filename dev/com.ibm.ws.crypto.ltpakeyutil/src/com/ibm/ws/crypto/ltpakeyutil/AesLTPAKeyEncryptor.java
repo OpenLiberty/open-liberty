@@ -23,9 +23,10 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * An {@link LTPAKeyEncryptor} that encrypts and decrypts LTPA key material
  * using a raw AES {@link Key}. The cipher is always {@code AES/GCM/NoPadding}.
  *
- * <p>A fresh random 16-byte IV is generated on every {@link #encrypt} call and
- * prepended to the ciphertext. {@link #decrypt} reads the first 16 bytes as the
- * IV before decrypting the remainder. This avoids a fixed all-zero IV while
+ * <p>A fresh random 12-byte IV (96 bits, per NIST SP 800-38D §8.2.1) is
+ * generated on every {@link #encrypt} call and prepended to the ciphertext.
+ * {@link #decrypt} reads the first 12 bytes as the IV before decrypting the
+ * remainder. This avoids a fixed all-zero IV while
  * requiring no access to the key's raw bytes, which makes it compatible with
  * keys that return {@code null} from {@code getEncoded()}.
  *
@@ -37,7 +38,7 @@ public class AesLTPAKeyEncryptor implements LTPAKeyEncryptor {
 
     private static final String AES_CIPHER = CryptoUtils.AES_GCM_CIPHER;
 
-    private static final int IV_LENGTH = CryptoUtils.AES_IV_LENGTH_BYTES;
+    private static final int IV_LENGTH = CryptoUtils.GCM_IV_LENGTH_BYTES;
 
     private final Key aesKey;
 
