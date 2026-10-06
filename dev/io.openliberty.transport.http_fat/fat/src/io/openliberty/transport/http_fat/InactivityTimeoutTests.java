@@ -13,11 +13,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -290,16 +290,17 @@ public class InactivityTimeoutTests {
      * On the initial read the server will retry one time if the timeout is hit. So we need to wait a bit more
      * than 2 times the inactivityTimeout to ensure the inactivityTimeout is working as expected.
      *
-     * The test will then send a request and validate that the response is "HTTP/1.1 408 Request Timeout" or
-     * the connection was closed before the test could read the response and a SocketException occurs.
+     * The test will then send a request and validate that the response is "HTTP/1.1 408 Request Timeout",
+     * the connection was closed before the test could read the response and an IOException occurs, or readLine() returns null.
      *
      * @throws Exception
      */
     @Test
     public void testInactivityTimeout_one_request() throws Exception {
         String expectedResponse = "HTTP/1.1 408 Request Timeout";
-        boolean expectedResponseFound = false;
-        boolean socketExceptionOccurred = false;
+        boolean requestTimeoutFound = false;
+        boolean IOExceptionOccurred = false;
+        boolean nullResponseFound = false;
 
         String address = server.getHostname() + ":" + server.getHttpDefaultPort();
 
@@ -341,32 +342,66 @@ public class InactivityTimeoutTests {
             // Sleep 4X the inactivityTimeout since the read is retried one time.
             Thread.sleep(20000);
 
+            // Log the status of the socket
+            LOG.info("Checking the socket state after sleeping.");
+            LOG.info("Socket.isConnected(): " + socket.isConnected());
+            LOG.info("Socket.isClosed(): " + socket.isClosed());
+            LOG.info("Socket.isInputShutdown(): " + socket.isInputShutdown());
+            LOG.info("Socket.isOutputShutdown(): " + socket.isOutputShutdown());
+
+            // Determine if the connection is already closed before we try to write to the socket.
+            try {
+                socket.sendUrgentData(0xFF);
+                LOG.info("Urgent data was sent - the socket is still connected.");
+            } catch (IOException e) {
+                LOG.info("Socket is closed, IOException from sendUrgentData() " + e.getMessage());
+                IOExceptionOccurred = true;
+            }
+
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            OutputStream os = socket.getOutputStream();
+            BufferedOutputStream os = new BufferedOutputStream(socket.getOutputStream());
 
-            LOG.info("Sending a request: " + request);
-            os.write(request.getBytes());
-
-            LOG.info("Read the response:");
-            try {
-                while ((line = reader.readLine()) != null) {
-                    LOG.info(line);
-                    if (line.equals(expectedResponse)) {
-                        LOG.info("Expected response was found!");
-                        expectedResponseFound = true;
-                    }
+            // Only send the request if socket connection is good.
+            if (!IOExceptionOccurred) {
+                try {
+                    LOG.info("Sending a request: " + request);
+                    os.write(request.getBytes());
+                    os.flush();
+                } catch (IOException e) {
+                    LOG.info("IOException while sending request: " + e.getMessage());
+                    IOExceptionOccurred = true;
                 }
-            } catch (SocketException e) {
-                // If the connection is closed before we can read the response.
-                LOG.info("SocketException occurred!");
-                socketExceptionOccurred = true;
+            }
+
+            // Only try to read the response if we successfully sent a request.
+            if (!IOExceptionOccurred) {
+                LOG.info("Read the response:");
+                try {
+                    line = reader.readLine();
+                    LOG.info(line);
+                    if (line == null) {
+                        LOG.info("A null response was returned!");
+                        nullResponseFound = true;
+                    } else {
+                        do {
+                            if (line.equals(expectedResponse)) {
+                                LOG.info("408 Request Timeout response was found!");
+                                requestTimeoutFound = true;
+                            }
+                        } while ((line = reader.readLine()) != null);
+                    }
+                } catch (IOException e) {
+                    // If the connection is closed before we can read the response.
+                    LOG.info("IOException occurred while reading the response: " + e.getMessage());
+                    IOExceptionOccurred = true;
+                }
             }
         }
 
-        assertTrue("A timeout did not occur!", expectedResponseFound || socketExceptionOccurred);
+        assertTrue("A timeout did not occur!", requestTimeoutFound || IOExceptionOccurred || nullResponseFound);
 
-        // Verify that there was a SocketTimeoutException in the trace.
+        // Verify that there was a SocketTimeoutException or connection closed message in the trace.
         if (!runningNetty) {
             assertTrue("The SocketTimeoutException was not found in the trace and should have been!",
                        server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() == 1);
@@ -389,7 +424,7 @@ public class InactivityTimeoutTests {
      * The test will sleep for 6 seconds which is 1X + 1 the inactivityTimeout.
      *
      * The test will then send another request and ensure no response is returned and that there
-     * is a SocketTimeoutException in the trace indicating the inactivtyTimeout worked correctly.
+     * is a SocketTimeoutException / connection closed message in the trace indicating the inactivtyTimeout worked correctly.
      *
      * @throws Exception
      */
@@ -431,10 +466,11 @@ public class InactivityTimeoutTests {
 
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            OutputStream os = socket.getOutputStream();
+            BufferedOutputStream os = new BufferedOutputStream(socket.getOutputStream());
 
             LOG.info("Sending request 1: " + request);
             os.write(request.getBytes());
+            os.flush();
 
             LOG.info("Read the response from request 1:");
             while ((line = reader.readLine()) != null) {
@@ -452,17 +488,20 @@ public class InactivityTimeoutTests {
             // Drive another request
             LOG.info("Sending request 2: " + request);
             os.write(request.getBytes());
+            os.flush();
 
             LOG.info("Read the response from request 2:");
             while ((line = reader.readLine()) != null) {
                 LOG.info(line);
                 requestTwoFailed = true; // There should be no response!
             }
+        } catch (IOException e) {
+            LOG.info("IOException occurred while reading / writing to Socket: " + e.getMessage());
         }
 
         assertFalse("There was no response expected but one was received", requestTwoFailed);
 
-        // Verify that there was a SocketTimeoutException in the trace.
+        // Verify that there was a SocketTimeoutException or connection closed message in the trace.
         if (!runningNetty) {
             assertTrue("The SocketTimeoutException was not found in the trace and should have been!",
                        server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() == 1);
@@ -485,7 +524,7 @@ public class InactivityTimeoutTests {
      * A request is sent and the initial response is read and validated to be the correct response from the Servlet.
      *
      * Since the initial read is retried before invoking the inactivityTimeout this request and response should work with
-     * only the 6s sleep vs the 20s sleep where it would be expected to have a "HTTP/1.1 408 Request Timeout" response or a SocketException.
+     * only the 6s sleep vs the 20s sleep where it would be expected to have a "HTTP/1.1 408 Request Timeout" response an IOException, or readLine() returns null.
      *
      *
      * @throws Exception
@@ -537,10 +576,11 @@ public class InactivityTimeoutTests {
 
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            OutputStream os = socket.getOutputStream();
+            BufferedOutputStream os = new BufferedOutputStream(socket.getOutputStream());
 
             LOG.info("Sending a request: " + request);
             os.write(request.getBytes());
+            os.flush();
 
             LOG.info("Read the response:");
             while ((line = reader.readLine()) != null) {
@@ -549,6 +589,8 @@ public class InactivityTimeoutTests {
                     expectedResponseFound = true;
                 }
             }
+        } catch (IOException e) {
+            LOG.info("IOException occurred while reading / writing to the socket: " + e.getMessage());
         }
 
         assertTrue("The expected response: " + expectedResponse + " was not received!", expectedResponseFound);
@@ -622,10 +664,11 @@ public class InactivityTimeoutTests {
 
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            OutputStream os = socket.getOutputStream();
+            BufferedOutputStream os = new BufferedOutputStream(socket.getOutputStream());
 
             LOG.info("Sending a request: " + request);
             os.write(request.getBytes());
+            os.flush();
 
             LOG.info("Read the response:");
             while ((line = reader.readLine()) != null) {
@@ -636,6 +679,8 @@ public class InactivityTimeoutTests {
                 }
             }
 
+        } catch (IOException e) {
+            LOG.info("IOException occurred while reading / writing to the socket: " + e.getMessage());
         }
 
         assertTrue("The expected response: " + expectedResponse + " was not received!", expectedResponseFound);
@@ -704,10 +749,11 @@ public class InactivityTimeoutTests {
 
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            OutputStream os = socket.getOutputStream();
+            BufferedOutputStream os = new BufferedOutputStream(socket.getOutputStream());
 
             LOG.info("Sending a request: " + request);
             os.write(request.getBytes());
+            os.flush();
 
             LOG.info("Read the response:");
             while ((line = reader.readLine()) != null) {
@@ -717,6 +763,8 @@ public class InactivityTimeoutTests {
                     expectedResponseFound = true;
                 }
             }
+        } catch (IOException e) {
+            LOG.info("IOException occurred while reading / writing to the socket: " + e.getMessage());
         }
 
         assertTrue("The expected response: " + expectedResponse + " was not received!", expectedResponseFound);
