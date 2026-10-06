@@ -77,6 +77,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_AGGREGATOR_HANDLER_NAME = "objectAggregator";
     public static final String HTTP_REQUEST_HANDLER_NAME = "requestHandler";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "h2cUpgradeHandler";
+    public static final String SERVLET_UPGRADE_HANDLER_NAME = "ServletUpgradeHandler";
     public static final String HTTP1_PROTOCOL_HANDLER_NAME = "http1ProtocolHandler";
     public static final String WRITE_TIMEOUT_HANDER_NAME = "writeTimeoutHandler";
 

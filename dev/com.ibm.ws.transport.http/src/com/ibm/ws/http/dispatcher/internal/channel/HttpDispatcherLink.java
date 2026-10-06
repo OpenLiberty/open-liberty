@@ -474,7 +474,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return true;
         }
         // Keep-alive handler must be present for the connection to be reusable.
-        if (this.nettyContext.pipeline().get("httpKeepAlive") == null) {
+        if (this.nettyContext.pipeline().get(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME) == null) {
             return false;
         }
         // If the request itself was not keep-alive, reuse is not possible.
