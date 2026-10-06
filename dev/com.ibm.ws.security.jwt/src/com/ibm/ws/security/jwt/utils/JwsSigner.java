@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,17 +30,6 @@ public class JwsSigner {
 
 	// private static TraceComponent tc = Tr.register(JwsSigner.class,
 	// TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-	// set org.jose4j.jws.default-allow-none to true to behave the same as old
-	// jwt
-	// allow signatureAlgorithme as none
-	static {
-		AccessController.doPrivileged(new PrivilegedAction<String>() {
-			@Override
-			public String run() {
-				return System.setProperty("org.jose4j.jws.default-allow-none", "true");
-			}
-		});
-	};
 
 	@FFDCIgnore({ Exception.class })
 	public static String getSignedJwt(JwtClaims claims, JwtData jwtData) throws JwtTokenException {
