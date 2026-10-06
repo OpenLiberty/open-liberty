@@ -129,6 +129,7 @@ checkCriuUnprivileged()
 ##
 createServer()
 {
+  JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
   javaCmd '' "${SERVER_NAME}" --create "$@"
   rc=$?
 
@@ -675,6 +676,22 @@ addPlatformSpecificJvmFlags()
 serverEnvAndJVMOptions()
 {
   serverEnv
+  initializeBaseJVMOptions
+  loadJVMOptionsFiles || return $?
+  detectJavaHome
+  loadJavaVersionSpecificOptions
+  addPlatformSpecificJvmFlags
+  enableFIPS140_3
+  return 0
+}
+
+## installEnvAndJVMOptions: Set variables for a non-server or nonexistent server command
+##                          and populate JVM_OPTIONS_QUOTED.
+##                          Used by commands like 'create' where the server does not yet
+##                          exist so server-level server.env files cannot be read.
+installEnvAndJVMOptions()
+{
+  installEnv
   initializeBaseJVMOptions
   loadJVMOptionsFiles || return $?
   detectJavaHome
@@ -2087,7 +2104,9 @@ case "$ACTION" in
   ;;
 
   create)
-    installEnv
+    if ! installEnvAndJVMOptions; then
+      exit $?
+    fi
     createServer "$@"
     exit $rc
   ;;
