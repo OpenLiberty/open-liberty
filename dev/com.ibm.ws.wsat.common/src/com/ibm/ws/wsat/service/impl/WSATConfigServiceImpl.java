@@ -85,7 +85,6 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     // Obtained via BundleContext.getService() (not locateService) so it works regardless
     // of whether the reference was DS-bound. Null when using default_host.
     private VirtualHost configuredVirtualHost = null;
-    private ComponentContext savedComponentContext = null;
 
     private static WSATConfigService INSTANCE;
 
@@ -163,12 +162,11 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         unregisterVirtualHostVariable();
 
         // Release the directly-obtained VirtualHost service
-        if (configuredVirtualHostRef != null && savedComponentContext != null) {
-            savedComponentContext.getBundleContext().ungetService(configuredVirtualHostRef);
+        if (configuredVirtualHostRef != null) {
+            cc.getBundleContext().ungetService(configuredVirtualHostRef);
             configuredVirtualHostRef = null;
             configuredVirtualHost = null;
         }
-        savedComponentContext = null;
 
         httpOptions.deactivate(cc);
         variableRegistryRef.deactivate(cc);
@@ -179,7 +177,6 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         httpOptions.activate(cc);
         handlerService.activate(cc);
         variableRegistryRef.activate(cc);
-        savedComponentContext = cc;
 
         // Read the configured virtual host reference from server.xml
         String virtualHostRef = (String) properties.get("virtualHostRef");

@@ -127,6 +127,7 @@ public class WSATConfigServiceImplTest {
         public List<ServiceReference<VirtualHost>> vhRefs = Collections.emptyList();
         public VirtualHost vhService = null; // returned by getService()
         public int getServiceReferencesCallCount = 0;
+        public int ungetServiceCallCount = 0;
 
         // Matches BundleContext.getServiceReferences(Class<S>, String) throws InvalidSyntaxException
         @SuppressWarnings("unchecked")
@@ -147,6 +148,7 @@ public class WSATConfigServiceImplTest {
 
         // Matches BundleContext.ungetService(ServiceReference<?>)
         public boolean ungetService(ServiceReference<?> reference) {
+            ungetServiceCallCount++;
             return true;
         }
     }
@@ -470,5 +472,55 @@ public class WSATConfigServiceImplTest {
         impl.modified(mockCc.asMock(ComponentContext.class), props);
         assertEquals("Expected no additional BundleContext lookup on repeated modified()",
             afterFirst, mockBundleCc.getServiceReferencesCallCount);
+    }
+
+    // -----------------------------------------------------------------------
+    // UT-7: revert to default_host after modified() switches back from a custom VH
+    // -----------------------------------------------------------------------
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRevertToDefaultHostAfterCustomVirtualHost() throws Exception {
+        // Wire default VH (port 9080)
+        MockVirtualHost defaultVH = setupDefaultHttpOptions();
+
+        // Build a custom VH on port 9090
+        MockVirtualHost customVH = new MockVirtualHost("http://host:9090");
+        ServiceReference<VirtualHost> customVhRef =
+            new MockServiceRef<VirtualHost>().mkRef();
+        mockBundleCc.vhRefs = Collections.singletonList(customVhRef);
+        mockBundleCc.vhService = customVH.asMock(VirtualHost.class);
+
+        ComponentContext cc = mockCc.asMock(ComponentContext.class);
+
+        // First modified() — switch to wsatHost
+        Map<String, Object> props = baseProperties();
+        props.put("virtualHostRef", "wsatHost");
+        impl.modified(cc, props);
+        assertEquals("Expected custom VH URL after first modified()",
+            "http://host:9090/ibm/wsatservice", impl.getWSATUrl());
+
+        // Second modified() — revert to default_host.
+        // Clear vhRefs so lookupVirtualHost() is not called (default_host skips the lookup).
+        mockBundleCc.vhRefs = Collections.emptyList();
+        mockBundleCc.vhService = null;
+        // Re-register the default VH as the locateService result for httpOptions
+        mockCc.register("httpOptions", defaultVH.asMock(VirtualHost.class));
+
+        Map<String, Object> defaultProps = baseProperties();
+        defaultProps.put("virtualHostRef", "default_host");
+        impl.modified(cc, defaultProps);
+
+        // URL must now come from httpOptions (default VH, port 9080)
+        assertEquals("Expected default VH URL after revert",
+            "http://host:9080/ibm/wsatservice", impl.getWSATUrl());
+
+        // ungetService() must have been called exactly once (to release the custom VH ref)
+        assertEquals("Expected ungetService() to be called once on revert",
+            1, mockBundleCc.ungetServiceCallCount);
+
+        // No additional BundleContext lookups for the default_host path
+        assertEquals("Expected exactly one BundleContext lookup total (for wsatHost only)",
+            1, mockBundleCc.getServiceReferencesCallCount);
     }
 }
