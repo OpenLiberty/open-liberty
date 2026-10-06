@@ -1950,10 +1950,7 @@ case "$ACTION" in
   # Start the server in the foreground
   run | debug | checkpoint)
 
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
 
@@ -2031,10 +2028,7 @@ case "$ACTION" in
   # Start the server in the background
   start)
 
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
 
@@ -2104,10 +2098,7 @@ case "$ACTION" in
 
   # Stop the server.
   stop)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
     if checkServer true
@@ -2138,10 +2129,7 @@ case "$ACTION" in
 
   # Check if server is running
   status)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
     if checkServer true
@@ -2174,11 +2162,8 @@ case "$ACTION" in
 
   # Package up the runtime and target server configuration
   package)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
-     exit $?
+    if ! serverEnvAndJVMOptions; then
+      exit $?
     fi
 
     # Check to see if the server exists
@@ -2196,10 +2181,7 @@ case "$ACTION" in
 
   # dump the server's configs/logs/status to a zip file
   dump)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
     # Check to see if the server exists
@@ -2215,10 +2197,7 @@ case "$ACTION" in
 
   # dump JVM status
   javadump)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
     if checkServer true
@@ -2233,10 +2212,7 @@ case "$ACTION" in
 
   # pause the server
   pause)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
     # Check to see if the server exists
@@ -2252,10 +2228,7 @@ case "$ACTION" in
 
   # resume the server
   resume)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
+    if ! serverEnvAndJVMOptions; then
       exit $?
     fi
     # Check to see if the server exists
