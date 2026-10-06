@@ -219,7 +219,7 @@ public class CustomConfigIdTests {
         long elapsed = 0;
         while (elapsed < timeout) {
             lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
-            if (lines.size() >= (initialLineCount + 1)) {
+            if (lines.size() == (initialLineCount + 1)) {
                 break;
             }
             Thread.sleep(pollInterval);
