@@ -98,13 +98,10 @@ public class SRTUpgradeOutputStream31 extends ServletOutputStream
     @Override
     public void setWriteListener(WriteListener appWLObject) {
         //Throw a NullPointerException if the WriteListener passed in was null
-        if(appWLObject == null){            
-
+        if(appWLObject == null){
             Tr.error(tc, "writelistener.is.null");
-            //TODO: this is being swallowed, look for another alternative 
-            _outHelper.get_vc().getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "true");
             throw new NullPointerException(Tr.formatMessage(tc, "writelistener.is.null"));
-        } 
+        }
         if(_outHelper.isOutputStream_closed() || _outHelper.isOutputStream_close_initiated_but_not_Flush_ready()){
             Tr.error(tc, "stream.is.closed.no.read.write");                         
             throw new IllegalStateException(Tr.formatMessage(tc, "stream.is.closed.no.read.write"));           
