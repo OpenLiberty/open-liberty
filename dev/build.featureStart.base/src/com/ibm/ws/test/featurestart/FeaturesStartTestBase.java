@@ -101,6 +101,31 @@ public class FeaturesStartTestBase {
         FeaturesStartTestBase.results = new FeaturesStartResults(server, features, parameters);
     }
 
+    // The open-liberty bucket sub-classes have been updated to use the new API.
+    // WS-CD bucket subclasses require a coordinated update, which is mildly painful.
+    // Temporarily, the WS-CD subclasses still use the deprecated APIs.
+
+    /**
+     * Deprecated API invoked by subclasses. Use instead {@link #setParameters(Class, String, int)}.
+     * The number of buckets and sparse setting are not provided by the root class.
+     */
+    @Deprecated
+    public static void setParameters(
+        Class<?> testClass, String serverName, int numBuckets, int bucketNo, int sparsity) throws Exception {
+
+        FeaturesStartTestBase.setParameters(testClass, serverName, bucketNo);
+    }
+
+    /**
+     * Deprecated API invoked by subclasses. This method no longer needs to be invoked.
+     * (This implementation does nothing.) Feature setup now occurs within the standard base
+     * class initialization steps.
+     */
+    @Deprecated    
+    public static void setupFeatures() {
+        // NO-OP
+    }
+    
     // Primary data structures:
     //
     // Tests are run against a named liberty server.
