@@ -41,13 +41,19 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
     public static final String NAME = "libertyALPNHandler";
 
     private final NettyHttpChannelConfig httpConfig;
+    private final TimeoutHandler timeoutHandler;
 
     /**
      * Default to HTTP 1.1
      */
     public LibertyNettyALPNHandler(NettyHttpChannelConfig httpConfig) {
+        this(httpConfig, new TimeoutHandler(httpConfig));
+    }
+
+    public LibertyNettyALPNHandler(NettyHttpChannelConfig httpConfig, TimeoutHandler timeoutHandler) {
         super(ApplicationProtocolNames.HTTP_1_1);
         this.httpConfig = httpConfig;
+        this.timeoutHandler = timeoutHandler;
     }
 
     @Override
@@ -62,9 +68,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, null, handler);
 
             if (ctx.pipeline().get(TimeoutHandler.class) == null) {
-                TimeoutHandler h = new TimeoutHandler(httpConfig);
-
-                ctx.pipeline().addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, h);
+                ctx.pipeline().addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, timeoutHandler);
             }
             // The H2 topology is installed before the protocol state is published.
             ProtocolState.establish(ctx.channel(), ProtocolName.HTTP2, ProtocolSource.ALPN_HTTP2);
@@ -90,9 +94,8 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
             }
 
-            if(ctx.pipeline().get(TimeoutHandler.class)==null){
-                TimeoutHandler h = new TimeoutHandler(httpConfig);
-                ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, h);
+            if (ctx.pipeline().get(TimeoutHandler.class) == null) {
+                ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, timeoutHandler);
             }
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
             ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
