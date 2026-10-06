@@ -245,7 +245,7 @@ public class SymbolRegistry {
      */
     private InternalWsResource resolveSymbols(final String originalPath, final String path, int recurse) {
         if (recurse > RECURSE_LIMIT)
-            throw new IllegalStateException("Exceeded recursion limit (orig=" + originalPath + ",path=" + path + ")");
+            throw new IllegalStateException("Exceeded recursion limit (orig=" + originalPath + ")");
 
         Matcher m = SymbolRegistry.SYMBOL_DEF.matcher(path);
         if (m.find()) {
@@ -329,7 +329,7 @@ public class SymbolRegistry {
 
     private String resolveStringSymbols(final String originalPath, String path, final boolean includeRoots, int recurse, boolean pathNormalize) {
         if (recurse > RECURSE_LIMIT)
-            throw new IllegalStateException("Exceeded recursion limit (orig=" + originalPath + ",path=" + path + ")");
+            throw new IllegalStateException("Exceeded recursion limit (orig=" + originalPath + ")");
 
         if (pathNormalize) {
             path = PathUtils.normalize(path);
