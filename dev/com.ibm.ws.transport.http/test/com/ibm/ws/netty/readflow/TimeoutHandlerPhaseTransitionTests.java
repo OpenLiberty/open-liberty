@@ -106,11 +106,8 @@ public class TimeoutHandlerPhaseTransitionTests {
         return m;
     }
 
-    private static String phase(EmbeddedChannel ch) throws ReflectiveOperationException {
-        TimeoutHandler h = ch.pipeline().get(TimeoutHandler.class);
-        Field f = TimeoutHandler.class.getDeclaredField("phase");
-        f.setAccessible(true);
-        return f.get(h).toString();
+    private static String phase(EmbeddedChannel ch) {
+        return TimeoutHandler.state(ch).getPhase().toString();
     }
 
     private static HttpRequest requestWithBody(String uri, int len) {

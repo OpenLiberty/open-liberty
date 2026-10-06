@@ -67,6 +67,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private final NettyChain chain;
     private final NettyHttpChannelConfig httpConfig;
     private final Map<ConfigElement, Map<String, Object>> configOptions;
+    private final TimeoutHandler timeoutHandler;
 
     public static final String NO_UPGRADE_OCURRED_HANDLER_NAME = "upgradeCheckHandler";
     public static final String NETTY_HTTP_SERVER_CODEC = "httpServerCodec";
@@ -87,6 +88,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         this.chain = chain;
         this.httpConfig = httpConfig;
         this.configOptions = configOptions;
+        this.timeoutHandler = new TimeoutHandler(httpConfig);
 
         httpConfig.registerAccessLog(chain.getOwner().getName());
     }
@@ -143,7 +145,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         pipeline.addFirst(HTTP_SSL_HANDLER_NAME, handler);
         addPreHttpCodecHandlers(pipeline);
-        pipeline.addLast(LibertyNettyALPNHandler.NAME, new LibertyNettyALPNHandler(httpConfig));
+        pipeline.addLast(LibertyNettyALPNHandler.NAME, new LibertyNettyALPNHandler(httpConfig, timeoutHandler));
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreDispatcherHandlers(pipeline, true);
         pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
@@ -204,7 +206,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     private void addH2cTimeoutHandler(ChannelPipeline pipeline) {
         if (pipeline.get(TimeoutHandler.class) == null) {
-            pipeline.addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, new TimeoutHandler(httpConfig));
+            pipeline.addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, timeoutHandler);
         }
     }
 
@@ -351,7 +353,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             }
 
             if (pipeline.get(TimeoutHandler.class) == null) {
-                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, TimeoutHandler.NAME, new TimeoutHandler(httpConfig));
+                pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, TimeoutHandler.NAME, timeoutHandler);
             }
             
             if(pipeline.get(ReadFlowHandler.class) == null) {

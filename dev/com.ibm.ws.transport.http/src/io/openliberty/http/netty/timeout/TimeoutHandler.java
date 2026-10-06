@@ -30,6 +30,7 @@ import io.openliberty.http.options.TcpOption;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -44,36 +45,51 @@ import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
 
+@Sharable
 public class TimeoutHandler extends ChannelDuplexHandler {
 
     private static final TraceComponent tc = Tr.register(TimeoutHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     public static String NAME = "timeoutHandler";
 
-    private enum Phase {
+    public enum Phase {
         OFF, TCP_IDLE, READ, PERSIST, H2_IDLE
     }
 
-    private Phase phase = Phase.OFF;
+    public static final AttributeKey<TimeoutState> TIMEOUT_STATE_KEY = AttributeKey.valueOf("httpTimeoutState");
+
+    public static final class TimeoutState {
+        Phase phase = Phase.OFF;
+        ScheduledFuture<?> currentTimeout;
+        boolean clientRequestedKeepAlive = false;
+        boolean serverKeepAlive = false;
+        boolean firstRequest = true;
+        boolean readRetried = false;
+        boolean purgeInProgress = false;
+
+        public Phase getPhase() {
+            return phase;
+        }
+    }
+
+    /** Returns the {@link TimeoutState} for the given channel, creating one on first access. */
+    public static TimeoutState state(Channel channel) {
+        TimeoutState state = channel.attr(TIMEOUT_STATE_KEY).get();
+        if (state == null) {
+            state = new TimeoutState();
+            channel.attr(TIMEOUT_STATE_KEY).set(state);
+        }
+        return state;
+    }
 
     private static final TimeUnit LEGACY_UNIT = TimeUnit.MILLISECONDS;
-    private ChannelHandlerContext parentContext;
 
-    private int readTimeout;
-    private int persistTimeout;
-    private int inactivityTimeout;
-    private int h2InactivityTimeout;
+    private final int readTimeout;
+    private final int persistTimeout;
+    private final int inactivityTimeout;
+    private final int h2InactivityTimeout;
     private final boolean streamOnly;
-
     private final boolean useKeepAlive;
-    private boolean clientRequestedKeepAlive = false;
-    private boolean serverKeepAlive = false;
-
-    private boolean firstRequest = true;
-    private boolean readRetried = false;
-    private boolean purgeInProgress = false;
-
-    private ScheduledFuture<?> currentTimeout;
 
     private static final AttributeKey<AtomicBoolean> READ_OP_TIMED = AttributeKey.valueOf("readOpTimed");
     private static final AttributeKey<ScheduledFuture<?>> READ_OP_FUTURE = AttributeKey.valueOf("readOpFuture");
@@ -114,49 +130,51 @@ public class TimeoutHandler extends ChannelDuplexHandler {
 
     @Override
     public void handlerAdded(ChannelHandlerContext context) {
-        this.parentContext = context;
-
         if (streamOnly) {
             return;
         }
 
+        TimeoutState state = state(context.channel());
         if (currentProtocol(context) == ProtocolName.HTTP2) {
-            arm(context, Phase.H2_IDLE);
+            arm(context, state, Phase.H2_IDLE);
         } else {
-            arm(context, Phase.TCP_IDLE);
+            arm(context, state, Phase.TCP_IDLE);
         }
-
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext context) throws Exception {
-        cancel();
+        TimeoutState state = context.channel().attr(TIMEOUT_STATE_KEY).get();
+        if (state != null) {
+            cancel(state);
+        }
         super.handlerRemoved(context);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
+        TimeoutState state = state(context.channel());
         if (currentProtocol(context) == ProtocolName.HTTP2 && !streamOnly) {
-            if (phase == Phase.H2_IDLE && h2InactivityTimeout > 0) {
-                arm(context, Phase.H2_IDLE);
+            if (state.phase == Phase.H2_IDLE && h2InactivityTimeout > 0) {
+                arm(context, state, Phase.H2_IDLE);
             }
             super.channelRead(context, message);
             return;
         }
 
         if (isRequestStart(message)) {
-            cancel();
-            clientRequestedKeepAlive = shouldKeepAliveRequest(context, message);
-            if(!isRequestEnd(message)){
-                arm(context, Phase.READ);
+            cancel(state);
+            state.clientRequestedKeepAlive = shouldKeepAliveRequest(context, message);
+            if (!isRequestEnd(message)) {
+                arm(context, state, Phase.READ);
             }
-        } else if(phase == Phase.READ){
-            resetRead(context);
+        } else if (state.phase == Phase.READ) {
+            resetRead(context, state);
         }
 
         // Snapshot before forwarding: LastHttpContent admission may synchronously
         // install B's timer; we must cancel only A's, not the replacement.
-        final ScheduledFuture<?> timerBeforeForward = currentTimeout;
+        final ScheduledFuture<?> timerBeforeForward = state.currentTimeout;
 
         super.channelRead(context, message);
 
@@ -165,24 +183,24 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             // pipelined-request admission. If B was admitted, currentTimeout ≠
             // timerBeforeForward (cancel set it to null, arm set it to a new value),
             // so this guard is false and we leave B's timer alone.
-            if (phase == Phase.READ && currentTimeout == timerBeforeForward) {
-                cancel();
+            if (state.phase == Phase.READ && state.currentTimeout == timerBeforeForward) {
+                cancel(state);
             }
-            firstRequest = false;
+            state.firstRequest = false;
         }
     }
 
     @Override
     public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
-
+        TimeoutState state = state(context.channel());
         if (message instanceof HttpResponse) {
-            serverKeepAlive = shouldKeepAliveResponse(context, message);
+            state.serverKeepAlive = shouldKeepAliveResponse(context, state, message);
         }
         super.write(context, message, promise);
 
         promise.addListener(future -> {
             if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
-                if (!serverKeepAlive) {
+                if (!state.serverKeepAlive) {
                     context.close();
                 }
                 // Persist timeout is armed via RequestConsumedEvent fired by
@@ -199,45 +217,47 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         // Re-arm the read timer on each socket read so the deadline resets per
         // fragment during body reads. PERSIST is excluded — it's a one-shot
         // deadline armed from RequestConsumedEvent, not per-read.
-        if (phase == Phase.READ) {
-            arm(context, Phase.READ);
+        TimeoutState state = state(context.channel());
+        if (state.phase == Phase.READ) {
+            arm(context, state, Phase.READ);
         }
         super.read(context);
     }
 
-    private void arm(ChannelHandlerContext context, Phase newPhase) {
+    private void arm(ChannelHandlerContext context, TimeoutState state, Phase newPhase) {
         int timeout = timeoutForPhase(newPhase);
         if (timeout <= 0) {
-            phase = Phase.OFF;
+            state.phase = Phase.OFF;
             return;
         }
-        cancel();
-        phase = newPhase;
-        currentTimeout = context.executor().schedule(() -> onTimeout(context), timeout, TimeUnit.MILLISECONDS);
+        cancel(state);
+        state.phase = newPhase;
+        state.currentTimeout = context.executor().schedule(() -> onTimeout(context), timeout, TimeUnit.MILLISECONDS);
     }
 
-    private void resetRead(ChannelHandlerContext context) {
-        if (phase == Phase.READ) {
-            arm(context, Phase.READ);
+    private void resetRead(ChannelHandlerContext context, TimeoutState state) {
+        if (state.phase == Phase.READ) {
+            arm(context, state, Phase.READ);
         }
     }
 
-    private void armPersistIfNeeded(ChannelHandlerContext context) {
+    private void armPersistIfNeeded(ChannelHandlerContext context, TimeoutState state) {
         if (currentProtocol(context) != ProtocolName.WEBSOCKET) {
-            arm(context, Phase.PERSIST);
+            arm(context, state, Phase.PERSIST);
         }
     }
 
-    private void cancel() {
-        if (currentTimeout != null) {
-            currentTimeout.cancel(false);
-            currentTimeout = null;
+    private void cancel(TimeoutState state) {
+        if (state.currentTimeout != null) {
+            state.currentTimeout.cancel(false);
+            state.currentTimeout = null;
         }
-        phase = Phase.OFF;
+        state.phase = Phase.OFF;
     }
 
     private void onTimeout(ChannelHandlerContext context) {
-        switch (phase) {
+        TimeoutState state = state(context.channel());
+        switch (state.phase) {
             case TCP_IDLE:
 
             case READ:
@@ -245,15 +265,15 @@ public class TimeoutHandler extends ChannelDuplexHandler {
                 // Skip the retry if a body purge is in progress — the purge timer
                 // was armed by PurgeStartedEvent and the connection should be
                 // closed immediately on expiry, not given a second window.
-                if (firstRequest && !readRetried && !purgeInProgress) {
-                    readRetried = true;
-                    arm(context, Phase.READ);
+                if (state.firstRequest && !state.readRetried && !state.purgeInProgress) {
+                    state.readRetried = true;
+                    arm(context, state, Phase.READ);
                     return;
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "The connection is closing due an idle read timeout");
                 }
-                if (firstRequest && context.pipeline().get(SslHandler.class) != null) {
+                if (state.firstRequest && context.pipeline().get(SslHandler.class) != null) {
                     context.close();
                 } else {
                     context.fireExceptionCaught(new ReadTimeoutException(readTimeout, LEGACY_UNIT,
@@ -314,7 +334,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         return false;
     }
 
-    private boolean shouldKeepAliveResponse(ChannelHandlerContext context, Object response) {
+    private boolean shouldKeepAliveResponse(ChannelHandlerContext context, TimeoutState state, Object response) {
         ProtocolName protocol = currentProtocol(context);
         if (protocol == ProtocolName.WEBSOCKET) {
             return true;
@@ -323,7 +343,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             return true;
         }
 
-        if (!clientRequestedKeepAlive) {
+        if (!state.clientRequestedKeepAlive) {
             return false;
         }
         if (response instanceof HttpResponse) {
@@ -337,35 +357,36 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         return false;
     }
 
-    private void switchToH2Idle() {
-        if (streamOnly || parentContext == null) {
+    private void switchToH2Idle(ChannelHandlerContext context, TimeoutState state) {
+        if (streamOnly) {
             return;
         }
         if (h2InactivityTimeout == 0) {
-            cancel();
+            cancel(state);
             return;
         }
-        cancel();
-        arm(parentContext, Phase.H2_IDLE);
+        cancel(state);
+        arm(context, state, Phase.H2_IDLE);
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
+        TimeoutState state = state(context.channel());
         if (event instanceof ProtocolChangedEvent) {
             ProtocolName protocol = ((ProtocolChangedEvent) event).current();
             if (protocol == ProtocolState.current(context.channel())) {
                 if (protocol == ProtocolName.HTTP2) {
-                    switchToH2Idle();
+                    switchToH2Idle(context, state);
                 } else if (protocol == ProtocolName.WEBSOCKET) {
-                    cancel();
+                    cancel(state);
                 }
             }
         } else if (event instanceof PurgeStartedEvent) {
             // Async body purge has begun after the response completed. Arm the
             // read timeout so each arriving body fragment is bounded — matching
             // Channel Framework where every purge body read uses readTimeout.
-            purgeInProgress = true;
-            arm(context, Phase.READ);
+            state.purgeInProgress = true;
+            arm(context, state, Phase.READ);
             super.userEventTriggered(context, event);
             return;
         } else if (event instanceof RequestConsumedEvent) {
@@ -373,9 +394,9 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             // request. Cancel any in-progress read timeout and transition to
             // PERSIST — matching Channel Framework's sequencing where the persist
             // timeout governs the keep-alive read issued after purge finishes.
-            purgeInProgress = false;
-            cancel();
-            armPersistIfNeeded(context);
+            state.purgeInProgress = false;
+            cancel(state);
+            armPersistIfNeeded(context, state);
             super.userEventTriggered(context, event);
             return;
         }
@@ -405,7 +426,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         if (previous != null)
             previous.cancel(false);
 
-        ScheduledFuture<?> future = handler.parentContext.executor().schedule( () -> {
+        ScheduledFuture<?> future = channel.eventLoop().schedule( () -> {
             channel.attr(READ_OP_TIMED).get().set(true);
             Runnable cb = channel.attr(READ_OP_CALLBACK).get();
             if(cb!=null){
@@ -415,7 +436,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
                     }catch(Throwable ignore){}
                 });
             }
-            handler.parentContext.fireExceptionCaught(new ReadTimeoutException(timeout, LEGACY_UNIT));
+            channel.pipeline().fireExceptionCaught(new ReadTimeoutException(timeout, LEGACY_UNIT));
         }, timeout, TimeUnit.MILLISECONDS);
 
         channel.attr(READ_OP_FUTURE).set(future);
