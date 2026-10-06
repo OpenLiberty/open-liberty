@@ -15,6 +15,7 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken6.common;
 
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -321,7 +322,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     @Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicy() throws Exception {
     	

@@ -24,27 +24,20 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-        AlwaysPassesTest.class,
-        HttpMethodsTests.class,
-        LogoutTokenValidationTests.class,
-        BasicBCLTests.class
-})
+@SuiteClasses({ AlwaysPassesTest.class, HttpMethodsTests.class, LogoutTokenValidationTests.class, BasicBCLTests.class })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
 
-    /*
-     * On Windows, always run the default/empty/EE7/EE8 tests.
-     * On other Platforms:
-     * - if Java 8, run default/empty/EE7/EE8 tests.
-     * - All other Java versions
-     * -- If LITE mode, run EE9
-     * -- If FULL mode, run EE10
-     *
-     */
-    @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats("servlet-5.0", "servlet-6.0");
+	/*
+	 * On Windows, always run the default/empty/EE7/EE8 tests. On other Platforms: -
+	 * if Java 8, run default/empty/EE7/EE8 tests. - All other Java versions -- If
+	 * LITE mode, run EE9 -- If FULL mode, run EE10
+	 *
+	 */
+	@ClassRule
+	public static RepeatTests repeat = LargeProjectRepeatActions.createEERepeats("servlet-5.0", "servlet-6.0",
+			"servlet-6.1");
 
 }

@@ -52,6 +52,7 @@ public class FATSuite {
      * Run EE9 and EE10 tests in LITE mode (but not on Windows) and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats(null, null, null, null, "publish/servers", "publish/shared/config");
+	public static RepeatTests repeat = LargeProjectRepeatActions.createEERepeats(null, null, null, null, null,
+			"publish/servers", "publish/shared/config");
 
 }
