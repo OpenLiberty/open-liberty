@@ -407,7 +407,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                         nettyContext.channel().close();
                         return;
                     }
-                    timeoutHandler.armPersistAfterUpgrade();
+                    timeoutHandler.armPersistAfterUpgrade(nettyContext.channel());
                 }
             }
 
