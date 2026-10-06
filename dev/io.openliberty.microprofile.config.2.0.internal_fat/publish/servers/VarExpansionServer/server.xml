@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Server for testing variable expansion in Config 2.0">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-2.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>mpConfig-2.0</feature>
+    </featureManager>
+
+    <!-- List expansion: the list() function converts a comma-separated variable
+         value into a list that can be used in server config attributes.
+         MicroProfile Config exposes the raw comma-separated string as a config
+         property, which converts to String[] / List<String> automatically. -->
+    <variable name="examplePorts" value="27017,27018,27019" />
+    <variable name="exampleHosts" value="mongo1.example.com,mongo2.example.com,mongo3.example.com" />
+
+    <application location="varExpansionApp.war">
+        <appProperties>
+            <property name="app.appPropertyExamplePorts" value="${list(examplePorts)}" />
+            <property name="app.appPropertyExampleHosts" value="${list(exampleHosts)}" />
+        </appProperties>
+    </application>
+
+    <logging trace.specification="*=info:APPCONFIG=all" />
+</server>
