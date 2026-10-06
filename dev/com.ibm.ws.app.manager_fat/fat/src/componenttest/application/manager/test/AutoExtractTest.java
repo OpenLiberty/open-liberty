@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1172,6 +1172,70 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             server.stopServer(APP_FAIL_INSTALL);
         }
 
+    }
+
+    /**
+     * Test that path-traversal entries in a WAR archive are NOT extracted outside
+     * the application's expanded directory.  The autoexpand-boundary.war contains
+     * entries such as "../outside_parent.txt" and "../../outside_grandparent.txt"
+     * which ZipUtils.reachesOut() currently fails to block due to an inverted
+     * return value — causing those files to land outside the app's expanded folder.
+     *
+     * This test directly verifies the two files that escape:
+     *   "../outside_parent.txt"        -> apps/expanded/outside_parent.txt
+     *   "../../outside_grandparent.txt"-> apps/outside_grandparent.txt
+     *
+     * Both assertFalse checks are expected to FAIL until ZipUtils.reachesOut() is fixed.
+     */
+    @Test
+    public void testAutoExpandBoundary() throws Exception {
+        final String method = testName.getMethodName();
+        try {
+            server.copyFileToLibertyServerRoot(server.pathToAutoFVTTestFiles + "autoExpand", APPS_DIR, "autoexpand-boundary.war");
+
+            server.setServerConfigurationFile("/autoExpand/boundaryWarServer.xml");
+            server.startServer(method + ".log");
+
+            // Wait until the server is ready to install apps
+            assertNotNull("The server never reported that it was ready to install web apps.",
+                          server.waitForStringInLog("CWWKZ0058I:"));
+
+            // Wait for the app to start — the traversal entries do not prevent deployment
+            assertNotNull("The application autoexpand-boundary did not appear to have started.",
+                          server.waitForStringInLog("CWWKZ0001I.* autoexpand-boundary"));
+
+            // Verify that the safe entry inside the archive WAS extracted into the app directory
+            File expandedAppDir = new File(server.getServerRoot() + "/" + EXPANDED_DIR + "/autoexpand-boundary.war");
+            File normalFile = new File(expandedAppDir, "normal.txt");
+            assertTrue("normal.txt should have been extracted into the expanded app directory",
+                       normalFile.exists());
+
+            // Verify that path-traversal entries did NOT escape the expanded app directory.
+            //
+            // Due to an inverted return value in ZipUtils.reachesOut(), both of the following
+            // files currently exist on disk (demonstrating the bug):
+            //
+            //   "../outside_parent.txt"        -> apps/expanded/outside_parent.txt
+            //                                     (one level above the app dir, still inside expanded/)
+            //   "../../outside_grandparent.txt"-> apps/outside_grandparent.txt
+            //                                     (two levels above the app dir, inside apps/)
+
+            File expandedDir = new File(server.getServerRoot() + "/" + EXPANDED_DIR);
+            File appsDir = new File(server.getServerRoot() + "/" + APPS_DIR);
+
+            File outsideParent = new File(expandedDir, "outside_parent.txt");
+            assertFalse("Path-traversal entry '../outside_parent.txt' must NOT exist outside the app dir: " + outsideParent,
+                        outsideParent.exists());
+
+            File outsideGrandparent = new File(appsDir, "outside_grandparent.txt");
+            assertFalse("Path-traversal entry '../../outside_grandparent.txt' must NOT exist outside the app dir: " + outsideGrandparent,
+                        outsideGrandparent.exists());
+
+        } finally {
+            pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
+            server.removeAllInstalledAppsForValidation();
+            server.stopServer("CWWKZ0132W");
+        }
     }
 
     /*

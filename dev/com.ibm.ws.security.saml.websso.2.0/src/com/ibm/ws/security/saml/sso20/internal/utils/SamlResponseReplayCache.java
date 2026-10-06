@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.opensaml.saml.saml2.core.Assertion;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.structures.BoundedHashMap;
@@ -29,12 +31,14 @@ import com.ibm.ws.security.common.structures.BoundedHashMap;
 /**
  * Cache containing three internal tables in order to implement a least-recently-used removal algorithm.
  */
-public class UnsolicitedResponseCache {
+public class SamlResponseReplayCache {
 
-    private static final TraceComponent tc = Tr.register(UnsolicitedResponseCache.class);
+    private static final TraceComponent tc = Tr.register(SamlResponseReplayCache.class);
 
     /**
      * Primary hash table containing the most recently used entries.
+     * key: AssertionId
+     * value: Expiry
      */
     private final Map<String, Object> primaryTable;
 
@@ -43,7 +47,7 @@ public class UnsolicitedResponseCache {
      */
     private int entryLimit = 50000;
     /**
-     * Default cache timeout.
+     * Interval (in milliseconds) at which the background eviction task runs to remove expired entries.
      */
     private long timeoutInMilliSeconds = 15 * 60 * 1000;
 
@@ -54,7 +58,7 @@ public class UnsolicitedResponseCache {
      */
     private Timer timer;
 
-    public UnsolicitedResponseCache(int entryLimit, long timeoutInMilliSeconds, long clockSkew) {
+    public SamlResponseReplayCache(int entryLimit, long timeoutInMilliSeconds, long clockSkew) {
         if (entryLimit > 0) {
             this.entryLimit = entryLimit;
         }
@@ -111,21 +115,40 @@ public class UnsolicitedResponseCache {
 
     }
 
-    public synchronized boolean isValid(String key) {
+    /**
+     * Checks whether the assertion has already been seen/replayed.
+     * Otherwise, insert the assertion into cache.
+     * @param assertion the SAML assertion to check and register
+     * @return {@code true} if the assertion is a replay; {@code false} if it was
+     *         successfully registered as a new entry
+     */
+    public synchronized boolean detectReplayAndStoreAssertion(Assertion assertion) {
+        boolean isReplayed = false;
+        String key = assertion.getID();
+        Long oldAssertionExpiryMs = (Long) primaryTable.get(key);
 
-        Object curEntry = primaryTable.get(key);
-        if (curEntry != null) {
-            Date now = new Date();
-            Long lEntry = (Long) curEntry;
-            Date exp = new Date(lEntry.longValue() + this.clockSkewInMilliSeconds);
-            if (exp.after(now)) {
-                return true;
+        if (oldAssertionExpiryMs != null) {
+            // Assertion is still valid and has been seen before, this is a replay
+            if (hasNotExpired(oldAssertionExpiryMs)) {
+                isReplayed =  true;
             } else {
                 primaryTable.remove(key);
             }
         }
 
-        return false;
+        // register non-expired assertionId in cache
+        long newAssertionExpiryMs = assertion.getSubject().getSubjectConfirmations().get(0)
+                                        .getSubjectConfirmationData().getNotOnOrAfter().toEpochMilli();
+        if (hasNotExpired(newAssertionExpiryMs)) {
+            primaryTable.put(key, Long.valueOf(newAssertionExpiryMs));
+        }
+
+        return isReplayed;
+    }
+
+    // return whether the expiry provided has expired given the configured clockSkewInMilliSeconds
+    private boolean hasNotExpired(long expiry) {
+        return System.currentTimeMillis() < (expiry + this.clockSkewInMilliSeconds);
     }
 
     protected synchronized void invalidate() {
