@@ -152,29 +152,29 @@ public class StartUpRecoveryServlet extends HttpServlet {
      * @param starting
      */
     private void generateStepExecutionEntry(Long executionId, Long dummyTopLevelStepExecId, BatchStatus batchStatus, String exitStatus) throws Exception {
-        long stepExecutionId = -1L;
+        // Get the next available STEPEXECID
+        long stepExecutionId = getNextStepExecutionId();
 
         Connection conn = null;
         PreparedStatement statement = null;
-        ResultSet rs = null;
 
         long time = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(time);
 
         // I suppose we're not buying ourselves much by enforcing that the FK_TOPLVL_STEPEXECID can never be null
-        String query = "INSERT INTO JBATCH.STEPTHREADEXECUTION (FK_JOBEXECID, batchstatus, exitstatus, stepname, M_READ, "
+        String query = "INSERT INTO JBATCH.STEPTHREADEXECUTION (STEPEXECID, FK_JOBEXECID, batchstatus, exitstatus, stepname, M_READ, "
                        + "M_WRITE, M_COMMIT, M_ROLLBACK, M_READSKIP, M_PROCESSSKIP, M_WRITESKIP, M_FILTER, STARTTIME, ENDTIME, FK_TOPLVL_STEPEXECID, INTERNALSTATUS, PARTNUM, THREADTYPE) "
-                       + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, -1, 'T' )"; // 'T' => (T)op-level.
+                       + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, -1, 'T' )"; // 'T' => (T)op-level.
 
         try {
             conn = getDataSourceConnection();
-            statement = conn.prepareStatement(query, new String[] { "STEPEXECID" });
+            statement = conn.prepareStatement(query);
 
-            statement.setLong(1, executionId);
-            statement.setInt(2, batchStatus.ordinal());
-            statement.setString(3, exitStatus);
-            statement.setString(4, "stepName_" + executionId);
-            statement.setLong(5, 0);
+            statement.setLong(1, stepExecutionId);
+            statement.setLong(2, executionId);
+            statement.setInt(3, batchStatus.ordinal());
+            statement.setString(4, exitStatus);
+            statement.setString(5, "stepName_" + executionId);
             statement.setLong(6, 0);
             statement.setLong(7, 0);
             statement.setLong(8, 0);
@@ -182,20 +182,17 @@ public class StartUpRecoveryServlet extends HttpServlet {
             statement.setLong(10, 0);
             statement.setLong(11, 0);
             statement.setLong(12, 0);
-            statement.setTimestamp(13, timestamp);
+            statement.setLong(13, 0);
             statement.setTimestamp(14, timestamp);
-            statement.setLong(15, dummyTopLevelStepExecId);
+            statement.setTimestamp(15, timestamp);
+            statement.setLong(16, dummyTopLevelStepExecId);
 
             statement.executeUpdate();
-            rs = statement.getGeneratedKeys();
-            if (rs.next()) {
-                stepExecutionId = rs.getLong(1);
-            }
         } catch (Exception ex) {
             logger.info("exception creating execution instance: " + ex.toString());
             throw new TestFailureException(ex.getMessage());
         } finally {
-            cleanupConnection(conn, rs, statement);
+            cleanupConnection(conn, null, statement);
         }
         String msg = "generateStepExecutionEntry return execution instance:[" + stepExecutionId + "]";
         logger.info(msg);
@@ -203,42 +200,40 @@ public class StartUpRecoveryServlet extends HttpServlet {
 
     /**
      * Insert a new entry to EXECUTIONINSTANCEDATA table
-     * 
+     *
      * @param i
      * @return
      */
     private Long generateJobExecutionEntry(long jobInstance, BatchStatus status, String exitStatus, String hostName, String userDir, String serverName) throws Exception {
-        String sql = "INSERT INTO JBATCH.JOBEXECUTION (FK_JOBINSTANCEID, createtime, updatetime, batchstatus, exitstatus, jobparameters, serverId, EXECNUM, RESTURL) VALUES(?, ?, ?, ?, ?, ?, ?, 0, 'NOTSET')";
+        // Get the next available JOBEXECID
+        long newJobExecutionId = getNextJobExecutionId();
+        
+        String sql = "INSERT INTO JBATCH.JOBEXECUTION (JOBEXECID, FK_JOBINSTANCEID, createtime, updatetime, batchstatus, exitstatus, jobparameters, serverId, EXECNUM, RESTURL) VALUES(?, ?, ?, ?, ?, ?, ?, ?, 0, 'NOTSET')";
         PreparedStatement statement = null;
-        ResultSet rs = null;
         Connection conn = null;
         long time = System.currentTimeMillis();
         Timestamp timestamp = new Timestamp(time);
-        long newJobExecutionId = 0;
         String serverId = hostName + "/" + userDir + "/" + serverName;
-        logger.info("generateJobExecutionEntry jobinstanceid=" + jobInstance + ",serverId=" + serverId);
+        logger.info("generateJobExecutionEntry jobinstanceid=" + jobInstance + ",serverId=" + serverId + ",jobExecId=" + newJobExecutionId);
         try {
             conn = getDataSourceConnection();
-            statement = conn.prepareStatement(sql, new String[] { "JOBEXECID" });
-            statement.setLong(1, jobInstance);
-            statement.setTimestamp(2, timestamp);
+            statement = conn.prepareStatement(sql);
+            statement.setLong(1, newJobExecutionId);
+            statement.setLong(2, jobInstance);
             statement.setTimestamp(3, timestamp);
-            statement.setInt(4, status.ordinal());
-            statement.setString(5, exitStatus);
-            statement.setObject(6, serializeObject(new Properties()));
-            statement.setString(7, serverId);
+            statement.setTimestamp(4, timestamp);
+            statement.setInt(5, status.ordinal());
+            statement.setString(6, exitStatus);
+            statement.setObject(7, serializeObject(new Properties()));
+            statement.setString(8, serverId);
             int rc = statement.executeUpdate();
             logger.info("generateJobExecutionEntry: for jobinstance=" + jobInstance + ", rc=" + rc);
-            rs = statement.getGeneratedKeys();
-            if (rs.next()) {
-                newJobExecutionId = rs.getLong(1);
-            }
 
         } catch (Exception ex) {
             logger.info("exception creating execution instance: " + ex.toString());
             throw new TestFailureException(ex.getMessage());
         } finally {
-            cleanupConnection(conn, rs, statement);
+            cleanupConnection(conn, null, statement);
         }
         String msg = "generateJobExecutionEntry return execution instance:[" + newJobExecutionId + "]";
         logger.info(msg);
@@ -270,37 +265,108 @@ public class StartUpRecoveryServlet extends HttpServlet {
     private long generateJobInstanceEntry(int i) throws Exception {
         String methodName = "generateJobInstanceEntry";
 
-        String sql_1 = "INSERT INTO JBATCH.JOBINSTANCE (JOBNAME, SUBMITTER, AMCNAME, BATCHSTATUS, CREATETIME, INSTANCESTATE, NUMEXECS) VALUES(?, ?, ?, ?, ?, 1, 1)";
+        // Get the next available JOBINSTANCEID by querying the max existing ID
+        long jobInstanceID = getNextJobInstanceId();
+        
+        String sql_1 = "INSERT INTO JBATCH.JOBINSTANCE (JOBINSTANCEID, JOBNAME, SUBMITTER, AMCNAME, BATCHSTATUS, CREATETIME, INSTANCESTATE, NUMEXECS) VALUES(?, ?, ?, ?, ?, ?, 1, 1)";
 
-        logger.info(methodName + ",sql=" + sql_1);
+        logger.info(methodName + ",sql=" + sql_1 + ", jobInstanceID=" + jobInstanceID);
 
-        long jobInstanceID = 0;
+        PreparedStatement statement = null;
+        Connection conn = null;
+        try {
+            conn = getDataSourceConnection();
+            statement = conn.prepareStatement(sql_1);
+            statement.setLong(1, jobInstanceID);
+            statement.setString(2, "name_" + i);
+            statement.setString(3, "submitter_" + i);
+            statement.setString(4, "appNameToInsert_" + i);
+            statement.setInt(5, BatchStatus.STARTING.ordinal());
+            statement.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+            statement.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new TestFailureException(ex.getMessage());
+        } finally {
+            cleanupConnection(conn, null, statement);
+        }
 
+        logger.info(methodName + ",return job instance:[" + jobInstanceID + "]");
+        return jobInstanceID;
+    }
+
+    /**
+     * Get the next available JOBINSTANCEID by querying the max existing ID.
+     * This is needed because H2 2.x doesn't auto-generate IDENTITY columns
+     * the same way as H2 1.x when using explicit INSERT statements.
+     */
+    private long getNextJobInstanceId() throws Exception {
+        String sql = "SELECT MAX(JOBINSTANCEID) FROM JBATCH.JOBINSTANCE";
+        
         PreparedStatement statement = null;
         ResultSet rs = null;
         Connection conn = null;
         try {
             conn = getDataSourceConnection();
-            statement = conn.prepareStatement(sql_1, new String[] { "JOBINSTANCEID" });
-            statement.setString(1, "name_" + i);
-            statement.setString(2, "submitter_" + i);
-            statement.setString(3, "appNameToInsert_" + i);
-            statement.setInt(4, BatchStatus.STARTING.ordinal());
-            statement.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-            statement.executeUpdate();
-            rs = statement.getGeneratedKeys();
+            statement = conn.prepareStatement(sql);
+            rs = statement.executeQuery();
             if (rs.next()) {
-                jobInstanceID = rs.getLong(1);
+                long maxId = rs.getLong(1);
+                return maxId + 1;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new TestFailureException(ex.getMessage());
+            // If no rows exist, start at 1
+            return 1;
         } finally {
             cleanupConnection(conn, rs, statement);
         }
+    }
 
-        logger.info(methodName + ",return job instance:[" + jobInstanceID + "]");
-        return jobInstanceID;
+    /**
+     * Get the next available JOBEXECID by querying the max existing ID.
+     */
+    private long getNextJobExecutionId() throws Exception {
+        String sql = "SELECT MAX(JOBEXECID) FROM JBATCH.JOBEXECUTION";
+        
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        Connection conn = null;
+        try {
+            conn = getDataSourceConnection();
+            statement = conn.prepareStatement(sql);
+            rs = statement.executeQuery();
+            if (rs.next()) {
+                long maxId = rs.getLong(1);
+                return maxId + 1;
+            }
+            // If no rows exist, start at 1
+            return 1;
+        } finally {
+            cleanupConnection(conn, rs, statement);
+        }
+    }
+
+    /**
+     * Get the next available STEPEXECID by querying the max existing ID.
+     */
+    private long getNextStepExecutionId() throws Exception {
+        String sql = "SELECT MAX(STEPEXECID) FROM JBATCH.STEPTHREADEXECUTION";
+        
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        Connection conn = null;
+        try {
+            conn = getDataSourceConnection();
+            statement = conn.prepareStatement(sql);
+            rs = statement.executeQuery();
+            if (rs.next()) {
+                long maxId = rs.getLong(1);
+                return maxId + 1;
+            }
+            // If no rows exist, start at 1
+            return 1;
+        } finally {
+            cleanupConnection(conn, rs, statement);
+        }
     }
 
     /**

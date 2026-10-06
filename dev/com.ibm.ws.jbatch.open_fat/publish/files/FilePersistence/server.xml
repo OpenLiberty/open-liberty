@@ -8,11 +8,11 @@
 		<feature>servlet-3.1</feature>
 	</featureManager>
 
-	<library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	<library id="H2Lib">
+	    <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
 	</library>
 
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+	<javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 
 </server>

@@ -35,22 +35,6 @@ import componenttest.topology.impl.LibertyServer;
 /*
  * The classes specified in the @SuiteClasses annotation
  * below should represent all of the test cases for this FAT.
- *
- *
- * NOTES on commented-out classes:
- *
- * BasicJDBCPersistenceTest.class,
- *
- * Useful when starting, or perhaps if you needed to run
- * one quick test with FAT. At this point this isn't adding
- * much in regression on top of what's already there in a real
- * lite or full bucket run, so we'll remove.
- *
- * OracleJDBCPersistenceTest.class
- *
- * Was useful before building on Cathy's DB swap framework,
- * which will be the "real" way to execute cross DB going forward.
- * Left in here commented out in case it helps someone running manually.
  */
 @SuiteClasses({
         BatchUserTranTest.class,
@@ -66,13 +50,16 @@ import componenttest.topology.impl.LibertyServer;
         TranTimeoutTest.class,
         DDLTest.class,
         SkipRetryHandlerTest.class,
-        JPAPersistenceManagerImplTest.class,
+        /* Skip for H2, some of things this test does is not supported by H2
+            perhaps this can be moved to DB rotation
+        JPAPersistenceManagerImplTest.class, 
+        */
         InMemoryPersistenceTest.class,
         InMemoryPersistenceBatchJobOperatorApiTest.class,
         JPAPersistenceBatchJobOperatorApiTest.class
 })
 public class FATSuite {
-    @ClassRule
+@ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
         .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
         .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
