@@ -47,6 +47,5 @@ tested.features: \
 	com.ibm.websphere.javaee.transaction.1.2;version=latest, \
 	com.ibm.ws.ejbcontainer.core; version=latest, \
 	com.ibm.ws.ejbcontainer.fat_tools; version=latest,\
-	io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest
