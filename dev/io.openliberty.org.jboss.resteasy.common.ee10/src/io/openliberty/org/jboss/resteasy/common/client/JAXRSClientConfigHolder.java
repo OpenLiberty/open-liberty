@@ -14,6 +14,7 @@ package io.openliberty.org.jboss.resteasy.common.client;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -39,7 +40,11 @@ public class JAXRSClientConfigHolder {
 
     // a cached map of search results
     // that have been processed to look up the best match for the uri strings
-    private static volatile Map<String, Map<String, String>> resolvedConfigInfo = new HashMap<>();
+    private static volatile Map<String, Map<String, String>> resolvedConfigInfo = new LinkedHashMap<String, Map<String, String>>(500,0.75f,true) {
+        protected boolean removeEldestEntry(Map.Entry<String, Map<String, String>> eldest) {
+            return true;
+        }
+    };
 
     private static boolean wildcardsPresentInConfigInfo = false;
 
