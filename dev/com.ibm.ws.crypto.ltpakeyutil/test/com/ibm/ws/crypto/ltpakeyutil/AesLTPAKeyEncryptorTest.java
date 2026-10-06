@@ -105,7 +105,7 @@ public class AesLTPAKeyEncryptorTest {
 
     /**
      * The output of {@link AesLTPAKeyEncryptor#encrypt} must be at least
-     * {@code IV_LENGTH + 1} bytes long: a 16-byte IV prefix followed by at least
+     * {@code IV_LENGTH + 1} bytes long: a 12-byte IV prefix followed by at least
      * one block of ciphertext.
      */
     @Test
@@ -116,10 +116,10 @@ public class AesLTPAKeyEncryptorTest {
         byte[] plaintext = "SomeKeyMaterial".getBytes("UTF-8");
         byte[] ciphertext = encryptor.encrypt(plaintext);
 
-        // IV is 16 bytes; AES/GCM/NoPadding appends a 16-byte (128-bit) authentication tag,
-        // so the minimum ciphertext length after the IV is plaintext.length + 16 bytes.
-        assertTrue("Encrypted output must be longer than IV_LENGTH (16) bytes",
-                   ciphertext.length > 16);
+        // IV is 12 bytes (GCM_IV_LENGTH_BYTES); AES/GCM/NoPadding appends a 16-byte (128-bit)
+        // authentication tag, so the minimum ciphertext length after the IV is plaintext.length + 16 bytes.
+        assertTrue("Encrypted output must be longer than IV_LENGTH (12) bytes",
+                   ciphertext.length > 12);
     }
 
     /**
@@ -140,7 +140,7 @@ public class AesLTPAKeyEncryptorTest {
     }
 
     /**
-     * Feeding fewer than {@code IV_LENGTH} (16) bytes to
+     * Feeding fewer than {@code IV_LENGTH} (12) bytes to
      * {@link AesLTPAKeyEncryptor#decrypt} must throw an exception, not silently
      * return garbage.
      */
@@ -149,7 +149,7 @@ public class AesLTPAKeyEncryptorTest {
         Key key = makeAesKey(VALID_KEY_B64);
         AesLTPAKeyEncryptor encryptor = new AesLTPAKeyEncryptor(key);
 
-        // 8 bytes — shorter than the 16-byte IV prefix that decrypt expects.
+        // 8 bytes — shorter than the 12-byte IV prefix that decrypt expects.
         byte[] truncated = new byte[8];
 
         try {
