@@ -77,7 +77,7 @@ public class PartialViewContextImpl extends PartialViewContext
     // expanded into a PartialVisitContext (quadratic resource exhaustion). See also the nesting-depth
     // backstop in PartialVisitContext#_addSubtreeClientId.
     private static final int MAX_CLIENT_IDS = 256;
-    private static final int MAX_CLIENT_ID_LENGTH = 256;
+    private static final int MAX_CLIENT_ID_LENGTH = 356;
 
     private static final Set<VisitHint> PARTIAL_EXECUTE_HINTS = Collections.unmodifiableSet(
             EnumSet.of(VisitHint.EXECUTE_LIFECYCLE, VisitHint.SKIP_UNRENDERED));
