@@ -31,6 +31,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.health.file.healthcheck.fat.actions.MPConfigCompatibilityAction;
 import io.openliberty.microprofile.health.file.healthcheck.fat.utils.Constants;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
@@ -71,7 +72,8 @@ public class MPConfigDefaultValuesTest {
                                                              MicroProfileActions.MP70_EE10, // mpHealth-4.0 FULL EE10
                                                              MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL EE11
                                                              HealthActions.MP14_MPHEALTH40, // mpHealth-4.0 FULL EE7
-                                                             HealthActions.MP41_MPHEALTH40); //mpHealth-4.0 FULL EE8
+                                                             HealthActions.MP41_MPHEALTH40) //mpHealth-4.0 FULL EE8
+                                                             .andWith(new MPConfigCompatibilityAction()); // Replace mpConfig-3.0 with mpConfig-1.3 for EE7
 
     @Server(DEFAULT_SERVER)
     public static LibertyServer defaultServer;
@@ -403,5 +405,4 @@ public class MPConfigDefaultValuesTest {
 
         cleanup(server);
     }
-
 }
