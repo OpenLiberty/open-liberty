@@ -77,6 +77,11 @@
 #              to y to allow remote debugging. By default, this value is not
 #              defined, which does not allow remote debugging on newer JDK/JREs.
 #
+# WLP_DEBUG_ON_RESTORE - Whether to allow debugging on restore or not. This can be set
+#              to y to allow debugging on restore. By default, this value is not
+#              defined, which does not allow debugging on restore. This value must
+#              be set before performing a checkpoint operation on the server.
+#
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
 #              to be used.
 #
@@ -1048,6 +1053,10 @@ javaCmd()
     # IgnoreUnrecognizedRestoreOptions to avoid failing to restore if unsupported options are specified to restore
     JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+IgnoreUnrecognizedRestoreOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
 
+    if [ -n "$WLP_DEBUG_ON_RESTORE" ]; then
+      JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+DebugOnRestore"
+    fi
+
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
       JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.unprivileged=true"
@@ -1534,6 +1543,28 @@ criuRestore()
     CRIU_RESTORE_PATH=criu
   fi
 
+  SAVE_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
+  JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
+
+  SAVE_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
+  IBM_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
+  SAVE_OPENJ9_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
+  OPENJ9_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
+
+  # Store the current restored environment into a file that the JVM can read to restore the values.
+  # The following are filtered out of the restore env because they could be different from the checkpoint
+  # values.  The JVM only allows new values to be set into the restored environment:
+  # - INVOKED - this gets set to the path used to launch the server script;
+  # It is not used for restore and we don't care if this changes.
+  # Unsetting it is faster than filtering it out
+  unset INVOKED
+  # REGEX explanation
+  # ^[...] is to negate the match for a specific char
+  # [^\=] matches an '=' at the beginning of the line
+  # *.= matches any '=' in the rest of the line.
+  # We need to filter out lines that start with '=' in case a multi-line output starts with '='
+  env | grep -E "^[^\=]*.=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
+
   if $BACKGROUND_RESTORE
   then
     mkdirs "${X_PID_DIR}"
@@ -1546,11 +1577,13 @@ criuRestore()
       --restore-detached
     rc=$?
     PID=`cat ${X_PID_FILE}`
+
+    JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+    IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+    OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
+
     if [ $rc = 0 ]; then
       # successful restore, now check server status
-      JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
-      IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
-      OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
       # Verify/wait for the server process to start
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start
@@ -1574,6 +1607,10 @@ criuRestore()
     rc=$?
 
     kill $TAIL_PID
+
+    JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+    IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+    OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
   fi
 
   return $rc
@@ -1599,6 +1636,26 @@ restoreServer()
       fi
     fi
   done
+
+  if [ "${ACTION}" = "debug" ]
+  then
+    if [ -z "${WLP_DEBUG_ADDRESS}" ]
+    then
+      WLP_DEBUG_ADDRESS=7777
+    fi
+    if [ -z "${WLP_DEBUG_SUSPEND}" ]
+    then
+      WLP_DEBUG_SUSPEND=y
+    fi
+    if [ "${WLP_DEBUG_REMOTE}" = "y" ]
+    then
+      WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
+    else
+      WLP_DEBUG_REMOTE_HOST=""
+    fi
+    OPENJ9_RESTORE_JAVA_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,suspendOnRestore=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_REMOTE_HOST}${WLP_DEBUG_ADDRESS} ${OPENJ9_RESTORE_JAVA_OPTIONS}"
+    export OPENJ9_RESTORE_JAVA_OPTIONS
+  fi
 
   # Use the log dir settings from checkpoint
   # The exception is for the CUR_X_LOG_DIR which gets used for the checkpoint restore log
@@ -1633,20 +1690,6 @@ restoreServer()
   echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
 
   criuEnvDefaults
-
-  # Store the current restored environment into a file that the JVM can read to restore the values.
-  # The following are filtered out of the restore env because they could be different from the checkpoint
-  # values.  The JVM only allows new values to be set into the restored environment:
-  # - INVOKED - this gets set to the path used to launch the server script;
-  # It is not used for restore and we don't care if this changes.
-  # Unsetting it is faster than filtering it out
-  unset INVOKED
-  # REGEX explanation
-  # ^[...] is to negate the match for a specific char
-  # [^\=] matches an '=' at the beginning of the line
-  # *.= matches any '=' in the rest of the line.
-  # We need to filter out lines that start with '=' in case a multi-line output starts with '='
-  env | grep -E "^[^\=]*.=" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.env.properties
 
   rm -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/.restoreFailedMarker
 
