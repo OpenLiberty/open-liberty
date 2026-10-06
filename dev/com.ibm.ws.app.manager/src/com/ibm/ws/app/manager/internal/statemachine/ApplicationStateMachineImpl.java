@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -173,6 +173,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             cl.cancel();
         }
         final boolean checkForUnprocessedConfigChange = _nextAppConfig.getAndSet(appConfig) != null;
+        // Mark as update only if there was already a pending config change (reconfiguration)
+        // or if the app has been started before (indicated by _update already being true)
+        if (checkForUnprocessedConfigChange || _update.get()) {
+            _update.set(true);
+        }
 
         addAppStartingFutures(appStartingFutures);
         updateStartAfterFutures(startAfterFutures);
@@ -1284,6 +1289,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         throw new IllegalStateException("enterState");
                     case STOPPED:
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STOPPED);
+                        // Reset update flag when fully stopped with no pending config changes
+                        // This ensures a subsequent start (not part of update/restart) sends "application.start"
+                        if (_nextAppConfig.get() == null) {
+                            _update.set(false);
+                        }
                         flushQueuedActions();
                         ApplicationDependency stoppedFuture;
                         while ((stoppedFuture = _notifyAppStopped.poll()) != null) {
@@ -1359,7 +1369,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             ApplicationInstallInfo aii = new ApplicationInstallInfo(_appConfig.get(), _appContainer.getAndSet(null), _resolvedLocation.getAndSet(null), _handler.get(), ApplicationStateMachineImpl.this);
                             _appInstallInfo.set(aii); // capture the handler so we call the same one for stopping.
                             startCallback = new StartActionCallback();
-                            startAction = new StartAction(_appConfig.get(), _update.getAndSet(true), _appMonitor, aii, startCallback, _futureMonitor, _configurator);
+                            // Use current value of _update flag (don't automatically set to true)
+                            startAction = new StartAction(_appConfig.get(), _update.get(), _appMonitor, aii, startCallback, _futureMonitor, _configurator);
                             _currentAction.set(startAction);
                         }
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STARTING);
