@@ -191,7 +191,23 @@ public class JwtComponent implements JwtConfig {
             valid = valid * 3600;
         }
 
+        checkIfJwtOutlivesJwk();
         checkWorkloadIdentityClaimConflicts();
+    }
+
+    private void checkIfJwtOutlivesJwk() {
+        if (!isJwkEnabled) {
+            return;
+        }
+
+        // jwkRotationTime is in milliseconds; valid is in seconds.
+        // A signing key stays in the JWK set for jwkMaxKeys rotation periods.
+        // If that window < token lifetime, tokens can outlive their signing key.
+        long keyWindowInSeconds = (jwkRotationTime / 1000L) * jwkMaxKeys;
+        if (keyWindowInSeconds < valid) {
+            long jwkRotationTimeInMinutes = jwkRotationTime / 60000L;
+            Tr.warning(tc, "JWK_KEY_COVERAGE_WINDOW_TOO_SHORT", new Object[] { issuer, jwkRotationTimeInMinutes, jwkMaxKeys, valid });
+        }
     }
 
     private void checkWorkloadIdentityClaimConflicts() {
