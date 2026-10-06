@@ -74,6 +74,8 @@ public class DefaultConfigIdTests {
      */
     @Test
     public void testDefaultHeadersIgnored() throws Exception {
+        Integer startLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
+        LOG.info("[DIAGNOSTIC] Start of testDefaultHeadersIgnored. startLineCount = " + startLineCount);
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -89,6 +91,8 @@ public class DefaultConfigIdTests {
 
         } finally {
             conn.disconnect();
+            Integer endLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
+            LOG.info("[DIAGNOSTIC] End of testDefaultHeadersIgnored. endLineCount = " + endLineCount);
         }
     }
 
@@ -136,6 +140,8 @@ public class DefaultConfigIdTests {
      */
     @Test
     public void testDefaultSameSiteIgnored() throws Exception {
+        Integer startLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
+        LOG.info("[DIAGNOSTIC] Start of testDefaultSameSiteIgnored. startLineCount = " + startLineCount);
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort()
                           + "/" + APP_NAME + "/cookie");
@@ -165,6 +171,8 @@ public class DefaultConfigIdTests {
             assertTrue("TestCookie should be present in Set-Cookie headers", foundTestCookie);
         } finally {
             conn.disconnect();
+            Integer endLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
+            LOG.info("[DIAGNOSTIC] End of testDefaultSameSiteIgnored. endLineCount = " + endLineCount);
         }
     }
 
@@ -199,9 +207,11 @@ public class DefaultConfigIdTests {
      */
     @Test
     public void testDefaultAccessLoggingNotIgnored() throws Exception {
+        LOG.info("[DIAGNOSTIC] Start of testDefaultAccessLoggingNotIgnored");
         LOG.info("Testing that defaultAccessLogging configuration is NOT ignored (exception)");
 
         Integer initialLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
+        LOG.info("[DIAGNOSTIC] Captured baseline: initialLineCount = " + initialLineCount);
 
         // Make a request to generate access log entry
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/");
@@ -231,6 +241,7 @@ public class DefaultConfigIdTests {
         }
 
         // Check that access log has one more entry than before
+        LOG.info("[DIAGNOSTIC] Before assertion. initialLineCount: " + initialLineCount + ", lines.size(): " + lines.size() + ", lines on disk: " + lines);
         assertTrue("Access log should have one more line entry", (initialLineCount + 1) == lines.size());
 
         String lastLine = lines.get(lines.size() - 1);
@@ -240,5 +251,6 @@ public class DefaultConfigIdTests {
         // Pattern: %h %u "%r" %s %b
         assertTrue("Access log entry does not match expected format '%h %u \"%r\" %s %b'. Entry: " + lastLine,
                    lastLine.matches(".*127\\.0\\.0\\.1 - \"GET / HTTP/1\\.1\" 200 \\d+.*"));
+        LOG.info("[DIAGNOSTIC] End of testDefaultAccessLoggingNotIgnored");
     }
 }
