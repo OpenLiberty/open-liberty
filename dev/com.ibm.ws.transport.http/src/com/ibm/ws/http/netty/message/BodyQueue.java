@@ -89,6 +89,11 @@ final public class BodyQueue {
         return eos && queue.isEmpty();
     }
 
+    /** Whether end of body was signaled, even if buffered bytes remain. */
+    public boolean isEosSignaled() {
+        return eos;
+    }
+
     private void signalChange() {
         synchronized (signalLock) {
             signal++;

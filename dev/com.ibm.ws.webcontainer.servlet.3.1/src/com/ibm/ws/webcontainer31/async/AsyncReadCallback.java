@@ -10,6 +10,7 @@
 package com.ibm.ws.webcontainer31.async;
 
 import java.io.IOException;
+
 import javax.servlet.AsyncContext;
 
 import com.ibm.websphere.ras.Tr;
@@ -50,8 +51,6 @@ public class AsyncReadCallback implements InterChannelCallback {
     private boolean onErrorDriven = false;
 
     private boolean onAllDataReadCalled = false;
-    // Distinguishes successful terminal return from onAllDataRead throwing into onError.
-    private boolean onAllDataReadCompleted = false;
 
     private AsyncContext context;
 
@@ -87,20 +86,6 @@ public class AsyncReadCallback implements InterChannelCallback {
             //Once isReady returns false once, we don't want to change it back until the next call into onDataAvailable
             //This variable prevents isReady from returning true if there is an outstanding read           
             this.in.setAsyncReadOutstanding(false);
-
-            // onAllDataRead and onError are terminal for non-blocking input. A queued
-            // channel completion may still arrive afterward, but must not reach the
-            // application's listener. Both terminal flags are protected by this lock.
-            if (onAllDataReadCalled || onErrorDriven) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "ReadListener terminal callback has already been driven; ignoring subsequent completion callback: " + this.context);
-                }
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "complete");
-                }
-                return;
-            }
-
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Calling user's ReadListener onDataAvailable : " + this.in.getReadListener() + " " + this.context);
             }       
@@ -156,7 +141,6 @@ public class AsyncReadCallback implements InterChannelCallback {
                             if (!onAllDataReadCalled) {
                                 onAllDataReadCalled = true;
                                 this.in.getReadListener().onAllDataRead();
-                                onAllDataReadCompleted = true;
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "Returned from user's ReadListener onAllDataRead : " + this.in.getReadListener() + " " + this.context);
                                 }
@@ -211,24 +195,15 @@ public class AsyncReadCallback implements InterChannelCallback {
      */
     @Override
     public void error(VirtualConnection vc, Throwable t) { 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Calling user's ReadListener onError : " + this.in.getReadListener());
+        }
+        onErrorDriven = true;
         Exception e = null;
         
-        synchronized( this.in.getCompleteLockObj()){
-            // A successful onAllDataRead or a previously driven onError is terminal.
-            // If onAllDataRead threw, onAllDataReadCompleted remains false so the
-            // listener exception can still be escalated to onError exactly once.
-            if (onErrorDriven || onAllDataReadCompleted) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "ReadListener terminal callback has already completed; ignoring subsequent error callback: " + this.context);
-                }
-                return;
-            }
-            onErrorDriven = true;
+        SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Calling user's ReadListener onError : " + this.in.getReadListener());
-            }
-            SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
+        synchronized( this.in.getCompleteLockObj()){
 
             boolean localPushedThreadContext = false;
             try {
