@@ -19,6 +19,13 @@ javac.target: 21
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
+# Export the public API packages so that hibernate-models-bytebuddy (and
+# other consumers) can import them from this OSGi bundle.
+Export-Package: \
+  org.hibernate.models; version="1.3.0", \
+  org.hibernate.models.spi; version="1.3.0", \
+  org.hibernate.models.serial.spi; version="1.3.0"
+
 -includeresource: \
   @${repo;org.hibernate.models:hibernate-models;1.3.0;EXACT}!/!module-info.class
 
@@ -26,4 +33,5 @@ instrument.disabled: true
 
 -buildpath: \
         org.hibernate.models:hibernate-models;version=1.3.0, \
+        io.openliberty.org.jboss.logging36;version=latest, \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest
