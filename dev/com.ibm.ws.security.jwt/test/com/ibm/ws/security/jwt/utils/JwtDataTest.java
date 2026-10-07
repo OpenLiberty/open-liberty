@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,10 @@ package com.ibm.ws.security.jwt.utils;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.StandardCharsets;
+
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.keys.HmacKey;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -75,10 +78,10 @@ public class JwtDataTest {
 	@Test
 	public void testSignerIncludesCorrectKeyTypeForJWT() {
 		try {
-
-			JwtData data = new JwtData(null, null);
+            HmacKey key = new HmacKey("testKey".getBytes(StandardCharsets.UTF_8));
+			JwtData data = new JwtData(key, null);
 			data.bJwtToken = true;
-			data.signatureAlgorithm = "none";
+			data.signatureAlgorithm = "HS256";
 			JwtClaims claims = new JwtClaims();
 			String result = JwsSigner.getSignedJwt(claims, data);
 			String header = JwtUtils.splitTokenString(result)[0];
