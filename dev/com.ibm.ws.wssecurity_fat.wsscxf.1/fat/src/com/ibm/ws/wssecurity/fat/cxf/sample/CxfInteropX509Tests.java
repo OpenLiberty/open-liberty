@@ -116,14 +116,19 @@ public class CxfInteropX509Tests {
 
         //RTC 291296
         String vendorName = System.getProperty("java.vendor");
+        // RTC 311660 - IBM Semeru OpenJ9 also reports java.vendor="IBM Corporation" but has
+        // disabled SHA1withRSA/1024-bit RSA keys since 8u492, so it must be excluded too.
+        String vmName = System.getProperty("java.vm.name", "");
         Log.info(thisClass, thisMethod, "JDK Vendor Name is: " + vendorName);
+        Log.info(thisClass, thisMethod, "JDK VM Name is: " + vmName);
 
         ibmJDK = true;
 
         //issue 30353
         JavaInfo info = JavaInfo.forServer(server);
-        if ((info.majorVersion() == 8) && (vendorName.contains("IBM"))) {
-            Log.info(thisClass, thisMethod, "Using an IBM JDK");
+        if ((info.majorVersion() == 8) && (vendorName.contains("IBM"))
+                && !vmName.toLowerCase().contains("openj9")) {
+            Log.info(thisClass, thisMethod, "Using IBM JDK 8");
         } else {
             Log.info(thisClass, thisMethod, "Using NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
             System.err.println("Using a NON-IBM JDK/OpenJDK/Openj9/IBM Semeru Open Edition/OSX_12_MONTEREY_IBMJDK8 - this test should not run!");
