@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -259,7 +259,18 @@ public class CDIUpgradeHandlerTest {
         performUpgrade();
         // make sure server side is finished onWritePossible
         // wait till see this message CDITestWriteListener: onWritePossible: EXIT
-        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+
+        // Wait for the last server-log event in the upgrade cycle.
+        // onAllDataRead: EXIT is the final step in the async chain:
+        //   init -> setReadListener -> onDataAvailable -> setWriteListener
+        //   -> onWritePossible (closes connection) -> onAllDataRead
+        // All application log entries (including init:Exit, setReadListener:Exit,
+        // onDataAvailable:Exit, onWritePossible:Exit) are guaranteed to be written
+        // before onAllDataRead: EXIT appears in the server log.
+        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onAllDataRead: EXIT");
+
+        //LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+        //LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with [ EXPECTED_LOG2 ]");
 
@@ -267,7 +278,10 @@ public class CDIUpgradeHandlerTest {
 
         performUpgrade();
 
-        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onAllDataRead: EXIT");
+
+//        LS.waitForStringInLogUsingLastOffset("CDITestWriteListener: onWritePossible: EXIT");
+//        LS.waitForStringInLogUsingLastOffset("CDITestReadListener: onDataAvailable: EXIT");
 
         LOG.info("implTestCDIUpgrade : Now check the results and compare it with  [ EXPECTED_LOG3 ]");
 
