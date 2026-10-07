@@ -168,7 +168,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public List<HeaderField> getHeaders(byte[] name) {
-        // TODO: Should this be a copy?
         return getHeaders(new AsciiString(name, false));
     }
 
@@ -269,7 +268,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public int getNumberOfHeaderInstances(byte[] header) {
-        // TODO: Should this be a copy or not?
         return this.getNumberOfHeaderInstances(new AsciiString(header, false));
     }
 
