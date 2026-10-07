@@ -106,4 +106,7 @@ LTPA_KEYS_REENCRYPT_SUCCESS.useraction=If you are sharing the LTPA keys between 
 
 LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Failed to re-encrypt the {0} LTPA keys. Exception: {1}
 LTPA_KEYS_REENCRYPT_ERROR.explanation=The LTPA keys could not be re-encrypted. For more information, see the exception in the message.
+LTPA_TOKEN3_FACTORY_NO_HYBRID_KEYS=CWWKS4122E: LTPA Token3 factory cannot create tokens because hybrid keys (RSA + ML-DSA + ML-KEM) are not configured.
+LTPA_TOKEN3_FACTORY_NO_HYBRID_KEYS.explanation=The LTPA Token3 factory requires hybrid keys combining RSA, ML-DSA (quantum-resistant signatures), and ML-KEM (quantum-resistant key encapsulation) to create Post-Quantum Cryptography (PQC) tokens. The primary hybrid keys were not initialized.
+LTPA_TOKEN3_FACTORY_NO_HYBRID_KEYS.useraction=Ensure that the LTPA configuration includes hybrid keys. Use the securityUtility createLTPAKeys command with the --pqc option to generate hybrid keys, or configure the ltpa element with keysFileName pointing to a valid hybrid keys file.
 LTPA_KEYS_REENCRYPT_ERROR.useraction=Ensure that the LTPA keys file and its directory are not read-only. If the LTPA keys file and its directory are not read-only, then see the exception in the message for more information.

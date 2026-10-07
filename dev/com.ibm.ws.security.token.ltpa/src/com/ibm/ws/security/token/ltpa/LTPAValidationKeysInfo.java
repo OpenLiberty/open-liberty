@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
+import com.ibm.ws.security.token.ltpa.pqc.LTPAPQCKeys;
 
 /**
- *
+ * Container for LTPA validation keys, supporting classical (LTPA2), PQC (LTPA3), and hybrid keys.
  */
 public class LTPAValidationKeysInfo {
     private static final TraceComponent tc = Tr.register(LTPAValidationKeysInfo.class);
@@ -29,6 +30,8 @@ public class LTPAValidationKeysInfo {
     private byte[] publicKey = null;
     private LTPAPrivateKey ltpaPrivateKey = null;
     private LTPAPublicKey ltpaPublicKey = null;
+    private LTPAPQCKeys pqcKeys = null;
+    private LTPAHybridKeys hybridKeys = null;
     OffsetDateTime validUntilDateOdt = null;
 
     LTPAValidationKeysInfo(String filename, byte[] secretKey, byte[] privateKey, byte[] publicKey, OffsetDateTime validUntilDateOdt) {
@@ -59,6 +62,46 @@ public class LTPAValidationKeysInfo {
 
     public LTPAPublicKey getLTPAPublicKey() {
         return ltpaPublicKey;
+    }
+
+    /**
+     * Sets the PQC keys for LTPA3 token validation (legacy support).
+     *
+     * @param pqcKeys The PQC keys (RSA + ML-KEM)
+     * @deprecated Use {@link #setHybridKeys(LTPAHybridKeys)} instead
+     */
+    @Deprecated
+    public void setPQCKeys(LTPAPQCKeys pqcKeys) {
+        this.pqcKeys = pqcKeys;
+    }
+
+    /**
+     * Gets the PQC keys for LTPA3 token validation (legacy support).
+     *
+     * @return The PQC keys, or null if not set
+     * @deprecated Use {@link #getHybridKeys()} instead
+     */
+    @Deprecated
+    public LTPAPQCKeys getPQCKeys() {
+        return pqcKeys;
+    }
+
+    /**
+     * Sets the hybrid keys for LTPA3 token validation.
+     *
+     * @param hybridKeys The hybrid keys (RSA + ML-DSA + ML-KEM)
+     */
+    public void setHybridKeys(LTPAHybridKeys hybridKeys) {
+        this.hybridKeys = hybridKeys;
+    }
+
+    /**
+     * Gets the hybrid keys for LTPA3 token validation.
+     *
+     * @return The hybrid keys, or null if not set
+     */
+    public LTPAHybridKeys getHybridKeys() {
+        return hybridKeys;
     }
 
     // Check if the validUntilDate0dt has already passed.

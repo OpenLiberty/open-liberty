@@ -1,0 +1,223 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.token.ltpa.pqc;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.Security;
+import java.security.spec.AlgorithmParameterSpec;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
+/**
+ * Generates ML-DSA key pairs for PQC LTPA tokens.
+ * 
+ * This class provides utility methods for generating post-quantum cryptographic
+ * key pairs using the ML-DSA (Module-Lattice-Based Digital Signature Algorithm)
+ * as specified in NIST FIPS 204.
+ * 
+ * @see <a href="https://github.ibm.com/websphere/WS-CD-Open/issues/35556">Issue #35556</a>
+ */
+public class PQCKeyGenerator {
+    
+    private static final TraceComponent tc = Tr.register(PQCKeyGenerator.class);
+    
+    /**
+     * Generate ML-DSA key pair using specified algorithm and provider.
+     * 
+     * Implementation for Issue #35556 - Task 2.2
+     * 
+     * @param algorithm ML-DSA-44, ML-DSA-65, or ML-DSA-87
+     * @param provider OpenJCEPlus, IBMJCEPlus, or IBMJCECCA
+     * @return KeyPair containing ML-DSA private and public keys
+     * @throws NoSuchAlgorithmException if ML-DSA is not supported
+     * @throws NoSuchProviderException if provider is not available
+     * @throws IllegalArgumentException if algorithm is invalid
+     */
+    public static KeyPair generateMLDSAKeyPair(String algorithm, String provider) 
+            throws NoSuchAlgorithmException, NoSuchProviderException {
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "generateMLDSAKeyPair", algorithm, provider);
+        }
+        
+        // Validate algorithm
+        if (!isValidMLDSAAlgorithm(algorithm)) {
+            throw new IllegalArgumentException("Invalid ML-DSA algorithm: " + algorithm);
+        }
+        
+        // Check provider availability
+        if (!isPQCProviderAvailable(provider)) {
+            String msg = "PQC provider not available: " + provider;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, msg);
+            }
+            throw new NoSuchProviderException(msg);
+        }
+        
+        try {
+            // Get KeyPairGenerator instance for ML-DSA
+            //KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ML-DSA", provider);
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ML-DSA");
+           
+            // Initialize with the specific ML-DSA variant (ML-DSA-44, ML-DSA-65, or ML-DSA-87)
+            try {
+                // Load the MLDSAParameterSpec class from Java 25
+                Class<?> paramSpecClass = Class.forName("java.security.spec.MLDSAParameterSpec");
+        
+                // Convert algorithm name from "ML-DSA-65" to "ML_DSA_65" (constant naming)
+                String constantName = algorithm.replace("-", "_");
+            
+                // Get the constant field (e.g., MLDSAParameterSpec.ML_DSA_65)
+                java.lang.reflect.Field field = paramSpecClass.getField(constantName);
+                AlgorithmParameterSpec paramSpec = (AlgorithmParameterSpec) field.get(null);
+        
+                // Initialize the key generator with the parameter spec
+                keyGen.initialize(paramSpec);
+        
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Initialized KeyPairGenerator with " + algorithm + " using provider: " + keyGen.getProvider().getName());
+                }
+            } catch (ClassNotFoundException e) {
+                throw new NoSuchAlgorithmException("MLDSAParameterSpec not found - requires Java 25 or later", e);
+            } catch (NoSuchFieldException e) {
+                throw new IllegalArgumentException("Invalid ML-DSA algorithm constant: " + algorithm, e);
+            } catch (Exception e) {
+                throw new NoSuchAlgorithmException("Failed to initialize ML-DSA with algorithm " + algorithm, e);
+            }
+ 
+            // Generate the key pair with the correct algorithm variant
+            KeyPair keyPair = keyGen.generateKeyPair();
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Successfully generated ML-DSA key pair");
+            }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "generateMLDSAKeyPair");
+            }
+            
+            return keyPair;
+            
+        } catch (NoSuchAlgorithmException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to generate ML-DSA key pair: " + e.getMessage());
+            }
+            throw e;
+        }
+    }
+    
+    /**
+     * Check if PQC provider is available and supports ML-DSA.
+     * 
+     * Implementation for Issue #35556 - Task 2.2
+     * 
+     * @param providerName Provider name to check
+     * @return true if provider supports ML-DSA, false otherwise
+     */
+    public static boolean isPQCProviderAvailable(String providerName) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "isPQCProviderAvailable", providerName);
+        }
+        
+        Provider provider = Security.getProvider(providerName);
+        if (provider != null) {
+            // Check if provider supports ML-DSA KeyPairGenerator
+            Provider.Service service = provider.getService("KeyPairGenerator", "ML-DSA");
+            boolean available = (service != null);
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Provider " + providerName + " ML-DSA support: " + available);
+            }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "isPQCProviderAvailable", available);
+            }
+            
+            return available;
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Provider " + providerName + " not found");
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "isPQCProviderAvailable", false);
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Validate ML-DSA algorithm identifier.
+     * 
+     * @param algorithm Algorithm to validate
+     * @return true if algorithm is valid ML-DSA variant
+     */
+    private static boolean isValidMLDSAAlgorithm(String algorithm) {
+        return PQCConstants.ALGORITHM_ML_DSA_44.equals(algorithm) ||
+               PQCConstants.ALGORITHM_ML_DSA_65.equals(algorithm) ||
+               PQCConstants.ALGORITHM_ML_DSA_87.equals(algorithm);
+    }
+    
+    /**
+     * Get recommended ML-DSA algorithm based on security requirements.
+     * 
+     * @param securityLevel Desired security level in bits (128, 192, or 256)
+     * @return Recommended ML-DSA algorithm
+     */
+    public static String getRecommendedAlgorithm(int securityLevel) {
+        if (securityLevel >= 256) {
+            return PQCConstants.ALGORITHM_ML_DSA_87;
+        } else if (securityLevel >= 192) {
+            return PQCConstants.ALGORITHM_ML_DSA_65;
+        } else {
+            return PQCConstants.ALGORITHM_ML_DSA_44;
+        }
+    }
+    
+    /**
+     * Get list of available PQC providers.
+     * 
+     * @return Array of available provider names that support ML-DSA
+     */
+    public static String[] getAvailablePQCProviders() {
+        java.util.List<String> availableProviders = new java.util.ArrayList<>();
+        
+        for (String providerName : new String[] {
+            PQCConstants.PROVIDER_OPENJCEPLUS,
+            PQCConstants.PROVIDER_IBMJCEPLUS,
+            PQCConstants.PROVIDER_IBMJCECCA
+        }) {
+            if (isPQCProviderAvailable(providerName)) {
+                availableProviders.add(providerName);
+            }
+        }
+        
+        return availableProviders.toArray(new String[0]);
+    }
+    
+    /**
+     * Get the first available PQC provider.
+     * 
+     * @return Provider name, or null if none available
+     */
+    public static String getFirstAvailableProvider() {
+        String[] providers = getAvailablePQCProviders();
+        return (providers.length > 0) ? providers[0] : null;
+    }
+}

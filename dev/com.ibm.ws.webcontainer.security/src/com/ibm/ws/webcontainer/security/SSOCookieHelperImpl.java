@@ -88,7 +88,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         }
         String cookieByteString = JwtSSOTokenHelper.getJwtSSOToken(subject);
         if (cookieByteString != null) {
-            String testString = getJwtSsoTokenFromCookies(req, getJwtCookieName());
+            String testString = getSsoTokenFromCookies(req, getJwtCookieName());
             boolean cookieAlreadySent = testString != null && testString.equals(cookieByteString);
             if (!cookieAlreadySent) {
                 result = addJwtCookies(cookieByteString, req, resp, contextRoot);
@@ -102,7 +102,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * Return true if any cookies were added
      */
     protected boolean addJwtCookies(String cookieByteString, HttpServletRequest req, HttpServletResponse resp, String contextRoot) {
-
         String baseName = getJwtCookieName();
         if (baseName == null) {
             return false;
@@ -110,19 +109,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if ((!req.isSecure()) && getJwtCookieSecure()) {
             Tr.warning(tc, "JWT_COOKIE_SECURITY_MISMATCH", new Object[] {}); // CWWKS9127W
         }
-        String[] chunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieByteString, 3900);
-        String cookieName = baseName;
-        for (int i = 0; i < chunks.length; i++) {
-            if (i > 98) {
-                String eMsg = "Too many jwt cookies created";
-                com.ibm.ws.ffdc.FFDCFilter.processException(new Exception(eMsg), this.getClass().getName(), "132");
-                break;
-            }
-            Cookie ssoCookie = createCookie(req, cookieName, chunks[i], getJwtCookieSecure(), contextRoot); //name
-            resp.addCookie(ssoCookie);
-            cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2); //name02... name99
-        }
-        return true;
+        return addSsoCookiesWithChunking(cookieByteString, baseName, getJwtCookieSecure(), req, resp, contextRoot, "JWT");
     }
 
     protected String getJwtCookieName() {
@@ -317,7 +304,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
     protected void logoutJwtCookies(HttpServletRequest req, Cookie[] cookies, java.util.ArrayList<Cookie> logoutCookieList) {
         String jwtCookieName = getJwtCookieName();
         if (jwtCookieName != null) { // jwtsso is active, expire it's cookies too
-            String jwtTokenStr = getJwtSsoTokenFromCookies(req, jwtCookieName);
+            String jwtTokenStr = getSsoTokenFromCookies(req, jwtCookieName);
             if (jwtTokenStr != null) {
                 LoggedOutJwtSsoCookieCache.put(jwtTokenStr);
             }
@@ -513,9 +500,26 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * @param req
      * @return the token String or null if nothing found.
      */
+    /**
+     * Retrieves and reassembles an SSO token from cookies.
+     * This method handles both single cookies and fragmented cookies (e.g., for large tokens).
+     *
+     * Fragmented cookies follow the naming pattern:
+     * - Base cookie: {baseName} (e.g., "LtpaToken2" or "JWT")
+     * - Fragment 2: {baseName}02 (e.g., "LtpaToken202" or "JWT02")
+     * - Fragment 3: {baseName}03 (e.g., "LtpaToken203" or "JWT03")
+     * - ...
+     * - Fragment 99: {baseName}99 (e.g., "LtpaToken299" or "JWT99")
+     *
+     * This is particularly important for LTPA Token Version 3 with Post-Quantum Cryptography,
+     * which can exceed single cookie size limits (4KB).
+     *
+     * @param req The HTTP servlet request containing the cookies
+     * @param baseName The base name of the cookie (e.g., "LtpaToken2", "JWT")
+     * @return The reassembled token string, or null if no cookies found
+     */
     @Override
-    public String getJwtSsoTokenFromCookies(HttpServletRequest req, String baseName) {
-
+    public String getSsoTokenFromCookies(HttpServletRequest req, String baseName) {
         StringBuffer tokenStr = new StringBuffer();
         String cookieName = baseName;
         for (int i = 1; i <= 99; i++) {
@@ -531,6 +535,16 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             }
         }
         return tokenStr.length() > 0 ? tokenStr.toString() : null;
+    }
+
+    /**
+     * @deprecated Use {@link #getSsoTokenFromCookies(HttpServletRequest, String)} instead.
+     * This method is retained for backward compatibility.
+     */
+    @Deprecated
+    @Override
+    public String getJwtSsoTokenFromCookies(HttpServletRequest req, String baseName) {
+        return getSsoTokenFromCookies(req, baseName);
     }
 
     protected String getCookieValue(HttpServletRequest req, String cookieName) {
@@ -613,10 +627,65 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
                     updateCookieCache(cookieBytes, cookieByteString);
                 }
 
-                Cookie ssoCookie = createCookie(req, cookieByteString, contextRoot);
-                resp.addCookie(ssoCookie);
+                String baseName = getSSOCookiename();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "LTPA token size: " + cookieByteString.length() + " baseName: " + baseName);
+                }
+                
+                addSsoCookiesWithChunking(cookieByteString, baseName, config.getSSORequiresSSL(), req, resp, contextRoot, "LTPA");
             }
         }
+    }
+
+    /**
+     * Common method to add SSO cookies with chunking support for large tokens.
+     * This method splits the cookie value into chunks if it exceeds the maximum length
+     * and adds multiple cookies with sequential naming (e.g., LtpaToken2, LtpaToken202, LtpaToken203).
+     *
+     * @param cookieByteString The Base64-encoded token value to be stored in cookies
+     * @param baseName The base name for the cookie (e.g., "LtpaToken2" or JWT cookie name)
+     * @param isSecure Whether the cookie should have the Secure flag set
+     * @param req The HTTP servlet request
+     * @param resp The HTTP servlet response
+     * @param contextRoot The application context root (for cookie path)
+     * @param tokenType The type of token ("LTPA" or "JWT") for logging and error messages
+     * @return true if cookies were successfully added, false otherwise
+     */
+    protected boolean addSsoCookiesWithChunking(String cookieByteString, String baseName, boolean isSecure,
+                                                 HttpServletRequest req, HttpServletResponse resp,
+                                                 String contextRoot, String tokenType) {
+        if (baseName == null) {
+            return false;
+        }
+
+        // Split the cookie value into chunks if it exceeds the maximum length
+        // This handles large tokens (e.g., LTPA3 with Post-Quantum Cryptography)
+        String[] chunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieByteString, 3900);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, tokenType + " token split into " + chunks.length + " cookie(s)");
+        }
+
+        String cookieName = baseName;
+        for (int i = 0; i < chunks.length; i++) {
+            if (i > 98) {
+                String eMsg = "Too many " + tokenType + " cookies created";
+                com.ibm.ws.ffdc.FFDCFilter.processException(new Exception(eMsg), this.getClass().getName(), "addSsoCookiesWithChunking");
+                break;
+            }
+
+            Cookie ssoCookie = createCookie(req, cookieName, chunks[i], isSecure, contextRoot);
+            resp.addCookie(ssoCookie);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Added cookie: " + cookieName + " (chunk " + (i + 1) + " of " + chunks.length + ")");
+            }
+
+            // Update cookie name for next iteration: baseName02, baseName03, ..., baseName99
+            cookieName = baseName + (i + 2 < 10 ? "0" : "") + (i + 2);
+        }
+        
+        return true;
     }
 
     /** {@inheritDoc} */
@@ -632,10 +701,29 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if (cookies != null) {
             String ssoCookieName = resolveCookieName(cookies);
             for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equalsIgnoreCase(ssoCookieName)) {
+                String cookieName = cookies[i].getName();
+                String cookieValue = cookies[i].getValue();
+                
+                // Only delete cookies that have actual values (not empty/null)
+                // This prevents deleting cookies that were just created in the response
+                if (cookieValue == null || cookieValue.isEmpty()) {
+                    continue;
+                }
+                
+                // Check for exact match OR fragment cookies (e.g., LtpaToken202, LtpaToken203)
+                // Fragment cookies have numeric suffix after base name
+                boolean isFragmentCookie = false;
+                if (cookieName.length() > ssoCookieName.length() &&
+                    cookieName.toLowerCase().startsWith(ssoCookieName.toLowerCase())) {
+                    String suffix = cookieName.substring(ssoCookieName.length());
+                    // Match numeric suffixes like "02", "03", "10", "99" (2-3 digits)
+                    isFragmentCookie = suffix.matches("^\\d{2,3}$");
+                }
+
+                if (cookieName.equalsIgnoreCase(ssoCookieName) || isFragmentCookie) {
                     cookies[i].setValue(null);
-                    addLogoutCookieToList(req, ssoCookieName, logoutCookieList);
-                } else if (cookies[i].getName().equalsIgnoreCase(OIDC_BROWSER_STATE_COOKIE)) {
+                    addLogoutCookieToList(req, cookieName, logoutCookieList);
+                } else if (cookieName.equalsIgnoreCase(OIDC_BROWSER_STATE_COOKIE)) {
                     // remove oidc browser state cookie, if it exists.
                     if (oidcServerRef != null && oidcServerRef.getService() != null) {
                         removeBrowserStateCookie(req, res);
