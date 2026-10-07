@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,7 +59,20 @@ public class EncodingUtils {
     private static final String CLASS_NAME="com.ibm.wsspi.webcontainer.util.EncodingUtils";
     protected static final TraceNLS nls = TraceNLS.getTraceNLS(EncodingUtils.class, "com.ibm.ws.webcontainer.resources.Messages");
 
-    private static final Map<String, Charset> supportedEncodingsCache = new ConcurrentHashMap<>();
+    // Keep a cache of supported encodings with LRU eviction policy when cache max size is reached. ~250 universe of valid charsets and aliases
+    private static final int SUPPORTED_ENCODINGS_CACHE_MAX_SIZE = 250;
+    // Maximum charset name length (RFC 2978 limits registered names to 40 chars; 100 is plenty)
+    private static final int MAX_CHARSET_NAME_LENGTH = 100;
+
+    private static final Map<String, Charset> supportedEncodingsCache = Collections.synchronizedMap(
+        new LinkedHashMap<String, Charset>(16, 0.75f, true) {
+
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, Charset> eldest) {
+                return size() > SUPPORTED_ENCODINGS_CACHE_MAX_SIZE;
+            }
+        }
+    );
 
     /**
      * This Class is just used as a place holder for an invalid Charset so we don't have to look it up again and found
@@ -427,6 +439,10 @@ public class EncodingUtils {
      */
     // rewritten as part of PK13492
     public static Charset getCharsetForName(String name) {
+        if (name == null || name.length() > MAX_CHARSET_NAME_LENGTH) {
+            return null;
+        }
+
         Charset charset = supportedEncodingsCache.get(name);
         if (charset == null) {
             try {

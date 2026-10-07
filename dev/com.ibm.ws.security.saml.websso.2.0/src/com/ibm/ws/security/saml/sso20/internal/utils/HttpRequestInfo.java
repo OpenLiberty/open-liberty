@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -147,12 +147,13 @@ public class HttpRequestInfo implements Serializable {
         return isDelegatedLogout;
     }
 
-    public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams) {
+    public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams, long birthTimeMillis) {
         this.reqUrl = reqUrl;
         this.requestURL = requestURL;
         this.method = method;
         this.strInResponseToId = strInResponseToId;
         this.formLogoutExitPage = formlogout;
+        this.birthTime = new DateTime(birthTimeMillis);
 
         if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {
             this.savedPostParams = postParams;

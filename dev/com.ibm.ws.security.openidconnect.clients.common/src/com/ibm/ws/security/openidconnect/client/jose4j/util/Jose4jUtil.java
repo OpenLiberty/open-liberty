@@ -85,18 +85,6 @@ public class Jose4jUtil {
 
     WebSSOUtils webSsoUtils = new WebSSOUtils();
 
-    // set org.jose4j.jws.default-allow-none to true to behave the same as old jwt
-    // allow signatureAlgorithme as none
-    static {
-        AccessController
-                .doPrivileged(new PrivilegedAction<String>() {
-                    @Override
-                    public String run() {
-                        return System.setProperty("org.jose4j.jws.default-allow-none", "true");
-                    }
-                });
-    };
-
     public Jose4jUtil(SSLSupport sslSupport) {
         super();
         this.sslSupport = sslSupport;
