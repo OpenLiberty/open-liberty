@@ -76,6 +76,8 @@ dependencies {
     library "xerces:xercesImpl:2.12.2"
     library "xml-apis:xml-apis:1.4.01"
     library "ant-jshint:ant-jshint:0.3.6-deps"
+    library "io.openliberty.org.codehaus.jackson:jackson-core-asl:1.9.13.1"
+    library "io.openliberty.org.codehaus.jackson:jackson-mapper-asl:1.9.13.1"
     library "closure-compiler:compiler:1.0.0"
     library "css-validator:css-validator:1.0.0"
     library "org.webjars:jquery:3.5.1"
@@ -117,6 +119,8 @@ def dependencyToPath = [
   "org.ow2.asm:asm-all:5.0.3": "lib/buildtasks/asm-all-5.0.3.jar",
   "org.apache.aries:org.apache.aries.util:1.2.0-ibm-s20130314-0952": "lib/buildtasks/org.apache.aries.util-1.2.0.jar",
   "ant-jshint:ant-jshint:0.3.6-deps": "lib/jshint/ant-jshint-0.3.6-deps.jar",
+  "io.openliberty.org.codehaus.jackson:jackson-core-asl:1.9.13.1": "lib/jshint/jackson-core-asl-1.9.13.1.jar",
+  "io.openliberty.org.codehaus.jackson:jackson-mapper-asl:1.9.13.1": "lib/jshint/jackson-mapper-asl-1.9.13.1.jar",
   "closure-compiler:compiler:1.0.0": "lib/closure/compiler.jar",
   "closure-externs:externs-jquery-3.2:1.0.0": "lib/closure/closureExterns.jar",
   "com.google.javascript:closure-compiler:v20160315": "lib/closure/closure-compiler-v20160315.jar",

@@ -87,9 +87,4 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/mdb/resources/*.class
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.managedobject;version=latest,\
-	io.openliberty.yoko.spec.corba;version=latest,\
 	io.openliberty.yoko.core;version=latest,\
-	io.openliberty.yoko.osgi;version=latest,\
-	io.openliberty.yoko.rmi.impl;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
-	io.openliberty.yoko.util;version=latest
