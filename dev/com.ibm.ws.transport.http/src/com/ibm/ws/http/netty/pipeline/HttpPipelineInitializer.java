@@ -225,11 +225,11 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, false);
+        // Turn off auto read for HTTP/1.1 before publishing the protocol change.
+        pipeline.channel().config().setAutoRead(false);
         boolean secure = Boolean.TRUE.equals(pipeline.channel().attr(NettyHttpConstants.IS_SECURE).get());
         ProtocolState.establish(pipeline.channel(), ProtocolName.HTTP1,
             secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1);
-        // Turn off auto read for HTTP/1.1
-        pipeline.channel().config().setAutoRead(false);
     }
 
     /**
@@ -256,15 +256,14 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn off auto read for H1
                 ctx.channel().config().setAutoRead(false);
 
-                TimeoutHandler timeoutHandler = pipeline.get(TimeoutHandler.class);
-
                 // Add H1 handlers
-                // TODO we should decide if the TimeoutHandler is optional or not for this check
+                // The h2c pipeline installs TimeoutHandler before it can reach this fallback.
                 if(pipeline.get(ReadFlowHandler.class) == null){
-                    pipeline.addBefore((timeoutHandler != null) ? TimeoutHandler.NAME : HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                    pipeline.addBefore((pipeline.get(RemoteIpHandler.class) != null) ? RemoteIpHandler.NAME : HttpDispatcherHandler.NAME,
+                                       ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
                 if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                    pipeline.addBefore(TimeoutHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 }
 
                 ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
