@@ -882,7 +882,7 @@ public class FeatureDefinitionUtils {
         return str;
     }
 
-    @FFDCIgnore(IOException.class)
+    @FFDCIgnore({ IOException.class, Exception.class })
     private static Manifest loadManifest(File mfFile, InputStream in) throws IOException {
         try {
             if (in == null)
