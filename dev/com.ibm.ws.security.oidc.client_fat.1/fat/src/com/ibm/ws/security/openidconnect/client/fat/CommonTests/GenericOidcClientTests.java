@@ -1256,7 +1256,8 @@ public class GenericOidcClientTests extends CommonTest {
         else{
             Log.info(thisClass, _testName, "Skipping test for PKIX provider");
         }
-
+        
+        
     }
 
     /**
