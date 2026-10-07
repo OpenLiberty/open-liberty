@@ -10,7 +10,8 @@ Subsystem-Name: Message Server 1.0
   com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0, 8.0", \
   com.ibm.websphere.appserver.appLifecycle-1.0, \
   com.ibm.websphere.appserver.channelfw-1.0, \
-  com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2"
+  com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2", \
+  io.openliberty.netty.internal-1.0
 -bundles=com.ibm.ws.messaging.comms.server, \
  com.ibm.ws.messaging.msgstore, \
  com.ibm.ws.messaging.common, \
@@ -19,12 +20,7 @@ Subsystem-Name: Message Server 1.0
  com.ibm.ws.messaging.runtime, \
  com.ibm.ws.messaging.comms.client, \
  com.ibm.websphere.security, \
- io.openliberty.transport.config.internal, \
- io.openliberty.io.netty, \
- io.openliberty.io.netty.ssl, \
- io.openliberty.netty.internal, \
- io.openliberty.netty.internal.impl, \
- io.openliberty.endpoint
+ io.openliberty.transport.config.internal
 -jars=com.ibm.websphere.appserver.api.messaging; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip
 kind=ga
