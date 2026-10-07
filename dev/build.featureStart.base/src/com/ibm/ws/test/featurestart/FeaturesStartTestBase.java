@@ -270,21 +270,13 @@ public class FeaturesStartTestBase {
         } else if ( results.failures.contains(featureShortName) ) {
             String failureCase;
             if ( results.failuresAbsent.contains(featureShortName) ) {
-                if ( results.failuresAbsentFeatureSpecified.containsKey(featureShortName) ) {
-                    failureCase = "Missing feature specified error";
-                } else if ( results.failuresAbsentOutOfLevel.containsKey(featureShortName) ) {
-                    failureCase = "Missing out-of-level error";
-                } else {
+                if ( ((failureCase = reportFirst("Missing feature specified error", results.failuresAbsentFeatureSpecified, featureShortName)) == null) &&                    
+                     ((failureCase = reportFirst("Missing out-of-level error", results.failuresAbsentOutOfLevel, featureShortName)) == null) ) {                    
                     failureCase = "Strange mis-reported missing error";                    
                 }
             } else if ( results.failuresPresent.contains(featureShortName) ) {
-                if ( results.failuresPresentMissingBundle.containsKey(featureShortName) ) {
-                    failureCase = "Missing bundle";
-                } else if ( results.failuresPresentMissingModule.containsKey(featureShortName) ) {
-                    failureCase = "Missing module";                    
-                } else if ( results.failuresPresentOther.containsKey(featureShortName) ) {
-                    failureCase = "Unexpected error";                    
-                } else {
+                if ( ((failureCase = reportFirst("Missing bundle", results.failuresPresentMissingBundle, featureShortName)) == null) &&                    
+                    ((failureCase = reportFirst("Missing module", results.failuresPresentMissingModule, featureShortName)) == null) ) {                    
                     failureCase = "Strange mis-reported present error";
                 }
             } else {
@@ -298,6 +290,25 @@ public class FeaturesStartTestBase {
         } else if ( !results.successes.contains(featureShortName) ) {
             Assert.assertTrue("Strange: Neither success nor failure recorded for [ " + featureShortName + " ]", false);            
         }
+    }
+
+    private static String reportFirst(String prefix, Map<String, ? extends Collection<String>> storage, String bucketKey) {
+        if ( storage.containsKey(bucketKey) ) {
+            return prefix + "; first: " + firstElement(storage, bucketKey);
+        } else {
+            return null;
+        }
+    }
+    
+    private static String firstElement(Map<String, ? extends Collection<String>> storage, String bucketKey) {
+        Collection<String> bucket = storage.get(bucketKey);
+        if ( (bucket == null) || bucket.isEmpty() ) {
+            return null;
+        }
+        for ( String bucketElement : bucket ) {
+            return bucketElement;
+        }
+        return null; // Should never be reached.
     }
     
     public static void afterLastTest() {

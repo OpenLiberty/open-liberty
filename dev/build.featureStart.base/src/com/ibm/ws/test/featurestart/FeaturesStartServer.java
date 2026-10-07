@@ -107,13 +107,20 @@ public class FeaturesStartServer {
      * 
      * Failure messages include startup failure messages.
      *
+     * Do not transfer logs yet! These must remain in the server folders until they
+     * are examined.
+     * 
      * @param ignoredFailuresRegExps Regular expressions specifying failure messages which
      *     are to be ignored.
      * @throws Exception Thrown if the server stop fails with any error messages other than
      *     the specified ignored messages.
      */
     protected void stop(String... ignoredFailuresRegExps) throws Exception {
-        server.stopServer(ignoredFailuresRegExps);
+        server.stopServer(!LibertyServer.POST_ARCHIVES, ignoredFailuresRegExps);
+    }
+    
+    protected void postLogs() throws Exception {
+        server.postStopServerArchive();
     }
     
     /**

@@ -492,8 +492,12 @@ public class FeaturesStartResults {
 
         StartupResult result = startFeature(timingResult);
         if ( result.attempted ) {
-            stopFeature(timingResult, result);
-            processServerMessages(timingResult, result);
+            try {
+                stopFeature(timingResult, result);
+                processServerMessages(timingResult, result);
+            } finally {
+                postLogs(timingResult, result);
+            }
         }
 
         if ( !didFail() ) {
@@ -561,7 +565,9 @@ public class FeaturesStartResults {
      *
      * Second, if the server PID is available, attempt to kill the server process.
      *
-     * @param timingResult  Storage for timing data.
+     * Copying of server logs is deferred until after {@link #processServerMessages(TimingResult, StartupResult)}.
+     * 
+     * @param timingResult Storage for timing data.
      *
      * @return True or false telling if the stop was successful.
      */
@@ -585,6 +591,8 @@ public class FeaturesStartResults {
 
                 logInfo(m, "Stopping: " + description);
                 
+                // The invocation of 'server.stop' does NOT post server logs.
+                // That is deferred until after processing server messages.
                 Exception stopException = timingResult.runStop( () -> server.stop(nextIgnoredRegEx) );
                 if ( stopException == null ) {
                     logInfo(m, "Stopped: " + description);
@@ -615,6 +623,22 @@ public class FeaturesStartResults {
         return ( !stopFailed && !killFailed);
     }
 
+    /**
+     * Perform the deferred step of copying server logs. This is deferred to
+     * after processing message logs. The stop of copying server logs moves them
+     * out of the server folder and makes them inaccessible.
+     */
+    protected void postLogs(TimingResult timingResult, StartupResult startupResult) {
+        String m = "postLogs";
+        timingResult.runPost( () -> {
+            try {
+                server.postLogs();
+            } catch ( Exception e ) {
+                recordPresentOtherError(m, "Failed to post logs", e);
+            }
+        } );
+    }
+    
     protected void processServerMessages(TimingResult timingResult, StartupResult startupResult) {
         String m = "processServerMessages";
         

@@ -45,7 +45,8 @@ public class FeaturesStartTiming {
             PID,
             VERIFY,
             STOP,
-            KILL
+            KILL,
+            POST
         }
 
         private static EnumMap<TimingBucket, Long> initialResults() {
@@ -135,6 +136,14 @@ public class FeaturesStartTiming {
             return get(TimingBucket.KILL);
         }        
 
+        public Exception runPost(TimingAction action) {
+            return run(TimingBucket.POST, action);
+        }
+        
+        public Long getPostNs() {
+            return get(TimingBucket.POST);
+        }
+
         public <T> T runProducer(TimingBucket bucket, TimingProducer<T> action) throws Exception {            
             long initialNs = getTimeNs();
             try {
@@ -163,7 +172,11 @@ public class FeaturesStartTiming {
         public void display(String m) {
             StringBuilder builder = new StringBuilder();
 
-            builder.append("Feature [ " + getName() + " ]: ");
+            builder.append("Feature [ " + getName() + " ]:");
+            logInfo(m, builder.toString());
+            builder.setLength(0);
+            
+            builder.append("    ");
 
             builder.append(format("Update", getUpdateNs()));
             builder.append(", ");
@@ -187,6 +200,14 @@ public class FeaturesStartTiming {
 
             builder.append(format("Kill", getKillNs()));
             builder.append(", ");
+            
+            builder.append(format("Post", getPostNs()));
+            builder.append(", ");            
+
+            logInfo(m, builder.toString());
+            builder.setLength(0);
+            
+            builder.append("    ");
 
             builder.append(format("Total", getTotalNs()));
 
