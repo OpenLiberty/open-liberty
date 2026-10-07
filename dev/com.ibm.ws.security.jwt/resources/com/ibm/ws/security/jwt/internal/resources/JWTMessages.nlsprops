@@ -426,7 +426,7 @@ JWT_BUILDER_CHECKPOINT_NOT_SUPPORTED.explanation=The JWT builder cannot build JW
 JWT_BUILDER_CHECKPOINT_NOT_SUPPORTED.useraction=Configure the application to invoke the JWT builder only after the server has restored from checkpoint.
 
 # Do not translate "JSON Web Token", "JWT", "jwkRotationTime", "jwkMaxKeys", "expiry", "expiresInSeconds"
-# 0=Builder config ID, 1=jwkRotationTime in minutes, 2=jwkMaxKeys, 3=token lifetime in seconds
-JWK_KEY_COVERAGE_WINDOW_TOO_SHORT=CWWKS6074W: The [{0}] JWT builder configuration has a jwkRotationTime of [{1}] minutes and a jwkMaxKeys of [{2}], but the token lifetime is [{3}] seconds. Tokens may become unverifiable before they expire. Increase jwkRotationTime, increase jwkMaxKeys, or reduce the token lifetime with the expiry or expiresInSeconds attribute.
+# 0=Builder config ID, 1=jwkRotationTime in seconds, 2=jwkMaxKeys, 3=token lifetime in seconds
+JWK_KEY_COVERAGE_WINDOW_TOO_SHORT=CWWKS6074W: The [{0}] JWT builder configuration has a jwkRotationTime of [{1}] seconds and a jwkMaxKeys of [{2}], but the token lifetime is [{3}] seconds. Tokens may become unverifiable before they expire. Increase jwkRotationTime, increase jwkMaxKeys, or reduce the token lifetime with the expiry or expiresInSeconds attribute.
 JWK_KEY_COVERAGE_WINDOW_TOO_SHORT.explanation=A signing key remains in the JWK set for jwkMaxKeys rotation periods, giving a total key coverage window of jwkRotationTime multiplied by jwkMaxKeys. If this window is shorter than the token lifetime, a verifier may be unable to find the signing key for a token that has not yet expired.
 JWK_KEY_COVERAGE_WINDOW_TOO_SHORT.useraction=Ensure that jwkRotationTime multiplied by jwkMaxKeys is greater than or equal to the token lifetime. Increase jwkRotationTime, increase jwkMaxKeys, or reduce the token lifetime by using the expiry or expiresInSeconds attribute.

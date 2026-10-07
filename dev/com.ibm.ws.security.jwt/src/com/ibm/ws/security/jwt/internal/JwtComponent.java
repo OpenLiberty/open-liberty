@@ -172,8 +172,9 @@ public class JwtComponent implements JwtConfig {
         // HS256=shared secret
         // It it is JWK, then the algorithm should be RS256
         jwkRotationTime = (Long) props.get(JwtUtils.CFG_KEY_JWK_ROTATION_TIME);
-        // Rotation time is in minutes, so convert value to milliseconds
-        jwkRotationTime = jwkRotationTime * 60 * 1000;
+        // Rotation time is in seconds, so convert value to milliseconds
+        jwkRotationTime = jwkRotationTime * 1000;
+
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
         jwkMaxKeys = (Integer) props.get(JwtUtils.CFG_KEY_JWK_MAX_KEYS);
         nbfOffsetTime = ((Long) props.get(JwtUtils.CFG_KEY_NBF_OFFSET)).longValue();
@@ -205,8 +206,8 @@ public class JwtComponent implements JwtConfig {
         // If that window < token lifetime, tokens can outlive their signing key.
         long keyWindowInSeconds = (jwkRotationTime / 1000L) * jwkMaxKeys;
         if (keyWindowInSeconds < valid) {
-            long jwkRotationTimeInMinutes = jwkRotationTime / 60000L;
-            Tr.warning(tc, "JWK_KEY_COVERAGE_WINDOW_TOO_SHORT", new Object[] { issuer, jwkRotationTimeInMinutes, jwkMaxKeys, valid });
+            long jwkRotationTimeInSeconds = jwkRotationTime / 1000L;
+            Tr.warning(tc, "JWK_KEY_COVERAGE_WINDOW_TOO_SHORT", new Object[] { issuer, jwkRotationTimeInSeconds, jwkMaxKeys, valid });
         }
     }
 
