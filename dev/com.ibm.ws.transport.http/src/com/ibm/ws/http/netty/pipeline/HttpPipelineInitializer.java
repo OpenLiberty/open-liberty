@@ -77,6 +77,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_AGGREGATOR_HANDLER_NAME = "objectAggregator";
     public static final String HTTP_REQUEST_HANDLER_NAME = "requestHandler";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "h2cUpgradeHandler";
+    public static final String SERVLET_UPGRADE_HANDLER_NAME = "ServletUpgradeHandler";
     public static final String WRITE_TIMEOUT_HANDER_NAME = "writeTimeoutHandler";
 
     public static final long maxContentLength = Long.MAX_VALUE;
@@ -282,15 +283,15 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
 
                 // Remove non-H1 handlers
-                if (pipeline.get("h2cUpgradeHandler") != null) {
-                    pipeline.remove("h2cUpgradeHandler");
+                if (pipeline.get(HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME) != null) {
+                    pipeline.remove(HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME);
                 }
                 HttpServerUpgradeHandler upgradeHandler = pipeline.get(HttpServerUpgradeHandler.class);
                 if (upgradeHandler != null) {
                     pipeline.remove(upgradeHandler);
                 }
-                if (pipeline.get("upgradeCheckHandler") != null) {
-                    pipeline.remove("upgradeCheckHandler");
+                if (pipeline.get(NO_UPGRADE_OCURRED_HANDLER_NAME) != null) {
+                    pipeline.remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
                 }
 
             }

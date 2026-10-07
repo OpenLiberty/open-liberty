@@ -74,10 +74,21 @@ public class MultiAppIsolationTest extends FATServletClient {
         server.stopServer();
     }
 
+    /**
+     * Asserts that a JSON-RPC response is a success: no {@code "error"} key is present
+     * and a {@code "result"} key is present. Fails with a clear message
+     * when the caller tries to unwrap {@code "result"} on an error response.
+     */
+    private static void assertSuccessResponse(String context, JSONObject response) {
+        assertFalse(context + ": must not contain a JSON-RPC error", response.has("error"));
+        assertTrue(context + ": must contain a result object", response.has("result"));
+    }
+
     @Test
     public void testAlphaToolListReturnsAlphaToolsOnly() throws Exception {
         String alphaToolCallResponse = alphaClient.listAllTools();
         JSONObject jsonResponse = new JSONObject(alphaToolCallResponse);
+        assertSuccessResponse("Alpha tools/list", jsonResponse);
         JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
 
         boolean foundAlphaTool = false;
@@ -106,6 +117,7 @@ public class MultiAppIsolationTest extends FATServletClient {
     public void testBetaToolListReturnsBetaToolsOnly() throws Exception {
         String betaToolCallResponse = betaClient.listAllTools();
         JSONObject jsonResponse = new JSONObject(betaToolCallResponse);
+        assertSuccessResponse("Beta tools/list", jsonResponse);
         JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
 
         boolean foundAlphaTool = false;
@@ -384,5 +396,157 @@ public class MultiAppIsolationTest extends FATServletClient {
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    // Negative Tests
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Negative test: {@code tools/list} on the <em>alpha</em> endpoint must not
+     * contain {@code betaOnlyTool}'s schema, and {@code tools/list} on the <em>beta</em>
+     * endpoint must not contain {@code alphaOnlyTool}'s schema. Schema isolation must
+     * mirror tool-call isolation.
+     */
+    @Test
+    public void testToolListSchemaIsolatedBetweenApps() throws Exception {
+        String alphaResponse = alphaClient.listAllTools();
+        String betaResponse = betaClient.listAllTools();
+
+        JSONObject alphaJson = new JSONObject(alphaResponse);
+        JSONObject betaJson = new JSONObject(betaResponse);
+        assertSuccessResponse("Alpha tools/list", alphaJson);
+        assertSuccessResponse("Beta tools/list", betaJson);
+        JSONArray alphaTools = alphaJson.getJSONObject("result").getJSONArray("tools");
+        JSONArray betaTools = betaJson.getJSONObject("result").getJSONArray("tools");
+
+        // Alpha must not expose betaOnlyTool's schema
+        for (int i = 0; i < alphaTools.length(); i++) {
+            assertFalse("Alpha tools/list must not expose betaOnlyTool",
+                        "betaOnlyTool".equals(alphaTools.getJSONObject(i).getString("name")));
+        }
+
+        // Beta must not expose alphaOnlyTool's schema
+        for (int i = 0; i < betaTools.length(); i++) {
+            assertFalse("Beta tools/list must not expose alphaOnlyTool",
+                        "alphaOnlyTool".equals(betaTools.getJSONObject(i).getString("name")));
+        }
+    }
+
+    /**
+     * Negative test: the {@code sharedToolName} tool exists in both apps but their
+     * {@code inputSchema} shapes must not bleed across; each app's listing must only
+     * describe its own tool definition (description comes from {@code AlphaTools} vs
+     * {@code BetaTools} respectively).
+     */
+    @Test
+    public void testSharedToolNameSchemaIsIsolatedPerApp() throws Exception {
+        String alphaResponse = alphaClient.listAllTools();
+        String betaResponse = betaClient.listAllTools();
+
+        JSONObject alphaJson = new JSONObject(alphaResponse);
+        JSONObject betaJson = new JSONObject(betaResponse);
+        assertSuccessResponse("Alpha tools/list", alphaJson);
+        assertSuccessResponse("Beta tools/list", betaJson);
+
+        JSONObject alphaShared = null;
+        JSONObject betaShared = null;
+
+        JSONArray alphaTools = alphaJson.getJSONObject("result").getJSONArray("tools");
+        for (int i = 0; i < alphaTools.length(); i++) {
+            JSONObject t = alphaTools.getJSONObject(i);
+            if ("sharedToolName".equals(t.getString("name"))) {
+                alphaShared = t;
+                break;
+            }
+        }
+
+        JSONArray betaTools = betaJson.getJSONObject("result").getJSONArray("tools");
+        for (int i = 0; i < betaTools.length(); i++) {
+            JSONObject t = betaTools.getJSONObject(i);
+            if ("sharedToolName".equals(t.getString("name"))) {
+                betaShared = t;
+                break;
+            }
+        }
+
+        assertNotNull("sharedToolName must appear in alpha tools/list", alphaShared);
+        assertNotNull("sharedToolName must appear in beta tools/list", betaShared);
+
+        // Each listing must carry its own app-specific title/description, not the other's
+        String alphaTitle = alphaShared.optString("title", "");
+        String betaTitle = betaShared.optString("title", "");
+        assertFalse("Alpha's sharedToolName must not carry Beta's title",
+                    "Shared tool name in Beta".equals(alphaTitle));
+        assertFalse("Beta's sharedToolName must not carry Alpha's title",
+                    "Shared tool name in Alpha".equals(betaTitle));
+    }
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Negative test: calling {@code alphaOnlyTool} via the <em>alpha</em> client and
+     * then calling {@code betaOnlyTool} via the <em>beta</em> client must each succeed
+     * independently; the alpha session must not affect the beta session (no
+     * cross-app state contamination via shared MBeans or shared bean instances).
+     */
+    @Test
+    public void testCrossAppCallsRemainIndependent() throws Exception {
+        String alphaRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-1",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "alphaOnlyTool",
+                            "arguments": {"input": "ping"}
+                          }
+                        }
+                        """;
+        String betaRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "betaOnlyTool",
+                            "arguments": {"input": "ping"}
+                          }
+                        }
+                        """;
+
+        String expectedAlphaResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-1",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "alpha-response: ping"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+        String expectedBetaResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "iso-2",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "beta-response: ping"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedAlphaResponse, alphaClient.callMCP(alphaRequest), true);
+        JSONAssert.assertEquals(expectedBetaResponse, betaClient.callMCP(betaRequest), true);
     }
 }
