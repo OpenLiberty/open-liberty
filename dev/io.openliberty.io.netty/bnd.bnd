@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 
@@ -46,7 +46,8 @@ Import-Package: \
   @${repo;io.netty:netty-transport-native-epoll:jar:linux-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
   @${repo;io.netty:netty-transport-native-epoll:jar:linux-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
   @${repo;io.netty:netty-transport-native-kqueue:jar:osx-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
-  @${repo;io.netty:netty-transport-native-kqueue:jar:osx-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*)
+  @${repo;io.netty:netty-transport-native-kqueue:jar:osx-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
+  @${bin}
 
 Bundle-NativeCode: \
   META-INF/native/libnetty_transport_native_epoll_aarch_64.so; osname=Linux; processor=aarch64,\
