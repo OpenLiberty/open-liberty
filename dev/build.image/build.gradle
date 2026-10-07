@@ -393,7 +393,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
 }
 
 //all GA features
-def gaPublicFeatures() {
+def gaFeatures() {
     String features = ""
     gaFeatures(false).each {
         features += '<feature>' + it + '</feature>\n'
@@ -413,7 +413,7 @@ def latestEEAndBetaPublicFeatures() {
 }
 
 //all GA, beta and no-ship features
-def gaAndBetaAndNoShipPublicFeatures() {
+def gaAndBetaAndNoShipFeatures() {
     String features = ""
     gaFeatures(false).each {
         features += '<feature>' + it + '</feature>\n'
@@ -464,11 +464,11 @@ def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
 }
 
 if (isAutomatedBuild && !isIFIXBuild) {
-    //NOSHIP
+    //GA+BETA+NOSHIP
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&gaAndBetaAndNoShipPublicFeatures
+        withFeatures this.&gaAndBetaAndNoShipFeatures
         completeFeatureList = true
         outputTo new File(packageDir, "all")
     }
@@ -477,19 +477,19 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLiberty(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&gaPublicFeatures
+        withFeatures this.&gaFeatures
         completeFeatureList = true
         outputTo new File(packageDir, "ga")
     }
 
-    //BETA
+    //GA+BETA
     task packageOpenLibertyBeta(type: PackageLibertyWithFeatures) {
         enabled = rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn copyBetaLicenseToBuildImage
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&latestEEAndBetaPublicFeatures
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,io.openliberty.data,io.openliberty.jakarta.data"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.data,io.openliberty.jakarta.data,io.openliberty.persistenceContainer,io.openliberty.jakarta.persistence,io.openliberty.jakarta.persistence.base"
         outputTo new File(packageDir, "beta")
         isBeta = true
         doLast {
@@ -508,7 +508,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
-    //GA
+    //GA (no features)
     task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -645,7 +645,7 @@ task genChecksums() {
     }
 }
 
-//NOSHIP: Includes all features. For use in development.
+//ALL: Includes all built features. For use in development. Published in each nightly build.
 task zipOpenLibertyDev(type: Zip) {
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -661,7 +661,7 @@ publish.dependsOn zipOpenLibertyDev
 
 if (isAutomatedBuild && !isIFIXBuild) {
 
-    // NOSHIP: Includes all features except excluded features.
+    //GA+BETA+NOSHIP: Includes all GA, BETA & NOSHIP features. Published in each nightly build.
     task zipOpenLibertyAll(type: Zip) {
         dependsOn packageOpenLibertyAll
         dependsOn genChecksums
