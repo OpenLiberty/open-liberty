@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Ur\u010dete platnou hodnotu pro \u0159et\u0
 jndi.decode.failed=CWWKN0011E: Do\u0161lo k chyb\u011b p\u0159i dek\u00f3dov\u00e1n\u00ed hesla {0}. Ov\u011b\u0159te, \u017ee je heslo zak\u00f3dov\u00e1no spr\u00e1vn\u011b. \u0160lo o v\u00fdjimku: {1}.
 jndi.decode.failed.explanation=Heslo nen\u00ed zak\u00f3dov\u00e1no spr\u00e1vn\u011b.
 jndi.decode.failed.useraction=Ov\u011b\u0159te, \u017ee je heslo zak\u00f3dov\u00e1no spr\u00e1vn\u011b. Dal\u0161\u00ed podrobnosti najdete v uveden\u00e9 v\u00fdjimce.
+
+jndi.decode.warning=CWWKN0012W: Hodnotu JNDI n\u00e1zvu {0} nebylo mo\u017en\u00e9 dek\u00f3dovat, proto\u017ee heslo nen\u00ed spr\u00e1vn\u011b zak\u00f3dov\u00e1no.
+jndi.decode.warning.explanation=Vyhled\u00e1n\u00ed v prost\u0159ed\u00ed JNDI se nezda\u0159ilo, proto\u017ee hodnota hesla pro n\u00e1zev JNDI nen\u00ed v podporovan\u00e9m form\u00e1tu k\u00f3dov\u00e1n\u00ed. Server nedok\u00e1\u017ee hodnotu dek\u00f3dovat, a proto nelze vyhled\u00e1v\u00e1n\u00ed dokon\u010dit.
+jndi.decode.warning.useraction=Zak\u00f3dujte heslo pro n\u00e1zev JNDI pomoc\u00ed p\u0159\u00edkazu \u201e securityUtility \u201c a aktualizujte konfiguraci JNDI o zak\u00f3dovanou hodnotu. Dal\u0161\u00ed podrobnosti najdete ve zpr\u00e1v\u011b o v\u00fdjimce.

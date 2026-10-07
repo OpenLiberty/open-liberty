@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=Bei Angabe von outputVersion=2.0 wird nur das Element 'xsd:any ' in der Ausgabedatei verwendet, sodass unbekannte Elemente zwar erfolgreich die XSD-Validierung durchlaufen, daf\u00fcr aber die Validierung f\u00fcr bekannte Elemente verloren geht.
+
+option-key.strict=--strict
+option-desc.strict=Erstellen Sie ein Schema, mit dem ausschlie\u00dflich definierte Attribute validiert werden.

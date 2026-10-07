@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=Se outputVersion=2.0 for especificado, apenas o elemento xsd:any ser\u00e1 usado no arquivo de sa\u00edda, de modo que elementos desconhecidos transmitem a valida\u00e7\u00e3o XSD em detrimento de perda de valida\u00e7\u00e3o para elementos conhecidos.
+
+option-key.strict=--strict
+option-desc.strict=Crie um esquema para validar apenas os atributos definidos.

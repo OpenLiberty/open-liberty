@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Specifica\u0163i o valoare valid\u0103 pent
 jndi.decode.failed=CWWKN0011E: A ap\u0103rut o eroare \u00een timpul decodific\u0103rii parolei {0}. Verifica\u0163i c\u0103 parola de date este codificat\u0103 corect. Excep\u0163ia a fost: {1}.
 jndi.decode.failed.explanation=Parola nu este codificat\u0103 corect.
 jndi.decode.failed.useraction=Verifica\u0163i c\u0103 parola de date este codificat\u0103 corect. Vede\u0163i excep\u0163ia pentru detalii
+
+jndi.decode.warning=CWWKN0012W: Valoarea corespunz\u0103toare numelui JNDI \u201e {0} \u201d nu a putut fi decodat\u0103, deoarece parola nu este codificat\u0103 corect.
+jndi.decode.warning.explanation=C\u0103utarea \u00een mediul JNDI a e\u0219uat deoarece valoarea parolei pentru numele JNDI nu este \u00eentr-un format de codificare acceptat. Serverul nu poate decoda valoarea, iar opera\u021biunea de c\u0103utare nu poate fi finalizat\u0103.
+jndi.decode.warning.useraction=Codifica\u021bi parola pentru numele JNDI folosind comanda de codificare \u201e securityUtility \u201d \u0219i actualiza\u021bi configura\u021bia JNDI cu valoarea codificat\u0103. Consulta\u021bi mesajul de excep\u021bie pentru detalii suplimentare.

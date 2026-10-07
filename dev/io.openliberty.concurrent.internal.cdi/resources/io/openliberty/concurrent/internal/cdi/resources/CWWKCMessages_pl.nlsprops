@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Sprawd\u017a, czy zas\u00f3b jest poprawn
 CWWKC1412.qualifier.conflict=CWWKC1412E: Artefakt aplikacji {0} zawiera wiele definicji zasob\u00f3w {1} , kt\u00f3re maj\u0105 kwalifikatory {2} . Nazwy definicji zasob\u00f3w b\u0119d\u0105cych w konflikcie {1} to {3} .
 CWWKC1412.qualifier.conflict.explanation=Ka\u017cda definicja zasobu tego samego typu posiadaj\u0105ca kwalifikator musi mie\u0107 inny kwalifikator.
 CWWKC1412.qualifier.conflict.useraction=Upewnij si\u0119, \u017ce ka\u017cda definicja zasobu tego samego typu posiada inny kwalifikator lub nie posiada \u017cadnych kwalifikator\u00f3w.
+
+CWWKC1413.sched.method.args=CWWKC1413E: Metoda ` {0} ` obiektu zarz\u0105dzanego CDI typu ` {1} ` jest opatrzona adnotacj\u0105 `Schedule`, ale nie jest automatycznie planowana, poniewa\u017c metody opatrzone adnotacj\u0105 `Schedule` nie mog\u0105 posiada\u0107 parametr\u00f3w.
+CWWKC1413.sched.method.args.explanation=Metody oznaczone jako \u201eSchedule\u201d nie mog\u0105 mie\u0107 \u017cadnych parametr\u00f3w.
+CWWKC1413.sched.method.args.useraction=Usu\u0144 parametry z metody lub usu\u0144 adnotacj\u0119 \u201eSchedule\u201d z tej metody.
