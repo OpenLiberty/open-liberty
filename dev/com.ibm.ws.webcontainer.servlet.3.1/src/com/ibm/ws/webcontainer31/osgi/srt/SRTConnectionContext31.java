@@ -197,12 +197,6 @@ public class SRTConnectionContext31 extends SRTConnectionContext
                 catch (Throwable th)
                 {
                     FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
-                    // Netty: handler.init() threw and this catch block swallows the exception.
-                    // Set UPGRADED_FATAL_ERROR so nettyClose() force-closes the channel,
-                    // since the exception will not propagate further from here.
-                    if (vc != null) {
-                        vc.getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "true");
-                    }
                 }
 
                 try

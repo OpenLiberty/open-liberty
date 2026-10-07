@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.http.netty.timeout;
 
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -57,7 +58,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     private Phase phase = Phase.OFF;
 
     private static final TimeUnit LEGACY_UNIT = TimeUnit.MILLISECONDS;
-    private ChannelHandlerContext parentContext;
+    private volatile ChannelHandlerContext parentContext;
 
     private int readTimeout;
     private int persistTimeout;
@@ -224,6 +225,31 @@ public class TimeoutHandler extends ChannelDuplexHandler {
 
     private void armPersistIfNeeded(ChannelHandlerContext context) {
         if (currentProtocol(context) != ProtocolName.WEBSOCKET) {
+            arm(context, Phase.PERSIST);
+        }
+    }
+
+    /** Suspend HTTP timing while the application initializes an upgraded connection. */
+    public void suspendForUpgrade() {
+        cancel();
+    }
+
+    /** Start the configured persistence deadline after a generic upgrade without a listener. */
+    public void armPersistAfterUpgrade() {
+        ChannelHandlerContext context = parentContext;
+        if (context == null) {
+            return;
+        }
+        if (!context.executor().inEventLoop()) {
+            try {
+                context.executor().execute(this::armPersistAfterUpgrade);
+            } catch (RejectedExecutionException e) {
+                // The channel's event loop is shutting down.
+            }
+            return;
+        }
+        if (context.pipeline().context(this) == context && phase != Phase.PERSIST
+                        && context.channel().isActive() && persistTimeout > 0) {
             arm(context, Phase.PERSIST);
         }
     }

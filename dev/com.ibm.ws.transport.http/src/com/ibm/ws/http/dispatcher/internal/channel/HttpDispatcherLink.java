@@ -96,6 +96,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.netty.internal.impl.QuiesceState;
 
 /**
@@ -392,6 +393,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
+
+            TimeoutHandler timeoutHandler = nettyContext.pipeline().get(TimeoutHandler.class);
+            if (timeoutHandler != null && this.isc != null && vc != null
+                            && vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS) != null) {
+                if ("true".equalsIgnoreCase((String) vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER))) {
+                    nettyContext.pipeline().remove(timeoutHandler);
+                } else {
+                    FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
+                    if (!this.isc.isPersistent() || (requestReference != null && !HttpUtil.isKeepAlive(requestReference))) {
+                        signalAppDoneOnEventLoop();
+                        nettyContext.channel().close();
+                        return;
+                    }
+                    timeoutHandler.armPersistAfterUpgrade();
+                }
+            }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "nettyClose: upgraded connection; not closing channel");
