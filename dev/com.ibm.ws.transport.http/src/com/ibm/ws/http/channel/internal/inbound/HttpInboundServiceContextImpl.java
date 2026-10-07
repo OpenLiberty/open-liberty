@@ -198,7 +198,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setNettyResponse(HttpResponse response) {
         this.nettyResponse = response;
         super.setNettyResponse(response);
-        // TODO requires further cleanup
         this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest, ((NettyRequestMessage)getRequest()).getStreamId());
     }
 
