@@ -197,6 +197,8 @@ public class CustomConfigIdTests {
      */
     @Test
     public void testDefaultAccessLoggingNotIgnored() throws Exception {
+        // Allow LoggerOffThread to flush any pending entries from prior tests before reading baseline.
+        Thread.sleep(1000);
         Integer initialLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
 
         // Make a request to generate access log entry
