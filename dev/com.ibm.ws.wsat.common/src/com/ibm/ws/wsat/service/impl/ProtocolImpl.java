@@ -331,8 +331,13 @@ public class ProtocolImpl {
         part.setCoordinator(coord);
 
         WebClient client = WebClient.getWebClient(part, coord);
-        client.rollback();
-        replayers.add(part);
+        try {
+            replayers.add(part);
+            client.rollback();
+        } catch (Throwable t) {
+            replayers.remove(part); //Preserve old behaviour in case of exception
+            throw t;
+        }
         part.waitResponse(WSATConfigServiceImpl.getInstance().getAsyncResponseTimeout(), WSATParticipantState.ABORTED);
     }
 
