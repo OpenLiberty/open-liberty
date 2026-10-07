@@ -229,9 +229,7 @@ public class LTPAKeyRotationTests {
         server.setupForRestConnectorAccess();
         if (fips140_3Enabled) {
             File fipsServerXml = new File(server.pathToAutoFVTTestFiles + DEFAULT_FIPS_SERVER_XML);
-            File serverXml = new File(server.pathToAutoFVTTestFiles + DEFAULT_SERVER_XML);
-            Files.move(fipsServerXml.toPath(), serverXml.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            server.copyFileToLibertyServerRoot(DEFAULT_SERVER_XML);
+            server.updateServerConfiguration(fipsServerXml);
         }
 
         // Transform the application for EE9+ that was copied

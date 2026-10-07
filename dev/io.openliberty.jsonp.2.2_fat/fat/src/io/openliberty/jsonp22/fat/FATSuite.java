@@ -21,7 +21,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                JSONP22CustomProviderTest.class
+                JSONP22CustomProviderTest.class,
+                JSONP22ProviderCacheGCTest.class
 })
 public class FATSuite {
 }

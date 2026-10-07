@@ -56,6 +56,7 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ExchangeLifecycle;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
@@ -405,7 +406,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         final FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
         boolean requestTrailersRequireClose = requestTrailersRequireClose(requestReference);
-        if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing || requestTrailersRequireClose) {
+        if (nettyContext.pipeline().get(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME) == null || quiescing || requestTrailersRequireClose) {
             this.nettyContext.channel().close();
         } else {
             // Signal app-done so the lifecycle coordinator can perform isc.clear() once.
@@ -473,7 +474,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return true;
         }
         // Keep-alive handler must be present for the connection to be reusable.
-        if (this.nettyContext.pipeline().get("httpKeepAlive") == null) {
+        if (this.nettyContext.pipeline().get(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME) == null) {
             return false;
         }
         // If the request itself was not keep-alive, reuse is not possible.
