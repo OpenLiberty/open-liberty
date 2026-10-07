@@ -170,6 +170,20 @@ public class CustomConfigIdTests {
 
         } finally {
             conn.disconnect();
+
+            // Wait for the async LoggerOffThread to flush the cookie entry to disk before this test exits.
+            long cookieTimeout = 10000;
+            long pollInterval = 100;
+            long elapsed = 0;
+            while (elapsed < cookieTimeout) {
+                List<String> cookieLines = server.findStringsInFileInLibertyServerRoot(
+                        "GET /ConfigTest/cookie", "logs/http_access.log");
+                if (!cookieLines.isEmpty()) {
+                    break;
+                }
+                Thread.sleep(pollInterval);
+                elapsed += pollInterval;
+            }
         }
     }
 
@@ -193,12 +207,10 @@ public class CustomConfigIdTests {
     }
 
     /**
-     * Verifies access logging works, and the pattern matches. 
+     * Verifies access logging works, and the pattern matches.
      */
     @Test
     public void testDefaultAccessLoggingNotIgnored() throws Exception {
-        // Allow LoggerOffThread to flush any pending entries from prior tests before reading baseline.
-        Thread.sleep(1000);
         Integer initialLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
 
         // Make a request to generate access log entry
