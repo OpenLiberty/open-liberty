@@ -900,7 +900,7 @@ public class FeaturesStartResults {
         display(m, 80, "Unexpected error", "    ", failuresPresent, builder);
 
         if ( display(m, 80, "Missing modules", "    > ", "      > ", failuresPresentMissingModule, builder) ||
-             display(m, 80, "Missing bundlers", "    > ", "      > ", failuresPresentMissingBundle, builder) ) {
+             display(m, 80, "Missing bundles", "    > ", "      > ", failuresPresentMissingBundle, builder) ) {
 
             logInfo(m, "Missing modules and/or bundles have three common causes:");
             logInfo(m, "(1) A bundle dependency is incorrectly specified.");
@@ -936,6 +936,7 @@ public class FeaturesStartResults {
         summaries.put("Verify", statistics("Verify", timingResults, (TimingResult result) -> result.getVerifyNs()));
         summaries.put("Stop", statistics("Stop", timingResults, (TimingResult result) -> result.getStopNs()));
         summaries.put("Kill", statistics("Kill", timingResults, (TimingResult result) -> result.getKillNs()));
+        summaries.put("Post", statistics("Post", timingResults, (TimingResult result) -> result.getPostNs()));
         summaries.put("Total", statistics("Total", timingResults, (TimingResult result) -> result.getTotalNs()));
 
         logInfo(m, "Timing Summary:");
