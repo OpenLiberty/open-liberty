@@ -20,6 +20,16 @@ Bundle-SymbolicName: io.openliberty.net.bytebuddy; singleton:=true
 
 instrument.disabled: true
 
+# Mark JDK-internal and optional third-party packages as optional so OSGi
+# can resolve this bundle without those packages being present.
+Import-Package: \
+  com.sun.jna;resolution:=optional, \
+  jdk.internal.misc;resolution:=optional, \
+  sun.misc;resolution:=optional, \
+  javax.annotation;resolution:=optional, \
+  javax.annotation.meta;resolution:=optional, \
+  *
+
 -buildpath: \
         net.bytebuddy:byte-buddy;version=1.18.10, \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest
