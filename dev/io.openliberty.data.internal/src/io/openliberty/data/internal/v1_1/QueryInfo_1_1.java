@@ -534,7 +534,6 @@ public class QueryInfo_1_1 extends QueryInfo {
             TypedQuery<T> query = (TypedQuery<T>) entityHandler.getClass() //
                             .getMethod("createQuery", String.class, Class.class) //
                             .invoke(entityHandler, jpql, resultType);
-
             if (options != null)
                 setReadOptions(options, query, false, entityHandler);
 
@@ -637,21 +636,29 @@ public class QueryInfo_1_1 extends QueryInfo {
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected Object ehUpsert(AutoCloseable entityHandler, Object entity) {
-        // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.upsert(entity) //
-        //                : ((EntityManager) entityHandler).merge(entity);
-
-        Object upserted;
-        if (entityHandler instanceof EntityManager manager)
-            upserted = manager.merge(entity);
-        else
+    protected ArrayList<Object> ehUpsert(AutoCloseable entityHandler,
+                                         List<?> entities) {
+        ArrayList<Object> upserted;
+        if (entityHandler instanceof EntityManager manager) {
+            upserted = new ArrayList<>(entities.size());
+            for (Object e : entities)
+                upserted.add(manager.merge(e));
+        } else {
+            // TODO entities that require Id generation:
+            // Per EntityAgent.upsert/upsertMultiple,
+            // "This method never performs id generation and does not accept
+            // an entity instance with a null identifier. When id generation
+            // is required, use {@link #insert(Object)}."
             try {
-                entityHandler.getClass() //
-                                .getMethod("upsert", Object.class) //
-                                .invoke(entityHandler, entity);
-                upserted = entity;
+                // TODO Persistence 4.0 API
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("upsert", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("upsertMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -659,7 +666,15 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO upsertMultiple
+            if (entities instanceof ArrayList<?> a) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Object> arrayList = (ArrayList<Object>) a;
+                upserted = arrayList;
+            } else {
+                upserted = new ArrayList<>(entities.size());
+                upserted.addAll(entities);
+            }
+        }
         return upserted;
     }
 

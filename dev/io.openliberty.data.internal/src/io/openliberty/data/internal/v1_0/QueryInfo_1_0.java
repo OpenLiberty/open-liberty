@@ -23,6 +23,7 @@ import static io.openliberty.data.internal.v1_0.Data_1_0.EM_createQuery_ql_rc;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -211,8 +212,13 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
-    protected Object ehUpsert(AutoCloseable entityHandler, Object entity) {
-        return ((EntityManager) entityHandler).merge(entity);
+    protected ArrayList<Object> ehUpsert(AutoCloseable entityHandler,
+                                         List<?> entities) {
+        ArrayList<Object> merged = new ArrayList<>(entities.size());
+        EntityManager em = ((EntityManager) entityHandler);
+        for (Object e : entities)
+            merged.add(em.merge(e));
+        return merged;
     }
 
     @Override
