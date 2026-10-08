@@ -100,7 +100,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
         libertyInstallRoot = ltpaTestServer.getInstallRoot();
         securityUtilityPath = libertyInstallRoot + "/bin/securityUtility";
         testEnvironment = new Properties();
-        // Beta-gated features (--useEncryptionKey, --keyringType, --keyLabel, --keyring) require
+        // Beta-gated features (--useEncryptionKey) require
         // com.ibm.ws.beta.edition=true in the securityUtility child JVM. Only tests that exercise
         // those arguments use betaEnvironment; all other tests use the plain testEnvironment.
         betaEnvironment = new Properties();
