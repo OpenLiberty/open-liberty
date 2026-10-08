@@ -87,6 +87,9 @@ public class JakartaPersistenceServlet extends FATServlet {
     @PersistenceContext(unitName = "JakartaPersistenceUnit")
     private EntityManager em;
 
+    @PersistenceContext(unitName = "JakartaPersistenceUnitH2")
+    private EntityManager emH2;
+
     @Resource
     private UserTransaction tx;
     
@@ -1353,6 +1356,118 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals(LocalDate.of(2023, 2, 14), results.get(1).getLocalDateData());
         assertEquals(LocalTime.of(13, 25, 30), results.get(1).getLocalTimeData());
     }
+
+    /**
+     * Reproducer: EclipseLink + H2 — EXTRACT(DATE FROM localDateTimeData) returns the LocalDate portion.
+     *
+     * EclipseLink 5.0.0 emitted EXTRACT(DATE FROM ...) verbatim, which H2 rejects with
+     * "Invalid value 'DATE' for parameter 'date-time field'" (H2 error 90008).
+     * The fix in H2Platform adds a H2ExtractOperator that rewrites the expression to
+     * CAST(col AS DATE), which H2 accepts and returns a java.sql.Date / LocalDate.
+     *
+     * @see <a href="https://github.com/OpenLiberty/open-liberty/issues/XXXXX">GitHub issue</a>
+     */
+    @Test
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
+    public void testExtractDatePartFromLocalDateTimeData() throws Exception {
+        deleteAllEntitiesH2(DateTimeEntity.class);
+        // Three entities sharing the same date portion (2024-06-15) but with different times,
+        // plus one entity with a different date to verify filtering is correct.
+        DateTimeEntity e1 = new DateTimeEntity(1, "e1",
+                LocalDate.of(2024, 6, 15), LocalTime.of(10, 30, 45),
+                LocalDateTime.of(2024, 6, 15, 10, 30, 45));
+        DateTimeEntity e2 = new DateTimeEntity(2, "e2",
+                LocalDate.of(2024, 6, 15), LocalTime.of(23, 59, 59),
+                LocalDateTime.of(2024, 6, 15, 23, 59, 59));
+        DateTimeEntity e3 = new DateTimeEntity(3, "e3",
+                LocalDate.of(2023, 1, 20), LocalTime.of(8, 0, 0),
+                LocalDateTime.of(2023, 1, 20, 8, 0, 0));
+
+        tx.begin();
+        emH2.persist(e1);
+        emH2.persist(e2);
+        emH2.persist(e3);
+        tx.commit();
+
+        // EXTRACT(DATE FROM localDateTimeData) must return the LocalDate portion of a LocalDateTime.
+        // On EclipseLink + H2 without the fix this throws:
+        //   org.h2.jdbc.JdbcSQLDataException: Invalid value "DATE" for parameter "date-time field" [90008-224]
+        List<DateTimeEntity> results;
+        try {
+            results = emH2.createQuery(
+                    "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                    "FROM DateTimeEntity " +
+                    "WHERE EXTRACT(DATE FROM localDateTimeData) = ?1 " +
+                    "ORDER BY name ASC",
+                    DateTimeEntity.class)
+                    .setParameter(1, LocalDate.of(2024, 6, 15))
+                    .getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals("Expected exactly 2 rows with date 2024-06-15", 2, results.size());
+        assertEquals("e1", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 6, 15), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(10, 30, 45), results.get(0).getLocalTimeData());
+        assertEquals("e2", results.get(1).getName());
+        assertEquals(LocalDateTime.of(2024, 6, 15, 23, 59, 59), results.get(1).getLocalDateTimeData());
+    }
+
+    /**
+     * Reproducer: EclipseLink + H2 — EXTRACT(TIME FROM localDateTimeData) returns the LocalTime portion.
+     *
+     * EclipseLink 5.0.0 emitted EXTRACT(TIME FROM ...) verbatim, which H2 rejects with
+     * "Invalid value 'TIME' for parameter 'date-time field'" (H2 error 90008).
+     * The fix in H2Platform rewrites the expression to CAST(col AS TIME).
+     *
+     * @see <a href="https://github.com/OpenLiberty/open-liberty/issues/XXXXX">GitHub issue</a>
+     */
+    @Test
+    @SkipForRepeat({"JPA32_HIBERNATE7", "JPA40_HIBERNATE8"})
+    public void testExtractTimePartFromLocalDateTimeData() throws Exception {
+        deleteAllEntitiesH2(DateTimeEntity.class);
+        // Two entities share the same time portion (14:45:00), one has a distinct time.
+        DateTimeEntity e1 = new DateTimeEntity(1, "e1",
+                LocalDate.of(2023, 3, 15), LocalTime.of(14, 45, 0),
+                LocalDateTime.of(2023, 3, 15, 14, 45, 0));
+        DateTimeEntity e2 = new DateTimeEntity(2, "e2",
+                LocalDate.of(2022, 8, 22), LocalTime.of(9, 0, 0),
+                LocalDateTime.of(2022, 8, 22, 9, 0, 0));
+        DateTimeEntity e3 = new DateTimeEntity(3, "e3",
+                LocalDate.of(2024, 11, 5), LocalTime.of(14, 45, 0),
+                LocalDateTime.of(2024, 11, 5, 14, 45, 0));
+
+        tx.begin();
+        emH2.persist(e1);
+        emH2.persist(e2);
+        emH2.persist(e3);
+        tx.commit();
+
+        // EXTRACT(TIME FROM localDateTimeData) must return the LocalTime portion of a LocalDateTime.
+        // On EclipseLink + H2 without the fix this throws:
+        //   org.h2.jdbc.JdbcSQLDataException: Invalid value "TIME" for parameter "date-time field" [90008-224]
+        List<DateTimeEntity> results;
+        try {
+            results = emH2.createQuery(
+                    "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                    "FROM DateTimeEntity " +
+                    "WHERE EXTRACT(TIME FROM localDateTimeData) = ?1 " +
+                    "ORDER BY name ASC",
+                    DateTimeEntity.class)
+                    .setParameter(1, LocalTime.of(14, 45, 0))
+                    .getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals("Expected exactly 2 rows with time 14:45", 2, results.size());
+        assertEquals("e1", results.get(0).getName());
+        assertEquals(LocalDateTime.of(2023, 3, 15, 14, 45, 0), results.get(0).getLocalDateTimeData());
+        assertEquals("e3", results.get(1).getName());
+        assertEquals(LocalDate.of(2024, 11, 5), results.get(1).getLocalDateData());
+        assertEquals(LocalTime.of(14, 45, 0), results.get(1).getLocalTimeData());
+    }
     
     @Test
     @SkipForRepeat("JPA40_HIBERNATE8")
@@ -2041,6 +2156,21 @@ public class JakartaPersistenceServlet extends FATServlet {
         tx.commit();
     }
     
+    /**
+     * Utility method to drop all entities from the H2-backed persistence unit table.
+     * Mirrors deleteAllEntities() but uses emH2 so that H2-specific tests stay isolated
+     * from whichever database the default persistence unit is backed by.
+     */
+    private <T> void deleteAllEntitiesH2(Class<T> clazz) throws Exception {
+        tx.begin();
+        List<T> entities = emH2.createQuery("SELECT e FROM " + clazz.getSimpleName() + " e", clazz)
+                               .getResultList();
+        for (T entity : entities) {
+            emH2.remove(entity);
+        }
+        tx.commit();
+    }
+
     /**
      * Helper method to reset EntityManager cache modes to defaults after tests.
      * This ensures tests don't interfere with each other when using the same EM instance.
