@@ -534,6 +534,7 @@ public class QueryInfo_1_1 extends QueryInfo {
             TypedQuery<T> query = (TypedQuery<T>) entityHandler.getClass() //
                             .getMethod("createQuery", String.class, Class.class) //
                             .invoke(entityHandler, jpql, resultType);
+
             if (options != null)
                 setReadOptions(options, query, false, entityHandler);
 
@@ -579,19 +580,22 @@ public class QueryInfo_1_1 extends QueryInfo {
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected void ehInsert(AutoCloseable entityHandler, Object entity) {
+    protected void ehInsert(AutoCloseable entityHandler, List<?> entities) {
         // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.insert(entity) //
-        //                : ((EntityManager) entityHandler).persist(entity);
 
         if (entityHandler instanceof EntityManager manager)
-            manager.persist(entity);
+            for (Object e : entities)
+                manager.persist(e);
         else
             try {
-                entityHandler.getClass() //
-                                .getMethod("insert", Object.class) //
-                                .invoke(entityHandler, entity);
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("insert", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("insertMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -599,7 +603,6 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO insertMultiple
     }
 
     @FFDCIgnore(InvocationTargetException.class)

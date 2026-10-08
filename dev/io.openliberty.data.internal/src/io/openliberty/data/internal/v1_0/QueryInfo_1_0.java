@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
@@ -196,8 +197,10 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
-    protected void ehInsert(AutoCloseable entityHandler, Object entity) {
-        ((EntityManager) entityHandler).persist(entity);
+    protected void ehInsert(AutoCloseable entityHandler, List<?> entities) {
+        EntityManager em = ((EntityManager) entityHandler);
+        for (Object e : entities)
+            em.persist(e);
     }
 
     @Override
