@@ -105,13 +105,13 @@ public class FeaturesStartFeatures {
         this.featureFilter = (name) -> FeatureFilter.skipFeature(name);
         this.featureZOSFilter = (name) -> FeatureFilter.zosSkip(name, server.isZOS());
 
-        this.allowedErrorsRegEx = FeatureErrors.getAllowedErrorsRegEx();
+        this.requiredErrorsRegEx = FeatureErrors.getRequiredErrorsRegEx();
 
         //
 
         BiFunction<String, Boolean, String> zosFilter = (name, isZOS) -> FeatureFilter.zosSkip(name, isZOS.booleanValue());
 
-        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, zosFilter, allowedErrorsRegEx)).display();
+        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, zosFilter, requiredErrorsRegEx)).display();
 
         //
 
@@ -144,7 +144,7 @@ public class FeaturesStartFeatures {
         return stableFeatures.isStable(name);
     }
 
-    public Map<String, Integer> requiredLevels;
+    public final Map<String, Integer> requiredLevels;
 
     public Integer getRequiredLevel(String name) {
         return requiredLevels.get(name);
@@ -163,19 +163,19 @@ public class FeaturesStartFeatures {
         }
     }
 
-    public Map<String, String[]> allowedErrorsRegEx;
+    public final Map<String, String[]> requiredErrorsRegEx;
 
-    public String[] getAllowedErrorsRegEx(String name) {
-        return allowedErrorsRegEx.get(name);
+    public String[] getRequiredErrorsRegEx(String name) {
+        return requiredErrorsRegEx.get(name);
     }
 
-    public Function<String, String> featureFilter;
+    public final Function<String, String> featureFilter;
 
     public String isFiltered(String name) {
         return featureFilter.apply(name);
     }
 
-    public Function<String, String> featureZOSFilter;
+    public final Function<String, String> featureZOSFilter;
 
     public String isZOSFiltered(String name) {
         return featureZOSFilter.apply(name);

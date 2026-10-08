@@ -104,7 +104,7 @@ public class FeaturesStartResults {
      * 
      * Keep a reference to the current feature.
      * 
-     * Set the allowed errors data.
+     * Set the expected errors data.
      * 
      * @param featureShortName The short name of the next feature which is
      *     to be tested.
@@ -175,9 +175,8 @@ public class FeaturesStartResults {
     protected static final String MISSING_MODULE_ERROR = "CWWKE0702E";
     protected static final String MISSING_BUNDLE_ERROR = "CWWKF0002E";
 
-    protected static final String[] OUT_OF_LEVEL_EXPECTED_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR };
-    protected static final Pattern[] OUT_OF_LEVEL_EXPECTED_PATTERNS = asPatterns(OUT_OF_LEVEL_EXPECTED_ERRORS);
-    protected static final String OUT_OF_LEVEL_EXPECTED_REGEX = asRegEx( (String[]) OUT_OF_LEVEL_EXPECTED_ERRORS );
+    protected static final String[] OUT_OF_LEVEL_REQUIRED_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR };
+    protected static final Pattern[] OUT_OF_LEVEL_REQUIRED_PATTERNS = asPatterns(OUT_OF_LEVEL_REQUIRED_ERRORS);
     protected static final String OUT_OF_LEVEL_IGNORED_REGEX = asRegEx(JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR);
     
     protected static final String CLEAN_IGNORED_REGEX = asRegEx(MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR);
@@ -190,8 +189,8 @@ public class FeaturesStartResults {
     protected boolean nextIsOutOfLevel;
     protected boolean nextIsFeatureSpecified;
 
-    protected String[] nextExpectedErrorsRegEx;
-    protected Pattern[] nextExpectedErrorsPattern;
+    protected String[] nextRequiredErrorsRegEx;
+    protected Pattern[] nextRequiredErrorsPattern;
 
     // Pattern for error messages which are to be ignored when stopping the server.
     // All error messages must be examined. Stop server throws an exception
@@ -208,33 +207,33 @@ public class FeaturesStartResults {
         boolean isClean;
         boolean isFeatureSpecified;
         
-        String[] expectedErrorsRegEx;
-        Pattern[] expectedErrorsPattern;
+        String[] requiredErrorsRegEx;
+        Pattern[] requiredErrorsPattern;
         
         String ignoredRegEx;
         
         if ( features.outOfLevelFeatureNames.contains(nextShortName) ) {
-            errorsCase = "Out-of-level (expected)";
+            errorsCase = "Required errors (out-of-level)";
             isOutOfLevel = true;
             isClean = false;
             isFeatureSpecified = false;
-            expectedErrorsRegEx = OUT_OF_LEVEL_EXPECTED_ERRORS;
-            expectedErrorsPattern = OUT_OF_LEVEL_EXPECTED_PATTERNS;
+            requiredErrorsRegEx = OUT_OF_LEVEL_REQUIRED_ERRORS;
+            requiredErrorsPattern = OUT_OF_LEVEL_REQUIRED_PATTERNS;
             ignoredRegEx = OUT_OF_LEVEL_IGNORED_REGEX;
             
         } else {
-            String[] featureAllowedErrors = features.getAllowedErrorsRegEx(nextShortName);
-            if ( featureAllowedErrors != null ) {
-                errorsCase = "Feature specified (expected)";
+            String[] featureRequiredErrors = features.getRequiredErrorsRegEx(nextShortName);
+            if ( featureRequiredErrors != null ) {
+                errorsCase = "Required errors (feature specified)";
 
                 isOutOfLevel = false;
                 isClean = false;
                 isFeatureSpecified = true;
-                expectedErrorsRegEx = featureAllowedErrors;
-                expectedErrorsPattern = asPatterns(expectedErrorsRegEx);
-                ignoredRegEx = asRegEx( concatenate(featureAllowedErrors, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR) );
+                requiredErrorsRegEx = featureRequiredErrors;
+                requiredErrorsPattern = asPatterns(requiredErrorsRegEx);
+                ignoredRegEx = asRegEx( concatenate(featureRequiredErrors, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR) );
                 
-                // TODO: If either of the missing errors is explicitly allowed for the
+                // TODO: If either of the missing errors is explicitly required for the
                 //       feature, the ignored errors list will have redundant entries.
                 //       This should be harmless and has been allowed.
 
@@ -243,8 +242,8 @@ public class FeaturesStartResults {
                 isOutOfLevel = false;
                 isClean  = true;
                 isFeatureSpecified = false;
-                expectedErrorsRegEx = null;
-                expectedErrorsPattern = null;
+                requiredErrorsRegEx = null;
+                requiredErrorsPattern = null;
                 ignoredRegEx = CLEAN_IGNORED_REGEX;
             }
         }
@@ -254,15 +253,15 @@ public class FeaturesStartResults {
         nextIsClean = isClean;
         nextIsOutOfLevel = isOutOfLevel;
         nextIsFeatureSpecified = isFeatureSpecified;
-        nextExpectedErrorsRegEx = expectedErrorsRegEx;
-        nextExpectedErrorsPattern = expectedErrorsPattern;
+        nextRequiredErrorsRegEx = requiredErrorsRegEx;
+        nextRequiredErrorsPattern = requiredErrorsPattern;
 
         nextIgnoredRegEx = ignoredRegEx;
         
-        if ( expectedErrorsRegEx != null ) {
-            logInfo(m, "Feature case [ " + errorsCase + " ] expects errors:");
-            for ( String expectedError : expectedErrorsRegEx ) {
-                logInfo(m, "    " + expectedError);
+        if ( requiredErrorsRegEx != null ) {
+            logInfo(m, "Feature case [ " + errorsCase + " ] errors:");
+            for ( String requiredError : requiredErrorsRegEx ) {
+                logInfo(m, "    " + requiredError);
             }
         } else {
             logInfo(m, "Feature case [ " + errorsCase + " ] expects to run cleanly");
@@ -374,11 +373,11 @@ public class FeaturesStartResults {
     //
     // Result -> Success | Failure
     //
-    // Failure -> Expected Error | Unexpected Error
+    // Failure -> Required Error | Forbidden Error
     //
     // Expected Error -> Feature Specified Error | Out-Of-Level Error
     //
-    // Unexpected Error -> Missing Module | Missing Bundle | Other Error
+    // Forbidden Error -> Missing Module | Missing Bundle | Other Error
 
     protected final Set<String> successes;
     protected final Set<String> failures;
@@ -415,11 +414,11 @@ public class FeaturesStartResults {
         return failures.contains(nextShortName); 
     }
     
-    // Failure -> Missing Expected Error | Unexpected Error
+    // Failure -> Required Error | Prohibited Error
     //
-    // Expected Error -> Feature Specified Missing Error | Out-Of-Level Missing Error
+    // Required Error -> Feature Specified | Out-Of-Level
     //
-    // Unexpected Error -> Missing Module Error | Missing Bundle Error | Other Error
+    // Prohibited Error -> Missing Module | Missing Bundle | Other
 
     protected void recordAbsentError(String m, String explanation) {
         failuresAbsent.add(nextShortName);
@@ -555,7 +554,7 @@ public class FeaturesStartResults {
         //
         // If the startup was attempted, the server start can fail, but
         // that does not mean the startup test failed. The test fails if
-        // expected error messages are not produced, or if unexpected
+        // required error messages are not produced, or if prohibited
         // error messages are produced.
 
         if ( !didFail() ) {
@@ -737,16 +736,16 @@ public class FeaturesStartResults {
         
         // Optimized case: No errors were reported.
         //
-        // All of the expected messages is missing, and can be immediately
+        // All of the required messages is missing, and can be immediately
         // reported as such.
         
         if ( nextIsOutOfLevel ) {
-            for ( String expectedErrorRegEx : nextExpectedErrorsRegEx ) {
-                recordAbsentOutOfLevelError(m, expectedErrorRegEx);
+            for ( String requiredErrorRegEx : nextRequiredErrorsRegEx ) {
+                recordAbsentOutOfLevelError(m, requiredErrorRegEx);
             }
         } else if ( nextIsFeatureSpecified ) { 
-            for ( String expectedError : nextExpectedErrorsRegEx ) {
-                recordAbsentFeatureError(m, expectedError);
+            for ( String requiredError : nextRequiredErrorsRegEx ) {
+                recordAbsentFeatureError(m, requiredError);
             }
         } else {
             // Nothing to do ... possible success!
@@ -766,12 +765,12 @@ public class FeaturesStartResults {
         String m = "processPresentMessages";
 
         if ( nextIsClean ) {
-            // Optimized case: No errors are expected.
+            // Optimized case: No errors are required.
             //
-            // All of the messages are extra and can be immediately reported as such.
+            // All of the messages are prohibited and can be immediately reported as such.
 
             for ( String message : messages ) {
-                processExtraMessage(m, message); 
+                processProhibitedMessage(m, message); 
             }
             return;
         }
@@ -785,25 +784,26 @@ public class FeaturesStartResults {
         // The count of occurrences of each category of messages is not made. One or several
         // messages matching the same message pattern is counted as a hit on that pattern.
         //
-        // All missing messages are recorded as an absent errors. These are categorized as
-        // out-of-level errors or feature specified errors, according to the test parameters.
+        // All missing required messages are recorded as an absent errors. These are
+        // categorized as out-of-level errors or feature specified errors, according to the
+        // test parameters.
         //
-        // All extra messages are recorded as present errors. These are categorized as
+        // All prohibited messages are recorded as present errors. These are categorized as
         // bundle errors, module errors, or 'other' errors.
         //
-        // Keep a count messages which match an expected error. Keep a count of the
-        // expected errors which have a matching message. If all messages match an
-        // expected error and if all expected errors have matching message, then the
+        // Keep a count of messages which match an required error. Keep a count of the
+        // required errors which have a matching message. If all messages match an
+        // required error and if all required errors have matching message, then the
         // test profile is matched and no failures are recorded.
-        
+
         boolean isOutOfLevel = nextIsOutOfLevel;
         boolean isFeatureSpecified = nextIsFeatureSpecified;
 
-        String[] expectedErrorsRegEx = nextExpectedErrorsRegEx;
-        Pattern[] expectedErrorsPattern = nextExpectedErrorsPattern;
+        String[] requiredErrorsRegEx = nextRequiredErrorsRegEx;
+        Pattern[] requiredErrorsPattern = nextRequiredErrorsPattern;
 
         int numMessages = messages.size();
-        int numErrors = expectedErrorsRegEx.length;
+        int numErrors = requiredErrorsRegEx.length;
         
         boolean[] matchedMessages = new boolean[numMessages];
         int numMatchedMessages = 0;
@@ -811,20 +811,17 @@ public class FeaturesStartResults {
         boolean[] matchedErrors = new boolean[numErrors];
         int numMatchedErrors = 0;
 
-        boolean[][] matches = new boolean[numMessages][numErrors];
-        
         for ( int messageNo = 0; messageNo < numMessages; messageNo++ ) {
             String nextMessage = messages.get(messageNo);
             for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
-                String nextErrorRegEx = expectedErrorsRegEx[errorNo];
-                Pattern nextErrorPattern = expectedErrorsPattern[errorNo];
+                String nextErrorRegEx = requiredErrorsRegEx[errorNo];
+                Pattern nextErrorPattern = requiredErrorsPattern[errorNo];
 
                 if ( nextErrorPattern.matcher(nextMessage).find() ) {
-                    logInfo(m, "Matched expected error:");
+                    logInfo(m, "Matched required error:");
                     logInfo(m, "    [ " + nextErrorRegEx + " ]");
                     logInfo(m, "    [ " + nextMessage + " ]");
                     
-                    matches[messageNo][errorNo] = true;
                     matchedMessages[messageNo] = true;
 
                     numMatchedMessages++;
@@ -845,15 +842,15 @@ public class FeaturesStartResults {
 
         if ( numMatchedErrors != numErrors ) {
             for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
-                String expectedError = expectedErrorsRegEx[errorNo];
+                String requiredError = requiredErrorsRegEx[errorNo];
                 if ( !matchedErrors[errorNo] ) {
                     if ( isOutOfLevel ) {
-                        recordAbsentOutOfLevelError(m, expectedError);
+                        recordAbsentOutOfLevelError(m, requiredError);
                     } else if ( isFeatureSpecified ) {
-                        recordAbsentFeatureError(m, expectedError);
+                        recordAbsentFeatureError(m, requiredError);
                     } else {
                         // This case should never happen!
-                        recordPresentOtherError(m, "Strange: Neither out-of-level nor feature specified for expected error [ " + expectedError + " ]");
+                        recordPresentOtherError(m, "Strange: Neither out-of-level nor feature specified for expected error [ " + requiredError + " ]");
                     }
                 }
             }
@@ -862,13 +859,13 @@ public class FeaturesStartResults {
         if ( numMatchedMessages != numMessages ) {
             for ( int messageNo = 0; messageNo < numMessages; messageNo++ ) {
                 if ( !matchedMessages[messageNo] ) {
-                    processExtraMessage( m, messages.get(messageNo) );
+                    processProhibitedMessage( m, messages.get(messageNo) );
                 }
             }
         }
     }
 
-    protected void processExtraMessage(String m, String extraMessage) {
+    protected void processProhibitedMessage(String m, String extraMessage) {
         String missingModule;
         if ( ( missingModule = extractMissingModule(extraMessage)) != null ) {
             recordPresentMissingModule(m, missingModule);
@@ -991,12 +988,20 @@ public class FeaturesStartResults {
         }
 
         StringBuilder builder = new StringBuilder(totalLen);
+        
+        if ( prefix != null ) {
+            builder.append(prefix);
+        }
         for ( int elementNo = 0; elementNo < elements.length; elementNo++ ) {
             if ( elementNo > 0 ) {
                 builder.append(delim);
             }
             builder.append(elements[elementNo]);
         }
+        if ( suffix != null ) {
+            builder.append(suffix);
+        }
+
         return builder.toString();
     }
 

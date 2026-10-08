@@ -22,7 +22,7 @@ import java.util.function.Function;
 import com.ibm.websphere.simplicity.log.Log;
 
 public class FeatureReports {
-    private static Class<?> c = FeatureReports.class;
+    private final static Class<?> c = FeatureReports.class;
 
     private static void logInfo(String m, String msg) {
         Log.info(c, m, msg);
@@ -68,7 +68,7 @@ public class FeatureReports {
         Function<String, String> featureFilter = (name) -> FeatureFilter.skipFeature(name);
         BiFunction<String, Boolean, String> featureZOSFilter = (name, isZOS) -> FeatureFilter.zosSkip(name, isZOS.booleanValue());
 
-        Map<String, String[]> allowedErrors = FeatureErrors.getAllowedErrorsRegEx();
+        Map<String, String[]> allowedErrors = FeatureErrors.getRequiredErrorsRegEx();
 
         System.out.println("Read features for server [ " + serverHome + " ] ... [ " + featureData.size() + " ] features read.");
         System.out.println();
@@ -83,14 +83,14 @@ public class FeatureReports {
                           Map<String, Integer> requiredLevels,
                           Function<String, String> featureFilter,
                           BiFunction<String, Boolean, String> featureZOSFilter,
-                          Map<String, String[]> allowedErrors) {
+                          Map<String, String[]> requiredErrors) {
 
         this.featureData = featureData;
         this.stableFeatures = stableFeatures;
         this.requiredLevels = requiredLevels;
         this.featureFilter = featureFilter;
         this.featureZOSFilter = featureZOSFilter;
-        this.allowedErrors = allowedErrors;
+        this.requiredErrors = requiredErrors;
     }
 
     protected Map<String, FeatureData> featureData;
@@ -116,10 +116,10 @@ public class FeatureReports {
         return featureZOSFilter.apply(name, Boolean.valueOf(isZOS));
     }
 
-    protected Map<String, String[]> allowedErrors;
+    protected Map<String, String[]> requiredErrors;
 
-    public String[] getAllowedErrors(String name) {
-        return allowedErrors.get(name);
+    public String[] getRequiredErrors(String name) {
+        return requiredErrors.get(name);
     }
 
     //
@@ -160,22 +160,22 @@ public class FeatureReports {
     public void display(FeatureData useFeatureData) {
         String m = "display";
 
-        String name = useFeatureData.getName();
+        String featureShortName = useFeatureData.getName();
 
-        String featureLine1 = String.format("  %-20s : %s", name, useFeatureData.symbolicName);
+        String featureLine1 = String.format("  %-20s : %s", featureShortName, useFeatureData.symbolicName);
 
         String featureLine2 = "  " +
                               "  " + (flag(useFeatureData.isClientOnly) + "isClient") +
                               " " + (flag(useFeatureData.isPublic) + "isPublic") +
                               " " + (flag(useFeatureData.isTest) + "isTest") +
-                              " " + (flag(isStable(name)) + "isStable") +
-                              " " + ("java " + flagLevel(getRequiredLevel(name)));
+                              " " + (flag(isStable(featureShortName)) + "isStable") +
+                              " " + ("java " + flagLevel(getRequiredLevel(featureShortName)));
 
-        String filterReason = isFiltered(name);
-        String nonzosFilterReason = isZOSFiltered(name, false);
-        String zosFilterReason = isZOSFiltered(name, true);
+        String filterReason = isFiltered(featureShortName);
+        String nonzosFilterReason = isZOSFiltered(featureShortName, false);
+        String zosFilterReason = isZOSFiltered(featureShortName, true);
 
-        String[] ignoredErrors = getAllowedErrors(name);
+        String[] featureRequiredErrors = getRequiredErrors(featureShortName);
 
         logInfo(m, featureLine1);
         logInfo(m, featureLine2);
@@ -195,8 +195,8 @@ public class FeatureReports {
             logInfo(m, featureLine);
         }
 
-        if (ignoredErrors != null) {
-            String errorsLine = "  Allowed errors: " + Arrays.toString(ignoredErrors);
+        if (featureRequiredErrors != null) {
+            String errorsLine = "  Required errors: " + Arrays.toString(featureRequiredErrors);
             logInfo(m, errorsLine);
         }
     }

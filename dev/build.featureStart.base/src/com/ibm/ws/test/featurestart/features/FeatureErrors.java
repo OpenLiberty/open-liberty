@@ -17,25 +17,14 @@ import java.util.Map;
 
 public class FeatureErrors {
 
-    //
-    
-    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[35](rtcommGateway-1.0)
-    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[36](samlWeb-2.0)
-    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[37](scalingController-1.0)
-    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[38](scalingMember-1.0)
-    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[85](wsSecuritySaml-1.1)
-    //
-    // junit.framework.AssertionFailedError: Strange mis-reported missing error [ wsSecuritySaml-1.1 ]
-    //  at com.ibm.ws.test.featurestart.FeaturesStartTestBase.basicTestStartFeature(FeaturesStartTestBase.java:285)
-    
     /**
-     * Answer a table of errors which are allowed to appear in server logs
+     * Answer a table of errors which are required to appear in server logs
      * when starting a server with the single named feature provisioned.
      *
-     * @return The table of allowed errors.
+     * @return The table of required errors.
      */
-    public static Map<String, String[]> getAllowedErrorsRegEx() {
-        Map<String, String[]> allowedErrors = new HashMap<>();
+    public static Map<String, String[]> getRequiredErrorsRegEx() {
+        Map<String, String[]> requiredErrors = new HashMap<>();
 
         // "openapi-3.0" and "openapi-3.1" previously left threads
         // when the server was stopped. Those errors no longer occur.
@@ -43,25 +32,25 @@ public class FeatureErrors {
         // Errors still occur when stopping mpOpenApi-1.o".
 
         String[] QUIESCE_FAILURES = new String[] { "CWWKE1102W", "CWWKE1107W" };
-        allowedErrors.put("mpOpenApi-1.0", QUIESCE_FAILURES);
+        requiredErrors.put("mpOpenApi-1.0", QUIESCE_FAILURES);
 
-        allowedErrors.put("batchSMFLogging-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging" });
+        requiredErrors.put("batchSMFLogging-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging" });
         
-        allowedErrors.put("zosLocalAdapters-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.security.thread.zos",
+        requiredErrors.put("zosLocalAdapters-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.security.thread.zos",
                                                                  "CWWKE0702E: .* com.ibm.ws.webcontainer" });
 
-        allowedErrors.put("zosWlm-1.0", new String[] { "CWWKB0160W" });
+        requiredErrors.put("zosWlm-1.0", new String[] { "CWWKB0160W" });
 
-        allowedErrors.put("zosAutomaticRestartManager-1.0", new String[] { "CWWKB0758E" });
+        requiredErrors.put("zosAutomaticRestartManager-1.0", new String[] { "CWWKB0758E" });
 
         // requires binaryLogging-1.0 to be enabled via bootstrap.properties
-        allowedErrors.put("logAnalysis-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.loganalysis" });
+        requiredErrors.put("logAnalysis-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.loganalysis" });
 
         // The Rtcomm service is not able to connect to tcp://localhost:1883.
-        allowedErrors.put("rtcomm-1.0", new String[] { "CWRTC0002E" });
+        requiredErrors.put("rtcomm-1.0", new String[] { "CWRTC0002E" });
         // The Rtcomm service is not able to connect to tcp://localhost:1883.
         // The Rtcomm service - The following virtual hosts could not be found or are not correctly configured: [abcdefg].
-        allowedErrors.put("rtcommGateway-1.0", new String[] { "CWRTC0002E", "SRVE9956W" });
+        requiredErrors.put("rtcommGateway-1.0", new String[] { "CWRTC0002E", "SRVE9956W" });
 
         // [10/07/2026 21:27:32:360 UTC] 002 FeaturesStartTest4             processExpected                I
         // Feature failure [ wsSecuritySaml-1.1] (Feature specified (expected)):
@@ -72,21 +61,21 @@ public class FeatureErrors {
         // CWWKS5207W: The inboundPropagation attribute is set to [false] in the configuration of samlWebSso20 [defaultSP]. The attributes [headerName, audiences] will be ignored during processing. ]
         
         // lets the user now certain config attributes will be ignored depending on whether or not 'inboundPropagation' is configured
-        allowedErrors.put("samlWeb-2.0", new String[] { "CWWKS5207W: .* inboundPropagation" });
+        requiredErrors.put("samlWeb-2.0", new String[] { "CWWKS5207W: .* inboundPropagation" });
         // pulls in the samlWeb-2.0 feature
-        allowedErrors.put("wsSecuritySaml-1.1", new String[] { "CWWKS5207W: .* inboundPropagation" });
+        requiredErrors.put("wsSecuritySaml-1.1", new String[] { "CWWKS5207W: .* inboundPropagation" });
 
         // Ignore required config warnings for the 'collectiveMember-1.0' feature, and all features that include it
         String[] COLLECTIVE_MEMBER_WARNINGS = new String[] { "CWWKG0033W: .*collectiveTrust", "CWWKG0033W: .*serverIdentity" };
-        allowedErrors.put("collectiveMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("collectiveController-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("clusterMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("dynamicRouting-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("healthAnalyzer-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("healthManager-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("scalingController-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("scalingMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("collectiveMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("collectiveController-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("clusterMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("dynamicRouting-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("healthAnalyzer-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("healthManager-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("scalingController-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        requiredErrors.put("scalingMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
 
-        return allowedErrors;
+        return requiredErrors;
     }
 }
