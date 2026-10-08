@@ -31,5 +31,4 @@ publish.wlp.jar.suffix: dev/api/spec
 instrument.disabled: true
 
 -buildpath: \
-  io.openliberty.yoko.rmi.spec;version=latest, \
-  io.openliberty.yoko.spec.corba;version=latest  
+  io.openliberty.yoko.core;version=latest,\
