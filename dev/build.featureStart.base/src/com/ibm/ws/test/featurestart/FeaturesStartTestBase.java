@@ -276,7 +276,8 @@ public class FeaturesStartTestBase {
                 }
             } else if ( results.failuresPresent.contains(featureShortName) ) {
                 if ( ((failureCase = reportFirst("Missing bundle", results.failuresPresentMissingBundle, featureShortName)) == null) &&                    
-                    ((failureCase = reportFirst("Missing module", results.failuresPresentMissingModule, featureShortName)) == null) ) {                    
+                     ((failureCase = reportFirst("Missing module", results.failuresPresentMissingModule, featureShortName)) == null) &&                    
+                     ((failureCase = reportFirst("Other", results.failuresPresentOther, featureShortName)) == null) ) {                                        
                     failureCase = "Strange mis-reported present error";
                 }
             } else {

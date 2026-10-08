@@ -666,41 +666,81 @@ public class FeaturesStartResults {
             }
 
             if ( errorMessages.isEmpty() ) {
-                if ( nextIsOutOfLevel ) {
-                    for ( String expectedErrorRegEx : nextExpectedErrorsRegEx ) {
-                        recordAbsentOutOfLevelError(m, expectedErrorRegEx);
-                    }
-                } else if ( nextIsFeatureSpecified ) { 
-                    for ( String expectedError : nextExpectedErrorsRegEx ) {
-                        recordAbsentFeatureError(m, expectedError);
-                    }
-                } else {
-                    // Nothing to do ... possible success!
-                }
-
+                processAbsentMessages();
             } else {
-                if ( nextIsClean ) {
-                    for ( String errorMessage : errorMessages ) {
-                        processExtraMessage(m, errorMessage); 
-                    }
-                } else {
-                    processExpected(errorMessages);
-                }
+                processPresentMessages(errorMessages);
             }
         } );
     }
 
     //
+
+    protected void processAbsentMessages() {
+        String m = "processAbsentMessages";
+        
+        // Optimized case: No errors were reported.
+        //
+        // All of the expected messages is missing, and can be immediately
+        // reported as such.
+        
+        if ( nextIsOutOfLevel ) {
+            for ( String expectedErrorRegEx : nextExpectedErrorsRegEx ) {
+                recordAbsentOutOfLevelError(m, expectedErrorRegEx);
+            }
+        } else if ( nextIsFeatureSpecified ) { 
+            for ( String expectedError : nextExpectedErrorsRegEx ) {
+                recordAbsentFeatureError(m, expectedError);
+            }
+        } else {
+            // Nothing to do ... possible success!
+        }
+    }
     
-    // Matching code based simplity file manager string matching.
+    //
+    
+    // Matching code based simplicity file manager string matching.
     //
     // See:
     //   open-liberty/dev/fattest.simplicity/src/
     //     componenttest/topology/impl/
     //       LibertyFileManager.findStringsInFileCommon.
     
-    protected void processExpected(List<String> messages) {
+    protected void processPresentMessages(List<String> messages) {
         String m = "processExpected";
+
+        if ( nextIsClean ) {
+            // Optimized case: No errors are expected.
+            //
+            // All of the messages are extra and can be immediately reported as such.
+
+            for ( String message : messages ) {
+                processExtraMessage(m, message); 
+            }
+            return;
+        }
+
+        // General case:
+        //
+        // Error messages were collected. These may be expected or unexpected.
+        //
+        // Determine which expected messages are missing and which messages are extra.
+        //
+        // The count of occurrences of each category of messages is not made. One or several
+        // messages matching the same message pattern is counted as a hit on that pattern.
+        //
+        // All missing messages are recorded as an absent errors. These are categorized as
+        // out-of-level errors or feature specified errors, according to the test parameters.
+        //
+        // All extra messages are recorded as present errors. These are categorized as
+        // bundle errors, module errors, or 'other' errors.
+        //
+        // Keep a count messages which match an expected error. Keep a count of the
+        // expected errors which have a matching message. If all messages match an
+        // expected error and if all expected errors have matching message, then the
+        // test profile is matched and no failures are recorded.
+        
+        boolean isOutOfLevel = nextIsOutOfLevel;
+        boolean isFeatureSpecified = nextIsFeatureSpecified;
 
         String[] expectedErrorsRegEx = nextExpectedErrorsRegEx;
         Pattern[] expectedErrorsPattern = new Pattern[ expectedErrorsRegEx.length ];
@@ -744,6 +784,7 @@ public class FeaturesStartResults {
             }
         }
 
+        // The test profile was satisfied exactly.
         if ( (numMatchedErrors == numErrors) && (numMatchedMessages == numMessages) ) {
             return;
         }
@@ -751,7 +792,13 @@ public class FeaturesStartResults {
         if ( numMatchedErrors != numErrors ) {
             for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
                 if ( !matchedErrors[errorNo] ) {
-                    recordAbsentError(m, expectedErrorsRegEx[errorNo] );
+                    if ( isOutOfLevel ) {
+                        recordAbsentOutOfLevelError(m, expectedErrorsRegEx[errorNo] );
+                    } else if ( isFeatureSpecified ) {
+                        recordAbsentFeatureError(m, expectedErrorsRegEx[errorNo] );
+                    } else {
+                        recordPresentOtherError(m, expectedErrorsRegEx[errorNo] );
+                    }
                 }
             }
         }
@@ -759,27 +806,13 @@ public class FeaturesStartResults {
         if ( numMatchedMessages != numMessages ) {
             for ( int messageNo = 0; messageNo < numMessages; messageNo++ ) {
                 if ( !matchedMessages[messageNo] ) {
-                    String extraMessage = messages.get(messageNo);
-
-                    recordPresentOtherError(m, extraMessage);
-
-                    String missingModule;
-                    if ( ( missingModule = extractMissingModule(extraMessage)) != null ) {
-                        recordPresentMissingModule(m, missingModule);
-                    } else {
-                        String missingBundle;
-                        if ( ( missingBundle = extractMissingBundle(extraMessage)) != null ) {
-                            recordPresentMissingBundle(m, missingBundle);
-                        }
-                    }
+                    processExtraMessage( m, messages.get(messageNo) );
                 }
             }
         }
     }
 
     protected void processExtraMessage(String m, String extraMessage) {
-        recordPresentOtherError(m, extraMessage);
-
         String missingModule;
         if ( ( missingModule = extractMissingModule(extraMessage)) != null ) {
             recordPresentMissingModule(m, missingModule);
@@ -787,6 +820,8 @@ public class FeaturesStartResults {
             String missingBundle;
             if ( ( missingBundle = extractMissingBundle(extraMessage)) != null ) {
                 recordPresentMissingBundle(m, missingBundle);
+            } else {
+                recordPresentOtherError(m, extraMessage);
             }
         }
     }    
@@ -948,13 +983,13 @@ public class FeaturesStartResults {
             logInfo(m, "    LIBERTY_HOME/lib/features/*.mf");
         }
 
-        if ( display(m, 80, "Missing feature specified errors", "    > ", "      > ", failuresAbsentOutOfLevel, builder) ) {                
+        if ( display(m, 80, "Missing java out-of-level errors", "    > ", "      > ", failuresAbsentOutOfLevel, builder) ) {                
             logInfo(m, "Features unexpectedly started on java level [ " + server.getJavaLevel() + " ]");
             logInfo(m, "If these are test-only features, add 'IBM-Test-Feature: true' to the feature manifests. ");
             logInfo(m, "Feature required java levels are specified in resource [ " + FeatureLevels.REQUIRED_LEVELS_NAME + " ]");
         }
 
-        display(m, 80, "Missing java level", "    > ", "      > ", failuresAbsentFeatureSpecified, builder);
+        display(m, 80, "Missing feature specified errors", "    > ", "      > ", failuresAbsentFeatureSpecified, builder);
     }
 
     public void displayTimingResults() {
