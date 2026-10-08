@@ -116,6 +116,31 @@ public class FeaturesStartResults {
         setFeatureData();
     }
 
+    // Cache of error patterns.
+    //
+    // Allow these to accumulate between test runs. There is not expected
+    // to be a problem of excess growth of the pattern store.
+    //
+    // The store MUST be initialized before any call to 'getPattern'.
+
+    protected static final Map<String, Pattern> patternStore = Collections.synchronizedMap( new HashMap<>() );
+
+    protected static Pattern getPattern(String regEx) {
+        return patternStore.computeIfAbsent( regEx, (useRegEx) -> Pattern.compile(useRegEx) );
+    }
+
+    protected static Pattern[] asPatterns(String[] allRegEx) {
+        if ( allRegEx == null ) {
+            return null;
+        }
+
+        Pattern[] patterns = new Pattern[ allRegEx.length ];
+        for ( int patternNo = 0; patternNo < allRegEx.length; patternNo++ ) {
+            patterns[patternNo] = getPattern( allRegEx[patternNo] );
+        }
+        return patterns;
+    }
+    
     // A java error occurs when attempting to start an out-of-level feature.
     // When the feature is known to not be supported for a particular java level, the
     // java error is expected and does not fail the startup test.
@@ -150,36 +175,12 @@ public class FeaturesStartResults {
     protected static final String MISSING_MODULE_ERROR = "CWWKE0702E";
     protected static final String MISSING_BUNDLE_ERROR = "CWWKF0002E";
 
-    protected static final String[] OUT_OF_LEVEL_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR };
-    protected static final Pattern[] OUT_OF_LEVEL_PATTERNS = asPatterns(OUT_OF_LEVEL_ERRORS);
-    protected static final String OUT_OF_LEVEL_REGEX = asRegEx(JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR);
+    protected static final String[] OUT_OF_LEVEL_EXPECTED_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR };
+    protected static final Pattern[] OUT_OF_LEVEL_EXPECTED_PATTERNS = asPatterns(OUT_OF_LEVEL_EXPECTED_ERRORS);
+    protected static final String OUT_OF_LEVEL_EXPECTED_REGEX = asRegEx( (String[]) OUT_OF_LEVEL_EXPECTED_ERRORS );
+    protected static final String OUT_OF_LEVEL_IGNORED_REGEX = asRegEx(JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR);
     
-    protected static final String[] CLEAN_ERRORS = { MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR };
-    protected static final Pattern[] CLEAN_PATTERNS = asPatterns(CLEAN_ERRORS);
-    protected static final String CLEAN_REGEX = asRegEx( (String[]) CLEAN_ERRORS);
-
-    // Cache of error patterns.
-    //
-    // Allow these to accumulate between test runs. There is not expected
-    // to be a problem of excess growth of the pattern store.
-    
-    protected static final Map<String, Pattern> patternStore = Collections.synchronizedMap( new HashMap<>() );
-
-    protected static Pattern getPattern(String regEx) {
-        return patternStore.computeIfAbsent( regEx, (useRegEx) -> Pattern.compile(useRegEx) );
-    }
-
-    protected static Pattern[] asPatterns(String[] allRegEx) {
-        if ( allRegEx == null ) {
-            return null;
-        }
-
-        Pattern[] patterns = new Pattern[ allRegEx.length ];
-        for ( int patternNo = 0; patternNo < allRegEx.length; patternNo++ ) {
-            patterns[patternNo] = getPattern( allRegEx[patternNo] );
-        }
-        return patterns;
-    }
+    protected static final String CLEAN_IGNORED_REGEX = asRegEx(MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR);
 
     // Next feature dependent data ...
 
@@ -191,6 +192,10 @@ public class FeaturesStartResults {
 
     protected String[] nextExpectedErrorsRegEx;
     protected Pattern[] nextExpectedErrorsPattern;
+
+    // Pattern for error messages which are to be ignored when stopping the server.
+    // All error messages must be examined. Stop server throws an exception
+    // with the first detected error which is not flagged to be ignored.
 
     protected String nextIgnoredRegEx;
     
@@ -213,9 +218,9 @@ public class FeaturesStartResults {
             isOutOfLevel = true;
             isClean = false;
             isFeatureSpecified = false;
-            expectedErrorsRegEx = OUT_OF_LEVEL_ERRORS;
-            expectedErrorsPattern = OUT_OF_LEVEL_PATTERNS;
-            ignoredRegEx = OUT_OF_LEVEL_REGEX;
+            expectedErrorsRegEx = OUT_OF_LEVEL_EXPECTED_ERRORS;
+            expectedErrorsPattern = OUT_OF_LEVEL_EXPECTED_PATTERNS;
+            ignoredRegEx = OUT_OF_LEVEL_IGNORED_REGEX;
             
         } else {
             String[] featureAllowedErrors = features.getAllowedErrorsRegEx(nextShortName);
@@ -240,7 +245,7 @@ public class FeaturesStartResults {
                 isFeatureSpecified = false;
                 expectedErrorsRegEx = null;
                 expectedErrorsPattern = null;
-                ignoredRegEx = CLEAN_REGEX;
+                ignoredRegEx = CLEAN_IGNORED_REGEX;
             }
         }
 
@@ -758,7 +763,7 @@ public class FeaturesStartResults {
     //       LibertyFileManager.findStringsInFileCommon.
     
     protected void processPresentMessages(List<String> messages) {
-        String m = "processExpected";
+        String m = "processPresentMessages";
 
         if ( nextIsClean ) {
             // Optimized case: No errors are expected.
@@ -840,13 +845,15 @@ public class FeaturesStartResults {
 
         if ( numMatchedErrors != numErrors ) {
             for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
+                String expectedError = expectedErrorsRegEx[errorNo];
                 if ( !matchedErrors[errorNo] ) {
                     if ( isOutOfLevel ) {
-                        recordAbsentOutOfLevelError(m, expectedErrorsRegEx[errorNo] );
+                        recordAbsentOutOfLevelError(m, expectedError);
                     } else if ( isFeatureSpecified ) {
-                        recordAbsentFeatureError(m, expectedErrorsRegEx[errorNo] );
+                        recordAbsentFeatureError(m, expectedError);
                     } else {
-                        recordPresentOtherError(m, expectedErrorsRegEx[errorNo] );
+                        // This case should never happen!
+                        recordPresentOtherError(m, "Strange: Neither out-of-level nor feature specified for expected error [ " + expectedError + " ]");
                     }
                 }
             }
