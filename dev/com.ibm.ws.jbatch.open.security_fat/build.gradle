@@ -19,7 +19,7 @@ configurations {
 }
 
 addRequiredLibraries {
-	dependsOn addDerby
+	dependsOn addH2Java8
 	dependsOn addJakartaTransformer
 }
 

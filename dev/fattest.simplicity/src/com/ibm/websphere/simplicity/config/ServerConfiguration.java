@@ -45,6 +45,9 @@ public abstract class ServerConfiguration implements Cloneable {
     @XmlElement(name = "acmeCA")
     private AcmeCA acmeCA;
 
+    @XmlElement(name = "audit")
+    private Audit audit;
+
     @XmlElement(name = "activationSpec")
     private ConfigElementList<ActivationSpec> activationSpecs;
 
@@ -537,6 +540,16 @@ public abstract class ServerConfiguration implements Cloneable {
             this.messagingEngines = new ConfigElementList<MessagingEngine>();
         }
         return this.messagingEngines;
+    }
+
+    /**
+     * @return the audit configuration for this server
+     */
+    public Audit getAudit() {
+        if (this.audit == null) {
+            this.audit = new Audit();
+        }
+        return this.audit;
     }
 
     /**

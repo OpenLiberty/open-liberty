@@ -200,7 +200,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
         } else if (blockListConfig instanceof String[]) {
             BlockList = normalizePaths((String[]) blockListConfig);
         } else {
-            //Default is to block ${server.output.dir}/resources/security
+            //Default is to block ${server.output.dir}/resources/security and ${server.output.dir}/resources/collective
             BlockList = new ArrayList<String>();
 
             WsLocationAdmin wsLocation = getWsLocationAdmin();
@@ -215,6 +215,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             }
 
             BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/collective"));
         }
 
         //START DEBUG

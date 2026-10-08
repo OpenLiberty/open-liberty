@@ -1,0 +1,12 @@
+<server description="TLS Profiler FAT test server — TLSv1.3">
+    <include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>appSecurity-3.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true" sslProtocol="TLSv1.3"/>
+</server>

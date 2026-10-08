@@ -92,7 +92,7 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 			bootstrap = nettyBundle.createTCPBootstrapOutbound(options);
 			bootstrap.attr(NettyJMSClientHandler.CHAIN_ATTR_KEY, chainName);
 		} catch (NettyException e) {
-			SibTr.error(tc, "<init>: Failure initializing Netty Bootstrap", e);
+			SibTr.error(tc, "NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086", new Object[] { e });
 		}
 		if (tc.isEntryEnabled())
 			SibTr.exit(tc, "<init>");

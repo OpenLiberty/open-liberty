@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
+import com.ibm.ws.http.internal.AbstractHttpChain.ChainState;
 import com.ibm.ws.http.logging.internal.AccessLogger;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
 import com.ibm.ws.http.netty.NettyChain;
@@ -583,8 +583,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private void logChainStates(){
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-            HttpChain httpChain = getCurrentHttpChain();
-            HttpChain httpsChain = getCurrentHttpsChain();
+            AbstractHttpChain httpChain = getCurrentHttpChain();
+            AbstractHttpChain httpsChain = getCurrentHttpsChain();
 
             Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChain.getChainState())
                 + ", HTTPS: " + ChainState.printState(httpsChain.getChainState()));
@@ -1404,8 +1404,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             Tr.entry(this, tc, "verifyResumedChainStates");
         }
 
-        HttpChain httpChain = getCurrentHttpChain();
-        HttpChain httpsChain = getCurrentHttpsChain();
+        AbstractHttpChain httpChain = getCurrentHttpChain();
+        AbstractHttpChain httpsChain = getCurrentHttpsChain();
 
         int httpChainState = ChainState.UNINITIALIZED.val;
         int httpsChainState = ChainState.UNINITIALIZED.val;
@@ -1436,16 +1436,20 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         }
 
         if (netty == null) {
-            throw new IllegalStateException("Netty framework is not initialized");
+            Tr.error(tc, "endpoint.netty.not.initialized", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.netty.not.initialized", name));
         }
         if (chfw == null) {
-            throw new IllegalStateException("Channel framework is not initialized");
+            Tr.error(tc, "endpoint.channel.not.initialized", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.channel.not.initialized", name));
         }
         if (executorService.getService() == null) {
-            throw new IllegalStateException("Executor service is not available");
-        }   
+            Tr.error(tc, "endpoint.executor.not.available", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.executor.not.available", name));
+        }
         if (eventService.getService() == null) {
-            throw new IllegalStateException("Event service is not available");
+            Tr.error(tc, "endpoint.event.not.available", name);
+            throw new IllegalStateException(Tr.formatMessage(tc, "endpoint.event.not.available", name));
         }
 
         // Check SSL components only if HTTPS is configured
@@ -1494,10 +1498,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return info;
     }
     
-    private synchronized HttpChain getCurrentHttpChain() {
+    private synchronized AbstractHttpChain getCurrentHttpChain() {
         return useNetty ? nettyChain: httpChain;
     }
-    private synchronized HttpChain getCurrentHttpsChain() {
+    private synchronized AbstractHttpChain getCurrentHttpsChain() {
         return useNetty ? nettySecureChain: httpSecureChain;
     }
 

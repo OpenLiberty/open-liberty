@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,15 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.fat.uriInfo;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
@@ -29,6 +32,9 @@ public class TestResource {
 
     @Context
     UriInfo uriInfo;
+
+    @Context
+    HttpHeaders httpHeaders;
 
     @Inject
     TestClient testClient;
@@ -56,5 +62,28 @@ public class TestResource {
     @Path("client")
     public String clientRequest() {
         return "";
+    }
+
+    /**
+     * returns the raw value of UriInfo.getPath() for the request path.
+     * strips the leading '/' — returns e.g. "test/getpath"
+     */
+    @GET
+    @Path("getpath")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getPath() {
+        return uriInfo.getPath();
+    }
+
+    /**
+     * returns "null" if HttpHeaders.getRequestHeader() returns null for an absent header,
+     * or "empty" if it returns an empty (non-null) list.
+     */
+    @GET
+    @Path("missingheader")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getMissingHeader() {
+        List<String> values = httpHeaders.getRequestHeader("X-Absent-Header");
+        return (values == null) ? "null" : "empty";
     }
 }

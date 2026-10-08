@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -266,5 +266,37 @@ public class LibertyServerUtils {
         String javaHome = bootstrap.getValue(hostName + ".JavaHome");
         String cmd = bootstrap.getValue("libertyInstallPath") + "/bin/" + command;
         return execute(machine, javaHome, null, cmd, preserveSpaces, parms);
+    }
+
+    /**
+     * Execute a Liberty server script command with an explicit server start wait time.
+     * This method passes {@code -Dserver.start.wait.time=<startWaitSeconds>} via the
+     * {@code JVM_ARGS} environment variable so that the {@code --status:start} watcher
+     * JVM uses the extended timeout when polling for the server to start.
+     * <p>
+     * Unlike a {@code bootstrap.properties}-based approach, this works even when the
+     * server directory does not yet exist (e.g. implicit {@code defaultServer} create),
+     * and does not alter the server directory in any way before the command runs.
+     *
+     * @param bootstrap        FAT bootstrap configuration
+     * @param startWaitSeconds value for {@code server.start.wait.time} (seconds)
+     * @param command          Liberty script name, e.g. {@code "server"}
+     * @param parms            script arguments
+     */
+    public static ProgramOutput executeLibertyCmd(Bootstrap bootstrap, int startWaitSeconds, String command, String... parms) throws Exception {
+        Machine machine = createMachine(bootstrap);
+        String hostName = bootstrap.getValue("hostName");
+        String javaHome = bootstrap.getValue(hostName + ".JavaHome");
+        String cmd = bootstrap.getValue("libertyInstallPath") + "/bin/" + command;
+
+        // Pass server.start.wait.time as a JVM system property via JVM_ARGS.
+        // The server script forwards JVM_ARGS to every JVM it launches, including
+        // the --status:start watcher process that polls the lock file.  This avoids
+        // any need to touch the server directory before the command runs, preserving
+        // the integrity of tests that exercise implicit server creation.
+        Properties envVars = new Properties();
+        envVars.setProperty("JVM_ARGS", "-Dserver.start.wait.time=" + startWaitSeconds);
+
+        return execute(machine, javaHome, envVars, cmd, parms);
     }
 }

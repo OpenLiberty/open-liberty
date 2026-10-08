@@ -25,6 +25,7 @@ src: \
 	test-applications/testParentLibraryInconsistent.war/src, \
 	test-applications/testLibPrecedence.war/src, \
 	test-applications/testOverrideLib.war/src, \
+	test-applications/testLibraryUser.war/src, \
 	test-applications/testClient1.jar/src, \
 	test-applications/testEjb1.jar/src, \
 	test-applications/testEjb2.jar/src, \
@@ -50,7 +51,8 @@ src: \
 	test-applications/testRar1.rar/src, \
 	test-applications/testResourceAdaptor.jar/src, \
 	test-resourceadapters/testDummyRA/src, \
-	test-bundles/userApiBundle/src
+	test-bundles/userApiBundle/src, \
+	test-bundles/libraryUserBundle/src
 
 fat.project: true
 -sub: *.bnd
@@ -64,5 +66,7 @@ tested.features:
 	com.ibm.websphere.javaee.annotation.1.3, \
 	com.ibm.websphere.javaee.jms.2.0, \
 	com.ibm.ws.classloading.configuration, \
-	com.ibm.websphere.org.osgi.core
+	com.ibm.ws.classloading, \
+	com.ibm.websphere.org.osgi.core, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 

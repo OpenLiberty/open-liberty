@@ -11,6 +11,10 @@
   <application location="oidcTests.war">
   	<mcp stateless="true"/>
   </application>
+
+  <application location="oidcAuthFlowTests.war">
+  	<mcp stateless="true"/>
+  </application>
   
   <include location="../fatTestPorts.xml" />
   
@@ -28,6 +32,7 @@
         httpsRequired="false"
         disableLtpaCookie="true"
         tokenReuse="true">
+     <protectedResourceMetadata/>
    </openidConnectClient>
 
  <ssl id="defaultSSLConfig" trustDefaultCerts="true" />

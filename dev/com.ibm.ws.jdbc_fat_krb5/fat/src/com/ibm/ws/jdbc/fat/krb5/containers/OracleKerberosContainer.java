@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ public class OracleKerberosContainer extends OracleContainer implements Kerberos
      * to the parent constructor so we can lazily start this image.
      */
     private static final DockerImageName ORACLE_KRB5 = ImageBuilder
-                    .build("oracle-krb5:23.9-full-faststart")
+                    .build("oracle-krb5:23.26.2-full-faststart")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("gvenzl/oracle-free");
 

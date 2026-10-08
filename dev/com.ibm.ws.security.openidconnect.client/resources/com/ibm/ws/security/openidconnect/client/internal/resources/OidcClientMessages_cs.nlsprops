@@ -104,7 +104,7 @@ PROPAGATION_TOKEN_NOT_ACTIVE.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00
 PROPAGATION_TOKEN_NOT_ACTIVE.useraction=Zajist\u011bte, aby poskytovan\u00fd p\u0159\u00edstupov\u00fd token byl platn\u00fd. Je-li to mo\u017en\u00e9, zkontrolujte protokoly poskytovatele p\u0159ipojen\u00ed OpenID, zda neobsahuj\u00ed dal\u0161\u00ed chyby. Rovn\u011b\u017e se ujist\u011bte, \u017ee uveden\u00e1 metoda ov\u011b\u0159en\u00ed a adresa URL koncov\u00e9ho bodu z konfigurace klienta pro p\u0159ipojen\u00ed OpenID jsou spr\u00e1vn\u00e9.
 
 #used_by_client_project
-OIDC_PROPAGATION_FAIL=CWWKS1721E: Server prost\u0159edk\u016f p\u0159ijal chybu [{0}] b\u011bhem pokusu ov\u011b\u0159it p\u0159\u00edstupov\u00fd prvek. Bu\u010f vypr\u0161ela platnost, nebo nem\u016f\u017ee b\u00fdt rozpozn\u00e1n koncov\u00fdm bodem ov\u011b\u0159en\u00ed [{1}].
+OIDC_PROPAGATION_FAIL=CWWKS1721E: Server prost\u0159edk\u016f p\u0159ijal chybu [{0}] b\u011bhem pokusu ov\u011b\u0159it p\u0159\u00edstupov\u00fd token. Bu\u010f vypr\u0161ela platnost, nebo nem\u016f\u017ee b\u00fdt rozpozn\u00e1n koncov\u00fdm bodem ov\u011b\u0159en\u00ed [{1}].
 OIDC_PROPAGATION_FAIL.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token nelze ov\u011b\u0159it kv\u016fli odezv\u011b na chybu od poskytovatele p\u0159ipojen\u00ed OpenID. 
 OIDC_PROPAGATION_FAIL.useraction=Ov\u011b\u0159te platnost tokenu \u0161\u00ed\u0159en\u00ed a pokud je to mo\u017en\u00e9, zkontrolujte protokoly u poskytovatele p\u0159ipojen\u00ed OpenID, kde jsou dal\u0161\u00ed podrobnosti o chyb\u011b.
 
@@ -116,7 +116,7 @@ PROPAGATION_TOKEN_INVALID_CLIENTID.explanation=Poskytnut\u00fd p\u0159\u00edstup
 PROPAGATION_TOKEN_INVALID_CLIENTID.useraction=Ov\u011b\u0159te, \u017ee konfigurace klienta pro p\u0159ipojen\u00ed OpenID obsahuje ID klienta, kter\u00e9 se shoduje s ID klienta v konfiguraci poskytovatele p\u0159ipojen\u00ed OpenID. Je-li to mo\u017en\u00e9, zkontrolujte protokoly na poskytovateli p\u0159ipojen\u00ed OpenID, zda neobsahuj\u00ed dal\u0161\u00ed informace.
 
 #used_by_client_project
-PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Serveru prost\u0159edk\u016f se nezda\u0159il po\u017eadavek na ov\u011b\u0159en\u00ed, nebo\u0165 identifik\u00e1tor issuerIdentifier [{0}] v konfiguraci neobsahuje n\u00e1rok "iss" [{1}] v p\u0159\u00edstupov\u00e9m tokenu.
+PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, nebo\u0165 identifik\u00e1tor issuerIdentifier [{0}] v konfiguraci neobsahuje n\u00e1rok "iss" [{1}] v p\u0159\u00edstupov\u00e9m tokenu.
 PROPAGATION_TOKEN_ISS_ERROR.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token nelze ov\u011b\u0159it, nebo\u0165 n\u00e1rok "iss" z p\u0159\u00edstupov\u00e9ho tokenu nen\u00ed shodn\u00fd s atributem konfigurace issuerIdentifier. B\u011bhov\u00fd modul nem\u016f\u017ee pokra\u010dovat v procesu ov\u011b\u0159en\u00ed.
 PROPAGATION_TOKEN_ISS_ERROR.useraction=Ov\u011b\u0159te, \u017ee konfigurace klienta pro p\u0159ipojen\u00ed OpenID obsahuje identifik\u00e1tor issuerIdentifier, obsahuj\u00edc\u00ed n\u00e1rok "iss" v p\u0159\u00edstupov\u00e9m tokenu. 
 
@@ -126,12 +126,12 @@ PROPAGATION_TOKEN_INVALID_VALIDATION_URL.explanation=Poskytnut\u00fd p\u0159\u00
 PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Ujist\u011bte se, \u017ee jste do atributu validationEndpointUrl v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID zadali platnou hodnotu.
 
 #used_by_client_project
-PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee tato \u017e\u00e1dost nem\u011bla nezbytn\u00fd token \u0161\u00ed\u0159en\u00ed, nap\u0159. p\u0159\u00edstupov\u00fd prvek nebo token jwt.
+PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee tato \u017e\u00e1dost nem\u011bla nezbytn\u00fd token \u0161\u00ed\u0159en\u00ed, nap\u0159. p\u0159\u00edstupov\u00fd token nebo token jwt.
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=\u017d\u00e1dost mus\u00ed obsahovat nezbytn\u00fd token \u0161\u00ed\u0159en\u00ed, nap\u0159.: p\u0159\u00edstupov\u00fd token nebo token jwt tak, aby server prost\u0159edk\u016f mohl zpracovat ov\u011b\u0159en\u00ed a \u0161\u00ed\u0159en\u00ed tokenu.
 PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Ujist\u011bte se, \u017ee m\u00e1 \u017e\u00e1dost platn\u00fd token \u0161\u00ed\u0159en\u00ed.
 
 # USED IN CLIENT AND CLIENTS.COMMON BUNDLE. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee nelze ov\u011b\u0159it p\u0159\u00edstupov\u00fd prvek kv\u016fli chyb\u011b [{0}]. Metoda ov\u011b\u0159en\u00ed je [{1}] a adresa URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed je [{2}].
+PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, proto\u017ee nelze ov\u011b\u0159it p\u0159\u00edstupov\u00fd token kv\u016fli chyb\u011b [{0}]. Metoda ov\u011b\u0159en\u00ed je [{1}] a adresa URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed je [{2}].
 PROPAGATION_TOKEN_INTERNAL_ERR.explanation=Poskytnut\u00fd p\u0159\u00edstupov\u00fd token nelze ov\u011b\u0159it kv\u016fli intern\u00ed chyb\u011b, b\u011bhov\u00fd modul tak nem\u016f\u017ee pokra\u010dovat v procesu ov\u011b\u0159en\u00ed. 
 PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Kontrolou protokol\u016f serveru prost\u0159edk\u016f zjist\u011bte, zda nebyly p\u0159edt\u00edm zaprotokolov\u00e1ny n\u011bjak\u00e9 dal\u0161\u00ed chyby.
 
@@ -142,7 +142,7 @@ PROPAGATION_TOKEN_INTERNAL_ERR.useraction=Kontrolou protokol\u016f serveru prost
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
 #unused but present in both bundles. IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES.
-PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serveru prost\u0159edk\u016f se nezda\u0159il po\u017eadavek na ov\u011b\u0159en\u00ed, nebo\u0165 metoda ov\u011b\u0159en\u00ed [{0}] nen\u00ed vhodn\u00e1 pro adresu URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed platnosti [{1}].
+PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Serveru prost\u0159edk\u016f se nezda\u0159ila \u017e\u00e1dost o ov\u011b\u0159en\u00ed, nebo\u0165 metoda ov\u011b\u0159en\u00ed [{0}] nen\u00ed vhodn\u00e1 pro adresu URL koncov\u00e9ho bodu ov\u011b\u0159en\u00ed platnosti [{1}].
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Atribut validationEndpointUrl ur\u010den\u00fd v konfiguraci klienta OpenID Connect nen\u00ed vhodn\u00fdm koncov\u00fdm bodem pro ur\u010denou metodu validationMethod.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aktualizuje konfiguraci klienta OpenID Connect zm\u011bnou metody validationMethod nebo validationEndpointUrl.
  
@@ -292,5 +292,10 @@ OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ov\u011b\u0159te posk
 REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: Po\u017eadavek na ov\u011b\u0159en\u00ed se nezda\u0159il, proto\u017ee poskytovatel OpenID Connect vr\u00e1til n\u00e1sleduj\u00edc\u00ed chybu {0}: {1}
 REDIRECT_URI_CONTAINED_ERROR.explanation=Zadan\u00fd stav odezvy ozna\u010dil, \u017ee ov\u011b\u0159ov\u00e1n\u00ed nebylo \u00fasp\u011b\u0161n\u00e9. Chyba a popis chyby uveden\u00e9 ve zpr\u00e1v\u011b obsahuj\u00ed dal\u0161\u00ed informace.
 REDIRECT_URI_CONTAINED_ERROR.useraction=Dal\u0161\u00ed informace viz chyba v t\u00e9to zpr\u00e1v\u011b.
+
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: Metadata chr\u00e1n\u011bn\u00e9ho zdroje nesm\u00ed obsahovat JWT typu \u201esigned_metadata\u201c, proto\u017ee n\u00e1stroj pro generov\u00e1n\u00ed JWT [ {0} ] nedok\u00e1zal token vygenerovat: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=Nakonfigurovan\u00fd gener\u00e1tor JWT vyvolal v\u00fdjimku p\u0159i vytv\u00e1\u0159en\u00ed podepsan\u00e9ho metadatov\u00e9ho tokenu. Server vr\u00e1t\u00ed dokument s metadaty bez pole signed_metadata.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=Dal\u0161\u00ed informace o t\u00e9to chyb\u011b najdete v konfiguraci n\u00e1stroje pro generov\u00e1n\u00ed JWT a v protokolech serveru.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

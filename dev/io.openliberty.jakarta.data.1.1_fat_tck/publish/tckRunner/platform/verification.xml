@@ -41,6 +41,12 @@
 			<artifactId>jakarta.data-api</artifactId>
 			<version>${jakarta.data.version}</version>
 		</dependency>
+		<!-- api - data stateful - internal bundle -->
+		<dependency>
+			<groupId>jakarta.data</groupId>
+			<artifactId>jakarta.data.stateful-api</artifactId>
+			<version>${jakarta.data.version}</version>
+		</dependency>
 
 		<!-- The Liberty Arquillian plugin -->
 		<dependency>
@@ -91,6 +97,7 @@
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
 			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+			<version>${shrinkwrap.resolver.version}</version>
 		</dependency>
 		
 	</dependencies>

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transport;
 
@@ -341,22 +338,22 @@ public class GenericEndpointImpl {
 		                ((com.ibm.ws.sip.stack.transport.netty.GenericChain)_genericTCPChain).init(name, cid, m_nettyBundle, "InboundTCPChain");
 		            }
 
-		            if (sslOptions != null) {
-		                ((com.ibm.ws.sip.stack.transport.netty.GenericChain)_genericTLSChain).init(name, cid, m_nettyBundle, "InboundTLSChain");
-		            }
-    	    } else {
-    	            if (udpOptions != null) {
-    	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericUDPChain).init(name, cid, m_chfw, "InboundUDPChain");
-    	            }
-    
-    	            if (tcpOptions != null) {
-    	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTCPChain).init(name, cid, m_chfw, "InboundTCPChain");
-    	            }
-    
-    	            if (sslOptions != null) {
-    	                ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTLSChain).init(name, cid, m_chfw, "InboundTLSChain");
-    	            }
-    	    }
+		            // Always init the TLS chain so it is ready to start when sslOptions arrive,
+		            // even if sslOptions are not yet available at activate time (OSGi ordering)
+		            ((com.ibm.ws.sip.stack.transport.netty.GenericChain)_genericTLSChain).init(name, cid, m_nettyBundle, "InboundTLSChain");
+		       } else {
+		               if (udpOptions != null) {
+		                   ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericUDPChain).init(name, cid, m_chfw, "InboundUDPChain");
+		               }
+		  
+		               if (tcpOptions != null) {
+		                   ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTCPChain).init(name, cid, m_chfw, "InboundTCPChain");
+		               }
+		  
+		            // Always init the TLS chain so it is ready to start when sslOptions arrive,
+		            // even if sslOptions are not yet available at activate time (OSGi ordering)
+		               ((com.ibm.ws.sip.stack.transport.chfw.GenericChain)_genericTLSChain).init(name, cid, m_chfw, "InboundTLSChain");
+		       }
 			startChains(properties);
 			
 			try {
@@ -523,7 +520,8 @@ public class GenericEndpointImpl {
 
 		if (tcpPort < 0 && tlsPort < 0 && udpPort < 0) {
 			endpointEnabled = false;
-			c_logger.warn("missingPorts.endpointDisabled", id);
+			// Use 3 arg method to ensure id is passed to message.
+			c_logger.warn("missingPorts.endpointDisabled", null, id);
 		}
 
 		if (tcpOptions != null && tcpPort >= 0) {
@@ -616,6 +614,15 @@ public class GenericEndpointImpl {
 			c_logger.event("enable ssl support ", this);
 		}
 		sslSupport = config;
+		// If the endpoint has already started, we need to queue another start
+		// so that the ssl endpoint is properly started as well. If the config
+		// is unchanged, this will leave the endpoints as is when doing the chain start
+		if (endpointStarted && getEndpointOptions() != null) {
+			applyNewConfiguration(getEndpointOptions());
+		}
+		else if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("Set SSL support without starting chain. EndpointStarted ? " + endpointStarted + ", Endpoint Options: " + getEndpointOptions());
+		}
 	}
 
 	/**
@@ -654,6 +661,15 @@ public class GenericEndpointImpl {
 					this);
 		}
 		sslOptions = config;
+		// If the endpoint has already started, we need to queue another start
+		// so that the ssl endpoint is properly started as well. If the config
+		// is unchanged, this will leave the endpoints as is when doing the chain start
+		if (endpointStarted && getEndpointOptions() != null) {
+			applyNewConfiguration(getEndpointOptions());
+		}
+		else if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("Set SSL options without starting chain. EndpointStarted ? " + endpointStarted + ", Endpoint Options: " + getEndpointOptions());
+		}
 	}
 
 	@Trivial
@@ -795,6 +811,15 @@ public class GenericEndpointImpl {
             c_logger.event("setNettyTlsProvider " + tls);
         }
         tlsProviderService = tls;
+        // If the endpoint has already started, we need to queue another start
+        // so that the ssl endpoint is properly started as well. If the config
+        // is unchanged, this will leave the endpoints as is when doing the chain start
+        if (endpointStarted && getEndpointOptions() != null) {
+            applyNewConfiguration(getEndpointOptions());
+        }
+        else if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug("Set Netty TLS provider without starting chain. EndpointStarted ? " + endpointStarted + ", Endpoint Options: " + getEndpointOptions());
+        }
     }
     
     protected void unsetNettyTlsProvider(NettyTlsProvider tls) {

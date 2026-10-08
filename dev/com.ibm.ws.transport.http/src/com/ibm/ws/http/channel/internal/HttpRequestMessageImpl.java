@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal;
 
+import java.util.Arrays;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -75,7 +76,8 @@ import com.ibm.wsspi.http.ee8.Http2PushBuilder;
  */
 public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpRequestMessage {
     /** RAS trace variable */
-    private static final TraceComponent tc = Tr.register(HttpRequestMessageImpl.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(HttpRequestMessageImpl.class, HttpMessages.HTTP_TRACE_NAME,
+            HttpMessages.HTTP_BUNDLE);
 
     /** Serialization ID field */
     private static final long serialVersionUID = 5759292362534888246L;
@@ -115,11 +117,15 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     private transient Map<String, String[]> queryParams = null;
     /** Marked true if this object was populated from a serialized stream */
     private transient boolean deserialized = false;
+    private static final byte[] DEFAULT_ALLOWED_HTTP_PORT = {'8', '0'};
+    private static final byte[] DEFAULT_ALLOWED_HTTPS_PORT = {'4', '4', '3'};
+
 
     /**
      * Default constructor with no service context.
      * <P>
-     * Warning: this object will be prone to NPEs if used prior to the init with a real service context.
+     * Warning: this object will be prone to NPEs if used prior to the init with a
+     * real service context.
      *
      */
     public HttpRequestMessageImpl() {
@@ -247,6 +253,17 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return isBodyExpected();
     }
 
+    @Override
+    public boolean parseMessage(WsByteBuffer buffer, boolean bExtract) throws Exception {
+        boolean complete = super.parseMessage(buffer, bExtract);
+        if (complete && isIncoming()
+            && containsHeader(HttpHeaderKeys.HDR_TRANSFER_ENCODING)
+            && containsHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH)) {
+            throw new MalformedMessageException("Transfer-Encoding and Content-Length cannot both be present in a request");
+        }
+        return complete;
+    }
+
     /*
      * @see com.ibm.ws.http.channel.internal.HttpBaseMessageImpl#clear()
      */
@@ -286,8 +303,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     @Override
     protected H2HeaderTable getH2HeaderTable() {
-        //Currently, Only inbound connections are supported, return null if we are
-        //not inbound.
+        // Currently, Only inbound connections are supported, return null if we are
+        // not inbound.
         if (getServiceContext() instanceof HttpInboundServiceContextImpl) {
             HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) getServiceContext();
             return ((H2HttpInboundLinkWrap) context.getLink()).getReadTable();
@@ -297,20 +314,21 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     @Override
     protected void setPseudoHeaders(HashMap<String, String> pseudoHeaders) throws Exception {
-        //Possible request pseudo-headers are: ':authority', ':method'
-        //':path', and ':scheme'. Validity of pseudoHeader is verified
-        //by caller of this method.
+        // Possible request pseudo-headers are: ':authority', ':method'
+        // ':path', and ':scheme'. Validity of pseudoHeader is verified
+        // by caller of this method.
 
         for (Entry<String, String> entry : pseudoHeaders.entrySet()) {
             H2HeaderField header = new H2HeaderField(entry.getKey(), entry.getValue());
             if (!isValidPseudoHeader(header)) {
-                ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + header.toString());
+                ProtocolException pe = new ProtocolException(
+                        "Invalid pseudo-header for decompression context: " + header.toString());
                 pe.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
                 throw pe;
             }
         }
 
-        //Authority is not required to be present, check if it is.
+        // Authority is not required to be present, check if it is.
         if (pseudoHeaders.containsKey(HpackConstants.METHOD)) {
             this.setMethod(MethodValues.find(pseudoHeaders.get(HpackConstants.METHOD)));
         }
@@ -328,11 +346,11 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     @Override
     protected boolean isValidPseudoHeader(H2HeaderField pseudoHeader) {
-        //If the H2HeaderField being evaluated has an empty value, it is not a valid
-        //pseudo-header.
+        // If the H2HeaderField being evaluated has an empty value, it is not a valid
+        // pseudo-header.
         if (!pseudoHeader.getValue().isEmpty()) {
-            //Evaluate if input is a valid request pseudo-header by comparing to the
-            //four request pseudo-header hashes.
+            // Evaluate if input is a valid request pseudo-header by comparing to the
+            // four request pseudo-header hashes.
             int hash = pseudoHeader.getNameHash();
             return (hash == HpackConstants.AUTHORITY_HASH || hash == HpackConstants.METHOD_HASH ||
                     hash == HpackConstants.PATH_HASH || hash == HpackConstants.SCHEME_HASH);
@@ -572,42 +590,44 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return firstLine;
     }
 
-    //If outbound requests are ever supported for HTTP/2.0, this would represent the marshalling
-    //of the first line.
+    // If outbound requests are ever supported for HTTP/2.0, this would represent
+    // the marshalling
+    // of the first line.
     @Override
     public WsByteBuffer[] encodePseudoHeaders() {
         WsByteBuffer[] firstLine = new WsByteBuffer[1];
         firstLine[0] = allocateBuffer(getOutgoingBufferSize());
 
         LiteralIndexType indexType = LiteralIndexType.NOINDEXING;
-        //For the time being, there will be no indexing on the responses to guarantee
-        //the write context is concurrent to the remote endpoint's read context. Remote
-        //intermediaries could index if they so desire, so setting NoIndexing (as
-        //opposed to NeverIndexing).
-        //TODO: investigate how streams and priority can work together with indexing on
-        //responses.
-        //LiteralIndexType indexType = isPushPromise ? LiteralIndexType.NOINDEXING : LiteralIndexType.INDEX;
+        // For the time being, there will be no indexing on the responses to guarantee
+        // the write context is concurrent to the remote endpoint's read context. Remote
+        // intermediaries could index if they so desire, so setting NoIndexing (as
+        // opposed to NeverIndexing).
+        // TODO: investigate how streams and priority can work together with indexing on
+        // responses.
+        // LiteralIndexType indexType = isPushPromise ? LiteralIndexType.NOINDEXING :
+        // LiteralIndexType.INDEX;
 
-        //Corresponding dynamic table
+        // Corresponding dynamic table
         H2HeaderTable table = this.getH2HeaderTable();
-        //Current encoded pseudo-header
+        // Current encoded pseudo-header
         byte[] encodedHeader = null;
         try {
-            //Encode the Method
+            // Encode the Method
             encodedHeader = H2Headers.encodeHeader(table, HpackConstants.METHOD, this.myMethod.toString(), indexType);
             firstLine = putBytes(encodedHeader, firstLine);
-            //Encode Scheme
+            // Encode Scheme
             encodedHeader = H2Headers.encodeHeader(table, HpackConstants.SCHEME, this.myScheme.toString(), indexType);
             this.myScheme.toString();
             firstLine = putBytes(encodedHeader, firstLine);
-            //Encode Authority
+            // Encode Authority
             if (this.sUrlHost != null) {
                 // TODO: should the iUrlPort be added here?
                 encodedHeader = H2Headers.encodeHeader(table, HpackConstants.AUTHORITY, this.sUrlHost, indexType);
                 firstLine = putBytes(encodedHeader, firstLine);
             }
 
-            //Encode Path
+            // Encode Path
             encodedHeader = H2Headers.encodeHeader(table, HpackConstants.PATH, this.myURIString, indexType);
             firstLine = putBytes(encodedHeader, firstLine);
         } catch (Exception e) {
@@ -815,7 +835,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     private String getTargetHost() {
         String host = getVirtualHost();
         if (null == host) {
-            host = (isIncoming()) ? getServiceContext().getLocalAddr().getCanonicalHostName() : getServiceContext().getRemoteAddr().getCanonicalHostName();
+            host = (isIncoming()) ? getServiceContext().getLocalAddr().getCanonicalHostName()
+                    : getServiceContext().getRemoteAddr().getCanonicalHostName();
         }
         return host;
     }
@@ -1029,7 +1050,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         } catch (NumberFormatException nfe) {
             // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getVirtualPort: Invalid port value: " + HttpChannelUtils.getEnglishString(host, start, length));
+                Tr.debug(tc, "getVirtualPort: Invalid port value: "
+                        + HttpChannelUtils.getEnglishString(host, start, length));
             }
             return -1;
         }
@@ -1182,7 +1204,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         int uri_end = data.length;
         for (int i = start; i < data.length; i++) {
             // look for the query string marker
-            if ('?' == data[i]) {
+            if ('?' == data[i] || '#' == data[i]) {
                 uri_end = i;
                 break;
             }
@@ -1230,7 +1252,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             if ('@' == data[i]) {
                 // Note: we're just cutting off the userinfo section for now
                 host_start = i + 1;
-            } else if ('/' == data[i]) {
+            } else if ('/' == data[i] || '?' == data[i] || '#' == data[i]) {
                 slash_start = i;
                 break;
             }
@@ -1275,7 +1297,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             if (':' == data[i]) {
                 SchemeValues val = SchemeValues.match(data, 0, i);
                 if (null == val) {
-                    throw new IllegalArgumentException("Invalid scheme inside URL: " + GenericUtils.getEnglishString(data));
+                    throw new IllegalArgumentException(
+                            "Invalid scheme inside URL: " + GenericUtils.getEnglishString(data));
                 }
                 setScheme(val);
                 // scheme should be followed by "://"
@@ -1376,7 +1399,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // otherwise we should be looking at alpha chars and the scheme
         else if (isAlpha(url[0])) {
             parseScheme(url);
-        } else if (url[0] == '?') { //PI42523 Start
+        } else if (url[0] == '?') { // PI42523 Start
             // Inject Slash to the beginning of the URL if the URL is
             // composed of only the query
             byte[] injectRootURL = new byte[url.length + 1];
@@ -1657,7 +1680,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /**
-     * @see com.ibm.wsspi.http.channel.cookies.CookieHandler#removeCookie(java.lang.String, com.ibm.wsspi.http.channel.values.HttpHeaderKeys)
+     * @see com.ibm.wsspi.http.channel.cookies.CookieHandler#removeCookie(java.lang.String,
+     *      com.ibm.wsspi.http.channel.values.HttpHeaderKeys)
      */
     @Override
     public boolean removeCookie(String name, HttpHeaderKeys header) {
@@ -1815,7 +1839,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         this.queryParams = null;
         super.setFirstLineChanged();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && null != this.myQueryBytes) {
-            Tr.debug(tc, "setQueryString(String): set query to [" + GenericUtils.nullOutPasswords(this.myQueryBytes, (byte) '&') + "]");
+            Tr.debug(tc, "setQueryString(String): set query to ["
+                    + GenericUtils.nullOutPasswords(this.myQueryBytes, (byte) '&') + "]");
         }
     }
 
@@ -1828,7 +1853,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         this.queryParams = null;
         super.setFirstLineChanged();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && null != this.myQueryBytes) {
-            Tr.debug(tc, "setQueryString(byte[]): set query to [" + GenericUtils.nullOutPasswords(this.myQueryBytes, (byte) '&') + "]");
+            Tr.debug(tc, "setQueryString(byte[]): set query to ["
+                    + GenericUtils.nullOutPasswords(this.myQueryBytes, (byte) '&') + "]");
         }
     }
 
@@ -1923,7 +1949,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /**
-     * @return request start time with nanosecond precision (relative to the JVM instance as opposed to time since epoch)
+     * @return request start time with nanosecond precision (relative to the JVM
+     *         instance as opposed to time since epoch)
      */
     public long getStartNanoTime() {
         return getServiceContext().getStartNanoTime();
@@ -1942,7 +1969,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     /*
      * isPushSupported
-     * - called by WebContainer to determine whether or not push_promise is supported
+     * - called by WebContainer to determine whether or not push_promise is
+     * supported
      *
      */
     @Override
@@ -1955,31 +1983,35 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
         if (!(link instanceof H2HttpInboundLinkWrap)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): Error: This is not an HTTP2 connection, push() was ignored.");
+                Tr.debug(tc,
+                        "HTTPRequestMessageImpl.isPushSupported(): Error: This is not an HTTP2 connection, push() was ignored.");
             }
             return false;
         }
 
         if ((((H2HttpInboundLinkWrap) link).muxLink == null) ||
-            (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings() == null)) {
+                (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings() == null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
+                Tr.debug(tc,
+                        "HTTPRequestMessageImpl.isPushSupported(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
             }
             return false;
         }
 
         // If the link is closing, don't bother
-        //if (((H2InboundLink) link).linkStatus == LINK_STATUS.CLOSING) {
-        //    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //        Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Link is closing, push() was ignored.");
-        //    }
-        //    return false;
+        // if (((H2InboundLink) link).linkStatus == LINK_STATUS.CLOSING) {
+        // if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        // Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Link is closing,
+        // push() was ignored.");
+        // }
+        // return false;
         // }
 
         // Don't send the push_promise frame if the client doesn't want it
         if (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings().getEnablePush() != 1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The client does not accept push_promise frames, push() was ignored.");
+                Tr.debug(tc,
+                        "HTTPRequestMessageImpl.isPushSupported(): The client does not accept push_promise frames, push() was ignored.");
             }
             return false;
         }
@@ -1989,7 +2021,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
     /**
      * pushNewRequest
-     * - called by WebContainer when a servlet determines that a push_promise is needed
+     * - called by WebContainer when a servlet determines that a push_promise is
+     * needed
      *
      * 1. Send an HTTP2 push promise frame to the client
      * 2. Send an HTTP 1.1 request to WebContainer
@@ -2002,10 +2035,12 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             Tr.entry(tc, "HTTPRequestMessageImpl.pushNewRequest(): pushNewRequest() started " + this);
         }
 
-        //Test to see if this is an HTTP/2 link, and that the client endpoint wants to accept push_promise frames
+        // Test to see if this is an HTTP/2 link, and that the client endpoint wants to
+        // accept push_promise frames
         if (!isPushSupported()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): Push_promise is not client supported, this is not an HTTP/2 connection, or the connection is closing.");
+                Tr.exit(tc,
+                        "HTTPRequestMessageImpl.pushNewRequest(): Push_promise is not client supported, this is not an HTTP/2 connection, or the connection is closing.");
             }
             return;
         }
@@ -2035,19 +2070,23 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
         try {
             // If all is well, start encoding, first the method
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, pushBuilder.getMethod(), LiteralIndexType.NOINDEXING));
+            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, pushBuilder.getMethod(),
+                    LiteralIndexType.NOINDEXING));
 
             // Encode the scheme
             String scheme = new String("https");
             if (!isc.isSecure()) {
                 scheme = new String("http");
             }
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, scheme, LiteralIndexType.NOINDEXING));
+            ppStream.write(
+                    H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, scheme, LiteralIndexType.NOINDEXING));
 
             // Encode authority
-            // If the :authority header was sent in the request, get the information from there
+            // If the :authority header was sent in the request, get the information from
+            // there
             // If it was not, use getTargetHost and and getTargetPort to create it
-            // If it's still null, we have to bail, since it's a required header in a push_promise frame
+            // If it's still null, we have to bail, since it's a required header in a
+            // push_promise frame
             String auth = ((H2HttpInboundLinkWrap) link).muxLink.getAuthority();
             if (null == auth) {
                 auth = getTargetHost();
@@ -2057,15 +2096,18 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                     }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.exit(tc, "HTTPRequestMessageImpl: Cannot find hostname for required :authority pseudo header");
+                        Tr.exit(tc,
+                                "HTTPRequestMessageImpl: Cannot find hostname for required :authority pseudo header");
                     }
                     return;
                 }
             }
 
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
+            ppStream.write(
+                    H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
 
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pbPath, LiteralIndexType.NOINDEXING));
+            ppStream.write(
+                    H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pbPath, LiteralIndexType.NOINDEXING));
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HTTPRequestMessageImpl: Method is GET,  scheme is " + scheme + ", auth is " + auth);
@@ -2081,7 +2123,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "HTTPRequestMessageImpl.getHeaders() " + hf.getName() + " " + hf.asString());
                     }
-                    ppStream.write(H2Headers.encodeHeader(h2WriteTable, hf.getName(), hf.asString(), LiteralIndexType.NOINDEXING));
+                    ppStream.write(H2Headers.encodeHeader(h2WriteTable, hf.getName(), hf.asString(),
+                            LiteralIndexType.NOINDEXING));
 
                 }
             } else {
@@ -2094,12 +2137,16 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // Either IOException from write, or CompressionException from encodeHeader
         catch (IOException ioe) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The attempt to write an HTTP/2 Push Promise frame resulted in an IOException. Exception {0}" + ioe);
+                Tr.exit(tc,
+                        "HTTPRequestMessageImpl.pushNewRequest(): The attempt to write an HTTP/2 Push Promise frame resulted in an IOException. Exception {0}"
+                                + ioe);
             }
             return;
         } catch (CompressionException ce) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The attempt to encode an HTTP/2 Push Promise frame resulted in a CompressionException. Exception {0}" + ce);
+                Tr.exit(tc,
+                        "HTTPRequestMessageImpl.pushNewRequest(): The attempt to encode an HTTP/2 Push Promise frame resulted in a CompressionException. Exception {0}"
+                                + ce);
             }
             return;
         }
@@ -2117,10 +2164,10 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 if (((H2HttpInboundLinkWrap) link).muxLink.isClosing()) {
                     Tr.exit(tc, "pushNewRequest exit; cannot create new push stream - "
-                                + "server is shutting down, closing link: " + link);
+                            + "server is shutting down, closing link: " + link);
                 } else {
                     Tr.exit(tc, "pushNewRequest exit; cannot create new push stream -"
-                                + " the max number of concurrent streams has already been reached on link: " + link);
+                            + " the max number of concurrent streams has already been reached on link: " + link);
                 }
             }
             return;
@@ -2137,25 +2184,29 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         int streamId = ((H2HttpInboundLinkWrap) link).getStreamId();
 
         // Create the push_promise frame to send to the client
-        FramePushPromise pushPromiseFrame = new FramePushPromise(streamId, ppStream.toByteArray(), promisedStreamId, 0, true, false, false);
+        FramePushPromise pushPromiseFrame = new FramePushPromise(streamId, ppStream.toByteArray(), promisedStreamId, 0,
+                true, false, false);
 
         // Create a headers frame to send to wc, as if it had come in from the client
         FramePPHeaders headersFrame = new FramePPHeaders(streamId, ppStream.toByteArray());
 
-        // Get the existing stream processor and send the push_promise frame to the client
+        // Get the existing stream processor and send the push_promise frame to the
+        // client
         H2StreamProcessor existingSP = ((H2HttpInboundLinkWrap) link).muxLink.getStreamProcessor(streamId);
         if (existingSP != null) {
             try {
                 existingSP.processNextFrame(pushPromiseFrame, Constants.Direction.WRITING_OUT);
             } catch (Http2Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): processNextFrame threw a ProtocolException " + e);
+                    Tr.exit(tc,
+                            "HTTPRequestMessageImpl.pushNewRequest(): processNextFrame threw a ProtocolException " + e);
                 }
                 return;
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The client connection using stream-id " + streamId + " has been closed, push() was ignored..");
+                Tr.exit(tc, "HTTPRequestMessageImpl.pushNewRequest(): The client connection using stream-id " + streamId
+                        + " has been closed, push() was ignored..");
             }
             return;
         }
@@ -2184,12 +2235,34 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             rc = super.filterAdd(key, value, isWASPrivateHeader);
         } else if (!this.deserialized) {
             rc = isPrivateHeaderTrusted(key);
+            // Found non trusted $WSSP header which by default is trusted if values are 80/443
+            if (!rc && HttpHeaderKeys.HDR_$WSSP.equals(key)) {
+                // Treat the header as a sensitive header
+                if (getServiceContext().getHttpConfig().desensitizePrivatePortHeader()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "HTTPRequestMessageImpl.filterAdd() $WSSP header is foced to be unsensitive...");
+                    }
+                    HttpServiceContextImpl hisc = getServiceContext();
+                    InetAddress remoteAddr = null;
+                    if (hisc != null) {
+                        remoteAddr = hisc.getRemoteAddr();
+                    }
+                    return HttpDispatcher.usePrivateHeaders(remoteAddr);
+                }
+                else if ((Arrays.equals(value, DEFAULT_ALLOWED_HTTP_PORT) || Arrays.equals(value, DEFAULT_ALLOWED_HTTPS_PORT))) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "HTTPRequestMessageImpl.filterAdd() $WSSP header is not trusted but value passed is allowed. Trusting header...");
+                    }
+                    return true;
+                }
+            }
         }
         return rc;
     }
 
     /**
-     * Check the to see if the current remote host is allowed to send a private header
+     * Check the to see if the current remote host is allowed to send a private
+     * header
      *
      * @see HttpDispatcher.usePrivateHeaders()
      *
@@ -2208,7 +2281,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if (!trusted) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (remoteAddr != null) {
-                    Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host " + remoteAddr.getHostAddress());
+                    Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host "
+                            + remoteAddr.getHostAddress());
                 } else {
                     Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for this host");
                 }
@@ -2219,7 +2293,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /**
-     * Obtains the request end time by leveraging the recorded start of the response.
+     * Obtains the request end time by leveraging the recorded start of the
+     * response.
      * The service context marks the start of the response time when it is done
      * processing the request, so the start of the response coincides with the end
      * time for the request.

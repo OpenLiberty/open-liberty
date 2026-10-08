@@ -44,7 +44,8 @@ public class YassonTranslationTest extends FATServletClient {
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE9_FEATURES().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(SERVER_NAME).fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE11_FEATURES().forServers(SERVER_NAME).fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().forServers(SERVER_NAME).fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE12_FEATURES().forServers(SERVER_NAME).fullFATOnly());
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = YassonTranslationTestServlet.class, contextRoot = CONTEXT)
@@ -58,7 +59,11 @@ public class YassonTranslationTest extends FATServletClient {
 
     @Before
     public void setup() {
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE12Active()) {
+            server.addEnvVar("YASSON_JAR", "io.openliberty.org.eclipse.yasson.3.1*jar");
+        } else if (JakartaEEAction.isEE11Active()) {
+            server.addEnvVar("YASSON_JAR", "io.openliberty.org.eclipse.yasson.3.0*jar");
+        } else if (JakartaEEAction.isEE10Active()) {
             server.addEnvVar("YASSON_JAR", "io.openliberty.org.eclipse.yasson.3.0*jar");
         } else if (JakartaEEAction.isEE9Active()) {
             server.addEnvVar("YASSON_JAR", "com.ibm.ws.org.eclipse.yasson.2.0*jar");

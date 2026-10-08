@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -205,3 +205,41 @@ error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Actualice
 err.unsupported.jmx.operation=CWWKW0059E: La operaci\u00f3n {0} no est\u00e1 soportada.
 err.unsupported.jmx.operation.explanation=La operaci\u00f3n necesaria no est\u00e1 permitida.
 err.unsupported.jmx.operation.useraction=No ejecute operaciones no soportadas.
+
+# webService and webServiceClient config messages
+
+info.no.attributes.webservice=CWWKW0062I: El elemento de configuraci\u00f3n \u00ab webService \u00bb est\u00e1 activado, pero no tiene atributos de configuraci\u00f3n.
+info.no.attributes.webservice.explanation=El elemento de configuraci\u00f3n \u00ab webService \u00bb se ha a\u00f1adido al archivo \u00ab server.xml \u00bb, pero no contiene ning\u00fan atributo de configuraci\u00f3n. Sin atributos, ninguna de las opciones de configuraci\u00f3n de \u00ab webService \u00bb surtir\u00e1 efecto y el servidor utilizar\u00e1 el comportamiento predeterminado.
+info.no.attributes.webservice.useraction=A\u00f1ade uno o varios atributos de configuraci\u00f3n al elemento \u00ab webService \u00bb, o elimina el elemento \u00ab webService \u00bb del archivo \u00ab server.xml \u00bb.
+
+info.no.attributes.webserviceclient=CWWKW0063I: El elemento de configuraci\u00f3n \u00ab webServiceClient \u00bb est\u00e1 activado, pero no tiene atributos de configuraci\u00f3n.
+info.no.attributes.webserviceclient.explanation=El elemento de configuraci\u00f3n \u00ab webServiceClient \u00bb se ha a\u00f1adido al archivo \u00ab server.xml \u00bb, pero no contiene ning\u00fan atributo de configuraci\u00f3n. Sin atributos, ninguna de las opciones de configuraci\u00f3n de webServiceClient surtir\u00e1 efecto y el servidor utilizar\u00e1 el comportamiento predeterminado.
+info.no.attributes.webserviceclient.useraction=A\u00f1ade uno o varios atributos de configuraci\u00f3n al elemento \u00ab webServiceClient \u00bb, o elimina el elemento \u00ab webServiceClient \u00bb del archivo \u00ab server.xml \u00bb.
+
+#{0}=serviceName value
+info.ignore.unexpected.elements.client.named=CWWKW0064I: El atributo \u00ab ignoreUnexpectedElements \u00bb est\u00e1 habilitado en el cliente JAX-WS de {0}. Los elementos desconocidos que se encuentren en las respuestas SOAP recibidas para este cliente se ignoran.
+info.ignore.unexpected.elements.client.named.explanation=La configuraci\u00f3n de \u00ab webServiceClient \u00bb ( {0} ) serviceName tiene el atributo \u00ab ignoreUnexpectedElements \u00bb establecido en \u00abtrue\u00bb. Cuando JAXB desmarca las respuestas SOAP recibidas, ignora los elementos desconocidos.
+info.ignore.unexpected.elements.client.named.useraction=No se requiere ninguna acci\u00f3n. Para desactivar este comportamiento, establece el valor de \u00ab ignoreUnexpectedElements \u00bb en \u00abfalse\u00bb en la configuraci\u00f3n de \u00ab webServiceClient \u00bb.
+
+#{0}=portName value
+info.ignore.unexpected.elements.provider.named=CWWKW0065I: El atributo \u00ab ignoreUnexpectedElements \u00bb est\u00e1 habilitado en el proveedor JAX-WS de {0}. Los elementos desconocidos que se encuentren en las solicitudes SOAP entrantes dirigidas a este proveedor se ignoran.
+info.ignore.unexpected.elements.provider.named.explanation=La configuraci\u00f3n de \u00ab webService \u00bb ( {0} ) portName tiene el atributo \u00ab ignoreUnexpectedElements \u00bb establecido en \u00abtrue\u00bb. Cuando JAXB desmarca las solicitudes SOAP entrantes, ignora los elementos desconocidos.
+info.ignore.unexpected.elements.provider.named.useraction=No se requiere ninguna acci\u00f3n. Para desactivar este comportamiento, establece el valor de \u00ab ignoreUnexpectedElements \u00bb en \u00abfalse\u00bb en la configuraci\u00f3n de \u00ab webService \u00bb.
+
+info.ignore.unexpected.elements.global=CWWKW0066I: El atributo \u00ab ignoreUnexpectedElements \u00bb est\u00e1 activado. Los elementos desconocidos que se detectan durante el desmarshalling se ignoran.
+info.ignore.unexpected.elements.global.explanation=Una configuraci\u00f3n global de webServiceClient o webService tiene el atributo ignoreUnexpectedElements establecido en \u00abtrue\u00bb. Cuando JAXB desmarca los mensajes SOAP entrantes, ignora los elementos desconocidos.
+info.ignore.unexpected.elements.global.useraction=No se requiere ninguna acci\u00f3n. Para desactivar este comportamiento, establece el valor de \u00ab ignoreUnexpectedElements \u00bb en \u00abfalse\u00bb en la configuraci\u00f3n.
+
+info.schema.validation.global=CWWKW0067I: El atributo \u00ab enableSchemaValidation \u00bb est\u00e1 establecido en \u00abtrue\u00bb. Los mensajes SOAP entrantes se validan seg\u00fan el esquema antes de ser procesados.
+info.schema.validation.global.explanation=En la configuraci\u00f3n global de webServiceClient o webService, la opci\u00f3n enableSchemaValidation est\u00e1 establecida en \u00abtrue\u00bb. Cuando JAXB desmarca los mensajes SOAP entrantes, lleva a cabo una validaci\u00f3n completa del esquema.
+info.schema.validation.global.useraction=No se requiere ninguna acci\u00f3n. Para desactivar la validaci\u00f3n del esquema, establece el valor de \u00ab enableSchemaValidation \u00bb en \u00abfalse\u00bb en la configuraci\u00f3n.
+
+#{0}=serviceName value
+info.schema.validation.client.named=CWWKW0068I: El atributo \u00ab enableSchemaValidation \u00bb est\u00e1 habilitado en el cliente JAX-WS de {0}. Las respuestas SOAP recibidas para este cliente se validan seg\u00fan el esquema antes de ser procesadas.
+info.schema.validation.client.named.explanation=La configuraci\u00f3n de \u00ab webServiceClient \u00bb ( {0} ) serviceName tiene la opci\u00f3n \u00ab enableSchemaValidation \u00bb establecida en \u00abtrue\u00bb. Cuando JAXB desmarca las respuestas SOAP entrantes para este cliente, JAXB lleva a cabo una validaci\u00f3n completa del esquema.
+info.schema.validation.client.named.useraction=No se requiere ninguna acci\u00f3n. Para desactivar la validaci\u00f3n del esquema, establece el valor de \u00ab enableSchemaValidation \u00bb en \u00abfalse\u00bb en la configuraci\u00f3n de \u00ab webServiceClient \u00bb.
+
+#{0}=portName value
+info.schema.validation.provider.named=CWWKW0069I: El atributo \u00ab enableSchemaValidation \u00bb est\u00e1 habilitado en el proveedor JAX-WS de {0}. Las solicitudes SOAP entrantes destinadas a este proveedor se validan seg\u00fan el esquema antes de ser procesadas.
+info.schema.validation.provider.named.explanation=La configuraci\u00f3n de \u00ab webService \u00bb con la URL {0} portName tiene la opci\u00f3n \u00ab enableSchemaValidation \u00bb establecida en \u00abtrue\u00bb. Cuando JAXB desmarca las solicitudes SOAP entrantes para este proveedor, JAXB lleva a cabo una validaci\u00f3n completa del esquema.
+info.schema.validation.provider.named.useraction=No se requiere ninguna acci\u00f3n. Para desactivar la validaci\u00f3n del esquema, establece el valor de \u00ab enableSchemaValidation \u00bb en \u00abfalse\u00bb en la configuraci\u00f3n de \u00ab webService \u00bb.

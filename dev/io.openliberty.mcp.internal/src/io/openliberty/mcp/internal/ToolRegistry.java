@@ -193,7 +193,7 @@ public class ToolRegistry implements ToolManager {
         @Override
         public ToolDefinition addArgument(String name, String description, boolean required, Type type, String defaultValue) {
             Objects.requireNonNull(name, "name");
-            ToolArgument arg = new ToolArgument(name, description, required, type, defaultValue);
+            ToolArgument arg = new ToolArgumentImpl(name, description, required, type, defaultValue);
             validateArgument(arg);
             arguments.add(arg);
             return this;
@@ -340,5 +340,16 @@ public class ToolRegistry implements ToolManager {
             }
         }
     }
+
+    /**
+     * Information about a tool argument
+     *
+     * @param name the tool name
+     * @param description the tool description
+     * @param required whether the tool argument is required
+     * @param type the argument type
+     * @param defaultValue the default value
+     */
+    public record ToolArgumentImpl(String name, String description, boolean required, java.lang.reflect.Type type, String defaultValue) implements ToolArgument {}
 
 }

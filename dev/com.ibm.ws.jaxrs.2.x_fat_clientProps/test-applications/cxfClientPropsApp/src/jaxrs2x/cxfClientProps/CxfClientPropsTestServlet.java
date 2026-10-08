@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -533,5 +533,219 @@ public class CxfClientPropsTestServlet extends FATServlet {
         _log.info("    " + m + " Received r2.getStatus() " + r2.getStatus());
         String echoValue2 = r2.readEntity(String.class);        
         assertNotSame("hello", echoValue2.toLowerCase());              
+    }
+
+    // -------------------------------------------------------------------------
+    // Tests for set.content.type.for.empty.request (DT495859)
+    // Verifies that the property works for DELETE, not just GET.
+    // -------------------------------------------------------------------------
+
+    /**
+     * Baseline: GET with set.content.type.for.empty.request=false must NOT send Content-Type.
+     * This already worked before the bug fix -- included as a regression guard.
+     * Note: getHeaderString() returns null when absent; JAX-RS serialises null String return as "".
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_GET_propertyFalse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder()
+                                     .property("set.content.type.for.empty.request", "false")
+                                     .build();
+        Response r = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/header")
+                           .queryParam("h", "Content-Type")
+                           .request()
+                           .get();
+        String ct = r.readEntity(String.class);
+        // null header → resource returns null → serialised as empty body ""
+        assertEquals("GET with set.content.type.for.empty.request=false should NOT send Content-Type, but got: " + ct,
+                     "", ct);
+    }
+
+    /**
+     * Baseline: GET with set.content.type.for.empty.request=true MUST send Content-Type: *.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_GET_propertyTrue(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder()
+                                     .property("set.content.type.for.empty.request", "true")
+                                     .build();
+        Response r = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/header")
+                           .queryParam("h", "Content-Type")
+                           .request()
+                           .get();
+        String ct = r.readEntity(String.class);
+        assertEquals("GET with set.content.type.for.empty.request=true should send Content-Type: */*",
+                     "*/*", ct);
+    }
+
+    /**
+     * Bug reproducer (DT495859):
+     * DELETE with set.content.type.for.empty.request=false must NOT send Content-Type.
+     * Before the fix this fails -- Liberty ignores the property for DELETE and always
+     * sends Content-Type: *.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_DELETE_propertyFalse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder()
+                                     .property("set.content.type.for.empty.request", "false")
+                                     .build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .delete(String.class);
+        _log.info("testSetContentTypeForEmptyRequest_DELETE_propertyFalse: response body=[" + ct + "]");
+        assertEquals("DELETE with set.content.type.for.empty.request=false should NOT send Content-Type",
+                     "none", ct);
+    }
+
+    /**
+     * DELETE with set.content.type.for.empty.request=true MUST send Content-Type: star/star.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_DELETE_propertyTrue(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder()
+                                     .property("set.content.type.for.empty.request", "true")
+                                     .build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .delete(String.class);
+        assertEquals("DELETE with set.content.type.for.empty.request=true should send Content-Type: */*",
+                     "*/*", ct);
+    }
+
+    /**
+     * DELETE with no property set -- default behaviour sends Content-Type: star/star.
+     * Only explicit property=false suppresses Content-Type.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_DELETE_propertyNotSet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .delete(String.class);
+        assertEquals("DELETE with no property set should send Content-Type: star/star by default",
+                     "*/*", ct);
+    }
+
+    /**
+     * z/OS Connect reproducer (DT495859):
+     * Property set on Invocation.Builder (not ClientBuilder) -- this is exactly what
+     * z/OS Connect does via builder.property("set.content.type.for.empty.request", "FALSE").
+     * Before the fix, the property is buried in jaxrs.filter.properties and never reaches
+     * getContextualProperty(), so Content-Type: star/star is still sent.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_DELETE_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .delete(String.class);
+        assertEquals("DELETE with set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
+    }
+
+    /**
+     * z/OS Connect reproducer (DT495859) using method() with null entity --
+     * exactly matching builder.method(httpMethod, null) call pattern used by z/OS Connect.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_DELETE_propertyFalse_onInvocationBuilder_methodWithNullEntity(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .method("DELETE", String.class);
+        assertEquals("DELETE via method() with set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
+    }
+
+    /**
+     * Verify set.content.type.for.empty.request=true on InvocationBuilder still sends Content-Type.
+     * This ensures the property IS reachable via getContextualProperty() when set on InvocationBuilder.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_DELETE_propertyTrue_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "true")
+                          .delete(String.class);
+        assertEquals("DELETE with set.content.type.for.empty.request=true on InvocationBuilder should send Content-Type: star/star",
+                     "*/*", ct);
+    }
+
+    // -------------------------------------------------------------------------
+    // Tests for POST, PUT, HEAD, OPTIONS with set.content.type.for.empty.request
+    // These verify the InvocationBuilder dual-write fix covers all empty-body
+    // HTTP methods, not just DELETE.
+    // -------------------------------------------------------------------------
+
+    /**
+     * POST with no body and set.content.type.for.empty.request=false on InvocationBuilder.
+     * Unlike DELETE, the JDK HttpURLConnection automatically sets Content-Type:
+     * application/x-www-form-urlencoded for empty POST requests before CXF's transport
+     * layer runs. This means CXF sees contentTypeSet=true and skips the dropContentType
+     * logic entirely -- so the property cannot suppress Content-Type for POST with no body.
+     * This test documents that known JDK behaviour and verifies the InvocationBuilder
+     * dual-write fix does not break it.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_POST_noBody_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .method("POST", String.class);
+        // JDK HttpURLConnection sets application/x-www-form-urlencoded for empty POST
+        // before CXF transport runs -- the property cannot suppress it for POST
+        assertEquals("POST with no body: JDK HttpURLConnection sets Content-Type regardless of the property",
+                     "application/x-www-form-urlencoded", ct);
+    }
+
+    /**
+     * PUT with no body and set.content.type.for.empty.request=false on InvocationBuilder
+     * must NOT send Content-Type.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_PUT_noBody_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .method("PUT", String.class);
+        assertEquals("PUT with no body and set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
+    }
+
+    /**
+     * HEAD with set.content.type.for.empty.request=false on InvocationBuilder must NOT send
+     * Content-Type. HEAD responses have no body so the result is returned via the
+     * X-Received-Content-Type response header set by the server endpoint.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_HEAD_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        javax.ws.rs.core.Response response = client
+                          .target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .head();
+        String ct = response.getHeaderString("X-Received-Content-Type");
+        assertEquals("HEAD with set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
+    }
+
+    /**
+     * OPTIONS with set.content.type.for.empty.request=false on InvocationBuilder must NOT send
+     * Content-Type.
+     */
+    @Test
+    public void testSetContentTypeForEmptyRequest_OPTIONS_propertyFalse_onInvocationBuilder(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        Client client = ClientBuilder.newBuilder().build();
+        String ct = client.target("http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/contentTypeCheck")
+                          .request(javax.ws.rs.core.MediaType.TEXT_PLAIN)
+                          .property("set.content.type.for.empty.request", "false")
+                          .method("OPTIONS", String.class);
+        assertEquals("OPTIONS with set.content.type.for.empty.request=false on InvocationBuilder should NOT send Content-Type",
+                     "none", ct);
     }
 }

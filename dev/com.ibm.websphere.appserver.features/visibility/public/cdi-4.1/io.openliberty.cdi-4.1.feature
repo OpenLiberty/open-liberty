@@ -44,7 +44,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.1
   io.openliberty.servlet.api-6.1, \
   com.ibm.websphere.appserver.contextService-1.0, \
   io.openliberty.jakarta.enterpriseBeans-4.0, \
-  io.openliberty.jakarta.persistence-3.2, \
+  io.openliberty.jakarta.persistence-3.2; ibm.tolerates:="4.0", \
   io.openliberty.jakarta.cdi-4.1, \
   io.openliberty.jakarta.xmlWS-4.0, \
   io.openliberty.jakarta.xmlBinding-4.0, \

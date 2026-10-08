@@ -9,9 +9,11 @@
  *******************************************************************************/
 package com.ibm.ws.common.crypto;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,6 +30,28 @@ public class MessageDigestUtils {
 
     private static final TraceComponent tc = Tr.register(MessageDigestUtils.class);
 
+    private static final Base64.Encoder JAVA_BASIC_ENCODER = Base64.getEncoder();
+
+    public enum Base64Option {
+        // Uses the com.ibm.ws.common.encoder.Base64Coder implement to base 64 encode the bytes
+        LIBERTY {
+            @Override
+            String encode(byte[] bytes) {
+                return Base64Coder.base64EncodeToString(bytes);
+            }
+        },
+        // Uses the java.util.Base64.getEncoder() implement to base 64 encode the bytes
+        JAVA_BASIC {
+            @Override
+            String encode(byte[] bytes) {
+                return JAVA_BASIC_ENCODER.encodeToString(bytes);
+            }
+        };
+        // If we ever want to support additional get*Encoder methods on Base64, we would have additional enum options
+
+        abstract String encode(byte[] bytes);
+    };
+
     private static class MessageDigestProcessor {
         private final MessageDigest CLONEABLE_MESSAGE_DIGEST;
         private final String algorithm;
@@ -38,8 +62,17 @@ public class MessageDigestUtils {
             CLONEABLE_MESSAGE_DIGEST = MessageDigest.getInstance(algorithm);
         }
 
-        String getHashedValue(@Sensitive String originalValue) throws NoSuchAlgorithmException {
-            byte[] valueBytes = originalValue.getBytes(StandardCharsets.UTF_8);
+        /**
+         * Converts a String to its hashed value using a MessageDigest.
+         *
+         * @param originalValue String value which may be a password so is marked Sensitive
+         * @param charset       Charset to use to get the bytes
+         * @param base64option  Base 64 encoding option to use
+         * @return
+         * @throws NoSuchAlgorithmException
+         */
+        String getHashedValue(@Sensitive String originalValue, Charset charset, Base64Option base64option) throws NoSuchAlgorithmException {
+            byte[] valueBytes = originalValue.getBytes(charset);
 
             MessageDigest md = getMessageDigest();
 
@@ -49,7 +82,7 @@ public class MessageDigestUtils {
             // MessageDigest is not in a healthy state
             messageDigestPool.put(md);
 
-            return Base64Coder.base64EncodeToString(hashedBytes);
+            return base64option.encode(hashedBytes);
         }
 
         /**
@@ -94,12 +127,31 @@ public class MessageDigestUtils {
      * Converts a String to its hashed value based off of a MessageDigest for the provided
      * algorithm.
      *
+     * This method uses UTF-8 character set to get the bytes from the String that is to be
+     * encoded and uses com.ibm.ws.common.encoder.Base64Coder to convert the encoded bytes
+     * to get the resulting string.
+     *
      * @param originalValue String value which may be a password so is marked Sensitive
      * @param algorithm     MessageDigest algorithm to use
      * @return
      * @throws NoSuchAlgorithmException
      */
     public static String getHashedValue(@Sensitive String originalValue, String algorithm) throws NoSuchAlgorithmException {
+        return getHashedValue(originalValue, algorithm, StandardCharsets.UTF_8, Base64Option.LIBERTY);
+    }
+
+    /**
+     * Converts a String to its hashed value based off of a MessageDigest for the provided
+     * algorithm.
+     *
+     * @param originalValue String value which may be a password so is marked Sensitive
+     * @param algorithm     MessageDigest algorithm to use
+     * @param charset       Charset to use to get the bytes
+     * @param base64option  Base 64 encoding option to use
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    public static String getHashedValue(@Sensitive String originalValue, String algorithm, Charset charset, Base64Option base64option) throws NoSuchAlgorithmException {
         MessageDigestProcessor mdProcessor = messageDigestProcessors.get(algorithm);
 
         if (mdProcessor == null) {
@@ -117,6 +169,6 @@ public class MessageDigestUtils {
             }
         }
 
-        return mdProcessor.getHashedValue(originalValue);
+        return mdProcessor.getHashedValue(originalValue, charset, base64option);
     }
 }

@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: \u0410\u0442\u0440\u0438\u0431\u0443\u0442 ` quiesceTimeout ` \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430 `server` \u043f\u0435\u0440\u0435\u043e\u043f\u0440\u0435\u0434\u0435\u043b\u044f\u0435\u0442 \u0430\u0442\u0440\u0438\u0431\u0443\u0442 ` chainQuiesceTimeout `. \u0421\u0435\u0440\u0432\u0435\u0440 \u0438\u0433\u043d\u043e\u0440\u0438\u0440\u0443\u0435\u0442 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u0430 \u00ab chainQuiesceTimeout \u00bb \u2014 {0} \u0441\u0435\u043a\u0443\u043d\u0434.
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=\u0415\u0441\u043b\u0438 \u0430\u0442\u0440\u0438\u0431\u0443\u0442 ` quiesceTimeout ` \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d \u0432 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0435 `server` \u0432 \u0444\u0430\u0439\u043b\u0435 ` server.xml `, \u043e\u043d \u0438\u043c\u0435\u0435\u0442 \u043f\u0440\u0438\u043e\u0440\u0438\u0442\u0435\u0442 \u043d\u0430\u0434 \u0430\u0442\u0440\u0438\u0431\u0443\u0442\u043e\u043c ` chainQuiesceTimeout ` \u0432 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0435 `channelfw`. \u0421\u0435\u0440\u0432\u0435\u0440 \u0438\u0433\u043d\u043e\u0440\u0438\u0440\u0443\u0435\u0442 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u0430 \u00ab chainQuiesceTimeout \u00bb.
+QUIESCE_TIMEOUT_OVERRIDE.useraction=\u041d\u0438\u043a\u0430\u043a\u0438\u0445 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0439 \u043d\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f. \u0415\u0441\u043b\u0438 \u0432\u044b \u0445\u043e\u0442\u0438\u0442\u0435 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u044c \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u00ab chainQuiesceTimeout \u00bb, \u0443\u0434\u0430\u043b\u0438\u0442\u0435 \u0430\u0442\u0440\u0438\u0431\u0443\u0442 \u00ab quiesceTimeout \u00bb \u0438\u0437 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430 \u00abserver\u00bb.

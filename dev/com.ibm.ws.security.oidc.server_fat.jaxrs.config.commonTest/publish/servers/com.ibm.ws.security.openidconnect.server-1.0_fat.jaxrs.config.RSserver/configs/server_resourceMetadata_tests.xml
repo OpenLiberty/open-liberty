@@ -6,18 +6,14 @@
     http://www.eclipse.org/legal/epl-2.0/
 
     SPDX-License-Identifier: EPL-2.0
-
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 
 <!--
-    RS server configuration for NoOPResourceMetadataNonBetaRSServerTests (non-beta variant).
+    RS server configuration for NoOPResourceMetadataRSServerTest.
 
-    The <protectedResourceMetadata> element in oidcClient_RSResourceMetadata.xml is present
-    in the XML, but the server runs WITHOUT -Dcom.ibm.ws.beta.edition=true so the feature
-    is beta-fenced and the element is ignored at runtime.  The WWW-Authenticate 401 response
-    must therefore NOT contain the resource_metadata parameter.
+    The <protectedResourceMetadata> element in oidcClient_RSResourceMetadata.xml
+    is present and therefore the WWW-Authenticate 401 response MUST contain the
+    resource_metadata parameter per RFC 9728.
  -->
 <server>
     <include location="${server.config.dir}/imports/oidcClientFeatures.xml" />

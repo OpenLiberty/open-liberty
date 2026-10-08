@@ -1,23 +1,11 @@
 /*******************************************************************************
- * Copyright (c) contributors to https://github.com/quarkiverse/quarkus-mcp-server
- * Copyright (c) 2025 IBM Corporation and others
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- * Based on https://github.com/quarkiverse/quarkus-mcp-server/blob/main/core/runtime/src/main/java/io/quarkiverse/mcp/server/ToolArg.java
- * Modifications have been made.
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package io.openliberty.mcp.annotations;
@@ -31,8 +19,23 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.mcpjava.server.tools.ToolArg;
+
 /**
- * Annotates a parameter of a {@linkSchema} method.
+ * Augment the schema used for an object when it is part of a tool argument or structured output.
+ * <p>
+ * All tools have an input schema derived from the types of its tool arguments. Tools with structured content also have an output schema derived from its return type. Generally the
+ * schema is created by looking at the structure of the types and how they are serialized by JSON-B. This annotation allows the created schema for a class to be
+ * {@linkplain #value() overridden} or {@linkplain #description() augmented with a description}.
+ * <p>
+ * This annotation can be placed:
+ * <ul>
+ * <li>on a {@link Tool} method to affect its output schema
+ * <li>on a {@link ToolArg} parameter to affect the input schema for that argument
+ * <li>on a class to affect the schema generated for that class
+ * <li>on a field, setter method or getter method to affect the schema generated for that property (overriding any schema that would have been generated from the type of that
+ * property)
+ * </ul>
  */
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD, METHOD, PARAMETER })
@@ -40,8 +43,18 @@ public @interface Schema {
 
     public final static String UNSET = "<<unset>>";
 
+    /**
+     * Override the schema used for the annotated element
+     *
+     * @return the JSON schema for the annotated element
+     */
     String value() default UNSET;
 
+    /**
+     * Augment the schema used for the annotated element with a description
+     *
+     * @return the description
+     */
     String description() default UNSET;
 
 }

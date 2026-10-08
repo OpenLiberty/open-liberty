@@ -15,7 +15,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -117,5 +119,79 @@ public class BeanLifecycleTest {
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
                    lifecycleMessages, contains(containsString("@PostConstruct ClassTool"), containsString("[LOGGED] Class Tool logged"), containsString("@PreDestroy ClassTool")));
 
+    }
+
+    // Negative Tests
+
+    /**
+     * Verifies that a {@code @Dependent}-scoped bean is not reused across successive tool calls —
+     * each invocation must produce its own {@code @PostConstruct}/{@code @PreDestroy} pair,
+     * in the correct order.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testDependentBeanIsNotReusedAcrossSuccessiveCalls() throws Exception {
+        server.setMarkToEndOfLog();
+
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-1",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "sayHello",
+                            "arguments": {
+                              "name": "First"
+                            }
+                          }
+                        }
+                        """;
+
+        client.callMCP(request);
+
+        String request2 = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "sayHello",
+                            "arguments": {
+                              "name": "Second"
+                            }
+                          }
+                        }
+                        """;
+
+        client.callMCP(request2);
+
+        // Wait for both @PreDestroy events - each call must destroy its own instance
+        long startTime = System.nanoTime();
+        boolean found = false;
+        while (System.nanoTime() - startTime < Duration.ofSeconds(30).toNanos()) {
+            List<String> predestroyMessages = server.findStringsInLogsUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool", server.getDefaultLogFile());
+
+            if (predestroyMessages.size() >= 2) {
+                found = true;
+                break;
+            }
+
+            Thread.sleep(100);
+        }
+        if (!found) {
+            fail("Not found two PreDestroy messages");
+        }
+
+        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
+
+        assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
+                   lifecycleMessages,
+                   contains(containsString("@PostConstruct ClassTool"),
+                            containsString("[LOGGED] Class Tool logged"),
+                            containsString("@PreDestroy ClassTool"),
+                            containsString("@PostConstruct ClassTool"),
+                            containsString("[LOGGED] Class Tool logged"),
+                            containsString("@PreDestroy ClassTool")));
     }
 }

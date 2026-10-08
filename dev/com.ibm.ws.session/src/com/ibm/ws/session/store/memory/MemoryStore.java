@@ -201,6 +201,7 @@ public class MemoryStore implements IStore {
             // lastAccessTime to the create time
             sess.updateLastAccessTime(sess.getCreationTime());
             try {
+                sess.setMaxInactiveInterval((int) _smc.getSessionInvalidationTime());
                 _sessions.put(id, sess);
             } catch (TooManySessionsException tmse) {
                 // could catch this exception if multiple threads get past the

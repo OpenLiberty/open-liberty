@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.classloading.trace.war;
 
+import java.net.URL;
+import java.util.Enumeration;
 import javax.servlet.annotation.WebServlet;
 
 import componenttest.app.FATServlet;
@@ -146,6 +148,135 @@ public class TraceTestServlet extends FATServlet {
     }
 
     /**
+     * Triggers getResource() for a resource that exists in the EAR lib (testLib1.jar).
+     * Expects RESOURCE FOUND trace.
+     */
+    public void testGetResourceFound() {
+        // testLib1.jar is on the classpath; it contains lib1.properties so this path exists
+        URL url = getClass().getClassLoader().getResource(
+                "io/openliberty/classloading/test/resources/lib1.properties");
+        if (url == null) {
+            throw new RuntimeException("Expected resource lib1.properties to be found but getResource() returned null");
+        }
+    }
+
+    /**
+     * Triggers getResource() for a resource that does not exist anywhere on the classpath.
+     * Expects RESOURCE NOT FOUND trace.
+     */
+    public void testGetResourceNotFound() {
+        // deliberately non-existent resource path
+        URL url = getClass().getClassLoader().getResource(
+                "io/openliberty/classloading/nonexistent/NoSuchResource.txt");
+        if (url != null) {
+            throw new RuntimeException("Expected getResource() to return null but got: " + url);
+        }
+    }
+
+    /**
+     * Triggers getResources() for META-INF/MANIFEST.MF which exists in multiple JARs.
+     * Expects RESOURCES FOUND trace listing all locations.
+     */
+    public void testGetResourcesFound() throws java.io.IOException {
+        Enumeration<URL> urls = getClass().getClassLoader().getResources(
+                "META-INF/MANIFEST.MF");
+        if (!urls.hasMoreElements()) {
+            throw new RuntimeException("Expected getResources(META-INF/MANIFEST.MF) to return at least one URL");
+        }
+    }
+
+    /**
+     * Triggers getResources() for a resource that does not exist anywhere on the classpath.
+     * Expects RESOURCES FOUND trace with an empty locations list.
+     */
+    public void testGetResourcesNotFound() throws java.io.IOException {
+        Enumeration<URL> urls = getClass().getClassLoader().getResources(
+                "io/openliberty/classloading/nonexistent/NoSuchResource.txt");
+        if (urls.hasMoreElements()) {
+            throw new RuntimeException("Expected getResources() to return empty enumeration but got results");
+        }
+    }
+    
+
+    /**
+     * Triggers getResource() for api_a1.txt which lives inside the test.bundle.api OSGi
+     * bundle. AppClassLoader delegates to its parent GatewayClassLoader, which finds the
+     * resource in the wired bundle and emits a RESOURCE FOUND trace.
+     */
+    public void testGetBundleResourceFound() {
+        URL url = getClass().getClassLoader().getResource("test/bundle/api1/a/api_a1.txt");
+        if (url == null) {
+            throw new RuntimeException(
+                    "Expected test/bundle/api1/a/api_a1.txt to be found via GatewayClassLoader but getResource() returned null");
+        }
+    }
+
+    /**
+     * Triggers getResources() for api_a1.txt which lives inside the test.bundle.api OSGi
+     * bundle. AppClassLoader delegates to its parent GatewayClassLoader, which finds the
+     * resource in the wired bundle and emits a RESOURCES FOUND trace.
+     * A single URL in the returned enumeration is sufficient to confirm the trace fires.
+     */
+    public void testGetBundleResourcesFound() throws java.io.IOException {
+        Enumeration<URL> urls = getClass().getClassLoader().getResources("test/bundle/api1/a/api_a1.txt");
+        if (!urls.hasMoreElements()) {
+            throw new RuntimeException(
+                    "Expected test/bundle/api1/a/api_a1.txt to be found via GatewayClassLoader.getResources() but got empty enumeration");
+        }
+    }
+
+    /**
+     * Triggers getResource() for lib3.properties, which exists only in testLib3.jar.
+     * When the server wires testLib3.jar as a commonLibraryRef the resource is found
+     * via AppClassLoader.findResourceCommonLibraryClassLoaders(), which emits:
+     *   Resource=[...lib3.properties] found at location=[...] by common library loader;
+     *   classloader=[<libCL>]; delegation path=[<appCL> -> <libCL>]
+     */
+    public void testGetCommonLibResourceFound() {
+        URL url = getClass().getClassLoader().getResource(
+                "io/openliberty/classloading/test/resources/lib3.properties");
+        if (url == null) {
+            throw new RuntimeException(
+                    "Expected lib3.properties to be found via common library loader but getResource() returned null");
+        }
+    }
+
+    /**
+     * Triggers getResources() for lib3.properties, which exists only in testLib3.jar.
+     * When the server wires testLib3.jar as a commonLibraryRef the resource is found
+     * via AppClassLoader.findResourcesCommonLibraryClassLoaders(), which emits:
+     *   Resources=[...lib3.properties] found at locations=[...] by common library loader;
+     *   classloader=[<libCL>]; delegation path=[<appCL> -> <libCL>]
+     */
+    public void testGetCommonLibResourcesFound() throws java.io.IOException {
+        Enumeration<URL> urls = getClass().getClassLoader().getResources(
+                "io/openliberty/classloading/test/resources/lib3.properties");
+        if (!urls.hasMoreElements()) {
+            throw new RuntimeException(
+                    "Expected lib3.properties to be found via common library loader but getResources() returned empty enumeration");
+        }
+    }
+
+    /**
+     * Triggers a load of {@code Lib3}, which exists only in {@code testLib3.jar} wired as an
+     * {@code afterApp} common library delegate.  The EAR classloader cannot find it locally and
+     * delegates to the common library loader, which emits:
+     *   Class=[io.openliberty.classloading.classpath.test.lib3.Lib3] loaded by common library loader;
+     *   classloader=[<libCL>]; delegation path=[<warCL> -> <earCL> -> <libCL>]
+     */
+    public void testLoadCommonLibClass() {
+        try {
+            Class<?> lib3Class = Class.forName("io.openliberty.classloading.classpath.test.lib3.Lib3",
+                                               false, getClass().getClassLoader());
+            if (lib3Class == null) {
+                throw new RuntimeException("Expected Lib3 to be found via common library loader but Class.forName() returned null");
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Expected Lib3 to be found via common library loader but got ClassNotFoundException", e);
+        }
+    }
+
+    /**
      * Test method that attempts to load a class whose bytes are intentionally
      * corrupt (not a valid class file). AppClassLoader.defineClass() will throw
      * ClassFormatError, which triggers the "CLASS FAIL" trace line.
@@ -161,6 +292,23 @@ public class TraceTestServlet extends FATServlet {
         } catch (ClassFormatError expected) {
             // Expected: corrupted bytes cause ClassFormatError
             // A "CLASS FAIL" trace line should have been emitted.
+        }
+    }
+
+    /**
+     * Attempts to load a class that does not exist anywhere on the delegation chain.
+     * AppClassLoader.loadClassInternal() will exhaust all delegates and emit:
+     *   Class=[com.example.nonexistent.NoSuchClass] failed to load; classloader=[...]
+     *
+     * The ClassNotFoundException is caught so the servlet returns HTTP 200
+     * and the FAT test can inspect the trace.
+     */
+    public void testLoadNonExistentClass() {
+        try {
+            Class.forName("com.example.nonexistent.NoSuchClass", false, getClass().getClassLoader());
+        } catch (ClassNotFoundException expected) {
+            // Expected: class does not exist anywhere on the delegation chain.
+            // A "failed to load" trace line should have been emitted.
         }
     }
 }

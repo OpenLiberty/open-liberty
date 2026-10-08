@@ -797,11 +797,14 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         }
 
         try {
-            long length = GenericUtils.asLongValue(value);
+            long length = GenericUtils.asLongValue(value, false);
             // PK24115 - don't allow -1 to be set explicitly
             if (0 > length) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Invalid Content-Length: " + Long.toString(length));
+                }
+                if (null != this.myHSC && this.myHSC.getHttpConfig().isRequestSmugglingProtectionEnabled()) {
+                    this.myHSC.setPersistent(false);
                 }
                 return false;
             }
@@ -832,9 +835,16 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
             this.myContentLength = length;
         } catch (NumberFormatException nfe) {
+            // If the issue is caught in an incoming request, we need to close the connection to avoid possible vulnerabilities
+            if (isIncoming() && null != this.myHSC && this.myHSC.getHttpConfig().isRequestSmugglingProtectionEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setContentLength(b): error parsing value: " + nfe.getMessage());
+                }
+                throw new IllegalArgumentException(nfe);
+            }
             // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Format exception in value");
+                Tr.debug(tc, "Format exception in value, operation will be ignored.");
             }
             return false;
         }
@@ -2955,23 +2965,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 }
             }
 
-            String partitionedValue = cookie.getAttribute("partitioned");
-            // cookie contains the paritioned keyword (set via session / security)
-            if(partitionedValue != null && !partitionedValue.equalsIgnoreCase("false")) {
-                boolean sameSiteIsNotNone = true;
-                if(cookie.getAttribute("samesite") != null) {
-                    sameSiteIsNotNone = !cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
-                }
-                // webAppSecurity or httpSession can set partitioned independently in case channel sets samesite=none. 
-                // if samesite=none is NOT set in channel, then we'll override partitioned to false so it isn't rendered in the cookie. 
-                // our goal is to not render paritioned on disabled/lax/strict cookies
-                if(sameSiteIsNotNone) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Overriding Partitioned to false for SameSite=" + cookie.getAttribute("samesite"));
-                    }
-                    cookie.setAttribute("partitioned", "false");
-                }
-            }
+            CookieUtils.enforcePartitionedPolicy(cookie);
 
             // Check for SameSite=None Incompatible clients
             if (cookie.getAttribute("samesite") != null && cookie.getAttribute("samesite").equals(HttpConfigConstants.SameSite.NONE.getName())) {
@@ -2983,7 +2977,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                     }
                     cookie.setAttribute("samesite", null);
                     // Partitioned should only be included when SameSite=None, so if it is incompatible Partitioned should be removed as well
-                    if (partitionedValue != null) {
+                    if (cookie.getAttribute("partitioned") != null) {
                         cookie.setAttribute("partitioned", null);
                     }
                 }

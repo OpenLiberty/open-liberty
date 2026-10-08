@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,8 +38,6 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import javax.sql.DataSource;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -56,6 +53,7 @@ import io.openliberty.data.internal.Fail;
 import io.openliberty.data.internal.QueryInfo;
 import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.Util;
+import jakarta.data.Order;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.EntityExistsException;
@@ -63,6 +61,7 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Repository;
 import jakarta.data.spi.EntityDefining;
@@ -75,7 +74,6 @@ import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
 
 /**
  * CDI extension to handle the injection of repository implementations
@@ -220,6 +218,7 @@ public class DataExtension implements Extension {
         List<QueryInfo> queriesWithQueryAnno = new ArrayList<>();
         ArrayList<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
         Boolean stateful = null;
+        Set<Class<?>> allAccessorTypes = provider.compat.resourceAccessorTypes(null);
 
         RepositoryProducer<Object> producer = new RepositoryProducer<>( //
                         repositoryInterface, beanMgr, provider, this, //
@@ -232,10 +231,22 @@ public class DataExtension implements Extension {
             // Check for resource accessor methods:
             Class<?> returnType = method.getReturnType();
             if (method.getParameterCount() == 0 &&
-                (EntityManager.class.equals(returnType)
-                 || DataSource.class.equals(returnType)
-                 || Connection.class.equals(returnType))) {
-                // TODO use compat to obtain above types, and identify stateless from EntityAgent type
+                allAccessorTypes.contains(returnType)) {
+                boolean canBeStateful = provider.compat //
+                                .resourceAccessorTypes(true).contains(returnType);
+                boolean canBeStateless = provider.compat //
+                                .resourceAccessorTypes(false).contains(returnType);
+                if (canBeStateless && !canBeStateful)
+                    if (stateful == Boolean.TRUE)
+                        ; // TODO error
+                    else
+                        stateful = false;
+                else if (canBeStateful && !canBeStateless)
+                    if (stateful == Boolean.FALSE)
+                        ; // TODO error
+                    else
+                        stateful = true;
+
                 QueryInfo queryInfo = provider.compat //
                                 .createQueryInfo(producer, //
                                                  repositoryInterface, //
@@ -324,25 +335,27 @@ public class DataExtension implements Extension {
 
                 for (Class<? extends Annotation> statelessAnnoType : provider.compat //
                                 .lifeCycleAnnoTypes(false))
-                    if (method.getAnnotation(statelessAnnoType) != null)
-                        if (stateful == Boolean.TRUE) {
-                            // TODO error
-                        } else {
-                            stateful = false;
-                            possiblyLifeCycleMethod = true;
-                            break;
-                        }
+                    if (method.getAnnotation(statelessAnnoType) != null) {
+                        possiblyLifeCycleMethod = true;
+                        if (!Delete.class.equals(statelessAnnoType))
+                            if (stateful == Boolean.TRUE)
+                                ; // TODO error
+                            else
+                                stateful = false;
+
+                        break;
+                    }
 
                 for (Class<? extends Annotation> statefulAnnoType : provider.compat //
                                 .lifeCycleAnnoTypes(true))
-                    if (method.getAnnotation(statefulAnnoType) != null)
-                        if (stateful == Boolean.FALSE) {
-                            // TODO error
-                        } else {
+                    if (method.getAnnotation(statefulAnnoType) != null) {
+                        possiblyLifeCycleMethod = true;
+                        if (stateful == Boolean.FALSE)
+                            ; // TODO error
+                        else
                             stateful = true;
-                            possiblyLifeCycleMethod = true;
-                            break;
-                        }
+                        break;
+                    }
 
                 for (Class<? extends Annotation> queryAnnoType : provider.compat //
                                 .queryLanguageAnnoTypes())
@@ -357,11 +370,14 @@ public class DataExtension implements Extension {
             // Determine entity class from a lifecycle method parameter:
             if ((possiblyLifeCycleMethod &= method.getParameterCount() == 1)) {
                 Class<?> c = method.getParameterTypes()[0];
-                if (Iterable.class.isAssignableFrom(c) || Stream.class.isAssignableFrom(c)) {
+                if (Iterable.class.isAssignableFrom(c) && c != Order.class ||
+                    Stream.class.isAssignableFrom(c)) {
                     type = method.getGenericParameterTypes()[0];
                     if (type instanceof ParameterizedType) {
-                        Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
-                        if (typeParams.length == 1 && typeParams[0] instanceof Class) // for example, List<Product>
+                        Type[] typeParams = ((ParameterizedType) type) //
+                                        .getActualTypeArguments();
+                        if (typeParams.length == 1 &&
+                            typeParams[0] instanceof Class) // for example, List<Product>
                             c = (Class<?>) typeParams[0];
                         else { // could be a method like BasicRepository.saveAll(Iterable<S> entity)
                             entityParamType = c;
@@ -393,11 +409,19 @@ public class DataExtension implements Extension {
                         Parameter param = method.getParameters()[0];
                         entityParamType = param.getType();
                         for (Annotation anno : param.getAnnotations())
-                            if (anno.annotationType().getPackageName().startsWith("jakarta.data"))
+                            if (anno.annotationType().getPackageName() //
+                                            .startsWith("jakarta.data"))
                                 entityParamType = null;
                         if (entityParamType != null) {
                             entityClass = c;
                             lifecycleMethodEntityClasses.add(c);
+                            // Delayed detection for Delete now that we know it is a
+                            // life cycle method vs a constraint query Delete method
+                            if (method.isAnnotationPresent(Delete.class))
+                                if (stateful == Boolean.TRUE)
+                                    ; // TODO error
+                                else
+                                    stateful = false;
                         }
                     }
                 }
@@ -582,7 +606,7 @@ public class DataExtension implements Extension {
                                                            Object... args) {
         // Avoid logging errors that might be due to server shutdown, and
         // avoid logging various usage errors that are already raised to the
-        // appliaction
+        // application
         if (!FrameworkState.isStopping() &&
             !exceptionType.equals(EmptyResultException.class) &&
             !exceptionType.equals(EntityExistsException.class) &&

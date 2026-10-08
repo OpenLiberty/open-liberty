@@ -15,7 +15,7 @@ package com.ibm.ws.config.xml.internal;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.websphere.kernel.server.ServerElementConfig;
+import com.ibm.ws.runtime.update.ServerElementConfig;
 
 /**
  * Implementation of ServerElementConfig service.
@@ -27,36 +27,17 @@ import com.ibm.websphere.kernel.server.ServerElementConfig;
  */
 @Component(service = ServerElementConfig.class,
            configurationPolicy = ConfigurationPolicy.IGNORE,
+           immediate = true,
            property = { "service.vendor=IBM" })
 public class ServerElementConfigImpl implements ServerElementConfig {
 
-    
-    /**
-     * Singleton instance for direct access within the same bundle.
-     */
-    private static volatile ServerElementConfigImpl instance;
-    
     /**
      * Static reference to ServerXMLConfiguration set by SystemConfiguration.
      * This allows access to the actual configuration values stored in BaseConfiguration.
      * Set once during initialization and never modified.
      */
     private static ServerXMLConfiguration serverXMLConfiguration;
-    
-    /**
-     * DS activation method - sets the singleton instance.
-     */
-    protected void activate() {
-        instance = this;
-    }
-    
-    /**
-     * DS deactivation method - clears the singleton instance.
-     */
-    protected void deactivate() {
-        instance = null;
-    }
-    
+
     /**
      * Set the ServerXMLConfiguration reference. Called by SystemConfiguration.
      *
@@ -65,16 +46,7 @@ public class ServerElementConfigImpl implements ServerElementConfig {
     public static void setServerXMLConfiguration(ServerXMLConfiguration config) {
         serverXMLConfiguration = config;
     }
-    
-    /**
-     * Get the singleton instance for direct access within the same bundle.
-     *
-     * @return the singleton instance, or null if not yet activated
-     */
-    public static ServerElementConfigImpl getInstance() {
-        return instance;
-    }
-    
+
     /**
      * Get the server description from BaseConfiguration.
      *
@@ -91,7 +63,7 @@ public class ServerElementConfigImpl implements ServerElementConfig {
         }
         return null;
     }
-    
+
     /**
      * Get the current quiesce timeout value in milliseconds from BaseConfiguration.
      *
@@ -108,7 +80,7 @@ public class ServerElementConfigImpl implements ServerElementConfig {
         }
         return BaseConfiguration.DEFAULT_QUIESCE_TIMEOUT_MILLIS;
     }
-    
+
     /**
      * Check if the quiesce timeout was explicitly configured in server.xml.
      *

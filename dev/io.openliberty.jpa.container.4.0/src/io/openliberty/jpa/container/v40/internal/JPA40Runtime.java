@@ -91,7 +91,7 @@ public class JPA40Runtime extends JPA20Runtime implements JPARuntime {
         SynchronizationType syncType = unsynchronized ? SynchronizationType.UNSYNCHRONIZED : SynchronizationType.SYNCHRONIZED;
 
         try {
-            return emf.createEntityManager(syncType);
+            return emf.createEntityManager(syncType, (Map<?, ?>) null);
         } catch (AbstractMethodError x) {
             Tr.error(tc, "NOT_COMPLIANT_WITH_JPA21_CWWJP0054E", "EntityManagerFactory", emf.getClass().getName());
             throw x;

@@ -11,7 +11,6 @@ package io.openliberty.transport.http_fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -22,11 +21,11 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +38,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Tests that inbound HTTP/1.1 requests with obsolete line folding are rejected
- * before folded framing headers can create a request-boundary mismatch.
+ * Tests that inbound HTTP/1.1 requests with malformed framing headers 
+ * are rejected to prevent request-boundary ambiguity.
  */
 @RunWith(FATRunner.class)
 public class ObsoleteLineFoldingTest {
@@ -48,8 +47,7 @@ public class ObsoleteLineFoldingTest {
     private static final Logger LOG = Logger.getLogger(ObsoleteLineFoldingTest.class.getName());
     private static final String APP_NAME = "obsFoldApp";
     private static final String SERVLET_PATH = "/" + APP_NAME + "/ObsFoldEchoServlet";
-    private static final String HOST_HEADER_NAME = "obsfold1.example.test";
-    private static final String NETTY_TCP_CLASS_NAME = "io.openliberty.netty.internal.tcp.TCPUtils";
+    private static final String HOST_HEADER_NAME = "malformed-framing.example.test";
     private static final int SOCKET_TIMEOUT_MS = 1000;
     private static boolean runningNetty = false;
 
@@ -63,7 +61,6 @@ public class ObsoleteLineFoldingTest {
         configurePorts();
         server.startServer();
         server.waitForStringInLog("CWWKT0016I:.*" + APP_NAME + ".*");
-        logHttpTransport();
     }
 
     @AfterClass
@@ -71,22 +68,6 @@ public class ObsoleteLineFoldingTest {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
-    }
-
-    private static void logHttpTransport() throws Exception {
-        String tcpChannelMessage = server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint");
-        assertNotNull("The default HTTP endpoint did not start.", tcpChannelMessage);
-        runningNetty = tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);
-        //Next obs-fold fix covers parity for netty and legacy
-        if (runningNetty) {
-            LOG.info("Skipping obs-fold FAT behavior assertions on Netty transport: " + tcpChannelMessage);
-        } else {
-            LOG.info("Running obs-fold FAT on classic HTTP transport: " + tcpChannelMessage);
-        }
-    }
-
-    private static void assumeClassicTransport() {
-        Assume.assumeTrue(!runningNetty);
     }
 
     private static void configurePorts() throws Exception {
@@ -118,53 +99,66 @@ public class ObsoleteLineFoldingTest {
 
     @Test
     public void rejectsFoldedContentLength() throws Exception {
-        assumeClassicTransport();
-
-        String marker = "smuggled=fix1-cl";
-        String smuggledRequest = smuggledGetRequest(marker);
+        String marker = "probe=fix1-cl";
+        String secondaryRequest = secondaryGetRequest(marker);
         String request = "GET " + SERVLET_PATH + " HTTP/1.1\r\n" +
-                         "Host: " + hostHeader() + "\r\n" +
-                         "Content-Length:\r\n" +
-                         " " + smuggledRequest.getBytes(StandardCharsets.ISO_8859_1).length + "\r\n" +
-                         "Connection: keep-alive\r\n" +
-                         "\r\n" +
-                         smuggledRequest;
+                "Host: " + hostHeader() + "\r\n" +
+                "Content-Length:\r\n" +
+                " " + secondaryRequest.getBytes(StandardCharsets.ISO_8859_1).length + "\r\n" +
+                "Connection: keep-alive\r\n" +
+                "\r\n" +
+                secondaryRequest;
 
-        assertRejectedWithoutSmuggledResponse(request, marker);
+        assertMalformedRequestRejected(request, marker);
     }
 
     @Test
-    public void rejectsFoldedTransferEncodingContinuation() throws Exception {
-        assumeClassicTransport();
-
-        String marker = "smuggled=fix1-te";
+    public void rejectsFoldedTransferEncodingContinuationWithContentLength() throws Exception {
+        String marker = "probe=fix1-te";
         String request = "POST " + SERVLET_PATH + " HTTP/1.1\r\n" +
-                         "Host: " + hostHeader() + "\r\n" +
-                         "Transfer-Encoding: identity\r\n" +
-                         " ,chunked\r\n" +
-                         "Content-Length: 5\r\n" +
-                         "Connection: keep-alive\r\n" +
-                         "\r\n" +
-                         "0\r\n\r\n" +
-                         smuggledGetRequest(marker);
+                "Host: " + hostHeader() + "\r\n" +
+                "Transfer-Encoding: identity\r\n" +
+                " ,chunked\r\n" +
+                "Content-Length: 5\r\n" +
+                "Connection: keep-alive\r\n" +
+                "\r\n" +
+                "0\r\n\r\n" +
+                secondaryGetRequest(marker);
 
-        assertRejectedWithoutSmuggledResponse(request, marker);
+        assertMalformedRequestRejected(request, marker);
     }
 
-    private static void assertRejectedWithoutSmuggledResponse(String request, String marker) throws Exception {
-        String response = sendRawRequest(request);
+    @Test
+    public void rejectsContentLengthWithMalformedTransferEncoding() throws Exception {
+        String marker = "probe=fix2-tecl";
+        String request = "GET " + SERVLET_PATH + " HTTP/1.1\r\n" +
+                         "Host: " + hostHeader() + "\r\n" +
+                         "Content-Length: 0\r\n" +
+                         "Transfer-Encoding: ,chunked\t\r\n" +
+                         "Connection: keep-alive\r\n" +
+                         "\r\n" +
+                         secondaryGetRequest(marker);
+
+        assertMalformedRequestRejected(request, marker);
+    }
+
+    private static void assertMalformedRequestRejected(String request, String marker) throws Exception {
+        RawHttpExchange exchange = sendRawRequest(request);
+        String response = exchange.getResponse();
         LOG.info("Raw response for " + marker + ":\n" + response);
 
         List<String> statusLines = statusLines(response);
-        assertEquals("Expected a single HTTP response for malformed obs-fold request. Response was:\n" + response,
-                     1, statusLines.size());
-        assertTrue("Expected HTTP 400 for malformed obs-fold request. Status lines were: " + statusLines,
-                   statusLines.get(0).startsWith("HTTP/1.1 400"));
-        assertFalse("Smuggled request marker must not be processed. Response was:\n" + response,
-                    response.contains(marker));
+        assertEquals("Expected a single HTTP response for malformed framing request. Response was:\n" + response,
+                1, statusLines.size());
+        assertTrue("Expected HTTP 400 for malformed framing request. Status lines were: " + statusLines,
+                statusLines.get(0).startsWith("HTTP/1.1 400"));
+        assertFalse("Malformed request marker must not be processed. Response was:\n" + response,
+                response.contains(marker));
+        assertTrue("Malformed framing request should result in a closed connection. Response was:\n" + response,
+                   exchange.isClosedByServer() || hasConnectionCloseHeader(response));
     }
 
-    private static String sendRawRequest(String request) throws Exception {
+    private static RawHttpExchange sendRawRequest(String request) throws Exception {
         try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
             socket.setSoTimeout(SOCKET_TIMEOUT_MS);
 
@@ -174,11 +168,13 @@ public class ObsoleteLineFoldingTest {
 
             InputStream in = socket.getInputStream();
             ByteArrayOutputStream response = new ByteArrayOutputStream();
+            boolean closedByServer = false;
             byte[] buffer = new byte[4096];
             while (true) {
                 try {
                     int read = in.read(buffer);
                     if (read < 0) {
+                        closedByServer = true;
                         break;
                     }
                     response.write(buffer, 0, read);
@@ -186,15 +182,43 @@ public class ObsoleteLineFoldingTest {
                     break;
                 }
             }
-            return response.toString(StandardCharsets.ISO_8859_1.name());
+            return new RawHttpExchange(response.toString(StandardCharsets.ISO_8859_1.name()), closedByServer);
         }
     }
 
-    private static String smuggledGetRequest(String marker) throws Exception {
+    private static boolean hasConnectionCloseHeader(String response) {
+        String[] lines = response.split("\\r?\\n");
+        for (String line : lines) {
+            if (line.toLowerCase(Locale.ENGLISH).startsWith("connection:") && line.toLowerCase(Locale.ENGLISH).contains("close")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static final class RawHttpExchange {
+        private final String response;
+        private final boolean closedByServer;
+
+        RawHttpExchange(String response, boolean closedByServer) {
+            this.response = response;
+            this.closedByServer = closedByServer;
+        }
+
+        String getResponse() {
+            return response;
+        }
+
+        boolean isClosedByServer() {
+            return closedByServer;
+        }
+    }
+
+    private static String secondaryGetRequest(String marker) {
         return "GET " + SERVLET_PATH + "?" + marker + " HTTP/1.1\r\n" +
-               "Host: " + hostHeader() + "\r\n" +
-               "Connection: close\r\n" +
-               "\r\n";
+                "Host: " + hostHeader() + "\r\n" +
+                "Connection: close\r\n" +
+                "\r\n";
     }
 
     private static String hostHeader() {

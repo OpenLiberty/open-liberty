@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.rest.handler.helper.ServletRESTRequestImpl;
 import com.ibm.ws.rest.handler.helper.ServletRESTResponseImpl;
 import com.ibm.wsspi.rest.handler.RESTHandlerContainer;
@@ -73,6 +74,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
      * @param request The HttpServletRequest from which we'll get the OSGi BundleContext
      * @throws ServletException When the RESTHandlerContainer service is unavailable
      */
+    @FFDCIgnore(IllegalStateException.class)
     private synchronized void getAndSetRESTHandlerContainer(HttpServletRequest request) throws ServletException {
         if (REST_HANDLER_CONTAINER == null) {
             // Get the bundle context
@@ -86,8 +88,14 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
                 throw new ServletException("OSGi service RESTHandlerContainer is not available.");
             } else {
                 REST_HANDLER_CONTAINER = ctxt.getService(ref);
-                // generate initial session metrics
-                request.getSession();
+                // generate initial session metrics - guard against an already-invalidated
+                // session on the triggering request (the container has been successfully
+                // initialised above so we must not let this throw)
+                try {
+                    request.getSession();
+                } catch (IllegalStateException e) {
+                    // session was invalidated before we could use it; safe to ignore
+                }
             }
         }
     }

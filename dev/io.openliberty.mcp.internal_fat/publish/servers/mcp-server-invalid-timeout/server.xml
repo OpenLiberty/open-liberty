@@ -13,7 +13,6 @@
   	 </application>
     
     <include location="../fatTestPorts.xml"/>
-    <mpMetrics authentication="false"/>
 </server>
 
 <!-- Made with Bob -->

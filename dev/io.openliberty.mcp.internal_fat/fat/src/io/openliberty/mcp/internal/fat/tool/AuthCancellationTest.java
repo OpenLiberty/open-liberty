@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Callable;
@@ -62,6 +63,9 @@ public class AuthCancellationTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
         server.startServer();
+        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        // Wait for LTPA configuration to be ready
+        server.waitForLTPAConfigReady();
 
         executor = Executors.newSingleThreadExecutor();
     }
@@ -184,7 +188,7 @@ public class AuthCancellationTest extends FATServletClient {
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
                                         """;
 
-        String responseA = futureA.get(10, TimeUnit.SECONDS);
+        String responseA = futureA.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
     }

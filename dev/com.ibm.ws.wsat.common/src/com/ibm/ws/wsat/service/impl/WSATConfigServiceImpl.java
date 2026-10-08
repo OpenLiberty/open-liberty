@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.wsat.service.impl;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.xml.soap.SOAPException;
@@ -27,6 +28,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,6 +41,7 @@ import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
            immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -64,15 +68,23 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
     private static final String HTTPCONFIGSERVICE_REFERENCE_NAME = "httpOptions";
     private static final String WSATHANDLERSERVICE_REFERENCE_NAME = "handler";
+    private static final String VARIABLEREGISTRY_REFERENCE_NAME = "variableRegistry";
 
     private static final AtomicServiceReference<VirtualHost> httpOptions = new AtomicServiceReference<VirtualHost>(HTTPCONFIGSERVICE_REFERENCE_NAME);
     private static final AtomicServiceReference<Handler> handlerService = new AtomicServiceReference<Handler>(WSATHANDLERSERVICE_REFERENCE_NAME);
+    private static final AtomicServiceReference<VariableRegistry> variableRegistryRef = new AtomicServiceReference<VariableRegistry>(VARIABLEREGISTRY_REFERENCE_NAME);
 
     private boolean enabled;
     private String sslId;
     private String proxy;
     private long asyncResponseTimeout;
     private boolean clientAuth;
+    private String configuredVirtualHostId = "default_host";
+    private ServiceReference<VirtualHost> configuredVirtualHostRef = null;
+    // The actual VirtualHost service instance for the configured non-default virtual host.
+    // Obtained via BundleContext.getService() (not locateService) so it works regardless
+    // of whether the reference was DS-bound. Null when using default_host.
+    private VirtualHost configuredVirtualHost = null;
 
     private static WSATConfigService INSTANCE;
 
@@ -93,13 +105,27 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     }
 
     @Reference(name = HTTPCONFIGSERVICE_REFERENCE_NAME, service = VirtualHost.class,
-               target = "(&(enabled=true)(id=default_host))")
+               target = "(&(enabled=true)(id=default_host))",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC)
     protected void setHttpOptions(ServiceReference<VirtualHost> ref) {
         httpOptions.setReference(ref);
     }
 
     protected void unsetHttpOptions(ServiceReference<VirtualHost> ref) {
         httpOptions.unsetReference(ref);
+    }
+
+    @Reference(name = VARIABLEREGISTRY_REFERENCE_NAME,
+               service = VariableRegistry.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC)
+    protected void setVariableRegistry(ServiceReference<VariableRegistry> ref) {
+        variableRegistryRef.setReference(ref);
+    }
+
+    protected void unsetVariableRegistry(ServiceReference<VariableRegistry> ref) {
+        variableRegistryRef.unsetReference(ref);
     }
 
     /*
@@ -132,13 +158,72 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
+        // Remove the variable from VariableRegistry on deactivation
+        unregisterVirtualHostVariable();
+
+        // Release the directly-obtained VirtualHost service
+        if (configuredVirtualHostRef != null) {
+            cc.getBundleContext().ungetService(configuredVirtualHostRef);
+            configuredVirtualHostRef = null;
+            configuredVirtualHost = null;
+        }
+
         httpOptions.deactivate(cc);
+        variableRegistryRef.deactivate(cc);
     }
 
     @Modified
     protected void modified(ComponentContext cc, Map<String, Object> properties) throws SOAPException {
         httpOptions.activate(cc);
         handlerService.activate(cc);
+        variableRegistryRef.activate(cc);
+
+        // Read the configured virtual host reference from server.xml
+        String virtualHostRef = (String) properties.get("virtualHostRef");
+        if (virtualHostRef == null || virtualHostRef.isEmpty()) {
+            virtualHostRef = "default_host";  // Use default if not configured
+        }
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "Configured virtual host: {0}", virtualHostRef);
+        }
+
+        // Register the virtual host variable for WABInstaller to resolve
+        registerVirtualHostVariable(virtualHostRef);
+
+        // If the configured virtual host has changed, resolve the new VirtualHost service
+        // directly via BundleContext.getService() so getWSATUrl() can use it without going
+        // through AtomicServiceReference (which requires a DS-bound reference to work).
+        if (!virtualHostRef.equals(configuredVirtualHostId)) {
+            configuredVirtualHostId = virtualHostRef;
+
+            // Release the previously-held service, if any
+            if (configuredVirtualHostRef != null) {
+                cc.getBundleContext().ungetService(configuredVirtualHostRef);
+                configuredVirtualHostRef = null;
+                configuredVirtualHost = null;
+            }
+
+            if (!"default_host".equals(virtualHostRef)) {
+                ServiceReference<VirtualHost> newRef = lookupVirtualHost(cc, virtualHostRef);
+                if (newRef != null) {
+                    VirtualHost vh = cc.getBundleContext().getService(newRef);
+                    if (vh != null) {
+                        configuredVirtualHostRef = newRef;
+                        configuredVirtualHost = vh;
+                        if (TC.isDebugEnabled()) {
+                            Tr.debug(TC, "Updated to use virtual host: {0}", virtualHostRef);
+                        }
+                    } else {
+                        Tr.warning(TC, "Configured virtual host {0} could not be resolved, using default_host", virtualHostRef);
+                        configuredVirtualHostId = "default_host";
+                    }
+                } else {
+                    Tr.warning(TC, "Configured virtual host {0} not found, using default_host", virtualHostRef);
+                    configuredVirtualHostId = "default_host";
+                }
+            }
+        }
 
         enabled = (Boolean) properties.get(SSLEnabled);
         sslId = (String) properties.get(SSLRef);
@@ -202,6 +287,38 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         setEndpoints(handlerService.getService(), host);
     }
 
+    /**
+     * Look up a VirtualHost service by its ID.
+     *
+     * @param cc ComponentContext for accessing OSGi services
+     * @param virtualHostId The ID of the virtual host to look up
+     * @return ServiceReference to the VirtualHost, or null if not found
+     */
+    private ServiceReference<VirtualHost> lookupVirtualHost(ComponentContext cc, String virtualHostId) {
+        try {
+            String filter = "(&(enabled=true)(id=" + virtualHostId + "))";
+            Collection<ServiceReference<VirtualHost>> refs =
+                cc.getBundleContext().getServiceReferences(VirtualHost.class, filter);
+            
+            if (refs != null && !refs.isEmpty()) {
+                ServiceReference<VirtualHost> ref = refs.iterator().next();
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Found VirtualHost service for id={0}", virtualHostId);
+                }
+                return ref;
+            } else {
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "No VirtualHost service found for id={0}", virtualHostId);
+                }
+            }
+        } catch (Exception e) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Exception looking up VirtualHost for id={0}: {1}", virtualHostId, e);
+            }
+        }
+        return null;
+    }
+
     public void setEndpoints(Handler handler, String host) {
 
         String regHost = host
@@ -245,6 +362,11 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     public String getWSATUrl() {
         if (proxy != null && proxy.length() > 0)
             return proxy + WSATContextRoot;
+        else if (configuredVirtualHost != null)
+            // Use the directly-obtained VirtualHost instance for the configured virtual host.
+            // This bypasses AtomicServiceReference.getService() which requires a DS-bound
+            // reference and would always return the default_host VirtualHost otherwise.
+            return configuredVirtualHost.getUrlString(WSATContextRoot, enabled);
         else
             return httpOptions.getService().getUrlString(WSATContextRoot, enabled);
     }
@@ -258,5 +380,51 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     @Trivial
     public boolean isClientAuthEnabled() {
         return clientAuth;
+    }
+
+    /**
+     * Register the WS-AT virtual host variable in the VariableRegistry.
+     * This allows the WABInstaller to resolve ${wsat.webservice.virtualHostRef}
+     * when deploying the WS-AT web service bundle.
+     *
+     * @param virtualHostRef The virtual host ID to register (may be null or empty)
+     */
+    private void registerVirtualHostVariable(String virtualHostRef) {
+        VariableRegistry varReg = variableRegistryRef.getService();
+        if (varReg != null) {
+            // Ensure we always register a valid value - default to "default_host" if not configured
+            // This ensures the web container binding and URL construction stay in sync
+            String vhostToRegister = (virtualHostRef != null && !virtualHostRef.trim().isEmpty())
+                ? virtualHostRef
+                : "default_host";
+            
+            // Use WS-AT-specific variable name to avoid conflicts
+            varReg.addVariable("wsat.webservice.virtualHostRef", vhostToRegister);
+            
+            if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled()) {
+                Tr.debug(TC, "Registered variable: wsat.webservice.virtualHostRef=" + vhostToRegister);
+            }
+        } else {
+            // VariableRegistry not available - log debug message
+            // WABInstaller will use default_host if variable can't be resolved
+            if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled()) {
+                Tr.debug(TC, "VariableRegistry not available, cannot register wsat.webservice.virtualHostRef");
+            }
+        }
+    }
+
+    /**
+     * Remove the WS-AT virtual host variable from the VariableRegistry.
+     * Called during component deactivation to clean up.
+     */
+    private void unregisterVirtualHostVariable() {
+        VariableRegistry varReg = variableRegistryRef.getService();
+        if (varReg != null) {
+            varReg.removeVariable("wsat.webservice.virtualHostRef");
+            
+            if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled()) {
+                Tr.debug(TC, "Removed variable: wsat.webservice.virtualHostRef");
+            }
+        }
     }
 }

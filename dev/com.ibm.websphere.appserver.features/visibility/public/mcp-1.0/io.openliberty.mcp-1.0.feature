@@ -26,7 +26,7 @@ Subsystem-Name: Model Context Protocol 1.0
  io.openliberty.org.mcpjava.mcp-server-api; location:="dev/api/stable/,lib/"; mavenCoordinates="org.mcpjava:mcp-server-api:1.0.0", \
  io.openliberty.org.mcpjava.mcp-server-api.fragment
 -files=dev/api/ibm/javadoc/io.openliberty.mcp_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

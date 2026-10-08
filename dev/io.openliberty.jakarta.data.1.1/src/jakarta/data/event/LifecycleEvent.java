@@ -13,6 +13,7 @@
 package jakarta.data.event;
 
 import jakarta.annotation.Nonnull;
+import jakarta.data.messages.Messages;
 
 public abstract class LifecycleEvent<E> {
 
@@ -20,6 +21,7 @@ public abstract class LifecycleEvent<E> {
     private final E entityInstance;
 
     public LifecycleEvent(@Nonnull E entity) {
+        Messages.requireNonNull(entity, "entity");
         entityInstance = entity;
     }
 

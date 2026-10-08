@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 ZOSAIO_DEACTIVATED=CWWKO0230I: Dezaktywowano obs\u0142ug\u0119 rodzimych asynchronicznych we/wy dla systemu z/OS.
 ZOSAIO_DEACTIVATED.explanation=Dezaktywowano asynchroniczne we/wy gniazd TCP/IP dla serwera Liberty (AsyncIO) w systemie z/OS udost\u0119pniaj\u0105ce podstawowe mo\u017cliwo\u015bci pakietu asynchronicznych we/wy na poziomie systemu operacyjnego.
 ZOSAIO_DEACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: Obs\u0142uga kana\u0142u {0} Netty zosta\u0142a usuni\u0119ta z aktywnego potoku po\u0142\u0105cze\u0144.
+netty.handler.removed.from.pipeline.explanation=Obs\u0142uga kana\u0142u typu \u201e Netty \u201d, niezb\u0119dna do prawid\u0142owego dzia\u0142ania po\u0142\u0105czenia, zosta\u0142a nieoczekiwanie usuni\u0119ta, gdy kana\u0142 by\u0142 aktywny.
+netty.handler.removed.from.pipeline.useraction=Je\u015bli ten komunikat nadal si\u0119 pojawia, nale\u017cy zebra\u0107 informacje diagnostyczne i skontaktowa\u0107 si\u0119 z pomoc\u0105 techniczn\u0105 serwisu IBM.
+
+read.timeout=CWWKO1713W: Wyst\u0105pi\u0142 limit czasu podczas operacji odczytu z serwisu HTTP : {0}
+read.timeout.explanation=Wchodz\u0105ce po\u0142\u0105czenie typu \u201e HTTP \u201d nie otrzyma\u0142o danych w ci\u0105gu skonfigurowanego limitu czasu odczytu.
+read.timeout.useraction=Sprawd\u017a po\u0142\u0105czenie sieciowe lub zwi\u0119ksz warto\u015b\u0107 limitu czasu odczytu w konfiguracji punktu ko\u0144cowego HTTP.
+
+write.timeout=CWWKO1714W: Wyst\u0105pi\u0142 limit czasu operacji zapisu w us\u0142udze \u201e HTTP \u201d: {0}
+write.timeout.explanation=Operacja zapisu wychodz\u0105cego HTTP nie zosta\u0142a zako\u0144czona w ci\u0105gu skonfigurowanego limitu czasu zapisu.
+write.timeout.useraction=Sprawd\u017a po\u0142\u0105czenie sieciowe lub zwi\u0119ksz warto\u015b\u0107 limitu czasu zapisu w konfiguracji punktu ko\u0144cowego HTTP.
+
+h2.idle.timeout=CWWKO1715W: Po\u0142\u0105czenie z serwerem HTTP/2 zosta\u0142o zamkni\u0119te z powodu przekroczenia limitu czasu bezczynno\u015bci: {0}
+h2.idle.timeout.explanation=Po\u0142\u0105czenie z serwerem HTTP/2 pozostawa\u0142o nieaktywne d\u0142u\u017cej ni\u017c wynosi\u0142 skonfigurowany limit czasu bezczynno\u015bci, wi\u0119c serwer zamkn\u0105\u0142 to po\u0142\u0105czenie.
+h2.idle.timeout.useraction=Sprawd\u017a po\u0142\u0105czenie sieciowe lub zwi\u0119ksz warto\u015b\u0107 limitu czasu bezczynno\u015bci po\u0142\u0105czenia HTTP/2 w konfiguracji punktu ko\u0144cowego HTTP.

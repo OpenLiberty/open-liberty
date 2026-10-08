@@ -105,10 +105,12 @@ public interface OidcClientConfig extends ConvergedClientConfig {
     public List<String> getProtectedResourceMetadataAdvertisedScopes();
 
     /**
-     * Get the JWT builder reference for the protected resource metadata.
+     * Get the user-facing JWT builder id for the protected resource metadata.
+     * This is the {@code id} attribute value from {@code <jwtBuilder id="..."/>},
+     * resolved from the OSGi PID.
      *
-     * @return The JWT builder reference ID, or null if not configured
+     * @return The user-facing JWT builder id, or null if not configured or unresolvable
      */
-    public String getProtectedResourceMetadataJwtBuilderRef();
+    public String getProtectedResourceMetadataJwtBuilderId();
 
 }

@@ -371,6 +371,59 @@ public class PluginUtilityMergeTest {
         Log.exiting(c, methodName);
     }
 
+    /**
+     * Tests that pluginUtility merge completes successfully when one of the input plugin-cfg.xml
+     * files was generated while the server's httpEndpoint listeners were paused.
+     * <p>
+     * A paused-endpoint plugin-cfg.xml contains {@code <UriGroup>} and {@code <Route>} elements
+     * but no {@code <ServerCluster>} element (only the comment
+     * {@code <!-- The configured endpoint could not be found. httpEndpointRef=defaultHttpEndpoint-->}).
+     * Prior to the fix, this caused a {@code NullPointerException} in
+     * {@code PluginMergeToolImpl$PluginInfo.<init>} and the merge was aborted.
+     * After the fix, the paused server's entries are skipped with an informational message and the
+     * merge completes using only the data from the healthy input file.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPluginUtilityMergePausedEndpoint() throws Exception {
+        final String methodName = "testPluginUtilityMergePausedEndpoint";
+        Log.entering(c, methodName);
+
+        Path sourceDir = Paths.get(PluginUtilityEndpointMergeTest.pathToAutoFVTTestFiles,
+                                   "paused-endpoint", "source");
+        Path workDir = Paths.get("paused-endpoint-test");
+        Path mergedFile = workDir.resolve(MERGED_PLUGIN_CFG_FILENAME);
+
+        Files.createDirectories(workDir);
+        try {
+            ProgramOutput po = machine.execute(defaultServerInstallRoot + "/bin/pluginUtility",
+                    new String[] { "merge",
+                            "--sourcePath=" + sourceDir.toAbsolutePath().toString()
+                    }, workDir.toAbsolutePath().toString());
+
+            Log.info(c, methodName, "merge result:\n" + po.getStdout());
+
+            // Merge must complete without error despite the paused-endpoint file
+            assertEquals("pluginUtility merge should complete with return code 0 for the paused-endpoint scenario.",
+                         0, po.getReturnCode());
+            assertTrue("merged-plugin-cfg.xml was not created in " + workDir.toAbsolutePath(),
+                       Files.exists(mergedFile));
+
+            // The merged output must contain srv01's cluster and must not contain any srv02 element
+            String mergedContent = new String(Files.readAllBytes(mergedFile));
+            assertTrue("Merged output should contain srv01's ServerCluster",
+                       mergedContent.contains("srv01_default_node_Cluster"));
+            assertFalse("Merged output must not contain srv02's ServerCluster — paused-endpoint entries should be skipped",
+                        mergedContent.contains("srv02_default_node_Cluster"));
+        } finally {
+            Files.deleteIfExists(mergedFile);
+            workDir.toFile().delete();
+        }
+
+        Log.exiting(c, methodName);
+    }
+
     private List<String> readLines(String filename) {
         List<String> lines = new ArrayList<>();
         try (Stream<String> stream = Files.lines(Paths.get(filename))) {

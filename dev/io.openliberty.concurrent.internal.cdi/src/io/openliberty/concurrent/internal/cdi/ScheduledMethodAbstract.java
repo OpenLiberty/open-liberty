@@ -24,7 +24,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -35,8 +37,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
-
-import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 /**
  * A task that can be scheduled to run a method at the appropriate time.
@@ -54,6 +54,8 @@ public abstract class ScheduledMethodAbstract implements //
     private final ThreadContextDescriptor contextDescriptor;
     public final CompletableFuture<Object> future;
     protected final Method method;
+    protected final AtomicReference<Future<?>> nextExecutionFuture = //
+                    new AtomicReference<>();
     private long nextExecutionSkipIfLateBySeconds;
     private ZonedDateTime nextExecutionTime;
     private final List<Long> skipIfLateBySeconds;
@@ -78,16 +80,14 @@ public abstract class ScheduledMethodAbstract implements //
                                       List<ScheduleCronTrigger> triggers,
                                       List<Long> skipIfLateBySeconds) {
         this.contextDescriptor = contextDescriptor;
-        this.future = ((ManagedExecutorService) managedExecutor).newIncompleteFuture();
+        this.future = managedExecutor.newScheduledMethod(method,
+                                                         nextExecutionFuture);
         this.method = method;
         this.skipIfLateBySeconds = skipIfLateBySeconds;
         this.triggers = triggers;
         this.virtualThreadExecutor = managedExecutor //
                         .getNormalPolicyExecutor() //
                         .getVirtualThreadExecutor();
-
-        ConcurrencyExtensionMetadata.scheduledExecutor //
-                        .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
     }
 
     /**
@@ -117,9 +117,13 @@ public abstract class ScheduledMethodAbstract implements //
                                ChronoUnit.SECONDS);
         if (secondsLate > nextExecutionSkipIfLateBySeconds) {
             try {
-                long delayNanos = computeDelayNanos();
-                ConcurrencyExtensionMetadata.scheduledExecutor //
-                                .schedule(this, delayNanos, TimeUnit.NANOSECONDS);
+                Future<?> nextExecFuture = ConcurrencyExtensionMetadata //
+                                .scheduledExecutor.schedule(this, //
+                                                            computeDelayNanos(), //
+                                                            TimeUnit.NANOSECONDS);
+                nextExecutionFuture.set(nextExecFuture);
+                if (future.isCancelled())
+                    nextExecFuture.cancel(true);
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "call: skip because late by " + secondsLate +
                                       " seconds");
@@ -155,8 +159,12 @@ public abstract class ScheduledMethodAbstract implements //
                 if (failure.getCause() != null)
                     failure = failure.getCause();
             }
+            // TODO application can also raise types of RuntimeException
             if (!appException)
                 FFDCFilter.processException(x, getClass().getName(), "183", this);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "exception from scheduled method", x);
         } finally {
             try {
                 if (contextApplied != null)
@@ -164,16 +172,29 @@ public abstract class ScheduledMethodAbstract implements //
             } catch (RuntimeException x) {
                 failure = x;
             } finally {
-                if (failure != null)
+                if (failure != null) {
                     future.completeExceptionally(failure);
+                    // TODO NLS
+                    System.out.println("The " + method.getName() +
+                                       " scheduled method of the " +
+                                       method.getDeclaringClass().getName() +
+                                       " CDI managed bean failed due to an error" +
+                                       " and will not run again. The error is: " +
+                                       failure);
+                }
             }
         }
 
         if (!future.isDone())
             if (cs == null)
                 try { // reschedule next execution
-                    ConcurrencyExtensionMetadata.scheduledExecutor //
-                                    .schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
+                    Future<?> nextExecFuture = ConcurrencyExtensionMetadata //
+                                    .scheduledExecutor.schedule(this, //
+                                                                computeDelayNanos(), //
+                                                                TimeUnit.NANOSECONDS);
+                    nextExecutionFuture.set(nextExecFuture);
+                    if (future.isCancelled())
+                        nextExecFuture.cancel(true);
                 } catch (Exception x) {
                     future.completeExceptionally(x);
                 }
@@ -209,7 +230,7 @@ public abstract class ScheduledMethodAbstract implements //
      * @return nanoseconds until the next execution.
      */
     @Trivial
-    long computeDelayNanos() {
+    public long computeDelayNanos() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "computeDelayNanos");

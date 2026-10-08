@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: L''attribut \u00ab quiesceTimeout \u00bb de l''\u00e9l\u00e9ment \u00ab server \u00bb remplace l''attribut \u00ab chainQuiesceTimeout \u00bb. Le serveur ignore la valeur configur\u00e9e pour \u00ab chainQuiesceTimeout \u00bb, qui est de {0} secondes.
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=Lorsque l'attribut \u00ab quiesceTimeout \u00bb est configur\u00e9 sur l'\u00e9l\u00e9ment \u00ab server \u00bb dans le fichier \u00ab server.xml \u00bb, cet attribut pr\u00e9vaut sur l'attribut \u00ab chainQuiesceTimeout \u00bb de l'\u00e9l\u00e9ment \u00ab channelfw \u00bb. Le serveur ignore la valeur \u00ab chainQuiesceTimeout \u00bb.
+QUIESCE_TIMEOUT_OVERRIDE.useraction=Aucune action n'est requise. Si vous souhaitez utiliser la valeur \u00ab chainQuiesceTimeout \u00bb, supprimez l'attribut \u00ab quiesceTimeout \u00bb de l'\u00e9l\u00e9ment \u00ab server \u00bb.

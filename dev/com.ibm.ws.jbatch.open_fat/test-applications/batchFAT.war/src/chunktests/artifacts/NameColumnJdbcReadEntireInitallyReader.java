@@ -39,7 +39,7 @@ public class NameColumnJdbcReadEntireInitallyReader implements ItemReader {
     DataSource ds = null;
     boolean readYet = false;
 
-    private String query = "SELECT name FROM intable";
+    private String query = "SELECT name FROM APP.INTABLE";
     private String adjustedQuery;
 
     @Inject
@@ -64,7 +64,7 @@ public class NameColumnJdbcReadEntireInitallyReader implements ItemReader {
     }
 
     private Connection getConnection() throws Exception {
-        return ds.getConnection("app", "app");
+        return ds.getConnection("user", "pass");
     }
 
     @Override

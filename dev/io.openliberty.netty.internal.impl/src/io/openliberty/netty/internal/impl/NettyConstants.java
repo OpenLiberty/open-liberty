@@ -14,8 +14,10 @@ public interface NettyConstants {
     /** RAS trace bundle for NLS */
     String BASE_BUNDLE = "io.openliberty.netty.internal.impl.resources.NettyFrameworkMessages";
     String CF_BUNDLE = "com.ibm.ws.channelfw.internal.resources.ChannelfwMessages";
-    /** RAS trace group name */
+    String TCP_BUNDLE = "com.ibm.ws.tcpchannel.internal.resources.TCPChannelMessages";
+    /** RAS trace group names */
     String NETTY_TRACE_NAME = "Netty";
+    String TCP_TRACE_NAME = "TCPChannel";
     /** default trace string */
     String NETTY_TRACE_STRING = "io.netty*=all:io.openliberty.netty*=all";
     /** INADDR_ANY host */

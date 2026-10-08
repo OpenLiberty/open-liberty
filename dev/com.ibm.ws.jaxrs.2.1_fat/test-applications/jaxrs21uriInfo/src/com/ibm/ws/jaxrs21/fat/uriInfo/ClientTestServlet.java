@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,35 @@ public class ClientTestServlet extends FATServlet {
     @After
     private void teardown() {
         client.close();
+    }
+
+    /**
+     * strips the leading '/' from UriInfo.getPath().
+     */
+    @Test
+    public void testGetPathNoLeadingSlashOnCXF() throws Exception {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                                  .path("resources/test/getpath")
+                                  .request()
+                                  .get();
+        assertEquals(200, response.getStatus());
+        // strips the leading '/' from UriInfo.getPath()
+        assertEquals("test/getpath", response.readEntity(String.class));
+    }
+
+    /**
+     * returns null from HttpHeaders.getRequestHeader() when
+     * the requested header is not present in the request.
+     */
+    @Test
+    public void testMissingHeaderIsNullOnCXF() throws Exception {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                                  .path("resources/test/missingheader")
+                                  .request()
+                                  .get();
+        assertEquals(200, response.getStatus());
+        // returns null for absent headers; resource echoes "null"
+        assertEquals("null", response.readEntity(String.class));
     }
 
     @Test

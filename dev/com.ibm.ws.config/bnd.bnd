@@ -36,7 +36,7 @@ Private-Package: com.ibm.ws.config.admin, \
 
 Import-Package: org.osgi.service.cm;version="[1.6,1.7)", \
    org.osgi.service.metatype;version="[1.1,2.0)", \
-   com.ibm.ws.kernel.boot.internal.*, \
+   com.ibm.ws.kernel.boot.internal,\
    !*.internal.*, \
    !org.eclipse.equinox.metatype.impl, \
    *
@@ -77,7 +77,6 @@ instrument.classesExcludes: com/ibm/ws/config/internal/resources/*.class
 	com.ibm.wsspi.org.osgi.service.metatype;version=latest,\
 	com.ibm.wsspi.thirdparty.equinox;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.filemonitor;version=latest,\
-	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.metatype;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

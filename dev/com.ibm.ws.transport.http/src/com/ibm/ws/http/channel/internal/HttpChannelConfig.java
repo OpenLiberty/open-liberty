@@ -10,6 +10,7 @@
 package com.ibm.ws.http.channel.internal;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Comparator;
@@ -124,6 +125,8 @@ public class HttpChannelConfig {
     private boolean v0CookieDateRFC1123compat = true;
     /** PI31734 - Prevent multiple Set-Cookies with the same name */
     private boolean doNotAllowDuplicateSetCookies = false;
+    /** Force to treat $WSSP header as non sensitive */
+    private boolean desensitizePrivatePortHeader = false;
     /**
      * PI33453 - Wait for end of message data, if not immediately available, after the first CRLF
      * sequence following the 0 byte chunk.
@@ -650,6 +653,7 @@ public class HttpChannelConfig {
         initSameSiteCookiesPatterns();
         parseHeaders(props);
         parseIgnoreWriteAfterCommit(props.get(HttpConfigConstants.PROPNAME_IGNORE_WRITE_AFTER_COMMIT));
+        parseDesensitizePrivatePortHeader(props.get(HttpConfigConstants.PROPNAME_DESENSITIZE_PRIVATE_PORT_HEADER));
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -1876,6 +1880,10 @@ public class HttpChannelConfig {
                 for (String headerName : headers) {
                     if (headerName.isEmpty()) {
                         Tr.warning(tc, "headers.emptyName", "remove");
+                    } else if (isReservedNettyResponseAuthorityHeader(headerName)) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                            Tr.event(tc, "Headers remove configuration: ignoring reserved Netty authority header [" + headerName + "]");
+                        }
                     } else {
 
                         int hashcode = headerName.trim().toLowerCase().hashCode();
@@ -2012,6 +2020,11 @@ public class HttpChannelConfig {
         if (headerName.isEmpty()) {
             Tr.warning(tc, "headers.emptyName", collectionType.getName());
 
+        } else if (isReservedNettyResponseAuthorityHeader(headerName)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Header " + collectionType.getName()
+                             + " configuration: ignoring reserved Netty authority header [" + headerName + "]");
+            }
         } else {
             //No configuration error so far, check that no other list defines this, as
             //that would create ambiguity. If found elsewhere, warn the user and take it
@@ -2394,6 +2407,21 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Check the configuration map for if we should swallow inbound connections IOEs
+     *
+     * @ param props
+     */
+    protected void parseDesensitizePrivatePortHeader(Object option) {
+        //PI57542
+        if (Objects.nonNull(option)) {
+            this.desensitizePrivatePortHeader = convertBoolean(option);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Config: desensitizePrivatePortHeader is " + desensitizePrivatePortHeader());
+            }
+        }
+    }
+
+    /**
      * Check the configuration if we should purge the remaining response data
      * This is a JVM custom property as it's intended for outbound scenarios
      *
@@ -2403,7 +2431,7 @@ public class HttpChannelConfig {
      */
     protected void parsePurgeRemainingResponseBody() {
 
-        String option = AccessController.doPrivileged(new java.security.PrivilegedAction<String>() {
+        String option = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
                 return (System.getProperty(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE));
@@ -2617,7 +2645,9 @@ public class HttpChannelConfig {
      */
     private int minLimit(int input, int min) {
         if (input < min) {
-            Tr.debug(tc, "Config: " + input + " too small.");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Config: " + input + " too small.");
+            }
 
             return min;
         }
@@ -2634,7 +2664,9 @@ public class HttpChannelConfig {
      */
     private long minLimit(long input, long min) {
         if (input < min) {
-            Tr.debug(tc, "Config: " + input + " too small.");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Config: " + input + " too small.");
+            }
 
             return min;
         }
@@ -3035,6 +3067,15 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Query whether or not the HTTP Channel should treat $WSSP as non sensitive
+     *
+     * @return boolean
+     */
+    public boolean desensitizePrivatePortHeader() {
+        return this.desensitizePrivatePortHeader;
+    }
+
+    /**
      * Query whether or not the HTTP Channel should purge remaining response data
      *
      * @return boolean
@@ -3194,6 +3235,21 @@ public class HttpChannelConfig {
      */
     public Map<Integer, String> getConfiguredHeadersToRemove() {
         return this.configuredHeadersToRemove;
+    }
+
+    /**
+     * Netty reserved extension headers are internal routing/authority signals and must not be
+     * admitted through generic response-header configuration.
+     * Keep the literal aligned with HttpConversionUtil.ExtensionHeaderNames.STREAM_ID without
+     * introducing a Netty package dependency on this config class.
+     */
+    private static final String RESERVED_NETTY_STREAM_ID_HEADER = "x-http2-stream-id";
+
+    private static boolean isReservedNettyResponseAuthorityHeader(String headerName) {
+        if (headerName == null) {
+            return false;
+        }
+        return RESERVED_NETTY_STREAM_ID_HEADER.equalsIgnoreCase(headerName.trim());
     }
 
     /**

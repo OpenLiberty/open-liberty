@@ -51,6 +51,9 @@ public class CustomServerInfoTest {
     @Rule
     public McpClient customClient = new McpClient(server, "/fullyCustomServerInfoTest");
 
+    @Rule
+    public McpClient dynamicClient = new McpClient(server, "/dynamicServerInfoUpdateTest");
+
     @Server("mcp-server-custom-info")
     public static LibertyServer server;
 
@@ -64,13 +67,19 @@ public class CustomServerInfoTest {
         WebArchive customWar = ShrinkWrap.create(WebArchive.class, "fullyCustomServerInfoTest.war")
                                          .addPackage(BasicTools.class.getPackage());
 
+        // Deploy second app with serverInfo to be dynamically updated
+        WebArchive dynamicWar = ShrinkWrap.create(WebArchive.class, "dynamicServerInfoUpdateTest.war")
+                                          .addPackage(BasicTools.class.getPackage());
+
         ShrinkHelper.exportAppToServer(server, partialWar, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, customWar, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, dynamicWar, SERVER_ONLY);
 
         server.startServer();
-        // Wait for both applications to be fully deployed and MCP endpoints to be available
+        // Wait for all applications to be fully deployed and MCP endpoints to be available
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/partialServerInfoTest/mcp$"));
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/fullyCustomServerInfoTest/mcp$"));
+        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/dynamicServerInfoUpdateTest/mcp$"));
     }
 
     @AfterClass
@@ -202,7 +211,7 @@ public class CustomServerInfoTest {
                         }
                         """;
 
-        String initialResponse = customClient.callMCP(request);
+        String initialResponse = dynamicClient.callMCP(request);
 
         String expectedInitialResponse = """
                         {
@@ -216,10 +225,10 @@ public class CustomServerInfoTest {
                               }
                             },
                             "serverInfo": {
-                              "name": "my-custom-server",
-                              "title": "My Custom MCP Server",
+                              "name": "my-unchanged-server",
+                              "title": "My Unupdated MCP Server",
                               "version": "2.5.0",
-                              "description": "My custom description"
+                              "description": "My unupdated description"
                             }
                           }
                         }
@@ -231,15 +240,15 @@ public class CustomServerInfoTest {
 
         // Mark the session as deleted since config changes will invalidate it
         // This prevents the cleanup code from trying to delete an already-invalid session
-        customClient.markSessionDeleted();
+        dynamicClient.markSessionDeleted();
 
         // Dynamically update the serverInfo configuration by replacing the server.xml
         server.setServerConfigurationFile("server_updated_info.xml");
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("fullyCustomServerInfoTest"));
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("dynamicServerInfoUpdateTest"));
 
         // Re-initialize the session after config update since the old session was invalidated
         // Create a new client which will automatically establish a new session
-        McpClient newClient = new McpClient(server, "/fullyCustomServerInfoTest");
+        McpClient newClient = new McpClient(server, "/dynamicServerInfoUpdateTest");
         newClient.initializeSession();
 
         try {

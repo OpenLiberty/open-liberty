@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Nale\u017cy poda\u0107 odst\u
 cookie.attribute.name.invalid=CWWKT0047E: Atrybut informacji cookie [{0}] zawiera niepoprawny znak.
 cookie.attribute.name.invalid.explanation=Nazwa atrybutu informacji cookie nie mo\u017ce zawiera\u0107 \u017cadnego znaku specjalnego [ () < > @,;: \\/ []? = {}].
 cookie.attribute.name.invalid.useraction=Popraw nazw\u0119 atrybutu informacji cookie tak, aby nie u\u017cywa\u0142a \u017cadnego znaku specjalnego.
+
+endpoint.netty.not.initialized=CWWKT0048E: Punkt ko\u0144cowy {0} HTTP nie mo\u017ce zosta\u0107 uruchomiony, poniewa\u017c framework Netty nie zosta\u0142 zainicjowany.
+endpoint.netty.not.initialized.explanation=Wymagana jest us\u0142uga frameworku \u201e Netty \u201d, ale us\u0142uga ta by\u0142a niedost\u0119pna w momencie pr\u00f3by uruchomienia punktu ko\u0144cowego.
+endpoint.netty.not.initialized.useraction=Sprawd\u017a konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce wymagany pakiet frameworku Netty jest aktywny.
+
+endpoint.channel.not.initialized=CWWKT0049E: Punkt ko\u0144cowy {0} HTTP nie mo\u017ce zosta\u0107 uruchomiony, poniewa\u017c struktura kana\u0142u nie zosta\u0142a zainicjowana.
+endpoint.channel.not.initialized.explanation=Wymagana jest us\u0142uga struktury kana\u0142\u00f3w, ale us\u0142uga ta nie by\u0142a dost\u0119pna w momencie, gdy punkt ko\u0144cowy pr\u00f3bowa\u0142 si\u0119 uruchomi\u0107.
+endpoint.channel.not.initialized.useraction=Sprawd\u017a konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce wymagany pakiet struktury kana\u0142\u00f3w jest aktywny.
+
+endpoint.executor.not.available=CWWKT0050E: Punkt ko\u0144cowy {0} HTTP nie mo\u017ce zosta\u0107 uruchomiony, poniewa\u017c us\u0142uga wykonawcza jest niedost\u0119pna.
+endpoint.executor.not.available.explanation=Us\u0142uga wykonawcy jest wymagana, ale nie by\u0142a dost\u0119pna w momencie, gdy punkt ko\u0144cowy pr\u00f3bowa\u0142 si\u0119 uruchomi\u0107.
+endpoint.executor.not.available.useraction=Sprawd\u017a konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce wymagana us\u0142uga wykonawcza jest aktywna.
+
+endpoint.event.not.available=CWWKT0051E: Punkt ko\u0144cowy {0} HTTP nie mo\u017ce zosta\u0107 uruchomiony, poniewa\u017c us\u0142uga zdarze\u0144 jest niedost\u0119pna.
+endpoint.event.not.available.explanation=Us\u0142uga zdarze\u0144 jest wymagana, ale nie by\u0142a dost\u0119pna w momencie, gdy punkt ko\u0144cowy pr\u00f3bowa\u0142 j\u0105 uruchomi\u0107.
+endpoint.event.not.available.useraction=Sprawd\u017a konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce wymagana us\u0142uga zdarze\u0144 jest aktywna.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: Operacji zapisu blokuj\u0105cego nie mo\u017cna wywo\u0142a\u0107 w w\u0105tku p\u0119tli zdarze\u0144 typu \u201e Netty \u201d.
+netty.blocking.write.on.event.loop.explanation=Wykonanie operacji zapisu blokuj\u0105cego w w\u0105tku p\u0119tli zdarze\u0144 Netty powoduje zakleszczenie.
+netty.blocking.write.on.event.loop.useraction=Nale\u017cy upewni\u0107 si\u0119, \u017ce operacje zapisu blokuj\u0105ce s\u0105 przekazywane do oddzielnego w\u0105tku i nie s\u0105 wywo\u0142ywane z poziomu procedury obs\u0142ugi p\u0119tli zdarze\u0144 typu \u201e Netty \u201d.
+
+netty.socket.timeout=CWWKT0053E: Operacja na gnie\u017adzie zako\u0144czy\u0142a si\u0119 przekroczeniem limitu czasu przed jej zako\u0144czeniem. Lokalnie: {0} / {1} : {2} Zdalnie: {3} / {4} : {5}
+netty.socket.timeout.explanation=Operacja odczytu z gniazda nie zosta\u0142a zako\u0144czona w ci\u0105gu ustawionego limitu czasu.
+netty.socket.timeout.useraction=Sprawd\u017a po\u0142\u0105czenie sieciowe lub zwi\u0119ksz warto\u015b\u0107 limitu czasu odczytu, je\u015bli wykonanie operacji wymaga wi\u0119cej czasu.
+
+netty.h2.window.ratio.error=CWWKT0054W: Nie mo\u017cna zaktualizowa\u0107 wsp\u00f3\u0142czynnika od\u015bwie\u017cania okna w programie \u201e HTTP/2 \u201d: {0} Serwer korzysta z domy\u015blnego wsp\u00f3\u0142czynnika od\u015bwie\u017cania okna.
+netty.h2.window.ratio.error.explanation=Nie mo\u017cna ustawi\u0107 wsp\u00f3\u0142czynnika aktualizacji okna kontroli przep\u0142ywu w funkcji \u201e HTTP/2 \u201d na skonfigurowan\u0105 warto\u015b\u0107. Serwer korzysta z domy\u015blnej cz\u0119stotliwo\u015bci od\u015bwie\u017cania okna.
+netty.h2.window.ratio.error.useraction=Je\u015bli domy\u015blna cz\u0119stotliwo\u015b\u0107 od\u015bwie\u017cania okna jest zadowalaj\u0105ca, nie trzeba podejmowa\u0107 \u017cadnych dzia\u0142a\u0144. Je\u015bli komunikat nadal si\u0119 pojawia, sprawd\u017a ustawienia kontroli przep\u0142ywu w protokole HTTP/2 w konfiguracji serwera.
+
+netty.tls.provider.not.loaded=CWWKT0055E: Nie mo\u017cna zainicjowa\u0107 punktu ko\u0144cowego HTTPS, poniewa\u017c dostawca TLS nie zosta\u0142 za\u0142adowany.
+netty.tls.provider.not.loaded.explanation=Us\u0142uga dostawcy \u201e TLS \u201d by\u0142a niedost\u0119pna w momencie, gdy punkt ko\u0144cowy HTTPS pr\u00f3bowa\u0142 si\u0119 uruchomi\u0107.
+netty.tls.provider.not.loaded.useraction=Sprawd\u017a konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce wymagany pakiet dostawcy \u201e TLS \u201d jest aktywny.
+
+netty.ssl.handler.create.failed=CWWKT0056E: Serwerowi nie uda\u0142o si\u0119 utworzy\u0107 modu\u0142u obs\u0142ugi SSL dla punktu ko\u0144cowego {0} : {1}.
+netty.ssl.handler.create.failed.explanation=Nie mo\u017cna utworzy\u0107 modu\u0142u obs\u0142ugi typu \u201e SSL \u201d dla podanego hosta i portu punktu ko\u0144cowego.
+netty.ssl.handler.create.failed.useraction=Sprawd\u017a konfiguracj\u0119 us\u0142ugi \u201e SSL \u201d dla danego punktu ko\u0144cowego i upewnij si\u0119, \u017ce dostawca \u201e TLS \u201d jest poprawnie skonfigurowany.
+
+h2.encode.header.failed=CWWKT0057E: Serwer nie zdo\u0142a\u0142 zakodowa\u0107 nag\u0142\u00f3wka HTTP/2 : {0}
+h2.encode.header.failed.explanation=Serwer nie zdo\u0142a\u0142 zakodowa\u0107 pseudog\u0142owicy \u201e HTTP/2 \u201d w odpowiedzi. Serwer zamyka strumie\u0144.
+h2.encode.header.failed.useraction=Sprawd\u017a logi serwera pod k\u0105tem powi\u0105zanych b\u0142\u0119d\u00f3w typu \u201e HTTP/2 \u201d. Je\u015bli problem nadal wyst\u0119puje, nale\u017cy zebra\u0107 informacje diagnostyczne i skontaktowa\u0107 si\u0119 z dzia\u0142em pomocy technicznej serwisu IBM.

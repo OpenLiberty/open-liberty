@@ -60,6 +60,7 @@ import jakarta.data.restrict.Restrict;
 import jakarta.data.restrict.Restriction;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -75,7 +76,8 @@ import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
 
 @SuppressWarnings("serial")
-@WebServlet("/*")
+@WebServlet(loadOnStartup = 1, // ensure data from init is available to other servlets
+            value = "/*")
 public class Data_1_1_Servlet extends FATServlet {
 
     /**
@@ -86,6 +88,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Advertisements ads;
+
+    // Do not use this until after the init method.
+    static boolean atLeastJPA4;
 
     @Inject
     Fractions fractions;
@@ -107,6 +112,17 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
+        // TODO look into whether a transaction ought to be required here
+        try {
+            tx.begin();
+            atLeastJPA4 = statefulFractions.atLeastJPA4();
+            tx.commit();
+        } catch (Exception x) {
+            throw new ServletException(x);
+        }
+
+        System.out.println("Persistence provider supports JPA 4.0+? " + atLeastJPA4);
+
         // Fractions including 1/2, 1/3, 2/3, ... 19/20
         Set<Fraction> fractionsToAdd = new HashSet<Fraction>();
         for (int d = 2; d <= 20; d++)
@@ -512,6 +528,47 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Uses a Delete method with a constraint parameter. The method is provided
+     * by a stateful repository.
+     */
+    @Test
+    public void testConstraintDeleteStateful() {
+        // Populate with 1/24, 2/24, and 3/24.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(1, 24),
+                                                Fraction.of(2, 24),
+                                                Fraction.of(3, 24)));
+        boolean removed = false;
+        try {
+            assertEquals(2,
+                         statefulFractionRepo //
+                                         .omit(Between.bounds(2, 10), // numerator
+                                               _Fraction.denominator.equalTo(24)));
+
+            Fraction f1_24 = statefulFractions.fetch(1, 24).orElseThrow();
+
+            statefulFractionRepo.remove(f1_24);
+            removed = true;
+        } finally {
+            // Ensure no fractions with denominator of 24 or more are left around
+            if (!removed)
+                fractions.discard(AtLeast.min(24),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
+        }
+
+        assertEquals(false,
+                     statefulFractions.fetch(2, 24).isPresent());
+
+        assertEquals(false,
+                     statefulFractions.fetch(3, 24).isPresent());
+
+        // Ensure we did not delete a non-matching entity:
+        assertEquals(true,
+                     statefulFractions.fetch(3, 20).isPresent());
+    }
+
+    /**
      * Request cursor pagination from a repository method that accepts a
      * Restriction parameter, but specify the unrestricted restriction.
      * Verify the total count of elements and pages is computed correctly.
@@ -605,7 +662,8 @@ public class Data_1_1_Servlet extends FATServlet {
      *
      * Applies scaling due to Oracle stripping trailing 0s
      */
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
@@ -970,6 +1028,41 @@ public class Data_1_1_Servlet extends FATServlet {
                      page2.numberOfElements());
         assertEquals(false,
                      page2.hasTotals());
+    }
+
+    /**
+     * The Fetching annotation requests eager loading of a value that would
+     * normally be loaded lazily.
+     */
+    @Test
+    public void testFetching1() {
+        // TODO skipped until Hibernate bug is fixed:
+        // NoClassDefFoundError: jakarta/persistence/BatchSize
+        //   at org.hibernate.engine.spi.FetchOptions.batchSize(FetchOptions.java:81)
+        if (isHibernatePersistence())
+            return;
+
+        Fraction f5_8 = fractions.withRoundedValues(5, 8)
+                        .orElseThrow();
+        assertEquals(BigDecimal.valueOf(630, 3),
+                     f5_8.rounded.get(1));
+
+        // EclipseLink eagerly loads the collection regardless, so we can only
+        // test for an exception on Hibernate
+        if (isHibernatePersistence()) {
+            Fraction f3_8 = fractions.withoutRoundedValues(3, 8)
+                            .orElseThrow();
+            try {
+                assertEquals(BigDecimal.valueOf(380, 3),
+                             f3_8.rounded.get(1));
+            } catch (PersistenceException x) {
+                if ("org.hibernate.LazyInitializationException" //
+                                .equals(x.getClass().getName()))
+                    ; // expected
+                else
+                    throw x;
+            }
+        }
     }
 
     /**
@@ -1340,6 +1433,8 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testJakartaQueryWithRestrictionAndOrder() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
 
         Restriction<Fraction> ninthsAndTenths = //
                         Restrict.any(_Fraction.denominator.equalTo(9),
@@ -1559,6 +1654,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDB2() && isHibernatePersistence())
             return;
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 18/23.
         // Ensure deletion in the finally block.
@@ -1868,6 +1965,27 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Uses a Query by Method Name pattern deleteBy method that is provided
+     * by a stateful repository.
+     */
+    @Test
+    public void testMethodNameDeleteStateful() {
+        // Populate with 19/23 and 20/23.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(19, 23),
+                                                Fraction.of(20, 23)));
+
+        assertEquals(2,
+                     statefulFractions.deleteByDenominator(23));
+
+        // Ensure we did not delete a number with other denominator
+        fractions.exists(Restrict.all(_Fraction.numerator.equalTo(19),
+                                      _Fraction.denominator.equalTo(20)));
+
+        assertEquals(0,
+                     statefulFractions.deleteByDenominator(23));
+    }
+
+    /**
      * Supply minus and times expressions to a restriction that is
      * supplied to a repository method.
      */
@@ -2020,6 +2138,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
 
         // Populate with 14/23.
         // Ensure deletion in the finally block.
@@ -2058,6 +2178,127 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a NativeQuery method that returns a page of results. Retrieve the
+     * second page, then the next (third) page, then the next (fourth) page.
+     * Finally, retrieve the previous page from the second page, which is page 1.
+     */
+    @Test
+    public void testNativeQueryRetrievesPages() {
+        // Fractions n/d where 2^n < d^2, ordered by denominator ASC, numerator ASC.
+        // With page size 8: page 1 = items 1-8, page 2 = items 9-16, etc.
+
+        // Hibernate has trouble with SELECT * in native query combined with
+        // limit for SQL Server
+        if (isHibernatePersistence() && isSQLServer())
+            return;
+
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        PageRequest page2Req = PageRequest.ofSize(8).pageNumber(2);
+
+        Page<Fraction> page2 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2Req);
+
+        assertEquals(List.of("3/5",
+                             "4/5",
+                             "1/6",
+                             "2/6",
+                             "3/6",
+                             "4/6",
+                             "5/6",
+                             "1/7"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(2L,
+                     page2.pageRequest().pageNumber());
+        assertEquals(8,
+                     page2.numberOfElements());
+        assertEquals(true,
+                     page2.hasPrevious());
+        assertEquals(true,
+                     page2.hasNext());
+
+        Page<Fraction> page3 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2.nextPageRequest());
+
+        assertEquals(List.of("2/7",
+                             "3/7",
+                             "4/7",
+                             "5/7",
+                             "1/8",
+                             "2/8",
+                             "3/8",
+                             "4/8"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(3L,
+                     page3.pageRequest().pageNumber());
+        assertEquals(8,
+                     page3.numberOfElements());
+        assertEquals(true,
+                     page3.hasPrevious());
+        assertEquals(true,
+                     page3.hasNext());
+
+        Page<Fraction> page4 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page3.nextPageRequest());
+
+        assertEquals(List.of("5/8",
+                             "1/9",
+                             "2/9",
+                             "3/9",
+                             "4/9",
+                             "5/9",
+                             "6/9",
+                             "1/10"),
+                     page4.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4L,
+                     page4.pageRequest().pageNumber());
+        assertEquals(8,
+                     page4.numberOfElements());
+        assertEquals(true,
+                     page4.hasPrevious());
+        assertEquals(true,
+                     page4.hasNext());
+
+        Page<Fraction> page1 = fractions //
+                        .pageOfNumSquaredLessThanDenomPowerOf(2,
+                                                              page2.previousPageRequest());
+
+        assertEquals(List.of("1/2",
+                             "1/3",
+                             "2/3",
+                             "1/4",
+                             "2/4",
+                             "3/4",
+                             "1/5",
+                             "2/5"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(1L,
+                     page1.pageRequest().page());
+        assertEquals(8,
+                     page1.numberOfElements());
+        assertEquals(false,
+                     page1.hasPrevious());
+        assertEquals(true,
+                     page1.hasNext());
+    }
+
+    /**
      * Use a NativeQuery method that returns subsets of entity attributes
      * as an array of Java records
      */
@@ -2081,6 +2322,9 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryReturnsFirstEntity() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
         assertEquals("Seven Twentieths",
                      fractions.firstValueWithin(0.334, 0.4)
                                      .orElseThrow().name);
@@ -2095,6 +2339,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(List.of("1/2",
                              "1/3",
@@ -2158,6 +2404,8 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
 
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
                      fractions.numReducedWithDenominatorOf(18, true));
@@ -2569,7 +2817,8 @@ public class Data_1_1_Servlet extends FATServlet {
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
-    @Test
+    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
+    // @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
         // Derby ignores query timeout and the lock timeout ends up applying instead.
         // Hibernate does not honor the query timeout on native queries with DB2.

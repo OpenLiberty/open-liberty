@@ -170,6 +170,20 @@ public class CustomConfigIdTests {
 
         } finally {
             conn.disconnect();
+
+            // Wait for the async LoggerOffThread to flush the cookie entry to disk before this test exits.
+            long cookieTimeout = 10000;
+            long pollInterval = 100;
+            long elapsed = 0;
+            while (elapsed < cookieTimeout) {
+                List<String> cookieLines = server.findStringsInFileInLibertyServerRoot(
+                        "GET /ConfigTest/cookie", "logs/http_access.log");
+                if (!cookieLines.isEmpty()) {
+                    break;
+                }
+                Thread.sleep(pollInterval);
+                elapsed += pollInterval;
+            }
         }
     }
 
@@ -193,7 +207,7 @@ public class CustomConfigIdTests {
     }
 
     /**
-     * Verifies access logging works, and the pattern matches. 
+     * Verifies access logging works, and the pattern matches.
      */
     @Test
     public void testDefaultAccessLoggingNotIgnored() throws Exception {
@@ -212,12 +226,22 @@ public class CustomConfigIdTests {
             conn.disconnect();
         }
 
-        // Small pause
-        Thread.sleep(1000);
+        // Poll for the async LoggerOffThread to flush the entry to disk (up to 10 seconds)
+        List<String> lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
+        long timeout = 10000;
+        long pollInterval = 500;
+        long elapsed = 0;
+        while (elapsed < timeout) {
+            lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
+            if (lines.size() == (initialLineCount + 1)) {
+                break;
+            }
+            Thread.sleep(pollInterval);
+            elapsed += pollInterval;
+        }
 
         // Check that access log has one more entry than before
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log");
-        assertTrue("Access log should have one more line entry", (initialLineCount+1) == lines.size());
+        assertTrue("Access log should have one more line entry", (initialLineCount + 1) == lines.size());
 
         String lastLine = lines.get(lines.size() - 1);
         LOG.info("Last access log line: " + lastLine);

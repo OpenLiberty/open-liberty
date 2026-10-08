@@ -24,14 +24,14 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.util.ReferenceCountUtil;
 
 /**
  * Pipeline handler to support Liberty's <remoteIp> end point configuration.
  */
-public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class RemoteIpHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(RemoteIpHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -80,7 +80,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
+    protected void channelRead0(ChannelHandlerContext context, HttpRequest request) throws Exception {
 
         String forwardedHeader = request.headers().get(FORWARDED_HEADER);
         forwardedFor = new ArrayList<String>();
@@ -105,7 +105,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
             context.channel().attr(NettyHttpConstants.FORWARDED_BY_KEY).set(forwardedBy.toArray(new String[forwardedBy.size()]));
             context.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).set(forwardedFor.toArray(new String[forwardedFor.size()]));
 
-            Tr.debug(tc, "channelRead0", this);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "channelRead0", this);
+            }
 
         }
 
@@ -135,7 +137,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         this.noErrors = Boolean.TRUE;
     }
 
-    private void parseForwarded(FullHttpRequest request) {
+    private void parseForwarded(HttpRequest request) {
 
         List<String> values = request.headers().getAll(FORWARDED_HEADER);
         if (Objects.nonNull(values) && !values.isEmpty()) {
@@ -266,11 +268,13 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
                 nodeName = extract;
             }
         }
-        Tr.debug(tc, "Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Forwarded address [" + nodeName + "] being tracked in " + type.toString() + " list.");
+        }
         list.add(nodeName);
     }
 
-    private void parseXForwarded(FullHttpRequest request) {
+    private void parseXForwarded(HttpRequest request) {
         List<String> value;
         HttpHeaders headers = request.headers();
         value = headers.getAll(X_FORWARDED_FOR);
@@ -385,7 +389,9 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
             }
         }
 
-        Tr.debug(tc, "ValidateProto value is valid: " + valid);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "ValidateProto value is valid: " + valid);
+        }
         Tr.exit(tc, "validateProto");
         return valid;
 

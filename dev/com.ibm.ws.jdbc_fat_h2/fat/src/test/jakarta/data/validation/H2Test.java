@@ -121,14 +121,16 @@ public class H2Test extends FATServletClient {
             assertTrue("H2 logwriter output should be present in trace.log",
                        !h2LogWriterOutput.isEmpty());
 
-            // Verify exact Type:/Content: password filtering behavior
-            List<String> passwordTypeLines = server.findStringsInLogsAndTrace("Type: password");
-            assertTrue("Type: password should be present in trace.log",
-                       !passwordTypeLines.isEmpty());
+            // Verify exact Type:/Content: password filtering behavior if testDataSource() was not skipped (e.g. on IBM i)
+            if (!"OS/400".equalsIgnoreCase(System.getProperty("os.name"))) {
+                List<String> passwordTypeLines = server.findStringsInLogsAndTrace("Type: password");
+                assertTrue("Type: password should be present in trace.log",
+                           !passwordTypeLines.isEmpty());
 
-            List<String> filteredContent = server.findStringsInLogsAndTrace("Content: \\*\\*\\*\\*\\*\\*");
-            assertTrue("Filtered content markers (Content: ******) should be present in trace.log",
-                       !filteredContent.isEmpty());
+                List<String> filteredContent = server.findStringsInLogsAndTrace("Content: \\*\\*\\*\\*\\*\\*");
+                assertTrue("Filtered content markers (Content: ******) should be present in trace.log",
+                           !filteredContent.isEmpty());
+            }
 
             // Verify that all Content: lines are filtered (no unfiltered content should appear)
             List<String> unfilteredContent = server.findStringsInLogsAndTrace("Content: (?!\\*\\*\\*\\*\\*\\*).*");
@@ -136,7 +138,10 @@ public class H2Test extends FATServletClient {
                          0, unfilteredContent.size());
         } finally {
             // Stop server and expect errors from URL validation tests
-            server.stopServer("DSRA8070E", "CWWKE0701E");
+            server.stopServer(
+                "DSRA8020E.*URL", // DSRA8020E: Warning: The property 'URL' does not exist on the DataSource class -- Occurs on IBMi where the DataSources that produce this error are skipped.
+                "DSRA8070E", 
+                "CWWKE0701E");
         }
     }
 

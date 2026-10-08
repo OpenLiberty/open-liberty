@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 ZOSAIO_DEACTIVATED=CWWKO0230I: A fost dezactivat suportul pentru Native Asynchronous I/O for z/OS.
 ZOSAIO_DEACTIVATED.explanation=Soclurile Asynchronous TCP/IP I/O for Liberty (AsyncIO) pe serviciul z/OS, care furnizeaz\u0103 capabilit\u0103\u0163ile de baz\u0103 ale unui pachet Asynchronous I/O la nivel de sistem de operare sunt dezactivate.
 ZOSAIO_DEACTIVATED.useraction=Nici o ac\u0163iune nu este necesar\u0103.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: Handlerul de canal \u201e {0} \u201d ( Netty ) a fost eliminat dintr-un pipeline de conexiuni active.
+netty.handler.removed.from.pipeline.explanation=Un handler de canal de tip \u201e Netty \u201d, necesar pentru func\u021bionarea corect\u0103 a conexiunii, a fost eliminat \u00een mod nea\u0219teptat \u00een timp ce canalul era activ.
+netty.handler.removed.from.pipeline.useraction=Dac\u0103 acest mesaj persist\u0103, colecta\u021bi informa\u021biile de urm\u0103rire pentru diagnosticare \u0219i contacta\u021bi serviciul de asisten\u021b\u0103 IBM.
+
+read.timeout=CWWKO1713W: O opera\u021biune de citire de tip \u201e HTTP \u201d a dep\u0103\u0219it timpul de a\u0219teptare: {0}
+read.timeout.explanation=O conexiune de tip \u201e HTTP \u201d de intrare nu a primit date \u00een intervalul de timp configurat pentru expirarea timpului de a\u0219teptare la citire.
+read.timeout.useraction=Verifica\u021bi conexiunea la re\u021bea sau m\u0103ri\u021bi valoarea timpului de a\u0219teptare pentru citire \u00een configura\u021bia punctului final \u201e HTTP \u201d.
+
+write.timeout=CWWKO1714W: O opera\u021biune de scriere HTTP a dep\u0103\u0219it limita de timp: {0}
+write.timeout.explanation=O opera\u021biune de scriere de ie\u0219ire c\u0103tre HTTP nu s-a finalizat \u00een intervalul de timp configurat pentru expirarea timpului de a\u0219teptare la scriere.
+write.timeout.useraction=Verifica\u021bi conexiunea la re\u021bea sau m\u0103ri\u021bi valoarea timpului de a\u0219teptare pentru scriere \u00een configura\u021bia punctului final \u201e HTTP \u201d.
+
+h2.idle.timeout=CWWKO1715W: O conexiune HTTP/2 s-a \u00eenchis din cauza expir\u0103rii timpului de inactivitate: {0}
+h2.idle.timeout.explanation=Conexiunea HTTP/2 a r\u0103mas inactiv\u0103 mai mult dec\u00e2t perioada de expirare configurat\u0103, astfel \u00eenc\u00e2t serverul a \u00eenchis conexiunea.
+h2.idle.timeout.useraction=Verifica\u021bi conexiunea la re\u021bea sau m\u0103ri\u021bi valoarea timpului de a\u0219teptare \u00een inactivitate a conexiunii HTTP/2 \u00een configura\u021bia punctului final HTTP.

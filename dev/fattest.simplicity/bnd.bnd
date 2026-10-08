@@ -81,7 +81,7 @@ fat.test.container.images:\
 
 -buildpath:\
     biz.aQute.bnd:biz.aQute.bnd.transform;strategy=exact;version=6.4.1,\
-    biz.aQute.bnd:biz.aQute.bnd.transform;strategy=exact;version=7.0.0,\
+    biz.aQute.bnd:biz.aQute.bnd.transform;strategy=exact;version=7.4.0,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\

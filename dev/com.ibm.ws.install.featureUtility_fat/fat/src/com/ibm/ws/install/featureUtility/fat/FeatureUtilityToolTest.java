@@ -70,6 +70,7 @@ public abstract class FeatureUtilityToolTest {
     private static String originalWlpEdition;
     private static String originalWlpInstallType;
     private static String originalWlpPublicKeyId;
+    private static String originalWasEdition;
     static boolean isClosedLiberty = false;
     private static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
@@ -281,6 +282,17 @@ public abstract class FeatureUtilityToolTest {
                 // ignore we are trying to close.
             }
         }
+
+        // Capture original edition from WebSphereApplicationServer.properties, if it exists
+        File wasPropFile = new File(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+        if (wasPropFile.exists()) {
+            Properties wasProps = new Properties();
+            try (FileInputStream wasIn = new FileInputStream(wasPropFile)) {
+                wasProps.load(wasIn);
+                originalWasEdition = wasProps.getProperty("com.ibm.websphere.productEdition");
+                Log.info(c, "getWlpVersion", "WebSphereApplicationServer.properties com.ibm.websphere.productEdition : " + originalWasEdition);
+            }
+        }
     }
 
     public static String getCurrentWlpVersion() throws IOException {
@@ -346,30 +358,42 @@ public abstract class FeatureUtilityToolTest {
 
 
     protected static void replaceWlpProperties(String version) throws Exception {
-            RemoteFile rf = server.getMachine().getFile(minifiedRoot+ "/lib/versions/openliberty.properties");
-	    try (OutputStream os = rf.openForWriting(false)) {
-		wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
-		Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
-		wlpVersionProps.store(os, null);
-	    }
-	    // replace cl properties version if it exits
-	    rf = server.getMachine().getFile(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
-	    if (rf.exists()) {
-		Properties wlProps = new Properties();
-		try (InputStream is = rf.openForReading();) {
-		    wlProps.load(is);
-		    wlProps.setProperty("com.ibm.websphere.productVersion", version);
-		    Log.info(c, "replaceWlpProperties - closed ", "Set the version to : " + version);
-		}
-
-		try (OutputStream os = rf.openForWriting(false)) {
-		    wlProps.store(os, null);
-		}
-	    }
-
+        RemoteFile rf = server.getMachine().getFile(minifiedRoot + "/lib/versions/openliberty.properties");
+        try (OutputStream os = rf.openForWriting(false)) {
+            wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
+            Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
+            wlpVersionProps.store(os, null);
+        }
+        // replace cl properties version and edition if the file exists
+        rf = server.getMachine().getFile(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+        if (rf.exists()) {
+            Properties wlProps = new Properties();
+            try (InputStream is = rf.openForReading()) {
+                wlProps.load(is);
+                wlProps.setProperty("com.ibm.websphere.productVersion", version);
+                wlProps.setProperty("com.ibm.websphere.productEdition", "ND");
+                Log.info(c, "replaceWlpProperties", "Set version to : " + version + ", edition to : ND");
+            }
+            try (OutputStream os = rf.openForWriting(false)) {
+                wlProps.store(os, null);
+            }
+        }
     }
     protected static void resetOriginalWlpProps() throws Exception {
         replaceWlpProperties(originalWlpVersion);
+        // restore original edition in WebSphereApplicationServer.properties if it exists
+        RemoteFile rf = server.getMachine().getFile(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+        if (rf.exists() && originalWasEdition != null) {
+            Properties wlProps = new Properties();
+            try (InputStream is = rf.openForReading()) {
+                wlProps.load(is);
+                wlProps.setProperty("com.ibm.websphere.productEdition", originalWasEdition);
+                Log.info(c, "resetOriginalWlpProps", "Restored edition to : " + originalWasEdition);
+            }
+            try (OutputStream os = rf.openForWriting(false)) {
+                wlProps.store(os, null);
+            }
+        }
     }
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params) throws Exception {

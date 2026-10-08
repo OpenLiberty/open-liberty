@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2025 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -176,22 +176,32 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration, ClassLoa
             sb.append(":").append(id.getDomain()).append(":").append(id.getId());
         }
         
+        // Show parent relationship or null state
         if (parentId != null) {
             sb.append(" [child of ").append(parentId).append("]");
+        } else {
+            sb.append(" [parent=null]");
         }
         
         sb.append(":").append(delegateLast ? "PL" : "PF");
         
+        // Show library counts, including empty state
         if (!sharedLibraries.isEmpty()) {
             sb.append(":privateLibs=").append(sharedLibraries.size());
+        } else {
+            sb.append(":privateLibs=empty");
         }
         
         if (!overrideLibraries.isEmpty()) {
             sb.append(":overrideLibs=").append(overrideLibraries.size());
+        } else {
+            sb.append(":overrideLibs=empty");
         }
         
         if (!commonLibraries.isEmpty()) {
             sb.append(":commonLibs=").append(commonLibraries.size());
+        } else {
+            sb.append(":commonLibs=empty");
         }
         
         return sb.toString();

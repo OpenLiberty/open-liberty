@@ -183,8 +183,11 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     @Test
     public void testToolCallDuration() throws Exception {
+        int waitMs = 300;
+        int toleranceMs = 20; // Accounts for OS timer resolution and scheduling jitter
+
         long startTime = System.nanoTime();
-        String response = client.callMCP(WAITING_TOOL_REQUEST.formatted(1500));
+        String response = client.callMCP(WAITING_TOOL_REQUEST.formatted(waitMs));
         Duration clientCallDuration = Duration.ofNanos(System.nanoTime() - startTime);
         String expectedResponseString = """
                         {"id":3,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "OK"}], "isError": false}}
@@ -193,7 +196,7 @@ public class TelemetryOperationsTest extends FATServletClient {
 
         Duration metricDuration = getDurationMetric("waitingTool");
 
-        assertThat(metricDuration, greaterThanOrEqualTo(Duration.ofMillis(1500)));
+        assertThat(metricDuration, greaterThanOrEqualTo(Duration.ofMillis(waitMs - toleranceMs)));
         assertThat(metricDuration, lessThanOrEqualTo(clientCallDuration));
     }
 
@@ -367,6 +370,40 @@ public class TelemetryOperationsTest extends FATServletClient {
 
         // Run servlet test to verify async failed stage error metrics are recorded correctly
         FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testAsyncFailedStageToolMetrics");
+    }
+
+    @Test
+    public void testParseErrorMetrics() throws Exception {
+        captureMetrics();
+        client.callMCP("this is not json");
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testParseErrorMetrics");
+    }
+
+    @Test
+    public void testInvalidRequestMetrics() throws Exception {
+        captureMetrics();
+        client.callMCP("""
+                        {
+                          "jsonrpc": "1.0",
+                          "id": 99,
+                          "method": "tools/list"
+                        }
+                        """);
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testInvalidRequestMetrics");
+    }
+
+    @Test
+    public void testMethodNotFoundMetrics() throws Exception {
+        captureMetrics();
+        client.callMCP("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 100,
+                          "method": "unknown/method",
+                          "params": {}
+                        }
+                        """);
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testMethodNotFoundMetrics");
     }
 
     /**

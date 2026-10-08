@@ -18,6 +18,7 @@ src: \
 	test-applications/testEjb1.jar/src, \
 	test-applications/testLib1.jar/src, \
 	test-applications/testLib2.jar/src, \
+	test-applications/testLib3.jar/src, \
 	test-applications/testLib12.jar/src, \
 	test-applications/testLib17.jar/src, \
 	test-applications/testRar1.rar/src, \

@@ -13,6 +13,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -98,6 +99,22 @@ public class McpMonitorTest {
                     }
                     """;
 
+    private static final String UNKNOWN_METHOD_REQUEST = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 5,
+                      "method": "unknown/method"
+                    }
+                    """;
+
+    private static final String INVALID_JSONRPC_VERSION_REQUEST = """
+                    {
+                      "jsonrpc": "1.0",
+                      "id": 6,
+                      "method": "tools/list"
+                    }
+                    """;
+
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -141,11 +158,18 @@ public class McpMonitorTest {
      * @throws AssertionError if more than one matching MBean is found
      */
     private ObjectName findOperationMBean(String methodName, String toolName) throws Exception {
+        return findOperationMBean(methodName, toolName, null);
+    }
+
+    private ObjectName findOperationMBean(String methodName, String toolName, String errorType) throws Exception {
         // Build query pattern with individual properties instead of a single name property
         StringBuilder pattern = new StringBuilder(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION);
         pattern.append(",mcpMethod=").append(methodName);
         if (toolName != null) {
             pattern.append(",genAiTool=").append(toolName);
+        }
+        if (errorType != null) {
+            pattern.append(",errorType=").append(errorType);
         }
         pattern.append(",*");
 
@@ -155,7 +179,8 @@ public class McpMonitorTest {
         return switch (mbeans.size()) {
             case 0 -> null;
             case 1 -> mbeans.iterator().next();
-            default -> throw new AssertionError("More than one operation mbean found for " + methodName + (toolName != null ? "/" + toolName : ""));
+            default -> throw new AssertionError("More than one operation mbean found for " + methodName + (toolName != null ? "/" + toolName : "")
+                                                + (errorType != null ? "/" + errorType : ""));
         };
     }
 
@@ -757,6 +782,49 @@ public class McpMonitorTest {
     }
 
     /**
+     * Test that a PARSE_ERROR emits an MBean with method name "_OTHER".
+     */
+    @Test
+    public void testParseErrorMetrics() throws Exception {
+        client.callMCP("this is not json");
+
+        ObjectName mbean = findOperationMBean("_OTHER", null, "PARSE_ERROR");
+        assertNotNull("MBean for _OTHER/PARSE_ERROR should exist after parse error", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("Status code should be error", "error", statusCode);
+    }
+
+    /**
+     * Test that an INVALID_REQUEST emits an MBean with method name "_OTHER".
+     */
+    @Test
+    public void testInvalidRequestMetrics() throws Exception {
+        client.callMCP(INVALID_JSONRPC_VERSION_REQUEST);
+
+        ObjectName mbean = findOperationMBean("_OTHER", null, "INVALID_REQUEST");
+        assertNotNull("MBean for _OTHER/INVALID_REQUEST should exist after invalid request", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("Status code should be error", "error", statusCode);
+    }
+
+    /**
+     * Test that a METHOD_NOT_FOUND error emits an MBean with method name "_OTHER".
+     * Unknown method names must not be used as metric attributes directly to limit cardinality.
+     */
+    @Test
+    public void testMethodNotFoundMetrics() throws Exception {
+        client.callMCP(UNKNOWN_METHOD_REQUEST);
+
+        ObjectName mbean = findOperationMBean("_OTHER", null, "METHOD_NOT_FOUND");
+        assertNotNull("MBean for _OTHER/METHOD_NOT_FOUND should exist after unknown method call", mbean);
+
+        String statusCode = (String) mbeanServer.getAttribute(mbean, "RpcResponseStatusCode");
+        assertEquals("Status code should be error", "error", statusCode);
+    }
+
+    /**
      * Test that initialize operation metrics are recorded.
      * Verifies that the initialize call from setup created an MBean.
      */
@@ -780,5 +848,83 @@ public class McpMonitorTest {
         // Verify duration was recorded
         double duration = (Double) mbeanServer.getAttribute(mbean, "Duration");
         assertTrue("Duration should be greater than 0", duration > 0);
+    }
+
+    // Negative Tests
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Verifies that no operation MBean is registered for a tool that has never been called.
+     */
+    @Test
+    public void testNoMBeanExistsForUncalledTool() throws Exception {
+        ObjectName mbean = findOperationMBean("tools/call", "neverCalledTool");
+        assertNull(
+                   "No MBean should exist for a tool that has never been called", mbean);
+    }
+
+    /**
+     * Verifies that calling an unknown tool produces an error-status operation MBean with
+     * {@code RpcResponseStatusCode} {@code "error"} and a non-null {@code ErrorType}.
+     */
+    @Test
+    public void testUnknownToolCallProducesErrorMBean() throws Exception {
+        String unknownToolRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 20,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "doesNotExistTool",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(unknownToolRequest);
+
+        ObjectName errorMBean = findOperationMBean("tools/call", "doesNotExistTool");
+        assertNotNull("An operation MBean should be registered for the unknown-tool call", errorMBean);
+
+        String statusCode = (String) mbeanServer.getAttribute(errorMBean, "RpcResponseStatusCode");
+        assertEquals("RpcResponseStatusCode must be 'error' for an unknown tool call", "error", statusCode);
+
+        String errorType = (String) mbeanServer.getAttribute(errorMBean, "ErrorType");
+        assertNotNull("ErrorType must be non-null for an unknown tool call", errorType);
+    }
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Verifies that every registered operation MBean exposes a non-null, non-blank
+     * {@code McpMethodName} attribute.
+     */
+    @Test
+    public void testMBeanMethodNameNeverNullOrEmpty() throws Exception {
+        String unknownToolRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 23,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "phantomSchemaTool",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(unknownToolRequest);
+
+        // Inspect every operation MBean currently registered
+        ObjectName operationQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> allMBeans = mbeanServer.queryNames(operationQuery, null);
+        assertFalse("At least one operation MBean must be registered", allMBeans.isEmpty());
+
+        for (ObjectName on : allMBeans) {
+            String methodName = (String) mbeanServer.getAttribute(on, "McpMethodName");
+            assertNotNull("McpMethodName must never be null on any operation MBean: " + on, methodName);
+            assertFalse("McpMethodName must never be empty on any operation MBean: " + on, methodName.isBlank());
+        }
     }
 }

@@ -11,6 +11,7 @@ package io.openliberty.data.internal;
 
 import static io.openliberty.data.internal.QueryType.FIND;
 import static io.openliberty.data.internal.QueryType.FIND_AND_DELETE;
+import static io.openliberty.data.internal.QueryType.NATIVE;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 
 import java.lang.annotation.Annotation;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import io.openliberty.data.internal.Util;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
@@ -462,7 +465,7 @@ public class Fail {
                       paramIndex + 1, // switch to 1-based
                       info.method.getName(),
                       info.repositoryInterface.getName(),
-                      Arrays.toString(paramAnnos),
+                      Util.toStringList(paramAnnos),
                       paramType.getClass().getName());
         else
             throw exc(UnsupportedOperationException.class,
@@ -470,7 +473,7 @@ public class Fail {
                       paramIndex + 1, // switch to 1-based
                       info.method.getName(),
                       info.repositoryInterface.getName(),
-                      Arrays.toString(paramAnnos));
+                      Util.toStringList(paramAnnos));
     }
 
     /**
@@ -940,16 +943,20 @@ public class Fail {
      * Raises ClassCastException for a repository method return type that does
      * not match the number of entities returned.
      *
-     * @param info                   query information for the repository method.
-     * @param lifeCycleMethodAnno    type of life cycle method. For example, @Insert.
-     * @param hasSingularEntityParam indicates if the method's entity parameter is
-     *                                   singular (one entity) vs multiple.
+     * @param info                query information for the repository method.
+     * @param lifeCycleMethodAnno type of life cycle method. For example, @Insert.
+     * @param numResults          number of results returned by the query
      * @throws the ClassCastException.
      */
     static ClassCastException resultSizeMismatch(QueryInfo info,
                                                  String lifeCycleMethodAnno,
-                                                 int numResults,
-                                                 boolean hasSingularEntityParam) {
+                                                 int numResults) {
+        boolean hasSingularEntityParam //
+                        = info.entityParamType != null &&
+                          !info.entityParamType.isArray() &&
+                          !Iterable.class.isAssignableFrom(info.entityParamType) &&
+                          !Stream.class.isAssignableFrom(info.entityParamType);
+
         throw exc(ClassCastException.class,
                   "CWWKD1094.return.mismatch",
                   info.method.getName(),
@@ -984,25 +991,29 @@ public class Fail {
      * Raises UnsupportedOperationException for a return type that is not valid
      * for the repository method.
      *
-     * @param info                   query information for the repository method.
-     * @param lifeCycleMethodType    type of life cycle method. For example, Insert.
-     * @param hasSingularEntityParam indicates if the method's entity parameter is
-     *                                   singular (one entity) vs multiple.
-     * @param validReturnTypes       valid return types, if always the same.
-     *                                   Otherwise null.
-     * @param resultClass            resultClass from which to infer valid return
-     *                                   types. Otherwise null.
+     * @param info                query information for the repository method.
+     * @param lifeCycleMethodType type of life cycle method. For example, Insert.
+     * @param validReturnTypes    valid return types, if always the same.
+     *                                Otherwise null.
+     * @param resultClass         resultClass from which to infer valid return
+     *                                types. Otherwise null.
      * @throws the UnsupportedOperationException.
      */
     static UnsupportedOperationException returnTypeInvalid(QueryInfo info,
                                                            String lifeCycleMethodType,
-                                                           boolean hasSingularEntityParam,
                                                            String validReturnTypes,
                                                            Class<?> resultClass) {
-        if (validReturnTypes == null)
+        if (validReturnTypes == null) {
+            boolean hasSingularEntityParam //
+                            = info.entityParamType != null &&
+                              !info.entityParamType.isArray() &&
+                              !Iterable.class.isAssignableFrom(info.entityParamType) &&
+                              !Stream.class.isAssignableFrom(info.entityParamType);
+
             validReturnTypes = Util.lifeCycleReturnTypes(resultClass.getSimpleName(),
                                                          hasSingularEntityParam,
                                                          false).toString();
+        }
 
         throw exc(UnsupportedOperationException.class,
                   "CWWKD1003.rtrn.err",
@@ -1099,6 +1110,34 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   paramType.getSimpleName(),
                   info.type.operationName);
+    }
+
+    /**
+     * Raise a new UnsupportedOperationException for the errors where a count of
+     * total elements or pages is not possible due to the query being a NativeQuery
+     * or having a keyword that is incompatible with automatically generating a
+     * count query.
+     *
+     * @param info query information for the repository method.
+     * @throws UnsupportedOperationException.
+     */
+    static UnsupportedOperationException totalsNotSupported(QueryInfo info) {
+        if (info.type == NATIVE) // TODO NLS
+            throw new UnsupportedOperationException //
+            ("A count of total elements or total pages cannot be automatically" +
+             " obtained for the " + info.method.getName() + " method of the " +
+             info.repositoryInterface.getName() +
+             " repository because the repository method has the" +
+             " jakarta.persistence.query.NativeQuery annotation. Write a " +
+             " separate, designated repository method annotated NativeQuery" +
+             " that computes the total count of elements for your application.");
+        else
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1119.keyword.prevents.count",
+                      info.method.getName(),
+                      info.repositoryInterface.getName(),
+                      info.jpqlCount,
+                      info.ql);
     }
 
     /**

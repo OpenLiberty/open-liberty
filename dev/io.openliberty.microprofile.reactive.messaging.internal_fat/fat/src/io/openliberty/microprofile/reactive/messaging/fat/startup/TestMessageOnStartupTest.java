@@ -13,6 +13,7 @@ package io.openliberty.microprofile.reactive.messaging.fat.startup;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -105,6 +106,7 @@ public class TestMessageOnStartupTest extends FATServletClient {
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
                         .addAsModule(war)
                         .addAsLibrary(jar)
+                        .addAsManifestResource(kafkaPermissions(), "permissions.xml")
                         .addAsResource(new org.jboss.shrinkwrap.api.asset.StringAsset(applicationXml), "META-INF/application.xml");
 
         ShrinkHelper.exportAppToServer(server, ear, SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);//we're testing tolerance for custom names so this needs to be manual.

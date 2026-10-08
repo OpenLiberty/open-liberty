@@ -9,5 +9,5 @@ IBM-API-Package: \
  io.openliberty.mcp.monitor; type="ibm-api"
 -bundles=io.openliberty.mcp.monitor; location:="dev/api/ibm/,lib/", \
  io.openliberty.mcp.internal.monitor
-kind=beta
+kind=ga
 edition=core

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -49,15 +50,13 @@ public class JULLogServletTest {
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
-    public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from(TestUtils.IMAGE_NAME)
-                                    .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
-                    .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml"), 0644))
+    public static GenericContainer<?> container = new GenericContainer<>(TestUtils.IMAGE_NAME)
+                    .withCopyFileToContainer(MountableFile.forHostPath(new File(TestUtils.PATH_TO_AUTOFVT_TESTFILES + "config.yaml").toPath()),
+                                             "/etc/otelcol-contrib/config.yaml")
                     .withLogConsumer(new SimpleLogConsumer(JULLogServletTest.class, "opentelemetry-collector-contrib"))
-                    .withExposedPorts(4317, 4318);
+                    .withExposedPorts(4317, 4318)
+                    .waitingFor(Wait.forLogMessage(".*Everything is ready.*", 1));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -91,7 +90,7 @@ public class JULLogServletTest {
     public void testMatchingJULMessageLogsWithContainerViaOpenTelemetryAgent() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 
-        TestUtils.isContainerStarted("LogsExporter", container);
+        TestUtils.isContainerStarted("Everything is ready.", container);
 
         TimeUnit.SECONDS.sleep(5);
 

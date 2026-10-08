@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=Un num\u0103r total de elemente nu este disponibil
 011.unknown.attr.type=Instan\u021ba {0} a fost ob\u021binut\u0103 \u00eentr-un mod care nu identific\u0103 tipul de atribut. Pentru clasele metamodel static, utiliza\u021bi o metod\u0103.of care este definit\u0103 pe un subtip Attribute pentru a furniza clasa entit\u0103\u021bii \u0219i tipul de atribut al entit\u0103\u021bii.
 012.unknown.decl.type=Instan\u021ba {0} a fost ob\u021binut\u0103 \u00eentr-un mod care nu identific\u0103 clasa entit\u0103\u021bii care declar\u0103 atributul. Pentru clasele metamodel static, utiliza\u021bi o metod\u0103.of care este definit\u0103 pe un subtip Attribute pentru a furniza clasa entit\u0103\u021bii \u0219i tipul de atribut al entit\u0103\u021bii.
+013.arg.invalid=Argumentul \u201e {0} \u201d nu poate avea valoarea \u201e {1} \u201d.
+014.mode.disallows.offset=O solicitare de pagin\u0103 nu poate include simultan at\u00e2t un offset, c\u00e2t \u0219i modul \u201e {0} \u201d.
+015.cursor.uncomputable=Opera\u021biunea solicitat\u0103 nu este disponibil\u0103, deoarece nu se poate calcula un cursor pe baza unor criterii de sortare care includ o expresie.

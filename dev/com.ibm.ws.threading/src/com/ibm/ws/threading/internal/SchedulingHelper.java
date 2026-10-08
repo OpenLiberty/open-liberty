@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2023 IBM Corporation and others.
+ * Copyright (c) 2015,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.ScheduledCustomExecutorTask;
@@ -112,6 +113,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      *
      * @see java.util.concurrent.Delayed#getDelay(java.util.concurrent.TimeUnit)
      */
+    @Trivial
     @Override
     public long getDelay(TimeUnit unit) {
         return m_schedFuture.getDelay(unit);
@@ -122,6 +124,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @Trivial
     @Override
     public int compareTo(Delayed o) {
         return m_schedFuture.compareTo(o);
@@ -130,6 +133,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
     /**
      * @see java.lang.Object#equals(Object)
      */
+    @Trivial
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -140,11 +144,13 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Trivial
     @Override
     public final int hashCode() {
         return m_schedFuture.hashCode();
     }
 
+    @Trivial
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -166,6 +172,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      *
      * @see java.util.concurrent.Future#isCancelled()
      */
+    @Trivial
     @Override
     public boolean isCancelled() {
         return m_cancelResult;
@@ -218,6 +225,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      *
      * @see java.util.concurrent.Future#isDone()
      */
+    @Trivial
     @Override
     public boolean isDone() {
         boolean retVal = false;
@@ -283,6 +291,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      *
      * @see java.util.concurrent.RunnableScheduledFuture#isPeriodic()
      */
+    @Trivial
     @Override
     public boolean isPeriodic() {
         return false;
@@ -362,6 +371,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
          *
          * @see com.ibm.ws.threading.internal.QueueItem#isExpedited()
          */
+        @Trivial
         @Override
         public boolean isExpedited() {
             return true;

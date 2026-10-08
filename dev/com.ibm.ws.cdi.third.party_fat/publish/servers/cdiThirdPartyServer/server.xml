@@ -31,5 +31,6 @@
 
     <SSLDefault />
 
+    <javaPermission codebase="${server.config.dir}/apps/entityListeners.ear" className="java.security.AllPermission" />
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission" />
 </server>

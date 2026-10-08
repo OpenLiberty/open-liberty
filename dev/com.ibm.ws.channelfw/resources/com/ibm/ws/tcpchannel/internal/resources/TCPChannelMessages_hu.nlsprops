@@ -154,3 +154,19 @@ ZOSAIO_ACTIVATED.useraction=Nincs teend\u0151.
 ZOSAIO_DEACTIVATED=CWWKO0230I: A z/OS nat\u00edv aszinkron I/O t\u00e1mogat\u00e1sa le lett \u00e1ll\u00edtva.
 ZOSAIO_DEACTIVATED.explanation=A z/OS szolg\u00e1ltat\u00e1son le lett \u00e1ll\u00edtva a Liberty aszinkron TCP/IP sockets I/O, ami az oper\u00e1ci\u00f3s rendszer szintj\u00e9n biztos\u00edtja az aszinkron I/O csomag alapvet\u0151 k\u00e9pess\u00e9geit.
 ZOSAIO_DEACTIVATED.useraction=Nincs teend\u0151.
+
+netty.handler.removed.from.pipeline=CWWKO0231W: Az \u201e {0} \u201d Netty csatornakezel\u0151 elt\u00e1vol\u00edt\u00e1sra ker\u00fclt egy akt\u00edv kapcsolati csatorn\u00e1b\u00f3l.
+netty.handler.removed.from.pipeline.explanation=A kapcsolat megfelel\u0151 m\u0171k\u00f6d\u00e9s\u00e9hez sz\u00fcks\u00e9ges \u201e Netty \u201d csatorna-kezel\u0151 v\u00e1ratlanul elt\u00e1vol\u00edt\u00e1sra ker\u00fclt, mik\u00f6zben a csatorna akt\u00edv volt.
+netty.handler.removed.from.pipeline.useraction=Ha ez az \u00fczenet tov\u00e1bbra is megjelenik, gy\u0171jts\u00f6n \u00f6ssze diagnosztikai nyomk\u00f6vet\u00e9si adatokat, majd vegye fel a kapcsolatot a IBM \u00fcgyf\u00e9lszolg\u00e1lattal.
+
+read.timeout=CWWKO1713W: Az \u201e HTTP \u201d olvas\u00e1si m\u0171velet id\u0151t\u00fall\u00e9p\u00e9se t\u00f6rt\u00e9nt: {0}
+read.timeout.explanation=A bej\u00f6v\u0151 HTTP kapcsolat a be\u00e1ll\u00edtott olvas\u00e1si v\u00e1rakoz\u00e1si id\u0151n bel\u00fcl nem kapott adatot.
+read.timeout.useraction=Ellen\u0151rizze a h\u00e1l\u00f3zati kapcsolatot, vagy n\u00f6velje az olvas\u00e1si v\u00e1rakoz\u00e1si id\u0151 \u00e9rt\u00e9k\u00e9t az \u201e HTTP \u201d v\u00e9gpont konfigur\u00e1ci\u00f3j\u00e1ban.
+
+write.timeout=CWWKO1714W: Az \u201e HTTP \u201d \u00edr\u00e1si m\u0171velet id\u0151t\u00fall\u00e9p\u00e9se t\u00f6rt\u00e9nt: {0}
+write.timeout.explanation=Egy kimen\u0151 \u201e HTTP \u201d \u00edr\u00e1si m\u0171velet nem fejez\u0151d\u00f6tt be a be\u00e1ll\u00edtott \u00edr\u00e1si v\u00e1rakoz\u00e1si id\u0151n bel\u00fcl.
+write.timeout.useraction=Ellen\u0151rizze a h\u00e1l\u00f3zati kapcsolatot, vagy n\u00f6velje az \u00edr\u00e1si v\u00e1rakoz\u00e1si id\u0151 \u00e9rt\u00e9k\u00e9t az \u201e HTTP \u201d v\u00e9gpont konfigur\u00e1ci\u00f3j\u00e1ban.
+
+h2.idle.timeout=CWWKO1715W: Egy HTTP/2 -kapcsolat az inaktivit\u00e1si id\u0151t\u00fall\u00e9p\u00e9s miatt lez\u00e1rult: {0}
+h2.idle.timeout.explanation=A HTTP/2 kapcsolat a be\u00e1ll\u00edtott t\u00e9tlens\u00e9gi id\u0151t\u00fall\u00e9p\u00e9si id\u0151n\u00e9l hosszabb ideig t\u00e9tlen volt, ez\u00e9rt a szerver lez\u00e1rta a kapcsolatot.
+h2.idle.timeout.useraction=Ellen\u0151rizze a h\u00e1l\u00f3zati kapcsolatot, vagy n\u00f6velje az \u201e HTTP/2 \u201d kapcsolat t\u00e9tlens\u00e9gi id\u0151t\u00fall\u00e9p\u00e9si \u00e9rt\u00e9k\u00e9t az \u201e HTTP \u201d v\u00e9gpont konfigur\u00e1ci\u00f3j\u00e1ban.

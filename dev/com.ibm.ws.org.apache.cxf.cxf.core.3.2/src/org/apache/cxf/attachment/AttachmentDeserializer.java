@@ -46,6 +46,8 @@ import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class AttachmentDeserializer {
     public static final String ATTACHMENT_PART_HEADERS = AttachmentDeserializer.class.getName() + ".headers";
 
@@ -63,12 +65,14 @@ public class AttachmentDeserializer {
     /**
      * The maximum size of the attachment. Allowed value is any of {@link Number} or {@link String}.
      */
-    public static final String ATTACHMENT_MAX_SIZE = "attachment-max-size";
+    public static final String ATTACHMENT_MAX_SIZE = "attachment-max-size";public static final long DEFAULT_ATTACHMENT_MAX_SIZE =
+                    SystemPropertyAction.getInteger("org.apache.cxf.attachment-max-size", 50 * 1024 * 1024 /* 50 Mb */); // Liberty Change - CXF #3188
 
     /**
      * The maximum number of attachments permitted in a message. The default is 50.
      */
     public static final String ATTACHMENT_MAX_COUNT = "attachment-max-count";
+    public static final int DEFAULT_ATTACHMENT_MAX_COUNT = 50; // Liberty Change - CXF #3311
 
     // Liberty Change Start - CXF #3159
     /**
@@ -118,11 +122,11 @@ public class AttachmentDeserializer {
     private int maxHeaderLength = DEFAULT_MAX_HEADER_SIZE;
     private int maxHeadersCount = DEFAULT_ATTACHMENT_HEADERS_MAX_COUNT; // Liberty Change - CXF #3159
 
-    public AttachmentDeserializer(Message message) {
+    public AttachmentDeserializer(@Sensitive Message message) { // Liberty Change
         this(message, Collections.singletonList("multipart/related"));
     }
 
-    public AttachmentDeserializer(Message message, List<String> supportedTypes) {
+    public AttachmentDeserializer(@Sensitive Message message, List<String> supportedTypes) { // Liberty Change
         this.message = message;
         this.supportedTypes = supportedTypes;
 
@@ -141,7 +145,7 @@ public class AttachmentDeserializer {
         initializeRootMessage();
 
         Object maxCountProperty = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_COUNT);
-        int maxCount = 50;
+        int maxCount = DEFAULT_ATTACHMENT_MAX_COUNT;
         if (maxCountProperty != null) {
             if (maxCountProperty instanceof Integer) {
                 maxCount = (Integer)maxCountProperty;

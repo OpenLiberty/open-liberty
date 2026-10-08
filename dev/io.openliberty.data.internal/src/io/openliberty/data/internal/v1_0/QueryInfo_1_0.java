@@ -17,13 +17,19 @@ import static io.openliberty.data.internal.QueryType.LC_DELETE;
 import static io.openliberty.data.internal.QueryType.LC_UPDATE;
 import static io.openliberty.data.internal.QueryType.LC_UPDATE_MERGE;
 import static io.openliberty.data.internal.QueryType.SAVE;
+import static io.openliberty.data.internal.v1_0.Data_1_0.EM_createQuery_ql;
+import static io.openliberty.data.internal.v1_0.Data_1_0.EM_createQuery_ql_rc;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.AttributeConstraint;
 import io.openliberty.data.internal.QueryInfo;
@@ -44,6 +50,7 @@ import jakarta.persistence.TypedQuery;
  * QueryInfo implementation for Jakarta Data 1.0.
  */
 public class QueryInfo_1_0 extends QueryInfo {
+    private static final TraceComponent tc = Tr.register(QueryInfo_1_0.class);
 
     /**
      * Construct partially complete query information.
@@ -139,21 +146,46 @@ public class QueryInfo_1_0 extends QueryInfo {
         throw new UnsupportedOperationException("jakarta.persistence.query.NativeQuery");
     }
 
+    @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
     protected jakarta.persistence.Query ehCreateStatement(AutoCloseable entityHandler,
                                                           String jpql) {
-        return ((EntityManager) entityHandler).createQuery(jpql);
+        try { // entityHandler.createQuery(jpql)
+            return (jakarta.persistence.Query) EM_createQuery_ql //
+                            .invoke(entityHandler,
+                                    jpql);
+        } catch (IllegalAccessException x) {
+            throw new RuntimeException(x); // should never occur
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            else
+                throw new RuntimeException(x);
+        }
     }
 
+    @FFDCIgnore(InvocationTargetException.class)
     @Override
-    @SuppressWarnings("unchecked")
     @Trivial
     protected <T> TypedQuery<T> ehCreateTypedQuery(AutoCloseable entityHandler,
                                                    String jpql,
                                                    Class<?> resultType) {
-        return (TypedQuery<T>) ((EntityManager) entityHandler) //
-                        .createQuery(jpql, resultType);
+        try { // entityHandler.createQuery(jpql, resultType)
+            @SuppressWarnings("unchecked")
+            TypedQuery<T> query = (TypedQuery<T>) EM_createQuery_ql_rc //
+                            .invoke(entityHandler,
+                                    jpql,
+                                    resultType);
+            return query;
+        } catch (IllegalAccessException x) {
+            throw new RuntimeException(x); // should never occur
+        } catch (InvocationTargetException x) {
+            if (x.getCause() instanceof RuntimeException rx)
+                throw rx;
+            else
+                throw new RuntimeException(x);
+        }
     }
 
     @Override
@@ -260,8 +292,15 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
-    public Object[] toConstraintValues(Object value) {
-        return null;
+    protected int setPositionalParameters(jakarta.persistence.Query query,
+                                          int paramNum,
+                                          Object arg) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "[q] set ?" + paramNum + ' ' + loggable(arg));
+
+        query.setParameter(paramNum++, arg);
+
+        return paramNum;
     }
 
 }

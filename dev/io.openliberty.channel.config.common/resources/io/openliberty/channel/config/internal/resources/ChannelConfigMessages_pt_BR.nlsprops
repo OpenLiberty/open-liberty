@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO WebSphere kernel channel framework service: channel configuration
+#CMVCPATHNAME io.openliberty.channel.config.common/resources/io/openliberty/channel/config/internal/resources/ChannelConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO0400 - CWWKO0499
+
+QUIESCE_TIMEOUT_OVERRIDE=CWWKO0400I: O atributo ` quiesceTimeout ` no elemento `server` substitui o atributo ` chainQuiesceTimeout `. O servidor ignora o valor configurado para \u201c chainQuiesceTimeout \u201d, que \u00e9 de {0} segundos.
+# {0} is the number of seconds
+QUIESCE_TIMEOUT_OVERRIDE.explanation=Quando o atributo ` quiesceTimeout ` \u00e9 configurado no elemento `server` do arquivo ` server.xml `, esse atributo tem preced\u00eancia sobre o atributo ` chainQuiesceTimeout ` do elemento `channelfw`. O servidor ignora o valor de ` chainQuiesceTimeout `.
+QUIESCE_TIMEOUT_OVERRIDE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Se voc\u00ea quiser usar o valor \u201c chainQuiesceTimeout \u201d, remova o atributo \u201c quiesceTimeout \u201d do elemento \u201cserver\u201d.

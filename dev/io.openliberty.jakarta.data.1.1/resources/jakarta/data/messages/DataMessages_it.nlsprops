@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=Il conteggio totale degli elementi non \u00e8 disponibile
 011.unknown.attr.type=L''istanza di {0} \u00e8 stata ottenuta in un modo che non identifica il tipo di attributo. Per le classi statiche del metamodello, utilizzare un metodo.of definito su un sottotipo Attribute per fornire la classe dell''entit\u00e0 e il tipo di attributo dell''entit\u00e0.
 012.unknown.decl.type=L''istanza di {0} \u00e8 stata ottenuta in un modo che non identifica la classe di entit\u00e0 che dichiara l''attributo. Per le classi statiche del metamodello, utilizzare un metodo.of definito su un sottotipo Attribute per fornire la classe dell''entit\u00e0 e il tipo di attributo dell''entit\u00e0.
+013.arg.invalid=L''argomento ` {0} ` non pu\u00f2 assumere il valore ` {1} `.
+014.mode.disallows.offset=Una richiesta di pagina non pu\u00f2 includere contemporaneamente un offset e la modalit\u00e0 " {0} ".
+015.cursor.uncomputable=L'operazione richiesta non \u00e8 disponibile poich\u00e9 non \u00e8 possibile calcolare un cursore a partire da criteri di ordinamento che includono un'espressione.

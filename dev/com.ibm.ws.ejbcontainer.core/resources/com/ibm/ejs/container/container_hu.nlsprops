@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2022 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1560,6 +1560,10 @@ CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=T\u00e1vol\u00edtsa el a jakarta.enter
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: A(z) {0} \u00fczleti csatol\u00f3 jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3t tartalmaz. Az aszinkron annot\u00e1ci\u00f3k semmilyen fel\u00fcleten nem \u00e9rv\u00e9nyesek, \u00e9s a Jakarta Enterprise Beans t\u00e1rol\u00f3 figyelmen k\u00edv\u00fcl hagyja \u0151ket.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=A jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3 nem haszn\u00e1lhat\u00f3 Jakarta Enterprise komponensekkel. A Jakarta Enterprise Beans t\u00e1rol\u00f3 figyelmen k\u00edv\u00fcl hagyja a fel\u00fcleteken ezeket az annot\u00e1ci\u00f3kat. Ha a met\u00f3dusok az ejb-jar.xml telep\u00edt\u00e9sle\u00edr\u00f3ban nem aszinkronk\u00e9nt vannak deklar\u00e1lva, illetve a komponensoszt\u00e1lyokon vagy komponensoszt\u00e1ly met\u00f3dusokon nem jakarta.ejb.Asynchronous annot\u00e1ci\u00f3 van megadva, akkor a komponens met\u00f3dusok szinkron m\u00f3don futnak.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=T\u00e1vol\u00edtsa el a jakarta.enterprise.concurrent.Asynchronous annot\u00e1ci\u00f3t a megadott \u00fczleti fel\u00fcletr\u0151l, \u00e9s ellen\u0151rizze, hogy a jakarta.ejb.Asynchronous annot\u00e1ci\u00f3 helyesen van-e megadva a komponensoszt\u00e1lyban.
+
+CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: A {2} alkalmaz\u00e1s {1} modulj\u00e1ban tal\u00e1lhat\u00f3 \u201e {0} \u201d bean egy vagy t\u00f6bb olyan met\u00f3dussal rendelkezik, amelyeken a \u201e jakarta.enterprise.concurrent.Schedule \u201d annot\u00e1ci\u00f3 szerepel. Ez a megjegyz\u00e9s nem haszn\u00e1lhat\u00f3 v\u00e1llalati bean-eken.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=A Jakarta Concurrency specifik\u00e1ci\u00f3 nem enged\u00e9lyezi az \u201e jakarta.enterprise.concurrent.Schedule \u201d annot\u00e1ci\u00f3 haszn\u00e1lat\u00e1t a Jakarta Enterprise Beans-en.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.useraction=T\u00e1vol\u00edtsa el a ` jakarta.enterprise.concurrent.Asynchronous ` megjegyz\u00e9st a met\u00f3dusb\u00f3l. Az ` jakarta.ejb.Schedule ` annot\u00e1ci\u00f3val jel\u00f6lje meg az enterprise bean-ek id\u0151t\u00fall\u00e9p\u00e9si met\u00f3dusait.
 
 #-------------------------------------------------------------------------------
 #

@@ -2567,7 +2567,7 @@ public class ToolTest extends FATServletClient {
         client.callMCP(request);
 
         assertNotNull(server.waitForStringInTrace(Pattern.quote(redactedSessionId)));
-        assertNull(server.waitForStringInTrace(sessionId, 3000)); // wait 3 seconds to confirm full session Id not found in trace
+        assertNull(server.waitForStringInTrace(sessionId, TestConstants.NEGATIVE_TIMEOUT_MS)); // negative check to confirm full session Id not found in trace
     }
 
     @Test
@@ -3054,6 +3054,96 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testOutputSchemaFromOnToolResponseToolCall() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testOutputSchemaFromOnToolResponse",
+                            "arguments": { "name": "Paris" }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+        String expected = """
+                        {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "isError": false,
+                            "structuredContent": {
+                              "name": "Paris",
+                              "country": "England",
+                              "population": 8000,
+                              "isCapital": false
+                            }
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expected, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    @Test
+    public void testOutputSchemaFromOverridesReturnTypeToolCall() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testOutputSchemaFromOverridesReturnType",
+                            "arguments": { "name": "Lyon" }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+        // Returns String — schema is City (from outputSchemaFrom) but response is plain text
+        String expected = """
+                        {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "isError": false,
+                            "content": [{ "type": "text", "text": "Lyon" }]
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expected, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    @Test
+    public void testSchemaAnnotationTakesPrecedenceOverOutputSchemaFromToolCall() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom",
+                            "arguments": { "name": "Paris" }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+        // @Schema wins over outputSchemaFrom=City — structuredContent has cityName, not City fields
+        String expected = """
+                        {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "isError": false,
+                            "structuredContent": {
+                              "cityName": "Paris"
+                            }
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expected, response, JSONCompareMode.NON_EXTENSIBLE);
     }
 
 }
