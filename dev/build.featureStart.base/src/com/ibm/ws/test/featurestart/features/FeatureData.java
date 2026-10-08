@@ -68,7 +68,7 @@ public class FeatureData {
             logError(m, "Folder [ " + featuresPath + " ] could not be read");
             return features;
         } else if (featureFiles.length == 0) {
-            logError(m, "Folder [ " + featuresPath + " ] could not be read");
+            logError(m, "Folder [ " + featuresPath + " ] is empty");
             return features;
         }
 

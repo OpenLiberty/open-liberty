@@ -138,10 +138,15 @@ public class FeaturesStartTestBase {
     // the server java level, whether the server is running on ZOS, whether the test
     // mode is FULL or LITE, and based on a sparseness setting.
 
-    protected static FeaturesStartServer server;
-    private static FeaturesStartFeatures features;    
-    protected static FeaturesStartParameters parameters;
-    protected static FeaturesStartResults results;
+    // Marking these as volatile to address review / analysis concerns.
+    //
+    // The expectation is that in practice there will be no problem of concurrent
+    // updates.
+
+    protected static volatile FeaturesStartServer server;
+    private static volatile FeaturesStartFeatures features;    
+    protected static volatile FeaturesStartParameters parameters;
+    protected static volatile FeaturesStartResults results;
     
     // Server APIs ...
 
@@ -263,9 +268,9 @@ public class FeaturesStartTestBase {
         timingResult.display(m);
 
         if ( !testResult.attempted ) {
-            Assert.assertTrue("Did not attempt [ " + featureShortName + " ]", false);
+            Assert.fail("Did not attempt [ " + featureShortName + " ]");
         } else if ( !testResult.started ) {
-            Assert.assertTrue("Failed to start [ " + featureShortName + " ]", false);
+            Assert.fail("Failed to start [ " + featureShortName + " ]");
 
         } else if ( results.failures.contains(featureShortName) ) {
             String failureCase;
@@ -283,13 +288,13 @@ public class FeaturesStartTestBase {
             } else {
                 failureCase = "Strange mis-reported error";                
             }
-            Assert.assertTrue(failureCase + " [ " + featureShortName + " ]", false);
+            Assert.fail(failureCase + " [ " + featureShortName + " ]");
 
         } else if ( !testResult.stopped ) {
-            Assert.assertTrue("Failed to stop [ " + featureShortName + " ]", false);
+            Assert.fail("Failed to stop [ " + featureShortName + " ]");
 
         } else if ( !results.successes.contains(featureShortName) ) {
-            Assert.assertTrue("Strange: Neither success nor failure recorded for [ " + featureShortName + " ]", false);            
+            Assert.fail("Strange: Neither success nor failure recorded for [ " + featureShortName + " ]");            
         }
     }
 

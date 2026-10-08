@@ -98,13 +98,23 @@ public class FeaturesStartParameters {
         int[] range = getRange(features.runnableFeatures.size(), NUM_BUCKETS, bucketNo);
         this.firstFeatureNo = range[0];
         this.lastFeatureNo = range[1];
-        
-        int useNumFeatures = this.lastFeatureNo - this.firstFeatureNo;
+
+        int bucketSize = this.lastFeatureNo - this.firstFeatureNo;
+
+        // If 'SPARSITY' was specified, adjust the number of features.
+        // One of each 'SPARSITY' features is run.
+        // If there are remaining features, increment the count, since
+        // one of those remaining features will be run.
+
+        int useNumFeatures; 
         if (SPARSITY > 0) {
-            useNumFeatures /= SPARSITY;
-            if ((useNumFeatures % SPARSITY) > 0) {
+            useNumFeatures = bucketSize / SPARSITY;
+            int remainder = bucketSize % SPARSITY;
+            if (remainder > 0) {
                 useNumFeatures++;
             }
+        } else {
+            useNumFeatures = bucketSize;
         }
         this.numFeatures = useNumFeatures;
 
@@ -116,9 +126,9 @@ public class FeaturesStartParameters {
             }
         }
         
-        List<Object[]> useParameters = new ArrayList<>(this.numFeatures);
-        List<String> useRunFeatureNames = new ArrayList<>((SPARSITY > 0) ? ((this.numFeatures / SPARSITY) + 1) : this.numFeatures);
-        List<String> useSkipFeatureNames = new ArrayList<>((SPARSITY > 0) ? this.numFeatures : 0);
+        List<Object[]> useParameters = new ArrayList<>(useNumFeatures);
+        List<String> useRunFeatureNames = new ArrayList<>(useNumFeatures);
+        List<String> useSkipFeatureNames = new ArrayList<>(bucketSize - useNumFeatures);
 
         for (int featureNo = this.firstFeatureNo; featureNo < this.lastFeatureNo; featureNo++) {
             String shortName = features.runnableFeatureNames.get(featureNo);

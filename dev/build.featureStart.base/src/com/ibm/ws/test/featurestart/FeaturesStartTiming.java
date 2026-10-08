@@ -292,7 +292,7 @@ public class FeaturesStartTiming {
     }
 
     public static final String nsAsSec(long ns) {
-        return String.format("%.4f", Float.valueOf(((float) ns) / NS_IN_SEC));
+        return String.format("%.4f", Double.valueOf(((double) ns) / NS_IN_SEC));
     }
 
     public static String format(String description, long ns) {

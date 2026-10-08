@@ -14,6 +14,7 @@ package com.ibm.ws.test.featurestart;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -95,8 +96,8 @@ public class FeaturesStartResults {
 
     // Test state
 
-    public String lastShortName;
-    public String nextShortName;
+    protected String lastShortName;
+    protected String nextShortName;
 
     /**
      * Set the short name of the next feature which is to be tested.
@@ -150,21 +151,48 @@ public class FeaturesStartResults {
     protected static final String MISSING_BUNDLE_ERROR = "CWWKF0002E";
 
     protected static final String[] OUT_OF_LEVEL_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR };
-
+    protected static final Pattern[] OUT_OF_LEVEL_PATTERNS = asPatterns(OUT_OF_LEVEL_ERRORS);
     protected static final String OUT_OF_LEVEL_REGEX = asRegEx(JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR);
-    protected static final String CLEAN_REGEX = asRegEx(MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR);
     
+    protected static final String[] CLEAN_ERRORS = { MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR };
+    protected static final Pattern[] CLEAN_PATTERNS = asPatterns(CLEAN_ERRORS);
+    protected static final String CLEAN_REGEX = asRegEx( (String[]) CLEAN_ERRORS);
+
+    // Cache of error patterns.
+    //
+    // Allow these to accumulate between test runs. There is not expected
+    // to be a problem of excess growth of the pattern store.
+    
+    protected static final Map<String, Pattern> patternStore = Collections.synchronizedMap( new HashMap<>() );
+
+    protected static Pattern getPattern(String regEx) {
+        return patternStore.computeIfAbsent( regEx, (useRegEx) -> Pattern.compile(useRegEx) );
+    }
+
+    protected static Pattern[] asPatterns(String[] allRegEx) {
+        if ( allRegEx == null ) {
+            return null;
+        }
+
+        Pattern[] patterns = new Pattern[ allRegEx.length ];
+        for ( int patternNo = 0; patternNo < allRegEx.length; patternNo++ ) {
+            patterns[patternNo] = getPattern( allRegEx[patternNo] );
+        }
+        return patterns;
+    }
+
     // Next feature dependent data ...
 
-    public String nextErrorsCase;
+    protected String nextErrorsCase;
 
-    public boolean nextIsClean;
-    public boolean nextIsOutOfLevel;
-    public boolean nextIsFeatureSpecified;
+    protected boolean nextIsClean;
+    protected boolean nextIsOutOfLevel;
+    protected boolean nextIsFeatureSpecified;
 
-    public String[] nextExpectedErrorsRegEx;
+    protected String[] nextExpectedErrorsRegEx;
+    protected Pattern[] nextExpectedErrorsPattern;
 
-    public String nextIgnoredRegEx;
+    protected String nextIgnoredRegEx;
     
     protected void setFeatureData() {
         String m = "setErrors";
@@ -176,7 +204,8 @@ public class FeaturesStartResults {
         boolean isFeatureSpecified;
         
         String[] expectedErrorsRegEx;
-
+        Pattern[] expectedErrorsPattern;
+        
         String ignoredRegEx;
         
         if ( features.outOfLevelFeatureNames.contains(nextShortName) ) {
@@ -185,6 +214,7 @@ public class FeaturesStartResults {
             isClean = false;
             isFeatureSpecified = false;
             expectedErrorsRegEx = OUT_OF_LEVEL_ERRORS;
+            expectedErrorsPattern = OUT_OF_LEVEL_PATTERNS;
             ignoredRegEx = OUT_OF_LEVEL_REGEX;
             
         } else {
@@ -196,8 +226,8 @@ public class FeaturesStartResults {
                 isClean = false;
                 isFeatureSpecified = true;
                 expectedErrorsRegEx = featureAllowedErrors;
-
-                ignoredRegEx = asRegEx( asArray(featureAllowedErrors, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR) );
+                expectedErrorsPattern = asPatterns(expectedErrorsRegEx);
+                ignoredRegEx = asRegEx( concatenate(featureAllowedErrors, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR) );
                 
                 // TODO: If either of the missing errors is explicitly allowed for the
                 //       feature, the ignored errors list will have redundant entries.
@@ -209,7 +239,7 @@ public class FeaturesStartResults {
                 isClean  = true;
                 isFeatureSpecified = false;
                 expectedErrorsRegEx = null;
-                
+                expectedErrorsPattern = null;
                 ignoredRegEx = CLEAN_REGEX;
             }
         }
@@ -220,6 +250,7 @@ public class FeaturesStartResults {
         nextIsOutOfLevel = isOutOfLevel;
         nextIsFeatureSpecified = isFeatureSpecified;
         nextExpectedErrorsRegEx = expectedErrorsRegEx;
+        nextExpectedErrorsPattern = expectedErrorsPattern;
 
         nextIgnoredRegEx = ignoredRegEx;
         
@@ -344,18 +375,18 @@ public class FeaturesStartResults {
     //
     // Unexpected Error -> Missing Module | Missing Bundle | Other Error
 
-    public final Set<String> successes;
-    public final Set<String> failures;
+    protected final Set<String> successes;
+    protected final Set<String> failures;
 
-    public final Set<String> failuresAbsent;
-    public final Set<String> failuresPresent;
+    protected final Set<String> failuresAbsent;
+    protected final Set<String> failuresPresent;
 
-    public final Map<String, Set<String>> failuresAbsentFeatureSpecified;
-    public final Map<String, Set<String>> failuresAbsentOutOfLevel;
+    protected final Map<String, Set<String>> failuresAbsentFeatureSpecified;
+    protected final Map<String, Set<String>> failuresAbsentOutOfLevel;
 
-    public final Map<String, List<String>> failuresPresentOther;
-    public final Map<String, List<String>> failuresPresentMissingModule;
-    public final Map<String, List<String>> failuresPresentMissingBundle;
+    protected final Map<String, List<String>> failuresPresentOther;
+    protected final Map<String, List<String>> failuresPresentMissingModule;
+    protected final Map<String, List<String>> failuresPresentMissingBundle;
 
     public boolean didSucceed() {
         return successes.contains(nextShortName); 
@@ -513,6 +544,15 @@ public class FeaturesStartResults {
             }
         }
 
+        // A failure can be because the startup was not attempted
+        // (because the server feature update failed), or because
+        // the startup was attempted.
+        //
+        // If the startup was attempted, the server start can fail, but
+        // that does not mean the startup test failed. The test fails if
+        // expected error messages are not produced, or if unexpected
+        // error messages are produced.
+
         if ( !didFail() ) {
             recordSuccess(m);
         }
@@ -619,6 +659,18 @@ public class FeaturesStartResults {
             }
 
         } finally {
+            // TODO: Whether to always kill the server process (even if the server stop
+            // succeeded) is not clear.
+            //
+            // Killing a possibly already killed process might accidentally kill a process
+            // which was started immediately after the server process stopped.
+            //
+            // On the other hand, if the server stop left a zombie process, not killing the
+            // process will leave that zombie process.
+            //
+            // Per available documentation, on unix systems, PIDs are usually assigned sequentially.
+            // That should make the problem of accidental re-assignment of a PID value "rare".
+
             if ( startupResult.pid != null ) {
                 logInfo(m, "Killing: " + description);
                 Exception killException = timingResult.runKill( () -> server.killProcess(startupResult.pid) );
@@ -743,10 +795,7 @@ public class FeaturesStartResults {
         boolean isFeatureSpecified = nextIsFeatureSpecified;
 
         String[] expectedErrorsRegEx = nextExpectedErrorsRegEx;
-        Pattern[] expectedErrorsPattern = new Pattern[ expectedErrorsRegEx.length ];
-        for ( int errorNo = 0; errorNo < expectedErrorsRegEx.length; errorNo++ ) {
-            expectedErrorsPattern[errorNo] = Pattern.compile( expectedErrorsRegEx[errorNo] );
-        }
+        Pattern[] expectedErrorsPattern = nextExpectedErrorsPattern;
 
         int numMessages = messages.size();
         int numErrors = expectedErrorsRegEx.length;
@@ -850,29 +899,28 @@ public class FeaturesStartResults {
 
     //
 
-    
     // "io.openliberty.java11.internal [25]" ==> "io.openliberty.java11.internal"
     
     protected static String stripModuleNumber(String missingModule) {
-        int delimiterOffset = missingModule.indexOf(' ');
-        if ( delimiterOffset == 0 ) {
-            return missingModule;
-        } else {
-            return missingModule.substring(0, delimiterOffset);
-        }
+        return extractHead(missingModule, ' ');
     }
 
     // io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
     // ==> io.openliberty.org.eclipse.microprofile.contextpropagation.1.2
 
     protected static String stripVersionDependency(String missingBundle) {
-        int delimiterOffset = missingBundle.indexOf('/');
-        if ( delimiterOffset == 0 ) {
-            return missingBundle;
+        return extractHead(missingBundle, '/');
+    }
+
+    protected static String extractHead(String text, char delimiter) {
+        int delimiterOffset = text.indexOf(delimiter);
+        if ( delimiterOffset == -1 ) {
+            return text;
         } else {
-            return missingBundle.substring(0, delimiterOffset);
+            return text.substring(0, delimiterOffset);
         }
     }
+
     
     protected static final boolean INCLUDE_PREFIX = true;
     
@@ -893,25 +941,17 @@ public class FeaturesStartResults {
         return tail;
     }
     
-    protected static String[] asArray(String... head) {
-        String[] allElements = new String[head.length ];
-        for ( int elementNo = 0; elementNo < head.length; elementNo++ ) {
-            allElements[elementNo] = head[elementNo];
-        }
-        return allElements;
-    }
+    protected static String[] concatenate(String[] head, String... tail) {
+        int allLength = head.length + tail.length;
 
-    protected static String[] asArray(String[] tail, String... head) {
-        int allLength = tail.length + head.length;
-        
         String[] allElements = new String[allLength];
-        
+
         int elementNo = 0;
-        for ( String tailElement : tail ) {
-            allElements[ elementNo++ ] = tailElement;
-        }
         for ( String headElement : head ) {
             allElements[ elementNo++ ] = headElement;
+        }
+        for ( String tailElement : tail ) {
+            allElements[ elementNo++ ] = tailElement;
         }        
         
         return allElements;

@@ -44,13 +44,13 @@ public class FeaturesStartServer {
     
     // Server APIs ...
 
-    public String serverName;
+    private final String serverName;
 
     public String serverGetName() {
         return serverName;
     }
 
-    public LibertyServer server;
+    private final LibertyServer server;
 
     protected String getInstallRoot() {
         return server.getInstallRoot();
@@ -64,8 +64,8 @@ public class FeaturesStartServer {
         return JavaInfo.forServer(useServer).majorVersion();
     }
 
-    public boolean serverIsZOS;
-    public int serverJavaLevel;
+    private final boolean serverIsZOS;
+    private final int serverJavaLevel;
 
     public boolean isZOS() {
         return serverIsZOS;
@@ -82,7 +82,7 @@ public class FeaturesStartServer {
         return new File( server.getInstallRoot() + SERVER_FEATURES_PATH );
     }
 
-    public String serverConfigPath;
+    private final String serverConfigPath;
 
     public String getConfigPath() {
         return serverConfigPath;
@@ -229,12 +229,12 @@ public class FeaturesStartServer {
      */
     public void updateFeature(String lastShortName, String nextShortName) throws Exception {
         String m = "updateFeature";
-        logInfo(m, "Configuring server [ " + serverName + " ] for feature [ " + nextShortName + " ]");
+        logInfo(m, "Configuring server [ " + serverGetName() + " ] for feature [ " + nextShortName + " ]");
         if ( lastShortName != null ) {
             logInfo(m, "Prior feature [ " + lastShortName + " ]");
         }
         changeFeatures(Collections.singletonList(nextShortName));
-        logInfo(m, "Configured server [ " + serverName + " ] for feature [ " + nextShortName + " ]");        
+        logInfo(m, "Configured server [ " + serverGetName() + " ] for feature [ " + nextShortName + " ]");        
     }
     
 }
