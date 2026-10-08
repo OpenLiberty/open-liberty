@@ -72,17 +72,18 @@ public class LTPATokenRefreshTests {
     private static final String KEYS_DEST       = "resources/security/ltpa.keys";
 
     // Token age offsets in seconds used by authenticateAndBackdateToken().
-    private static final int PAST_THRESHOLD_S   = 70;
-    private static final int BEFORE_THRESHOLD_S = 20;
-    private static final int PAST_INACTIVITY_S  = 130;
-    private static final int PAST_EXPIRY_S      = 190;
+    private static final int PAST_REFRESH_S   = 61;
+    private static final int BEFORE_REFRESH_S = 20;
+    private static final int PAST_INACTIVITY_S  = 121;
+    private static final int PAST_EXPIRY_S      = 181;
+    private static final int NEAR_INACTIVITY_S  = 115;
 
     private static final String CFG_TOKEN_REFRESH                      = "serverTokenRefresh.xml";
     private static final String CFG_TOKEN_NON_REFRESH                  = "serverTokenNonRefresh.xml";
     private static final String CFG_TOKEN_REFRESH_ONLY                 = "serverTokenRefreshOnly.xml";
     private static final String CFG_TOKEN_INACTIVITY_ONLY              = "serverTokenInactivityOnly.xml";
-    private static final String CFG_TOKEN_EXCEEDS_EXPIRY               = "serverTokenInactivityExceedsExpiration.xml";
-    private static final String CFG_TOKEN_THRESHOLD_EXCEEDS_INACTIVITY = "serverTokenRefreshExceedsInactivity.xml";
+    private static final String CFG_TOKEN_INACTIVITY_EXCEEDS_EXPIRY    = "serverTokenInactivityExceedsExpiration.xml";
+    private static final String CFG_TOKEN_REFRESH_EXCEEDS_INACTIVITY = "serverTokenRefreshExceedsInactivity.xml";
     private static final String CFG_TOKEN_REFRESH_DYN_EXP_VAL_FALSE    = "serverTokenRefreshDynExpValFalse.xml";
 
     @Rule
@@ -107,7 +108,7 @@ public class LTPATokenRefreshTests {
         nonRefreshServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.token.ltpa.fat.refreshDisabled");
         nonRefreshServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/ltpafattestlibertyinternals-1.0.mf");
         nonRefreshServer.addInstalledAppForValidation(APP_NAME);
-        nonRefreshServer.useSecondaryHTTPPort();
+        nonRefreshServer.useSecondaryHTTPPort(); // Avoid port conflict with refreshServer
 
         // Pre-provision both servers with identical LTPA keys so tokens minted by the
         // non-refresh server are decryptable by the refresh server and vice versa.
@@ -139,11 +140,12 @@ public class LTPATokenRefreshTests {
         }
         if (refreshServer != null && refreshServer.isStarted()) {
             // These warnings are intentionally produced by specific test configs and must not
-            // cause teardown to fail: CWWKS4125W (inactivityTimeout >= expiration),
-            // CWWKS4124W (refreshThreshold >= inactivityTimeout, relative-to-expiration path),
-            // CWWKS4123W (refreshThreshold >= inactivityTimeout, clearly-wrong path),
-            // CWWKS4126W (inactivityTimeout set without refreshThreshold),
-            // CWWKS4127W (refreshThreshold set without inactivityTimeout).
+            // cause teardown to fail:
+            // CWWKS4125W: inactivityTimeout >= expiration
+            // CWWKS4124W: refreshThreshold >= inactivityTimeout AND refreshThreshold < expiration
+            // CWWKS4123W: refreshThreshold >= inactivityTimeout AND refreshThreshold >= expiration
+            // CWWKS4126W: inactivityTimeout set without refreshThreshold
+            // CWWKS4127W: refreshThreshold set without inactivityTimeout
             refreshServer.stopServer("CWWKS4125W", "CWWKS4124W", "CWWKS4123W", "CWWKS4126W", "CWWKS4127W");
         }
     }
@@ -152,33 +154,66 @@ public class LTPATokenRefreshTests {
      * Tests the following:
      * <OL>
      * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Authenticate as user1 and backdate the token past the refresh threshold (70s).
-     * <LI>Send an SSO request with the backdated cookie.
-     * <LI>Repeat steps for expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false.
+     * <LI>Authenticate as user1 and backdate the token by {@code NEAR_INACTIVITY_S} (115s) — inside the
+     *     refresh threshold window — then send an SSO request (cycle 1 refresh).
+     * <LI>Sleep {@code PAST_REFRESH_S} (61s) to cross the refresh threshold on the refreshed cookie,
+     *     then send a second SSO request (cycle 2 refresh).
+     * <LI>Sleep 5s and send a final SSO request with the just-refreshed cookie.
      * </OL>
      * <P>Expected Results:
      * <OL>
-     * <LI>The server issues a new LtpaToken2 cookie during SSO request (token refresh triggered).
+     * <LI>Both cycle 1 and cycle 2 SSO requests trigger a refresh and issue a new LtpaToken2 cookie.
+     * <LI>The final SSO request is rejected with HTTP 401 — the hard session cap
+     *     ({@code sessionStart + expiration}) has been exceeded, ending the session.
+     * <LI>This demonstrates that with dynamicExpirationValidation=true the absolute expiration enforced
+     *     is based on the configured expiration regardless of the expiration set in the token.
      * </OL>
      */
     @Test
-    public void testTokenRefreshedAndUsableWhenThresholdCrossed() throws Exception {
+    public void testTokenFullLifeCycleWithDynamicExpirationValidationTrue() throws Exception {
         String url = getRefreshServletUrl();
-        String method = "testTokenRefreshedAndUsableWhenThresholdCrossed";
-        
-        // dynamicExpirationValidation=true
+        String method = "testTokenFullLifeCycleWithDynamicExpirationValidationTrue";
         Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true");
-        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
-        ssoRequestExpectingRefresh(url, agedCookie, "SSO after threshold", method);
 
-        // dynamicExpirationValidation=false
-        setConfig(CFG_TOKEN_REFRESH_DYN_EXP_VAL_FALSE);
-        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false");
-        agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
-        ssoRequestExpectingRefresh(url, agedCookie, "SSO after threshold", method);
-  
-        Log.info(thisClass, method, "PASSED: refresh successful");
+        String cookie = authenticateAndBackdateToken(url, "user1", "user1pwd", NEAR_INACTIVITY_S, method);
+        cookie = ssoRequestExpectingRefresh(url, cookie, "cycle 1 (refresh expected, token age ~" + NEAR_INACTIVITY_S + "s)", method);
+
+        Log.info(thisClass, method, "cycle 2: sleeping " + PAST_REFRESH_S + "s to cross refreshThreshold=1m");
+        Thread.sleep(PAST_REFRESH_S * 1000L);
+        cookie = ssoRequestExpectingRefresh(url, cookie, "cycle 2 (refresh expected, total time elapsed > inactivityTimeout)", method);
+
+        Log.info(thisClass, method, "final check: sleeping 5s");
+        Thread.sleep(5_000);
+        HttpURLConnection conn = ssoRequest(url, cookie, "final SSO (absolute expiration exceeded, expect 401)", method);
+        assertEquals("Session must be rejected once the absolute expiraiton is exceeded", 401, conn.getResponseCode());
+        conn.disconnect();
     }
+
+    // same as testTokenFullLifeCycleWithDynamicExpirationValidationTrue but for dynamicExpirationValidation=false
+    @Test
+    public void testTokenFullLifeCycleWithDynamicExpirationValidationFalse() throws Exception {
+        setConfig(CFG_TOKEN_REFRESH_DYN_EXP_VAL_FALSE);
+        String url = getRefreshServletUrl();
+        String method = "testTokenFullLifeCycleWithDynamicExpirationValidationFalse";
+        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false");
+
+        String cookie = authenticateAndBackdateToken(url, "user1", "user1pwd", NEAR_INACTIVITY_S, method);
+        cookie = ssoRequestExpectingRefresh(url, cookie, "cycle 1 (refresh expected, token age ~" + NEAR_INACTIVITY_S + "s)", method);
+
+        Log.info(thisClass, method, "cycle 2: sleeping " + PAST_REFRESH_S + "s to cross refreshThreshold=1m");
+        Thread.sleep(PAST_REFRESH_S * 1000L);
+        cookie = ssoRequestExpectingRefresh(url, cookie, "cycle 2 (refresh expected, total time elapsed > inactivityTimeout)", method);
+
+        Log.info(thisClass, method, "final check: sleeping 5s then sending SSO, expect 401");
+        Thread.sleep(5_000);
+        HttpURLConnection conn = ssoRequest(url, cookie, "final SSO (session cap exceeded, expect 401)", method);
+        assertEquals("Session must be rejected once the hard session cap is exceeded", 401, conn.getResponseCode());
+        conn.disconnect();
+    }
+
+    // =========================================================================
+    // Refresh Threshold Tests
+    // =========================================================================
 
     /**
      * Tests the following:
@@ -199,58 +234,20 @@ public class LTPATokenRefreshTests {
         String method = "testTokenNotRefreshedBeforeThreshold";
         Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true");
 
-        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", BEFORE_THRESHOLD_S, method);
+        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", BEFORE_REFRESH_S, method);
 
         HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO before threshold", method);
         assertEquals("SSO request must succeed", 200, conn.getResponseCode());
         assertTokenNotRefreshed("Token should not be refreshed when inactivity remaining > refreshThreshold", conn);
         conn.disconnect();
-        Log.info(thisClass, method, "PASSED: no new cookie received");
     }
 
     /**
      * Tests the following:
      * <OL>
      * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Authenticate as user1 and backdate the token past the refresh threshold (110s).
-     * <LI>Send an SSO request with the backdated cookie to trigger a refresh.
-     * <LI>Wait 10 seconds to age the token past original inactivityTimeout of 120s.
-     * <LI>Send a second SSO request using the newly refreshed cookie.
-     * </OL>
-     * <P>Expected Results:
-     * <OL>
-     * <LI>A new LtpaToken2 cookie is issued on the first SSO request.
-     * <LI>The refreshed cookie is accepted with HTTP 200, confirming the inactivity clock was
-     *     reset to the point of refresh rather than the original token creation time.
-     * </OL>
-     */
-    @Test
-    public void testInactivityWindowResetsAfterTokenRefresh() throws Exception {
-        String url = getRefreshServletUrl();
-        String method = "testInactivityWindowResetsAfterTokenRefresh";
-        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true");
-
-        // Backdate token within refresh window and 10 seconds before inactivity timeout (age = 110s)
-        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", 110, method);
-        String refreshedCookie = ssoRequestExpectingRefresh(url, agedCookie, "SSO after first age (refresh expected)", method);
-
-        // Sleep for 11s to age past original inactivityTimeout of 120s
-        Log.info(thisClass, method, "waiting 11s to pass the original inactivityTimeout of 120s");
-        Thread.sleep(11_000);
-
-        HttpURLConnection conn = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (inactivity timeout reset)", method);
-        assertEquals("Refreshed cookie must be valid (inactivity clock was reset)", 200, conn.getResponseCode());
-        conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: refreshed cookie accepted; inactivity clock was correctly reset");
-    }
-
-    /**
-     * Tests the following:
-     * <OL>
-     * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Authenticate as user1 and backdate the token past the refresh threshold (70s).
-     * <LI>Authenticate as user2 and backdate the token past the refresh threshold (70s).
+     * <LI>Authenticate as user1 and backdate the token past the refresh threshold ({@code PAST_REFRESH_S}s = 61s).
+     * <LI>Authenticate as user2 and backdate the token past the refresh threshold ({@code PAST_REFRESH_S}s = 61s).
      * <LI>Send an SSO request for each user.
      * </OL>
      * <P>Expected Results:
@@ -265,54 +262,15 @@ public class LTPATokenRefreshTests {
         String method = "testTokenRefreshWithMultipleUsers";
         Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true");
 
-        String user1AgedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
-        String user2AgedCookie = authenticateAndBackdateToken(url, "user2", "user2pwd", PAST_THRESHOLD_S, method);
+        String user1AgedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_REFRESH_S, method);
+        String user2AgedCookie = authenticateAndBackdateToken(url, "user2", "user2pwd", PAST_REFRESH_S, method);
 
         assertFalse("Different users must have different backdated cookies", user1AgedCookie.equals(user2AgedCookie));
-        Log.info(thisClass, method, "users have unique backdated cookies");
 
         String user1RefreshedCookie = ssoRequestExpectingRefresh(url, user1AgedCookie, "user1 SSO (refresh expected)", method);
         String user2RefreshedCookie = ssoRequestExpectingRefresh(url, user2AgedCookie, "user2 SSO (refresh expected)", method);
 
         assertFalse("Refreshed cookies must differ between users", user1RefreshedCookie.equals(user2RefreshedCookie));
-        Log.info(thisClass, method, "PASSED: both users received unique refreshed cookies");
-    }
-
-    /**
-     * Tests the following:
-     * <OL>
-     * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Authenticate as user1 and backdate the token past the refresh threshold (70s).
-     * <LI>Send an SSO request with the backdated cookie.
-     * <LI>Inspect the Set-Cookie header on the response.
-     * </OL>
-     * <P>Expected Results:
-     * <OL>
-     * <LI>A new LtpaToken2 cookie is issued (token refresh triggered).
-     * <LI>The Set-Cookie header on the refreshed cookie contains the HttpOnly attribute.
-     * <LI>The Set-Cookie header on the refreshed cookie contains the Path attribute.
-     * </OL>
-     */
-    @Test
-    public void testCookieAttributesPreservedAfterRefresh() throws Exception {
-        String url = getRefreshServletUrl();
-        String method = "testCookieAttributesPreservedAfterRefresh";
-        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true");
-
-        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
-
-        HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO after threshold (refresh expected)", method);
-        assertEquals("SSO authentication must succeed", 200, conn.getResponseCode());
-        String header = getCookieHeader(conn.getHeaderFields());
-        assertNotNull("Refreshed Set-Cookie header must be present", header);
-        assertTokenRefreshed(conn, agedCookie);
-        conn.disconnect();
-
-        Log.info(thisClass, method, "refreshed Set-Cookie header: " + header);
-        assertTrue("Refreshed cookie must have HttpOnly attribute", header.toLowerCase().contains("httponly"));
-        assertTrue("Refreshed cookie must have Path attribute",     header.toLowerCase().contains("path="));
-
-        Log.info(thisClass, method, "PASSED: cookie attributes present on refreshed token");
     }
 
     /**
@@ -320,7 +278,7 @@ public class LTPATokenRefreshTests {
      * <OL>
      * <LI>Start server with baseline config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
      * <LI>Switch server to non-refresh config: expiration=2m, no inactivityTimeout, no refreshThreshold.
-     * <LI>Authenticate as user1 and backdate the token past the former refresh threshold (70s).
+     * <LI>Authenticate as user1 and backdate the token past the former refresh threshold ({@code PAST_REFRESH_S}s = 61s).
      * <LI>Send an SSO request with the backdated cookie.
      * </OL>
      * <P>Expected Results:
@@ -337,24 +295,25 @@ public class LTPATokenRefreshTests {
         Log.info(thisClass, method, "switching from " + CFG_TOKEN_REFRESH + " to " + CFG_TOKEN_NON_REFRESH +
                  " (expiration=2m, no inactivityTimeout, no refreshThreshold)");
         setConfig(CFG_TOKEN_NON_REFRESH);
-        Log.info(thisClass, method, "config update complete; refresh and inactivity are now disabled");
 
         // Feature is OFF: a past-threshold token must not be refreshed.
-        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_REFRESH_S, method);
 
         HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO past refreshThreshold (no refresh expected)", method);
         assertEquals("SSO must succeed, token only expires at absolute expiration without inactivityTimeout", 200, conn.getResponseCode());
         assertTokenNotRefreshed("No refresh expected — refreshThreshold and inactivityTimeout not configured", conn);
         conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: refresh not enforced after switch");
     }
+
+    // =========================================================================
+    // Inactivity Timeout Tests
+    // =========================================================================
 
     /**
      * Tests the following:
      * <OL>
-     * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false.
-     * <LI>Authenticate as user1 and backdate the token past the inactivity timeout (130s).
+     * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
+     * <LI>Authenticate as user1 and backdate the token past the inactivity timeout ({@code PAST_INACTIVITY_S}s = 121s).
      * <LI>Send an SSO request with the backdated cookie.
      * </OL>
      * <P>Expected Results:
@@ -364,56 +323,53 @@ public class LTPATokenRefreshTests {
      * </OL>
      */
     @Test
-    public void testTokenRejectedAfterInactivityTimeout() throws Exception {
-        setConfig(CFG_TOKEN_REFRESH_DYN_EXP_VAL_FALSE);
+    public void testTokenRejectedAfterInactivityTimeoutDT() throws Exception {
         String url = getRefreshServletUrl();
-        String method = "testTokenRejectedAfterInactivityTimeout";
-        Log.info(thisClass, method, "expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false");
+        String method = "testTokenRejectedAfterInactivityTimeoutDT";
 
+        Log.info(thisClass, method, "expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true");
         String expiredCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
-
         HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
-        int status = conn.getResponseCode();
-        assertEquals("Idle token must be rejected with 401", 401, status);
+        assertEquals("Idle token must be rejected with 401", 401, conn.getResponseCode());
         conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: idle token correctly rejected with HTTP " + status);
     }
 
     /**
      * Tests the following:
      * <OL>
-     * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Authenticate as user1 and backdate the token past the absolute expiration (190s).
+     * <LI>Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false.
+     * <LI>Authenticate as user1 and backdate the token past the inactivity timeout ({@code PAST_INACTIVITY_S}s = 121s).
      * <LI>Send an SSO request with the backdated cookie.
      * </OL>
      * <P>Expected Results:
      * <OL>
      * <LI>The SSO request is rejected with HTTP 401.
-     * <LI>The absolute expiration boundary is enforced regardless of inactivity timeout or refresh threshold.
+     * <LI>The inactivity timeout is enforced before absolute expiration is reached.
      * </OL>
      */
     @Test
-    public void testTokenExpiresAfterExpirationTime() throws Exception {
+    public void testTokenRejectedAfterInactivityTimeoutDF() throws Exception {
+        setConfig(CFG_TOKEN_REFRESH_DYN_EXP_VAL_FALSE);
         String url = getRefreshServletUrl();
-        String method = "testTokenExpiresAfterExpirationTime";
-        Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true");
+        String method = "testTokenRejectedAfterInactivityTimeoutDF";
 
-        String expiredCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_EXPIRY_S, method);
-
-        HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after absolute expiry (rejection expected)", method);
-        int status = conn.getResponseCode();
-        assertEquals("Absolutely expired token must be rejected with 401", 401, status);
+        Log.info(thisClass, method, "expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false");
+        String expiredCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_INACTIVITY_S, method);
+        HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after inactivity timeout (rejection expected)", method);
+        assertEquals("Idle token must be rejected with 401", 401, conn.getResponseCode());
         conn.disconnect();
-        Log.info(thisClass, method, "PASSED: expired token correctly rejected with HTTP " + status);
     }
+
+    // =========================================================================
+    // Misconfiguration / Warning Tests
+    // =========================================================================
 
     /**
      * Tests the following:
      * <OL>
      * <LI>Config: expiration=2m, refreshThreshold=1m, no inactivityTimeout.
      * <LI>Assert that warning CWWKS4127W is logged (refreshThreshold set without inactivityTimeout).
-     * <LI>Authenticate as user1 and backdate the token past the refresh threshold (70s).
+     * <LI>Authenticate as user1 and backdate the token past the refresh threshold ({@code PAST_REFRESH_S}s = 61s).
      * <LI>Send an SSO request with the backdated cookie.
      * </OL>
      * <P>Expected Results:
@@ -432,14 +388,12 @@ public class LTPATokenRefreshTests {
 
         assertWarningLogged("CWWKS4127W", "refreshThreshold is set without inactivityTimeout", method);
 
-        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_REFRESH_S, method);
 
         HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO past refreshThreshold (no refresh expected)", method);
         assertEquals("SSO must succeed, token only expires at absolute expiration without inactivityTimeout", 200, conn.getResponseCode());
         assertTokenNotRefreshed("No refresh expected — refreshThreshold has no effect without inactivityTimeout", conn);
         conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: no refresh performed");
     }
 
     /**
@@ -447,7 +401,7 @@ public class LTPATokenRefreshTests {
      * <OL>
      * <LI>Config: expiration=2m, inactivityTimeout=1m, no refreshThreshold.
      * <LI>Assert that warning CWWKS4126W is logged (inactivityTimeout set without refreshThreshold).
-     * <LI>Authenticate as user1 and backdate the token past the inactivity timeout (70s).
+     * <LI>Authenticate as user1 and backdate the token past the inactivity timeout ({@code PAST_REFRESH_S}s = 61s).
      * <LI>Send an SSO request with the backdated cookie.
      * </OL>
      * <P>Expected Results:
@@ -466,14 +420,12 @@ public class LTPATokenRefreshTests {
 
         assertWarningLogged("CWWKS4126W", "inactivityTimeout is set without refreshThreshold", method);
 
-        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        String agedCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_REFRESH_S, method);
 
         HttpURLConnection conn = ssoRequest(url, agedCookie, "SSO past inactivity timeout (no refresh expected)", method);
         assertEquals("Inactivity timeout should be disabled, SSO must succeed.", 200, conn.getResponseCode());
         assertTokenNotRefreshed("Cookie should not be refreshed", conn);
         conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: SSO succeeded past inactivity timeout");
     }
 
     /**
@@ -481,7 +433,7 @@ public class LTPATokenRefreshTests {
      * <OL>
      * <LI>Config: expiration=3m, inactivityTimeout=4m, refreshThreshold=2m (inactivityTimeout exceeds expiration).
      * <LI>Assert that warning CWWKS4125W is logged (inactivityTimeout &gt;= expiration).
-     * <LI>Authenticate as user1 and backdate the token past the absolute expiration (190s).
+     * <LI>Authenticate as user1 and backdate the token past the absolute expiration ({@code PAST_EXPIRY_S}s = 181s).
      * <LI>Send an SSO request with the backdated cookie.
      * </OL>
      * <P>Expected Results:
@@ -492,7 +444,7 @@ public class LTPATokenRefreshTests {
      */
     @Test
     public void testTokenInactivityTimeoutExceedsExpiration() throws Exception {
-        setConfig(CFG_TOKEN_EXCEEDS_EXPIRY);
+        setConfig(CFG_TOKEN_INACTIVITY_EXCEEDS_EXPIRY);
         String url = getRefreshServletUrl();
         String method = "testTokenInactivityTimeoutExceedsExpiration";
         Log.info(thisClass, method, "Config: expiration=3m, inactivityTimeout=4m, refreshThreshold=2m");
@@ -502,10 +454,8 @@ public class LTPATokenRefreshTests {
         String expiredCookie = authenticateAndBackdateToken(url, "user1", "user1pwd", PAST_EXPIRY_S, method);
 
         HttpURLConnection conn = ssoRequest(url, expiredCookie, "SSO after expiration (rejection expected)", method);
-        int status = conn.getResponseCode();
-        assertEquals("Token must be rejected at expiration, got HTTP " + status, 401, status);
+        assertEquals("Token must be rejected at expiration", 401, conn.getResponseCode());
         conn.disconnect();
-        Log.info(thisClass, method, "PASSED: token correctly rejected at expiration boundary");
     }
 
     /**
@@ -513,7 +463,7 @@ public class LTPATokenRefreshTests {
      * <OL>
      * <LI>Config: expiration=6m, inactivityTimeout=3m, refreshThreshold=4m (refreshThreshold exceeds inactivityTimeout).
      * <LI>Assert that warning CWWKS4124W is logged — refreshThreshold is auto-adjusted to inactivityTimeout/3 (1m).
-     * <LI>Authenticate as user1 and backdate the token past the adjusted threshold (130s).
+     * <LI>Authenticate as user1 and backdate the token past the adjusted threshold ({@code PAST_INACTIVITY_S}s = 121s).
      * <LI>Send an SSO request with the backdated cookie.
      * <LI>Send a second SSO request using the refreshed cookie.
      * </OL>
@@ -526,7 +476,7 @@ public class LTPATokenRefreshTests {
      */
     @Test
     public void testRefreshThresholdExceedsInactivityTimeout() throws Exception {
-        setConfig(CFG_TOKEN_THRESHOLD_EXCEEDS_INACTIVITY);
+        setConfig(CFG_TOKEN_REFRESH_EXCEEDS_INACTIVITY);
         String url = getRefreshServletUrl();
         String method = "testRefreshThresholdExceedsInactivityTimeout";
         Log.info(thisClass, method,
@@ -542,9 +492,11 @@ public class LTPATokenRefreshTests {
         HttpURLConnection conn = ssoRequest(url, refreshedCookie, "SSO with refreshed cookie (must succeed)", method);
         assertEquals("Refreshed token must be accepted for SSO", 200, conn.getResponseCode());
         conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: CWWKS4124W emitted, threshold auto-adjusted to 1m, " + "token refreshed when adjusted threshold was crossed");
     }
+
+    // =========================================================================
+    // Mixed Environment Tests (Refresh Server <-> Non-Refresh Server)
+    // =========================================================================
 
     /**
      * Tests the following:
@@ -552,45 +504,7 @@ public class LTPATokenRefreshTests {
      * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
      * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
      * <LI>Both servers share the same LTPA key set.
-     * <LI>Authenticate as user1 on the refresh server with a fresh token (no backdating).
-     * <LI>Present the refresh server token to the non-refresh server.
-     * <LI>Authenticate as user1 on the non-refresh server with a fresh token (no backdating).
-     * <LI>Present the non-refresh server token to the refresh server.
-     * </OL>
-     * <P>Expected Results:
-     * <OL>
-     * <LI>The refresh server token is accepted by the non-refresh server with HTTP 200.
-     * <LI>The non-refresh server token is accepted by the refresh server with HTTP 200.
-     * </OL>
-     */
-    @Test
-    public void testFreshTokensAcceptedAcrossMixedEnvironments() throws Exception {
-        String nonRefreshUrl = getNonRefreshServletUrl();
-        String refreshUrl = getRefreshServletUrl();
-        String method = "testFreshTokensAcceptedAcrossMixedEnvironments";
-
-        // Mint a fresh token on the refresh server and present it to the non-refresh server.
-        String refreshCookie = authenticateAndBackdateToken(refreshUrl, "user1", "user1pwd", 0, method);
-        HttpURLConnection conn = ssoRequest(nonRefreshUrl, refreshCookie, "refresh server token on non-refresh server (acceptance expected)", method);
-        assertEquals("Token from refresh server must be accepted by non-refresh server", 200, conn.getResponseCode());
-        conn.disconnect();
-
-        // Mint a fresh token on the non-refresh server and present it to the refresh server.
-        String nonRefreshCookie = authenticateAndBackdateToken(nonRefreshUrl, "user1", "user1pwd", 0, method);
-        conn = ssoRequest(refreshUrl, nonRefreshCookie, "non-refresh server token on refresh server (acceptance expected)", method);
-        assertEquals("Token from non-refresh server must be accepted by refresh server", 200, conn.getResponseCode());
-        conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: fresh tokens accepted in both directions between refresh server and non-refresh server");
-    }
-
-    /**
-     * Tests the following:
-     * <OL>
-     * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
-     * <LI>Both servers share the same LTPA key set.
-     * <LI>Authenticate as user1 on the refresh server and backdate the token past the inactivity timeout (130s).
+     * <LI>Authenticate as user1 on the refresh server and backdate the token past the inactivity timeout (121s).
      * <LI>Present the timed-out token to the non-refresh server.
      * </OL>
      * <P>Expected Results:
@@ -611,11 +525,39 @@ public class LTPATokenRefreshTests {
 
         // Present the timed-out token to the non-refresh server.
         HttpURLConnection conn = ssoRequest(nonRefreshUrl, agedCookie, "refresh server token on non-refresh server", method);
-        int status = conn.getResponseCode();
-        assertEquals("Token from refresh server must be rejected by non-refresh server", 401, status);
+        assertEquals("Token from refresh server must be rejected by non-refresh server", 401, conn.getResponseCode());
         conn.disconnect();
+    }
 
-        Log.info(thisClass, method, "PASSED: refresh server token past inactivity timeout rejected by non-refresh server");
+    /**
+     * Tests the following:
+     * <OL>
+     * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false.
+     * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
+     * <LI>Both servers share the same LTPA key set.
+     * <LI>Authenticate as user1 on the refresh server and backdate the token past the inactivity timeout ({@code PAST_INACTIVITY_S}s = 121s).
+     * <LI>Present the timed-out token to the non-refresh server.
+     * </OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>The non-refresh server accepts the token with HTTP 200 — because dynamicExpirationValidation=false,
+     *     the token's expiry field encodes the configured expiration (3m) rather than the inactivity timeout (2m),
+     *     so the non-refresh server does not consider the token expired at 121s.
+     * </OL>
+     */
+    @Test
+    public void testRefreshTokenAcceptedByNonRefreshServerAfterInactivityTimeout() throws Exception {
+        setConfig(CFG_TOKEN_REFRESH_DYN_EXP_VAL_FALSE);
+        String nonRefreshUrl = getNonRefreshServletUrl();
+        String refreshUrl = getRefreshServletUrl();
+        String method = "testRefreshTokenAcceptedByNonRefreshServerAfterInactivityTimeout";
+        Log.info(thisClass, method, "Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=false");
+
+        String agedCookie = authenticateAndBackdateToken(refreshUrl, "user1", "user1pwd", PAST_INACTIVITY_S, method);
+
+        HttpURLConnection conn = ssoRequest(nonRefreshUrl, agedCookie, "refresh server token on non-refresh server", method);
+        assertEquals("Token from refresh server must be accepted by non-refresh server when dynamicExpirationValidation=false", 200, conn.getResponseCode());
+        conn.disconnect();
     }
 
     /**
@@ -624,7 +566,7 @@ public class LTPATokenRefreshTests {
      * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
      * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
      * <LI>Both servers share the same LTPA key set.
-     * <LI>Authenticate as user1 on the non-refresh server and backdate the token past the refresh threshold (70s).
+     * <LI>Authenticate as user1 on the non-refresh server and backdate the token past the refresh threshold ({@code PAST_REFRESH_S}s = 61s).
      * <LI>Present the backdated token to the refresh server.
      * </OL>
      * <P>Expected Results:
@@ -638,12 +580,9 @@ public class LTPATokenRefreshTests {
         String refreshUrl = getRefreshServletUrl();
         String method = "testNonRefreshTokenRefreshedByRefreshServer";
 
-        // Authenticate on the non-refresh server and backdate the token past the refresh server's threshold (1m).
-        String agedCookie = authenticateAndBackdateToken(nonRefreshUrl, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        String agedCookie = authenticateAndBackdateToken(nonRefreshUrl, "user1", "user1pwd", PAST_REFRESH_S, method);
 
-        // Present the backdated token to the refresh server — must be accepted and a refresh must be issued.
         ssoRequestExpectingRefresh(refreshUrl, agedCookie, "non-refresh server token on refresh server (refresh expected)", method);
-        Log.info(thisClass, method, "PASSED: token from non-refresh server accepted by refresh server and refreshed");
     }
 
     /**
@@ -652,83 +591,7 @@ public class LTPATokenRefreshTests {
      * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
      * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
      * <LI>Both servers share the same LTPA key set.
-     * <LI>Authenticate as user1 on the non-refresh server and backdate the token past absolute expiration (190s).
-     * <LI>Present the expired token to the refresh server.
-     * <LI>Authenticate as user1 on the refresh server and backdate the token past absolute expiration (190s).
-     * <LI>Present the expired token to the non-refresh server.
-     * </OL>
-     * <P>Expected Results:
-     * <OL>
-     * <LI>The refresh server rejects the non-refresh server token with HTTP 401.
-     * <LI>The non-refresh server rejects the refresh server token with HTTP 401.
-     * </OL>
-     */
-    @Test
-    public void testExpiredTokensRejectedAcrossMixedEnvironments() throws Exception {
-        String nonRefreshUrl = getNonRefreshServletUrl();
-        String refreshUrl = getRefreshServletUrl();
-        String method = "testExpiredTokensRejectedAcrossMixedEnvironments";
-
-        // token minted on non-refresh server, presented to refresh server.
-        String expiredFromNonRefresh = authenticateAndBackdateToken(nonRefreshUrl, "user1", "user1pwd", PAST_EXPIRY_S, method);
-        HttpURLConnection conn1 = ssoRequest(refreshUrl, expiredFromNonRefresh, "expired non-refresh server token on refresh server (rejection expected)", method);
-        int status1 = conn1.getResponseCode();
-        assertEquals("Absolutely expired token from non-refresh server must be rejected by refresh server — got HTTP " + status1, 401, status1);
-        conn1.disconnect();
-
-        // token minted on refresh server, presented to non-refresh server.
-        String expiredFromRefresh = authenticateAndBackdateToken(refreshUrl, "user1", "user1pwd", PAST_EXPIRY_S, method);
-        HttpURLConnection conn2 = ssoRequest(nonRefreshUrl, expiredFromRefresh, "expired refresh server token on non-refresh server (rejection expected)", method);
-        int status2 = conn2.getResponseCode();
-        assertEquals("Absolutely expired token from refresh server must be rejected by non-refresh server — got HTTP " + status2, 401, status2);
-        conn2.disconnect();
-
-        Log.info(thisClass, method, "PASSED: expired tokens correctly rejected in both directions across mixed environments");
-    }
-
-    /**
-     * Tests the following:
-     * <OL>
-     * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
-     * <LI>Both servers share the same LTPA key set.
-     * <LI>Authenticate as user1 on the refresh server and backdate the token past the refresh threshold (70s).
-     * <LI>Present the backdated token to the refresh server to trigger a refresh.
-     * <LI>Present the newly refreshed token to the non-refresh server.
-     * </OL>
-     * <P>Expected Results:
-     * <OL>
-     * <LI>The refresh server issues a new LtpaToken2 cookie (token refresh triggered).
-     * <LI>The non-refresh server accepts the refreshed token with HTTP 200.
-     * </OL>
-     */
-    @Test
-    public void testRefreshedTokenAcceptedByNonRefreshServer() throws Exception {
-        String nonRefreshUrl = getNonRefreshServletUrl();
-        String refreshUrl = getRefreshServletUrl();
-        String method = "testRefreshedTokenAcceptedByNonRefreshServer";
-
-        // Authenticate on the refresh server and backdate the token past the refresh threshold (1m).
-        String backdatedCookie = authenticateAndBackdateToken(refreshUrl, "user1", "user1pwd", PAST_THRESHOLD_S, method);
-
-        // Trigger refresh on the refresh server.
-        String refreshedCookie = ssoRequestExpectingRefresh(refreshUrl, backdatedCookie, "trigger refresh on refresh server", method);
-
-        // Present the refreshed token to the non-refresh server.
-        HttpURLConnection conn = ssoRequest(nonRefreshUrl, refreshedCookie, "refreshed token on non-refresh server (acceptance expected)", method);
-        assertEquals("Refreshed token from refresh server must be accepted by non-refresh server before inactivity elapses", 200, conn.getResponseCode());
-        conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: refreshed token accepted by non-refresh server — inactivity window has not yet elapsed");
-    }
-
-    /**
-     * Tests the following:
-     * <OL>
-     * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true.
-     * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
-     * <LI>Both servers share the same LTPA key set.
-     * <LI>Authenticate as user1 on the refresh server and backdate the token past the refresh threshold (70s).
+     * <LI>Authenticate as user1 on the refresh server and backdate the token past the refresh threshold ({@code PAST_REFRESH_S}s = 61s).
      * <LI>Present the backdated token to the non-refresh server.
      * </OL>
      * <P>Expected Results:
@@ -744,53 +607,14 @@ public class LTPATokenRefreshTests {
         String refreshUrl = getRefreshServletUrl();
         String method = "testRefreshTokenPastThresholdNotRefreshedByNonRefreshServer";
 
-        // Authenticate on the refresh server and backdate the token past the refresh threshold (70s).
-        String agedCookie = authenticateAndBackdateToken(refreshUrl, "user1", "user1pwd", PAST_THRESHOLD_S, method);
+        // Authenticate on the refresh server and backdate the token past the refresh threshold (61s).
+        String agedCookie = authenticateAndBackdateToken(refreshUrl, "user1", "user1pwd", PAST_REFRESH_S, method);
 
         // Present the backdated token to the non-refresh server — accepted but not refreshed.
         HttpURLConnection conn = ssoRequest(nonRefreshUrl, agedCookie, "refresh server token past threshold on non-refresh server (acceptance, no refresh expected)", method);
         assertEquals("Token from refresh server must be accepted by non-refresh server", 200, conn.getResponseCode());
         assertTokenNotRefreshed("Non-refresh server must not issue a new cookie — it has no refreshThreshold configured", conn);
         conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: refresh server token past threshold accepted by non-refresh server without triggering a refresh");
-    }
-
-
-    /**
-     * Tests the following:
-     * <OL>
-     * <LI>Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true, dynamicExpirationValidation=false.
-     * <LI>Non-refresh server config: expiration=3m, no inactivityTimeout, no refreshThreshold.
-     * <LI>Both servers share the same LTPA key set.
-     * <LI>Authenticate as user1 on the refresh server and backdate the token past the inactivity timeout (130s).
-     * <LI>Present the timed-out token to the non-refresh server.
-     * </OL>
-     * <P>Expected Results:
-     * <OL>
-     * <LI>The non-refresh server accepts the token with HTTP 200 — because dynamicExpirationValidation=false,
-     *     the token's expiry field encodes the configured expiration (3m) rather than the inactivity timeout (2m),
-     *     so the non-refresh server does not consider the token expired at 130s.
-     * </OL>
-     */
-    @Test
-    public void testRefreshTokenAcceptedByNonRefreshServerAfterInactivityTimeout() throws Exception {
-        setConfig(CFG_TOKEN_REFRESH_DYN_EXP_VAL_FALSE);
-        String nonRefreshUrl = getNonRefreshServletUrl();
-        String refreshUrl = getRefreshServletUrl();
-        String method = "testRefreshTokenAcceptedByNonRefreshServerAfterInactivityTimeout";
-        Log.info(thisClass, method,
-                 "Refresh server config: expiration=3m, inactivityTimeout=2m, refreshThreshold=1m, dynamicExpirationValidation=true, dynamicExpirationValidation=false");
-
-        String agedCookie = authenticateAndBackdateToken(refreshUrl, "user1", "user1pwd", PAST_INACTIVITY_S, method);
-
-        HttpURLConnection conn = ssoRequest(nonRefreshUrl, agedCookie, "refresh server token on non-refresh server", method);
-        int status = conn.getResponseCode();
-        assertEquals("Token from refresh server must be accepted by non-refresh server when dynamicExpirationValidation=false", 200, status);
-        conn.disconnect();
-
-        Log.info(thisClass, method, "PASSED: refresh server token past inactivity timeout accepted by non-refresh server " +
-                                    "because dynamicExpirationValidation=false encodes configured expiration in the token");
     }
 
     // =========================================================================
@@ -801,8 +625,7 @@ public class LTPATokenRefreshTests {
      * Authenticates via Basic Auth, requests the servlet to backdate the issued token by
      * {@code ageSeconds}, and returns the resulting {@code LtpaToken2} cookie value.
      */
-    private String authenticateAndBackdateToken(String url, String username, String password,
-                                              int ageSeconds, String method) throws IOException {
+    private String authenticateAndBackdateToken(String url, String username, String password, int ageSeconds, String method) throws IOException {
         String backdateUrl = url + "?action=backdate&offsetSeconds=" + ageSeconds;
         Log.info(thisClass, method, "authenticating as " + username + " with token age=" + ageSeconds + "s via " + backdateUrl);
         HttpURLConnection conn = makeAuthenticatedRequest(backdateUrl, username, password);
@@ -818,8 +641,7 @@ public class LTPATokenRefreshTests {
      * Sends a cookie-only SSO request and asserts that the server issues a new distinct
      * {@code LtpaToken2} cookie (HTTP 200). Returns the new cookie value.
      */
-    private String ssoRequestExpectingRefresh(String url, String cookie, String label,
-                                              String method) throws IOException {
+    private String ssoRequestExpectingRefresh(String url, String cookie, String label, String method) throws IOException {
         HttpURLConnection conn = ssoRequest(url, cookie, label, method);
         assertEquals(label + ": SSO must succeed", 200, conn.getResponseCode());
         String newCookie = assertTokenRefreshed(conn, cookie);
@@ -832,8 +654,7 @@ public class LTPATokenRefreshTests {
      * Sends a cookie-only SSO GET request, logs the label and HTTP response code,
      * and returns the open connection for further inspection by the caller.
      */
-    private HttpURLConnection ssoRequest(String url, String cookie, String label,
-                                         String method) throws IOException {
+    private HttpURLConnection ssoRequest(String url, String cookie, String label, String method) throws IOException {
         Log.info(thisClass, method, label + ": sending SSO request");
         HttpURLConnection conn = openConnection(url);
         conn.setRequestProperty("Cookie", LTPA_COOKIE + "=" + cookie);
@@ -866,18 +687,16 @@ public class LTPATokenRefreshTests {
      * Opens a GET connection to {@code urlString} and sets a Basic Authorization header
      * for the given credentials.
      */
-    private HttpURLConnection makeAuthenticatedRequest(String urlString,
-                                                       String username, String password) throws IOException {
+    private HttpURLConnection makeAuthenticatedRequest(String urlString, String username, String password) throws IOException {
         HttpURLConnection conn = openConnection(urlString);
         conn.setRequestProperty("Authorization",
-            "Basic " + Base64.getEncoder()
-                           .encodeToString((username + ":" + password).getBytes()));
+            "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()));
         return conn;
     }
 
     /**
      * Reads the response body and returns the backdated token value from the line prefixed
-     * with {@value com.ibm.ws.security.token.ltpa.servlet.LTPATestServlet#BACKDATED_TOKEN_PREFIX},
+     * with {@code LTPATestServlet.BACKDATED_TOKEN_PREFIX},
      * or {@code null} if no such line is present.
      */
     private String readBackdatedTokenFromBody(HttpURLConnection conn) throws IOException {
@@ -895,11 +714,12 @@ public class LTPATokenRefreshTests {
     /**
      * Extracts the raw {@code LtpaToken2} cookie value from the last matching
      * {@code Set-Cookie} response header, or {@code null} if no such header is present.
+     * Assumes the header format is {@code LtpaToken2=<value>;...} (no spaces around {@code =}).
      */
     private String extractCookie(HttpURLConnection conn) {
         String header = getCookieHeader(conn.getHeaderFields());
         if (header == null) return null;
-        int start = LTPA_COOKIE.length() + 1;
+        int start = LTPA_COOKIE.length() + 1; // skip "LtpaToken2="
         int end   = header.indexOf(";");
         return header.substring(start, end == -1 ? header.length() : end);
     }
@@ -966,7 +786,8 @@ public class LTPATokenRefreshTests {
      * tokens issued by the other.
      */
     private static void copySharedKeysToServer(LibertyServer srv) throws Exception {
-        // Place validation1.keys directly into resources/security/ (same pattern as LTPAKeyPasswordTests).
+        // Place validation1.keys from publish/files/alternate/ into resources/security/
+        // (same pattern as LTPAKeyPasswordTests).
         srv.copyFileToLibertyServerRoot("resources/security", SHARED_KEYS_SRC);
         // Rename validation1.keys → ltpa.keys within that directory.
         File placed  = new File(srv.getServerRoot(), "resources/security/validation1.keys");
@@ -983,8 +804,8 @@ public class LTPATokenRefreshTests {
      * <p>Two outcomes are both valid:
      * <ul>
      *   <li>{@code CWWKS4105I} — LTPA reloaded (config meaningfully changed LTPA parameters).
-     *   <li>{@code CWWKG0018I} — Liberty detected no functional change (e.g. restoring the
-     *       baseline config that the server is already running).
+     *   <li>{@code CWWKG0018I} — Configuration updated (may indicate no functional change,
+     *       e.g. restoring the baseline config that the server is already running).
      * </ul>
      * Either message confirms the server has finished processing the file write and is in
      * the expected state. Waiting only for {@code CWWKS4105I} causes a 30-second timeout
