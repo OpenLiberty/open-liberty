@@ -27,6 +27,7 @@ import com.ibm.wsspi.security.ltpa.Token;
  */
 @SuppressWarnings("serial")
 public class TestToken implements Token, Serializable {
+    private static final long serialVersionUID = 1224338109289314866L;
     private final double random;
 
     public TestToken() {

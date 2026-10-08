@@ -44,6 +44,7 @@ public class LTPATestServlet extends HttpServlet {
     public static final String BACKDATED_TOKEN_PREFIX = "BACKDATED_TOKEN:";
     private static final String CREATION_TIME = AttributeNameConstants.WSTOKEN_CREATION_TIME;
     private static final String EXPIRATION    = AttributeNameConstants.WSTOKEN_EXPIRATION;
+    private static final String SESSION_START = AttributeNameConstants.WSTOKEN_SESSION_START;
 
     // Dispatches GET requests: ?action=backdate&offsetSeconds=N backdates the caller's LTPA token
     // (used by LTPATokenRefreshTests); any other GET exercises the TokenManager creation path and
@@ -108,7 +109,7 @@ public class LTPATestServlet extends HttpServlet {
             long backdatedCreationTime = System.currentTimeMillis() - offsetMs;
 
             SingleSignonToken token = createBackdatedToken(tm, request, backdatedCreationTime, writer);
-            setLtpaCookieHeader(writer, token);
+            writeBackdatedTokenToBody(writer, token);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -120,18 +121,19 @@ public class LTPATestServlet extends HttpServlet {
     }
 
     /*
-    * Creates an SSO token for the authenticated user with creationTime and expire both
-    * backdated by offsetSeconds.
+    * Creates an SSO token for the authenticated user with creationTime, sessionStart, and expire
+    * all backdated by offsetSeconds.
     *
     * Strategy:
-    *  1. Call createSSOToken() — Liberty stamps creationTime=now and expire=now+duration.
+    *  1. Call createSSOToken() — Liberty stamps creationTime=now, sessionStart=now, and expire=now+duration.
     *  2. Read the original creationTime and expire from the fresh token to compute the duration.
-    *  3. Recreate the token from its bytes, stripping WSTOKEN_CREATION_TIME and WSTOKEN_EXPIRATION.
-    *  4. Add the backdated creationTime via addAttribute().
-    *  5. Add the backdated expiration via setExpiraitonFromMilliseconds().
+    *  3. Recreate the token from its bytes, stripping WSTOKEN_CREATION_TIME, WSTOKEN_EXPIRATION,
+    *     and WSTOKEN_SESSION_START.
+    *  4. Add the backdated creationTime and sessionStart via addAttribute().
+    *  5. Add the backdated expiration via setExpirationFromMilliseconds().
     *
-    * Result: the token contains exactly one WSTOKEN_CREATION_TIME entry and one expire entry,
-    * both shifted back by offsetSeconds.
+    * Result: the token contains exactly one WSTOKEN_CREATION_TIME, one WSTOKEN_SESSION_START, and
+    * one expire entry, all shifted back by offsetSeconds.
     */
     private SingleSignonToken createBackdatedToken(TokenManager tm, HttpServletRequest request,
                                                    long backdatedCreationTime, PrintWriter writer) throws Exception {
@@ -149,12 +151,13 @@ public class LTPATestServlet extends HttpServlet {
         long duration             = originalExpire - originalCreationTime;
         long backdatedExpire      = backdatedCreationTime + duration;
 
-        // Recreate from bytes with both creationtime and expiration stripped.
-        Token strippedToken = tm.recreateTokenFromBytes(freshToken.getBytes(), CREATION_TIME, EXPIRATION);
+        // Recreate from bytes with creationTime, sessionStart, and expiration stripped.
+        Token strippedToken = tm.recreateTokenFromBytes(freshToken.getBytes(), CREATION_TIME, SESSION_START, EXPIRATION);
         SingleSignonToken token = tm.createSSOToken(strippedToken);
 
-        // Add the backdated creationTime and expiration to token
+        // Add the backdated creationTime, sessionStart, and expiration to token
         token.addAttribute(CREATION_TIME, Long.toString(backdatedCreationTime));
+        token.addAttribute(SESSION_START, Long.toString(backdatedCreationTime));
         setExpirationFromMilliseconds(token, backdatedExpire);
 
         return token;
@@ -204,12 +207,12 @@ public class LTPATestServlet extends HttpServlet {
     // so the test can parse the value reliably. Using response.addCookie() is not reliable here
     // because the writer has already been obtained, and Liberty's servlet container may silently
     // drop the second LtpaToken2 cookie added after the one issued during BasicAuth.
-    private void setLtpaCookieHeader(PrintWriter writer, SingleSignonToken token) throws Exception {
+    private void writeBackdatedTokenToBody(PrintWriter writer, SingleSignonToken token) throws Exception {
         String value = Base64.getEncoder().encodeToString(token.getBytes());
         writer.println(BACKDATED_TOKEN_PREFIX + value);
     }
 
-    // Returns the OSGi BundleContext via the servlet container bundle, or null if unavailable.
+    // Returns the OSGi BundleContext via the servlet container bundle.
     private BundleContext getBundleContext() {
         Bundle bundle = FrameworkUtil.getBundle(HttpServlet.class);
         return bundle.getBundleContext();
