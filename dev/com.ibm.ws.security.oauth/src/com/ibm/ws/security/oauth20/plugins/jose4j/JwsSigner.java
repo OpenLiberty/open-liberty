@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.security.AccessController;
 import java.security.Key;
 import java.security.PrivilegedAction;
 
+import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 
@@ -32,17 +33,6 @@ import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 public class JwsSigner {
 
     private static TraceComponent tc = Tr.register(JwsSigner.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    // set org.jose4j.jws.default-allow-none to true to behave the same as old jwt
-    // allow signatureAlgorithme as none
-    static {
-        AccessController
-                .doPrivileged(new PrivilegedAction<String>() {
-                    @Override
-                    public String run() {
-                        return System.setProperty("org.jose4j.jws.default-allow-none", "true");
-                    }
-                });
-    };
 
     @FFDCIgnore({ Exception.class })
     public static String getSignedJwt(JwtClaims claims, OidcServerConfig oidcServerConfig, JWTData jwtData) throws JWTTokenException {
@@ -75,7 +65,11 @@ public class JwsSigner {
         }
 
         // Set the signature algorithm on the JWT/JWS that will integrity protect the claims
-        jws.setAlgorithmHeaderValue(oidcServerConfig.getSignatureAlgorithm());
+        String signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
+        if ("none".equals(signatureAlgorithm)) {
+            jws.setAlgorithmConstraints(AlgorithmConstraints.NO_CONSTRAINTS);
+        }
+        jws.setAlgorithmHeaderValue(signatureAlgorithm);
         jws.setDoKeyValidation(false);
 
         // Sign the JWS and produce the compact serialization or the complete JWT/JWS
