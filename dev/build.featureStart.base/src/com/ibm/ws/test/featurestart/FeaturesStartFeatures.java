@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2023,2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.test.featurestart;
 
 import java.io.IOException;
@@ -93,13 +105,13 @@ public class FeaturesStartFeatures {
         this.featureFilter = (name) -> FeatureFilter.skipFeature(name);
         this.featureZOSFilter = (name) -> FeatureFilter.zosSkip(name, server.isZOS());
 
-        this.allowedErrors = FeatureErrors.getAllowedErrors();
+        this.allowedErrorsRegEx = FeatureErrors.getAllowedErrorsRegEx();
 
         //
 
         BiFunction<String, Boolean, String> zosFilter = (name, isZOS) -> FeatureFilter.zosSkip(name, isZOS.booleanValue());
 
-        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, zosFilter, allowedErrors)).display();
+        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, zosFilter, allowedErrorsRegEx)).display();
 
         //
 
@@ -151,10 +163,10 @@ public class FeaturesStartFeatures {
         }
     }
 
-    public Map<String, String[]> allowedErrors;
+    public Map<String, String[]> allowedErrorsRegEx;
 
-    public String[] getAllowedErrors(String name) {
-        return allowedErrors.get(name);
+    public String[] getAllowedErrorsRegEx(String name) {
+        return allowedErrorsRegEx.get(name);
     }
 
     public Function<String, String> featureFilter;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,23 +17,32 @@ import java.util.Map;
 
 public class FeatureErrors {
 
+    //
+    
+    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[35](rtcommGateway-1.0)
+    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[36](samlWeb-2.0)
+    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[37](scalingController-1.0)
+    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[38](scalingMember-1.0)
+    // com.ibm.ws.test.featurestart.FeaturesStartTest4.test[85](wsSecuritySaml-1.1)
+    //
+    // junit.framework.AssertionFailedError: Strange mis-reported missing error [ wsSecuritySaml-1.1 ]
+    //  at com.ibm.ws.test.featurestart.FeaturesStartTestBase.basicTestStartFeature(FeaturesStartTestBase.java:285)
+    
     /**
      * Answer a table of errors which are allowed to appear in server logs
      * when starting a server with the single named feature provisioned.
      *
      * @return The table of allowed errors.
      */
-    public static Map<String, String[]> getAllowedErrors() {
+    public static Map<String, String[]> getAllowedErrorsRegEx() {
         Map<String, String[]> allowedErrors = new HashMap<>();
 
-        // TODO: OpenAPI code needs to be reworked so that it
-        // doesn't leave threads around when the server stops
-        // before it has finished initializing. Once OpenAPI is
-        // fixed, these QUISCE_FAILURES should be removed.
-        // TODO: This might be fixed by now.
+        // "openapi-3.0" and "openapi-3.1" previously left threads
+        // when the server was stopped. Those errors no longer occur.
+        //
+        // Errors still occur when stopping mpOpenApi-1.o".
+
         String[] QUIESCE_FAILURES = new String[] { "CWWKE1102W", "CWWKE1107W" };
-        allowedErrors.put("openapi-3.0", QUIESCE_FAILURES);
-        allowedErrors.put("openapi-3.1", QUIESCE_FAILURES);
         allowedErrors.put("mpOpenApi-1.0", QUIESCE_FAILURES);
 
         allowedErrors.put("batchSMFLogging-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging" });
@@ -54,6 +63,14 @@ public class FeatureErrors {
         // The Rtcomm service - The following virtual hosts could not be found or are not correctly configured: [abcdefg].
         allowedErrors.put("rtcommGateway-1.0", new String[] { "CWRTC0002E", "SRVE9956W" });
 
+        // [10/07/2026 21:27:32:360 UTC] 002 FeaturesStartTest4             processExpected                I
+        // Feature failure [ wsSecuritySaml-1.1] (Feature specified (expected)):
+        // CWWKS5207W: .* inboundPropagation
+        // [10/07/2026 21:27:32:360 UTC] 002 FeaturesStartTest4             processExpected                I
+        // Feature failure [ wsSecuritySaml-1.1] (Feature specified (expected)):
+        // Unexpected error [ [10/7/26, 21:27:28:514 UTC] 00000021 com.ibm.ws.security.saml.sso20.internal.SsoConfigImpl        W
+        // CWWKS5207W: The inboundPropagation attribute is set to [false] in the configuration of samlWebSso20 [defaultSP]. The attributes [headerName, audiences] will be ignored during processing. ]
+        
         // lets the user now certain config attributes will be ignored depending on whether or not 'inboundPropagation' is configured
         allowedErrors.put("samlWeb-2.0", new String[] { "CWWKS5207W: .* inboundPropagation" });
         // pulls in the samlWeb-2.0 feature

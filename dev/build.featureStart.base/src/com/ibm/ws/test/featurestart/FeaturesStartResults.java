@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2023,2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.test.featurestart;
 
 import java.util.ArrayList;
@@ -9,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.ToLongFunction;
+import java.util.regex.Pattern;
 
 import com.ibm.ws.test.featurestart.FeaturesStartTiming.TimingResult;
 import com.ibm.ws.test.featurestart.FeaturesStartTiming.TimingSummary;
@@ -149,7 +162,7 @@ public class FeaturesStartResults {
     public boolean nextIsOutOfLevel;
     public boolean nextIsFeatureSpecified;
 
-    public String[] nextExpectedErrors;
+    public String[] nextExpectedErrorsRegEx;
 
     public String nextIgnoredRegEx;
     
@@ -162,7 +175,7 @@ public class FeaturesStartResults {
         boolean isClean;
         boolean isFeatureSpecified;
         
-        String[] expectedErrors;
+        String[] expectedErrorsRegEx;
 
         String ignoredRegEx;
         
@@ -171,18 +184,18 @@ public class FeaturesStartResults {
             isOutOfLevel = true;
             isClean = false;
             isFeatureSpecified = false;
-            expectedErrors = OUT_OF_LEVEL_ERRORS;
+            expectedErrorsRegEx = OUT_OF_LEVEL_ERRORS;
             ignoredRegEx = OUT_OF_LEVEL_REGEX;
             
         } else {
-            String[] featureAllowedErrors = features.getAllowedErrors(nextShortName);
+            String[] featureAllowedErrors = features.getAllowedErrorsRegEx(nextShortName);
             if ( featureAllowedErrors != null ) {
                 errorsCase = "Feature specified (expected)";
 
                 isOutOfLevel = false;
                 isClean = false;
                 isFeatureSpecified = true;
-                expectedErrors = featureAllowedErrors;
+                expectedErrorsRegEx = featureAllowedErrors;
 
                 ignoredRegEx = asRegEx( asArray(featureAllowedErrors, MISSING_MODULE_ERROR, MISSING_BUNDLE_ERROR) );
                 
@@ -195,7 +208,7 @@ public class FeaturesStartResults {
                 isOutOfLevel = false;
                 isClean  = true;
                 isFeatureSpecified = false;
-                expectedErrors = null;
+                expectedErrorsRegEx = null;
                 
                 ignoredRegEx = CLEAN_REGEX;
             }
@@ -206,13 +219,13 @@ public class FeaturesStartResults {
         nextIsClean = isClean;
         nextIsOutOfLevel = isOutOfLevel;
         nextIsFeatureSpecified = isFeatureSpecified;
-        nextExpectedErrors = expectedErrors;
+        nextExpectedErrorsRegEx = expectedErrorsRegEx;
 
         nextIgnoredRegEx = ignoredRegEx;
         
-        if ( expectedErrors != null ) {
+        if ( expectedErrorsRegEx != null ) {
             logInfo(m, "Feature case [ " + errorsCase + " ] expects errors:");
-            for ( String expectedError : expectedErrors ) {
+            for ( String expectedError : expectedErrorsRegEx ) {
                 logInfo(m, "    " + expectedError);
             }
         } else {
@@ -382,14 +395,14 @@ public class FeaturesStartResults {
         recordFailure(m, explanation);
     }    
     
-    protected void recordAbsentOutOfLevelError(String m, String expectedError) {
-        addToSet(failuresAbsentOutOfLevel, nextShortName, expectedError);
-        recordAbsentError(m, "Missing expected out-of-level error [ " + expectedError + " ]");
+    protected void recordAbsentOutOfLevelError(String m, String expectedErrorRegEx) {
+        addToSet(failuresAbsentOutOfLevel, nextShortName, expectedErrorRegEx);
+        recordAbsentError(m, "Missing expected out-of-level error [ " + expectedErrorRegEx + " ]");
     }
 
-    protected void recordAbsentFeatureError(String m, String expectedError) {
-        addToSet(failuresAbsentFeatureSpecified, nextShortName, expectedError);
-        recordAbsentError(m, "Missing expected feature error [ " + expectedError + " ]");
+    protected void recordAbsentFeatureError(String m, String expectedErrorRegEx) {
+        addToSet(failuresAbsentFeatureSpecified, nextShortName, expectedErrorRegEx);
+        recordAbsentError(m, "Missing expected feature error [ " + expectedErrorRegEx + " ]");
     }
 
     protected void recordPresentOtherError(String m, String unexpectedError) {
@@ -654,11 +667,11 @@ public class FeaturesStartResults {
 
             if ( errorMessages.isEmpty() ) {
                 if ( nextIsOutOfLevel ) {
-                    for ( String expectedError : nextExpectedErrors ) {
-                        recordAbsentOutOfLevelError(m, expectedError);
+                    for ( String expectedErrorRegEx : nextExpectedErrorsRegEx ) {
+                        recordAbsentOutOfLevelError(m, expectedErrorRegEx);
                     }
                 } else if ( nextIsFeatureSpecified ) { 
-                    for ( String expectedError : nextExpectedErrors ) {
+                    for ( String expectedError : nextExpectedErrorsRegEx ) {
                         recordAbsentFeatureError(m, expectedError);
                     }
                 } else {
@@ -677,13 +690,26 @@ public class FeaturesStartResults {
         } );
     }
 
+    //
+    
+    // Matching code based simplity file manager string matching.
+    //
+    // See:
+    //   open-liberty/dev/fattest.simplicity/src/
+    //     componenttest/topology/impl/
+    //       LibertyFileManager.findStringsInFileCommon.
+    
     protected void processExpected(List<String> messages) {
         String m = "processExpected";
 
-        String[] expectedErrors = nextExpectedErrors;
-        
+        String[] expectedErrorsRegEx = nextExpectedErrorsRegEx;
+        Pattern[] expectedErrorsPattern = new Pattern[ expectedErrorsRegEx.length ];
+        for ( int errorNo = 0; errorNo < expectedErrorsRegEx.length; errorNo++ ) {
+            expectedErrorsPattern[errorNo] = Pattern.compile( expectedErrorsRegEx[errorNo] );
+        }
+
         int numMessages = messages.size();
-        int numErrors = expectedErrors.length;
+        int numErrors = expectedErrorsRegEx.length;
         
         boolean[] matchedMessages = new boolean[numMessages];
         int numMatchedMessages = 0;
@@ -696,11 +722,17 @@ public class FeaturesStartResults {
         for ( int messageNo = 0; messageNo < numMessages; messageNo++ ) {
             String nextMessage = messages.get(messageNo);
             for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
-                String nextError = expectedErrors[errorNo];
-                if ( nextMessage.contains(nextError) ) {
+                String nextErrorRegEx = expectedErrorsRegEx[errorNo];
+                Pattern nextErrorPattern = expectedErrorsPattern[errorNo];
+
+                if ( nextErrorPattern.matcher(nextMessage).find() ) {
+                    logInfo(m, "Matched expected error:");
+                    logInfo(m, "    [ " + nextErrorRegEx + " ]");
+                    logInfo(m, "    [ " + nextMessage + " ]");
+                    
                     matches[messageNo][errorNo] = true;
                     matchedMessages[messageNo] = true;
-                    
+
                     numMatchedMessages++;
                     if ( !matchedErrors[errorNo] ) {
                         matchedErrors[errorNo] = true;
@@ -719,7 +751,7 @@ public class FeaturesStartResults {
         if ( numMatchedErrors != numErrors ) {
             for ( int errorNo = 0; errorNo < numErrors; errorNo++ ) {
                 if ( !matchedErrors[errorNo] ) {
-                    recordAbsentError(m, expectedErrors[errorNo] );
+                    recordAbsentError(m, expectedErrorsRegEx[errorNo] );
                 }
             }
         }
@@ -990,7 +1022,7 @@ public class FeaturesStartResults {
         Collection<String> values,
         StringBuilder builder) {
             
-        logInfo( m, title + " [" + values.size() + " ]" );
+        logInfo( m, title + " [ " + values.size() + " ]" );
 
         if ( !values.isEmpty () ) {
             FeaturesStartReporting.display(m, prefix, width, values, builder);
@@ -1006,7 +1038,7 @@ public class FeaturesStartResults {
         Map<String, ? extends Collection<String>> values,
         StringBuilder builder) {
         
-        logInfo( m, title + " [" + values.size() + " ]" );
+        logInfo( m, title + " [ " + values.size() + " ]" );
         
         if ( !values.isEmpty() ) {
             FeaturesStartReporting.display(m, prefix, nestedPrefix, width, values, builder);
@@ -1014,5 +1046,5 @@ public class FeaturesStartResults {
         } else {
             return false;
         }
-    }    
+    }
 }

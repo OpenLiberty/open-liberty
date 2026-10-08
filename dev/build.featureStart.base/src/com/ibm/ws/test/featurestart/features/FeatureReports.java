@@ -68,7 +68,7 @@ public class FeatureReports {
         Function<String, String> featureFilter = (name) -> FeatureFilter.skipFeature(name);
         BiFunction<String, Boolean, String> featureZOSFilter = (name, isZOS) -> FeatureFilter.zosSkip(name, isZOS.booleanValue());
 
-        Map<String, String[]> allowedErrors = FeatureErrors.getAllowedErrors();
+        Map<String, String[]> allowedErrors = FeatureErrors.getAllowedErrorsRegEx();
 
         System.out.println("Read features for server [ " + serverHome + " ] ... [ " + featureData.size() + " ] features read.");
         System.out.println();
