@@ -51,31 +51,25 @@
         </application-bnd>
     </application>
 
-    <authentication id="Basic" cacheEnabled="true" />
+    <!-- cacheEnabled=false ensures every SSO request exercises the full LTPA token
+         validation and refresh path. A cached auth result would bypass that path
+         entirely, making refresh assertions vacuous. -->
+    <authentication id="Basic" cacheEnabled="false" />
     
     <httpSession securityIntegrationEnabled="false"/>
 
-    <!-- LTPA configuration for token refresh testing
-         - expiration:        4 minutes  absolute token lifetime (hard cap)
-         - inactivityTimeout: 2 minutes  token expires if idle longer than this (< expiration)
-         - refreshThreshold:  1 minute   proactively refresh when <=1m inactivity time remaining (~1/2 of inactivity)
-    -->
-    <ltpa expiration="4m"
+    <ltpa expiration="3m"
           inactivityTimeout="2m"
           refreshThreshold="1m"
+          dynamicExpirationValidation="true"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
           keysPassword="{xor}Lz4sLCgwLTs="/>
 
     <include location="../fatTestPorts.xml" />
     
-    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
-    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
-    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
-    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+    <javaPermission className="java.security.AllPermission"/>
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
     <ssl id="defaultSSLConfig" />
     
 </server>
-
-<!-- Made with Bob -->

@@ -10,7 +10,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="com.ibm.ws.security.token.ltpa.fat.refresh">
+<server description="com.ibm.ws.security.token.ltpa.fat.refresh - Short Token Expiration Test Configuration">
 
     <featureManager>
         <feature>appSecurity-2.0</feature>
@@ -51,12 +51,13 @@
         </application-bnd>
     </application>
 
+    <!-- cacheEnabled=false ensures every SSO request exercises the full LTPA token
+         validation path. -->
     <authentication id="Basic" cacheEnabled="false" />
     
     <httpSession securityIntegrationEnabled="false"/>
 
-    <ltpa expiration="3m"
-          inactivityTimeout="2m"
+    <ltpa expiration="2m"
           refreshThreshold="1m"
           dynamicExpirationValidation="true"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
