@@ -29,7 +29,7 @@ public class FeatureErrors {
         // "openapi-3.0" and "openapi-3.1" previously left threads
         // when the server was stopped. Those errors no longer occur.
         //
-        // Errors still occur when stopping mpOpenApi-1.o".
+        // Errors still occur when stopping "mpOpenApi-1.0".
 
         String[] QUIESCE_FAILURES = new String[] { "CWWKE1102W", "CWWKE1107W" };
         requiredErrors.put("mpOpenApi-1.0", QUIESCE_FAILURES);

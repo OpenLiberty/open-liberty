@@ -373,11 +373,11 @@ public class FeaturesStartResults {
     //
     // Result -> Success | Failure
     //
-    // Failure -> Required Error | Forbidden Error
+    // Failure -> Required Error | Prohibited Error
     //
-    // Expected Error -> Feature Specified Error | Out-Of-Level Error
+    // Required Error -> Feature Specified Error | Out-Of-Level Error
     //
-    // Forbidden Error -> Missing Module | Missing Bundle | Other Error
+    // Prohibited Error -> Missing Module | Missing Bundle | Other Error
 
     protected final Set<String> successes;
     protected final Set<String> failures;
@@ -777,7 +777,7 @@ public class FeaturesStartResults {
 
         // General case:
         //
-        // Error messages were collected. These may be expected or unexpected.
+        // Error messages were collected. These may be required or prohibited.
         //
         // Determine which expected messages are missing and which messages are extra.
         //
