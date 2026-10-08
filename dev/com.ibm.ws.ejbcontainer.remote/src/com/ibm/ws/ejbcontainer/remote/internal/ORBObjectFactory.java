@@ -32,7 +32,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class ORBObjectFactory implements ObjectFactory {
     private static final String REFERENCE_ORB = "orb";
 
-    private static final AtomicServiceReference<ClientORBRef> orbRef = new AtomicServiceReference<ClientORBRef>(REFERENCE_ORB);
+    private final AtomicServiceReference<ClientORBRef> orbRef = new AtomicServiceReference<ClientORBRef>(REFERENCE_ORB);
 
     @Activate
     protected void activate(ComponentContext cc) {
