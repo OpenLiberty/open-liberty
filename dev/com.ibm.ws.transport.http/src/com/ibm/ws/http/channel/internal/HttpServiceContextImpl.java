@@ -130,6 +130,7 @@ import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
+import io.netty.util.AsciiString;
 import io.openliberty.http.constants.HttpGenerics;
 
 /**
@@ -3885,18 +3886,19 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             ChannelFuture future = nettyContext.channel().writeAndFlush(nettyResponse);
             boolean websocketIntent = Boolean.TRUE.equals(nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).get());
             boolean isSwitching = nettyResponse.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code();
+            String connection = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
+            String upgrade = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
+            // Match the response predicate that makes HttpOutputStreamImpl wait for readiness.
             boolean isUpgrade = isSwitching
-                            && nettyResponse.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true)
-                            && nettyResponse.headers().get(HttpHeaderNames.UPGRADE) != null;
+                            && connection != null
+                            && AsciiString.containsIgnoreCase(connection, "upgrade")
+                            && upgrade != null && !upgrade.isEmpty();
             boolean isWebSocketUpgrade = isUpgrade
                             && HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(nettyResponse.headers().get(HttpHeaderNames.UPGRADE));
             if (websocketIntent && !isWebSocketUpgrade) {
                 nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
             }
             if (isSwitching) {
-                String connection = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
-                String upgrade = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
-                        
                 if(isUpgrade) {
                     Object upgPromise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
                     if(!(upgPromise instanceof CompletableFuture<?>)) {
