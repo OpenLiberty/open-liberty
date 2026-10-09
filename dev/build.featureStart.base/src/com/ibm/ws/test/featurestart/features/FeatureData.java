@@ -14,6 +14,7 @@ package com.ibm.ws.test.featurestart.features;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -36,6 +37,8 @@ public class FeatureData {
         Log.error(CLASS, m, th, msg);
     }
 
+    //
+    
     /**
      * Read feature manifest files from a server features directory.
      * All files with the extension ".mf" are read.
@@ -68,7 +71,7 @@ public class FeatureData {
             logError(m, "Folder [ " + featuresPath + " ] could not be read");
             return features;
         } else if (featureFiles.length == 0) {
-            logError(m, "Folder [ " + featuresPath + " ] could not be read");
+            logError(m, "Folder [ " + featuresPath + " ] is empty");
             return features;
         }
 
@@ -101,7 +104,11 @@ public class FeatureData {
     public static FeatureData parseFeature(File file) {
         String m = "parseFeature";
 
-        try (Scanner scanner = new Scanner(file)) {
+        // Do not use the default character set. Feature data is stored
+        // in manifest files, which always use UTF-8. The default character
+        // set might not be UTF-8.
+
+        try (Scanner scanner = new Scanner(file, StandardCharsets.UTF_8.name())) {
             String shortName = null;
             String symbolicName = null;
             boolean isClientOnly = false;
