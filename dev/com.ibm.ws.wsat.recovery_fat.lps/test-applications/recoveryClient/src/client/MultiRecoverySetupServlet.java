@@ -423,12 +423,12 @@ public class MultiRecoverySetupServlet extends HttpServlet {
 					if (!output.contains("failed"))
 						output = "Get response: " + output + ".";
 					//kill server2
-					///try{
-					callServlet("SuicideServlet"+"02", BASE_URL2);
-					//}catch (SocketException e){
-					//	System.out.println("Get expected exception " + e.toString() 
-					//			+ " when killing server2");
-					// }
+					try{
+						callServlet("SuicideServlet"+"02", BASE_URL2);
+					}catch (SocketException e){
+						System.out.println("Get expected exception " + e.toString()
+								+ " when killing server2");
+					}
 					output += " Test passed.";
 					userTransaction.commit();
 				}catch(java.lang.Exception e){
