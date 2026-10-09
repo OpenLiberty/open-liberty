@@ -17,6 +17,10 @@ public class HttpOptions extends ConfigElement {
     private Boolean ignoreWriteAfterCommit;
     private Integer messageSizeLimit;
     private String websocketBufferSize;
+    private String readTimeout;
+    private String writeTimeout;
+    private Boolean throwIOEForInboundConnections;
+
 
     public Integer getMessageSizeLimit() {
         return this.messageSizeLimit;
@@ -39,10 +43,40 @@ public class HttpOptions extends ConfigElement {
     public String isWebsocketBufferSize() {
         return this.websocketBufferSize;
     }
+
     @XmlAttribute
     public void setWebsocketBufferSize(String websocketBufferSize) {
         this.websocketBufferSize = websocketBufferSize;
     }
+
+    public String getReadTimeout() {
+        return this.readTimeout;
+    }
+
+    @XmlAttribute
+    public void setReadTimeout(String readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    public String getWriteTimeout() {
+        return this.writeTimeout;
+    }
+
+    @XmlAttribute
+    public void setWriteTimeout(String writeTimeout) {
+        this.writeTimeout = writeTimeout;
+    }
+
+    public Boolean isThrowIOEForInboundConnections() {
+        return this.throwIOEForInboundConnections;
+    }
+
+    @XmlAttribute(name = "ThrowIOEForInboundConnections")
+    public void setThrowIOEForInboundConnections(Boolean throwIOEForInboundConnections) {
+        this.throwIOEForInboundConnections = throwIOEForInboundConnections;
+    }
+
+
 
     @Override
     public String toString() {
@@ -55,6 +89,13 @@ public class HttpOptions extends ConfigElement {
             buf.append("messageSizeLimit=\"" + messageSizeLimit + "\" ");
         if (websocketBufferSize != null)
             buf.append("websocketBufferSize=\"" + websocketBufferSize + "\" ");
+        if (readTimeout != null)
+            buf.append("readTimeout=\"" + readTimeout + "\" ");
+        if (writeTimeout != null)
+            buf.append("writeTimeout=\"" + writeTimeout + "\" ");
+        if (throwIOEForInboundConnections != null)
+            buf.append("ThrowIOEForInboundConnections=\"" + throwIOEForInboundConnections + "\" ");
+
         buf.append("}");
         return buf.toString();
     }
