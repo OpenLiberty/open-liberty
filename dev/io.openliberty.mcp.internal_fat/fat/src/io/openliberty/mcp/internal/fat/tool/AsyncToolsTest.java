@@ -28,56 +28,58 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONParser;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Mcp;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
-import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
 @RunWith(FATRunner.class)
 public class AsyncToolsTest extends FATServletClient {
 
-    private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async-tools")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server or copy the field here.
+    // McpAsyncServerSuite.server is null until suite before() fires; reference it directly everywhere.
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolsTest");
+    public McpClient client = new McpClient(McpAsyncServerSuite.server, "/asyncToolsTest");
 
     @Rule
-    public McpClient shortTimeoutClient = new McpClient(server, "/asyncToolsTestShortTimeout");
-
-    @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");
+    public McpClient shortTimeoutClient = new McpClient(McpAsyncServerSuite.server, "/asyncToolsTestShortTimeout");
 
     @BeforeClass
     public static void setup() throws Exception {
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolsTest.war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(McpAsyncServerSuite.server, war, SERVER_ONLY);
 
-        // Same app deployed a second time, but has different config in server.xml
         WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, "asyncToolsTestShortTimeout.war")
                                                .addPackage(AsyncTools.class.getPackage())
                                                .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportAppToServer(server, shortTimeoutWar, SERVER_ONLY);
+        McpAsyncServerSuite.deployWithConfiguration(shortTimeoutWar, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setAsyncTimeout("1s");
+            app.getMcps().add(mcp);
+        });
 
-        server.startServer();
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("MCP server endpoint: .*/asyncToolsTest/mcp$"));
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("CWWKZ0001I:.*asyncToolsTestShortTimeout"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
+        McpAsyncServerSuite.undeployWithConfiguration("asyncToolsTestShortTimeout");
+        McpAsyncServerSuite.undeployDropinApp("asyncToolsTest");
     }
 
     @Test
@@ -153,7 +155,7 @@ public class AsyncToolsTest extends FATServletClient {
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("Method call caused runtime exception", McpAsyncServerSuite.server.getDefaultLogFile()));
     }
 
     @Test
@@ -179,7 +181,7 @@ public class AsyncToolsTest extends FATServletClient {
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("Method call caused runtime exception", McpAsyncServerSuite.server.getDefaultLogFile()));
     }
 
     @Test

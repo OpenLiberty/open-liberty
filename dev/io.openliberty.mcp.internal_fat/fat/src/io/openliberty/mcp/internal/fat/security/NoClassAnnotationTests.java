@@ -23,9 +23,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.NoClassAnnotationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -35,12 +34,11 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class NoClassAnnotationTests extends AbstractNoClassAnnotation {
 
-    @Server("mcp-server-auth")
-    public static LibertyServer server;
+    // Server is managed by McpAuthServerSuite — do NOT add @Server or copy the field here.
     Logger logger = Logger.getLogger(NoClassAnnotationTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/noClassAnnotationTools");
+    public McpClient client = new McpClient(McpAuthServerSuite.server, "/noClassAnnotationTools");
 
     /** {@inheritDoc} */
     @Override
@@ -50,16 +48,15 @@ public class NoClassAnnotationTests extends AbstractNoClassAnnotation {
 
     @BeforeClass
     public static void setup() throws Exception {
+        McpAuthServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "noClassAnnotationTools.war").addClass(NoClassAnnotationTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-        assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        ShrinkHelper.exportDropinAppToServer(McpAuthServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAuthServerSuite.server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        McpAuthServerSuite.server.setMarkToEndOfLog();
+        McpAuthServerSuite.undeployDropinApp("noClassAnnotationTools");
     }
 }

@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -25,10 +26,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
@@ -38,29 +38,30 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 public class AsyncToolCallEventTraceTest extends FATServletClient {
 
     private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async")
-    public static LibertyServer server;
+
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server or copy the field here.
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolCallEventTraceTest");
+    public McpClient client = new McpClient(McpAsyncServerSuite.server, "/asyncToolCallEventTraceTest");
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");
+    public ToolStatusClient toolStatus = new ToolStatusClient(McpAsyncServerSuite.server, "/asyncToolsTest");
 
     @BeforeClass
     public static void setup() throws Exception {
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolCallEventTraceTest.war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        ShrinkHelper.exportDropinAppToServer(McpAsyncServerSuite.server, war, SERVER_ONLY);
+        assertNotNull(McpAsyncServerSuite.server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        McpAsyncServerSuite.server.setMarkToEndOfLog();
+        McpAsyncServerSuite.undeployDropinApp("asyncToolCallEventTraceTest");
     }
 
     @Test
@@ -83,7 +84,7 @@ public class AsyncToolCallEventTraceTest extends FATServletClient {
                                                       "The tool method 'asyncEcho' returned: 'Async Hello: (async)'");
 
         for (String traceMsg : expectedEventTraceMsgs) {
-            assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+            assertTrue("Expected event trace not found: " + traceMsg, !McpAsyncServerSuite.server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
         }
 
     }
@@ -105,7 +106,7 @@ public class AsyncToolCallEventTraceTest extends FATServletClient {
                         """;
         client.callMCP(request);
         String traceMsg = "The tool method 'asyncEcho' returned the following error to the user: 'An internal server error occurred while running the tool.'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !McpAsyncServerSuite.server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
     }
 
     @Test
@@ -123,7 +124,7 @@ public class AsyncToolCallEventTraceTest extends FATServletClient {
 
         client.callMCP(request);
         String traceMsg = "The tool method 'asyncEcho' returned the following error to the user: 'The method expected the following arguments but did not receive them: [input].'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !McpAsyncServerSuite.server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
 
     }
 

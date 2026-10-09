@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
@@ -21,11 +20,10 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Mcp;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpStatelessAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.DenyAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
@@ -36,12 +34,14 @@ import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 @RunWith(FATRunner.class)
 public class DenyAllTestsStateless extends AbstractDenyAll {
 
-    @Server("mcp-stateless-server-auth")
-    public static LibertyServer server;
+    private static final String APP_NAME = "denyAllToolsStateless";
+
+    // Do NOT copy McpStatelessAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(DenyAllTestsStateless.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/securityTests", StateMode.STATELESS);
+    public McpClient client = new McpClient(McpStatelessAuthServerSuite.server, "/" + APP_NAME, StateMode.STATELESS);
 
     /** {@inheritDoc} */
     @Override
@@ -51,16 +51,21 @@ public class DenyAllTestsStateless extends AbstractDenyAll {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "securityTests.war").addClass(DenyAllTools.class);
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-        assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        McpStatelessAuthServerSuite.server.setMarkToEndOfLog();
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(DenyAllTools.class);
+        McpStatelessAuthServerSuite.deployWithConfiguration(war, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setStateless("true");
+            app.getMcps().add(mcp);
+        });
+
+        assertNotNull(McpStatelessAuthServerSuite.server.waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        McpStatelessAuthServerSuite.server.setMarkToEndOfLog();
+        McpStatelessAuthServerSuite.undeployWithConfiguration(APP_NAME);
     }
 }

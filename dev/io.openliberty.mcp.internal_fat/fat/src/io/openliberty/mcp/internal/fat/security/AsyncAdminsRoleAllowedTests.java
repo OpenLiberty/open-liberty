@@ -9,10 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpAsyncAuthServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
-
-import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -22,11 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.ExpectedTestResult;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.Scenario;
@@ -39,26 +33,26 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class AsyncAdminsRoleAllowedTests extends FATServletClient {
 
-    @Server("mcp-server-async-auth")
-    public static LibertyServer server;
-    Logger logger = Logger.getLogger(AsyncAdminsRoleAllowedTests.class.getName());
+    private static final String APP_NAME = "asyncAdminsRoleTools";
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncAdminsRoleTools");
+    public McpClient client = new McpClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncAdminsRoleTools.war").addClass(AsyncAdminsRoleTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-        assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        serverLifecycle.getServer().setMarkToEndOfLog();
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(AsyncAdminsRoleTools.class);
+        serverLifecycle.deployWithConfiguration(war, app -> {
+            // no extra <mcp> config needed for this app
+        });
+
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("CWWKZ0001I:.*" + APP_NAME));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployWithConfiguration(APP_NAME);
     }
 
     @Test

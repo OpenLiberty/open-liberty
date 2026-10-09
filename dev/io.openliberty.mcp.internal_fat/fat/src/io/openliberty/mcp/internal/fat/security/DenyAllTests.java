@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
@@ -21,11 +20,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.DenyAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -35,12 +31,14 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class DenyAllTests extends AbstractDenyAll {
 
-    @Server("mcp-server-auth")
-    public static LibertyServer server;
+    private static final String APP_NAME = "denyAllTools";
+
+    // Do NOT copy McpAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(DenyAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/denyAllTools");
+    public McpClient client = new McpClient(McpAuthServerSuite.server, "/" + APP_NAME);
 
     /** {@inheritDoc} */
     @Override
@@ -50,17 +48,20 @@ public class DenyAllTests extends AbstractDenyAll {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "denyAllTools.war").addClass(DenyAllTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-        assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        McpAuthServerSuite.server.setMarkToEndOfLog();
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(DenyAllTools.class);
+        McpAuthServerSuite.deployWithConfiguration(war, app -> {
+            // no extra <mcp> config needed for this app
+        });
+
+        assertNotNull(McpAuthServerSuite.server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + APP_NAME));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        McpAuthServerSuite.server.setMarkToEndOfLog();
+        McpAuthServerSuite.undeployWithConfiguration(APP_NAME);
     }
 
 }
