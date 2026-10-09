@@ -15,7 +15,8 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/H2TestApp/src
+  test-applications/H2TestApp/src,\
+  test-applications/H2SecurityTestApp/src
 
 javac.source: 17
 javac.target: 17
