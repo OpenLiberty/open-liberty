@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.token.ltpa.LTPAValidationKeysInfo;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
@@ -32,6 +33,9 @@ import com.ibm.wsspi.security.ltpa.TokenFactory;
 public class LTPAToken2Factory implements TokenFactory {
     private static final TraceComponent tc = Tr.register(LTPAToken2Factory.class);
     private long expirationInMinutes;
+    private long refreshThresholdInMinutes;
+    private long inactivityTimeoutInMinutes;
+    private boolean dynamicExpirationValidation;
     private byte[] primarySharedKey;
     private LTPAPublicKey primaryPublicKey;
     private LTPAPrivateKey primaryPrivateKey;
@@ -43,6 +47,10 @@ public class LTPAToken2Factory implements TokenFactory {
     @Override
     public void initialize(@Sensitive Map tokenFactoryMap) {
         expirationInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.EXPIRATION);
+        refreshThresholdInMinutes = (long) tokenFactoryMap.get(LTPAConstants.REFRESH_THRESHOLD);
+        inactivityTimeoutInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.INACTIVITY_TIMEOUT);
+        Boolean dynExpVal = (Boolean) tokenFactoryMap.get(LTPAConstants.DYNAMIC_EXPIRATION_VALIDATION);
+        dynamicExpirationValidation = (dynExpVal != null) ? dynExpVal : false;
         primarySharedKey = (byte[]) tokenFactoryMap.get(LTPAConstants.PRIMARY_SECRET_KEY);
         primaryPublicKey = (LTPAPublicKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PUBLIC_KEY);
         primaryPrivateKey = (LTPAPrivateKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PRIVATE_KEY);
@@ -58,7 +66,7 @@ public class LTPAToken2Factory implements TokenFactory {
     @Override
     public Token createToken(Map tokenData) throws TokenCreationFailedException {
         String userUniqueId = getUniqueId(tokenData);
-        return new LTPAToken2(userUniqueId, expirationInMinutes, primarySharedKey, primaryPrivateKey, primaryPublicKey);
+        return new LTPAToken2(userUniqueId, expirationInMinutes, refreshThresholdInMinutes, inactivityTimeoutInMinutes, dynamicExpirationValidation, primarySharedKey, primaryPrivateKey, primaryPublicKey);
     }
 
     private String getUniqueId(Map tokenData) throws TokenCreationFailedException {
@@ -90,13 +98,36 @@ public class LTPAToken2Factory implements TokenFactory {
             }
 
             try {
-                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, removeAttributes);
+
+                // Start timing
+                long startTime = 0;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    startTime = System.nanoTime();
+                }
+
+                Token returnToken = null;
+
+                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, expirationInMinutes, refreshThresholdInMinutes, inactivityTimeoutInMinutes, dynamicExpirationValidation, removeAttributes);
                 if (validatedToken != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "validateTokenBytes with primary keys (success)");
                     }
-                    return validatedToken;
+                    // Beta guard: Token refresh is only available in beta edition
+                    if (ProductInfo.getBetaEdition() && validatedToken.shouldRefreshToken()) {
+                        returnToken = (Token) validatedToken.clone();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            debugMeasureTime(startTime, true);
+                        }
+                    } else {
+                        returnToken = validatedToken;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            debugMeasureTime(startTime, false);
+                        }
+                    }
                 }
+
+                return returnToken;
+
             } catch (Exception e) {
                 //If the token is expired then we do not want to continue processing validation keys below
                 if (e instanceof com.ibm.websphere.security.auth.TokenExpiredException) {
@@ -130,12 +161,17 @@ public class LTPAToken2Factory implements TokenFactory {
                     }
                     if (sharedKeyForValidation != null && ltpaPrivateKeyForValidation != null && ltpaPublicKeyForValidation != null) {
                         try {
-                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, removeAttributes);
+                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, expirationInMinutes, refreshThresholdInMinutes, inactivityTimeoutInMinutes, dynamicExpirationValidation, removeAttributes);
                             if (validatedToken != null) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "validateTokenBytes with validationKeys (success)");
                                 }
-                                return validatedToken;
+
+                                // Beta guard: Token refresh is only available in beta edition
+                                if (ProductInfo.getBetaEdition() && validatedToken.shouldRefreshToken())
+                                    return (Token) validatedToken.clone();
+                                else
+                                    return validatedToken;
                             }
                         } catch (Exception e) {
                             if (e instanceof com.ibm.websphere.security.auth.TokenExpiredException) {
@@ -170,6 +206,26 @@ public class LTPAToken2Factory implements TokenFactory {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "validateTokenBytes (no keys)");
         throw new com.ibm.websphere.security.auth.InvalidTokenException("Token factory not properly initialized.");
+    }
+
+    /**
+     * @param startTime
+     */
+    private void debugMeasureTime(long startTime, boolean clone) {
+        long endTime = System.nanoTime();
+
+        String msg = null;
+        if (clone) {
+            msg = "validateTokenBytes() and clone took ";
+        } else {
+            msg = "validateTokenBytes() took ";
+        }
+
+        // Calculate duration in milliseconds
+        long durationMs = (endTime - startTime) / 1_000_000;
+        // Or in seconds (with decimals)
+        double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
+        Tr.debug(tc, msg + "milliseconds: " + durationMs + " seconds: " + durationSeconds);
     }
 
 }

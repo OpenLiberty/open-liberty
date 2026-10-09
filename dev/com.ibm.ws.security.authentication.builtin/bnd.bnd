@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2025 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,9 +57,10 @@ Service-Component: \
     authCacheService=com.ibm.ws.security.authentication.cache.AuthCacheService; \
     userRegistryService=com.ibm.ws.security.registry.UserRegistryService; \
     delegationProvider=com.ibm.ws.security.delegation.DelegationProvider; \
+    ltpaConfiguration=com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     defaultDelegationProvider=com.ibm.ws.security.delegation.DefaultDelegationProvider; \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
-    optional:='delegationProvider,defaultDelegationProvider,credentialsService'; \
+    optional:='delegationProvider,defaultDelegationProvider,credentialsService,ltpaConfiguration'; \
     greedy:='delegationProvider,defaultDelegationProvider'; \
     dynamic:='delegationProvider,defaultDelegationProvider'; \
     properties:="service.vendor=IBM", \
@@ -122,6 +123,7 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 
 -buildpath: \
 	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.token.ltpa;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\

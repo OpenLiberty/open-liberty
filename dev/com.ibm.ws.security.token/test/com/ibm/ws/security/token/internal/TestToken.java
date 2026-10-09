@@ -49,6 +49,11 @@ public class TestToken implements Token, Serializable {
     }
 
     @Override
+    public boolean shouldRefreshToken() {
+        return false;
+    }
+
+    @Override
     public short getVersion() {
         return 1;
     }
