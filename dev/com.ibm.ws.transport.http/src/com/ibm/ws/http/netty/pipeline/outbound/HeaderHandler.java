@@ -78,7 +78,11 @@ public class HeaderHandler {
             if (headers.contains(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName())) {
                 headers.remove(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName());
             }
-        } else if (!HttpUtil.isContentLengthSet(response) && !this.isH2) {
+        } else if ((!HttpUtil.isContentLengthSet(response)
+                    // An empty servlet writer can supply its unknown-length sentinel on a 101.
+                    || (response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
+                        && "-1".equals(headers.get(HttpHeaderNames.CONTENT_LENGTH))))
+                   && !this.isH2) {
             if (response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
                 headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getAsciiStringName(), 0);
 
