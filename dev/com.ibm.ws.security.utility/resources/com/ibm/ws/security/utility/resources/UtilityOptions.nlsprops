@@ -262,7 +262,9 @@ createLTPAKeys.usage.options=\
 createLTPAKeys.required-key.password=\
 \ \ \ \ --password[=pwd]
 createLTPAKeys.required-desc.password=\
-\tLTPA keys password. If no value is defined you will be prompted.
+\tThe password for the Lightweight Third Party Authentication (LTPA)\n\
+\tkeys file. If you do not specify a value, you are prompted to enter\n\
+\tone. This option cannot be used with --useEncryptionKey=true.
 createLTPAKeys.option-key.server=\
 \ \ \ \ --server=name
 createLTPAKeys.option-desc.server=\
@@ -304,6 +306,16 @@ createLTPAKeys.option-desc.aesConfigFile=\
 \tvalues respectively. Both variables cannot be specified in the same file.\n\
 \tIf --aesConfigFile is specified then --passwordBase64Key and --passwordKey\n\
 \tcannot be specified.
+createLTPAKeys.option-key.useEncryptionKey=\
+\ \ \ \ --useEncryptionKey=[true|false]
+createLTPAKeys.option-desc.useEncryptionKey=\
+\tWhen set to true, an Advanced Encryption Standard (AES) key protects\n\
+\tthe Lightweight Third Party Authentication (LTPA) file directly rather\n\
+\tthan a password. Do not specify --password. You must also specify one\n\
+\tof the following key configurations:\n\
+\t  --passwordKey, --passwordBase64Key, or --aesConfigFile\n\
+\tThe server.xml snippet includes useEncryptionKey="true" on the <ltpa>\n\
+\telement and a hint line for the runtime key configuration.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

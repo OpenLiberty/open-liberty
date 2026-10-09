@@ -105,6 +105,8 @@ saf.arg.not.aes=The --keyring, --keyringType, and --keyLabel arguments can be us
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated
+createLTPAKeys.useEncryptionKey.passwordConflict=The --useEncryptionKey=true and --password options cannot be used together. To use AES key encryption, specify --useEncryptionKey=true with --passwordKey, --passwordBase64Key, or --aesConfigFile. To use password-based encryption, specify --password without --useEncryptionKey=true.
+createLTPAKeys.useEncryptionKey.missingAesConfig=If you specify --useEncryptionKey=true, you must also specify one of the following options: --passwordKey, --passwordBase64Key, or --aesConfigFile.
 createLTPAKeys.abort=Aborting LTPA key file creation:
 createLTPAKeys.fileExists=The {0} file already exists.  Unable to create a LTPA keys file in that location.
 createLTPAKeys.createdFile=Created LTPA keys file: {0}\n\

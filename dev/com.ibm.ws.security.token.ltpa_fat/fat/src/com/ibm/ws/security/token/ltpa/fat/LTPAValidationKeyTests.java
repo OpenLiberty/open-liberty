@@ -1280,6 +1280,11 @@ public class LTPAValidationKeyTests {
         // everything is already consistent: useEncryptionKey=true, keysPassword absent, the AES-
         // encrypted primary key already in place as ltpa.keys, and wlp.aes.encryption.key in
         // bootstrap.properties. This avoids any transient decryption failures from live reloads.
+        
+        // useEncryptionKey is beta-gated: the server JVM must see com.ibm.ws.beta.edition=true.
+        // Set this before the startServer calls below; resetServer() in @After clears it.
+        server1.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+        server2.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         // Step 1: Stop both servers.
         server1.stopServer(serverShutdownMessages);
