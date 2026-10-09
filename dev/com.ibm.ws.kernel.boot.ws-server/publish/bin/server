@@ -1964,9 +1964,7 @@ case "$ACTION" in
   # Start the server in the foreground
   run | debug | checkpoint)
 
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnvAndJVMOptions || exit $?
 
     if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] && [ ${ACTION} != "checkpoint" ]; then
       # Avoid call to restoreServer below if server already running.
@@ -2042,9 +2040,7 @@ case "$ACTION" in
   # Start the server in the background
   start)
 
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnvAndJVMOptions || exit $?
 
     if checkServer true
     then
@@ -2173,9 +2169,7 @@ case "$ACTION" in
 
   # Package up the runtime and target server configuration
   package)
-    if ! serverEnvAndJVMOptions; then
-      exit $?
-    fi
+    serverEnvAndJVMOptions || exit $?
 
     # Check to see if the server exists
     if checkServer true
