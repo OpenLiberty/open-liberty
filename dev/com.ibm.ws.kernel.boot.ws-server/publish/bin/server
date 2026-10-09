@@ -2122,7 +2122,6 @@ case "$ACTION" in
         PID=`cat "${X_PID_FILE}"`
       fi
 
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --stop "$@"
       rc=$?
 
@@ -2149,7 +2148,6 @@ case "$ACTION" in
     then
       serverPIDStatus
       mkdirs "${X_LOG_DIR}"
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status
       rc=$?
 
@@ -2199,7 +2197,6 @@ case "$ACTION" in
     # Check to see if the server exists
     if checkServer true
     then
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --dump "$@"
       exit $?
     else
@@ -2213,7 +2210,6 @@ case "$ACTION" in
     initializeClientJVMOptions
     if checkServer true
     then
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --javadump "$@"
       exit $?
     else
@@ -2228,7 +2224,6 @@ case "$ACTION" in
     # Check to see if the server exists
     if checkServer true
     then
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --pause "$@"
       exit $?
     else
@@ -2243,7 +2238,6 @@ case "$ACTION" in
     # Check to see if the server exists
     if checkServer true
     then
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
       javaCmd '' "${SERVER_NAME}" --resume "$@"
       exit $?
     else
