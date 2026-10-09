@@ -10,6 +10,7 @@
 package io.openliberty.jpa.persistence.tests.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -227,6 +228,81 @@ public class JakartaPersistenceServlet extends FATServlet {
         TypedQuery<Product> expensiveProductsQuery = em.createQuery("SELECT p FROM Product p WHERE p.price > 100.0", Product.class);
         long expensiveCount = expensiveProductsQuery.getResultCount();
         assertEquals("getResultCount() should return 2 for products priced over 100.0", 2L, expensiveCount);
+    }
+
+    @Test
+    public void testQueryGetSingleResultOrNull() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        SimpleEmployee emp = new SimpleEmployee("UniqueEmployee", 95_000L);
+        em.persist(emp);
+        tx.commit();
+
+        // 1. Found case -> returns entity
+        SimpleEmployee found = em.createQuery(
+            "SELECT e FROM SimpleEmployee e WHERE e.name = :name", SimpleEmployee.class)
+            .setParameter("name", "UniqueEmployee")
+            .getSingleResultOrNull();
+        assertNotNull("expected entity to be found", found);
+        assertEquals("UniqueEmployee", found.getName());
+
+        // 2. Not found case -> returns null instead of NoResultException
+        SimpleEmployee notFound = em.createQuery(
+            "SELECT e FROM SimpleEmployee e WHERE e.name = :name", SimpleEmployee.class)
+            .setParameter("name", "NonExistentEmployee")
+            .getSingleResultOrNull();
+        assertNull("expected null when no match found", notFound);
+    }
+
+    @Test
+    public void testPersistenceUnitUtilAndEntityState() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        SimpleEmployee emp = new SimpleEmployee("StateTestEmp", 60_000L);
+        em.persist(emp);
+        assertTrue("entity should be managed during active transaction", em.contains(emp));
+        tx.commit();
+
+        Long id = emp.getId();
+
+        // PersistenceUnitUtil inspection works on detached or managed entities
+        Object identifier = em.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(emp);
+        assertEquals(id, identifier);
+        assertTrue(em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(emp));
+
+        tx.begin();
+        SimpleEmployee managed = em.find(SimpleEmployee.class, id);
+        assertTrue("entity should be managed after find", em.contains(managed));
+        em.detach(managed);
+        assertFalse("entity should not be managed after detach", em.contains(managed));
+        tx.commit();
+    }
+
+    @Test
+    public void testBulkUpdateAndClear() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        em.persist(new SimpleEmployee("EmpA", 40_000L));
+        em.persist(new SimpleEmployee("EmpB", 45_000L));
+        tx.commit();
+
+        tx.begin();
+        int updatedCount = em.createQuery(
+            "UPDATE SimpleEmployee e SET e.salary = e.salary + 5000 WHERE e.salary < :threshold")
+            .setParameter("threshold", 50_000L)
+            .executeUpdate();
+        assertEquals("expected 2 employees updated", 2, updatedCount);
+        tx.commit();
+
+        em.clear();
+
+        tx.begin();
+        List<SimpleEmployee> updatedList = em.createQuery(
+            "SELECT e FROM SimpleEmployee e ORDER BY e.name", SimpleEmployee.class)
+            .getResultList();
+        assertEquals(45_000L, updatedList.get(0).getSalary());
+        assertEquals(50_000L, updatedList.get(1).getSalary());
+        tx.commit();
     }
 
     // -----------------------------------------------------------------------
