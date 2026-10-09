@@ -16,11 +16,18 @@ import java.util.function.Consumer;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
+import org.junit.runner.manipulation.Filter;
 import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 
+import componenttest.custom.junit.runner.CheckpointSupportFilter;
+import componenttest.custom.junit.runner.FeatureFilter;
+import componenttest.custom.junit.runner.JavaLevelFilter;
+import componenttest.custom.junit.runner.SecurityFilter;
+import componenttest.custom.junit.runner.SystemPropertyFilter;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -28,6 +35,23 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 public class ServerLifecycleRule implements TestRule {
+
+    private static final Filter[] testFiltersToApply = new Filter[] {
+                                                                      new TestModeFilter(),
+                                                                      new SuiteTestNameFilter(),
+                                                                      new FeatureFilter(),
+                                                                      new SystemPropertyFilter(),
+                                                                      new JavaLevelFilter(),
+                                                                      new CheckpointSupportFilter(),
+                                                                      new SecurityFilter()
+    };
+
+    private static final Statement EMPTY_STATEMENT = new Statement() {
+        @Override
+        public void evaluate() throws Throwable {
+            // Intentionally empty
+        }
+    };
 
     private String serverName;
     private LibertyServer server;
@@ -40,7 +64,14 @@ public class ServerLifecycleRule implements TestRule {
 
     @Override
     public Statement apply(Statement testToRun, Description description) {
-        // TODO: check if _any_ of our child tests are configured to run before starting the server
+        // If any of the filters prevent us from running, return an empty
+        // statement so that we do not start the server and our children do not run.
+        for (Filter filter : testFiltersToApply) {
+            if (!filter.shouldRun(description)) {
+                return EMPTY_STATEMENT;
+            }
+        }
+
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
