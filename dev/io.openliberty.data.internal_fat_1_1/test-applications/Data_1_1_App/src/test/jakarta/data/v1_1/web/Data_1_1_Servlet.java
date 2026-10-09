@@ -662,8 +662,7 @@ public class Data_1_1_Servlet extends FATServlet {
      *
      * Applies scaling due to Oracle stripping trailing 0s
      */
-    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
-    // @Test
+    @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
@@ -1036,11 +1035,6 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testFetching1() {
-        // TODO skipped until Hibernate bug is fixed:
-        // NoClassDefFoundError: jakarta/persistence/BatchSize
-        //   at org.hibernate.engine.spi.FetchOptions.batchSize(FetchOptions.java:81)
-        if (isHibernatePersistence())
-            return;
 
         Fraction f5_8 = fractions.withRoundedValues(5, 8)
                         .orElseThrow();
@@ -2817,9 +2811,11 @@ public class Data_1_1_Servlet extends FATServlet {
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
-    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
-    // @Test
+    @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
+        // TODO UnsupportedOperationException for change method with NativeQuery and QueryOptions
+        if (!isHibernatePersistence())
+            return;
         // Derby ignores query timeout and the lock timeout ends up applying instead.
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDerby() || (isDB2() && isHibernatePersistence()))
