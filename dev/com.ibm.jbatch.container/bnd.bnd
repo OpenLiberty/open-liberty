@@ -89,6 +89,7 @@ Import-Package: com.ibm.jbatch.spi,\
 	javax.xml.bind;version=!,\
 	javax.xml.bind.annotation;version=!,\
 	javax.xml.bind.annotation.adapters;version=!,\
+	org.eclipse.persistence.*;resolution:=optional,\
 	*
 		
 instrument.classesExcludes: com/ibm/jbatch/container/internal/resources/*.class
