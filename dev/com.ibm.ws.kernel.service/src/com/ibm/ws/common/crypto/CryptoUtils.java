@@ -120,6 +120,16 @@ public class CryptoUtils {
     public static final int AES_128_KEY_LENGTH_BYTES = 16;
     public static final int AES_256_KEY_LENGTH_BYTES = 32;
 
+    /** AES CBC IV length: must equal the AES block size (128 bits / 16 bytes). */
+    public static final int AES_IV_LENGTH_BYTES = 16;
+
+    /**
+     * Recommended GCM IV length: 96 bits (12 bytes) per NIST SP 800-38D §8.2.1.
+     * A 96-bit IV is processed directly as the counter block; any other length
+     * requires an extra GHASH pass and reduces the security margin.
+     */
+    public static final int GCM_IV_LENGTH_BYTES = 12;
+
     public static final int DESEDE_KEY_LENGTH_BYTES = 24;
 
     public static final int PBKDF2HMACSHA1_ITERATIONS = 84756;
@@ -418,7 +428,7 @@ public class CryptoUtils {
         if (isEnhancedSecurityChecked) {
             return isEnhancedSecurity;
         } else {
-            isEnhancedSecurity = isRunningBetaMode() && Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false"));
+            isEnhancedSecurity = Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false")) &&  isRunningBetaMode() ;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isEnhancedSecurity: " + (isEnhancedSecurity ? "enabled" : "disabled"));
             }
