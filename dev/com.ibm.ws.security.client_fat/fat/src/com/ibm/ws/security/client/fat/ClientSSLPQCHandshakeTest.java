@@ -60,10 +60,10 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
     private static final String SERVER_HELLO_PQC_NAMED_GROUP = "\"named group\": X25519MLKEM768";
 
     /**
-     * Search string that identifies the non-PQC X25519 group in the ServerHello key_share
-     * extension of the server trace, confirming a non-PQC group was negotiated.
+     * Search string that identifies the non-PQC x25519 group in the ServerHello key_share
+     * extension of the server trace on Java 8, confirming a non-PQC group was negotiated.
      */
-    private static final String SERVER_HELLO_NON_PQC_NAMED_GROUP = "\"named group\": X25519";
+    private static final String SERVER_HELLO_NON_PQC_NAMED_GROUP = "\"named group\": x25519";
 
     /** Baseline server jvm.options captured in {@link #before()} and restored in {@link #after()}. */
     private Map<String, String> originalServerJvmOptions;
@@ -185,11 +185,13 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
                         output.contains(ERRORSTRING));
 
             // Both sides used JDK defaults — X25519MLKEM768 is in the default list on both ends.
-            // Confirm it was selected in the ServerHello key_share.
+            // Confirm it was selected in the ServerHello key_share and verify the last occurrence.
             List<String> serverTraceLines = testServer.findStringsInTrace(SERVER_HELLO_PQC_NAMED_GROUP);
             assertFalse("Server trace ServerHello key_share should show \"named group\": X25519MLKEM768 " +
                         "when both client and server rely on JDK default named groups with no explicit config",
                         serverTraceLines.isEmpty());
+            String lastOccurrence = serverTraceLines.get(serverTraceLines.size() - 1);
+            assertNotNull("Last matched ServerHello key_share line should not be null", lastOccurrence);
 
             Log.info(c, name.getMethodName(), "PQC handshake succeeded with no named group config on either side: both JDK defaults include X25519MLKEM768");
 
@@ -251,6 +253,8 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
             List<String> ignoredPQCLines = testServer.findStringsInTrace("Ignore unsupported named group: X25519MLKEM768");
             assertFalse("Server trace should show X25519MLKEM768 was ignored when server is restricted to non PQC named groups only",
                         ignoredPQCLines.isEmpty());
+            String lastIgnored = ignoredPQCLines.get(ignoredPQCLines.size() - 1);
+            assertNotNull("Last ignored named group trace line should not be null", lastIgnored);
 
             Log.info(c, name.getMethodName(), "Handshake succeeded with non PQC group: server non PQC only restriction correctly prevented PQC negotiation");
 
@@ -291,11 +295,13 @@ public class ClientSSLPQCHandshakeTest extends CommonTest {
                         output.contains(ERRORSTRING));
 
             // On Java 8 we expect the JDK to default to non-PQC named groups.
-            // Confirm X25519 was selected in the ServerHello key_share.
+            // Confirm x25519 was selected in the ServerHello key_share and verify the last occurrence.
             List<String> serverTraceLines = testServer.findStringsInTrace(SERVER_HELLO_NON_PQC_NAMED_GROUP);
-            assertFalse("Server trace ServerHello key_share should show \"named group\": X25519 " +
+            assertFalse("Server trace ServerHello key_share should show \"named group\": x25519 " +
                         "when both client and server rely on Java 8 JDK default non-PQC named groups",
                         serverTraceLines.isEmpty());
+            String lastOccurrence = serverTraceLines.get(serverTraceLines.size() - 1);
+            assertNotNull("Last matched ServerHello key_share line should not be null", lastOccurrence);
 
             Log.info(c, name.getMethodName(), "Handshake succeeded with no named group config on either side using Java 8 non-PQC defaults");
 
