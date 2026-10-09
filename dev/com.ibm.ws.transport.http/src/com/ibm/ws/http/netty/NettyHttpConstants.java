@@ -10,12 +10,15 @@
 package com.ibm.ws.http.netty;
 
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 
 /**
@@ -45,6 +48,7 @@ public final class NettyHttpConstants {
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
     public static final AttributeKey<Socket> SOCKET_HANDLE = AttributeKey.valueOf("SocketHandleKey");
+    public static final AttributeKey<SslHandler> SSL_HANDLER = AttributeKey.valueOf("sslHandler");
 
     //AUTOREAD WORK
     public static final AttributeKey<HttpInputStreamImpl> HTTP_INPUT_STREAM = AttributeKey.valueOf("httpInputStream");
@@ -78,14 +82,19 @@ public final class NettyHttpConstants {
 
         ProtocolName(String protocol) { this.protocol = protocol; }
 
+        private static final Map<String, ProtocolName> PROTOCOLS;
+        static {
+            PROTOCOLS = new HashMap<>(8);
+            for (ProtocolName p : values())
+                PROTOCOLS.put(p.protocol, p);
+        }
+
         /** Reverse-lookup from the string stored on the channel. */
         public static ProtocolName from(String protocol) {
             if (protocol == null)
                 return UNKNOWN;
-            for (ProtocolName p : values())
-                if (p.protocol.equals(protocol))
-                    return p;
-            return UNKNOWN;
+            ProtocolName result = PROTOCOLS.get(protocol);
+            return result != null ? result : UNKNOWN;
         }
     }
 

@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.KeyMatcher;
+import io.netty.util.AsciiString;
 
 /**
  * Class representing a single HTTP header name.
@@ -246,6 +247,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     /** Max value of header keys that will be kept in key storage */
     public static final int ORD_MAX = 1024;
 
+    private AsciiString asciiName;
+
     /**
      * Constructor to create a new HttpHeaderKey and add it to the
      * enumerated list.
@@ -254,8 +257,8 @@ public class HttpHeaderKeys extends HeaderKeys {
      */
     private HttpHeaderKeys(String name) {
         super(name, generateNextOrdinal());
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
             allKeys.add(this);
             myMatcher.add(this);
         }
@@ -271,9 +274,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     private HttpHeaderKeys(String name, boolean undefined) {
         super(name, generateNextOrdinal());
         setUndefined(undefined);
-
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
             allKeys.add(this);
             myMatcher.add(this);
         }
@@ -291,11 +293,15 @@ public class HttpHeaderKeys extends HeaderKeys {
         super(name, generateNextOrdinal());
         super.setShouldLogValue(shouldLog);
         super.setUseFilters(shouldFilter);
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
             allKeys.add(this);
             myMatcher.add(this);
         }
+    }
+
+    public AsciiString getAsciiStringName() {
+        return asciiName;
     }
 
     /**

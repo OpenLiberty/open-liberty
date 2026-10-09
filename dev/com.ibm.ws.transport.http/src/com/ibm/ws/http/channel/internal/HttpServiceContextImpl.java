@@ -2374,7 +2374,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
         ((NettyResponseMessage) getResponse()).processCookies();
-        HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
+        HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response, (((NettyResponseMessage) getResponse()).getStreamId() != -1));
         headerHandler.complianceCheck();
         // The Netty encoder consumes this reserved extension field. Project authority once,
         // after ordinary configuration and compliance have completed.
@@ -2402,8 +2402,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION, ConnectionValues.CLOSE.getName());
         }
-        if (HttpUtil.isContentLengthSet(response)) {
-            this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
+        if (getResponse().getContentLength() != HttpGenerics.NOT_SET) {
+            this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(getResponse().getContentLength());
         }
         this.setHeadersSent();
     }
@@ -3134,10 +3134,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            String streamId = Integer.toString(getNettyHttp2StreamId());
-
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
-                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
+                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(getNettyHttp2StreamId());
             }
 
             nettyWrite(sendHeaders, false);
@@ -3459,10 +3457,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "Number of bytes to write: " + getNumBytesWritten());
             }
 
-            String streamId = Integer.toString(getNettyHttp2StreamId());
-
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
-                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(streamId);
+                ((NettyTCPWriteRequestContext) (getTSC().getWriteInterface())).setStreamId(getNettyHttp2StreamId());
             }
 
             nettyWrite(sendHeaders, true);
@@ -3831,6 +3827,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // Set prefix object on Netty Write Request Context
                 ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).queuePrefixObject(nettyResponse);
             }
+            if(finalWrite) {
+                // Set last write object on Netty Write Request Context
+                NettyResponseMessage resp = (NettyResponseMessage) getResponse();
+                ((NettyTCPWriteRequestContext)getTSC().getWriteInterface()).setLastWrite(new LastStreamSpecificHttpContent(resp.getStreamId(), resp.getNettyTrailers()));
+            }
 
             bindNettyRequestVersion(getTSC().getWriteInterface());
             getTSC().getWriteInterface().setBuffers(writeBuffers);
@@ -3843,7 +3844,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // 457369 - disconnect write buffers in TCP when done
                 getTSC().getWriteInterface().setBuffers(null);
             }
-
+            return;
         }
         else if (sendHeaders) {
             sendNettyHeaders();
@@ -3864,11 +3865,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
         }
         NettyResponseMessage resp = (NettyResponseMessage) getResponse();
-        HttpHeaders trailers = resp.getNettyTrailers();
-
-        String streamId = Integer.toString(getNettyHttp2StreamId());
-
-        DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
+        DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(getNettyHttp2StreamId(), resp.getNettyTrailers());
 
         // Sending last http content since all data was written.
         // Connection-close is owned by HttpServerKeepAliveHandler: it reads the
