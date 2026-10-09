@@ -32,6 +32,7 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -79,6 +80,62 @@ public class H2SecurityTestServlet extends FATServlet {
 	}
 
 	@Test
+	@AllowedFFDC({ "jakarta.resource.spi.SecurityException",
+	               "jakarta.resource.spi.ResourceAllocationException",
+	               "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+	public void testCipherAESWrongPassword() throws Exception {
+		// Wrong user password (correct file password, wrong user password).
+		// H2 error 28000: wrong user name or password.
+		try (Connection con = cipherAesAppAuthDs.getConnection("secuser", "filepwd wrongpwd")) {
+			con.close();
+			fail("Expected SQLException for wrong user password with AES cipher");
+		} catch (SQLException expected) {
+			assertEquals("Expected H2 error 28000 (wrong user/password) for wrong user password",
+			             28000, expected.getErrorCode());
+		}
+
+		// Wrong file password (wrong file password, correct user password).
+		// H2 error 90049: wrong file password / decryption failure when the database file is opened.
+		// H2 error 28000: the database is already open in this server JVM (pooled connections),
+		// so the file password is validated as part of the user authentication instead.
+		try (Connection con = cipherAesAppAuthDs.getConnection("secuser", "wrongfilepwd secpwd")) {
+			con.close();
+			fail("Expected SQLException for wrong file password with AES cipher");
+		} catch (SQLException expected) {
+			int code = expected.getErrorCode();
+			assertTrue("Expected H2 error 90049 or 28000 for wrong file password but was " + code,
+			           code == 90049 || code == 28000);
+		}
+	}
+
+	@Test
+	@AllowedFFDC({ "jakarta.resource.spi.SecurityException",
+	               "jakarta.resource.spi.ResourceAllocationException",
+	               "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+	public void testPasswordHashWrongPassword() throws Exception {
+		// Plain (unhashed) password with PASSWORD_HASH=TRUE.
+		// H2 error 90004: password is not a valid hex string.
+		try (Connection con = passwordHashAppAuthDs.getConnection("secuser", "wrongpwd")) {
+			con.close();
+			fail("Expected SQLException for unhashed password with PASSWORD_HASH=TRUE");
+		} catch (SQLException expected) {
+			assertEquals("Expected H2 error 90004 (invalid hex password) for unhashed password",
+			             90004, expected.getErrorCode());
+		}
+
+		// Well-formed 64-char hex hash that does not match the user's password.
+		// H2 error 28000: wrong user name or password.
+		String wrongHash = "0".repeat(64);
+		try (Connection con = passwordHashAppAuthDs.getConnection("secuser", wrongHash)) {
+			con.close();
+			fail("Expected SQLException for wrong password hash");
+		} catch (SQLException expected) {
+			assertEquals("Expected H2 error 28000 (wrong user/password) for wrong password hash",
+			             28000, expected.getErrorCode());
+		}
+	}
+
+	@Test
 	public void testAllowLiteralsNone() throws Exception {
 		try (Connection con = allowLiteralsDs.getConnection();
 		     PreparedStatement ps = con.prepareStatement("SELECT ?")) {
@@ -99,36 +156,13 @@ public class H2SecurityTestServlet extends FATServlet {
 	}
 
 	@Test
-	public void testCipherAESWrongPassword() throws Exception {
-		// Wrong user password (correct file password, wrong user password).
-		// H2 error 28000: wrong user name or password.
-		try (Connection con = cipherAesAppAuthDs.getConnection("secuser", "filepwd wrongpwd")) {
-			con.close();
-			fail("Expected SQLException for wrong user password with AES cipher");
-		} catch (SQLException expected) {
-			assertEquals("Expected H2 error 28000 (wrong user/password) for wrong user password",
-			             28000, expected.getErrorCode());
-		}
-
-		// Wrong file password (wrong file password, correct user password).
-		// H2 error 90049: wrong file password / decryption failure.
-		try (Connection con = cipherAesAppAuthDs.getConnection("secuser", "wrongfilepwd secpwd")) {
-			con.close();
-			fail("Expected SQLException for wrong file password with AES cipher");
-		} catch (SQLException expected) {
-			assertEquals("Expected H2 error 90049 (wrong file password) for wrong file password",
-			             90049, expected.getErrorCode());
-		}
-	}
-
-	@Test
 	public void testFileLockSocket() throws Exception {
 		// Verify FILE_LOCK=SOCKET by checking that the .lock.db file written by H2's
 		// socket lock mechanism exists and contains the string "socket".
 		try (Connection con = fileLockDs.getConnection()) {
 			String url = con.getMetaData().getURL();
 			// Strip "jdbc:h2:" prefix and any ";..." parameters to get the raw file path.
-			String filePath = url.replaceFirst("^jdbc:h2:", "").replaceFirst(";.*$", "");
+			String filePath = url.replaceFirst("^jdbc:h2:(file:)?", "").replaceFirst(";.*$", "");
 			File lockFile = new File(filePath + ".lock.db");
 			assertTrue("Expected .lock.db file to exist for FILE_LOCK=SOCKET database: " + lockFile,
 			           lockFile.exists());

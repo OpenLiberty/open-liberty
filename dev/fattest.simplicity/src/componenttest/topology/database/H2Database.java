@@ -573,7 +573,6 @@ public class H2Database extends ExternalResource {
 
         Properties logged = new Properties();
         logged.putAll(i);
-        logged.put("password", "****");
         Log.info(c, "createConnection", "Creating a connection using URL=" + getURL() + " queryString=" + q + " and properties=" + logged);
 
         return getDriverInstance().connect(getURL() + q, i);
@@ -582,8 +581,13 @@ public class H2Database extends ExternalResource {
     /**
      * Get the password to pass to the H2 driver, taking into account
      * file encryption and pre-hashed password configuration.
+     *
+     * @return the driver-ready password: the plain admin password, its SHA-256 hex hash when
+     *         {@link #withPasswordHash()} is used, and prefixed with the file password
+     *         (<code>"&lt;filePassword&gt; &lt;userPassword&gt;"</code>) when
+     *         {@link #withCipher(CIPHER, String)} is used
      */
-    String getConnectionPassword() {
+    public String getConnectionPassword() {
         String userPassword = passwordHash ? hashPassword(adminUser, adminPassword) : adminPassword;
         return cipher != null ? filePassword + " " + userPassword : userPassword;
     }

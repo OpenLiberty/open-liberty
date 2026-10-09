@@ -31,17 +31,16 @@
 
   <!-- AES file-encrypted database.
        When H2 CIPHER is active, Liberty must pass the compound "<filePassword> <userPassword>"
-       value as the JDBC password; the user name is embedded in the compound value by H2.
-       Therefore only the password attribute is used here — no user attribute. -->
+       value as the JDBC password, along with the user the database was created with. -->
   <dataSource id="h2ds-cipher-aes" jndiName="jdbc/h2ds-cipher-aes">
     <jdbcDriver libraryRef="H2Lib"/>
-    <properties.h2 URL="${env.DB_URL_CIPHER_AES}" password="${env.DB_PASSWORD_CIPHER_AES}"/>
+    <properties.h2 URL="${env.DB_URL_CIPHER_AES}" user="${env.DB_USER}" password="${env.DB_PASSWORD_CIPHER_AES}"/>
   </dataSource>
 
   <!-- Pre-hashed password database -->
   <dataSource id="h2ds-password-hash" jndiName="jdbc/h2ds-password-hash">
     <jdbcDriver libraryRef="H2Lib"/>
-    <properties.h2 URL="${env.DB_URL_PASSWORD_HASH}" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
+    <properties.h2 URL="${env.DB_URL_PASSWORD_HASH}" user="${env.DB_USER}" password="${env.DB_PASSWORD_PASSWORD_HASH}"/>
   </dataSource>
 
   <!-- ALLOW_LITERALS=NONE database -->

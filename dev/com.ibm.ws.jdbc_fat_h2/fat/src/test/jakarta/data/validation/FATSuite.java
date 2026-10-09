@@ -21,7 +21,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                H2Test.class
+                H2Test.class,
+                H2SecurityTest.class
 })
 public class FATSuite {
 }
