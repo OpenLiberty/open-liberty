@@ -524,8 +524,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         NettyServletUpgradeHandler h = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
         if(h != null) return h;
 
-        // //TODO lazy initialization due to wsoc not triggering upgrade event. Find missing location to throw event .
-
         // Dispatcher must install it; reaching here means the upgrade signal was not received.
         throw new IllegalStateException("Channel marked upgraded but no NettyServletUpgradeHandler in pipeline");
     }
@@ -682,8 +680,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             return false;
         }
 
-        //TODO -> find a way to cleanly handle timing for now block for 5s, this should be 
-        //more than enough time to handle it or report the issue. 
+        // Bound a concurrent read's wait for the 101 write to install the upgrade handler.
+        // Normal upgraded application reads begin after handler initialization.
         try {
             promise.get(5, TimeUnit.SECONDS);
             return true;
