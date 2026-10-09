@@ -37,7 +37,9 @@ import org.junit.runners.model.TestClass;
  *
  * Use of the 'name' attribute of {@link Parameterized.Parameter} is preferred,
  * but the current in use JUNIT version does not yet support that. See
- * {@link "https://junit.org/junit4/javadoc/4.12/index.html?org/junit/runners/Parameterized.html"}
+ * <a href="https://junit.org/junit4/javadoc/4.12/index.html?org/junit/runners/Parameterized.html">
+ * org.junit.runners.Parameterized
+ * </a>
  */
 public class NamedParameterized extends Suite {
     /**

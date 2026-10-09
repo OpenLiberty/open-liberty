@@ -58,10 +58,10 @@ public class FeaturesStartParameters {
 
     /**
      * Global test bucket count. A single test project must exist per bucket.
-     * These are currently {@link com.ibm.we.test.featurestart.FeatureStartTest1},
-     * {@link com.ibm.we.test.featurestart.FeatureStartTest2},
-     * {@link com.ibm.we.test.featurestart.FeatureStartTest3}, and
-     * {@link com.ibm.we.test.featurestart.FeatureStartTest4}.
+     * These are currently {@link com.ibm.ws.test.featurestart.FeaturesStartTest1},
+     * {@link com.ibm.ws.test.featurestart.FeaturesStartTest2},
+     * {@link com.ibm.ws.test.featurestart.FeaturesStartTest3}, and
+     * {@link com.ibm.ws.test.featurestart.FeaturesStartTest4}.
      */
     public static final int NUM_BUCKETS = 4;
 
@@ -94,12 +94,12 @@ public class FeaturesStartParameters {
         String m = "<init>";
 
         this.bucketNo = bucketNo;
-        
+
         int[] range = getRange(features.runnableFeatures.size(), NUM_BUCKETS, bucketNo);
         this.firstFeatureNo = range[0];
         this.lastFeatureNo = range[1];
 
-        int bucketSize = this.lastFeatureNo - this.firstFeatureNo;
+        int numCandidateFeatures = this.lastFeatureNo - this.firstFeatureNo;
 
         // If 'SPARSITY' was specified, adjust the number of features.
         // One of each 'SPARSITY' features is run.
@@ -108,13 +108,13 @@ public class FeaturesStartParameters {
 
         int useNumFeatures; 
         if (SPARSITY > 0) {
-            useNumFeatures = bucketSize / SPARSITY;
-            int remainder = bucketSize % SPARSITY;
+            useNumFeatures = numCandidateFeatures / SPARSITY;
+            int remainder = numCandidateFeatures % SPARSITY;
             if (remainder > 0) {
                 useNumFeatures++;
             }
         } else {
-            useNumFeatures = bucketSize;
+            useNumFeatures = numCandidateFeatures;
         }
         this.numFeatures = useNumFeatures;
 
@@ -125,11 +125,12 @@ public class FeaturesStartParameters {
                 bucketOutOfLevelFeatureNames.add(shortName);
             }
         }
-        
-        List<Object[]> useParameters = new ArrayList<>(useNumFeatures);
-        List<String> useRunFeatureNames = new ArrayList<>(useNumFeatures);
-        List<String> useSkipFeatureNames = new ArrayList<>(bucketSize - useNumFeatures);
 
+        List<String> useRunFeatureNames = new ArrayList<>(useNumFeatures);
+        List<String> useSkipFeatureNames = new ArrayList<>(numCandidateFeatures - useNumFeatures);
+
+        List<Object[]> useParameters = new ArrayList<>(useNumFeatures);
+        
         for (int featureNo = this.firstFeatureNo; featureNo < this.lastFeatureNo; featureNo++) {
             String shortName = features.runnableFeatureNames.get(featureNo);
             if ((SPARSITY > 0) && (((featureNo - this.firstFeatureNo) % SPARSITY) != 0)) {
@@ -141,9 +142,10 @@ public class FeaturesStartParameters {
             }
         }
 
-        this.rawParameters = useParameters;
-        this.skipFeatureNames = useSkipFeatureNames;
         this.runFeatureNames = useRunFeatureNames;
+        this.skipFeatureNames = useSkipFeatureNames;
+
+        this.parameters = useParameters;
         
         //
         
@@ -159,8 +161,10 @@ public class FeaturesStartParameters {
 
         logInfo(m, "Bucket [ " + bucketNo + " ] of [ " + NUM_BUCKETS + " ]");
         logInfo(m, "  Count [ " + this.numFeatures + " ] Out-of-level [ " + this.bucketOutOfLevelFeatureNames.size() + " ]");
-        logInfo(m, "  First [ " + firstFeatureNo + " ]: [ " + features.runnableFeatureNames.get(firstFeatureNo) + " ]");
-        logInfo(m, "  Last  [ " + (lastFeatureNo - 1) + " ]: [ " + features.runnableFeatureNames.get(lastFeatureNo - 1) + " ]");
+        if ( numCandidateFeatures > 0 ) {
+            logInfo(m, "  First [ " + firstFeatureNo + " ]: [ " + features.runnableFeatureNames.get(firstFeatureNo) + " ]");
+            logInfo(m, "  Last  [ " + (lastFeatureNo - 1) + " ]: [ " + features.runnableFeatureNames.get(lastFeatureNo - 1) + " ]");
+        }
         if (SPARSITY > 0) {
             logInfo(m, "  Sparsity [ " + SPARSITY + " ]");
         }
@@ -224,7 +228,7 @@ public class FeaturesStartParameters {
                 useFirstFeatureNo += bucketOffset;
                 useLastFeatureNo += bucketOffset + 1;
             } else {
-                // In effect, add one to the bucket size **for preceeding buckets**
+                // In effect, add one to the bucket size **for preceding buckets**
                 useFirstFeatureNo += residue;
                 useLastFeatureNo += residue;
             }
@@ -232,10 +236,20 @@ public class FeaturesStartParameters {
 
         return new int[] { useFirstFeatureNo, useLastFeatureNo };
     }            
-    protected List<Object[]> rawParameters;
 
-    public List<Object[]> getRawParameters() {
-        return rawParameters;
+    /**
+     * Test parameters, per the junit parameterized test pattern.
+     * 
+     * Each feature start test instance has a single parameter which
+     * is a short feature name. For example, "mpOpenApi-1.0".
+     * 
+     * This data structure is provided to {@link FeaturesStartTestBase#getParameters()},
+     * which is invoked by the junit test runner to create test instances.
+     */
+    protected List<Object[]> parameters;
+
+    public List<Object[]> getParameters() {
+        return parameters;
     }
     
     // Bucket parameters:

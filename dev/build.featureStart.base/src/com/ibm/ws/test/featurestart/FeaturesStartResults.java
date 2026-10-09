@@ -21,11 +21,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.ToLongFunction;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.test.featurestart.FeaturesStartTiming.TimingResult;
 import com.ibm.ws.test.featurestart.FeaturesStartTiming.TimingSummary;
+import com.ibm.ws.test.featurestart.features.FeatureErrors;
 import com.ibm.ws.test.featurestart.features.FeatureLevels;
 
 import componenttest.topology.impl.LibertyServer;
@@ -101,10 +103,9 @@ public class FeaturesStartResults {
 
     /**
      * Set the short name of the next feature which is to be tested.
-     * 
      * Keep a reference to the current feature.
      * 
-     * Set the expected errors data.
+     * Set the data for the new feature.
      * 
      * @param featureShortName The short name of the next feature which is
      *     to be tested.
@@ -123,10 +124,13 @@ public class FeaturesStartResults {
     //
     // The store MUST be initialized before any call to 'getPattern'.
 
-    protected static final Map<String, Pattern> patternStore = Collections.synchronizedMap( new HashMap<>() );
-
+    protected static final Map<String, Pattern> patternStore =
+        new ConcurrentHashMap<String, Pattern>();
+    
     protected static Pattern getPattern(String regEx) {
-        return patternStore.computeIfAbsent( regEx, (useRegEx) -> Pattern.compile(useRegEx) );
+        return patternStore.computeIfAbsent(
+            regEx,
+            (useRegEx) -> Pattern.compile(useRegEx) );
     }
 
     protected static Pattern[] asPatterns(String[] allRegEx) {
@@ -141,39 +145,43 @@ public class FeaturesStartResults {
         return patterns;
     }
     
-    // A java error occurs when attempting to start an out-of-level feature.
-    // When the feature is known to not be supported for a particular java level, the
-    // java error is expected and does not fail the startup test.
+    // When a feature is not supported for by a java level (the feature is
+    // 'out-of-level'), java and missing module errors are expected. The test
+    // framework looks for these errors and fails the test if they are not
+    // produced.
     //
-    // Java errors for other cases are true errors.
+    // Otherwise, unless specified as required feature specific errors, java and
+    // missing module errors are true error and will fail the test.
+    //
+    // TODO: For out-of-level features, the actual module which was missing is not
+    // validated.
+    //
+    // Unless specified as required feature specific errors, missing bundle errors
+    // are true errors and will fail the test.
+
+    // Typical out-of-level errors:
     //
     // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
     //   E CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
     //   a minimum Java runtime environment version of JavaSE 11.
-
-    protected static final String JAVA_LEVEL_ERROR = "CWWKF0032E";
-
-    // A missing module error occurs when attempting to start an out-of-level feature.
-    // When the feature is known to not be supported for a particular java level, the
-    // missing module error is expected and does not fail the startup test.
     //
-    // Missing module errors for other cases are true errors.
+    // [2/8/23 12:22:13:451 EST] 00000024 LogService-25-io.openliberty.java11.internal
+    //   E CWWKE0702E: Could not resolve module: io.openliberty.java11.internal [25]
     //
-    // TODO: Testing does not current check what specific module was not resolved.
+    // A typical missing module error:
     //
     // [9/21/26, 0:30:17:647 UTC] 0000001e LogService-56-com.ibm.ws.concurrent E
     //   CWWKE0702E: Could not resolve module: com.ibm.ws.concurrent [56]
     //
-    // [2/8/23 12:22:13:451 EST] 00000024 LogService-25-io.openliberty.java11.internal
-    //   E CWWKE0702E: Could not resolve module: io.openliberty.java11.internal [25]
-
-    // Missing bundle errors are always errors:
+    // A typical missing bundle error:
     //
     // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
     //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
 
-    protected static final String MISSING_MODULE_ERROR = "CWWKE0702E";
-    protected static final String MISSING_BUNDLE_ERROR = "CWWKF0002E";
+    protected static final String JAVA_LEVEL_ERROR = "CWWKF0032E";
+    
+    protected static final String MISSING_MODULE_ERROR = "CWWKE0702E: Could not resolve module: ";
+    protected static final String MISSING_BUNDLE_ERROR = "CWWKF0002E: A bundle could not be found for ";
 
     protected static final String[] OUT_OF_LEVEL_REQUIRED_ERRORS = { JAVA_LEVEL_ERROR, MISSING_MODULE_ERROR };
     protected static final Pattern[] OUT_OF_LEVEL_REQUIRED_PATTERNS = asPatterns(OUT_OF_LEVEL_REQUIRED_ERRORS);
@@ -432,17 +440,17 @@ public class FeaturesStartResults {
     
     protected void recordAbsentOutOfLevelError(String m, String expectedErrorRegEx) {
         addToSet(failuresAbsentOutOfLevel, nextShortName, expectedErrorRegEx);
-        recordAbsentError(m, "Missing expected out-of-level error [ " + expectedErrorRegEx + " ]");
+        recordAbsentError(m, "Missing required out-of-level error [ " + expectedErrorRegEx + " ]");
     }
 
     protected void recordAbsentFeatureError(String m, String expectedErrorRegEx) {
         addToSet(failuresAbsentFeatureSpecified, nextShortName, expectedErrorRegEx);
-        recordAbsentError(m, "Missing expected feature error [ " + expectedErrorRegEx + " ]");
+        recordAbsentError(m, "Missing required feature error [ " + expectedErrorRegEx + " ]");
     }
 
     protected void recordPresentOtherError(String m, String unexpectedError) {
         addToList(failuresPresentOther, nextShortName, unexpectedError);
-        recordPresentError(m, "Unexpected error [ " + unexpectedError + " ]");
+        recordPresentError(m, "Prohibited error [ " + unexpectedError + " ]");
     }
     
     protected void recordPresentOtherError(String m, String unexpectedError, Exception e) {
@@ -638,9 +646,13 @@ public class FeaturesStartResults {
 
         try {
             if ( server.serverIsStarted() ) {
-                if ( nextShortName.equals("logstashCollector-1.0") ) {
+                long featureDelayMs = FeatureErrors.getFeatureDelayMs(nextShortName);
+                if ( featureDelayMs > 0 ) {
+                    logInfo(m,
+                        "Delay [ " + featureDelayMs + " (ms) ]" +
+                        " between start and stop for feature [ " + nextShortName + " ]");
                     try {
-                        Thread.sleep(10000); // wait 10 seconds for logstashCollector
+                        Thread.sleep(featureDelayMs); // wait 10 seconds for logstashCollector
                     } catch ( Exception e ) {
                         // ignore and continue;
                     }
@@ -850,7 +862,7 @@ public class FeaturesStartResults {
                         recordAbsentFeatureError(m, requiredError);
                     } else {
                         // This case should never happen!
-                        recordPresentOtherError(m, "Strange: Neither out-of-level nor feature specified for expected error [ " + requiredError + " ]");
+                        recordPresentOtherError(m, "Strange: Neither out-of-level nor feature specified for required error [ " + requiredError + " ]");
                     }
                 }
             }
@@ -878,7 +890,20 @@ public class FeaturesStartResults {
             }
         }
     }    
-        
+
+    // Start with a full line from the message log:
+    //
+    // [2/8/23 12:22:13:451 EST] 00000024 LogService-25-io.openliberty.java11.internal
+    //   E CWWKE0702E: Could not resolve module: io.openliberty.java11.internal [25]
+    //
+    // Extract the tail. Do not include the missing module prefix:
+    //
+    // io.openliberty.java11.internal [25]    
+    //
+    // Strip off the module number:
+    //
+    // io.openliberty.java11.internal [25]    
+
     protected String extractMissingModule(String error) {
         String missingModule = extractTail(error, MISSING_MODULE_ERROR, !INCLUDE_PREFIX);
         if ( missingModule != null ) {
@@ -888,6 +913,19 @@ public class FeaturesStartResults {
         }
     }
 
+    // Start with a full line from the message log:
+    //
+    // [9/21/26, 0:30:17:218 UTC] 0000002b com.ibm.ws.kernel.feature.internal.Provisioner E
+    //   CWWKF0002E: A bundle could not be found for io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
+    //
+    // Extract the tail. Do not include the missing bundle prefix.
+    //
+    // io.openliberty.org.eclipse.microprofile.contextpropagation.1.2/[1.0.0,1.1.0).
+    //
+    // Strip off the version range:
+    //
+    // io.openliberty.org.eclipse.microprofile.contextpropagation.1.2
+        
     protected String extractMissingBundle(String error) {
         String missingBundle = extractTail(error, MISSING_BUNDLE_ERROR, !INCLUDE_PREFIX);
         if (missingBundle != null) {
@@ -896,6 +934,17 @@ public class FeaturesStartResults {
             return null;
         }
     }
+    
+    // Start with a full line from the message log:
+    //
+    // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+    //   E CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
+    //   a minimum Java runtime environment version of JavaSE 11.
+    //
+    // Extract the tail. Do include the level error prefix.
+    //
+    // CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
+    //   a minimum Java runtime environment version of JavaSE 11.
     
     protected String extractJavaError(String error) {
         return extractTail(error, JAVA_LEVEL_ERROR, INCLUDE_PREFIX);

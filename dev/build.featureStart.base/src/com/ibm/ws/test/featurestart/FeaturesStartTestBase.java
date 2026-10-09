@@ -78,7 +78,7 @@ public class FeaturesStartTestBase {
     //
     
     public static List<Object[]> getParameters() {
-        return parameters.getRawParameters();
+        return parameters.getParameters();
     }
     
     /**
@@ -142,6 +142,10 @@ public class FeaturesStartTestBase {
     //
     // The expectation is that in practice there will be no problem of concurrent
     // updates.
+
+    // These *MUST* be static, because of how parameterized tests are run.
+    // They could at best be put into a data structure, but that would still need
+    // to be held as a static value.
 
     protected static volatile FeaturesStartServer server;
     private static volatile FeaturesStartFeatures features;    
@@ -310,11 +314,9 @@ public class FeaturesStartTestBase {
         Collection<String> bucket = storage.get(bucketKey);
         if ( (bucket == null) || bucket.isEmpty() ) {
             return null;
+        } else {
+            return bucket.iterator().next();
         }
-        for ( String bucketElement : bucket ) {
-            return bucketElement;
-        }
-        return null; // Should never be reached.
     }
     
     public static void afterLastTest() {

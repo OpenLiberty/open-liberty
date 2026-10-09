@@ -18,6 +18,30 @@ import java.util.Map;
 public class FeatureErrors {
 
     /**
+     * Tell if a feature should receive an extra delay between starting
+     * and stopping the feature.
+     * 
+     * This is here specifically for logstashCollector, which needs
+     * extra time (10 s) between starting and stopping the feature.
+     * 
+     * This is very specific, and is not error data. However, adding
+     * additional classes for this one case is too much.
+     * 
+     * @param shortFeatureName A feature short name.
+     * 
+     * @return The delay that is needed between starting and stopping
+     *     the feature, in milliseconds. Return zero if the feature
+     *     does not need a delay.
+     */
+    public static long getFeatureDelayMs(String shortFeatureName) {
+        if ( shortFeatureName.equals("logstashCollector-1.0") ) {
+            return 10000; // wait 10 seconds for logstashCollector
+        } else {
+            return 0;
+        }
+    }
+    
+    /**
      * Answer a table of errors which are required to appear in server logs
      * when starting a server with the single named feature provisioned.
      *

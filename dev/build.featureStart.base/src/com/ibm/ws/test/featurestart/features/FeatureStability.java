@@ -281,7 +281,7 @@ public class FeatureStability {
      * 
      * Attempt to proportion buckets according to their weight. Because
      * each feature bucket is placed in a single partition element, this
-     * may cause one of more of the partition elements being empty.
+     * may cause one or more of the partition elements being empty.
      * 
      * @param numElements The size of the partition.
      * 

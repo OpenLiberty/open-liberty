@@ -156,6 +156,7 @@ public class FeaturesStartServer {
             throw new IllegalArgumentException("Non-numeric PID [ " + pid + " ]", e);
         }
 
+        // 'killProcess' does nothing if the process is not running.
         server.getMachine().killProcess(pidValue);
     }
 
