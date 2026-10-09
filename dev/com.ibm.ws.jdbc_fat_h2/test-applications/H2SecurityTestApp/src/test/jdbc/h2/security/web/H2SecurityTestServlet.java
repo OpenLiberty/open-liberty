@@ -16,9 +16,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -159,14 +160,15 @@ public class H2SecurityTestServlet extends FATServlet {
 	public void testFileLockSocket() throws Exception {
 		// Verify FILE_LOCK=SOCKET by checking that the .lock.db file written by H2's
 		// socket lock mechanism exists and contains the string "socket".
-		try (Connection con = fileLockDs.getConnection()) {
-			String url = con.getMetaData().getURL();
-			// Strip "jdbc:h2:" prefix and any ";..." parameters to get the raw file path.
-			String filePath = url.replaceFirst("^jdbc:h2:(file:)?", "").replaceFirst(";.*$", "");
-			File lockFile = new File(filePath + ".lock.db");
+		try (Connection con = fileLockDs.getConnection();
+		     Statement st = con.createStatement();
+		     ResultSet rs = st.executeQuery("CALL DATABASE_PATH()")) {
+			assertTrue("Expected DATABASE_PATH() result", rs.next());
+			String dbPath = rs.getString(1);
+			Path lockFile = Paths.get(dbPath + ".lock.db");
 			assertTrue("Expected .lock.db file to exist for FILE_LOCK=SOCKET database: " + lockFile,
-			           lockFile.exists());
-			String lockContents = new String(Files.readAllBytes(lockFile.toPath()), StandardCharsets.UTF_8);
+			           Files.exists(lockFile));
+			String lockContents = Files.readString(lockFile, StandardCharsets.UTF_8);
 			assertTrue("Expected .lock.db file to contain 'socket' for FILE_LOCK=SOCKET database",
 			           lockContents.toLowerCase().contains("socket"));
 		}
