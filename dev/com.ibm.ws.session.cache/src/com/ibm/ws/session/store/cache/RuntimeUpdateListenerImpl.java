@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -164,8 +164,12 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener {
                              * of CacheStoreService. We will just register the global library since it doesn't matter as it will not be
                              * used and it would be much more difficult to pull a library from the CachingProviderService.
                              */
-                            libraryRegistration = DefaultCachingProviderSupport.registerLibrary(componentContext.getBundleContext(), "global");
-                            Tr.debug(tc, "Registered the global library under service registration: " + libraryRegistration);
+                            if (DefaultCachingProviderSupport.isLibraryAvailable(componentContext.getBundleContext(), "global")) {
+                                libraryRegistration = DefaultCachingProviderSupport.registerLibrary(componentContext.getBundleContext(), "global");
+                                Tr.debug(tc, "Registered the global library under service registration: " + libraryRegistration);
+                            } else {
+                                Tr.debug(tc, "The global library service is not available yet; skipping the fallback library registration.");
+                            }
                         }
                     }
                 }
