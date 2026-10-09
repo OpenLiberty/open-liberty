@@ -9,14 +9,18 @@
  *******************************************************************************/
 package componenttest.topology.database;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -68,6 +72,17 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
  * H2Container dbContainer = new H2Container().withDatabase(db);
  * </pre>
  *
+ * <p>
+ * Supported security mechanisms:
+ * </p>
+ * <ul>
+ * <li>Username / password authentication via {@link #create(String, String)} and {@link #withUser(String, String)}</li>
+ * <li>File encryption via {@link #withCipher(CIPHER, String)} (URL parameter <code>CIPHER</code>, implies in-file mode)</li>
+ * <li>Pre-hashed passwords via {@link #withPasswordHash()} (URL parameter <code>PASSWORD_HASH=TRUE</code>)</li>
+ * <li>SQL literal restrictions via {@link #withAllowLiterals(String)} (SQL statement <code>SET ALLOW_LITERALS</code>)</li>
+ * <li>File locking modes via {@link #withFileLock(String)} (URL parameter <code>FILE_LOCK</code>, requires in-file mode)</li>
+ * </ul>
+ *
  */
 public class H2Database extends ExternalResource {
 
@@ -117,6 +132,18 @@ public class H2Database extends ExternalResource {
         }
     }
 
+    /**
+     * Enum that represents the file encryption algorithms supported by H2
+     * - AES - Advanced Encryption Standard
+     * - XTEA - Extended Tiny Encryption Algorithm
+     * - FOG - pseudo-encryption, only obfuscates data (not secure)
+     */
+    public enum CIPHER {
+        AES,
+        XTEA,
+        FOG
+    }
+
     // Admin user
     private final String adminUser;
     private final String adminPassword;
@@ -132,6 +159,16 @@ public class H2Database extends ExternalResource {
 
     // Name of database - Random UUID by default
     private String databaseName = UUID.randomUUID().toString();
+
+    // File encryption - not configured by default
+    private CIPHER cipher = null;
+    private String filePassword = null;
+
+    // Pre-hashed password - disabled by default
+    private boolean passwordHash = false;
+
+    // SQL literal restriction mode - not configured by default
+    private String allowLiterals = null;
 
     // Cache the driver
     private final AtomicReference<Driver> driver = new AtomicReference<>();
@@ -243,27 +280,150 @@ public class H2Database extends ExternalResource {
     }
 
     /**
+     * Enable file encryption using the given cipher.
+     *
+     * NOTE: encryption requires in-file mode, this will switch modes from in-memory to in-file.
+     *
+     * Produces the URL parameter <code>CIPHER=&lt;algorithm&gt;</code>.
+     * Connections created via {@link #createConnection(String, Properties)} will pass the
+     * password as <code>"&lt;filePassword&gt; &lt;userPassword&gt;"</code>, while
+     * {@link #getAdminPassword()} continues to return the plain user password.
+     *
+     * @param  cipher       the encryption algorithm
+     * @param  filePassword the file encryption password
+     * @return              this
+     */
+    public H2Database withCipher(CIPHER cipher, String filePassword) {
+        Objects.requireNonNull(cipher);
+        Objects.requireNonNull(filePassword);
+
+        if (filePassword.chars().anyMatch(Character::isWhitespace)) {
+            throw new IllegalArgumentException("filePassword must not contain whitespace (H2 CIPHER protocol splits on space)");
+        }
+
+        if (mode.equals(MODE.IN_MEMORY)) {
+            Log.info(c, "withCipher", "WARNING: CIPHER requires in-file mode, switching from in-memory to in-file mode.");
+            withFileMode();
+        }     
+
+        this.cipher = cipher;
+        this.filePassword = filePassword;
+        additionalConfig.put("CIPHER", cipher.name());
+        return this;
+    }
+
+    /**
+     * Enable pre-hashed passwords.
+     *
+     * Produces the URL parameter <code>PASSWORD_HASH=TRUE</code>. Works in either mode.
+     * Connections created via {@link #createConnection(String, Properties)} will pass the
+     * lowercase hex SHA-256 of the UTF-16LE bytes of
+     * <code>"@" + adminUser.toUpperCase() + adminPassword</code> instead of the plain password.
+     *
+     * When combined with {@link #withCipher(CIPHER, String)} only the user password portion
+     * is hashed, the file password portion is passed as plain text.
+     *
+     * @return this
+     */
+    public H2Database withPasswordHash() {
+        this.passwordHash = true;
+        additionalConfig.put("PASSWORD_HASH", "TRUE");
+        return this;
+    }
+
+    /**
+     * Restrict the use of literals in SQL statements.
+     *
+     * Valid modes (case-insensitive): <code>ALL</code>, <code>NUMBERS</code>, <code>NONE</code>.
+     *
+     * Does not produce a URL parameter. Instead, the SQL statement
+     * <code>SET ALLOW_LITERALS &lt;MODE&gt;</code> is executed by an admin connection in
+     * {@link #before()} (after creating any additional users). Requires in-file mode for
+     * the statement to be executed, since {@link #before()} does nothing for in-memory databases.
+     *
+     * @param  mode the literal restriction mode
+     * @return      this
+     */
+    public H2Database withAllowLiterals(String mode) {
+        String m = mode == null ? null : mode.toUpperCase(Locale.ROOT);
+        if (!"ALL".equals(m) && !"NUMBERS".equals(m) && !"NONE".equals(m)) {
+            throw new IllegalArgumentException("Invalid ALLOW_LITERALS mode '" + mode + "', must be one of: ALL, NUMBERS, NONE");
+        }
+        this.allowLiterals = m;
+        if (this.mode.equals(MODE.IN_MEMORY)) {
+            Log.info(c, "withAllowLiterals", "ALLOW_LITERALS requires in-file mode, switching from in-memory to in-file mode.");
+            withFileMode();
+        }
+        return this;
+    }
+
+    /**
+     * Configure the file locking method.
+     *
+     * Valid methods (case-insensitive): <code>FILE</code>, <code>SOCKET</code>, <code>NO</code>, <code>FS</code>.
+     *
+     * NOTE: requires in-file mode, call {@link #withFileMode()} (or another method that implies it) first.
+     *
+     * Produces the URL parameter <code>FILE_LOCK=&lt;method&gt;</code>.
+     *
+     * @param  method the file locking method
+     * @return        this
+     */
+    public H2Database withFileLock(String method) {
+        String m = method == null ? null : method.toUpperCase(Locale.ROOT);
+        if (!"FILE".equals(m) && !"SOCKET".equals(m) && !"NO".equals(m) && !"FS".equals(m)) {
+            throw new IllegalArgumentException("Invalid FILE_LOCK method '" + method + "', must be one of: FILE, SOCKET, NO, FS");
+        }
+        if (mode.equals(MODE.IN_MEMORY)) {
+            throw new IllegalStateException("FILE_LOCK cannot be used with an in-memory database, call withFileMode() first");
+        }
+        additionalConfig.put("FILE_LOCK", m);
+        return this;
+    }
+
+    /**
      * Configure additional config options to append to the URL
      * See: http://www.h2database.com/html/features.html#database_url
+     *
+     * NOTE: the keys CIPHER, PASSWORD_HASH, ALLOW_LITERALS, and FILE_LOCK are not allowed,
+     * use the dedicated methods instead.
      *
      * @param  key   the config key
      * @param  value the config value
      * @return
      */
     public H2Database withConfig(String key, String value) {
-        if ("AUTO_SERVER".equals(key)) {
+        String normalizedKey = key == null ? null : key.toUpperCase(Locale.ROOT);
+
+        if ("CIPHER".equals(normalizedKey)) {
+            throw new IllegalArgumentException("CIPHER cannot be set via withConfig, use withCipher(CIPHER, String) instead");
+        }
+
+        if ("PASSWORD_HASH".equals(normalizedKey)) {
+            throw new IllegalArgumentException("PASSWORD_HASH cannot be set via withConfig, use withPasswordHash() instead");
+        }
+
+        if ("ALLOW_LITERALS".equals(normalizedKey)) {
+            throw new IllegalArgumentException("ALLOW_LITERALS cannot be set via withConfig, use withAllowLiterals(String) instead");
+        }
+
+        if ("FILE_LOCK".equals(normalizedKey)) {
+            throw new IllegalArgumentException("FILE_LOCK cannot be set via withConfig, use withFileLock(String) instead");
+        }
+
+        if ("AUTO_SERVER".equals(normalizedKey)) {
             Log.info(c, "withConfig", "AUTO_SERVER config ignored, " +
                                       "set to true automatically when running in-file mode.");
             return this;
         }
 
-        if ("DB_CLOSE_DELAY".equals(key)) {
+        if ("DB_CLOSE_DELAY".equals(normalizedKey)) {
             Log.info(c, "withConfig", "DB_CLOSE_DELAY config ignored, " +
                                       "set to -1 automatically when running in-memory mode.");
             return this;
         }
 
-        additionalConfig.put(key, value);
+        additionalConfig.put(normalizedKey, value);
         return this;
     }
 
@@ -288,6 +448,15 @@ public class H2Database extends ExternalResource {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Could not create new users", e);
+        }
+
+        if (allowLiterals != null) {
+            try (Connection con = createConnection("");
+                            Statement stmt = con.createStatement()) {
+                stmt.execute("SET ALLOW_LITERALS " + allowLiterals);
+            } catch (SQLException e) {
+                throw new RuntimeException("Could not set ALLOW_LITERALS " + allowLiterals, e);
+            }
         }
 
         if (additionalConfig.containsKey("TRACE_LEVEL_SYSTEM_OUT")) {
@@ -400,10 +569,42 @@ public class H2Database extends ExternalResource {
 
         Properties i = info == null ? new Properties() : info;
         i.put("user", getAdminUser());
-        i.put("password", getAdminPassword());
+        i.put("password", getConnectionPassword());
 
-        Log.info(c, "createConnection", "Creating a connection using URL=" + getURL() + " queryString=" + q + " and properties=" + i);
+        Properties logged = new Properties();
+        logged.putAll(i);
+        logged.put("password", "****");
+        Log.info(c, "createConnection", "Creating a connection using URL=" + getURL() + " queryString=" + q + " and properties=" + logged);
 
         return getDriverInstance().connect(getURL() + q, i);
+    }
+
+    /**
+     * Get the password to pass to the H2 driver, taking into account
+     * file encryption and pre-hashed password configuration.
+     */
+    String getConnectionPassword() {
+        String userPassword = passwordHash ? hashPassword(adminUser, adminPassword) : adminPassword;
+        return cipher != null ? filePassword + " " + userPassword : userPassword;
+    }
+
+    /**
+     * Compute the lowercase hex SHA-256 of the UTF-16LE bytes of ("@" + user.toUpperCase() + password).
+     *
+     * Known vector: user="secuser", password="secpwd" -> input "@SECUSERsecpwd" ->
+     * c8fb70828d3e11d0989b9e1e80599ad35f68c7772a6501ce22298d43cc0b1293
+     */
+    static String hashPassword(String user, String password) {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                            .digest(("@" + user.toUpperCase(Locale.ROOT) + password).getBytes(StandardCharsets.UTF_16LE));
+            StringBuilder sb = new StringBuilder(digest.length * 2);
+            for (byte b : digest) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 algorithm not available", e);
+        }
     }
 }
