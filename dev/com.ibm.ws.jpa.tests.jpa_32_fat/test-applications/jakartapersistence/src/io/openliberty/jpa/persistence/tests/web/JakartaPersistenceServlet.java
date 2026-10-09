@@ -39,6 +39,7 @@ import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.persistence.tests.web.JPABridge;
 import io.openliberty.jpa.persistence.tests.models.AsciiCharacter;
 import io.openliberty.jpa.persistence.tests.models.Book;
 import io.openliberty.jpa.persistence.tests.models.ConcatEntity;
@@ -313,7 +314,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     @SkipIfSysProp({
                      DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
     })
@@ -339,7 +339,7 @@ public class JakartaPersistenceServlet extends FATServlet {
             Root<Product> from = criteriaQuery.from(Product.class);
             CriteriaQuery<Product> select = criteriaQuery.select(from);
             criteriaQuery.orderBy(criteriaBuilder.desc(from.get("description"), Nulls.FIRST));
-            productsNullFirst = em.createQuery(criteriaQuery).getResultList();
+            productsNullFirst = JPABridge.createQuery(em, criteriaQuery).getResultList();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -360,7 +360,7 @@ public class JakartaPersistenceServlet extends FATServlet {
             Root<Product> from = criteriaQuery.from(Product.class);
             CriteriaQuery<Product> select = criteriaQuery.select(from);
             criteriaQuery.orderBy(criteriaBuilder.desc(from.get("description"), Nulls.LAST));
-            productsNullLast = em.createQuery(criteriaQuery).getResultList();
+            productsNullLast = JPABridge.createQuery(em, criteriaQuery).getResultList();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -376,7 +376,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testNotEqualToInCriteriaQuery() throws Exception {
         deleteAllEntities(User.class);
 
@@ -409,7 +408,7 @@ public class JakartaPersistenceServlet extends FATServlet {
             CriteriaQuery<User> criteriaQueryOld = criteriaBuilder.createQuery(User.class);
             Root<User> userOld = criteriaQueryOld.from(User.class);
             criteriaQueryOld.select(userOld).where(criteriaBuilder.notEqual(userOld.get("firstName"), "John"));
-	        result = em.createQuery(criteriaQueryOld).getResultList();
+	        result = JPABridge.createQuery(em, criteriaQueryOld).getResultList();
             assertEquals(4, result.size());
 
              /** In JPA 3.2, new default method was added to the jakarta.persistence.criteria.Expression 
@@ -418,7 +417,7 @@ public class JakartaPersistenceServlet extends FATServlet {
             CriteriaQuery<User> criteriaQueryNew= criteriaBuilder.createQuery(User.class);
             Root<User> userNew = criteriaQueryNew.from(User.class);
             criteriaQueryNew.where(userNew.get("firstName").notEqualTo("John"));
-	        resultNew = em.createQuery(criteriaQueryNew).getResultList();
+	        resultNew = JPABridge.createQuery(em, criteriaQueryNew).getResultList();
             
             assertEquals(4, resultNew.size());
             assertEquals(result, resultNew);
@@ -435,7 +434,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testEqualToInCriteriaQuery() throws Exception {
         deleteAllEntities(User.class);
 
@@ -468,7 +466,7 @@ public class JakartaPersistenceServlet extends FATServlet {
             CriteriaQuery<User> criteriaQueryOld= criteriaBuilder.createQuery(User.class);
             Root<User> user = criteriaQueryOld.from(User.class);
             criteriaQueryOld.select(user).where(criteriaBuilder.equal(user.get("firstName"), "John"));
-	        result = em.createQuery(criteriaQueryOld).getResultList();
+	        result = JPABridge.createQuery(em, criteriaQueryOld).getResultList();
 
             /** In JPA 3.2, new default method was added to the jakarta.persistence.criteria.Expression 
                 interface:Predicate equalTo(Expression<?> other);
@@ -476,7 +474,7 @@ public class JakartaPersistenceServlet extends FATServlet {
             CriteriaQuery<User> criteriaQueryNew= criteriaBuilder.createQuery(User.class);
             Root<User> userNew = criteriaQueryNew.from(User.class);
             criteriaQueryNew.where(userNew.get("firstName").equalTo("John"));
-	        resultNew = em.createQuery(criteriaQueryNew).getResultList();
+	        resultNew = JPABridge.createQuery(em, criteriaQueryNew).getResultList();
             
             assertEquals(3, resultNew.size());
             assertEquals(result, resultNew);
@@ -594,7 +592,6 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test // Verifies that a JPQL query using an alias returns the correct hexadecimal value for a persisted AsciiCharacter
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testAsciiCharacterQueryReturnsHexadecimalWithAlias() throws Exception {
         deleteAllEntities(AsciiCharacter.class);
         
@@ -607,7 +604,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         character.setControl(false);
         try {
             tx.begin();
-            em.createQuery("DELETE FROM AsciiCharacter a WHERE a.thisCharacter = :char").setParameter("char", character.getThisCharacter()).executeUpdate();
+            JPABridge.createStatement(em, "DELETE FROM AsciiCharacter a WHERE a.thisCharacter = :char").setParameter("char", character.getThisCharacter()).executeUpdate();
             em.persist(character);
             tx.commit();
         } catch (Exception e) {
@@ -811,7 +808,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testConcatInWhereCriteriaQuery() throws Exception {
         deleteAllEntities(ConcatEntity.class);
 
@@ -845,13 +841,13 @@ public class JakartaPersistenceServlet extends FATServlet {
                         .where(cb.equal(cb.concat(concatExpression), strParam1));
 
         // Use of concat in where clause: Matching case
-        List<ConcatEntity> person = em.createQuery(cquery)
+        List<ConcatEntity> person = JPABridge.createQuery(em, cquery)
                         .setParameter(strParam1, "John Jacobs")
                         .getResultList();
         assertEquals("Expected 1 record that matches full name 'John Jacobs'", 1, person.size());
 
         // Use of concat in where clause: No Match case
-        List<ConcatEntity> personNoMatch = em.createQuery(cquery)
+        List<ConcatEntity> personNoMatch = JPABridge.createQuery(em, cquery)
                         .setParameter(strParam1, "John Jacob")
                         .getResultList();
         assertEquals("Expected 0 record that matches full name 'John Jacob'", 0, personNoMatch.size());
@@ -867,7 +863,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testConcatCriteriaQuery() throws Exception {
         deleteAllEntities(ConcatEntity.class);
 
@@ -899,7 +894,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         cquery.select(cb.concat(concatExpression));
         cquery.orderBy(cb.desc(root.get("firstName")));
 
-        List<String> fullname = em.createQuery(cquery).getResultList();
+        List<String> fullname = JPABridge.createQuery(em, cquery).getResultList();
         System.out.println("****** testConcatCriteriaQuery: fullname: " + fullname);
         assertEquals("Expected full name 'John Jacobs' for first record", "John Jacobs", fullname.get(1));
         assertEquals("Expected full name 'Steve Smith' for second record", "Steve Smith", fullname.get(0));
@@ -911,7 +906,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802
     @SkipIfSysProp({
         DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
@@ -937,7 +931,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         Expression<Integer> yearExpression = criteriaBuilder.extract(yearLocalDateField, from.get("localDateData"));
         criteriaQuery.select(yearExpression);
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
-        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        List<Integer> result = JPABridge.createQuery(em, criteriaQuery).getResultList();
         assertEquals(4, result.size());
         assertEquals(null, result.get(0));
         assertEquals("Extracted Year should be 2021", 2021, ((Number) result.get(1)).intValue());
@@ -952,7 +946,6 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802
     @SkipIfSysProp({
         DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
@@ -978,7 +971,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         Expression<Integer> quarterExpression = criteriaBuilder.extract(quarterLocalDateField, from.get("localDateData"));
         criteriaQuery.select(quarterExpression);
         criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
-        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        List<Integer> result = JPABridge.createQuery(em, criteriaQuery).getResultList();
         assertEquals(4, result.size());
         assertEquals(null, result.get(0));
         assertEquals("Extracted Quarter should be 1", 1, ((Number) result.get(1)).intValue());
@@ -1355,7 +1348,6 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     @SkipIfSysProp({
         DB_Postgres    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32848
     })
@@ -1372,7 +1364,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         tx.begin();
         
         try {
-        em.createQuery("UPDATE Employee e SET e.info = ?1 WHERE e.id = ?2")
+        JPABridge.createStatement(em, "UPDATE Employee e SET e.info = ?1 WHERE e.id = ?2")
           .setParameter(1, null)
           .setParameter(2, abc.id)
           .executeUpdate();
@@ -1386,7 +1378,6 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_EMLevel_Bypass() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1403,7 +1394,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
             
-            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+            JPABridge.createStatement(em, "UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
               .setParameter(1, id)
               .executeUpdate();
             
@@ -1423,7 +1414,6 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
     
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testCacheRetrieveMode_EMLevel_Use_Default() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
         String id = "testCacheRetrieveMode_EMLevel_Use_Default";
@@ -1440,7 +1430,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             //Default cache retrieve mode is USE — no  need to set explicitly
             
-            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+            JPABridge.createStatement(em, "UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
               .setParameter(1, id)
               .executeUpdate();
             
@@ -1456,7 +1446,6 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_QueryLevel_Bypass() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1470,7 +1459,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         tx.begin();
         PersistenceUnitEntity entity;
         try {
-            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+            JPABridge.createStatement(em, "UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
               .setParameter(1, id)
               .executeUpdate();
 
@@ -1563,7 +1552,6 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
     public void testCacheRetrieveMode_QueryOverridesEM_BypassOverridesUse() throws Exception {
         deleteAllEntities(PersistenceUnitEntity.class);
@@ -1579,7 +1567,7 @@ public class JakartaPersistenceServlet extends FATServlet {
         try {
             em.setCacheRetrieveMode(CacheRetrieveMode.USE);
 
-            em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
+            JPABridge.createStatement(em, "UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1")
               .setParameter(1, id)
               .executeUpdate();
 
@@ -2033,11 +2021,8 @@ public class JakartaPersistenceServlet extends FATServlet {
      */
     private <T> void deleteAllEntities(Class<T> clazz) throws Exception {
         tx.begin();
-        List<T> entities = em.createQuery("SELECT e FROM " + clazz.getSimpleName() + " e", clazz)
-                             .getResultList();
-        for (T entity : entities) {
-            em.remove(entity);
-        }
+        JPABridge.createStatement(em, "DELETE FROM " + clazz.getSimpleName())
+                 .executeUpdate();
         tx.commit();
     }
     
