@@ -1237,11 +1237,15 @@ public abstract class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "delete", loggable(results));
 
+        boolean hasEntityResults = false;
+
         for (Object result : results)
             if (result == null) {
                 throw Fail.resultConversion(this, null, null);
+            } else if (hasEntityResults) {
+                ; // use deleteMultiple for Data 1.1/EE 12+
             } else if (entityInfo.entityClass.isInstance(result)) {
-                ehDelete(entityHandler, result);
+                hasEntityResults = true; // use deleteMultiple for Data 1.1/EE 12+
             } else if (entityInfo.idClassAttributeAccessors != null) {
                 jakarta.persistence.Query delete = ehCreateStatement(entityHandler,
                                                                      jpqlDelete);
@@ -1256,7 +1260,7 @@ public abstract class QueryInfo {
                     delete.setParameter(++numParams, value);
                 }
                 delete.executeUpdate();
-            } else { // is return value the entity or id?
+            } else { // is return value a record entity or id?
                 Object value = result;
                 if (entityInfo.entityClass.isInstance(result) ||
                     (entityInfo.recordClass != null &&
@@ -1288,6 +1292,9 @@ public abstract class QueryInfo {
                 delete.executeUpdate();
             }
 
+        if (hasEntityResults)
+            ehDelete(entityHandler, results);
+
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "delete");
     }
@@ -1305,35 +1312,39 @@ public abstract class QueryInfo {
      */
     @Trivial
     Object delete(Object arg, AutoCloseable entityHandler) throws Exception {
-        Iterable<?> args;
-        int entityCount = 0;
+        List<Object> args; // always an ArrayList if entityInfo.recordClass != null
 
         if (entityParamType.isArray()) {
-            entityCount = Array.getLength(arg);
-            List<Object> list = new ArrayList<>(entityCount);
+            int entityCount = Array.getLength(arg);
+            ArrayList<Object> list = new ArrayList<>(entityCount);
             for (int i = 0; i < entityCount; i++)
                 list.add(Array.get(arg, i));
             args = list;
-        } else if (arg instanceof Collection<?> c) {
-            args = c;
-            entityCount = c.size();
-        } else if (arg instanceof Iterable<?> iterable) {
-            args = iterable;
-            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
-                entityCount++;
-        } else if (arg instanceof Stream<?> s) {
-            List<?> list = s.sequential().toList();
+        } else if (entityInfo.recordClass == null && arg instanceof List<?> c) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) c;
             args = list;
-            entityCount = list.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            ArrayList<Object> list = new ArrayList<>();
+            for (Object e : iterable)
+                list.add(e);
+            args = list;
+        } else if (arg instanceof Stream<?> s) {
+            ArrayList<Object> list = s.sequential() //
+                            .collect(Collectors.toCollection(ArrayList::new));
+            args = list;
         } else {
-            args = Collections.singletonList(arg);
-            entityCount = 1;
+            ArrayList<Object> singleton = new ArrayList<>(1);
+            singleton.add(arg);
+            args = singleton;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "delete", loggable(args));
+            Tr.entry(this, tc, "delete",
+                     loggable(arg instanceof Stream ? args : arg));
 
+        int entityCount = args.size();
         if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
 
@@ -1345,15 +1356,26 @@ public abstract class QueryInfo {
                 event.fire(new PreDeleteEvent<>(e));
         }
 
-        // delete the entities
-        int updateCount = 0;
-        for (Object e : args)
-            updateCount += deleteOne(e, entityHandler);
+        Object returnValue;
+        Class<?> returnType = method.getReturnType();
+        if ((returnType == void.class || returnType == Void.class) &&
+            entityInfo.recordClass == null &&
+            !(entityHandler instanceof EntityManager)) { // use deleteMultiple
 
-        if (updateCount < entityCount)
-            throw Fail.optimisticLockConflict(this, updateCount, entityCount);
+            ehDelete(entityHandler, args);
 
-        Object returnValue = toReturnValue(updateCount, method.getReturnType());
+            returnValue = null;
+        } else { // delete entities individually
+            // TODO DELETE BY ID IN ?
+            int updateCount = 0;
+            for (Object e : args)
+                updateCount += deleteOne(e, entityHandler);
+
+            if (updateCount < entityCount)
+                throw Fail.optimisticLockConflict(this, updateCount, entityCount);
+
+            returnValue = toReturnValue(updateCount, returnType);
+        }
 
         // PostDeleteEvent
         if (producer.lifeCycleEvents != null) {
@@ -1542,12 +1564,13 @@ public abstract class QueryInfo {
 
     /**
      * Delegates to the EntityAgent or EntityManager to delete or remove
-     * an entity.
+     * one or more entities.
      *
      * @param entityHandler EntityAgent or EntityManager
-     * @param entity        the entity to remove
+     * @param entities      the entities to delete
      */
-    protected abstract void ehDelete(AutoCloseable entityHandler, Object entity);
+    protected abstract void ehDelete(AutoCloseable entityHandler,
+                                     List<?> entities);
 
     /**
      * Delegates to the EntityAgent or EntityManager to insert or persist
@@ -3495,7 +3518,7 @@ public abstract class QueryInfo {
                 }
             }
 
-            if (type == FIND_AND_DELETE)
+            if (type == FIND_AND_DELETE && !results.isEmpty())
                 delete(results, entityHandler);
 
             if (results.isEmpty() && isOptional) {
