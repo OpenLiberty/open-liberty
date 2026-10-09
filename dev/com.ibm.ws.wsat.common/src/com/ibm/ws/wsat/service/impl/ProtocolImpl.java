@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -318,6 +318,7 @@ public class ProtocolImpl {
         participantResponse(tran, globalId, wrapper.getResponseEpr(), WSATParticipantState.ABORTED);
     }
 
+    @FFDCIgnore(Exception.class)
     private void coordinatorResponse(ProtocolServiceWrapper wrapper, WSATParticipantState response) throws WSATException {
         if (TC.isDebugEnabled()) {
             Tr.debug(TC, "From EPR address: {0}", wrapper.getResponseEpr().getAddress().getValue());
@@ -331,8 +332,16 @@ public class ProtocolImpl {
         part.setCoordinator(coord);
 
         WebClient client = WebClient.getWebClient(part, coord);
-        client.rollback();
-        replayers.add(part);
+        try {
+            replayers.add(part);
+            client.rollback();
+        } catch (Exception e) {
+            replayers.remove(part);
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "Exception sending rollback to participant, ignoring: {0}", e);
+            }
+            return;
+        }
         part.waitResponse(WSATConfigServiceImpl.getInstance().getAsyncResponseTimeout(), WSATParticipantState.ABORTED);
     }
 
@@ -396,8 +405,8 @@ public class ProtocolImpl {
                     // Couldn't find the tran. Probably never got logged. Send a rollback
                     if (TC.isDebugEnabled()) {
                         Tr.debug(TC, "Couldn't find tran. Need to send rollback");
-                        coordinatorResponse(wrapper, WSATParticipantState.ROLLBACK);
                     }
+                    coordinatorResponse(wrapper, WSATParticipantState.ROLLBACK);
                 }
             }
         }
