@@ -14,7 +14,7 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-    hibernateVersion = '8.0.0.Beta1'
+    hibernateVersion = '8.0.0.Beta3'
   }
 
 configurations {
