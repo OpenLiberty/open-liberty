@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=Je-li zad\u00e1n parametr outputVersion=2.0, pou\u017eije se ve v\u00fdstupn\u00edm souboru pouze prvek xsd: any, aby nezn\u00e1m\u00e9 prvky pro\u0161ly ov\u011b\u0159en\u00edm XSD na \u00fakor ztr\u00e1ty ov\u011b\u0159en\u00ed platnosti pro zn\u00e1m\u00e9 prvky.
+
+option-key.strict=--strict
+option-desc.strict=Vytvo\u0159te sch\u00e9ma pro ov\u011b\u0159ov\u00e1n\u00ed pouze definovan\u00fdch atribut\u016f.

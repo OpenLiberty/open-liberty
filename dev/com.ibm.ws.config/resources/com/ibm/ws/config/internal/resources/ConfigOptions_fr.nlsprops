@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=Si outputVersion=2.0 est sp\u00e9cifi\u00e9, seul l'\u00e9l\u00e9ment xsd:any est utilis\u00e9 dans le fichier de sortie, de sorte que des \u00e9l\u00e9ments inconnus transmettent la validation XSD au d\u00e9triment de la validation des \u00e9l\u00e9ments connus.
+
+option-key.strict=--strict
+option-desc.strict=Cr\u00e9er un sch\u00e9ma permettant de valider uniquement les attributs d\u00e9finis.

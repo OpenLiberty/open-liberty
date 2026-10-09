@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Entrez une valeur valide pour la cha\u00een
 jndi.decode.failed=CWWKN0011E: Une erreur s''est produite lors du d\u00e9codage du mot de passe {0}. V\u00e9rifiez que le mot de passe a \u00e9t\u00e9 cod\u00e9 correctement. Exception renvoy\u00e9e : {1}.
 jndi.decode.failed.explanation=Le mot de passe n'a pas \u00e9t\u00e9 cod\u00e9 correctement.
 jndi.decode.failed.useraction=V\u00e9rifiez que le mot de passe a \u00e9t\u00e9 cod\u00e9 correctement. Pour plus de d\u00e9tails, voir l'exception.
+
+jndi.decode.warning=CWWKN0012W: La valeur associ\u00e9e au nom JNDI \u00ab {0} \u00bb n''a pas pu \u00eatre d\u00e9cod\u00e9e, car le mot de passe n''est pas correctement encod\u00e9.
+jndi.decode.warning.explanation=La recherche dans l'environnement JNDI a \u00e9chou\u00e9 car la valeur du mot de passe associ\u00e9 au nom JNDI n'est pas dans un format d'encodage pris en charge. Le serveur ne parvient pas \u00e0 d\u00e9coder la valeur et la recherche ne peut pas aboutir.
+jndi.decode.warning.useraction=Encodez le mot de passe associ\u00e9 au nom JNDI \u00e0 l'aide de la commande d'encodage de l' securityUtility, puis mettez \u00e0 jour la configuration JNDI avec la valeur encod\u00e9e. Consultez le message d'exception pour plus de d\u00e9tails.

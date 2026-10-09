@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Asigura\u021bi-v\u0103 c\u0103 resursa es
 CWWKC1412.qualifier.conflict=CWWKC1412E: Artefactul aplica\u021biei {0} include mai multe defini\u021bii de resurse {1} care au calificatorii {2} . Numele defini\u021biilor de resurse {1} aflate \u00een conflict sunt {3} .
 CWWKC1412.qualifier.conflict.explanation=Fiecare defini\u021bie de resurs\u0103 de acela\u0219i tip care are un calificator trebuie s\u0103 aib\u0103 un calificator diferit.
 CWWKC1412.qualifier.conflict.useraction=Asigura\u021bi-v\u0103 c\u0103 fiecare defini\u021bie de resurs\u0103 de acela\u0219i tip are un calificator diferit sau nu are niciun calificativ.
+
+CWWKC1413.sched.method.args=CWWKC1413E: Metoda ` {0} ` a bean-ului gestionat CDI ` {1} ` este adnotat\u0103 cu `Schedule`, dar nu este programat\u0103 automat, deoarece metodele adnotate cu `Schedule` nu pot avea parametri.
+CWWKC1413.sched.method.args.explanation=Metodele care sunt marcate ca \u201eSchedule\u201d nu trebuie s\u0103 aib\u0103 parametri.
+CWWKC1413.sched.method.args.useraction=Elimina\u021bi parametrii din metod\u0103 sau elimina\u021bi adnotarea \u201eSchedule\u201d din metod\u0103.
