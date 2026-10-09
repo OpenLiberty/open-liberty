@@ -154,7 +154,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (evt instanceof ChannelInputShutdownEvent){
             try {
                 FlowState state = ReadFlowHandler.state(ctx.channel());
-                if(queue!=null && !queue.isEos() && !state.isRequestConsumed()){
+                if(queue!=null && !queue.isEosSignaled() && !state.isRequestConsumed()){
                     try {
                         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
                     } catch (Throwable t) {
@@ -863,7 +863,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         AsyncReadDispatchState asyncReadState = AsyncReadDispatchState.forChannel(context.channel());
         Throwable lifecycleFailure = null;
         try {
-            asyncReadState.fail();
+            if (queue != null && queue.isEosSignaled()) {
+                asyncReadState.signal();
+            } else {
+                asyncReadState.fail();
+            }
         } catch (Throwable t) {
             lifecycleFailure = t;
         }
@@ -873,7 +877,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         // forced-close path that used to signal EOS here has been removed; a genuine
         // premature close is always an error from the body reader's perspective.
         try {
-            if (queue != null && !queue.isEos()) {
+            if (queue != null && !queue.isEosSignaled()) {
                 context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
                 queue.signalError(new EOFException("Channel closed before request body completed."));
             }
