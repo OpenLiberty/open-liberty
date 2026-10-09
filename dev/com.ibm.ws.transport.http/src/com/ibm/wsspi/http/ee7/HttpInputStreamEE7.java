@@ -227,6 +227,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 }
                 if (isStreamingEndReadyForCallback()) {
                     this.readChannelComplete = true;
+                    markStreamingEosObserved();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "isFinished(streaming): queue EOS and no buffered data; returning true");
                     }
