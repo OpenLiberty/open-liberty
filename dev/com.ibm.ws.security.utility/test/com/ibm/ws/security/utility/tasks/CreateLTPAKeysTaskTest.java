@@ -13,6 +13,7 @@
 package com.ibm.ws.security.utility.tasks;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertTrue;
 
@@ -39,6 +40,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.AesConfigFileParser;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -107,6 +109,7 @@ public class CreateLTPAKeysTaskTest {
 
     @After
     public void tearDown() {
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         mock.assertIsSatisfied();
     }
 
@@ -662,13 +665,25 @@ public class CreateLTPAKeysTaskTest {
     // -----------------------------------------------------------------------
 
     /**
-     * --useEncryptionKey=true is recognised as a known argument.
+     * --useEncryptionKey is recognized as a known argument when beta is enabled.
      */
     @Test
-    public void isKnownArgument_useEncryptionKey() {
+    public void isKnownArgument_useEncryptionKey_betaEnabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
-        assertTrue("FAIL: Did not recognize the --useEncryptionKey flag",
+        assertTrue("FAIL: Did not recognize the --useEncryptionKey flag in beta mode",
                    task.isKnownArgument("--useEncryptionKey"));
+    }
+
+    /**
+     * --useEncryptionKey is NOT recognized as a known argument when beta is disabled.
+     */
+    @Test
+    public void isKnownArgument_useEncryptionKey_betaDisabled() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        assertFalse("FAIL: Recognized the --useEncryptionKey flag when beta is disabled",
+                    task.isKnownArgument("--useEncryptionKey"));
     }
 
     /**
@@ -736,6 +751,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_useEncryptionKey_passwordKey_fileCreated() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         String passwordKey = "myTestEncryptionKey";
 
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
@@ -775,6 +791,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_useEncryptionKey_passwordBase64Key_fileCreated() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         String base64Key = "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=";
 
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
@@ -804,6 +821,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_useEncryptionKey_aesConfigFile_fileCreated() throws Exception {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
         String aesConfigFilePath = "keys.xml";
         String base64Key = "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=";
 

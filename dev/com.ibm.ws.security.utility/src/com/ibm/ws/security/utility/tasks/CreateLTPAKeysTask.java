@@ -30,6 +30,7 @@ import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.AESKeyManager;
 import com.ibm.ws.crypto.util.AesConfigFileParser;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -50,7 +51,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     static final String ARG_SERVER = "--server";
     static final String ARG_FILE = "--file";
     static final String ARG_USE_ENCRYPTION_KEY = "--useEncryptionKey";
-    private static final List<String> BETA_ARG_TABLE = new ArrayList<>();
+    private static final List<String> BETA_ARG_TABLE = Arrays.asList(ARG_USE_ENCRYPTION_KEY);
     private static final List<String> BETA_OPTS = BETA_ARG_TABLE.stream().map(s -> s.startsWith("--") ? s.substring(2) : s).collect(Collectors.toList());
     private final LTPAKeyFileUtility ltpaKeyFileUtil;
     private final IFileUtility fileUtility;
@@ -99,10 +100,13 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     /** {@inheritDoc} */
     @Override
     boolean isKnownArgument(String arg) {
-        return arg.equals(ARG_SERVER) || arg.equals(ARG_PASSWORD) ||
+        boolean value = arg.equals(ARG_SERVER) || arg.equals(ARG_PASSWORD) ||
                arg.equals(ARG_PASSWORD_ENCODING) || arg.equals(ARG_PASSWORD_KEY) ||
-               arg.equals(ARG_FILE) || arg.equals(ARG_PASSWORD_BASE64_KEY) || arg.equals(ARG_AES_CONFIG_FILE) ||
-               arg.equals(ARG_USE_ENCRYPTION_KEY);
+               arg.equals(ARG_FILE) || arg.equals(ARG_PASSWORD_BASE64_KEY) || arg.equals(ARG_AES_CONFIG_FILE);
+        if (!value && ProductInfo.getBetaEdition()) {
+            value = BETA_ARG_TABLE.contains(arg);
+        }
+        return value;
     }
 
     /** {@inheritDoc} */
