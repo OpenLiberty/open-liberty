@@ -24,17 +24,11 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * Shared helpers for dynamically deploying and undeploying WARs on a running
- * Liberty server without emitting {@code CWWKZ0014W} or {@code CWWKZ0059E}.
+ * Liberty server.
  *
- * <h3>Why the ordering matters</h3>
- * <ul>
- * <li>{@code CWWKZ0014W} — Liberty tries to start an app whose WAR is not yet
- * on disk. Fix: write the WAR <em>before</em> adding the
- * {@code <application>} entry to server.xml.</li>
- * <li>{@code CWWKZ0059E} — Liberty tries to stop an app but the WAR has
- * already been deleted. Fix: remove the {@code <application>} entry and
- * wait for the app to stop <em>before</em> deleting the WAR.</li>
- * </ul>
+ * <p>Does things in the right order to avoid creating warnings
+ * {@code CWWKZ0014W} (config with no app) or {@code CWWKZ0059E}
+ * (trying to stop an app that's been deleted).
  *
  * <p>Usage in a suite:
  *
@@ -46,7 +40,6 @@ import componenttest.topology.impl.LibertyServer;
  *     mcp.setStateless("true");
  *     app.getMcpElements().add(mcp);
  * });
- * server.waitForStringInLogUsingMark("CWWKZ0001I:.*myApp");
  *
  * // undeploy — preferred: pass the app name directly (no need to recreate the archive)
  * McpDeployHelper.undeployWithConfiguration(server, "myApp");
@@ -65,18 +58,13 @@ public final class McpDeployHelper {
      * configure it via {@code configurator}.
      *
      * <p>The WAR is written to disk <em>before</em> the server configuration is
-     * updated, which prevents Liberty from emitting {@code CWWKZ0014W} (app
-     * declared in server.xml before the WAR file exists).
-     *
-     * <p>After updating the configuration, the app is registered with
-     * {@code server.addInstalledAppForValidation} so that framework shutdown
-     * validation knows about it, even though {@code DISABLE_VALIDATION} was
-     * used during the export.
+     * updated, and the method waits for the app to start before returning.
      *
      * @param server the Liberty server to deploy to
      * @param war the archive to deploy; its name is used as the file name
      * @param configurator callback that receives the new {@link Application} element
      *     so the caller can set properties (e.g. {@code <mcp stateless="true"/>})
+     * @throws Exception if the app does not start
      */
     public static void deployWithConfiguration(LibertyServer server,
                                                WebArchive war,
@@ -101,6 +89,7 @@ public final class McpDeployHelper {
         // 3. Register with the framework so shutdown validation tracks this app.
         //    We do this manually here because DISABLE_VALIDATION suppressed the
         //    automatic registration inside exportAppToServer.
+        //    This waits for the app to start before returning.
         server.addInstalledAppForValidation(appName);
     }
 
@@ -112,14 +101,10 @@ public final class McpDeployHelper {
      * Liberty from emitting {@code CWWKZ0059E} (app still configured when WAR
      * is removed from disk).
      *
-     * <p>A mark-based {@code waitForStringInLogUsingMark("CWWKZ0009I:.*appName")} is used
-     * instead of relying solely on {@link LibertyServer#removeInstalledAppForValidation},
-     * because that method scans from the start of the log and can be confused by earlier
-     * {@code CWWKZ0001I} start messages on a long-running shared server.
-     *
      * @param server the Liberty server to undeploy from
      * @param appName the application name (without {@code .war} suffix) that was
      *     previously deployed via {@link #deployWithConfiguration}
+     * @throws Exception if the app does not stop
      */
     public static void undeployWithConfiguration(LibertyServer server,
                                                  String appName)
@@ -133,29 +118,23 @@ public final class McpDeployHelper {
         }
         server.updateServerConfiguration(config);
 
-        // 2. Wait for the app to stop using a mark-based search so that earlier
-        //    CWWKZ0001I messages from this same server run don't confuse
-        //    waitForAppState (which scans from the start of the log).
-        //    The caller must have called server.setMarkToEndOfLog() before teardown.
-        server.waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName);
-
-        // 3. Deregister from the framework. removeInstalledAppForValidation will
-        //    re-check state via waitForAppState; since CWWKZ0009I is now the last
-        //    matching message it will return immediately.
+        // 2. Deregister from the framework. removeInstalledAppForValidation will
+        //    wait until the app is stopped.
         server.removeInstalledAppForValidation(appName);
 
-        // 4. Delete WAR only after the app has fully stopped.
+        // 3. Delete WAR only after the app has fully stopped.
         server.deleteFileFromLibertyServerRoot("apps/" + appName + ".war");
     }
 
     /**
-     * Convenience overload that derives the app name from the archive.
-     * Prefer passing the app name string directly where the archive does not
-     * need to be kept around solely for teardown.
+     * Undeploys an application from {@code apps}, deriving the app's name from
+     * an archive. Use {@link #undeployWithConfiguration(LibertyServer, String)}
+     * to undeploy by name if you don't still have the archive.
      *
      * @param server the Liberty server to undeploy from
      * @param war the archive that was previously deployed via
      *     {@link #deployWithConfiguration(LibertyServer, WebArchive, Consumer)}
+     * @throws Exception if the app does not stop
      * @see #undeployWithConfiguration(LibertyServer, String)
      */
     public static void undeployWithConfiguration(LibertyServer server,
@@ -165,20 +144,29 @@ public final class McpDeployHelper {
     }
 
     /**
+     * Deploys {@code war} to the server's {@code dropins/} directory.
+     *
+     * The method waits for the app to start before returning.
+     *
+     * @param server the Liberty server to deploy to
+     * @param war the archive to deploy; its name is used as the file name
+     * @throws Exception if the app does not start
+     */
+    public static void deployDropinApp(LibertyServer server, WebArchive war) throws Exception {
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+    }
+
+    /**
      * Removes a dropin WAR from the server's {@code dropins/} directory and
      * deregisters it from framework validation.
      *
      * <p>The WAR file is deleted first — Liberty detects the removal, stops the
-     * app, and logs {@code CWWKZ0009I}. {@link LibertyServer#removeInstalledAppForValidation}
-     * already waits for that message internally, so no separate
-     * {@code waitForStringInLogUsingMark} call is needed here.
-     *
-     * <p>The caller must have called {@code server.setMarkToEndOfLog()} before
-     * teardown so that the internal wait does not match an earlier
-     * {@code CWWKZ0001I} start message from the same server run.
+     * app, and logs {@code CWWKZ0009I}. Then {@link LibertyServer#removeInstalledAppForValidation}
+     * Is called to wait for the app to stop.
      *
      * @param server the Liberty server to undeploy from
      * @param appName the application name (without {@code .war} suffix)
+     * @throws Exception if the app does not stop
      */
     public static void undeployDropinApp(LibertyServer server,
                                          String appName)

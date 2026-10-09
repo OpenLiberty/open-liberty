@@ -9,19 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.suite;
 
-import java.util.function.Consumer;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
-import org.junit.rules.ExternalResource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.simplicity.config.Application;
-
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.mcp.internal.fat.security.AsyncAdminsRoleAllowedTests;
 import io.openliberty.mcp.internal.fat.security.AsyncDenyAllTests;
 import io.openliberty.mcp.internal.fat.security.AsyncNoClassAnnotationTests;
@@ -47,74 +39,14 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    AsyncPermitAllTests.class,
-    AsyncDenyAllTests.class,
-    AsyncNoClassAnnotationTests.class,
-    AsyncAdminsRoleAllowedTests.class,
-    AsyncToolCancellationTest.class,
+                AsyncPermitAllTests.class,
+                AsyncDenyAllTests.class,
+                AsyncNoClassAnnotationTests.class,
+                AsyncAdminsRoleAllowedTests.class,
+                AsyncToolCancellationTest.class,
 })
 public class McpAsyncAuthServerSuite {
 
-    /**
-     * Assigned in {@code before()} so that {@link LibertyServerFactory#getLibertyServer}
-     * runs again on every EE repeat.
-     */
-    public static LibertyServer server;
-
     @ClassRule
-    public static ExternalResource serverLifecycle = new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            server = LibertyServerFactory.getLibertyServer("mcp-server-async-auth");
-            server.startServer();
-            server.waitForLTPAConfigReady();
-        }
-
-        @Override
-        protected void after() {
-            try {
-                // AsyncToolCancellationTest deliberately cancels operations that throw OperationCancelledException
-                server.stopServer("OperationCancelledException");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    };
-
-    /**
-     * Delegates to {@link McpDeployHelper#deployWithConfiguration}.
-     *
-     * @see McpDeployHelper#deployWithConfiguration(LibertyServer, WebArchive, Consumer)
-     */
-    public static void deployWithConfiguration(WebArchive war,
-                                               Consumer<Application> configurator) throws Exception {
-        McpDeployHelper.deployWithConfiguration(server, war, configurator);
-    }
-
-    /**
-     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, String)}.
-     *
-     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, String)
-     */
-    public static void undeployWithConfiguration(String appName) throws Exception {
-        McpDeployHelper.undeployWithConfiguration(server, appName);
-    }
-
-    /**
-     * Delegates to {@link McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)}.
-     *
-     * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, WebArchive)
-     */
-    public static void undeployWithConfiguration(WebArchive war) throws Exception {
-        McpDeployHelper.undeployWithConfiguration(server, war);
-    }
-
-    /**
-     * Delegates to {@link McpDeployHelper#undeployDropinApp(LibertyServer, String)}.
-     *
-     * @see McpDeployHelper#undeployDropinApp(LibertyServer, String)
-     */
-    public static void undeployDropinApp(String appName) throws Exception {
-        McpDeployHelper.undeployDropinApp(server, appName);
-    }
+    public static ServerLifecycleRule serverLifecycle = new ServerLifecycleRule("mcp-server-async-auth");
 }

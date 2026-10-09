@@ -9,9 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.util.logging.Logger;
+import static io.openliberty.mcp.internal.fat.suite.McpAsyncAuthServerSuite.serverLifecycle;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,7 +23,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.ExpectedTestResult;
 import io.openliberty.mcp.internal.fat.security.AuthHelper.Scenario;
-import io.openliberty.mcp.internal.fat.suite.McpAsyncAuthServerSuite;
 import io.openliberty.mcp.internal.fat.tool.securityApps.AsyncPermitAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -37,29 +34,20 @@ public class AsyncPermitAllTests extends FATServletClient {
 
     private static final String APP_NAME = "asyncPermitAllTools";
 
-    // Do NOT copy McpAsyncAuthServerSuite.server into a local static field — it would capture null
-    // because suite fields are assigned after static initializers run in the test class.
-    Logger logger = Logger.getLogger(AsyncPermitAllTests.class.getName());
-
     @Rule
-    public McpClient client = new McpClient(McpAsyncAuthServerSuite.server, "/" + APP_NAME);
+    public McpClient client = new McpClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
-        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
-
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(AsyncPermitAllTools.class);
-        McpAsyncAuthServerSuite.deployWithConfiguration(war, app -> {
+        serverLifecycle.deployWithConfiguration(war, app -> {
             // no extra <mcp> config needed for this app
         });
-
-        assertNotNull(McpAsyncAuthServerSuite.server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + APP_NAME));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        McpAsyncAuthServerSuite.server.setMarkToEndOfLog();
-        McpAsyncAuthServerSuite.undeployWithConfiguration(APP_NAME);
+        serverLifecycle.undeployWithConfiguration(APP_NAME);
     }
 
     @Test
