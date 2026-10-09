@@ -15,6 +15,7 @@ package com.ibm.ws.security.jwt.fat.builder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.Arrays;
@@ -80,8 +81,15 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
     private static final String BUILDER_ID = "jwkMaxKeys_3_rotationTime_1m";
     private static final String JWK_URL_PART = "jwt/ibm/api/";
     private static final String JWK_ENDPOINT_SUFFIX = "/jwk";
-    /** Sleep duration in ms: 60s matches the 1m rotation timer exactly */
-    private static final long ROTATION_SLEEP_MS = 60_000L;
+    /**
+     * Offset from the previously observed rotation at which we check that no premature rotation
+     * has happened yet (55s — just before the next 1m boundary)
+     */
+    private static final long PRE_ROTATION_CHECK_MS = 55_000L;
+    /** Max time to wait for the next rotation, measured from the previous anchor (1m period + margin) */
+    private static final long ROTATION_TIMEOUT_MS = 70_000L;
+    /** Interval between polls of the JWK endpoint while waiting for a rotation */
+    private static final long POLL_INTERVAL_MS = 1_000L;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -187,16 +195,50 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
     }
 
     /**
+     * Poll the JWK endpoint until its set of kids differs from previousKids.
+     * Fails the test if no change is observed before the deadline.
+     *
+     * @return the keys array returned by the first poll that observed the change
+     */
+    private JsonArray waitForKidsChange(String jwkUrl, Set<String> previousKids, long deadlineMs, String phase) throws Exception {
+        while (System.currentTimeMillis() < deadlineMs) {
+            JsonArray keys = getJwkKeys(jwkUrl);
+            if (!extractKids(keys).equals(previousKids)) {
+                return keys;
+            }
+            Thread.sleep(POLL_INTERVAL_MS);
+        }
+        fail(phase + ": JWK keys did not rotate before the deadline");
+        return null; // unreachable
+    }
+
+    /**
+     * Sleep until the given absolute time (System.currentTimeMillis() based). Returns immediately if already passed.
+     */
+    private void sleepUntil(long timeMs) throws InterruptedException {
+        long remaining = timeMs - System.currentTimeMillis();
+        if (remaining > 0) {
+            Thread.sleep(remaining);
+        }
+    }
+
+    /**
      * Verifies the full JWK key lifecycle for jwkMaxKeys=3 and jwkRotationTime=1m:
      *
-     * Phase 1 (T=0):   JWK endpoint returns 1 key (lazy init).
+     * Phase 0 (T=0):   JWK endpoint returns 1 key (lazy init).
      *                  Build JWT signed with Key A. Signature is valid against current JWKS.
-     * Phase 2 (T=1m):  After 1st rotation: 2 keys. Key A still present.
+     * Phase 1 (T=1m):  After 1st rotation: 2 keys. Key A still present.
      *                  Reuse JWT. Signature still valid.
-     * Phase 3 (T=2m):  After 2nd rotation: 3 keys (maxKeys reached). Key A still present.
+     * Phase 2 (T=2m):  After 2nd rotation: 3 keys (maxKeys reached). Key A still present.
      *                  Reuse JWT. Signature still valid.
-     * Phase 4 (T=3m):  After 3rd rotation: still 3 keys. Key A evicted (sliding window).
+     * Phase 3 (T=3m):  After 3rd rotation: still 3 keys. Key A evicted (sliding window).
      *                  Reuse JWT. Signature is now invalid against current JWKS.
+     *
+     * The rotation timer starts when the JWKProvider is created (server startup), not at the
+     * first /jwk request, so the offset between test T=0 and the timer is unknown. Therefore:
+     * - The 1st rotation is detected by polling, and the observed time becomes the anchor.
+     * - Before each subsequent rotation, the JWKS is checked at anchor+55s to be unchanged
+     *   (no premature rotation), then polled until the rotation is observed (new anchor).
      *
      * Signature verification uses bare jose4j against a live GET of the /jwk endpoint,
      * bypassing Liberty's JWKSet cache (10-minute TTL) entirely.
@@ -207,67 +249,91 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
 
         String jwkUrl = buildJwkUrl(BUILDER_ID);
 
-        // ── Phase 1: initial state ─────────────────────────────────────────
-        Log.info(thisClass, _testName, "Phase 1: checking initial JWK state");
-        JsonArray phase1Keys = getJwkKeys(jwkUrl);
-        assertEquals("Phase 1: expected exactly 1 key before any rotation", 1, phase1Keys.size());
-        Set<String> phase1Kids = extractKids(phase1Keys);
+        // ── Phase 0: initial state ─────────────────────────────────────────
+        Log.info(thisClass, _testName, "Phase 0: checking initial JWK state");
+        long phase0Time = System.currentTimeMillis();
+        JsonArray phase0Keys = getJwkKeys(jwkUrl);
+        assertEquals("Phase 0: expected exactly 1 key before any rotation", 1, phase0Keys.size());
+        Set<String> phase0Kids = extractKids(phase0Keys);
 
         // Build the JWT once with Key A; reuse it for all subsequent phases
         String jwtToken = buildJwt(BUILDER_ID);
-        assertTrue("Phase 1: JWT signed with Key A must be valid against current JWKS",
+        assertTrue("Phase 0: JWT signed with Key A must be valid against current JWKS",
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
 
-        // ── Phase 2: after 1st rotation ────────────────────────────────────
-        Log.info(thisClass, _testName, "Phase 2: waiting for 1st rotation...");
-        Thread.sleep(ROTATION_SLEEP_MS);
-
-        JsonArray phase2Keys = getJwkKeys(jwkUrl);
-        assertEquals("Phase 2: expected 2 keys after 1st rotation", 2, phase2Keys.size());
-        Set<String> phase2Kids = extractKids(phase2Keys);
+        // ── Phase 1: after 1st rotation ────────────────────────────────────
+        // The timer offset relative to T=0 is unknown, so poll for the 1st rotation and use it as the anchor
+        Log.info(thisClass, _testName, "Phase 1: polling for 1st rotation...");
+        JsonArray phase1Keys = waitForKidsChange(jwkUrl, phase0Kids, phase0Time + ROTATION_TIMEOUT_MS, "Phase 1");
+        long rotation1Time = System.currentTimeMillis();
+        assertEquals("Phase 1: expected 2 keys after 1st rotation", 2, phase1Keys.size());
+        Set<String> phase1Kids = extractKids(phase1Keys);
 
         // Key A must still be present (smooth transition: existing tokens stay valid)
-        assertTrue("Phase 2: original key (Key A) must still be present after 1st rotation",
-                phase2Kids.containsAll(phase1Kids));
+        assertTrue("Phase 1: original key (Key A) must still be present after 1st rotation",
+                phase1Kids.containsAll(phase0Kids));
         // A new key must have been added
-        assertFalse("Phase 2: a new key must have been added after 1st rotation",
+        assertFalse("Phase 1: a new key must have been added after 1st rotation",
+                phase0Kids.containsAll(phase1Kids));
+
+        // JWT signed with Key A must still be valid (Key A is still in the JWKS)
+        assertTrue("Phase 1: JWT signed with Key A must still be valid while Key A is in the JWKS",
+                verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
+
+        // ── Phase 2: after 2nd rotation ────────────────────────────────────
+        Log.info(thisClass, _testName, "Phase 2: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 1st rotation to check for premature rotation...");
+        sleepUntil(rotation1Time + PRE_ROTATION_CHECK_MS);
+        JsonArray prePhase2Keys = getJwkKeys(jwkUrl);
+        assertEquals("Pre-Phase 2: kids must not change before 2nd rotation", phase1Kids, extractKids(prePhase2Keys));
+
+        Log.info(thisClass, _testName, "Phase 2: polling for 2nd rotation...");
+        JsonArray phase2Keys = waitForKidsChange(jwkUrl, phase1Kids, rotation1Time + ROTATION_TIMEOUT_MS, "Phase 2");
+        long rotation2Time = System.currentTimeMillis();
+        assertEquals("Phase 2: expected 3 keys after 2nd rotation (maxKeys=3 reached)", 3, phase2Keys.size());
+        Set<String> phase2Kids = extractKids(phase2Keys);
+
+        // Key A must still be present
+        assertTrue("Phase 2: original key (Key A) must still be present after 2nd rotation",
+                phase2Kids.containsAll(phase0Kids));
+        // Key B must still be present too (all phase-1 keys retained)
+        assertTrue("Phase 2: all keys from phase 1 (Key A and Key B) must still be present after 2nd rotation",
+                phase2Kids.containsAll(phase1Kids));
+        // A new key (Key C) must have been added
+        assertFalse("Phase 2: a new key must have been added after 2nd rotation",
                 phase1Kids.containsAll(phase2Kids));
 
         // JWT signed with Key A must still be valid (Key A is still in the JWKS)
         assertTrue("Phase 2: JWT signed with Key A must still be valid while Key A is in the JWKS",
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
 
-        // ── Phase 3: after 2nd rotation ────────────────────────────────────
-        Log.info(thisClass, _testName, "Phase 3: waiting for 2nd rotation...");
-        Thread.sleep(ROTATION_SLEEP_MS);
+        // ── Phase 3: after 3rd rotation ────────────────────────────────────
+        Log.info(thisClass, _testName, "Phase 3: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 2nd rotation to check for premature rotation...");
+        sleepUntil(rotation2Time + PRE_ROTATION_CHECK_MS);
+        JsonArray prePhase3Keys = getJwkKeys(jwkUrl);
+        assertEquals("Pre-Phase 3: kids must not change before 3rd rotation", phase2Kids, extractKids(prePhase3Keys));
 
-        JsonArray phase3Keys = getJwkKeys(jwkUrl);
-        assertEquals("Phase 3: expected 3 keys after 2nd rotation (maxKeys=3 reached)", 3, phase3Keys.size());
+        Log.info(thisClass, _testName, "Phase 3: polling for 3rd rotation...");
+        JsonArray phase3Keys = waitForKidsChange(jwkUrl, phase2Kids, rotation2Time + ROTATION_TIMEOUT_MS, "Phase 3");
+        // Count must stay at maxKeys=3 (sliding window eviction)
+        assertEquals("Phase 3: key count must stay at maxKeys=3 after 3rd rotation", 3, phase3Keys.size());
         Set<String> phase3Kids = extractKids(phase3Keys);
 
-        // Key A must still be present
-        assertTrue("Phase 3: original key (Key A) must still be present after 2nd rotation",
-                phase3Kids.containsAll(phase1Kids));
-
-        // JWT signed with Key A must still be valid (Key A is still in the JWKS)
-        assertTrue("Phase 3: JWT signed with Key A must still be valid while Key A is in the JWKS",
-                verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
-
-        // ── Phase 4: after 3rd rotation ────────────────────────────────────
-        Log.info(thisClass, _testName, "Phase 4: waiting for 3rd rotation...");
-        Thread.sleep(ROTATION_SLEEP_MS);
-
-        JsonArray phase4Keys = getJwkKeys(jwkUrl);
-        // Count must stay at maxKeys=3 (sliding window eviction)
-        assertEquals("Phase 4: key count must stay at maxKeys=3 after 3rd rotation", 3, phase4Keys.size());
-        Set<String> phase4Kids = extractKids(phase4Keys);
-
         // Key A must have been evicted
-        assertFalse("Phase 4: original key (Key A) must have been evicted after 3rd rotation",
-                phase4Kids.containsAll(phase1Kids));
+        assertFalse("Phase 3: original key (Key A) must have been evicted after 3rd rotation",
+                phase3Kids.containsAll(phase0Kids));
+
+        // Key B and Key C (phase2 minus Key A) must still be present — eviction is precise
+        Set<String> phase2KidsMinusPhase0Kids = new HashSet<>(phase2Kids);
+        phase2KidsMinusPhase0Kids.removeAll(phase0Kids);
+        assertTrue("Phase 3: keys from phase 2 except Key A (i.e. Key B and Key C) must still be present after 3rd rotation",
+                phase3Kids.containsAll(phase2KidsMinusPhase0Kids));
+
+        // A new key (Key D) must have been added
+        assertFalse("Phase 3: a new key must have been added after 3rd rotation",
+                phase2Kids.containsAll(phase3Kids));
 
         // JWT signed with evicted Key A must now be rejected by the live JWKS
-        assertFalse("Phase 4: JWT signed with evicted Key A must be invalid against current JWKS",
+        assertFalse("Phase 3: JWT signed with evicted Key A must be invalid against current JWKS",
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
     }
 }

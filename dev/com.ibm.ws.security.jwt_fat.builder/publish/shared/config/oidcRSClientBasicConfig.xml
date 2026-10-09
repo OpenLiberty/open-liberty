@@ -439,5 +439,4 @@
 	-->
 	
 	<!-- validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}" -->
-
 </server>
