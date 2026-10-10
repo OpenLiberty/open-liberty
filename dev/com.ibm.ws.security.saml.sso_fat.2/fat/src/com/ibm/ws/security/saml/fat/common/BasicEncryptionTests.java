@@ -14,6 +14,7 @@ package com.ibm.ws.security.saml.fat.common;
 
 import java.util.List;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -238,7 +239,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
         
         String failureMessage = null;
         // IBM Java 8
-        if (testSAMLServer.getServer().isIbmJdk8FIPS140_3EnabledAndSupported()) {
+        if (testSAMLServer.getServer().isIbmJdk8FIPS140_3EnabledAndSupported() || (testSAMLServer.getServer().isSemeruFIPS140_3EnabledAndSupported() && testSAMLServer.getServer().getMachine().getOperatingSystem().equals(OperatingSystem.ZOS))) {
             failureMessage = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+server is configured with FIPS 140-3 enabled mode, but the received SAML assertion is signed with RSA-SHA1.*";
         } else if (testSAMLServer.getServer().isSemeruFIPS140_3EnabledAndSupported()) {
             // failureMessage = ".+The requested algorithm http://www.w3.org/2000/09/xmldsig#rsa-sha1 does not exist.*";
