@@ -78,7 +78,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_REQUEST_HANDLER_NAME = "requestHandler";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "h2cUpgradeHandler";
     public static final String SERVLET_UPGRADE_HANDLER_NAME = "ServletUpgradeHandler";
-    public static final String HTTP1_PROTOCOL_HANDLER_NAME = "http1ProtocolHandler";
     public static final String WRITE_TIMEOUT_HANDER_NAME = "writeTimeoutHandler";
 
     public static final long maxContentLength = Long.MAX_VALUE;
@@ -229,15 +228,11 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, false);
-        pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP1_PROTOCOL_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
-            @Override
-            protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-                establishHttp1Protocol(ctx, Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.IS_SECURE).get()));
-                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
-            }
-        });
-        // Turn off auto read for HTTP/1.1
+        // Turn off auto read for HTTP/1.1 before publishing the protocol change.
         pipeline.channel().config().setAutoRead(false);
+        boolean secure = Boolean.TRUE.equals(pipeline.channel().attr(NettyHttpConstants.IS_SECURE).get());
+        ProtocolState.establish(pipeline.channel(), ProtocolName.HTTP1,
+            secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1);
     }
 
     /**
@@ -264,18 +259,17 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn off auto read for H1
                 ctx.channel().config().setAutoRead(false);
 
-                TimeoutHandler timeoutHandler = pipeline.get(TimeoutHandler.class);
-
                 // Add H1 handlers
-                // TODO we should decide if the TimeoutHandler is optional or not for this check
+                // The h2c pipeline installs TimeoutHandler before it can reach this fallback.
                 if(pipeline.get(ReadFlowHandler.class) == null){
-                    pipeline.addBefore((timeoutHandler != null) ? TimeoutHandler.NAME : HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                    pipeline.addBefore((pipeline.get(RemoteIpHandler.class) != null) ? RemoteIpHandler.NAME : HttpDispatcherHandler.NAME,
+                                       ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
                 if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                    pipeline.addBefore(TimeoutHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 }
 
-                establishHttp1Protocol(ctx, false);
+                ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
@@ -315,11 +309,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 super.userEventTriggered(ctx, evt);
             }
         });
-    }
-
-    private static void establishHttp1Protocol(ChannelHandlerContext context, boolean secure) {
-        ProtocolSource source = secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1;
-        ProtocolState.establish(context.channel(), ProtocolName.HTTP1, source);
     }
 
     /**
