@@ -17,10 +17,10 @@
     </featureManager>
 
     <httpEndpoint id="defaultHttpEndpoint"
-          host="localhost"
+          host="*"
           httpPort="${bvt.prop.HTTP_default}"
           httpsPort="${bvt.prop.HTTP_default.secure}" >
-          <tcpOptions portOpenRetries="60"/>
+          <tcpOptions soReuseAddr="true" portOpenRetries="60"/>
 	</httpEndpoint>
 
     <!-- The keystore DELIBERATELY does not have a personal certificate -->

@@ -122,10 +122,7 @@ public class SSLOptionsTest{
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(null);
-        if(server.findStringsInLogsUsingMark("CWWKG0018I", server.getDefaultLogFile()).size() == 0) { // Server configuration was updated so need to wait for ssl port
-            assertNotNull("We need to wait for the SSL port to open after config update",
-                      server.waitForDefaultHTTPEndpointSSLStart(true));
-        }
+        server.waitForSSLRestart();
         
     }
 
@@ -158,7 +155,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        server.waitForDefaultHTTPEndpointSSLStart();
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         hitServerWithBadHandshake();
@@ -190,8 +187,7 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_TRUE_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        assertNotNull("We need to wait for the SSL port to start (again)",
-                      server.waitForDefaultHTTPEndpointSSLStart(true));
+        server.waitForSSLRestart();
         saveCnt = server.findStringsInLogs("CWWKO0801E").size();
 
         // Hit the servlet on the SSL port
@@ -205,9 +201,7 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_FALSE_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Requires info trace
-        assertNotNull("We need to wait for the SSL port to start (again)",
-                      server.waitForDefaultHTTPEndpointSSLStart(true));
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         server.setMarkToEndOfLog();
@@ -231,7 +225,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        server.waitForDefaultHTTPEndpointSSLStart();
+        server.waitForSSLRestart();
         server.setMarkToEndOfLog();
 
         // Hit the servlet on the SSL port
@@ -276,7 +270,7 @@ public class SSLOptionsTest{
 
         // Requires info trace
         assertNotNull("We need to wait for the SSL port to open (first time)",
-                      server.waitForMultipleStringsInLogUsingMark(2, "CWWKO0219I:.*-ssl"));
+                      server.waitForDefaultHTTPEndpointSSLStart(true));
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, TRUSTSTORE, PASSWORD);
@@ -288,7 +282,7 @@ public class SSLOptionsTest{
 
         // Requires info trace
         assertNotNull("We need to wait for the SSL port to start (again)",
-                      server.waitForMultipleStringsInLogUsingMark(2, "CWWKO0219I:.*-ssl"));
+                      server.waitForDefaultHTTPEndpointSSLStart(true));
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, ALTERNATE_TRUSTSTORE, PASSWORD);
@@ -316,13 +310,13 @@ public class SSLOptionsTest{
     }
 
     /**
-     * Hit the server and make sure its not authenticated. This will trigger
-     * a handshake error which is what we're testing for.
+     * Hit the server on the SSL port with the given keystore and truststore
+     * to verify the SSL connection succeeds and returns the expected response.
      */
     private void hitServer(String ksFile, String ksPassword, String tsFile, String tsPassword) {
         String keystore = server.getPathToAutoFVTNamedServer() + "resources" + File.separator + "security" + File.separator + ksFile;
         String truststore = server.getPathToAutoFVTNamedServer() + "resources" + File.separator + "security" + File.separator + tsFile;
-        // Hit the servlet with HTTPS on the SSL port and validate it fails
+        // Hit the servlet with HTTPS on the SSL port and validate the response
         SSLBasicAuthClient sslClient = new SSLBasicAuthClient(server, DEFAULT_REALM, DEFAULT_SERVLET_NAME, DEFAULT_CONTEXT_ROOT,
                         keystore, ksPassword, truststore, tsPassword);
         String response = sslClient.accessUnprotectedServlet(SSLBasicAuthClient.UNPROTECTED_NO_SECURITY_CONSTRAINT);
