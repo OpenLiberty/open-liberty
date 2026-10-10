@@ -120,6 +120,7 @@ import componenttest.exception.TopologyException;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureUtilities;
 import componenttest.rules.repeater.JakartaEE11Action;
+import componenttest.rules.repeater.JakartaEE12Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -2166,7 +2167,7 @@ public class LibertyServer implements LogMonitorClient {
         // If Java 2 security is enabled, add java.security.manager and java.security.policy.
         //
         // Java 2 security is not enabled for servers if testing InstantOn function since it does not support it.
-        if (isJava2SecurityEnabled() && checkpointInfo == null) {
+        if (isJava2SecurityEnabled() && !isEE12Enabled() && checkpointInfo == null) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
@@ -8347,6 +8348,45 @@ public class LibertyServer implements LogMonitorClient {
                 }
             }
         }
+        return false;
+    }
+
+    private boolean isEE12Enabled() throws Exception {
+        if (JakartaEEAction.isEE12Active()) {
+            return true;
+        }
+
+        if (JakartaEEAction.isEE9Active() || JakartaEEAction.isEE10Active()) {
+            return false;
+        }
+
+        // EE 12 which doesn't support Java security manager can run with Java 17 in beta.  As such we need to return false even if we are running
+        // with Java security enabled in the build.
+
+        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        InputStreamReader in = new InputStreamReader(serverXML.openForReading());
+        try (Scanner s = new Scanner(in)) {
+            while (s.hasNextLine()) {
+                String line = s.nextLine();
+                if (line.contains("<featureManager>")) {//So has reached featureSets
+                    while (s.hasNextLine()) {
+                        line = s.nextLine();
+                        if (line.contains("</featureManager>"))
+                            break;
+
+                        line = line.replaceAll("<feature>", "");
+                        line = line.replaceAll("</feature>", "");
+                        line = line.trim();
+                        String lowerCaseFeatureName = line.toLowerCase();
+
+                        if (JakartaEE12Action.EE12_ONLY_FEATURE_SET_LOWERCASE.contains(lowerCaseFeatureName)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
         return false;
     }
 
