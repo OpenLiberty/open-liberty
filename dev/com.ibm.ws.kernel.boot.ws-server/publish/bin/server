@@ -311,37 +311,12 @@ checkServer()
   return $rc
 }
 
-##
-##
-## addZosNativeAccessFlag: Add --enable-native-access flag for z/OS Java 24+
-##
-addZosNativeAccessFlag()
-{
-  # Determine Java version and add z/OS native access flag for Java 24+ to avoid warnings
-  if [ "${uname}" = OS/390 ]; then
-    # Try to determine Java version if JAVA_HOME is set
-    if [ -n "${JAVA_HOME}" ] && [ -f "${JAVA_HOME}/release" ]; then
-      JAVA_VERSION_MAJOR=$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION\s*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
-      # Only add flag if version was successfully detected and is >= 24
-      if [ -n "${JAVA_VERSION_MAJOR}" ] && [ "${JAVA_VERSION_MAJOR}" -ge 24 ] 2>/dev/null; then
-        case "${JVM_OPTIONS_QUOTED}" in
-          *--enable-native-access=ALL-UNNAMED*) ;;
-          *)
-            JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
-            ;;
-        esac
-      fi
-    fi
-  fi
-}
-
 ## installEnv: Set variables for a non-server or nonexistent server command.
 installEnv()
 {
   readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
   installEnvDefaults
   serverEnvDefaults
-  addZosNativeAccessFlag
 }
 
 ##
@@ -517,7 +492,6 @@ serverEnv()
   readServerEnv "${WLP_USER_DIR}/shared/server.env"
   readServerEnv "${SERVER_CONFIG_DIR}/server.env"
   serverEnvDefaults
-  addZosNativeAccessFlag
 }
 
 ## Initialize base JVM options that are always needed
@@ -708,6 +682,24 @@ serverEnvAndJVMOptions()
   addPlatformSpecificJvmFlags
   enableFIPS140_3
   return 0
+}
+
+## initializeClientJVMOptions: Set the minimum JVM options needed for client
+##   commands (stop, status, dump, javadump, create, pause, resume).
+##   Intentionally does NOT load jvm.options files -- those contain server JVM
+##   options (e.g. heap settings) that should not apply to the short-lived
+##   client JVM that signals the running server.
+##   On z/OS Java 24+, addPlatformSpecificJvmFlags adds
+##   --enable-native-access=ALL-UNNAMED, required because these commands open
+##   a debug log (e.g. stop.log) which triggers NativeMethodHelper via
+##   TaggedFileOutputStream on z/OS.
+initializeClientJVMOptions()
+{
+  initializeBaseJVMOptions
+  detectJavaHome
+  loadJavaVersionSpecificOptions
+  addPlatformSpecificJvmFlags
+  JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
 }
 
 # Resolve symbolic links in a path iteratively
@@ -1976,12 +1968,7 @@ case "$ACTION" in
   # Start the server in the foreground
   run | debug | checkpoint)
 
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
-      exit $?
-    fi
+    serverEnvAndJVMOptions || exit $?
 
     if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] && [ ${ACTION} != "checkpoint" ]; then
       # Avoid call to restoreServer below if server already running.
@@ -2057,12 +2044,7 @@ case "$ACTION" in
   # Start the server in the background
   start)
 
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
-      exit $?
-    fi
+    serverEnvAndJVMOptions || exit $?
 
     if checkServer true
     then
@@ -2124,6 +2106,7 @@ case "$ACTION" in
 
   create)
     installEnv
+    initializeClientJVMOptions
     createServer "$@"
     exit $rc
   ;;
@@ -2131,6 +2114,7 @@ case "$ACTION" in
   # Stop the server.
   stop)
     serverEnv
+    initializeClientJVMOptions
     if checkServer true
     then
       PID=
@@ -2159,6 +2143,7 @@ case "$ACTION" in
   # Check if server is running
   status)
     serverEnv
+    initializeClientJVMOptions
     if checkServer true
     then
       serverPIDStatus
@@ -2188,12 +2173,7 @@ case "$ACTION" in
 
   # Package up the runtime and target server configuration
   package)
-    if serverEnvAndJVMOptions
-    then
-      :
-    else
-     exit $?
-    fi
+    serverEnvAndJVMOptions || exit $?
 
     # Check to see if the server exists
     if checkServer true
@@ -2211,6 +2191,7 @@ case "$ACTION" in
   # dump the server's configs/logs/status to a zip file
   dump)
     serverEnv
+    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
@@ -2224,6 +2205,7 @@ case "$ACTION" in
   # dump JVM status
   javadump)
     serverEnv
+    initializeClientJVMOptions
     if checkServer true
     then
       javaCmd '' "${SERVER_NAME}" --javadump "$@"
@@ -2236,6 +2218,7 @@ case "$ACTION" in
   # pause the server
   pause)
     serverEnv
+    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
@@ -2249,6 +2232,7 @@ case "$ACTION" in
   # resume the server
   resume)
     serverEnv
+    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
