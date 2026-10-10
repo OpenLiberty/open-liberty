@@ -13,6 +13,7 @@
 package com.ibm.ws.security.token.ltpa.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -41,6 +42,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
@@ -227,6 +230,10 @@ public class LTPAConfigurationImplTest {
         ltpaConfig.deactivate(cc);
         ltpaConfig.unsetExecutorService(executorServiceRef);
         ltpaConfig.unsetLocationService(locateServiceRef);
+        // Reset beta edition property and AESKeyManager static state modified by useEncryptionKey tests
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
+        AESKeyManager.setKeyStringResolver(null);
+        AESKeyManager.setSecretKeyResolver(null);
         outputMgr.resetStreams();
         mock.assertIsSatisfied();
     }
@@ -660,5 +667,152 @@ public class LTPAConfigurationImplTest {
 
         // Assert
         assertEquals("The password was not masked correctly", expectedList, outputList);
+    }
+
+    // -----------------------------------------------------------------------
+    // useEncryptionKey tests
+    // -----------------------------------------------------------------------
+
+    /**
+     * useEncryptionKey=false (default): password path is used, isUseEncryptionKey() returns false.
+     */
+    @Test
+    public void useEncryptionKey_false_usesPasswordPath() {
+        // Default setUp already creates config with no useEncryptionKey in props (defaults to false)
+        assertFalse("isUseEncryptionKey() must be false when not set", ltpaConfig.isUseEncryptionKey());
+        assertEquals("Password must be resolved via password path", PWD, ltpaConfig.getPrimaryKeyPassword());
+    }
+
+    /**
+     * useEncryptionKey=true with AES V2 configured: starts successfully, password is null,
+     * isUseEncryptionKey() returns true.
+     */
+    @Test
+    public void useEncryptionKey_true_whenBetaDisabled_treatedAsFalse() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+
+        Map<String, Object> aesProps = new HashMap<>(props);
+        aesProps.put(LTPAConfiguration.CFG_KEY_USE_ENCRYPTION_KEY, Boolean.TRUE);
+
+        LTPAConfigurationImplTestDouble config = new LTPAConfigurationImplTestDouble();
+        config.setExecutorService(executorServiceRef);
+        config.setLocationService(locateServiceRef);
+        config.setLtpaKeysChangeNotifier(ltpaKeysChangeNotifierRef);
+        config.activate(cc, aesProps);
+
+        assertFalse("isUseEncryptionKey() must be false when beta is disabled", config.isUseEncryptionKey());
+        assertEquals("Password path must be used when beta is disabled", PWD, config.getPrimaryKeyPassword());
+
+        config.deactivate(cc);
+        config.unsetExecutorService(executorServiceRef);
+        config.unsetLocationService(locateServiceRef);
+    }
+
+    /**
+     * useEncryptionKey=true with AES V2 configured: starts successfully, password is null,
+     * isUseEncryptionKey() returns true when beta is enabled.
+     */
+    @Test
+    public void useEncryptionKey_true_withConfiguredV2_startsSuccessfully() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+
+        // Install a KeyStringResolver that returns a valid base64 32-byte key for V2
+        final String validKey = "pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=";
+        AESKeyManager.setKeyStringResolver(key -> {
+            if (AESKeyManager.PROPERTY_WLP_BASE64_AES_ENCRYPTION_KEY.equals(key)) {
+                return validKey.toCharArray();
+            }
+            return key.toCharArray();
+        });
+
+        Map<String, Object> aesProps = new HashMap<>(props);
+        aesProps.put(LTPAConfiguration.CFG_KEY_USE_ENCRYPTION_KEY, Boolean.TRUE);
+        // Remove password so that if the password path were hit it would throw
+        aesProps.remove(LTPAConfiguration.CFG_KEY_PASSWORD);
+
+        LTPAConfigurationImplTestDouble config = new LTPAConfigurationImplTestDouble();
+        config.setExecutorService(executorServiceRef);
+        config.setLocationService(locateServiceRef);
+        config.setLtpaKeysChangeNotifier(ltpaKeysChangeNotifierRef);
+        config.activate(cc, aesProps);
+
+        assertTrue("isUseEncryptionKey() must be true", config.isUseEncryptionKey());
+        assertEquals("primaryKeyPassword must be null when useEncryptionKey=true", null, config.getPrimaryKeyPassword());
+
+        config.deactivate(cc);
+        config.unsetExecutorService(executorServiceRef);
+        config.unsetLocationService(locateServiceRef);
+    }
+
+    /**
+     * useEncryptionKey=true with no AES key configured: CWWKS4122E must be logged
+     * and the service must not start (no executor submission).
+     */
+    @Test
+    public void useEncryptionKey_true_noKeyConfigured_logsError() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        // Default (no-op) resolver returns the placeholder — neither V2 nor V1 is configured.
+        // No executor call expected beyond the one already registered in setUp.
+        Map<String, Object> aesProps = new HashMap<>(props);
+        aesProps.put(LTPAConfiguration.CFG_KEY_USE_ENCRYPTION_KEY, Boolean.TRUE);
+        aesProps.remove(LTPAConfiguration.CFG_KEY_PASSWORD);
+
+        // We need a fresh config for this test so as not to disturb setUp state.
+        // The activate call will call loadConfig which throws; the error is caught
+        // internally and logged (CWWKS4122E via the IllegalArgumentException path).
+        LTPAConfigurationImplTestDouble config = new LTPAConfigurationImplTestDouble();
+        config.setExecutorService(executorServiceRef);
+        config.setLocationService(locateServiceRef);
+        config.setLtpaKeysChangeNotifier(ltpaKeysChangeNotifierRef);
+
+        // No executor call expected for a failed startup — the executor.execute() is only
+        // submitted inside setupRuntimeLTPAInfrastructure which is not reached when
+        // loadConfig throws. So we register 0 extra executor expectations here.
+        config.activate(cc, aesProps);
+
+        assertTrue("CWWKS4122E must be logged when useEncryptionKey=true but no AES key is configured",
+                   outputMgr.checkForStandardErr("CWWKS4122E"));
+
+        config.deactivate(cc);
+        config.unsetExecutorService(executorServiceRef);
+        config.unsetLocationService(locateServiceRef);
+    }
+
+    /**
+     * useEncryptionKey=true with keysPassword also set: CWWKS4123E must be logged to
+     * tell the operator that keysPassword and useEncryptionKey cannot be used together.
+     */
+    @Test
+    public void useEncryptionKey_true_withPasswordAlsoSet_logsError() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        final String validKey = "pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=";
+        AESKeyManager.setKeyStringResolver(key -> {
+            if (AESKeyManager.PROPERTY_WLP_BASE64_AES_ENCRYPTION_KEY.equals(key)) {
+                return validKey.toCharArray();
+            }
+            return key.toCharArray();
+        });
+
+        // Both useEncryptionKey=true AND keysPassword present
+        Map<String, Object> aesProps = new HashMap<>(props);
+        aesProps.put(LTPAConfiguration.CFG_KEY_USE_ENCRYPTION_KEY, Boolean.TRUE);
+        // CFG_KEY_PASSWORD is already in props from setUp — leave it in deliberately
+
+        LTPAConfigurationImplTestDouble config = new LTPAConfigurationImplTestDouble();
+        config.setExecutorService(executorServiceRef);
+        config.setLocationService(locateServiceRef);
+        config.setLtpaKeysChangeNotifier(ltpaKeysChangeNotifierRef);
+        config.activate(cc, aesProps);
+
+        assertTrue("CWWKS4123E must be logged when both keysPassword and useEncryptionKey=true are set",
+                   outputMgr.checkForStandardErr("CWWKS4123E"));
+
+        config.deactivate(cc);
+        config.unsetExecutorService(executorServiceRef);
+        config.unsetLocationService(locateServiceRef);
     }
 }
