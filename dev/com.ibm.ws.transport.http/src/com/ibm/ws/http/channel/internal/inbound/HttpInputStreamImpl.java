@@ -61,6 +61,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private ArrayList<WsByteBuffer> postDataBuffer;
     protected boolean firstReadCompleteforMulti = false;
     protected boolean readChannelComplete = false;
+    //Flag to indicate read path has observed end-of-body in Netty streaming
+    private volatile boolean streamingEosObserved = false;
     private int postDataIndex = 0;
     protected long bytesReadFromStore = 0L;
 
@@ -112,6 +114,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.decompressor = new HttpContentDecompressor();
 
         this.readChannelComplete = false;
+        this.streamingEosObserved = false;
         this.rawBytesRead = 0L;
 
         this.remainingContentLength = contentLength;
@@ -721,6 +724,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             ByteBuf fragment = queue.poll();
             if (fragment == null){
                 streamingTransferInProgress = false; 
+                markStreamingEosObserved();
                 if (queue.isEos()){
                     this.readChannelComplete = true;
                     if (this.context != null){
@@ -859,8 +863,21 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
+    /**
+     * @return true once end-of-body has been observed on the Netty streaming read path,
+     *         meaning any request trailers have been received and attached to the message.
+     */
+    public boolean isStreamingEosObserved() {
+        return streamingEosObserved;
+    }
+
+    protected void markStreamingEosObserved() {
+        this.streamingEosObserved = true;
+    }
+
     private void completeStreamingFixedLengthRequest() {
         this.readChannelComplete = true;
+        markStreamingEosObserved();
         if (this.context != null){
             ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
             ReadFlowHandler.markRequestConsumed(this.context.channel());
