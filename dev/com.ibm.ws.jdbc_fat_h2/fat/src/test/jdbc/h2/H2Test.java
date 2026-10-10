@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.validation;
+package test.jdbc.h2;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

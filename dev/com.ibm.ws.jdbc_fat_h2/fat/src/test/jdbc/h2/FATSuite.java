@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.validation;
+package test.jdbc.h2;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -21,7 +21,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                H2Test.class
+                H2Test.class,
+                H2SecurityTest.class
 })
 public class FATSuite {
 }
