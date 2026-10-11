@@ -128,23 +128,42 @@ public class HttpTest {
                         {
                           "jsonrpc": "2.0",
                           "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
+                          "method": "ping"
                         }
                         """;
 
         HttpRequest JsonRequest = new HttpRequest(server, ENDPOINT)
-                                                                   .requestProp(ACCEPT, VALUE_APPLICATION_JSON)
+                                                                   .requestProp(ACCEPT, "image/png")
                                                                    .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                                    .jsonBody(request).method("POST").expectCode(406);
 
         String response = JsonRequest.run(String.class);
         assertNull("Expected no response body for 406 Not Acceptable due to incorrect Accept header", response);
+    }
+
+    @Test
+    public void testAcceptHeaderApplicationJsonOnlyReturns200() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "ping"
+                        }
+                        """;
+
+        HttpRequest httpRequest = new HttpRequest(server, ENDPOINT)
+                                                                   .requestProp(ACCEPT, VALUE_APPLICATION_JSON)
+                                                                   .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                                                                   .jsonBody(request)
+                                                                   .method("POST")
+                                                                   .expectCode(200);
+
+        String response = httpRequest.run(String.class);
+        assertNotNull("Expected response body for ping", response);
+        assertTrue("Expected 'result' field in ping response", response.contains("\"result\""));
+
+        String contentType = httpRequest.getResponseHeader("Content-Type");
+        assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
     }
 
     @Test
