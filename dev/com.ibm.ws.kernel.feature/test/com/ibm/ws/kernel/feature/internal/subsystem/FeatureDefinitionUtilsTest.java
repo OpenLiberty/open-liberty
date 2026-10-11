@@ -399,6 +399,19 @@ public class FeatureDefinitionUtilsTest {
     }
 
     @Test
+    public void testCapabilityFilterMatchesFeatureVersion() throws Exception {
+        String provisionCapability = "IBM-Provision-Capability: osgi.identity; filter:=\"(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.versioned)(version>=2.0.0))\" \n";
+        SubsystemFeatureDefinitionImpl autoFeature = createSubsystemFeatureDefinition("com.ibm.websphere.auto.version", "1.0.0", provisionCapability);
+        SubsystemFeatureDefinitionImpl lowerVersionFeature = createSubsystemFeatureDefinition("com.ibm.websphere.versioned", "1.9.0");
+        SubsystemFeatureDefinitionImpl matchingVersionFeature = createSubsystemFeatureDefinition("com.ibm.websphere.versioned", "2.0.0");
+
+        Assert.assertFalse("Capability should not be satisfied by a lower feature version",
+                           autoFeature.isCapabilitySatisfied(Arrays.asList(lowerVersionFeature)));
+        Assert.assertTrue("Capability should be satisfied by a matching feature version",
+                          autoFeature.isCapabilitySatisfied(Arrays.asList(matchingVersionFeature)));
+    }
+
+    @Test
     public void testInstallIsValidVisibilityDirective() throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
@@ -415,6 +428,24 @@ public class FeatureDefinitionUtilsTest {
 
         Assert.assertEquals("symbolicName should return com.ibm.websphere.install-1.0", "com.ibm.websphere.install-1.0", iAttr.symbolicName);
         Assert.assertEquals("Visibility should return INSTALL", Visibility.INSTALL, iAttr.visibility);
+    }
+
+    private SubsystemFeatureDefinitionImpl createSubsystemFeatureDefinition(String symbolicName,
+                                                                           String subsystemVersion,
+                                                                           String... extraHeaders) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintWriter writer = new PrintWriter(out, true);
+        writer.write("Manifest-Version: 1.0 \n");
+        writer.write("Subsystem-SymbolicName: " + symbolicName + " \n");
+        writer.write("Subsystem-Type: osgi.subsystem.feature \n");
+        writer.write("Subsystem-Version: " + subsystemVersion + " \n");
+        writer.write("IBM-Feature-Version: 2 \n");
+        for (String extraHeader : extraHeaders) {
+            writer.write(extraHeader);
+        }
+        writer.flush();
+
+        return new SubsystemFeatureDefinitionImpl("", new ByteArrayInputStream(out.toByteArray()));
     }
 
     void assertAttributesEqual(Class<?> c, Object o1, Object o2, String... fieldNames) throws Exception {
