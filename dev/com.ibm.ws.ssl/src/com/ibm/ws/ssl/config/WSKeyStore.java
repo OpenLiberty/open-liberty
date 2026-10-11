@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2025 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -506,12 +506,30 @@ public class WSKeyStore extends Properties {
 
         // reset location w/ resolved value
         // isDefault tested because the default path's file may not exists (and that's OK)
-        if ((res != null && resFile.isFile()) || isDefault) {
-            this.location = res;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Found store under [" + location + "]");
+        if(res !=null) {
+            try{
+                // We want to ensure consistent path handling across all the platforms
+                // since it may be assumed that this is an absolute path. 
+                if(resFile != null && !resFile.isAbsolute()){
+                    res = resFile.getAbsolutePath();
+                    resFile = new File(res);
+                }
+            }catch (Exception e){
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                    Tr.debug(tc, "Unable to convert path to absolute path");
+                }
             }
-        } else {
+            this.location = res;
+            if (resFile != null && resFile.isFile()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found store under [" + location + "]");
+                }
+            }else{
+                if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                    Tr.debug(tc, "The KeyStore was not found during the path resolution: " + res);
+                }
+            }
+        } else if (!isDefault) {
             // If it wasn't found then it's likely going to trigger
             // the load.error later. Issue a warning to explain the file
             // could not be found.
