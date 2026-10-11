@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi.visibility.tests.basic.BasicVisibilityTests;
 import com.ibm.ws.cdi.visibility.tests.ejb.EJBVisibilityTests;
+import com.ibm.ws.cdi.visibility.tests.overridelib.OverrideLibraryTest;
 import com.ibm.ws.cdi.visibility.tests.sharedlib.SharedLibraryTest;
 import com.ibm.ws.cdi.visibility.tests.validatorInJar.ValidatorInJarTest;
 import com.ibm.ws.cdi.visibility.tests.vistest.VisTest;
@@ -30,7 +31,8 @@ import com.ibm.ws.cdi.visibility.tests.vistest.VisTestAddWarCPToEar;
                 SharedLibraryTest.class,
                 ValidatorInJarTest.class,
                 VisTest.class,
-                VisTestAddWarCPToEar.class
+                VisTestAddWarCPToEar.class,
+                OverrideLibraryTest.class
 })
 public class FATSuite {
 
