@@ -37,7 +37,7 @@ public class HttpAuthenticationMechanismsTracker {
 
     private final Map<String, Map<String, ModuleProperties>> moduleMapsPerApplication = new ConcurrentHashMap<String, Map<String, ModuleProperties>>();
 
-    public void initialize(String applicationName) {
+    public synchronized void initialize(String applicationName) {
         if (applicationName != null) {
             // atomic operation required on concurrent hash map as multiple CDI extensions
             //   can now use initialize and use moduleMapsPerApplication without
