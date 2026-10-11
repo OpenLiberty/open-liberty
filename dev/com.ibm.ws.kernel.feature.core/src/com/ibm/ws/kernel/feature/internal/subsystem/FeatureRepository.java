@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -416,10 +416,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     /**
      * Return all the platforms the versionless feature is a part of.
      * ex. servlet would return javaee-6.0 through jakartaee-10.0
-     * 
+     *
      * @return Set<String> platforms
      */
-    public Set<String> getPlatformsForVersionlessFeature(String versionlessFeatureName){
+    public Set<String> getPlatformsForVersionlessFeature(String versionlessFeatureName) {
         ProvisioningFeatureDefinition versionlessFeature = getFeature(versionlessFeatureName);
         Set<String> platforms = new HashSet<String>();
 
@@ -891,6 +891,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                             updateMaps(def);
 
                         } catch (IOException e) {
+                            // auto-ffdc
+                            Tr.error(tc, "FEATURES_ERROR_READING_FEATURE", file.getAbsolutePath(), e.getMessage());
                             debug("Exception reading feature manifest [ " + file.getAbsolutePath() + " ]", e.toString()); // TODO: NLS                            // TODO: NLS MESSAGE
                             knownBadFeatureFiles.put(file, new BadFeature(file.lastModified(), file.length()));
                         }
@@ -986,7 +988,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             publicFeatureNameToSymbolicName.put(lowerFeature(attr.symbolicName), attr.symbolicName);
         } else if (def.getVisibility() == Visibility.PRIVATE) {
             if ((attr.platforms != null) && !attr.platforms.isEmpty()) {
-                for(String plat : def.getPlatformNames()){
+                for (String plat : def.getPlatformNames()) {
                     putCompatibilityFeature(plat, def);
                 }
             }
