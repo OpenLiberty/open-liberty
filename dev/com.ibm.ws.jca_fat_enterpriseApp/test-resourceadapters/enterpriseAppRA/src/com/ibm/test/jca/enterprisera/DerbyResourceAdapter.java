@@ -131,13 +131,15 @@ public class DerbyResourceAdapter implements ResourceAdapter {
         } catch (Exception x) {
             throw new ResourceAdapterInternalException(x);
         }
-        // TODO 126583 can make this configurable in server.xml once story 126583 is complete
-//        // Config properties should be set at this point, validate them now.
-//        if (!"PROP_SET".equals(getGeneralConfigProp())) {
-//            String failMsg = "Expected generalConfigProp to be 'PROP_SET' but instead the value was " + getGeneralConfigProp();
-//            System.out.println(failMsg);
-//            throw new ResourceAdapterInternalException(failMsg);
-//        }
+        // Log the generalConfigProp value for verification by testEmbeddedRAConfigPropsApplied.
+        // Do NOT throw an exception here — this RA is shared by multiple tests and variants.
+        String configPropValue = getGeneralConfigProp();
+        if ("PROP_SET".equals(configPropValue)) {
+            System.out.println("generalConfigProp correctly set to: " + configPropValue);
+        } else {
+            System.out.println("WARNING: generalConfigProp has value '" + configPropValue
+                             + "' instead of expected 'PROP_SET' — embedded RA properties may not have been applied");
+        }
     }
 
     /** {@inheritDoc} */
