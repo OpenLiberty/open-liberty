@@ -20,6 +20,7 @@ import static com.ibm.ws.runtime.update.RuntimeUpdateNotification.CONFIG_UPDATES
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -226,5 +227,68 @@ public class RuntimeUpdateNotificationMBeanTest {
         assertEquals("User data maps do not match.", expectedData, userData);
 
         assertSame("Handback object is not the same.", handback, nr.getHandback());
+    }
+
+    /**
+     * Verifies that JMX notification sequence numbers increase by one
+     * for consecutive notifications.
+     */
+    @Test
+    public void testSequenceNumberIncrementsAcrossNotifications() {
+        // Capture emitted JMX notifications.
+        NotficationRecorder nr = new NotficationRecorder();
+        mBean.addNotificationListener(nr, null, null);
+
+        // Create separate completion listeners for each notification cycle.
+        CompletionListenerInterceptor cli1 = new CompletionListenerInterceptor();
+        CompletionListenerInterceptor cli2 = new CompletionListenerInterceptor();
+
+        // Trigger first notification.
+        mBean.notificationCreated(updateManager, cli1);
+        cli1.getCompletionListener().successfulCompletion(dummyFuture, Boolean.TRUE);
+
+        Notification first = nr.getNotification();
+        assertNotNull("First JMX notification must not be null", first);
+        long seq1 = first.getSequenceNumber();
+
+        // Trigger second notification.
+        mBean.notificationCreated(updateManager, cli2);
+        cli2.getCompletionListener().successfulCompletion(dummyFuture, Boolean.TRUE);
+
+        Notification second = nr.getNotification();
+        assertNotNull("Second JMX notification must not be null", second);
+        long seq2 = second.getSequenceNumber();
+
+        assertEquals("Sequence number must increase by exactly 1 between consecutive notifications",
+                    seq1 + 1, seq2);
+    }
+
+    /**
+     * Verifies that successful completion notifications contain
+     * a status value of {@code Boolean.TRUE}.
+     * 
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSuccessfulCompletionStatusIsTrue() {
+        // Capture emitted JMX notifications and propogate to test runner.
+        NotficationRecorder nr = new NotficationRecorder();
+        mBean.addNotificationListener(nr, null, null);
+
+        CompletionListenerInterceptor cli = new CompletionListenerInterceptor();
+
+        // Trigger a successful completion notification.
+        mBean.notificationCreated(updateManager, cli);
+        cli.getCompletionListener().successfulCompletion(dummyFuture, Boolean.TRUE);
+
+        Notification n = nr.getNotification();
+        assertNotNull("MBean must emit a JMX notification on successful completion", n);
+
+        Map<String, Object> userData = (Map<String, Object>) n.getUserData();
+        assertNotNull("User data map must not be null", userData);
+
+        Object status = userData.get(RUNTIME_UPDATE_NOTIFICATION_KEY_STATUS);
+        assertTrue("status must be Boolean.TRUE on successful completion",
+                Boolean.TRUE.equals(status));
     }
 }
