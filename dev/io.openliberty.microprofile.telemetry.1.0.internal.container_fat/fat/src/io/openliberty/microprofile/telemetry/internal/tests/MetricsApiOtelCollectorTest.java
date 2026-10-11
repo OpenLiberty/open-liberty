@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -144,20 +144,20 @@ public class MetricsApiOtelCollectorTest {
 
     /**
      * Gets metrics from otelcollector:3131/metrics in the prometheus format.
-     * For more info on the Prometheus metrics format: 
+     * For more info on the Prometheus metrics format:
      * https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md#text-format-details
      */
     public void getApiMetrics(String name, String type, String value) throws Exception {
-        
+
         waitForApiMetrics();
-        
+
         String result = client.dumpMetrics();
         // Add null check for result before using it
         if (result == null) {
             fail("No metrics data returned from collector");
             return;
         }
-        
+
         List<String> splits = Arrays.asList(result.split("((?=# HELP))"));
         for (String s : splits) {
             if (s.contains(name)) {
