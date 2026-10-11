@@ -48,6 +48,7 @@ import componenttest.topology.impl.LibertyServer;
         LocalServerJobRecoveryAtStartUpTest.class,
         MiscTest.class,
         TranTimeoutTest.class,
+        TranTimeoutJakartaTest.class,
         DDLTest.class,
         SkipRetryHandlerTest.class,
         /* Skip for H2, some of things this test does is not supported by H2
