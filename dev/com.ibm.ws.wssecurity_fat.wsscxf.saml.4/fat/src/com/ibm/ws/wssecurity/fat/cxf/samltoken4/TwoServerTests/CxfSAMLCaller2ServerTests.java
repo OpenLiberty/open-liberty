@@ -37,6 +37,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 
@@ -333,7 +335,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userIdentifier in the message
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierBad() throws Exception {
         
@@ -354,7 +356,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userIdentifier in the message
      */
 
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad() throws Exception {
       
@@ -375,7 +377,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad() throws Exception {
        
@@ -396,7 +398,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad() throws Exception {
     	
@@ -730,7 +732,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
      
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierBad() throws Exception {
         	
@@ -751,7 +753,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
      
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad() throws Exception {
        	
@@ -772,7 +774,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userIdentifier in the message
      */
   
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierBad() throws Exception {
         	
@@ -794,7 +796,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userIdentifier in the message
      */
      
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierBad() throws Exception {
           	
@@ -818,7 +820,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
    
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad() throws Exception {
         
@@ -839,7 +841,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad() throws Exception {
         
@@ -884,7 +886,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expectd
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGood() throws Exception {
         
@@ -928,7 +930,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmitted() throws Exception {
         
@@ -971,7 +973,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted() throws Exception {
          	
@@ -1015,7 +1017,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID }) 
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID }) 
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted() throws Exception {
         
@@ -1058,7 +1060,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted() throws Exception {
           	
@@ -1101,7 +1103,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted() throws Exception {    
     	
@@ -1145,7 +1147,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad() throws Exception {
     	
@@ -1188,7 +1190,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException"  }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException"  }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad() throws Exception {
         
@@ -1209,7 +1211,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userIdentifier in the message
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID , JakartaEE10Action.ID})
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBad() throws Exception {
            	
@@ -1230,7 +1232,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for userIdentifier in the message
      */
    
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBad() throws Exception {
         
@@ -1273,7 +1275,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * EntryNotFoundException expected
      */
     
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "com.ibm.ws.security.registry.EntryNotFoundException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad() throws Exception {
         

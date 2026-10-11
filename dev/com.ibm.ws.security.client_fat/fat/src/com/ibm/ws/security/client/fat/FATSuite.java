@@ -47,5 +47,5 @@ public class FATSuite {
      * -- If FULL mode, run EE10
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEERepeats();
 }

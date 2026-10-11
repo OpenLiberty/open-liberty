@@ -495,6 +495,9 @@ public class ShibbolethHelpers {
         if (currentRepeatAction.contains(JakartaEEAction.EE10_ACTION_ID)) {
             eeVersion = EEVersion.EE10;
         }
+        if (currentRepeatAction.contains(JakartaEEAction.EE11_ACTION_ID)) {
+            eeVersion = EEVersion.EE11;
+        }
 
         String thisMethod = "chooseIdpWarVersion";
         LibertyServer theServer = idpServer.getServer();

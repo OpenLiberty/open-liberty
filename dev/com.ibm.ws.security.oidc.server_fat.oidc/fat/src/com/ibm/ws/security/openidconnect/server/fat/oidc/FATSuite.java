@@ -44,6 +44,7 @@ import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesClientCredent
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesImplicitTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesPasswordTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesTest;
+
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -108,6 +109,6 @@ public class FATSuite extends CommonRemoteLDAPServerSuite {
      *
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats(null, null, REMOVE, INSERT);
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEERepeats(null, null, null, REMOVE, INSERT);
 
 }
