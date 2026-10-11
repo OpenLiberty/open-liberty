@@ -1,0 +1,2 @@
+-Djdk.tls.namedGroups=
+-Djavax.net.debug=all

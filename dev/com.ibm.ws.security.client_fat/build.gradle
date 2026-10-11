@@ -1065,9 +1065,18 @@ autoFVT.doLast {
   /*
    * Copy applications into the myTestClientCipher client.
    */
-  copy { 
+  copy {
     from new File(project.buildDir, 'test-application')
     into new File(autoFvtDir, 'publish/clients/myTestClientCipher/apps')
+    include 'BasicCalculatorClient.ear', 'TechnologySamples.ear'
+  }
+
+  /*
+   * Copy applications into the myTestClientPQC client.
+   */
+  copy {
+    from new File(project.buildDir, 'test-application')
+    into new File(autoFvtDir, 'publish/clients/myTestClientPQC/apps')
     include 'BasicCalculatorClient.ear', 'TechnologySamples.ear'
   }
 
@@ -1206,5 +1215,17 @@ autoFVT.doLast {
    copy {
       from new File(project.buildDir, 'test-application/BasicCalculator.ear')
       into new File(autoFvtDir, 'publish/servers/SSLHandshakeTest/apps')
+   }
+
+   /*
+    * Copy applications to the SSLHandshakePQCTest server.
+    */
+   copy {
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/SSLHandshakePQCTest/dropins')
+   }
+   copy {
+      from new File(project.buildDir, 'test-application/BasicCalculator.ear')
+      into new File(autoFvtDir, 'publish/servers/SSLHandshakePQCTest/apps')
    }
 }
