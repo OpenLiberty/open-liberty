@@ -20,9 +20,7 @@ import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SAML20_AUT
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,16 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import java.time.Instant;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.opensaml.saml.saml2.core.Assertion;
-import org.opensaml.saml.saml2.core.Subject;
-import org.opensaml.saml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.saml.SsoConfig;
@@ -50,7 +44,7 @@ import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
-import com.ibm.ws.security.saml.sso20.internal.utils.UnsolicitedResponseCache;
+import com.ibm.ws.security.saml.sso20.internal.utils.SamlResponseReplayCache;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
@@ -75,15 +69,8 @@ public class UnsolicitedHandlerTest {
     private static final SsoConfig ssoConfig = common.getSsoConfig();
     private static final BasicMessageContext<?, ?> basicMessageContext = common.getBasicMessageContext();
     private static final WebSSOConsumer<?, ?, ?> webSSOConsumer = mockery.mock(WebSSOConsumer.class, "webSSOConsumer");
-    private static final UnsolicitedResponseCache resCache = mockery.mock(UnsolicitedResponseCache.class, "resCache");
+    private static final SamlResponseReplayCache resCache = mockery.mock(SamlResponseReplayCache.class, "resCache");
     private static final Assertion a_assertion = mockery.mock(Assertion.class, "a_assertion");
-    private static final Subject a_subject = mockery.mock(Subject.class, "a_subject");
-    private static final SubjectConfirmation subject_confirm = mockery.mock(SubjectConfirmation.class, "subject_confirm");
-    private static final List<SubjectConfirmation> listsubjectconfirm = new ArrayList<SubjectConfirmation>();
-    static {
-        listsubjectconfirm.add(subject_confirm);
-    }
-    private static final SubjectConfirmationData subject_confirm_data = mockery.mock(SubjectConfirmationData.class, "subject_confirm_data");
 
     private static final String RESPONSE = "HTTP/200";
     private static final String PROVIDER_NAME = "https://sp.example.com/SAML2";
@@ -111,7 +98,7 @@ public class UnsolicitedHandlerTest {
                 atMost(2).of(ssoRequest).getProviderName();//
                 will(returnValue(PROVIDER_NAME));//
 
-                atMost(2).of(ssoService).getUnsolicitedResponseCache(PROVIDER_NAME);//
+                atMost(2).of(ssoService).getSamlResponseReplayCache(PROVIDER_NAME);//
                 will(returnValue(resCache));//
 
                 atMost(2).of(basicMessageContext).getValidatedAssertion();//
@@ -120,22 +107,8 @@ public class UnsolicitedHandlerTest {
                 atMost(2).of(a_assertion).getID(); //
                 will(returnValue(a_id)); //
 
-                atMost(2).of(resCache).isValid(a_id); //
+                atMost(2).of(resCache).detectReplayAndStoreAssertion(a_assertion); //
                 will(returnValue(false)); //
-
-                atMost(2).of(a_assertion).getSubject(); //
-                will(returnValue(a_subject)); //
-
-                atMost(2).of(a_subject).getSubjectConfirmations();//
-                will(returnValue(listsubjectconfirm));//
-
-                atMost(2).of(subject_confirm).getSubjectConfirmationData();//
-                will(returnValue(subject_confirm_data));//
-
-                atMost(2).of(subject_confirm_data).getNotOnOrAfter(); //
-                will(returnValue(Instant.now().plusMillis(3600000))); //
-
-                atMost(2).of(resCache).put(with(any(String.class)), with(any(Long.class))); //
 
                 atMost(2).of(ssoRequest).getProviderName();
                 will(returnValue(PROVIDER_NAME));
