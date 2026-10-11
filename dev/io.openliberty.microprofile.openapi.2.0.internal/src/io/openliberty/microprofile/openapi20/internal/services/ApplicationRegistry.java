@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.services;
 
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
@@ -40,5 +52,18 @@ public interface ApplicationRegistry {
      * @return an {@code OpenAPIProvider} holding an OpenAPI model or {@code null} if there are no OpenAPI providers
      */
     OpenAPIProvider getOpenAPIProvider();
+
+    /**
+     * Finds the models for the named application only, merges its web modules if necessary, and returns them.
+     * <p>
+     * This is used when the client supplies an {@code ?application=} query parameter on the {@code /openapi} endpoint
+     * to request the OpenAPI document for a single deployed application.
+     *
+     * @param applicationName
+     *     The deployment name of the application (matches the {@code name} attribute from {@code server.xml}).
+     * @return an {@code OpenAPIProvider} holding an OpenAPI model for the named application,
+     *         or {@code null} if the application is not known or has no OpenAPI providers
+     */
+    OpenAPIProvider getOpenAPIProvider(String applicationName);
 
 }

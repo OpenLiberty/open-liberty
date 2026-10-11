@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,11 +87,27 @@ public class ApplicationServlet extends OpenAPIServletBase {
             /*
              * Retrieve the current provider and get the OpenAPI model for it. If there is no current provider then
              * generate a default (empty) OpenAPI model.
+             *
+             * If the client supplied ?application=<name>, return documentation only for that application.
+             * If the named application is not found, return 404 Not Found.
              */
             ApplicationRegistry appRegistry = appRegistryTracker.getService();
             OpenAPIProvider currentProvider = null;
             if (appRegistry != null) {
-                currentProvider = appRegistry.getOpenAPIProvider();
+                String applicationParam = request.getParameter(Constants.APPLICATION_PARAM_NAME);
+                if (applicationParam != null) {
+                    currentProvider = appRegistry.getOpenAPIProvider(applicationParam);
+                    if (currentProvider == null) {
+                        // The application name was supplied but doesn't match any deployed application
+                        if (LoggingUtils.isEventEnabled(tc)) {
+                            Tr.event(this, tc, "application query parameter did not match a deployed application: " + applicationParam);
+                        }
+                        writeResponse(response, null, Status.NOT_FOUND, contentType);
+                        return;
+                    }
+                } else {
+                    currentProvider = appRegistry.getOpenAPIProvider();
+                }
             }
             final String document;
             if (currentProvider != null) {
