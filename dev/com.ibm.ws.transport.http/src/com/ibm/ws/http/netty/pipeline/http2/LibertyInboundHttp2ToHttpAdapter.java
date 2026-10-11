@@ -28,6 +28,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Error;
 import io.netty.handler.codec.http2.Http2Exception;
+import io.netty.handler.codec.http2.Http2Settings;
 import io.netty.handler.codec.http2.Http2Stream;
 import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapter;
 
@@ -43,6 +44,7 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
     private final Channel channel;
     private final int maxResetFrames;
     private final int resetFrameWindow;
+    private final NettyH2RateState rateState;
     
     private volatile long startResetTime = System.nanoTime();
     private volatile int resetFrameCount = 0; //tracks both inbound and outbound resets
@@ -51,13 +53,17 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
 
     static final Http2Exception RST_FRAME_RATE_EXCEEDED = new Http2Exception(Http2Error.ENHANCE_YOUR_CALM,
             "too many reset frames processed");
+    
+    static final Http2Exception LOW_WINDOW_STREAMS_EXCEEDED = Http2Exception.connectionError(Http2Error.ENHANCE_YOUR_CALM,
+            "Too many streams with low initial window size have been opened; closing the connection");
 
 
-    protected LibertyInboundHttp2ToHttpAdapter(Http2Connection connection, int maxContentLength, boolean validateHttpHeaders, boolean propagateSettings, Channel channel, HttpChannelConfig httpConfig) {
+    protected LibertyInboundHttp2ToHttpAdapter(Http2Connection connection, int maxContentLength, boolean validateHttpHeaders, boolean propagateSettings, Channel channel, HttpChannelConfig httpConfig, NettyH2RateState rateState) {
         super(connection, maxContentLength, validateHttpHeaders, propagateSettings);
         this.channel = channel;
         this.maxResetFrames = httpConfig.getH2MaxResetFrames();
         this.resetFrameWindow = httpConfig.getH2ResetFramesWindow();
+        this.rateState = rateState;
     }
 
     @Override
@@ -66,6 +72,9 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
     protected io.netty.handler.codec.http.FullHttpMessage processHeadersBegin(ChannelHandlerContext ctx, io.netty.handler.codec.http2.Http2Stream stream,
                                                                               io.netty.handler.codec.http2.Http2Headers headers, boolean endOfStream, boolean allowAppend,
                                                                               boolean appendToTrailer) throws io.netty.handler.codec.http2.Http2Exception {
+        // check the stream's initial remote flow-control window before any message allocation. 
+        checkLowWindowStream(stream);
+
         try {
             boolean containsPath = Objects.nonNull(headers.path()) && !headers.path().toString().isEmpty();
             boolean containsScheme = Objects.nonNull(headers.scheme()) && !headers.scheme().toString().isEmpty();
@@ -83,6 +92,55 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
             throw Http2Exception.streamError(stream.id(), Http2Error.PROTOCOL_ERROR, e.getMessage());
         } catch (Exception e2) {
             throw e2;
+        }
+    }
+
+    // SETTINGS: reclassify all active streams when INITIAL_WINDOW_SIZE changes
+
+    @Override
+    public void onSettingsRead(ChannelHandlerContext ctx,
+                               Http2Settings settings) throws Http2Exception {
+        super.onSettingsRead(ctx, settings);
+
+        if (settings.initialWindowSize() != null) {
+            final int newSize = settings.initialWindowSize();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "onSettingsRead: INITIAL_WINDOW_SIZE=" + newSize
+                             + ", re-checking all active streams against lowWindowLimit="
+                             + rateState.getLowWindowLimit());
+            }
+            // Check every active stream and reclassify 
+            connection.forEachActiveStream(stream -> {
+                if (newSize <= rateState.getLowWindowLimit()) {
+                    if (rateState.wouldExceedLowWindowStreams(stream.id())) {
+                        throw Http2Exception.connectionError(Http2Error.ENHANCE_YOUR_CALM,
+                                "Too many streams with low initial window size have been opened; closing the connection");
+                    }
+                    rateState.addLowWindowStream(stream.id());
+                }
+                return true; 
+            });
+        }
+    }
+
+    // ── WINDOW_UPDATE: untrack stream if its window has recovered ─────────────
+
+    @Override
+    public void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId,
+                                   int windowSizeIncrement) throws Http2Exception {
+        super.onWindowUpdateRead(ctx, streamId, windowSizeIncrement);
+        // streamId == 0 is a connection-level update; no per-stream tracking to update.
+        if (streamId > 0) {
+            Http2Stream stream = connection.stream(streamId);
+            if (stream != null && remoteStreamWindow(stream) > rateState.getLowWindowLimit()) {
+                if (rateState.removeLowWindowStream(streamId)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "onWindowUpdateRead: stream " + streamId
+                                    + " window recovered to " + remoteStreamWindow(stream)
+                                    + ", removed from low-window tracking");
+                    }
+                }
+            }
         }
     }
 
@@ -169,6 +227,8 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
     @Override
     public void onStreamClosed(Http2Stream stream) {
         super.onStreamClosed(stream);
+        //stop tracking this stream once it is closed
+        rateState.removeLowWindowStream(stream.id());
         // After stream was closed, check if we need to send a go away frame
         sendGoAwayIfClosing();
     }
@@ -181,6 +241,34 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
         if(goAwayReceived.get() && connection.numActiveStreams() == 0 && !connection.goAwaySent()) {
             channel.close();
         }
+    }
+
+    /**
+     * check whether a newly-opened stream has a low initial remote
+     * flow-control window, and close the connection if too many such streams
+     * have accumulated.
+     */
+    private void checkLowWindowStream(Http2Stream stream) throws Http2Exception {
+        int remoteWindow = remoteStreamWindow(stream);
+        if (remoteWindow <= rateState.getLowWindowLimit()) {
+            if (rateState.wouldExceedLowWindowStreams(stream.id())) {
+                throw LOW_WINDOW_STREAMS_EXCEEDED;
+            }
+            rateState.addLowWindowStream(stream.id());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "checkLowWindowStream: stream " + stream.id()
+                             + " has low initial window " + remoteWindow
+                             + " <= " + rateState.getLowWindowLimit());
+            }
+        }
+    }
+
+    /**
+     * Returns the current remote flow-control window size for the given stream.
+     * Centralises the three-part expression to a single readable call site.
+     */
+    private int remoteStreamWindow(Http2Stream stream) {
+        return connection.remote().flowController().windowSize(stream);
     }
 
 }
