@@ -529,9 +529,16 @@ serverEnv()
 initializeBaseJVMOptions()
 {
   if [ "${uname}" = OS/390 ]; then
-    JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Dcom.ibm.tools.attach.enable=yes"
+    BASE_JVM_OPTIONS="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Dcom.ibm.tools.attach.enable=yes"
   else
-    JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
+    BASE_JVM_OPTIONS="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
+  fi
+  # Prepend the base options but preserve any flags (e.g. --enable-native-access) already
+  # added by addZosNativeAccessFlag() before this function was called.
+  if [ -z "${JVM_OPTIONS_QUOTED}" ]; then
+    JVM_OPTIONS_QUOTED="${BASE_JVM_OPTIONS}"
+  else
+    JVM_OPTIONS_QUOTED="${BASE_JVM_OPTIONS} ${JVM_OPTIONS_QUOTED}"
   fi
   SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
 }
