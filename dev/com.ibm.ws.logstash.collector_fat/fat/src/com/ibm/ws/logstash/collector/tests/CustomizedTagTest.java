@@ -233,7 +233,15 @@ public class CustomizedTagTest extends LogstashCollectorTest {
     private static void serverStart() throws Exception {
         Log.info(c, "serverStart", "--->  Starting Server.. ");
         server.startServer();
-        // Wait for Liberty server to connect to Logstash server
+
+        Log.info(c, "serverStart", "---> Wait for feature to start ");
+        // CWWKZ0001I: Application LogstashApp started in x seconds.
+        assertNotNull("Cannot find CWWKZ0001I from messages.log", server.waitForStringInLogUsingMark("CWWKZ0001I", 15000));
+
+        // Wait for CWWKT0016I in Logstash container output before checking messages.log
+        waitForStringInContainerOutput("CWWKT0016I");
+
+        Log.info(c, "serverStart", "---> Wait for logstash collector to connect to logstash server ");
         // TRAS0218I: The logstash collector is connected to the logstash server on the specified host {0} and port number {1}.
         assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLog("TRAS0218I", 60000));
     }
