@@ -1,1 +1,2 @@
 -javaagent:opentelemetry-javaagent.jar
+-Xmx2048m
