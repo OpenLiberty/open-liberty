@@ -61,10 +61,12 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.springboot.support.fat.CommonWebServerTests;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@MaximumJavaLevel(javaLevel = 21) //https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/getting-started.html#getting-started.system-requirements
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class SpringBootUtilityThinTest extends CommonWebServerTests {

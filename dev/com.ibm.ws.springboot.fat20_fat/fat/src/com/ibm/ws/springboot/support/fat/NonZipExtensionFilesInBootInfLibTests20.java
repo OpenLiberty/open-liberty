@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.utils.HttpUtils;
 
@@ -45,6 +46,7 @@ import componenttest.topology.utils.HttpUtils;
  * is not a valid zip regardless of the extension. And the server will start successfully
  * if all the BOOT-INF libraries are valid zip files regardless of the extension.
  */
+@MaximumJavaLevel(javaLevel = 21) //https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/getting-started.html#getting-started.system-requirements
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class NonZipExtensionFilesInBootInfLibTests20 extends AbstractSpringTests {

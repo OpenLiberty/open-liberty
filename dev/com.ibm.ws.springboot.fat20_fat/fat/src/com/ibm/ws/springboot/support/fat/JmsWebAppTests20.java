@@ -20,10 +20,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
+@MaximumJavaLevel(javaLevel = 21) //https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/getting-started.html#getting-started.system-requirements
 @RunWith(FATRunner.class)
 @Mode(FULL) // TODO re-enable lite mode once this test is consistently successful in builds
 public class JmsWebAppTests20 extends JmsAbstractTests {
