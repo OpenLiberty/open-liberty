@@ -62,8 +62,12 @@ public class HandleResponsesTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(remoteAppServer, "basicRemoteApp", new DeployOptions[] {DeployOptions.OVERWRITE, DeployOptions.SERVER_ONLY}, "remoteApp.basic");
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.0", "ssl-1.0", "jsonb-2.0"));
+        if (JakartaEEAction.isEE11Active()) {
+            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-4.0", "restfulWSClient-4.0", "ssl-1.0", "jsonb-3.0", "jsonp-2.1", "cdi-4.1", "concurrent-3.1", "servlet-6.1"));
+        } else if (JakartaEEAction.isEE10Active()) {
+            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.1", "restfulWSClient-3.1", "ssl-1.0", "jsonb-3.0", "jsonp-2.1", "cdi-4.0", "concurrent-3.0", "servlet-6.0"));
+        } else if (JakartaEEAction.isEE9Active()) {
+            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.0", "restfulWSClient-3.0", "ssl-1.0", "jsonb-2.0", "jsonp-2.0", "cdi-3.0", "concurrent-2.0", "servlet-5.0"));
         }
         remoteAppServer.startServer();
         remoteAppServer.waitForDefaultHTTPEndpointSSLStart();
