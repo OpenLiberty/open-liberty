@@ -110,6 +110,11 @@ public class ComplexClientTest extends AbstractTest {
     }
 
     @Test
+    public void complexTestTriggerDeserializationError() throws Exception {
+        this.runTestOnServer(target, "testTriggerDeserializationError", null, "SUCCESS: Caught expected ResponseProcessingException");
+    }
+
+    @Test
     public void complexTestNew2Invocations() throws Exception {
         this.runTestOnServer(target, "testNew2Invocations", null, "ECHO1:test3,ECHO2:test4");
     }

@@ -565,7 +565,8 @@ public final class ResponseImpl extends Response {
     }
 
     private void reportMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Throwable cause) {
-        String errorMessage = JAXRSUtils.logMessageHandlerProblem(name, cls, ct);
+        Message responseMessage = getResponseMessage();
+        String errorMessage = JAXRSUtils.logMessageHandlerProblem(name, cls, ct, responseMessage);
         throw new ResponseProcessingException(this, errorMessage, cause);
     }
 
