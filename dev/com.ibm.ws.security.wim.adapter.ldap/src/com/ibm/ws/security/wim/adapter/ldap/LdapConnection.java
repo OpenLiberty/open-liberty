@@ -877,6 +877,27 @@ public class LdapConnection {
         if (extId == null) {
             extId = iLdapConfigMgr.getExtIdFromAttributes(dn, entityType, attrs);
         }
+        if (iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers() != null) { // PH02868
+        	/*
+        	 * We need to add the end of the domain back onto the DN and the UniqueName, as we strip it off when
+        	 * we send the request to LDAP.
+        	 */
+        	dn = LdapHelper.prepareDN(dn, "", iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers());
+        	if (uniqueName != null && !uniqueName.equals("")) {
+        		try {
+        			new LdapName(uniqueName); // check if the unique name is a DN
+        			if (!uniqueName.toLowerCase().endsWith(iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServersLowerCase())) {
+        				uniqueName = uniqueName + LdapConstants.LDAP_DN_SEPARATOR + iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers();
+        				if (trcLogger.isLoggable(Level.FINEST)) {
+        					trcLogger.logp(Level.FINEST, CLASSNAME, METHODNAME, "Override unique name, add getDomainNameForAutomaticDiscoveryOfLDAPServers " + uniqueName);
+        				}
+        			}
+        		} catch (Exception e ) {
+        			// ignore, not a DN, skip trying to update it.
+        		}
+        	}
+        }
+
         LdapEntry ldapEntry = new LdapEntry(dn, extId, uniqueName, entityType, attrs);
 
         return ldapEntry;
@@ -1356,7 +1377,7 @@ public class LdapConnection {
                     count = 0;
                     while (clone2.hasMore()) {
                         SearchResult result = clone2.nextElement();
-                        String dnKey = LdapHelper.prepareDN(result.getName(), searchBase);
+                        String dnKey = LdapHelper.prepareDN(result.getName(), searchBase, iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers());
                         Object cached = getAttributesCache().get(dnKey);
                         Attributes cachedAttrs = null;
                         if (cached != null && cached instanceof Attributes) {
@@ -1734,7 +1755,7 @@ public class LdapConnection {
                 if (entryName == null || entryName.trim().length() == 0) {
                     continue;
                 }
-                String dn = LdapHelper.prepareDN(entryName, base);
+                String dn = LdapHelper.prepareDN(entryName, base, iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers());
                 javax.naming.directory.Attributes attrs = thisEntry.getAttributes();
                 String extId = iLdapConfigMgr.getExtIdFromAttributes(dn, SchemaConstants.DO_GROUP, attrs);
                 String uniqueName = getUniqueName(dn, SchemaConstants.DO_GROUP, attrs);
@@ -1955,7 +1976,7 @@ public class LdapConnection {
                     continue;
                 }
                 String entryName = thisEntry.getName();
-                String dn = LdapHelper.prepareDN(entryName, base);
+                String dn = LdapHelper.prepareDN(entryName, base, iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers());
                 if (scope != SearchControls.OBJECT_SCOPE && base.equalsIgnoreCase(dn))
                     continue;
 
