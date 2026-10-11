@@ -40,7 +40,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations= \
-  com.ibm.ws.transport.iiop.internal.NamingServiceSubsystemFactory, \
+  com.ibm.ws.transport.iiop.internal.NamingServiceOrbConfigurator, \
   com.ibm.ws.transport.iiop.internal.ORBWrapper, \
   com.ibm.ws.transport.iiop.internal.ORBWrapperInternal, \
   com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl, \
@@ -48,8 +48,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl, \
   com.ibm.ws.transport.iiop.internal.WSClassRegistration, \
   com.ibm.ws.transport.iiop.internal.WSUtilService, \
-  com.ibm.ws.transport.iiop.yoko.DefaultSocketFactorySubsystemFactory, \
-  com.ibm.ws.transport.iiop.yoko.DispatchSubsystemFactory, \
+  com.ibm.ws.transport.iiop.yoko.DefaultSocketFactoryOrbConfigurator, \
+  com.ibm.ws.transport.iiop.yoko.DispatchOrbConfigurator, \
   com.ibm.ws.transport.iiop.yoko.ORBConfigAdapter
 -dsannotations-options: version;minimum=1.2
 

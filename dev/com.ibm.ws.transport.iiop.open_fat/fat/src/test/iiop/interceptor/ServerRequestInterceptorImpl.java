@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015,2023 IBM Corporation and others.
+ * Copyright 2015,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,8 @@ public class ServerRequestInterceptorImpl extends LocalObject implements ServerR
     public void receive_request(ServerRequestInfo ri) throws ForwardRequest {
         System.out.println("### in receive_request()");
         System.out.println("###    operation: '" + ri.operation() + "'");
-        if (ri.operation().equals("sayHello")) {
-            System.out.println("###    raising NO_PERMISSION");
-            throw new NO_PERMISSION("Can't touch this.");
-        }
+        System.out.println("###    raising NO_PERMISSION");
+        throw new NO_PERMISSION("Can't touch this.");
     }
 
     @Override
