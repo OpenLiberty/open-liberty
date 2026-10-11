@@ -42,6 +42,7 @@ public class HeaderFormatTest {
                                                    "\\{.*\"type\":\"liberty_audit\".*\\}" };
     public static final String[] BASIC_MESSSAGE = { "\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*\\*" };
     public static final String[] JSON_CONSOLE = { "\\{\".*Launching.*\"\\}" };
+    public static final String[] SIMPLE_CONSOLE = { "\\[\\d.*\\]\\s+[0-9a-f]{8}\\s+.*Launching.*" };
     private static final String TBASIC_FORMAT_REGEX_PATTERN = "([a-zA-Z0-9- ]{8} [aA-zZ ]{13} [aA-zZ]{1}\\s{3})";
 
     private static LibertyServer server;
@@ -107,6 +108,30 @@ public class HeaderFormatTest {
         hasNoJSON = checkStringsNotInLog(JSON_MESSAGES, traceLogFile);
         assertTrue("There a json header in trace.log", hasNoJSON);
 
+    }
+
+    /*
+     * This tests if the simple console header contains a timestamp when consoleFormat=simple
+     */
+    @Test
+    public void simpleHeaderTest() throws Exception {
+        //start server
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.headerformatsimple");
+        System.out.println("Starting server...");
+        server.startServer();
+        System.out.println("Started server.");
+
+        //retrieve log files
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+        /* Check that the console log contains the simple format header with timestamp */
+        boolean hasNoSimpleHeader = checkStringsNotInLog(SIMPLE_CONSOLE, consoleLogFile);
+        assertFalse("There is no simple header with timestamp in console.log", hasNoSimpleHeader);
+        /* Check that the console log does not contain json header */
+        boolean hasNoJSON = checkStringsNotInLog(JSON_CONSOLE, consoleLogFile);
+        assertTrue("There is a json header in console.log", hasNoJSON);
+        /* Check that the console log does not contain basic header */
+        boolean hasNoBasic = checkStringsNotInLog(BASIC_MESSSAGE, consoleLogFile);
+        assertTrue("There is a basic header in console.log", hasNoBasic);
     }
 
     /*
