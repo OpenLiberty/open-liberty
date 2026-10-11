@@ -23,4 +23,6 @@
 	<javaPermission className="java.util.PropertyPermission" name="com.sun.xml.bind.v2.runtime.JAXBContextImpl.fastBoot" actions="read"/>
 	<javaPermission className="java.util.PropertyPermission" name="mapAnyUriToUri" actions="read"/>
 	<javaPermission className="java.util.PropertyPermission" name="com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize" actions="read"/>
+	<!-- required when jaxrs-2.1 and jaxws-2.2 are both active: neethi PolicyBuilder reads this property during CXF WS-Policy initialisation -->
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.neethi.parser.maxDepth" actions="read"/>
 </server>
