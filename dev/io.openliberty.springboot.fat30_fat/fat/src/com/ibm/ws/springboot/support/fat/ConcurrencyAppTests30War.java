@@ -13,20 +13,24 @@ package com.ibm.ws.springboot.support.fat;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class ConcurrencyAppTests30War extends ConcurrencyAppAbstractTests {
 
     @Test
     public void testConcurrencyScheduledTask1() throws Exception {
-        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask: MANAGED THREAD VERIFICATION PASSED"));
+        //HttpUtils.findStringInUrl(server, "testName/testScheduledTask1", "ScheduledTask1 TESTED");
+        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask1: MANAGED THREAD VERIFICATION PASSED"));
     }
 
     @Test
@@ -36,16 +40,19 @@ public class ConcurrencyAppTests30War extends ConcurrencyAppAbstractTests {
 
     @Test
     public void testConcurrencyScheduledTask3() throws Exception {
-        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("Async task 1: ASSERT ASYNC METHOD VERIFICATION PASSED"));
+        HttpUtils.findStringInUrl(server, "testName/testAssertAsyncTask1and2Method", "AssertAsyncTask1and2Method TESTED");
+        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask1 Async task 1: ASSERT ASYNC METHOD VERIFICATION PASSED"));
     }
 
     @Test
     public void testConcurrencyScheduledTask4() throws Exception {
-        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("Async task 2: ASSERT ASYNC METHOD VERIFICATION PASSED"));
+        HttpUtils.findStringInUrl(server, "testName/testAssertAsyncTask1and2Method", "AssertAsyncTask1and2Method TESTED");
+        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask1 Async task 2: ASSERT ASYNC METHOD VERIFICATION PASSED"));
     }
 
     @Test
     public void testConcurrencyScheduledTask5() throws Exception {
+        HttpUtils.findStringInUrl(server, "testName/testAssertAsyncTask3Method", "AssertAsyncTask3Method TESTED");
         assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("ScheduledTask2 Async task 3: ASSERT ASYNC METHOD VERIFICATION PASSED"));
     }
 
@@ -62,6 +69,11 @@ public class ConcurrencyAppTests30War extends ConcurrencyAppAbstractTests {
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("servlet-6.0", "concurrent-3.0", "jndi-1.0", "connectors-2.1"));
+    }
+
+    @Override
+    public Map<String, String> getBootStrapProperties() {
+        return Collections.singletonMap("test.concurrency", "AppRunner");
     }
 
     @Override
