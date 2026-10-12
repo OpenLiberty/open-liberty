@@ -80,6 +80,8 @@ public class SimpleTest extends FATServletClient {
     public void verifyArtifactoryDependency() throws Exception {
         // Confirm that the example Artifactory dependency was download and is available on the classpath
         org.apache.commons.logging.Log.class.getName();
+
+        System.out.println("NON-FUNCTIONAL CHANGE")
     }
 
     @Test
