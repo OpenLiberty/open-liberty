@@ -192,8 +192,10 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
-    protected void ehDelete(AutoCloseable entityHandler, Object entity) {
-        ((EntityManager) entityHandler).remove(entity);
+    protected void ehDelete(AutoCloseable entityHandler, List<?> entities) {
+        EntityManager em = ((EntityManager) entityHandler);
+        for (Object e : entities)
+            em.remove(e);
     }
 
     @Override

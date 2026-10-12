@@ -553,19 +553,22 @@ public class QueryInfo_1_1 extends QueryInfo {
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected void ehDelete(AutoCloseable entityHandler, Object entity) {
+    protected void ehDelete(AutoCloseable entityHandler, List<?> entities) {
         // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.delete(entity) //
-        //                : ((EntityManager) entityHandler).remove(entity);
 
         if (entityHandler instanceof EntityManager manager)
-            manager.remove(entity);
+            for (Object e : entities)
+                manager.remove(e);
         else
             try {
-                entityHandler.getClass() //
-                                .getMethod("delete", Object.class) //
-                                .invoke(entityHandler, entity);
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("delete", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("deleteMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -573,7 +576,6 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO deleteMultiple
     }
 
     @FFDCIgnore(InvocationTargetException.class)
