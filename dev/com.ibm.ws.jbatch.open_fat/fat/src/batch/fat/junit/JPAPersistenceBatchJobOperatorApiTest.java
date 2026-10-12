@@ -197,9 +197,8 @@ public class JPAPersistenceBatchJobOperatorApiTest extends BatchJobOperatorApiUt
         String schema = server.getServerConfiguration().getDatabaseStores().get(0).getSchema();
 
         //All but first job instance should be marked failed.
-        long validInstanceId = validJobInstance.getJsonNumber("instanceId").longValue();
-        String queryExecution = "SELECT BATCHSTATUS FROM " + schema + ".JOBEXECUTION WHERE FK_JOBINSTANCEID > " + validInstanceId + " ORDER BY JOBEXECID";
-        String queryInstance = "SELECT BATCHSTATUS,instancestate FROM " + schema + ".JOBINSTANCE WHERE JOBINSTANCEID > " + validInstanceId + " ORDER BY JOBINSTANCEID";
+        String queryExecution = "SELECT BATCHSTATUS FROM " + schema + ".JOBEXECUTION WHERE FK_JOBINSTANCEID > 1";
+        String queryInstance = "SELECT BATCHSTATUS,instancestate FROM " + schema + ".JOBINSTANCE WHERE JOBINSTANCEID > 1";
 
         String instanceResponse = restUtils.executeSql(server, "jdbc/batch", queryInstance);
 

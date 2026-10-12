@@ -171,8 +171,6 @@ public class DynamicConfigRule implements TestRule {
                 server.setServerConfigurationFile(serverXmlFileName);
                 server.waitForConfigUpdateInLogUsingMark(null);
 
-                server.waitForStringInLogUsingMark("CWWKZ0003I.*batchFAT", 10000);
-
                 try {
                     base.evaluate();
                 } finally {

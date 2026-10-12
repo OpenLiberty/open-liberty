@@ -56,6 +56,9 @@ public class BatchTransactionalMiscTest extends BatchFATHelper {
         BatchFATHelper.startServer(server, testClass);
         FatUtils.waitForSmarterPlanet(server);
 
+        // Standard runtime tables
+        createDefaultRuntimeTables();
+
         // The other tests' app table is fine
         Log.info(BatchTransactionalMiscTest.class, "setup", "Creating output table");
         executeSql("jdbc/batch", getChunkOutTableSql(APP_OUT1));

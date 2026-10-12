@@ -75,6 +75,7 @@ public class JdbcConfigTest extends BatchFATHelper {
 
         server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchAppUtils.addDropinsBatchFATWar(server);
+        BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
         // Start server
