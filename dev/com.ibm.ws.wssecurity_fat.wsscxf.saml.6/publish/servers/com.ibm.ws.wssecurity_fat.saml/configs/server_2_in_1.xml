@@ -26,7 +26,7 @@
         <feature>servlet-3.1</feature>
 		<feature>wsSecuritySaml-1.1</feature>
 		<feature>samlWeb-2.0</feature>
-		//issue 23060 usr feature used as dummy feature for condition checker
+		<!--issue 23060 usr feature used as dummy feature for condition checker-->
 		<feature>usr:wsseccbh-1.0</feature>
 	</featureManager>
 
