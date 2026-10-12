@@ -299,22 +299,36 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         }
 
         try {
+
+            Log.info(this.getClass(), "invokeApp", "the testname is :::::::::::::::::::::::::" + _testName);
+            Log.info(this.getClass(), "invokeApp", "the webclient is :::::::::::::::::::::::::" + webClient.toString());
+            Log.info(this.getClass(), "invokeApp", "the url is :::::::::::::::::::::::::" + url);
+            Log.info(this.getClass(), "invokeApp", "the rspValues.getParms is :::::::::::::::::::::::::" + rspValues.getParms());
+            Log.info(this.getClass(), "invokeApp", "the tempHeaders values are :::::::::::::::::::::::::" + tempHeaders);
+
+//            System.out.println("the testname is :::::::::::::::::::::::::" + _testName);
+//            System.out.println("the webclient is :::::::::::::::::::::::::" + webClient.toString());
+//            System.out.println("the url is :::::::::::::::::::::::::" + url);
+//            System.out.println("the rspValues.getParms is :::::::::::::::::::::::::" + rspValues.getParms());
+//            System.out.println("the tempHeaders values are :::::::::::::::::::::::::" + tempHeaders);
+
             response = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, url, rspValues.getParms(), tempHeaders);
 
         } catch (Exception e) {
             if (e.getMessage() == null) {
-                throw new Exception("Error invoking " + url) ;
+                throw new Exception("Error invoking " + url);
             }
-                if (allowJavaScriptError && e.getMessage().contains("Unable to download JavaScript")) {
-                    Log.info(thisClass, "invokeApp", "Problem processing redirect - most likely a test infrastructure issue - we won't fail the calling test");
-                    Log.info(thisClass, "invokeApp", e.getMessage());
-                    return null; // return with no failure allowing the test to pass
-                } else {
-                    throw e;
-                }
+            if (allowJavaScriptError && e.getMessage().contains("Unable to download JavaScript")) {
+                Log.info(thisClass, "invokeApp", "Problem processing redirect - most likely a test infrastructure issue - we won't fail the calling test");
+                Log.info(thisClass, "invokeApp", e.getMessage());
+                return null; // return with no failure allowing the test to pass
+            } else {
+                throw e;
+            }
         }
         loggingUtils.printAllCookies(webClient);
-
+        System.out.println("The response is " + response);
+        System.out.println("The expectations is " + expectations);
         validationUtils.validateResult(response, expectations);
 
         return response;
@@ -324,9 +338,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * Invoke the requested app - and ensure that we landed on the login page (login.jsp)
      *
      * @param webClient
-     *            the webClient to use to make the request
+     *                      the webClient to use to make the request
      * @param url
-     *            the test requested url to attempt to access
+     *                      the test requested url to attempt to access
      * @return the login page (that the next step will use to actually login)
      * @throws Exception
      */
@@ -340,9 +354,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * Invoke the requested app - and ensure that we landed on the logout page - we'll land on this page when we try to use expired tokens
      *
      * @param webClient
-     *            the webClient to use to make the request
+     *                      the webClient to use to make the request
      * @param url
-     *            the test requested url to attempt to access
+     *                      the test requested url to attempt to access
      * @return the logout page
      * @throws Exception
      */
@@ -356,9 +370,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * Invoke the requested app - and ensure that we landed on the post logout page - we'll land on this page when we try to use expired tokens
      *
      * @param webClient
-     *            the webClient to use to make the request
+     *                      the webClient to use to make the request
      * @param url
-     *            the test requested url to attempt to access
+     *                      the test requested url to attempt to access
      * @return the logout page
      * @throws Exception
      */
@@ -372,9 +386,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * Invoke the requested app - and ensure that we landed on the test endSession app (with/without a logout redirect, we won't get past the test endSession)
      *
      * @param webClient
-     *            the webClient to use to make the request
+     *                      the webClient to use to make the request
      * @param url
-     *            the test requested url to attempt to access
+     *                      the test requested url to attempt to access
      * @return the logout page
      * @throws Exception
      */
@@ -388,13 +402,14 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * Invoke the requested app - and ensure that we land on the app without having to login again - we'll land on the app when the tokens included in the request are still valid
      *
      * @param webClient
-     *            the webClient to use to make the request
+     *                      the webClient to use to make the request
      * @param url
-     *            the test requested url to attempt to access
+     *                      the test requested url to attempt to access
      * @return the app output page
      * @throws Exception
      */
     public Page invokeAppGetToApp(WebClient webClient, String url) throws Exception {
+        System.out.println("In CommonSecurityTests Line 398");
 
         return invokeApp(webClient, url, getProcessLoginExpectations(""));
 
@@ -411,9 +426,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * times
      *
      * @param webClient
-     *            the webClient to use to make the request
+     *                      the webClient to use to make the request
      * @param url
-     *            the test requested url to attempt to access
+     *                      the test requested url to attempt to access
      * @return the Open Liberty splash page
      * @throws Exception
      */
@@ -516,9 +531,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * afterwards
      *
      * @param appRoot
-     *            the root of the app to invoke
+     *                    the root of the app to invoke
      * @param app
-     *            the name of the app to invoke
+     *                    the name of the app to invoke
      * @return the web Page response - in case the caller needs to process it further
      * @throws Exception
      */
@@ -533,11 +548,11 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * afterwards
      *
      * @param webClient
-     *            the webClient to use to process the requests
+     *                      the webClient to use to process the requests
      * @param appRoot
-     *            the root of the app to invoke
+     *                      the root of the app to invoke
      * @param app
-     *            the name of the app to invoke
+     *                      the name of the app to invoke
      * @return the web Page response - in case the caller needs to process it further
      * @throws Exception
      */
@@ -553,15 +568,15 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * afterwards
      *
      * @param webClient
-     *            the webClient to use to process the requests
+     *                      the webClient to use to process the requests
      * @param appRoot
-     *            the root of the app to invoke
+     *                      the root of the app to invoke
      * @param app
-     *            the name of the app to invoke
+     *                      the name of the app to invoke
      * @param user
-     *            the user to log in as
+     *                      the user to log in as
      * @param pw
-     *            the password to use to log in
+     *                      the password to use to log in
      * @return the web Page response - in case the caller needs to process it further
      * @throws Exception
      */

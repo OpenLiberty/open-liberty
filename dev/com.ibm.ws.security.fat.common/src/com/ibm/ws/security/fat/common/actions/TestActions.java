@@ -14,8 +14,10 @@ package com.ibm.ws.security.fat.common.actions;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
@@ -30,6 +32,12 @@ import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
 import com.meterware.httpunit.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.DebuggingWebConnection;
 
 public class TestActions {
 
@@ -251,6 +259,8 @@ public class TestActions {
             if (requestHeaders != null) {
                 request.setAdditionalHeaders(requestHeaders);
             }
+            Log.info(this.getClass(), "invokeUrlWithParametersAndHeaders", "the current test is::::::::::: " + currentTest);
+            
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
@@ -296,7 +306,49 @@ public class TestActions {
         String thisMethod = "submitRequestWithNonNullObjects";
         loggingUtils.printRequestParts(wc, request, currentTest);
         try {
+            
+//            System.out.println("!!!!!!!!!!!!!!!!System Set properties!!!!!!!!!!!!!!!!");
+//            
+//            System.getProperties().put("org.apache.commons.logging.simplelog.defaultlog", "trace");
+            
+            //System.out.println("!!!!!!!!!!!!!!!!gargoylesoftware Logging!!!!!!!!!!!!!!!!");
+            Log.info(this.getClass(), "submitRequestWithNonNullObjects", "gargoylesoftware Logging::::::::::: " + currentTest);
+            
+            java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.ALL);
+            
+            Log.info(this.getClass(), "submitRequestWithNonNullObjects", "Debuggin web connection::::::::::: " + currentTest);
+            //System.out.println("!!!!!!!!!!!!!!!!Debuggin web connection!!!!!!!!!!!!!!!!");
+
+            DebuggingWebConnection webConnection = new DebuggingWebConnection(wc.getWebConnection(), "myLogFile.txt");
+
+            // Set the new web connection that logs requests and responses
+            wc.setWebConnection(webConnection);
+
+            // Now each request and response will be logged into "myLogFile.txt".
+
+      
+          //Using Date class
+            Date date = new Date();
+            //Pattern for showing milliseconds in the time "SSS"
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            String stringDate = sdf.format(date);
+            System.out.println(stringDate);
+            
+            //System.out.println("the time when the request hits is :::::::::::::"+stringDate);
+            
+            Log.info(this.getClass(), "submitRequestWithNonNullObjects", "the time when the request hits is::::::::::: " + stringDate);
             Page response = wc.getPage(request);
+                        
+            Date date1 = new Date();
+            //Pattern for showing milliseconds in the time "SSS"
+            DateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            String stringDate1 = sdf1.format(date1);
+            System.out.println(stringDate1);
+            
+            Log.info(this.getClass(), "submitRequestWithNonNullObjects", "the time when the response come::::::::::: " + stringDate1);
+            //System.out.println("the time when the response come  :::::::::::::"+stringDate1);
+            
+            
             loggingUtils.printResponseParts(response, currentTest, "Response from URL: ");
             return response;
         } catch (Exception e) {
