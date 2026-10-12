@@ -260,8 +260,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Add H1 handlers
                 // The h2c pipeline installs TimeoutHandler before it can reach this fallback.
                 if(pipeline.get(ReadFlowHandler.class) == null){
-                    pipeline.addBefore((pipeline.get(RemoteIpHandler.class) != null) ? RemoteIpHandler.NAME : HttpDispatcherHandler.NAME,
-                                       ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                    pipeline.addAfter(TimeoutHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
                 if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
                     pipeline.addBefore(TimeoutHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
