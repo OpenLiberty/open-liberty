@@ -2313,10 +2313,6 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testExtractDate() throws Exception {
 
-        // TODO enable once EclipseLink 34899 is fixed to run EXTRACT(DATE FROM...) on H2
-        if (!isHibernate())
-            return;
-
         PurchaseTime may14_2_07_PM = new PurchaseTime( //
                         LocalTime.of(14, 7, 0), LocalDate.of(2026, 5, 14));
 
@@ -2442,10 +2438,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testExtractTime() throws Exception {
-
-        // TODO enable once EclipseLink 34899 is fixed to run EXTRACT(TIME FROM...) on H2
-        if (!isHibernate())
-            return;
 
         PurchaseTime may12_10_31_AM = new PurchaseTime( //
                         LocalTime.of(10, 31, 30), LocalDate.of(2026, 5, 12));
