@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -81,6 +81,21 @@ public interface WebSphereCDIDeployment extends CDI11Deployment {
      */
     @Override
     public WebSphereBeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass);
+
+    /**
+     * <p>
+     * The same as <code>CDI11Deployment.getBeanDeploymentArchive(Class<?> beanClass)</code> except that this method returns
+     * a {@link WebSphereBeanDeploymentArchive}
+     * </p>
+     *
+     * If there are multiple BDAs that contain the class, this method will return an EJB_Modules if it can, and any other kind of archive
+     * containing the class if it cannot.
+     *
+     * @param clazz the class
+     * @return the {@link WebSphereBeanDeploymentArchive} containing the bean class (favouring EJB_Modules if multiple matching archives exist) or null if no such
+     *         {@link WebSphereBeanDeploymentArchive} exists
+     */
+    WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClassFavouringEJB(Class<?> clazz);
 
     /**
      * <p>
