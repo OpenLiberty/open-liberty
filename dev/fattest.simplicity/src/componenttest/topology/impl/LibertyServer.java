@@ -120,6 +120,7 @@ import componenttest.exception.TopologyException;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureUtilities;
 import componenttest.rules.repeater.JakartaEE11Action;
+import componenttest.rules.repeater.JakartaEE12Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -8340,6 +8341,9 @@ public class LibertyServer implements LogMonitorClient {
                 for (String installedFeature : installedFeatureSet) {
                     String lowerCaseFeatureName = installedFeature.toLowerCase();
                     if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(lowerCaseFeatureName)) {
+                        return true;
+                    } else if (JakartaEE12Action.EE12_ONLY_FEATURE_SET_LOWERCASE.contains(lowerCaseFeatureName)) {
+                        // EE 12 features can run with EE 11 features with Java 17 in beta
                         return true;
                     } else if ("springboot-4.0".equals(lowerCaseFeatureName)) {
                         return true;
