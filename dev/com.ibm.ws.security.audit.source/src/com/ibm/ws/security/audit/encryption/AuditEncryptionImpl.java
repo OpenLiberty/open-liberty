@@ -170,20 +170,26 @@ public class AuditEncryptionImpl implements AuditEncrypting {
         try {
             if (crypto != null) {
                 try {
-                    sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, CryptoUtils.AES_256_KEY_LENGTH_BYTES, CryptoUtils.ENCRYPT_ALGORITHM_AES);
+                    byte[] keyBytes = crypto.generateSharedKey();
+                    if (keyBytes == null) {
+                        throw new com.ibm.websphere.crypto.KeyException("Failed to generate random key bytes.");
+                    }
+                    sharedKey = new javax.crypto.spec.SecretKeySpec(keyBytes, 0, CryptoUtils.AES_256_KEY_LENGTH_BYTES, CryptoUtils.ENCRYPT_ALGORITHM_AES);
                 } catch (Exception me) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "me.getMessage: " + me.getMessage());
+                    throw me;
                 }
             }
 
             if (sharedKey != null) {
                 return sharedKey;
             } else {
-                throw new com.ibm.websphere.crypto.KeyException("Key could not be generated.");
+                throw new com.ibm.websphere.crypto.KeyException("Key could not be generated - crypto object is null.");
             }
 
         } catch (Exception e) {
+            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditEncryptionImpl.generateSharedKey", "186", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Error generating key.", new Object[] { e });
 

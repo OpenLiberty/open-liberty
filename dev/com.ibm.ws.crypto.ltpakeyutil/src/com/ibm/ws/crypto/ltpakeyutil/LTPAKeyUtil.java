@@ -27,6 +27,32 @@ public final class LTPAKeyUtil {
 		return LTPACrypto.verifyISO9796(key, data, off, len, sig, sigOff, sigLen);
 	}
 
+        /**
+         * Encrypt data using AES-GCM (authenticated encryption).
+         * PQC Issue #35556 - Task 2.6
+         *
+         * @param data The data to encrypt
+         * @param key  The encryption key
+         * @return The encrypted data with format: [IV (12 bytes)][Ciphertext][Auth Tag (16 bytes)]
+         * @throws Exception if encryption fails
+         */
+         public static byte[] encryptGCM(byte[] data, byte[] key) throws Exception {
+                 return LTPACrypto.encryptGCM(data, key);
+        }
+
+        /**
+         * Decrypt data using AES-GCM (authenticated encryption).
+         * PQC Issue #35556 - Task 2.6
+         *
+         * @param encryptedData The encrypted data
+         * @param key           The decryption key
+         * @return The decrypted plaintext
+         * @throws Exception if decryption fails or authentication tag is invalid
+         */
+         public static byte[] decryptGCM(byte[] encryptedData, byte[] key) throws Exception {
+                 return LTPACrypto.decryptGCM(encryptedData, key);
+        }
+
 	public static byte[] signISO9796(byte[][] key, byte[] data, int off, int len) throws Exception {
 		return LTPACrypto.signISO9796(key, data, off, len);
 	}
@@ -50,5 +76,6 @@ public final class LTPAKeyUtil {
 	public static byte[] generateSharedKey() {
 		return LTPACrypto.generateSharedKey();
 	}
+
 
 }

@@ -20,7 +20,11 @@ Bundle-Description: LTPA Key Crypto Utilities; version=${bVersion}
 Export-Package: \
   com.ibm.ws.crypto.ltpakeyutil;provide:=true
 
-Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: \
+  java.security.spec, \
+  !*.internal.*, \
+  !com.ibm.ws.kernel.boot.cmdline, \
+  *
 
 instrument.disabled: true
 

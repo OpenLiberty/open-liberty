@@ -30,6 +30,15 @@ public interface LTPAKeyFileUtility {
 	public static final String CREATION_HOST_PROPERTY = "com.ibm.websphere.CreationHost";
 
 	public static final String VALIDATION_KEYS_PROPERTY = "com.ibm.websphere.ltpa.ltpa_validation_keys";
+	       // PQC key properties (Issue #35556 - Task 2.3)
+	       public static final String KEYIMPORT_MLDSA_PRIVATEKEY = "com.ibm.websphere.ltpa.pqc.PrivateKey";
+	       public static final String KEYIMPORT_MLDSA_PUBLICKEY = "com.ibm.websphere.ltpa.pqc.PublicKey";
+	       public static final String KEYIMPORT_PQC_ALGORITHM = "com.ibm.websphere.ltpa.PQCAlgorithm";
+	       public static final String KEYIMPORT_CRYPTO_MODE = "com.ibm.websphere.ltpa.CryptoMode";
+	       // ML-KEM key properties (Phase 4)
+	       public static final String KEYIMPORT_MLKEM_PRIVATEKEY = "com.ibm.websphere.ltpa.mlkem.PrivateKey";
+	       public static final String KEYIMPORT_MLKEM_PUBLICKEY = "com.ibm.websphere.ltpa.mlkem.PublicKey";
+	       public static final String KEYIMPORT_MLKEM_ALGORITHM = "com.ibm.websphere.ltpa.mlkem.Algorithm";
 
 	/**
 	 * Create the LTPA keys file at the specified location using the specified

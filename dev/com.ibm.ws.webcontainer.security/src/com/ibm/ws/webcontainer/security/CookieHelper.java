@@ -19,6 +19,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 /**
@@ -27,6 +29,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
  * in various other classes.
  */
 public class CookieHelper {
+    private static final TraceComponent tc = Tr.register(CookieHelper.class);
 
     /**
      * Retrieve the value of the first instance of the specified Cookie name
@@ -78,6 +81,51 @@ public class CookieHelper {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Collect all cookies that match a base name or its fragments (e.g., LtpaToken2, LtpaToken202, LtpaToken203).
+     * This is used for LTPA3 tokens that may be split across multiple cookies due to size constraints.
+     * Fragment naming follows JWT SSO pattern: base name + 2-3 digit suffix (02, 03, 04, etc.)
+     *
+     * @param cookies array of Cookie objects, may be {@code null}.
+     * @param baseCookieName the base name of the cookie (e.g., "LtpaToken2")
+     * @return Map of cookie names to values, {@code null} if no matches found
+     */
+    public static java.util.Map<String, String> getFragmentedCookies(Cookie[] cookies, String baseCookieName) {
+        if (cookies == null || baseCookieName == null) {
+            return null;
+        }
+
+        java.util.Map<String, String> cookieMap = new java.util.TreeMap<>();
+        
+        for (Cookie cookie : cookies) {
+            String name = cookie.getName();
+            // Match base cookie name (e.g., LtpaToken2)
+            if (baseCookieName.equalsIgnoreCase(name)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found base cookie: " + name + " (length: " + cookie.getValue().length() + ")");
+                }
+                cookieMap.put(name, cookie.getValue());
+            }
+            // Match fragment cookies with numeric suffix (e.g., LtpaToken202, LtpaToken203)
+            else if (name.startsWith(baseCookieName) && name.length() > baseCookieName.length()) {
+                String suffix = name.substring(baseCookieName.length());
+                // Check if suffix is 2-3 digits (matches pattern: 02, 03, ..., 99, 100)
+                if (suffix.matches("^\\d{2,3}$")) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found fragment cookie: " + name + " (length: " + cookie.getValue().length() + ")");
+                    }
+                    cookieMap.put(name, cookie.getValue());
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Total fragments collected: " + cookieMap.size() + " for base name: " + baseCookieName);
+        }
+
+        return cookieMap.isEmpty() ? null : cookieMap;
     }
 
     /**

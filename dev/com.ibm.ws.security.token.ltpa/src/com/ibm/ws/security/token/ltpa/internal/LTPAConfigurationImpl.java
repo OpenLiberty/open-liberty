@@ -44,6 +44,7 @@ import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
+import com.ibm.ws.security.token.ltpa.pqc.PQCConstants;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -108,6 +109,25 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private List<Properties> nonConfigValidationKeys = null;
     private final Collection<File> currentlyDeletedFiles = new HashSet<File>();
     private static final Collection<File> allKeysFiles = new HashSet<File>();
+
+    // ========== PQC Configuration Fields (Issue #35556 - Task 2.8) ==========
+    private String tokenVersion = "2"; // Default to Token Version 2 (RSA-only)
+    private String cryptoMode = PQCConstants.DEFAULT_CRYPTO_MODE;
+    private String pqcAlgorithm = PQCConstants.DEFAULT_PQC_ALGORITHM;
+    private boolean enablePQC = PQCConstants.DEFAULT_ENABLE_PQC;
+
+    // ML-DSA (Signatures) Configuration
+    private String mldsaAlgorithm = PQCConstants.DEFAULT_PQC_ALGORITHM; // Default: ML-DSA-44
+    private String mldsaKeystoreFile;
+    @Sensitive
+    private String mldsaKeystorePassword;
+
+    // ML-KEM (Encryption) Configuration
+    private String mlkemAlgorithm = "ML-KEM-512"; // Default: NIST Level 1
+    private String pqcKeystoreFile;
+    @Sensitive
+    private String pqcKeystorePassword;
+
     boolean isValidationKeysFileConfigured = false;
 
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
@@ -202,6 +222,64 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         primaryKeyPassword = resolvePrimaryKeyPassword(props);
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
+
+        // ========== PQC Configuration Loading (Issue #35556 - Task 2.8) ==========
+        Object tokenVersionObj = props.get(CFG_KEY_TOKEN_VERSION);
+        if (tokenVersionObj != null) {
+            tokenVersion = (String) tokenVersionObj;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Token version: " + tokenVersion);
+            }
+        }
+
+        Object cryptoModeObj = props.get(CFG_KEY_CRYPTO_MODE);
+        if (cryptoModeObj != null) {
+            cryptoMode = (String) cryptoModeObj;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "PQC crypto mode: " + cryptoMode);
+            }
+        }
+
+        Object pqcAlgorithmObj = props.get(CFG_KEY_PQC_ALGORITHM);
+        if (pqcAlgorithmObj != null) {
+            pqcAlgorithm = (String) pqcAlgorithmObj;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "PQC algorithm: " + pqcAlgorithm);
+            }
+        }
+
+        Object enablePQCObj = props.get(CFG_KEY_ENABLE_PQC);
+        if (enablePQCObj != null) {
+            enablePQC = (Boolean) enablePQCObj;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "PQC enabled: " + enablePQC);
+            }
+        }
+
+        // ML-DSA Configuration (Signatures)
+        Object mldsaAlgorithmObj = props.get(CFG_KEY_MLDSA_ALGORITHM);
+        if (mldsaAlgorithmObj != null) {
+            mldsaAlgorithm = (String) mldsaAlgorithmObj;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ML-DSA algorithm: " + mldsaAlgorithm);
+            }
+        }
+
+        mldsaKeystoreFile = (String) props.get(CFG_KEY_MLDSA_KEYSTORE_FILE);
+        mldsaKeystorePassword = resolveMLDSAKeystorePassword(props);
+
+        // ML-KEM Configuration (Encryption)
+        Object mlkemAlgorithmObj = props.get(CFG_KEY_MLKEM_ALGORITHM);
+        if (mlkemAlgorithmObj != null) {
+            mlkemAlgorithm = (String) mlkemAlgorithmObj;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ML-KEM algorithm: " + mlkemAlgorithm);
+            }
+        }
+
+        pqcKeystoreFile = (String) props.get(CFG_KEY_PQC_KEYSTORE_FILE);
+        pqcKeystorePassword = resolvePQCKeystorePassword(props);
+
         authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);
         // expirationDifferenceAllowed is set to 3 seconds (3000ms) by default.
         // If expirationDifferenceAllowed is set to less than 0, then the two expiration values will not be compared in the LTPAToken2.decrypt() method.
@@ -265,6 +343,52 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         String formattedMessage = Tr.formatMessage(tc, "LTPA_KEYS_PASSWORD_ERROR");
         throw new IllegalArgumentException(formattedMessage);
+    }
+
+    /**
+     * Resolve the ML-DSA keystore password from configuration or environment variables.
+     *
+     * @param props Configuration properties
+     * @return The resolved password, or null if not configured
+     */
+    @Sensitive
+    private String resolveMLDSAKeystorePassword(Map<String, Object> props) {
+        SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_MLDSA_KEYSTORE_PASSWORD);
+        String password = sps == null ? null : new String(sps.getChars());
+        if (password != null && !password.isEmpty()) {
+            return password;
+        }
+
+        String envPassword = System.getenv("mldsa_keystore_password");
+        if (envPassword != null && !envPassword.isEmpty()) {
+            return envPassword;
+        }
+
+        // Return null if not configured (ML-DSA is optional)
+        return null;
+    }
+
+    /**
+     * Resolve the PQC (ML-KEM) keystore password from configuration or environment variables.
+     *
+     * @param props Configuration properties
+     * @return The resolved password, or null if not configured
+     */
+    @Sensitive
+    private String resolvePQCKeystorePassword(Map<String, Object> props) {
+        SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PQC_KEYSTORE_PASSWORD);
+        String password = sps == null ? null : new String(sps.getChars());
+        if (password != null && !password.isEmpty()) {
+            return password;
+        }
+
+        String envPassword = System.getenv("pqc_keystore_password");
+        if (envPassword != null && !envPassword.isEmpty()) {
+            return envPassword;
+        }
+
+        // Return null if not configured (PQC is optional)
+        return null;
     }
 
     /**
@@ -829,6 +953,60 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         if (notifier != null) {
             notifier.notifyListeners();
         }
+    }
+
+    // ========== PQC Configuration Getters (Issue #35556 - Task 2.8) ==========
+
+    @Override
+    public String getTokenVersion() {
+        return tokenVersion;
+    }
+
+    @Override
+    public String getCryptoMode() {
+        return cryptoMode;
+    }
+
+    @Override
+    public String getPQCAlgorithm() {
+        return pqcAlgorithm;
+    }
+
+    @Override
+    public boolean isEnablePQC() {
+        return enablePQC;
+    }
+
+    @Override
+    public String getMLDSAAlgorithm() {
+        return mldsaAlgorithm;
+    }
+
+    @Override
+    public String getMLDSAKeystoreFile() {
+        return mldsaKeystoreFile;
+    }
+
+    @Override
+    @Sensitive
+    public String getMLDSAKeystorePassword() {
+        return mldsaKeystorePassword;
+    }
+
+    @Override
+    public String getMLKEMAlgorithm() {
+        return mlkemAlgorithm;
+    }
+
+    @Override
+    public String getPQCKeystoreFile() {
+        return pqcKeystoreFile;
+    }
+
+    @Override
+    @Sensitive
+    public String getPQCKeystorePassword() {
+        return pqcKeystorePassword;
     }
 
     /**
