@@ -72,10 +72,32 @@ public class FeatureErrors {
 
         // The Rtcomm service is not able to connect to tcp://localhost:1883.
         requiredErrors.put("rtcomm-1.0", new String[] { "CWRTC0002E" });
+
         // The Rtcomm service is not able to connect to tcp://localhost:1883.
         // The Rtcomm service - The following virtual hosts could not be found or are not correctly configured: [abcdefg].
-        requiredErrors.put("rtcommGateway-1.0", new String[] { "CWRTC0002E", "SRVE9956W" });
+        requiredErrors.put("rtcommGateway-1.0", new String[] { "CWRTC0002E" });
+        // requiredErrors.put("rtcommGateway-1.0", new String[] { "CWRTC0002E", "SRVE9956W" });        
 
+        // As of 12-Oct-2026, SRVE9956W no longer occurs:
+        //
+        // junit.framework.AssertionFailedError: Missing feature specified error; first:
+        //   SRVE9956W [ rtcommGateway-1.0 ]
+        // at com.ibm.ws.test.featurestart.FeaturesStartTestBase.basicTestStartFeature(FeaturesStartTestBase.java:295)
+        // at com.ibm.ws.test.featurestart.FeaturesStartTestBase.testStartFeature(FeaturesStartTestBase.java:243)
+        // at com.ibm.ws.test.featurestart.FeaturesStartTest4.test(FeaturesStartTest4.java:71)       
+        //
+        // [AUDIT   ] CWWKE0001I: The server features.start.4.server has been launched.
+        // [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/ci/Build/workspace/ebcTestRunner/dev/autoFVT/image/output/wlp/usr/servers/fatTestPorts.xml
+        // [AUDIT   ] CWWKG0028A: Processing included configuration resource: /home/ci/Build/workspace/ebcTestRunner/dev/autoFVT/image/output/wlp/usr/servers/fatTestCommon.xml
+        // [AUDIT   ] CWWKZ0058I: Monitoring dropins for applications.
+        // [AUDIT   ] TE9900A: Timed Exit Enabled
+        // [ERROR   ] CWRTC0002E: The Rtcomm service is not able to connect to tcp://localhost:1883.
+        // [AUDIT   ] CWWKF0012I: The server installed the following features: [json-1.0, rtcomm-1.0, rtcommGateway-1.0, servlet-3.1, sipServlet-1.1, timedexit-1.0].
+        // [AUDIT   ] CWWKF0011I: The features.start.4.server server is ready to run a smarter planet. The features.start.4.server server started in 4.593 seconds.
+        // [AUDIT   ] CWWKE0055I: Server shutdown requested on Friday, October 9, 2026 at 11:37 PM. The server features.start.4.server is shutting down.
+        // [AUDIT   ] CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce.
+        // [AUDIT   ] CWWKE0036I: The server features.start.4.server stopped after 6.176 seconds.
+        
         // [10/07/2026 21:27:32:360 UTC] 002 FeaturesStartTest4             processExpected                I
         // Feature failure [ wsSecuritySaml-1.1] (Feature specified (expected)):
         // CWWKS5207W: .* inboundPropagation
