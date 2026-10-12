@@ -46,10 +46,8 @@ public class PartitionMetricsTest extends BatchFATHelper {
         server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchFATHelper.setConfig(DFLT_SERVER_XML, testClass);
 
-        DatabaseContainerUtil.build(server, FATSuite.jdbcContainer)
-                        .withDatabaseProperties()
-                        .withDriverVariable()
-                        .modify();
+        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.jdbcContainer);
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.jdbcContainer).getDriverName());
 
         BatchRestUtils.updateDatabaseStoreIfNecessary(server, DatabaseContainerType.valueOf(FATSuite.jdbcContainer));
 
@@ -65,7 +63,7 @@ public class PartitionMetricsTest extends BatchFATHelper {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKY0011W", "DSRA8020E");
+            server.stopServer("CWWKY0011W");
         }
     }
 

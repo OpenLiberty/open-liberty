@@ -40,6 +40,7 @@ public class MiscTest extends BatchFATHelper {
         BatchFATHelper.setConfig(DFLT_SERVER_XML, testClass);
 
         BatchAppUtils.addDropinsBatchFATWar(server);
+        BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
         BatchFATHelper.startServer(server, testClass);

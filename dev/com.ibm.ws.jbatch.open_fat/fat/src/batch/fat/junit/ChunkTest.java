@@ -25,11 +25,15 @@ public class ChunkTest extends BatchFATHelper {
         server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchFATHelper.setConfig("ChunkTest/server.xml", testClass);
 
-        BatchAppUtils.addDropinsBatchFATWar(server);;
+        BatchAppUtils.addDropinsBatchFATWar(server);
+        BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
         BatchFATHelper.startServer(server, testClass);
         FatUtils.waitForSmarterPlanet(server);
+
+        // Setup batch tables.
+        createDefaultRuntimeTables();
 
         // Setup chunk test data
         executeSql("jdbc/batch", getChunkInTableSql());

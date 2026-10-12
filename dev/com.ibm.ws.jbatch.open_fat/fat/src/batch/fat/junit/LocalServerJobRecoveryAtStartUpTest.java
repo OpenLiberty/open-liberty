@@ -49,10 +49,13 @@ public class LocalServerJobRecoveryAtStartUpTest extends BatchFATHelper {
         BatchFATHelper.setConfig("LocalJobRecoveryResources/server.xml", testClass);
 
         BatchAppUtils.addDropinsBatchFATWar(server);
+        BatchAppUtils.addDropinsBonusPayoutWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
 
         BatchFATHelper.startServer(server, testClass);
         FatUtils.waitForSmarterPlanet(server);
+
+        createDefaultRuntimeTables();
 
         setUpDB();
 

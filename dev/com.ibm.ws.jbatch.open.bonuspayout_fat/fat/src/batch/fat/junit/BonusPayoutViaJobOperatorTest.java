@@ -145,7 +145,7 @@ public class BonusPayoutViaJobOperatorTest extends BatchFATHelper {
          * Seems like there's no point in re-packaging a DB servlet in BonusPayout.war at the moment.
          */
         loadAndExecuteSql("jdbc/BonusPayoutDS",
-                          "common/BonusPayout.h2.ddl",
+                          "common/BonusPayout.derby.ddl",
                           DFLT_PERSISTENCE_SCHEMA,
                           DFLT_TABLE_PREFIX);
 
