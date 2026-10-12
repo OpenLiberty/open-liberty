@@ -80,12 +80,12 @@ public class CCLObjectInputStream extends java.io.ObjectInputStream
 
         try
         {
-            return Class.forName(objStrmClass.getName());
+            return Class.forName(objStrmClass.getName(), false, CCLObjectInputStream.class.getClassLoader());
         } catch (ClassNotFoundException cnfe)
         {
             //FFDCFilter.processException(ex, CLASS_NAME + "resolveClass", "97", this);
         }
-        return Class.forName(objStrmClass.getName(), true, classloader);
+        return Class.forName(objStrmClass.getName(), false, classloader);
 
     }
 
