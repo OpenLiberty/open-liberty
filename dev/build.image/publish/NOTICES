@@ -398,8 +398,7 @@ smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
 snappy-java, swagger-client, swagger-ui, text-decoder, tomcat-el-api,
 tomcat-jasper-el, ts-toolbelt, vertx-codegen, wss4j-bindings, wss4j-policy,
 wss4j-ws-security-common, wss4j-ws-security-dom, wss4j-ws-security-policy-stax,
-wss4j-ws-security-stax, wss4j-ws-security-web, xmlsec, yoko-core, yoko-osgi,
-yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
+wss4j-ws-security-stax, wss4j-ws-security-web, xmlsec, yoko-core
 
 
 Apache License

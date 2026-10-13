@@ -14241,14 +14241,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.yoko.spec.corba</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.osgi</symbolic-name>
+            <symbolic-name>io.openliberty.yoko.core</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -14269,35 +14262,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.yoko.rmi.impl</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.core</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.util</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
             <symbolic-name>com.ibm.ws.transport.iiop</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.rmi.spec</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -15232,47 +15197,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.yoko.spec.corba</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <java-range>9.0.0</java-range>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.osgi</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <java-range>9.0.0</java-range>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.rmi.impl</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <java-range>9.0.0</java-range>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
             <symbolic-name>io.openliberty.yoko.core</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <java-range>9.0.0</java-range>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.util</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <java-range>9.0.0</java-range>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.yoko.rmi.spec</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>
@@ -43603,7 +43528,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.yoko.spec.corba</symbolic-name>
+            <symbolic-name>io.openliberty.org.apache.bcel</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -43611,7 +43536,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.yoko.rmi.spec</symbolic-name>
+            <symbolic-name>com.ibm.ws.org.apache.commons.lang3</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -43619,7 +43544,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.yoko.osgi</symbolic-name>
+            <symbolic-name>io.openliberty.yoko.core</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
