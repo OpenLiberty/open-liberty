@@ -210,6 +210,11 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals("Cheap", cheap.get(0).getName());
     }
 
+    // -----------------------------------------------------------------------
+    // JPA 4.0 — TypedQuery.getResultCount()
+    // -----------------------------------------------------------------------
+
+    /** Verify getResultCount() returns total count without and with WHERE clause. */
     @Test
     public void testGetResultCount() throws Exception {
         cleanup(Product.class);
@@ -224,9 +229,59 @@ public class JakartaPersistenceServlet extends FATServlet {
         long totalCount = allProductsQuery.getResultCount();
         assertEquals("getResultCount() should return 4 for the total number of products", 4L, totalCount);
 
-        TypedQuery<Product> expensiveProductsQuery = em.createQuery("SELECT p FROM Product p WHERE p.price > 100.0", Product.class);
+        TypedQuery<Product> expensiveProductsQuery = em.createQuery(
+            "SELECT p FROM Product p WHERE p.price > 100.0", Product.class);
         long expensiveCount = expensiveProductsQuery.getResultCount();
         assertEquals("getResultCount() should return 2 for products priced over 100.0", 2L, expensiveCount);
+    }
+
+    /** Verify getResultCount() with named parameters and when no records match. */
+    @Test
+    public void testGetResultCountWithParameters() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        em.persist(new SimpleEmployee("Alice", 80_000L));
+        em.persist(new SimpleEmployee("Bob", 50_000L));
+        em.persist(new SimpleEmployee("Carol", 120_000L));
+        em.persist(new SimpleEmployee("David", 95_000L));
+        tx.commit();
+
+        TypedQuery<SimpleEmployee> query = em.createQuery(
+            "SELECT e FROM SimpleEmployee e WHERE e.salary >= :minSalary", SimpleEmployee.class);
+        query.setParameter("minSalary", 80_000L);
+        long count = query.getResultCount();
+        assertEquals("getResultCount() should return 3 for employees with salary >= 80000", 3L, count);
+
+        // When no rows match
+        query.setParameter("minSalary", 200_000L);
+        long zeroCount = query.getResultCount();
+        assertEquals("getResultCount() should return 0 when no rows match", 0L, zeroCount);
+    }
+
+    /** Verify getResultCount() returns total count even when pagination (firstResult/maxResults) is set. */
+    @Test
+    public void testGetResultCountWithPagination() throws Exception {
+        cleanup(Product.class);
+        tx.begin();
+        em.persist(new Product("Item 1", 10.0));
+        em.persist(new Product("Item 2", 20.0));
+        em.persist(new Product("Item 3", 30.0));
+        em.persist(new Product("Item 4", 40.0));
+        em.persist(new Product("Item 5", 50.0));
+        tx.commit();
+
+        TypedQuery<Product> paginatedQuery = em.createQuery(
+            "SELECT p FROM Product p ORDER BY p.price", Product.class);
+        paginatedQuery.setFirstResult(1);
+        paginatedQuery.setMaxResults(2);
+
+        // getResultList() returns page size of 2
+        List<Product> page = paginatedQuery.getResultList();
+        assertEquals("getResultList() should return paginated results size", 2, page.size());
+
+        // getResultCount() returns total count (5) regardless of pagination
+        long totalCount = paginatedQuery.getResultCount();
+        assertEquals("getResultCount() should return total count of 5 regardless of pagination", 5L, totalCount);
     }
 
     // -----------------------------------------------------------------------
