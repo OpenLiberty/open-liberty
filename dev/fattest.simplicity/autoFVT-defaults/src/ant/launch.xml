@@ -72,7 +72,7 @@
 							<fileset dir="${basedir}/build/lib" includes="**.jar" />
 						</scanJars>
 				
-						<echo message="entry point: ${entry.point}" />
+						<echo level="info" message="entry point: ${entry.point}" />
 
 						<!-- If we find more than one test bucket class, fail and instruct the user to set test.bucket.class -->
 						<iff>
@@ -104,18 +104,18 @@
 	<!-- Properties used: configuration.properties, local.properties, bootstrapping.properties, topology.properties, acute.properties, dir.log, dir.log.tmp -->
 	<target name="translateProperties" depends="initProperties">
 		<!-- ACUTE caches information in its topology properties file, so if the state of your server changed since your last invocation, ACUTE won't know about it unless you refresh the file -->
-		<echo>Deleting existing properties files</echo>
+		<echo level="info">Deleting existing properties files</echo>
 		<delete file="${local.properties}" quiet="true" />
 		<delete file="${simplicity.properties}" quiet="true" />
 
-		<echo>Generating a local properties file that contains all the properties from Ant and configuration.properties</echo>
+		<echo level="info">Generating a local properties file that contains all the properties from Ant and configuration.properties</echo>
 		<property file="${configuration.properties}" />
 		<property file="${bootstrapping.properties}" />
 		<property file="${testinfo.properties}" />
 		<echoproperties destfile="${local.properties}" />
-		<echo>Created ${local.properties}</echo>
+		<echo level="info">Created ${local.properties}</echo>
 
-		<echo>Generating the Simplicity config.props file based on configuration.properties</echo>
+		<echo level="info">Generating the Simplicity config.props file based on configuration.properties</echo>
 		<propertyfile file="${simplicity.properties}" comment="Simplicity Configuration file">
 			<entry key="webSphereOperationsProvider" value="${simplicity.webSphereOperationsProvider}" />
 			<entry key="commandLineProvider" value="${simplicity.commandLineProvider}" />
@@ -126,14 +126,14 @@
 			<entry key="preferJIIWSWsAdmin" value="${simplicity.preferJIIWSWsAdmin}" />
 		</propertyfile>
 		
-		<echo>Initializing the classpath for ${test.bucket.name}</echo>
+		<echo level="info">Initializing the classpath for ${test.bucket.name}</echo>
 		<property file="${bootstrapping.properties}" />
 
 		<property name="bucket.minimum.java.prop" value="${test.bucket.class}_fat.minimum.java.level"/>
 		<copyProperty from="${bucket.minimum.java.prop}" to="bucket.minimum.java"/>
 		
 		<!-- Work out the actual entry point based on the current java level and database properties -->
-		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
+		<echo level="info" message="Checking min java level for project based on bootstrapping.properties file..." />
 
 		<condition property="fat.minimum.java" value="${bucket.minimum.java}" else="${fat.minimum.java.level}">
 			<isset property="${bucket.minimum.java.prop}" />
@@ -161,9 +161,9 @@
 		</condition>
 
 		<!-- Output java level info -->
-		<echo message="fat.minimum.java=${fat.minimum.java}" />
-		<echo message="java.specification.version=${java.specification.version}" />
-		<echo message="micro.version=${micro.version}" />
+		<echo level="info" message="fat.minimum.java=${fat.minimum.java}" />
+		<echo level="info" message="java.specification.version=${java.specification.version}" />
+		<echo level="info" message="micro.version=${micro.version}" />
 
 		<iff>
 			<istrue value="${skip.java.level}" />
@@ -180,7 +180,7 @@
 		<property name="test.bucket.name.to.run" value="${test.bucket.name}" />
 
 		<!-- What will our entry point be? -->
-		<echo message="FAT entry point will be: ${test.bucket.class.to.run}" />
+		<echo level="info" message="FAT entry point will be: ${test.bucket.class.to.run}" />
 	</target>
 
 	<!-- Properties used: test.bucket.name.to.run, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class.to.run -->
@@ -355,7 +355,7 @@
 			<fileset dir="${liberty.location}/dev/" includes="${test.classpath.wlp.include}" />
 		</path>
 
-		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}" />
+		<echo level="info" message="test.bucket.path including junit: ${toString:test.bucket.path}" />
 
 		<iff>
 			<or>
@@ -363,7 +363,7 @@
 				<istrue value="${is.zos.platform}" />
 			</or>
 			<then>
-				<echo>generating classpath jar file.</echo>
+				<echo level="info">generating classpath jar file.</echo>
 				<property name="classpath.jar.name" value="${basedir}/build/lib/cp.jar" />
 				<manifestclasspath property="classpath.list" maxParentLevels="20" jarfile="${classpath.jar.name}">
 					<classpath refid="test.bucket.path" />
@@ -376,11 +376,11 @@
 				<path id="test.bucket.path">
 					<fileset file="${classpath.jar.name}" />
 				</path>
-				<echo message="modified test.bucket.path : ${toString:test.bucket.path}" />
+				<echo level="info" message="modified test.bucket.path : ${toString:test.bucket.path}" />
 			</then>
 		</iff>
 
-		<echo>Initializing JRE logging</echo>
+		<echo level="info">Initializing JRE logging</echo>
 		<delete dir="${dir.log}" quiet="true" />
 		<mkdir dir="${dir.log.xml}" />
 		<mkdir dir="${dir.log.tmp}" />
@@ -498,7 +498,7 @@
 
 		<iff if="embedded.trace">
 			<then>
-				<echo>embedded.trace is active</echo>
+				<echo level="info">embedded.trace is active</echo>
 				<property name="framework.debug.embed.jvmarg1" value="-javaagent:${libertyInstallPath}/bin/tools/ws-javaagent.jar" />
 			</then>
 			<else>
@@ -512,18 +512,18 @@
 		<property name="enable.server.log.validation" value="false" />
 
 		<property name="extra.vmargs" value="" />
-		<echo message="Launching FAT with extra vmargs: ${extra.vmargs}" />
+		<echo level="info" message="Launching FAT with extra vmargs: ${extra.vmargs}" />
 
 		<iff if="zos.environment">
 			<then>
-				<echo message="Setting zos.extra.vmargs because we are running on zos" />
+				<echo level="info" message="Setting zos.extra.vmargs because we are running on zos" />
 				<property name="zos.extra.vmargs" value="-Dcom.ibm.jsse2.overrideDefaultTLS=true -Dcom.ibm.team.repository.transport.client.protocol=TLSv1.2" />
 			</then>
 			<else>
 				<property name="zos.extra.vmargs" value="" />
 			</else>
 		</iff>
-		<echo message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}" />
+		<echo level="info" message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}" />
 		
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
@@ -531,21 +531,23 @@
 		<property name="jacocoagent.file" location="${junit_jar}/jacoco-0.7.6.201602180812/lib/jacocoagent.jar" />
 		<!-- END coverage properties -->
 
-		<echo>Coverage settings:</echo>
-		<echo>test.coverage: ${test.coverage}</echo>
-		<echo>exec.data.file: ${exec.data.file}</echo>
-		<echo>jacocoant.file: ${jacocoant.file}</echo>
-		<echo>jacocoagent.file: ${jacocoagent.file}</echo>
+		<echo level="info">Coverage settings:</echo>
+		<echo level="info">test.coverage: ${test.coverage}</echo>
+		<echo level="info">exec.data.file: ${exec.data.file}</echo>
+		<echo level="info">jacocoant.file: ${jacocoant.file}</echo>
+		<echo level="info">jacocoagent.file: ${jacocoagent.file}</echo>
 
 		<mkdir dir="${build.tmp.dir}" />
 		
 		<!-- Note that users can override framework.maxheap from personal build -->
 		<property name="framework.maxheap" value="-Xmx1024m" />
-		<echo>framework.maxheap=${framework.maxheap}</echo>
+		<echo level="info">framework.maxheap=${framework.maxheap}</echo>
 		<property name="apache.ds.home" location="${basedir}/apacheds-2.0.0-M15" />
+		<property name="junit.output.to.formatters" value="true" />
 		<try rethrow="false">
 			<sequential>
-				<junit printsummary="on" fork="on" dir="${dir.test.current.directory}" timeout="${fattest.timeout}" failureproperty="test.failure" includeantruntime="no">
+				<junit printsummary="on" fork="on" dir="${dir.test.current.directory}" timeout="${fattest.timeout}" failureproperty="test.failure" includeantruntime="no"
+				       outputtoformatters="${junit.output.to.formatters}">
 					<!-- junit printsummary="on" fork="on" dir="${dir.test.current.directory}" watchdog="TimeoutWatchdog(${fattest.timeout})" failureproperty="test.failure" includeantruntime="no" -->
 					<!-- Push in the is.running.automated.build and isPersonalBuild -->
 					<sysproperty key="disable.ffdc.checking" value="${disable.ffdc.checking}" />
@@ -616,6 +618,8 @@
 					<classpath refid="test.bucket.path" />
 					<!-- report will be generated as xml -->
 					<formatter type="xml" />
+					<!-- brief formatter: records each test result; failures include a stack trace -->
+					<formatter type="brief" usefile="true" if="llm" />
 					<!-- Invoke JUnit TestSuite -->
 					<test todir="${dir.log.xml}" name="${test.bucket.class.to.run}" />
 					<!-- need the file.encoding for running on z/os -->
@@ -663,7 +667,7 @@
 						<istrue value="${is.windows.platform}" />
 					</condition>
 
-					<echo>Executing ${libertyInstallPath}/bin/${script.exec} ${script.cmd} stop ${serverDir}</echo>
+					<echo level="info">Executing ${libertyInstallPath}/bin/${script.exec} ${script.cmd} stop ${serverDir}</echo>
 					<exec failonerror="false" executable="${script.exec}" dir="${libertyInstallPath}/bin" timeout="300000">
 						<arg line="${script.cmd}" />
 						<arg line="stop" />
@@ -682,10 +686,17 @@
 				<delete>
 					<fileset dir="${basedir}/output" includes="*.mrk" />
 				</delete>
-
+	
+				<iff if="llm">
+					<then>
+						<concat>
+							<fileset dir="${dir.log.xml}" includes="TEST-*.txt" />
+						</concat>
+					</then>
+				</iff>
 			</finally>
 		</try>
-		<echo>Finished running ${test.bucket.name.to.run}</echo>
+		<echo level="info">Finished running ${test.bucket.name.to.run}</echo>
 		<echo>XML report is available at ${dir.log.xml}</echo>
 		<iff if="is.running.automated.build">
 			<then>
@@ -760,7 +771,7 @@
 	</target>
 
 	<target name="stopServer">
-		<echo>stopServer for ${serverFile}</echo>
+		<echo level="info">stopServer for ${serverFile}</echo>
 	</target>
 
 	<!-- Properties used: dir.log.html, dir.log.xml. -->
@@ -793,7 +804,7 @@
 
 	<!-- Properties used: dir.log.html, dir.log.xml -->
 	<target name="reallyGenerateReports">
-		<echo>Generating an HTML report based on the existing XML report</echo>
+		<echo level="info">Generating an HTML report based on the existing XML report</echo>
 		<delete dir="${dir.log.html}" quiet="true" />
 		<mkdir dir="${dir.log.html}" />
 		<junitreport todir="${dir.log.xml}">
@@ -802,7 +813,7 @@
 			</fileset>
 			<report format="frames" todir="${dir.log.html}" />
 		</junitreport>
-		<echo>HTML report is available at ${dir.log.html}/index.html</echo>
+		<echo level="info">HTML report is available at ${dir.log.html}/index.html</echo>
 	</target>
 
 	<!-- Properties used: dir.log -->
@@ -837,19 +848,19 @@
 					<property name="liberty.dir" value="${basedir}/../../${install.name}" />
 				</then>
 			</iff>
-			<echo>Base dir is:  ${basedir}</echo>
-			<echo>Liberty dir is:  ${liberty.dir}</echo>
-			<echo>libertyInstallPath is:  ${libertyInstallPath}</echo>
+			<echo level="info">Base dir is:  ${basedir}</echo>
+			<echo level="info">Liberty dir is:  ${liberty.dir}</echo>
+			<echo level="info">libertyInstallPath is:  ${libertyInstallPath}</echo>
 
 			<condition property="liberty.location" value="${liberty.dir}" else="${libertyInstallPath}">
 				<isset property="liberty.dir" />
 			</condition>
-			<echo>liberty.location is:  ${liberty.location}</echo>
+			<echo level="info">liberty.location is:  ${liberty.location}</echo>
 
 			<condition property="install.location" value="${basedir}/autoFVT/" else="${basedir}/">
 				<available file="${basedir}/autoFVT/" />
 			</condition>
-			<echo>install.location is:  ${install.location}</echo>
+			<echo level="info">install.location is:  ${install.location}</echo>
 
 			<condition property="testports.location" value="${basedir}/../image/output/${install.name}/usr/servers/${testports.properties}" else="${liberty.location}/usr/servers/${testports.properties}">
 				<available file="${basedir}/../image/output/${install.name}/usr/servers" />
@@ -897,9 +908,9 @@
 			<iff>
 				<available file="${basedir}/apacheds-2.0.0-M15" property="isApacheDSAvailable" />
 				<then>
-					<echo> For first ldap Non-SSL port : ${ldap.1.port} and SSL port : ${ldap.1.ssl.port} </echo>
-					<echo> For second ldap Non-SSL port : ${ldap.2.port} and SSL port : ${ldap.2.ssl.port} </echo>
-					<echo> For third ldap Non-SSL port : ${ldap.3.port} and SSL port : ${ldap.3.ssl.port} </echo>
+					<echo level="info"> For first ldap Non-SSL port : ${ldap.1.port} and SSL port : ${ldap.1.ssl.port} </echo>
+					<echo level="info"> For second ldap Non-SSL port : ${ldap.2.port} and SSL port : ${ldap.2.ssl.port} </echo>
+					<echo level="info"> For third ldap Non-SSL port : ${ldap.3.port} and SSL port : ${ldap.3.ssl.port} </echo>
 					<copy file="${basedir}/apacheds-2.0.0-M15/instances/TDS/conf/config.ldif.org" tofile="${basedir}/apacheds-2.0.0-M15/instances/TDS/conf/config.ldif" overwrite="true">
 						<filterchain>
 							<tokenfilter>
@@ -978,19 +989,19 @@
 			</and>
 		</condition>
 
-		<echo>Debug Data:</echo>
-		<echo>libertyInstallPath: ${libertyInstallPath}</echo>
-		<echo>jacocoant.file: ${jacocoant.file}</echo>
-		<echo>exec.data.file: ${exec.data.file}</echo>
-		<echo>is.exec.data.file.avialable: ${is.exec.data.file.avialable}</echo>
-		<echo>dir.log.coverage: ${dir.log.coverage}</echo>
-		<echo>project.name: ${project.name}</echo>
-		<echo>project.under.test: ${project.under.test}</echo>
-		<echo>project.under.test.bundles.path: ${project.under.test.bundles.path}</echo>
-		<echo>is.project.under.test.bundles.available: ${is.project.under.test.bundles.available}</echo>
-		<echo>project.under.test.source.path: ${project.under.test.source.path}</echo>
-		<echo>is.project.under.test.source.available: ${is.project.under.test.source.available}</echo>
-		<echo>generateFatJaCoCoReport.run: ${generateFatJaCoCoReport.run}</echo>
+		<echo level="info">Debug Data:</echo>
+		<echo level="info">libertyInstallPath: ${libertyInstallPath}</echo>
+		<echo level="info">jacocoant.file: ${jacocoant.file}</echo>
+		<echo level="info">exec.data.file: ${exec.data.file}</echo>
+		<echo level="info">is.exec.data.file.avialable: ${is.exec.data.file.avialable}</echo>
+		<echo level="info">dir.log.coverage: ${dir.log.coverage}</echo>
+		<echo level="info">project.name: ${project.name}</echo>
+		<echo level="info">project.under.test: ${project.under.test}</echo>
+		<echo level="info">project.under.test.bundles.path: ${project.under.test.bundles.path}</echo>
+		<echo level="info">is.project.under.test.bundles.available: ${is.project.under.test.bundles.available}</echo>
+		<echo level="info">project.under.test.source.path: ${project.under.test.source.path}</echo>
+		<echo level="info">is.project.under.test.source.available: ${is.project.under.test.source.available}</echo>
+		<echo level="info">generateFatJaCoCoReport.run: ${generateFatJaCoCoReport.run}</echo>
 	</target>
 
 	<target name="generateFatJaCoCoReport.checkExecDataFile" unless="is.exec.data.file.avialable">
@@ -1013,7 +1024,7 @@
 	</target>
 
 	<target name="generateFatJaCoCoReport.withSource" if="is.project.under.test.source.available">
-		<echo>Generating the FAT coverage report for component ${project.under.test}</echo>
+		<echo level="info">Generating the FAT coverage report for component ${project.under.test}</echo>
 		<jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
 			<executiondata>
 				<file file="${exec.data.file}" />
@@ -1038,7 +1049,7 @@
 	</target>
 
 	<target name="generateFatJaCoCoReport.noSource" unless="is.project.under.test.source.available">
-		<echo>Generating the FAT coverage report for component ${project.under.test} (no source)</echo>
+		<echo level="info">Generating the FAT coverage report for component ${project.under.test} (no source)</echo>
 		<jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
 			<executiondata>
 				<file file="${exec.data.file}" />
@@ -1068,9 +1079,9 @@
                                                   generateFatJaCoCoReport.noRun" if="generateFatJaCoCoReport.run">
 		<antcall target="generateFatJaCoCoReport.withSource" />
 		<antcall target="generateFatJaCoCoReport.noSource" />
-		<echo>HTML report for code coverage is available at ${dir.log.coverage}/index.html</echo>
-		<echo>CSV report for code coverage is available at ${dir.log.coverage}/report.csv</echo>
-		<echo>XML report for code coverage is available at ${dir.log.coverage}/report.xml</echo>
+		<echo level="info">HTML report for code coverage is available at ${dir.log.coverage}/index.html</echo>
+		<echo level="info">CSV report for code coverage is available at ${dir.log.coverage}/report.csv</echo>
+		<echo level="info">XML report for code coverage is available at ${dir.log.coverage}/report.xml</echo>
 	</target>
 
 	<!-- Want to add ${haltOnFailure} control to this, defaulting to 
@@ -1079,7 +1090,7 @@
 	     status is desired from a single pass.
 	  -->
 	<target name="failIfTestFailures">
-		<echo message="haltOnFailure is '${haltOnFailure}'" />
+		<echo level="info" message="haltOnFailure is '${haltOnFailure}'" />
 		<iff>
 			<and>
 				<not>
