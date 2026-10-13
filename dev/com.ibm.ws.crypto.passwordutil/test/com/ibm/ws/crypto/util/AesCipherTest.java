@@ -19,8 +19,11 @@ import static org.junit.Assert.fail;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.SecureRandom;
 import java.util.Base64;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.After;
@@ -161,5 +164,27 @@ public class AesCipherTest {
         assertEquals(KeyVersion.AES_V0, KeyVersion.fromWireByte((byte) 0));
         assertEquals(KeyVersion.AES_V1, KeyVersion.fromWireByte((byte) 1));
         assertEquals(KeyVersion.AES_V2, KeyVersion.fromWireByte((byte) 2));
+    }
+
+    @Test(expected = InvalidPasswordCipherException.class)
+    public void testMalformedSeedSizeThrowsInvalidPasswordCipherException() throws Exception {
+        // Build a payload that authenticates and decrypts successfully, but whose decrypted
+        // content declares a seed size (0xFF) larger than the buffer, so removeSeed rejects it.
+        final Key aesKey = new SecretKeySpec(Base64.getDecoder().decode(VALID_BASE64_KEY), "AES");
+        SecretKeyResolver resolver = () -> aesKey;
+
+        byte[] iv = new byte[12];
+        new SecureRandom().nextBytes(iv);
+        Cipher c = Cipher.getInstance("AES/GCM/NoPadding");
+        c.init(Cipher.ENCRYPT_MODE, aesKey, new GCMParameterSpec(128, iv));
+        byte[] ciphertext = c.doFinal(new byte[] { (byte) 0xFF, 0x01 });
+
+        byte[] payload = new byte[2 + iv.length + ciphertext.length];
+        payload[0] = KeyVersion.AES_V2.wireByte;
+        payload[1] = (byte) iv.length;
+        System.arraycopy(iv, 0, payload, 2, iv.length);
+        System.arraycopy(ciphertext, 0, payload, 2 + iv.length, ciphertext.length);
+
+        AesCipher.forDecrypt(KeyVersion.AES_V2, resolver).decrypt(payload);
     }
 }
