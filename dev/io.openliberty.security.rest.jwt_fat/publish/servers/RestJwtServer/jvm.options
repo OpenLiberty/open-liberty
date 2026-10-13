@@ -1,0 +1,1 @@
+-Dcom.ibm.ws.logging.trace.specification=*=info:RESTJWT=all:jmx.rest.server.connector=all:com.ibm.ws.security.*=all
