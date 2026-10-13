@@ -3890,7 +3890,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                             && nettyResponse.headers().get(HttpHeaderNames.UPGRADE) != null;
             boolean isWebSocketUpgrade = isUpgrade
                             && HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(nettyResponse.headers().get(HttpHeaderNames.UPGRADE));
-            if (websocketIntent && !isWebSocketUpgrade) {
+            if (!websocketIntent && isWebSocketUpgrade && getVC() != null
+                            && getVC().getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT) != null) {
+                // HTTP/1 WebSocket servlet upgrades have no LibertyUpgradeCodec hint.
+                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(Boolean.TRUE);
+            } else if (websocketIntent && !isWebSocketUpgrade) {
                 nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
             }
             if (isSwitching) {
