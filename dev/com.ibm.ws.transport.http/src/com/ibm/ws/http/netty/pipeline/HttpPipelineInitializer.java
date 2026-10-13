@@ -31,6 +31,7 @@ import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpKeepAliveHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
 import io.netty.channel.Channel;
@@ -42,7 +43,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.flow.FlowControlHandler;
@@ -271,8 +271,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 if(pipeline.get(ReadFlowHandler.class) == null){
                     pipeline.addBefore((timeoutHandler != null) ? TimeoutHandler.NAME : HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
-                if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                if(pipeline.get(LibertyHttpKeepAliveHandler.class) == null){
+                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpKeepAliveHandler(httpConfig));
                 }
 
                 establishHttp1Protocol(ctx, false);
@@ -348,8 +348,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
             }
 
-            if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                pipeline.addAfter(FLOW_CONTROL_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            if(pipeline.get(LibertyHttpKeepAliveHandler.class) == null){
+                pipeline.addAfter(FLOW_CONTROL_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new LibertyHttpKeepAliveHandler(httpConfig));
             }
 
             if (pipeline.get(TimeoutHandler.class) == null) {
