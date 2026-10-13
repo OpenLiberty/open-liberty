@@ -19,9 +19,14 @@
        However, since node.js is javascript based, it tends to perform better than Rhino,
        but since the ant (java) version of jshint ran in 2-10 seconds, I don't think that's an issue. -->
   <target name="jshint" description="Run jshint on all of the JavaScript files in the project">
-    <!-- Define the task -->
-    <taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask"
-             classpath="${basedir}/../ant_build.js/lib/jshint/ant-jshint-0.3.6-deps.jar" />
+    <!-- Define the task with all required dependencies in its classpath -->
+    <taskdef name="jshint" classname="com.philmander.jshint.JsHintAntTask">
+      <classpath>
+        <fileset dir="${basedir}/../ant_build.js/lib/jshint/">
+          <include name="*.jar" />
+        </fileset>
+      </classpath>
+    </taskdef>
 
     <!-- Lint the code -->
     <!-- Default to running jshint unless the build definition overrides this property with false. -->
