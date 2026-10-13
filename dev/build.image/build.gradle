@@ -454,6 +454,9 @@ def excludedEE7Features = ['cdi-1.2',
 def excludedMP6Features = ['mpCompatible-6.0',
                            'mpCompatible-6.1']
 
+def excludedPersistenceFeatures = ['com.ibm.websphere.appserver.org.eclipse.persistence-3.0.mf',
+								   'com.ibm.websphere.appserver.org.eclipse.persistence-3.1.mf']
+
 def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
     Path path = Paths.get(pathname)
     Charset charset = StandardCharsets.UTF_8
@@ -489,7 +492,8 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn copyBetaLicenseToBuildImage
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&latestEEAndBetaPublicFeatures
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.data,io.openliberty.jakarta.data,io.openliberty.persistenceContainer,io.openliberty.jakarta.persistence,io.openliberty.jakarta.persistence.base"
+        excludedFeatures = excludedPersistenceFeatures
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.data,io.openliberty.jakarta.data,io.openliberty.persistenceContainer,io.openliberty.jakarta.persistence,io.openliberty.jakarta.persistence.base,com.ibm.websphere.appserver.org.eclipse.persistence"
         outputTo new File(packageDir, "beta")
         isBeta = true
         doLast {
