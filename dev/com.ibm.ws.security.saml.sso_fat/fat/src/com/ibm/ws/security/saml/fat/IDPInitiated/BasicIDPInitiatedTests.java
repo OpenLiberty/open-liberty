@@ -28,6 +28,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -95,6 +96,47 @@ public class BasicIDPInitiatedTests extends BasicSAMLTests {
 
         genericSAML(_testName, webClient, updatedTestSettings, SAMLConstants.IDP_INITIATED_FLOW, expectations);
 
+    }
+    /**
+     * Explicit FAT test for SAML assertion replay cache (CWWKS5082E) in the IDP-initiated flow.
+     * The IDP-initiated flow has no relay-state cache entry to consume, so the
+     * only guard against replay is SamlResponseReplayCache in UnsolicitedHandler.
+     * This test verifies that guard works end-to-end:
+     *  1. Run IDP-initiated flow through IDP login — save the IDP response page
+     *     (HTML auto-submit form containing the SAMLResponse POST body).
+     *  2. Submit it to ACS once — must succeed; assertion ID is stored in cache.
+     *  3. Submit the exact same page to ACS again — must be rejected with CWWKS5082E.
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @Test
+    public void basicIDPInitiatedTests_useSAMLTokenAgain_replayAttack() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.updatePartnerInSettings("sp1", true);
+
+        // Step 1: get the IDP response page without submitting to ACS.
+        // justGetSAMLToken = IDP_INITIATED_GET_SAML_TOKEN = { BUILD_POST_IDP_INITIATED_REQUEST, PERFORM_IDP_LOGIN }
+        Object idpResponsePage = genericSAML(_testName, webClient, updatedTestSettings,
+                                             justGetSAMLToken,
+                                             helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings));
+
+        // Step 2: first ACS submission — must succeed.
+        List<validationData> firstExpectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
+        helpers.invokeACSWithSAMLResponse(_testName, webClient, idpResponsePage,
+                                          updatedTestSettings, firstExpectations);
+
+        // Step 3: replay the same IDP response page — must be rejected with CWWKS5082E.
+        List<validationData> replayExpectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, null);
+        replayExpectations = helpers.addMessageExpectation(testSAMLServer, replayExpectations,
+                                                           SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE,
+                                                           SAMLConstants.SAML_MESSAGES_LOG,
+                                                           SAMLConstants.STRING_CONTAINS,
+                                                           "Did not receive CWWKS5082E replay attack failure for IDP-initiated flow.",
+                                                           SAMLMessageConstants.CWWKS5082E_ASSERTION_ALREADY_PROCESSED);
+        helpers.invokeACSWithSAMLResponse(_testName, webClient, idpResponsePage,
+                                          updatedTestSettings, replayExpectations);
     }
 
     // TODO - chc - can't set the "relayState/RelayState" in the request with Shibboleth - they use the target by default
