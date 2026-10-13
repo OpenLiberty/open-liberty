@@ -104,7 +104,13 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
     /* call from dispatcher handler when headers are parsed and auto-read off */
     public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding, long contentLength, boolean chunked){
-        
+        // A null queue would leave streaming=false while all other Netty state is
+        // configured on a Netty connection.  The caller provides a non-null
+        // queue, so fail fast here rather than allow a silent wrong-path read later.
+        if (queue == null) {
+            throw new IllegalArgumentException("BodyQueue must not be null when configuring Netty streaming mode");
+        }
+
         this.context = context;
         this.autoRead = (context != null) && context.channel().config().isAutoRead();
         
@@ -118,14 +124,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.isChunked = chunked;
         this.streamingTransferInProgress = false;
 
-        this.bytesRead = 0L;   
-        this.decodedBytesRead = 0L;          
+        this.bytesRead = 0L;
+        this.decodedBytesRead = 0L;
         this.decodedBytesProduced = 0L;
 
-        if(queue != null){
-            this.queue = queue;
-            this.streaming = true;
-        }
+        this.queue = queue;
+        this.streaming = true;
     }
 
     /*
