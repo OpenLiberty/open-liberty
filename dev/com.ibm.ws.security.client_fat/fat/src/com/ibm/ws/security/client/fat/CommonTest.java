@@ -878,6 +878,7 @@ public class CommonTest {
                     apps = new String[] { "apps/BasicCalculatorClient.ear", "apps/TechnologySamples.ear" };
                     break;
                 case "myTestClientCipher":
+                case "myTestClientPQC":
                     apps = new String[] { "apps/BasicCalculatorClient.ear", "apps/TechnologySamples.ear" };
                     break;
                 case "noDefaultKeyClient":
@@ -930,6 +931,7 @@ public class CommonTest {
                 case "SSLCipherTest":
                 case "SSLnonIBMCipherTest":
                 case "SSLHandshakeTest":
+                case "SSLHandshakePQCTest":
                 case "SSLHandshakeTestNonIBM":
                     apps = new String[] { "apps/BasicCalculator.ear", "dropins/testmarker.war" };
                     break;
