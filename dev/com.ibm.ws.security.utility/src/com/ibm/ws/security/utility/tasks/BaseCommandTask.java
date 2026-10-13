@@ -197,22 +197,14 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
      * @return String value as defined above, or {@code null} if at end of args.
      */
     protected String getValue(String arg) {
-        String[] split = arg.split("=");
-        if (split.length == 1) {
+        if (arg == null) {
             return null;
-        } else if (split.length == 2) {
-            return split[1];
-        } else {
-            // Handle DN case with multiple =s
-            StringBuffer value = new StringBuffer();
-            for (int i = 1; i < split.length; i++) {
-                value.append(split[i]);
-                if (i < (split.length - 1)) {
-                    value.append("=");
-                }
-            }
-            return value.toString();
         }
+        int idx = arg.indexOf('=');
+        if (idx < 0 || idx == arg.length() - 1) {
+            return null;
+        }
+        return arg.substring(idx + 1);
     }
 
     /**
