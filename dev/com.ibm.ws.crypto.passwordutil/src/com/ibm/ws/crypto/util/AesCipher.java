@@ -297,13 +297,13 @@ public final class AesCipher {
         return seeded;
     }
 
-    private static byte[] removeSeed(byte[] decrypted) {
+    private static byte[] removeSeed(byte[] decrypted) throws InvalidPasswordCipherException {
         if (decrypted == null) {
             return null;
         }
         int seedSize = decrypted[0] & 0xFF;
         if (seedSize + 1 > decrypted.length) {
-            throw new IllegalArgumentException("Malformed decrypted payload: seed size " + seedSize + " exceeds buffer length " + decrypted.length);
+            throw new InvalidPasswordCipherException("Malformed decrypted payload: seed size " + seedSize + " exceeds buffer length " + decrypted.length);
         }
         byte[] result = new byte[decrypted.length - seedSize - 1];
         System.arraycopy(decrypted, seedSize + 1, result, 0, result.length);

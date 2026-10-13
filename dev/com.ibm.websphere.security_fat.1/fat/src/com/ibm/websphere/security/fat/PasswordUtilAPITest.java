@@ -116,7 +116,8 @@ public class PasswordUtilAPITest {
         } finally {
             // CWWKS1864W: expected warning when decoding AES-128 (aes_v0) passwords
             // CWWKS1856E: expected errors from negative-test decode failures (key mismatch scenarios)
-            myServer.stopServer("CWWKS1864W", "CWWKS1856E");
+            // CWWKS1857E: AES-128 CBC mismatched key can occasionally yield valid padding but a garbage seed size
+            myServer.stopServer("CWWKS1864W", "CWWKS1856E", "CWWKS1857E");
         }
 
         Log.info(thisClass, method, "Exiting test " + method);
@@ -161,7 +162,8 @@ public class PasswordUtilAPITest {
         } finally {
             // CWWKS1864W: expected warning when decoding AES-128 (aes_v0) passwords
             // CWWKS1856E: expected errors from negative-test decode failures (key mismatch scenarios)
-            myServer.stopServer("CWWKS1864W", "CWWKS1856E");
+            // CWWKS1857E: AES-128 CBC mismatched key can occasionally yield valid padding but a garbage seed size
+            myServer.stopServer("CWWKS1864W", "CWWKS1856E", "CWWKS1857E");
         }
 
         Log.info(thisClass, method, "Exiting test " + method);
@@ -176,12 +178,15 @@ public class PasswordUtilAPITest {
         String encV0 = extractCiphertext(respV0);
         invokeServlet(urlBase, className, "decode", "input=" + URLEncoder.encode(encV0, StandardCharsets.UTF_8.name()), 200, "decode output is: " + plaintext);
 
-        // Scenario 2: AES_V0 (AES-128 Mismatch Custom Key -> decode fails with InvalidPasswordDecodingException)
-        // The encode uses a custom cryptoKey not known to the server, so decode is expected to fail.
-        Log.info(thisClass, name.getMethodName(), "Scenario 2: Expecting decode failure (InvalidPasswordDecodingException) - encoded with a custom key not present in server config.");
+        // Scenario 2: AES_V0 (AES-128 Mismatch Custom Key -> decode fails or produces non-matching garbage)
+        // AES-128 CBC has no integrity tag. Decrypting with a mismatched key usually fails with an exception,
+        // but in rare cases (~0.1%) where PKCS#5 padding and seed length coincidentally validate, it yields
+        // garbage plaintext. In either case, the original plaintext must NOT be recovered.
+        Log.info(thisClass, name.getMethodName(), "Scenario 2: Verifying decode failure or non-recovery with mismatched custom key.");
         String respV0Custom = invokeServlet(urlBase, className, "encode", "aesVersion=v0&cryptoKey=MismatchSecretKey123&input=" + plaintext, 200, "encode output is: {aes}");
         String encV0Custom = extractCiphertext(respV0Custom);
-        invokeServlet(urlBase, className, "decode", "input=" + URLEncoder.encode(encV0Custom, StandardCharsets.UTF_8.name()), 200, "Unexpected Exception during processing: aes");
+        String respDecodeV0 = invokeServlet(urlBase, className, "decode", "input=" + URLEncoder.encode(encV0Custom, StandardCharsets.UTF_8.name()), 200, null);
+        assertFalse("Decoded text must not match plaintext when encoded with mismatched key: " + respDecodeV0, respDecodeV0.contains(plaintext));
 
         // Scenario 3: AES_V1 (AES-256 Server wlp.password.encryption.key)
         String respV1 = invokeServlet(urlBase, className, "encode", "aesVersion=v1&input=" + plaintext, 200, "encode output is: {aes}");
@@ -243,8 +248,10 @@ public class PasswordUtilAPITest {
         String response = invokeServlet(url, expectedStatusCode);
         Log.info(thisClass, method, "response = " + response);
         assertNotNull("response was null", response);
-        assertTrue("Expected: " + expectedResponseText + ", in response text: " + response,
-                   response.indexOf(expectedResponseText) >= 0);
+        if (expectedResponseText != null) {
+            assertTrue("Expected: " + expectedResponseText + ", in response text: " + response,
+                       response.indexOf(expectedResponseText) >= 0);
+        }
         return response;
     }
 
