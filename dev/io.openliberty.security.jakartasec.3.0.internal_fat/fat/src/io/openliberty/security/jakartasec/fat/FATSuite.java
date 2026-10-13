@@ -25,6 +25,7 @@ import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationUseRedire
 import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationWithOidcClientConfigTests;
 import io.openliberty.security.jakartasec.fat.tests.IdentityStoreTests;
 import io.openliberty.security.jakartasec.fat.tests.InjectionScopedTests;
+import io.openliberty.security.jakartasec.fat.tests.MultipartUploadTests;
 import io.openliberty.security.jakartasec.fat.tests.TokenValidationTests;
 
 @RunWith(Suite.class)
@@ -34,6 +35,7 @@ import io.openliberty.security.jakartasec.fat.tests.TokenValidationTests;
                 BasicOIDCAnnotationUseRedirectToOriginalResourceTests.class,
                 BasicOIDCAnnotationWithOidcClientConfigTests.class,
                 InjectionScopedTests.class,
+                MultipartUploadTests.class,
                 IdentityStoreTests.class,
                 TokenValidationTests.class,
                 AuthenticationTests.class,
