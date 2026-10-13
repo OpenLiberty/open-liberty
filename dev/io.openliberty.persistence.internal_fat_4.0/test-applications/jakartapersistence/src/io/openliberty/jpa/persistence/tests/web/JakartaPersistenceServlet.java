@@ -14,11 +14,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
@@ -282,6 +287,68 @@ public class JakartaPersistenceServlet extends FATServlet {
         // getResultCount() returns total count (5) regardless of pagination
         long totalCount = paginatedQuery.getResultCount();
         assertEquals("getResultCount() should return total count of 5 regardless of pagination", 5L, totalCount);
+    }
+
+    // -----------------------------------------------------------------------
+    // JPA 4.0 — PessimisticLockScope.FETCHED
+    // -----------------------------------------------------------------------
+
+    /** Verify PessimisticLockScope enum values and valueOf for FETCHED. */
+    @Test
+    public void testPessimisticLockScopeFetchedEnum() throws Exception {
+        assertNotNull("PessimisticLockScope.FETCHED must be defined", PessimisticLockScope.FETCHED);
+        assertEquals(PessimisticLockScope.FETCHED, PessimisticLockScope.valueOf("FETCHED"));
+        assertEquals("FETCHED", PessimisticLockScope.FETCHED.name());
+
+        List<PessimisticLockScope> scopes = Arrays.asList(PessimisticLockScope.values());
+        assertTrue("PessimisticLockScope must contain NORMAL", scopes.contains(PessimisticLockScope.NORMAL));
+        assertTrue("PessimisticLockScope must contain EXTENDED", scopes.contains(PessimisticLockScope.EXTENDED));
+        assertTrue("PessimisticLockScope must contain FETCHED", scopes.contains(PessimisticLockScope.FETCHED));
+    }
+
+    /** Verify setting jakarta.persistence.lock.scope hint on TypedQuery with PessimisticLockScope.FETCHED and String "FETCHED". */
+    @Test
+    public void testQuerySetHintLockScopeFetched() throws Exception {
+        TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
+
+        // Test fluent setHint with PessimisticLockScope.FETCHED enum
+        TypedQuery<Product> returnedQuery = query.setHint("jakarta.persistence.lock.scope", PessimisticLockScope.FETCHED);
+        assertNotNull("setHint with PessimisticLockScope.FETCHED should return non-null query", returnedQuery);
+
+        // Test fluent setHint with String "FETCHED"
+        returnedQuery = query.setHint("jakarta.persistence.lock.scope", "FETCHED");
+        assertNotNull("setHint with String FETCHED should return non-null query", returnedQuery);
+    }
+
+    /** Verify setting jakarta.persistence.lock.scope property on EntityManager with PessimisticLockScope.FETCHED. */
+    @Test
+    public void testEntityManagerPropertyLockScopeFetched() throws Exception {
+        em.setProperty("jakarta.persistence.lock.scope", PessimisticLockScope.FETCHED);
+        Map<String, Object> props = em.getProperties();
+        assertNotNull("EntityManager properties must not be null", props);
+
+        em.setProperty("jakarta.persistence.lock.scope", "FETCHED");
+        assertNotNull("EntityManager properties must not be null after setting String property", em.getProperties());
+    }
+
+    /** Verify passing PessimisticLockScope.FETCHED in properties map to EntityManager.find. */
+    @Test
+    public void testFindWithLockScopeProperty() throws Exception {
+        cleanup(Product.class);
+        tx.begin();
+        Product p = new Product("Tablet", 399.99);
+        em.persist(p);
+        tx.commit();
+
+        Long id = p.getId();
+
+        tx.begin();
+        Map<String, Object> props = Collections.singletonMap(
+            "jakarta.persistence.lock.scope", PessimisticLockScope.FETCHED);
+        Product found = em.find(Product.class, id, props);
+        assertNotNull("entity should be found successfully with lock scope property", found);
+        assertEquals("Tablet", found.getName());
+        tx.commit();
     }
 
     // -----------------------------------------------------------------------
