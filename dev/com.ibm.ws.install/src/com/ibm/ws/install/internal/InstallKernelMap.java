@@ -18,6 +18,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -1137,6 +1139,9 @@ public class InstallKernelMap implements Map {
      * @param envMap
      */
     private void logEnvMap(Map<String, Object> envMap) {
+        if (envMap == null) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for (Entry<String, Object> entry : envMap.entrySet()) {
@@ -1197,12 +1202,17 @@ public class InstallKernelMap implements Map {
     protected void checkValidProxy(String protocol) throws InstallException {
         String proxyPort = (String) envMap.get(protocol + ".proxyPort");
         if (protocol != null) {
-            int proxyPortnum = Integer.parseInt(proxyPort);
+            int proxyPortnum;
+            try {
+                proxyPortnum = Integer.parseInt(proxyPort);
+            } catch (NumberFormatException e) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
+            }
             if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (envMap.get(protocol + "proxyUser") != null && (envMap.get(protocol + ".proxyPassword") == null
+            } else if (envMap.get(protocol + ".proxyUser") != null && (envMap.get(protocol + ".proxyPassword") == null
                                                                       || ((String) envMap.get(protocol + ".proxyPassword")).isEmpty())) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
@@ -2063,36 +2073,29 @@ public class InstallKernelMap implements Map {
      * @return
      * @throws InstallException
      */
-    private Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) throws InstallException {
+    protected Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) throws InstallException {
         Map<String, String> result = new HashMap<String, String>();
-
-        String[] proxyEnvVarSplit = proxyEnvVar.split("@");
-        if (proxyEnvVarSplit.length != 1 && proxyEnvVarSplit.length != 2) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol.toUpperCase() + "PROXY_FORMAT", proxyEnvVar));
-        }
-
-        if (proxyEnvVarSplit.length == 1) { //without username and password
-            String[] proxyHttpSplit = proxyEnvVar.split(":");
-            if (proxyHttpSplit.length != 3) {
+        try {
+            URI uri = new URI(proxyEnvVar);
+            String host = uri.getHost();
+            int port = uri.getPort();
+            if (host == null || port == -1) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol.toUpperCase() + "PROXY_FORMAT", proxyEnvVar));
             }
-            result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //proxy-server
-            result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
-        } else {
-            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http(s), //user, password]
-            if (proxyCredentials.length != 3) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
-            }
-            String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
-            if (proxyHostPort.length != 2) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
-            }
-            result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
-            result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
-            result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
-            result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
-        }
+            result.put(protocol + ".proxyHost", host);
+            result.put(protocol + ".proxyPort", String.valueOf(port));
 
+            String userInfo = uri.getUserInfo();
+            if (userInfo != null && !userInfo.isEmpty()) {
+                String[] credentials = userInfo.split(":", 2);
+                result.put(protocol + ".proxyUser", credentials[0]);
+                if (credentials.length > 1) {
+                    result.put(protocol + ".proxyPassword", credentials[1]);
+                }
+            }
+        } catch (URISyntaxException e) {
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol.toUpperCase() + "PROXY_FORMAT", proxyEnvVar));
+        }
         return result;
     }
 
