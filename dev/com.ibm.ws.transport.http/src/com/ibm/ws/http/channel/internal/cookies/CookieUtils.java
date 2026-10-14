@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2024 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,11 +43,47 @@ public class CookieUtils {
     private static boolean skipCookiePathQuotes = false;
     private static boolean isEE11 = HttpDispatcher.isEE11();
 
+    private static final String PARTITIONED_ATTRIBUTE = "partitioned";
+    private static final String SAMESITE_ATTRIBUTE = "samesite";
+    private static final String SAMESITE_NONE = "none";
+
     /**
      * Default constructor for the utility class.
      */
     private CookieUtils() {
         // nothing to do
+    }
+
+    /**
+     * Apply the common Partitioned cookie policy used by both the classic and
+     * Netty transports.
+     * 
+     * An empty value represents an application-supplied flag and is preserved
+     * when no SameSite attribute is present. A value of true represents
+     * a configuration-driven request and is emitted only with SameSite=None.
+     * Partitioned is never emitted with an explicit SameSite value other than
+     * None.
+     *
+     * @param cookie cookie to update
+     */
+    public static void enforcePartitionedPolicy(HttpCookie cookie) {
+        if (cookie == null) {
+            return;
+        }
+
+        String partitionedValue = cookie.getAttribute(PARTITIONED_ATTRIBUTE);
+        if (partitionedValue == null || partitionedValue.equalsIgnoreCase("false")) {
+            return;
+        }
+
+        String sameSiteValue = cookie.getAttribute(SAMESITE_ATTRIBUTE);
+        boolean isSameSiteNone = sameSiteValue != null && sameSiteValue.equalsIgnoreCase(SAMESITE_NONE);
+        boolean isConfigDrivenPartitioned = partitionedValue.equalsIgnoreCase("true");
+        boolean isInvalidSameSiteForPartitioned = sameSiteValue != null && !isSameSiteNone;
+
+        if ((isConfigDrivenPartitioned && !isSameSiteNone) || isInvalidSameSiteForPartitioned) {
+            cookie.setAttribute(PARTITIONED_ATTRIBUTE, "false");
+        }
     }
 
     /**

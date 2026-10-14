@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Assurez-vous que la ressource est correct
 CWWKC1412.qualifier.conflict=CWWKC1412E: L''artefact d''application {0} comprend plusieurs d\u00e9finitions de ressources {1} qui ont les qualificatifs {2}. Les noms des d\u00e9finitions de ressources {1} en conflit sont {3}.
 CWWKC1412.qualifier.conflict.explanation=Chaque d\u00e9finition de ressource du m\u00eame type ayant un qualificatif doit avoir un qualificatif diff\u00e9rent.
 CWWKC1412.qualifier.conflict.useraction=Veiller \u00e0 ce que chaque d\u00e9finition de ressource du m\u00eame type ait un qualificatif diff\u00e9rent ou n'en ait pas.
+
+CWWKC1413.sched.method.args=CWWKC1413E: La m\u00e9thode ` {0} ` du bean g\u00e9r\u00e9 ` {1} ` (CDI) est annot\u00e9e `Schedule`, mais elle n''est pas automatiquement planifi\u00e9e, car les m\u00e9thodes annot\u00e9es `Schedule` ne peuvent pas comporter de param\u00e8tres.
+CWWKC1413.sched.method.args.explanation=Les m\u00e9thodes annot\u00e9es \u00ab Schedule \u00bb ne doivent comporter aucun param\u00e8tre.
+CWWKC1413.sched.method.args.useraction=Supprimez les param\u00e8tres de la m\u00e9thode, ou supprimez l'annotation \u00ab Schedule \u00bb de la m\u00e9thode.

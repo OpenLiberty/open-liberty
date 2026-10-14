@@ -13,6 +13,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -178,7 +179,8 @@ public class McpMonitorTest {
         return switch (mbeans.size()) {
             case 0 -> null;
             case 1 -> mbeans.iterator().next();
-            default -> throw new AssertionError("More than one operation mbean found for " + methodName + (toolName != null ? "/" + toolName : "") + (errorType != null ? "/" + errorType : ""));
+            default -> throw new AssertionError("More than one operation mbean found for " + methodName + (toolName != null ? "/" + toolName : "")
+                                                + (errorType != null ? "/" + errorType : ""));
         };
     }
 
@@ -691,6 +693,11 @@ public class McpMonitorTest {
         // End session to trigger session metrics
         client.deleteSession();
 
+        // Set log mark after deleteSession() so the waitForStringInLogUsingMark below
+        // cannot match a CWWKZ0009I from a previous test. Must be placed before
+        // removeDropinsApplications() to capture the undeploy that follows.
+        server.setMarkToEndOfLog();
+
         // 2. Verify both operation and session MBeans are registered with specific checks
         ObjectName operationQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
         Set<ObjectName> operationMBeans = mbeanServer.queryNames(operationQuery, null);
@@ -713,8 +720,14 @@ public class McpMonitorTest {
 
         // 3. Undeploy the application
         server.removeDropinsApplications(APP_NAME + ".war");
+
+        // Use waitForStringInLogUsingMark (not waitForStringInLog) so that only the
+        // CWWKZ0009I from this undeploy is matched. CWWKZ0009I is logged synchronously
+        // after applicationStopped() returns, which itself returns after
+        // removeStatsForApp() completes — so the JMX assertions below are guaranteed
+        // to run after all MBeans have been deregistered, eliminating the race.
         assertNotNull("Application should stop",
-                      server.waitForStringInLog("CWWKZ0009I.*" + APP_NAME));
+                      server.waitForStringInLogUsingMark("CWWKZ0009I.*" + APP_NAME));
 
         // 4. Verify cleanup: both operation and session MBeans should be removed
         operationMBeans = mbeanServer.queryNames(operationQuery, null);
@@ -846,5 +859,83 @@ public class McpMonitorTest {
         // Verify duration was recorded
         double duration = (Double) mbeanServer.getAttribute(mbean, "Duration");
         assertTrue("Duration should be greater than 0", duration > 0);
+    }
+
+    // Negative Tests
+
+    // --- Monitoring and Management ---
+
+    /**
+     * Verifies that no operation MBean is registered for a tool that has never been called.
+     */
+    @Test
+    public void testNoMBeanExistsForUncalledTool() throws Exception {
+        ObjectName mbean = findOperationMBean("tools/call", "neverCalledTool");
+        assertNull(
+                   "No MBean should exist for a tool that has never been called", mbean);
+    }
+
+    /**
+     * Verifies that calling an unknown tool produces an error-status operation MBean with
+     * {@code RpcResponseStatusCode} {@code "error"} and a non-null {@code ErrorType}.
+     */
+    @Test
+    public void testUnknownToolCallProducesErrorMBean() throws Exception {
+        String unknownToolRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 20,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "doesNotExistTool",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(unknownToolRequest);
+
+        ObjectName errorMBean = findOperationMBean("tools/call", "doesNotExistTool");
+        assertNotNull("An operation MBean should be registered for the unknown-tool call", errorMBean);
+
+        String statusCode = (String) mbeanServer.getAttribute(errorMBean, "RpcResponseStatusCode");
+        assertEquals("RpcResponseStatusCode must be 'error' for an unknown tool call", "error", statusCode);
+
+        String errorType = (String) mbeanServer.getAttribute(errorMBean, "ErrorType");
+        assertNotNull("ErrorType must be non-null for an unknown tool call", errorType);
+    }
+
+    // --- Tool Metadata and Schema Generation ---
+
+    /**
+     * Verifies that every registered operation MBean exposes a non-null, non-blank
+     * {@code McpMethodName} attribute.
+     */
+    @Test
+    public void testMBeanMethodNameNeverNullOrEmpty() throws Exception {
+        String unknownToolRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 23,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "phantomSchemaTool",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        client.callMCP(unknownToolRequest);
+
+        // Inspect every operation MBean currently registered
+        ObjectName operationQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> allMBeans = mbeanServer.queryNames(operationQuery, null);
+        assertFalse("At least one operation MBean must be registered", allMBeans.isEmpty());
+
+        for (ObjectName on : allMBeans) {
+            String methodName = (String) mbeanServer.getAttribute(on, "McpMethodName");
+            assertNotNull("McpMethodName must never be null on any operation MBean: " + on, methodName);
+            assertFalse("McpMethodName must never be empty on any operation MBean: " + on, methodName.isBlank());
+        }
     }
 }

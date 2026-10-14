@@ -9,7 +9,7 @@
         <feature>servlet-6.0</feature>
     </featureManager>
   	<application id="ConfigurableSessionTelemetryTest" location="ConfigurableSessionTelemetryTest.war">
-  	     <mcp sessionTimeout="10s"/>
+  	     <mcp sessionTimeout="5s"/>
   	 </application>
     
     <include location="../fatTestPorts.xml"/>

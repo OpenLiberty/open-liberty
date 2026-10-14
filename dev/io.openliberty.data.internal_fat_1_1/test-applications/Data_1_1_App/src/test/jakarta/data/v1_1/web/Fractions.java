@@ -39,6 +39,7 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Fetching;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
@@ -367,6 +368,14 @@ public interface Fractions {
     (@By(_Fraction.NUMERATOR) In<Integer> numerators,
      @Is int denominator,
      Sort<Fraction> sort);
+
+    @Find
+    @Fetching(_Fraction.DECIMAL) // unnecessary, but intentionally included
+    Optional<Fraction> withoutRoundedValues(int numerator, int denominator);
+
+    @Find
+    @Fetching(_Fraction.ROUNDED)
+    Optional<Fraction> withRoundedValues(int numerator, int denominator);
 
     @JakartaQuery("WHERE name = :name")
     @QueryOptions(lockMode = LockModeType.PESSIMISTIC_WRITE,

@@ -101,6 +101,8 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo {
 
     // Collection of the managed POJO entity class names, if specified.
     private List<String> ivManagedClassNames = null;
+    private List<String> ivManagedPackageDescriptors = null;
+    private List<String> ivManagedModuleDescriptors = null;
 
     // Indicator to exclude unlist classes for managed POJO entity search.
     private boolean ivExcludeUnlistedClasses = false;
@@ -197,6 +199,8 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo {
         ivQualifierClassNames = new ArrayList<String>();
         ivJarFileURLs = new ArrayList<URL>();
         ivManagedClassNames = new ArrayList<String>();
+        ivManagedPackageDescriptors = new ArrayList<String>();
+        ivManagedModuleDescriptors = new ArrayList<String>();
         ivMappingFileNames = new ArrayList<String>();
         ivTransformers = new CopyOnWriteArrayList<ClassTransformer>(); // PM77840
         ivClassLoader = loader; // d473432.1
@@ -591,7 +595,8 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo {
     }
 
     /**
-     * (non-Javadoc)
+     * Returns the names of ordinary Java types listed by {@code <class>} elements of the
+     * {@code persistence.xml} file. Package and module descriptors are not included.
      *
      * @see javax.persistence.spi.PersistenceUnitInfo#getManagedClassNames()
      */
@@ -1492,13 +1497,59 @@ public abstract class JPAPUnitInfo extends AbstractJPAPUnitInfo {
     }
 
     /**
-     * Returns all class names in the persistence unit.
-     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Returns the names of all ordinary compiled Java types belonging to the persistence unit.
+     * Package and module descriptors are not included.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0-M6+).
      * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
      * the jakarta-namespace transformed version of this class will implement it correctly.
      */
     public List<String> getAllClassNames() {
         return getManagedClassNames();
+    }
+
+    /**
+     * Returns the package names listed by {@code <package-descriptor>} elements of the
+     * {@code persistence.xml} file. Each name is a qualified package name without the
+     * {@code .package-info} suffix.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getManagedPackageDescriptors() {
+        return ivManagedPackageDescriptors;
+    }
+
+    /**
+     * Returns the JPMS module names listed by {@code <module-descriptor>} elements of the
+     * {@code persistence.xml} file.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getManagedModuleDescriptors() {
+        return ivManagedModuleDescriptors;
+    }
+
+    /**
+     * Returns the names of all package descriptors belonging to the persistence unit
+     * (both listed in {@code persistence.xml} and discovered by scanning).
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getAllPackageDescriptors() {
+        return getManagedPackageDescriptors();
+    }
+
+    /**
+     * Returns the names of all module descriptors belonging to the persistence unit
+     * (both listed in {@code persistence.xml} and discovered by scanning).
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version of this class will implement it correctly.
+     */
+    public List<String> getAllModuleDescriptors() {
+        return getManagedModuleDescriptors();
     }
 
     /**

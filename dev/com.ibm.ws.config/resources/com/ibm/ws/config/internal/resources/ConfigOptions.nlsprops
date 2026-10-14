@@ -68,3 +68,6 @@ option-desc.outputVersion=\
 If outputVersion=2.0 is specified, only the xsd:any element is used    \n\
 in the output file, so that unknown elements pass XSD validation at    \n\
 the expense of losing validation for known elements.
+
+option-key.strict=--strict
+option-desc.strict=Produce a schema for validating only defined attributes.

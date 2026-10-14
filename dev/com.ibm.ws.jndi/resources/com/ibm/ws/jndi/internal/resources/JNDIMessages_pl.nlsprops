@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Okre\u015bl poprawn\u0105 warto\u015b\u0107
 jndi.decode.failed=CWWKN0011E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas dekodowania has\u0142a {0}. Sprawd\u017a, czy has\u0142o zosta\u0142o poprawnie zakodowane. Wyj\u0105tek: {1}.
 jndi.decode.failed.explanation=Has\u0142o nie zosta\u0142o poprawnie zakodowane.
 jndi.decode.failed.useraction=Sprawd\u017a, czy has\u0142o zosta\u0142o poprawnie zakodowane. Szczeg\u00f3\u0142owe informacje zawiera wyj\u0105tek.
+
+jndi.decode.warning=CWWKN0012W: Nie uda\u0142o si\u0119 zdekodowa\u0107 warto\u015bci dla nazwy JNDI \u201e {0} \u201d, poniewa\u017c has\u0142o nie zosta\u0142o poprawnie zakodowane.
+jndi.decode.warning.explanation=Wyszukiwanie w \u015brodowisku JNDI nie powiod\u0142o si\u0119, poniewa\u017c warto\u015b\u0107 has\u0142a dla nazwy JNDI nie jest w obs\u0142ugiwanym formacie kodowania. Serwer nie mo\u017ce zdekodowa\u0107 tej warto\u015bci, w zwi\u0105zku z czym operacja wyszukiwania nie mo\u017ce zosta\u0107 zako\u0144czona.
+jndi.decode.warning.useraction=Zakoduj has\u0142o dla nazwy JNDI za pomoc\u0105 polecenia \u201e securityUtility \u201d i zaktualizuj konfiguracj\u0119 JNDI, wprowadzaj\u0105c zakodowan\u0105 warto\u015b\u0107. Aby uzyska\u0107 dodatkowe informacje, sprawd\u017a komunikat o wyj\u0105tku.

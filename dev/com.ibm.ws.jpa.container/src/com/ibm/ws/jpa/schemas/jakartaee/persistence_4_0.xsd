@@ -185,9 +185,40 @@
                 <xsd:annotation>
                   <xsd:documentation>
 
-                    Managed class to be included in the persistence unit and
-                    to scan for annotations.  It should be annotated
-                    with either @Entity, @Embeddable or @MappedSuperclass.
+                    An ordinary Java type to be included in the persistence
+                    unit and scanned for discoverable annotation types.
+
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+
+              <!-- **************************************************** -->
+
+              <xsd:element name="package-descriptor" type="xsd:string"
+                           minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                  <xsd:documentation>
+
+                    The qualified name of a package descriptor whose
+                    annotations belong to the persistence unit. The name does
+                    not include ".package-info". This element does not include
+                    the ordinary Java types in the package.
+
+                  </xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+
+              <!-- **************************************************** -->
+
+              <xsd:element name="module-descriptor" type="xsd:string"
+                           minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                  <xsd:documentation>
+
+                    The declared JPMS name of a module descriptor whose
+                    annotations belong to the persistence unit. The name is
+                    not "module-info". This element does not include the
+                    ordinary Java types or package descriptors in the module.
 
                   </xsd:documentation>
                 </xsd:annotation>

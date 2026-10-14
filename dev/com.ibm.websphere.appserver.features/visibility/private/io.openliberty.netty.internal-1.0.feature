@@ -6,11 +6,11 @@ singleton=true
 -bundles=\
   io.openliberty.io.netty, \
   io.openliberty.io.netty.ssl, \
-  com.ibm.ws.wsbytebuffer, \
-  io.openliberty.channel.config.common, \ 
+  io.openliberty.channel.config.common, \
   io.openliberty.endpoint, \
+  io.openliberty.accesslists.internal, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.impl
-kind=noship
-edition=full
+kind=ga
+edition=core
 WLP-Activation-Type: parallel

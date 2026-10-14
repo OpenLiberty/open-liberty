@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Ujist\u011bte se, \u017ee je prost\u0159e
 CWWKC1412.qualifier.conflict=CWWKC1412E: Aplika\u010dn\u00ed artefakt {0} obsahuje n\u011bkolik definic prost\u0159edk\u016f {1} , kter\u00e9 maj\u00ed kvalifik\u00e1tory {2} . N\u00e1zvy konfliktn\u00edch definic zdroj\u016f {1} jsou {3} .
 CWWKC1412.qualifier.conflict.explanation=Ka\u017ed\u00e1 definice zdroje stejn\u00e9ho typu, kter\u00e1 m\u00e1 kvalifik\u00e1tor, mus\u00ed m\u00edt jin\u00fd kvalifik\u00e1tor.
 CWWKC1412.qualifier.conflict.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00e1 definice prost\u0159edku stejn\u00e9ho typu m\u00e1 jin\u00fd kvalifik\u00e1tor nebo nem\u00e1 \u017e\u00e1dn\u00e9 kvalifik\u00e1tory.
+
+CWWKC1413.sched.method.args=CWWKC1413E: Metoda ` {0} ` spravovan\u00e9ho beanu ` {1} ` typu CDI je ozna\u010dena anotac\u00ed `Schedule`, ale nen\u00ed automaticky napl\u00e1nov\u00e1na, proto\u017ee metody ozna\u010den\u00e9 anotac\u00ed `Schedule` nesm\u011bj\u00ed m\u00edt \u017e\u00e1dn\u00e9 parametry.
+CWWKC1413.sched.method.args.explanation=Metody ozna\u010den\u00e9 jako \u201eSchedule\u201c nesm\u00ed m\u00edt \u017e\u00e1dn\u00e9 parametry.
+CWWKC1413.sched.method.args.useraction=Odstra\u0148te parametry z metody nebo odstra\u0148te z metody anotaci Schedule.

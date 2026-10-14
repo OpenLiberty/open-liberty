@@ -139,6 +139,12 @@ class JPAPxmlInfo {
             // Set <class>
             puInfo.setManagedClassNames(pu.getClazz());
 
+            // Set <package-descriptor> (JPA 4.0, returns empty list for earlier schema versions)
+            puInfo.getManagedPackageDescriptors().addAll(pu.getPackageDescriptors());
+
+            // Set <module-descriptor> (JPA 4.0, returns empty list for earlier schema versions)
+            puInfo.getManagedModuleDescriptors().addAll(pu.getModuleDescriptors());
+
             // Set <shared-cache-mode> (mapped by JaxbPUnit abstraction) // F743-8705 F1879-16302
             puInfo.setSharedCacheMode(pu.getSharedCacheMode());
 

@@ -151,8 +151,6 @@ public class DefaultConfigIdTests {
             List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
 
             LOG.info("Cookie: " + (cookies != null ? cookies : "null"));
-
-
             // Verify the TestCookie was set
             boolean foundTestCookie = false;
             for (String cookie : cookies) {
@@ -165,6 +163,20 @@ public class DefaultConfigIdTests {
             assertTrue("TestCookie should be present in Set-Cookie headers", foundTestCookie);
         } finally {
             conn.disconnect();
+
+            // Wait for the async LoggerOffThread to flush the cookie entry to disk before this test exits.
+            long cookieTimeout = 10000;
+            long pollInterval = 100;
+            long elapsed = 0;
+            while (elapsed < cookieTimeout) {
+                List<String> cookieLines = server.findStringsInFileInLibertyServerRoot(
+                        "GET /ConfigTest/cookie", "logs/http_access.log");
+                if (!cookieLines.isEmpty()) {
+                    break;
+                }
+                Thread.sleep(pollInterval);
+                elapsed += pollInterval;
+            }
         }
     }
 
@@ -236,7 +248,7 @@ public class DefaultConfigIdTests {
         String lastLine = lines.get(lines.size() - 1);
         LOG.info("Last access log line: " + lastLine);
 
-        // No timestamp -- for easier matching. Note: bytes may vary between machines?
+        // No timestamp -- for easier matching. Note: bytes may vary between machines
         // Pattern: %h %u "%r" %s %b
         assertTrue("Access log entry does not match expected format '%h %u \"%r\" %s %b'. Entry: " + lastLine,
                    lastLine.matches(".*127\\.0\\.0\\.1 - \"GET / HTTP/1\\.1\" 200 \\d+.*"));

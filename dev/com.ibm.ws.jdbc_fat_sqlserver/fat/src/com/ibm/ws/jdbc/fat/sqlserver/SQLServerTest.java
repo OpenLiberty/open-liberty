@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,6 +87,7 @@ public class SQLServerTest extends FATServletClient {
             expectedErrorMessages.add("DSRA0302E.*XAER_NOTA"); // More specific message for rollback of already timed out XAResource
             expectedErrorMessages.add("J2CA0027E.*rollback"); // JCA message for rollback of already timed out XAResource
             expectedErrorMessages.add("J2CA0027E.*commit"); // JCA message for attempted commit of already timed out XAResource
+            expectedErrorMessages.add("J2CA0079E.*IllegalStateException"); // from transaction timeout/abort
             server.stopServer(expectedErrorMessages.toArray(new String[expectedErrorMessages.size()]));
         }
     }
