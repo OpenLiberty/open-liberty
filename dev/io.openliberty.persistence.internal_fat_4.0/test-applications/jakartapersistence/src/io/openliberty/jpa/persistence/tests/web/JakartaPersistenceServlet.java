@@ -340,6 +340,80 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     // -----------------------------------------------------------------------
+    // JPA 4.0 — getMultiple()
+    // -----------------------------------------------------------------------
+
+    /**
+     * getMultiple() returns the full list when all requested ids exist.
+     */
+    @Test
+    public void testGetMultipleAllPresent() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        SimpleEmployee e1 = new SimpleEmployee("Raymond", 1_000L);
+        SimpleEmployee e2 = new SimpleEmployee("Dorothy", 2_000L);
+        em.persist(e1);
+        em.persist(e2);
+        tx.commit();
+
+        tx.begin();
+        List<SimpleEmployee> results = em.getMultiple(SimpleEmployee.class,
+                Arrays.asList(e1.getId(), e2.getId()));
+        tx.commit();
+
+        assertEquals("getMultiple() must return 2 entries", 2, results.size());
+        assertFalse("result list must not contain null entries", results.contains(null));
+        assertEquals("Raymond", results.get(0).getName());
+        assertEquals("Dorothy", results.get(1).getName());
+    }
+
+    /**
+     * getMultiple() throws {@link EntityNotFoundException} when any requested id
+     * is not found, unlike findMultiple() which places null in the slot.
+     */
+    @Test
+    public void testGetMultipleThrowsForMissingId() throws Exception {
+        cleanup(SimpleEmployee.class);
+        SimpleEmployee e1 = new SimpleEmployee("Bernard", 5_000L);
+        tx.begin();
+        em.persist(e1);
+        tx.commit();
+
+        Long missingId = Long.MAX_VALUE;
+
+        tx.begin();
+        try {
+            em.getMultiple(SimpleEmployee.class, Arrays.asList(e1.getId(), missingId));
+            fail("getMultiple() must throw EntityNotFoundException when any id is missing");
+        } catch (EntityNotFoundException e) {
+            // expected
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.rollback();
+        }
+    }
+
+    /**
+     * getMultiple() with an empty id list returns an empty list, not null —
+     * even when matching rows exist in the database.
+     */
+    @Test
+    public void testGetMultipleEmptyList() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        em.persist(new SimpleEmployee("Clarence", 9_000L));
+        em.persist(new SimpleEmployee("Mildred", 8_000L));
+        tx.commit();
+
+        tx.begin();
+        List<SimpleEmployee> results = em.getMultiple(SimpleEmployee.class, List.of());
+        tx.commit();
+
+        assertNotNull("getMultiple() with empty input must return an empty list, not null", results);
+        assertTrue("result list must be empty", results.isEmpty());
+    }
+
+    // -----------------------------------------------------------------------
     // JPA 4.0 — TypedQuery.getResultCount()
     // -----------------------------------------------------------------------
 
