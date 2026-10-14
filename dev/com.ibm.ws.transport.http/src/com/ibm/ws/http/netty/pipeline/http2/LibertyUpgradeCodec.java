@@ -21,6 +21,7 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -53,7 +54,6 @@ import io.netty.handler.codec.http2.Http2Settings;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandlerBuilder;
-import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapterBuilder;
 import io.netty.handler.codec.http2.LibertyDefaultHttp2HeadersDecoder;
 import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
@@ -75,7 +75,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
      * Helper method for creating H2C Upgrade handler
      */
     public static CleartextHttp2ServerUpgradeHandler createCleartextUpgradeHandler(HttpChannelConfig httpConfig, Channel channel) {
-        HttpServerCodec sourceCodec = new HttpServerCodec(httpConfig.getLimitOfFieldSize(), httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        HttpServerCodec sourceCodec = HttpPipelineInitializer.newHttpServerCodec(httpConfig);
         LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel);
         int maxContentlength = (httpConfig.getMessageSizeLimit() >= Integer.MAX_VALUE || httpConfig.getMessageSizeLimit() < 0) ? Integer.MAX_VALUE : (int) httpConfig.getMessageSizeLimit();
         final HttpServerUpgradeHandler upgradeHandler = new Http11OnlyUpgradeHandler(sourceCodec, codec, maxContentlength);
