@@ -18,12 +18,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityListener;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PessimisticLockScope;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
@@ -31,6 +39,7 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.persistence.tests.models.AuditListener;
 import io.openliberty.jpa.persistence.tests.models.Product;
 import io.openliberty.jpa.persistence.tests.models.SimpleEmployee;
 
@@ -349,6 +358,133 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertNotNull("entity should be found successfully with lock scope property", found);
         assertEquals("Tablet", found.getName());
         tx.commit();
+    }
+
+    // -----------------------------------------------------------------------
+    // JPA 4.0 — lockScope on @NamedQuery and setLockScope() on TypedQuery
+    // -----------------------------------------------------------------------
+
+    /** Verify TypedQuery.setLockScope() and TypedQuery.getLockScope() with PessimisticLockScope. */
+    @Test
+    public void testTypedQuerySetAndGetLockScope() throws Exception {
+        TypedQuery<Product> query = em.createQuery("SELECT p FROM Product p", Product.class);
+
+        // Set lockScope to FETCHED
+        query.setLockScope(PessimisticLockScope.FETCHED);
+        assertEquals("getLockScope() should return FETCHED", PessimisticLockScope.FETCHED, query.getLockScope());
+
+        // Set lockScope to EXTENDED
+        query.setLockScope(PessimisticLockScope.EXTENDED);
+        assertEquals("getLockScope() should return EXTENDED", PessimisticLockScope.EXTENDED, query.getLockScope());
+
+        // Set lockScope to NORMAL
+        query.setLockScope(PessimisticLockScope.NORMAL);
+        assertEquals("getLockScope() should return NORMAL", PessimisticLockScope.NORMAL, query.getLockScope());
+    }
+
+    /** Verify @NamedQuery configured with lockScope = PessimisticLockScope.FETCHED. */
+    @Test
+    public void testNamedQueryWithLockScopeFetched() throws Exception {
+        cleanup(Product.class);
+        tx.begin();
+        em.persist(new Product("Alpha", 10.0));
+        em.persist(new Product("Beta", 20.0));
+        tx.commit();
+
+        TypedQuery<Product> namedQuery = em.createNamedQuery("Product.findAllWithLockScope", Product.class);
+        assertEquals("NamedQuery lockScope should be FETCHED", PessimisticLockScope.FETCHED, namedQuery.getLockScope());
+
+        List<Product> results = namedQuery.getResultList();
+        assertEquals(2, results.size());
+        assertEquals("Alpha", results.get(0).getName());
+    }
+
+    /** Verify @NamedQuery configured with lockScope = PessimisticLockScope.EXTENDED. */
+    @Test
+    public void testNamedQueryWithLockScopeExtended() throws Exception {
+        cleanup(Product.class);
+        tx.begin();
+        em.persist(new Product("SpecialProduct", 99.0));
+        tx.commit();
+
+        TypedQuery<Product> namedQuery = em.createNamedQuery("Product.findByNameWithExtendedScope", Product.class);
+        assertEquals("NamedQuery lockScope should be EXTENDED", PessimisticLockScope.EXTENDED, namedQuery.getLockScope());
+
+        namedQuery.setParameter("name", "SpecialProduct");
+        List<Product> results = namedQuery.getResultList();
+        assertEquals(1, results.size());
+        assertEquals("SpecialProduct", results.get(0).getName());
+    }
+
+    // -----------------------------------------------------------------------
+    // JPA 4.0 — Entity Listeners enhancements
+    // -----------------------------------------------------------------------
+
+    /** Verify @EntityListener annotation is present on AuditListener class. */
+    @Test
+    public void testEntityListenerAnnotation() throws Exception {
+        assertTrue("@EntityListener must be present on AuditListener",
+            AuditListener.class.isAnnotationPresent(EntityListener.class));
+    }
+
+    /**
+     * Verify an entity listener may have multiple callbacks of the same type (@PrePersist)
+     * with different parameter types as per JPA 4.0 Section 3.10.1.
+     */
+    @Test
+    public void testMultipleCallbacksOfSameTypeOnEntityListener() throws Exception {
+        cleanup(SimpleEmployee.class);
+        cleanup(Product.class);
+        AuditListener.reset();
+
+        tx.begin();
+        SimpleEmployee emp = new SimpleEmployee("ListenerUser", 70_000L);
+        em.persist(emp);
+        tx.commit();
+
+        assertEquals("SimpleEmployee @PrePersist callback should be executed", 1, AuditListener.employeePrePersistCount.get());
+        assertEquals("Product @PrePersist callback should NOT be executed yet", 0, AuditListener.productPrePersistCount.get());
+        assertEquals("@PostPersist callback should be executed", 1, AuditListener.postPersistCount.get());
+
+        tx.begin();
+        Product product = new Product("ListenerProduct", 49.99);
+        em.persist(product);
+        tx.commit();
+
+        assertEquals("Product @PrePersist callback should be executed", 1, AuditListener.productPrePersistCount.get());
+        assertEquals("@PostPersist callback count should now be 2", 2, AuditListener.postPersistCount.get());
+    }
+
+    /** Verify EntityManagerFactory.addListener() registers dynamic listener callback. */
+    @Test
+    public void testEntityManagerFactoryAddListener() throws Exception {
+        EntityManagerFactory emf = em.getEntityManagerFactory();
+        assertNotNull("EntityManagerFactory should not be null", emf);
+
+        AtomicInteger dynamicPrePersistCount = new AtomicInteger(0);
+
+        // Register dynamic listener callback via EntityManagerFactory.addListener()
+        emf.addListener(Product.class, PrePersist.class, p -> dynamicPrePersistCount.incrementAndGet());
+
+        cleanup(Product.class);
+        tx.begin();
+        Product product = new Product("DynamicListenerProduct", 199.99);
+        em.persist(product);
+        tx.commit();
+
+        assertTrue("dynamic listener callback should have been invoked", dynamicPrePersistCount.get() >= 1);
+    }
+
+    /** Verify @EntityListeners targets include PACKAGE and MODULE as per JPA 4.0. */
+    @Test
+    public void testEntityListenersTargetAllowedOnPackageAndModule() throws Exception {
+        Target target = EntityListeners.class.getAnnotation(Target.class);
+        assertNotNull("@Target annotation on @EntityListeners must not be null", target);
+
+        List<ElementType> targets = Arrays.asList(target.value());
+        assertTrue("@EntityListeners should target TYPE", targets.contains(ElementType.TYPE));
+        assertTrue("@EntityListeners should target PACKAGE", targets.contains(ElementType.PACKAGE));
+        assertTrue("@EntityListeners should target MODULE", targets.contains(ElementType.MODULE));
     }
 
     // -----------------------------------------------------------------------
