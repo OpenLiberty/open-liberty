@@ -105,36 +105,36 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     }
 
     private HttpInputStreamImpl input() throws IOException {
-    
-        HttpInputStreamImpl in = null;
+        throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
+        // HttpInputStreamImpl in = null;
 
-        if (vc != null) {
-            Object candidate = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
-            if (candidate instanceof HttpInputStreamImpl) {
-                in = (HttpInputStreamImpl) candidate;
-            }
-            if (in == null) {
-                Object sid = vc.getStateMap().get(NettyHttpConstants.VC_HTTP2_STREAM_ID);
-                if (sid instanceof String) {
-                    HttpDispatcherHandler disp =
-                            nettyChannel.pipeline().get(HttpDispatcherHandler.class);
-                    if (disp != null) {
-                        HttpInputStream s = disp.getStream((String) sid);
-                        if (s instanceof HttpInputStreamImpl) {
-                            in = (HttpInputStreamImpl) s;
-                            // Optionally cache it on VC for next time:
-                            vc.getStateMap().put(NettyHttpConstants.VC_HTTP_INPUT_STREAM, in);
-                        }
-                    }
-                }
-            }
-        }
+        // if (vc != null) {
+        //     Object candidate = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
+        //     if (candidate instanceof HttpInputStreamImpl) {
+        //         in = (HttpInputStreamImpl) candidate;
+        //     }
+        //     if (in == null) {
+        //         Object sid = vc.getStateMap().get(NettyHttpConstants.VC_HTTP2_STREAM_ID);
+        //         if (sid instanceof String) {
+        //             HttpDispatcherHandler disp =
+        //                     nettyChannel.pipeline().get(HttpDispatcherHandler.class);
+        //             if (disp != null) {
+        //                 HttpInputStream s = disp.getStream((String) sid);
+        //                 if (s instanceof HttpInputStreamImpl) {
+        //                     in = (HttpInputStreamImpl) s;
+        //                     // Optionally cache it on VC for next time:
+        //                     vc.getStateMap().put(NettyHttpConstants.VC_HTTP_INPUT_STREAM, in);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
-        if (in == null) {
-            // TODO VLAD
-            throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
-        }
-        return in;
+        // if (in == null) {
+        //     // TODO VLAD
+        //     throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
+        // }
+        // return in;
     }
 
     @Override
@@ -331,6 +331,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     @Override
     public VirtualConnection read(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
+        System.out.println("VSDEBUG 1: ");
+                        HttpDispatcher.getExecutorService().execute(
+                                                            () -> callback.error(vc, this, new EOFException("I/O aborted")));
         if (aborted) {
             if (callback != null) {
                 HttpDispatcher.getExecutorService().execute(

@@ -702,7 +702,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
 
         if (waitForInput && context != null && context.executor().inEventLoop()){
-            // TODO VLAD
             throw new IllegalStateException("Blocking request read on event loop group thread");
         }
 
@@ -774,7 +773,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     token = queue.awaitChange(token);
                 } catch (InterruptedException ie){
                     Thread.currentThread().interrupt();
-                    // TODO VLAD
                     throw new IOException("Interrupted while waiting for request body", ie);
                 }
 
