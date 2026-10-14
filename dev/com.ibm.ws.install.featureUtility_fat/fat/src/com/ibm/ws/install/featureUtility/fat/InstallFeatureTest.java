@@ -1168,7 +1168,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
 
         try {
-            checkCommandOutput(po, 21, "CWWKF1401E", null);
+            checkCommandOutput(po, 21, "CWWKF1400E", null);
         } catch (AssertionError e) {
             throw e;
         }
