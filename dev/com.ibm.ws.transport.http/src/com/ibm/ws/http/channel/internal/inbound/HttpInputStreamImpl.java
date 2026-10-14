@@ -260,8 +260,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "checkMultiReadBuffer, requires more data, checking readRemainingFromChannel.");
                 }
-                //get remaining from channel now as read needs more than the stored
-                readRemainingFromChannel(waitForInput);
+                //get remaining from the source now as read needs more than the stored
+                if (streaming) {
+                    readRemainingFromNettyQueue(waitForInput);
+                } else {
+                    readRemainingFromChannel(waitForInput);
+                }
             }
             if (postDataBuffer.size() > postDataIndex) {
                 this.buffer = postDataBuffer.get(postDataIndex);
@@ -306,6 +310,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         readRemainingFromChannel(true);
     }
 
+    /**
+     * Legacy Channel Framework path. Reads all remaining body data from the channel
+     * into {@code postDataBuffer} for multi-read. A {@code false} return from the
+     * underlying read unambiguously means end of body on this path.
+     * For Netty streaming, use {@link #readRemainingFromNettyQueue(boolean)}.
+     */
     private void readRemainingFromChannel(boolean waitForInput) throws IOException {
         if (!readChannelComplete) {
 
@@ -322,8 +332,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                                  + " ,index ->" + postDataIndex);
                 }
                 postDataIndex++;
-            
-                if(!streaming)
+
                 this.bytesRead += this.buffer.remaining(); // record the new amount of data read from the channel
 
                 this.buffer.release(); // release any buffers read
@@ -336,6 +345,43 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             readChannelComplete = true;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "readRemainingFromChannel, all buffer read and stored from channel , now read it from store");
+            }
+        }
+    }
+
+    /**
+     * Netty streaming path. Reads all currently available body fragments from the
+     * queue into {@code postDataBuffer} for multi-read. A {@code false} return does
+     * not always mean end of body — the queue may simply have no data ready yet.
+     * For Legacy Channel Framework, use {@link #readRemainingFromChannel(boolean)}.
+     */
+    private void readRemainingFromNettyQueue(boolean waitForInput) throws IOException {
+        if (!readChannelComplete) {
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "readRemainingFromNettyQueue, data not completely read during first read");
+            }
+            int localIx = postDataIndex;
+            while (fillFromStreamingNetty(waitForInput)) {
+                postDataBuffer.add(postDataIndex, this.buffer.duplicate());
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "readRemainingFromNettyQueue, buffer ->" + postDataBuffer.get(postDataIndex)
+                                 + " ,size ->" + postDataBuffer.size()
+                                 + " ,index ->" + postDataIndex);
+                }
+                postDataIndex++;
+
+                this.buffer.release(); // release any buffers read
+                this.buffer = null;
+            }
+            postDataIndex = localIx;
+            if (!waitForInput && !readChannelComplete) {
+                return;
+            }
+            readChannelComplete = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "readRemainingFromNettyQueue, all buffer read and stored from queue , now read it from store");
             }
         }
     }
