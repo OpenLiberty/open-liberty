@@ -22,7 +22,6 @@ import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.flow.FlowControlHandler;
@@ -84,12 +83,8 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configuring pipeline with HTTP 1.1 for incoming connection " + ctx.channel());
             }
-            int maxLineLength = Integer.MAX_VALUE;
-            if(httpConfig.getMessageSizeLimit() != -1 && httpConfig.getMessageSizeLimit() < Integer.MAX_VALUE) {
-                maxLineLength = (int)httpConfig.getMessageSizeLimit();
-            }
             ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC,
-                                    new HttpServerCodec(httpConfig.getLimitOfFieldSize(), httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders()));
+                                    HttpPipelineInitializer.newHttpServerCodec(httpConfig));
 
             if(ctx.pipeline().get(ReadFlowHandler.class) == null) {
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
