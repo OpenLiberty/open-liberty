@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
@@ -37,6 +38,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -105,6 +107,16 @@ public class ServerStartTest {
         server.resetStarted();
 
         assertTrue("the server should have been started", server.isStarted());
+
+        // On z/OS with Java 24+, the --status:start poller JVM opens a debug log via
+        // TaggedFileOutputStream, which triggers System.loadLibrary under JEP 472.
+        // Verify --enable-native-access=ALL-UNNAMED suppresses the warning.
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.ZOS
+            && JavaInfo.forServer(server).majorVersion() >= 24) {
+            assertFalse("JEP 472 restricted-method warning found in 'server start' stdout -- "
+                        + "--enable-native-access=ALL-UNNAMED may be missing from the server JVM command line",
+                        po.getStdout().contains("A restricted method in java.lang.System has been called"));
+        }
 
         Log.exiting(c, METHOD_NAME);
     }
