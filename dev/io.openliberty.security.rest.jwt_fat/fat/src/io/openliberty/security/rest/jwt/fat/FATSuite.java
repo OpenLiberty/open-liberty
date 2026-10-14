@@ -22,7 +22,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 RestJwtFATTest.class,
-                RestJwtNoConnectorFATTest.class
+                RestJwtNoConnectorFATTest.class,
+                RestJwtKeyFileFATTest.class,
+                RestJwtKeyFileInvalidFATTest.class
 })
 public class FATSuite {
 }

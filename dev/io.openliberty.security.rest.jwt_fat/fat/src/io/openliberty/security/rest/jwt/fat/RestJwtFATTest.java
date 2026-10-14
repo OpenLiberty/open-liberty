@@ -64,7 +64,7 @@ public class RestJwtFATTest {
     private static final String WRONG_KEY = "wrongSecretSharedKeyThatWillFailValidation1";
 
     private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
-//    private static final String ADMIND_ENDPOINT = "/IBMJMXConnectorREST/adminEndpoint"; TODO: UTLE
+//    private static final String ADMIND_ENDPOINT = "/IBMJMXConnectorREST/adminEndpoint"; TODO:
 
     @Server("RestJwtServer")
     public static LibertyServer server;

@@ -43,6 +43,8 @@ import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
@@ -73,11 +75,43 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String LTPA_COOKIE_NAME = "LtpaToken2";
 
+    /**
+     * System property naming the file that holds the public key used to verify the JWT signature.
+     * When it is set, the key is read from that file (PEM or JWK, same as mp.jwt.verify.publickey.location)
+     * instead of from the jwtConsumer keystore configuration. Only used for RS and ES algorithms.
+     */
+    public static final String PROP_VERIFY_PUBLICKEY_LOCATION = "rest.jwt.verify.publickey.location";
+    public static final String KEY_JWT_CONSUMER_CONFIG = "jwtConsumerConfig";
+    public static final String DEFAULT_JWT_CONSUMER_ID = "defaultJwtConsumer";
+
     //public static final String ADMIN_REST_ENDPOINT_PREFIX = "/IBMJMXConnectorREST/adminEndpoint"; //UTLE: TODO - USE: ADMIN_REST_ENDPOINT
     public static final String ADMIN_REST_ENDPOINT_PREFIX = "/IBMJMXConnectorREST"; 
 
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
+    static protected final ConcurrentServiceReferenceMap<String, JwtConsumerConfig> jwtConsumerConfigRef = new ConcurrentServiceReferenceMap<String, JwtConsumerConfig>(KEY_JWT_CONSUMER_CONFIG);
+
+    @Reference(service = JwtConsumerConfig.class, name = KEY_JWT_CONSUMER_CONFIG, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setJwtConsumerConfig(ServiceReference<JwtConsumerConfig> ref) {
+        String id = (String) ref.getProperty("id");
+        synchronized (jwtConsumerConfigRef) {
+            jwtConsumerConfigRef.putReference(id, ref);
+        }
+    }
+
+    protected void updatedJwtConsumerConfig(ServiceReference<JwtConsumerConfig> ref) {
+        String id = (String) ref.getProperty("id");
+        synchronized (jwtConsumerConfigRef) {
+            jwtConsumerConfigRef.putReference(id, ref);
+        }
+    }
+
+    protected void unsetJwtConsumerConfig(ServiceReference<JwtConsumerConfig> ref) {
+        String id = (String) ref.getProperty("id");
+        synchronized (jwtConsumerConfigRef) {
+            jwtConsumerConfigRef.removeReference(id, ref);
+        }
+    }
 
     @Reference(service = SecurityService.class, name = KEY_SECURITY_SERVICE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     public void setSecurityService(ServiceReference<SecurityService> reference) {
@@ -132,6 +166,9 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
         synchronized (authFilterServiceRef) {
             authFilterServiceRef.activate(cc);
         }
+        synchronized (jwtConsumerConfigRef) {
+            jwtConsumerConfigRef.activate(cc);
+        }
         securityServiceRef.activate(cc);
     }
 
@@ -144,6 +181,9 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     protected void deactivate(ComponentContext cc) {
         synchronized (authFilterServiceRef) {
             authFilterServiceRef.deactivate(cc);
+        }
+        synchronized (jwtConsumerConfigRef) {
+            jwtConsumerConfigRef.deactivate(cc);
         }
         securityServiceRef.deactivate(cc);
     }
@@ -225,8 +265,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
 
         JwtToken jwtToken = null;
         try {
-            JwtConsumer jwtConsumer = JwtConsumer.create();
-            jwtToken = jwtConsumer.createJwt(token);
+            jwtToken = parseJwt(token);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Error validating JWT token: " + e.getMessage(), e);
@@ -266,6 +305,35 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    /**
+     * Validates the token with the jwtConsumer. If the system property rest.jwt.verify.publickey.location is set,
+     * the public key is read from that file; otherwise the key comes from the jwtConsumer configuration.
+     */
+    protected JwtToken parseJwt(@Sensitive String token) throws Exception {
+        MpConfigProperties mpProps = getKeyLocationProperties();
+        if (mpProps == null) {
+            return JwtConsumer.create().createJwt(token);
+        }
+        JwtConsumerConfig config = jwtConsumerConfigRef.getService(DEFAULT_JWT_CONSUMER_ID);
+        if (config == null) {
+            throw new IllegalStateException("The JWT consumer " + DEFAULT_JWT_CONSUMER_ID + " is not configured");
+        }
+        return config.getConsumerUtils().parseJwt(token, config, mpProps);
+    }
+
+    /**
+     * @return properties that point the jwtConsumer at the public key file, or null if the system property is not set
+     */
+    protected MpConfigProperties getKeyLocationProperties() {
+        String location = System.getProperty(PROP_VERIFY_PUBLICKEY_LOCATION);
+        if (location == null || location.trim().isEmpty()) {
+            return null;
+        }
+        MpConfigProperties mpProps = new MpConfigProperties();
+        mpProps.put(MpConfigProperties.KEY_LOCATION, location.trim());
+        return mpProps;
     }
 
     /**
