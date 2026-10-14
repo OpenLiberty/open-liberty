@@ -15,6 +15,7 @@ package com.ibm.ws.kernel.boot;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.util.List;
@@ -30,12 +31,14 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -79,6 +82,45 @@ public class ServerStopTest {
         if (server.isStarted()) {
             stopServer();
         }
+    }
+
+    /**
+     * Verifies that the JEP 472 restricted-method warning
+     * ("A restricted method in java.lang.System has been called") is NOT present
+     * in the stdout of the server stop command on z/OS with Java 24+.
+     *
+     * On z/OS, the client JVM launched by "server stop" opens a log file via
+     * TaggedFileOutputStream, which triggers NativeMethodHelper.loadAndInitialize()
+     * and System.loadLibrary(). Without --enable-native-access=ALL-UNNAMED on the
+     * client JVM command line, Java 24+ emits a JEP 472 warning to stdout.
+     */
+    @Test
+    public void testNoJep472WarningOnStop() throws Exception {
+        final String METHOD_NAME = "testNoJep472WarningOnStop";
+        Log.info(c, METHOD_NAME, ENTERING);
+
+        // Skip on non-z/OS or Java < 24: JEP 472 restricted-method warnings only appear there
+        assumeTrue(server.getMachine().getOperatingSystem() == OperatingSystem.ZOS
+                   && JavaInfo.forServer(server).majorVersion() >= 24);
+
+        startServer();
+
+        String executionDir = server.getInstallRoot() + File.separator + "bin";
+        String command = "." + File.separator + "server";
+        ProgramOutput po = server.getMachine().execute(command,
+                                                       new String[] { "stop", SERVER_NAME },
+                                                       executionDir);
+        String stdout = po.getStdout();
+        Log.info(c, METHOD_NAME, "server stop stdout = " + stdout);
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.resetStarted();
+
+        assertFalse("JEP 472 restricted-method warning found in 'server stop' stdout -- "
+                    + "--enable-native-access=ALL-UNNAMED may be missing from the client JVM command line",
+                    stdout.contains("A restricted method in java.lang.System has been called"));
+
+        Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
