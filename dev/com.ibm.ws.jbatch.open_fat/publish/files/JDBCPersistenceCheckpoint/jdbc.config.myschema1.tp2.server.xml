@@ -19,7 +19,7 @@
 
     <!-- The H2 driver -->
     <library id="H2Lib">
-        <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
+        <fileset dir="${shared.resource.dir}/h2" includes="h2.jar"/>
     </library>
 
     <!-- H2 datasource used for batch tables-->

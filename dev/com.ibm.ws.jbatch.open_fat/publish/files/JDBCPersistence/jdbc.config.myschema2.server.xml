@@ -15,7 +15,7 @@
 
     <!-- The H2 driver -->
     <library id="H2Lib">
-        <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
+        <fileset dir="${shared.resource.dir}/h2" includes="h2.jar"/>
     </library>
  
  <!-- The following configures in-memory H2.  For H2 on disk, which is needed if the database

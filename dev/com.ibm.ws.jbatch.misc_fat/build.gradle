@@ -12,6 +12,6 @@
  *******************************************************************************/
 
 addRequiredLibraries {
-	dependsOn addH2Java8
+	dependsOn addH2
 	dependsOn addJakartaTransformer
 }

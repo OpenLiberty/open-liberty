@@ -15,7 +15,7 @@
     <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
 
     <library id="H2Lib">
-        <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
+        <fileset dir="${shared.resource.dir}/h2" includes="h2.jar"/>
     </library>
 
     <dataSource id="batchDB" jndiName="jdbc/batch">
@@ -73,7 +73,7 @@
 
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	   <javaPermission className="java.lang.RuntimePermission" name="*" actions="accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect"/>
-	   <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
+	   <javaPermission codebase="${shared.resource.dir}/h2/h2.jar" className="java.security.AllPermission"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.WSLogin"/>

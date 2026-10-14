@@ -13,7 +13,7 @@
     <databaseStore id="BatchDatabaseStore" dataSourceRef="BatchDB" schema="JBATCH" tablePrefix="" />
 
 	<library id="H2Lib">
-	    <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
+	    <fileset dir="${shared.resource.dir}/h2" includes="h2.jar"/>
 	</library>
 
 
@@ -23,6 +23,6 @@
 	</dataSource>
 
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/h2/h2.jar" className="java.security.AllPermission"/>
 
 </server>
