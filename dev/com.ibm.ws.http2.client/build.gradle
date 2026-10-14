@@ -10,6 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+dependencies {
+    testImplementation project(':com.ibm.ws.logging')
+    testImplementation project(':com.ibm.ws.logging.core')
+    testImplementation project(':com.ibm.ws.wsbytebuffer')
+}
+
 // Special publish feature task since this is a test feature
 task publishFeatureManifests(type: Copy) {
     dependsOn jar
