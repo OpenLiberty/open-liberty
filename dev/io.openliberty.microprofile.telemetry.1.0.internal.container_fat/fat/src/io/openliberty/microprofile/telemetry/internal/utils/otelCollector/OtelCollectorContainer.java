@@ -13,8 +13,11 @@
 package io.openliberty.microprofile.telemetry.internal.utils.otelCollector;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
@@ -37,6 +40,17 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
     public static final int OTLP_GRPC_PORT = 4317;
     public static final int PROMETHEUS_METRIC_PORT = 3131;
 
+    /**
+     * The OTel collector image is distroless (no /bin/sh), so the default
+     * HostPortWaitStrategy's internal port check always fails with exit code 127.
+     * Wait on the collector's own startup log message instead, which is emitted
+     * only after all receivers (including the gRPC OTLP receiver) are listening.
+     */
+    private static final WaitStrategy READY_WAIT_STRATEGY =
+        new LogMessageWaitStrategy()
+            .withRegEx(".*Everything is ready\\..*")
+            .withStartupTimeout(Duration.ofSeconds(60));
+
     public OtelCollectorContainer(File configFile) {
         this(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR, configFile);
     }
@@ -54,6 +68,7 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         withCopyFileToContainer(MountableFile.forHostPath(configFile.toPath()), "/etc/otel-collector-config.yaml");
         withExposedPorts(OTLP_GRPC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
+        waitingFor(READY_WAIT_STRATEGY);
     }
 
     public OtelCollectorContainer(DockerImageName imageName, File configFile, int PROMETHEUS_METRIC_PORT) {
@@ -61,6 +76,7 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         withCopyFileToContainer(MountableFile.forHostPath(configFile.toPath()), "/etc/otel-collector-config.yaml");
         withExposedPorts(OTLP_GRPC_PORT, PROMETHEUS_METRIC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
+        waitingFor(READY_WAIT_STRATEGY);
     }
 
     public OtelCollectorContainer(DockerImageName imageName, File configFile, File tlsCert, File tlsKey) {
@@ -70,6 +86,7 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         withCopyFileToContainer(MountableFile.forHostPath(tlsKey.toPath()), "/etc/private.key");
         withExposedPorts(OTLP_GRPC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
+        waitingFor(READY_WAIT_STRATEGY);
     }
 
     /**
