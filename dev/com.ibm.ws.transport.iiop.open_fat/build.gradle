@@ -19,11 +19,6 @@ configurations {
 
 dependencies {
   requiredLibs project(':io.openliberty.org.apache.bcel')
-  requiredLibs project(':io.openliberty.yoko.osgi')
-  requiredLibs project(':io.openliberty.yoko.spec.corba')
-  requiredLibs project(':io.openliberty.yoko.rmi.spec')
-  requiredLibs project(':io.openliberty.yoko.util')
-  requiredLibs project(':io.openliberty.yoko.rmi.impl')
   requiredLibs project(':io.openliberty.yoko.core')
 
 }
