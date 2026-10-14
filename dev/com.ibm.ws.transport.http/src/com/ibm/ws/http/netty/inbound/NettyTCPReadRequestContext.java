@@ -131,6 +131,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         if (in == null) {
+            // TODO VLAD
             throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
         }
         return in;
@@ -719,6 +720,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 }
                 if (callback != null) {
                     if(inputShutdownPending){
+                        // TODO VLAD
                         callback.error(vc, this, new EOFException("Peer input shutdown before request body completed. local="
                                     + nettyChannel.localAddress() + " remote=" + nettyChannel.remoteAddress()));
                     } else{

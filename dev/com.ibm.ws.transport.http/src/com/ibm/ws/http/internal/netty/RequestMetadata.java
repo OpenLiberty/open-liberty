@@ -44,6 +44,7 @@ public final class RequestMetadata {
             return new RequestMetadata(requestProtocol, -1);
         }
         if (connectionProtocol != ProtocolName.HTTP2) {
+            // TODO VLAD
             throw new InvalidRequestMetadataException("Request received before the connection protocol was established: " + connectionProtocol);
         }
 

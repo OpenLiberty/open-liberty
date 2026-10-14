@@ -306,6 +306,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             int sizeOfCurrentChunk = content.content().readableBytes();
             if (HttpConfigConstants.UNLIMITED != config.getMessageSizeLimit() && (sizeOfCurrentChunk > config.getMessageSizeLimit() ||
                 (queue.bytesRead() + sizeOfCurrentChunk) > config.getMessageSizeLimit())) {
+                    // TODO VLAD
                 throw new TooLongFrameException("Content length exceeded max of " + config.getMessageSizeLimit() + " bytes.");
             }
 
