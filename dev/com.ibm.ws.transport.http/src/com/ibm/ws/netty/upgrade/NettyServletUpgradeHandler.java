@@ -102,6 +102,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "NettyServletUpgradeHandler ChannelInputShutdownEvent reading async found!!");
                 }
+                // TODO VLAD
                 fireAsyncReadError(operation,
                                    new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
                                                     channel.localAddress() + " remote=" + channel.remoteAddress()));

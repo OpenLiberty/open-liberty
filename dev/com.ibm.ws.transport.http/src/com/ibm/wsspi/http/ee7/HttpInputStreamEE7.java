@@ -174,6 +174,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
             if (!delivered.compareAndSet(false, true)) {
                 return;
             }
+            // TODO VLAD
             callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC,
                            new EOFException("Peer input shutdown before request body completed"));
         };
