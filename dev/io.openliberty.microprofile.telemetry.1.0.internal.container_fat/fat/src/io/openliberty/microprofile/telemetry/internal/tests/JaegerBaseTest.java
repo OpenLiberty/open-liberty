@@ -53,6 +53,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
  * <p>
  * Subclasses must set up the server, deploy the spanTest application and implement {@link #getJaegerClient()} to return a client for the Jaeger server
  */
+@SuppressWarnings("deprecation")
 public abstract class JaegerBaseTest {
 
     private static final Class<?> c = JaegerBaseTest.class;
