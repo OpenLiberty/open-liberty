@@ -79,6 +79,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private String proxy;
     private long asyncResponseTimeout;
     private boolean clientAuth;
+    private boolean checkWsdlMode;
     private String configuredVirtualHostId = "default_host";
     private ServiceReference<VirtualHost> configuredVirtualHostRef = null;
 
@@ -222,9 +223,12 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
         clientAuth = (Boolean) properties.get(clientAuthRef);
 
+        String propagationValue = (String) properties.get("propagation");
+        checkWsdlMode = "check_wsdl".equals(propagationValue);
+
         if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}]", enabled, sslId, proxy, clientAuth,
-                     asyncResponseTimeout);
+            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}], propagation = [{5}]",
+                     enabled, sslId, proxy, clientAuth, asyncResponseTimeout, propagationValue);
         }
 
         String host = getWSATUrl();
@@ -356,6 +360,12 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     @Trivial
     public boolean isClientAuthEnabled() {
         return clientAuth;
+    }
+
+    @Override
+    @Trivial
+    public boolean isCheckWsdlMode() {
+        return checkWsdlMode;
     }
 
     /**
