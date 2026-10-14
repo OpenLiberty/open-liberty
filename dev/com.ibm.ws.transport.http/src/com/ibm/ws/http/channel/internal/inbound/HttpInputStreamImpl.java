@@ -547,6 +547,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.exit(tc, "read(byte[],int,int), EOF");
             }
+            // App has consumed all bytes and received the EOF signal.
+            if (streaming) {
+                markStreamingEosObserved();
+            }
             return -1;
         }
         int avail = this.buffer.remaining();
@@ -776,7 +780,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 streamingTransferInProgress = false;
                 if (queue.isEos()){
                     this.readChannelComplete = true;
-                    markStreamingEosObserved();
                     if (this.context != null){
                         ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
                         ReadFlowHandler.markRequestConsumed(this.context.channel());
