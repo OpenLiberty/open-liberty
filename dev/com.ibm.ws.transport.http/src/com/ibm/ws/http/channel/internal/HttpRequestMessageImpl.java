@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -77,6 +78,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     /** RAS trace variable */
     private static final TraceComponent tc = Tr.register(HttpRequestMessageImpl.class, HttpMessages.HTTP_TRACE_NAME,
             HttpMessages.HTTP_BUNDLE);
+
+    /** Ensures the non-sensitive $WSSP warning message is issued only once */
+    private static final AtomicBoolean wsspWarningIssued = new AtomicBoolean(false);
 
     /** Serialization ID field */
     private static final long serialVersionUID = 5759292362534888246L;
@@ -2249,12 +2253,40 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
             rc = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, hkey, isWssp ? value : null, desensitizePrivatePortHeader);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && !rc) {
+            if (!rc && isWssp) {
+                logWsspFromNonSensitiveAddress(value, remoteAddr, hisc);
+            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && !rc) {
                 Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
                         + "] not permitted from [" + remoteAddr + "]");
             }
         }
         return rc;
+    }
+
+    /**
+     * Log that a $WSSP header was received from a non-sensitive (untrusted) IP address.
+     * Emits a single numbered warning for the first occurrence; every occurrence is
+     * recorded in debug trace.
+     *
+     * @param value      raw $WSSP header bytes
+     * @param remoteAddr the remote client address (may be null)
+     * @param hisc       the HTTP service context for this request (may be null)
+     */
+    private void logWsspFromNonSensitiveAddress(byte[] value, InetAddress remoteAddr, HttpServiceContextImpl hisc) {
+        String clientAddr = (remoteAddr != null) ? remoteAddr.getHostAddress() : null;
+        int clientPort = (hisc != null) ? hisc.getRemotePort() : -1;
+        String wsspValue = GenericUtils.getEnglishString(value);
+
+        if (wsspWarningIssued.compareAndSet(false, true)) {
+            Tr.warning(tc, "wssp.header.non.sensitive.address", clientAddr, clientPort, wsspValue);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "filterAdd: $WSSP header received from non-sensitive address:"
+                         + " clientAddress=" + clientAddr
+                         + ", clientPort=" + clientPort
+                         + ", $WSSP=" + wsspValue);
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
+import com.ibm.websphere.servlet.request.IRequest;
+import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
@@ -39,6 +41,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedResponse;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
+import com.ibm.wsspi.http.HttpInboundConnection;
 /**
  * Dispatch context represents data stored for the execution of
  * a request to a dispatcher.
@@ -672,6 +675,28 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     //	}
 
     /**
+     * Trace whether the request is trusted, whether the $WSSP header is present, and
+     * whether the $WSSP value will be used to build the Location header for a relative URL.
+     * The $WSSP header is only present on the request when it was accepted as trusted,
+     * and when present it determines the port returned by {@link IExtendedRequest#getServerPort()}.
+     */
+    private void traceWsspForRedirect(String relativeURI)
+    {
+        IRequest iRequest = _request.getIRequest();
+        if (iRequest instanceof IRequestExtended)
+        {
+            HttpInboundConnection conn = ((IRequestExtended) iRequest).getHttpInboundConnection();
+            boolean trusted = (conn != null) && conn.useTrustedHeaders();
+            String wssp = iRequest.getHeader("$WSSP");
+            boolean wsspPresent = (wssp != null);
+            logger.logp(Level.FINE, CLASS_NAME, "sendRedirect", "relative URI [" + relativeURI + "], request trusted --> " + trusted
+                                                                 + ", $WSSP header present --> " + wsspPresent
+                                                                 + (wsspPresent ? ", $WSSP value --> " + wssp : "")
+                                                                 + ", $WSSP value used to build Location header --> " + wsspPresent);
+        }
+    }
+
+    /**
      * convert a relative URI to a full URL.
      */
     protected String convertRelativeURIToURL(String relativeURI)
@@ -744,6 +769,10 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 
             // 112000 - begin - there was no reason to have two schemes for handling relative to root vs.
             // not relative to root so redid the section below
+
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                traceWsspForRedirect(relativeURI);
+            }
 
             // add the server info to the front of the url
             int urlPort = request.getServerPort();
