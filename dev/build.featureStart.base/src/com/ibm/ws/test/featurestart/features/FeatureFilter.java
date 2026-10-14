@@ -15,7 +15,7 @@ package com.ibm.ws.test.featurestart.features;
 import componenttest.topology.impl.JavaInfo;
 
 public class FeatureFilter {
-
+    
     // TODO: Is this the correct implementation of this test?
     // How is the test specific to the java which is running the test
     // server?  The test seems to be specific to the java running the

@@ -8,7 +8,7 @@ Open Liberty feature start testing comprises a number of FAT components which do
 
 --------------------
 
-Hightlights - Feature Start Testing
+Highlights - Feature Start Testing
 
 For a quick tour, see these sections:
 
@@ -212,7 +212,7 @@ Specific features required much more time:
 
 Unsurprisingly, jakartaee-10.0 required about 38s to startup and shutdown.
 
-Possibly suprisingly, batchManagement-1.0 required about 35s to startup and shutdown, and wsSecuritySaml-1.1 required about 44s to startup and shutdown.
+Possibly surprisingly, batchManagement-1.0 required about 35s to startup and shutdown, and wsSecuritySaml-1.1 required about 44s to startup and shutdown.
 
 --------------------
 
@@ -228,7 +228,7 @@ dev/build.featureStart.base/resources/com/ibm/ws/test/featurestart/features/
 Feature java levels are specified by:
 
 dev/build.featureStart.base/resources/com/ibm/ws/test/featurestart/features/
-  feature-stable.txt
+  feature-levels.properties
 
 Preferably, for each feature, which is stable and what java level is required would be specified by the feature itself, most likely using a BND directive.
 
