@@ -25,6 +25,7 @@ fat.minimum.java.level: 17
 fat.project: true
 
 -buildpath: \
+  com.h2database:h2;strategy=exact;version=2.4.240,\
   com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
   com.ibm.websphere.appserver.spi.logging,\
   com.ibm.websphere.org.osgi.core,\
