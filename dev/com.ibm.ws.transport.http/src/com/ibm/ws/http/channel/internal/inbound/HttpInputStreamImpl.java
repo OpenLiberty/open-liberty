@@ -124,8 +124,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.isChunked = chunked;
         this.streamingTransferInProgress = false;
 
-        this.bytesRead = 0L;
-        this.decodedBytesRead = 0L;
+        this.bytesRead = 0L;   
+        this.decodedBytesRead = 0L;          
         this.decodedBytesProduced = 0L;
 
         this.queue = queue;
