@@ -36,6 +36,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
+import com.ibm.ws.jaxws.wsat.components.WSATFeatureService;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.wsat.service.Handler;
 import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
@@ -64,6 +66,8 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private static final String SSLRef = "sslRef";
     private static final String proxyRef = "externalURLPrefix";
     private static final String asyncResponseTimeoutRef = "asyncResponseTimeout";
+    private static final String PROPAGATION = "propagation";
+    private static final String PROPAGATION_CHECK_WSDL = "check_wsdl";
     private static final String WSATContextRoot = "/ibm/wsatservice";
 
     private static final String HTTPCONFIGSERVICE_REFERENCE_NAME = "httpOptions";
@@ -79,6 +83,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private String proxy;
     private long asyncResponseTimeout;
     private boolean clientAuth;
+    private boolean checkWsdlMode;
     private String configuredVirtualHostId = "default_host";
     private ServiceReference<VirtualHost> configuredVirtualHostRef = null;
     // The actual VirtualHost service instance for the configured non-default virtual host.
@@ -241,9 +246,19 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
         clientAuth = (Boolean) properties.get(clientAuthRef);
 
+        // The propagation attribute is beta: it is hidden from the schema (ibm:beta) and,
+        // because the config layer does not enforce that, ignored here unless running a beta edition.
+        // Its default is supplied by the public wsAtomicTransaction-1.2 feature, so a value
+        // that is present without that feature has been set explicitly and can have no effect.
+        String propagationValue = ProductInfo.getBetaEdition() ? (String) properties.get(PROPAGATION) : null;
+        checkWsdlMode = PROPAGATION_CHECK_WSDL.equals(propagationValue);
+        if (propagationValue != null && TC.isDebugEnabled() && !WSATFeatureService.isPublicFeaturePresent()) {
+            Tr.debug(TC, "The propagation attribute is set to [{0}] but has no effect unless the wsAtomicTransaction-1.2 feature is enabled", propagationValue);
+        }
+
         if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}]", enabled, sslId, proxy, clientAuth,
-                     asyncResponseTimeout);
+            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}], propagation = [{5}]",
+                     enabled, sslId, proxy, clientAuth, asyncResponseTimeout, propagationValue);
         }
 
         String host = getWSATUrl();
@@ -380,6 +395,12 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     @Trivial
     public boolean isClientAuthEnabled() {
         return clientAuth;
+    }
+
+    @Override
+    @Trivial
+    public boolean isCheckWsdlMode() {
+        return checkWsdlMode;
     }
 
     /**
