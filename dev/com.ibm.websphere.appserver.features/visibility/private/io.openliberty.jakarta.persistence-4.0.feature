@@ -4,10 +4,9 @@ singleton=true
 IBM-Process-Types: server, \
  client
 -features=io.openliberty.jakarta.persistence.base-4.0, \
-  com.ibm.websphere.appserver.eeCompatible-12.0, \
-  io.openliberty.noShip-1.0
+  com.ibm.websphere.appserver.eeCompatible-11.0; ibm.tolerates:= "12.0"
 -bundles=io.openliberty.jakarta.persistence.api.4.0
 -jars=io.openliberty.jakarta.persistence.4.0; location:=dev/api/spec/; mavenCoordinates="jakarta.persistence:jakarta.persistence-api:4.0.0"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

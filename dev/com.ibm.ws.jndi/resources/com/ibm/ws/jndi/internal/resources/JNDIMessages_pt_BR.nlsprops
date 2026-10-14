@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Especifique um valor v\u00e1lido para a seq
 jndi.decode.failed=CWWKN0011E: Ocorreu um erro ao decodificar a senha do {0}. Verifique se a senha est\u00e1 codificada corretamente. Exce\u00e7\u00e3o: {1}.
 jndi.decode.failed.explanation=A senha n\u00e3o est\u00e1 codificada corretamente.
 jndi.decode.failed.useraction=Verifique se a senha est\u00e1 codificada corretamente. Consulte a exce\u00e7\u00e3o para obter detalhes.
+
+jndi.decode.warning=CWWKN0012W: N\u00e3o foi poss\u00edvel decodificar o valor do nome JNDI {0}, pois a senha n\u00e3o est\u00e1 codificada corretamente.
+jndi.decode.warning.explanation=A pesquisa no ambiente JNDI falhou porque o valor da senha associado ao nome JNDI n\u00e3o est\u00e1 em um formato de codifica\u00e7\u00e3o compat\u00edvel. O servidor n\u00e3o consegue decodificar o valor e a consulta n\u00e3o pode ser conclu\u00edda.
+jndi.decode.warning.useraction=Codifique a senha do nome JNDI usando o comando de codifica\u00e7\u00e3o do securityUtility e atualize a configura\u00e7\u00e3o do JNDI com o valor codificado. Verifique a mensagem de exce\u00e7\u00e3o para obter mais detalhes.

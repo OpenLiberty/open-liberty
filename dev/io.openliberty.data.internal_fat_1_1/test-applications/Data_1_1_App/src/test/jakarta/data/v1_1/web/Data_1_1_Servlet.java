@@ -60,6 +60,7 @@ import jakarta.data.restrict.Restrict;
 import jakarta.data.restrict.Restriction;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -75,7 +76,8 @@ import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
 
 @SuppressWarnings("serial")
-@WebServlet("/*")
+@WebServlet(loadOnStartup = 1, // ensure data from init is available to other servlets
+            value = "/*")
 public class Data_1_1_Servlet extends FATServlet {
 
     /**
@@ -86,6 +88,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Advertisements ads;
+
+    // Do not use this until after the init method.
+    static boolean atLeastJPA4;
 
     @Inject
     Fractions fractions;
@@ -107,6 +112,17 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
+        // TODO look into whether a transaction ought to be required here
+        try {
+            tx.begin();
+            atLeastJPA4 = statefulFractions.atLeastJPA4();
+            tx.commit();
+        } catch (Exception x) {
+            throw new ServletException(x);
+        }
+
+        System.out.println("Persistence provider supports JPA 4.0+? " + atLeastJPA4);
+
         // Fractions including 1/2, 1/3, 2/3, ... 19/20
         Set<Fraction> fractionsToAdd = new HashSet<Fraction>();
         for (int d = 2; d <= 20; d++)
@@ -646,8 +662,7 @@ public class Data_1_1_Servlet extends FATServlet {
      *
      * Applies scaling due to Oracle stripping trailing 0s
      */
-    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
-    // @Test
+    @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
@@ -1012,6 +1027,36 @@ public class Data_1_1_Servlet extends FATServlet {
                      page2.numberOfElements());
         assertEquals(false,
                      page2.hasTotals());
+    }
+
+    /**
+     * The Fetching annotation requests eager loading of a value that would
+     * normally be loaded lazily.
+     */
+    @Test
+    public void testFetching1() {
+
+        Fraction f5_8 = fractions.withRoundedValues(5, 8)
+                        .orElseThrow();
+        assertEquals(BigDecimal.valueOf(630, 3),
+                     f5_8.rounded.get(1));
+
+        // EclipseLink eagerly loads the collection regardless, so we can only
+        // test for an exception on Hibernate
+        if (isHibernatePersistence()) {
+            Fraction f3_8 = fractions.withoutRoundedValues(3, 8)
+                            .orElseThrow();
+            try {
+                assertEquals(BigDecimal.valueOf(380, 3),
+                             f3_8.rounded.get(1));
+            } catch (PersistenceException x) {
+                if ("org.hibernate.LazyInitializationException" //
+                                .equals(x.getClass().getName()))
+                    ; // expected
+                else
+                    throw x;
+            }
+        }
     }
 
     /**
@@ -1382,7 +1427,7 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testJakartaQueryWithRestrictionAndOrder() {
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         Restriction<Fraction> ninthsAndTenths = //
@@ -1603,7 +1648,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDB2() && isHibernatePersistence())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         // Populate with 18/23.
@@ -2087,7 +2132,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         // Populate with 14/23.
@@ -2141,7 +2186,7 @@ public class Data_1_1_Servlet extends FATServlet {
         if (isHibernatePersistence() && isSQLServer())
             return;
 
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         PageRequest page2Req = PageRequest.ofSize(8).pageNumber(2);
@@ -2271,7 +2316,7 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryReturnsFirstEntity() {
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         assertEquals("Seven Twentieths",
@@ -2288,7 +2333,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         assertEquals(List.of("1/2",
@@ -2353,7 +2398,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
         if (!isHibernatePersistence() && isSQLServer())
             return;
-        if (!isHibernatePersistence())
+        if (!atLeastJPA4)
             return; // TODO remove once using persistence-4.0
 
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
@@ -2766,9 +2811,11 @@ public class Data_1_1_Servlet extends FATServlet {
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
-    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
-    // @Test
+    @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
+        // TODO UnsupportedOperationException for change method with NativeQuery and QueryOptions
+        if (!isHibernatePersistence())
+            return;
         // Derby ignores query timeout and the lock timeout ends up applying instead.
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDerby() || (isDB2() && isHibernatePersistence()))

@@ -104,7 +104,37 @@ public class JakartaEE12Action extends JakartaEEAction {
                                                   "xmlWSClient-4.0"
     };
 
+    private static final String[] EE12_ONLY_FEATURES_ARRAY_LOWERCASE = {
+                                                                         "jakartaee-12.0",
+                                                                         "webprofile-12.0",
+                                                                         "jakartaeeclient-12.0",
+                                                                         "appsecurity-7.0",
+                                                                         "batch-2.2",
+                                                                         "validation-4.0",
+                                                                         "cdi-5.0",
+                                                                         "concurrent-3.2",
+                                                                         "connectors-2.2",
+                                                                         "data-1.1",
+                                                                         "datacontainer-1.1",
+                                                                         "expressionlanguage-6.1",
+                                                                         "mail-2.2",
+                                                                         "persistence-4.0",
+                                                                         "persistencecontainer-4.0",
+                                                                         "jsonp-2.2",
+                                                                         "jsonb-3.1",
+                                                                         "jsonpContainer-2.2",
+                                                                         "jsonbContainer-3.1",
+                                                                         "faces-5.0",
+                                                                         "facescontainer-5.0",
+                                                                         "pages-4.1",
+                                                                         "restfulws-5.0",
+                                                                         "restfulwsclient-5.0",
+                                                                         "servlet-6.2",
+                                                                         "websocket-2.3"
+    };
+
     public static final Set<String> EE12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE12_FEATURES_ARRAY)));
+    public static final Set<String> EE12_ONLY_FEATURE_SET_LOWERCASE = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE12_ONLY_FEATURES_ARRAY_LOWERCASE)));
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // This constructor is purposely not public to force people to use the JakartaEEAction class and                 //

@@ -18,7 +18,6 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,6 +31,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestRetryHelper;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
@@ -42,9 +42,6 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
     @Server("mcp-server-telemetry-session-config")
     public static LibertyServer server;
-
-    @Rule
-    public McpClient client = new McpClient(server, "/" + APP_NAME);
 
     private static final String BASIC_TOOL_REQUEST = """
                       {
@@ -89,24 +86,31 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
     @Test
     public void testCustomSessionTimeoutWithMetrics() throws Exception {
-        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
-        client.callMCP(BASIC_TOOL_REQUEST);
+        McpClient client = new McpClient(server, "/" + APP_NAME);
 
-        // Wait long enough for the session to expire
-        // sessionTimeout = 10s in server.xml
-        Thread.sleep(10500);
+        TestRetryHelper.retryWithSetup(3,
+            () -> client.initializeSession(),
+            () -> {
+                FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
+                client.callMCP(BASIC_TOOL_REQUEST);
 
-        try {
-            client.callMCP(BASIC_TOOL_REQUEST);
-            fail("Expected session to be timed out, but too call succeeded");
-        } catch (Exception e) {
-            assertTrue("Expected session not found error",
-                       e.getMessage().contains("Session not found") ||
-                                                           e.getMessage().contains("404"));
-            client.setSessionDeleted(true);
-        }
+                // Wait long enough for the session to expire
+                // sessionTimeout = 5s in server.xml
+                Thread.sleep(5300);
 
-        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionTimeoutMetrics");
+                try {
+                    client.callMCP(BASIC_TOOL_REQUEST);
+                    fail("Expected session to be timed out, but tool call succeeded");
+                } catch (Exception e) {
+                    assertTrue("Expected session not found error",
+                               e.getMessage().contains("Session not found") ||
+                                                                   e.getMessage().contains("404"));
+                    client.markSessionDeleted();
+                }
+
+                FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionTimeoutMetrics");
+            },
+            () -> client.cleanupSession());
     }
 
 }

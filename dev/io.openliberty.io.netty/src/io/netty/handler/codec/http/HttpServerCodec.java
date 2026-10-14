@@ -20,6 +20,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.CombinedChannelDuplexHandler;
+import io.netty.handler.codec.DefaultHeaders.ValueValidator;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -49,6 +50,20 @@ import static io.netty.handler.codec.http.HttpObjectDecoder.DEFAULT_MAX_INITIAL_
  */
 public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequestDecoder, HttpResponseEncoder>
         implements HttpServerUpgradeHandler.SourceCodec {
+
+    private static final DefaultHttpHeadersFactory STANDARD_HEADERS_FACTORY =
+            DefaultHttpHeadersFactory.headersFactory();
+    private static final ValueValidator<CharSequence> STANDARD_VALUE_VALIDATOR =
+            STANDARD_HEADERS_FACTORY.getValueValidator();
+    private static final ValueValidator<CharSequence> REQUEST_VALUE_VALIDATOR = value -> {
+        try {
+            STANDARD_VALUE_VALIDATOR.validate(value);
+        } catch (IllegalArgumentException failure) {
+            throw new HttpRequestValidationException(failure);
+        }
+    };
+    private static final DefaultHttpHeadersFactory REQUEST_HEADERS_FACTORY =
+            STANDARD_HEADERS_FACTORY.withValueValidator(REQUEST_VALUE_VALIDATOR);
 
     private static final byte METHOD_FLAG_HEAD = 1;
     private static final byte METHOD_FLAG_CONNECT = 2;
@@ -173,14 +188,37 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
                 .setMaxInitialLineLength(maxInitialLineLength)
                 .setMaxChunkSize(maxChunkSize)
                 .setLimitFieldSize(limitFieldSize)
-                .setLimitNumHeaders(limitNumHeaders));
+                .setLimitNumHeaders(limitNumHeaders)
+                .setHeadersFactory(DefaultHttpHeadersFactory.headersFactory()
+                    .withValueValidation(false))   // matches CHFW: no value char check
+                    // name validation remains ON // matches CHFW: isValidTchar enforced
+            );
     }
 
     /**
      * Creates a new instance with the specified decoder configuration.
      */
     public HttpServerCodec(HttpDecoderConfig config) {
-        init(new HttpServerRequestDecoder(config), new HttpServerResponseEncoder());
+        init(new HttpServerRequestDecoder(requestDecoderConfig(config)), new HttpServerResponseEncoder());
+    }
+
+    private static HttpDecoderConfig requestDecoderConfig(HttpDecoderConfig config) {
+        if (config == null) {
+            return null;
+        }
+        HttpHeadersFactory headersFactory = config.getHeadersFactory();
+        if (!(headersFactory instanceof DefaultHttpHeadersFactory)) {
+            return config;
+        }
+        DefaultHttpHeadersFactory defaultFactory = (DefaultHttpHeadersFactory) headersFactory;
+        if (defaultFactory.getValueValidator() != STANDARD_VALUE_VALIDATOR) {
+            return config;
+        }
+        HttpDecoderConfig requestConfig = config.clone();
+        requestConfig.setHeadersFactory(defaultFactory == STANDARD_HEADERS_FACTORY
+                        ? REQUEST_HEADERS_FACTORY
+                        : defaultFactory.withValueValidator(REQUEST_VALUE_VALIDATOR));
+        return requestConfig;
     }
 
     /**
@@ -243,6 +281,17 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
     private final class HttpServerRequestDecoder extends HttpRequestDecoder {
         HttpServerRequestDecoder(HttpDecoderConfig config) {
             super(config);
+        }
+
+        @Override
+        protected HttpMessage createMessage(String[] initialLine) {
+            HttpVersion version;
+            try {
+                version = HttpVersion.valueOf(initialLine[2], true);
+            } catch (IllegalArgumentException failure) {
+                throw new HttpRequestValidationException(failure);
+            }
+            return new DefaultHttpRequest(version, HttpMethod.valueOf(initialLine[0]), initialLine[1], headersFactory);
         }
 
         @Override

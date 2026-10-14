@@ -16,13 +16,18 @@ def gaFeatures
 def noShipFeatures
 def betaFeatures
 def gaPublicFeatures
+def betaPublicFeatures
+def noShipPublicFeatures
+
 def getFeatureMap = {
     if (featurePropertiesMap == null) {
         Map<String,Properties> map = new TreeMap()
         Set<String> featuresGa = new TreeSet()
         Set<String> featuresBeta = new TreeSet()
         Set<String> featuresNoShip = new TreeSet()
-        Set<String> publicFeatures = new TreeSet()
+        Set<String> publicFeaturesTreeSet = new TreeSet()
+        Set<String> betaFeaturesTreeSet = new TreeSet()
+        Set<String> noShipFeaturesTreeSet = new TreeSet()
         project(':com.ibm.websphere.appserver.features').fileTree(dir: '.', include: 'visibility/**/*.feature').each { featureFile ->
             Properties featureProps = new Properties()
             featureFile.withInputStream { featureProps.load(it) }
@@ -30,19 +35,27 @@ def getFeatureMap = {
             if ('ga'.equals(featureProps['kind'])) {
                 featuresGa.add(featureProps['symbolicName'])
                 if ('public'.equals(featureProps['visibility'])) {
-                    publicFeatures.add(featureProps['IBM-ShortName'])
+                    publicFeaturesTreeSet.add(featureProps['IBM-ShortName'])
                 }
             } else if ('beta'.equals(featureProps['kind'])) {
                 featuresBeta.add(featureProps['symbolicName'])
+                if ('public'.equals(featureProps['visibility'])) {
+                    betaFeaturesTreeSet.add(featureProps['IBM-ShortName'])
+                }
             } else if ('noship'.equals(featureProps['kind'])) {
                 featuresNoShip.add(featureProps['symbolicName'])
+                if ('public'.equals(featureProps['visibility'])) {
+                    noShipFeaturesTreeSet.add(featureProps['IBM-ShortName'])
+                }
             }
         }
         featurePropertiesMap = map
         gaFeatures = featuresGa
         betaFeatures = featuresBeta
         noShipFeatures = featuresNoShip
-        gaPublicFeatures = publicFeatures
+        gaPublicFeatures = publicFeaturesTreeSet
+        betaPublicFeatures = betaFeaturesTreeSet
+        noShipPublicFeatures = noShipFeaturesTreeSet
     }
     featurePropertiesMap
 }
@@ -56,6 +69,20 @@ def getGaFeatures = {
     gaFeatures
 }
 
+def getBetaFeatures = {
+    if (betaFeatures == null) {
+        getFeatureMap()
+    }
+    betaFeatures
+}
+
+def getNoShipFeatures = {
+    if (noShipFeatures == null) {
+        getFeatureMap()
+    }
+    noShipFeatures
+}
+
 rootProject.ext.gaFeatures = { useShortName ->
     if (useShortName) {
         if (gaFeatures == null) {
@@ -67,18 +94,26 @@ rootProject.ext.gaFeatures = { useShortName ->
     }
 }
 
-rootProject.ext.betaFeatures = {
-    if (betaFeatures == null) {
-        getFeatureMap()
+rootProject.ext.betaFeatures = { useShortName ->
+    if (useShortName) {
+        if (betaFeatures == null) {
+            getFeatureMap()
+        }
+        betaPublicFeatures
+    } else {
+        getBetaFeatures()
     }
-    betaFeatures
 }
 
-rootProject.ext.noShipFeatures = {
-    if (noShipFeatures == null) {
-        getFeatureMap()
+rootProject.ext.noShipFeatures = { useShortName ->
+    if (useShortName) {
+        if (noShipFeatures == null) {
+            getFeatureMap()
+        }
+        noShipPublicFeatures
+    } else {
+        getNoShipFeatures()
     }
-    noShipFeatures
 }
 
 copyPiiFiles {

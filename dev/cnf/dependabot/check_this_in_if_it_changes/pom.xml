@@ -177,11 +177,6 @@
       <version>3.25.5</version>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.json-simple</groupId>
-      <artifactId>json-simple</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-    <dependency>
       <groupId>com.graphql-java</groupId>
       <artifactId>graphql-java</artifactId>
       <version>20.9</version>
@@ -702,16 +697,6 @@
       <version>4.2.17.Final</version>
     </dependency>
     <dependency>
-      <groupId>io.openliberty.arquillian</groupId>
-      <artifactId>arquillian-liberty-support-jakarta</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.openliberty.arquillian</groupId>
-      <artifactId>arquillian-liberty-support</artifactId>
-      <version>1.0.8</version>
-    </dependency>
-    <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-annotations-support</artifactId>
       <version>1.19.0-alpha</version>
@@ -1084,12 +1069,12 @@
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-opentracing-shim</artifactId>
-      <version>1.29</version>
+      <version>1.29.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-opentracing-shim</artifactId>
-      <version>1.39</version>
+      <version>1.39.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -1809,7 +1794,7 @@
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
-      <version>4.0.0-M6</version>
+      <version>4.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>jakarta.resource</groupId>
@@ -2749,16 +2734,6 @@
     <dependency>
       <groupId>org.apache.neethi</groupId>
       <artifactId>neethi</artifactId>
-      <version>3.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.neethi</groupId>
-      <artifactId>neethi</artifactId>
-      <version>3.2.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.neethi</groupId>
-      <artifactId>neethi</artifactId>
       <version>3.2.3</version>
     </dependency>
     <dependency>
@@ -3084,16 +3059,6 @@
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-jetty-api</artifactId>
-      <version>11.0.9</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty.websocket</groupId>
-      <artifactId>websocket-jetty-api</artifactId>
-      <version>11.0.9</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty.websocket</groupId>
-      <artifactId>websocket-jetty-client</artifactId>
       <version>11.0.9</version>
     </dependency>
     <dependency>
@@ -3544,7 +3509,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>5.0.1</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3564,7 +3529,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>5.0.1</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3584,7 +3549,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>5.0.1</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3604,7 +3569,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>5.0.1</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3614,7 +3579,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>5.0.1</version>
+      <version>5.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
@@ -4035,16 +4000,6 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging-annotations</artifactId>
       <version>2.2.1.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging-processor</artifactId>
-      <version>2.2.1.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging-processor</artifactId>
-      <version>3.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>
@@ -5019,11 +4974,6 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>4.3.13.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
       <version>5.3.21</version>
     </dependency>
     <dependency>
@@ -5074,11 +5024,6 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>4.3.13.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
       <version>5.3.39</version>
     </dependency>
     <dependency>
@@ -5120,11 +5065,6 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-expression</artifactId>
       <version>3.0.7.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-expression</artifactId>
-      <version>4.3.13.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -5205,11 +5145,6 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
       <version>3.0.7.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-web</artifactId>
-      <version>4.3.13.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -5313,11 +5248,6 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>oracle-xe</artifactId>
-      <version>1.21.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
       <version>1.21.3</version>
     </dependency>
@@ -5345,11 +5275,6 @@
       <groupId>software.amazon.jdbc</groupId>
       <artifactId>aws-advanced-jdbc-wrapper</artifactId>
       <version>2.2.3</version>
-    </dependency>
-    <dependency>
-      <groupId>sorg.bouncycastle</groupId>
-      <artifactId>bcutil-jdk18on</artifactId>
-      <version>1.84</version>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>
@@ -5445,16 +5370,6 @@
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
       <version>2.3.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.messaging.saaj</groupId>
-      <artifactId>saaj-impl</artifactId>
-      <version>1.5.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.messaging.saaj</groupId>
-      <artifactId>saaj-impl</artifactId>
-      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.stream.buffer</groupId>

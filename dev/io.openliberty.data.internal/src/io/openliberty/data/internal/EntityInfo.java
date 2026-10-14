@@ -80,7 +80,7 @@ public class EntityInfo {
     final Map<String, Class<?>> collectionElementTypes;
 
     public final Class<?> entityClass; // will be a generated class for entity records
-    final EntityHandlerFactory factory;
+    public final EntityHandlerFactory factory;
     final Class<?> idType; // type of the id, which could be a JPA IdClass for composite ids
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;

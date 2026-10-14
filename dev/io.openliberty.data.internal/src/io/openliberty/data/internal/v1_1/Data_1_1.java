@@ -157,6 +157,11 @@ public class Data_1_1 implements DataVersionCompatibility {
     static final Class<? extends Annotation> QUERY_OPTIONS_CLASS;
 
     /**
+     * Classes that are valid as return types of resource accessor methods.
+     */
+    private static final Set<Class<?>> RESOURCE_ACCESSOR_CLASSES_ALL;
+
+    /**
      * Classes that are valid as return types of resource accessor methods for a
      * stateful repository.
      */
@@ -169,8 +174,7 @@ public class Data_1_1 implements DataVersionCompatibility {
      * Classes that are valid as return types of resource accessor methods for a
      * stateless repository.
      */
-    private static final Set<Class<?>> RESOURCE_ACCESSOR_CLASSES_STATELESS = //
-                    RESOURCE_ACCESSOR_CLASSES_STATEFUL; // TODO 1.1 entity agent
+    private static final Set<Class<?>> RESOURCE_ACCESSOR_CLASSES_STATELESS;
 
     /**
      * Types that are valid as repository method special parameters.
@@ -198,6 +202,8 @@ public class Data_1_1 implements DataVersionCompatibility {
             NATIVE_QUERY_VALUE = null;
             QUERY_OPTIONS_CLASS = null;
             QUERY_LANGUAGE_ANNOS = Set.of(Query.class);
+            RESOURCE_ACCESSOR_CLASSES_ALL = RESOURCE_ACCESSOR_CLASSES_STATEFUL;
+            RESOURCE_ACCESSOR_CLASSES_STATELESS = RESOURCE_ACCESSOR_CLASSES_STATEFUL;
         } else { // Persistence 4.0
             try {
                 Class<?> CreationOption_EA = cl //
@@ -224,6 +230,17 @@ public class Data_1_1 implements DataVersionCompatibility {
 
                 QUERY_OPTIONS_CLASS = (Class<? extends Annotation>) cl //
                                 .loadClass("jakarta.persistence.query.QueryOptions");
+
+                Class<?> EntityAgent = cl //
+                                .loadClass("jakarta.persistence.EntityAgent");
+                RESOURCE_ACCESSOR_CLASSES_STATELESS = Set //
+                                .of(Connection.class,
+                                    DataSource.class,
+                                    EntityAgent,
+                                    EntityManager.class // compatible with Data 1.0
+                                );
+                RESOURCE_ACCESSOR_CLASSES_ALL = RESOURCE_ACCESSOR_CLASSES_STATELESS;
+
             } catch (ClassNotFoundException | NoSuchMethodException x) {
                 throw new ExceptionInInitializerError(x);
             }
@@ -407,9 +424,12 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Set<Class<?>> resourceAccessorTypes(boolean stateful) {
-        return stateful ? RESOURCE_ACCESSOR_CLASSES_STATEFUL //
-                        : RESOURCE_ACCESSOR_CLASSES_STATELESS;
+    public Set<Class<?>> resourceAccessorTypes(Boolean stateful) {
+        return stateful == null //
+                        ? RESOURCE_ACCESSOR_CLASSES_ALL //
+                        : stateful //
+                                        ? RESOURCE_ACCESSOR_CLASSES_STATEFUL //
+                                        : RESOURCE_ACCESSOR_CLASSES_STATELESS;
     }
 
     @Override

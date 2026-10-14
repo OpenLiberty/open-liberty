@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -246,21 +246,7 @@ public final class CookieEncoder {
                 }
             }
         }
-        enforcePartitionedPolicy(cookie);
-    }
-
-    /**
-     * Final pass to disable the Partitioned attribute if SameSite is 
-     * not 'None'.
-     */
-    private static void enforcePartitionedPolicy(final HttpCookie cookie) {
-        String sameSiteValue = cookie.getAttribute(SAMESITE_ATTRIBUTE);
-        boolean isNone = (sameSiteValue != null && sameSiteValue.equalsIgnoreCase("none"));
-
-        String partitionedValue = cookie.getAttribute(PARTITIONED_ATTRIBUTE);
-        if (!isNone && partitionedValue != null && !partitionedValue.equalsIgnoreCase("false")) {
-            cookie.setAttribute(PARTITIONED_ATTRIBUTE, "false");
-        }
+        CookieUtils.enforcePartitionedPolicy(cookie);
     }
 
     /**

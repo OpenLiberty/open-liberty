@@ -154,6 +154,12 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private transient boolean bHeaderValidation = true;
     /** Flag on whether to reject obsolete line folding in parsed headers */
     private transient boolean rejectHeaderLineFolding = false;
+    /**
+     * Flag to indicate that a CR was the last byte of a read buffer and we are
+     * expecting a LF at the beginning of the next buffer to complete a valid CRLF
+     * pair
+     */
+    private transient boolean pendingLFBeforeResume = false;
     /** Flag on whether to perform character validation in the header or not */
     private transient static boolean bCharacterValidation = true; //PI45266
     /** Flag on whether to use the channel is configured to use the remote Ip, Forwarded/X-Forwarded headers */
@@ -574,6 +580,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         this.parsedTokenLength = 0;
         this.bytePosition = 0;
         this.byteLimit = 0;
+        this.pendingLFBeforeResume = false;
         this.currentReadBB = null;
         clearBuffers();
         this.debugContext = this;
@@ -3533,6 +3540,20 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     }
 
     /**
+     * Records the position of the most recently parsed CRLF sequence
+     *
+     * @param buff the current parse buffer
+     */
+    private void recordCRLFPosition(WsByteBuffer buff) {
+        if (HeaderStorage.NOTSET != this.headerChangeLimit) {
+            int pos = findCurrentBufferPosition(buff);
+            this.lastCRLFPosition = pos - 1;
+            this.lastCRLFBufferIndex = this.parseIndex;
+            this.lastCRLFisCR = false;
+        }
+    }
+
+    /**
      * Parse a CRLF delimited token and return the length of the token.
      *
      * @param buff
@@ -3570,6 +3591,15 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                     if (this.bytePosition >= this.byteLimit) {
                         if (!fillByteCache(buff)) {
                             // no more data
+                            // But the CR was the last byte of this read.
+                            // Setting pendingLFBeforeResume here so the next call knows the first
+                            // byte it reads (the LF) completes this CRLF pair.
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "findCRLFTokenLength: CR last byte of buffer, setting pendingLFBeforeResume."
+                                    + " buffPos=" + findCurrentBufferPosition(buff)
+                                    + " byteLimit=" + this.byteLimit);
+                            }
+                            this.pendingLFBeforeResume = true;
                             this.bytePosition--;
                             break;
                         }
@@ -3578,12 +3608,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
                     } else {
                         rc = TokenCodes.TOKEN_RC_CRLF;
-                        if (HeaderStorage.NOTSET != this.headerChangeLimit) {
-                            int pos = findCurrentBufferPosition(buff);
-                            this.lastCRLFPosition = pos - 1; // Should this be - 2?
-                            this.lastCRLFBufferIndex = this.parseIndex;
-                            this.lastCRLFisCR = false;
-                        }
+                        recordCRLFPosition(buff);
                         break;
                     }
                 } else {
@@ -3600,12 +3625,35 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 break; // out of while
             } else if (BNFHeaders.LF == b) {
                 // This means a bare LF was found, verify if we should reject it
-                if (this.rejectHeaderLineFolding) {
-                    throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
-                } else {
+                if (this.rejectHeaderLineFolding && !this.pendingLFBeforeResume) {
+                    // A bare LF with no preceding CR in the same read is only valid when
+                    // pendingLFBeforeResume is set, meaning the CR arrived at the end of
+                    // the previous OS read and was deferred. Any other bare LF while
+                    // rejectHeaderLineFolding is enabled is obsolete line folding.
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "findCRLFTokenLength: Found LF which we are treating as a delimiter");
+                        Tr.debug(tc, "findCRLFTokenLength: bare LF detected with rejectHeaderLineFolding=true"
+                            + " - throwing MalformedMessageException."
+                            + " buffPos=" + findCurrentBufferPosition(buff)
+                            + " pendingLF=" + this.pendingLFBeforeResume);
                     }
+                    throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
+                }
+                if (this.pendingLFBeforeResume) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "findCRLFTokenLength: LF completes deferred CRLF pair"
+                            + " (CR was last byte of previous read buffer) - treating as valid CRLF."
+                            + " buffPos=" + findCurrentBufferPosition(buff));
+                    }
+                    this.pendingLFBeforeResume = false;
+                    // Un-consume the LF so parseCRLFs will then read and count it as the
+                    // first LF of a potential end-of-headers CRLF-CRLF sequence.
+                    this.bytePosition--;
+                    rc = TokenCodes.TOKEN_RC_CRLF;
+                    recordCRLFPosition(buff);
+                    break;
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "findCRLFTokenLength: Found LF which we are treating as a delimiter");
                 }
                 // update counter if linefeed found
                 rc = TokenCodes.TOKEN_RC_DELIM;

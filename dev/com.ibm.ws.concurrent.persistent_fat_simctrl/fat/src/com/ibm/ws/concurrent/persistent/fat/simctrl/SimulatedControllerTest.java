@@ -130,7 +130,8 @@ public class SimulatedControllerTest {
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted())
             server.stopServer("CWWKC1556W",
-                              "CWWKC1101E.*test.concurrent.persistent.fat.simctrl.SimulatedController\\$FinderTask"); // Not always possible to prevent FinderTask from running during shutdown
+                              "CWWKC1101E.*test.concurrent.persistent.fat.simctrl.SimulatedController\\$FinderTask", // Not always possible to prevent FinderTask from running during shutdown
+                              "J2CA0056I"); // FinderTask may query the in-memory DB while it is shutting down
     }
 
     /**

@@ -231,6 +231,8 @@ public class Persistence {
                                       "mappingFile",
                                       "jarFile",
                                       "clazz",
+                                      "packageDescriptor",
+                                      "moduleDescriptor",
                                       "excludeUnlistedClasses",
                                       "sharedCacheMode",
                                       "validationMode",
@@ -255,6 +257,10 @@ public class Persistence {
         protected List<String> jarFile;
         @XmlElement(name = "class")
         protected List<String> clazz;
+        @XmlElement(name = "package-descriptor")
+        protected List<String> packageDescriptor;
+        @XmlElement(name = "module-descriptor")
+        protected List<String> moduleDescriptor;
         @XmlElement(name = "exclude-unlisted-classes", defaultValue = "true")
         protected Boolean excludeUnlistedClasses;
         @XmlElement(name = "shared-cache-mode")
@@ -486,6 +492,26 @@ public class Persistence {
                 clazz = new ArrayList<String>();
             }
             return this.clazz;
+        }
+
+        /**
+         * Gets the value of the packageDescriptor property.
+         */
+        public List<String> getPackageDescriptor() {
+            if (packageDescriptor == null) {
+                packageDescriptor = new ArrayList<String>();
+            }
+            return this.packageDescriptor;
+        }
+
+        /**
+         * Gets the value of the moduleDescriptor property.
+         */
+        public List<String> getModuleDescriptor() {
+            if (moduleDescriptor == null) {
+                moduleDescriptor = new ArrayList<String>();
+            }
+            return this.moduleDescriptor;
         }
 
         /**
