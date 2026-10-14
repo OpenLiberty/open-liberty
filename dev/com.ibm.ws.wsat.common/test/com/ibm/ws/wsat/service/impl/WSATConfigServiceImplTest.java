@@ -187,6 +187,9 @@ public class WSATConfigServiceImplTest {
     private MockBundleContext     mockBundleCc;
     private MockVariableRegistry  mockVarReg;
     private MockHandler           mockHandler;
+    private String                savedBetaProperty;
+
+    private static final String BETA_PROPERTY = "com.ibm.ws.beta.edition";
 
     private AtomicServiceReference<VirtualHost>      httpOptionsRef;
     private AtomicServiceReference<Handler>          handlerServiceRef;
@@ -239,6 +242,9 @@ public class WSATConfigServiceImplTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
+        savedBetaProperty = System.getProperty(BETA_PROPERTY);
+        System.clearProperty(BETA_PROPERTY);
+
         impl = new WSATConfigServiceImpl();
 
         // Obtain the static AtomicServiceReference fields via reflection.
@@ -274,6 +280,12 @@ public class WSATConfigServiceImplTest {
 
     @After
     public void tearDown() throws Exception {
+        if (savedBetaProperty == null) {
+            System.clearProperty(BETA_PROPERTY);
+        } else {
+            System.setProperty(BETA_PROPERTY, savedBetaProperty);
+        }
+
         // Deactivate all static AtomicServiceReferences to reset their state between tests.
         // The fields are static final so they persist across test instances.
         ComponentContext cc = mockCc.asMock(ComponentContext.class);
@@ -522,5 +534,48 @@ public class WSATConfigServiceImplTest {
         // No additional BundleContext lookups for the default_host path
         assertEquals("Expected exactly one BundleContext lookup total (for wsatHost only)",
             1, mockBundleCc.getServiceReferencesCallCount);
+    }
+
+    // -----------------------------------------------------------------------
+    // UT-8: the propagation attribute is beta
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void testPropagationIgnoredOutsideBetaEdition() throws Exception {
+        setupDefaultHttpOptions();
+        Map<String, Object> props = baseProperties();
+        props.put("propagation", "check_wsdl");
+
+        impl.modified(mockCc.asMock(ComponentContext.class), props);
+
+        assertFalse("propagation must be ignored when not running a beta edition", impl.isCheckWsdlMode());
+    }
+
+    @Test
+    public void testPropagationCheckWsdlHonouredInBetaEdition() throws Exception {
+        System.setProperty(BETA_PROPERTY, "true");
+        setupDefaultHttpOptions();
+        Map<String, Object> props = baseProperties();
+        props.put("propagation", "check_wsdl");
+
+        impl.modified(mockCc.asMock(ComponentContext.class), props);
+
+        assertTrue(impl.isCheckWsdlMode());
+    }
+
+    @Test
+    public void testPropagationAlwaysAndUnsetAreNotCheckWsdlInBetaEdition() throws Exception {
+        System.setProperty(BETA_PROPERTY, "true");
+        setupDefaultHttpOptions();
+        ComponentContext cc = mockCc.asMock(ComponentContext.class);
+
+        Map<String, Object> always = baseProperties();
+        always.put("propagation", "always");
+        impl.modified(cc, always);
+        assertFalse(impl.isCheckWsdlMode());
+
+        // No value at all: no default was supplied (the public feature is not enabled)
+        impl.modified(cc, baseProperties());
+        assertFalse(impl.isCheckWsdlMode());
     }
 }

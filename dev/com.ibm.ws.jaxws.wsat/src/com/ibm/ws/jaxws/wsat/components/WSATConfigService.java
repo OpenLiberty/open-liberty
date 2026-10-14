@@ -23,4 +23,11 @@ public interface WSATConfigService {
     public String getWSATUrl();
 
     public long getAsyncResponseTimeout();
+
+    /**
+     * Returns {@code true} when {@code propagation="check_wsdl"} is configured on
+     * {@code <wsAtomicTransaction/>}.  When {@code false} (the default {@code "always"}
+     * mode), WS-AT coordination context is propagated unconditionally.
+     */
+    public boolean isCheckWsdlMode();
 }
