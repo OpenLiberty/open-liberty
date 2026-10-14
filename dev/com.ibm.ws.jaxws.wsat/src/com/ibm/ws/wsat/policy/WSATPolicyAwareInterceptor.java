@@ -149,6 +149,16 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
             //NOTE: message.getInterceptorChain() is the current interceptor list.
             //If we are in the middle of the interceptor process, the list will NOT be refreshed again from ex.getEndpoint().getOutInterceptors()
             //So message.getInterceptorChain() is the correct and only way to modify it.
+
+            // Outbound propagation is only allowed when the public wsAtomicTransaction-1.2 feature
+            // is present.  The private internal feature provides inbound participant support only.
+            if (!WSATFeatureService.isPublicFeaturePresent()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "handleMessage_feature_exist",
+                             "internal feature only: skipping outbound context propagation");
+                return;
+            }
+
             message.getInterceptorChain().add(service.getCoorContextOutInterceptor());
         } else if (!isOut && busType.equals(LibertyApplicationBus.Type.SERVER)) {
             String requrl = (String) message.get(Message.PATH_INFO);
