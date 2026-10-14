@@ -10,17 +10,22 @@
 package io.openliberty.jpa.persistence.tests.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Statement;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -60,12 +65,10 @@ public class JakartaPersistenceServlet extends FATServlet {
 
         assertNotNull("id should have been assigned", emp.getId());
 
-        tx.begin();
         SimpleEmployee found = em.find(SimpleEmployee.class, emp.getId());
         assertNotNull("entity should exist after persist", found);
         assertEquals("Alice", found.getName());
         assertEquals(80_000L, found.getSalary());
-        tx.commit();
     }
 
     /** Update a field and verify the change is visible in a fresh find. */
@@ -104,10 +107,8 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.remove(managed);
         tx.commit();
 
-        tx.begin();
         SimpleEmployee gone = em.find(SimpleEmployee.class, id);
         assertNull("entity should be gone after remove", gone);
-        tx.commit();
     }
 
     /** JPQL query with a named parameter. */
@@ -120,13 +121,11 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(new SimpleEmployee("Frank",  55_000L));
         tx.commit();
 
-        tx.begin();
         TypedQuery<SimpleEmployee> q = em.createQuery(
             "SELECT e FROM SimpleEmployee e WHERE e.salary > :minSalary",
             SimpleEmployee.class);
         q.setParameter("minSalary", 80_000L);
         List<SimpleEmployee> results = q.getResultList();
-        tx.commit();
 
         assertEquals("expected two employees earning > 80k", 2, results.size());
     }
@@ -140,10 +139,8 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(new SimpleEmployee("G2", 2L));
         tx.commit();
 
-        tx.begin();
         Long count = em.createQuery("SELECT COUNT(e) FROM SimpleEmployee e", Long.class)
                        .getSingleResult();
-        tx.commit();
 
         assertTrue("expected at least 2 employees", count >= 2L);
     }
@@ -181,11 +178,9 @@ public class JakartaPersistenceServlet extends FATServlet {
         managed.setPrice(54.99);
         tx.commit();
 
-        tx.begin();
         Product updated = em.find(Product.class, id);
         assertEquals("version should have been incremented to 1", 1L, updated.getVersion());
         assertEquals(54.99, updated.getPrice(), 0.001);
-        tx.commit();
     }
 
     /** JPQL — find all products below a price threshold. */
@@ -198,17 +193,75 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.persist(new Product("Expensive",99.99));
         tx.commit();
 
-        tx.begin();
         List<Product> cheap = em.createQuery(
             "SELECT p FROM Product p WHERE p.price < :max ORDER BY p.price",
             Product.class)
             .setParameter("max", 10.0)
             .getResultList();
-        tx.commit();
 
         assertEquals(1, cheap.size());
         assertEquals("Cheap", cheap.get(0).getName());
     }
+
+    // -----------------------------------------------------------------------
+    // JPA 4.0 — get() / find() semantics
+    // -----------------------------------------------------------------------
+
+    /**
+     * get() returns the entity when it exists — same result as find().
+     */
+    @Test
+    public void testGetReturnsEntityWhenPresent() throws Exception {
+        cleanup(SimpleEmployee.class);
+        SimpleEmployee emp1 = new SimpleEmployee("Alby", 45_000L);
+        SimpleEmployee emp2 = new SimpleEmployee("Bruno", 70_000L);
+        tx.begin();
+        em.persist(emp1);
+        em.persist(emp2);
+        tx.commit();
+
+        tx.begin();
+        SimpleEmployee found = em.get(SimpleEmployee.class, emp2.getId());
+        tx.commit();
+        assertNotNull("get() must return a non-null entity for an existing id", found);
+        assertEquals("Bruno", found.getName());
+        assertEquals(70_000L, found.getSalary());
+    }
+
+    /**
+     * get() throws EntityNotFoundException when the entity does not exist,
+     * whereas find() would return null.
+     */
+    @Test
+    public void testGetAndFindForMissingId() throws Exception {
+        cleanup(SimpleEmployee.class);
+        SimpleEmployee emp = new SimpleEmployee("Antony", 50_000L);
+        tx.begin();
+        em.persist(emp);
+        tx.commit();
+
+        Long nonExistentId = Long.MAX_VALUE;
+
+        tx.begin();
+        SimpleEmployee notFound = em.find(SimpleEmployee.class, nonExistentId);
+        tx.commit();
+        assertNull("find() must return null for a missing entity", notFound);
+
+        tx.begin();
+        try {
+            em.get(SimpleEmployee.class, nonExistentId);
+            fail("get() must throw EntityNotFoundException for a missing entity");
+        } catch (EntityNotFoundException e) {
+            // expected
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.rollback();
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // JPA 4.0 — TypedQuery.getResultCount()
+    // -----------------------------------------------------------------------
 
     @Test
     public void testGetResultCount() throws Exception {
@@ -235,7 +288,8 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     private void cleanup(Class<?> entityClass) throws Exception {
         tx.begin();
-        em.createQuery("DELETE FROM " + entityClass.getSimpleName() + " e").executeUpdate();
+        Statement stmt = em.createStatement("DELETE FROM " + entityClass.getSimpleName() + " e");
+        stmt.execute();
         tx.commit();
     }
 }
