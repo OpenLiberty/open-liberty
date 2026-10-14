@@ -17,6 +17,11 @@
 			type="String" ibm:type="duration" default="30s" required="false"  min="0" />
 		<AD id="virtualHostRef" name="internal" description="internal use only"
 			type="String" default="default_host" required="false" ibmui:uiReference="com.ibm.ws.http.virtualhost" />
+		<AD id="propagation" name="%propagation.name" description="%propagation.description"
+			type="String" default="always" required="false">
+			<Option label="%propagation.always" value="always"/>
+			<Option label="%propagation.check_wsdl" value="check_wsdl"/>
+		</AD>
 	</OCD>
 
 	<Designate pid="com.ibm.ws.wsat.service.wsatconfigservice">
