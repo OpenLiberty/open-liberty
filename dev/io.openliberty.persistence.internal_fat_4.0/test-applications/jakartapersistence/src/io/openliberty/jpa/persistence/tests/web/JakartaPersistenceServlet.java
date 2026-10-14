@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.List;
 
 import jakarta.annotation.Resource;
@@ -257,6 +258,85 @@ public class JakartaPersistenceServlet extends FATServlet {
             if (tx.getStatus() == Status.STATUS_ACTIVE)
                 tx.rollback();
         }
+    }
+
+    // -----------------------------------------------------------------------
+    // JPA 4.0 — findMultiple()
+    // -----------------------------------------------------------------------
+
+    /**
+     * findMultiple() returns one entity per id in the same order.
+     * Missing ids produce null slots in the list.
+     */
+    @Test
+    public void testFindMultipleAllPresent() throws Exception {
+        cleanup(SimpleEmployee.class);
+        SimpleEmployee e1 = new SimpleEmployee("Thomas", 10_000L);
+        SimpleEmployee e2 = new SimpleEmployee("Edwin", 20_000L);
+        SimpleEmployee e3 = new SimpleEmployee("Margaret", 30_000L);
+        tx.begin();
+        em.persist(e1);
+        em.persist(e2);
+        em.persist(e3);
+        tx.commit();
+
+        tx.begin();
+        List<SimpleEmployee> results = em.findMultiple(SimpleEmployee.class,
+                Arrays.asList(e1.getId(), e2.getId(), e3.getId()));
+        tx.commit();
+
+        assertEquals("findMultiple() must return exactly 3 entries", 3, results.size());
+        assertNotNull("slot 0 must be non-null", results.get(0));
+        assertNotNull("slot 1 must be non-null", results.get(1));
+        assertNotNull("slot 2 must be non-null", results.get(2));
+        assertEquals("Thomas", results.get(0).getName());
+        assertEquals("Edwin", results.get(1).getName());
+        assertEquals("Margaret", results.get(2).getName());
+    }
+
+    /**
+     * findMultiple() places null in the result list for an id that does not exist.
+     */
+    @Test
+    public void testFindMultipleSomeMissing() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        SimpleEmployee e1 = new SimpleEmployee("Leonard", 11_000L);
+        SimpleEmployee e2 = new SimpleEmployee("Patricia", 22_000L);
+        em.persist(e1);
+        em.persist(e2);
+        tx.commit();
+
+        Long missingId = Long.MAX_VALUE;
+
+        tx.begin();
+        List<SimpleEmployee> results = em.findMultiple(SimpleEmployee.class,
+                Arrays.asList(e1.getId(), missingId, e2.getId()));
+        tx.commit();
+
+        assertEquals("findMultiple() must return 3 slots (one per id)", 3, results.size());
+        assertNotNull("slot 0 (present) must be non-null", results.get(0));
+        assertNull("slot 1 (missing) must be null", results.get(1));
+        assertNotNull("slot 2 (present) must be non-null", results.get(2));
+    }
+
+    /**
+     * findMultiple() with an empty id list returns an empty list, not null.
+     */
+    @Test
+    public void testFindMultipleEmptyList() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        em.persist(new SimpleEmployee("Walter", 15_000L));
+        em.persist(new SimpleEmployee("Harriet", 25_000L));
+        tx.commit();
+
+        tx.begin();
+        List<SimpleEmployee> results = em.findMultiple(SimpleEmployee.class, List.of());
+        tx.commit();
+
+        assertNotNull("findMultiple() with empty input must return an empty list, not null", results);
+        assertTrue("result list must be empty", results.isEmpty());
     }
 
     // -----------------------------------------------------------------------
