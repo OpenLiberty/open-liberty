@@ -38,7 +38,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 public class BestMatch {
 
     /** Maximum number of Maven dependencies written to a single pom.xml file. */
-    private static final int MAX_DEPS_PER_POM = 50;
+    private static final int MAX_DEPS_PER_POM = 1;
 
     private static int pomFiles = 1;
     private static final Map<String, List<String>> depVersionMap = new HashMap<>();
