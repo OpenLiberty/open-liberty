@@ -78,7 +78,7 @@ public class BonusPayoutViaJBatchUtilityTest {
                         .setHostAndPort(server.getHostname(),
                                         server.getHttpDefaultPort())
                         .loadSql(server.pathToAutoFVTTestFiles
-                                 + "common/BonusPayout.derby.ddl",
+                                 + "common/BonusPayout.h2.ddl",
                                  "JBATCH",
                                  "")
                         .executeUpdate();
