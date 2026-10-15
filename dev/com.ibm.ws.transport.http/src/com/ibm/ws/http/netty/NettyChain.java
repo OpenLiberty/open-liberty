@@ -202,17 +202,17 @@ public class NettyChain extends AbstractHttpChain {
                     Tr.debug(this, tc, "This configuration differs and should cause an update ");
                 }
                 currentConfig = newConfig;
-                ChainState currentState = state.get();
-                if (currentState == ChainState.STARTING) {
-                    // A deferred bind (initial startup) is in flight on another thread.
-                    // channelFutureHandler will transition the state to STARTED or STOPPED
-                    // and call notifyStarted/notifyStopped when the bind completes.
-                    // Stopping the chain here would fire notifyStopped without a matching
-                    // notifyStarted, spuriously removing all web apps from the virtual host.
-                    // Skip the stop; the next update() call (after the bind resolves) will
-                    // see STARTED/STOPPED and handle the config change correctly.
-                    Tr.debug(this, tc, "Deferred bind in progress (STARTING), skipping stopAndWait for config change on " + endpointName);
-                } else if (currentState != ChainState.UNINITIALIZED) {
+                // If the state is not UNINITIALIZED (e.g. STARTED or STARTING with a bind in-flight),
+                // stopAndWait() must be called so the current/in-flight channel is properly closed
+                // and state transitions to STOPPED before startNettyChannel() initiates a new bind.
+                //
+                // Note: If STARTING, stop() will close the serverChannel and fire notifyStopped(),
+                // balancing the notifyStarted() that was already sent when startNettyChannel() began.
+                // The pending bind callback in TCPUtils / channelFutureHandler will see the channel
+                // is no longer current/open and discard it. If there are issues where stopping an
+                // in-flight deferred bind causes startup race conditions, ensure the closeFuture
+                // listener in stop() properly completes stopLock notification and state -> STOPPED.
+                if (state.get() != ChainState.UNINITIALIZED) {
                     stopAndWait();
                 }
             }
@@ -297,24 +297,43 @@ public class NettyChain extends AbstractHttpChain {
                 // STARTING window that would otherwise allow a concurrent update() call to
                 // fire notifyStopped() without a matching notifyStarted().
                 if (NettyFrameworkImpl.isServerCompletelyStarted()) {
-                    long bindTimeoutMs = nettyFramework.getDefaultChainQuiesceTimeout();
+                    Object retriesObj = tcpOptions.get("portOpenRetries");
+                    int portOpenRetries = 0;
+                    if (retriesObj instanceof Integer) {
+                        portOpenRetries = (Integer) retriesObj;
+                    } else if (retriesObj instanceof String) {
+                        try {
+                            portOpenRetries = Integer.parseInt((String) retriesObj);
+                        } catch (NumberFormatException ignored) {
+                        }
+                    }
+                    long retryWindowMs = ((long) portOpenRetries + 1L) * 1000L + 5000L;
+                    long bindTimeoutMs = Math.max(nettyFramework.getDefaultChainQuiesceTimeout(), retryWindowMs);
                     long deadline = System.currentTimeMillis() + bindTimeoutMs;
-                    Tr.debug(this, tc, "startNettyChannel: server started, waiting for bind result. state: [" + state.get() + "]");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "startNettyChannel: server started, waiting for bind result. state: [" + state.get() + "]");
+                    }
                     while (state.get() == ChainState.STARTING) {
                         long remaining = deadline - System.currentTimeMillis();
                         if (remaining <= 0) {
-                            Tr.debug(this, tc, "Timed out after " + bindTimeoutMs + "ms waiting for bind result on " + endpointName + ", treating as failure");
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Timed out after " + bindTimeoutMs + "ms waiting for bind result on " + endpointName + ", treating as failure");
+                            }
                             state.set(ChainState.STOPPED);
                             break;
                         }
                         wait(remaining);
                     }
                 } else {
-                    Tr.debug(this, tc, "startNettyChannel: bind deferred until server fully started for " + endpointName + ", returning without waiting");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "startNettyChannel: bind deferred until server fully started for " + endpointName + ", returning without waiting");
+                    }
                 }
 
             } catch (InterruptedException ie) {
-                Tr.debug(this, tc, "startNettyChannel interrupted while waiting for bind to complete");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "startNettyChannel interrupted while waiting for bind to complete");
+                }
                 state.set(ChainState.STOPPED);
                 Thread.currentThread().interrupt();
             } catch (Exception e) {
