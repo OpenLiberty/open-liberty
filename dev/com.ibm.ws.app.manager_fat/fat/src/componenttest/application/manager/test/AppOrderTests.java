@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package componenttest.application.manager.test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -344,6 +345,68 @@ public class AppOrderTests extends AbstractAppManagerTest {
         assertNotNull("Application 'slow' did not start after config PID replacement — "
                       + "explicit start intent was lost (regression of TS022427317)",
                       server.waitForStringInLogUsingMark("CWWKZ0001I.* slow", LONG_TIMEOUT));
+    }
+
+    /**
+     * Regression test: an explicit {@code ApplicationMBean.stop()} on an application with the default
+     * {@code autoStart=true} must leave it STOPPED until it is explicitly started again.  It must not
+     * restart itself once the stop completes.
+     */
+    @Test
+    public void testStopAutoStartTrueAppStaysStopped() throws Exception {
+        final String method = testName.getMethodName();
+
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SNOOP_WAR);
+        server.setServerConfigurationFile("/appOrder/mbean-stop-autostart.xml");
+        server.startServer(method + ".log");
+
+        assertNotNull("The snoop application never started", server.waitForStringInLog("CWWKZ0001I.* snoop"));
+
+        ApplicationMBean snoop = getApplicationMBean("snoop");
+
+        server.setMarkToEndOfLog();
+        snoop.stop();
+        assertNotNull("The snoop application did not stop", server.waitForStringInLogUsingMark("CWWKZ0009I.* snoop"));
+
+        // The application must not bounce back to STARTING by itself.
+        assertNull("The snoop application restarted itself after an explicit stop",
+                   server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
+        assertTrue("The application 'snoop' should remain STOPPED", snoop.getState() == ApplicationState.STOPPED);
+
+        // An explicit start must still work.
+        server.setMarkToEndOfLog();
+        snoop.start();
+        assertNotNull("The snoop application did not start after an explicit start",
+                      server.waitForStringInLogUsingMark("CWWKZ0001I.* snoop", LONG_TIMEOUT));
+    }
+
+    /**
+     * Regression test: an application with the default {@code autoStart=true} that has been explicitly
+     * stopped must remain STOPPED when an unrelated server.xml change is applied afterwards.
+     */
+    @Test
+    public void testStoppedAutoStartTrueAppStaysStoppedAcrossConfigUpdate() throws Exception {
+        final String method = testName.getMethodName();
+
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SNOOP_WAR);
+        server.setServerConfigurationFile("/appOrder/mbean-stop-autostart.xml");
+        server.startServer(method + ".log");
+
+        assertNotNull("The snoop application never started", server.waitForStringInLog("CWWKZ0001I.* snoop"));
+
+        ApplicationMBean snoop = getApplicationMBean("snoop");
+
+        server.setMarkToEndOfLog();
+        snoop.stop();
+        assertNotNull("The snoop application did not stop", server.waitForStringInLogUsingMark("CWWKZ0009I.* snoop"));
+
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("/appOrder/mbean-stop-autostart-updated.xml");
+        assertNotNull("Server config update was not acknowledged", server.waitForStringInLogUsingMark("CWWKG0017I"));
+
+        assertNull("The stopped snoop application was restarted by an unrelated config update",
+                   server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
+        assertTrue("The application 'snoop' should remain STOPPED", snoop.getState() == ApplicationState.STOPPED);
     }
 
     /**

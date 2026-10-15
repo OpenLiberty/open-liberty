@@ -108,12 +108,9 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
         final ApplicationDependency appDep = createDependency("resolves when app " + getAppName() + " finishes stopping");
         _notifyAppStopped.add(appDep);
-        // Only re-arm the explicit-start barrier for applications configured with autoStart=false.
-        // For autoStart=true applications the barrier was never installed, so installing it here
-        // would silently convert the application to manual-start behaviour on the next configure().
-        if (!_appConfig.get().isAutoStarted()) {
-            createExplicitStartFuture();
-        }
+        // An explicit stop must leave the application stopped, regardless of its autoStart setting,
+        // until it is explicitly started again.
+        createExplicitStartFuture();
         attemptStateChange(StateChangeAction.STOP);
         return appDep.getFuture();
     }
