@@ -100,18 +100,15 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
 
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, h);
             }
-            // HTTP/1 codec/read topology is installed before application dispatch can observe it.
-            ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.ALPN_HTTP1);
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
-            
+            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             if(ctx.pipeline().get(FlowControlHandler.class) == null){
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
             }
-            
-            ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             // Turn on half closure for H1
             ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
             ctx.channel().config().setAutoRead(false);
+            ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.ALPN_HTTP1);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configured pipeline with " + ctx.pipeline().names());
             }

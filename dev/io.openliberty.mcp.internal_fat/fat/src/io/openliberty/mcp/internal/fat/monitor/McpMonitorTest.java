@@ -693,6 +693,11 @@ public class McpMonitorTest {
         // End session to trigger session metrics
         client.deleteSession();
 
+        // Set log mark after deleteSession() so the waitForStringInLogUsingMark below
+        // cannot match a CWWKZ0009I from a previous test. Must be placed before
+        // removeDropinsApplications() to capture the undeploy that follows.
+        server.setMarkToEndOfLog();
+
         // 2. Verify both operation and session MBeans are registered with specific checks
         ObjectName operationQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
         Set<ObjectName> operationMBeans = mbeanServer.queryNames(operationQuery, null);
@@ -715,8 +720,14 @@ public class McpMonitorTest {
 
         // 3. Undeploy the application
         server.removeDropinsApplications(APP_NAME + ".war");
+
+        // Use waitForStringInLogUsingMark (not waitForStringInLog) so that only the
+        // CWWKZ0009I from this undeploy is matched. CWWKZ0009I is logged synchronously
+        // after applicationStopped() returns, which itself returns after
+        // removeStatsForApp() completes — so the JMX assertions below are guaranteed
+        // to run after all MBeans have been deregistered, eliminating the race.
         assertNotNull("Application should stop",
-                      server.waitForStringInLog("CWWKZ0009I.*" + APP_NAME));
+                      server.waitForStringInLogUsingMark("CWWKZ0009I.*" + APP_NAME));
 
         // 4. Verify cleanup: both operation and session MBeans should be removed
         operationMBeans = mbeanServer.queryNames(operationQuery, null);

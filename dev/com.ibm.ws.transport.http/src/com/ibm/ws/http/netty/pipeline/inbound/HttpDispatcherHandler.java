@@ -534,7 +534,17 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             removeIfPresent(p, HttpServerCodec.class);
             removeIfPresent(p, HttpObjectAggregator.class);
             removeIfPresent(p, CRLFValidationHandler.class);
-            removeIfPresent(p, TimeoutHandler.class);
+            ProtocolName protocol = ProtocolState.current(ctx.channel());
+            if (protocol == ProtocolName.HTTP2
+                            || Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).get())) {
+                removeIfPresent(p, TimeoutHandler.class);
+            } else {
+                // Generic Servlet upgrades may still need the HTTP persistence deadline.
+                TimeoutHandler timeoutHandler = p.get(TimeoutHandler.class);
+                if (timeoutHandler != null) {
+                    timeoutHandler.suspendForUpgrade();
+                }
+            }
             removeIfPresent(p, WriteTimeoutHandler.class);
             removeIfPresent(p, ReadFlowHandler.class);
             removeIfPresent(p, FlowControlHandler.class);

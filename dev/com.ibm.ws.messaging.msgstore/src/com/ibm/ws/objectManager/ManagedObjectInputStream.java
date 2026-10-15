@@ -132,7 +132,7 @@ class ManagedObjectInputStream
 
         Class theClass = null;
         try {
-            theClass = Class.forName(objectStreamClass.getName());
+            theClass = Class.forName(objectStreamClass.getName(), false, ManagedObjectInputStream.class.getClassLoader());
 
         } catch (java.lang.ClassNotFoundException classNotFoundException) {
             // Get the ClassLoader, which may be the standard ClassLoader or may be an application
@@ -143,7 +143,7 @@ class ManagedObjectInputStream
                                     return Thread.currentThread().getContextClassLoader();
                                 }
                             });
-            theClass = Class.forName(objectStreamClass.getName(), true, classLoader);
+            theClass = Class.forName(objectStreamClass.getName(), false, classLoader);
         }
 
         if (Tracing.isAnyTracingEnabled() && trace.isEntryEnabled())
