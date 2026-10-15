@@ -20,7 +20,7 @@ public class HelloImplNoAssertion{
 		return "Hello World!";
 	}
 	
-	public String sayHelloToOther(String username){
-		return "Hello " + username;
-	}
+	public String sayHelloToOther(String username) throws Exception {
+        return TxProbe.probe(username);
+    }
 }
