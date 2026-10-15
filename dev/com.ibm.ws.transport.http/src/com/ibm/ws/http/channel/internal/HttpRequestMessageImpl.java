@@ -82,6 +82,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     /** Ensures the non-sensitive $WSSP warning message is issued only once */
     private static final AtomicBoolean wsspWarningIssued = new AtomicBoolean(false);
 
+    /** Maximum number of $WSSP header bytes written to the logs; a valid value is a port number of at most 5 digits */
+    private static final int MAX_LOGGED_WSSP_LENGTH = 16;
+
     /** Serialization ID field */
     private static final long serialVersionUID = 5759292362534888246L;
 
@@ -2253,40 +2256,30 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
             rc = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, hkey, isWssp ? value : null, desensitizePrivatePortHeader);
 
-            if (!rc && isWssp) {
-                logWsspFromNonSensitiveAddress(value, remoteAddr, hisc);
-            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && !rc) {
-                Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
-                        + "] not permitted from [" + remoteAddr + "]");
+            if (!rc) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
+                            + "] not permitted from [" + remoteAddr + "]");
+                }
+
+                if (isWssp) {
+                    int clientPort = (hisc != null) ? hisc.getRemotePort() : -1;
+                    // $WSSP comes from a peer that is not trusted, so limit how much of it is written to the logs
+                    String wsspValue = GenericUtils.getEnglishString(value, 0, Math.min(value.length, MAX_LOGGED_WSSP_LENGTH))
+                                       + (value.length > MAX_LOGGED_WSSP_LENGTH ? "..." : "");
+
+                    // warn only for the first request, but trace every request
+                    if (wsspWarningIssued.compareAndSet(false, true)) {
+                        Tr.warning(tc, "wssp.header.non.sensitive.address", remoteAddr, clientPort, wsspValue);
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "filterAdd: $WSSP header received from non-sensitive address: clientAddress=" + remoteAddr
+                                     + ", clientPort=" + clientPort + ", $WSSP=" + wsspValue);
+                    }
+                }
             }
         }
         return rc;
-    }
-
-    /**
-     * Log that a $WSSP header was received from a non-sensitive (untrusted) IP address.
-     * Emits a single numbered warning for the first occurrence; every occurrence is
-     * recorded in debug trace.
-     *
-     * @param value      raw $WSSP header bytes
-     * @param remoteAddr the remote client address (may be null)
-     * @param hisc       the HTTP service context for this request (may be null)
-     */
-    private void logWsspFromNonSensitiveAddress(byte[] value, InetAddress remoteAddr, HttpServiceContextImpl hisc) {
-        String clientAddr = (remoteAddr != null) ? remoteAddr.getHostAddress() : null;
-        int clientPort = (hisc != null) ? hisc.getRemotePort() : -1;
-        String wsspValue = GenericUtils.getEnglishString(value);
-
-        if (wsspWarningIssued.compareAndSet(false, true)) {
-            Tr.warning(tc, "wssp.header.non.sensitive.address", clientAddr, clientPort, wsspValue);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "filterAdd: $WSSP header received from non-sensitive address:"
-                         + " clientAddress=" + clientAddr
-                         + ", clientPort=" + clientPort
-                         + ", $WSSP=" + wsspValue);
-        }
     }
 
     /**
