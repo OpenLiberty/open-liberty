@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,6 +24,7 @@ import componenttest.custom.junit.runner.FATRunner;
 public class AopSpringBootAppTests30 extends AopAbstractTests {
     @Override
     public Set<String> getFeatures() {
+        // springBoot-3.0 requires Jakarta EE 10 (servlet-6.0); servlet-6.1 (Jakarta EE 11) is incompatible.
         return new HashSet<>(Arrays.asList("servlet-6.0", "springBoot-3.0"));
     }
 
@@ -31,8 +33,21 @@ public class AopSpringBootAppTests30 extends AopAbstractTests {
         return AppConfigType.SPRING_BOOT_APP_TAG;
     }
 
+    // Stop the server after each test method so that each test uses its own servlet feature.
+    // springBoot-3.0 requires Jakarta EE 10 (servlet-6.0) and cannot be combined with servlet-6.1,
+    // so both tests run with servlet-6.0 only. SRVE8046E does not apply here.
+    @After
+    public void stopServerAfterTest() throws Exception {
+        stopServer(DO_CLEANUP_APPS);
+    }
+
     @Test
-    public void testAopSpringBootApplication() throws Exception {
-        testAop();
+    public void testAopSpringBootApplicationServlet60Sync() throws Exception {
+        testAopSync();
+    }
+
+    @Test
+    public void testAopSpringBootApplicationServlet60Aysnc() throws Exception {
+        testAopAsync();
     }
 }
