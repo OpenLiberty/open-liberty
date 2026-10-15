@@ -276,7 +276,7 @@ public class LTPAKeyRotationTests {
             }
         } else {
             assertFalse("Expected neither of IBM JDK 8 or Semeru FIPS 140-3 to be enabled, but at least one is enabled.", ibmJdk8Fips140_3Enabled || semeruFips140_3Enabled);
-            assertNull("Expected FIPS 140-3 enabled message to be not found, but was found.", server.waitForStringInLog("CWWKS5903I:"));
+            assertNull("Expected FIPS 140-3 enabled message to be not found, but was found.", server.waitForStringInLog("CWWKS5903I:", 30000));
         }
 
         // let's not worry about non-fips case for getFipsLevel for now since some JDK's might use 140-2 as default
