@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -353,7 +353,7 @@ public class PackageCommand {
         //tell user we are collecting.
         System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverPackagingCollectingInformation"),
                                                 serverName));
-        EmbeddedServerImpl server = new EmbeddedServerImpl(serverName, bootProps.getUserRoot(), new File(serverOutputDir).getParentFile(), null, null, null, null, BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS);
+        EmbeddedServerImpl server = new EmbeddedServerImpl(serverName, bootProps, bootProps.getUserRoot(), new File(serverOutputDir).getParentFile(), null, null, null, null, BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS);
 
         //add in the 'do not pass go' property.
         //this will prevent the server raising the start level, preventing features starting
