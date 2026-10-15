@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=Revisa el mensaje de error
 CWMCM0043W.unsupported.annotation=CWMCM0043W: El m\u00e9todo ` {0} ` utiliza la anotaci\u00f3n ` {1} `, que no es compatible. Este m\u00e9todo se ignora.
 CWMCM0043W.unsupported.annotation.explanation=La API de Java del Protocolo de Contexto de Modelos (MCP) incluye anotaciones para funciones que no son compatibles con esta implementaci\u00f3n. Se ignoran los m\u00e9todos que contienen anotaciones no admitidas.
 CWMCM0043W.unsupported.annotation.useraction=Elimina la anotaci\u00f3n no compatible del m\u00e9todo o utiliza \u00fanicamente anotaciones compatibles con el Protocolo de Contexto de Modelo (MCP).
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: El servidor no ha procesado una solicitud MCP local porque el valor del encabezado \u00abOrigin\u00bb no era v\u00e1lido.
+CWMCM0044I.localhost.header.rejected.explanation=Las solicitudes no seguras de tipo \u00ab HTTP \u00bb procedentes de \u00ablocalhost\u00bb deben carecer de encabezado \u00abOrigin\u00bb o bien contener un encabezado \u00abOrigin\u00bb que incluya \u00fanicamente \u00ablocalhost\u00bb o una direcci\u00f3n de bucle invertido. Un encabezado \u00abOrigin\u00bb que contenga cualquier otro valor indica un posible ataque de reasignaci\u00f3n de DNS.
+CWMCM0044I.localhost.header.rejected.useraction=Aseg\u00farate de que el encabezado \u00abOrigin\u00bb no aparezca o de que solo contenga \u00ablocalhost\u00bb.

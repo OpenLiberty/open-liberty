@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -492,6 +492,11 @@ schemagen.info.schema.file.created.useraction=No se requiere ninguna acci\u00f3n
 error.config.root.deleted=CWWKG0110E: Se ha detectado una actualizaci\u00f3n de la configuraci\u00f3n, pero el server.xml no existe. No se han realizado actualizaciones de configuraci\u00f3n.
 error.config.root.deleted.explanation=Se ha eliminado el archivo server.xml. Para no causar interrupciones en las aplicaciones en ejecuci\u00f3n, no se realizan cambios en la configuraci\u00f3n.
 error.config.root.deleted.useraction=Vuelva a a\u00f1adir el archivo server.xml al servidor.
+
+warn.invalid.quiesce.timeout=CWWKG0111W: El valor \u00ab {0} \u00bb especificado para el atributo \u00ab quiesceTimeout \u00bb del elemento \u00abserver\u00bb en el archivo \u00ab server.xml \u00bb no es v\u00e1lido. El valor debe corresponder a una duraci\u00f3n de 30 segundos o m\u00e1s. El servidor utiliza el valor predeterminado de 30 segundos.
+warn.invalid.quiesce.timeout.explanation=El atributo \u00ab quiesceTimeout \u00bb especifica el tiempo que hay que esperar a que el servidor entre en estado de reposo durante el apagado. Especifica un n\u00famero entero positivo seguido de una unidad de tiempo, como \u00ab 30s \u00bb, \u00ab 1m \u00bb o \u00ab 1m30s \u00bb. Si no se indica ninguna unidad de tiempo, el servidor da por hecho que se trata de segundos. El valor debe ser de al menos 30 segundos. Los valores inferiores a 30 segundos no proporcionan tiempo suficiente para que el servidor complete las solicitudes en curso y lleve a cabo las operaciones de apagado de forma ordenada.
+warn.invalid.quiesce.timeout.useraction=En el archivo \u00ab server.xml \u00bb, cambia el atributo \u00ab quiesceTimeout \u00bb del elemento \u00abserver\u00bb por un valor de duraci\u00f3n de 30 segundos o m\u00e1s (por ejemplo, \u00ab 30s \u00bb, \u00ab 45s \u00bb o \u00ab 1m30s \u00bb), o elimina el atributo para utilizar el valor predeterminado de 30 segundos.
+
 
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

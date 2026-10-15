@@ -66,18 +66,23 @@ public class JPAEMFactoryV40 extends JPAEMFactory{
     }
 
     @Override
+    public EntityAgent createEntityAgent(EntityAgent.CreationOption... options) {
+        return ivFactory.createEntityAgent(options);
+    }
+
+    @Override
     public EntityAgent createEntityAgent(Map<?, ?> properties) {
         return ivFactory.createEntityAgent(properties);
     }
 
     @Override
-    public EntityAgent createEntityAgent() {
-        return ivFactory.createEntityAgent();
+    public EntityManager createEntityManager(EntityManager.CreationOption... options) {
+        return ivFactory.createEntityManager(options);
     }
 
     @Override
-    public EntityManager createEntityManager(SynchronizationType arg0) {
-        return ivFactory.createEntityManager(arg0);
+    public EntityManager createEntityManager(@SuppressWarnings("rawtypes") Map map) {
+        return ivFactory.createEntityManager(map);
     }
 
     @Override

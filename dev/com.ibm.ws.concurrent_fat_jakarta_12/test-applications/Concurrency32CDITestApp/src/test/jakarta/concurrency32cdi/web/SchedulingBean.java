@@ -81,6 +81,12 @@ public class SchedulingBean {
     /**
      * Tracks the non-execution of the notScheduled method.
      */
+    private final CountDownLatch neverDueToMethodParameterLatch = //
+                    new CountDownLatch(1);
+
+    /**
+     * Tracks the non-execution of the notScheduled method.
+     */
     private final CountDownLatch notScheduledLatch = //
                     new CountDownLatch(1);
 
@@ -169,6 +175,19 @@ public class SchedulingBean {
         }
     }
 
+    /**
+     * This should never schedule or run because scheduled methods cannot have
+     * parameters.
+     */
+    @Schedule(cron = "* * * * * *")
+    public void neverDueToMethodParameter(String message) {
+        System.out.println("Running a scheduled method that has a parameter: " +
+                           message);
+    }
+
+    /**
+     * This should never schedule or run because it has no Schedule annotation.
+     */
     public void notScheduled() {
         System.out.println("Running a method that is NOT SCHEDULED!");
         notScheduledLatch.countDown();
@@ -218,6 +237,16 @@ public class SchedulingBean {
      */
     public LinkedBlockingQueue<Object> trackerOfLookUp3Times() {
         return lookUp3TimesQueue;
+    }
+
+    /**
+     * Returns a latch tracking the non-execution of the neverDueToMethodParameter
+     * method.
+     *
+     * @return a latch tracking non-execution of the neverDueToMethodParameter method
+     */
+    public CountDownLatch trackerOfNeverDueToMethodParameter() {
+        return neverDueToMethodParameterLatch;
     }
 
     /**

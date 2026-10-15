@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=Review the error message, 
 CWMCM0043W.unsupported.annotation=CWMCM0043W: The {0} method uses the {1} annotation which is not supported. This method is ignored.
 CWMCM0043W.unsupported.annotation.explanation=The Model Context Protocol (MCP) Java API includes annotations for features that are not supported by this implementation. Methods annotated with unsupported annotations are ignored.
 CWMCM0043W.unsupported.annotation.useraction=Remove the unsupported annotation from the method, or use only supported Model Context Protocol (MCP) annotations.
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: The server did not process a local MCP request because the Origin header value was not valid.
+CWMCM0044I.localhost.header.rejected.explanation=Unsecured HTTP requests from localhost must either have no Origin header, or have an Origin header that contains only localhost or a loopback address. An Origin header that contains any other value indicates a possible DNS rebinding attack.
+CWMCM0044I.localhost.header.rejected.useraction=Ensure that the Origin header is either not present or contains only localhost.

@@ -50,9 +50,9 @@ public class McpIntrospectorContextListener implements ServletContextListener {
 
     private String extractAppName(ServletContext context) {
         String contextPath = context.getContextPath();
-        if (contextPath != null && !contextPath.isEmpty() && !"/".equals(contextPath)) {
-            return contextPath.startsWith("/") ? contextPath.substring(1) : contextPath;
+        if (contextPath == null || contextPath.isEmpty() || "/".equals(contextPath)) {
+            return "/";
         }
-        return "unknown-app";
+        return contextPath.startsWith("/") ? contextPath.substring(1) : contextPath;
     }
 }

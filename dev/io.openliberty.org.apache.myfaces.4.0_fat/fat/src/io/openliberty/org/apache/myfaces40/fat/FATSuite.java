@@ -132,6 +132,20 @@ public class FATSuite extends TestContainerSuite {
     }
 
     public static ExtendedWebDriver getWebDriver() throws Exception {
+        // Liveness probe: make a real network round-trip to detect a dead container.
+        // A null check alone is insufficient — the Java DRIVER object survives a Docker
+        // container kill and remains non-null even when the container is gone.
+        // getCurrentUrl() catches both failure modes:
+        //   1. UnreachableBrowserException  — container was killed externally
+        //   2. NoSuchSessionException       — session invalidated between repeat runs
+        if (DRIVER != null) {
+            try {
+                DRIVER.getRemoteWebDriver().getCurrentUrl();
+            } catch (Exception stale) {
+                Log.info(c, "getWebDriver", "Existing WebDriver session is no longer alive; resetting. " + stale.getMessage());
+                tearDownWebDriver();
+            }
+        }
         int retryCount = 3;
         while (DRIVER == null && retryCount > 0) {
             Log.info(c, "getWebDriver", "Attempting to initialize WebDriver, attempts remaining: " + retryCount);

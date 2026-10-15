@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Non-blocking (except when take or poll with timeout are requested) queue that is backed by
@@ -63,6 +65,7 @@ public class DoubleQueue<T> extends AbstractQueue<T> implements BlockingQueue<T>
         return count;
     }
 
+    @Trivial
     @Override
     public boolean isEmpty() {
         return size.availablePermits() <= 0;
@@ -124,6 +127,7 @@ public class DoubleQueue<T> extends AbstractQueue<T> implements BlockingQueue<T>
         return offer(item); // size is unlimited so all adds are non-blocking
     }
 
+    @Trivial
     @Override
     public T peek() {
         T t = q1.peek();
@@ -221,6 +225,7 @@ public class DoubleQueue<T> extends AbstractQueue<T> implements BlockingQueue<T>
         return modified;
     }
 
+    @Trivial
     @Override
     public final int size() {
         int s = size.availablePermits();

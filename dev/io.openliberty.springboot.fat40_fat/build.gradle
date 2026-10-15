@@ -107,6 +107,12 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
   }
 
+  // Copy MQ MQSC configuration script used to configure the MQ container
+  copy {
+    from new File(projectDir, 'publish/files/mqconfig.mqsc')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+  }
+
   def server = 'SpringBootTests'
   def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
 

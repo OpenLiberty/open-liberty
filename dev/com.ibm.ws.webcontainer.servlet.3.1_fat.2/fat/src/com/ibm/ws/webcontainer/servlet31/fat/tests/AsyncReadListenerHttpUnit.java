@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -60,8 +60,6 @@ public class AsyncReadListenerHttpUnit {
     private static final String READ_LISTENER_SERVLET_FALSE_URL = "/LibertyReadWriteListenerTest/BasicReadListenerAsyncFalseServlet";
     private static final String READ_LISTENER__FILTER_SERVLET_URL = "/LibertyReadListenerFilterTest/ReadListenerFilterServlet";
 
-    private static boolean runningNetty = false;
-
     @BeforeClass
     public static void setupClass() throws Exception {
         // Build the war apps and add the dependencies
@@ -107,7 +105,6 @@ public class AsyncReadListenerHttpUnit {
             if (LOG.isLoggable(Level.INFO)) {
                 LOG.logp(Level.INFO, CLASS_NAME, "test()", "Netty? " + endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils"));
             }
-            runningNetty = endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils");
             break;
         }
 
@@ -332,6 +329,8 @@ public class AsyncReadListenerHttpUnit {
     /*
      * Read data after isReady() in onDataAvailable method in readListenerImpl called from the servlet
      * has returned false - should get an IllegalStateException.
+     * 
+     * NOTE: CURRENTLY (Sept 2026) FAILS ON NETTY
      */
 
     @Test
@@ -342,13 +341,6 @@ public class AsyncReadListenerHttpUnit {
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onReadingData_isReadyFalse Start");
         LOG.info("\n /************************************************************************************/");
-
-        if(runningNetty){
-            LOG.info("\n /************************************************************************************/");
-            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onReadingData_isReadyFalse Skipped due to Netty difference");
-            LOG.info("\n /************************************************************************************/");
-            return;
-        }
 
         final String EXPECTED_DATA = "java.lang.IllegalStateException: SRVE9010E: An attempt to read failed because isReady API returns false";
         String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;

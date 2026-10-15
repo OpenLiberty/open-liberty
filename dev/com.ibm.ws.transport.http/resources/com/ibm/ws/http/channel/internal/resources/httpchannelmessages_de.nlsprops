@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Geben Sie ein Protokollumlauf
 cookie.attribute.name.invalid=CWWKT0047E: Das Cookieattribut [{0}] enth\u00e4lt ein ung\u00fcltiges Zeichen.
 cookie.attribute.name.invalid.explanation=Der Cookieattributname darf kein Sonderzeichen [ () < > @,;: \\/ []? = {}] enthalten.
 cookie.attribute.name.invalid.useraction=Korrigieren Sie den Cookieattributnamen so, dass kein Sonderzeichen verwendet wird.
+
+endpoint.netty.not.initialized=CWWKT0048E: Der Endpunkt \u201e {0} \u201c ( HTTP ) kann nicht gestartet werden, da das \u201e Netty \u201c-Framework nicht initialisiert ist.
+endpoint.netty.not.initialized.explanation=Der \u201e Netty \u201c-Framework-Dienst ist erforderlich, war jedoch nicht verf\u00fcgbar, als der Endpunkt gestartet werden sollte.
+endpoint.netty.not.initialized.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und stellen Sie sicher, dass das erforderliche \u201e Netty \u201c-Framework-Bundle aktiv ist.
+
+endpoint.channel.not.initialized=CWWKT0049E: Der Endpunkt \u201e {0} \u201c ( HTTP ) kann nicht gestartet werden, da das Channel-Framework nicht initialisiert ist.
+endpoint.channel.not.initialized.explanation=Der Channel-Framework-Dienst ist erforderlich, war jedoch nicht verf\u00fcgbar, als der Endpunkt versucht hat, zu starten.
+endpoint.channel.not.initialized.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und stellen Sie sicher, dass das erforderliche Channel-Framework-Bundle aktiv ist.
+
+endpoint.executor.not.available=CWWKT0050E: Der Endpunkt \u201e {0} \u201c ( HTTP ) kann nicht gestartet werden, da der Executor-Dienst nicht verf\u00fcgbar ist.
+endpoint.executor.not.available.explanation=Der Executor-Dienst ist erforderlich, war jedoch nicht verf\u00fcgbar, als der Endpunkt versucht hat, zu starten.
+endpoint.executor.not.available.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und stellen Sie sicher, dass der erforderliche Executor-Dienst aktiv ist.
+
+endpoint.event.not.available=CWWKT0051E: Der Endpunkt \u201e {0} \u201c ( HTTP ) kann nicht gestartet werden, da der Ereignisdienst nicht verf\u00fcgbar ist.
+endpoint.event.not.available.explanation=Der Ereignisdienst ist erforderlich, war jedoch nicht verf\u00fcgbar, als der Endpunkt versuchte, zu starten.
+endpoint.event.not.available.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und stellen Sie sicher, dass der erforderliche Ereignisdienst aktiv ist.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: Ein blockierender Schreibvorgang kann nicht im Thread der Ereignisschleife \u201e Netty \u201c aufgerufen werden.
+netty.blocking.write.on.event.loop.explanation=Die Ausf\u00fchrung eines blockierenden Schreibvorgangs im Thread der Ereignisschleife \u201e Netty \u201c f\u00fchrt zu einem Deadlock.
+netty.blocking.write.on.event.loop.useraction=Stellen Sie sicher, dass blockierende Schreibvorg\u00e4nge an einen separaten Thread weitergeleitet werden und nicht aus einem Handler der Ereignisschleife \u201e Netty \u201c heraus aufgerufen werden.
+
+netty.socket.timeout=CWWKT0053E: Bei einem Socket-Vorgang ist die Zeit\u00fcberschreitung aufgetreten, bevor der Vorgang abgeschlossen wurde. Vor Ort: {0} / {1} : {2} Remote: {3} / {4} : {5}
+netty.socket.timeout.explanation=Ein Lesevorgang am Socket wurde nicht innerhalb der konfigurierten Zeit\u00fcberschreitungsdauer abgeschlossen.
+netty.socket.timeout.useraction=\u00dcberpr\u00fcfen Sie die Netzwerkverbindung oder erh\u00f6hen Sie den Wert f\u00fcr das Lese-Timeout, falls der Vorgang mehr Zeit ben\u00f6tigt.
+
+netty.h2.window.ratio.error=CWWKT0054W: Die Fensteraktualisierungsrate \u201e HTTP/2 \u201c kann nicht aktualisiert werden: {0} Der Server verwendet die Standard-Fensteraktualisierungsrate.
+netty.h2.window.ratio.error.explanation=Die Aktualisierungsrate des \u201e HTTP/2 \u201c-Fensters zur Durchflussregelung kann nicht auf den konfigurierten Wert eingestellt werden. Der Server verwendet die Standard-Fensteraktualisierungsrate.
+netty.h2.window.ratio.error.useraction=Es sind keine Ma\u00dfnahmen erforderlich, wenn die standardm\u00e4\u00dfige Fensteraktualisierungsrate akzeptabel ist. Sollte die Meldung weiterhin angezeigt werden, \u00fcberpr\u00fcfen Sie die Einstellungen f\u00fcr die \u201e HTTP/2 \u201c-Flusssteuerung in der Serverkonfiguration.
+
+netty.tls.provider.not.loaded=CWWKT0055E: Der Endpunkt \u201e HTTPS \u201c kann nicht initialisiert werden, da der Anbieter \u201e TLS \u201c nicht geladen ist.
+netty.tls.provider.not.loaded.explanation=Der Dienst des \u201e TLS \u201c-Anbieters war nicht verf\u00fcgbar, als der Endpunkt \u201e HTTPS \u201c gestartet werden sollte.
+netty.tls.provider.not.loaded.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und stellen Sie sicher, dass das erforderliche \u201e TLS \u201c-Anbieter-Bundle aktiv ist.
+
+netty.ssl.handler.create.failed=CWWKT0056E: Der Server konnte den Handler \u201e SSL \u201c f\u00fcr den Endpunkt \u201e {0} : {1} \u201c nicht erstellen.
+netty.ssl.handler.create.failed.explanation=Der Handler \u201e SSL \u201c kann f\u00fcr den angegebenen Endpunkt-Host und -Port nicht erstellt werden.
+netty.ssl.handler.create.failed.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration unter \u201e SSL \u201c f\u00fcr den Endpunkt und stellen Sie sicher, dass der Anbieter \u201e TLS \u201c korrekt konfiguriert ist.
+
+h2.encode.header.failed=CWWKT0057E: Der Server konnte den Header \u201e HTTP/2 \u201c nicht kodieren: {0}
+h2.encode.header.failed.explanation=Der Server konnte den Pseudo-Header \u201e HTTP/2 \u201c f\u00fcr die Antwort nicht kodieren. Der Server schlie\u00dft den Stream.
+h2.encode.header.failed.useraction=\u00dcberpr\u00fcfen Sie die Serverprotokolle auf entsprechende Fehler der Art \u201e HTTP/2 \u201c. Sollte das Problem weiterhin bestehen, erfassen Sie bitte Diagnoseinformationen und wenden Sie sich an den IBM -Support.

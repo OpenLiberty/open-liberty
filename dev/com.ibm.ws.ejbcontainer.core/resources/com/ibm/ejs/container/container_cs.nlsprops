@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2022 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -847,7 +847,7 @@ BEAN_INHERITANCE_ERROR_CNTR0159E.useraction=Opravte konfigurovanou relaci d\u011
 
 #---------------------------------------------------------------------------------
 # Do not translate "ejbTimeout", or "TimedObject"
-TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E=CNTR0160E: Objekt enterprise bean {0} v modulu {1} je konfigurov\u00e1n jako objekt typu bean \u010dasova\u010de. Tento objekt typu bean v\u0161ak neimplementuje n\u00e1sleduj\u00edc\u00ed vy\u017eadovanou metodu \u010dasov\u00e9ho limitu: ejbTimeout
+TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E=CNTR0160E: Objekt enterprise bean {0} v modulu {1} je konfigurov\u00e1n jako objekt typu timer bean. Tento objekt typu bean v\u0161ak neimplementuje n\u00e1sleduj\u00edc\u00ed vy\u017eadovanou metodu \u010dasov\u00e9ho limitu: ejbTimeout
 TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E.explanation=Objekty typu timer bean, kter\u00e9 d\u011bd\u00ed volby z rozhran\u00ed TimedObject, mus\u00ed implementovat n\u00e1sleduj\u00edc\u00ed metodu \u010dasov\u00e9ho limitu: ejbTimeout
 TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E.useraction=Opravte implementaci objektu typu bean, aby zahrnovala vy\u017eadovanou metodu.   Pot\u00e9 aplikaci znovu nainstalujte.
 
@@ -1561,6 +1561,10 @@ CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: Obchodn\u00ed rozhran\u00ed 
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Anotace jakarta.enterprise.concurrent.Asynchronous nesm\u00ed b\u00fdt pou\u017e\u00edv\u00e1na spolu s objekty Jakarta Enterprise Bean. Kontejner objekt\u016f Jakarta Enterprise Bean tyto anotace na rozhran\u00edch ignoruje. Pokud nejsou metody v deskriptoru implementace ejb-jar.xml deklarov\u00e1ny jako asynchronn\u00ed nebo nen\u00ed v metod\u011b t\u0159\u00eddy objektu typu bean nebo ve t\u0159\u00edd\u011b objektu typu bean ur\u010dena anotace jakarta.ejb.Asynchronous, metody objektu bean b\u011b\u017e\u00ed synchronn\u011b.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Odeberte v\u0161echny anotace jakarta.enterprise.concurrent.Asynchronous z uveden\u00e9ho obchodn\u00edho rozhran\u00ed a ov\u011b\u0159te, zda je anotace jakarta.ejb.Asynchronous ve t\u0159\u00edd\u011b objektu typu bean spr\u00e1vn\u011b ur\u010dena. 
 
+CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: Bean \u201e {0} \u201c v modulu \u201e {1} \u201c aplikace \u201e {2} \u201c obsahuje jednu nebo v\u00edce metod s anotac\u00ed \u201e jakarta.enterprise.concurrent.Schedule \u201c. Tuto anotaci nelze pou\u017e\u00edt u podnikov\u00fdch bean\u016f.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=Specifikace Jakarta Concurrency nepovoluje pou\u017eit\u00ed anotace ` jakarta.enterprise.concurrent.Schedule ` u komponent Jakarta Enterprise Beans.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.useraction=Odstra\u0148te z metody anotaci \u201e jakarta.enterprise.concurrent.Asynchronous \u201c. K ozna\u010den\u00ed metod s \u010dasov\u00fdm limitem v podnikov\u00fdch bean\u00e1ch pou\u017eijte anotaci ` jakarta.ejb.Schedule `.
+
 #-------------------------------------------------------------------------------
 #
 # CNTR4000 to CNTR4999 reserved for Liberty.
@@ -1690,7 +1694,7 @@ JIT_INVALID_SF_HOME_METHOD_CNTR5023E.useraction=Zm\u011b\u0148te n\u00e1zev meto
 # Do NOT translate "remove", except the last occurrence in useraction.
 JIT_INVALID_BMP_HOME_METHOD_CNTR5024E=CNTR5024E: Domovsk\u00e9 rozhran\u00ed {1} objektu typu bean {0} obsahuje metodu, kter\u00e1 za\u010d\u00edn\u00e1 \u0159et\u011bzcem remove. Metoda {2} nen\u00ed povolena.
 JIT_INVALID_BMP_HOME_METHOD_CNTR5024E.explanation=Podle specifikace EJB (Enterprise JavaBeans) nesm\u00ed b\u00fdt v domovsk\u00e9m rozhran\u00ed objektu entity bean definov\u00e1ny metody, kter\u00e9 za\u010d\u00ednaj\u00ed \u0159et\u011bzcem remove.
-JIT_INVALID_BMP_HOME_METHOD_CNTR5024E.useraction=Zm\u011b\u0148te n\u00e1zev metody domovsk\u00e9ho rozhran\u00ed tak, aby neza\u010d\u00ednala \u0159et\u011bzcem remove, nebo danou metodu odeberte.
+JIT_INVALID_BMP_HOME_METHOD_CNTR5024E.useraction=Zm\u011b\u0148te n\u00e1zev metody domovsk\u00e9ho rozhran\ufffd\ufffd tak, aby neza\u010d\u00ednala \u0159et\u011bzcem remove, nebo danou metodu odeberte.
 
 #-------------------------------------------------------------------------------
 # Do NOT translate "ejbCreate" or "init".

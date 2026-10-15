@@ -52,7 +52,7 @@ public class DefaultValueResolver {
      * @throws IllegalArgumentException if default value conversion fails
      */
     public static Object resolveDefaultValue(String toolName, ToolArgument argMetadata, ConverterRegistry converterRegistry) {
-        if (!argMetadata.defaultValue().isEmpty()) {
+        if (argMetadata.defaultValue() != null && !argMetadata.defaultValue().isEmpty()) {
             try {
                 return convertDefaultValue(toolName, argMetadata.defaultValue(), argMetadata.name(), argMetadata.type(), converterRegistry);
             } catch (Exception e) {

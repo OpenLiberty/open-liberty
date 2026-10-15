@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=Esaminare il messaggio di 
 CWMCM0043W.unsupported.annotation=CWMCM0043W: Il metodo ` {0} ` utilizza l'annotazione ` {1} `, che non \u00e8 supportata. Questo metodo viene ignorato.
 CWMCM0043W.unsupported.annotation.explanation=L'API Java del Model Context Protocol (MCP) include annotazioni relative a funzionalit\u00e0 non supportate da questa implementazione. I metodi contrassegnati da annotazioni non supportate vengono ignorati.
 CWMCM0043W.unsupported.annotation.useraction=Rimuovere l'annotazione non supportata dal metodo oppure utilizzare solo annotazioni MCP (Model Context Protocol) supportate.
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: Il server non ha elaborato una richiesta MCP locale poich\u00e9 il valore dell'intestazione Origin non era valido.
+CWMCM0044I.localhost.header.rejected.explanation=Le richieste non protette di tipo " HTTP " provenienti da localhost devono essere prive di intestazione Origin oppure devono contenere un'intestazione Origin che includa solo localhost o un indirizzo di loopback. Un\u2019intestazione Origin che contenga qualsiasi altro valore indica un possibile attacco di rebinding DNS.
+CWMCM0044I.localhost.header.rejected.useraction=Assicurarsi che l'intestazione "Origin" non sia presente oppure contenga solo "localhost".

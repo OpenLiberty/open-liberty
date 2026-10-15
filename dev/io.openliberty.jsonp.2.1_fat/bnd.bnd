@@ -15,7 +15,8 @@ javac.target: 11
 
 src: \
 	fat/src,\
-	test-applications/JSONP21fat/src
+	test-applications/JSONP21fat/src,\
+	test-applications/CustomProviderApp/src
 
 fat.project: true
 

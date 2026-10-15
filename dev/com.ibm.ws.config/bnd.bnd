@@ -36,6 +36,7 @@ Private-Package: com.ibm.ws.config.admin, \
 
 Import-Package: org.osgi.service.cm;version="[1.6,1.7)", \
    org.osgi.service.metatype;version="[1.1,2.0)", \
+   com.ibm.ws.kernel.boot.internal,\
    !*.internal.*, \
    !org.eclipse.equinox.metatype.impl, \
    *
@@ -54,7 +55,8 @@ Service-Component=com.ibm.ws.config.schemagen.internal; \
 com.ibm.ws.config.xml.internal.ConfigIntrospection, \
 com.ibm.ws.config.xml.internal.ServerXMLConfigurationMBeanImpl, \
 com.ibm.ws.config.schemagen.internal.ServerSchemaGeneratorImpl, \
-com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl
+com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl, \
+com.ibm.ws.config.xml.internal.ServerElementConfigImpl
 
 -includeresource: \
     OSGI-INF/permissions.perm=resources/permissions.perm, \

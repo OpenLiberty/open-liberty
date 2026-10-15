@@ -135,6 +135,10 @@ public class FailoverTestRetriableCodes extends FailoverTest {
     public static void setUp() throws Exception {
         FailoverTest.commonSetUp(FailoverTestRetriableCodes.class);
     }
+    
+    public FailoverTestRetriableCodes() {
+        serverMsgs = new String[] { "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" };
+    }
 
     /**
      * Run the same test as in testHADBNonRecoverableRuntimeFailover but against a server that has the retriableSqlCodes server.xml
@@ -212,7 +216,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
         // We need to tidy up the environment at this point. We cannot guarantee
         // test order, so we should ensure
         // that we do any necessary recovery at this point
-        FATUtils.stopServers(server);
+        FATUtils.stopServers(serverMsgs, server);
 
         FATUtils.startServers(runner, server);
 
@@ -234,7 +238,6 @@ public class FailoverTestRetriableCodes extends FailoverTest {
         final String method = "testHADBNonRetriableBatchFailover";
 
         server = nonRetriableServer;
-        serverMsgs = new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" };
 
         HADBTestControl.write(HADBTestType.RUNTIME, -33, 12, 1);
 
@@ -254,7 +257,7 @@ public class FailoverTestRetriableCodes extends FailoverTest {
         // We need to tidy up the environment at this point. We cannot guarantee
         // test order, so we should ensure
         // that we do any necessary recovery at this point
-        FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0066W", "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server);
+        FATUtils.stopServers(serverMsgs, server);
 
         FATUtils.startServers(runner, server);
 

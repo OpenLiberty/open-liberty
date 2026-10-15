@@ -91,7 +91,7 @@ dependencies {
         "org.apache.derby:derbytools:${derbyJava17PlusVersion}",
         "org.apache.derby:derbyshared:${derbyJava17PlusVersion}",
         'com.oracle.database.jdbc:ojdbc8:23.4.0.24.05',
-        "com.h2database:h2:${h2Java8Version}"
+        "com.h2database:h2:${h2Version}"
         
 
   jakartaTransformer 'commons-cli:commons-cli:1.5.0',
@@ -110,7 +110,7 @@ dependencies {
 
   jakartaTransformerJava17Plus('biz.aQute.bnd:biz.aQute.bnd.transform') {
                          version {
-                            strictly '7.0.0'
+                            strictly '7.4.0'
                          }
                      }
 
@@ -273,7 +273,7 @@ if (!bnd.get('-sub', '').empty) {
 publishedArtifacts.add(project.name)
 
 task autoFVT {
-  shouldRunAfter cleanFat
+  mustRunAfter cleanFat
   dependsOn jar
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries

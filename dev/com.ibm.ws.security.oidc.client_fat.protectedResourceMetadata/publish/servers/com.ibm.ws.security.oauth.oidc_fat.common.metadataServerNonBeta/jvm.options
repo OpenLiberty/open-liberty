@@ -1,2 +1,0 @@
-# Explicitly disable beta mode to verify that protectedResourceMetadata is not served.
--Dcom.ibm.ws.beta.edition=false

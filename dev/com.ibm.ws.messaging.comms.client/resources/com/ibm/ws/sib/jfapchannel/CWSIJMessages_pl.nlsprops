@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2003, 2010 IBM Corporation and others.
+# Copyright (c) 2003, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
 #
@@ -552,6 +549,45 @@ CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Sprawd\u017a wyj\u0105tek podany w
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: \u0141a\u0144cuch transportowy przesy\u0142ania komunikat\u00f3w {0} zosta\u0142 zatrzymany.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=\u0141a\u0144cuch transportowy zosta\u0142 zatrzymany w wyniku zmiany konfiguracji, co oznacza, \u017ce \u017cadna z magistral zdefiniowanych dla kom\u00f3rki nie pozwala ju\u017c na u\u017cycie \u0142a\u0144cucha.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception which occurred
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086=CWSIJ0086E: B\u0142\u0105d wewn\u0119trzny uniemo\u017cliwi\u0142 zainicjowanie procedury uruchamiaj\u0105cej transportu Netty z powodu wyst\u0105pienia nast\u0119puj\u0105cego wyj\u0105tku: {0}
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.explanation=Nie mo\u017cna zainicjowa\u0107 obiektu bootstrapowego transportu typu \u201e Netty \u201d. Po\u0142\u0105czenia wychodz\u0105ce us\u0142ugi Java Message Service (JMS), kt\u00f3re korzystaj\u0105 ze \u015bcie\u017cki transportowej \u201e Netty \u201d, nie mog\u0105 zosta\u0107 nawi\u0105zane.
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.useraction=Aby ustali\u0107 przyczyn\u0119, nale\u017cy przeanalizowa\u0107 wyj\u0105tek wymieniony w komunikacie oraz powi\u0105zane logi serwera. Sprawd\u017a, czy us\u0142uga frameworku \u201e Netty \u201d jest aktywna oraz czy opcje transportu \u201e TCP \u201d s\u0105 poprawnie skonfigurowane.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel for which no connection could be found
+NETTY_READ_NO_CONNECTION_SICJ0087=CWSIJ0087W: Wiadomo\u015b\u0107 przychodz\u0105ca na kanale \u201e {0} \u201d nie mo\u017ce zosta\u0107 przypisana do po\u0142\u0105czenia Java Message Service (JMS). Serwer odrzuca komunikat i zamyka kana\u0142.
+NETTY_READ_NO_CONNECTION_SICJ0087.explanation=Otrzymano komunikat na kanale transportowym typu \u201e Netty \u201d, kt\u00f3ry nie ma powi\u0105zanego obiektu po\u0142\u0105czenia JMS. Ten stan mo\u017ce wskazywa\u0107 na wyst\u0105pienie sytuacji wy\u015bcigu podczas roz\u0142\u0105czania po\u0142\u0105czenia. Serwer nie mo\u017ce przetworzy\u0107 tej wiadomo\u015bci.
+NETTY_READ_NO_CONNECTION_SICJ0087.useraction=Sprawd\u017a logi serwera pod k\u0105tem zwi\u0105zanych z tym komunikat\u00f3w o b\u0142\u0119dach lub ostrze\u017ce\u0144, kt\u00f3re mog\u0142yby wyja\u015bni\u0107, dlaczego obiekt po\u0142\u0105czenia nie by\u0142 dost\u0119pny. Je\u015bli problem nadal wyst\u0119puje, nale\u017cy zebra\u0107 \u015blad serwera i skontaktowa\u0107 si\u0119 z dzia\u0142em pomocy technicznej IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the JMS Connection object
+# {1} the IOReadCompletedCallback object
+# {2} the IOReadRequestContext object
+# {3} the NetworkConnection object
+NETTY_UNEXPECTED_CALLBACK_SICJ0088=CWSIJ0088W: Nie mo\u017cna przetworzy\u0107 przychodz\u0105cej wiadomo\u015bci lub zdarzenia typu \u201eheartbeat\u201d na kanale \u201e Netty \u201d, poniewa\u017c co najmniej jeden z powi\u0105zanych obiekt\u00f3w nie ma oczekiwanego typu \u201e Netty \u201d. Link: {0} Formularz kontaktowy: {1} ReadContext: {2} NetworkConnection: {3}
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.explanation=Kana\u0142 typu \u201e Netty \u201d odebra\u0142 dane lub zdarzenie przekroczenia limitu czasu, ale po\u0142\u0105czenie, wywo\u0142anie zwrotne, kontekst odczytu lub obiekt po\u0142\u0105czenia sieciowego przypisany do tego kana\u0142u nie jest typu zgodnego z oczekiwaniami dla typu \u201e Netty \u201d. Serwer zamyka kana\u0142. Ten stan wskazuje na wewn\u0119trzny b\u0142\u0105d programowania.
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.useraction=Przejrzyj logi serwera oraz wszelkie zapisy z funkcji First Failure Data Capture (FFDC) pod k\u0105tem towarzysz\u0105cych im komunikat\u00f3w o b\u0142\u0119dach, kt\u00f3re mog\u0142yby wyja\u015bni\u0107, dlaczego obiekty po\u0142\u0105cze\u0144 nie s\u0105 typ\u00f3w oczekiwanych. Je\u015bli problem nadal wyst\u0119puje, nale\u017cy zebra\u0107 \u015blad serwera i skontaktowa\u0107 si\u0119 z dzia\u0142em pomocy technicznej IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the IdleStateEvent that was received
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089=CWSIJ0089W: Otrzymano zdarzenie typu \u201e Netty \u201d dotycz\u0105ce stanu bezczynno\u015bci o nieoczekiwanym typie, kt\u00f3re zosta\u0142o przekazane dalej przez potok. Zdarzenie: {0}
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.explanation=Modu\u0142 obs\u0142ugi sygna\u0142\u00f3w kontrolnych Java Message Service (JMS) w systemie Netty otrzyma\u0142 zdarzenie stanu bezczynno\u015bci, kt\u00f3re nie jest zdarzeniem bezczynno\u015bci czytnika (przekroczenie limitu czasu odczytu). Procedura obs\u0142ugi sygna\u0142u \u201eheartbeat\u201d oczekuje wy\u0142\u0105cznie zdarze\u0144 typu \u201ereader-idle\u201d. Serwer przekazuje zdarzenie dalej wzd\u0142u\u017c potoku w celu dalszego przetwarzania.
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.useraction=Je\u015bli komunikat ten pojawia si\u0119 sporadycznie, nie trzeba podejmowa\u0107 \u017cadnych dzia\u0142a\u0144. Je\u015bli ten komunikat pojawia si\u0119 wielokrotnie, sprawd\u017a logi serwera pod k\u0105tem powi\u0105zanych ostrze\u017ce\u0144 lub b\u0142\u0119d\u00f3w i skontaktuj si\u0119 z pomoc\u0105 techniczn\u0105 serwisu IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel on which the heartbeat timeout event occurred
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090=CWSIJ0090W: Zdarzenie przekroczenia limitu czasu serca (heartbeat timeout) na kanale \u201e {0} \u201d nie mo\u017ce by\u0107 powi\u0105zane z po\u0142\u0105czeniem Java Message Service (JMS). Serwer przekazuje zdarzenie przez potok.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.explanation=Wyst\u0105pi\u0142o zdarzenie \u201eread-idle\u201d (przekroczenie limitu czasu sygna\u0142u kontrolnego) na kanale typu \u201e Netty \u201d, kt\u00f3ry nie ma powi\u0105zanego obiektu po\u0142\u0105czenia JMS. Ten stan mo\u017ce wskazywa\u0107 na wyst\u0105pienie sytuacji wy\u015bcigu podczas roz\u0142\u0105czania po\u0142\u0105czenia. Serwer nie mo\u017ce przetworzy\u0107 zdarzenia i przekazuje je dalej wzd\u0142u\u017c potoku.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.useraction=Sprawd\u017a logi serwera pod k\u0105tem zwi\u0105zanych z tym komunikat\u00f3w o b\u0142\u0119dach lub ostrze\u017ce\u0144, kt\u00f3re mog\u0142yby wyja\u015bni\u0107, dlaczego obiekt po\u0142\u0105czenia nie by\u0142 dost\u0119pny. Je\u015bli problem nadal wyst\u0119puje, nale\u017cy zebra\u0107 \u015blad serwera i skontaktowa\u0107 si\u0119 z dzia\u0142em pomocy technicznej IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel (null) for which the SSL session was requested
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091=CWSIJ0091W: Zg\u0142oszono \u017c\u0105danie sesji Secure Sockets Layer ( SSL ), ale dla tego po\u0142\u0105czenia nie zarejestrowano \u017cadnego kana\u0142u Netty. Kana\u0142: {0}
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.explanation=Nie mo\u017cna pobra\u0107 sesji SSL, poniewa\u017c kana\u0142 Netty nie jest powi\u0105zany z tym obiektem po\u0142\u0105czenia. Ten stan mo\u017ce wskazywa\u0107 na problem z synchronizacj\u0105 podczas nawi\u0105zywania po\u0142\u0105czenia.
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.useraction=Sprawd\u017a logi serwera pod k\u0105tem powi\u0105zanych komunikat\u00f3w o b\u0142\u0119dach lub ostrze\u017ce\u0144, kt\u00f3re mog\u0142yby wyja\u015bni\u0107, dlaczego kana\u0142 nie zosta\u0142 zarejestrowany. Je\u015bli problem nadal wyst\u0119puje, nale\u017cy zebra\u0107 \u015blad serwera i skontaktowa\u0107 si\u0119 z dzia\u0142em pomocy technicznej IBM.
 
 # Emergency use
 # -------------------------------------------------------------------------------------------------

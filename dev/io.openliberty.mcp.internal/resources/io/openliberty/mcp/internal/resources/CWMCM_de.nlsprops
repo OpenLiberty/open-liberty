@@ -341,3 +341,9 @@ CWMCM0042E.metadata.value.conversion.error.useraction=\u00dcberpr\u00fcfen Sie d
 CWMCM0043W.unsupported.annotation=CWMCM0043W: Die Methode \u201e {0} \u201c verwendet die Annotation \u201e {1} \u201c, die nicht unterst\u00fctzt wird. Diese Methode wird ignoriert.
 CWMCM0043W.unsupported.annotation.explanation=Die Java-API des Model Context Protocol (MCP) enth\u00e4lt Annotationen f\u00fcr Funktionen, die von dieser Implementierung nicht unterst\u00fctzt werden. Methoden, die mit nicht unterst\u00fctzten Annotationen versehen sind, werden ignoriert.
 CWMCM0043W.unsupported.annotation.useraction=Entfernen Sie die nicht unterst\u00fctzte Annotation aus der Methode oder verwenden Sie ausschlie\u00dflich unterst\u00fctzte Annotationen des Model Context Protocol (MCP).
+
+# Used for server logging
+# Do not translate "MCP", "localhost", or "Origin"
+CWMCM0044I.localhost.header.rejected=CWMCM0044I: Der Server hat eine lokale MCP-Anfrage nicht bearbeitet, da der Wert des \u201eOrigin\u201c-Headers ung\u00fcltig war.
+CWMCM0044I.localhost.header.rejected.explanation=Unsichere HTTP -Anfragen von localhost d\u00fcrfen entweder keinen \u201eOrigin\u201c-Header enthalten oder einen \u201eOrigin\u201c-Header, der ausschlie\u00dflich \u201elocalhost\u201c oder eine Loopback-Adresse enth\u00e4lt. Ein \u201eOrigin\u201c-Header, der einen anderen Wert enth\u00e4lt, deutet auf einen m\u00f6glichen DNS-Rebinding-Angriff hin.
+CWMCM0044I.localhost.header.rejected.useraction=Stellen Sie sicher, dass der \u201eOrigin\u201c-Header entweder nicht vorhanden ist oder ausschlie\u00dflich \u201elocalhost\u201c enth\u00e4lt.

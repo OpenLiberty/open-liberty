@@ -21,6 +21,7 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AcceptThreadTests.class,
                 AccessListsTests.class,
                 InactivityTimeoutTests.class,
                 MaxOpenConnectionsTests.class,
@@ -40,6 +41,7 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
                 WelcomePageVersionTest.class,
                 HttpVersionTokenTest.class,
                 HeaderCasingTests.class,
+                PrivateHeaderFilterTest.class,
 })
 
 public class FATSuite {

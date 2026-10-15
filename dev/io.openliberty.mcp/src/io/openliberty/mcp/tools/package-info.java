@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,9 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 /**
+ * Classes and interfaces for working with MCP Tools
  *
+ * @see <a href="https://www.javadoc.io/doc/org.mcpjava/mcp-server-api/1.0.0/org/mcpjava/server/tools/package-summary.html">MCP Java Tools APIs</a>
  */
 @com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "MCP")
 @org.osgi.annotation.versioning.Version("1.0")

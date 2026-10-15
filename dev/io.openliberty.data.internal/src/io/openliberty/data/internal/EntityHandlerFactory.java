@@ -90,7 +90,7 @@ public abstract class EntityHandlerFactory {
     protected final String dataStore;
 
     /**
-     * Map of Transaction to EntityAgent that allows statefulless repositories to
+     * Map of Transaction to EntityAgent that allows stateless repositories to
      * reuse the same EntityAgent within a transaction.
      */
     private final Map<Transaction, Sync<AutoCloseable>> entityAgentSyncPerTx = //

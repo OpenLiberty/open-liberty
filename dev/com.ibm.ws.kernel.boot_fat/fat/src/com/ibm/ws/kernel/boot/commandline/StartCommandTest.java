@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,15 @@ public class StartCommandTest {
         // we need to make sure to explicitly clean up.  We do this before running
         // the test in order to preserve the contents on disk.
 
+        // Stop any leftover server before attempting directory deletion.
+        // On Windows, a running server holds console.log open which prevents
+        // directory deletion.  This can happen if a previous test received
+        // ERROR_SERVER_START (rc=22) and its finally-block stop did not complete
+        // before the server finished starting.  On all platforms, stopping first
+        // also prevents a leftover running server from causing the next test to
+        // see REDUNDANT_ACTION_STATUS instead of a clean start.
+        LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "stop");
+
         if (LibertyFileManager.libertyFileExists(machine, defaultServerPath)) {
             LibertyFileManager.deleteLibertyDirectoryAndContents(machine, defaultServerPath);
         }
@@ -79,7 +88,12 @@ public class StartCommandTest {
     @Test
     public void testIsServerEnvCreatedForImplicitServerCreate() throws Exception {
 
-        ProgramOutput po = LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "start");
+        // Pass startWaitSeconds=60 to extend the --status:start polling window to 60s.
+        // On slow Windows CI machines, JVM startup + implicit server create can exceed
+        // the default 30s, causing ERROR_SERVER_START (rc=22).  Using JVM_ARGS avoids
+        // touching the server directory before the command runs, so the test still
+        // exercises the full implicit-create path (no defaultServer exists at this point).
+        ProgramOutput po = LibertyServerUtils.executeLibertyCmd(bootstrap, 60, "server", "start");
         assertEquals("Unexpected return code from server start command STDOUT: \" + po.getStdout() + \" STDERR: \" + po.getStderr()", 0, po.getReturnCode());
 
         try {

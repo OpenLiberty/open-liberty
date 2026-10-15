@@ -467,6 +467,8 @@ public class HttpConfigConstants {
 
     public static final String PROPNAME_IGNORE_WRITE_AFTER_COMMIT = "ignoreWriteAfterCommit";
 
+    public static final String PROPNAME_DESENSITIZE_PRIVATE_PORT_HEADER = "desensitizePrivatePortHeader";
+
     public static enum SameSite {
         LAX("Lax"),
         NONE("None"),

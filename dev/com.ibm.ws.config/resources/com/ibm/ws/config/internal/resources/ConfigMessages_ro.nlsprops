@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -492,6 +492,11 @@ schemagen.info.schema.file.created.useraction=Nu este necesar\u0103 nicio ac\u01
 error.config.root.deleted=CWWKG0110E: A fost detectat\u0103 o actualizare de configurare, dar server.xml nu exist\u0103. Nu s-au f\u0103cut actualiz\u0103ri de configurare.
 error.config.root.deleted.explanation=Fi\u0219ierul server.xml a fost \u0219ters. Pentru a nu provoca \u00eentreruperi \u00een rularea aplica\u021biilor, nu se fac modific\u0103ri de configurare.
 error.config.root.deleted.useraction=Ad\u0103uga\u021bi fi\u0219ierul server.xml \u00eenapoi pe server.
+
+warn.invalid.quiesce.timeout=CWWKG0111W: Valoarea \u201e {0} \u201d specificat\u0103 pentru atributul \u201e quiesceTimeout \u201d al elementului \u201eserver\u201d din fi\u0219ierul \u201e server.xml \u201d nu este valid\u0103. Valoarea trebuie s\u0103 fie o durat\u0103 de cel pu\u021bin 30 de secunde. Serverul utilizeaz\u0103 valoarea implicit\u0103 de 30 de secunde.
+warn.invalid.quiesce.timeout.explanation=Atributul \u201e quiesceTimeout \u201d specific\u0103 durata de a\u0219teptare p\u00e2n\u0103 c\u00e2nd serverul ajunge la starea de repaus \u00een timpul procesului de oprire. Specifica\u021bi un num\u0103r \u00eentreg pozitiv urmat de o unitate de timp, cum ar fi \u201e 30s \u201d, \u201e 1m \u201d sau \u201e 1m30s \u201d. Dac\u0103 omite\u021bi unitatea de timp, serverul presupune c\u0103 este vorba de secunde. Valoarea trebuie s\u0103 fie de cel pu\u021bin 30 de secunde. Valorile mai mici de 30 de secunde nu ofer\u0103 serverului timp suficient pentru a finaliza cererile aflate \u00een curs de procesare \u0219i pentru a efectua opera\u021biunile de \u00eenchidere \u00een mod ordonat.
+warn.invalid.quiesce.timeout.useraction=\u00cen fi\u0219ierul \u201e server.xml \u201d, modifica\u021bi atributul \u201e quiesceTimeout \u201d al elementului \u201eserver\u201d astfel \u00eenc\u00e2t valoarea duratei s\u0103 fie de cel pu\u021bin 30 de secunde (de exemplu, \u201e 30s \u201d, \u201e 45s \u201d sau \u201e 1m30s \u201d) sau elimina\u021bi atributul pentru a utiliza valoarea implicit\u0103 de 30 de secunde.
+
 
 # Non-TR message
 error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/** @version 2.2.0 */
-@org.osgi.annotation.versioning.Version("2.2.0")
+/** @version 2.3.0 */
+@org.osgi.annotation.versioning.Version("2.3.0")
 @TraceOptions(traceGroup = "container.service", messageBundle = "com.ibm.ws.container.service.resources.Messages")
 package com.ibm.ws.container.service.app.deploy;
 

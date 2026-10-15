@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -73,17 +75,20 @@ public class JSF23FacesDataModelTests {
     public void testFacesDataModelUIRepeat() throws Exception {
         String contextRoot = "FacesDataModel";
         try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setJavaScriptEnabled(false);
 
             // Construct the URL for the test
             URL url = JSFUtils.createHttpUrl(server, contextRoot, "UIRepeatFacesDataModel.jsf");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
+            assertEquals("Expected HTTP 200 for " + url, 200, page.getWebResponse().getStatusCode());
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
             Log.info(c, name.getMethodName(), page.asXml());
 
             // Ensure the proper values were output on the page
+            assertNotNull("Element repeat:0:output not found on page", page.getElementById("repeat:0:output"));
             String testValue1 = page.getElementById("repeat:0:output").getTextContent();
             String testValue2 = page.getElementById("repeat:1:output").getTextContent();
             String testValue3 = page.getElementById("repeat:2:output").getTextContent();
@@ -111,17 +116,20 @@ public class JSF23FacesDataModelTests {
     public void testFacesDataModelUIData() throws Exception {
         String contextRoot = "FacesDataModel";
         try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setJavaScriptEnabled(false);
 
             // Construct the URL for the test
             URL url = JSFUtils.createHttpUrl(server, contextRoot, "UIDataFacesDataModel.jsf");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
+            assertEquals("Expected HTTP 200 for " + url, 200, page.getWebResponse().getStatusCode());
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
             Log.info(c, name.getMethodName(), page.asXml());
 
             // Ensure the proper values were output on the page
+            assertNotNull("Element table:0:output not found on page", page.getElementById("table:0:output"));
             String testValue1 = page.getElementById("table:0:output").getTextContent();
             String testValue2 = page.getElementById("table:1:output").getTextContent();
             String testValue3 = page.getElementById("table:2:output").getTextContent();
@@ -152,17 +160,20 @@ public class JSF23FacesDataModelTests {
     public void testFacesDataModelChildUIData() throws Exception {
         String contextRoot = "FacesDataModel";
         try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setJavaScriptEnabled(false);
 
             // Construct the URL for the test
             URL url = JSFUtils.createHttpUrl(server, contextRoot, "UIDataFacesDataModelChild.jsf");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
+            assertEquals("Expected HTTP 200 for " + url, 200, page.getWebResponse().getStatusCode());
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
             Log.info(c, name.getMethodName(), page.asXml());
 
             // Ensure the proper values were output on the page
+            assertNotNull("Element table:0:output not found on page", page.getElementById("table:0:output"));
             String testValue1 = page.getElementById("table:0:output").getTextContent();
             String testValue2 = page.getElementById("table:1:output").getTextContent();
             String testValue3 = page.getElementById("table:2:output").getTextContent();
@@ -193,17 +204,20 @@ public class JSF23FacesDataModelTests {
     public void testFacesDataModelChildUIRepeat() throws Exception {
         String contextRoot = "FacesDataModel";
         try (WebClient webClient = new WebClient()) {
+            webClient.getOptions().setJavaScriptEnabled(false);
 
             // Construct the URL for the test
             URL url = JSFUtils.createHttpUrl(server, contextRoot, "UIRepeatFacesDataModelChild.jsf");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
+            assertEquals("Expected HTTP 200 for " + url, 200, page.getWebResponse().getStatusCode());
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
             Log.info(c, name.getMethodName(), page.asXml());
 
             // Ensure the proper values were output on the page
+            assertNotNull("Element repeat:0:output not found on page", page.getElementById("repeat:0:output"));
             String testValue1 = page.getElementById("repeat:0:output").getTextContent();
             String testValue2 = page.getElementById("repeat:1:output").getTextContent();
             String testValue3 = page.getElementById("repeat:2:output").getTextContent();

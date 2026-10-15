@@ -126,13 +126,21 @@ public class McpServlet extends HttpServlet {
     @Override
     @FFDCIgnore({ JSONRPCException.class, HttpResponseException.class })
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, JSONRPCException {
+        if (!LocalhostHeaderChecks.validateLocalhostHeaders(req)) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            Tr.info(tc, "CWMCM0044I.localhost.header.rejected");
+            return;
+        }
         McpTransport transport = new McpTransport(req, resp, jsonb, mcpConfig.asyncTimeoutMs());
         McpOperationMetrics metrics = new McpOperationMetrics();
 
         try {
             transport.init(sessionStores.getCurrent());
 
-            RequestMethod method = transport.getMcpRequest().getRequestMethod();
+            metrics.setTransport(transport);
+            McpRequest mcpRequest = transport.getMcpRequest();
+            RequestMethod method = mcpRequest.getRequestMethod();
+            metrics.setMethodName(method.getMethodName());
 
             if (!isServerStateless() && method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
                 McpSession session = transport.getSession();
@@ -141,8 +149,6 @@ public class McpServlet extends HttpServlet {
                                                     "Missing Mcp-Session-Id header");
                 }
             }
-
-            metrics.setTransport(transport);
 
             callRequest(transport, metrics);
         } catch (JSONRPCException e) {
@@ -157,6 +163,12 @@ public class McpServlet extends HttpServlet {
 
             traceEvent("The following error was returned to the user: '" + jsonRpcErrorMsg + "'");
 
+            // JSONRPCExceptions are sent as HTTP 200, so HTTP metrics will not record errors.
+            // Use "_OTHER" as the method name fallback when the method could not be determined
+            // (e.g. PARSE_ERROR, INVALID_REQUEST) so the MCP metric is always emitted.
+            if (metrics.getMethodName() == null) {
+                metrics.setMethodName("_OTHER");
+            }
             metrics.setOutcome("error", e.getErrorCode().name());
             McpOperationMetrics.operationEnded(metrics);
 
@@ -168,6 +180,10 @@ public class McpServlet extends HttpServlet {
             }
             traceEvent("The following error was returned to the user: '" + errorMsg + "'");
 
+            if (metrics.getMethodName() == null) {
+                metrics.setTransport(transport);
+                trySetMethodNameFromTransport(metrics, transport);
+            }
             metrics.setOutcome("error", "http_error");
             McpOperationMetrics.operationEnded(metrics);
 
@@ -179,10 +195,31 @@ public class McpServlet extends HttpServlet {
             }
             traceEvent("The following error was returned to the user: '" + errorMsg + "'");
 
+            if (metrics.getMethodName() == null) {
+                metrics.setTransport(transport);
+                trySetMethodNameFromTransport(metrics, transport);
+            }
             metrics.setOutcome("error", "internal_error");
             McpOperationMetrics.operationEnded(metrics);
 
             transport.sendError(e);
+        }
+    }
+
+    /**
+     * Attempts to set the method name on metrics from the parsed request in the transport.
+     * Falls back to "_OTHER" if the method name cannot be determined or is not a known method.
+     */
+    private static void trySetMethodNameFromTransport(McpOperationMetrics metrics, McpTransport transport) {
+        try {
+            McpRequest mcpRequest = transport.getMcpRequest();
+            if (mcpRequest != null) {
+                metrics.setMethodName(mcpRequest.getRequestMethod().getMethodName());
+            } else {
+                metrics.setMethodName("_OTHER");
+            }
+        } catch (JSONRPCException e) {
+            metrics.setMethodName("_OTHER");
         }
     }
 
@@ -236,10 +273,10 @@ public class McpServlet extends HttpServlet {
 
         McpSessionId sessionId = new McpSessionId(sessionIdStr);
 
-        if (sessionStores.getCurrent().isValid(sessionId)) {
-            sessionStores.getCurrent().deleteSession(sessionId);
+        if (sessionStores.getCurrent().deleteSession(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
+            traceEvent("DELETE request received for unknown or already-expired session: " + sessionIdStr);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
         }
     }
@@ -270,11 +307,11 @@ public class McpServlet extends HttpServlet {
 
             Authorizer.requireAuthorized(transport, params.getMetadata());
 
+            ToolArguments toolArgs = createToolArguments(request, params, transport);
             if (params.getMetadata().returnsCompletionStage()) {
-                ToolArguments toolArgs = createToolArguments(request, params, transport);
                 callToolAndSendResponseAsync(transport, requestId, params, toolArgs, metrics);
             } else {
-                callToolAndSendResponseSync(transport, requestId, request, params, metrics);
+                callToolAndSendResponseSync(transport, requestId, toolArgs, params, metrics);
             }
         } catch (ToolCallUnauthorizedException e) {
             throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
@@ -291,11 +328,10 @@ public class McpServlet extends HttpServlet {
     @FFDCIgnore({ McpResponseException.class, ToolCallUnauthorizedException.class, ToolCallException.class, Exception.class })
     private void callToolAndSendResponseSync(McpTransport transport,
                                              ExecutionRequestId requestId,
-                                             McpRequest mcpRequest,
+                                             ToolArguments toolArgs,
                                              McpToolCallParams params,
                                              McpOperationMetrics metrics) {
 
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params, transport);
         if (requestId != null) {
             requestTrackers.getCurrent().registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }

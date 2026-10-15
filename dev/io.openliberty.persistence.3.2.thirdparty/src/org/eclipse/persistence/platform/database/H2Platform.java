@@ -23,12 +23,16 @@ package org.eclipse.persistence.platform.database;
 
 import org.eclipse.persistence.exceptions.ValidationException;
 import org.eclipse.persistence.expressions.ExpressionOperator;
+import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.internal.databaseaccess.DatabaseCall;
 import org.eclipse.persistence.internal.expressions.ExpressionSQLPrinter;
+import org.eclipse.persistence.internal.expressions.ExpressionJavaPrinter;
+import org.eclipse.persistence.internal.expressions.ExtractOperator;
 import org.eclipse.persistence.internal.expressions.SQLSelectStatement;
 import org.eclipse.persistence.internal.helper.ClassConstants;
 import org.eclipse.persistence.internal.helper.DatabaseField;
 import org.eclipse.persistence.internal.helper.DatabaseTable;
+import org.eclipse.persistence.internal.sessions.AbstractSession;
 import org.eclipse.persistence.queries.ValueReadQuery;
 import org.eclipse.persistence.tools.schemaframework.FieldDefinition;
 
@@ -37,6 +41,10 @@ import java.io.Serial;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -240,6 +248,7 @@ public class H2Platform extends DatabasePlatform {
         addOperator(ExpressionOperator.simpleTwoArgumentFunction(ExpressionOperator.Nvl, "IFNULL"));
         addOperator(toNumberOperator());
         addOperator(monthsBetweenOperator());
+        addOperator(h2ExtractOperator());
     }
 
     /**
@@ -305,5 +314,87 @@ public class H2Platform extends DatabasePlatform {
         } else {
             writer.write("FALSE");
         }
+    }
+
+    /**
+     * INTERNAL
+     * Set the parameter in the JDBC statement at the given index.
+     * H2 requires {@link java.time.LocalTime} to be bound via {@code setTime()} rather than
+     * {@code setTimestamp()} (the base-class default). Binding as a TIMESTAMP causes H2 to
+     * compare a TIME column result against a TIMESTAMP value, which never matches.
+     */
+    @Override
+    public void setParameterValueInDatabaseCall(Object parameter,
+                                                PreparedStatement statement, int index, AbstractSession session)
+            throws SQLException {
+        if (parameter instanceof LocalTime) {
+            statement.setTime(index, java.sql.Time.valueOf((LocalTime) parameter));
+            return;
+        }
+        super.setParameterValueInDatabaseCall(parameter, statement, index, session);
+    }
+
+    /**
+     * INTERNAL
+     * Set the parameter in the JDBC callable statement with the given name.
+     * Same LocalTime fix as the indexed variant above.
+     */
+    @Override
+    public void setParameterValueInDatabaseCall(Object parameter,
+                                                CallableStatement statement, String name, AbstractSession session)
+            throws SQLException {
+        if (parameter instanceof LocalTime) {
+            statement.setTime(name, java.sql.Time.valueOf((LocalTime) parameter));
+            return;
+        }
+        super.setParameterValueInDatabaseCall(parameter, statement, name, session);
+    }
+
+    // H2 does not accept EXTRACT(DATE FROM ...) or EXTRACT(TIME FROM ...) because
+    // DATE and TIME are not valid single-field datetime specifiers in H2's EXTRACT().
+    // We emulate them with CAST(col AS DATE) and CAST(col AS TIME) instead,
+    // which H2 supports natively and returns java.sql.Date / java.sql.Time respectively.
+    private static final class H2ExtractOperator extends ExtractOperator {
+
+        // DATE emulation: CAST(:first AS DATE)
+        private static final String[] DATE_STRINGS = new String[] {"CAST(", " AS DATE)"};
+        // TIME emulation: CAST(:first AS TIME)
+        private static final String[] TIME_STRINGS = new String[] {"CAST(", " AS TIME)"};
+
+        private H2ExtractOperator() {
+            super();
+        }
+
+        @Override
+        protected void printDateSQL(final Expression first, Expression second, final ExpressionSQLPrinter printer) {
+            printer.printString(DATE_STRINGS[0]);
+            first.printSQL(printer);
+            printer.printString(DATE_STRINGS[1]);
+        }
+
+        @Override
+        protected void printDateJava(final Expression first, Expression second, final ExpressionJavaPrinter printer) {
+            printer.printString(DATE_STRINGS[0]);
+            first.printJava(printer);
+            printer.printString(DATE_STRINGS[1]);
+        }
+
+        @Override
+        protected void printTimeSQL(final Expression first, Expression second, final ExpressionSQLPrinter printer) {
+            printer.printString(TIME_STRINGS[0]);
+            first.printSQL(printer);
+            printer.printString(TIME_STRINGS[1]);
+        }
+
+        @Override
+        protected void printTimeJava(final Expression first, Expression second, final ExpressionJavaPrinter printer) {
+            printer.printString(TIME_STRINGS[0]);
+            first.printJava(printer);
+            printer.printString(TIME_STRINGS[1]);
+        }
+    }
+
+    private static ExpressionOperator h2ExtractOperator() {
+        return new H2ExtractOperator();
     }
 }

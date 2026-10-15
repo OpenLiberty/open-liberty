@@ -140,22 +140,15 @@ public class McpOperationMetricServlet extends FATServlet {
     }
 
     public void testCancelRequestErrorMetrics() {
-        Optional<HistogramPointData> errorPoint = reader.findCancelOperationPoint("error");
+        HistogramPointData point = reader.getCancelOperationPoint("error");
 
-        if (errorPoint.isPresent()) {
-            HistogramPointData point = errorPoint.get();
-            Attributes attributes = point.getAttributes();
-
-            assertEquals("notifications/cancelled", getStringAttribute(attributes, "mcp.method.name"));
-            assertInvariantOperationAttributes(attributes);
-            assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
-            assertNotNull("Expected error.type for failed cancel",
-                          getStringAttribute(attributes, "error.type"));
-            assertTimingAttributes(point);
-        } else {
-            assertTrue("At least success case should exist",
-                       reader.findCancelOperationPoint("ok").isPresent());
-        }
+        Attributes attributes = point.getAttributes();
+        assertEquals("notifications/cancelled", getStringAttribute(attributes, "mcp.method.name"));
+        assertInvariantOperationAttributes(attributes);
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertNotNull("Expected error.type for failed cancel",
+                      getStringAttribute(attributes, "error.type"));
+        assertTimingAttributes(point);
     }
 
     public void testBusinessErrorToolMetrics() {
@@ -244,6 +237,24 @@ public class McpOperationMetricServlet extends FATServlet {
                         .runCompareAgainst(capturedMetricData);
     }
 
+    public void testParseErrorMetrics() {
+        MetricComparator.compareOperationDuration(reader)
+                        .expectChange(otherOperationWithErrorType("PARSE_ERROR"), countIncreasedBy(1))
+                        .runCompareAgainst(capturedMetricData);
+    }
+
+    public void testInvalidRequestMetrics() {
+        MetricComparator.compareOperationDuration(reader)
+                        .expectChange(otherOperationWithErrorType("INVALID_REQUEST"), countIncreasedBy(1))
+                        .runCompareAgainst(capturedMetricData);
+    }
+
+    public void testMethodNotFoundMetrics() {
+        MetricComparator.compareOperationDuration(reader)
+                        .expectChange(otherOperationWithErrorType("METHOD_NOT_FOUND"), countIncreasedBy(1))
+                        .runCompareAgainst(capturedMetricData);
+    }
+
     public void captureOperationDurationMetrics() {
         capturedMetricData = reader.getMetricData("mcp.server.operation.duration").get();
     }
@@ -297,6 +308,12 @@ public class McpOperationMetricServlet extends FATServlet {
 
         assertTrue("Expected at least one point for " + toolName + " with status " + status, !toolCallPoints.isEmpty());
         return toolCallPoints.get(0);
+    }
+
+    private static Predicate<HistogramPointData> otherOperationWithErrorType(String errorType) {
+        return point -> "_OTHER".equals(getStringAttribute(point.getAttributes(), "mcp.method.name"))
+                        && "error".equals(getStringAttribute(point.getAttributes(), "rpc.response.status_code"))
+                        && errorType.equals(getStringAttribute(point.getAttributes(), "error.type"));
     }
 
     private static Predicate<HistogramPointData> toolCallWithStatus(String toolName, String status) {

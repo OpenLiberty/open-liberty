@@ -1,0 +1,19 @@
+<server description="TLS Profiler FAT — untrusted certificate test server">
+    <include location="../fatTestCommon.xml"/>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>appSecurity-3.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <!-- Use secondary ports so this server can run alongside TLSProfilerTestServer -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+    <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true" sslProtocol="TLSv1.3"/>
+</server>

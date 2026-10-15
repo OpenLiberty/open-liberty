@@ -72,6 +72,9 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
     public String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath, String absoluteResourceUrl) {
         OidcClientImpl client = oidcClientImpl;
         if (client == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "resolveMetadataJson: no OidcClientImpl service available, returning null");
+            }
             return null;
         }
 
@@ -80,20 +83,41 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
         // the configured URL patterns.
         HttpServletRequest resourceRequest = new ProtectedResourceRequestWrapper(request, protectedResourcePath);
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "resolveMetadataJson: selecting OIDC provider for protected resource path [" + protectedResourcePath + "]");
+        }
+
         String providerId = client.getOidcProvider(resourceRequest);
 
         if (providerId == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "resolveMetadataJson: no OIDC provider matched path [" + protectedResourcePath + "], returning 404 - check authFilterRef on openidConnectClient covers this path");
+            }
             return null;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "resolveMetadataJson: matched OIDC provider [" + providerId + "] for path [" + protectedResourcePath + "]");
         }
 
         OidcClientConfig config = client.getOidcClientConfig(request, providerId); // OidcClientImpl
 
         if (config == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "resolveMetadataJson: no OidcClientConfig found for provider [" + providerId + "], returning null");
+            }
             return null;
         }
 
         if (!config.getServeProtectedResourceMetadata()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "resolveMetadataJson: protectedResourceMetadata is not enabled on client [" + config.getId() + "] - add <protectedResourceMetadata> to the openidConnectClient element to enable");
+            }
             return null;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "resolveMetadataJson: building metadata JSON for resource [" + absoluteResourceUrl + "] using client [" + config.getId() + "]");
         }
 
         return createMetadataJson(config, absoluteResourceUrl, request);
@@ -128,6 +152,14 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
             }
             if (!authorizationServers.isEmpty()) {
                 metadata.put("authorization_servers", authorizationServers);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "createMetadataJson: authorization_servers will be omitted - authorization server value [" + authorizationServer + "] produced no non-blank entries after splitting on ','");
+                }
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "createMetadataJson: authorization_servers will be omitted - neither issuerIdentifier nor validationEndpointUrl is configured on client [" + config.getId() + "]");
             }
         }
 
@@ -136,18 +168,32 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
             JSONArray scopesSupported = new JSONArray();
             scopesSupported.addAll(advertisedScopes);
             metadata.put("scopes_supported", scopesSupported);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "createMetadataJson: scopes_supported will be omitted - no advertisedScopes configured on client [" + config.getId() + "]");
+            }
         }
 
         String jwtBuilderId = config.getProtectedResourceMetadataJwtBuilderId();
         if (jwtBuilderId != null && !jwtBuilderId.trim().isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "createMetadataJson: signing metadata JWT using jwtBuilderRef [" + jwtBuilderId + "]");
+            }
             String signedJwt = createSignedMetadata(jwtBuilderId, metadata);
             if (signedJwt != null) {
                 metadata.put("signed_metadata", signedJwt);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "createMetadataJson: signed_metadata field added successfully");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "createMetadataJson: signed_metadata omitted due to signing failure (see warning logged by createSignedMetadata)");
+                }
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Resolved OAuth protected resource metadata for resource [" + absoluteResourceUrl + "] using client [" + config.getId() + "]");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "createMetadataJson: built metadata document with fields " + metadata.keySet() + " for resource [" + absoluteResourceUrl + "]");
         }
 
         return metadata.toString();
@@ -166,6 +212,9 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
     // package visible for unit testing
     String createSignedMetadata(String jwtBuilderId, JSONObject metadata) {
         if (jwtBuilderId == null || jwtBuilderId.trim().isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "createSignedMetadata: jwtBuilderRef is null or blank, signed_metadata will not be added");
+            }
             return null;
         }
         try {
@@ -195,12 +244,22 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
     String getAuthorizationServer(OidcClientConfig config) {
         String issuer = config.getIssuerIdentifier();
         if (issuer != null && !issuer.trim().isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "getAuthorizationServer: using issuerIdentifier [" + issuer + "]");
+            }
             return issuer;
         }
         String validationEndpoint = config.getValidationEndpointUrl();
         if (validationEndpoint != null) {
             int lastSlashIndex = validationEndpoint.lastIndexOf("/");
-            return validationEndpoint.substring(0, lastSlashIndex);
+            String derived = validationEndpoint.substring(0, lastSlashIndex);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "getAuthorizationServer: issuerIdentifier not set, derived authorization server [" + derived + "] from validationEndpointUrl by stripping last path segment");
+            }
+            return derived;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "getAuthorizationServer: neither issuerIdentifier nor validationEndpointUrl is configured, authorization_servers will be omitted from metadata");
         }
         return null;
     }

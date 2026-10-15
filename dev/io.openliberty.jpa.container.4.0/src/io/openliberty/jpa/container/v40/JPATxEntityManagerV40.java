@@ -15,6 +15,7 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.CacheStoreMode;
@@ -297,6 +298,16 @@ public class JPATxEntityManagerV40 extends JPATxEntityManager {
     @Override
     public void setCacheStoreMode(CacheStoreMode cacheStoreMode) {
         getEMInvocationInfo(false).setCacheStoreMode(cacheStoreMode);
+    }
+
+    @Override
+    public void addOption(EntityManager.Option option) {
+        getEMInvocationInfo(false).addOption(option);
+    }
+
+    @Override
+    public Set<EntityManager.Option> getOptions() {
+        return getEMInvocationInfo(false).getOptions();
     }
 
 }

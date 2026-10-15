@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Test server for quiesceTimeout override" quiesceTimeout="45s">
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <!-- Include fatTestPorts.xml for timedexit-1.0 feature -->
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Configure channel framework with chainQuiesceTimeout - should be overridden by quiesceTimeout -->
+    <channelfw chainQuiesceTimeout="10s"/>
+</server>
+
+<!-- Made with Bob -->

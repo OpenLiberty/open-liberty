@@ -238,3 +238,7 @@ upgradeHttpToWebSocket.failed.useraction=Examina\u021bi eroarea pentru a identif
 maxmessagesize.exceeded=CWWKH0056E: maxMessageSize pentru metoda {0} dep\u0103\u0219e\u0219te Integer.MAX_VALUE pentru clasa {1} .
 maxmessagesize.exceeded.explanation=Parametrul de adnotare maxMessageSize OnMessage seteaz\u0103 dimensiunea maxim\u0103 a mesajului \u00een octe\u021bi pentru o metod\u0103. maxMessageSize poate fi setat numai la o valoare maxim\u0103 de Integer.MAX_VALUE .
 maxmessagesize.exceeded.useraction=Reduce\u021bi valoarea parametrului maxMessageSize la cel mult Integer.MAX_VALUE .
+
+client.no.response=CWWKH0057E: Clientul nu a primit niciun r\u0103spuns de tip \u201e HTTP \u201d de la punctul final {0} dup\u0103 finalizarea cererii de actualizare WebSocket.
+client.no.response.explanation=Procesul de stabilire a conexiunii pentru actualizarea \u201e WebSocket \u201d a fost finalizat, dar nu a fost disponibil niciun r\u0103spuns \u201e HTTP \u201d care s\u0103 poat\u0103 fi procesat.
+client.no.response.useraction=Verifica\u021bi dac\u0103 serverul \u021bint\u0103 este accesibil \u0219i dac\u0103 r\u0103spunde corect la cererile de actualizare de tip \u201e WebSocket \u201d.

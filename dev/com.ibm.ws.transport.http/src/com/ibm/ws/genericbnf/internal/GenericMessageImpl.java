@@ -280,7 +280,9 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
             // line ends with just an LF and not CRLF then we don't want to
             // change position as the header parsing above would consider it the
             // end of headers)
-            decrementBytePositionIgnoringLFs();
+            // Only do this if we are lenient in parsing bare CR/LF
+            if (!isRejectHeaderLineFolding())
+                decrementBytePositionIgnoringLFs();
         }
 
         if (bTrace && tc.isDebugEnabled()) {

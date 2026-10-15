@@ -18,14 +18,14 @@ import java.time.Year;
 
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.Schedule;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.Dependent;
 
 /**
  * Bean with Asynchronous that also has Schedule on a bean method.
  * This must be rejected with UnsupportedOperationException.
  */
 @Asynchronous
-@SessionScoped
+@Dependent
 public class AsyncWithSchedule implements Serializable {
     private static final long serialVersionUID = 7391058645294L;
 

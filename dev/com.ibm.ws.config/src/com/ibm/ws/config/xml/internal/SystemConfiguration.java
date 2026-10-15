@@ -116,8 +116,11 @@ class SystemConfiguration implements CheckpointHook {
         this.configRetriever = new ConfigRetriever(caSupport, configAdmin, variableRegistry);
         this.validator = new ConfigValidator(metatypeRegistry, variableRegistry);
 
-        XMLConfigParser parser = new XMLConfigParser(locationService, variableRegistry);
+        XMLConfigParser parser = new XMLConfigParser(locationService, variableRegistry, metatypeRegistry);
         this.serverXMLConfig = new ServerXMLConfiguration(bc, locationService, parser);
+        
+        // Set the ServerXMLConfiguration reference in ServerElementConfigImpl so it can delegate to BaseConfiguration
+        ServerElementConfigImpl.setServerXMLConfiguration(this.serverXMLConfig);
 
         ConfigEvaluator ce = new ConfigEvaluator(configRetriever, metatypeRegistry, variableRegistry, this.serverXMLConfig);
 

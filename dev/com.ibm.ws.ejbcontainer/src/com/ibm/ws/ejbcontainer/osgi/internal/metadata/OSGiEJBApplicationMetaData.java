@@ -29,7 +29,6 @@ import com.ibm.ejs.csi.EJBApplicationMetaData;
 import com.ibm.ejs.csi.EJBModuleMetaDataImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
@@ -40,7 +39,6 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  */
 public class OSGiEJBApplicationMetaData extends EJBApplicationMetaData implements ServerQuiesceListener {
     private static final TraceComponent tc = Tr.register(OSGiEJBApplicationMetaData.class);
-    private static final boolean isBeta = ProductInfo.getBetaEdition();
 
     public OSGiEJBApplicationMetaData(EJSContainer container, String name, String logicalName, boolean standaloneModule, ApplicationMetaData amd, boolean started,
                                       boolean blockWorkUntilStarted) {
@@ -94,7 +92,7 @@ public class OSGiEJBApplicationMetaData extends EJBApplicationMetaData implement
     public synchronized void addSingletonInitialization(EJSHome home) {
         super.addSingletonInitialization(home);
 
-        if (isBeta && home.getBeanMetaData().isDestroyOnQuiesce()) {
+        if (home.getBeanMetaData().isDestroyOnQuiesce()) {
 
             // Create list of singleton to destroy during server quiesce and register for server quiesce
             if (quiesceSingletons == null) {

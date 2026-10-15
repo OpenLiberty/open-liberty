@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,4 +77,7 @@ public interface TCPMessageConstants {
     String NEW_CONFIG_VALUE_NOT_EQUAL = "NEW_CONFIG_VALUE_NOT_EQUAL";
     /** Config update failed to be processed */
     String UPDATED_CONFIG_NOT_IMPLEMENTED = "UPDATED_CONFIG_NOT_IMPLEMENTED";
+
+    /** Netty pipeline handler was unexpectedly removed from an active channel */
+    String NETTY_HANDLER_REMOVED_FROM_PIPELINE = "netty.handler.removed.from.pipeline";
 }

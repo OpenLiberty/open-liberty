@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -288,6 +288,8 @@ final class JaxbUnmarshaller extends DefaultHandler {
                 ivPersistence = new JaxbPersistence30(ivJPAPXml);
             } else if (JaxbPersistence32.SCHEMA_VERSION.equals(version)) {
                 ivPersistence = new JaxbPersistence32(ivJPAPXml);
+            } else if (JaxbPersistence40.SCHEMA_VERSION.equals(version)) {
+                ivPersistence = new JaxbPersistence40(ivJPAPXml);
             } else {
                 // TODO, this is a new situation, in the past we've always been able to default to the latest spec.
             }

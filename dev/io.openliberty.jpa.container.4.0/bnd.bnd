@@ -15,10 +15,10 @@ Bundle-Name: JPA 4.0 Container Runtime
 Bundle-SymbolicName: io.openliberty.jpa.container.4.0
 Bundle-Description: JPA 4.0 Container Runtime; version=${bVersion}
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 WS-TraceGroup: JPA
 
@@ -36,7 +36,7 @@ Private-Package: \
   io.openliberty.jpa.container.v40.*
 
 -buildpath: \
-	com.ibm.ws.jpa.container.jakarta;version=latest,\
+	com.ibm.ws.jpa.container.jakarta.40;version=latest,\
 	io.openliberty.jakarta.persistence.4.0;version=latest,\
 	com.ibm.wsspi.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
