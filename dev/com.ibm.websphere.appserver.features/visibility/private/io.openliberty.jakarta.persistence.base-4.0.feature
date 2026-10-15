@@ -3,10 +3,8 @@ symbolicName=io.openliberty.jakarta.persistence.base-4.0
 singleton=true
 IBM-Process-Types: server, \
  client
--features=com.ibm.websphere.appserver.eeCompatible-12.0, \
-  io.openliberty.jsonpInternal-2.2,\
-  io.openliberty.noShip-1.0
+-features=com.ibm.websphere.appserver.eeCompatible-11.0; ibm.tolerates:="12.0"
 -bundles=io.openliberty.org.hibernate.4.0; location:=lib/
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

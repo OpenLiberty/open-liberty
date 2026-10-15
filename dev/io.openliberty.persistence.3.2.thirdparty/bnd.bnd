@@ -70,10 +70,10 @@ Import-Package: \
             javax.management.openmbean;resolution:=optional, \
             jakarta.mail.internet;resolution:=optional, \
             javax.naming;resolution:=optional, \
-            jakarta.persistence;jpa="3.2";consumer="persistenceService";resolution:=optional, \
-            jakarta.persistence.criteria;jpa="3.2";consumer="persistenceService", \
-            jakarta.persistence.metamodel;jpa="3.2";consumer="persistenceService", \
-            jakarta.persistence.spi;jpa="3.2";consumer="persistenceService";resolution:=optional, \
+            jakarta.persistence;version="[3.2,5)";consumer="persistenceService";resolution:=optional, \
+            jakarta.persistence.criteria;version="[3.2,5)";consumer="persistenceService", \
+            jakarta.persistence.metamodel;version="[3.2,5)";consumer="persistenceService", \
+            jakarta.persistence.spi;version="[3.2,5)";consumer="persistenceService";resolution:=optional, \
             jakarta.resource;resolution:=optional, \
             jakarta.resource.cci;resolution:=optional, \
             javax.rmi;resolution:=optional, \
