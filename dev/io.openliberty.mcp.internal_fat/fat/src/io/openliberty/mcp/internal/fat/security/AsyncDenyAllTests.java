@@ -44,7 +44,7 @@ public class AsyncDenyAllTests extends FATServletClient {
     Logger logger = Logger.getLogger(AsyncDenyAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncDenyAllTools");
+    public McpClient client = McpClient.builder(server, "/asyncDenyAllTools").build();
 
     @BeforeClass
     public static void setup() throws Exception {

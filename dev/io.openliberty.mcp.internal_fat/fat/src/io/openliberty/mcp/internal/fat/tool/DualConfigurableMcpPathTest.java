@@ -59,10 +59,10 @@ public class DualConfigurableMcpPathTest extends FATServletClient {
     }
 
     @Rule
-    public McpClient war1Client = new McpClient(server, "/war1", "/custom-mcp");
+    public McpClient war1Client = McpClient.builder(server, "/war1").path("/custom-mcp").build();
 
     @Rule
-    public McpClient war2Client = new McpClient(server, "/war2", "/custom-mcp-for-war-2");
+    public McpClient war2Client = McpClient.builder(server, "/war2").path("/custom-mcp-for-war-2").build();
 
     private static final String PATH = "/custom-mcp";
     private static final String CUSTOM_PATH = "/custom-mcp-for-war-2";
@@ -83,7 +83,7 @@ public class DualConfigurableMcpPathTest extends FATServletClient {
                         }
                         """;
 
-        String war1Response = war1Client.callMCPCustomized(request, PATH, 200);
+        String war1Response = war1Client.callMCP(request);
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
@@ -91,7 +91,7 @@ public class DualConfigurableMcpPathTest extends FATServletClient {
 
         JSONAssert.assertEquals(expectedResponseString, war1Response, true);
 
-        String war2Response = war2Client.callMCPCustomized(request, CUSTOM_PATH, 200);
+        String war2Response = war2Client.callMCP(request);
 
         JSONAssert.assertEquals(expectedResponseString, war2Response, true);
     }

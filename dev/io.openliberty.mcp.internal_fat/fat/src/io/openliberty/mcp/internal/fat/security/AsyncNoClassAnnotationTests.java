@@ -44,7 +44,7 @@ public class AsyncNoClassAnnotationTests extends FATServletClient {
     Logger logger = Logger.getLogger(AsyncNoClassAnnotationTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncNoClassAnnotationTools");
+    public McpClient client = McpClient.builder(server, "/asyncNoClassAnnotationTools").build();
 
     @BeforeClass
     public static void setup() throws Exception {

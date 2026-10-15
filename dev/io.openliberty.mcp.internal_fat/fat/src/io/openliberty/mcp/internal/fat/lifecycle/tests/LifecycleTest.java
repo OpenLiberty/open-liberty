@@ -40,7 +40,7 @@ public class LifecycleTest {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/lifecycleTest");
+    public McpClient client = McpClient.builder(server, "/lifecycleTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

@@ -69,7 +69,7 @@ public class HttpTest {
     private static final String ENDPOINT = "/httpTest/mcp";
 
     @Rule
-    public McpClient client = new McpClient(server, "/httpTest");
+    public McpClient client = McpClient.builder(server, "/httpTest").build();
 
     @Test
     public void testGetRequestWithoutAcceptHeaderReturns405() throws Exception {

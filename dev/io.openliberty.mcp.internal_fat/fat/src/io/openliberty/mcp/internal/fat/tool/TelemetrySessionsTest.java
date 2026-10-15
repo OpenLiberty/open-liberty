@@ -39,7 +39,7 @@ public class TelemetrySessionsTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/" + APP_NAME);
+    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
 
     private static final String BASIC_TOOL_REQUEST = """
                       {

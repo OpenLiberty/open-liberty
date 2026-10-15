@@ -53,16 +53,16 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient encoderModuleMCPClient = new McpClient(server, "/encoderModule");
+    public McpClient encoderModuleMCPClient = McpClient.builder(server, "/encoderModule").build();
 
     @Rule
-    public McpClient defaultEncoderModuleMCPClient = new McpClient(server, "/defaultEncoderModule");
+    public McpClient defaultEncoderModuleMCPClient = McpClient.builder(server, "/defaultEncoderModule").build();
 
     @Rule
-    public McpClient customConverterModuleClient = new McpClient(server, "/customConverterModule");
+    public McpClient customConverterModuleClient = McpClient.builder(server, "/customConverterModule").build();
 
     @Rule
-    public McpClient sharedConvertersModuleClient = new McpClient(server, "/sharedConvertersModule");
+    public McpClient sharedConvertersModuleClient = McpClient.builder(server, "/sharedConvertersModule").build();
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -262,7 +262,8 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
         boolean exceptionThrown = false;
         try {
-            defaultEncoderModuleMCPClient.callMCPWithSessionID(toolCallRequest("1", "methodTool"), encoderModuleMCPClient.getSessionId());
+            defaultEncoderModuleMCPClient.callMCPRaw(toolCallRequest("1", "methodTool"),
+                    McpClient.RequestOptions.builder().sessionId(encoderModuleMCPClient.getSessionId()).build());
         } catch (Exception e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("Invalid or Expired Session Id"));

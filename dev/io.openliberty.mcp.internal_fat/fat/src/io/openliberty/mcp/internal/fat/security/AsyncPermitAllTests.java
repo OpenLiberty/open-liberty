@@ -44,7 +44,7 @@ public class AsyncPermitAllTests extends FATServletClient {
     Logger logger = Logger.getLogger(AsyncPermitAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncPermitAllTools");
+    public McpClient client = McpClient.builder(server, "/asyncPermitAllTools").build();
 
     @BeforeClass
     public static void setup() throws Exception {

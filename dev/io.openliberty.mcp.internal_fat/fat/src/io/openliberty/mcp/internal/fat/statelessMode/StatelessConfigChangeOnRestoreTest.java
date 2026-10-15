@@ -100,7 +100,7 @@ public class StatelessConfigChangeOnRestoreTest extends FATServletClient {
     @Test
     public void testStatelessToStatefulConfigChange() throws Exception {
         // Initialize client in stateful mode (after restore, server is now stateful)
-        McpClient client = new McpClient(server, "/statelessConfigChangeTest", McpClient.StateMode.STATEFUL);
+        McpClient client = McpClient.builder(server, "/statelessConfigChangeTest").build();
         client.initialize();
 
         try {

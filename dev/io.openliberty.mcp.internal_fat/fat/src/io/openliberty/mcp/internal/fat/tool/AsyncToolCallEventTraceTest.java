@@ -42,7 +42,7 @@ public class AsyncToolCallEventTraceTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolCallEventTraceTest");
+    public McpClient client = McpClient.builder(server, "/asyncToolCallEventTraceTest").build();
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");

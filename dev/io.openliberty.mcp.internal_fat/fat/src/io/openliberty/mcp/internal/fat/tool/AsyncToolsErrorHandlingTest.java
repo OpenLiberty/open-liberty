@@ -48,7 +48,7 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolErrorHandling");
+    public McpClient client = McpClient.builder(server, "/asyncToolErrorHandling").build();
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -218,7 +218,7 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
                         """,
                                        exceptionToThrow,
                                        failureMechanism);
-        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
         Log.info(AsyncToolsErrorHandlingTest.class, "callToolExpect403", response.toString());
 
         assertEquals(403, response.statusCode());

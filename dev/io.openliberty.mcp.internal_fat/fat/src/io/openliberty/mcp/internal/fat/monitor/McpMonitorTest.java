@@ -54,7 +54,7 @@ public class McpMonitorTest {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/" + APP_NAME);
+    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
 
     private static LocalConnector localConnector;
     private static MBeanServerConnection mbeanServer;

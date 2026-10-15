@@ -49,7 +49,7 @@ public class TelemetryOperationsTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/" + APP_NAME);
+    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
 
     private static final String BASIC_TOOL_REQUEST = """
                       {
@@ -137,10 +137,10 @@ public class TelemetryOperationsTest extends FATServletClient {
         captureMetrics();
 
         // Create two new clients to cause the lifecycle methods to be called
-        McpClient clientA = new McpClient(server, APP_NAME);
+        McpClient clientA = McpClient.builder(server, APP_NAME).build();
         clientA.initialize();
         clientA.deleteSession();
-        McpClient clientB = new McpClient(server, APP_NAME);
+        McpClient clientB = McpClient.builder(server, APP_NAME).build();
         clientB.initialize();
         clientB.deleteSession();
 
@@ -233,11 +233,9 @@ public class TelemetryOperationsTest extends FATServletClient {
                         }
                         """;
 
-        try {
-            // Invalid session ID will cause an error
-            client.callMCPWithSessionID(cancelRequestWithError, "fakeSessionId");
-        } catch (Exception e) {
-        }
+        // Send the notification with an invalid session ID — status is not asserted since
+        // the server may return 404 or similar, but the error metric should still be recorded.
+        client.callMCPRaw(cancelRequestWithError, McpClient.RequestOptions.builder().sessionId("fakeSessionId").anyStatus().build());
 
         FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestErrorMetrics");
     }

@@ -42,7 +42,7 @@ public class GenericToolTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/genericToolTest");
+    public McpClient client = McpClient.builder(server, "/genericToolTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {
