@@ -122,7 +122,7 @@ public class SSLOptionsTest{
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(null);
-        waitForSSLRestartFromMark();
+        server.waitForSSLRestart();
     }
 
     /**
@@ -154,7 +154,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        waitForSSLRestartFromMark();
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         hitServerWithBadHandshake();
@@ -186,7 +186,7 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_TRUE_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        waitForSSLRestartFromMark();
+        server.waitForSSLRestart();
         saveCnt = server.findStringsInLogs("CWWKO0801E").size();
 
         // Hit the servlet on the SSL port
@@ -200,7 +200,8 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_FALSE_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        waitForSSLRestartFromMark();
+        // Requires info trace
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         server.setMarkToEndOfLog();
@@ -224,7 +225,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        waitForSSLRestartFromMark();
+        server.waitForSSLRestart();
         server.setMarkToEndOfLog();
 
         // Hit the servlet on the SSL port
@@ -268,7 +269,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        waitForSSLRestartFromMark();
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, TRUSTSTORE, PASSWORD);
@@ -279,7 +280,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        waitForSSLRestartFromMark();
+        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, ALTERNATE_TRUSTSTORE, PASSWORD);
@@ -321,19 +322,5 @@ public class SSLOptionsTest{
                    sslClient.verifyUnauthenticatedResponse(response));
     }
 
-    /**
-     * Checks if the SSL channel was stopped since the mark. If stopped, advances
-     * the mark past the stop message and waits for the channel to start.
-     * Loops if rapid successive restarts occur (e.g. dynamic keystore reloading).
-     */
-    private void waitForSSLRestartFromMark() throws Exception {
-        String sslStopMsg = server.waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
-        while (sslStopMsg != null) {
-            server.setMarkToEndOfLog();
-            assertNotNull("Timed out waiting for SSL channel to restart after stop",
-                          server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*"));
-            sslStopMsg = server.waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 300);
-        }
-    }
 
 }
