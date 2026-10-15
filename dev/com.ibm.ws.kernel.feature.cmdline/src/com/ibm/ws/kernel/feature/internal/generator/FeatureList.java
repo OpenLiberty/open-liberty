@@ -504,20 +504,60 @@ public class FeatureList {
     }
 
     /**
-     * Writes deduplicated {@code <mavenCoordinates>} elements for every constituent of the
-     * given feature that carries a {@code mavenCoordinates} attribute in the format
-     * {@code groupId:artifactId:version}.
+     * Writes deduplicated {@code <mavenCoordinates>} elements for all bundle constituents
+     * reachable from the given public feature, recursing into private sub-features.
+     * <p>
+     * Direct bundle/jar constituents whose manifest entry carries a
+     * {@code mavenCoordinates="groupId:artifactId:version"} attribute are collected at
+     * every level. Private sub-features (non-PUBLIC feature constituents) are walked
+     * recursively; PUBLIC sub-features are skipped because they represent independent
+     * top-level features that will be processed on their own. A {@code visited} set
+     * guards against cycles.
      */
     private void writeMavenCoordinates(FeatureListWriter writer, ProvisioningFeatureDefinition fd) throws IOException, XMLStreamException {
         LinkedHashSet<String> seen = new LinkedHashSet<String>();
+        collectMavenCoordinates(fd, seen, new HashSet<String>());
+        for (String coordinate : seen) {
+            writer.writeTextElement("mavenCoordinates", coordinate);
+        }
+    }
+
+    /**
+     * Recursively collects {@code mavenCoordinates} values from bundle/jar constituents
+     * of {@code fd} and all reachable private sub-features.
+     *
+     * @param fd      the feature definition to inspect
+     * @param seen    accumulator for deduplicated coordinates (insertion-ordered)
+     * @param visited symbolic names already visited, to prevent cycles
+     */
+    void collectMavenCoordinates(ProvisioningFeatureDefinition fd,
+                                         LinkedHashSet<String> seen,
+                                         Set<String> visited) {
+        if (!visited.add(fd.getSymbolicName())) {
+            return; // already visited — cycle guard
+        }
+
+        // Collect mavenCoordinates from direct bundle/jar constituents at this level.
         for (FeatureResource resource : fd.getConstituents(null)) {
             String coordinate = resource.getAttributes().get("mavenCoordinates");
             if (coordinate != null && !coordinate.isEmpty() && coordinate.split(":").length == 3) {
                 seen.add(coordinate);
             }
         }
-        for (String coordinate : seen) {
-            writer.writeTextElement("mavenCoordinates", coordinate);
+
+        // Recurse into private sub-features (non-PUBLIC feature-type constituents).
+        for (FeatureResource fr : fd.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+            String symbolicName = fr.getSymbolicName();
+            ProvisioningFeatureDefinition sub = features.get(symbolicName);
+
+            // For extension repositories, also check core features.
+            if (sub == null && coreFeatures != null) {
+                sub = coreFeatures.get(symbolicName);
+            }
+
+            if (sub != null && sub.getVisibility() != Visibility.PUBLIC) {
+                collectMavenCoordinates(sub, seen, visited);
+            }
         }
     }
 
