@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.wsat.Constants.AssertionStatus;
+import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
 import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATUtil;
@@ -89,6 +90,20 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
             isOptional = AssertionStatus.FALSE;
         } else {
             isOptional = WSCoorUtil.isOptional(message, false);
+        }
+
+        // check_wsdl mode: skip outbound WS-AT context when the target endpoint has no assertion.
+        // assertAT() returns true (needFurtherCheck) when no ATAssertion QName is in the map.
+        // isOptional NULL means no WS-AT assertion was found in the WSDL policy tree either.
+        // Both checks must agree there is no assertion before we suppress propagation.
+        WSATConfigService configService = WSCoorUtil.getConfigService();
+        if (configService != null && configService.isCheckWsdlMode()
+                && WSCoorUtil.assertAT(message)
+                && isOptional == AssertionStatus.NULL) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "handleMessage",
+                         "check_wsdl mode: no WS-AT assertion on endpoint, skipping context propagation");
+            return;
         }
 
         boolean inTrans = false;
