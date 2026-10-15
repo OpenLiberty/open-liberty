@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,14 @@ public class FrameReadProcessor {
                     }
                     // the server is stopping, so we don't want to accept a new stream - invoke close(vc, e) to (potentially) trigger a GOAWAY
                     muxLink.close(null, null);
+                    return;
+                }
+
+                if ((currentFrame.getFrameType().equals(FrameTypes.RST_STREAM)
+                     || currentFrame.getFrameType().equals(FrameTypes.WINDOW_UPDATE))
+                    && streamId < muxLink.getHighestClientStreamId()) {
+                    // tolerate RST_STREAM and WINDOW_UPDATE frames received for a recently-closed
+                    // client-initiated stream that has been evicted from the stream table
                     return;
                 }
 
