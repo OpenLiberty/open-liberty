@@ -15,8 +15,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import tests.AssertionTest;
+import tests.ConditionalPropagationTest;
 import tests.DBWithoutAssertionTest;
 import tests.EJBCDITest;
+import tests.InternalFeatureOnlyTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -24,8 +26,10 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 	AssertionTest.class,
+	ConditionalPropagationTest.class,
 	DBWithoutAssertionTest.class,
 	EJBCDITest.class,
+	InternalFeatureOnlyTest.class,
 })
 public class FATSuite {
     @ClassRule
