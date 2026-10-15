@@ -242,9 +242,13 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
             // EquinoxClassLoader, causing a loader constraint violation.
             // By making the OSGi classloader first, all Hibernate classes are found
             // consistently through the same classloader hierarchy.
-            ClassLoader hibernateBundleCL = getHibernateBundleClassLoader(loader);
-            if (hibernateBundleCL != null) {
-                props.putIfAbsent("hibernate.classLoaders", Collections.singletonList(hibernateBundleCL));
+            // Only applies to persistence 4.0+ where the Hibernate bundle is present,
+            // whether provided by Liberty (persistence-4.0) or by the user (persistenceContainer-4.0).
+            if (jpaVersion.greaterThanOrEquals(JPAVersion.JPA40)) {
+                ClassLoader hibernateBundleCL = getHibernateBundleClassLoader(loader);
+                if (hibernateBundleCL != null) {
+                    props.putIfAbsent("hibernate.classLoaders", Collections.singletonList(hibernateBundleCL));
+                }
             }
         }
 
@@ -261,22 +265,21 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
     }
 
     /**
-     * Returns the OSGi classloader of the Hibernate thirdparty bundle, obtained by loading
-     * {@code io.openliberty.persistence.hibernate.LibertyHibernateBundle} through the application
-     * classloader and reading its {@code classLoader} field.
+     * Returns the OSGi classloader of the Hibernate bundle by loading a well-known exported
+     * Hibernate class ({@code org.hibernate.jpa.HibernatePersistenceProvider}) through the
+     * application classloader and obtaining its classloader.
      * <p>
-     * Using reflection through the app classloader avoids a hard compile-time dependency on the
-     * thirdparty bundle from this core bundle.
+     * This works whether Hibernate is provided by Liberty (persistence-4.0) or by the user
+     * (persistenceContainer-4.0), as long as {@code org.hibernate.jpa} is on the app classpath.
      *
      * @param appClassLoader the application classloader
      * @return the Hibernate bundle's classloader, or {@code null} if unavailable
      */
-    @FFDCIgnore(Exception.class)
+    @FFDCIgnore(ClassNotFoundException.class)
     private static ClassLoader getHibernateBundleClassLoader(ClassLoader appClassLoader) {
         try {
-            Class<?> helper = appClassLoader.loadClass("io.openliberty.persistence.hibernate.LibertyHibernateBundle");
-            return (ClassLoader) helper.getField("classLoader").get(null);
-        } catch (Exception x) {
+            return appClassLoader.loadClass("org.hibernate.jpa.HibernatePersistenceProvider").getClassLoader();
+        } catch (ClassNotFoundException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(AbstractJPAProviderIntegration.class, tc, "Unable to obtain Hibernate bundle classloader", x);
             return null;
