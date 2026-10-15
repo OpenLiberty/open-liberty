@@ -691,7 +691,6 @@ serverEnvAndJVMOptions()
   loadJavaVersionSpecificOptions
   addPlatformSpecificJvmFlags
   enableFIPS140_3
-  SERVER_JVM_OPTIONS_INITIALIZED=true
   return 0
 }
 
@@ -711,11 +710,11 @@ initializeClientJVMOptions()
   addPlatformSpecificJvmFlags
   # Load jvm.options files only to extract preferIPv4Stack into SERVER_PREFER_IPV4.
   # Customer jvm.options content (heap, GC, etc.) is intentionally not passed
-  # to the short-lived client JVM -- see CLIENT_JVM_OPTIONS_INITIALIZED flag
-  # which prevents javaCmd from reloading jvm.options.
+  # to the short-lived client JVM.
   loadJVMOptionsFiles
-  extractPreferIPv4Stack
-  CLIENT_JVM_OPTIONS_INITIALIZED=true
+  if [ -z "$SERVER_PREFER_IPV4" ]; then
+    extractPreferIPv4Stack
+  fi
 }
 
 # Resolve symbolic links in a path iteratively
@@ -1095,21 +1094,10 @@ javaCmd()
   # (start) sets JAVA_CMD_LOG and takes the else branch below.
   if [ -z "${JAVA_CMD_LOG}" ]; then
 
-    # Load jvm.options and extract IPv4 preference if not already done.
-    # This is a fallback only for simple commands (version, list, help) that call bare
-    # installEnv without invoking initializeClientJVMOptions or serverEnvAndJVMOptions.
-    if [ -z "$CLIENT_JVM_OPTIONS_INITIALIZED" ] && [ -z "$SERVER_JVM_OPTIONS_INITIALIZED" ]; then
-      loadJVMOptionsFiles
-    fi
-
-    if [ -z "$SERVER_PREFER_IPV4" ]; then
-      extractPreferIPv4Stack
-    fi
-    
     # Build the complete Java command line arguments and store them in the shell's positional parameters ($1, $2, $3, etc.).
     # Add IPv4 preference. SERVER_PREFER_IPV4 should either be empty or set to something containing no spaces.
     eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} $SERVER_PREFER_IPV4 -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
-    
+
   else
     # Build the complete Java command line arguments and store them in the shell's positional parameters ($1, $2, $3, etc.).
     # This is for a server JVM invocation.
