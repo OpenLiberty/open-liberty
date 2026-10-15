@@ -70,6 +70,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     private boolean clientRequestedKeepAlive = false;
     private boolean serverKeepAlive = false;
     private boolean responseStartedWithoutReadFlow = false;
+    private boolean readFlowPresent = false;
 
     private boolean firstRequest = true;
     private boolean readRetried = false;
@@ -117,6 +118,9 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     @Override
     public void handlerAdded(ChannelHandlerContext context) {
         this.parentContext = context;
+        // ALPN HTTP/1 installs ReadFlowHandler before TimeoutHandler; other
+        // pipelines notify us when ReadFlowHandler is added later.
+        readFlowPresent = context.pipeline().get(ReadFlowHandler.class) != null;
 
         if (streamOnly) {
             return;
@@ -134,6 +138,10 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     public void handlerRemoved(ChannelHandlerContext context) throws Exception {
         cancel();
         super.handlerRemoved(context);
+    }
+
+    public void readFlowHandlerChanged(boolean present) {
+        readFlowPresent = present;
     }
 
     @Override
@@ -183,7 +191,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
             // Once ReadFlowHandler is present, it and Netty's keep-alive handler
             // own response completion. A queued request must not change the
             // close decision for the response currently being written.
-            responseStartedWithoutReadFlow = context.pipeline().get(ReadFlowHandler.class) == null;
+            responseStartedWithoutReadFlow = !readFlowPresent;
             if (responseStartedWithoutReadFlow) {
                 serverKeepAlive = shouldKeepAliveResponse(context, message);
             }
