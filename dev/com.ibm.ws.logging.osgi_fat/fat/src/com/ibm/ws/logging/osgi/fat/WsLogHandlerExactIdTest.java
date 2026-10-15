@@ -102,9 +102,14 @@ public class WsLogHandlerExactIdTest extends WsLogHandlerBaseTest {
         assertEquals("Verify should return 200 (PASSED) — valid messages captured and unexpected messages excluded",
                      200, verifyStatus);
 
-        Log.info(c, "testExactIdRoutingAndFiltering", "the ending bit");
-        
         // 4. Ensure that valid messages were actually received
         assertTrue("Captured count should be greater than 0", getCapturedCount() > 0);
+
+        // 5. Assert that the unconfigured IDs were NOT routed to the handler.
+        //    CWABC0002I and CWDEF0007W are not in routerThing, so the router must have
+        //    filtered them out — verifyAbsent returns 200 only if neither appears in the store.
+        int absentStatus = getStatus("/wsLogHandler/verifyAbsent?patterns=CWABC0002I,CWDEF0007W");
+        assertEquals("verifyAbsent should return 200 (PASSED) — unconfigured IDs must not have been captured",
+                     200, absentStatus);
     }
 }

@@ -60,6 +60,8 @@ public class WsLogHandlerEndpoint implements RESTHandler {
             handleEmitJson(request, response);
         } else if (path.equals("/verify")) {
             handleVerify(request, response);
+        } else if (path.equals("/verifyAbsent")) {
+            handleVerifyAbsent(request, response);
         } else if (path.equals("/clear") || path.equals("/reset")) {
             handleClear(request, response);
         } else if (path.equals("/messages")) {
@@ -176,6 +178,41 @@ public class WsLogHandlerEndpoint implements RESTHandler {
     }
 
     /**
+     * GET/POST /wsLogHandler/verifyAbsent — asserts that none of the given patterns
+     * appear in the captured message store.
+     * HTTP 200 (PASSED) when no captured message matches any supplied pattern.
+     * HTTP 417 (FAILED) when at least one captured message matches.
+     */
+    private void handleVerifyAbsent(RESTRequest request, RESTResponse response) throws IOException {
+        String patterns = request.getParameter("patterns");
+        if (patterns == null || patterns.trim().isEmpty()) {
+            patterns = readRequestBody(request);
+        }
+
+        CapturedMessageStore.AbsenceResult result = CapturedMessageStore.verifyAbsent(patterns);
+
+        response.setStatus(result.isPassed() ? 200 : 417);
+        response.setContentType("application/json");
+
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        json.append("\"status\": \"").append(result.isPassed() ? "PASSED" : "FAILED").append("\",");
+        json.append("\"patterns\": \"").append(escapeJson(result.getPatterns() != null ? result.getPatterns() : "")).append("\",");
+        json.append("\"totalCaptured\": ").append(result.getTotalCaptured()).append(",");
+        json.append("\"unexpectedlyMatchedCount\": ").append(result.getUnexpectedlyMatched().size()).append(",");
+        json.append("\"unexpectedlyMatched\": [");
+        List<String> unexpected = result.getUnexpectedlyMatched();
+        for (int i = 0; i < unexpected.size(); i++) {
+            if (i > 0) json.append(",");
+            json.append("\"").append(escapeJson(unexpected.get(i))).append("\"");
+        }
+        json.append("]");
+        json.append("}");
+
+        response.getWriter().write(json.toString());
+    }
+
+    /**
      * GET/POST /wsLogHandler/clear — resets the in-memory captured message store.
      */
     private void handleClear(RESTRequest request, RESTResponse response) throws IOException {
@@ -225,6 +262,7 @@ public class WsLogHandlerEndpoint implements RESTHandler {
                 + ", \"endpoints\": [\"POST /wsLogHandler/emit/text\","
                 + "\"POST /wsLogHandler/emit/json\","
                 + "\"GET /wsLogHandler/verify?routerThing=...\","
+                + "\"GET /wsLogHandler/verifyAbsent?patterns=...\","
                 + "\"GET /wsLogHandler/messages\","
                 + "\"GET /wsLogHandler/clear\"]}");
     }

@@ -28,9 +28,11 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * FAT tests verifying combined usage of exact message IDs and wildcard patterns
- * in the same routing configuration using standard Open Liberty message ID conventions.
+ * in the same routing configuration using synthetic message IDs following the
+ * standard Liberty syntax (CW prefix, alphabetic component code, numeric suffix,
+ * and log level letter).
  *
- * <p>Server is configured with {@code routerThing="CWWKF*,CWWKE0001I,CWWKS*A,CWWKZ0012E"}.
+ * <p>Server is configured with {@code routerThing="CWLFA*,CWLFB0001I,CWLFC*A,CWLFD0003E"}.
  */
 @RunWith(FATRunner.class)
 public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
@@ -83,20 +85,20 @@ public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
         int clearStatus = getStatus("/wsLogHandler/clear");
         assertEquals("Clear should return 200", 200, clearStatus);
 
-        String emitBody = "count=10&messages=CWWKF0011I: Server is ready to run a smarter planet.,"
-                + "CWWKE0001I: The server defaultServer has been launched.,"
-                + "CWWKS1100A: Authentication audit event.,"
-                + "CWWKZ0012E: Application failed to start.";
+        String emitBody = "count=10&messages=CWLFA0001I: Test component alpha initialized successfully.,"
+                + "CWLFB0001I: Test component beta started successfully.,"
+                + "CWLFC0010A: Test component charlie audit event recorded.,"
+                + "CWLFD0003E: Test component delta failed to initialize subsystem.";
         int emitStatus = postForm("/wsLogHandler/emit/text", emitBody);
         assertEquals("Emit should return 200", 200, emitStatus);
 
-        int verifyStatus = getStatus("/wsLogHandler/verify?routerThing=CWWKF*,CWWKE0001I,CWWKS*A,CWWKZ0012E");
+        int verifyStatus = getStatus("/wsLogHandler/verify?routerThing=CWLFA*,CWLFB0001I,CWLFC*A,CWLFD0003E");
         assertEquals("Verify should return 200 (PASSED) for combined configuration", 200, verifyStatus);
         assertTrue("Captured count should be greater than 0", getCapturedCount() > 0);
     }
 
     /**
-     * Verifies that an exact ID in the combined configuration (CWWKE0001I) can be
+     * Verifies that an exact ID in the combined configuration (CWLFB0001I) can be
      * emitted and verified independently.
      */
     @Test
@@ -106,17 +108,17 @@ public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
         int clearStatus = getStatus("/wsLogHandler/clear");
         assertEquals("Clear should return 200", 200, clearStatus);
 
-        String emitBody = "count=5&messages=CWWKE0001I: The server defaultServer has been launched.";
+        String emitBody = "count=5&messages=CWLFB0001I: Test component beta started successfully.";
         int emitStatus = postForm("/wsLogHandler/emit/text", emitBody);
         assertEquals("Emit should return 200", 200, emitStatus);
 
-        int verifyStatus = getStatus("/wsLogHandler/verify?routerThing=CWWKE0001I");
-        assertEquals("Verify should return 200 (PASSED) for exact ID CWWKE0001I", 200, verifyStatus);
+        int verifyStatus = getStatus("/wsLogHandler/verify?routerThing=CWLFB0001I");
+        assertEquals("Verify should return 200 (PASSED) for exact ID CWLFB0001I", 200, verifyStatus);
         assertTrue("Captured count should be greater than 0", getCapturedCount() > 0);
     }
 
     /**
-     * Verifies that a level-qualified wildcard pattern in the combined configuration (CWWKS*A)
+     * Verifies that a level-qualified wildcard pattern in the combined configuration (CWLFC*A)
      * can be emitted and verified independently.
      */
     @Test
@@ -126,12 +128,12 @@ public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
         int clearStatus = getStatus("/wsLogHandler/clear");
         assertEquals("Clear should return 200", 200, clearStatus);
 
-        String emitBody = "count=5&messages=CWWKS1100A: Authentication audit event.";
+        String emitBody = "count=5&messages=CWLFC0010A: Test component charlie audit event recorded.";
         int emitStatus = postForm("/wsLogHandler/emit/text", emitBody);
         assertEquals("Emit should return 200", 200, emitStatus);
 
-        int verifyStatus = getStatus("/wsLogHandler/verify?routerThing=CWWKS*A");
-        assertEquals("Verify should return 200 (PASSED) for wildcard CWWKS*A", 200, verifyStatus);
+        int verifyStatus = getStatus("/wsLogHandler/verify?routerThing=CWLFC*A");
+        assertEquals("Verify should return 200 (PASSED) for wildcard CWLFC*A", 200, verifyStatus);
         assertTrue("Captured count should be greater than 0", getCapturedCount() > 0);
     }
 
@@ -146,10 +148,10 @@ public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
         int clearStatus = getStatus("/wsLogHandler/clear");
         assertEquals("Clear should return 200", 200, clearStatus);
 
-        String emitBody = "count=5&messages=CWWKE0010W: Warning on kernel component.,"
-                + "CWWKS4105W: LTPA configuration warning.,"
-                + "CWWKZ0001I: Application sample started.,"
-                + "CWWKO0219I: TCP Channel defaultHttpEndpoint has been started.";
+        String emitBody = "count=5&messages=CWLFB0005W: Test component beta warning does not match exact ID.,"
+                + "CWLFC0007W: Test component charlie warning does not match audit pattern.,"
+                + "CWLFD0001I: Test component delta info does not match exact error ID.,"
+                + "CWLFX0001I: Test component xray unconfigured prefix.";
         int emitStatus = postForm("/wsLogHandler/emit/text", emitBody);
         assertEquals("Emit should return 200", 200, emitStatus);
 

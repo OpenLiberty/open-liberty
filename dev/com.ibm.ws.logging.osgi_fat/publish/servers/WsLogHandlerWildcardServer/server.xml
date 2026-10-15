@@ -18,8 +18,8 @@
         <feature>wsLogHandler-1.0</feature>
     </featureManager>
 
-    <!-- Configure wildcard message ID patterns matching Open Liberty conventions:
-         CWWKF* (prefix), CWWKE*W (prefix+level), CWWKS*A (prefix+level), CWWKZ*E (prefix+level) -->
-    <wsLogHandler routerThing="CWWKF*,CWWKE*W,CWWKS*A,CWWKZ*E" />
+    <!-- Configure wildcard message ID patterns using synthetic Liberty-style IDs:
+         CWLFA* (prefix), CWLFB*W (prefix+level), CWLFC*A (prefix+level), CWLFD*E (prefix+level) -->
+    <wsLogHandler routerThing="CWLFA*,CWLFB*W,CWLFC*A,CWLFD*E" />
 
 </server>

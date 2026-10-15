@@ -71,6 +71,33 @@ public class CapturedMessageStore {
         public List<String> getMissingPatterns()       { return missingPatterns; }
     }
 
+    /**
+     * Result of a {@link #verifyAbsent} check.
+     *
+     * <p>Passed when no captured message matched any of the supplied patterns.
+     * Failed when at least one captured message matched a pattern that was
+     * supposed to be absent.
+     */
+    public static class AbsenceResult {
+        private final boolean passed;
+        private final String patterns;
+        private final int totalCaptured;
+        private final List<String> unexpectedlyMatched;
+
+        public AbsenceResult(boolean passed, String patterns, int totalCaptured,
+                             List<String> unexpectedlyMatched) {
+            this.passed = passed;
+            this.patterns = patterns;
+            this.totalCaptured = totalCaptured;
+            this.unexpectedlyMatched = unexpectedlyMatched;
+        }
+
+        public boolean isPassed()                          { return passed; }
+        public String getPatterns()                        { return patterns; }
+        public int getTotalCaptured()                      { return totalCaptured; }
+        public List<String> getUnexpectedlyMatched()       { return unexpectedlyMatched; }
+    }
+
     private static final List<CapturedEntry> entries = Collections.synchronizedList(new ArrayList<CapturedEntry>());
 
     public static void addMessage(String formattedMessage, boolean messageHidden) {
@@ -157,6 +184,40 @@ public class CapturedMessageStore {
                 && missing.isEmpty();
 
         return new VerificationResult(passed, routerThing, snapshot.size(), matched, unmatched, missing);
+    }
+
+    /**
+     * Verifies that none of the captured messages match any of the supplied
+     * absence patterns (comma-separated exact IDs and/or wildcard patterns).
+     *
+     * <p>HTTP callers use this to assert that messages which should have been
+     * filtered out by the router were never delivered to the handler.
+     *
+     * <p>Returns PASSED (with an empty {@code unexpectedlyMatched} list) when no
+     * captured message matches any pattern.  Returns FAILED with the list of
+     * offending messages when at least one match is found.
+     */
+    public static AbsenceResult verifyAbsent(String patternsCsv) {
+        List<CapturedEntry> snapshot = getEntries();
+        List<String> unexpectedlyMatched = new ArrayList<String>();
+
+        String[] rawPatterns = (patternsCsv != null) ? patternsCsv.split(",") : new String[0];
+        List<String> patterns = new ArrayList<String>();
+        for (String p : rawPatterns) {
+            String trimmed = p.trim();
+            if (!trimmed.isEmpty()) {
+                patterns.add(trimmed);
+            }
+        }
+
+        for (CapturedEntry entry : snapshot) {
+            if (matchesAnyPattern(entry.getMessageId(), patterns)) {
+                unexpectedlyMatched.add(entry.getFormattedMessage());
+            }
+        }
+
+        boolean passed = unexpectedlyMatched.isEmpty();
+        return new AbsenceResult(passed, patternsCsv, snapshot.size(), unexpectedlyMatched);
     }
 
     /**

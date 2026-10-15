@@ -18,8 +18,8 @@
         <feature>wsLogHandler-1.0</feature>
     </featureManager>
 
-    <!-- Configure combined exact IDs and wildcard message ID patterns matching Open Liberty conventions:
-         CWWKF* (prefix wildcard), CWWKE0001I (exact ID), CWWKS*A (prefix+level wildcard), CWWKZ0012E (exact error ID) -->
-    <wsLogHandler routerThing="CWWKF*,CWWKE0001I,CWWKS*A,CWWKZ0012E" />
+    <!-- Configure combined exact IDs and wildcard message ID patterns using synthetic Liberty-style IDs:
+         CWLFA* (prefix wildcard), CWLFB0001I (exact ID), CWLFC*A (prefix+level wildcard), CWLFD0003E (exact error ID) -->
+    <wsLogHandler routerThing="CWLFA*,CWLFB0001I,CWLFC*A,CWLFD0003E" />
 
 </server>
