@@ -95,6 +95,7 @@ public class ServerStopTest {
      * client JVM command line, Java 24+ emits a JEP 472 warning to stdout.
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 24)
     public void testNoJep472WarningOnStop() throws Exception {
         final String METHOD_NAME = "testNoJep472WarningOnStop";
         Log.info(c, METHOD_NAME, ENTERING);
