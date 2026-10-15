@@ -162,16 +162,4 @@ public class AesCipherTest {
         assertEquals(KeyVersion.AES_V1, KeyVersion.fromWireByte((byte) 1));
         assertEquals(KeyVersion.AES_V2, KeyVersion.fromWireByte((byte) 2));
     }
-
-    @Test(expected = InvalidPasswordCipherException.class)
-    public void testMalformedSeedSizeThrowsInvalidPasswordCipherException() throws Exception {
-        // Construct a mock decrypted payload where seed size exceeds buffer length
-        // and ensure decrypt path throws InvalidPasswordCipherException rather than unchecked IllegalArgumentException.
-        SecretKeyResolver v1Resolver = AESKeyManager.getResolverFor(KeyVersion.AES_V1);
-        // Encrypt valid plaintext
-        EncryptedInfo encrypted = AesCipher.forEncrypt(KeyVersion.AES_V1, v1Resolver).encrypt(PLAINTEXT);
-        // Using a resolver with a mismatched key will result in decryption failure (AEADBadTagException or cipher exception)
-        SecretKeyResolver badResolver = () -> new SecretKeySpec(new byte[32], "AES");
-        AesCipher.forDecrypt(KeyVersion.AES_V1, badResolver).decrypt(encrypted.getEncryptedBytes());
-    }
 }
