@@ -26,6 +26,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -316,6 +317,7 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     /* Verifies EntityAgent.insert writes @ElementCollection rows declared inside an @Embeddable.
        Fails with size 0 if the provider silently skips the collection table. */
+    @Ignore("Reference issue: https://hibernate.atlassian.net/browse/HHH-20997")
     @Test
     public void testEntityAgentInsertWithElementCollection() throws Exception {
         cleanup(EmployeeWithSkills.class);
@@ -344,6 +346,7 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     /* Verifies EntityAgent.update rewrites the @ElementCollection inside an @Embeddable.
        Fails with size 2 (old rows) if the provider ignores the collection table on update. */
+    @Ignore("Reference issue: https://hibernate.atlassian.net/browse/HHH-20997")
     @Test
     public void testEntityAgentUpdateWithElementCollection() throws Exception {
         cleanup(EmployeeWithSkills.class);
@@ -377,6 +380,7 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     /* Verifies EntityAgent.upsert rewrites the @ElementCollection inside an @Embeddable.
        Fails with size 2 (old rows) if the provider ignores the collection table on upsert. */
+    @Ignore("Reference issue: https://hibernate.atlassian.net/browse/HHH-20997")
     @Test
     public void testEntityAgentUpsertWithElementCollection() throws Exception {
         cleanup(EmployeeWithSkills.class);
