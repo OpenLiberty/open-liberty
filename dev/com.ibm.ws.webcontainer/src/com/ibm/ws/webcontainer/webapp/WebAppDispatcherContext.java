@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
-import com.ibm.websphere.servlet.request.IRequest;
-import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
@@ -41,7 +39,6 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedResponse;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
-import com.ibm.wsspi.http.HttpInboundConnection;
 /**
  * Dispatch context represents data stored for the execution of
  * a request to a dispatcher.
@@ -748,23 +745,6 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
             // 112000 - begin - there was no reason to have two schemes for handling relative to root vs.
             // not relative to root so redid the section below
 
-            // Trace whether $WSSP will influence the host/port used to build the Location header.
-            // $WSSP is only on the request when it was accepted as trusted, and when present it
-            // determines the port returned by getServerPort().
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-                IRequest iRequest = request.getIRequest();
-                if (iRequest instanceof IRequestExtended) {
-                    HttpInboundConnection conn = ((IRequestExtended) iRequest).getHttpInboundConnection();
-                    boolean trusted = (conn != null) && conn.useTrustedHeaders();
-                    String wssp = iRequest.getHeader("$WSSP");
-                    boolean wsspPresent = (wssp != null);
-                    logger.logp(Level.FINE, CLASS_NAME,"convertRelativeURIToURL", "sendRedirect relative URI [" + relativeURI + "], request trusted --> " + trusted
-                                                                                  + ", $WSSP header present --> " + wsspPresent
-                                                                                  + (wsspPresent ? ", $WSSP value --> " + wssp : "")
-                                                                                  + ", $WSSP value used to build Location header --> " + wsspPresent);
-                }
-            }
-
             // add the server info to the front of the url
             int urlPort = request.getServerPort();
 
@@ -777,6 +757,17 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
             {
                 url.append(":");
                 url.append(urlPort);
+            }
+
+            // Trace the facts after the host and port are resolved. $WSSP is a sensitive private header that is
+            // dropped by the HTTP channel when its sender is not trusted, so if it is present here it was accepted.
+            // Whether it determined the port is shown by comparing it with the serverPort and the resulting URL prefix.
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                String wssp = request.getIRequest().getHeader("$WSSP");
+                logger.logp(Level.FINE, CLASS_NAME,"convertRelativeURIToURL", "sendRedirect relative URI [" + relativeURI + "], scheme --> " + urlScheme
+                                                                              + ", serverName --> " + request.getServerName() + ", serverPort --> " + urlPort
+                                                                              + ", $WSSP header --> " + (wssp != null ? wssp : "not present")
+                                                                              + ", Location prefix --> " + url);
             }
 
             String redirectURL = null;
