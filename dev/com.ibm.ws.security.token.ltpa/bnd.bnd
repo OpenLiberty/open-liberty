@@ -40,6 +40,30 @@ Include-Resource: \
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
+# keyStringResolver reference on LTPAConfiguration:
+#
+# This reference exists solely to establish a DS activation ordering guarantee
+# when zosPasswordEncryptionKey-1.0 is active alongside <ltpa useEncryptionKey="true"/>.
+#
+# KeyStringResolverImpl (com.ibm.ws.zos.password.encryption.key bundle) registers itself
+# as a KeyStringResolver OSGi service AND calls AESKeyManager.setSecretKeyResolver() in
+# its own DS activate(). Without this reference, OSGi has no ordering constraint between
+# the two components, and LTPAConfigurationImpl can activate before KeyStringResolverImpl.
+# That causes AESKeyManager.isKeyConfigured(AES_V2) to return false inside loadConfig(),
+# which throws an IllegalArgumentException and prevents the LTPA service from starting.
+#
+# With this reference declared: when a KeyStringResolver service is present, the DS
+# runtime will bind it (calling setKeyStringResolver) before invoking
+# LTPAConfigurationImpl.activate(). Because KeyStringResolverImpl.activate() runs as
+# part of its own DS lifecycle before it publishes the KeyStringResolver service,
+# AESKeyManager already holds the ICSFSecretKeyResolver by the time loadConfig() /
+# resolveAndValidateAesKey() and LTPAKeyCreateTask.buildEncryptor() execute.
+#
+# optional  - LTPAConfigurationImpl activates normally when zosPasswordEncryptionKey is
+#             not configured (non-z/OS, or ICSF not in use).
+# multiple  - supports future scenarios with more than one resolver.
+# dynamic   - if the zosPasswordEncryptionKey feature is removed at runtime the LTPA
+#             component is not torn down; it simply loses the reference.
 Service-Component: \
   com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl; \
@@ -51,7 +75,10 @@ Service-Component: \
     locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
     executorService=java.util.concurrent.ExecutorService; \
     ltpaKeysChangeNotifier=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
-    dynamic:='ltpaKeysChangeNotifier'; \
+    keyStringResolver=com.ibm.wsspi.security.crypto.KeyStringResolver; \
+    optional:='keyStringResolver'; \
+    multiple:='keyStringResolver'; \
+    dynamic:='keyStringResolver,ltpaKeysChangeNotifier'; \
     properties:='service.vendor=IBM,tokenType=Ltpa2,osgi.ds.satisfying.condition.target=(osgi.condition.id=io.openliberty.process.running)', \
   com.ibm.ws.security.token.ltpa.LTPATokenService; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPATokenService; \
@@ -97,10 +124,11 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.crypto.ltpakeyutil;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.security.fat.common;version=latest,\
-    com.ibm.ws.security.registry;version=latest,\
+	 com.ibm.ws.security.fat.common;version=latest,\
+	   com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.config;version=latest
 
 -testpath: \
@@ -113,5 +141,4 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	cglib:cglib;version=3.3.0, \
 	com.ibm.ws.org.objectweb.asm;version=latest, \
 	org.jmock:jmock-legacy;version=2.5.0, \
-	com.ibm.ws.kernel.boot;version=latest, \
-	com.ibm.ws.crypto.passwordutil;version=latest
+	com.ibm.ws.kernel.boot;version=latest

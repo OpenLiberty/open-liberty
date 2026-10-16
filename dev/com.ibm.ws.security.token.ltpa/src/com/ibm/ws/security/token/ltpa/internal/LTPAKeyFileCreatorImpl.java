@@ -21,7 +21,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.UserRegistry;
+import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtilityImpl;
+import com.ibm.ws.crypto.ltpakeyutil.PasswordLTPAKeyEncryptor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.location.WsResource.Type;
@@ -90,18 +92,31 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
     /** {@inheritDoc} */
     @Override
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes) throws Exception {
-        String realmName = isUserRegistryAvailable()?getRealmName():"defaultRealm";
-        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, realmName);
-        addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
-        return ltpaProps;
+        return createLTPAKeysFile(locService, keyFile, new PasswordLTPAKeyEncryptor(keyPasswordBytes));
     }
 
     /** {@inheritDoc} */
     @Override
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes,
                                          @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception {
+        return createLTPAKeysFile(locService, keyFile, new PasswordLTPAKeyEncryptor(keyPasswordBytes), sharedKeyBytes, privateKeyBytes, publicKeyBytes);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive LTPAKeyEncryptor encryptor,
+                                         @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception {
         String realmName = isUserRegistryAvailable() ? getRealmName() : "defaultRealm";
-        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, sharedKeyBytes, privateKeyBytes, publicKeyBytes, realmName);
+        Properties ltpaProps = generateLTPAKeys(encryptor, sharedKeyBytes, privateKeyBytes, publicKeyBytes, realmName);
+        addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
+        return ltpaProps;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive LTPAKeyEncryptor encryptor) throws Exception {
+        String realmName = isUserRegistryAvailable() ? getRealmName() : "defaultRealm";
+        Properties ltpaProps = generateLTPAKeys(encryptor, realmName);
         addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
         return ltpaProps;
     }
