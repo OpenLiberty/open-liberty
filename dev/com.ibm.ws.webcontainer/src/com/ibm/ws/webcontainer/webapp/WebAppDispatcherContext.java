@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -757,6 +757,17 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
             {
                 url.append(":");
                 url.append(urlPort);
+            }
+
+            // Trace the facts after the host and port are resolved. $WSSP is a sensitive private header that is
+            // dropped by the HTTP channel when its sender is not trusted, so if it is present here it was accepted.
+            // Whether it determined the port is shown by comparing it with the serverPort and the resulting URL prefix.
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                String wssp = request.getIRequest().getHeader("$WSSP");
+                logger.logp(Level.FINE, CLASS_NAME,"convertRelativeURIToURL", "sendRedirect relative URI [" + relativeURI + "], scheme --> " + urlScheme
+                                                                              + ", serverName --> " + request.getServerName() + ", serverPort --> " + urlPort
+                                                                              + ", $WSSP header --> " + (wssp != null ? wssp : "not present")
+                                                                              + ", Location prefix --> " + url);
             }
 
             String redirectURL = null;
