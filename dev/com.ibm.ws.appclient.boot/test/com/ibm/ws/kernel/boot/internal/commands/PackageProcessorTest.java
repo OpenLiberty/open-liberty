@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -31,7 +36,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.ws.appclient.boot.ClientBootstrapConfig;
+import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
+import com.ibm.ws.kernel.boot.internal.commands.ArchiveProcessor.Pair;
+import com.ibm.ws.kernel.boot.internal.commands.PackageProcessor.PackageOption;
 
 import test.common.junit.rules.MaximumJavaLevelRule;
 
@@ -143,5 +151,49 @@ public class PackageProcessorTest {
         assertNull(atts.getValue("License-Agreement"));
         assertEquals("com.ibm.websphere.appserver", atts.getValue("Applies-To"));
         assertEquals("false", atts.getValue("Extract-Installer"));
+    }
+
+    @Test
+    public void testClientMinifyPackageProcessor() throws Exception {
+        final ClientBootstrapConfig mockBootConfig = mockery.mock(ClientBootstrapConfig.class);
+        File testInstallRoot = new File(TEST_TMP_ROOT_FILE, "testInstallRoot");
+        testInstallRoot.mkdirs();
+        File testUserRoot = new File(TEST_TMP_ROOT_FILE, "testUserRoot");
+        testUserRoot.mkdirs();
+        File testConfigDir = new File(testUserRoot, "clients/testClient");
+        testConfigDir.mkdirs();
+        File testPackageFile = new File(TEST_TMP_ROOT_FILE, "testClient.zip");
+        testPackageFile.deleteOnExit();
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(mockBootConfig).getInstallRoot();
+                will(returnValue(testInstallRoot));
+
+                allowing(mockBootConfig).getUserRoot();
+                will(returnValue(testUserRoot));
+
+                allowing(mockBootConfig).getConfigFile(null);
+                will(returnValue(testConfigDir));
+
+                allowing(mockBootConfig).getOutputFile(null);
+                will(returnValue(testConfigDir));
+
+                allowing(mockBootConfig).get(BootstrapConstants.LOC_PROPERTY_SRVTMP_DIR);
+                will(returnValue(TEST_TMP_ROOT));
+
+                allowing(mockBootConfig).getProcessType();
+                will(returnValue(BootstrapConstants.LOC_PROCESS_TYPE_CLIENT));
+            }
+        });
+
+        List<Pair<PackageOption, String>> options = new ArrayList<Pair<PackageOption, String>>();
+        options.add(new Pair<PackageOption, String>(PackageOption.INCLUDE, "minify"));
+
+        Set<String> processContent = new HashSet<String>();
+
+        PackageProcessor processor = new PackageProcessor("testClient", testPackageFile, mockBootConfig, options, processContent);
+        ReturnCode rc = processor.execute(false);
+        assertEquals("Packaging with include=minify on client should succeed", ReturnCode.OK, rc);
     }
 }
