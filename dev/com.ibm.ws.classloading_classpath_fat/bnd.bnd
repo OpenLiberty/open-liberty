@@ -26,6 +26,7 @@ src: \
 	test-applications/testLibPrecedence.war/src, \
 	test-applications/testOverrideLib.war/src, \
 	test-applications/testLibraryUser.war/src, \
+	test-applications/testDynamicFeatureApp.war/src, \
 	test-applications/testClient1.jar/src, \
 	test-applications/testEjb1.jar/src, \
 	test-applications/testEjb2.jar/src, \
@@ -48,11 +49,13 @@ src: \
 	test-applications/testLib16.jar/src, \
 	test-applications/testLib17.jar/src, \
 	test-applications/testLib18.jar/src, \
-	test-applications/testRar1.rar/src, \
 	test-applications/testResourceAdaptor.jar/src, \
+	test-applications/testSharedFeatureLib.jar/src, \
+	test-applications/testRar1.rar/src, \
 	test-resourceadapters/testDummyRA/src, \
 	test-bundles/userApiBundle/src, \
-	test-bundles/libraryUserBundle/src
+	test-bundles/libraryUserBundle/src, \
+	test-bundles/testFeatureApiBundle/src
 
 fat.project: true
 -sub: *.bnd

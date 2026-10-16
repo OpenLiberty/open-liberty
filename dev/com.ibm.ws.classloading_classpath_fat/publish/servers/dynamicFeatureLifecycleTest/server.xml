@@ -1,0 +1,16 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>testFeatureApi-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="testDynamicFeatureApp.war" />
+
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+</server>
