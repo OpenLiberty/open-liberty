@@ -373,11 +373,12 @@ public class AppOrderTests extends AbstractAppManagerTest {
                    server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
         assertTrue("The application 'snoop' should remain STOPPED", snoop.getState() == ApplicationState.STOPPED);
 
-        // An explicit start must still work.
+        // An explicit start must still work.  A restart after a stop is reported as
+        // CWWKZ0003I (application updated) rather than CWWKZ0001I (application started).
         server.setMarkToEndOfLog();
         snoop.start();
         assertNotNull("The snoop application did not start after an explicit start",
-                      server.waitForStringInLogUsingMark("CWWKZ0001I.* snoop", LONG_TIMEOUT));
+                      server.waitForStringInLogUsingMark("CWWKZ000[13]I.* snoop", LONG_TIMEOUT));
     }
 
     /**
