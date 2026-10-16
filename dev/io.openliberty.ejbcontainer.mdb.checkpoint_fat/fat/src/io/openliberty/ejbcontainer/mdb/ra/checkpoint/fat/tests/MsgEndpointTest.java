@@ -11,6 +11,7 @@ package io.openliberty.ejbcontainer.mdb.ra.checkpoint.fat.tests;
 
 import static org.junit.Assert.assertFalse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -35,6 +36,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import com.ibm.websphere.simplicity.RemoteFile;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -847,7 +850,7 @@ public class MsgEndpointTest extends FATServletClient {
     @Test
     public void testEndpointNotStartWithAutoStartFalse() throws Exception {
         runTest("MsgEndpointWeb/MsgEndpoint_PCServlet");
-        List<String> infoMessage = server.findStringsInLogsAndTrace("CNTR4116I.*EndpointBMTNonJMSNeverStarted");
+        List<String> infoMessage = findStringsInAllMessagesLogs("CNTR4116I.*EndpointBMTNonJMSNeverStarted");
         assertFalse("Did not find expected CNTR4116I message in logs", infoMessage.isEmpty());
     }
 
@@ -856,7 +859,7 @@ public class MsgEndpointTest extends FATServletClient {
     @Test
     public void testEndpointNotStartWithAutoStartFalseJMS() throws Exception {
         runTest("MsgEndpointWeb/MsgEndpoint_PCServlet");
-        List<String> infoMessage = server.findStringsInLogsAndTrace("CNTR4116I.*EndpointBMTJMSAutoStartFalse");
+        List<String> infoMessage = findStringsInAllMessagesLogs("CNTR4116I.*EndpointBMTJMSAutoStartFalse");
         assertFalse("Did not find expected CNTR4116I message in logs", infoMessage.isEmpty());
     }
 
@@ -880,7 +883,7 @@ public class MsgEndpointTest extends FATServletClient {
     @Test
     public void testMDBWithNoActSpecBinding() throws Exception {
         runTest("MsgEndpointWeb/MsgEndpoint_PCServlet");
-        List<String> infoMessage = server.findStringsInLogsAndTrace("CNTR4015W.*EndpointBMTNonJMSNoActSpec");
+        List<String> infoMessage = findStringsInAllMessagesLogs("CNTR4015W.*EndpointBMTNonJMSNoActSpec");
         assertFalse("Did not find expected CNTR4015W message in logs", infoMessage.isEmpty());
     }
 
@@ -916,5 +919,16 @@ public class MsgEndpointTest extends FATServletClient {
         runTest("MsgEndpointWeb/MsgEndpoint_PCServlet");
         tranMsgs = server.findStringsInLogsAndTraceUsingMark("CNTR4118I");
         assertFalse(tranMsgs.isEmpty());
+    }
+
+    private List<String> findStringsInAllMessagesLogs(String regexp) throws Exception {
+        List<String> matches = new ArrayList<>();
+        RemoteFile logsDir = server.getMachine().getFile(server.getLogsRoot());
+        for (RemoteFile f : logsDir.list(false)) {
+            if (f.isFile() && f.getName().startsWith("messages") && f.getName().endsWith(".log")) {
+                matches.addAll(server.findStringsInLogs(regexp, f));
+            }
+        }
+        return matches;
     }
 }
