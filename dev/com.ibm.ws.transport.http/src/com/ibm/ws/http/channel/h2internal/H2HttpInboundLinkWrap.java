@@ -128,6 +128,10 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 String searchURL = currentURL;
                 searchURL = searchURL.substring(1);
                 int index = searchURL.lastIndexOf('/');
+                if (index < 0) {
+                    // No second slash — not a valid gRPC path, treat as non-gRPC
+                    return false;
+                }
                 searchURL = searchURL.substring(0, index);
 
                 GrpcServletServices.ServiceInformation info = servicePaths.get(searchURL);

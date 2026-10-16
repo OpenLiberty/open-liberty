@@ -134,9 +134,11 @@ public interface FileServiceMXBean {
      * &lt;/remoteFileAccess&gt;
      * </pre>
      * <p>
-     * The default is a list containing 2 entries:
+     * The default is a list containing 4 entries:
      *    ${server.output.dir}/resources/security
      *    ${server.output.dir}/resources/collective
+     *    ${server.config.dir}/resources/security
+     *    ${server.config.dir}/resources/collective
      * 
      * @return a list of Strings containing the absolute paths which are blocked.
 
