@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.kernel.boot.commandline;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
@@ -32,6 +33,7 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -114,6 +116,39 @@ public class DumpCommandTest {
         assertTrue("Expected javacore*.txt file not found in serverRoot: " + serverRoot.getAbsolutePath(), foundJavacoreFile);
 
         Log.info(c, "testJavadump", "exit success");
+    }
+
+    /**
+     * Verifies that the JEP 472 restricted-method warning
+     * ("A restricted method in java.lang.System has been called") is NOT present
+     * in the stdout of the server dump command on z/OS with Java 24+.
+     *
+     * On z/OS, the client JVM launched by "server dump" opens a log file via
+     * TaggedFileOutputStream, which triggers NativeMethodHelper.loadAndInitialize()
+     * and System.loadLibrary(). Without --enable-native-access=ALL-UNNAMED on the
+     * client JVM command line, Java 24+ emits a JEP 472 warning to stdout.
+     */
+    @Test
+    @MinimumJavaLevel(javaLevel = 24)
+    public void testNoJep472WarningOnDump() throws Exception {
+        final String METHOD_NAME = "testNoJep472WarningOnDump";
+
+        // Skip on non-z/OS: JEP 472 restricted-method warnings only appear on z/OS
+        // (Java < 24 is already excluded by @MinimumJavaLevel above)
+        assumeTrue(server.getMachine().getOperatingSystem() == OperatingSystem.ZOS);
+
+        Log.info(c, METHOD_NAME, "running server dump");
+        ProgramOutput output = server.serverDump();
+
+        String stdout = output.getStdout();
+        Log.info(c, METHOD_NAME, "server dump stdout = " + stdout);
+        Log.info(c, METHOD_NAME, "server dump stderr = " + output.getStderr());
+
+        assertFalse("JEP 472 restricted-method warning found in 'server dump' stdout -- "
+                    + "--enable-native-access=ALL-UNNAMED may be missing from the client JVM command line",
+                    stdout.contains("A restricted method in java.lang.System has been called"));
+
+        Log.info(c, METHOD_NAME, "exit success");
     }
 
     /**
