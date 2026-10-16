@@ -20,6 +20,7 @@ import javax.servlet.http.HttpUpgradeHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConnectionUpgrade;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -134,6 +135,19 @@ public class SRTConnectionContext31 extends SRTConnectionContext
                             vc.getStateMap().put(TransportConstants.UPGRADED_LISTENER, null);
                             
                             upgradedCon.setVirtualConnection(vc);
+
+                            // For Netty transport, install NettyServletUpgradeHandler into the pipeline before writing the 101 response,
+                            // as the client may send post-upgrade data immediately after receiving the 101 response; without the handler
+                            // already installed, the data arrives as a raw ByteBuf and is silently dropped.
+                            if (dispatcherLink instanceof HttpDispatcherLink) {
+                                HttpDispatcherLink httpDispLink = (HttpDispatcherLink) dispatcherLink;
+                                if (httpDispLink.isUsingNetty()) {
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, "finishConnection, calling prepareForUpgrade on Netty pipeline before sending 101");
+                                    }
+                                    httpDispLink.prepareForUpgrade();
+                                }
+                            }
 
                             doUpgradeInit = true;
                         }
