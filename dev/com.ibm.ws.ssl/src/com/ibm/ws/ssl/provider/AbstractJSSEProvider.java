@@ -47,7 +47,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -217,8 +216,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     public String[] getCiphersForSecurityLevel(boolean isClient, String securityLevel) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "getCiphersForSecurityLevel: Security Level is no longer in use and will be ignored. Will be defaulting to the effective JDK cipher list.", new Object[] { Boolean.valueOf(isClient), securityLevel });
-        
+            Tr.debug(tc, "getCiphersForSecurityLevel: Security Level is no longer in use and will be ignored. Will be defaulting to the effective JDK cipher list.",
+                     new Object[] { Boolean.valueOf(isClient), securityLevel });
 
         String[] supportedCiphers = null;
 
@@ -229,7 +228,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
             supportedCiphers = factory.getSupportedCipherSuites();
         }
-    return Constants.adjustSupportedCiphers(supportedCiphers, null);
+        return Constants.adjustSupportedCiphers(supportedCiphers, null);
     }
 
     /*
@@ -318,7 +317,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
      * @return
      * @throws Exception
      */
-    private void getWSTrustmanager(List<TrustManager> tmHolder, Map<String, Object> connectionInfo, SSLConfig sslConfig) throws Exception {
+    public void getWSTrustmanager(List<TrustManager> tmHolder, Map<String, Object> connectionInfo, SSLConfig sslConfig) throws Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getWSTrustmanager", new Object[] { tmHolder, connectionInfo, sslConfig });
@@ -386,6 +385,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             // prepare trust manager wrapper.
             TrustManager[] defaultTMArray = trustManagerFactory.getTrustManagers();
             WSX509TrustManager wsTrustManager = new WSX509TrustManager(defaultTMArray, connectionInfo, sslConfig, trustStoreName, trustStoreLocation);
+            // Register for in-place refresh when the backing truststore file changes.
+            wsTrustManager.register();
             tmHolder.add(wsTrustManager);
 
         } catch (Exception e) {
@@ -1072,6 +1073,80 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
                 sslContextCacheJAVAX.remove(removeEntry);
             }
+        }
+    }
+
+    /**
+     * Registers an {@link javax.net.ssl.SSLSessionContext} with the
+     * {@link WSX509TrustManager} session invalidation registry.  Calling this
+     * after each completed TLS handshake allows the SSL infrastructure to
+     * invalidate all cached sessions whenever trust material is reloaded, forcing
+     * affected connections to re-authenticate on the next request.
+     *
+     * <p>This method is a thin bridge that exposes the functionality from the
+     * private {@code com.ibm.ws.ssl.core} package through the exported
+     * {@code com.ibm.ws.ssl.provider} package so that the SSL channel bundle
+     * (which imports this package) can call it without a circular dependency.
+     *
+     * @param context the session context to register; silently ignored if {@code null}
+     */
+    public static void registerSSLSessionContext(javax.net.ssl.SSLSessionContext context) {
+        WSX509TrustManager.registerSessionContext(context);
+    }
+
+    /**
+     * Functional interface for per-channel active-link closers.  Accepts a map of
+     * SSL-config-alias → freshly-reloaded {@link javax.net.ssl.X509TrustManager} so
+     * that each channel can look up the exact trust manager that governs each live
+     * connection and close only the connections that are no longer trusted.
+     */
+    public interface TrustAwareCloser {
+        /**
+         * Close all inbound connections on one {@code SSLChannel} whose peer certificate
+         * chain is no longer valid under the trust manager that governs them.
+         *
+         * @param managersByAlias map from SSL config alias to the reloaded trust manager
+         *                        for that alias; never {@code null}
+         */
+        void closeUntrusted(java.util.Map<String, javax.net.ssl.X509TrustManager> managersByAlias);
+    }
+
+    /**
+     * Registry of per-channel active-link closers.  Each {@link com.ibm.ws.channel.ssl.internal.SSLChannel}
+     * registers a {@link TrustAwareCloser} at construction time.  A
+     * {@link java.util.concurrent.CopyOnWriteArrayList} is used so that registration
+     * (rare) and invocation (rare) are safe without holding a lock on the handshake
+     * hot path.
+     */
+    private static final java.util.concurrent.CopyOnWriteArrayList<TrustAwareCloser> ACTIVE_LINK_CLOSERS =
+        new java.util.concurrent.CopyOnWriteArrayList<TrustAwareCloser>();
+
+    /**
+     * Registers a trust-aware closer for one {@code SSLChannel} instance.  Called once
+     * per channel at construction time so that {@link WSX509TrustManager} can selectively
+     * close live connections after a truststore reload without a circular OSGi bundle
+     * dependency.
+     *
+     * @param closer a {@link TrustAwareCloser} that looks up the governing trust manager
+     *               by SSL config alias and closes only untrusted connections; must not
+     *               be {@code null}
+     */
+    public static void registerActiveLinkCloser(TrustAwareCloser closer) {
+        ACTIVE_LINK_CLOSERS.add(closer);
+    }
+
+    /**
+     * Selectively closes live inbound SSL connections across every registered
+     * {@code SSLChannel} whose peer certificate chain is no longer trusted under the
+     * manager that governs them.  Called by {@link WSX509TrustManager#refreshTrustManagers}
+     * after a truststore reload.
+     *
+     * @param managersByAlias map from SSL config alias to the reloaded trust manager for
+     *                        that alias; must not be {@code null}
+     */
+    public static void closeUntrustedActiveSSLConnections(java.util.Map<String, javax.net.ssl.X509TrustManager> managersByAlias) {
+        for (TrustAwareCloser closer : ACTIVE_LINK_CLOSERS) {
+            closer.closeUntrusted(managersByAlias);
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2025 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,10 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.security.AccessController;
+import java.security.KeyStore;
 import java.security.PrivilegedAction;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
@@ -32,11 +34,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSessionContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509ExtendedTrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -72,9 +78,23 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
     private static final int MAX_MSG_LEN = 79;
     private static final String INDENT = "           ";
 
-    private final TrustManager[] tm;
+    /** Registry of live instances keyed by canonical truststore file path, for in-place refresh. */
+    private static final ConcurrentHashMap<String, CopyOnWriteArrayList<WeakReference<WSX509TrustManager>>> REGISTRY = new ConcurrentHashMap<String, CopyOnWriteArrayList<WeakReference<WSX509TrustManager>>>();
+
+    /**
+     * Registry of live {@link SSLSessionContext} instances contributed by the SSL channel layer.
+     * Weak references prevent this registry from keeping session caches alive beyond their
+     * natural lifetime.  All registered contexts are invalidated whenever trust material is
+     * reloaded so that the next request triggers a fresh TLS handshake against the updated
+     * trust anchors.
+     */
+    private static final CopyOnWriteArrayList<WeakReference<SSLSessionContext>> SESSION_CONTEXT_REGISTRY = new CopyOnWriteArrayList<WeakReference<SSLSessionContext>>();
+
+    private volatile TrustManager[] tm;
     private final String tsCfgAlias;
     private final String tsFile;
+    /** The SSL config alias (e.g. "defaultSSLConfig") that owns this trust manager. */
+    private final String sslCfgAlias;
     private Map<String, Object> extendedInfo;
     private String peerHost;
     private final SSLConfig config;
@@ -111,6 +131,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
         this.config = null;
         this.tsCfgAlias = null;
         this.tsFile = null;
+        this.sslCfgAlias = null;
         this.tm = tmArray.clone();
         this.autoAccept = false;
         this.useCACertFile = useCacerts;
@@ -135,6 +156,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
         tm = tmArray.clone();
         tsFile = trustStoreFilename;
         tsCfgAlias = trustStoreAlias;
+        sslCfgAlias = sslConfig.getProperty(Constants.SSLPROP_ALIAS);
         config = sslConfig;
         extendedInfo = connectionInfo;
         isServer = SSLConfigManager.getInstance().isServerProcess();
@@ -170,6 +192,186 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "WSX509TrustManager");
+    }
+
+    /**
+     * Registers this instance in the static registry so it can be refreshed in-place
+     * when the backing truststore file changes. Called immediately after construction
+     * by {@link com.ibm.ws.ssl.provider.AbstractJSSEProvider}.
+     */
+    public void register() {
+        if (tsFile == null)
+            return;
+        REGISTRY.computeIfAbsent(tsFile, k -> new CopyOnWriteArrayList<WeakReference<WSX509TrustManager>>()).add(new WeakReference<WSX509TrustManager>(this));
+    }
+
+    /**
+     * Returns the SSL configuration alias (e.g. {@code "defaultSSLConfig"}) of the
+     * {@code <ssl>} element that owns this trust manager, or {@code null} if this
+     * instance was created outside of a full server SSL configuration (e.g. in a
+     * unit test).
+     *
+     * <p>This alias matches the value of {@link com.ibm.websphere.ssl.Constants#SSLPROP_ALIAS}
+     * in the SSL config properties and corresponds to the {@code id} attribute of the
+     * {@code <ssl>} element in {@code server.xml}.  It can be used to match a trust
+     * manager to the connection link that was established under the same SSL config.
+     *
+     * @return the SSL config alias, or {@code null}
+     */
+    public String getSSLConfigAlias() {
+        return sslCfgAlias;
+    }
+
+    /**
+     * Registers an {@link SSLSessionContext} so that it will be invalidated whenever
+     * trust material is reloaded.  Called by the SSL channel layer after each completed
+     * TLS handshake.  Duplicate registrations of the same context object are silently
+     * ignored.
+     *
+     * @param context the session context to register; must not be {@code null}
+     */
+    public static void registerSessionContext(SSLSessionContext context) {
+        if (context == null)
+            return;
+        // Avoid registering the same context twice: scan existing live refs first.
+        for (WeakReference<SSLSessionContext> ref : SESSION_CONTEXT_REGISTRY) {
+            if (context.equals(ref.get()))
+                return;
+        }
+        SESSION_CONTEXT_REGISTRY.add(new WeakReference<SSLSessionContext>(context));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "registerSessionContext: registered " + context);
+    }
+
+    /**
+     * Invalidates every session stored in every registered {@link SSLSessionContext}.
+     * Stale (GC'd) weak references are pruned during the sweep.
+     *
+     * <p>After a truststore reload, existing TLS sessions whose peer certificates are
+     * no longer trusted under the new trust material would otherwise be resumed without
+     * re-validation.  Invalidating the entire session cache forces a fresh handshake —
+     * and therefore a fresh {@code checkClientTrusted} / {@code checkServerTrusted} call —
+     * on the next request on any affected connection.
+     */
+    private static void invalidateAllCachedSessions() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "invalidateAllCachedSessions");
+
+        List<WeakReference<SSLSessionContext>> dead = new ArrayList<WeakReference<SSLSessionContext>>();
+        for (WeakReference<SSLSessionContext> ref : SESSION_CONTEXT_REGISTRY) {
+            SSLSessionContext ctx = ref.get();
+            if (ctx == null) {
+                dead.add(ref);
+                continue;
+            }
+            java.util.Enumeration<byte[]> ids = ctx.getIds();
+            int count = 0;
+            while (ids.hasMoreElements()) {
+                SSLSession session = ctx.getSession(ids.nextElement());
+                if (session != null) {
+                    session.invalidate();
+                    count++;
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "invalidateAllCachedSessions: invalidated " + count + " session(s) in " + ctx);
+        }
+        SESSION_CONTEXT_REGISTRY.removeAll(dead);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "invalidateAllCachedSessions");
+    }
+
+    /**
+     * Refreshes the inner {@code TrustManager[]} of every live {@link WSX509TrustManager}
+     * whose truststore file matches {@code trustStoreFilePath}. Stale (GC'd) weak references
+     * are pruned during the sweep.
+     *
+     * @param trustStoreFilePath canonical path of the truststore file that was modified
+     */
+    public static void refreshTrustManagers(String trustStoreFilePath) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "refreshTrustManagers", trustStoreFilePath);
+
+        // Reload trust material and build a map of SSL-config-alias → trust manager.
+        // refreshInPlace() must complete before the connection sweep below so that
+        // any checkClientTrusted() calls evaluate against the new trust material.
+        // The map allows closeUntrustedConnections() to look up the exact trust manager
+        // that governs each live connection by its SSL config alias, rather than checking
+        // all managers regardless of which SSL config the connection was established under.
+        java.util.Map<String, javax.net.ssl.X509TrustManager> refreshed =
+            new java.util.HashMap<String, javax.net.ssl.X509TrustManager>();
+        CopyOnWriteArrayList<WeakReference<WSX509TrustManager>> refs = REGISTRY.get(trustStoreFilePath);
+        if (refs != null) {
+            List<WeakReference<WSX509TrustManager>> dead = new ArrayList<WeakReference<WSX509TrustManager>>();
+            for (WeakReference<WSX509TrustManager> ref : refs) {
+                WSX509TrustManager mgr = ref.get();
+                if (mgr == null) {
+                    dead.add(ref);
+                    continue;
+                }
+                mgr.refreshInPlace();
+                String alias = mgr.getSSLConfigAlias();
+                if (alias != null) {
+                    refreshed.put(alias, mgr);
+                }
+            }
+            refs.removeAll(dead);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "refreshTrustManagers: no registered managers for path " + trustStoreFilePath);
+        }
+
+        // Always invalidate all cached TLS sessions after a trust material change,
+        // regardless of whether any WSX509TrustManager was registered for this path.
+        // This ensures that sessions established before the reload are not resumed
+        // without re-authentication, even when no new handshakes have occurred yet.
+        invalidateAllCachedSessions();
+
+        // Selectively close only those live inbound connections whose peer certificate
+        // chain is no longer trusted under the reloaded trust manager for their SSL config.
+        // Each connection link's peer cert chain (retained in the SSLSession from the
+        // original handshake) is re-evaluated via checkClientTrusted(); only failing
+        // connections are closed.  If no managers were registered for this path (e.g.
+        // reload happened before any connection was established) the map is empty and
+        // the sweep is skipped.
+        if (!refreshed.isEmpty()) {
+            AbstractJSSEProvider.closeUntrustedActiveSSLConnections(refreshed);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "refreshTrustManagers");
+    }
+
+    /**
+     * Reloads the inner {@code TrustManager[]} from the truststore identified by
+     * {@link #tsCfgAlias} / {@link #tsFile}. The field is volatile so the updated
+     * reference is immediately visible to threads calling {@code check*Trusted}.
+     */
+    private void refreshInPlace() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "refreshInPlace", tsFile);
+        try {
+            KeyStore trustStore = KeyStoreManager.getInstance().getJavaKeyStore(tsCfgAlias);
+            if (trustStore == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "refreshInPlace: trustStore not available yet for " + tsCfgAlias);
+                return;
+            }
+            String trustMgr = config != null ? config.getProperty(com.ibm.websphere.ssl.Constants.SSLPROP_TRUST_MANAGER) : null;
+            if (trustMgr == null)
+                trustMgr = com.ibm.ws.ssl.JSSEProviderFactory.getTrustManagerFactoryAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(trustMgr);
+            tmf.init(trustStore);
+            this.tm = tmf.getTrustManagers();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "refreshInPlace: reloaded TrustManagers for " + tsFile);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "refreshInPlace: failed to reload TrustManagers for " + tsFile + ": " + e.getMessage());
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "refreshInPlace");
     }
 
     /**

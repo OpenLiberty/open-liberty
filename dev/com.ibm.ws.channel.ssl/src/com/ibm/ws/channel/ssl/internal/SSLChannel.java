@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,21 +12,31 @@
  *******************************************************************************/
 package com.ibm.ws.channel.ssl.internal;
 
+import java.lang.ref.WeakReference;
 import java.net.InetSocketAddress;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
+import javax.net.ssl.X509TrustManager;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.Status;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSessionContext;
+import javax.net.ssl.X509TrustManager;
+
 
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
@@ -38,6 +48,7 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.Channel;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -103,6 +114,16 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
     volatile private boolean stop0Called = false;
 
     /**
+     * Registry of live inbound {@link SSLConnectionLink} instances for this channel.
+     * Used by {@link #closeAllActiveConnections()} to tear down existing connections
+     * when trust material is reloaded (e.g., a client cert is removed from the truststore).
+     * WeakReferences are used so that links that have already been GC'd do not prevent
+     * collection; dead references are pruned on each sweep.
+     */
+    private final CopyOnWriteArrayList<WeakReference<SSLConnectionLink>> activeLinkRegistry =
+        new CopyOnWriteArrayList<WeakReference<SSLConnectionLink>>();
+
+    /**
      * Constructor.
      *
      * @param inputData Input channel configuration information
@@ -125,6 +146,17 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
             ce.suppressFFDC(true);
             throw ce;
         }
+
+        // Register the trust-aware closer callback with the trust-manager bridge so that
+        // WSX509TrustManager.refreshTrustManagers() can selectively close live connections
+        // after a truststore reload without a circular OSGi bundle dependency.
+        final SSLChannel self = this;
+        AbstractJSSEProvider.registerActiveLinkCloser(new AbstractJSSEProvider.TrustAwareCloser() {
+            @Override
+            public void closeUntrusted(Map<String, X509TrustManager> managersByAlias) {
+                self.closeUntrustedConnections(managersByAlias);
+            }
+        });
 
         // TODO z/os
         // PlatformHelper osHelper = PlatformHelperFactory.getPlatformHelper();
@@ -1016,10 +1048,137 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
         this.sessionContext = context;
         context.setSessionCacheSize(getConfig().getSSLSessionCacheSize());
         context.setSessionTimeout(getConfig().getSSLSessionTimeout());
+        // Register the session context so that a truststore reload can invalidate
+        // all cached sessions, forcing fresh TLS handshakes against the new trust material.
+        AbstractJSSEProvider.registerSSLSessionContext(context);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Session cache size set to " + context.getSessionCacheSize());
             Tr.debug(tc, "Session timeout set to " + context.getSessionTimeout());
         }
+    }
+
+    /**
+     * Adds a live inbound connection link to the active registry so that it can
+     * be closed if trust material changes while the connection is open.
+     * Called by {@link SSLConnectionLink} immediately after a successful handshake.
+     *
+     * @param link the newly-handshaked connection link; must not be {@code null}
+     */
+    void registerActiveLink(SSLConnectionLink link) {
+        activeLinkRegistry.add(new WeakReference<SSLConnectionLink>(link));
+    }
+
+    /**
+     * Removes a connection link from the active registry.  Called when the link
+     * is closed or destroyed so that the registry does not accumulate stale entries
+     * faster than they are swept during a truststore reload.
+     *
+     * @param link the connection link being closed; must not be {@code null}
+     */
+    void deregisterActiveLink(SSLConnectionLink link) {
+        List<WeakReference<SSLConnectionLink>> toRemove = new ArrayList<WeakReference<SSLConnectionLink>>();
+        for (WeakReference<SSLConnectionLink> ref : activeLinkRegistry) {
+            SSLConnectionLink candidate = ref.get();
+            if (candidate == null || candidate == link) {
+                toRemove.add(ref);
+            }
+        }
+        activeLinkRegistry.removeAll(toRemove);
+    }
+
+    /**
+     * Closes only those live inbound connections whose peer certificate chain is no
+     * longer trusted under the trust manager that governs them.  Called by the
+     * {@link AbstractJSSEProvider.TrustAwareCloser} registered in
+     * {@link #SSLChannel(ChannelData, SSLChannelFactoryImpl)} when
+     * {@link AbstractJSSEProvider#closeUntrustedActiveSSLConnections} fires after a
+     * truststore reload.
+     *
+     * <p>For each live {@link SSLConnectionLink} the SSL config alias stored in its
+     * {@link SSLLinkConfig} is used to look up the specific {@link X509TrustManager}
+     * that governed the original handshake.  The peer certificate chain retained in the
+     * active {@link javax.net.ssl.SSLSession} is re-evaluated against that manager via
+     * {@code checkClientTrusted()}.  Only connections that fail are closed; connections
+     * whose certificates are still trusted under their governing SSL config are left
+     * untouched.
+     *
+     * <p>If no manager is found for a link's SSL config alias (e.g. the link was
+     * established under a config that references a different truststore), the link is
+     * skipped — the truststore that changed is not the one governing that connection.
+     *
+     * @param managersByAlias map from SSL config alias to the reloaded trust manager for
+     *                        that alias; must not be {@code null}
+     */
+    void closeUntrustedConnections(Map<String, X509TrustManager> managersByAlias) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "closeUntrustedConnections: sweeping " + activeLinkRegistry.size() + " registered link(s)");
+        }
+        List<WeakReference<SSLConnectionLink>> dead = new ArrayList<WeakReference<SSLConnectionLink>>();
+        SSLException cause = new SSLException("Client certificate no longer trusted after truststore reload");
+        for (WeakReference<SSLConnectionLink> ref : activeLinkRegistry) {
+            SSLConnectionLink link = ref.get();
+            if (link == null) {
+                dead.add(ref);
+                continue;
+            }
+            try {
+                // Look up the trust manager that governed this connection's handshake.
+                SSLLinkConfig linkCfg = link.getLinkConfig();
+                String sslAlias = (linkCfg != null) ? linkCfg.getProperty(com.ibm.websphere.ssl.Constants.SSLPROP_ALIAS) : null;
+                X509TrustManager manager = (sslAlias != null) ? managersByAlias.get(sslAlias) : null;
+                if (manager == null) {
+                    // This connection's SSL config references a different truststore — skip it.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "closeUntrustedConnections: no manager for alias '" + sslAlias + "' — skipping link " + link);
+                    }
+                    continue;
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeUntrustedConnections: resolved manager for alias '" + sslAlias + "' on link " + link);
+                }
+
+                X509Certificate[] peerCerts = link.getPeerCertificates();
+                String authType = peerCerts[0].getPublicKey().getAlgorithm();
+                boolean trusted = true;
+                try {
+                    manager.checkClientTrusted(peerCerts, authType);
+                } catch (CertificateException ce) {
+                    trusted = false;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "closeUntrustedConnections: peer cert rejected by trust manager for link " + link + "; " + ce);
+                    }
+                }
+                if (!trusted) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "closeUntrustedConnections: closing untrusted link " + link);
+                    }
+                    link.close(link.getVirtualConnection(), cause);
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "closeUntrustedConnections: link " + link + " remains trusted — leaving open");
+                    }
+                }
+            } catch (SSLPeerUnverifiedException upve) {
+                // Peer presented no certificate. On a clientAuthentication="true" endpoint
+                // this should not happen, but close defensively.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeUntrustedConnections: unverified peer on link " + link + " — closing; " + upve);
+                }
+                try {
+                    link.close(link.getVirtualConnection(), cause);
+                } catch (Exception ex) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "closeUntrustedConnections: error closing unverified link " + link + "; " + ex);
+                    }
+                }
+            } catch (Exception ex) {
+                // Best-effort: unexpected error evaluating this link. Log and continue.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "closeUntrustedConnections: unexpected error evaluating link " + link + "; " + ex);
+                }
+            }
+        }
+        activeLinkRegistry.removeAll(dead);
     }
 
     /**
