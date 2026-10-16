@@ -96,6 +96,7 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
         withCopyToContainer(buildKeycloakKeystore(), "/keystore.p12");
         withEnv("KEYCLOAK_ADMIN", "admin");
         withEnv("KEYCLOAK_ADMIN_PASSWORD", "admin");
+        withEnv("KC_SPI_ADMIN_REALM", "primary");
         withCommand("start-dev",
                     "--https-key-store-file=/keystore.p12",
                     "--https-key-store-password=password",
@@ -122,9 +123,9 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
      */
     public synchronized void setupRealm() throws Exception {
 
-        // Authenticate kcadm against the master realm
+        // Authenticate kcadm against the primary realm
         run("/opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080 " +
-            "--realm master --user admin --password admin");
+            "--realm primary --user admin --password admin");
 
         // Create application realm
         run("/opt/keycloak/bin/kcadm.sh create realms -s realm=" + REALM + " -s enabled=true");
