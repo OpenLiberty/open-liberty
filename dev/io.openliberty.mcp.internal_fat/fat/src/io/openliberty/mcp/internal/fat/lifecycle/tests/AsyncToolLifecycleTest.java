@@ -51,7 +51,7 @@ public class AsyncToolLifecycleTest {
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolLifecycleTest");
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolLifecycleTest");
+    public McpClient client = McpClient.builder(server, "/asyncToolLifecycleTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

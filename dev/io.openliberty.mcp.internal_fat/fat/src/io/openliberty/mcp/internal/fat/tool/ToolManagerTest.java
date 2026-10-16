@@ -64,7 +64,7 @@ public class ToolManagerTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, APP_NAME);
+    public McpClient client = McpClient.builder(server, APP_NAME).build();
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -614,7 +614,7 @@ public class ToolManagerTest extends FATServletClient {
                         }
                         """;
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
@@ -646,7 +646,7 @@ public class ToolManagerTest extends FATServletClient {
                         }
                         """;
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));

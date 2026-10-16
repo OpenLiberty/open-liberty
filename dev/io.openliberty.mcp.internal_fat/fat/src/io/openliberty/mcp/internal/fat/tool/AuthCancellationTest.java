@@ -36,7 +36,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
-import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
@@ -49,7 +48,7 @@ public class AuthCancellationTest extends FATServletClient {
     private static ExecutorService executor;
 
     @Rule
-    public McpClient client = new McpClient(server, "/cancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
+    public McpClient client = McpClient.builder(server, "/cancellationTest").basicAuth("BobTheAdmin", "testpassword").build();
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");
@@ -102,7 +101,7 @@ public class AuthCancellationTest extends FATServletClient {
                                 }
                                 """;
 
-                return client.callMCPwithBasicAuth(request, "BobTheAdmin", "testpassword");
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -122,8 +121,9 @@ public class AuthCancellationTest extends FATServletClient {
 
         toolStatus.awaitStarted(LATCH_NAME);
 
-        // Send cancellation with the wrong user — expect 403 Forbidden
-        client.callMCPNotificationWithBasicAuthForbiddenErrorExpected(cancellationRequestNotification, "testuser", "testpassword");
+        // Send cancellation with the wrong user on the same session — expect 403 Forbidden.
+        client.callMCPRaw(cancellationRequestNotification,
+                McpClient.RequestOptions.builder().basicAuth("testuser", "testpassword").expectedStatus(403).build());
 
         // Wait briefly to confirm the tool is still running (it was not cancelled)
         TimeUnit.MILLISECONDS.sleep(TestConstants.NEGATIVE_TIMEOUT_MS);
@@ -162,7 +162,7 @@ public class AuthCancellationTest extends FATServletClient {
                                 }
                                 """;
 
-                return client.callMCPwithBasicAuth(request, "BobTheAdmin", "testpassword");
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -182,7 +182,7 @@ public class AuthCancellationTest extends FATServletClient {
         // Call AwaitToolServlet to wait for the tool to start running. Adds path param "numId" to specify which countdown latch to use
         toolStatus.awaitStarted(LATCH_NAME);
 
-        client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
+        client.callMCPNotification(cancellationRequestNotification);
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}

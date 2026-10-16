@@ -49,7 +49,7 @@ public class BeanLifecycleTest {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/beanLifecycleTest");
+    public McpClient client = McpClient.builder(server, "/beanLifecycleTest").build();
 
     public static void info(Class<?> clazz, String method, String message) {
         Log.info(clazz, method, message);

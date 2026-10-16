@@ -38,7 +38,7 @@ public class LocaleTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/localeTest");
+    public McpClient client = McpClient.builder(server, "/localeTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

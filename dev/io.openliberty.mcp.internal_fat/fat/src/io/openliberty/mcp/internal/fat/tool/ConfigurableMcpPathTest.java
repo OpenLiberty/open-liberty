@@ -53,7 +53,7 @@ public class ConfigurableMcpPathTest extends FATServletClient {
                                                                       });
 
     @Rule
-    public McpClient client = new McpClient(server, "/configurableMcpPathTests", "/custom-mcp");
+    public McpClient client = McpClient.builder(server, "/configurableMcpPathTests").path("/custom-mcp").build();
 
     private static final String PATH = "/custom-mcp";
 
@@ -91,7 +91,7 @@ public class ConfigurableMcpPathTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCPCustomized(request, PATH, 200);
+        String response = client.callMCP(request);
 
         String expectedResponseString = """
                         {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}

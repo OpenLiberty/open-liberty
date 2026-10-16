@@ -143,8 +143,7 @@ public class AuthHelper {
      */
     private static void negativeResponseExpectedForMCPTool(McpClient client, String user, String password) throws Exception {
         String request = buildMCPCallRequest();
-
-        client.callMCPExpectingStatus(request, user, password, 403);
+        client.callMCPRaw(request, McpClient.RequestOptions.builder().basicAuth(user, password).expectedStatus(403).build());
     }
 
     /*
@@ -153,18 +152,16 @@ public class AuthHelper {
      */
     static void negativeResponseExpectedForMCPTool(McpClient client) throws Exception {
         String request = AuthHelper.buildMCPCallRequest();
-        client.callMCPExpectingStatus(request, 403);
+        client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
     }
 
     /*
      * Given a JSON request with invalid credentials, this MCP call is expected
      * to fail authentication (HTTP 401 Unauthorized).
      */
-
     private static void failedAuthenticationExpected(McpClient client, String user, String password) throws Exception {
         String request = buildMCPCallRequest();
-
-        client.callMCPExpectingStatus(request, user, password, 401);
+        client.callMCPRaw(request, McpClient.RequestOptions.builder().basicAuth(user, password).expectedStatus(401).build());
     }
 
     /*
@@ -173,14 +170,11 @@ public class AuthHelper {
      */
     private static void failedAuthenticationExpected(McpClient client) throws Exception {
         String request = buildMCPCallRequest();
-        client.callMCPExpectingStatus(request, 401);
+        client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(401).build());
     }
 
     /**
      * This asserts the expected output from a call to the echo tool without authorization
-     *
-     * @param client TODO
-     * @throws Exception
      */
     private static void positiveResponseExpectedForMCPTool(McpClient client) throws Exception {
         String request = AuthHelper.buildMCPCallRequest();
@@ -190,14 +184,11 @@ public class AuthHelper {
 
     /**
      * This asserts the expected output from a call to the echo tool in order to check that authorization has worked
-     *
-     * @param client TODO
-     * @throws Exception
      */
     private static void positiveResponseExpectedForMCPTool(McpClient client, String user, String password) throws Exception {
         String request = AuthHelper.buildMCPCallRequest();
-        String response = client.callMCPwithBasicAuth(request, user, password);
-        compareJSONWithExpectedEchoResponse(response);
+        McpClient.McpDetailedAuthResponse r = client.callMCPRaw(request, McpClient.RequestOptions.builder().basicAuth(user, password).build());
+        compareJSONWithExpectedEchoResponse(r.body());
     }
 
     /**

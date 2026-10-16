@@ -49,7 +49,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
     private static final String EXPECTED_ERROR = "OperationCancelledException";
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolCancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
+    public McpClient client = McpClient.builder(server, "/asyncToolCancellationTest").basicAuth("BobTheAdmin", "testpassword").build();
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolCancellationTest");
@@ -95,7 +95,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
                                 }
                                 """;
 
-                return client.callMCPwithBasicAuth(request, "BobTheAdmin", "testpassword");
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -115,7 +115,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
                         """;
 
         toolStatus.awaitStarted(latchName);
-        client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
+        client.callMCPNotification(cancellationRequestNotification);
 
         String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
@@ -145,7 +145,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
                                 }
                                 """;
 
-                return client.callMCPwithBasicAuth(request, "BobTheAdmin", "testpassword");
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -165,7 +165,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
                         """;
 
         toolStatus.awaitStarted(latchName);
-        client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
+        client.callMCPNotification(cancellationRequestNotification);
 
         String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
