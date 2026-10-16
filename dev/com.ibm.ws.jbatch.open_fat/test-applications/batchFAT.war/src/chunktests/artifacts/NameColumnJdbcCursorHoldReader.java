@@ -43,7 +43,7 @@ public class NameColumnJdbcCursorHoldReader implements ItemReader {
     DataSource ds = null;
     boolean readYet = false;
 
-    private String query = "SELECT name FROM intable";
+    private String query = "SELECT name FROM APP.INTABLE";
     private String adjustedQuery;
 
     @Inject
@@ -75,7 +75,7 @@ public class NameColumnJdbcCursorHoldReader implements ItemReader {
     }
 
     private void getConnection() throws Exception {
-        conn = ds.getConnection("app", "app");
+        conn = ds.getConnection("user", "pass");
     }
 
     @Override
@@ -121,8 +121,12 @@ public class NameColumnJdbcCursorHoldReader implements ItemReader {
         if (rs != null) {
             rs.close();
         }
-        preparedStatement.close();
-        conn.close();
+        if (preparedStatement != null) {
+            preparedStatement.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
     }
 
 }

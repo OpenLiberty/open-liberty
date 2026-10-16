@@ -67,6 +67,6 @@ public class NameLetterCounterJdbcWriter implements ItemWriter {
     }
 
     private Connection getConnection() throws Exception {
-        return ds.getConnection("app", "app");
+        return ds.getConnection("user", "pass");
     }
 }

@@ -44,8 +44,6 @@ public class BatchNoSecurityTest {
 
         log("setup", "start server and execute DDLs");
 
-        FatUtils.checkJava7();
-
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.nosecurity.fat");
         BatchAppUtils.addDropinsBatchSecurityWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);
