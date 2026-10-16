@@ -215,6 +215,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private transient int binaryParsingState = GenericConstants.PARSING_HDR_FLAG;
     /** current header being parsed */
     private transient HeaderElement currentElem = null;
+    /** name of the last header whose value was fully parsed, for diagnostic logging */
+    private transient String lastParsedHdrName = null;
     /** Flag on whether the current header is a multiline value or not */
     private transient boolean bIsMultiLine = false;
     /** Number of CRLFs currently found during parsing */
@@ -3605,6 +3607,11 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         }
                     }
                     if (BNFHeaders.LF != this.byteCache[this.bytePosition]) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "findCRLFTokenLength: bare CR not followed by LF - throwing MalformedMessageException."
+                                + " buffPos=" + findCurrentBufferPosition(buff)
+                                + " hdr=" + (this.currentElem != null ? this.currentElem.getName() : "none"));
+                        }
                         throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
                     } else {
                         rc = TokenCodes.TOKEN_RC_CRLF;
@@ -3634,7 +3641,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         Tr.debug(tc, "findCRLFTokenLength: bare LF detected with rejectHeaderLineFolding=true"
                             + " - throwing MalformedMessageException."
                             + " buffPos=" + findCurrentBufferPosition(buff)
-                            + " pendingLF=" + this.pendingLFBeforeResume);
+                            + " pendingLF=" + this.pendingLFBeforeResume
+                            + " hdr=" + (this.currentElem != null ? this.currentElem.getName() : "none"));
                     }
                     throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
                 }
@@ -3848,6 +3856,10 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 this.numCRLFs++;
             } else if (BNFHeaders.SPACE == b || BNFHeaders.TAB == b) {
                 if (this.rejectHeaderLineFolding) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "parseCRLFs: obs-fold whitespace after CRLF - throwing MalformedMessageException."
+                            + " hdr=" + (this.lastParsedHdrName != null ? this.lastParsedHdrName : "none"));
+                    }
                     throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
                 }
                 // Check for multi-line header values
@@ -4114,6 +4126,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (!tcRC.equals(TokenCodes.TOKEN_RC_MOREDATA)) {
             setHeaderValue();
             this.parsedToken = null;
+            this.lastParsedHdrName = this.currentElem.getName();
             this.currentElem = null;
             this.stateOfParsing = PARSING_CRLF;
             return true;
