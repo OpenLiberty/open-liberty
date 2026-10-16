@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -214,7 +214,7 @@ public class Recovery {
 			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
 			break;
 		case 40102:
-			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 40202:
 			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
