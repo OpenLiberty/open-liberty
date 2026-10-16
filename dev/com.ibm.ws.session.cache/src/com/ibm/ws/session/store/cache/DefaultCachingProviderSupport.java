@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -62,6 +63,12 @@ public class DefaultCachingProviderSupport {
 
     protected void unsetCachingProvider(ServiceReference<CachingProvider> ref) {
         libraryId = null;
+    }
+
+    public static boolean isLibraryAvailable(BundleContext context, String libraryId) throws InvalidSyntaxException {
+        String filter = FilterUtils.createPropertyFilter("id", libraryId);
+        Collection<ServiceReference<Library>> refs = context.getServiceReferences(Library.class, filter);
+        return refs != null && !refs.isEmpty();
     }
 
     /**
