@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance21.cdi.config.impl;
 
@@ -31,20 +28,24 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProviderResolver;
 import com.ibm.ws.microprofile.faulttolerance20.impl.ProviderResolverImpl20;
 
+import io.openliberty.microprofile.config.fat.repeat.UnitTestUtils;
+
 @SuppressWarnings("restriction")
 public class FallbackConfig21Test {
 
     @Before
-    public void before() {
+    public void before() throws Exception {
+        UnitTestUtils.mockOSGiCallers();
         ConfigProviderResolver.setInstance(new Config13ProviderResolverImpl());
         FaultToleranceProviderResolver.setInstance(new ProviderResolverImpl20());
     }
 
     @After
-    public void after() {
+    public void after() throws Exception {
         ((Config13ProviderResolverImpl) ConfigProviderResolver.instance()).shutdown();
         ConfigProviderResolver.setInstance(null);
         FaultToleranceProviderResolver.setInstance(null);
+        UnitTestUtils.restoreOSGiCallers();
     }
 
     @Test

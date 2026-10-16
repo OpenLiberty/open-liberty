@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.microprofile.config14.test;
 
@@ -18,20 +15,23 @@ import org.junit.Before;
 
 import com.ibm.ws.microprofile.config14.impl.Config14ProviderResolverImpl;
 
+import io.openliberty.microprofile.config.fat.repeat.UnitTestUtils;
+
 /**
  *
  */
 public abstract class AbstractConfigTest {
 
     @Before
-    public void before() {
+    public void before() throws Exception {
+        UnitTestUtils.mockOSGiCallers();
         ConfigProviderResolver.setInstance(new Config14ProviderResolverImpl());
     }
 
     @After
-    public void after() {
+    public void after() throws Exception {
         ((Config14ProviderResolverImpl) ConfigProviderResolver.instance()).shutdown();
         ConfigProviderResolver.setInstance(null);
+        UnitTestUtils.restoreOSGiCallers();
     }
-
 }
