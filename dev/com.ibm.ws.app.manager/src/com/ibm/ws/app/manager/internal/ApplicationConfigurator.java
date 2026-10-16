@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -119,12 +119,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         private final ServiceReg<Application> appReg = new ServiceReg<Application>();
         private final ServiceReg<DynamicMBean> mbeanReg = new ServiceReg<DynamicMBean>();
         private final AtomicReference<DynamicMBean> dynamicMBean = new AtomicReference<DynamicMBean>();
+        /** Back-reference used to track explicit-start intent across configuration PID replacements. */
+        private final ApplicationConfigurator configurator;
 
-        NamedApplication(String appName, ApplicationConfig appConfig, BundleContext bundleContext, ExecutorService executor) {
+        NamedApplication(String appName, ApplicationConfig appConfig, BundleContext bundleContext, ExecutorService executor,
+                         ApplicationConfigurator configurator) {
             this.appName = appName;
             this.configPid = appConfig.getConfigPid();
             this.appConfig = appConfig;
             this.bundleContext = bundleContext;
+            this.configurator = configurator;
             // TODO resolve the description using NLS.
             MBeanNotificationInfo info = new MBeanNotificationInfo(new String[] { AttributeChangeNotification.class.getName() }, AttributeChangeNotification.class.getName(), "");
 
@@ -200,17 +204,41 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             final Application appService = new Application() {
                 @Override
                 public Future<Boolean> start() {
-                    return asm.start();
+                    configurator.noteExplicitStart(appName);
+                    ApplicationStateMachine currentAsm = asm;
+                    if (currentAsm == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
+                            Tr.debug(_tc, "start() called on application " + appName + " whose state machine has already been removed; ignoring");
+                        }
+                        return null;
+                    }
+                    return currentAsm.start();
                 }
 
                 @Override
                 public Future<Boolean> stop() {
-                    return asm.stop();
+                    configurator.clearExplicitStart(appName);
+                    ApplicationStateMachine currentAsm = asm;
+                    if (currentAsm == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
+                            Tr.debug(_tc, "stop() called on application " + appName + " whose state machine has already been removed; ignoring");
+                        }
+                        return null;
+                    }
+                    return currentAsm.stop();
                 }
 
                 @Override
                 public void restart() {
-                    asm.restart();
+                    configurator.noteExplicitStart(appName);
+                    ApplicationStateMachine currentAsm = asm;
+                    if (currentAsm == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {
+                            Tr.debug(_tc, "restart() called on application " + appName + " whose state machine has already been removed; ignoring");
+                        }
+                        return;
+                    }
+                    currentAsm.restart();
                 }
 
                 @Override
@@ -312,6 +340,18 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     private final Map<String, ApplicationConfig> _blockedConfigFromPid = new HashMap<String, ApplicationConfig>();
     private final Map<String, List<String>> _blockedPidsFromName = new HashMap<String, List<String>>();
     private final Map<String, List<ApplicationDependency>> _startAfterDependencies = new HashMap<String, List<ApplicationDependency>>();
+
+    /**
+     * Tracks application names for which an explicit {@code start()} request was received while
+     * the application was configured with {@code autoStart="false"}.  The entry is kept across
+     * OSGi Configuration Admin PID churn (deleted + re-added for the same logical application
+     * name) so that the replacement state machine can be started automatically without requiring
+     * the external caller (e.g. CICS) to issue a second {@code start()} call.
+     *
+     * Access must be performed only from methods that already hold the {@code ApplicationConfigurator}
+     * monitor (i.e. {@code synchronized(this)} blocks or {@code synchronized} methods).
+     */
+    private final Set<String> _pendingExplicitStartAppNames = new HashSet<String>();
 
     private final Set<String> reportedCycles = new HashSet<String>();
 
@@ -509,6 +549,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             _blockedConfigFromPid.clear();
             _blockedPidsFromName.clear();
             _appTypeSupport.clear();
+            _pendingExplicitStartAppNames.clear();
         }
         for (NamedApplication app : appsToStop) {
             uninstallApp(app);
@@ -1063,7 +1104,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 // New with a new name.
             }
 
-            app = new NamedApplication(newAppName, newAppConfig, _ctx, _executor);
+            app = new NamedApplication(newAppName, newAppConfig, _ctx, _executor, this);
             asm = createStateMachine(app);
             _appFromPid.put(newPid, app);
             _appFromName.put(newAppName, app);
@@ -1085,6 +1126,17 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         UpdateEpisodeState episode = joinEpisode();
         if (episode != null) {
             episode.configureApp(app);
+            // If a prior explicit start() was received for this app name before its previous
+            // state machine was destroyed by a transient configuration PID replacement (e.g.
+            // OSGi Config Admin delete+re-add during CICS BUNDLE installation after a z/OS IPL),
+            // propagate that intent to the new state machine so the application proceeds to
+            // STARTING without requiring a second external start() call.
+            if (_pendingExplicitStartAppNames.remove(newAppName)) {
+                if (_tc.isEventEnabled()) {
+                    Tr.event(_tc, "processUpdate: propagating pending explicit start intent to new ASM for app " + newAppName);
+                }
+                asm.start();
+            }
             episode.dropReference();
         }
     }
@@ -1915,6 +1967,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         _appFromPid.clear();
         _blockedConfigFromPid.clear();
         _blockedPidsFromName.clear();
+        _pendingExplicitStartAppNames.clear();
 
         cleanCache(getCacheAdaptDir(), appCacheIds);
         cleanCache(getCacheOverlayDir(), appCacheIds);
@@ -1983,6 +2036,31 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             }
         });
         return appRemoved;
+    }
+
+    /**
+     * Records that an explicit {@code start()} request was received for the named application.
+     * Called from the {@code Application} service's {@code start()} method.  The intent is
+     * preserved across OSGi Configuration Admin PID churn so that a replacement state machine
+     * created for the same application name is started automatically.
+     */
+    synchronized void noteExplicitStart(String appName) {
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, "noteExplicitStart: recording pending explicit start for app " + appName);
+        }
+        _pendingExplicitStartAppNames.add(appName);
+    }
+
+    /**
+     * Clears any pending explicit-start intent for the named application.  Called when the
+     * application is explicitly stopped (so that a subsequent configuration replacement does
+     * not automatically restart an intentionally stopped application).
+     */
+    synchronized void clearExplicitStart(String appName) {
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, "clearExplicitStart: clearing pending explicit start for app " + appName);
+        }
+        _pendingExplicitStartAppNames.remove(appName);
     }
 
     public void unblockAppStartDependencies(String appPid) {
