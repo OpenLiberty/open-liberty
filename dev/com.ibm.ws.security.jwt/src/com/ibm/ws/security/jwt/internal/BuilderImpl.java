@@ -214,7 +214,7 @@ public class BuilderImpl implements Builder {
         }
         // cannot set workload identity if jwt builder is invoked during checkpoint since env vars are not available
         if (!CheckpointPhase.getPhase().restored()) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder cannot be invoked during the server checkpoint phase when workload identity is enabled.", configId);
+            String msg = Tr.formatMessage(tc, "JWT_BUILDER_CHECKPOINT_NOT_SUPPORTED", new Object[] { configId });
             throw new IllegalStateException(msg);
         }
         return true;
@@ -1001,8 +1001,8 @@ public class BuilderImpl implements Builder {
 
     private void putClaim(String key, Object value) {
         if (isWorkloadIdentityClaim(key)) {
-            String msg = String.format("An attempt to overwrite or remove the [%s] workload identity claim from the JSON Web Token (JWT) was ignored by the [%s] JWT builder.", workloadIdentityClaim, configId);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { workloadIdentityClaim, configId });
+            Tr.error(tc, msg);
             return;
         }
         claims.put(key, value);
@@ -1010,8 +1010,8 @@ public class BuilderImpl implements Builder {
 
     private void removeClaim(String key) {
         if (isWorkloadIdentityClaim(key)) {
-            String msg = String.format("An attempt to overwrite or remove the [%s] workload identity claim from the JSON Web Token (JWT) was ignored by the [%s] JWT builder.", workloadIdentityClaim, configId);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { workloadIdentityClaim, configId });
+            Tr.error(tc, msg);
             return;
         }
         claims.remove(key);
@@ -1019,8 +1019,8 @@ public class BuilderImpl implements Builder {
 
     private void putAllClaims(Map<? extends String, ? extends Object> claimsMap) {
         if (claimsMap.containsKey(workloadIdentityClaim)) {
-            String msg = String.format("An attempt to overwrite or remove the [%s] workload identity claim from the JSON Web Token (JWT) was ignored by the [%s] JWT builder.", workloadIdentityClaim, configId);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { workloadIdentityClaim, configId });
+            Tr.error(tc, msg);
             claimsMap.remove(workloadIdentityClaim);
         }
         claims.putAll(claimsMap);

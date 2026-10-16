@@ -172,8 +172,9 @@ public class JwtComponent implements JwtConfig {
         // HS256=shared secret
         // It it is JWK, then the algorithm should be RS256
         jwkRotationTime = (Long) props.get(JwtUtils.CFG_KEY_JWK_ROTATION_TIME);
-        // Rotation time is in minutes, so convert value to milliseconds
-        jwkRotationTime = jwkRotationTime * 60 * 1000;
+        // Rotation time is in seconds, so convert value to milliseconds
+        jwkRotationTime = jwkRotationTime * 1000;
+
         jwkSigningKeySize = ((Long) props.get(JwtUtils.CFG_KEY_JWK_SIGNING_KEY_SIZE)).intValue();
         jwkMaxKeys = (Integer) props.get(JwtUtils.CFG_KEY_JWK_MAX_KEYS);
         nbfOffsetTime = ((Long) props.get(JwtUtils.CFG_KEY_NBF_OFFSET)).longValue();
@@ -181,7 +182,7 @@ public class JwtComponent implements JwtConfig {
         loadJweConfigOptions(props);
 
         if (isJwkCapableSigAlgorithm()) {
-            initializeJwkProvider(this);
+            initializeJwkProvider();
         }
 
         // expiresInSeconds wins if present
@@ -191,7 +192,23 @@ public class JwtComponent implements JwtConfig {
             valid = valid * 3600;
         }
 
+        checkIfJwtOutlivesJwk();
         checkWorkloadIdentityClaimConflicts();
+    }
+
+    private void checkIfJwtOutlivesJwk() {
+        if (!isJwkEnabled) {
+            return;
+        }
+
+        // jwkRotationTime is in milliseconds; valid is in seconds.
+        // A signing key stays in the JWK set for jwkMaxKeys rotation periods.
+        // If that window < token lifetime, tokens can outlive their signing key.
+        long keyWindowInSeconds = (jwkRotationTime / 1000L) * jwkMaxKeys;
+        if (keyWindowInSeconds < valid) {
+            long jwkRotationTimeInSeconds = jwkRotationTime / 1000L;
+            Tr.warning(tc, "JWK_KEY_COVERAGE_WINDOW_TOO_SHORT", new Object[] { issuer, jwkRotationTimeInSeconds, jwkMaxKeys, valid });
+        }
     }
 
     private void checkWorkloadIdentityClaimConflicts() {
@@ -200,22 +217,22 @@ public class JwtComponent implements JwtConfig {
         }
 
         if (workloadIdentityClaim.equals("iss") && issuerUrl != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER, issuerUrl, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER, issuerUrl, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER });
+            Tr.error(tc, msg);
         } else if (workloadIdentityClaim.equals("aud") && audiences != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES, audiences, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES, audiences, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES });
+            Tr.error(tc, msg);
         } else if (workloadIdentityClaim.equals("scope") && scope != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE, scope, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE, scope, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE });
+            Tr.error(tc, msg);
         } else if (workloadIdentityClaim.equals("jti") && jti) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI, jti, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI, jti, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI });
+            Tr.error(tc, msg);
         }
 
         if (claims != null && claims.contains(workloadIdentityClaim)) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS, claims, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS, claims, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS });
+            Tr.error(tc, msg);
         }
     }
 
@@ -226,17 +243,10 @@ public class JwtComponent implements JwtConfig {
         return (KeyAlgorithmChecker.isRSAlgorithm(sigAlg) || KeyAlgorithmChecker.isESAlgorithm(sigAlg));
     }
 
-    private void initializeJwkProvider(JwtConfig jwtConfig) {
-
-        if (jwtConfig == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "No config object found");
-            }
-            return;
-        }
-        if (jwtConfig.isJwkEnabled()) {
-            jwkProvider = new JWKProvider(jwtConfig.getJwkSigningKeySize(), jwtConfig.getSignatureAlgorithm(),
-                    jwtConfig.getJwkRotationTime(), jwtConfig.getJwkMaxKeys());
+    private void initializeJwkProvider() {
+        if (isJwkEnabled()) {
+            jwkProvider = new JWKProvider(getJwkSigningKeySize(), getSignatureAlgorithm(),
+                    getJwkRotationTime(), getJwkMaxKeys());
         }
     }
 
@@ -414,18 +424,15 @@ public class JwtComponent implements JwtConfig {
         return jwkProvider != null ? jwkProvider.getJWK() : null;
     }
 
-    @Override
-    public long getJwkRotationTime() {
+    private long getJwkRotationTime() {
         return jwkRotationTime;
     }
 
-    @Override
-    public int getJwkSigningKeySize() {
+    private int getJwkSigningKeySize() {
         return jwkSigningKeySize;
     }
 
-    @Override
-    public int getJwkMaxKeys() {
+    private int getJwkMaxKeys() {
         return jwkMaxKeys;
     }
 
