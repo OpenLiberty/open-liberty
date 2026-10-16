@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -327,6 +327,231 @@ public class SSOAuthenticatorTest {
 
         AuthenticationResult authResult = ssoAuth.authenticate(webRequest, webAppSecConfig);
         assertNull("Should return null when authentication fails", authResult);
+    }
+
+    /**
+     * Tests that authenticate() detects when LTPA token is refreshed and adds new SSO cookie
+     *
+     * @throws Exception
+     */
+    @Test
+    public void authenticate_WithTokenRefresh() throws Exception {
+        final Cookie[] cookieArray = { cookie };
+        final Subject authSubject = new Subject();
+        
+        // Create a mock SSO token with different bytes than the original cookie
+        final com.ibm.wsspi.security.token.SingleSignonToken mockSSOToken = mock.mock(com.ibm.wsspi.security.token.SingleSignonToken.class);
+        final String newTokenValue = "differentTokenValue123456789";
+        final byte[] newTokenBytes = newTokenValue.getBytes();
+
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getCookies();
+                will(returnValue(cookieArray));
+
+                allowing(webAppSecConfig).getLogoutOnHttpSessionExpire();
+                will(returnValue(false));
+
+                allowing(webAppSecConfig).isTrackLoggedOutSSOCookiesEnabled();
+                will(returnValue(false));
+
+                allowing(ssoCookieHelper).getSSOCookiename();
+                will(returnValue("LTPAToken2"));
+
+                allowing(webAppSecConfig).isUseOnlyCustomCookieName();
+                will(returnValue(false));
+
+                // Authentication succeeds
+                one(authService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)),
+                                            with(any(AuthenticationData.class)),
+                                            with(equal((Subject) null)));
+                will(returnValue(authSubject));
+
+                // JWT SSO cookies are added
+                one(ssoCookieHelper).addJwtSsoCookiesToResponse(authSubject, req, resp, null);
+
+                // Token refresh detection - return a different token
+                one(ssoCookieHelper).getDefaultSSOTokenFromSubject(authSubject);
+                will(returnValue(mockSSOToken));
+                
+                one(mockSSOToken).getBytes();
+                will(returnValue(newTokenBytes));
+
+                // Since token was refreshed, SSO cookies should be added
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, resp, null);
+            }
+        });
+
+        AuthenticationResult authResult = ssoAuth.authenticate(webRequest, webAppSecConfig);
+        assertEquals("AuthenticationResult should be SUCCESS", AuthResult.SUCCESS, authResult.getStatus());
+    }
+
+    /**
+     * Tests that authenticate() does NOT add SSO cookie when token is not refreshed
+     *
+     * @throws Exception
+     */
+    @Test
+    public void authenticate_WithoutTokenRefresh() throws Exception {
+        final Cookie[] cookieArray = { cookie };
+        final Subject authSubject = new Subject();
+        
+        // Create a mock SSO token that will produce the SAME base64-encoded string as the original cookie
+        final com.ibm.wsspi.security.token.SingleSignonToken mockSSOToken = mock.mock(com.ibm.wsspi.security.token.SingleSignonToken.class);
+        // Decode the cookie value to get the original bytes, then we'll return those same bytes
+        final byte[] sameTokenBytes = com.ibm.ws.common.encoder.Base64Coder.base64DecodeString(cookieValue);
+
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getCookies();
+                will(returnValue(cookieArray));
+
+                allowing(webAppSecConfig).getLogoutOnHttpSessionExpire();
+                will(returnValue(false));
+
+                allowing(webAppSecConfig).isTrackLoggedOutSSOCookiesEnabled();
+                will(returnValue(false));
+
+                allowing(ssoCookieHelper).getSSOCookiename();
+                will(returnValue("LTPAToken2"));
+
+                allowing(webAppSecConfig).isUseOnlyCustomCookieName();
+                will(returnValue(false));
+
+                // Authentication succeeds
+                one(authService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)),
+                                            with(any(AuthenticationData.class)),
+                                            with(equal((Subject) null)));
+                will(returnValue(authSubject));
+
+                // JWT SSO cookies are added
+                one(ssoCookieHelper).addJwtSsoCookiesToResponse(authSubject, req, resp, null);
+
+                // Token refresh detection - return the same token
+                one(ssoCookieHelper).getDefaultSSOTokenFromSubject(authSubject);
+                will(returnValue(mockSSOToken));
+                
+                one(mockSSOToken).getBytes();
+                will(returnValue(sameTokenBytes));
+
+                // Since token was NOT refreshed, addSSOCookiesToResponse should NOT be called
+                never(ssoCookieHelper).addSSOCookiesToResponse(with(any(Subject.class)),
+                                                              with(any(HttpServletRequest.class)),
+                                                              with(any(HttpServletResponse.class)),
+                                                              with(any(String.class)));
+            }
+        });
+
+        AuthenticationResult authResult = ssoAuth.authenticate(webRequest, webAppSecConfig);
+        assertEquals("AuthenticationResult should be SUCCESS", AuthResult.SUCCESS, authResult.getStatus());
+    }
+
+    /**
+     * Tests that authenticate() handles null SSO token from subject gracefully
+     *
+     * @throws Exception
+     */
+    @Test
+    public void authenticate_WithNullSSOTokenFromSubject() throws Exception {
+        final Cookie[] cookieArray = { cookie };
+        final Subject authSubject = new Subject();
+
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getCookies();
+                will(returnValue(cookieArray));
+
+                allowing(webAppSecConfig).getLogoutOnHttpSessionExpire();
+                will(returnValue(false));
+
+                allowing(webAppSecConfig).isTrackLoggedOutSSOCookiesEnabled();
+                will(returnValue(false));
+
+                allowing(ssoCookieHelper).getSSOCookiename();
+                will(returnValue("LTPAToken2"));
+
+                allowing(webAppSecConfig).isUseOnlyCustomCookieName();
+                will(returnValue(false));
+
+                // Authentication succeeds
+                one(authService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)),
+                                            with(any(AuthenticationData.class)),
+                                            with(equal((Subject) null)));
+                will(returnValue(authSubject));
+
+                // JWT SSO cookies are added
+                one(ssoCookieHelper).addJwtSsoCookiesToResponse(authSubject, req, resp, null);
+
+                // Token refresh detection - return null token
+                one(ssoCookieHelper).getDefaultSSOTokenFromSubject(authSubject);
+                will(returnValue(null));
+
+                // Since token is null, addSSOCookiesToResponse should NOT be called
+                never(ssoCookieHelper).addSSOCookiesToResponse(with(any(Subject.class)),
+                                                              with(any(HttpServletRequest.class)),
+                                                              with(any(HttpServletResponse.class)),
+                                                              with(any(String.class)));
+            }
+        });
+
+        AuthenticationResult authResult = ssoAuth.authenticate(webRequest, webAppSecConfig);
+        assertEquals("AuthenticationResult should be SUCCESS", AuthResult.SUCCESS, authResult.getStatus());
+    }
+
+    /**
+     * Tests that authenticate() handles null token bytes from SSO token gracefully
+     *
+     * @throws Exception
+     */
+    @Test
+    public void authenticate_WithNullTokenBytes() throws Exception {
+        final Cookie[] cookieArray = { cookie };
+        final Subject authSubject = new Subject();
+        final com.ibm.wsspi.security.token.SingleSignonToken mockSSOToken = mock.mock(com.ibm.wsspi.security.token.SingleSignonToken.class);
+
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getCookies();
+                will(returnValue(cookieArray));
+
+                allowing(webAppSecConfig).getLogoutOnHttpSessionExpire();
+                will(returnValue(false));
+
+                allowing(webAppSecConfig).isTrackLoggedOutSSOCookiesEnabled();
+                will(returnValue(false));
+
+                allowing(ssoCookieHelper).getSSOCookiename();
+                will(returnValue("LTPAToken2"));
+
+                allowing(webAppSecConfig).isUseOnlyCustomCookieName();
+                will(returnValue(false));
+
+                // Authentication succeeds
+                one(authService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)),
+                                            with(any(AuthenticationData.class)),
+                                            with(equal((Subject) null)));
+                will(returnValue(authSubject));
+
+                // JWT SSO cookies are added
+                one(ssoCookieHelper).addJwtSsoCookiesToResponse(authSubject, req, resp, null);
+
+                // Token refresh detection - return token with null bytes
+                one(ssoCookieHelper).getDefaultSSOTokenFromSubject(authSubject);
+                will(returnValue(mockSSOToken));
+                
+                one(mockSSOToken).getBytes();
+                will(returnValue(null));
+
+                // Since token bytes are null, addSSOCookiesToResponse should NOT be called
+                never(ssoCookieHelper).addSSOCookiesToResponse(with(any(Subject.class)),
+                                                              with(any(HttpServletRequest.class)),
+                                                              with(any(HttpServletResponse.class)),
+                                                              with(any(String.class)));
+            }
+        });
+
+        AuthenticationResult authResult = ssoAuth.authenticate(webRequest, webAppSecConfig);
+        assertEquals("AuthenticationResult should be SUCCESS", AuthResult.SUCCESS, authResult.getStatus());
     }
 
 }
