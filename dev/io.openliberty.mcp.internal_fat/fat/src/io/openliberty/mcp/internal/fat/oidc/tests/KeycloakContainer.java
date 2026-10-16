@@ -101,8 +101,7 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
                     "--https-key-store-password=password",
                     "--hostname-strict=false");
         withLogConsumer(new SimpleLogConsumer(KeycloakContainer.class, "keycloak-container"));
-        // Keycloak requires full Quarkus augmentation, Liquibase schema migration, and master realm
-        // key generation at boot; allow up to 5 minutes for busy or remote CI build machines.
+        // Allow up to 5 minutes for busy or remote CI build machines.
         waitingFor(Wait.forLogMessage(".*Listening on:.*", 1)
                        .withStartupTimeout(Duration.ofMinutes(5)));
     }
