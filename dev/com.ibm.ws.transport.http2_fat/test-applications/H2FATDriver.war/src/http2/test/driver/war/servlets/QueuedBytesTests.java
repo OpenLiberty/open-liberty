@@ -49,7 +49,8 @@ public class QueuedBytesTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] debugData = "Total queued bytes across all streams exceeded limit!".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 3, false);
+        int expectedLastStreamId = USING_NETTY ? Integer.MAX_VALUE : 3;
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, expectedLastStreamId, false);
         h2Client.addExpectedFrame(errorFrame);
 
         // Set initial window size to 1 byte to block server writes and force queuing
@@ -82,7 +83,8 @@ public class QueuedBytesTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] debugData = "Total queued bytes across all streams exceeded limit!".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 11, false);
+        int expectedLastStreamId = USING_NETTY ? Integer.MAX_VALUE : 11;
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, expectedLastStreamId, false);
         h2Client.addExpectedFrame(errorFrame);
 
         // Set initial window size to 1 byte to block server writes
@@ -119,7 +121,11 @@ public class QueuedBytesTests extends H2FATDriverServlet {
 
         List<H2HeaderField> expectedHeaders = new ArrayList<H2HeaderField>();
         expectedHeaders.add(new H2HeaderField(":status", "200"));
-        FrameHeadersClient expectedResponse = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient expectedResponse;
+        if (USING_NETTY)
+            expectedResponse = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            expectedResponse = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         expectedResponse.setHeaderFields(expectedHeaders);
         h2Client.addExpectedFrame(expectedResponse);
 
@@ -240,7 +246,8 @@ public class QueuedBytesTests extends H2FATDriverServlet {
 
         // Expect GOAWAY when trying to queue more data (bytes still tracked from timeout)
         byte[] debugData = "Total queued bytes across all streams exceeded limit!".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 5, false);
+        int expectedLastStreamId = USING_NETTY ? Integer.MAX_VALUE : 5;
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, expectedLastStreamId, false);
         h2Client.addExpectedFrame(errorFrame);
 
         // Set initial window size to 1 byte to block server writes
