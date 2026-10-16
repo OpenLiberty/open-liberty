@@ -33,8 +33,8 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -133,9 +133,9 @@ public class DumpCommandTest {
     public void testNoJep472WarningOnDump() throws Exception {
         final String METHOD_NAME = "testNoJep472WarningOnDump";
 
-        // Skip on non-z/OS or Java < 24: JEP 472 restricted-method warnings only appear there
-        assumeTrue(server.getMachine().getOperatingSystem() == OperatingSystem.ZOS
-                   && JavaInfo.forServer(server).majorVersion() >= 24);
+        // Skip on non-z/OS: JEP 472 restricted-method warnings only appear on z/OS
+        // (Java < 24 is already excluded by @MinimumJavaLevel above)
+        assumeTrue(server.getMachine().getOperatingSystem() == OperatingSystem.ZOS);
 
         Log.info(c, METHOD_NAME, "running server dump");
         ProgramOutput output = server.serverDump();

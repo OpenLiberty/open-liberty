@@ -37,8 +37,8 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -100,9 +100,9 @@ public class ServerStopTest {
         final String METHOD_NAME = "testNoJep472WarningOnStop";
         Log.info(c, METHOD_NAME, ENTERING);
 
-        // Skip on non-z/OS or Java < 24: JEP 472 restricted-method warnings only appear there
-        assumeTrue(server.getMachine().getOperatingSystem() == OperatingSystem.ZOS
-                   && JavaInfo.forServer(server).majorVersion() >= 24);
+        // Skip on non-z/OS: JEP 472 restricted-method warnings only appear on z/OS
+        // (Java < 24 is already excluded by @MinimumJavaLevel above)
+        assumeTrue(server.getMachine().getOperatingSystem() == OperatingSystem.ZOS);
 
         startServer();
 
