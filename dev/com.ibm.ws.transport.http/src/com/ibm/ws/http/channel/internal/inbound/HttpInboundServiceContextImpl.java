@@ -1892,6 +1892,10 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     }
 
     private void armNettyRequestBodyCallback(InterChannelCallback callback) {
+        System.out.println("VSDEBUG: 3" + callback);
+                    callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC,
+                           new EOFException("Peer input shutdown before request body completed."));
+
         AtomicBoolean delivered = new AtomicBoolean();
         AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(this.nettyContext.channel());
         Runnable success = () -> {
@@ -1904,6 +1908,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             if (!delivered.compareAndSet(false, true)) {
                 return;
             }
+            // TODO VLAD
             callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC,
                            new EOFException("Peer input shutdown before request body completed."));
         };

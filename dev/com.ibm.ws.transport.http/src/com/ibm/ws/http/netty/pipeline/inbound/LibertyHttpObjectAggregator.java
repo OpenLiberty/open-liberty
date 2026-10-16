@@ -123,6 +123,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
                 if (sizeOfCurrentChunk > maxContentLength ||
                     (content.readableBytes() + sizeOfCurrentChunk) > maxContentLength) {
+                        // TODO VLAD
                     throw new TooLongFrameException("Content length exceeded max of " + maxContentLength + " bytes.");
                 }
 
