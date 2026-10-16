@@ -109,22 +109,30 @@ public class InternalFeatureOnlyTest extends PropagationTestBase {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * 1.1 {@code propagation} is accepted by config (the metatype is in the shared WS-AT bundle)
-     * but has no effect on outbound behaviour when only the internal feature is active.
-     * Outbound propagation is permanently off regardless of the configured value.
-     * A valid value ({@code check_wsdl}) must not produce a config warning.
-     * Contrast with {@code ConditionalPropagationTest.test3_3} where an invalid value produces CWWKG0032W.
+     * 1.1 {@code propagation} is declared in the {@code com.ibm.ws.wsat.common} metatype, which is
+     * loaded by both the internal and public features, so the config service accepts it without a
+     * {@code CWWKG0032W} warning even when only the internal feature is present.
+     *
+     * <p>The attribute is <em>inert</em> at runtime because {@code WSATPolicyAwareInterceptor} only
+     * adds the outbound coordination context interceptor when
+     * {@code WSATFeatureService.isPublicFeaturePresent()} returns {@code true}. With the internal
+     * feature only, that guard returns {@code false}, so outbound propagation is permanently off
+     * regardless of whatever value is written to {@code <wsAtomicTransaction propagation="..."/>}.
+     *
+     * <p>Asserts: no {@code CWWKG0032W} (attribute is known); endpoint reports {@code tx=NONE}
+     * (not enlisted) because the public feature is not present; its row persists on both commit
+     * and rollback because the endpoint committed locally.
      */
     @Test
     public void test1_1_PropagationAcceptedButInert() throws Exception {
         internal.setMarkToEndOfLog();
         updateInternal("propagation", "check_wsdl");
 
-        assertNull("A valid propagation value must not produce CWWKG0032W on the internal-only server",
+        assertNull("propagation is a known attribute; CWWKG0032W must not be logged",
                    internal.waitForStringInLogUsingMark("CWWKG0032W", 2000));
 
-        // Despite the config, outbound propagation must still be off — the internal feature
-        // does not support outbound coordination.
+        // Despite the config, outbound propagation must still be off — the internal feature's
+        // runtime guard (isPublicFeaturePresent) blocks the outbound interceptor entirely.
         initTable(internalUrl);
         assertOutcome(internalUrl, internalUrl, NONE, false, false);
     }

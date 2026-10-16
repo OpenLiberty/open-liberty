@@ -110,8 +110,8 @@ public class ConditionalPropagationTest extends PropagationTestBase {
     /**
      * 3.3 {@code propagation} is a known attribute on the public feature, so an unsupported value must be
      * reported (CWWKG0032W) rather than silently ignored. Contrast with
-     * {@code InternalFeatureOnlyTest.test1_1_UnknownPropagationSilentlyIgnored}, where the attribute is unknown.
-     * The server falls back to the default, {@code always}.
+     * {@code InternalFeatureOnlyTest.test1_1_PropagationAcceptedButInert}, where the attribute is accepted
+     * but inert. The server falls back to the default, {@code always}.
      */
     @Test
     public void test3_3_InvalidValueReported() throws Exception {
