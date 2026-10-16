@@ -257,3 +257,7 @@ netty.ssl.handler.create.failed.useraction=Check the SSL configuration for the e
 h2.encode.header.failed=CWWKT0057E: The server failed to encode an HTTP/2 header: {0}
 h2.encode.header.failed.explanation=The server failed to encode an HTTP/2 pseudoheader for the response. The server closes the stream.
 h2.encode.header.failed.useraction=Check the server logs for related HTTP/2 errors. If the problem persists, collect diagnostic information and contact IBM Support.
+
+write.to.closed.connection=CWWKT0058E: An attempt was made to write to an inbound connection that was already closed.
+write.to.closed.connection.explanation=The remote client closed the connection before the server finished writing the response.
+write.to.closed.connection.useraction=No action is required. The client disconnected and the server will stop processing this request.

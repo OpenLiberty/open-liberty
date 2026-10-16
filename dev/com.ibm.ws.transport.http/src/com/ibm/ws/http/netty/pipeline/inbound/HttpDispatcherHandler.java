@@ -50,6 +50,7 @@ import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
+import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 
@@ -723,9 +724,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                 return;
             }
-        } else if(cause instanceof TooLongFrameException) {
+        } else if(cause instanceof TooLongFrameException || cause instanceof IllegalHttpBodyException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
+                Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException/IllegalHttpBodyException : " + cause);
             }
             sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE, cause);
             return;
