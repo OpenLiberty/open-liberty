@@ -121,6 +121,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.QueryHint;
+import jakarta.persistence.Subgraph;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -1208,12 +1209,23 @@ public class QueryInfo_1_1 extends QueryInfo {
 
             if (fetches.length > 0)
                 for (Fetching fetch : fetches) {
-                    String attr = fetch.value();
-                    if (attr.contains("."))
-                        // TODO implement
-                        throw new UnsupportedOperationException("@Fetching(" + attr + ")");
-                    else
+                    String attr = getAttributeName(fetch.value(), true);
+                    int dot = attr.indexOf('.');
+                    if (dot < 0) {
                         eagerlyFetch.addAttributeNode(attr);
+                    } else {
+                        // Navigate through the path of attributes, such as
+                        // "address.street.name", adding a subgraph for each
+                        // intermediate attribute and an attribute node for the last
+                        Subgraph<?> subgraph = eagerlyFetch //
+                                        .addSubgraph(attr.substring(0, dot));
+                        int sub;;
+                        while ((dot = attr.indexOf('.', sub = dot + 1)) > 0) {
+                            String subAttribute = attr.substring(sub, dot);
+                            subgraph = subgraph.addSubgraph(subAttribute);
+                        }
+                        subgraph.addAttributeNodes(attr.substring(sub));
+                    }
                 }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1334,9 +1346,21 @@ public class QueryInfo_1_1 extends QueryInfo {
 
         // QueryOptions specified via Hints:
         for (QueryHint hint : hints)
-            query.setHint(hint.name(),
-                          hint);
+            if (Util.FETCHGRAPH.equals(hint.name()) ||
+                Util.LOADGRAPH.equals(hint.name()))
+                query.setHint(hint.name(),
+                              entityHandler.getClass() //
+                                              .getMethod("getEntityGraph",
+                                                         String.class) //
+                                              .invoke(entityHandler,
+                                                      hint.value()));
+            else
+                query.setHint(hint.name(),
+                              hint.value());
 
+        // TODO Hibernate doesn't like this:
+        // "Ignoring unrecognized query hint [jakarta.persistence.lock.scope]"
+        // and would likely prefer setLockScope
         query.setHint(LOCK_SCOPE,
                       lockScope);
 
