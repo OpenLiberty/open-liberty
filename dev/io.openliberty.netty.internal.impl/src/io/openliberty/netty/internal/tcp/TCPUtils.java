@@ -10,8 +10,10 @@
 package io.openliberty.netty.internal.tcp;
 
 import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
@@ -243,18 +245,18 @@ public class TCPUtils {
                 // the close.  Sleeping on the I/O thread would deadlock: the close event
                 // can never fire while the I/O thread is blocked.
                 if (config.isInbound() && future.cause() instanceof java.net.BindException
-                    && !reuseAddrRetry && frameworkOwnsPort(framework, inetPort)) {
+                    && !reuseAddrRetry && frameworkOwnsPort(framework, newHost, inetPort)) {
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Bind failed for " + config.getExternalName() + " on port " + inetPort
-                                         + " because this framework already owns that port (config update in progress)."
+                        Tr.debug(tc, "Bind failed for " + config.getExternalName() + " on host " + newHost + " port " + inetPort
+                                         + " because this framework already owns that address (config update in progress)."
                                          + " retryCount=" + retryCount + ". Scheduling retry on Liberty executor.");
                     }
 
                     if (retryCount > 0 && channel.isOpen()) {
                         // Find the conflicting channel so we can wait for its close,
                         // then re-try the bind on the Liberty executor thread.
-                        Channel conflicting = findChannelOwningPort(framework, inetPort);
+                        Channel conflicting = findChannelOwningPort(framework, newHost, inetPort);
                         ChannelFuture waitFuture = (conflicting != null) ? conflicting.closeFuture() : null;
                         if (waitFuture != null) {
                             waitFuture.addListener(ignored -> framework.getExecutorService().execute(
@@ -652,29 +654,54 @@ public class TCPUtils {
     }
 
     /**
-     * Returns true if the framework already owns a channel on the given port
+     * Returns true if the framework already owns a channel on the given host and port
      * (either still active or in the process of closing during a config update).
      * When true the bind failure is a transient self-conflict, not an external
      * conflict, so the self-conflict retry path is taken instead of the
      * TIME_WAIT probe path.
      */
-    private static boolean frameworkOwnsPort(NettyFrameworkImpl framework, int port) {
-        return findChannelOwningPort(framework, port) != null;
+    private static boolean frameworkOwnsPort(NettyFrameworkImpl framework, String host, int port) {
+        return findChannelOwningPort(framework, host, port) != null;
     }
 
     /**
      * Returns the channel owned by this framework that is currently bound to the
-     * given port (active or closing), or null if no such channel exists.
+     * given host and port (active or closing), or null if no such channel exists.
      * Used to identify the conflicting channel whose closeFuture we wait on
      * before retrying the bind.
      */
-    private static Channel findChannelOwningPort(NettyFrameworkImpl framework, int port) {
+    private static Channel findChannelOwningPort(NettyFrameworkImpl framework, String host, int port) {
+        InetAddress targetAddr = null;
+        boolean targetIsWildcard = false;
+        if (host == null || "*".equals(host) || NettyConstants.INADDR_ANY.equals(host)) {
+            targetIsWildcard = true;
+        } else {
+            try {
+                targetAddr = InetAddress.getByName(host);
+                targetIsWildcard = targetAddr.isAnyLocalAddress();
+            } catch (UnknownHostException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Unable to resolve host '" + host + "': " + e.getMessage());
+                }
+            }
+        }
+
         synchronized (framework.getActiveChannelsMap()) {
             for (Channel activeChannel : framework.getActiveChannelsMap().keySet()) {
-                java.net.SocketAddress localAddr = activeChannel.localAddress();
-                if (localAddr instanceof java.net.InetSocketAddress) {
-                    if (((java.net.InetSocketAddress) localAddr).getPort() == port) {
-                        return activeChannel;
+                SocketAddress localAddr = activeChannel.localAddress();
+                if (localAddr instanceof InetSocketAddress) {
+                    InetSocketAddress activeInetAddr = (InetSocketAddress) localAddr;
+                    if (activeInetAddr.getPort() == port) {
+                        InetAddress activeAddr = activeInetAddr.getAddress();
+                        if (targetIsWildcard || (activeAddr != null && activeAddr.isAnyLocalAddress())) {
+                            return activeChannel;
+                        }
+                        if (targetAddr != null && targetAddr.equals(activeAddr)) {
+                            return activeChannel;
+                        }
+                        if (host != null && host.equalsIgnoreCase(activeInetAddr.getHostString())) {
+                            return activeChannel;
+                        }
                     }
                 }
             }
