@@ -52,6 +52,7 @@ import org.junit.Test;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.data.tests.web.JPABridge;
 import io.openliberty.jpa.data.tests.models.Account;
 import io.openliberty.jpa.data.tests.models.AccountId;
 import io.openliberty.jpa.data.tests.models.Annuity;
@@ -146,7 +147,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     @SkipIfSysProp({ DB_Postgres })
     public void testOLGH28912() throws Exception {
         Coordinate original = Coordinate.of("testOLGH28912", 10, 15f);
@@ -160,7 +160,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             // FAILURE PARSING QUERY HERE
-            em.createQuery("UPDATE Coordinate SET x = :newX, y = y / :yDivisor WHERE id = :id")
+            JPABridge.createStatement(em, "UPDATE Coordinate SET x = :newX, y = y / :yDivisor WHERE id = :id")
                             .setParameter("newX", 11)
                             .setParameter("yDivisor", 5)
                             .setParameter("id", id)
@@ -287,7 +287,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28908
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testOLGH28908() throws Exception {
         Person p = new Person();
         p.firstName = "John";
@@ -300,7 +299,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         try {
             em.persist(p);
-            em.createQuery("UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn")
+            JPABridge.createStatement(em, "UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn")
                             .setParameter("newFirstName", "Jack")
                             .setParameter("ssn", p.ssn_id)
                             .executeUpdate();
@@ -446,7 +445,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28909
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testOLGH28909() throws Exception {
         deleteAllEntities(Box.class);
 
@@ -460,7 +458,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         try {
-            em.createQuery("UPDATE Box SET length = length + ?1, width = width - ?1, height = height * ?2")
+            JPABridge.createStatement(em, "UPDATE Box SET length = length + ?1, width = width - ?1, height = height * ?2")
                             .setParameter(1, 1)
                             .setParameter(2, 2)
                             .executeUpdate();
@@ -1282,7 +1280,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     //Original issue: https://github.com/OpenLiberty/open-liberty/issues/24926
     //Additional issue: https://github.com/OpenLiberty/open-liberty/issues/32848
     public void testOLGH24926() throws Exception {
@@ -1295,7 +1292,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.commit();
 
         tx.begin();
-        em.createQuery("UPDATE Line o SET o.pointB = ?1 WHERE (o.id=?2)")
+        JPABridge.createStatement(em, "UPDATE Line o SET o.pointB = ?1 WHERE (o.id=?2)")
                         .setParameter(1, null)
                         .setParameter(2, unitRadius.id)
                         .executeUpdate(); // UPDATE LINE SET x_B = ? WHERE (ID = ?) bind => [null, 5]
@@ -1513,7 +1510,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("JPA40_HIBERNATE8")
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28905
     public void testOLGH28905() throws Exception {
         Triangle t1_0 = Triangle.of((byte) 13, (byte) 84, (byte) 85);
@@ -1528,7 +1524,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         try {
-            em.createQuery("UPDATE Triangle SET this.sides=?2, this.perimeter=?3 WHERE this.distinctKey=?1")
+            JPABridge.createStatement(em, "UPDATE Triangle SET this.sides=?2, this.perimeter=?3 WHERE this.distinctKey=?1")
                             .setParameter(1, t1_0.distinctKey)
                             .setParameter(2, new byte[] { 36, 77, 85 })
                             .setParameter(3, (short) (198))
@@ -1558,7 +1554,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28898
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testOLGH28898() throws Exception {
         Reciept r1 = Reciept.of(00012, "Billy", 12.5f);
         Reciept r2 = Reciept.of(00013, "Bobby", 9.75f);
@@ -1572,7 +1567,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         try {
-            count = em.createQuery("DELETE FROM Reciept WHERE this.total < :max")
+            count = (int) JPABridge.createStatement(em, "DELETE FROM Reciept WHERE this.total < :max")
                             .setParameter("max", 10.00f)
                             .executeUpdate();
             tx.commit();
@@ -1600,7 +1595,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29781
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testOLGH29781() throws Exception {
         ZoneId ET = ZoneId.of("America/New_York");
         Instant when = ZonedDateTime.of(2022, 4, 29, 12, 0, 0, 0, ET)
@@ -1617,7 +1611,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         try {
-            count = em.createQuery("DELETE FROM Store WHERE this.time>:when")
+            count = (int) JPABridge.createStatement(em, "DELETE FROM Store WHERE this.time>:when")
                             .setParameter("when", when)
                             .executeUpdate();
             tx.commit();
@@ -1630,7 +1624,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28895
-    @SkipForRepeat("JPA40_HIBERNATE8")
     public void testOLGH28895() throws Exception {
         Product p1 = Product.of("testOLGH28895-1", "Ball", 12.50f);
         Product p2 = Product.of("testOLGH28895-2", "Skate", 15.50f);
@@ -1644,7 +1637,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         try {
-            count = em.createQuery("DELETE FROM Product WHERE this.name LIKE ?1")
+            count = (int) JPABridge.createStatement(em, "DELETE FROM Product WHERE this.name LIKE ?1")
                             .setParameter(1, "B%")
                             .executeUpdate();
             tx.commit();
@@ -2686,40 +2679,22 @@ public class JakartaDataRecreateServlet extends FATServlet {
      */
     private <T> void deleteAllEntities(Class<T> clazz, String aka) throws Exception {
         tx.begin();
-        List<T> entities = em.createQuery("SELECT e FROM " + aka + " e", clazz)
-                             .getResultList();
-        for (T entity : entities) {
-            em.remove(entity);
-        }
+        JPABridge.createStatement(em, "DELETE FROM " + aka)
+                 .executeUpdate();
         tx.commit();
     }
 
-    /**
-     * Utility method to drop all entities from table.
-     * Uses SELECT + remove() so the same code works under both JPA 3.2 and JPA 4.0:
-     * createQuery(String, Class) and em.remove() exist in both versions.
-     */
     private <T> void deleteAllEntities(Class<T> clazz) throws Exception {
         tx.begin();
-        List<T> entities = em.createQuery("SELECT e FROM " + clazz.getSimpleName() + " e", clazz)
-                             .getResultList();
-        for (T entity : entities) {
-            em.remove(entity);
-        }
+        JPABridge.createStatement(em, "DELETE FROM " + clazz.getSimpleName())
+                 .executeUpdate();
         tx.commit();
     }
 
-    /**
-     * Utility method to drop all entities from table using H2 EntityManager.
-     * Uses SELECT + remove() so the same code works under both JPA 3.2 and JPA 4.0.
-     */
     private <T> void deleteAllEntitiesH2(Class<T> clazz) throws Exception {
         tx.begin();
-        List<T> entities = emH2.createQuery("SELECT e FROM " + clazz.getSimpleName() + " e", clazz)
-                               .getResultList();
-        for (T entity : entities) {
-            emH2.remove(entity);
-        }
+        JPABridge.createStatement(emH2, "DELETE FROM " + clazz.getSimpleName())
+                 .executeUpdate();
         tx.commit();
     }
 
