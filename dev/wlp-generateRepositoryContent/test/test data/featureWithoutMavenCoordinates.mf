@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-IBM-ShortName: test-without-maven-1.0
-Subsystem-SymbolicName: io.openliberty.test.without.maven-1.0; visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Type: osgi.subsystem.feature
-IBM-AppliesTo: com.ibm.websphere.appserver; productVersion=25.0.0.1
-IBM-Feature-Version: 2
-Subsystem-Content: com.ibm.ws.internal.bundle; location:="lib/"

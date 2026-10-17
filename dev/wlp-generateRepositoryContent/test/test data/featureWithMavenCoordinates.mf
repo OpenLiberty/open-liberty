@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-IBM-ShortName: test-with-maven-1.0
-Subsystem-SymbolicName: io.openliberty.test.with.maven-1.0; visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Type: osgi.subsystem.feature
-IBM-AppliesTo: com.ibm.websphere.appserver; productVersion=25.0.0.1
-IBM-Feature-Version: 2
-Subsystem-Content: a.grpc; location:="lib/"; mavenCoordinates="io.grpc:grpc-api:1.0.0", b.cdi; location:="lib/"; mavenCoordinates="jakarta.cdi:cdi-api:3.0.1", c.bundle; location:="lib/"
