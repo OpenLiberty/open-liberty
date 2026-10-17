@@ -525,6 +525,8 @@ public class FeatureList {
     /**
      * Recursively collects {@code mavenCoordinates} values from bundle/jar constituents
      * of {@code fd} and all reachable private sub-features.
+     * <p>
+     * Package-private to allow direct invocation from unit tests in the same package.
      *
      * @param fd      the feature definition to inspect
      * @param seen    accumulator for deduplicated coordinates (insertion-ordered)
