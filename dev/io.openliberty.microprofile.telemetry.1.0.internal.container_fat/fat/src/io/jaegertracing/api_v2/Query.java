@@ -4,6 +4,7 @@ package io.jaegertracing.api_v2;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+@SuppressWarnings("deprecation")
 public final class Query {
 
     private Query() {
