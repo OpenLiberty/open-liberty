@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Subsystem-SymbolicName: io.openliberty.test.recursive.private.deep-1.0; visibility:=private
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-AppliesTo: com.ibm.websphere.appserver; productVersion=25.0.0.1
+IBM-Feature-Version: 2
+Subsystem-Content: io.openliberty.test.api.bundle; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.health:microprofile-health-api:4.0.1"
