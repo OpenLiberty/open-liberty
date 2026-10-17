@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
-import com.ibm.ws.security.saml.sso20.internal.utils.UnsolicitedResponseCache;
+import com.ibm.ws.security.saml.sso20.internal.utils.SamlResponseReplayCache;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
@@ -128,19 +128,15 @@ public class UnsolicitedHandler {
                                                                                                null, // do not check inResponse in idp_init (SP Unsolicited)
                                                                                                samlRequest);
             //Prevent replay
-            UnsolicitedResponseCache resCache = ssoService.getUnsolicitedResponseCache(samlRequest.getProviderName());
+            SamlResponseReplayCache resCache = ssoService.getSamlResponseReplayCache(samlRequest.getProviderName());
             Assertion assertion = msgCtx.getValidatedAssertion();
-            if (resCache.isValid(assertion.getID())) {
+            if (resCache.detectReplayAndStoreAssertion(assertion)) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "The SAML Assertion with ID " + assertion.getID() + " can not be processed twice.");
                 }
                 throw new SamlException("SAML20_RESPONSE_REPLAY",
                                 //SAML20_RESPONSE_REPLAY=CWWKS5082E: The SAML assertion with ID [{0}] has already been received, and cannot be accepted.,
                                 null, new Object[] { assertion.getID() });
-            } else {
-                //long exp = assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().getMillis();
-                long exp = assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().toEpochMilli(); //v4 update
-                resCache.put(assertion.getID(), Long.valueOf(exp));
             }
 
             // The msgCtx won't be null, otherwise, it throws Exception already

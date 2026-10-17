@@ -25,7 +25,6 @@ import java.security.PrivilegedAction;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIApiConstants;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.serialization.DeserializationObjectInputStream;
 import com.ibm.ws.sib.mfp.JmsBodyType;
 import com.ibm.ws.sib.mfp.JsJmsObjectMessage;
 import com.ibm.ws.sib.mfp.MessageDecodeFailedException;
@@ -458,7 +457,7 @@ final class JsJmsObjectMessageImpl extends JsJmsMessageImpl implements JsJmsObje
                                     }
                                 });
 
-                ois = new DeserializationObjectInputStream(bais, cl);
+                ois = new JmsDeserializationObjectInputStream(bais, cl);
 
                 // Deserialize the object and set the local variables appropriately
                 obj = (Serializable) ois.readObject();

@@ -1,4 +1,4 @@
-# Copyright IBM Corp. 2012, 2013
+# Copyright IBM Corp. 2012, 2026
 # The source code for this program is not published or other-
 # wise divested of its trade secrets, irrespective of what has
 # been deposited with the U.S. Copyright Office.
@@ -74,7 +74,6 @@ class JMXRESTConnector(object):
 		map.put("jmx.remote.provider.pkgs", "com.ibm.ws.jmx.connector.client")
 		map.put(JMXConnector.CREDENTIALS, jarray.array([user, password], String))
 		map.put(ConnectorSettings.READ_TIMEOUT, 2*60*1000)
-		map.put(ConnectorSettings.DISABLE_HOSTNAME_VERIFICATION, True) 
 		self.connectAdvanced(host, port, map)
 
 	def disconnect(self):
