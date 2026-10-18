@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -64,10 +66,16 @@ public class GrpcServletUtils {
     /**
      * Given a request path use GrpcServletServices.getServletGrpcServices to map
      * the target service class, and using that Class map the target
-     * java.lang.reflect.Method
-     * 
+     * java.lang.reflect.Method.
+     *
+     * Returns null if the service is not registered (unknown path). Throws
+     * GrpcMethodNotFoundException if the service IS registered but the method cannot
+     * be resolved. An unknown service is handled further up the stack, while an
+     * unresolvable method on a known service should be rejected.
+     *
      * @param String requestPath in the format of "service.Name/MethodName"
-     * @return Method invoked by the request
+     * @return Method invoked by the request, or null if the service is not registered
+     * @throws GrpcMethodNotFoundException if the service is registered but the method cannot be resolved
      */
     public static Method getTargetMethod(String requestPath) {
         int index = requestPath.indexOf('/');
@@ -81,16 +89,33 @@ public class GrpcServletUtils {
                 if (clazz != null) {
                     index = requestPath.indexOf('/');
                     String methodName = requestPath.substring(index + 1);
-                    if (methodName.contains("_")) {
-                        methodName = convertToCamelCase(methodName);
+                    if (!methodName.isEmpty()) {
+                        // Normalize method names the same way protoc-gen-grpc-java does
+                        methodName = toJavaMethodName(methodName);
                     }
-                    Method[] methods = clazz.getMethods();
-                    for (Method m : methods) {
-                        if (m.getName().equals(methodName)) {
-                            // TODO: we're only checking the method name here; should we check signature?
-                            return m;
+                    // Match on both name and signature
+                    Method candidate = null;
+                    for (Method m : clazz.getMethods()) {
+                        if (!m.getName().equals(methodName)) {
+                            continue;
                         }
+                        Class<?>[] params = m.getParameterTypes();
+                        if (params.length == 0 ||
+                            !io.grpc.stub.StreamObserver.class.isAssignableFrom(params[params.length - 1])) {
+                            continue;
+                        }
+                        if (candidate != null) {
+                            // More than one same-named method, so it is ambiguous
+                            // Deny this rather than guess
+                            throw new GrpcMethodNotFoundException(requestPath);
+                        }
+                        candidate = m;
                     }
+                    if (candidate != null) {
+                        return candidate;
+                    }
+                    // Service is registered but the method name could not be resolved.
+                    throw new GrpcMethodNotFoundException(requestPath);
                 }
             }
         }
@@ -228,30 +253,76 @@ public class GrpcServletUtils {
     }
 
     /**
-     * Given a String, remove any underscores and convert to camel case
-     * Examples:
-     *    "some_method_name" -> "someMethodName",
-     *    "some_MeTHod_NAME" -> "someMethodName"
-     *
-     * @param String name
-     * @return String
+     * Java reserved keywords — mirrors the java_keywords set in protoc-gen-grpc-java's
+     * java_generator.cpp (Java SE 8 list, which is what the code generator targets).
+     * When MixedLower produces one of these names it appends "_"; we must do the same
+     * so that our reflection-based lookup matches the generated ImplBase method name.
      */
-    private static String convertToCamelCase(String name) {
-        final StringBuilder builder = new StringBuilder(name.length());
-        boolean firstSection = true;
-        for (String section : name.split("_")) {
-            if (!section.isEmpty()) {
-                if (firstSection) {
-                    firstSection = false;
-                    builder.append(Character.toLowerCase(section.charAt(0)));
-                } else {
-                    builder.append(Character.toUpperCase(section.charAt(0)));
-                }
-                if (section.length() > 1) {
-                    builder.append(section.substring(1));
-                }
+    private static final Set<String> JAVA_KEYWORDS = new HashSet<>(Arrays.asList(
+        "abstract", "assert",   "boolean",  "break",        "byte",
+        "case",     "catch",    "char",     "class",        "const",
+        "continue", "default",  "do",       "double",       "else",
+        "enum",     "extends",  "final",    "finally",      "float",
+        "for",      "goto",     "if",       "implements",   "import",
+        "instanceof", "int",    "interface","long",         "native",
+        "new",      "package",  "private",  "protected",    "public",
+        "return",   "short",    "static",   "strictfp",     "super",
+        "switch",   "synchronized", "this", "throw",        "throws",
+        "transient","try",      "void",     "volatile",     "while",
+        // reserved literals also treated as keywords by the generator
+        "true",     "false"
+    ));
+
+    /**
+     * Converts a proto RPC name to the Java method name that protoc-gen-grpc-java
+     * generates on the service ImplBase class, matching the MixedLower function in
+     * java_generator.cpp exactly:
+     *  - The first character is lowercased.
+     *  - Each underscore is consumed and the immediately following character is
+     *    uppercased (matching MixedLower's after_underscore flag).
+     *  - All other characters are copied verbatim.
+     *  - If the resulting identifier is a Java reserved keyword, a trailing "_" is
+     *    appended (e.g. proto RPC "New" -> Java method "new_").
+     * Examples:
+     *    "SayHello"         -> "sayHello"
+     *    "some_method_name" -> "someMethodName"
+     *    "New"              -> "new_"
+     *    "Return"           -> "return_"
+     *
+     * @param name the proto RPC method name extracted from the request path
+     * @return the corresponding Java method name on the generated ImplBase class
+     */
+    private static String toJavaMethodName(String name) {
+        final StringBuilder builder = new StringBuilder(name.length() + 1);
+        builder.append(Character.toLowerCase(name.charAt(0)));
+        boolean afterUnderscore = false;
+        for (int i = 1; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (c == '_') {
+                afterUnderscore = true;
+            } else {
+                builder.append(afterUnderscore ? Character.toUpperCase(c) : c);
+                afterUnderscore = false;
             }
         }
-        return builder.toString();
+        String result = builder.toString();
+        return JAVA_KEYWORDS.contains(result) ? result + "_" : result;
+    }
+
+    /**
+     * Thrown by getTargetMethod() when the target gRPC service is registered but
+     * the requested method name cannot be resolved to a Java method. This is
+     * distinct from a null return, which means the service itself is not registered.
+     */
+    public static class GrpcMethodNotFoundException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        public GrpcMethodNotFoundException(String requestPath) {
+            super();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "gRPC method not found for registered service: " + requestPath);
+            }
+        }
     }
 }

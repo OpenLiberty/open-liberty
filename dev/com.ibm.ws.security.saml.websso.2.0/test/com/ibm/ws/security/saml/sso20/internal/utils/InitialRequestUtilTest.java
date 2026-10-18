@@ -128,7 +128,7 @@ public class InitialRequestUtilTest {
 
         }
         String cookiedigest = irUtil.digestInitialRequestCookieValue(irBytesStr, ssoService);
-        String expect = "eyJyZXFVcmwiOiJodHRwczovL2xvY2FsaG9zdDo4MDIwL3NhbWxjbGllbnQvc3AxL3Nub29wIiwicmVxdWVzdFVSTCI6Imh0dHBzOi8vbG9jYWxob3N0OjgwMjAvc2FtbGNsaWVudC9zcDEvc25vb3AiLCJtZXRob2QiOiJHRVQiLCJzdHJJblJlc3BvbnNlVG9JZCI6Il8wbkRTZzM5VzlNTU1SSk0wZzUxQzVvdEdsV0s5VXhXeiIsImlzRm9ybUxvZ291dEV4aXRQYWdlIjpmYWxzZX0_WyzaPG45Cn+kS4oAO/70AmCxf9iPKU4x8k8DBWYw7iA=";
+        String expect = "eyJyZXFVcmwiOiJodHRwczovL2xvY2FsaG9zdDo4MDIwL3NhbWxjbGllbnQvc3AxL3Nub29wIiwicmVxdWVzdFVSTCI6Imh0dHBzOi8vbG9jYWxob3N0OjgwMjAvc2FtbGNsaWVudC9zcDEvc25vb3AiLCJtZXRob2QiOiJHRVQiLCJzdHJJblJlc3BvbnNlVG9JZCI6Il8wbkRTZzM5VzlNTU1SSk0wZzUxQzVvdEdsV0s5VXhXeiIsImlzRm9ybUxvZ291dEV4aXRQYWdlIjpmYWxzZSwiYmlydGhUaW1lTWlsbGlzIjoxNzg5NDkwMDU4OTEwfQ_h1uhCXm2+KE5jodPsn9QvjKxBKumTVEFDLRES0/5cN4="; // pragma: allowlist secret
         assertEquals("Did not find expected cookie digest.", expect, cookiedigest);
     }
 
@@ -140,9 +140,10 @@ public class InitialRequestUtilTest {
         String method = "GET";
         String inResp = "_0nDSg39W9MMMRJM0g51C5otGlWK9UxWz";
         String logoutPage = null;
+        long birthTime = 1789490058910L;  // Tue Sep 15 2026 16:34:18 GMT+0000
         InitialRequest ir = null;  
         try {
-            ir = new InitialRequest(HTTP_SERVLET_REQUEST_MCK, requestUrl, requestUrl,method,inResp, logoutPage, null);
+            ir = new InitialRequest(HTTP_SERVLET_REQUEST_MCK, requestUrl, requestUrl, method, inResp, logoutPage, null, birthTime);
         } catch (SamlException e) {
 
         }
@@ -229,5 +230,56 @@ public class InitialRequestUtilTest {
         assertEquals("Did not find expected request method.", expect, method);
         expect = "https://localhost:8020/samlclient/sp1/snoop";
         assertEquals("Did not find expected request url.", expect, url);
+    }
+
+    /**
+     * Test that the older JSON serialization of InitialRequest (without birthTimeMillis) is still
+     * accepted by {@link com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil#handleDeserializingInitialRequest(java.lang.String)}.
+     * The base64 payload encodes: {"reqUrl":"https://localhost:8020/samlclient/sp1/snoop",
+     * "requestURL":"https://localhost:8020/samlclient/sp1/snoop","method":"GET",
+     * "strInResponseToId":"_0nDSg39W9MMMRJM0g51C5otGlWK9UxWz","isFormLogoutExitPage":false}
+     */
+    @Test
+    public void testHandleDeserializingInitialRequest_olderFormatNoBirthTime() {
+        // Payload is the base64-encoded JSON without the birthTimeMillis field
+        String olderPayload = "eyJyZXFVcmwiOiJodHRwczovL2xvY2FsaG9zdDo4MDIwL3NhbWxjbGllbnQvc3AxL3Nub29wIiwicmVxdWVzdFVSTCI6Imh0dHBzOi8vbG9jYWxob3N0OjgwMjAvc2FtbGNsaWVudC9zcDEvc25vb3AiLCJtZXRob2QiOiJHRVQiLCJzdHJJblJlc3BvbnNlVG9JZCI6Il8wbkRTZzM5VzlNTU1SSk0wZzUxQzVvdEdsV0s5VXhXeiIsImlzRm9ybUxvZ291dEV4aXRQYWdlIjpmYWxzZX0"; // pragma: allowlist secret
+        InitialRequest ir = null;
+        try {
+            ir = irUtil.handleDeserializingInitialRequest(olderPayload);
+        } catch (IOException e) {
+            fail("IOException deserializing older InitialRequest format: " + e.getMessage());
+        }
+        assertNotNull("InitialRequest should not be null for older format.", ir);
+        assertEquals("Did not find expected request method.", "GET", ir.getMethod());
+        assertEquals("Did not find expected request url.", "https://localhost:8020/samlclient/sp1/snoop", ir.getRequestUrl());
+        assertEquals("Did not find expected inResponseToId.", "_0nDSg39W9MMMRJM0g51C5otGlWK9UxWz", ir.getInResponseToId());
+        assertEquals("birthTimeMillis should default to 0 for older format without that field.", 0L, ir.getBirthTimeMillis());
+    }
+
+    /**
+     * Test that the older cookie value (JSON without birthTimeMillis, with appended HMAC digest)
+     * is still accepted by {@link com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil#getInitialRequestCookie(java.lang.String, com.ibm.ws.security.saml.SsoSamlService)}.
+     */
+    @Test
+    public void testGetInitialRequestCookie_olderFormat() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(ssoService).getPrivateKey();
+                    will(returnValue(null));
+                    allowing(ssoService).getDefaultKeyStorePassword();
+                    will(returnValue(null));
+                }
+            });
+        } catch (KeyStoreException e) {
+
+        } catch (CertificateException e) {
+
+        }
+        // Full older cookie: base64(JSON without birthTimeMillis) + "_" + digest
+        String olderCookie = "eyJyZXFVcmwiOiJodHRwczovL2xvY2FsaG9zdDo4MDIwL3NhbWxjbGllbnQvc3AxL3Nub29wIiwicmVxdWVzdFVSTCI6Imh0dHBzOi8vbG9jYWxob3N0OjgwMjAvc2FtbGNsaWVudC9zcDEvc25vb3AiLCJtZXRob2QiOiJHRVQiLCJzdHJJblJlc3BvbnNlVG9JZCI6Il8wbkRTZzM5VzlNTU1SSk0wZzUxQzVvdEdsV0s5VXhXeiIsImlzRm9ybUxvZ291dEV4aXRQYWdlIjpmYWxzZX0_WyzaPG45Cn+kS4oAO/70AmCxf9iPKU4x8k8DBWYw7iA="; // pragma: allowlist secret
+        String expectedPayload = "eyJyZXFVcmwiOiJodHRwczovL2xvY2FsaG9zdDo4MDIwL3NhbWxjbGllbnQvc3AxL3Nub29wIiwicmVxdWVzdFVSTCI6Imh0dHBzOi8vbG9jYWxob3N0OjgwMjAvc2FtbGNsaWVudC9zcDEvc25vb3AiLCJtZXRob2QiOiJHRVQiLCJzdHJJblJlc3BvbnNlVG9JZCI6Il8wbkRTZzM5VzlNTU1SSk0wZzUxQzVvdEdsV0s5VXhXeiIsImlzRm9ybUxvZ291dEV4aXRQYWdlIjpmYWxzZX0"; // pragma: allowlist secret
+        String result = irUtil.getInitialRequestCookie(olderCookie, ssoService);
+        assertEquals("Older cookie format should be accepted and return the payload.", expectedPayload, result);
     }
 }
