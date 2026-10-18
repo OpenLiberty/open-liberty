@@ -95,10 +95,11 @@ public class WsLogHandlerEndpoint implements RESTHandler {
         }
 
         long elapsed = emitRandomMessages(messageList, count);
+        int totalEmitted = messageList.size() + count;
 
         response.setStatus(200);
         response.setContentType("application/json");
-        response.getWriter().write("{\"status\": \"SUCCESS\", \"emittedCount\": " + count
+        response.getWriter().write("{\"status\": \"SUCCESS\", \"emittedCount\": " + totalEmitted
                 + ", \"uniqueMessages\": " + messageList.size()
                 + ", \"elapsedMs\": " + elapsed + "}");
     }
@@ -120,10 +121,11 @@ public class WsLogHandlerEndpoint implements RESTHandler {
         }
 
         long elapsed = emitRandomMessages(messageList, count);
+        int totalEmitted = messageList.size() + count;
 
         response.setStatus(200);
         response.setContentType("application/json");
-        response.getWriter().write("{\"status\": \"SUCCESS\", \"emittedCount\": " + count
+        response.getWriter().write("{\"status\": \"SUCCESS\", \"emittedCount\": " + totalEmitted
                 + ", \"uniqueMessages\": " + messageList.size()
                 + ", \"elapsedMs\": " + elapsed + "}");
     }
@@ -273,10 +275,12 @@ public class WsLogHandlerEndpoint implements RESTHandler {
 
     private long emitRandomMessages(List<String> messages, int count) {
         long start = System.currentTimeMillis();
+        // 1. Emit each message in the list at least once
         for (String msg : messages) {
             Tr.info(tc, msg);
         }
-        for (int i = messages.size(); i < count; i++) {
+        // 2. In addition, emit 'count' random messages from the list
+        for (int i = 0; i < count; i++) {
             String chosenMsg = messages.get(RANDOM.nextInt(messages.size()));
             Tr.info(tc, chosenMsg);
         }
