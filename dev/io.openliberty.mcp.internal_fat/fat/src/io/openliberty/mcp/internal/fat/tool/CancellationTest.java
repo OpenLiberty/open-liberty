@@ -9,9 +9,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -29,11 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -44,46 +41,46 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class CancellationTest extends FATServletClient {
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "cancellationTest";
+    private static final String WRONG_URL_APP_NAME = "clientOnWrongURL";
+    private static final String EAR_NAME = "multi-module";
     private static ExecutorService executor;
 
     @Rule
-    public McpClient clientWithTool = McpClient.builder(server, "/cancellationTest").build();
+    public McpClient clientWithTool = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @Rule
-    public McpClient clientOnWrongURL = McpClient.builder(server, "/clientOnWrongURL").build();
+    public McpClient clientOnWrongURL = McpClient.builder(serverLifecycle.getServer(), "/" + WRONG_URL_APP_NAME).build();
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");
+    public ToolStatusClient toolStatus = new ToolStatusClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E"));
 
-        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "cancellationTest.war")
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                     .addPackage(CancellationTools.class.getPackage())
                                     .addPackage(ToolStatus.class.getPackage());
 
-        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "clientOnWrongURL.war")
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, WRONG_URL_APP_NAME + ".war")
                                     .addPackage(CancellationTools.class.getPackage())
                                     .addPackage(ToolStatus.class.getPackage());
 
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "multi-module.ear")
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME + ".ear")
                                           .addAsModule(war1)
                                           .addAsModule(war2);
 
-        ShrinkHelper.exportDropinAppToServer(server, ear, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.deployDropinApp(ear);
 
         executor = Executors.newSingleThreadExecutor();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-                          "CWMCM0010E" //Internal server error
-        );
+        serverLifecycle.undeployDropinApp(EAR_NAME);
     }
 
     @AfterClass

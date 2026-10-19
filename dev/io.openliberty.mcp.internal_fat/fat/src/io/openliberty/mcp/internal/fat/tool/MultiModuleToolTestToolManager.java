@@ -9,13 +9,14 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,11 +24,7 @@ import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.convertertools.customConverterModule.CustomConverterModuleTools;
 import io.openliberty.mcp.internal.fat.convertertools.sharedConvertersModule.SharedConvertersModuleTools;
@@ -49,23 +46,24 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class MultiModuleToolTestToolManager extends FATServletClient {
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String EAR_NAME = "multi-module";
 
     @Rule
-    public McpClient encoderModuleMCPClient = McpClient.builder(server, "/encoderModule").build();
+    public McpClient encoderModuleMCPClient = McpClient.builder(serverLifecycle.getServer(), "/encoderModule").build();
 
     @Rule
-    public McpClient defaultEncoderModuleMCPClient = McpClient.builder(server, "/defaultEncoderModule").build();
+    public McpClient defaultEncoderModuleMCPClient = McpClient.builder(serverLifecycle.getServer(), "/defaultEncoderModule").build();
 
     @Rule
-    public McpClient customConverterModuleClient = McpClient.builder(server, "/customConverterModule").build();
+    public McpClient customConverterModuleClient = McpClient.builder(serverLifecycle.getServer(), "/customConverterModule").build();
 
     @Rule
-    public McpClient sharedConvertersModuleClient = McpClient.builder(server, "/sharedConvertersModule").build();
+    public McpClient sharedConvertersModuleClient = McpClient.builder(serverLifecycle.getServer(), "/sharedConvertersModule").build();
 
     @BeforeClass
     public static void setup() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
 
         WebArchive encoderModule = ShrinkWrap.create(WebArchive.class, "encoderModule.war")
                                              .addPackage(EncoderModuleTools.class.getPackage());
@@ -101,9 +99,12 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                                           .addAsLibrary(sharedEncodersLib) // Shared encoders are accessible to all WARs
                                           .addAsLibrary(sharedConvertersLib); // Shared converters are accessible to all WARs
 
-        ShrinkHelper.exportDropinAppToServer(server, ear, SERVER_ONLY);
+        serverLifecycle.deployDropinApp(ear);
+    }
 
-        server.startServer();
+    @AfterClass
+    public static void teardown() throws Exception {
+        serverLifecycle.undeployDropinApp(EAR_NAME);
     }
 
     private static String toolCallRequest(String id, String toolName) {

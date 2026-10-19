@@ -9,8 +9,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -21,11 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -33,11 +31,11 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class McpUrlPathTest extends FATServletClient {
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "mcpUrlPathTest";
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/mcpUrlPathTest").build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     private static final String REQUEST = """
                       {
@@ -56,16 +54,15 @@ public class McpUrlPathTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "mcpUrlPathTest.war").addPackage(BasicTools.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        serverLifecycle.getServer().addIgnoredErrors(List.of(EXPECTED_ERROR_MESSAGE));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(BasicTools.class.getPackage());
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR_MESSAGE);
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -82,8 +79,8 @@ public class McpUrlPathTest extends FATServletClient {
     public void testMcpEndpointWithTrailingForwardSlashAndMoreTestAppended() throws Exception {
 
         int expectedErrorCode = 404;
-        client.callMCPRaw(REQUEST).mcpPath("/mcpUrlPathTest/mcp/something-else").expectedStatus(expectedErrorCode).run();
-        assertNotNull(server.waitForStringInLogUsingMark(EXPECTED_ERROR_MESSAGE, server.getDefaultLogFile()));
+        client.callMCPCustomized(REQUEST, "/mcpUrlPathTest/mcp/something-else", expectedErrorCode);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark(EXPECTED_ERROR_MESSAGE, serverLifecycle.getServer().getDefaultLogFile()));
     }
 
 }

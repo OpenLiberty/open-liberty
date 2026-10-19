@@ -9,11 +9,13 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,12 +28,9 @@ import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.businessExceptionApp.ToolErrorHandlingTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -42,27 +41,24 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class ToolErrorHandlingTest extends FATServletClient {
 
-    private static final String ENDPOINT = "/toolErrorHandlingTest";
-
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "toolErrorHandlingTest";
+    private static final String ENDPOINT = "/" + APP_NAME;
 
     @Rule
-    public McpClient client = McpClient.builder(server, ENDPOINT).build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), ENDPOINT).build();
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "toolErrorHandlingTest.war").addPackage(ToolErrorHandlingTools.class.getPackage());
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(ToolErrorHandlingTools.class.getPackage());
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-                          "CWMCM0010E" //  Tool method threw an unexpected exception
-        );
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E")); // Tool method threw an unexpected exception
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -354,7 +350,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
 
         JSONAssert.assertEquals(expectedResponse, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("Unwrapped checked error for: abc", server.getDefaultLogFile()));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Unwrapped checked error for: abc", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test
@@ -667,33 +663,33 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                  }
                                  """;
 
-       // Lenient mode test (false boolean in 3rd parameter
-       JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
-   }
+        // Lenient mode test (false boolean in 3rd parameter
+        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
+    }
 
-   @Test
-   public void testToolThrowsToolCallUnauthorizedException() throws Exception {
-       String request = """
-                       {
-                         "jsonrpc": "2.0",
-                         "id": 1,
-                         "method": "tools/call",
-                         "params": {
-                           "name": "unauthorizedTool",
-                           "arguments": {
-                             "input": "bad-value"
-                           }
-                         }
-                       }
-                       """;
+    @Test
+    public void testToolThrowsToolCallUnauthorizedException() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unauthorizedTool",
+                            "arguments": {
+                              "input": "bad-value"
+                            }
+                          }
+                        }
+                        """;
 
        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).anyStatus().run();
        Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
 
-       assertEquals(403, response.statusCode());
-       assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
-       assertTrue("Response body must contain the exception message",
-                  response.body().contains("Not authorized to call this tool for input: bad-value"));
-       assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
-   }
+        assertEquals(403, response.statusCode());
+        assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
+        assertTrue("Response body must contain the exception message",
+                   response.body().contains("Not authorized to call this tool for input: bad-value"));
+        assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
+    }
 }

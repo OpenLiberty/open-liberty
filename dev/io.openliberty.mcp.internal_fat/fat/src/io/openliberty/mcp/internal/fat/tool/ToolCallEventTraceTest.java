@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
@@ -29,11 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
@@ -41,25 +37,25 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 @RunWith(FATRunner.class)
 public class ToolCallEventTraceTest extends FATServletClient {
-    @Server("mcp-server")
-    public static LibertyServer server;
+
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "toolCallEventTraceTest";
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/toolCallEventTraceTest").build();
-
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
+    
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "toolCallEventTraceTest.war")
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0010E"); // The - tool method threw an unexpected exception.);
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E")); // The - tool method threw an unexpected exception.
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -82,7 +78,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
                                                       "The tool method 'textContentTool' returned: 'Echo: hello'");
 
         for (String traceMsg : expectedEventTraceMsgs) {
-            assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+            assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
         }
 
     }
@@ -104,7 +100,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
                         """;
         client.callMCP(request);
         String traceMsg = "The tool method 'echo' returned the following error to the user: 'An internal server error occurred while running the tool.'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
     }
 
     @Test
@@ -124,7 +120,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
                         """;
         client.callMCP(request);
         String traceMsg = "The following error was returned to the user: 'JSONRPCException {code=-32603, message='Internal error', data=[Could not call privateEcho]}'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
     }
 
     @Test
@@ -142,7 +138,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
 
         client.callMCP(request);
         String traceMsg = "The tool method 'echo' returned the following error to the user: 'The method expected the following arguments but did not receive them: [input].'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
 
     }
 
@@ -167,7 +163,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
                         }
                         """;
 
-        new HttpRequest(server, "/toolCallEventTraceTest/mcp")
+        new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                               .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                               .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                               .requestProp(MCP_SESSION_ID, sessionId)
@@ -177,7 +173,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
                                                               .run(String.class);
 
         String traceMsg = "The following error was returned to the user: 'HTTP 404 - Invalid or Expired Session Id'";
-        assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
     }
 
 }
