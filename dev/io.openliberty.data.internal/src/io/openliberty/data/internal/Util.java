@@ -214,16 +214,6 @@ public class Util {
                            ZonedDateTime.class); // would be useful if it worked
 
     /**
-     * Valid types for when a repository method computes an update count
-     */
-    public static final Set<Class<?>> UPDATE_COUNT_TYPES = //
-                    Set.of(boolean.class, Boolean.class,
-                           int.class, Integer.class,
-                           long.class, Long.class,
-                           void.class, Void.class,
-                           Number.class);
-
-    /**
      * Valid types for jakarta.persistence.Version, except for
      * java.sql.Timestamp, which is not a valid type in Jakarta Data.
      */

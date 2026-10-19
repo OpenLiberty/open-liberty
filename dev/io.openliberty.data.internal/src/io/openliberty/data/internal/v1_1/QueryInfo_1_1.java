@@ -16,7 +16,6 @@ import static io.openliberty.data.internal.QueryType.DETACH;
 import static io.openliberty.data.internal.QueryType.INSERT;
 import static io.openliberty.data.internal.QueryType.LC_DELETE;
 import static io.openliberty.data.internal.QueryType.LC_UPDATE;
-import static io.openliberty.data.internal.QueryType.LC_UPDATE_MERGE;
 import static io.openliberty.data.internal.QueryType.MERGE;
 import static io.openliberty.data.internal.QueryType.NATIVE;
 import static io.openliberty.data.internal.QueryType.PERSIST;
@@ -556,10 +555,14 @@ public class QueryInfo_1_1 extends QueryInfo {
     protected void ehDelete(AutoCloseable entityHandler, List<?> entities) {
         // TODO Persistence 4.0 API
 
-        if (entityHandler instanceof EntityManager manager)
+        if (entityHandler instanceof EntityManager manager) {
             for (Object e : entities)
                 manager.remove(e);
-        else
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
+        } else {
             try {
                 if (entities.size() == 1)
                     entityHandler.getClass() //
@@ -576,6 +579,7 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
+        }
     }
 
     @FFDCIgnore(InvocationTargetException.class)
@@ -584,10 +588,14 @@ public class QueryInfo_1_1 extends QueryInfo {
     protected void ehInsert(AutoCloseable entityHandler, List<?> entities) {
         // TODO Persistence 4.0 API
 
-        if (entityHandler instanceof EntityManager manager)
+        if (entityHandler instanceof EntityManager manager) {
             for (Object e : entities)
                 manager.persist(e);
-        else
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
+        } else {
             try {
                 if (entities.size() == 1)
                     entityHandler.getClass() //
@@ -604,26 +612,36 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
+        }
     }
 
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected Object ehUpdate(AutoCloseable entityHandler, Object entity) {
-        // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.update(entity) //
-        //                : ((EntityManager) entityHandler).merge(entity);
+    protected ArrayList<Object> ehUpdate(AutoCloseable entityHandler,
+                                         List<Object> entities) throws Exception {
+        ArrayList<Object> updated;
+        if (entityHandler instanceof EntityManager manager) {
+            updated = new ArrayList<>(entities.size());
 
-        Object updated;
-        if (entityHandler instanceof EntityManager manager)
-            updated = manager.merge(entity);
-        else
+            // find and merge updates to the entities
+            for (Object e : entities)
+                updated.add(findAndMerge(e, manager));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
+        } else {
             try {
-                entityHandler.getClass() //
-                                .getMethod("update", Object.class) //
-                                .invoke(entityHandler, entity);
-                updated = entity;
+                // TODO Persistence 4.0 API
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("update", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("updateMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -631,7 +649,16 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO updateMultiple
+            if (entities instanceof ArrayList<?> a) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Object> arrayList = (ArrayList<Object>) a;
+                updated = arrayList;
+            } else {
+                updated = new ArrayList<>(entities.size());
+                updated.addAll(entities);
+            }
+        }
+
         return updated;
     }
 
@@ -645,6 +672,10 @@ public class QueryInfo_1_1 extends QueryInfo {
             upserted = new ArrayList<>(entities.size());
             for (Object e : entities)
                 upserted.add(manager.merge(e));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
         } else {
             // TODO entities that require Id generation:
             // Per EntityAgent.upsert/upsertMultiple,
@@ -1115,11 +1146,7 @@ public class QueryInfo_1_1 extends QueryInfo {
         if (entityParamType != null && methodTypeAnno instanceof Delete)
             setType(Delete.class, LC_DELETE);
         else if (entityParamType != null && methodTypeAnno instanceof Update)
-            setType(Update.class,
-                    entityInfo.attributeNamesForEntityUpdate != null &&
-                                  Util.UPDATE_COUNT_TYPES.contains(singleType) //
-                                                  ? LC_UPDATE //
-                                                  : LC_UPDATE_MERGE);
+            setType(Update.class, LC_UPDATE);
         else if (methodTypeAnno instanceof Insert)
             setType(Insert.class, INSERT);
         else if (methodTypeAnno instanceof Save)
