@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 import io.openliberty.webcontainer.servlet61.fat.tests.ServiceAcceptLanguageTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.ServiceServlet61DispatchCanonicalizationTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61AddAndSetHeaderTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61CharsetEncodingTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61DispatcherErrorMethodAttributeTest;
@@ -52,7 +53,8 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61SetCookieRandomA
     Servlet61SetCookieRandomAttributes.class,
     Servlet61SecureProtocolTLSDefaultAttributeTest.class,
     Servlet61SecureProtocolTLSv1_2AttributeTest.class,
-    ServiceAcceptLanguageTest.class
+    ServiceAcceptLanguageTest.class,
+    ServiceServlet61DispatchCanonicalizationTest.class
 })
 public class FATSuite {
     /**
