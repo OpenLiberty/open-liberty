@@ -564,6 +564,8 @@ public class BaseCommandTaskTest {
         TestTask task = new TestTask();
         assertEquals("FAIL: DN value with multiple '=' was not preserved",
                      "cn=foo,o=ibm,c=us", task.getValue("--dn=cn=foo,o=ibm,c=us"));
+        assertEquals("FAIL: password with leading '=' was not preserved",
+                    "=pass", task.getValue("--passwordBase64Key==pass"))
     }
 
     /**
