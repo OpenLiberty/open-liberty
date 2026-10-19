@@ -72,11 +72,17 @@ public class WsLogHandlerExactIdTest extends WsLogHandlerBaseTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
+        if (server == null) {
+            return;
         }
-        server.uninstallSystemBundle(BUNDLE);
-        server.uninstallSystemFeature(FEATURE);
+        try {
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+        } finally {
+            server.uninstallSystemBundle(BUNDLE);
+            server.uninstallSystemFeature(FEATURE);
+        }
     }
 
     /**
@@ -207,7 +213,7 @@ public class WsLogHandlerExactIdTest extends WsLogHandlerBaseTest {
         
         
         // 5. Verify that there are emitCount messages and more
-        assertTrue("Captured count should be greater than 0", getCapturedCount() > emitCount);
+        assertTrue("Captured count should be greater than emitCount", getCapturedCount() > emitCount);
 
         // 6. Also verify that each emitted ID was captured.
         assertEquals("Verify should return 200 (PASSED) for all emitted IDs",

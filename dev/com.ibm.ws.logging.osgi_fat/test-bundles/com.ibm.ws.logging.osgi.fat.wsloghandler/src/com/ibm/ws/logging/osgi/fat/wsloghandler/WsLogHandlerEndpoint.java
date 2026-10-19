@@ -14,7 +14,6 @@ package com.ibm.ws.logging.osgi.fat.wsloghandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,9 +65,21 @@ public class WsLogHandlerEndpoint implements RESTHandler {
             handleClear(request, response);
         } else if (path.equals("/messages")) {
             handleMessages(request, response);
-        } else {
+        } else if (path.isEmpty() || path.equals("/")) {
             handleStatus(request, response);
+        } else {
+            handleNotFound(path, response);
         }
+    }
+
+    /**
+     * Unknown path: returns HTTP 404 so a mistyped endpoint name in a test fails
+     * instead of silently returning the status page.
+     */
+    private void handleNotFound(String path, RESTResponse response) throws IOException {
+        response.setStatus(404);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"Unknown endpoint: " + escapeJson(path) + "\"}");
     }
 
     /**

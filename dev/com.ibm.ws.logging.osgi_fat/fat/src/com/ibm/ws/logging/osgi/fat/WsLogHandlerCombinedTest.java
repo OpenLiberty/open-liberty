@@ -13,7 +13,6 @@
 package com.ibm.ws.logging.osgi.fat;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -66,18 +65,26 @@ public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
     @After
     public void restoreConfig() throws Exception {
         if (configSaved) {
+            server.setMarkToEndOfLog();
             server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
             configSaved = false;
         }
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("CWWKE0710W");
+        if (server == null) {
+            return;
         }
-        server.uninstallSystemBundle(BUNDLE);
-        server.uninstallSystemFeature(FEATURE);
+        try {
+            if (server.isStarted()) {
+                server.stopServer("CWWKE0710W");
+            }
+        } finally {
+            server.uninstallSystemBundle(BUNDLE);
+            server.uninstallSystemFeature(FEATURE);
+        }
     }
 
     /**
@@ -187,8 +194,8 @@ public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
         for (String validPattern : new String[] { "CWLFC*A", "CWLFD0003E", "CWLFE*W", "CWLFM0007I" }) {
             List<String> validWarnings = server.findStringsInLogs(
                     "CWWKE0710W.*" + validPattern.replace("*", "\\*"));
-            assertFalse("No CWWKE0710W warning expected for valid pattern " + validPattern,
-                        !validWarnings.isEmpty());
+            assertTrue("No CWWKE0710W warning expected for valid pattern " + validPattern,
+                       validWarnings.isEmpty());
         }
 
         // 4. Clear the captured store so pre-update early messages don't pollute the assertion.

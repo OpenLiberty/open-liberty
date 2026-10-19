@@ -63,18 +63,26 @@ public class WsLogHandlerWildcardTest extends WsLogHandlerBaseTest {
     @After
     public void restoreConfig() throws Exception {
         if (configSaved) {
+            server.setMarkToEndOfLog();
             server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
             configSaved = false;
         }
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
+        if (server == null) {
+            return;
         }
-        server.uninstallSystemBundle(BUNDLE);
-        server.uninstallSystemFeature(FEATURE);
+        try {
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+        } finally {
+            server.uninstallSystemBundle(BUNDLE);
+            server.uninstallSystemFeature(FEATURE);
+        }
     }
 
     /**

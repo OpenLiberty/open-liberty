@@ -27,24 +27,11 @@ public class TestWsLogHandler implements WsLogHandler {
 
     public static final String HANDLER_ID = "WS_LOG_HANDLER";
 
-    private static final String OUTPUT_FILE = "C:\\devdir\\TestOutput\\output.txt";
-
     @Override
     public void publish(RoutedMessage routedMessage, boolean messageHidden) {
         if (routedMessage != null) {
             String formattedMsg = routedMessage.getFormattedMsg();
             CapturedMessageStore.addMessage(formattedMsg, messageHidden);
-        }
-
-        String s_prop = System.getProperty("writeToOutput");
-        boolean prop = (s_prop == null) ? false : Boolean.valueOf(s_prop.trim());
-
-        if (s_prop != null && prop && routedMessage != null) {
-            try (PrintWriter writer = new PrintWriter(new FileWriter(OUTPUT_FILE, true))) {
-                writer.println("[TestWsLogHandler] hidden=" + messageHidden + " | " + routedMessage.getFormattedMsg());
-            } catch (IOException e) {
-                // Intentionally swallowed — cannot use logging here without causing a routing loop.
-            }
         }
     }
 }

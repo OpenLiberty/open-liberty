@@ -416,7 +416,7 @@ public class MessageRouterImpl implements MessageRouter {
                     count++;
                 }
             }
-            if (count > 1 || (lastIndexAsterisk != msgId.length() - 1 && lastIndexAsterisk != msgId.length() - 2)) {
+            if (count > 1 || lastIndexAsterisk == 0 || (lastIndexAsterisk != msgId.length() - 1 && lastIndexAsterisk != msgId.length() - 2)) {
                 // Invalid pattern — ignore silently. We don't quite care for removal.
                 return;
             }

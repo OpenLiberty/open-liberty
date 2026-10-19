@@ -261,11 +261,11 @@ public class CapturedMessageStore {
             // prefix* — matches any level
             return true;
         } else if (asteriskIdx == pattern.length() - 2) {
-            // prefix*L — level-qualified
+            // prefix*L — level-qualified; case-sensitive, like the router
             char expectedLevel = pattern.charAt(pattern.length() - 1);
             if (!msgId.isEmpty()) {
                 char actualLevel = msgId.charAt(msgId.length() - 1);
-                return Character.toUpperCase(actualLevel) == Character.toUpperCase(expectedLevel);
+                return actualLevel == expectedLevel;
             }
         }
         return false;

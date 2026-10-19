@@ -230,8 +230,8 @@ public class WsLogHandlerInvalidWildcardTest extends WsLogHandlerBaseTest {
                 + "CWLFB0001I: Test component beta info does not match the warning-only pattern.,"
                 + "CWLFC0002I: Test component charlie other ID does not match the exact ID.,"
                 // Not routed: would match CWLFD*K / CWLFE** if those invalid patterns had been accepted
-                + "CWLFD0001E: Test component delta must not route, its pattern is invalid.,"
-                + "CWLFE0001I: Test component echo must not route, its pattern is invalid.";
+                + "CWLFD0001E: Test component delta must not route because its pattern is invalid.,"
+                + "CWLFE0001I: Test component echo must not route because its pattern is invalid.";
         assertEquals("Emit should return 200", 200, postForm("/wsLogHandler/emit/text", emitBody));
 
         // 3. Only messages matching the valid patterns were captured.
@@ -303,8 +303,8 @@ public class WsLogHandlerInvalidWildcardTest extends WsLogHandlerBaseTest {
                 + "CWLFC0010A: Test component charlie audit event recorded.,"
                 + "CWLFD0003E: Test component delta failed to initialize subsystem.,"
                 // Not routed: would match CWLFX*K / CWLFY** if those invalid patterns had been accepted
-                + "CWLFX0001E: Test component x-ray must not route, its pattern is invalid.,"
-                + "CWLFY0001I: Test component yankee must not route, its pattern is invalid.";
+                + "CWLFX0001E: Test component x-ray must not route because its pattern is invalid.,"
+                + "CWLFY0001I: Test component yankee must not route because its pattern is invalid.";
         assertEquals("Emit should return 200", 200, postForm("/wsLogHandler/emit/text", emitBody));
 
         assertEquals("Verify should return 200 (PASSED) - messages matching the valid patterns must still be routed",
