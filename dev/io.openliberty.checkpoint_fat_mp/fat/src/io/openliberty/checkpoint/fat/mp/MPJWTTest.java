@@ -251,7 +251,7 @@ public class MPJWTTest extends FATServletClient {
             char[] password = new String("secret").toCharArray();
             keystore.load(new FileInputStream(server.getMachine().getFile(keystorePath).getAbsolutePath()), password);
             Key key = keystore.getKey("default", password);
-            String output = "-----BEGIN PRIVATE KEY-----\n"
+            String output = "-----BEGIN PRIVATE KEY-----\n" // pragma: allowlist secret
                             + Base64.getEncoder().encodeToString(key.getEncoded()) + "\n"
                             + "-----END PRIVATE KEY-----";
 

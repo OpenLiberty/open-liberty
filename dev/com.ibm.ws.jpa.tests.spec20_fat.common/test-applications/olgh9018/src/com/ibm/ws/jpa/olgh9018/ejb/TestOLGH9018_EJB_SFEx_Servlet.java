@@ -40,7 +40,7 @@ public class TestOLGH9018_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testUnwrapConnectionNoTrans
     @Test
     public void jpa_spec20_olgh9018_testUnwrapConnectionNoTrans_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_spec20_olgh9018_testUnwrapConnectionNoTrans_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_spec20_olgh9018_testUnwrapConnectionNoTrans_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testUnwrapConnectionNoTrans";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -49,7 +49,7 @@ public class TestOLGH9018_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testUnwrapConnectionInTrans
     @Test
     public void jpa_spec20_olgh9018_testUnwrapConnectionInTrans_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_spec20_olgh9018_testUnwrapConnectionInTrans_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_spec20_olgh9018_testUnwrapConnectionInTrans_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testUnwrapConnectionInTrans";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -58,7 +58,7 @@ public class TestOLGH9018_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testUnwrapConnectionInTransWithOp
     @Test
     public void jpa_spec20_olgh9018_testUnwrapConnectionInTransWithOp_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_spec20_olgh9018_testUnwrapConnectionInTransWithOp_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_spec20_olgh9018_testUnwrapConnectionInTransWithOp_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testUnwrapConnectionInTransWithOp";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

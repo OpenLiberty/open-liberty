@@ -589,7 +589,7 @@ public class DMIPriNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRI_NOOVRD_Web_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRI_NOOVRD_Web_CMTS";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRI_NOOVRD_Web_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

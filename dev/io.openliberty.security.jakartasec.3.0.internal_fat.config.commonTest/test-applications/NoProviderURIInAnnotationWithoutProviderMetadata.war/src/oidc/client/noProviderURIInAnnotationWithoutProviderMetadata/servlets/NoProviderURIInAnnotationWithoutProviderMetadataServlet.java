@@ -24,7 +24,7 @@ import oidc.client.base.servlets.BaseServlet;
 @WebServlet("/NoProviderURIInAnnotationWithoutProviderMetadataServlet")
 @OpenIdAuthenticationMechanismDefinition(
                                          clientId = "client_1",
-                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
+                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger", // pragma: allowlist secret
                                          redirectURI = "${providerBean.clientSecureRoot}/NoProviderURIInAnnotationWithoutProviderMetadata/Callback",
                                          jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT,
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"))

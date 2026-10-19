@@ -25,7 +25,7 @@ import oidc.client.base.servlets.BaseServlet;
 @WebServlet("/OidcAnnotatedServlet")
 @OpenIdAuthenticationMechanismDefinition(providerURI = "https://localhost:8920/oidc/endpoint/OP1",
                                          clientId = "client_1",
-                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
+                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger", // pragma: allowlist secret
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          useSession = false,
                                          redirectURI = "https://localhost:8940/SimplestAnnotated/Callback",

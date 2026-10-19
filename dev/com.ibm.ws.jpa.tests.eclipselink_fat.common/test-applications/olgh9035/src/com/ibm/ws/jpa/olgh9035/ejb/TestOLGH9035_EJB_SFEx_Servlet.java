@@ -40,7 +40,7 @@ public class TestOLGH9035_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // DB2Z tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2ZOS";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -49,7 +49,7 @@ public class TestOLGH9035_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     //DB2-i tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2I";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -58,7 +58,7 @@ public class TestOLGH9035_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     //MySQL tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_MySQL";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -67,7 +67,7 @@ public class TestOLGH9035_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     //Derby tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_Derby_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_Derby_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_Derby_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_Derby";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -85,7 +85,7 @@ public class TestOLGH9035_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     //Hana tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_Hana_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_Hana_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_Hana_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_Hana";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

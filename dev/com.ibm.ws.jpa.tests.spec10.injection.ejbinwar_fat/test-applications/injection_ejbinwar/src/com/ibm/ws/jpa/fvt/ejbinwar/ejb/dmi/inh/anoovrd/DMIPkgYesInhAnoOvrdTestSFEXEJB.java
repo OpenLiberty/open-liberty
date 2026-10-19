@@ -59,7 +59,7 @@ public class DMIPkgYesInhAnoOvrdTestSFEXEJB extends DMIPkgYesInhAnoOvrdTestEXSup
 
     @Override
     @PersistenceContext(unitName = "../lib/jpapulib.jar#OVRD_COMMON_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmex_common_earlib")
+                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmex_common_earlib") // pragma: allowlist secret
     void setOvdem_cmex_common_earlib(EntityManager ovdemCmtsCommonEarlib) {
         ovdem_cmex_common_earlib = ovdemCmtsCommonEarlib;
     }
@@ -72,7 +72,7 @@ public class DMIPkgYesInhAnoOvrdTestSFEXEJB extends DMIPkgYesInhAnoOvrdTestEXSup
 
     @Override
     @PersistenceContext(unitName = "OVRD_JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     void setOvdem_cmex_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmex_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }

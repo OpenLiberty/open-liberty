@@ -49,7 +49,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNormalParams() {
         // base64(sha256(CLIENT_ID + BROWSER_STATE + SALT)) + SALT_DELIMITER + SALT
-        String expected = "SvQmlVGrmC4l8/kuwiSArKwoV+jAjdpIri2oT5Cdu1U=" + SALT_DELIMITER + SALT;
+        String expected = "SvQmlVGrmC4l8/kuwiSArKwoV+jAjdpIri2oT5Cdu1U=" + SALT_DELIMITER + SALT; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, BROWSER_STATE, SALT);
         assertEquals(expected, calculated);
     }
@@ -57,7 +57,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullClientId() {
         // base64(sha256("null" + BROWSER_STATE + SALT)) + SALT_DELIMITER + SALT
-        String expected = "iI2afTXH03JnPOfjqGdSuCQJp7AEt3mGBzo9km1mBdw=" + SALT_DELIMITER + SALT;
+        String expected = "iI2afTXH03JnPOfjqGdSuCQJp7AEt3mGBzo9km1mBdw=" + SALT_DELIMITER + SALT; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(null, BROWSER_STATE, SALT);
         assertEquals(expected, calculated);
     }
@@ -73,7 +73,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullBrowserState() {
         // base64(sha256(CLIENT_ID + "null" + SALT)) + SALT_DELIMITER + SALT
-        String expected = "1NKBvS+YJgfJm0/s69YpN8mOvl8z6pgo5jF7jqqrkCQ=" + SALT_DELIMITER + SALT;
+        String expected = "1NKBvS+YJgfJm0/s69YpN8mOvl8z6pgo5jF7jqqrkCQ=" + SALT_DELIMITER + SALT; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, null, SALT);
         assertEquals(expected, calculated);
     }
@@ -81,7 +81,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateEmptyBrowserState() {
         // base64(sha256(CLIENT_ID + SALT)) + SALT_DELIMITER + SALT
-        String expected = "6P0kbtVuKEbf41Mi3MWN78LGB+GmyiDVbMj+3geCraI=" + SALT_DELIMITER + SALT;
+        String expected = "6P0kbtVuKEbf41Mi3MWN78LGB+GmyiDVbMj+3geCraI=" + SALT_DELIMITER + SALT; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, "", SALT);
         assertEquals(expected, calculated);
     }
@@ -89,7 +89,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullSalt() {
         // base64(sha256(CLIENT_ID + BROWSER_STATE))
-        String expected = "eikUpPhMlAS0wyehh8Wm4I+sjxluM5AhrDaJr9mIbco=";
+        String expected = "eikUpPhMlAS0wyehh8Wm4I+sjxluM5AhrDaJr9mIbco="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, BROWSER_STATE, null);
         assertEquals(expected, calculated);
     }
@@ -97,7 +97,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateEmptySalt() {
         // base64(sha256(CLIENT_ID + BROWSER_STATE))
-        String expected = "eikUpPhMlAS0wyehh8Wm4I+sjxluM5AhrDaJr9mIbco=";
+        String expected = "eikUpPhMlAS0wyehh8Wm4I+sjxluM5AhrDaJr9mIbco="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, BROWSER_STATE, "");
         assertEquals(expected, calculated);
     }
@@ -105,7 +105,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullClientIdNullBrowserState() {
         // base64(sha256("null" + "null" + SALT)) + SALT_DELIMITER + SALT
-        String expected = "6OYejv0uqrGrwiu7aOaBy1VIJhMBHiFmO3z2KdzGdEI=" + SALT_DELIMITER + SALT;
+        String expected = "6OYejv0uqrGrwiu7aOaBy1VIJhMBHiFmO3z2KdzGdEI=" + SALT_DELIMITER + SALT; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(null, null, SALT);
         assertEquals(expected, calculated);
     }
@@ -129,7 +129,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateEmptyClientIdEmptyBrowserState() {
         // base64(sha256(SALT)) + SALT_DELIMITER + SALT
-        String expected = "Y0ea1poJCyWCd+yPum+ZQZov+ySJgVEGV8lEzNEUjpc=" + SALT_DELIMITER + SALT;
+        String expected = "Y0ea1poJCyWCd+yPum+ZQZov+ySJgVEGV8lEzNEUjpc=" + SALT_DELIMITER + SALT; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState("", "", SALT);
         assertEquals(expected, calculated);
     }
@@ -137,7 +137,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullClientIdNullSalt() {
         // base64(sha256("null" + BROWSER_STATE))
-        String expected = "1qIP/w9vzK/lOFMvrMQ1ZtM0wyM7+VKYnr5FSs1LnGI=";
+        String expected = "1qIP/w9vzK/lOFMvrMQ1ZtM0wyM7+VKYnr5FSs1LnGI="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(null, BROWSER_STATE, null);
         assertEquals(expected, calculated);
     }
@@ -145,7 +145,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullClientIdEmptySalt() {
         // base64(sha256("null" + BROWSER_STATE))
-        String expected = "1qIP/w9vzK/lOFMvrMQ1ZtM0wyM7+VKYnr5FSs1LnGI=";
+        String expected = "1qIP/w9vzK/lOFMvrMQ1ZtM0wyM7+VKYnr5FSs1LnGI="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(null, BROWSER_STATE, "");
         assertEquals(expected, calculated);
     }
@@ -153,7 +153,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateEmptyClientIdNullSalt() {
         // base64(sha256(BROWSER_STATE))
-        String expected = "lwn2T4bHVv/3J/vYWS2Ik6XOc8COGQDjk7Kx9CQQHco=";
+        String expected = "lwn2T4bHVv/3J/vYWS2Ik6XOc8COGQDjk7Kx9CQQHco="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState("", BROWSER_STATE, null);
         assertEquals(expected, calculated);
     }
@@ -161,7 +161,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateEmptyClientIdEmptySalt() {
         // base64(sha256(BROWSER_STATE))
-        String expected = "lwn2T4bHVv/3J/vYWS2Ik6XOc8COGQDjk7Kx9CQQHco=";
+        String expected = "lwn2T4bHVv/3J/vYWS2Ik6XOc8COGQDjk7Kx9CQQHco="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState("", BROWSER_STATE, "");
         assertEquals(expected, calculated);
     }
@@ -169,7 +169,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullBrowserStateNullSalt() {
         // base64(sha256(CLIENT_ID + "null"))
-        String expected = "gcb75Fgohqvl7zEkhg1JhUniypX5IjCsTphuW7FOWHg=";
+        String expected = "gcb75Fgohqvl7zEkhg1JhUniypX5IjCsTphuW7FOWHg="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, null, null);
         assertEquals(expected, calculated);
     }
@@ -177,7 +177,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateNullBrowserStateEmptySalt() {
         // base64(sha256(CLIENT_ID + "null"))
-        String expected = "gcb75Fgohqvl7zEkhg1JhUniypX5IjCsTphuW7FOWHg=";
+        String expected = "gcb75Fgohqvl7zEkhg1JhUniypX5IjCsTphuW7FOWHg="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, null, "");
         assertEquals(expected, calculated);
     }
@@ -185,7 +185,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateEmptyBrowserStateNullSalt() {
         // base64(sha256(CLIENT_ID))
-        String expected = "kYkzYrAtAcAPtxvGvgIGXe3DNWWV/GSFgatZqUhkp+Q=";
+        String expected = "kYkzYrAtAcAPtxvGvgIGXe3DNWWV/GSFgatZqUhkp+Q="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, "", null);
         assertEquals(expected, calculated);
     }
@@ -193,7 +193,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateEmptyBrowserStateEmptySalt() {
         // base64(sha256(CLIENT_ID))
-        String expected = "kYkzYrAtAcAPtxvGvgIGXe3DNWWV/GSFgatZqUhkp+Q=";
+        String expected = "kYkzYrAtAcAPtxvGvgIGXe3DNWWV/GSFgatZqUhkp+Q="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(CLIENT_ID, "", "");
         assertEquals(expected, calculated);
     }
@@ -201,7 +201,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateAllParamsNull() {
         // base64(sha256("null" + "null"))
-        String expected = "LHvdr6b4JMsOaCCRqh2co5KIPLH1vP+VOJrcn+rnf80=";
+        String expected = "LHvdr6b4JMsOaCCRqh2co5KIPLH1vP+VOJrcn+rnf80="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(null, null, null);
         assertEquals(expected, calculated);
     }
@@ -209,7 +209,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateOneParamNullOneParamEmptyNullSalt() {
         // base64(sha256("null"))
-        String expected = "dCNOmK/nSY+12vHzasLXiswzlGT5UHA7jAGYkvmCuQs=";
+        String expected = "dCNOmK/nSY+12vHzasLXiswzlGT5UHA7jAGYkvmCuQs="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState(null, "", null);
         assertEquals(expected, calculated);
     }
@@ -217,7 +217,7 @@ public class OidcSessionManagementUtilTest {
     @Test
     public void calculateSessionStateAllParamsEmpty() {
         // base64(sha256(""))
-        String expected = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
+        String expected = "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="; // pragma: allowlist secret
         String calculated = OidcSessionManagementUtil.calculateSessionState("", "", "");
         assertEquals(expected, calculated);
     }

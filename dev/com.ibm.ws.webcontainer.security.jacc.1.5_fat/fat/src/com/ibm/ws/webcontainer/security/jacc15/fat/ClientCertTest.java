@@ -122,35 +122,35 @@ public class ClientCertTest {
      * # convert DER certificate to PEM:
      * openssl x509 -in LDAPUser5.crt.der -inform DER -out LDAPUser5.crt.pem -outform PEM
      */
-    protected final static String user2CertWSCCHeader = "MIICYjCCAiCgAwIBAgIET9ZYzjALBgcqhkjOOAQDBQAwFDESMBAGA1UEAxMJTERBUFVzZXIyMB4XDTEyMDYxMTIwNDU"
+    protected final static String user2CertWSCCHeader = "MIICYjCCAiCgAwIBAgIET9ZYzjALBgcqhkjOOAQDBQAwFDESMBAGA1UEAxMJTERBUFVzZXIyMB4XDTEyMDYxMTIwNDU" // pragma: allowlist secret
                                                         + "wMloXDTIyMDYwOTIwNDUwMlowFDESMBAGA1UEAxMJTERBUFVzZXIyMIIBuDCCASwGByqGSM44BAEwggEfAoGBAP1/"
-                                                        + "U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq/xfW6MPbLm1Vs14E7gB00b/JmYLdrmVClp"
-                                                        + "J+f6AR7ECLCT7up1/63xhv4O1fnxqimFQ8E+4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAhUAl2BQjx"
-                                                        + "UjC8yykrmCouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdMCz0HgmdRWVeOutRZT+ZxBxCBgLR"
-                                                        + "JFnEj6EwoFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWfBpKL"
-                                                        + "Zl6Ae1UlZAFMO/7PSSoDgYUAAoGBALGljs2ahzYbSbeCaltBy+krGm4jNLlwvS81Zpgjqh2A15fHGTAvvrGArk36I"
-                                                        + "Q3jycONKUeEeyrlDGyJlrB+YZ6sFZXYbhsAPeLbIIthU1V7ahRuZtOavQao+nGV7gbGUb410e5iuwx8NHIEzhwH0l"
-                                                        + "C4CDPRuHGaRXaXReKSOLbgMAsGByqGSM44BAMFAAMvADAsAhR4JFtZj3PkGBEuIgC19XhRY67phwIUIg1xfWb7gb2"
+                                                        + "U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq/xfW6MPbLm1Vs14E7gB00b/JmYLdrmVClp" // pragma: allowlist secret
+                                                        + "J+f6AR7ECLCT7up1/63xhv4O1fnxqimFQ8E+4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAhUAl2BQjx" // pragma: allowlist secret
+                                                        + "UjC8yykrmCouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdMCz0HgmdRWVeOutRZT+ZxBxCBgLR" // pragma: allowlist secret
+                                                        + "JFnEj6EwoFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWfBpKL" // pragma: allowlist secret
+                                                        + "Zl6Ae1UlZAFMO/7PSSoDgYUAAoGBALGljs2ahzYbSbeCaltBy+krGm4jNLlwvS81Zpgjqh2A15fHGTAvvrGArk36I" // pragma: allowlist secret
+                                                        + "Q3jycONKUeEeyrlDGyJlrB+YZ6sFZXYbhsAPeLbIIthU1V7ahRuZtOavQao+nGV7gbGUb410e5iuwx8NHIEzhwH0l" // pragma: allowlist secret
+                                                        + "C4CDPRuHGaRXaXReKSOLbgMAsGByqGSM44BAMFAAMvADAsAhR4JFtZj3PkGBEuIgC19XhRY67phwIUIg1xfWb7gb2" // pragma: allowlist secret
                                                         + "maTnxH/EPUulzDsE=";
-    protected final static String user2CertInvalidWSCCHeader = "MIICYjCCAiCgAwIBAgIET9ZYzjALBgcqhkjOOAQDBQAwFDESMBAGA1UEAxMJTERBUFVzZXIyMB4XDTEyMDYxMTIwNDU"
+    protected final static String user2CertInvalidWSCCHeader = "MIICYjCCAiCgAwIBAgIET9ZYzjALBgcqhkjOOAQDBQAwFDESMBAGA1UEAxMJTERBUFVzZXIyMB4XDTEyMDYxMTIwNDU" // pragma: allowlist secret
                                                                + "wMloXDTIyMDYwOTIwNDUwMlowFDESMBAGA1UEAxMJTERBUFVzZXIyMIIBuDCCASwGByqGSM44BAEwggEfAoGBAP1/"
-                                                               + "U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq/xfW6MPbLm1Vs14E7gB00b/JmYLdrmVClp"
-                                                               + "J+f6AR7ECLCT7up1/64xhv4O1fnxqimFQ8E+4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAhUAl2BQjx"
-                                                               + "UjC8yykrmCouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdMCz0HgmdRWVeOutRZT+ZxBxCBgLR"
-                                                               + "JFnEj6EwoFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWfBpKL"
-                                                               + "Zl6Ae1UlZAGMO/7PSSoDgYUAAoGBALGljs2ahzYbSbeCaltBy+krGm4jNLlwvS81Zpgjqh2A15fHGTAvvrGArk36I"
-                                                               + "Q3jycONKUeEeyrlDGyJlrB+YZ6sFZXYbhsAPeLbIIthU1V7ahRuZtOavQao+nGV7gbGUb410e5iuwx8NHIEzhwH0l"
-                                                               + "C4CDPRuHGaRXaXReKSOLbgMAsGByqSSM44BAMFAAMvADAsAhR4JFtZj3PkGBEuIgC19XhRY67phwIUIg1xfWb7gb2"
+                                                               + "U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq/xfW6MPbLm1Vs14E7gB00b/JmYLdrmVClp" // pragma: allowlist secret
+                                                               + "J+f6AR7ECLCT7up1/64xhv4O1fnxqimFQ8E+4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAhUAl2BQjx" // pragma: allowlist secret
+                                                               + "UjC8yykrmCouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdMCz0HgmdRWVeOutRZT+ZxBxCBgLR" // pragma: allowlist secret
+                                                               + "JFnEj6EwoFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWfBpKL" // pragma: allowlist secret
+                                                               + "Zl6Ae1UlZAGMO/7PSSoDgYUAAoGBALGljs2ahzYbSbeCaltBy+krGm4jNLlwvS81Zpgjqh2A15fHGTAvvrGArk36I" // pragma: allowlist secret
+                                                               + "Q3jycONKUeEeyrlDGyJlrB+YZ6sFZXYbhsAPeLbIIthU1V7ahRuZtOavQao+nGV7gbGUb410e5iuwx8NHIEzhwH0l" // pragma: allowlist secret
+                                                               + "C4CDPRuHGaRXaXReKSOLbgMAsGByqSSM44BAMFAAMvADAsAhR4JFtZj3PkGBEuIgC19XhRY67phwIUIg1xfWb7gb2" // pragma: allowlist secret
                                                                + "maTnxH/EPUulzDsE=";
-    protected final static String user5CertWSCCHeader = "MIICmDCCAlagAwIBAgIETtVkXzALBgcqhkjOOAQDBQAwLzELMAkGA1UEBhMCVVMxDDAKBgNVBAoTA0lCTTESMBAGA1UEAxMJTERBUFVzZXI"
+    protected final static String user5CertWSCCHeader = "MIICmDCCAlagAwIBAgIETtVkXzALBgcqhkjOOAQDBQAwLzELMAkGA1UEBhMCVVMxDDAKBgNVBAoTA0lCTTESMBAGA1UEAxMJTERBUFVzZXI" // pragma: allowlist secret
                                                         + "1MB4XDTExMTEyOTIzMDE1MVoXDTIxMTEyNjIzMDE1MVowLzELMAkGA1UEBhMCVVMxDDAKBgNVBAoTA0lCTTESMBAGA1UEAxMJTERBUFVz"
-                                                        + "ZXI1MIIBuDCCASwGByqGSM44BAEwggEfAoGBAP1/U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq/xfW6MPbLm"
-                                                        + "1Vs14E7gB00b/JmYLdrmVClpJ+f6AR7ECLCT7up1/63xhv4O1fnxqimFQ8E+4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAh"
-                                                        + "UAl2BQjxUjC8yykrmCouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdMCz0HgmdRWVeOutRZT+ZxBxCBgLRJFnEj6Ew"
-                                                        + "oFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWfBpKLZl6Ae1UlZAFMO/7PSSoDgYUA"
-                                                        + "AoGBANqAPGZDtRgdQTvwFXGZaiNYMOuiQAJHLX97tTeO/N76PZNPQTI0+DTeJ82E1n62VI6qjZYhNVOS8pZyPinve2wOyHV8jRQgkXXui"
-                                                        + "A8r/C/WMXXwtkRKQEr4CxUY7vqSpEXVMIkUoZGESHUAc1TSk4RuP5DoW5WjfAT2CzCcRd2nMAsGByqGSM44BAMFAAMvADAsAhQ51XvpJt"
-                                                        + "/6xVd80F7A39E7woLAUQIUDB29n05fxwKd/3kjae8oX9pi7Iw=";
+                                                        + "ZXI1MIIBuDCCASwGByqGSM44BAEwggEfAoGBAP1/U4EddRIpUt9KnC7s5Of2EbdSPO9EAMMeP4C2USZpRV1AIlH7WT2NWPq/xfW6MPbLm" // pragma: allowlist secret
+                                                        + "1Vs14E7gB00b/JmYLdrmVClpJ+f6AR7ECLCT7up1/63xhv4O1fnxqimFQ8E+4P208UewwI1VBNaFpEy9nXzrith1yrv8iIDGZ3RSAHHAh" // pragma: allowlist secret
+                                                        + "UAl2BQjxUjC8yykrmCouuEC/BYHPUCgYEA9+GghdabPd7LvKtcNrhXuXmUr7v6OuqC+VdMCz0HgmdRWVeOutRZT+ZxBxCBgLRJFnEj6Ew" // pragma: allowlist secret
+                                                        + "oFhO3zwkyjMim4TwWeotUfI0o4KOuHiuzpnWRbqN/C/ohNWLx+2J6ASQ7zKTxvqhRkImog9/hWuWfBpKLZl6Ae1UlZAFMO/7PSSoDgYUA" // pragma: allowlist secret
+                                                        + "AoGBANqAPGZDtRgdQTvwFXGZaiNYMOuiQAJHLX97tTeO/N76PZNPQTI0+DTeJ82E1n62VI6qjZYhNVOS8pZyPinve2wOyHV8jRQgkXXui" // pragma: allowlist secret
+                                                        + "A8r/C/WMXXwtkRKQEr4CxUY7vqSpEXVMIkUoZGESHUAc1TSk4RuP5DoW5WjfAT2CzCcRd2nMAsGByqGSM44BAMFAAMvADAsAhQ51XvpJt" // pragma: allowlist secret
+                                                        + "/6xVd80F7A39E7woLAUQIUDB29n05fxwKd/3kjae8oX9pi7Iw="; // pragma: allowlist secret
 
     @Rule
     public final TestWatcher logger = new TestWatcher() {

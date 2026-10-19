@@ -25,7 +25,7 @@ import oidc.client.base.servlets.BaseServlet;
 @WebServlet("/TokenTestApp")
 @ApplicationScoped
 @OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP3", clientId = "client_1",
-                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
+                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger", // pragma: allowlist secret
                                          jwksReadTimeoutExpression = "60000",
                                          useNonceExpression = "${openIdConfig.useNonceExpression}",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub",

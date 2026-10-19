@@ -66,7 +66,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
 
     @Override
     @PersistenceContext(unitName = "../lib/jpapulib.jar#OVRD_COMMON_JTA", type = PersistenceContextType.TRANSACTION,
-                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmts_common_earlib")
+                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmts_common_earlib") // pragma: allowlist secret
     void setOvdem_cmts_common_earlib(EntityManager ovdemCmtsCommonEarlib) {
         ovdem_cmts_common_earlib = ovdemCmtsCommonEarlib;
     }
@@ -79,7 +79,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
 
     @Override
     @PersistenceContext(unitName = "OVRD_JPALIB_JTA", type = PersistenceContextType.TRANSACTION,
-                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmts_jpalib_earlib")
+                        name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdem_cmts_jpalib_earlib") // pragma: allowlist secret
     void setOvdem_cmts_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmts_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }
@@ -116,7 +116,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
     }
 
     @Override
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#OVRD_COMMON_JTA", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amjta_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#OVRD_COMMON_JTA", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amjta_common_earlib") // pragma: allowlist secret
     void setOvdemf_amjta_common_earlib(
                                        EntityManagerFactory ovdemfAmjtaCommonEarlib) {
         ovdemf_amjta_common_earlib = ovdemfAmjtaCommonEarlib;
@@ -129,7 +129,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
     }
 
     @Override
-    @PersistenceUnit(unitName = "OVRD_JPALIB_JTA", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amjta_jpalib_earlib")
+    @PersistenceUnit(unitName = "OVRD_JPALIB_JTA", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amjta_jpalib_earlib") // pragma: allowlist secret
     void setOvdemf_amjta_jpalib_earlib(
                                        EntityManagerFactory ovdemfAmjtaJpalibEarlib) {
         ovdemf_amjta_jpalib_earlib = ovdemfAmjtaJpalibEarlib;
@@ -142,7 +142,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
     }
 
     @Override
-    @PersistenceUnit(unitName = "OVRD_COMMON_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_common_ejb")
+    @PersistenceUnit(unitName = "OVRD_COMMON_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_common_ejb") // pragma: allowlist secret
     void setOvdemf_amrl_common_ejb(
                                    EntityManagerFactory ovdemfAmrlCommonWebapp) {
         ovdemf_amrl_common_ejb = ovdemfAmrlCommonWebapp;
@@ -155,7 +155,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
     }
 
     @Override
-    @PersistenceUnit(unitName = "OVRD_EJB_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_ejb_ejb")
+    @PersistenceUnit(unitName = "OVRD_EJB_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_ejb_ejb") // pragma: allowlist secret
     void setOvdemf_amrl_ejb_ejb(
                                 EntityManagerFactory ovdemfAmrlWebappWebapp) {
         ovdemf_amrl_ejb_ejb = ovdemfAmrlWebappWebapp;
@@ -168,7 +168,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
     }
 
     @Override
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#OVRD_COMMON_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#OVRD_COMMON_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_common_earlib") // pragma: allowlist secret
     void setOvdemf_amrl_common_earlib(
                                       EntityManagerFactory ovdemfAmrlCommonEarlib) {
         ovdemf_amrl_common_earlib = ovdemfAmrlCommonEarlib;
@@ -181,7 +181,7 @@ public class DMIPkgYesInhAnoOvrdMDB extends DMIPkgYesInhAnoOvrdTestSuperclass {
     }
 
     @Override
-    @PersistenceUnit(unitName = "OVRD_JPALIB_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_jpalib_earlib")
+    @PersistenceUnit(unitName = "OVRD_JPALIB_RL", name = "jpa/DMIPkgYesInhAnoOvrdTestEJB/ovdemf_amrl_jpalib_earlib") // pragma: allowlist secret
     void setOvdemf_amrl_jpalib_earlib(
                                       EntityManagerFactory ovdemfAmrlJpalibEarlib) {
         ovdemf_amrl_jpalib_earlib = ovdemfAmrlJpalibEarlib;

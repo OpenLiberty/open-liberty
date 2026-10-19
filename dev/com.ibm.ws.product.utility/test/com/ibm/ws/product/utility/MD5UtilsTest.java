@@ -28,10 +28,10 @@ import com.ibm.ws.product.utility.extension.MD5Utils;
 public class MD5UtilsTest {
 
     private static final String TEST_STR = "abc";
-    private static final String TEST_STR_MD5_VALUE = "900150983cd24fb0d6963f7d28e17f72";
+    private static final String TEST_STR_MD5_VALUE = "900150983cd24fb0d6963f7d28e17f72"; // pragma: allowlist secret
 
     private static final String TEST_FILE_NAME = "md5Tests/TestFile.txt";
-    private static final String TEST_FILE_MD5_VALUE = "91d4999210e9ffa1444b37b9ca8364b2";
+    private static final String TEST_FILE_MD5_VALUE = "91d4999210e9ffa1444b37b9ca8364b2"; // pragma: allowlist secret
 
     @Test
     public void testGetMD5String() {

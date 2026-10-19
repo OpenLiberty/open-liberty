@@ -108,7 +108,7 @@ public class UIBasicTest {
         //Especially for Windows if certificates are slow to create
         server.waitForDefaultHTTPEndpointSSLStart();
 
-        driver.get("https://admin:test@host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/ibm/api/explorer");
+        driver.get("https://admin:test@host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/ibm/api/explorer"); // pragma: allowlist secret
         testUI();
     }
 

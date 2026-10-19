@@ -58,7 +58,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -81,7 +81,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -104,7 +104,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_NOOVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -135,7 +135,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -158,7 +158,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -181,7 +181,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -208,7 +208,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -231,7 +231,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -254,7 +254,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -281,7 +281,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -304,7 +304,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -327,7 +327,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -361,7 +361,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_OVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_OVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_OVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -407,7 +407,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_OVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_OVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUName_PRO_OVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -438,7 +438,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -461,7 +461,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -484,7 +484,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -511,7 +511,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -534,7 +534,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -557,7 +557,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRO_OVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -584,7 +584,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -607,7 +607,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -630,7 +630,7 @@ public class DMIProYesInhDDOvrdEJBSLTestServlet extends EJBDBTestVehicleServlet 
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRO_OVRD_EJB_SL_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

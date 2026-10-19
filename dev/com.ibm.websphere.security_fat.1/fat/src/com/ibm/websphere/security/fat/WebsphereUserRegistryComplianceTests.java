@@ -126,7 +126,7 @@ public abstract class WebsphereUserRegistryComplianceTests {
 
         }
 
-        String password = "thisIsAVeryVeryVeryVeryVERYLongStringWithTheIntentOfDrivingPossibleProblems";
+        String password = "thisIsAVeryVeryVeryVeryVERYLongStringWithTheIntentOfDrivingPossibleProblems"; // pragma: allowlist secret
         try {
             servlet.checkPassword(validUserSecurityName, password);
             fail("Did not get expected PasswordCheckFailedException");

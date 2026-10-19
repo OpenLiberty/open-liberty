@@ -28,7 +28,7 @@ import oidc.client.base.servlets.BaseServlet;
 @WebServlet("/MaximumAnnotationServlet")
 @OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
                                          clientId = "client_1",
-                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
+                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger", // pragma: allowlist secret
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          logout = @LogoutDefinition(),
                                          redirectURI = "${providerBean.clientSecureRoot}/MaximumAnnotation/Callback",

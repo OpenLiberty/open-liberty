@@ -145,7 +145,7 @@ public class TokenEndpointServlet extends HttpServlet {
         theResponse.put("token_type", "Bearer");
         theResponse.put("expires_in", 7199);
         theResponse.put("scope", "openid profile");
-        theResponse.put("refresh_token", "21MhoIC95diaQo9tb5UpFBDFlHh45NixhcKkCwRipszH6WIzKz");
+        theResponse.put("refresh_token", "21MhoIC95diaQo9tb5UpFBDFlHh45NixhcKkCwRipszH6WIzKz"); // pragma: allowlist secret
         theResponse.put("id_token", idTokenRequestParameter);
 
         PrintWriter writer = resp.getWriter();

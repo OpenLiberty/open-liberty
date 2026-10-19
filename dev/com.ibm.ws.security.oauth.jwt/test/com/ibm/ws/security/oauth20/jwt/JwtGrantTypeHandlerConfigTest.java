@@ -42,7 +42,7 @@ public class JwtGrantTypeHandlerConfigTest {
     @Rule
     public TestRule managerRule = outputMgr;
     // tokenString
-    final String tokenString = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMSIsIm5vbmNlIjoibXlOb25jZU15Tm9uY2UiLCJpYXQiOjEzODkyODYxNzAsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg5Mjg5NzcwLCJhdWQiOiJjbGllbnQwMSJ9.iuqcj3SNSeos38St61fCU9alkExIsgVjVTdQfKilhrM";
+    final String tokenString = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMSIsIm5vbmNlIjoibXlOb25jZU15Tm9uY2UiLCJpYXQiOjEzODkyODYxNzAsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg5Mjg5NzcwLCJhdWQiOiJjbGllbnQwMSJ9.iuqcj3SNSeos38St61fCU9alkExIsgVjVTdQfKilhrM"; // pragma: allowlist secret
 
     private final Mockery mock = new JUnit4Mockery() {
         {

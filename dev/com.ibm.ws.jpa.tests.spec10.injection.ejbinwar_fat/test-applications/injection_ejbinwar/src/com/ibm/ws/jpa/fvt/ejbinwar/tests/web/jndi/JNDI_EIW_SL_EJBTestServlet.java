@@ -99,7 +99,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_AMJTA"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/earlib/common_jta";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -119,7 +119,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_AMRL"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/earlib/common_rl";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -139,7 +139,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_EJBSL_CMTS"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/earlib/common_cmts";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -159,7 +159,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_AMJTA"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/ejbinwar/ejb_jta";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -179,7 +179,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_AMRL"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/ejbinwar/ejb_rl";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -199,7 +199,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_CMTSL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_CMTSL";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_ANO_EJBSL_CMTSL"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/ejbinwar/ejb_cmts";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -219,7 +219,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_ANO_EJBSL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_ANO_EJBSL_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_ANO_EJBSL_AMJTA"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/earlib/jpalib_jta";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -259,7 +259,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_ANO_EJBSL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_ANO_EJBSL_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_ANO_EJBSL_CMTS"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/ano/earlib/jpalib_cmts";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -339,7 +339,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_AMJTA"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/dd/earlib/common_jta";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -359,7 +359,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_AMRL"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/dd/earlib/common_rl";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -379,7 +379,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_DD_EJBSL_CMTS"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/dd/earlib/common_cmts";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -399,7 +399,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_AMJTA"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/dd/ejbinwar/ejb_jta";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -419,7 +419,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_AMRL"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/dd/ejbinwar/ejb_rl";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -439,7 +439,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameAppModule_DD_EJBSL_CMTS"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/dd/ejbinwar/ejb_cmts";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -499,7 +499,7 @@ public class JNDI_EIW_SL_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_DD_EJBSL_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_DD_EJBSL_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_JNDI_testUniquePUNameLibJar_DD_EJBSL_CMTS"; // pragma: allowlist secret
         final String resource = "java:comp/env/jpa/ejbinwar/jndi/dd/earlib/jpalib_cmts";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

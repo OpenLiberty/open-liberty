@@ -141,13 +141,13 @@ public class ECDHCxfCallerSvcClient extends HttpServlet {
             if (thisMethod.equals("testCxfBasic128GCMSha256ECDHESWithUserNameToken")) {
                 service = new FatBAC01Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac01(" + untID + ")";
-            } else if (thisMethod.equals("testCxfBasic128GCMSha256ECDHESWithSupportingUNT")) {
+            } else if (thisMethod.equals("testCxfBasic128GCMSha256ECDHESWithSupportingUNT")) { // pragma: allowlist secret
                 service = new FatBAC02Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac02(" + untID + ")";
             } else if (thisMethod.equals("testCxfBasic192GCMSha256ECDHESWithUserNameToken")) {
                 service = new FatBAC03Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac03(" + untID + ")";
-            } else if (thisMethod.equals("testCxfBasic192GCMSha256ECDHESWithSupportingUNT")) {
+            } else if (thisMethod.equals("testCxfBasic192GCMSha256ECDHESWithSupportingUNT")) { // pragma: allowlist secret
                 service = new FatBAC04Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac04(" + untID + ")";
                 strSubErrMsg = "BSP:R5620: Any ED_ENCRYPTION_METHOD Algorithm attribute MUST have a value of";

@@ -93,7 +93,7 @@ public class IDTokenHandlerTest {
     private final String differentGroupIdentifier = "groups";
     private final String accessToken = "testAccessToken";
     // third party id token contains claims: {"test1":["test2","test3"],"test4":"test5"}
-    private final String thirdPartyIDToken = "eyJhbGciOiJIUzI1NiJ9.eyJ0ZXN0MSI6WyJ0ZXN0MiIsInRlc3QzIl0sInRlc3Q0IjoidGVzdDUifQ.ccc";
+    private final String thirdPartyIDToken = "eyJhbGciOiJIUzI1NiJ9.eyJ0ZXN0MSI6WyJ0ZXN0MiIsInRlc3QzIl0sInRlc3Q0IjoidGVzdDUifQ.ccc"; // pragma: allowlist secret
     private final boolean jtiClaimEnabledDefault = false;
     private final boolean customClaimsEnabledDefault = true;
     private final String signatureAlgorithmDefault = SIGNATURE_ALG_HS256;

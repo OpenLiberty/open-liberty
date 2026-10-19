@@ -323,7 +323,7 @@ public class TestInheritance_EJB_SFEX_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Inheritance_JoinedTable_StringDisc_Leaf2_CRUDTest_001_Ano_CMEX_EJB_SF() throws Exception {
-        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf2_CRUDTest_001_Ano_CMEX_EJB_SF";
+        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf2_CRUDTest_001_Ano_CMEX_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testInheritance001";
         final String testResource = "test-jpa-resource-cmex";
 
@@ -335,7 +335,7 @@ public class TestInheritance_EJB_SFEX_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Inheritance_JoinedTable_StringDisc_Leaf3_CRUDTest_001_Ano_CMEX_EJB_SF() throws Exception {
-        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf3_CRUDTest_001_Ano_CMEX_EJB_SF";
+        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf3_CRUDTest_001_Ano_CMEX_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testInheritance001";
         final String testResource = "test-jpa-resource-cmex";
 
@@ -359,7 +359,7 @@ public class TestInheritance_EJB_SFEX_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Inheritance_JoinedTable_StringDisc_Leaf2_CRUDTest_001_XML_CMEX_EJB_SF() throws Exception {
-        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf2_CRUDTest_001_XML_CMEX_EJB_SF";
+        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf2_CRUDTest_001_XML_CMEX_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testInheritance001";
         final String testResource = "test-jpa-resource-cmex";
 
@@ -371,7 +371,7 @@ public class TestInheritance_EJB_SFEX_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Inheritance_JoinedTable_StringDisc_Leaf3_CRUDTest_001_XML_CMEX_EJB_SF() throws Exception {
-        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf3_CRUDTest_001_XML_CMEX_EJB_SF";
+        final String testName = "jpa10_Inheritance_JoinedTable_StringDisc_Leaf3_CRUDTest_001_XML_CMEX_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testInheritance001";
         final String testResource = "test-jpa-resource-cmex";
 

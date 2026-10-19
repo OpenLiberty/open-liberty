@@ -170,13 +170,13 @@ public class CxfECDHCallerTests {
     @Test
     public void testCxfBasic128GCMSha256ECDHESWithSupportingUNT() throws Exception {
 
-        String thisMethod = "testCxfBasic128GCMSha256ECDHESWithSupportingUNT";
-        methodFull = "testCxfBasic128GCMSha256ECDHESWithSupportingUNT";
+        String thisMethod = "testCxfBasic128GCMSha256ECDHESWithSupportingUNT"; // pragma: allowlist secret
+        methodFull = "testCxfBasic128GCMSha256ECDHESWithSupportingUNT"; // pragma: allowlist secret
 
         try {
             testRoutine(
                         thisMethod, //String thisMethod,
-                        "Basic128GCMSha256ECDHESWithSupportingUNT", // Testing policy name
+                        "Basic128GCMSha256ECDHESWithSupportingUNT", // Testing policy name // pragma: allowlist secret
                         "positive", // Positive, positive-1, negative or negative-1... etc
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
@@ -203,8 +203,8 @@ public class CxfECDHCallerTests {
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
     public void testCxfBasic192GCMSha256ECDHESWithSupportingUNT() throws Exception {
 
-        String thisMethod = "testCxfBasic192GCMSha256ECDHESWithSupportingUNT";
-        methodFull = "testCxfBasic192GCMSha256ECDHESWithSupportingUNT";
+        String thisMethod = "testCxfBasic192GCMSha256ECDHESWithSupportingUNT"; // pragma: allowlist secret
+        methodFull = "testCxfBasic192GCMSha256ECDHESWithSupportingUNT"; // pragma: allowlist secret
 
         try {
             testRoutine(

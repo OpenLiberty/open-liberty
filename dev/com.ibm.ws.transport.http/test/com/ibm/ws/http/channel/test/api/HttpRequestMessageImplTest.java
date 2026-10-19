@@ -722,7 +722,7 @@ public class HttpRequestMessageImplTest {
             }
 
             // Test a userinfo being present in the URL
-            getRequest().setRequestURL("http://user:password@host/index.html");
+            getRequest().setRequestURL("http://user:password@host/index.html"); // pragma: allowlist secret
             assertEquals("host", getRequest().getURLHost());
             assertEquals("http", getRequest().getScheme());
 

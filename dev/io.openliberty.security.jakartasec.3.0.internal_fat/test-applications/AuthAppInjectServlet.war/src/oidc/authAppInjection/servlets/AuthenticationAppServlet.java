@@ -32,7 +32,7 @@ import oidc.client.base.servlets.BaseServlet;
 @WebServlet("/AuthenticationApp")
 @ApplicationScoped
 @OpenIdAuthenticationMechanismDefinition(providerURI = "${openIdConfig.providerURI}", clientId = "client_1",
-                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
+                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger", // pragma: allowlist secret
                                          jwksReadTimeoutExpression = "60000",
                                          redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResourceExpression}",
                                          useSessionExpression = "${openIdConfig.useSessionExpression}",

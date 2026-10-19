@@ -41,8 +41,8 @@ public abstract class BaseTestCase {
     private static final Class<?> CLASS = BaseTestCase.class;
 
     protected static final String USER1_NAME = "user1";
-    protected static final String USER1_PASSWORD = "user1Password";
-    protected static final String USER1_PASSWORD_HASH = "hQM3o73+TAyCGqHR7no3DJLDgBUTLpyH7mWR0e7bHhqIqlfbL1gMLxtRP+nfJ0XZUnriq4NGpAgW4WGdnq92cw==";
+    protected static final String USER1_PASSWORD = "user1Password"; // pragma: allowlist secret
+    protected static final String USER1_PASSWORD_HASH = "hQM3o73+TAyCGqHR7no3DJLDgBUTLpyH7mWR0e7bHhqIqlfbL1gMLxtRP+nfJ0XZUnriq4NGpAgW4WGdnq92cw=="; // pragma: allowlist secret
 
     protected static final String JCACHE_HIT = "JCache HIT for key ";
     protected static final String JCACHE_MISS = "JCache MISS for key ";

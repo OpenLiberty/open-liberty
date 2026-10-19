@@ -102,19 +102,19 @@ public class GrantTypeCustomizeHandlerJwtImplTest {
     final String oidcTokenEndpoint = "https://localhost:8045/oidc/endpoint/unitoidc/token";
     final String oauthTokenEndpoint = "https://localhost:8045/oauth2/providers/unitpauth/token";
     final String tokenHS256 = "eyJhbGciOiJIUzI1NiIsImtpZCI6ImF1dG9rZXlpZCJ9.eyJpc3MiOiJjbGllbnQ" +
-                              "wMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUiLCJpYXQiOjE0MDc4NjcwNDAsImV" +
-                              "4cCI6MTQwNzg3NDI0MCwic3ViIjoidGVzdHVzZXIiLCJhdWQiOiJodHRwczovL2x" +
-                              "vY2FsaG9zdDo4OTQ1L29hdXRoMi9wcm92aWRlcnMvT0F1dGhDb25maWdTYW1wbGU" +
+                              "wMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUiLCJpYXQiOjE0MDc4NjcwNDAsImV" + // pragma: allowlist secret
+                              "4cCI6MTQwNzg3NDI0MCwic3ViIjoidGVzdHVzZXIiLCJhdWQiOiJodHRwczovL2x" + // pragma: allowlist secret
+                              "vY2FsaG9zdDo4OTQ1L29hdXRoMi9wcm92aWRlcnMvT0F1dGhDb25maWdTYW1wbGU" + // pragma: allowlist secret
                               "ifQ.odcaquc4HvsmVS8Z8VtZHdln6h0E0ZBMwNPDPrSFcTE";
     final String tokenRS256 = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImtleWlkcnMyNTYifQ.eyJpc3MiOiJjbGllb" +
-                              "nQwMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUiLCJpYXQiOjE0MDc4NjcxMzYsI" +
+                              "nQwMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUiLCJpYXQiOjE0MDc4NjcxMzYsI" + // pragma: allowlist secret
                               "mV4cCI6MTQwNzg3NDMzNiwic3ViIjoidGVzdHVzZXIiLCJhdWQiOiJodHRwczovL" +
                               "2xvY2FsaG9zdDo4OTQ1L29pZGMvZW5kcG9pbnQvT2lkY0NvbmZpZ1NhbXBsZSJ9." +
-                              "Z8DMQeA0zPEr-Bv2rx9W1_Lf_4mQCT8Z-byoI0TbwF8Q2l4mJ1otwnW8JH7J2ma8" +
-                              "V9aO275kxVmObIgWiJo25SoSnlIkng72yLwB2e50xpUQk0U5nVPbdZ0atWPJDA9a" +
-                              "d-VaaG1H-9LVyHrUMROaFQVE0qjO5L6un4amBbyIdSFnjY-q2llhOyHram3KvP1_" +
-                              "RHv7VePTEWu7UMptfv1mHPD90j7TBG5rdmiBr3i_PNo1x2aiCcqz9IYuu3ayo-z4" +
-                              "2SSz7Oa8B-14SjvPIUTpren9TsW9Os_Az3tkisO51yTCTHZFwrCovrz3MrzKLaXW" +
+                              "Z8DMQeA0zPEr-Bv2rx9W1_Lf_4mQCT8Z-byoI0TbwF8Q2l4mJ1otwnW8JH7J2ma8" + // pragma: allowlist secret
+                              "V9aO275kxVmObIgWiJo25SoSnlIkng72yLwB2e50xpUQk0U5nVPbdZ0atWPJDA9a" + // pragma: allowlist secret
+                              "d-VaaG1H-9LVyHrUMROaFQVE0qjO5L6un4amBbyIdSFnjY-q2llhOyHram3KvP1_" + // pragma: allowlist secret
+                              "RHv7VePTEWu7UMptfv1mHPD90j7TBG5rdmiBr3i_PNo1x2aiCcqz9IYuu3ayo-z4" + // pragma: allowlist secret
+                              "2SSz7Oa8B-14SjvPIUTpren9TsW9Os_Az3tkisO51yTCTHZFwrCovrz3MrzKLaXW" + // pragma: allowlist secret
                               "P4tcm_As8Z9yJV5z-vo9dg";
 
     String issuerCompany = "ibm.com";
@@ -163,7 +163,7 @@ public class GrantTypeCustomizeHandlerJwtImplTest {
             mockGrantTypeCustomizedHandlerJwtImpl jwtHandler = new mockGrantTypeCustomizedHandlerJwtImpl();
             jwtHandler._jwtGrantTypeHandlerConfig = mockJwtConfig;
 
-            final String clientSecret = "secretsecretsecretsecretsecretsecret"; // need >=256bit key for jose4j
+            final String clientSecret = "secretsecretsecretsecretsecretsecret"; // need >=256bit key for jose4j // pragma: allowlist secret
             JWT jwtToken = createJwtString(issuerCompany, keyId, clientSecret);
             jwtHandler.setGetOidcServerConfig(true);
             final String strToken = jwtToken.getSignedJWTString();
@@ -214,7 +214,7 @@ public class GrantTypeCustomizeHandlerJwtImplTest {
             mockGrantTypeCustomizedHandlerJwtImpl jwtHandler = new mockGrantTypeCustomizedHandlerJwtImpl();
             jwtHandler._jwtGrantTypeHandlerConfig = mockJwtConfig;
 
-            final String clientSecret = "secretsecretsecretsecretsecretsecret"; // need >=256bit key for jose4j
+            final String clientSecret = "secretsecretsecretsecretsecretsecret"; // need >=256bit key for jose4j // pragma: allowlist secret
             JWT jwtToken = createJwtString(issuerCompany, keyId, clientSecret);
             jwtHandler.setGetOidcServerConfig(true);
             String strTokenTmp = jwtToken.getSignedJWTString();

@@ -50,17 +50,17 @@ public class OidcClientUtilTest extends CommonTestClass {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    // {"access_token":"qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw","token_type":"bearer","expires_in":3599,"scope":"openid profile","refresh_token":"QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv","id_token":"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk"}
-    //final String strContent = "access_token=EmItdyfKwjN03hW1URF67XrC9LuFDGqXwMoaudwN"
+    // {"access_token":"qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw","token_type":"bearer","expires_in":3599,"scope":"openid profile","refresh_token":"QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv","id_token":"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk"} // pragma: allowlist secret
+    //final String strContent = "access_token=EmItdyfKwjN03hW1URF67XrC9LuFDGqXwMoaudwN" // pragma: allowlist secret
     //                          +
     //                          "&token_type=bearer&expires_in=3599"
     //                          +
     //                          "&scope=openid%20profile"
     //                          +
-    //                          "&id_token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJGYWtlSXNzdWVySWRlbnRpZmllckluT0F1dGgyMENvbXBvbmVudEltcGw6Y29tLmlibS5vYXV0aC5jb3JlLmludGVybmFsLm9hdXRoMjAiLCJpYXQiOjEzODYxNzExODAsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg2MTc0NzgwLCJhdWQiOiJjbGllbnQwMSJ9.QYMy5AqsoZMneBHKiBKXotXNNQ2xm4jsx3iAbJHd4Bg"
+    //                          "&id_token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJGYWtlSXNzdWVySWRlbnRpZmllckluT0F1dGgyMENvbXBvbmVudEltcGw6Y29tLmlibS5vYXV0aC5jb3JlLmludGVybmFsLm9hdXRoMjAiLCJpYXQiOjEzODYxNzExODAsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg2MTc0NzgwLCJhdWQiOiJjbGllbnQwMSJ9.QYMy5AqsoZMneBHKiBKXotXNNQ2xm4jsx3iAbJHd4Bg" // pragma: allowlist secret
     //                          +
     //                          "&state=Uo1pv2rm4WO9SMMUINed";
-    final String strContent = "{\"access_token\":\"qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw\",\"token_type\":\"bearer\",\"expires_in\":3599,\"scope\":\"openid profile\",\"refresh_token\":\"QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv\",\"id_token\":\"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk\"}";
+    final String strContent = "{\"access_token\":\"qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw\",\"token_type\":\"bearer\",\"expires_in\":3599,\"scope\":\"openid profile\",\"refresh_token\":\"QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv\",\"id_token\":\"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk\"}"; // pragma: allowlist secret
 
     protected final OidcClientHttpUtil oidcHttpUtil = mock.mock(OidcClientHttpUtil.class, "oidcHttpUtil");
     protected final SSLContext sslContext = mock.mock(SSLContext.class, "sslContext");
@@ -225,10 +225,10 @@ public class OidcClientUtilTest extends CommonTestClass {
             postResponseMap.put(token_type, "bearer");
             postResponseMap.put(expires_in, new Long(3599));
             postResponseMap.put(scope, "openid profile");
-            postResponseMap.put(refresh_token, "QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv");
+            postResponseMap.put(refresh_token, "QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv"); // pragma: allowlist secret
             postResponseMap.put(
                     id_token,
-                    "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk");
+                    "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk"); // pragma: allowlist secret
 
             mock.checking(new Expectations() {
                 {

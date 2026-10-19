@@ -82,7 +82,7 @@ public abstract class BaseTestCase extends TestCase {
     }
 
     // Input format:
-    // {"access_token":"6YSYj0uCvL3O6fnFvQRy7oMt9MhpMipy4mzrhvD4","token_type":
+    // {"access_token":"6YSYj0uCvL3O6fnFvQRy7oMt9MhpMipy4mzrhvD4","token_type": // pragma: allowlist secret
     // "bearer","expires_in":3600}
     protected String extractAccessToken(String jsonString) {
         String result = null;
@@ -96,9 +96,9 @@ public abstract class BaseTestCase extends TestCase {
     }
 
     // Input format:
-    // {"access_token":"peO8jC2JmFXaWAbIPFhos0LKNFWUfylkH81KPGoc","token_type":
+    // {"access_token":"peO8jC2JmFXaWAbIPFhos0LKNFWUfylkH81KPGoc","token_type": // pragma: allowlist secret
     // "bearer","expires_in":3600,"scope":"scope1 scope2","refresh_token":
-    // "TFEoA9fOhQ3GFjohJ1QksUKlmE7mei0iXlUJKsfrl1FRnzjPdg"}
+    // "TFEoA9fOhQ3GFjohJ1QksUKlmE7mei0iXlUJKsfrl1FRnzjPdg"} // pragma: allowlist secret
     protected String extractRefreshToken(String jsonString) {
         String result = null;
         try {

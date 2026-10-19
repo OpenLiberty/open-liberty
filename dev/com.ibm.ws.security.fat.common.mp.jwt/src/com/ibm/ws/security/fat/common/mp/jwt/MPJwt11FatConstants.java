@@ -114,15 +114,15 @@ public class MPJwt11FatConstants extends MPJwtFatConstants {
     public static final String GOOD_FILE_RS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodFileRS256KeyLocationInMP-ConfigInMETA-INF";
     public static final String GOOD_FILE_PS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodFilePS384KeyLocationInMP-ConfigInMETA-INF";
     public static final String GOOD_URL_RS384_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodUrlRS384KeyLocationInMP-ConfigInMETA-INF";
-    public static final String GOOD_JWKSURI_PS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodJwksuriPS256KeyLocationInMP-ConfigInMETA-INF";
-    public static final String GOOD_JWKSURI_RS512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodJwksuriRS512KeyLocationInMP-ConfigInMETA-INF";
+    public static final String GOOD_JWKSURI_PS256_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodJwksuriPS256KeyLocationInMP-ConfigInMETA-INF"; // pragma: allowlist secret
+    public static final String GOOD_JWKSURI_RS512_KEYLOCATION_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileGoodJwksuriRS512KeyLocationInMP-ConfigInMETA-INF"; // pragma: allowlist secret
 
-    public static final String GOOD_RELATIVE_RS256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRelativeRS256KeyLocationInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_RELATIVE_RS256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRelativeRS256KeyLocationInMP-ConfigUnderWEB-INF"; // pragma: allowlist secret
     public static final String GOOD_RELATIVE_PS384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodRelativePS384KeyLocationInMP-ConfigUnderWEB-INF";
     public static final String GOOD_FILE_ES512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodFileES512KeyLocationInMP-ConfigUnderWEB-INF";
     public static final String GOOD_URL_ES256_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodUrlES256KeyLocationInMP-ConfigUnderWEB-INF";
     public static final String GOOD_URL_PS512_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodUrlPS512KeyLocationInMP-ConfigUnderWEB-INF";
-    public static final String GOOD_JWKSURI_ES384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodJwksuriES384KeyLocationInMP-ConfigUnderWEB-INF";
+    public static final String GOOD_JWKSURI_ES384_KEYLOCATION_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileGoodJwksuriES384KeyLocationInMP-ConfigUnderWEB-INF"; // pragma: allowlist secret
 
     public static final String PROPAGATE_TOKEN_STRING_TRUE = "propagate_token_string_true";
     public static final String PROPAGATE_TOKEN_BOOLEAN_TRUE = "propagate_token_boolean_true";

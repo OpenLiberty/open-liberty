@@ -248,7 +248,7 @@ public class AnnotatedJNDIEJBSLServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJB_SL_JNDI_testUniquePUNameAppModule_ANO_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJB_SL_JNDI_testUniquePUNameAppModule_ANO_CMTS";
+        final String testName = "jpa10_Injection_EJB_SL_JNDI_testUniquePUNameAppModule_ANO_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

@@ -39,7 +39,7 @@ public class TokenEndpointServlet extends HttpServlet {
 //    int expires_in = 7199;
 //    String token_type = "Bearer";
 //    String scope = "openid profile";
-//    String refresh_token = "21MhoIC95diaQo9tb5UpFBDFlHh45NixhcKkCwRipszH6WIzKz";
+//    String refresh_token = "21MhoIC95diaQo9tb5UpFBDFlHh45NixhcKkCwRipszH6WIzKz"; // pragma: allowlist secret
     String access_token = null;
     String id_token = null;
     int expires_in = 9999;

@@ -47,7 +47,7 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMJTA_Web";
+        final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testCaseExpressionOperatorConcurrency";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -56,7 +56,7 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMRL_Web";
+        final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testCaseExpressionOperatorConcurrency";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -64,7 +64,7 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     // @Test // Not a valid scenario
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_CMTS_Web";
+        final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testCaseExpressionOperatorConcurrency";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

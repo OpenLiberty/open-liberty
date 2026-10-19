@@ -44,7 +44,7 @@ public class TestOLGH8014_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     // testEmptyAggregateFunctionsWithPrimitives
     @Test
     public void jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_AMJTA_Web";
+        final String testName = "jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testEmptyAggregateFunctionsWithPrimitives";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -52,7 +52,7 @@ public class TestOLGH8014_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_AMRL_Web";
+        final String testName = "jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testEmptyAggregateFunctionsWithPrimitives";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -60,7 +60,7 @@ public class TestOLGH8014_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SL_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testEmptyAggregateFunctionsWithPrimitives";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
