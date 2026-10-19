@@ -66,9 +66,7 @@ public class DefaultCachingProviderSupport {
     }
 
     public static boolean isLibraryAvailable(BundleContext context, String libraryId) throws InvalidSyntaxException {
-        String filter = FilterUtils.createPropertyFilter("id", libraryId);
-        Collection<ServiceReference<Library>> refs = context.getServiceReferences(Library.class, filter);
-        return refs != null && !refs.isEmpty();
+        return false;
     }
 
     /**
