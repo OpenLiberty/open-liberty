@@ -735,6 +735,8 @@ public abstract class QueryInfo {
                             return n.floatValue();
                     }
                 }
+                if (Number.class.equals(toType))
+                    return value;
             } catch (ArithmeticException x) {
                 cause = x;
             }
