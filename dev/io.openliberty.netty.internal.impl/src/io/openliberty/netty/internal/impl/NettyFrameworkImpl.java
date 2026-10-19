@@ -424,7 +424,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     return;
                 }
 
-                NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
                 try {
                     // Go through active endpoints and stop accepting connections
                     for (Channel channel : activeChannelMap.keySet()) {
@@ -438,10 +437,33 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                             }
                         }
                     }
-                    
 
-                    // Schedule quiesce tasks
-                    quiesce.startTasks();
+                    // Poll on calling thread until connections drain or timeout expires
+                    long startTime = System.currentTimeMillis();
+                    while (!activeChannelMap.isEmpty() && (System.currentTimeMillis() - startTime) < timeout) {
+                        for (Map.Entry<Channel, ChannelGroup> entry : activeChannelMap.entrySet()) {
+                            Channel endpoint = entry.getKey();
+                            ChannelGroup group = entry.getValue();
+                            if (group != null && group.isEmpty()) {
+                                stop(endpoint);
+                            }
+                        }
+
+                        if (activeChannelMap.isEmpty()) {
+                            break;
+                        }
+
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+                    }
+
+                    // Close any remaining endpoints if timeout expired
+                    for (Channel endpoint : activeChannelMap.keySet()) {
+                        stop(endpoint);
+                    }
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Exception occurred on quiesce", e);
