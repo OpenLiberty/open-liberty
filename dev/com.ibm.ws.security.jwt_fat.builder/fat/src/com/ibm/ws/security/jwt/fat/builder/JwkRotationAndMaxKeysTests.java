@@ -83,11 +83,11 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
     private static final String JWK_ENDPOINT_SUFFIX = "/jwk";
     /**
      * Offset from the previously observed rotation at which we check that no premature rotation
-     * has happened yet (55s — just before the next 1m boundary)
+     * has happened yet (58s — just before the next 1m boundary)
      */
-    private static final long PRE_ROTATION_CHECK_MS = 55_000L;
-    /** Max time to wait for the next rotation, measured from the previous anchor (1m period + margin) */
-    private static final long ROTATION_TIMEOUT_MS = 70_000L;
+    private static final long PRE_ROTATION_CHECK_MS = 58_000L;
+    /** Max time to wait for the next rotation, measured from the previous anchor (1m period + 2s margin) */
+    private static final long ROTATION_TIMEOUT_MS = 62_000L;
     /** Interval between polls of the JWK endpoint while waiting for a rotation */
     private static final long POLL_INTERVAL_MS = 1_000L;
 
@@ -281,20 +281,18 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
 
         // ── Phase 2: after 2nd rotation ────────────────────────────────────
-        Log.info(thisClass, _testName, "Phase 2: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 1st rotation to check for premature rotation...");
+        Log.info(thisClass, _testName, "Pre-Phase 2: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 1st rotation to check for premature rotation...");
         sleepUntil(rotation1Time + PRE_ROTATION_CHECK_MS);
         JsonArray prePhase2Keys = getJwkKeys(jwkUrl);
         assertEquals("Pre-Phase 2: kids must not change before 2nd rotation", phase1Kids, extractKids(prePhase2Keys));
 
-        Log.info(thisClass, _testName, "Phase 2: polling for 2nd rotation...");
-        JsonArray phase2Keys = waitForKidsChange(jwkUrl, phase1Kids, rotation1Time + ROTATION_TIMEOUT_MS, "Phase 2");
+        Log.info(thisClass, _testName, "Phase 2: sleeping until 2nd rotation is expected...");
+        sleepUntil(rotation1Time + ROTATION_TIMEOUT_MS);
+        JsonArray phase2Keys = getJwkKeys(jwkUrl);
         long rotation2Time = System.currentTimeMillis();
         assertEquals("Phase 2: expected 3 keys after 2nd rotation (maxKeys=3 reached)", 3, phase2Keys.size());
         Set<String> phase2Kids = extractKids(phase2Keys);
 
-        // Key A must still be present
-        assertTrue("Phase 2: original key (Key A) must still be present after 2nd rotation",
-                phase2Kids.containsAll(phase0Kids));
         // Key B must still be present too (all phase-1 keys retained)
         assertTrue("Phase 2: all keys from phase 1 (Key A and Key B) must still be present after 2nd rotation",
                 phase2Kids.containsAll(phase1Kids));
@@ -307,13 +305,14 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
 
         // ── Phase 3: after 3rd rotation ────────────────────────────────────
-        Log.info(thisClass, _testName, "Phase 3: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 2nd rotation to check for premature rotation...");
+        Log.info(thisClass, _testName, "Pre-Phase 3: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 2nd rotation to check for premature rotation...");
         sleepUntil(rotation2Time + PRE_ROTATION_CHECK_MS);
         JsonArray prePhase3Keys = getJwkKeys(jwkUrl);
         assertEquals("Pre-Phase 3: kids must not change before 3rd rotation", phase2Kids, extractKids(prePhase3Keys));
 
-        Log.info(thisClass, _testName, "Phase 3: polling for 3rd rotation...");
-        JsonArray phase3Keys = waitForKidsChange(jwkUrl, phase2Kids, rotation2Time + ROTATION_TIMEOUT_MS, "Phase 3");
+        Log.info(thisClass, _testName, "Phase 3: sleeping until 3rd rotation is expected...");
+        sleepUntil(rotation2Time + ROTATION_TIMEOUT_MS);
+        JsonArray phase3Keys = getJwkKeys(jwkUrl);
         // Count must stay at maxKeys=3 (sliding window eviction)
         assertEquals("Phase 3: key count must stay at maxKeys=3 after 3rd rotation", 3, phase3Keys.size());
         Set<String> phase3Kids = extractKids(phase3Keys);
