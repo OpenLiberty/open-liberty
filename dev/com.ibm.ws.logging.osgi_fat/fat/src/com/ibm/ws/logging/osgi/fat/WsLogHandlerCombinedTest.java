@@ -178,15 +178,15 @@ public class WsLogHandlerCombinedTest extends WsLogHandlerBaseTest {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("wsLogHandler/server-combinedUpdate.xml");
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet(),
-                "CWWKE0710W: The wildcard message ID for CWLFN\\*\\* is invalid",
-                "CWWKE0710W: The wildcard message ID for CWLFO\\*Z is invalid");
+                "CWWKE0710W: The wildcard message ID for CWLFN\\*\\* is not valid",
+                "CWWKE0710W: The wildcard message ID for CWLFO\\*Z is not valid");
 
         // 3. Verify exactly one CWWKE0710W warning was emitted for each invalid pattern,
         //    and that no warning was emitted for any of the valid patterns.
         List<String> warningsNN = server.findStringsInLogs(
-                "CWWKE0710W: The wildcard message ID for CWLFN\\*\\* is invalid");
+                "CWWKE0710W: The wildcard message ID for CWLFN\\*\\* is not valid");
         List<String> warningsOZ = server.findStringsInLogs(
-                "CWWKE0710W: The wildcard message ID for CWLFO\\*Z is invalid");
+                "CWWKE0710W: The wildcard message ID for CWLFO\\*Z is not valid");
         assertEquals("Expected exactly one CWWKE0710W for CWLFN**", 1, warningsNN.size());
         assertEquals("Expected exactly one CWWKE0710W for CWLFO*Z", 1, warningsOZ.size());
 

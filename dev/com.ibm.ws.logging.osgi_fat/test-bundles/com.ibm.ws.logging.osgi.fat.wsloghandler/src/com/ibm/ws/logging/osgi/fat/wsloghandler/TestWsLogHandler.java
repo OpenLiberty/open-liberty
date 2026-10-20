@@ -12,10 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.logging.osgi.fat.wsloghandler;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 

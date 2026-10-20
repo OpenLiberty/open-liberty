@@ -32,5 +32,5 @@ fat.project: true
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.ws.rest.handler.jakarta;version=latest,\
-	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

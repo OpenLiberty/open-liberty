@@ -166,7 +166,7 @@ public class WsLogHandlerInvalidWildcardTest extends WsLogHandlerBaseTest {
      * satisfy the check for {@code CWK**}.
      */
     private static String warningRegex(String pattern) {
-        return "CWWKE0710W: The wildcard message ID for " + pattern.replace("*", "\\*") + " is invalid";
+        return "CWWKE0710W: The wildcard message ID for " + pattern.replace("*", "\\*") + " is not valid";
     }
 
     /**

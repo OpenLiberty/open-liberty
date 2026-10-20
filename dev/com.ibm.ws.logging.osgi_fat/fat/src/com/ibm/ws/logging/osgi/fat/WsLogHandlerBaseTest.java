@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
+import junit.framework.Assert;
 
 /**
  * Common base class for WsLogHandler FAT test classes, providing shared
@@ -126,7 +127,11 @@ public abstract class WsLogHandlerBaseTest {
         }
         return sb.toString();
     }
-
+    /**
+     * 
+     * @return Returns count of messages, or -1 if /message endpoint did not return expected output (We throw a fail before the return anyways).
+     * @throws Exception
+     */
     protected int getCapturedCount() throws Exception {
         String body = getBody("/wsLogHandler/messages");
         Log.info(WsLogHandlerBaseTest.class, "messages", body);
@@ -139,6 +144,7 @@ public abstract class WsLogHandlerBaseTest {
             }
             return Integer.parseInt(body.substring(start, end).trim());
         } 
-        return 0;
+        Assert.fail("Could not retrieve data from /messages endpoint");
+        return -1;
     }
 }
