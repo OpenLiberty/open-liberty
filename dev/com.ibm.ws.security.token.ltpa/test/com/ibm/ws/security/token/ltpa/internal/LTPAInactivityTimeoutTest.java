@@ -793,8 +793,12 @@ public class LTPAInactivityTimeoutTest {
         tokenFactory = createInitializedTokenFactory(120, 0, 5, true);
         Token token = tokenFactory.createToken(createBasicTokenData());
 
+        // Round-trip so the token is signed before isValid() is called
+        Token validated = tokenFactory.validateTokenBytes(token.getBytes());
+        assertNotNull(validated);
+
         assertTrue("Token must be valid when inactivity is disabled (no session cap applies)",
-                   token.isValid());
+                   validated.isValid());
     }
 
 

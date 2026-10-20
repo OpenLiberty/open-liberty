@@ -28,6 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
@@ -56,6 +57,7 @@ public class SSOAuthenticatorTest {
     private final Cookie cookie = new Cookie("LTPAToken2", cookieValue);
     private final Cookie[] cookieArray = { cookie };
     private SSOAuthenticator ssoAuth;
+    private String originalBetaProperty;
 
     /**
      * Common set of expectations shared by all the test methods
@@ -63,6 +65,7 @@ public class SSOAuthenticatorTest {
      */
     @Before
     public void setup() {
+        originalBetaProperty = System.getProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
 
         mock.checking(new Expectations() {
             {
@@ -89,7 +92,17 @@ public class SSOAuthenticatorTest {
 
     @After
     public void tearDown() {
+        if (originalBetaProperty == null) {
+            System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
+        } else {
+            System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, originalBetaProperty);
+        }
         mock.assertIsSatisfied();
+    }
+
+    /** Token refresh handling in SSOAuthenticator is only active in beta editions. */
+    private void enableBetaEdition() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
     }
 
     @Test
@@ -336,6 +349,7 @@ public class SSOAuthenticatorTest {
      */
     @Test
     public void authenticate_WithTokenRefresh() throws Exception {
+        enableBetaEdition();
         final Cookie[] cookieArray = { cookie };
         final Subject authSubject = new Subject();
         
@@ -393,6 +407,7 @@ public class SSOAuthenticatorTest {
      */
     @Test
     public void authenticate_WithoutTokenRefresh() throws Exception {
+        enableBetaEdition();
         final Cookie[] cookieArray = { cookie };
         final Subject authSubject = new Subject();
         
@@ -453,6 +468,7 @@ public class SSOAuthenticatorTest {
      */
     @Test
     public void authenticate_WithNullSSOTokenFromSubject() throws Exception {
+        enableBetaEdition();
         final Cookie[] cookieArray = { cookie };
         final Subject authSubject = new Subject();
 
@@ -505,6 +521,7 @@ public class SSOAuthenticatorTest {
      */
     @Test
     public void authenticate_WithNullTokenBytes() throws Exception {
+        enableBetaEdition();
         final Cookie[] cookieArray = { cookie };
         final Subject authSubject = new Subject();
         final com.ibm.wsspi.security.token.SingleSignonToken mockSSOToken = mock.mock(com.ibm.wsspi.security.token.SingleSignonToken.class);

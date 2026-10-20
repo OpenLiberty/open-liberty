@@ -174,6 +174,8 @@ public class ShouldRefreshCachedTokenTest {
                                 long expirationMinutes, boolean dynamicExpirationValidation) {
         mockery.checking(new Expectations() {
             {
+                allowing(ltpaConfig).isTokenRefreshEnabled();
+                will(returnValue(inactivityMinutes > 0 && refreshThresholdMinutes > 0));
                 allowing(ltpaConfig).getInactivityTimeout();
                 will(returnValue(inactivityMinutes));
                 allowing(ltpaConfig).getRefreshThreshold();
@@ -226,11 +228,11 @@ public class ShouldRefreshCachedTokenTest {
     }
 
     /**
-     * With dynamicExpirationValidation=false: absolute expiration exceeded → refresh
-     * (the caller will discard the cached subject and force full re-authentication).
+     * With dynamicExpirationValidation=false: absolute expiration exceeded → no refresh.
+     * An expired token is not refreshable; the JAAS login path rejects it.
      */
     @Test
-    public void dynamicOff_absoluteExpirationExceeded_refreshNeeded() throws Exception {
+    public void dynamicOff_absoluteExpirationExceeded_noRefresh() throws Exception {
         long inactivity = 30, threshold = 10, expiration = 120;
         configureLtpa(inactivity, threshold, expiration, false);
 
@@ -239,8 +241,8 @@ public class ShouldRefreshCachedTokenTest {
         long creationTime = storedExpiry - expiration * MILLIS_PER_MINUTE;
 
         Subject subject = subjectWithCredential(storedExpiry, creationTime);
-        assertTrue("Expired token must trigger refresh",
-                   callShouldRefresh(subject));
+        assertFalse("Expired token is not refreshable",
+                    callShouldRefresh(subject));
     }
 
     // ── dynamicExpirationValidation = true ────────────────────────────────────
@@ -287,10 +289,10 @@ public class ShouldRefreshCachedTokenTest {
 
     /**
      * With dynamicExpirationValidation=true: creationTime old enough that the
-     * absolute expiration (creationTime + configuredExpiration) is exceeded → refresh.
+     * absolute expiration (creationTime + configuredExpiration) is exceeded → no refresh.
      */
     @Test
-    public void dynamicOn_absoluteExpirationExceeded_refreshNeeded() throws Exception {
+    public void dynamicOn_absoluteExpirationExceeded_noRefresh() throws Exception {
         long inactivity = 10, threshold = 5, expiration = 120;
         configureLtpa(inactivity, threshold, expiration, true);
 
@@ -299,16 +301,16 @@ public class ShouldRefreshCachedTokenTest {
         long storedExpiry = creationTime + inactivity * MILLIS_PER_MINUTE; // already past, but irrelevant
 
         Subject subject = subjectWithCredential(storedExpiry, creationTime);
-        assertTrue("Absolutely expired token must trigger refresh when dynamicExpirationValidation=true",
-                   callShouldRefresh(subject));
+        assertFalse("Absolutely expired token is not refreshable when dynamicExpirationValidation=true",
+                    callShouldRefresh(subject));
     }
 
     /**
      * With dynamicExpirationValidation=true: inactivity timeout exceeded but absolute
-     * expiration is still in the future → refresh (stale inactivity window).
+     * expiration is still in the future → no refresh (inactivity-expired tokens are not refreshable).
      */
     @Test
-    public void dynamicOn_inactivityExceededButAbsoluteNotExpired_refreshNeeded() throws Exception {
+    public void dynamicOn_inactivityExceededButAbsoluteNotExpired_noRefresh() throws Exception {
         long inactivity = 10, threshold = 5, expiration = 120;
         configureLtpa(inactivity, threshold, expiration, true);
 
@@ -317,8 +319,8 @@ public class ShouldRefreshCachedTokenTest {
         long storedExpiry = creationTime + inactivity * MILLIS_PER_MINUTE;
 
         Subject subject = subjectWithCredential(storedExpiry, creationTime);
-        assertTrue("Inactivity-exceeded token must trigger refresh when dynamicExpirationValidation=true",
-                   callShouldRefresh(subject));
+        assertFalse("Inactivity-exceeded token is not refreshable when dynamicExpirationValidation=true",
+                    callShouldRefresh(subject));
     }
 
     // ── no creationTime fallback ──────────────────────────────────────────────
@@ -341,27 +343,27 @@ public class ShouldRefreshCachedTokenTest {
 
     /**
      * With no creationTime in WSCredential (legacy token), stored expiration has
-     * elapsed → refresh.
+     * elapsed → no refresh; expiry is left to LTPA validation.
      */
     @Test
-    public void noCreationTime_storedExpiryElapsed_refreshNeeded() throws Exception {
+    public void noCreationTime_storedExpiryElapsed_noRefresh() throws Exception {
         long inactivity = 30, threshold = 10, expiration = 120;
         configureLtpa(inactivity, threshold, expiration, false);
 
         long storedExpiry = System.currentTimeMillis() - MILLIS_PER_MINUTE; // already past
 
         Subject subject = subjectWithCredential(storedExpiry, null /* no creationTime */);
-        assertTrue("Legacy token with elapsed stored expiry must trigger refresh",
-                   callShouldRefresh(subject));
+        assertFalse("Legacy token with no creationTime must not trigger refresh",
+                    callShouldRefresh(subject));
     }
 
     /**
      * dynamicExpirationValidation=true with no creationTime: the stored expiry
      * (short inactivity window) has elapsed but we cannot recompute the absolute
-     * expiration — falls back to stored expiry and reports expired.
+     * expiration — no refresh; expiry is left to LTPA validation.
      */
     @Test
-    public void dynamicOn_noCreationTime_storedExpiryElapsed_refreshNeeded() throws Exception {
+    public void dynamicOn_noCreationTime_storedExpiryElapsed_noRefresh() throws Exception {
         long inactivity = 10, threshold = 5, expiration = 120;
         configureLtpa(inactivity, threshold, expiration, true);
 
@@ -369,8 +371,8 @@ public class ShouldRefreshCachedTokenTest {
         long storedExpiry = System.currentTimeMillis() - MILLIS_PER_MINUTE;
 
         Subject subject = subjectWithCredential(storedExpiry, null /* no creationTime */);
-        assertTrue("Legacy token with elapsed stored expiry must trigger refresh even with dynamicExpirationValidation=true",
-                   callShouldRefresh(subject));
+        assertFalse("Legacy token with no creationTime must not trigger refresh even with dynamicExpirationValidation=true",
+                    callShouldRefresh(subject));
     }
 
     // ── beta guard ────────────────────────────────────────────────────────────
@@ -404,7 +406,9 @@ public class ShouldRefreshCachedTokenTest {
     public void inactivityDisabled_alwaysReturnsFalse() throws Exception {
         mockery.checking(new Expectations() {
             {
-                // Only getInactivityTimeout() is called (early-exit guard)
+                // Only isTokenRefreshEnabled() is called (early-exit guard)
+                allowing(ltpaConfig).isTokenRefreshEnabled();
+                will(returnValue(false));
                 allowing(ltpaConfig).getInactivityTimeout();
                 will(returnValue(0L));
             }
