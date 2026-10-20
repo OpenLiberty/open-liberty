@@ -9,15 +9,19 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.nio.channels.UnresolvedAddressException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -244,7 +248,7 @@ public class TCPUtils {
                 // (never on the Netty I/O thread) so the event loop stays free to process
                 // the close.  Sleeping on the I/O thread would deadlock: the close event
                 // can never fire while the I/O thread is blocked.
-                if (config.isInbound() && future.cause() instanceof java.net.BindException
+                if (config.isInbound() && future.cause() instanceof IOException
                     && !reuseAddrRetry && frameworkOwnsPort(framework, newHost, inetPort)) {
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -302,12 +306,12 @@ public class TCPUtils {
                     // conflict from a TIME_WAIT remnant.  If it is TIME_WAIT only, retry
                     // immediately with SO_REUSEADDR=true rather than burning through all
                     // retries waiting for the OS TIME_WAIT period to expire.
-                    if (config.isInbound() && future.cause() instanceof java.net.BindException
+                    if (config.isInbound() && future.cause() instanceof IOException
                         && !reuseAddrRetry && config.getSoReuseAddress() && retryCount == config.getPortOpenRetries()) {
                         String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
                         InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
                         if (!probeAddr.isUnresolved()) {
-                            try (java.net.Socket probe = new java.net.Socket()) {
+                            try (Socket probe = new Socket()) {
                                 probe.connect(probeAddr, 1000);
                                 // Connection succeeded — someone is actively listening, not TIME_WAIT.
                                 // Fall through to the normal retry countdown below.
@@ -315,7 +319,7 @@ public class TCPUtils {
                                     Tr.debug(tc, "Probe connect to " + probeAddr + " succeeded: real port conflict, will retry normally for " + config.getExternalName());
                                 }
 
-                            } catch (java.io.IOException probeEx) {
+                            } catch (IOException probeEx) {
                                 // Connection refused — TIME_WAIT only, retry immediately with SO_REUSEADDR=true.
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "Probe connect to " + probeAddr + " failed (" + probeEx.getMessage()
@@ -366,7 +370,7 @@ public class TCPUtils {
                     boolean unresolvedAddress = false;
 
                     while (cause != null) {
-                        if (cause instanceof java.nio.channels.UnresolvedAddressException) {
+                        if (cause instanceof UnresolvedAddressException) {
                             unresolvedAddress = true;
                             break;
                         }
@@ -375,8 +379,8 @@ public class TCPUtils {
                     if (unresolvedAddress) {
                         // Log the specific error message
                         Tr.error(tc, TCPMessageConstants.LOCAL_HOST_UNRESOLVED,
-                                 new Object[] { config.getExternalName(), newHost, String.valueOf(inetPort) });
-                    } else if (config.isInbound() && future.cause() instanceof java.net.BindException
+                                  new Object[] { config.getExternalName(), newHost, String.valueOf(inetPort) });
+                    } else if (config.isInbound() && future.cause() instanceof IOException
                                && !reuseAddrRetry && config.getSoReuseAddress()) {
                         // portOpenRetries == 0: no retries were configured so the first-failure
                         // probe in the retryCount > 0 branch never ran.  Probe now to distinguish
@@ -384,7 +388,7 @@ public class TCPUtils {
                         String probeHost = newHost.equals(NettyConstants.INADDR_ANY) ? "localhost" : newHost;
                         InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
                         if (!probeAddr.isUnresolved()) {
-                            try (java.net.Socket probe = new java.net.Socket()) {
+                            try (Socket probe = new Socket()) {
                                 probe.connect(probeAddr, 1000);
                                 // Connection succeeded — real conflict, log the error.
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -393,7 +397,7 @@ public class TCPUtils {
 
                                 Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
                                                                                             String.valueOf(inetPort), openFuture.cause().getMessage() });
-                            } catch (java.io.IOException probeEx) {
+                            } catch (IOException probeEx) {
                                 // Connection refused — TIME_WAIT only, retry with SO_REUSEADDR=true.
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "Probe connect to " + probeAddr + " failed (" + probeEx.getMessage()
@@ -523,8 +527,8 @@ public class TCPUtils {
                             // attempt ChannelFuture object immediately (before any retries
                             // complete), latch.await() in setServerStarted() unblocks too early,
                             // CWWKF0011I fires, and tests get "Connection refused" on Linux CI.
-                            java.util.concurrent.CompletableFuture<ChannelFuture> bindDone =
-                                new java.util.concurrent.CompletableFuture<>();
+                            CompletableFuture<ChannelFuture> bindDone =
+                                new CompletableFuture<>();
                             ChannelFutureListener wrappedListener = openListener == null ? null :
                                 f -> {
                                     bindDone.complete(f);
