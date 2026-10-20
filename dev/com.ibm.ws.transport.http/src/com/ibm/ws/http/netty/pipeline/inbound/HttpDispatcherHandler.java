@@ -55,6 +55,7 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -139,6 +140,30 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(0);
         ctx.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(0);
         ctx.channel().attr(NettyHttpConstants.HTTP_CONFIG).set(config);
+        // Tell the Netty framework when quiesce has to wait for this connection. Without this it would
+        // close the connection as soon as quiesce has been handled.
+        ctx.channel().attr(QuiesceHandler.IN_FLIGHT).set(() -> isHttpWorkInFlight(ctx.channel()));
+    }
+
+    /**
+     * Whether quiesce should wait for this connection. Like the channel framework's dispatcher, which only
+     * counts connections that are processing a request, this does not count an idle keep-alive connection or
+     * an upgraded connection (WebSocket or servlet upgrade).
+     * <p>
+     * Must be called on the connection's event loop.
+     */
+    private static boolean isHttpWorkInFlight(Channel channel) {
+        ChannelPipeline pipeline = channel.pipeline();
+        if (pipeline.get(NettyServletUpgradeHandler.class) != null) {
+            // FlowState keeps responseInFlight set after a 101, so it cannot be used for an upgraded connection.
+            return false;
+        }
+        HttpToHttp2ConnectionHandler http2 = pipeline.get(HttpToHttp2ConnectionHandler.class);
+        if (http2 != null) {
+            return http2.connection().numActiveStreams() > 0;
+        }
+        FlowState state = ReadFlowHandler.state(channel);
+        return state.isResponseInFlight() || !state.isRequestConsumed();
     }
 
     @Override

@@ -117,6 +117,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     private volatile boolean isActive = false;
 
+    /** How long before the end of the quiesce period the final stop starts. */
+    private static final long FINAL_STOP_MARGIN_MS = 1000;
+    /** How long the final stop waits for force-closed connections to leave their group. */
+    private static final long FINAL_STOP_CLOSE_WAIT_MS = 500;
+
     private ScheduledExecutorService scheduledExecutorService = null;
 
     private ChannelFrameworkConfig channelConfig;
@@ -438,14 +443,25 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                         }
                     }
 
-                    // Poll on calling thread until connections drain or timeout expires
+                    // The runtime stops waiting for this listener after the same quiesce period, so the
+                    // final stop must happen a little before that or it will never get to run.
+                    long deadline = timeout - Math.min(FINAL_STOP_MARGIN_MS, timeout / 10);
+
+                    // Poll on calling thread until connections drain or the deadline passes
                     long startTime = System.currentTimeMillis();
-                    while (!activeChannelMap.isEmpty() && (System.currentTimeMillis() - startTime) < timeout) {
+                    while (!activeChannelMap.isEmpty() && (System.currentTimeMillis() - startTime) < deadline) {
                         for (Map.Entry<Channel, ChannelGroup> entry : activeChannelMap.entrySet()) {
                             Channel endpoint = entry.getKey();
                             ChannelGroup group = entry.getValue();
-                            if (group != null && group.isEmpty()) {
+                            if (group == null) {
+                                continue;
+                            }
+                            if (group.isEmpty()) {
                                 stop(endpoint);
+                            } else if (endpoint.pipeline().get(QuiesceHandler.class) == null
+                                       || QuiesceHandler.isQuiesceComplete(endpoint)) {
+                                // Nothing to wait for if the endpoint has no quiesce task of its own.
+                                closeIdleChildren(group);
                             }
                         }
 
@@ -460,15 +476,43 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                         }
                     }
 
-                    // Close any remaining endpoints if timeout expired
-                    for (Channel endpoint : activeChannelMap.keySet()) {
-                        stop(endpoint);
+                    // Final stop (equivalent of the channel framework's time=0 chain stop): force close any
+                    // connections still open. stop(endpoint) leaves a non-empty group open while the server is
+                    // stopping with a quiesce timeout, so close the children explicitly first.
+                    for (Map.Entry<Channel, ChannelGroup> entry : activeChannelMap.entrySet()) {
+                        ChannelGroup group = entry.getValue();
+                        if (group != null && !group.isEmpty()) {
+                            group.close().awaitUninterruptibly(FINAL_STOP_CLOSE_WAIT_MS, TimeUnit.MILLISECONDS);
+                        }
+                        stop(entry.getKey());
                     }
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Exception occurred on quiesce", e);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * The channel framework stops a quiesced chain early once it has no connections doing work, and then
+     * closes whatever is left. This does the same for any protocol without needing to know about it: a child
+     * connection is closed once it has handled the quiesce event, unless its protocol layer reports that it is
+     * still serving work (see {@link QuiesceHandler#IN_FLIGHT}).
+     */
+    private void closeIdleChildren(ChannelGroup group) {
+        for (Channel child : group) {
+            if (QuiesceHandler.isQuiesceComplete(child)) {
+                // The in-flight check reads protocol state that belongs to the connection's event loop.
+                child.eventLoop().execute(() -> {
+                    if (child.isActive() && !QuiesceHandler.isInFlight(child)) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Quiesce complete and not in flight, closing connection: " + child);
+                        }
+                        child.close();
+                    }
+                });
             }
         }
     }
