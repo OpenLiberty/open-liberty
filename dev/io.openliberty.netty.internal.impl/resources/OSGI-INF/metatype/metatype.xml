@@ -12,15 +12,16 @@
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
 
-   <!-- NETTY OPTIONS ........................................................ -->
+   <!-- NETWORK FRAMEWORK OPTIONS ........................................................ -->
 
-   <OCD id="io.openliberty.netty.internal" ibm:alias="netty" name="internal" description="internal use only">
-      
-         <AD name="internal" description="internal use only"
-            id="scalerMinThreads" required="false" type="Integer" default="1" min="0"/>
+   <OCD id="io.openliberty.netty.internal" ibm:alias="networkFramework" ibm:beta="true"
+        name="internal" description="internal use only">
 
          <AD name="internal" description="internal use only"
-            id="scalerMaxThreads" required="false" type="Integer" default="4" min="0"/>
+            id="eventGroupMinThreads" required="false" type="Integer" default="1" min="0"/>
+
+         <AD name="internal" description="internal use only"
+            id="eventGroupMaxThreads" required="false" type="Integer" default="4" min="0"/>
 
          <AD name="internal" description="internal use only"
             id="scalerWindowSize" required="false" type="String" ibm:type="duration" default="1500ms" min="0"/>
