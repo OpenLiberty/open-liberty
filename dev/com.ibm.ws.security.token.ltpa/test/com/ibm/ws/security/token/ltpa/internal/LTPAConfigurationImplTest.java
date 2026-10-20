@@ -154,6 +154,7 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
         props.put(LTPAConfiguration.CFG_KEY_INACTIVITY_TIMEOUT, 60L);
         props.put(LTPAConfiguration.CFG_KEY_REFRESH_THRESHOLD, refreshThreshold);
+        props.put(LTPAConfiguration.CFG_KEY_DYNAMIC_EXPIRATION_VALIDATION, false); // metatype default
 
         // Create one validation key in props
         props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME, validationKeyFileName);
