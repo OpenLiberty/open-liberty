@@ -42,6 +42,9 @@ import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionHandlerContext;
 import com.ibm.ws.transport.iiop.transaction.extension.TransactionProtocolProvider;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 @Component(configurationPolicy = IGNORE,
            service = { SubsystemFactory.class, TransactionHandlerContext.class },
            property = { "service.ranking:Integer=2" })
@@ -87,6 +90,21 @@ public class TransactionSubsystemFactory implements SubsystemFactory, Transactio
         this.providerRegistry = providerRegistry;
         this.transactionManager = transactionManager;
         this.remoteTransactionController = remoteTransactionController;
+
+        // Register CheckpointHook so SERVER_INSTANCE_UUID is regenerated on
+        // InstantOn restore. If InstantOn is not active, addMultiThreadedHook
+        // returns false and we do nothing (UUID from static init is correct).
+        CheckpointHook uuidHook = new CheckpointHook() {
+            @Override
+            public void restore() {
+                TransactionIORConstants.regenerateServerInstanceUUID();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "InstantOn restore: regenerated SERVER_INSTANCE_UUID={0}",
+                             TransactionIORConstants.SERVER_INSTANCE_UUID);
+                }
+            }
+        };
+        CheckpointPhase.getPhase().addMultiThreadedHook(uuidHook);
 
         transactionInitializerClass = new ServiceProvider(new MyLocalFactory(), TransactionInitializer.class);
         providerRegistry.registerProvider(transactionInitializerClass);
