@@ -2422,7 +2422,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             prepareNettyHeadersToSend();
         }
         
-        this.nettyContext.channel().writeAndFlush(response);
+        writeNettyResponse(response);
 
     }
 
@@ -3882,61 +3882,52 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      */
     private void sendNettyHeaders() {
-        this.nettyContext.channel().eventLoop().execute(() -> {
-            ChannelFuture future = nettyContext.channel().writeAndFlush(nettyResponse);
-            boolean websocketIntent = Boolean.TRUE.equals(nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).get());
-            boolean isSwitching = nettyResponse.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code();
-            String connection = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
-            String upgrade = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
-            // Match the response predicate that makes HttpOutputStreamImpl wait for readiness.
-            boolean isUpgrade = isSwitching
-                            && connection != null
+        this.nettyContext.channel().eventLoop().execute(() -> writeNettyResponse(nettyResponse));
+    }
+
+    private void writeNettyResponse(HttpResponse response) {
+        boolean isSwitching = response.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code();
+        String connection = response.headers().get(HttpHeaderNames.CONNECTION);
+        String upgrade = response.headers().get(HttpHeaderNames.UPGRADE);
+        boolean isUpgrade = isSwitching && connection != null
                             && AsciiString.containsIgnoreCase(connection, "upgrade")
                             && upgrade != null && !upgrade.isEmpty();
-            boolean isWebSocketUpgrade = isUpgrade
-                            && HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(nettyResponse.headers().get(HttpHeaderNames.UPGRADE));
-            if (websocketIntent && !isWebSocketUpgrade) {
-                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
+        boolean websocketIntent = Boolean.TRUE.equals(nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).get());
+        boolean isWebSocketUpgrade = isUpgrade && HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(upgrade);
+        if (websocketIntent && !isWebSocketUpgrade) {
+            nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
+        }
+        if (isUpgrade && nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get() == null) {
+            nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(new CompletableFuture<>());
+        }
+
+        ChannelFuture future = nettyContext.channel().writeAndFlush(response);
+        if (!isUpgrade) {
+            if (isSwitching && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "status 101 but missing headers: Connection=" + connection + " Upgrade=" + upgrade);
             }
-            if (isSwitching) {
-                if(isUpgrade) {
-                    Object upgPromise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-                    if(!(upgPromise instanceof CompletableFuture<?>)) {
-                        CompletableFuture<Void> promise = new CompletableFuture<>();
-                        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
-                    }
+            return;
+        }
 
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc,"sendNettyHeaders detected 101, attaching event to listener");
-                    }
-
-                    future.addListener(f -> {
-                        if(f.isSuccess()){
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc,"101 writeAndFlush success, firing event. Autoread = "
-                                    + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
-                            }
-                            
-                            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
-                        } else {
-                            if (isWebSocketUpgrade) {
-                                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
-                            }
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc,"101 writeAndFlush failed: " + String.valueOf(f.cause()));
-                            }
-                        }
-                        
-                    });
-                
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc,"status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
-                    }
+        future.addListener(f -> {
+            if (f.isSuccess()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "101 writeAndFlush success, firing upgrade event");
+                }
+                nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+            } else {
+                CompletableFuture<Void> promise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+                if (promise != null) {
+                    promise.completeExceptionally(f.cause() != null ? f.cause() : new IOException("101 response write failed"));
+                }
+                if (isWebSocketUpgrade) {
+                    nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "101 writeAndFlush failed: " + String.valueOf(f.cause()));
                 }
             }
         });
-
     }
 
     /**

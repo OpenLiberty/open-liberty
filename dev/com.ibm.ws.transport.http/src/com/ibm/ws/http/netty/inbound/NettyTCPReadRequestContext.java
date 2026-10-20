@@ -17,7 +17,10 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
@@ -156,19 +159,27 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         final boolean logicalUpg = isLogicallyUpgraded();
         final boolean handlerReady = hasUpgradeHandler();
+        int readTimeout = timeout;
 
-        // If we're logically upgraded but the upgrade handler is not yet in place,
-        // DO NOT touch HttpInputStreamImpl. Just report "no data" for now.
+        // The webcontainer's upgrade marker can precede Netty's handler installation.
+        // Wait for that handoff without reading from the old HTTP stream.
         if (logicalUpg && !handlerReady) {
-
             final int effectiveTimeout = normalizeTimeout(timeout);
             if(effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT){
-                awaitUpgradePipeline(effectiveTimeout);
+                long deadlineNs = effectiveTimeout == NO_TIMEOUT ? Long.MAX_VALUE
+                                : System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(effectiveTimeout);
+                awaitUpgradePipeline(deadlineNs);
                 if(!hasUpgradeHandler()){
-                    return 0L;
+                    throw new IOException("101 upgrade completed without an upgrade handler");
+                }
+                if (deadlineNs != Long.MAX_VALUE) {
+                    long remainingNs = deadlineNs - System.nanoTime();
+                    if (remainingNs <= 0) {
+                        throw createSocketTimeoutException();
+                    }
+                    readTimeout = (int) Math.max(1L, TimeUnit.NANOSECONDS.toMillis(remainingNs));
                 }
             }
-
         }
 
         if (timeout == IMMED_TIMEOUT) {
@@ -190,7 +201,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             return hasUpgradeHandler() ? upgradedImmediateDrain() : nonUpgradedImmediateDrain();
         }
 
-        return hasUpgradeHandler() ? upgradedSyncRead(numBytes, timeout) : nonUpgradedSyncRead(numBytes, timeout);
+        return hasUpgradeHandler() ? upgradedSyncRead(numBytes, readTimeout) : nonUpgradedSyncRead(numBytes, timeout);
     }
 
     private long nonUpgradedSyncRead(long numBytes, int timeout) throws IOException {
@@ -359,13 +370,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         if (logicalUpg && !handlerReady) {
-            installAsyncHttpReadCallbacks(numBytes, callback, effectiveTimeout);
-
-            if (effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT) {
-                awaitUpgradePipeline(effectiveTimeout);
-            }
-            if(hasUpgradeHandler()){
-                signalAndDispatchAsyncRead();
+            if (effectiveTimeout == IMMED_TIMEOUT || effectiveTimeout == ABORT_TIMEOUT) {
+                installAsyncHttpReadCallbacks(numBytes, callback, effectiveTimeout);
+            } else {
+                queuePendingUpgradeRead(numBytes, callback, forceQueue, effectiveTimeout);
             }
             return null;
         }
@@ -421,6 +429,56 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                          Math.max(1L, numBytes),
                          normalizeTimeout(timeout));
         return null;
+    }
+
+    private void queuePendingUpgradeRead(long numBytes, TCPReadCompletedCallback callback,
+                                        boolean forceQueue, int effectiveTimeout) {
+        CompletableFuture<Void> promise = nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise == null) {
+            dispatchUpgradeReadError(callback, new IOException("101 upgrade has no readiness promise"));
+            return;
+        }
+        long deadlineNs = effectiveTimeout == NO_TIMEOUT ? Long.MAX_VALUE
+                        : System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(effectiveTimeout);
+        AtomicBoolean pending = new AtomicBoolean(true);
+        ScheduledFuture<?> deadlineTask = effectiveTimeout == NO_TIMEOUT ? null : nettyChannel.eventLoop().schedule(() -> {
+            if (pending.compareAndSet(true, false)) {
+                dispatchUpgradeReadError(callback, createSocketTimeoutException());
+            }
+        }, effectiveTimeout, TimeUnit.MILLISECONDS);
+        promise.whenComplete((ignored, failure) -> {
+            if (!pending.compareAndSet(true, false)) {
+                return;
+            }
+            if (deadlineTask != null) {
+                deadlineTask.cancel(false);
+            }
+            if (failure != null || !hasUpgradeHandler()) {
+                dispatchUpgradeReadError(callback, new IOException("101 upgrade handoff failed", failure));
+                return;
+            }
+            int remainingTimeout = NO_TIMEOUT;
+            if (deadlineNs != Long.MAX_VALUE) {
+                long remainingNs = deadlineNs - System.nanoTime();
+                if (remainingNs <= 0) {
+                    dispatchUpgradeReadError(callback, createSocketTimeoutException());
+                    return;
+                }
+                remainingTimeout = (int) Math.max(1L, TimeUnit.NANOSECONDS.toMillis(remainingNs));
+            }
+            try {
+                ensureBuffersOrJIT(numBytes, true);
+                upgradedAsyncRead(numBytes, callback, forceQueue, remainingTimeout);
+            } catch (RuntimeException e) {
+                dispatchUpgradeReadError(callback, new EOFException(e.toString()));
+            }
+        });
+    }
+
+    private void dispatchUpgradeReadError(TCPReadCompletedCallback callback, IOException failure) {
+        if (callback != null) {
+            HttpDispatcher.getExecutorService().execute(() -> callback.error(vc, this, failure));
+        }
     }
 
     @Override
@@ -665,28 +723,28 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
     }
 
-    private boolean awaitUpgradePipeline(int timeout){
+    private void awaitUpgradePipeline(long deadlineNs) throws IOException {
         CompletableFuture<Void> promise = nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
         if(promise == null){
-            return false;
+            throw new IOException("101 upgrade has no readiness promise");
         }
-        if(promise.isDone()){
-            return true;
-        }
-        if(nettyChannel.eventLoop().inEventLoop()){
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc,"Cannot wait for the upgrade pipeline on the Netty event loop");
-            }
-            return false;
+        if (!promise.isDone() && nettyChannel.eventLoop().inEventLoop()) {
+            throw new IOException("Cannot wait for the 101 upgrade handoff on the Netty event loop");
         }
 
-        // Bound a concurrent read's wait for the 101 write to install the upgrade handler.
-        // Normal upgraded application reads begin after handler initialization.
         try {
-            promise.get(5, TimeUnit.SECONDS);
-            return true;
-        } catch (Exception e){
-            return false;
+            if (deadlineNs == Long.MAX_VALUE) {
+                promise.get();
+            } else {
+                promise.get(Math.max(0L, deadlineNs - System.nanoTime()), TimeUnit.NANOSECONDS);
+            }
+        } catch (TimeoutException e) {
+            throw createSocketTimeoutException();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Interrupted while waiting for the 101 upgrade handoff", e);
+        } catch (ExecutionException e) {
+            throw new IOException("101 upgrade handoff failed", e.getCause());
         }
     }
 

@@ -289,6 +289,11 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             writePromise.addListener((ChannelFutureListener) future -> {
                 if(future.isSuccess()){
                     fireUpgradeCommitted();
+                } else {
+                    CompletableFuture<Void> promise = nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+                    if (promise != null) {
+                        promise.completeExceptionally(future.cause() != null ? future.cause() : new IOException("101 response write failed"));
+                    }
                 }
             });
         }
@@ -408,6 +413,11 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             writePromise.addListener((ChannelFutureListener) future -> {
                 if(future.isSuccess()){
                     fireUpgradeCommitted();
+                } else {
+                    CompletableFuture<Void> promise = nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+                    if (promise != null) {
+                        promise.completeExceptionally(future.cause() != null ? future.cause() : new IOException("101 response write failed"));
+                    }
                 }
             });
         }
