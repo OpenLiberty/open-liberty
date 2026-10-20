@@ -96,8 +96,7 @@ public class OidcTests extends FATServletClient {
                         }
                         """, toolName);
 
-        McpDetailedAuthResponse mcpResponse = client.callMCPRaw(request,
-                McpClient.RequestOptions.builder().expectedStatus(401).build());
+        McpDetailedAuthResponse mcpResponse = client.callMCPRaw(request).expectedStatus(401).run();
         assertEquals(401, mcpResponse.statusCode());
 
         String wwwAuthenticate = mcpResponse.wwwAuthenticate();
@@ -206,7 +205,7 @@ public class OidcTests extends FATServletClient {
                         }
                         """;
 
-        client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
+        client.callMCPRaw(request).expectedStatus(403).run();
     }
 
     /**

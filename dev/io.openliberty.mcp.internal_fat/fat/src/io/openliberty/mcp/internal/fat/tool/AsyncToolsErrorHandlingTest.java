@@ -218,7 +218,7 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
                         """,
                                        exceptionToThrow,
                                        failureMechanism);
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
         Log.info(AsyncToolsErrorHandlingTest.class, "callToolExpect403", response.toString());
 
         assertEquals(403, response.statusCode());

@@ -154,8 +154,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * (RFC 9728 §3).
      */
     private static void assertUnauthenticated401WithResourceMetadata(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse response = client.callMCPRaw(toolCallRequest(toolName),
-                McpClient.RequestOptions.builder().expectedStatus(401).build());
+        McpDetailedAuthResponse response = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
 
         assertEquals("Expected HTTP 401 for unauthenticated call", 401, response.statusCode());
 
@@ -184,8 +183,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * fetch the Protected Resource Metadata document, and validate its structure.
      */
     private static void assertProtectedResourceMetadataDiscoverable(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse authResponse = client.callMCPRaw(toolCallRequest(toolName),
-                McpClient.RequestOptions.builder().expectedStatus(401).build());
+        McpDetailedAuthResponse authResponse = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
         assertEquals(401, authResponse.statusCode());
 
         String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
@@ -215,8 +213,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * the Authorization Server Metadata document.
      */
     private static void assertAuthorizationServerMetadataDiscoverable(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse authResponse = client.callMCPRaw(toolCallRequest(toolName),
-                McpClient.RequestOptions.builder().expectedStatus(401).build());
+        McpDetailedAuthResponse authResponse = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
         String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
@@ -303,8 +300,7 @@ public class AuthorizationFlowTests extends FATServletClient {
 
         McpClient authenticatedClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS)
                         .bearerToken(accessToken).sslContext(unauthClient.getSslContext()).build();
-        authenticatedClient.callMCPRaw(toolCallRequest("adminTool"),
-                McpClient.RequestOptions.builder().expectedStatus(403).build());
+        authenticatedClient.callMCPRaw(toolCallRequest("adminTool")).expectedStatus(403).run();
     }
 
     // Private helpers
@@ -313,8 +309,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * Runs the full discovery flow and returns the {@code token_endpoint} URL.
      */
     private static String discoverTokenEndpoint(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse authChallenge = client.callMCPRaw(toolCallRequest(toolName),
-                McpClient.RequestOptions.builder().expectedStatus(401).build());
+        McpDetailedAuthResponse authChallenge = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
         assertEquals("Unauthenticated request must return 401", 401, authChallenge.statusCode());
 
         String resourceMetadataUrl = extractResourceMetadataUrl(authChallenge.wwwAuthenticate());

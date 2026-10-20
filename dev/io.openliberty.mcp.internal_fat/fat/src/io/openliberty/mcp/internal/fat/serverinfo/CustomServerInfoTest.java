@@ -248,10 +248,8 @@ public class CustomServerInfoTest {
 
         // Re-initialize the session after config update since the old session was invalidated
         // Create a new client which will automatically establish a new session
-        McpClient newClient = McpClient.builder(server, "/dynamicServerInfoUpdateTest").build();
-        newClient.initialize();
-
-        try {
+        try (McpClient newClient = McpClient.builder(server, "/dynamicServerInfoUpdateTest").build()) {
+            newClient.initialize();
             String updatedResponse = newClient.callMCP(request);
 
             String expectedUpdatedResponse = """
@@ -276,9 +274,6 @@ public class CustomServerInfoTest {
                             """;
 
             JSONAssert.assertEquals(expectedUpdatedResponse, updatedResponse, JSONCompareMode.STRICT);
-        } finally {
-            // Clean up the new client's session
-            newClient.close();
         }
     }
 

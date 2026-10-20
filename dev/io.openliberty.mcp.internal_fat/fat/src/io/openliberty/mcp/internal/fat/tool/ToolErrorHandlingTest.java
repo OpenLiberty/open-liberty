@@ -687,7 +687,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                        }
                        """;
 
-       McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
+       McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).anyStatus().run();
        Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
 
        assertEquals(403, response.statusCode());

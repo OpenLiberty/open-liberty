@@ -143,7 +143,7 @@ public class AuthHelper {
      */
     private static void negativeResponseExpectedForMCPTool(McpClient client, String user, String password) throws Exception {
         String request = buildMCPCallRequest();
-        client.callMCPRaw(request, McpClient.RequestOptions.builder().basicAuth(user, password).expectedStatus(403).build());
+        client.callMCPRaw(request).basicAuth(user, password).expectedStatus(403).run();
     }
 
     /*
@@ -152,7 +152,7 @@ public class AuthHelper {
      */
     static void negativeResponseExpectedForMCPTool(McpClient client) throws Exception {
         String request = AuthHelper.buildMCPCallRequest();
-        client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
+        client.callMCPRaw(request).expectedStatus(403).run();
     }
 
     /*
@@ -161,7 +161,7 @@ public class AuthHelper {
      */
     private static void failedAuthenticationExpected(McpClient client, String user, String password) throws Exception {
         String request = buildMCPCallRequest();
-        client.callMCPRaw(request, McpClient.RequestOptions.builder().basicAuth(user, password).expectedStatus(401).build());
+        client.callMCPRaw(request).basicAuth(user, password).expectedStatus(401).run();
     }
 
     /*
@@ -170,7 +170,7 @@ public class AuthHelper {
      */
     private static void failedAuthenticationExpected(McpClient client) throws Exception {
         String request = buildMCPCallRequest();
-        client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(401).build());
+        client.callMCPRaw(request).expectedStatus(401).run();
     }
 
     /**
@@ -187,7 +187,7 @@ public class AuthHelper {
      */
     private static void positiveResponseExpectedForMCPTool(McpClient client, String user, String password) throws Exception {
         String request = AuthHelper.buildMCPCallRequest();
-        McpClient.McpDetailedAuthResponse r = client.callMCPRaw(request, McpClient.RequestOptions.builder().basicAuth(user, password).build());
+        McpClient.McpDetailedAuthResponse r = client.callMCPRaw(request).basicAuth(user, password).run();
         compareJSONWithExpectedEchoResponse(r.body());
     }
 

@@ -23,6 +23,8 @@ import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
@@ -61,7 +63,7 @@ import componenttest.topology.impl.LibertyServer;
  * <ul>
  *   <li>{@link #callMCP(String)} — standard call; applies all client-level auth and session
  *       headers, expects HTTP 200 with a response body.</li>
- *   <li>{@link #callMCPRaw(String, RequestOptions)} — full control over expected status code,
+ *   <li>{@link #callMCPRaw(String)} — full control over expected status code,
  *       per-call auth override, and custom endpoint path. Use for negative/exceptional test
  *       cases.</li>
  *   <li>{@link #callMCPNotification(String)} — sends a notification, expects HTTP 202 with
@@ -87,7 +89,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
 
     /** Non-null when this client speaks HTTPS. */
     private final SSLContext sslContext;
-    private final java.net.http.HttpClient httpClient;
+    private final HttpClient httpClient;
 
     /**
      * Optional fallback HTTP client used for {@link #getDiscoveryHttpClient()} when this
@@ -95,7 +97,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * URLs that point to HTTPS endpoints (e.g. Keycloak) without switching the MCP
      * transport to HTTPS.
      */
-    private java.net.http.HttpClient discoveryHttpClient;
+    private HttpClient discoveryHttpClient;
 
     private static final String DEFAULT_MCP_PATH = "/mcp";
     private final String path;
@@ -180,6 +182,9 @@ public class McpClient extends ExternalResource implements AutoCloseable {
 
         /** Builds and returns a new {@link McpClient}. */
         public McpClient build() {
+            if (bearerToken != null && username != null) {
+                throw new IllegalStateException("McpClient.Builder: basicAuth and bearerToken are mutually exclusive — set one or the other, not both.");
+            }
             return new McpClient(this);
         }
     }
@@ -195,8 +200,8 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         this.bearerToken = b.bearerToken;
         this.sslContext = b.sslContext;
         this.httpClient = sslContext == null
-                          ? java.net.http.HttpClient.newBuilder().version(java.net.http.HttpClient.Version.HTTP_1_1).build()
-                          : java.net.http.HttpClient.newBuilder().version(java.net.http.HttpClient.Version.HTTP_1_1).sslContext(sslContext).build();
+                          ? HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build()
+                          : HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).sslContext(sslContext).build();
     }
 
     // -------------------------------------------------------------------------
@@ -238,22 +243,22 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     }
 
     /**
-     * Sets a fallback {@link java.net.http.HttpClient} used for discovery requests when this
+     * Sets a fallback {@link HttpClient} used for discovery requests when this
      * client is plain HTTP but the discovery chain includes HTTPS endpoints (e.g. Keycloak).
      *
      * @param client the HTTP client to use for discovery requests
      * @return {@code this} for fluent chaining
      */
-    public McpClient withDiscoveryClient(java.net.http.HttpClient client) {
+    public McpClient withDiscoveryClient(HttpClient client) {
         this.discoveryHttpClient = client;
         return this;
     }
 
     /**
-     * Returns the appropriate {@link java.net.http.HttpClient} for discovery requests.
+     * Returns the appropriate {@link HttpClient} for discovery requests.
      * Priority: discovery client > this client's HTTP client.
      */
-    public java.net.http.HttpClient getDiscoveryHttpClient() {
+    public HttpClient getDiscoveryHttpClient() {
         return discoveryHttpClient != null ? discoveryHttpClient : httpClient;
     }
 
@@ -269,19 +274,6 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @throws Exception if initialization fails
      */
     public void initialize() throws Exception {
-        try {
-            before();
-        } catch (Throwable t) {
-            if (t instanceof Exception) {
-                throw (Exception) t;
-            }
-            throw new Exception("Initialization failed", t);
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected void before() throws Throwable {
         // Clear any stale session ID so it is not sent on the initialize request.
         sessionId = null;
 
@@ -314,25 +306,33 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             throw new Exception("initialize failed with HTTP " + response.statusCode() + ": " + response.body());
         }
 
+        // Validate the JSON-RPC envelope and required initialize result fields
         String expectedResponse = """
                         {
                           "jsonrpc": "2.0",
                           "id": "1",
                           "result": {
-                            "protocolVersion": "2025-11-25",
+                            "protocolVersion": "2025-11-25"
                           }
                         }
                         """;
         JSONAssert.assertEquals(expectedResponse, response.body(), JSONCompareMode.LENIENT);
 
+        JSONObject json = new JSONObject(response.body());
+        assertNull("initialize response must not contain a JSON-RPC error field", json.opt("error"));
+
+        JSONObject result = json.getJSONObject("result");
+        assertNotNull("initialize result must contain 'serverInfo'", result.opt("serverInfo"));
+        assertNotNull("initialize result must contain 'capabilities'", result.opt("capabilities"));
+
         sessionId = response.headers().firstValue(MCP_SESSION_ID).orElse(null);
         switch (mode) {
-            case STATEFUL -> assertNotNull(sessionId);
-            case STATELESS -> assertNull(sessionId);
+            case STATEFUL -> assertNotNull("Mcp-Session-Id header must be present in stateful mode", sessionId);
+            case STATELESS -> assertNull("Mcp-Session-Id header must be absent in stateless mode", sessionId);
         }
 
         String contentType = response.headers().firstValue("Content-Type").orElse(null);
-        assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
+        assertThat("Content-Type must be application/json", contentType, containsString(VALUE_APPLICATION_JSON));
 
         // Notify the server that initialization was successful
         callMCPNotification("""
@@ -343,9 +343,18 @@ public class McpClient extends ExternalResource implements AutoCloseable {
                         """);
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc} — delegates to {@link #initialize()}. */
     @Override
-    protected void after() {
+    protected void before() throws Throwable {
+        initialize();
+    }
+
+    /**
+     * Implements {@link AutoCloseable}: deletes the MCP session if stateful and not already
+     * deleted. Call manually when managing the lifecycle outside of a JUnit {@code @Rule}.
+     */
+    @Override
+    public void close() {
         if (mode.equals(StateMode.STATEFUL) && !sessionDeleted && sessionId != null) {
             try {
                 deleteSession();
@@ -355,13 +364,10 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         }
     }
 
-    /**
-     * Implements {@link AutoCloseable}: deletes the MCP session if stateful and not already
-     * deleted, identical to the JUnit {@code @Rule} teardown.
-     */
+    /** {@inheritDoc} — delegates to {@link #close()}. */
     @Override
-    public void close() {
-        after();
+    protected void after() {
+        close();
     }
 
     public String getSessionId() {
@@ -379,22 +385,36 @@ public class McpClient extends ExternalResource implements AutoCloseable {
 
     /** Sends a DELETE request for the current session and marks it as deleted. */
     public void deleteSession() throws Exception {
-        deleteSession(sessionId);
+        if (mode.equals(StateMode.STATEFUL)) {
+            HttpRequest deleteRequest = HttpRequest.newBuilder()
+                            .uri(URI.create(getMcpUrl()))
+                            .header(MCP_SESSION_ID, sessionId)
+                            .DELETE()
+                            .build();
+            HttpResponse<String> response = httpClient.send(deleteRequest, BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new Exception("deleteSession failed with HTTP " + response.statusCode() + ": " + response.body());
+            }
+            this.sessionDeleted = true;
+        }
     }
 
     /**
-     * Sends a DELETE request for the given session ID and marks this client's session as
-     * deleted. Useful when testing cross-session deletion.
+     * Sends a DELETE request for the given session ID. Does not mark this client's session
+     * as deleted — use this only when deleting a session belonging to another client (e.g.
+     * to test cross-session deletion behaviour).
      */
     public void deleteSession(String mcpSessionId) throws Exception {
         if (mode.equals(StateMode.STATEFUL)) {
-            java.net.http.HttpRequest deleteRequest = java.net.http.HttpRequest.newBuilder()
+            HttpRequest deleteRequest = HttpRequest.newBuilder()
                             .uri(URI.create(getMcpUrl()))
                             .header(MCP_SESSION_ID, mcpSessionId)
                             .DELETE()
                             .build();
-            httpClient.send(deleteRequest, BodyHandlers.ofString());
-            this.sessionDeleted = true;
+            HttpResponse<String> response = httpClient.send(deleteRequest, BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new Exception("deleteSession(" + mcpSessionId + ") failed with HTTP " + response.statusCode() + ": " + response.body());
+            }
         }
     }
 
@@ -407,12 +427,12 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * and client-level auth credentials (Basic or Bearer). Does not validate the status code.
      */
     private HttpResponse<String> post(String url, String jsonBody, String sessionIdOverride) throws Exception {
-        java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder()
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
                         .uri(URI.create(url))
                         .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
                         .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                         .header("Content-Type", VALUE_APPLICATION_JSON)
-                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonBody));
+                        .POST(HttpRequest.BodyPublishers.ofString(jsonBody));
 
         String sid = sessionIdOverride != null ? sessionIdOverride : sessionId;
         if (mode == StateMode.STATEFUL && sid != null) {
@@ -533,160 +553,141 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     // -------------------------------------------------------------------------
 
     /**
-     * Sends an MCP POST request with full caller control over the expected HTTP status code,
-     * per-call authentication, and endpoint path. Use this for negative tests and other cases
-     * that do not fit the standard happy path.
+     * Returns a {@link RawCall} builder for sending a low-level MCP POST request with full
+     * caller control over the expected HTTP status code, per-call authentication, and endpoint
+     * path. Chain options then call {@link RawCall#run()} to execute.
+     *
+     * <p>Use this for negative tests and other cases that do not fit the standard happy path.
      *
      * <p>Example — expect a 401 with no credentials:
      * <pre>{@code
-     * McpDetailedAuthResponse r = client.callMCPRaw(body,
-     *     RequestOptions.builder().expectedStatus(401).build());
+     * McpDetailedAuthResponse r = client.callMCPRaw(body).expectedStatus(401).run();
      * }</pre>
      *
-     * <p>Example — one-off call with different credentials:
+     * <p>Example — per-call credentials on an existing session:
      * <pre>{@code
-     * try (McpClient adminClient = McpClient.builder(server, contextRoot)
-     *                                       .mode(StateMode.STATEFUL)
-     *                                       .basicAuth("admin", "secret")
-     *                                       .build()) {
-     *     adminClient.initialize();
-     *     String response = adminClient.callMCP(body);
-     * }
+     * client.callMCPRaw(body).basicAuth("testuser", "password").expectedStatus(403).run();
      * }</pre>
      *
      * @param jsonRequestBody the JSON-RPC request body
-     * @param options         options controlling the expected status, auth override, and path
-     * @return a {@link McpDetailedAuthResponse} with status code, headers, and body
-     * @throws Exception if the request fails unexpectedly
+     * @return a {@link RawCall} builder ready to be configured and executed
      */
-    public McpDetailedAuthResponse callMCPRaw(String jsonRequestBody, RequestOptions options) throws Exception {
-        String url = options.appendPath != null
-                     ? (sslContext != null
-                        ? "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
-                        : "http://" + server.getHostname() + ":" + server.getHttpDefaultPort())
-                       + contextRoot + options.appendPath
-                     : getMcpUrl();
-
-        // Build a temporary request, applying per-call auth override if present
-        java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder()
-                        .uri(URI.create(url))
-                        .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                        .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                        .header("Content-Type", VALUE_APPLICATION_JSON)
-                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonRequestBody));
-
-        // sessionIdOverride takes precedence over the client's session ID
-        if (options.sessionIdOverride != null) {
-            builder.header(MCP_SESSION_ID, options.sessionIdOverride);
-        } else if (mode == StateMode.STATEFUL && sessionId != null) {
-            builder.header(MCP_SESSION_ID, sessionId);
-        }
-
-        // Per-call basicAuth override takes precedence over client-level credentials.
-        if (options.basicAuthUsername != null && options.basicAuthPassword != null) {
-            String encoded = Base64.getEncoder()
-                            .encodeToString((options.basicAuthUsername + ":" + options.basicAuthPassword).getBytes(StandardCharsets.UTF_8));
-            builder.header("Authorization", "Basic " + encoded);
-        } else if (bearerToken != null) {
-            builder.header("Authorization", "Bearer " + bearerToken);
-        } else if (username != null && password != null) {
-            String encoded = Base64.getEncoder()
-                            .encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
-            builder.header("Authorization", "Basic " + encoded);
-        }
-
-        HttpResponse<String> response = httpClient.send(builder.build(), BodyHandlers.ofString());
-
-        if (!options.anyStatus && response.statusCode() != options.expectedStatus) {
-            throw new Exception("[McpClient] callMCPRaw(" + url + ") -> HTTP "
-                                + response.statusCode() + " (expected " + options.expectedStatus + ")\nBody: " + response.body());
-        }
-
-        return new McpDetailedAuthResponse(
-                        response.statusCode(),
-                        response.headers().firstValue("WWW-Authenticate").orElse(null),
-                        response.headers().firstValue("Content-Type").orElse(null),
-                        response.body());
+    public RawCall callMCPRaw(String jsonRequestBody) {
+        return new RawCall(jsonRequestBody);
     }
 
     // -------------------------------------------------------------------------
-    // RequestOptions
+    // RawCall
     // -------------------------------------------------------------------------
 
     /**
-     * Options for {@link McpClient#callMCPRaw(String, RequestOptions)}.
-     * Build with {@link RequestOptions#builder()}.
+     * Fluent builder for a single low-level MCP request. Obtain via
+     * {@link McpClient#callMCPRaw(String)}; configure options; call {@link #run()} to execute.
      */
-    public static final class RequestOptions {
-        final int expectedStatus;
-        final boolean anyStatus;
-        final String appendPath;
-        final String sessionIdOverride;
-        final String basicAuthUsername;
-        final String basicAuthPassword;
+    public final class RawCall {
+        private final String jsonRequestBody;
+        private int expectedStatus = 200;
+        private boolean anyStatus = false;
+        private String mcpPath;
+        private String sessionIdOverride;
+        private String basicAuthUsername;
+        private String basicAuthPassword;
 
-        private RequestOptions(OptionsBuilder b) {
-            this.expectedStatus = b.expectedStatus;
-            this.anyStatus = b.anyStatus;
-            this.appendPath = b.appendPath;
-            this.sessionIdOverride = b.sessionIdOverride;
-            this.basicAuthUsername = b.basicAuthUsername;
-            this.basicAuthPassword = b.basicAuthPassword;
+        private RawCall(String jsonRequestBody) {
+            this.jsonRequestBody = jsonRequestBody;
         }
 
-        public static OptionsBuilder builder() {
-            return new OptionsBuilder();
+        /** Expected HTTP status code (default: 200). */
+        public RawCall expectedStatus(int code) {
+            this.expectedStatus = code;
+            return this;
         }
 
-        public static final class OptionsBuilder {
-            private int expectedStatus = 200;
-            private boolean anyStatus = false;
-            private String appendPath;
-            private String sessionIdOverride;
-            private String basicAuthUsername;
-            private String basicAuthPassword;
+        /** Accept any HTTP status code — disables the status assertion entirely. */
+        public RawCall anyStatus() {
+            this.anyStatus = true;
+            return this;
+        }
 
-            /** Expected HTTP status code (default: 200). */
-            public OptionsBuilder expectedStatus(int code) {
-                this.expectedStatus = code;
-                return this;
+        /**
+         * Overrides the MCP path for this single call, replacing the client's configured
+         * path. Useful for testing a different endpoint within the same application.
+         */
+        public RawCall mcpPath(String path) {
+            this.mcpPath = path;
+            return this;
+        }
+
+        /** Override the session ID header for this single call only. */
+        public RawCall sessionId(String sessionId) {
+            this.sessionIdOverride = sessionId;
+            return this;
+        }
+
+        /**
+         * Override the Basic Auth credentials for this single call only.
+         * Use when the call must be made on an existing session but with different credentials,
+         * e.g. testing that a cross-user request is rejected.
+         */
+        public RawCall basicAuth(String username, String password) {
+            this.basicAuthUsername = username;
+            this.basicAuthPassword = password;
+            return this;
+        }
+
+        /**
+         * Executes the request and returns the detailed response.
+         *
+         * @return a {@link McpDetailedAuthResponse} with status code, headers, and body
+         * @throws Exception if the HTTP call fails or the status does not match the expectation
+         */
+        public McpDetailedAuthResponse run() throws Exception {
+            String url = mcpPath != null
+                         ? (sslContext != null
+                            ? "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
+                            : "http://" + server.getHostname() + ":" + server.getHttpDefaultPort())
+                           + contextRoot + mcpPath
+                         : getMcpUrl();
+
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
+                            .uri(URI.create(url))
+                            .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                            .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                            .header("Content-Type", VALUE_APPLICATION_JSON)
+                            .POST(HttpRequest.BodyPublishers.ofString(jsonRequestBody));
+
+            // sessionIdOverride takes precedence over the client's session ID
+            if (sessionIdOverride != null) {
+                builder.header(MCP_SESSION_ID, sessionIdOverride);
+            } else if (mode == StateMode.STATEFUL && sessionId != null) {
+                builder.header(MCP_SESSION_ID, sessionId);
             }
 
-            /** Accept any HTTP status code — disables the status assertion entirely. */
-            public OptionsBuilder anyStatus() {
-                this.anyStatus = true;
-                return this;
+            // Per-call basicAuth override takes precedence over client-level credentials.
+            if (basicAuthUsername != null && basicAuthPassword != null) {
+                String encoded = Base64.getEncoder()
+                                .encodeToString((basicAuthUsername + ":" + basicAuthPassword).getBytes(StandardCharsets.UTF_8));
+                builder.header("Authorization", "Basic " + encoded);
+            } else if (bearerToken != null) {
+                builder.header("Authorization", "Bearer " + bearerToken);
+            } else if (username != null && password != null) {
+                String encoded = Base64.getEncoder()
+                                .encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+                builder.header("Authorization", "Basic " + encoded);
             }
 
-            /**
-             * Append this path to the context root instead of using the client's configured
-             * MCP path. Useful for testing a different endpoint within the same application.
-             */
-            public OptionsBuilder appendPath(String path) {
-                this.appendPath = path;
-                return this;
+            HttpResponse<String> response = httpClient.send(builder.build(), BodyHandlers.ofString());
+
+            if (!anyStatus && response.statusCode() != expectedStatus) {
+                throw new Exception("[McpClient] callMCPRaw(" + url + ") -> HTTP "
+                                    + response.statusCode() + " (expected " + expectedStatus + ")\nBody: " + response.body());
             }
 
-            /** Override the session ID header for this single call only. */
-            public OptionsBuilder sessionId(String sessionId) {
-                this.sessionIdOverride = sessionId;
-                return this;
-            }
-
-            /**
-             * Override the Basic Auth credentials for this single call only.
-             * Use when the call must be made on an existing session but with different credentials,
-             * e.g. testing that a cross-user request is rejected.
-             */
-            public OptionsBuilder basicAuth(String username, String password) {
-                this.basicAuthUsername = username;
-                this.basicAuthPassword = password;
-                return this;
-            }
-
-            public RequestOptions build() {
-                return new RequestOptions(this);
-            }
+            return new McpDetailedAuthResponse(
+                            response.statusCode(),
+                            response.headers().firstValue("WWW-Authenticate").orElse(null),
+                            response.headers().firstValue("Content-Type").orElse(null),
+                            response.body());
         }
     }
 
@@ -695,7 +696,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     // -------------------------------------------------------------------------
 
     /**
-     * Detailed response data returned by {@link #callMCPRaw(String, RequestOptions)}.
+     * Detailed response data returned by {@link RawCall#run()}.
      */
     public record McpDetailedAuthResponse(int statusCode, String wwwAuthenticate, String contentType, String body) {}
 

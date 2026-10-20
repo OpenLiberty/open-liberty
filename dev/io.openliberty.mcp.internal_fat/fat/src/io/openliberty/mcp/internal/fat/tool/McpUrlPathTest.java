@@ -70,7 +70,7 @@ public class McpUrlPathTest extends FATServletClient {
 
     @Test
     public void testMcpEndpointWithTrailingForwardSlash() throws Exception {
-        String response = client.callMCPRaw(REQUEST, McpClient.RequestOptions.builder().appendPath("/mcp/").expectedStatus(200).build()).body(); // url /mcp/ will be handled correctly
+        String response = client.callMCPRaw(REQUEST).mcpPath("/mcp/").run().body(); // url /mcp/ will be handled correctly
         String expectedResponseString = """
                         {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
                         """;
@@ -82,7 +82,7 @@ public class McpUrlPathTest extends FATServletClient {
     public void testMcpEndpointWithTrailingForwardSlashAndMoreTestAppended() throws Exception {
 
         int expectedErrorCode = 404;
-        client.callMCPRaw(REQUEST, McpClient.RequestOptions.builder().appendPath("/mcpUrlPathTest/mcp/something-else").expectedStatus(expectedErrorCode).build());
+        client.callMCPRaw(REQUEST).mcpPath("/mcpUrlPathTest/mcp/something-else").expectedStatus(expectedErrorCode).run();
         assertNotNull(server.waitForStringInLogUsingMark(EXPECTED_ERROR_MESSAGE, server.getDefaultLogFile()));
     }
 

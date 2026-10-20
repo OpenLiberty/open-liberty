@@ -262,8 +262,8 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
         boolean exceptionThrown = false;
         try {
-            defaultEncoderModuleMCPClient.callMCPRaw(toolCallRequest("1", "methodTool"),
-                    McpClient.RequestOptions.builder().sessionId(encoderModuleMCPClient.getSessionId()).build());
+            defaultEncoderModuleMCPClient.callMCPRaw(toolCallRequest("1", "methodTool"))
+                    .sessionId(encoderModuleMCPClient.getSessionId()).run();
         } catch (Exception e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("Invalid or Expired Session Id"));

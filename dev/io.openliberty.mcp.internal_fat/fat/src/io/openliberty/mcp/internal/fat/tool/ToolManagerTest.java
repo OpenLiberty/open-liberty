@@ -614,7 +614,7 @@ public class ToolManagerTest extends FATServletClient {
                         }
                         """;
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
@@ -646,7 +646,7 @@ public class ToolManagerTest extends FATServletClient {
                         }
                         """;
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request, McpClient.RequestOptions.builder().expectedStatus(403).build());
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));

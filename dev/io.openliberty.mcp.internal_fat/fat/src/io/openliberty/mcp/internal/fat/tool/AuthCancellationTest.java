@@ -122,8 +122,7 @@ public class AuthCancellationTest extends FATServletClient {
         toolStatus.awaitStarted(LATCH_NAME);
 
         // Send cancellation with the wrong user on the same session — expect 403 Forbidden.
-        client.callMCPRaw(cancellationRequestNotification,
-                McpClient.RequestOptions.builder().basicAuth("testuser", "testpassword").expectedStatus(403).build());
+        client.callMCPRaw(cancellationRequestNotification).basicAuth("testuser", "testpassword").expectedStatus(403).run();
 
         // Wait briefly to confirm the tool is still running (it was not cancelled)
         TimeUnit.MILLISECONDS.sleep(TestConstants.NEGATIVE_TIMEOUT_MS);
