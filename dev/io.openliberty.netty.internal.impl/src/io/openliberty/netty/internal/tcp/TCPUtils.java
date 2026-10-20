@@ -504,12 +504,11 @@ public class TCPUtils {
                     open(framework, channel, config, inetHost, inetPort, openListener,
                         config.getPortOpenRetries(), false);
                 } else {
-                    // Timeout must cover either the default chain quiesce timeout (30s)
-                    // or the full port-retry window ((portOpenRetries + 1) * 1s + 5s buffer),
-                    // whichever is larger.
-                    long retryWindowMs = ((long) config.getPortOpenRetries() + 1L)
-                                         * timeBetweenRetriesMsec + 5000L;
-                    final long bindTimeoutMs = Math.max(framework.getDefaultChainQuiesceTimeout(), retryWindowMs);
+                    // Timeout covers the full port-retry window ((portOpenRetries + 1) * timeBetweenRetriesMsec).
+                    // The buffer accounts for socket probe connect timeouts (up to 1s),
+                    // channel closeFuture listeners, and executor scheduling latency across retries.
+                    final long bindTimeoutMs = ((long) config.getPortOpenRetries() + 1L)
+                                               * timeBetweenRetriesMsec;
                     framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                         @Override
                         public ChannelFuture call() {
