@@ -10,17 +10,18 @@
  -->
 
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
-                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
 
    <!-- NETWORK FRAMEWORK OPTIONS ........................................................ -->
 
    <OCD id="io.openliberty.netty.internal" ibm:alias="networkFramework" ibm:beta="true"
-        name="internal" description="internal use only">
+        name="%networkFramework" description="%networkFramework.desc">
 
-         <AD name="internal" description="internal use only"
+         <AD name="%eventGroupMinThreads" description="%eventGroupMinThreads.desc"
             id="eventGroupMinThreads" required="false" type="Integer" default="1" min="0"/>
 
-         <AD name="internal" description="internal use only"
+         <AD name="%eventGroupMaxThreads" description="%eventGroupMaxThreads.desc"
             id="eventGroupMaxThreads" required="false" type="Integer" default="4" min="0"/>
 
          <AD name="internal" description="internal use only"
