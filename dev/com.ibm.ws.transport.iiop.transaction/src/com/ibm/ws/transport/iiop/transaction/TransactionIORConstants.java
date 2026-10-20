@@ -29,24 +29,40 @@ public final class TransactionIORConstants {
     public static final int TAG_IBM_SERVER_UUID = 0x49424d26;
 
     /**
-     * Server instance UUID - generated once at class initialization.
+     * Server instance UUID - generated once at class initialization and
+     * regenerated on InstantOn restore.
      * This UUID uniquely identifies this server instance and is used for
      * local optimization detection (avoiding transaction propagation overhead
      * when calling back to the same server instance).
+     *
+     * Declared volatile (not final) so it can be regenerated on InstantOn restore.
      */
-    public static final UUID SERVER_INSTANCE_UUID = UUID.randomUUID();
+    public static volatile UUID SERVER_INSTANCE_UUID;
     
     /**
      * Pre-computed byte array representation of SERVER_INSTANCE_UUID (16 bytes).
-     * Computed once at class initialization for efficiency.
+     * Regenerated together with SERVER_INSTANCE_UUID by
+     * {@link #regenerateServerInstanceUUID()}.
      */
-    public static final byte[] SERVER_INSTANCE_UUID_BYTES;
+    public static volatile byte[] SERVER_INSTANCE_UUID_BYTES;
     
     static {
-        // Convert UUID to bytes once at class initialization
+        regenerateServerInstanceUUID();
+    }
+
+    /**
+     * Generate a new random UUID for this server instance and update both
+     * SERVER_INSTANCE_UUID and SERVER_INSTANCE_UUID_BYTES.
+     *
+     * Called at class initialization and again by the CheckpointHook on
+     * InstantOn restore.
+     */
+    public static void regenerateServerInstanceUUID() {
+        UUID uuid = UUID.randomUUID();
         ByteBuffer buffer = ByteBuffer.allocate(16);
-        buffer.putLong(SERVER_INSTANCE_UUID.getMostSignificantBits());
-        buffer.putLong(SERVER_INSTANCE_UUID.getLeastSignificantBits());
+        buffer.putLong(uuid.getMostSignificantBits());
+        buffer.putLong(uuid.getLeastSignificantBits());
+        SERVER_INSTANCE_UUID = uuid;
         SERVER_INSTANCE_UUID_BYTES = buffer.array();
     }
     
