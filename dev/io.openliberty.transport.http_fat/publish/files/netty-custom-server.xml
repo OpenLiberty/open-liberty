@@ -19,9 +19,9 @@
     </httpEndpoint>
 
     <!-- Custom netty configuration with values different from the defaults -->
-    <netty
-        scalerMinThreads="2"
-        scalerMaxThreads="8"
+    <networkFramework
+        eventGroupMinThreads="2"
+        eventGroupMaxThreads="8"
         scalerWindowSize="2000ms"
         scalerDownThreshold="0.20"
         scalerUpThreshold="0.80"
