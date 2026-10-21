@@ -41,8 +41,7 @@
         databaseName="${shared.resource.dir}/data/transactionFAT7"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- HashiCorpIgnore --> <!-- password="dbpwd1" -->
     </dataSource>
     
 	<application location="transaction.war"/>

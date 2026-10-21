@@ -20,7 +20,7 @@
 		<feature>servlet-3.1</feature>
 	</featureManager>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- HashiCorpIgnore -->
 
 	<basicRegistry id="basic" realm="BasicRealm">
 		<user name="user0" password="user0pwd" />

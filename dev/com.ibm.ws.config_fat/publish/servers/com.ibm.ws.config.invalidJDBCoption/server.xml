@@ -29,8 +29,7 @@
         databaseName="memory:abc"
         createDatabase="whatever"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-        />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- HashiCorpIgnore --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <!-- logging traceSpecification="*=info:config=all" / --> 

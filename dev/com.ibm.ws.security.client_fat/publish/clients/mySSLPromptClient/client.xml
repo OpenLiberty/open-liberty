@@ -23,6 +23,6 @@
 
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- HashiCorpIgnore -->
 
 </client>

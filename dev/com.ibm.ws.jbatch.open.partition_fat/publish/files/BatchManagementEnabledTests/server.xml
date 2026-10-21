@@ -33,7 +33,7 @@
             password="pass" />
     </dataSource> 
 
-    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" />
+    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" /> <!-- HashiCorpIgnore -->
 
 	<basicRegistry id="basic" realm="ibm/api">
 		<user name="bob" password="bobpwd" />

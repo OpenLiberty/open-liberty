@@ -7,8 +7,8 @@
     
     <include location="../fatTestPorts.xml"/>
 
-    <authData id="derbyAuth1" user="dbuser1" password="{xor}Oz0vKDtu"/>
-    <authData id="derbyAuth2" user="dbuser2" password="{xor}Oz0vKDtt"/>
+    <authData id="derbyAuth1" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
+    <authData id="derbyAuth2" user="dbuser2" password="{xor}Oz0vKDtt"/> <!-- HashiCorpIgnore -->
 
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
     <library id="DerbyLib" filesetRef="DerbyFileset"/>

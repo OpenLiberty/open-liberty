@@ -13,7 +13,7 @@
 -->
 
         <!-- ssl keystore to enable SSL port for batch rest connector -->
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- HashiCorpIgnore --> <!-- pwd: Liberty -->
 
     <!-- users authorized to the batch rest connector (ibm/api realm) -->
     <basicRegistry id="basic" realm="ibm/api">

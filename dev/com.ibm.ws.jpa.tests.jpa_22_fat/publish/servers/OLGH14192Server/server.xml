@@ -22,7 +22,7 @@
     
     <dataSource id="DefaultDataSource" >
     	<jdbcDriver libraryRef="DerbyLib"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- HashiCorpIgnore -->
     </dataSource>
     
     <library id="DerbyLib" >
