@@ -218,7 +218,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
         webClient.getOptions().setUseInsecureSSL(true); 
      
-        String partToCheck = "pass:true::FatSamlC02aService";
+        String partToCheck = "pass:true::FatSamlC02aService"; // HashiCorpIgnore
         String testMode = "positive";
 
         SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);

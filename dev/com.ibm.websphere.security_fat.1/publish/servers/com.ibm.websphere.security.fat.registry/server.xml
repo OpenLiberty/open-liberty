@@ -20,7 +20,7 @@
     <basicRegistry id="basic" realm="BasicRegistry">
       <user name="user0" password="user0pwd" />
       <user name="user1" password="user1pwd" />
-      <user name="user2" password=" {xor}Kiw6LW0vKDs= " /> <!-- user2pwd -->
+      <user name="user2" password=" {xor}Kiw6LW0vKDs= " /> <!-- HashiCorpIgnore --> <!-- user2pwd -->
       <group name="group0" />
       <group name="group1">
         <member name="user2" />

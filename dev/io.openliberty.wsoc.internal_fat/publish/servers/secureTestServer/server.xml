@@ -50,7 +50,7 @@
         </application-bnd>
     </application>
 
-    <keyStore id="defaultKeyStore" password="{xor}BC8+LCwoby07Ag=="/>
+    <keyStore id="defaultKeyStore" password="{xor}BC8+LCwoby07Ag=="/> <!-- HashiCorpIgnore -->
 
     <webContainer deferServletLoad="false"/>
 

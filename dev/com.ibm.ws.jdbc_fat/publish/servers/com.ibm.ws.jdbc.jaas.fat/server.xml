@@ -73,8 +73,8 @@
     <authData id="recoveryAuth" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
     
     <!-- Auth for derby only -->
-    <authData id="derbyAuth1" user="dbuser1" password="{xor}Oz0vKDtu"/>
-    <authData id="derbyAuth2" user="dbuser2" password="{xor}Oz0vKDtt"/>
+    <authData id="derbyAuth1" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
+    <authData id="derbyAuth2" user="dbuser2" password="{xor}Oz0vKDtt"/> <!-- HashiCorpIgnore -->
 
 <!-- ### Connection Managers ### -->
     <connectionManager id="conMgr1" connectionTimeout="0" maxPoolSize="3" purgePolicy="ValidateAllConnections"/>
@@ -85,25 +85,25 @@
 
 <!-- ### Datasources using different jdbcDriver configurations ### -->
     <dataSource id="dsfatboot" jndiName="jdbc/dsfatboot" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <dataSource id="dsfatboot1" jndiName="jdbc/dsfatboot1" fat.modify="true" jdbcDriverRef="FATJDBCDriver1" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
     
     <dataSource id="dsfatboot2" jndiName="jdbc/dsfatboot2" fat.modify="true" jdbcDriverRef="FATJDBCDriver2" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <dataSource id="dsfatboot3" jndiName="jdbc/dsfatboot3" fat.modify="true" jdbcDriverRef="FATJDBCDriver3" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
     
     <!-- Test: nested jdbcDriver -> library -> fileset -->
     <dataSource id="dsfatboot4" jndiName="jdbc/dsfatboot4" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver libraryRef="FATLib4"/>
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
     <library id="FATLib4" filesetRef="FATfileset4"/>
     <fileset id="FATfileset4" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
@@ -113,7 +113,7 @@
       <jdbcDriver id="FATJDBCDriver5">
         <library id="FATLib5" filesetRef="FATfileset5"/>
       </jdbcDriver>
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
     <fileset id="FATfileset5" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
 
@@ -124,21 +124,21 @@
           <fileset id="FATfileset6" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
         </library>
       </jdbcDriver>
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
 
 <!-- ### Datasources using different connection properties ###  -->
     <dataSource id="dsfat0" jndiName="jdbc/dsfat0" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.DataSource" connectionSharing="MatchOriginalRequest">
       <connectionManager/>
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
      </dataSource>
 
     <dataSource id="dsfat1" jndiName="jdbc/dsfat1" fat.modify="true" jdbcDriverRef="FATJDBCDriver" connectionManagerRef="conMgr1" connectionSharing="MatchCurrentState" transactional="true">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <dataSource id="dsfat2" jndiName="jdbc/dsfat2" fat.modify="true" jdbcDriverRef="FATJDBCDriver" connectionManagerRef="conMgr2" type="javax.sql.XADataSource" isolationLevel="TRANSACTION_READ_COMMITTED" recoveryAuthDataRef="recoveryAuth">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <dataSource id="dsfat3" jndiName="jdbc/dsfat3" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource" transactional="false">
@@ -146,7 +146,7 @@
     </dataSource>
 
     <dataSource jndiName="jdbc/dsfat4" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.XADataSource" transactional="true" connectionSharing="MatchCurrentState" recoveryAuthDataRef="recoveryAuth">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
     
     <!-- This is a Derby-only data source -->
@@ -160,31 +160,31 @@
     <!-- This is a Derby-only data source -->
     <dataSource id="dsfat10derby" jndiName="jdbc/dsfat10" type="javax.sql.XADataSource" jdbcDriverRef="Derby" isolationLevel="TRANSACTION_READ_COMMITTED" queryTimeout="2m" syncQueryTimeoutWithTransactionTimeout="true">
       <connectionManager agedTimeout="1s" connectionTimeout="10" maxIdleTime="1s" maxPoolSize="3" minPoolSize="0" reapTime="2s"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> 
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore --> 
     </dataSource>
 
     <!-- This Derby-only data source contains some configuration errors -->
     <dataSource id="dsfat11derby" jndiName="jdbc/dsfat11" jdbcDriverRef="Derby" connectionManagerRef="conMgr5" badProperty="badValue1" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="11s" syncQueryTimeoutWithTransactionTimeout="false">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <dataSource id="dsfat20" fat.modify="true" jndiName="jdbc/dsfat20" jdbcDriverRef="FATJDBCDriver" connectionManagerRef="conMgr6" type="javax.sql.XADataSource" isolationLevel="TRANSACTION_READ_COMMITTED" recoveryAuthDataRef="recoveryAuth">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
     
     <dataSource id="dsfat21" fat.modify="true" jndiName="jdbc/dsfat21" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource">
       <connectionManager reapTime="0"/>
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
     
     <dataSource id="dsfat22" fat.modify="true" jndiName="jdbc/dsfat22" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource">
       <connectionManager agedTimeout="0" connectionTimeout="-1" maxPoolSize="2"/>
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
    
     <dataSource id="dsfat23" fat.modify="true" jndiName="jdbc/dsfat23" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource">
       <connectionManager maxIdleTime="0"/>
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <dataSource id="dsfatmca" jndiName="jdbc/dsfatmca" jdbcDriverRef="Derby" connectionManagerRef="conMgr5mca" jaasLoginContextEntryRef="myJAASLoginEntry" type="javax.sql.DataSource" connectionSharing="MatchOriginalRequest">
@@ -193,12 +193,12 @@
     
     <dataSource id="dsfatclc" jndiName="jdbc/dsfatclc" type="javax.sql.XADataSource" jdbcDriverRef="Derby" isolationLevel="TRANSACTION_READ_COMMITTED" queryTimeout="2m" syncQueryTimeoutWithTransactionTimeout="true">
       <connectionManager agedTimeout="1s" connectionTimeout="10" maxIdleTime="1s" maxPoolSize="3" minPoolSize="0" reapTime="2s"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> 
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore --> 
     </dataSource>
     
     <dataSource id="dsfatgss" jndiName="jdbc/dsfatgss" type="javax.sql.XADataSource" jdbcDriverRef="Derby">
       <connectionManager maxPoolSize="3" minPoolSize="0"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> 
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore --> 
     </dataSource>
 
 <!-- ### jaas login module ### -->

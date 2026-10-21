@@ -45,8 +45,7 @@
         databaseName="${shared.resource.dir}/data/transactionFATCloud"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- HashiCorpIgnore --> <!-- password="dbpwd1" -->
     </dataSource>
     
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>

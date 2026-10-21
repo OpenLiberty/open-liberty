@@ -47,7 +47,7 @@
   <variable name="DB_PASS" value="dbpass"/>
 
   <dataSource id="DataSourceWithoutJDBCDriver" jndiName="jdbc/withoutJDBCDriver" connectionSharing="MatchCurrentState" transactional="false">
-    <containerAuthData id="dbuser-auth" user="dbuser" password="{xor}Oz0vPiws"/>
+    <containerAuthData id="dbuser-auth" user="dbuser" password="{xor}Oz0vPiws"/> <!-- HashiCorpIgnore -->
    	<properties.h2 URL="jdbc:h2:mem:withoutJDBCDriver;DB_CLOSE_DELAY=-1"/>
   </dataSource>
 

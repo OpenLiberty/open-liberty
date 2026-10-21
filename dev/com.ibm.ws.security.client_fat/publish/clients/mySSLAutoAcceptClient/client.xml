@@ -29,6 +29,6 @@
 		</clientPolicy.clientContainerCsiv2>
 	</orb>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- HashiCorpIgnore -->
 
 </client>
