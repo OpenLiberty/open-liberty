@@ -307,7 +307,8 @@ public class NettyChain extends AbstractHttpChain {
                         } catch (NumberFormatException ignored) {
                         }
                     }
-                    long bindTimeoutMs = ((long) portOpenRetries + 1L) * 1000L;
+                    // 5s buffer for executor scheduling / probe latency; with portOpenRetries=0 a bare 1s is too short.
+                    long bindTimeoutMs = ((long) portOpenRetries + 1L) * 1000L + 5000L;
                     long deadline = System.currentTimeMillis() + bindTimeoutMs;
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "startNettyChannel: server started, waiting for bind result. state: [" + state.get() + "]");

@@ -508,11 +508,11 @@ public class TCPUtils {
                     open(framework, channel, config, inetHost, inetPort, openListener,
                         config.getPortOpenRetries(), false);
                 } else {
-                    // Timeout covers the full port-retry window ((portOpenRetries + 1) * timeBetweenRetriesMsec).
-                    // The buffer accounts for socket probe connect timeouts (up to 1s),
+                    // Timeout covers the full port-retry window ((portOpenRetries + 1) * timeBetweenRetriesMsec)
+                    // plus a 5s buffer.  The buffer accounts for socket probe connect timeouts (up to 1s),
                     // channel closeFuture listeners, and executor scheduling latency across retries.
                     final long bindTimeoutMs = ((long) config.getPortOpenRetries() + 1L)
-                                               * timeBetweenRetriesMsec;
+                                               * timeBetweenRetriesMsec + 5000L;
                     framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                         @Override
                         public ChannelFuture call() {
