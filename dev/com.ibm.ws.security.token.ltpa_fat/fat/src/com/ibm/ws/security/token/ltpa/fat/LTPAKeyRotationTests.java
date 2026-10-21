@@ -102,8 +102,8 @@ public class LTPAKeyRotationTests {
     private static List<String> commonShutdownErrors = new ArrayList<>(Arrays.asList("CWWKS4112E"));
     // Each test will add expected errors for as they run. This list is cleared in resetServer()
     private static List<String> testSpecificMessages = new ArrayList<>();
-    private static String validationKeyPassword = "{xor}Lz4sLCgwLTs=";
-    private static String validationKeyFIPSPassword = "{xor}CDo9Hgw=";
+    private static String validationKeyPassword = "{xor}Lz4sLCgwLTs="; // pragma: allowlist secret
+    private static String validationKeyFIPSPassword = "{xor}CDo9Hgw="; // pragma: allowlist secret
 
     private static int timeoutMillis = isWindows() ? 5 * 60 * 1000 : 5 * 1000;
 

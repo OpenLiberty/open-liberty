@@ -329,7 +329,7 @@ public class CxfX509MigSymEE7LiteTests extends CommonTests {
                              thisMethod.substring(4);
             }
             if (respReceived != null && respReceived.isEmpty()) {
-                respReceived = "pass:false:'received nothing'";
+                respReceived = "pass:false:'received nothing'";  // pragma: allowlist secret
             }
             Log.info(thisClass, methodFull, "The response received is: '" + respReceived + "'");
             //issue 24772 not using asserTrue here for the case of ws-security.return.security.error="false"

@@ -36,7 +36,7 @@ import componenttest.app.FATServlet;
                       className = "org.h2.jdbcx.JdbcDataSource",
                       url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "dbuser1",
-                      password = "dbpwd1")
+                      password = "dbpwd1") // pragma: allowlist secret
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataErrPaths_1_1_Servlet extends FATServlet {

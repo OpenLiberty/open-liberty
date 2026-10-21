@@ -447,7 +447,7 @@ public class CxfECDHCallerTests {
                              thisMethod.substring(4);
             }
             if (respReceived != null && respReceived.isEmpty()) {
-                respReceived = "pass:false:'received nothing'";
+                respReceived = "pass:false:'received nothing'";  // pragma: allowlist secret
             }
             Log.info(thisClass, methodFull, "'" + respReceived + "'");
             assertTrue("Failed to get back the expected text. But :" + respReceived, respReceived.contains("<p>pass:true:"));

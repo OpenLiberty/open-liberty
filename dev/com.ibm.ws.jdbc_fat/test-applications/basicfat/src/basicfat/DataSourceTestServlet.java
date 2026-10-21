@@ -84,7 +84,7 @@ import componenttest.app.FATServlet;
                       minPoolSize = 1,
                       transactional = true,
                       user = "dbuser1",
-                      password = "{xor}Oz0vKDtu",
+                      password = "{xor}Oz0vKDtu", // pragma: allowlist secret
                       properties = {
                                      "agedTimeout=3s",
                                      "connectionSharing=MatchCurrentState",
@@ -101,7 +101,7 @@ import componenttest.app.FATServlet;
                                                        isolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED,
                                                        loginTimeout = 77, // web.xml overrides with 70
                                                        user = "dbuser7", // web.xml overrides with dbuser1
-                                                       password = "{xor}Oz0vKDtu",
+                                                       password = "{xor}Oz0vKDtu", // pragma: allowlist secret
                                                        properties = {
                                                                       "shutdownDatabase=shutdown" // web.xml overrides with false.
                                                        }),
@@ -113,7 +113,7 @@ import componenttest.app.FATServlet;
                                                        loginTimeout = 80,
                                                        maxIdleTime = 3,
                                                        user = "dbuser1",
-                                                       password = "{xor}Oz0vKDtu",
+                                                       password = "{xor}Oz0vKDtu", // pragma: allowlist secret
                                                        properties = {
                                                                       "createDatabase=create",
                                                                       "purgePolicy=ValidateAllConnections",
@@ -125,7 +125,7 @@ import componenttest.app.FATServlet;
                                                        className = "org.apache.derby.jdbc.EmbeddedDataSource40",
                                                        databaseName = "memory:dsValTderbyAnn",
                                                        user = "dbuser1",
-                                                       password = "{xor}Oz0vKDtu",
+                                                       password = "{xor}Oz0vKDtu", // pragma: allowlist secret
                                                        properties = {
                                                                       "containerAuthDataRef=derbyAuth2",
                                                                       "createDatabase=create",
@@ -1692,7 +1692,7 @@ public class DataSourceTestServlet extends FATServlet {
         EmbDS.getMethod("setDatabaseName", String.class).invoke(ds, databaseName);
         EmbDS.getMethod("setShutdownDatabase", String.class).invoke(ds, "shutdown");
         EmbDS.getMethod("setUser", String.class).invoke(ds, "dbuser1");
-        EmbDS.getMethod("setPassword", String.class).invoke(ds, "{xor}Oz0vKDtu");
+        EmbDS.getMethod("setPassword", String.class).invoke(ds, "{xor}Oz0vKDtu"); // pragma: allowlist secret
         try {
             ds.getConnection().close();
             throw new Exception("Failed to shut down Derby database: " + databaseName);

@@ -3674,7 +3674,7 @@ public class CxfX509MigTests {
             // Read the response page from client jsp
             String respReceived = response.getText();
             if (respReceived != null && respReceived.isEmpty()) {
-                respReceived = "pass:false:'received nothing'";
+                respReceived = "pass:false:'received nothing'";  // pragma: allowlist secret
             }
 
             Log.info(thisClass, methodFull, "'" + respReceived + "'");
