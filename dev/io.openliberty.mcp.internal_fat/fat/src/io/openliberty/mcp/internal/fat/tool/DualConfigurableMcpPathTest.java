@@ -64,9 +64,6 @@ public class DualConfigurableMcpPathTest extends FATServletClient {
     @Rule
     public McpClient war2Client = McpClient.builder(server, "/war2").path("/custom-mcp-for-war-2").build();
 
-    private static final String PATH = "/custom-mcp";
-    private static final String CUSTOM_PATH = "/custom-mcp-for-war-2";
-
     @Test
     public void testMultipleWarModulesInEarCanHaveDifferentMcpPaths() throws Exception {
         String request = """
