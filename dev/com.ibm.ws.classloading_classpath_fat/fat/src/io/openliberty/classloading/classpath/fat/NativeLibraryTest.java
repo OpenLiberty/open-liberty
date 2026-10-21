@@ -110,6 +110,6 @@ public class NativeLibraryTest extends FATServletClient {
 
     @AfterClass
     public static void stopServer() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKL0085W");
     }
 }
