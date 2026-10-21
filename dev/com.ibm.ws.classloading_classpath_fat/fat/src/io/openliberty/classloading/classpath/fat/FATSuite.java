@@ -108,6 +108,7 @@ import test.bundle.api4.c.API_C4;
     LibraryPrecedenceBeforeAppTests.class,
     LibraryPrecedenceAfterAppTests.class,
     NativeLibraryTest.class,
+    NativeLibraryAccessTest.class,
     LibraryServiceTests.class
 })
 public class FATSuite {
@@ -121,6 +122,7 @@ public class FATSuite {
     static final String APP_PARENT_TEST_SERVER = "appParentTest";
     static final String JVM_LIB_TEST_SERVER = "jvmLibTest";
     static final String NATIVE_LIBRARY_TEST_SERVER = "nativeLibraryTest";
+    static final String NATIVE_LIBRARY_ACCESS_TEST_SERVER = "nativeLibraryAccessTest";
     static final String PARENT_LAST_LIBRARY_FEATURE_TEST_SERVER = "parentLastLibraryFeatureTest";
     static final String PARENT_LAST_LIBRARY_INCONSISTENT_SERVER = "parentLastLibraryInconsistentTest";
     static final String PARENT_LAST_RESOURCE_ADAPTOR_INCONSISTENT_SERVER = "parentLastResourceAdaptorInconsistentTest";
