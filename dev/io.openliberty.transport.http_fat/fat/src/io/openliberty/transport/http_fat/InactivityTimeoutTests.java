@@ -467,8 +467,8 @@ public class InactivityTimeoutTests {
             assertTrue("The SocketTimeoutException was not found in the trace and should have been!",
                        server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() == 1);
         } else {
-            assertTrue("The connection closed message was not found in the trace and should have been!",
-                       server.findStringsInLogsAndTraceUsingMark("connection closed due to idle timeout").size() == 1);
+            assertTrue("The idle timeout close message was not found in the trace and should have been!",
+                       server.findStringsInLogsAndTraceUsingMark("Idle timeout; closing channel").size() == 1);
         }
     }
 
