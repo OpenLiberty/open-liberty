@@ -300,7 +300,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
                         }
                         """;
 
-        HttpResponse<String> response = post(getMcpUrl(), request, null);
+        HttpResponse<String> response = post(getMcpUrl(), request);
 
         if (response.statusCode() != 200) {
             throw new Exception("initialize failed with HTTP " + response.statusCode() + ": " + response.body());
@@ -423,10 +423,10 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     // -------------------------------------------------------------------------
 
     /**
-     * Sends a POST to {@code url} with the standard MCP headers, optional session ID,
+     * Sends a POST to {@code url} with the standard MCP headers, the client's session ID,
      * and client-level auth credentials (Basic or Bearer). Does not validate the status code.
      */
-    private HttpResponse<String> post(String url, String jsonBody, String sessionIdOverride) throws Exception {
+    private HttpResponse<String> post(String url, String jsonBody) throws Exception {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                         .uri(URI.create(url))
                         .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
@@ -434,9 +434,8 @@ public class McpClient extends ExternalResource implements AutoCloseable {
                         .header("Content-Type", VALUE_APPLICATION_JSON)
                         .POST(HttpRequest.BodyPublishers.ofString(jsonBody));
 
-        String sid = sessionIdOverride != null ? sessionIdOverride : sessionId;
-        if (mode == StateMode.STATEFUL && sid != null) {
-            builder.header(MCP_SESSION_ID, sid);
+        if (mode == StateMode.STATEFUL && sessionId != null) {
+            builder.header(MCP_SESSION_ID, sessionId);
         }
 
         if (bearerToken != null) {
@@ -465,7 +464,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         if (mode == StateMode.STATEFUL && sessionId == null) {
             throw new IllegalStateException("In stateful mode but don't have a sessionId, did you forget to use @Rule or call initialize()?");
         }
-        HttpResponse<String> response = post(getMcpUrl(), jsonRequestBody, null);
+        HttpResponse<String> response = post(getMcpUrl(), jsonRequestBody);
         if (response.statusCode() != 200) {
             throw new Exception("Unexpected HTTP status expected:<200> but was:<" + response.statusCode() + ">\nBody: " + response.body());
         }
@@ -479,7 +478,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @throws Exception if the request fails or the response is not 202
      */
     public void callMCPNotification(String jsonRequestBody) throws Exception {
-        HttpResponse<String> response = post(getMcpUrl(), jsonRequestBody, null);
+        HttpResponse<String> response = post(getMcpUrl(), jsonRequestBody);
         if (response.statusCode() != 202) {
             throw new Exception("Unexpected HTTP status for notification expected:<202> but was:<" + response.statusCode() + ">\nBody: " + response.body());
         }
