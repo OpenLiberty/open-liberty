@@ -344,7 +344,7 @@ public class CxfCallerX509SymTests {
                              thisMethod.substring(4);
             }
             if (respReceived != null && respReceived.isEmpty()) {
-                respReceived = "pass:false:'received nothing'";
+                respReceived = "pass:false:'received nothing'";  // HashiCorpIgnore
             }
             Log.info(thisClass, methodFull, "'" + respReceived + "'");
             assertTrue("Failed to get back the expected text. But :" + respReceived, respReceived.contains("<p>pass:true:"));
