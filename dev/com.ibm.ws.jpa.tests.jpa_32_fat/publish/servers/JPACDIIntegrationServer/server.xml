@@ -21,7 +21,7 @@
     <include location="../fatTestPorts.xml"/>
     <dataSource id="DefaultDataSource" fat.modify="true">
         <jdbcDriver libraryRef="JDBCLib"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <library id="JDBCLib">

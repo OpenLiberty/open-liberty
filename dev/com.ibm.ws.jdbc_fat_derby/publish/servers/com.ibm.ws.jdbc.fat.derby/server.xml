@@ -23,7 +23,7 @@
     	<fileset dir="${shared.resource.dir}/derby"/>
     </library>
     
-    <authData id="derbyAuth" user="dbuser" password="{xor}Oz0vKDtt" />
+    <authData id="derbyAuth" user="dbuser" password="{xor}Oz0vKDtt" /> <!-- pragma: allowlist secret -->
      
     <dataSource id="dsfat0" jndiName="jdbc/dsfat0" type="javax.sql.DataSource" isolationLevel="TRANSACTION_SERIALIZABLE">
       <jdbcDriver libraryRef="DerbyLib" />

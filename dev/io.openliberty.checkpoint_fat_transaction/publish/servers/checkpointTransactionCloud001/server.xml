@@ -81,8 +81,7 @@
           databaseName="${shared.resource.dir}/data/transactionFATCloud"
           createDatabase="create"
           user="dbuser1"
-          password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+          password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <!-- See bootstrap.properties

@@ -33,24 +33,21 @@
 	>
 		<user
 			name="user1"
-			password="{xor}LDo8Ki02KyY=" />
+			password="{xor}LDo8Ki02KyY=" /> <!-- pragma: allowlist secret -->
 		<user
 			name="user2"
-			password="{xor}LDo8Ki02KyY=" />
+			password="{xor}LDo8Ki02KyY=" /> <!-- pragma: allowlist secret -->
 	</basicRegistry>
 	<wsSecurityClient
 		id="default"
-		ws-security.password="{xor}LDo8Ki02KyY="
 		ws-security.username="user2"
-	>
-	</wsSecurityClient>
+		ws-security.password="{xor}LDo8Ki02KyY=" /> <!-- pragma: allowlist secret -->
 	<wsSecurityProvider
 		id="default"
 		ws-security.timestamp.timeToLive="60"
 		ws-security.timestamp.futureTimeToLive="60"
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee7.xml"
-	>
-	</wsSecurityProvider>
+	/>
     <!-- 11/2022 brought back cxf-ehcache.xml and renamed with _ee7 for consistency; the file was removed during migration -->
         
     <include location="imports/java2Permissions.xml" />

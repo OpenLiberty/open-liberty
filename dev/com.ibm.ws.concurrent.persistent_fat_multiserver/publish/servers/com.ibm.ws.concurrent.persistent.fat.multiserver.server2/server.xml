@@ -35,7 +35,7 @@
   <databaseStore id="DBTaskStore">
     <dataSource>
       <jdbcDriver libraryRef="FATJDBCClientLib"/>
-      <properties.derby.client databaseName="memory:scheddb" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.client databaseName="memory:scheddb" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
   </databaseStore>
 

@@ -30,7 +30,7 @@
 
     <connectionFactory jndiName="eis/ds1">
       <connectionManager maxPoolSize="2" connectionTimeout="0"/>
-      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/> <!-- pragma: allowlist secret -->
       <properties.DerbyRA/>
     </connectionFactory>    
 

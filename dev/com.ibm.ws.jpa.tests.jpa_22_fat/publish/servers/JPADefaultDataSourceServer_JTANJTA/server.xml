@@ -24,22 +24,22 @@
     
     <dataSource id="jdbc/JTA_DS1" jndiName="jdbc/JTA_DS1" >
     	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="jdbc/NJTA_DS1" jndiName="jdbc/NJTA_DS1" transactional="false">
     	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="jdbc/JTA_DS2" jndiName="jdbc/JTA_DS2" >
     	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="jdbc/NJTA_DS2" jndiName="jdbc/NJTA_DS2" transactional="false">
     	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <library id="DerbyLib" >

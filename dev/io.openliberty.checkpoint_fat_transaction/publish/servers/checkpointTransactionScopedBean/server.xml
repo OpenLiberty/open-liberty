@@ -52,7 +52,7 @@
 
     <!-- Potential overrides to datasource config at restore -->
     <variable name="DERBY_DS_UID" defaultValue="dbuser1" />
-    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" />
+    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     <variable name="DERBY_DS_JNDINAME" defaultValue="OVERRIDE_TO_jdbc/derby" />
 
     <dataSource id="jdbc/derby" jndiName="jdbc/derby" jdbcDriverRef="DerbyEmbedded">
@@ -60,8 +60,7 @@
         databaseName="${shared.resource.dir}/data/transactionFAT7"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- password="dbpwd1" --> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <application location="transactionscopedbean.war"/>

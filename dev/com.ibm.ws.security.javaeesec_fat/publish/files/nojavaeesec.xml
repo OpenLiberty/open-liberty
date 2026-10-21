@@ -5,11 +5,11 @@
         <feature>jsp-2.3</feature>
     </featureManager>
 
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- pragma: allowlist secret -->
 
 	<basicRegistry id="basic1" realm="NoJavaEESecRealm">
-		<user name="user1" password="s3cur1ty" />
-		<user name="user2" password="s3cur1ty" />
+		<user name="user1" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
+		<user name="user2" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
 		<group name="group1">
 			<member name="user1" />
 		</group>

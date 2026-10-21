@@ -27,12 +27,12 @@
    <!--  dataSource IDs are taken from: https://github.com/jakartaee/platform-tck/blob/jakartaeetck-11.0.1/tcks/apis/persistence/persistence-inside-container/platform-tests/src/main/java/ee/jakarta/tck/persistence/ee/cdi/persistence.xml -->
     <dataSource id="jdbc/DB1" jndiName="jdbc/DB1"  type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="jdbc/DB_no_tx" jndiName="jdbc/DB_no_tx" at.modify="true" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:dsoverride" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsoverride" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <library id="AnonymousJDBCLib" >

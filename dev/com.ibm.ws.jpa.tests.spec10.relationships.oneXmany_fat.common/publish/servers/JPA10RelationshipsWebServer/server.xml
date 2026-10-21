@@ -25,12 +25,12 @@
 
     <dataSource id="jdbc/JPA_JTA_DS" jndiName="jdbc/JPA_JTA_DS" fat.modify="true">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <dataSource id="jdbc/JPA_NJTA_DS" jndiName="jdbc/JPA_NJTA_DS" fat.modify="true" transactional="false">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <library id="AnonymousJDBCLib">

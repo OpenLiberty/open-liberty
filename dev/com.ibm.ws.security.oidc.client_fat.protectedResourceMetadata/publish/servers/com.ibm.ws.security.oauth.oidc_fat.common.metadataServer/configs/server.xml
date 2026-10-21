@@ -31,11 +31,11 @@
     <openidConnectClient
         id="OidcConfigSample"
         clientId="client01"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilter1">
+        authFilterRef="authFilter1"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->>
         <protectedResourceMetadata />
     </openidConnectClient>
 
@@ -47,11 +47,11 @@
     <openidConnectClient
         id="OidcConfigSampleContains"
         clientId="client02"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilter2">
+        authFilterRef="authFilter2"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata />
     </openidConnectClient>
 
@@ -62,11 +62,11 @@
     <openidConnectClient
         id="OidcConfigSampleHttps"
         clientId="client03"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
-        authFilterRef="authFilter3">
+        authFilterRef="authFilter3"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata />
     </openidConnectClient>
 
@@ -79,11 +79,11 @@
     <openidConnectClient
         id="OidcConfigSampleContainsHttps"
         clientId="client04"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
-        authFilterRef="authFilter4">
+        authFilterRef="authFilter4"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata />
     </openidConnectClient>
 
@@ -137,12 +137,11 @@
     <openidConnectClient
         id="OidcConfigMetadataDisabled"
         clientId="client05"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
         authFilterRef="authFilter5"
-    />
+        clientSecret="{xor}LDo8LTorbm1saw==" /> <!-- pragma: allowlist secret -->
 
     <authFilter id="authFilter5">
         <requestUrl
@@ -158,11 +157,11 @@
     <openidConnectClient
         id="OidcConfigWithScopes"
         clientId="client06"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilter6">
+        authFilterRef="authFilter6"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata advertisedScopes="openid,profile,email" />
     </openidConnectClient>
 
@@ -180,12 +179,11 @@
     <openidConnectClient
         id="OidcConfigMetadataDisabledHttps"
         clientId="client07"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
         authFilterRef="authFilter7"
-    />
+        clientSecret="{xor}LDo8LTorbm1saw==" /> <!-- pragma: allowlist secret -->
 
     <authFilter id="authFilter7">
         <requestUrl
@@ -200,11 +198,11 @@
     <openidConnectClient
         id="OidcConfigWithScopesHttps"
         clientId="client08"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps"
         authorizationEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/authorize"
         tokenEndpointUrl="https://localhost:${bvt.prop.HTTP_default.secure}/oidc/endpoint/OidcConfigSampleHttps/token"
-        authFilterRef="authFilter8">
+        authFilterRef="authFilter8"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata advertisedScopes="openid,profile,email" />
     </openidConnectClient>
 
@@ -221,11 +219,11 @@
     <openidConnectClient
         id="OidcConfigWithSigning"
         clientId="client09"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterSigning">
+        authFilterRef="authFilterSigning"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata advertisedScopes="openid,profile,email" jwtBuilderRef="metadataJwtBuilder"/>
     </openidConnectClient>
 
@@ -260,11 +258,11 @@
     <openidConnectClient
         id="OidcConfigWithSigningRs512Jwk"
         clientId="client10"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterSigningRs512Jwk">
+        authFilterRef="authFilterSigningRs512Jwk"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata advertisedScopes="openid,profile" jwtBuilderRef="metadataJwtBuilderRs512Jwk"/>
     </openidConnectClient>
 
@@ -281,11 +279,11 @@
     <openidConnectClient
         id="OidcConfigWithSigningEs256Jwk"
         clientId="client11"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterSigningEs256Jwk">
+        authFilterRef="authFilterSigningEs256Jwk"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata jwtBuilderRef="metadataJwtBuilderEs256Jwk"/>
     </openidConnectClient>
 
@@ -302,11 +300,11 @@
     <openidConnectClient
         id="OidcConfigWithSigningJwkDisabled"
         clientId="client13"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterSigningJwkDisabled">
+        authFilterRef="authFilterSigningJwkDisabled"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="metadataJwtBuilderJwkDisabled"/>
     </openidConnectClient>
 
@@ -325,11 +323,11 @@
     <openidConnectClient
         id="OidcConfigWithInvalidJwtBuilder"
         clientId="client14"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterInvalidJwtBuilder">
+        authFilterRef="authFilterInvalidJwtBuilder"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- pragma: allowlist secret -->
         <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="invalid-reference"/>
     </openidConnectClient>
 

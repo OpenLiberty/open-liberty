@@ -27,7 +27,7 @@
     
     <dataSource id="DefaultDataSource" >
         <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <library id="DerbyLib" >
@@ -36,101 +36,101 @@
     
     <dataSource id="ds1" jndiName="jdbc/${id}" >
         <jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="ds2" jndiName="jdbc/${id}" >
         <jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <dataSource id="ds3" jndiName="jdbc/${id}" >
         <jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
         <connectionManager minPoolSize="0" purgePolicy="EntirePool"/>
     </dataSource>
     
     <dataSource id="ds1tls" jndiName="jdbc/${id}" >
         <jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
         <connectionManager minPoolSize="0" purgePolicy="EntirePool" numConnectionsPerThreadLocal="1"/>
     </dataSource>
     
     <dataSource id="ds2tls" jndiName="jdbc/${id}" >
         <jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
         <connectionManager agedTimeout="30s" connectionTimeout="0" maxIdleTime="20s" minPoolSize="0" maxPoolSize="2" purgePolicy="EntirePool" numConnectionsPerThreadLocal="1"  reapTime="10s"/>
     </dataSource>
     
     <dataSource id="dsfat22tls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="0" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1"/>
     </dataSource>
     
     <dataSource id="dsfat22btls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="-1" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1"/>
     </dataSource>
     
     <dataSource id="dsfat22ctls"  jndiName="jdbc/dsfat22ctls">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="1s" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="1s"/>
     </dataSource>
     
     <dataSource id="dsfat22dtls"  jndiName="jdbc/dsfat22dtls">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="90m" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="1s"/>
     </dataSource>
     
     <dataSource id="dsfat22etls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="1s" connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" reapTime="-1"/>
     </dataSource>
     
     <dataSource id="dsfat22gtls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" maxConnectionsPerThread="1"/>
     </dataSource>
     
     <dataSource id="dsfat22htls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" maxConnectionsPerThread="0"/>
     </dataSource>
     
     <dataSource id="dsfat22itls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager connectionTimeout="-1" maxPoolSize="2" numConnectionsPerThreadLocal="1" maxConnectionsPerThread="2"/>
     </dataSource>
     
     <dataSource id="dsfat22jtls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="-1" maxIdleTime="1s" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
     </dataSource>
     
     <dataSource id="dsfat22ktls"  jndiName="jdbc/dsfat22ktls">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="-1" maxIdleTime="90m" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
     </dataSource>
     
     <dataSource id="dsfat22ltls"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager agedTimeout="-1" maxIdleTime="-1" maxPoolSize="3" minPoolSize="2" numConnectionsPerThreadLocal="3" reapTime="1s"/>
     </dataSource>
     
     <dataSource id="XAds" jndiName="jdbc/${id}" type="javax.sql.XADataSource" >
         <jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="slowDS" jndiName="jdbc/${id}" type="javax.sql.DataSource">
@@ -141,31 +141,31 @@
     
     <dataSource id="dsfat22MaxInUseTime"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager maxInUseTime="500ms" connectionTimeout="-1" maxPoolSize="4"/>
     </dataSource>
     
     <dataSource id="dsfat22MaxInUseTime2"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager maxInUseTime="20m" connectionTimeout="-1" maxPoolSize="2"/>
     </dataSource>
     
     <dataSource id="dsfat22MaxInUseTime3"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager maxInUseTime="0" connectionTimeout="-1" maxPoolSize="2"/>
     </dataSource>
     
     <dataSource id="dsfat22MaxInUseTimeDefault"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager connectionTimeout="-1" maxPoolSize="2"/>
     </dataSource>
     
     <dataSource id="maxInUseUpdateTest"  jndiName="jdbc/${id}">
       <jdbcDriver libraryRef="DerbyLib" />
-      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
       <connectionManager maxInUseTime="250ms" connectionTimeout="-1" maxPoolSize="4"/>
     </dataSource>
     

@@ -22,7 +22,7 @@
 		<feature>servlet-3.1</feature>
 	</featureManager>
 	
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pragma: allowlist secret -->
 	
 	<include location="../fatTestPorts.xml" />	
 	

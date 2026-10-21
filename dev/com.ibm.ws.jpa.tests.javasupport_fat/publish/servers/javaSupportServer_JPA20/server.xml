@@ -11,12 +11,12 @@
     
     <dataSource id="jdbc/JPA_JTA_DS" jndiName="jdbc/JPA_JTA_DS" >
             <jdbcDriver libraryRef="JDBCLib"/>
-            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <dataSource id="jdbc/JPA_NJTA_DS" jndiName="jdbc/JPA_NJTA_DS"  transactional="false">
             <jdbcDriver libraryRef="JDBCLib"/>
-            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <library id="JDBCLib"  apiTypeVisibility="+third-party">

@@ -36,7 +36,7 @@
     </web-ext>
   </application>
 
-  <authData id="dbAuth" user="dbuser" password="{xor}Oz0vKDs=" />
+  <authData id="dbAuth" user="dbuser" password="{xor}Oz0vKDs=" /> <!-- pragma: allowlist secret -->
 
   <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" queryTimeout="1m21s" supplementalJDBCTrace="true" validationTimeout="18s">
     <jdbcDriver libraryRef="JDBCLib" javax.sql.XADataSource="test.jdbc.heritage.driver.HDXADataSource"/>

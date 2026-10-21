@@ -23,7 +23,7 @@
     <basicRegistry id="basic" realm="SampleBasicRealm">
         <user name="admin" password="password123" />
         <user name="user1" password="password123" />
-        <user name="user2" password="{xor}Lz4sLCgwLTtubWw=" />
+        <user name="user2" password="{xor}Lz4sLCgwLTtubWw=" /> <!-- pragma: allowlist secret -->
         <user name="bob (contractor)" password="bobspassword" />
         <user name="henry {contractor}" password="henryspassword" />
         <user name="dan\" password="danspassword" />

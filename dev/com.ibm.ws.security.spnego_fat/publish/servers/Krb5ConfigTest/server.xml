@@ -25,7 +25,7 @@
         <requestUrl id="myRequestUrl" urlPattern="/SimpleServlet" matchType="contains" />
     </authFilter>
     
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- pragma: allowlist secret -->
 	 <spnego id="nc135031"
         hostName="nc135031"
         canonicalHostName="false"

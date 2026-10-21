@@ -24,7 +24,7 @@
         <user name="admin" password="password123" />
         <user name="Administrator" password="password123" />
         <user name="user1" password="password123" />
-        <user name="user2" password="{xor}Lz4sLCgwLTtubWw=" />
+        <user name="user2" password="{xor}Lz4sLCgwLTtubWw=" /> <!-- pragma: allowlist secret -->
         <group name="memberlessGroup" />
         <group name="adminGroup">
             <member name="admin"/>

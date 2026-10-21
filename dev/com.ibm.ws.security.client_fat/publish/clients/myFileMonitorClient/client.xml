@@ -21,6 +21,6 @@
 
 	<application id="myFileMonitor" name="FileMonitor" type="ear" location="FileMonitor.ear" />
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" pollingRate="5ms" updateTrigger="polled" />
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" pollingRate="5ms" updateTrigger="polled" /> <!-- pragma: allowlist secret -->
 
 </client>

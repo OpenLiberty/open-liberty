@@ -39,7 +39,7 @@
     </adminObject>
 
     <connectionFactory jndiName="eis/ds1">
-      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/>
+      <containerAuthData user="DS1USER" password="{xor}GwxuDwgb"/> <!-- pragma: allowlist secret -->
       <properties.DerbyLMRA/>
     </connectionFactory>    
 

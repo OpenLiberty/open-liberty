@@ -12,17 +12,17 @@
 
     <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS"  type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" transactional="false"  type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="jdbc/AltJTADataSource" jndiName="jdbc/AltJTADataSource" at.modify="true" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:dsoverride" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsoverride" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <library id="AnonymousJDBCLib" >

@@ -41,29 +41,29 @@
 
     <dataSource id="DefaultDataSource">
       <jdbcDriver libraryRef="FATDriverLib"/>
-      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <dataSource id="derby" jndiName="jdbc/derby" type="java.sql.Driver">
       <jdbcDriver libraryRef="DerbyLib"/>
-      <properties.derby.embedded url="jdbc:derby:" databaseName="memory:derbydb" create="true" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded url="jdbc:derby:" databaseName="memory:derbydb" create="true" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <!-- the following is unusable because no ConnectionPoolDataSource implementation is provided by the driver -->
     <dataSource id="fatConnectionPoolDataSource" jndiName="jdbc/fatConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">
       <jdbcDriver libraryRef="FATDriverLib"/>
-      <properties databaseName="memory:jdbcdriver1" user="dbuser1" password="{xor}Oz0vKDtu" />
+      <properties databaseName="memory:jdbcdriver1" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="fatDataSource" jndiName="jdbc/fatDataSource">
       <jdbcDriver libraryRef="FATDriverLib"/>
-      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" loginTimeout="660"/>
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" loginTimeout="660"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <dataSource id="fatDriver" jndiName="jdbc/fatDriver">
       <jdbcDriver libraryRef="FATDriverLib"/>
-      <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true;loginTimeout=0" user="dbuser2" password="{xor}Oz0vKDtt"/>
-      <containerAuthData user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true;loginTimeout=0" user="dbuser2" password="{xor}Oz0vKDtt"/> <!-- pragma: allowlist secret -->
+      <containerAuthData user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <dataSource id="fatDriverInvalidURLLoginTimeout" jndiName="jdbc/fatDriverInvalidURLLoginTimeout">

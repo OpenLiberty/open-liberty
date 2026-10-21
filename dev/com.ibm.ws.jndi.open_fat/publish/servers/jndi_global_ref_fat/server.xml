@@ -32,13 +32,13 @@
     <jndiObjectFactory id="objectFactory" libraryRef="objectFactoryLib" className="com.ibm.ws.jndi.fat.factory.ObjectFactoryImpl"/>
     <jndiReferenceEntry id="refEntry" jndiName="ref/entry" factoryRef="objectFactory"/>
     <jndiReferenceEntry id="refEntryProps" jndiName="ref/entryProps" factoryRef="objectFactory">
-        <properties key1="value1" key2="value2" pwd="{xor}LDo8Ki02KyY="/> <!-- pwd=security -->
+        <properties key1="value1" key2="value2" pwd="{xor}LDo8Ki02KyY="/> <!-- pragma: allowlist secret --> <!-- pwd=security -->
     </jndiReferenceEntry>
     <jndiReferenceEntry id="refEntryPropsDecode" jndiName="ref/entryPropsDecode" factoryRef="objectFactory" decode="true">
-        <properties key1="value1" key2="value2" pwd="{xor}LDo8Ki02KyY="/> <!-- pwd=security -->
+        <properties key1="value1" key2="value2" pwd="{xor}LDo8Ki02KyY="/> <!-- pragma: allowlist secret --> <!-- pwd=security -->
     </jndiReferenceEntry>
     <jndiReferenceEntry id="refEntryPropsDecodeError" jndiName="ref/entryPropsDecodeError" factoryRef="objectFactory" decode="true">
-        <properties key1="value1" key2="value2" pwd="{xor}abcdefg"/> <!-- pwd=security -->
+        <properties key1="value1" key2="value2" pwd="{xor}abcdefg"/> <!-- pragma: allowlist secret --> <!-- pwd=security -->
     </jndiReferenceEntry>
     <jndiObjectFactory id="objectFactoryTyped" libraryRef="objectFactoryLib" className="com.ibm.ws.jndi.fat.factory.ObjectFactoryImpl" objectClassName="java.util.Properties"/>
     <jndiReferenceEntry id="refEntryTyped" jndiName="ref/entryTyped" factoryRef="objectFactoryTyped"/>

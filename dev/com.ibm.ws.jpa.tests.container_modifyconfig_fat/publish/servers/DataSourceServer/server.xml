@@ -23,34 +23,34 @@
     <!-- Default database -->
     <dataSource id="JPA_AMJTA_DS1" jndiName="jdbc/JPA_AMJTA_JTA_DS">
         <jdbcDriver libraryRef="derbylib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     <!-- Backup database for swap testing -->
     <dataSource id="JPA_AMJTA_DS2" jndiName="jdbc/JPA_AMJTA_JTA_DS2">
         <jdbcDriver libraryRef="derbylib"/>
-        <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <!-- Default database -->
     <dataSource id="JPA_AMRL_DS1" jndiName="jdbc/JPA_AMRL_NJTA_DS" transactional="false">
         <jdbcDriver libraryRef="derbylib"/>
-        <properties.derby.embedded databaseName="memory:ds3" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds3" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     <!-- Backup database for swap testing -->
     <dataSource id="JPA_AMRL_DS2" jndiName="jdbc/JPA_AMRL_NJTA_DS2" transactional="false">
         <jdbcDriver libraryRef="derbylib"/>
-        <properties.derby.embedded databaseName="memory:ds4" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds4" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <!-- Default database -->
     <dataSource id="JPA_CMTS_DS1" jndiName="jdbc/JPA_CMTS_JTA_DS">
         <jdbcDriver libraryRef="derbylib"/>
-        <properties.derby.embedded databaseName="memory:ds5" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds5" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     <!-- Backup database for swap testing -->
     <dataSource id="JPA_CMTS_DS2" jndiName="jdbc/JPA_CMTS_JTA_DS2">
         <jdbcDriver libraryRef="derbylib"/>
-        <properties.derby.embedded databaseName="memory:ds6" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds6" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <library id="derbylib">

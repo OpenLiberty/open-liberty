@@ -28,7 +28,7 @@
     <fileset id="DerbyFileset" dir="${shared.resource.dir}derby" includes="derby.jar"/>
 
     <variable name="DERBY_DS_UID" defaultValue="dbuser1"/>
-    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu"/>
+    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     <variable name="DERBY_DS_JNDINAME" defaultValue="DUMMYjdbc/derby"/>
 
     <dataSource

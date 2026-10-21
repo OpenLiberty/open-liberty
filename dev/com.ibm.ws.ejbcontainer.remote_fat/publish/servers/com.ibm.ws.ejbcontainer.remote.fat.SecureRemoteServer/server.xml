@@ -34,7 +34,7 @@
     </orb>
 
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" clientAuthenticationSupported="true" />
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pragma: allowlist secret --> <!-- pwd: Liberty, expires1/4/2099 -->
     <quickStartSecurity userName="bob" userPassword="mypwd" />
 
     <!-- Yoko ORB bug; org.apache.yoko.rmispec.util.UtilLoader.loadServiceClass needs doPriv around getClassLoader + others -->	

@@ -9,7 +9,7 @@
         </featureManager>
 
         <!-- ssl keystore to enable SSL port for batch rest connector -->
-    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" />
+    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" /> <!-- pragma: allowlist secret -->
 
     <!-- users authorized to the batch rest connector (ibm/api realm) -->
     <basicRegistry id="basic" realm="ibm/api">

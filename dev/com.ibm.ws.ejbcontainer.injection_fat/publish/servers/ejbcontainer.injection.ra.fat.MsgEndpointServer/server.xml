@@ -16,7 +16,7 @@
     
     <!-- <include location="../fatTestPorts.xml"/> -->
     
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pragma: allowlist secret --> <!-- pwd: Liberty, expires1/4/2099 -->
     <quickStartSecurity userName="bob" userPassword="mypwd" />
     <sslDefault sslRef="supportedClientAuthenticationSSLConfig" />
     <ssl id="supportedClientAuthenticationSSLConfig" keyStoreRef="defaultKeyStore" clientAuthenticationSupported="true"/>
@@ -45,7 +45,7 @@
       </clientPolicy.csiv2>
     </orb>
     
-    <authData id="dsAuthAlias" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    <authData id="dsAuthAlias" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     
     <jdbcDriver id="H2Driver" libraryRef="H2Lib"/>
     <library id="H2Lib" filesetRef="H2Fileset"/>

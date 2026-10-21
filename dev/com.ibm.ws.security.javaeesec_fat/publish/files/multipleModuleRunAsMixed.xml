@@ -6,12 +6,12 @@
         <feature>jsp-2.3</feature>
     </featureManager>
 
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- pragma: allowlist secret -->
 
     <basicRegistry id="basic1" realm="NoJavaEESecRealm">
-        <user name="basicuser1" password="s3cur1ty" />
-        <user name="basicuser2" password="s3cur1ty" />
-        <user name="basicrunasuser1" password="s3cur1ty" />
+        <user name="basicuser1" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
+        <user name="basicuser2" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
+        <user name="basicrunasuser1" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
         <group name="basicgroup1">
             <member name="basicuser1" />
         </group>
@@ -27,7 +27,7 @@
                 <run-as userid="runasuser1" />
             </security-role>
             <security-role name="javaeesec_runas2">
-                <run-as userid="anotherrunasuser1" password="{xor}PjFvKzc6LSxsPCotbism" />
+                <run-as userid="anotherrunasuser1" password="{xor}PjFvKzc6LSxsPCotbism" /> <!-- pragma: allowlist secret -->
             </security-role>
             <security-role name="basicgroup1">
                 <group name="basicgroup1" />

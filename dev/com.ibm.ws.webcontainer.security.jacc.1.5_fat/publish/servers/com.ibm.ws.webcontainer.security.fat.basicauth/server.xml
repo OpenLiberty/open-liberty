@@ -21,7 +21,7 @@
 	<jaccTestProvider roleMappingFile="${server.config.dir}/resources/security/roleMapping.props" />
 	 <webContainer deferServletLoad="false"/>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- pragma: allowlist secret -->
 
 	<basicRegistry id="basic" realm="BasicRealm">
 		<user name="user0" password="user0pwd" />

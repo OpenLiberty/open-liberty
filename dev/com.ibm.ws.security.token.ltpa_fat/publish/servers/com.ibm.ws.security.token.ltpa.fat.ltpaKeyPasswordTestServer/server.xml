@@ -33,6 +33,6 @@
         </application-bnd>
     </application>
 
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pragma: allowlist secret -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pragma: allowlist secret --> <!-- pragma: allowlist secret -->
     
 </server>

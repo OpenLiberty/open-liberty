@@ -19,7 +19,7 @@
 	<jdbcDriver id="FATJDBCDriver" libraryRef="DerbyLib"/>
     
     <dataSource id="ds1" jndiName="jdbc/ds1" jdbcDriverRef="FATJDBCDriver">
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
     
     <connectionFactory jndiName="eis/mak">
@@ -43,7 +43,7 @@
       <properties.FAT1 queueName="queue1"/>
     </jmsQueue>
     
-    <authData id="activation1auth" password="{xor}HhwLCW4PCBs=" user="ACTV1USER"/>
+    <authData id="activation1auth" password="{xor}HhwLCW4PCBs=" user="ACTV1USER"/> <!-- pragma: allowlist secret -->
 
     <jmsActivationSpec id="fvtapp/fvtweb/FVTMessageDrivenBean" authDataRef="activation1auth">
       <properties.FAT1 destinationRef="queue1"/>
@@ -63,7 +63,7 @@
 
     <resourceAdapter name="ra/rafat1" id="FAT1" location="${server.config.dir}/connectors/JCAFAT1.rar">
       <classloader commonLibraryRef="DerbyLib"/>
-      <properties.FAT1 databaseName="jcafvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+      <properties.FAT1 databaseName="jcafvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/> <!-- pragma: allowlist secret -->
     </resourceAdapter>
     
     <!-- This is used by the fake RAR -->

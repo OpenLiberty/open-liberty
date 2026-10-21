@@ -7,14 +7,14 @@
 		<feature>usr:jaspicUserTestFeature-1.0</feature>
 	</featureManager>
 
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- pragma: allowlist secret -->
 
 	<basicRegistry id="basic1" realm="JaspiRealm">
-		<user name="jaspiuser2" password="s3cur1ty" />
-		<user name="jaspiuser1" password="s3cur1ty" />
-		<user name="jaspiuser3" password="s3cur1ty" />
-		<user name="jaspiuser4" password="s3cur1ty" />
-		<user name="jaspiuser5" password="s3cur1ty" />
+		<user name="jaspiuser2" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
+		<user name="jaspiuser1" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
+		<user name="jaspiuser3" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
+		<user name="jaspiuser4" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
+		<user name="jaspiuser5" password="s3cur1ty" /> <!-- pragma: allowlist secret -->
 		<group name="group1">
 			<member name="jaspiuser1" />
 		</group>

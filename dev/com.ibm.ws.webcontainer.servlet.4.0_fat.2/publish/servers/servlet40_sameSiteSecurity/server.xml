@@ -25,7 +25,7 @@
         <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
     </httpEndpoint>
 
-    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 --> <!-- pragma: allowlist secret -->
 
     <basicRegistry id="basic1" realm="TestRealm">
         <user name="user1" password="user1Login" />

@@ -36,8 +36,7 @@
         databaseName="${shared.resource.dir}/data/derby1"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby2" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -45,8 +44,7 @@
         databaseName="${shared.resource.dir}/data/derby2"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby3" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -54,8 +52,7 @@
         databaseName="${shared.resource.dir}/data/derby3"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby4" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -63,8 +60,7 @@
         databaseName="${shared.resource.dir}/data/derby4"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby5" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -72,8 +68,7 @@
         databaseName="${shared.resource.dir}/data/derby5"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby6" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -81,8 +76,7 @@
         databaseName="${shared.resource.dir}/data/derby6"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby7" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -90,8 +84,7 @@
         databaseName="${shared.resource.dir}/data/derby7"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby8" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -99,8 +92,7 @@
         databaseName="${shared.resource.dir}/data/derby8"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
 
     <dataSource jndiName="jdbc/derby9" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -108,8 +100,7 @@
         databaseName="${shared.resource.dir}/data/derby9"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
     
     <dataSource jndiName="jdbc/derby10" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -117,8 +108,7 @@
         databaseName="${shared.resource.dir}/data/derby10"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
     
     <dataSource jndiName="jdbc/derby11" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -126,8 +116,7 @@
         databaseName="${shared.resource.dir}/data/derby11"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
     
     <dataSource jndiName="jdbc/derby12" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
@@ -135,8 +124,7 @@
         databaseName="${shared.resource.dir}/data/derby12"
         createDatabase="create"
         user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
+        password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret --> <!-- password="dbpwd1" -->
     </dataSource>
     
     <logging traceSpecification="TransactionSummary=all:Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>

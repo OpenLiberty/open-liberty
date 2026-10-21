@@ -147,8 +147,7 @@
 
     <authData id="endpointAuthData" password="${AUTHDATA_PASSWORD}" user="${AUTHDATA_USER}"/>
     <!-- Expected config at restore
-    <authData id="endpointAuthData" password="{xor}HhwLCW4PCBs=" user="ACTV1USER"/>
-    -->
+    <authData id="endpointAuthData" password="{xor}HhwLCW4PCBs=" user="ACTV1USER"/> --> <!-- pragma: allowlist secret -->
 
     <activationSpec id="ejb/EndpointRestoreAuthDataNonJMS" authDataRef="endpointAuthData">
         <properties.AdapterForEJB.MessageListenerAuth name="EndpointRestoreAuthDataNonJMS"/>

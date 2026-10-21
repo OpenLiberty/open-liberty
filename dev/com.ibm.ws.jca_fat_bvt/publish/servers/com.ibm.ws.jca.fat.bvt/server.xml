@@ -33,12 +33,12 @@
     </connectionFactory>
 
     <connectionFactory jndiName="eis/cf2" connectionManagerRef="ConMgr2">
-      <properties.JCARAR2 sslSocketFactory="mySSLConfig" password="{xor}DR4NbQ8IGw==" tableName="cf2tbl"/>
-      <recoveryAuthData user="RAR2USER" password="{xor}DR4NbQ8IGw=="/>
+      <properties.JCARAR2 sslSocketFactory="mySSLConfig" password="{xor}DR4NbQ8IGw==" tableName="cf2tbl"/> <!-- pragma: allowlist secret -->
+      <recoveryAuthData user="RAR2USER" password="{xor}DR4NbQ8IGw=="/> <!-- pragma: allowlist secret -->
     </connectionFactory>
     <connectionManager id="ConMgr2" maxPoolSize="2" connectionTimeout="0"/>
 
-    <authData id="RAR2AuthData" user="RAR2USER" password="{xor}DR4NbQ8IGw=="/>
+    <authData id="RAR2AuthData" user="RAR2USER" password="{xor}DR4NbQ8IGw=="/> <!-- pragma: allowlist secret -->
 
     <activationSpec id="activation1">
       <properties.RAR1 destinationRef="queue1" expectedDuration="1s"/>
@@ -60,7 +60,7 @@
       <contextService>
         <jeeMetadataContext/>
       </contextService>
-      <properties.RAR1 databaseName="memory:jcabvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+      <properties.RAR1 databaseName="memory:jcabvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/> <!-- pragma: allowlist secret -->
     </resourceAdapter>
 
     <resourceAdapter location="${server.config.dir}/resourceadapters/JCARAR2.rar">

@@ -23,12 +23,12 @@
 
     <dataSource id="DefaultDataSource" jndiName="jdbc/TransactionalDataSource" >
     	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <dataSource id="jdbc/NonTransactionalDataSource" jndiName="jdbc/NonTransactionalDataSource"  transactional="false">
     	    <jdbcDriver libraryRef="DerbyLib"/>
-    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <library id="DerbyLib" >

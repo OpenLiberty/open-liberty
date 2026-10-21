@@ -31,7 +31,7 @@
     <dataSource id="tranlogDataSource" jndiName="jdbc/tranlogDataSource" transactional="false" fat.modify="true">
       <jdbcDriver libraryRef="AnonymousJDBCLib" />
       <!-- Properties modified by fat for database rotation -->
-      <properties.derby.embedded  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.embedded  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- pragma: allowlist secret -->
     </dataSource>
 
     <include location="../fatTestPorts.xml"/>
