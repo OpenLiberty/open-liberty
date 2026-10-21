@@ -1,0 +1,6 @@
+# Block Secrets ignore rules
+# Paths are relative to the repository root.
+# Always use forward slashes, on every platform.
+
+- paths:
+    - ".secrets.baseline"

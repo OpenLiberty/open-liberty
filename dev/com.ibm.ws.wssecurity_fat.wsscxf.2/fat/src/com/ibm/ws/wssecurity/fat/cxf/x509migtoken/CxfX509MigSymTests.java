@@ -2254,7 +2254,7 @@ public class CxfX509MigSymTests {
                              thisMethod.substring(4);
             }
             if (respReceived != null && respReceived.isEmpty()) {
-                respReceived = "pass:false:'received nothing'";
+                respReceived = "pass:false:'received nothing'"; // HashiCorpIgnore
             }
             Log.info(thisClass, methodFull, "The response received is: '" + respReceived + "'");
             assertTrue("Failed to get back the expected text. But :" + respReceived, respReceived.contains("<p>pass:true:"));
