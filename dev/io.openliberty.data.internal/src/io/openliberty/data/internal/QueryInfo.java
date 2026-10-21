@@ -6430,7 +6430,7 @@ public abstract class QueryInfo {
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "updateAndCount", loggable(returnValue));
+            Tr.exit(this, tc, "update", loggable(returnValue));
         return returnValue;
     }
 
