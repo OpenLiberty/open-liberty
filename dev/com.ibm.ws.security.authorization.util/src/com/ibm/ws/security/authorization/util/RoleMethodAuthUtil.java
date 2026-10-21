@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ws.security.authorization.util;
 
 import java.lang.reflect.Method;
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -23,8 +25,19 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 
+import com.ibm.ws.security.authorization.AuthorizationService;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
+
 public class RoleMethodAuthUtil {
     private static final Logger LOG = Logger.getLogger(RoleMethodAuthUtil.class.getName());
+
+    // Set by RoleMethodAuthUtilService OSGi component via @Reference injection.
+    private static volatile AuthorizationService authorizationService = null;
+
+    /* package */ static void setAuthorizationService(AuthorizationService service) {
+        authorizationService = service;
+    }
 
     public static void checkAuthentication(Principal principal) throws UnauthenticatedException {
         if (principal == null) {
@@ -35,7 +48,36 @@ public class RoleMethodAuthUtil {
         }
     }
 
-    public static boolean parseMethodSecurity(Method method, Supplier<Principal> principal, Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
+    /**
+     * Returns true if the given role is mapped to the Everyone special subject for
+     * the current application. Returns false if the AuthorizationService is not
+     * available or the application name cannot be determined.
+     */
+    private static boolean isEveryoneGranted(Collection<String> requiredRoles) {
+        AuthorizationService authzService = authorizationService;
+        if (authzService == null) {
+            return false;
+        }
+        try {
+            com.ibm.ws.runtime.metadata.ComponentMetaData cmd =
+                ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            if (cmd == null) {
+                return false;
+            }
+            com.ibm.ws.runtime.metadata.ModuleMetaData mmd = cmd.getModuleMetaData();
+            if (!(mmd instanceof WebModuleMetaData)) {
+                return false;
+            }
+            WebModuleMetaData wmmd = (WebModuleMetaData) mmd;
+            String appName = wmmd.getConfiguration().getApplicationName();
+            return authzService.isEveryoneGranted(appName, requiredRoles);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean parseMethodSecurity(Method method, Supplier<Principal> principal,
+                                              Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
 
         boolean denyAll = getDenyAll(method);
         if (denyAll) {
@@ -53,12 +95,18 @@ public class RoleMethodAuthUtil {
                     LOG.log(Level.FINEST, "found RolesAllowed in method: {} " + method.getName(),
                             new Object[] { theseroles });
                 }
+                // Check Everyone special subject first — no authentication required.
+                // On z/OS this prevents a SAF EJBROLE lookup for roles mapped to Everyone.
+               if (isEveryoneGranted(Arrays.asList(theseroles))) {
+                   return true;
+               }
+                // No Everyone match — require authentication before calling isUserInRole.
+                checkAuthentication(principal.get());
                 for (String role : theseroles) {
                     if (isUserInRoleFunction.test(role)) {
                         return true;
                     }
                 }
-                checkAuthentication(principal.get()); // throws UnauthenticatedException if not authenticated
                 return false; // authenticated, but not authorized
             } else {
                 boolean permitAll = getPermitAll(method);
@@ -76,7 +124,8 @@ public class RoleMethodAuthUtil {
     }
 
     // parse security JSR250 annotations at the class level
-    private static boolean parseClassSecurity(Class<?> cls, Supplier<Principal> principal, Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
+    private static boolean parseClassSecurity(Class<?> cls, Supplier<Principal> principal,
+                                              Predicate<String> isUserInRoleFunction) throws UnauthenticatedException {
 
         // try DenyAll
         DenyAll denyAll = cls.getAnnotation(DenyAll.class);
@@ -86,7 +135,6 @@ public class RoleMethodAuthUtil {
             }
             return false;
         } else { // try RolesAllowed
-
             RolesAllowed rolesAllowed = cls.getAnnotation(RolesAllowed.class);
             if (rolesAllowed != null) {
                 String[] theseroles = rolesAllowed.value();
@@ -94,12 +142,17 @@ public class RoleMethodAuthUtil {
                     LOG.log(Level.FINEST, "found RolesAllowed in class: {} " + cls.getName(),
                             new Object[] { theseroles });
                 }
+                // Check Everyone special subject first — no authentication required.
+                if (isEveryoneGranted(Arrays.asList(theseroles))) {
+                    return true;
+                }
+                // No Everyone match — require authentication before calling isUserInRole.
+                checkAuthentication(principal.get());
                 for (String role : theseroles) {
                     if (isUserInRoleFunction.test(role)) {
                         return true;
                     }
                 }
-                checkAuthentication(principal.get()); // throws UnauthenticatedException if not authenticated
                 return false; // authenticated, but not authorized
             } else {
                 // if no annotations on method or class (or if class has @PermitAll), return true;

@@ -1,38 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package io.openliberty.grpc.internal.security;
 
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
-import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 
 import io.grpc.Metadata;
 import io.openliberty.grpc.internal.GrpcMessages;
-import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
 
 public class GrpcServerSecurity {
     
@@ -61,53 +50,6 @@ public class GrpcServerSecurity {
         }
     }
     
-    /**
-     * Checks if a given request is authorized to access the requested method, by
-     * scanning the requested method for @DenyAll, @RolesAllowed, or @AllowAll and
-     * validating the request's Subject
-     * 
-     * @param req
-     * @param res
-     * @param requestPath
-     * @return
-     */
-    @FFDCIgnore({ UnauthenticatedException.class, UnauthenticatedException.class, UnauthorizedException.class })
-    public static boolean doServletAuth(HttpServletRequest req, HttpServletResponse res, String requestPath) {
-        try {
-            handleSecurity(req, requestPath);
-            return true;
-        } catch (UnauthenticatedException ex) {			
-            Tr.error(tc, "authentication.error", new Object[] {requestPath , ex.getMessage()});	
-        } catch (UnauthorizedException e) {
-            Tr.error(tc, "authorization.error", new Object[] {requestPath , e.getMessage()});	
-        }
-        return false;
-    }
-
-    private static void handleSecurity(HttpServletRequest req, String path)
-            throws UnauthenticatedException, UnauthorizedException {
-
-        Method method = GrpcServletUtils.getTargetMethod(path);
-        if (method == null) {
-            // the requested service doesn't exist - we'll handle this further up
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "gRPC target service for this path {0} does not exist", path);
-            }
-            return;
-        }
-        if (RoleMethodAuthUtil.parseMethodSecurity(method,
-                new Supplier<Principal>() {
-                    @Override
-                    public Principal get() {
-                        return req.getUserPrincipal();
-                    }
-                },
-                s -> req.isUserInRole(s))) {
-            return;
-        }
-        throw new UnauthorizedException("Unauthorized");
-    }
-
     /**
      * 
      * @param key the LIBERTY_AUTH_KEY to check

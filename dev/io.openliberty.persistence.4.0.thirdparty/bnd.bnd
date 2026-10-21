@@ -29,9 +29,9 @@ Bundle-Vendor: Eclipse.org - EclipseLink Project
 Bundle-ManifestVersion: 2
 Specification-Version: ${eclVersion}
 
-javac.source: 21
-javac.target: 21
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+javac.source: 17
+javac.target: 17
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 app-resources= \
   META-INF/services/org.eclipse.persistence.internal.databaseaccess.spi.JsonPlatformProvider | \

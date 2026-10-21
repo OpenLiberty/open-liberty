@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.KeyMatcher;
+import io.netty.util.AsciiString;
 
 /**
  * Class representing a single HTTP header name.
@@ -117,7 +118,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     /** Enumerated object for the HTTP header key PROXY-AUTHENTICATE */
     public static final HttpHeaderKeys HDR_PROXY_AUTHENTICATE = new HttpHeaderKeys("Proxy-Authenticate");
     /** Enumerated object for the HTTP header key PROXY-AUTHORIZATION */
-    public static final HttpHeaderKeys HDR_PROXY_AUTHORIZATION = new HttpHeaderKeys("Proxy-Authorization", false, false);
+    public static final HttpHeaderKeys HDR_PROXY_AUTHORIZATION = new HttpHeaderKeys("Proxy-Authorization", false,
+            false);
     /** Enumerated object for the HTTP header PROXY-CONNECTION */
     public static final HttpHeaderKeys HDR_PROXY_CONNECTION = new HttpHeaderKeys("Proxy-Connection");
     /** Enumerated object for the HTTP header key REFERER */
@@ -230,7 +232,10 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_X_FORWARDED_PORT = new HttpHeaderKeys("X-Forwarded-Port");
     /** De facto standard header for original protocol (similar to $WSIS) */
     public static final HttpHeaderKeys HDR_X_FORWARDED_PROTO = new HttpHeaderKeys("X-Forwarded-Proto");
-    /** Private WAS header used by the HTTP Session Manager to determine if a request is failed over */
+    /**
+     * Private WAS header used by the HTTP Session Manager to determine if a request
+     * is failed over
+     */
     public static final HttpHeaderKeys HDR_$WSFO = new HttpHeaderKeys("$WSFO");
 
     public static final HttpHeaderKeys HDR_HSTS = new HttpHeaderKeys("Strict-Transport-Security");
@@ -242,6 +247,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     /** Max value of header keys that will be kept in key storage */
     public static final int ORD_MAX = 1024;
 
+    private AsciiString asciiName;
+
     /**
      * Constructor to create a new HttpHeaderKey and add it to the
      * enumerated list.
@@ -250,8 +257,8 @@ public class HttpHeaderKeys extends HeaderKeys {
      */
     private HttpHeaderKeys(String name) {
         super(name, generateNextOrdinal());
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
             allKeys.add(this);
             myMatcher.add(this);
         }
@@ -267,9 +274,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     private HttpHeaderKeys(String name, boolean undefined) {
         super(name, generateNextOrdinal());
         setUndefined(undefined);
-
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
             allKeys.add(this);
             myMatcher.add(this);
         }
@@ -287,11 +293,15 @@ public class HttpHeaderKeys extends HeaderKeys {
         super(name, generateNextOrdinal());
         super.setShouldLogValue(shouldLog);
         super.setUseFilters(shouldFilter);
+        asciiName = AsciiString.cached(name);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
             allKeys.add(this);
             myMatcher.add(this);
         }
+    }
+
+    public AsciiString getAsciiStringName() {
+        return asciiName;
     }
 
     /**
@@ -309,9 +319,9 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param offset
-     *                   - starting point in that name
+     *               - starting point in that name
      * @param length
-     *                   - length to use from that starting point
+     *               - length to use from that starting point
      * @return HttpHeaderKeys
      */
     public static HttpHeaderKeys match(String name, int offset, int length) {
@@ -327,9 +337,9 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param offset
-     *                   - starting point in that name
+     *               - starting point in that name
      * @param length
-     *                   - length to use from that offset
+     *               - length to use from that offset
      * @return HttpHeaderKeys
      */
     public static HttpHeaderKeys match(byte[] name, int offset, int length) {
@@ -344,16 +354,18 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param offset
-     *                                     - starting point in that input name
+     *                                 - starting point in that input name
      * @param length
-     *                                     - length to use from that offset
+     *                                 - length to use from that offset
      * @param returnNullForInvalidName
-     *                                     - return null instead of throw IllegalArgumentException for header name validation
+     *                                 - return null instead of throw
+     *                                 IllegalArgumentException for header name
+     *                                 validation
      * @return HttpHeaderKeys
      * @throws NullPointerException
-     *                                      if input name is null
+     *                                  if input name is null
      * @throws IllegalArgumentException
-     *                                      if the input name contains invalid chars
+     *                                  if the input name contains invalid chars
      */
     public static HttpHeaderKeys find(byte[] name, int offset, int length, boolean returnNullForInvalidName) {
         HttpHeaderKeys key = (HttpHeaderKeys) myMatcher.match(name, offset, length);
@@ -381,12 +393,14 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param returnNullForInvalidName
-     *                                     - return null instead of throw IllegalArgumentException for header name validation
+     *                                 - return null instead of throw
+     *                                 IllegalArgumentException for header name
+     *                                 validation
      * @return HttpHeaderKeys
      * @throws NullPointerException
-     *                                      if input name is null
+     *                                  if input name is null
      * @throws IllegalArgumentException
-     *                                      if the input name contains invalid chars
+     *                                  if the input name contains invalid chars
      */
     public static HttpHeaderKeys find(String name, boolean returnNullForInvalidName) {
         HttpHeaderKeys key = (HttpHeaderKeys) myMatcher.match(name, 0, name.length());
@@ -424,18 +438,18 @@ public class HttpHeaderKeys extends HeaderKeys {
                 if (returnFalseForInvalidName) {
                     return false;
                 }
-                final String msg = "Header name contained an invalid character " + i 
-                                   + " | char=" + toPrintable(c)
-                                   + " code=" + (int) c + "(0x" + Integer.toHexString(c) + ")"
-                                   + " pos=" + (i + 1)
-                                   + " name=\"" + name + "\"";
+                final String msg = "Header name contained an invalid character " + i
+                        + " | char=" + toPrintable(c)
+                        + " code=" + (int) c + "(0x" + Integer.toHexString(c) + ")"
+                        + " pos=" + (i + 1)
+                        + " name=\"" + name + "\"";
 
                 final IllegalArgumentException iae = new IllegalArgumentException(msg);
                 FFDCFilter.processException(
-                                            iae,
-                                            HttpHeaderKeys.class.getName() + ".validateHeaderName(String)",
-                                            "1",
-                                            name);
+                        iae,
+                        HttpHeaderKeys.class.getName() + ".validateHeaderName(String)",
+                        "1",
+                        name);
                 throw iae;
             }
         }
@@ -444,16 +458,16 @@ public class HttpHeaderKeys extends HeaderKeys {
 
     public static boolean isValidTchar(char c) {
         boolean valid = ((c >= 'a') && (c <= 'z')) ||
-                        ((c >= 'A') && (c <= 'Z')) ||
-                        ((c >= '0') && (c <= '9')) ||
-                        (c == '!') || (c == '#') ||
-                        (c == '$') || (c == '%') ||
-                        (c == '&') || (c == '\'') ||
-                        (c == '*') || (c == '+') ||
-                        (c == '-') || (c == '.') ||
-                        (c == '^') || (c == '_') ||
-                        (c == '`') || (c == '|') ||
-                        (c == '~');
+                ((c >= 'A') && (c <= 'Z')) ||
+                ((c >= '0') && (c <= '9')) ||
+                (c == '!') || (c == '#') ||
+                (c == '$') || (c == '%') ||
+                (c == '&') || (c == '\'') ||
+                (c == '*') || (c == '+') ||
+                (c == '-') || (c == '.') ||
+                (c == '^') || (c == '_') ||
+                (c == '`') || (c == '|') ||
+                (c == '~');
 
         return valid;
     }
@@ -479,7 +493,7 @@ public class HttpHeaderKeys extends HeaderKeys {
 
     /** private headers defined as sensitive */
     private static final HashSet<String> sensitiveHeaderList = new HashSet<String>(Arrays.asList(HDR_$WSCC.getName(), HDR_$WSRA.getName(), HDR_$WSRH.getName(),
-                                                                                                 HDR_$WSAT.getName(), HDR_$WSRU.getName()));
+                                                                                                 HDR_$WSAT.getName(), HDR_$WSRU.getName(), HDR_$WSSP.getName()));
 
     /**
      * @param headerName
@@ -493,13 +507,14 @@ public class HttpHeaderKeys extends HeaderKeys {
     }
 
     /** private headers defined as sensitive */
-    private static final HashSet<String> privateHeaderList = new HashSet<String>(Arrays.asList(HDR_$WSAT.getName(), HDR_$WSCC.getName(), HDR_$WSCS.getName(),
-                                                                                               HDR_$WSIS.getName(), HDR_$WSSC.getName(), HDR_$WSPR.getName(), HDR_$WSRA.getName(),
-                                                                                               HDR_$WSRH.getName(), HDR_$WSRU.getName(), HDR_$WSSN.getName(), HDR_$WSSP.getName(),
-                                                                                               HDR_$WSSI.getName(), HDR_$WSZIP.getName(), HDR_$WSEP.getName(), HDR_$WSPT.getName(),
-                                                                                               HDR_$WSATO.getName(), HDR_$WSORIGCL.getName(), HDR_$WSPC.getName(),
-                                                                                               HDR_$WSODRINFO.getName(),
-                                                                                               HDR_$WSFO.getName()));
+    private static final HashSet<String> privateHeaderList = new HashSet<String>(
+            Arrays.asList(HDR_$WSAT.getName(), HDR_$WSCC.getName(), HDR_$WSCS.getName(),
+                    HDR_$WSIS.getName(), HDR_$WSSC.getName(), HDR_$WSPR.getName(), HDR_$WSRA.getName(),
+                    HDR_$WSRH.getName(), HDR_$WSRU.getName(), HDR_$WSSN.getName(), HDR_$WSSP.getName(),
+                    HDR_$WSSI.getName(), HDR_$WSZIP.getName(), HDR_$WSEP.getName(), HDR_$WSPT.getName(),
+                    HDR_$WSATO.getName(), HDR_$WSORIGCL.getName(), HDR_$WSPC.getName(),
+                    HDR_$WSODRINFO.getName(),
+                    HDR_$WSFO.getName()));
 
     /**
      * @param headerName

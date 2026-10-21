@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2022 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,17 @@ public class ConfigComparator {
     public ComparatorResult computeDelta() throws ConfigUpdateException {
         Map<String, DeltaType> variableDelta = computeVariableDelta();
         List<ConfigDelta> configDelta = computeConfigDelta(variableDelta);
+        
+        // Check if quiesceTimeout changed. This is an attribute of the <server> root element,
+        // not a child element, so it's stored as an instance field in BaseConfiguration rather
+        // than in configurationMap (which only stores child elements as SimpleElement objects).
+        // We need to check it separately to detect changes during dynamic configuration updates.
+        if (oldConfiguration.getQuiesceTimeoutMillis() != newConfiguration.getQuiesceTimeoutMillis()) {
+            // Add a marker delta to indicate that server element attributes changed.
+            // This ensures switchConfiguration() is called even if no child elements changed.
+            variableDelta.put("__serverElementAttributesChanged__", DeltaType.MODIFIED);
+        }
+        
         return new ComparatorResult(configDelta, variableDelta);
     }
 

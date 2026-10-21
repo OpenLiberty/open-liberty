@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -492,6 +492,11 @@ schemagen.info.schema.file.created.useraction=Es ist keine Aktion erforderlich.
 error.config.root.deleted=CWWKG0110E: Eine Konfigurationsaktualisierung wurde erkannt, aber die Datei server.xml existiert nicht. Es wurden keine Konfigurations\u00e4nderungen vorgenommen.
 error.config.root.deleted.explanation=Die Datei server.xml wurde gel\u00f6scht. Um die laufenden Anwendungen nicht zu st\u00f6ren, werden keine Konfigurations\u00e4nderungen vorgenommen.
 error.config.root.deleted.useraction=F\u00fcgen Sie die Datei server.xml wieder zum Server hinzu.
+
+warn.invalid.quiesce.timeout=CWWKG0111W: Der Wert \u201e {0} \u201c, der f\u00fcr das Attribut \u201e quiesceTimeout \u201c des Server-Elements in der Datei \u201e server.xml \u201c angegeben ist, ist ung\u00fcltig. Der Wert muss eine Dauer von mindestens 30 Sekunden haben. Der Server verwendet den Standardwert von 30 Sekunden.
+warn.invalid.quiesce.timeout.explanation=Das Attribut \u201e quiesceTimeout \u201c gibt die Wartezeit an, bis der Server beim Herunterfahren in den Ruhezustand \u00fcbergeht. Geben Sie eine positive ganze Zahl gefolgt von einer Zeiteinheit an, z. B. \u201e 30s \u201c, \u201e 1m \u201c oder \u201e 1m30s \u201c. Wenn Sie keine Zeiteinheit angeben, geht der Server von Sekunden aus. Der Wert muss mindestens 30 Sekunden betragen. Werte unter 30 Sekunden lassen dem Server nicht gen\u00fcgend Zeit, um laufende Anfragen abzuschlie\u00dfen und einen ordnungsgem\u00e4\u00dfen Herunterfahrvorgang durchzuf\u00fchren.
+warn.invalid.quiesce.timeout.useraction=\u00c4ndern Sie in der Datei \u201e server.xml \u201c das Attribut \u201e quiesceTimeout \u201c des Elements \u201eserver\u201c auf einen Wert von mindestens 30 Sekunden (z. B. \u201e 30s \u201c, \u201e 45s \u201c oder \u201e 1m30s \u201c) oder entfernen Sie das Attribut, um den Standardwert von 30 Sekunden zu verwenden.
+
 
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

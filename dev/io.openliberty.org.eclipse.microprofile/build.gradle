@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 configurations {
   config20 {
@@ -47,3 +44,37 @@ artifacts {
   openapi20(file('build/libs/io.openliberty.org.eclipse.microprofile.openapi.2.0.jar'))
   openapi40(file('build/libs/io.openliberty.org.eclipse.microprofile.openapi.4.0.jar'))
 }
+
+task validateBndFiles {
+  group = 'verification'
+  description = 'Validates that the bnd files have the -maven-dependencies instruction'
+  doLast {
+    // Find all .bnd files in the root of the project excluding bnd.bnd
+    def subBudleBndFiles = projectDir.listFiles().findAll { file ->
+      file.isFile() && file.name.endsWith('.bnd') && file.name != 'bnd.bnd'
+    }
+
+    def missingFiles = []
+
+    subBudleBndFiles.each { bndFile ->
+      // Check if this file contains the '-maven-dependencies' instruction
+      boolean hasInstruction = bndFile.readLines().any { line ->
+        def trimmed = line.trim()
+          return trimmed.startsWith('-maven-dependencies')
+        }
+
+        if (!hasInstruction) {
+          missingFiles << bndFile.name
+        }
+    }
+
+    // Fail if any file is missing the instruction
+    if (!missingFiles.isEmpty()) {
+      throw new GradleException(
+        "Validation failed: The following .bnd file(s) are missing the required '-maven-dependencies' instruction: ${missingFiles.join(', ')}"
+      )
+    }
+  }
+}
+
+compileJava.dependsOn validateBndFiles

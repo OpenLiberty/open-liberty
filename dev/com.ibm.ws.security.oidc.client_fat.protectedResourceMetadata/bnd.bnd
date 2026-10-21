@@ -45,4 +45,6 @@ tested.features:\
     com.ibm.ws.security.fat.common;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
     com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
-    com.ibm.json4j;version=latest
+    com.ibm.json4j;version=latest,\
+    com.ibm.ws.org.jose4j;version=latest,\
+    org.bitbucket.b_c.jose4j

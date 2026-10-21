@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /*
  * Created on Jan 1, 2004
@@ -19,7 +16,6 @@
 package com.ibm.ws.webcontainer31.osgi.srt;
 
 import java.io.IOException;
-
 import javax.servlet.http.HttpUpgradeHandler;
 
 import com.ibm.websphere.ras.Tr;
@@ -27,12 +23,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConnectionUpgrade;
 import com.ibm.ws.transport.access.TransportConstants;
-import com.ibm.ws.webcontainer31.async.ThreadContextManager;
-import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
-import com.ibm.ws.webcontainer31.osgi.response.IResponse31Impl;
+import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletResponse;
+import com.ibm.ws.webcontainer31.async.ThreadContextManager;
+import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
+import com.ibm.ws.webcontainer31.osgi.response.IResponse31Impl;
 import com.ibm.ws.webcontainer31.srt.SRTServletRequest31;
 import com.ibm.ws.webcontainer31.srt.SRTServletResponse31;
 import com.ibm.ws.webcontainer31.upgrade.HttpUpgradeHandlerWrapper;
@@ -42,9 +39,9 @@ import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
+import com.ibm.wsspi.webcontainer.util.FFDCWrapper;
 
-
-public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext
+public class SRTConnectionContext31 extends SRTConnectionContext
 {
 
     private final static TraceComponent tc = Tr.register(SRTConnectionContext31.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
@@ -61,7 +58,6 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
     protected SRTServletResponse newSRTServletResponse() {
         return new SRTServletResponse31(this);
     }
-
 
     @Override
     public void finishConnection()
@@ -114,7 +110,6 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
 
                         doInit = true;                            
 
-
                     }
                     else{
                      // create the WebConnection and pass the handler generated
@@ -146,12 +141,30 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable t) {
                     // TODO reasonable to catch throwable here?
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(t, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "122", this);
+                    FFDCWrapper.processException(t, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "122", this);
                 }
 
                 try
                 {
-                    ((SRTServletResponse31)_response).finishKeepConnection();
+                    try{
+                        ((SRTServletResponse31) _response).finishKeepConnection();
+                    }catch(IOException ioe){
+                        String msg = ioe.getMessage();
+                        if (msg != null && msg.contains("Stream is closed")) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc,
+                                         "finishConnection: ignoring expected 'Stream is closed' while finishing upgrade response");
+                            }
+                            // Do NOT rethrow – treat as benign
+                        } else {
+                            // Anything else is still unexpected
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "finishConnection: unexpected IOException while finishing upgrade response", ioe);
+                            }
+                            throw ioe;
+                        }
+                    }
+                    
                     // close the current httpinput and httpoutput streams as the response is written out. 
                     if(dispatcherLink != null)
                         dispatcherLink.close(vc, null);
@@ -175,7 +188,6 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                         tcm.pushContextData();
 
                         try {
-                            //call application handler init 
                             handler.init(upgradedCon);
                         } finally {
                             tcm.popContextData();
@@ -184,8 +196,8 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
-                }               
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
+                }
 
                 try
                 {
@@ -193,7 +205,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "96", this);
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "96", this);
                     WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext)_request.getWebAppDispatcherContext();
                     dispatchContext.getWebApp().logError("Error while finishing the connection", th);
                 }
@@ -210,7 +222,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "64", this);
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "64", this);
                 }		
 
                 try
@@ -219,13 +231,11 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "74", this);
+                    FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "74", this);
                     WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext)_request.getWebAppDispatcherContext();
                     dispatchContext.getWebApp().logError("Error while finishing the connection", th);
                 }
             }
-
-
 
             dispatchContextFinish();
         }

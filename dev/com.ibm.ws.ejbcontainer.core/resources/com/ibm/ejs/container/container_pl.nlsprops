@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2022 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1559,6 +1559,10 @@ CNTR0342E_INCORRECT_ASYNC_ANNO.useraction=Usu\u0144 z metody lub klasy adnotacj\
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE=CNTR0343W: Interfejs biznesowy {0} zawiera adnotacj\u0119 jakarta.enterprise.concurrent.Asynchronous. Adnotacje asynchroniczne nie s\u0105 poprawne w \u017cadnym interfejsie, a kontener Jakarta Enterprise Beans ignoruje je.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.explanation=Adnotacja jakarta.enterprise.concurrent.Asynchronous nie mo\u017ce by\u0107 u\u017cywana z korporacyjnymi komponentami bean Jakarta. Kontener Jakarta Enterprise Beans ignoruje te adnotacje w interfejsach. Je\u015bli metody nie s\u0105 zadeklarowane jako asynchronicznie w deskryptorze wdra\u017cania ejb-jar.xml albo adnotacja jakarta.ejb.Asynchronous nie jest okre\u015blona w klasie komponentu bean lub w metodzie klasy komponentu bean, metody komponentu bean s\u0105 uruchamiane synchronicznie.
 CNTR0343W_INCORRECT_ASYNC_ANNO_INTERFACE.useraction=Usu\u0144 adnotacj\u0119 jakarta.enterprise.concurrent.Asynchronous z podanego interfejsu biznesowego i sprawd\u017a, czy adnotacja jakarta.ejb.Asynchronous zosta\u0142a poprawnie okre\u015blona w klasie komponentu bean.
+
+CNTR0344E_INCORRECT_SCHEDULE_ANNO=CNTR0344E: Bean o nazwie \u201e {0} \u201d w module \u201e {1} \u201d aplikacji \u201e {2} \u201d zawiera co najmniej jedn\u0105 metod\u0119 opatrzon\u0105 adnotacj\u0105 \u201e jakarta.enterprise.concurrent.Schedule \u201d. Tej adnotacji nie mo\u017cna stosowa\u0107 w przypadku komponent\u00f3w typu enterprise bean.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.explanation=Specyfikacja Jakarta Concurrency nie zezwala na stosowanie adnotacji ` jakarta.enterprise.concurrent.Schedule ` w obiektach typu Jakarta Enterprise Beans.
+CNTR0344E_INCORRECT_SCHEDULE_ANNO.useraction=Usu\u0144 adnotacj\u0119 \u201e jakarta.enterprise.concurrent.Asynchronous \u201d z tej metody. Aby zidentyfikowa\u0107 metody z limitem czasu w komponentach typu enterprise bean, nale\u017cy u\u017cy\u0107 adnotacji ` jakarta.ejb.Schedule `.
 
 #-------------------------------------------------------------------------------
 #

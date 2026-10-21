@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -928,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=P\u0159ekonfigurujte slu\u017ebu p\
 warning.traditional.enabled=CWSCT0441W: Kontejner SIP nepodporuje tradi\u010dn\u00ed PMI.
 warning.traditional.enabled.explanation=Atribut enableTraditionalPMI je nastaven na true v souboru server.xml. Kontejner SIP nepodporuje tradi\u010dn\u00ed PMI v syst\u00e9mu Liberty.
 warning.traditional.enabled.useraction=Odeberte vlastnost enableTraditionalPMI ze souboru server.xml.
+
+missingPorts.endpointDisabled=CWSCT0442W: Koncov\u00fd bod protokolu SIP (Session Initiation Protocol) slu\u017eby {0} nem\u00e1 nakonfigurovan\u00e9 \u017e\u00e1dn\u00e9 porty a je deaktivov\u00e1n.
+missingPorts.endpointDisabled.explanation=Konfigurace koncov\u00e9ho bodu SIP nestanovuje \u017e\u00e1dn\u00fd port typu TCP, TLS ani UDP. Koncov\u00fd bod nem\u016f\u017ee naslouchat p\u0159\u00edchoz\u00edmu SIP provozu.
+missingPorts.endpointDisabled.useraction=V souboru ` server.xml ` nakonfigurujte pro koncov\u00fd bod SIP atribut ` sipTCPPort, ` ( sipTLSPort, nebo sipUDPPort ).

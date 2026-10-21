@@ -1,3 +1,0 @@
-# Enable the Liberty Beta Edition so that beta-fenced features such as
-# protectedResourceMetadata (RFC 9728) are active during OIDC FAT tests.
--Dcom.ibm.ws.beta.edition=true

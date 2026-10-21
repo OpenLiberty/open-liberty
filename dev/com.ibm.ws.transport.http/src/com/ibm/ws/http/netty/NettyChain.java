@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.internal.HttpChain;
+import com.ibm.ws.http.internal.AbstractHttpChain;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -42,7 +42,7 @@ import io.openliberty.netty.internal.exception.NettyException;
 /**
  *
  */
-public class NettyChain extends HttpChain {
+public class NettyChain extends AbstractHttpChain {
 
     private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -79,10 +79,6 @@ public class NettyChain extends HttpChain {
         final String root = endpointId + (isHttps ? "-ssl" : "");
 
         endpointName = root;
-        tcpName = "TCP-" + root;
-        sslName = isHttps ? "SSL-" + root : null;
-        httpName = "HTTP-" + root;
-        dispatcherName = "HTTPD-" + root;
         chainName = "CHAIN-" + root;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -111,16 +107,13 @@ public class NettyChain extends HttpChain {
                     }
                     throw new IllegalStateException("Invalid chain state for stop: " + state.get());
                 }
-                else if (serverChannel.isActive()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Server Channel is active, attempting to close");
-                    }
-                    nettyFramework.stop(serverChannel, -1);
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Server Channel is NOT active while starting/started. Stopping will be left to the open future handler...");
-                    }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Server Channel is " + (serverChannel.isActive() ? "active" : "not yet active") + ", closing via framework");
                 }
+                // Block until the channel is fully closed to ensure channel.isOpen()
+                // transitions to false before stopAndWait() can unblock, preventing a new
+                // bind from racing with a still-open channel's in-flight retry loop.
+                nettyFramework.stop(serverChannel, -1);
                 serverChannel.closeFuture().addListener(future -> {
                     synchronized (stopLock) {
                         if (future.isSuccess()) {
@@ -295,6 +288,19 @@ public class NettyChain extends HttpChain {
             return;
         }
         synchronized (this) {
+            // Check if this callback is for a stale channel that bound the port after
+            // the chain was already restarted.
+            // Close the stale channel so it doesn't hold the port open for the next bind attempt.
+            if (future.channel() != serverChannel) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Stale channel " + future.channel()
+                        + " fired callback but current serverChannel is " + serverChannel + ", closing stale channel...");
+                }
+                if (future.channel().isActive()) {
+                    nettyFramework.stop(future.channel());
+                }
+                return;
+            }
             if (future.isSuccess()) {
                 state.set(ChainState.STARTED);
                 EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
@@ -397,12 +403,13 @@ public class NettyChain extends HttpChain {
 
     public VirtualConnection processNewConnection() {
         VirtualConnectionFactory factory = new NettyVirtualConnectionFactoryImpl();
-        VirtualConnection vc;
 
         try {
             return factory.createConnection();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Failed to create virtual connection: " + e);
+            }
         }
         return null;
     }

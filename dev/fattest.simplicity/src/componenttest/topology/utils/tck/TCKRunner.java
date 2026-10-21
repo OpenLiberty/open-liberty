@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1030,7 +1030,7 @@ public class TCKRunner {
      * @param  dir
      * @return
      */
-    private static String jarPathInDir(String jarNameFragment, String dir) {
+    static String jarPathInDir(String jarNameFragment, String dir) {
         String result = null;
         File dirFileObj = new File(dir);
         String[] files = dirFileObj.list();
@@ -1069,11 +1069,11 @@ public class TCKRunner {
 
         Pattern p = Pattern.compile(stringPattern);
 
-        //Find all files that match, then sort in reverse and return the first to ensure we get the latest version (if multiple exist)
+        //Find all files that match, then sort by version (numerically) in reverse and return the first to ensure we get the latest version (if multiple exist)
         result = Arrays.asList(files)
                         .stream()
                         .filter(file -> p.matcher(file).matches())
-                        .sorted(Comparator.reverseOrder())
+                        .sorted(JarVersionComparator.HIGH_TO_LOW)
                         .findFirst()
                         .orElse(null);
 
@@ -1084,6 +1084,57 @@ public class TCKRunner {
         }
 
         return result;
+    }
+
+    /**
+     * Comparators for jar file names that compares version segments numerically.
+     * Jar file names are expected to contain a version suffix after the last '_', e.g.
+     * {@code io.openliberty.jakarta.data.1.1_1.0.117.jar}. Each dot-separated segment is
+     * compared as an integer so that {@code 117 > 99}. Falls back to lexicographic order
+     * for segments that are not purely numeric.
+     */
+    static class JarVersionComparator implements Comparator<String> {
+        public static final Comparator<String> LOW_TO_HIGH = new JarVersionComparator();
+        public static final Comparator<String> HIGH_TO_LOW = new JarVersionComparator().reversed();
+
+        @Override
+        public int compare(String a, String b) {
+            String verA = versionSuffix(a);
+            String verB = versionSuffix(b);
+
+            String[] partsA = verA.split("\\.");
+            String[] partsB = verB.split("\\.");
+
+            if (partsA.length != partsB.length) {
+                throw new IllegalArgumentException("Could not compare " + a + " to " + b +
+                                                   " because the version suffix had a different number of parts");
+            }
+
+            for (int i = 0; i < partsA.length; i++) {
+                String pa = partsA[i];
+                String pb = partsB[i];
+                int cmp = Integer.compare(Integer.parseInt(pa), Integer.parseInt(pb));
+                if (cmp != 0) {
+                    return cmp;
+                }
+            }
+
+            return 0; // versions where the same
+        }
+    }
+
+    /**
+     * Extracts the version suffix from a jar filename: the portion after the last {@code '_'}
+     * and before the trailing {@code ".jar"}.
+     * Returns {@code jarFileName} with {@code ".jar"} removed if no {@code '_'} is found.
+     * <p>
+     * Example: {@code io.openliberty.jakarta.data.1.1_1.0.117.jar} → {@code "1.0.117"}
+     */
+    static String versionSuffix(String jarFileName) {
+        // Strip trailing ".jar" if present
+        String name = jarFileName.endsWith(".jar") ? jarFileName.substring(0, jarFileName.length() - 4) : jarFileName;
+        int underscore = name.lastIndexOf('_');
+        return underscore >= 0 ? name.substring(underscore + 1) : name;
     }
 
     private static Map<String, String> getMvnEnv(File mavenUserHome) throws IOException, InterruptedException {

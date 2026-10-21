@@ -23,6 +23,17 @@
 	              description="My custom description" />
 	    </mcp>
 	</application>
+	
+    <application location="dynamicServerInfoUpdateTest.war">
+        <mcp>
+            <!-- Set all fields to test dynamic updates -->
+            <info name="my-unchanged-server"
+                  title="My Unupdated MCP Server"
+                  version="2.5.0"
+                  description="My unupdated description" />
+        </mcp>
+    </application>
+
 
   <include location="../fatTestPorts.xml" />
   

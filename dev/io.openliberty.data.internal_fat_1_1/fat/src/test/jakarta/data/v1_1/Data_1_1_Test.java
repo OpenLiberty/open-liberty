@@ -45,6 +45,7 @@ public class Data_1_1_Test extends FATServletClient {
      */
     static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
+                                   "CWWKD1011E.*", // TODO remove once using persistence-4.0
                                    "CWWKD1054E.*findByIsControlTrueAndNumericValueBetween",
                                    "CWWKD1091E.*countBySurgePriceGreaterThanEqual",
                                    "DSRA0302E.*XA_RBTIMEOUT", // query timeout

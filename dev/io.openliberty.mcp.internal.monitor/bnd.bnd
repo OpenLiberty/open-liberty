@@ -17,6 +17,8 @@ Bundle-Description: Open Liberty Model Context Protocol Monitor, version ${bVers
 javac.source: 17
 javac.target: 17
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
 WS-TraceGroup: MCP
 
 Import-Package: \

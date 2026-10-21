@@ -55,7 +55,7 @@ public class LocaleTest extends FATServletClient {
 
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
+        assertNotNull(server.waitForStringInLog("CWMCM0008I")); // message code is locale-invariant; translated text won't match "MCP server endpoint:"
     }
 
     @AfterClass

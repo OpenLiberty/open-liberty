@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Especifique un valor v\u00e1lido para la se
 jndi.decode.failed=CWWKN0011E: Se ha producido un error al descodificar la contrase\u00f1a {0}. Verifique que la contrase\u00f1a est\u00e9 correctamente codificada. La excepci\u00f3n ha sido: {1}.
 jndi.decode.failed.explanation=La contrase\u00f1a no est\u00e1 codificada correctamente.
 jndi.decode.failed.useraction=Verifique que la contrase\u00f1a est\u00e9 correctamente codificada. Consulte la excepci\u00f3n para obtener detalles.
+
+jndi.decode.warning=CWWKN0012W: No se ha podido descodificar el valor del nombre JNDI \u00ab {0} \u00bb, ya que la contrase\u00f1a no est\u00e1 codificada correctamente.
+jndi.decode.warning.explanation=La b\u00fasqueda en el entorno JNDI ha fallado porque el valor de la contrase\u00f1a asociada al nombre JNDI no tiene un formato de codificaci\u00f3n compatible. El servidor no puede descodificar el valor y la consulta no se puede completar.
+jndi.decode.warning.useraction=Codifica la contrase\u00f1a del nombre JNDI utilizando el comando de codificaci\u00f3n de securityUtility y actualiza la configuraci\u00f3n JNDI con el valor codificado. Consulta el mensaje de excepci\u00f3n para obtener m\u00e1s detalles.

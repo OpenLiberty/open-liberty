@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -701,7 +698,6 @@ info.bootstrap.started=CWSCT0347I: Die Bootstrap-Replikation wurde gestartet.
 info.bootstrap.started.explanation=Die SIP-Komponente com.ibm.ws.sip.container repliziert jetzt ihre Sitzungsdaten auf einem neu verbundenen Peer.
 info.bootstrap.started.useraction=Es ist keine Aktion erforderlich.
 
-
 info.bootstrap.finished=CWSCT0348I: Die Bootstrap-Replikation ist abgeschlossen. 
 info.bootstrap.finished.explanation=Die SIP-Komponente com.ibm.ws.sip.container hat die Replikation ihrer Sitzungsdaten auf dem neu verbundenen Peer abgeschlossen.
 info.bootstrap.finished.useraction=Es ist keine Aktion erforderlich.
@@ -709,6 +705,7 @@ info.bootstrap.finished.useraction=Es ist keine Aktion erforderlich.
 info.sip.stack.timer=CWSCT0349I: F\u00fcr den Zeitgeber des SIP-Stacks [{0}] wurde der Wert [{1}] festgelegt.
 info.sip.stack.timer.explanation=Der Zeitgeberwert in der Konfiguration wurde ge\u00e4ndert.
 info.sip.stack.timer.useraction=Es ist keine Aktion erforderlich. 
+
 info.sip.container.quiesce.on=CWSCT0350I: Quiesce-Modus wird aktiviert.
 info.sip.container.quiesce.on.explanation=Die MBean der SIP-Komponente com.ibm.ws.sip.container hat einen Verwaltungsbefehl zum Aktivieren des Quiesce-Modus empfangen. Wenn dieser Modus aktiviert ist, werden in dieser Instanz von com.ibm.ws.sip.container keine neuen Aufrufe mehr verarbeitet.
 info.sip.container.quiesce.on.useraction=Es ist keine Aktion erforderlich.
@@ -795,7 +792,6 @@ error.dar.repository.create.1.useraction=Es ist keine Aktion erforderlich.
 
 error.dar.selector.1=CWSCT0407E: Es ist kein Status f\u00fcr den Standardanwendungsrouter verf\u00fcgbar.
 error.dar.selector.1.explanation=Wenn der Anwendungsrouter eine Anforderung mit einer anderen Anweisung als NEW empf\u00e4ngt, muss ein Statusindex in der Anwendungskette vorhanden sein.
-
 error.dar.selector.1.useraction=Es ist keine Aktion erforderlich. 
 
 error.dar.property.parser.1=CWSCT0408E: Der Standardanwendungsrouter konnte die Eigenschaftendatei, die die Eigenschaftenstrategie enth\u00e4lt, nicht laden.
@@ -825,6 +821,7 @@ warn.server.overloaded.message.queue.overloaded.useraction=Verringern Sie den ei
 info.sip.replication.mode=CWSCT0414I: SIP-Replikationsmodus: {0} 
 info.sip.replication.mode.explanation=Die H\u00e4ufigkeit, mit der SIP-Sitzungen in Replikationsdom\u00e4nen (sofern vorhanden) repliziert werden.
 info.sip.replication.mode.useraction=Es ist keine Aktion erforderlich. 
+
 info.dar.weight=CWSCT0415I: Der Standardanwendungsrouter wird gem\u00e4\u00df der Wertigkeitsstrategie geladen.
 info.dar.weight.explanation=Es wurde weder ein angepasster Router noch eine Konfigurationsdatei f\u00fcr den Standardanwendungsrouter angegeben. Deshalb verwendet die SIP-Komponente com.ibm.ws.sip.container ihr Standardverhalten und sortiert die Anwendungen nach Wertigkeit.
 info.dar.weight.useraction=Es ist keine Aktion erforderlich.
@@ -928,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=Konfigurieren Sie den SIP-Resolver-
 warning.traditional.enabled=CWSCT0441W: Der SIP-Container unterst\u00fctzt die traditionelle PMI nicht.
 warning.traditional.enabled.explanation=Das Attribut enableTraditionalPMI ist in der Datei server.xml auf true gesetzt. Der SIP-Container unterst\u00fctzt die traditionelle PMI in Liberty nicht.
 warning.traditional.enabled.useraction=Entfernen Sie die Eigenschaft enableTraditionalPMI aus der Datei server.xml.
+
+missingPorts.endpointDisabled=CWSCT0442W: Der SIP-Endpunkt (Session Initiation Protocol) \u201e {0} \u201c hat keine konfigurierten Ports und ist deaktiviert.
+missingPorts.endpointDisabled.explanation=In der SIP-Endpunktkonfiguration ist kein Port f\u00fcr TCP, TLS oder UDP angegeben. Der Endpunkt kann keinen eingehenden SIP-Verkehr empfangen.
+missingPorts.endpointDisabled.useraction=Konfigurieren Sie in der Datei \u201e server.xml \u201c das Attribut \u201e sipTCPPort, \u201c sipTLSPort, oder sipUDPPort f\u00fcr den SIP-Endpunkt.

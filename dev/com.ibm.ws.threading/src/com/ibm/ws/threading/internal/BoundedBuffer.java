@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
@@ -293,6 +294,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
      * immediately after returning.
      */
     // D312598 - remove synchronization and use .get
+    @Trivial
     @Override
     public int size() {
         return numberOfUsedSlots.get() + numberOfUsedExpeditedSlots.get();
@@ -324,6 +326,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
      *
      * @see java.util.Collection#isEmpty()
      */
+    @Trivial
     @Override
     public boolean isEmpty() {
         if (size() == 0) {
@@ -337,6 +340,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
      * object (or null if empty). The object remains in the
      * buffer.
      */
+    @Trivial
     @Override
     public T peek() {
         synchronized (this) {

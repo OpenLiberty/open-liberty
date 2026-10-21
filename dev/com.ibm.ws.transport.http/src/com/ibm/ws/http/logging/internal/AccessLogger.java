@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -164,14 +164,7 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
     @Deactivate
     protected void deactivate(ComponentContext ctx) {
         if (this.isLogRolloverScheduled) {
-            if (timedLogRollover_Timer != null) {
-                timedLogRollover_Timer.cancel();
-                timedLogRollover_Timer.purge();
-                this.isLogRolloverScheduled = false;
-                timedLogRollover_Timer = null;
-
-            }
-
+           cancelTimeBasedLogRollover();
         }
         stop();
     }
@@ -234,11 +227,13 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
         if (enabled) {
             start();
+            scheduleTimeBasedLogRollover(config);
+
         } else {
+            cancelTimeBasedLogRollover();
             stop();
         }
 
-        scheduleTimeBasedLogRollover(config);
     }
 
     /**
@@ -790,6 +785,14 @@ public class AccessLogger extends LoggerOffThread implements AccessLog {
 
     }
 
+    private void cancelTimeBasedLogRollover() {
+        if (timedLogRollover_Timer != null) {
+            timedLogRollover_Timer.cancel();
+            timedLogRollover_Timer.purge();
+            timedLogRollover_Timer = null;
+            this.isLogRolloverScheduled = false;
+        }
+    }
     /**
      * LogRoller task to be run/scheduled in timed log rollover.
      */

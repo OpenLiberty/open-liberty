@@ -105,6 +105,10 @@ public class ToolArgDefaultValueConverterTest {
                                                                         "ToolArg with a default value of a Obj type without a custom converter");
         List<ToolArgument> defaultValObjWithoutConverterToolArgs = List.of(new ToolArgumentImpl("person", "Person value", false, Person.class, "Joe::35"));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueObjArgWithoutConverterTestTool, defaultValObjWithoutConverterToolArgs, Collections.emptyList()));
+
+        Tool nullDefaultValueTool = Literals.tool("nullDefaultValue", "Null Default Value", "ToolArg with a null default value");
+        List<ToolArgument> nullDefaultValueToolArgs = List.of(new ToolArgumentImpl("value", "String value", false, String.class, null));
+        registry.addTool(ToolMetadataTestUtility.createFrom(nullDefaultValueTool, nullDefaultValueToolArgs, Collections.emptyList()));
     }
 
     @Test
@@ -275,6 +279,27 @@ public class ToolArgDefaultValueConverterTest {
         assertThrows(() -> DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, testConverterRegistry),
                      exception()
                                 .ofType(IllegalArgumentException.class));
+    }
+
+    @Test
+    public void testArgumentNullDefaultValueReturnsNull() {
+        // null defaultValue on a programmatically registered argument must not cause a NullPointerException in DefaultValueResolver.
+        StringReader reader = new StringReader("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "nullDefaultValue",
+                            "arguments": {}
+                          }
+                        }
+                        """);
+        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
+        ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "value");
+        String toolName = toolCallRequest.getMetadata().name();
+        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, testConverterRegistry), equalTo(null));
     }
 
     private static ToolArgument getArgument(ToolInfo toolInfo, String argName) {

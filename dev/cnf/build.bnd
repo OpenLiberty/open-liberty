@@ -10,7 +10,6 @@
 
 -include: \
   ${workspace}/gradle.properties, \
-  ${workspace}/cnf/resources/bnd/anttaskdefs.bnd, \
   ${workspace}/cnf/resources/bnd/repos.bnd, \
   ${workspace}/cnf/resources/bnd/test.bnd
 
@@ -53,6 +52,10 @@ javac.args.release: source
 # With bnd 5.2.0 The importing of java.* packages need to be disabled to maintain legacy behavior.
 -noimportjava: true
 
+# In bnd 7.1.0 new META-INF/services processing was enabled by default to 
+# generate META-INF/services files.  Switch to the old behavior.
+-metainf-services: none 
+
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class
 instrument.classesExcludes:
@@ -94,7 +97,9 @@ Bundle-SCM: \
   developerConnection=scm:git:https://github.com:OpenLiberty/open-liberty.git, \
   url=https://github.com/OpenLiberty/open-liberty/tree/release
 
-build.bnd.plugins.jar: ${repo;wlp-bndPlugins}
+# Fallback path for Eclipse/bnd direct builds. When Gradle drives the build,
+# bndSettings.gradle overrides this with a resolved absolute path before any
+# project prepares, avoiding ${repo;...} macro evaluation during parallel jar tasks.
 build.bnd.plugins.path: \
   ${workspace}/cnf/bndplugins/classes, \
   ${repo;org.apache.aries:org.apache.aries.util;1.1.3}

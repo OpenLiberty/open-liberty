@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -200,46 +200,110 @@ public class CpuInfo {
         return cpuUsage;
     }
 
-    // utility below parses cpu limits info from Docker files
+    // cgroups v1 file paths
+    static final String CGROUP_V1_PERIOD_FILE = "/sys/fs/cgroup/cpu/cpu.cfs_period_us";
+    static final String CGROUP_V1_QUOTA_FILE = "/sys/fs/cgroup/cpu/cpu.cfs_quota_us";
+
+    // cgroups v2 file paths
+    // /sys/fs/cgroup/cgroup.controllers is the canonical marker for a v2 hierarchy.
+    // /sys/fs/cgroup/cpu.max contains "quota period" on one line, or "max period" when unlimited.
+    static final String CGROUP_V2_MARKER_FILE = "/sys/fs/cgroup/cgroup.controllers";
+    static final String CGROUP_V2_CPU_MAX_FILE = "/sys/fs/cgroup/cpu.max";
+
+    // Sentinel value in cpu.max meaning "no quota limit"
+    private static final String CGROUP_V2_CPU_MAX_UNLIMITED = "max";
+
+    // utility below parses cpu limits info from cgroup files (v1 and v2)
     private static float getAvailableProcessorsFromFilesystemFloat() {
+        return getAvailableProcessorsFromFilesystemFloat(CGROUP_V1_PERIOD_FILE, CGROUP_V1_QUOTA_FILE, CGROUP_V2_CPU_MAX_FILE);
+    }
+
+    // Package-private overload to allow unit tests to supply custom file paths
+    static float getAvailableProcessorsFromFilesystemFloat(String v1PeriodPath, String v1QuotaPath, String v2CpuMaxPath) {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         float availableProcessorsFloat = -1;
 
-        //Check for docker files
-        String periodFileLocation = File.separator + "sys" + File.separator + "fs" + File.separator + "cgroup" + File.separator + "cpu" + File.separator + "cpu.cfs_period_us";
-        String quotaFileLocation = File.separator + "sys" + File.separator + "fs" + File.separator + "cgroup" + File.separator + "cpu" + File.separator + "cpu.cfs_quota_us";
-        File cfsPeriod = new File(periodFileLocation);
-        File cfsQuota = new File(quotaFileLocation);
-        if (cfsPeriod.exists() && cfsQuota.exists()) { //Found docker files
-            //Read quota
+        // --- cgroups v1: /sys/fs/cgroup/cpu/cpu.cfs_period_us + cpu.cfs_quota_us ---
+        // Try v1 first. This also covers hybrid environments (e.g. AKS 1.25) where
+        // both v1 and v2 structures are present, since v1 files will still exist.
+        File cfsPeriod = new File(v1PeriodPath);
+        File cfsQuota = new File(v1QuotaPath);
+        if (cfsPeriod.exists() && cfsQuota.exists()) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Found cgroups v1 cpu files");
             try {
                 String quotaContents = readFile(cfsQuota);
-                float quotaFloat = Float.parseFloat(quotaContents);
+                float quotaFloat = Float.parseFloat(quotaContents.trim());
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "quotaFloat = " + quotaFloat);
                 if (quotaFloat >= 0) {
-                    //Read period
                     String periodContents = readFile(cfsPeriod);
-                    float periodFloat = Float.parseFloat(periodContents);
+                    float periodFloat = Float.parseFloat(periodContents.trim());
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "periodFloat = " + periodFloat);
                     if (periodFloat != 0) {
                         availableProcessorsFloat = quotaFloat / periodFloat;
                         availableProcessorsFloat = roundToTwoDecimalPlaces(availableProcessorsFloat);
                         if (isTraceOn && tc.isDebugEnabled())
-                            Tr.debug(tc, "Calculated availableProcessors: " + availableProcessorsFloat + ". period=" + periodFloat + ", quota=" + quotaFloat);
+                            Tr.debug(tc, "Calculated availableProcessors (v1): " + availableProcessorsFloat + ". period=" + periodFloat + ", quota=" + quotaFloat);
                     }
                 }
             } catch (Throwable e) {
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(tc, "Caught exception: " + e.getMessage() + ". Using number of processors reported by java");
+                    Tr.debug(tc, "Caught exception reading cgroups v1 cpu files: " + e.getMessage() + ". Trying cgroups v2.");
                 availableProcessorsFloat = -1;
             }
         } else {
             if (isTraceOn && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Files " + quotaFileLocation + " : " + cfsQuota.exists());
-                Tr.debug(tc, "Files " + periodFileLocation + " : " + cfsPeriod.exists());
+                Tr.debug(tc, "cgroups v1 cpu files not found: " + CGROUP_V1_QUOTA_FILE + " exists=" + cfsQuota.exists()
+                             + ", " + CGROUP_V1_PERIOD_FILE + " exists=" + cfsPeriod.exists());
+            }
+        }
+
+        // --- cgroups v2: /sys/fs/cgroup/cpu.max ---
+        // Only attempt if v1 did not yield a result.
+        // Format: "<quota> <period>" or "max <period>" (unlimited).
+        if (availableProcessorsFloat <= 0) {
+            File cpuMax = new File(v2CpuMaxPath);
+            if (cpuMax.exists()) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "Found cgroups v2 cpu.max file");
+                try {
+                    String cpuMaxContents = readFile(cpuMax).trim();
+                    String[] parts = cpuMaxContents.split("\\s+");
+                    if (parts.length == 2) {
+                        String quotaPart = parts[0];
+                        String periodPart = parts[1];
+                        if (CGROUP_V2_CPU_MAX_UNLIMITED.equals(quotaPart)) {
+                            // "max" means no quota is set — leave availableProcessorsFloat as -1
+                            // so the caller falls back to Runtime.getRuntime().availableProcessors()
+                            if (isTraceOn && tc.isDebugEnabled())
+                                Tr.debug(tc, "cgroups v2 cpu.max quota is unlimited, using JVM reported processors");
+                        } else {
+                            float quotaFloat = Float.parseFloat(quotaPart);
+                            float periodFloat = Float.parseFloat(periodPart);
+                            if (isTraceOn && tc.isDebugEnabled())
+                                Tr.debug(tc, "cgroups v2 quotaFloat=" + quotaFloat + ", periodFloat=" + periodFloat);
+                            if (quotaFloat >= 0 && periodFloat != 0) {
+                                availableProcessorsFloat = quotaFloat / periodFloat;
+                                availableProcessorsFloat = roundToTwoDecimalPlaces(availableProcessorsFloat);
+                                if (isTraceOn && tc.isDebugEnabled())
+                                    Tr.debug(tc, "Calculated availableProcessors (v2): " + availableProcessorsFloat + ". period=" + periodFloat + ", quota=" + quotaFloat);
+                            }
+                        }
+                    } else {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "Unexpected cgroups v2 cpu.max format: " + cpuMaxContents + ". Using number of processors reported by java");
+                    }
+                } catch (Throwable e) {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught exception reading cgroups v2 cpu.max: " + e.getMessage() + ". Using number of processors reported by java");
+                    availableProcessorsFloat = -1;
+                }
+            } else {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "cgroups v2 cpu.max file not found: " + CGROUP_V2_CPU_MAX_FILE);
             }
         }
 

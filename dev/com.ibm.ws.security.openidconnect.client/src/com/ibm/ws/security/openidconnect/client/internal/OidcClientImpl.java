@@ -1048,6 +1048,9 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
      */
     void handleOauthChallenge(HttpServletRequest req, HttpServletResponse rsp, ProviderAuthenticationResult oidcResult, OidcClientConfig oidcClientConfig) {
         if (oidcResult.getStatus() == AuthResult.CONTINUE || oidcResult.getStatus() == AuthResult.REDIRECT_TO_PROVIDER) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "handleOauthChallenge: status is [" + oidcResult.getStatus() + "], no OAuth challenge sent");
+            }
             // do not handle these statuses
             return;
         }
@@ -1065,17 +1068,28 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             try {
                 // Construct the resource_metadata URL if serving protected resource metadata is enabled
                 String resourceMetadataUrl = null;
-                if (oidcClientConfig != null && oidcClientConfig.getServeProtectedResourceMetadata()) {
+                if (oidcClientConfig == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "handleOauthChallenge: no OidcClientConfig, resource_metadata will not be added to WWW-Authenticate");
+                    }
+                } else if (!oidcClientConfig.getServeProtectedResourceMetadata()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "handleOauthChallenge: client [" + oidcClientConfig.getId() + "] does not have protectedResourceMetadata enabled, resource_metadata will not be added to WWW-Authenticate");
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "handleOauthChallenge: protectedResourceMetadata enabled on client [" + oidcClientConfig.getId() + "], deriving resource_metadata URL for request [" + req.getRequestURI() + "]");
+                    }
                     resourceMetadataUrl = constructResourceMetadataUrl(req, oidcClientConfig);
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Derived resource_metadata URL: " + resourceMetadataUrl);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "handleOauthChallenge: resource_metadata URL derived as [" + resourceMetadataUrl + "]");
                     }
                 }
 
                 OAuth20ProviderUtils.handleOAuthChallenge(rsp, oidcResult, errorDescription, resourceMetadataUrl);
             } catch (IOException ioe) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "handleOauthChallenge() has failed :" + ioe, ioe);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "handleOauthChallenge: IOException writing OAuth challenge response", ioe);
                 }
 
                 // TODO error handling further
@@ -1084,7 +1098,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
                 // even though this did not set up proper message here,
                 // the error handling will continue handling it
             }
-
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "handleOauthChallenge: status [" + oidcResult.getStatus() + "] / HTTP status [" + oidcResult.getHttpStatusCode() + "] does not require a WWW-Authenticate challenge, no response written");
+            }
         }
     }
 
@@ -1115,6 +1132,9 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
      */
     private String constructResourceMetadataUrl(HttpServletRequest req, OidcClientConfig oidcClientConfig) {
         if (req == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "constructResourceMetadataUrl: request is null, cannot derive resource_metadata URL");
+            }
             return null;
         }
 
@@ -1135,6 +1155,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             // Determine the path to use as the resource identifier base
             String resourcePath = findResourceMetadataBasePath(req, oidcClientConfig, baseOrigin);
 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "constructResourceMetadataUrl: base origin [" + baseOrigin + "], resource path from filter probing [" + resourcePath + "]");
+            }
+
             // Build: <origin>/.well-known/oauth-protected-resource[<path>]
             StringBuilder metadataUrl = new StringBuilder(baseOrigin);
             metadataUrl.append("/.well-known/oauth-protected-resource");
@@ -1144,8 +1168,8 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
             return metadataUrl.toString();
         } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Failed to derive resource_metadata URL", e);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "constructResourceMetadataUrl: failed to derive resource_metadata URL for request [" + req.getRequestURI() + "]", e);
             }
             return null;
         }
@@ -1169,16 +1193,25 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     private String findResourceMetadataBasePath(HttpServletRequest req, OidcClientConfig oidcClientConfig, String baseOrigin) {
         // Without an auth filter we cannot narrow the base URI, so fall back to the full request URI.
         if (oidcClientConfig == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "findResourceMetadataBasePath: no oidcClientConfig, using full request URI [" + req.getRequestURI() + "] as resource path");
+            }
             return req.getRequestURI();
         }
 
         String authFilterId = oidcClientConfig.getAuthFilterId();
         if (authFilterId == null || authFilterId.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "findResourceMetadataBasePath: no authFilterRef on client [" + oidcClientConfig.getId() + "], using full request URI [" + req.getRequestURI() + "] as resource path");
+            }
             return req.getRequestURI();
         }
 
         AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
         if (authFilter == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "findResourceMetadataBasePath: authFilter [" + authFilterId + "] not found in service registry, using full request URI [" + req.getRequestURI() + "] as resource path");
+            }
             return req.getRequestURI();
         }
 
@@ -1189,19 +1222,35 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
         // Try with no path first (base origin only)
         if (!authFilter.isAccepted(new PathOverrideRequestWrapper(req, baseOrigin, ""))) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "findResourceMetadataBasePath: authFilter [" + authFilterId + "] did not accept base origin alone, walking path segments of [" + requestUri + "] to find shortest accepted prefix");
+            }
             // Walk forward adding one segment at a time until the filter matches
             StringBuilder candidatePath = new StringBuilder();
             for (int i = 1; i < segments.length; i++) {
                 candidatePath.append("/").append(segments[i]);
                 if (authFilter.isAccepted(new PathOverrideRequestWrapper(req, baseOrigin, candidatePath.toString()))) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "findResourceMetadataBasePath: authFilter [" + authFilterId + "] accepted path [" + candidatePath + "], using as resource path");
+                    }
                     return candidatePath.toString();
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "findResourceMetadataBasePath: authFilter [" + authFilterId + "] rejected candidate path [" + candidatePath + "], trying next segment");
+                    }
                 }
             }
             // If nothing matched, fall back to the full request URI
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "findResourceMetadataBasePath: authFilter [" + authFilterId + "] did not accept any path prefix, falling back to full request URI [" + requestUri + "]");
+            }
             return requestUri;
         }
 
         // Base origin (no path) is already accepted, no path suffix needed
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "findResourceMetadataBasePath: authFilter [" + authFilterId + "] accepts base origin with no path suffix, resource_metadata URL will have no path");
+        }
         return null;
     }
 

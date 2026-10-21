@@ -4,11 +4,9 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#    IBM Corporation 
 # This wraps the external JAR.
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
@@ -23,3 +21,6 @@ Export-Package: \
 
 Include-Resource: \
   @${repo;org.eclipse.microprofile.lra:microprofile-lra-api;1.0.0.M2;EXACT}
+
+-maven-dependencies: \
+   dep1;groupId=org.eclipse.microprofile.lra;artifactId=microprofile-lra-api;version=1.0.0-M2;scope=runtime

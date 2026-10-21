@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,20 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.internal.service;
 
+import java.io.Reader;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.security.Principal;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -30,6 +41,7 @@ import org.osgi.service.component.ComponentContext;
 import test.common.SharedOutputManager;
 
 import com.ibm.wsspi.rest.handler.RESTHandler;
+import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
  *
@@ -715,4 +727,185 @@ public class RESTHandlerContainerTest {
         assertNotNull("The container should return the backing Iterator",
                       container.registeredKeys());
     }
+
+    @Test
+    public void testisCSRFSafe() throws Exception {
+
+        RESTHandlerContainerImpl container = new RESTHandlerContainerImpl();
+        Method isCSRFSafe = RESTHandlerContainerImpl.class.getDeclaredMethod("isCSRFSafe", RESTRequest.class);
+        isCSRFSafe.setAccessible(true);
+
+        MyRestRequest request = new MyRestRequest();
+
+        // Anything not POST should be accepted
+        request.method = "GET";
+        assertTrue((Boolean)isCSRFSafe.invoke(container, request));
+
+        // POSTs with json content type should be accepted
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="application/json";
+        assertTrue((Boolean)isCSRFSafe.invoke(container, request));
+
+        // This should fail, simple request, but wrong fetch site.
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="text/plain";
+        request.headers.put("Sec-Fetch-Site", "cross-site");
+        assertFalse((Boolean)isCSRFSafe.invoke(container, request));
+
+        // Simple request, fetch site is same origin
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="text/plain";
+        request.headers.put("Sec-Fetch-Site", "same-origin");
+        assertTrue((Boolean)isCSRFSafe.invoke(container, request));
+
+        // Simple request with no Sec-Fetch-Site header, no Origin header, should be accepted
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="text/plain";
+        assertTrue((Boolean)isCSRFSafe.invoke(container, request));
+
+        // Simple request with origin header set.
+        // add matching request URL and it should be accepted.
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="text/plain";
+        request.headers.put("Origin", "http://example.com");
+        request.URL="http://example.com";
+        assertTrue((Boolean)isCSRFSafe.invoke(container, request));
+
+        // Simple request with origin header not
+        // matching request URL.
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="text/plain";
+        request.headers.put("Origin", "http://example.com");
+        request.URL="http://foo.com";
+        assertFalse((Boolean)isCSRFSafe.invoke(container, request));
+
+        // Simple request with no helpful origin header, but referer header set to match
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="text/plain";
+        request.headers.put("Origin", "");
+        request.headers.put("Referer", "http://example.com/foo/bar?something=nothing");
+        request.URL="http://example.com";
+        assertTrue((Boolean)isCSRFSafe.invoke(container, request));
+
+        // And with referer set to not match
+        request = new MyRestRequest();
+        request.method="POST";
+        request.contentType="text/plain";
+        request.headers.put("Origin", "");
+        request.headers.put("Referer", "http://example.com/foo/bar?something=nothing");
+        request.URL="http://foo.com";
+        assertFalse((Boolean)isCSRFSafe.invoke(container, request));
+
+    }
+
+    public static class MyRestRequest implements RESTRequest {
+        public String method;
+        public String contentType;
+        public Map<String,String> headers = new HashMap<String,String>();
+        public String URL;
+
+        public String getContentType() {
+            return contentType;
+        }
+        public String getMethod() {
+            return method;
+        }
+
+        public String getHeader(String key) {
+            return headers.get(key);
+        }
+
+        public String getURL() {
+            return URL;
+        }
+
+        public Reader getInput() {
+            return null;
+        }
+
+        public InputStream getInputStream() {
+            return null;
+        }
+
+        public String getCompleteURL() {
+            return null;
+        }
+
+        public String getURI() {
+            return null;
+        }
+
+        public String getContextPath() {
+            return null;
+        }
+
+        public String getPath() {
+            return null;
+        }
+
+        public String getQueryString() {
+            return null;
+        }
+
+        public String getParameter(String name) {
+            return null;
+        }
+
+        public String[] getParameterValues(String name) {
+            return null;
+        }
+
+        public Map<String, String[]> getParameterMap() {
+            return null;
+        }
+        public Principal getUserPrincipal() {
+            return null;
+        }
+        public boolean isUserInRole(String role) {
+            return false;
+        }
+
+        public String getPathVariable(String variable) {
+            return null;
+        }
+
+        public Locale getLocale() {
+            return null;
+        }
+
+        public Enumeration<Locale> getLocales() {
+            return null;
+        }
+
+        public String getRemoteAddr() {
+            return null;
+        }
+        public String getRemoteHost() {
+            return null;
+        }
+
+        public int getRemotePort() {
+            return 0;
+        }
+
+        public InputStream getPart(String partName) {
+            return null;
+        }
+        public boolean isMultiPartRequest() {
+            return false;
+        }
+
+        public String getSessionId() {
+            return null;
+        }
+    }
+
 }
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ public class Transaction extends ConfigElement {
     private String lpsHeuristicCompletion;
     private String propogatedOrBMTTranLifetimeTimeout;
     private Boolean recoverOnStartup;
-    private Boolean timeoutGracePeriodEnabled;
     private String totalTranLifetimeTimeout;
     private String transactionLogDirectory;
     private Integer transactionLogSize;
@@ -117,15 +116,6 @@ public class Transaction extends ConfigElement {
 
     public Boolean getRecoverOnStartup() {
         return this.recoverOnStartup;
-    }
-
-    @XmlAttribute(name = "timeoutGracePeriodEnabled")
-    public void setTimeoutGracePeriodEnabled(Boolean timeoutGracePeriodEnabled) {
-        this.timeoutGracePeriodEnabled = timeoutGracePeriodEnabled;
-    }
-
-    public Boolean getTimeoutGracePeriodEnabled() {
-        return this.timeoutGracePeriodEnabled;
     }
 
     @XmlAttribute(name = "totalTranLifetimeTimeout")
@@ -232,8 +222,6 @@ public class Transaction extends ConfigElement {
             buf.append("propogatedOrBMTTranLifetimeTimeout=\"" + propogatedOrBMTTranLifetimeTimeout + "\" ");
         if (recoverOnStartup != null)
             buf.append("recoverOnStartup=\"" + recoverOnStartup + "\" ");
-        if (timeoutGracePeriodEnabled != null)
-            buf.append("timeoutGracePeriodEnabled=\"" + timeoutGracePeriodEnabled + "\" ");
         if (totalTranLifetimeTimeout != null)
             buf.append("totalTranLifetimeTimeout=\"" + totalTranLifetimeTimeout + "\" ");
         if (transactionLogDirectory != null)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.webcontainer31.async;
 import java.io.IOException;
 
 import javax.servlet.AsyncContext;
+import javax.servlet.ReadListener;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -84,11 +85,18 @@ public class AsyncReadCallback implements InterChannelCallback {
 
             //This variable was introduced to prevent us from calling into Channel again when there is an outstanding ready
             //Once isReady returns false once, we don't want to change it back until the next call into onDataAvailable
-            //This variable prevents isReady from returning true if there is an outstanding read           
+            //This variable prevents isReady from returning true if there is an outstanding read
             this.in.setAsyncReadOutstanding(false);
+            ReadListener listener = this.in.getReadListener();
+            if (listener == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "complete");
+                }
+                return;
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Calling user's ReadListener onDataAvailable : " + this.in.getReadListener() + " " + this.context);
-            }       
+                Tr.debug(tc, "Calling user's ReadListener onDataAvailable : " + listener + " " + this.context);
+            }
             
             SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
             
@@ -103,7 +111,7 @@ public class AsyncReadCallback implements InterChannelCallback {
 
                 // Call into the user's ReadListener to indicate there is data available
                 try{
-                    this.in.getReadListener().onDataAvailable();
+                    listener.onDataAvailable();
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Returned from user's ReadListener onDataAvailable : " + this.in.getReadListener() + " " + this.context);

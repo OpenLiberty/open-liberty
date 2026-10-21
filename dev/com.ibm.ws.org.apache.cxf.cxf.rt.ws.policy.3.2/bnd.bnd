@@ -67,7 +67,7 @@ instrument.ffdc: false
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.logging.core, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
-  com.ibm.ws.org.apache.neethi.3.1.1;version=latest, \
+  io.openliberty.org.apache.neethi;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   org.apache.aries.blueprint:org.apache.aries.blueprint;version=latest, \
   org.springframework:spring-core;version=3.0.7.RELEASE

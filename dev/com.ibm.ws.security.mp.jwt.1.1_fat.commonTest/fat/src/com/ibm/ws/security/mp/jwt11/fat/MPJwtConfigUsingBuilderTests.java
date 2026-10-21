@@ -543,7 +543,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      *
      * @throws Exception
      */
-    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "com.ibm.websphere.security.jwt.InvalidClaimException" })
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException", "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_buildUsingX509_mpJWTusingJWK() throws Exception {
 
@@ -555,7 +555,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
-        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Message log did not contain an error indicating that the signing key could not be found."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Message log did not contain an exception indicating that the signature was NOT valid."));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the token could not be processed."));
         genericConfigTest(builtToken, expectations);
 
@@ -586,7 +586,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      *
      * @throws Exception
      */
-    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+    @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidTokenException",
                    "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @Test
     public void MPJwtConfigUsingBuilderTests_JwksUri_JWTHasJWK_mpJwtMisMatchJWK() throws Exception {
@@ -599,7 +599,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem creating a JWT."));
-        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6029E_SIGNING_KEY_CANNOT_BE_FOUND, "Message log did not contain an error indicating that the signing key could not be found."));
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, "Message log did not contain an exception indicating that the signature was NOT valid."));
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Message log did not contain an error indicating that the token could not be processed."));
         genericConfigTest(builtToken, expectations);
 

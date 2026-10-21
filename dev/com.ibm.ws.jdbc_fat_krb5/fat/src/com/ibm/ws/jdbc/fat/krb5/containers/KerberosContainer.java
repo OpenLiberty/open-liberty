@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_PASS = "password";
 
     private static final DockerImageName KDC_JDBC_SERVER = ImageBuilder //
-                    .build("kdc-jdbc-server:3.0.0.2") //
+                    .build("kdc-jdbc-server:3.0.0.3") //
                     .getDockerImageName();
 
     /**
@@ -125,6 +125,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public void generateConf(Path outputPath) throws IOException {
         String conf = "[libdefaults]\n" +
                       "        rdns = false\n" +
+                      "        dns_canonicalize_hostname = false\n" +
                       "        renew_lifetime = 7d\n" +
                       "        ticket_lifetime = 24h\n" +
                       "        dns_lookup_realm = false\n" +

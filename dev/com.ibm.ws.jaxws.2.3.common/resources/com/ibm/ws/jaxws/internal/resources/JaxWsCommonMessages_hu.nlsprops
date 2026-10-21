@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -205,3 +205,41 @@ error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Friss\u00
 err.unsupported.jmx.operation=CWWKW0059E: A(z) {0} m\u0171velet nem t\u00e1mogatott.
 err.unsupported.jmx.operation.explanation=A k\u00e9rt m\u0171velet v\u00e9grehajt\u00e1sa nem enged\u00e9lyezett.
 err.unsupported.jmx.operation.useraction=Ne futtasson nem t\u00e1mogatott m\u0171veletet.
+
+# webService and webServiceClient config messages
+
+info.no.attributes.webservice=CWWKW0062I: Az \u201e webService \u201d konfigur\u00e1ci\u00f3s elem enged\u00e9lyezve van, de nincs hozz\u00e1 konfigur\u00e1ci\u00f3s attrib\u00fatuma.
+info.no.attributes.webservice.explanation=Az \u201e webService \u201d konfigur\u00e1ci\u00f3s elem hozz\u00e1ad\u00f3dott az \u201e server.xml \u201d f\u00e1jlhoz, de nem tartalmaz semmilyen konfigur\u00e1ci\u00f3s attrib\u00fatumot. Attrib\u00fatumok hi\u00e1ny\u00e1ban a webService konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sai nem l\u00e9pnek \u00e9rv\u00e9nybe, \u00e9s a szerver az alap\u00e9rtelmezett viselked\u00e9st alkalmazza.
+info.no.attributes.webservice.useraction=Adjon hozz\u00e1 egy vagy t\u00f6bb konfigur\u00e1ci\u00f3s attrib\u00fatumot az ` webService ` elemhez, vagy t\u00e1vol\u00edtsa el az ` webService ` elemet az ` server.xml ` f\u00e1jlb\u00f3l.
+
+info.no.attributes.webserviceclient=CWWKW0063I: Az \u201e webServiceClient \u201d konfigur\u00e1ci\u00f3s elem enged\u00e9lyezve van, de nincs hozz\u00e1 konfigur\u00e1ci\u00f3s attrib\u00fatuma.
+info.no.attributes.webserviceclient.explanation=Az \u201e webServiceClient \u201d konfigur\u00e1ci\u00f3s elem hozz\u00e1ad\u00f3dott az \u201e server.xml \u201d f\u00e1jlhoz, de nem tartalmaz semmilyen konfigur\u00e1ci\u00f3s attrib\u00fatumot. Attrib\u00fatumok hi\u00e1ny\u00e1ban a webServiceClient konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sai nem l\u00e9pnek \u00e9letbe, \u00e9s a szerver az alap\u00e9rtelmezett viselked\u00e9st alkalmazza.
+info.no.attributes.webserviceclient.useraction=Adjon hozz\u00e1 egy vagy t\u00f6bb konfigur\u00e1ci\u00f3s attrib\u00fatumot az ` webServiceClient ` elemhez, vagy t\u00e1vol\u00edtsa el az ` webServiceClient ` elemet az ` server.xml ` f\u00e1jlb\u00f3l.
+
+#{0}=serviceName value
+info.ignore.unexpected.elements.client.named=CWWKW0064I: Az \u201e ignoreUnexpectedElements \u201d attrib\u00fatum enged\u00e9lyezve van az {0} JAX-WS kliensen. Az adott klienshez be\u00e9rkez\u0151 SOAP-v\u00e1laszokban tal\u00e1lhat\u00f3 ismeretlen elemeket a rendszer figyelmen k\u00edv\u00fcl hagyja.
+info.ignore.unexpected.elements.client.named.explanation=A \u201e webServiceClient \u201d konfigur\u00e1ci\u00f3ban, amely a \u201e {0} \u201d serviceName f\u00e1jlban tal\u00e1lhat\u00f3, a \u201e ignoreUnexpectedElements \u201d attrib\u00fatum \u00e9rt\u00e9ke \u201etrue\u201d-ra van be\u00e1ll\u00edtva. Amikor a JAXB kibontja a be\u00e9rkez\u0151 SOAP-v\u00e1laszokat, az ismeretlen elemeket figyelmen k\u00edv\u00fcl hagyja.
+info.ignore.unexpected.elements.client.named.useraction=Nincs teend\u0151. Ha ezt a viselked\u00e9st ki szeretn\u00e9 kapcsolni, \u00e1ll\u00edtsa a \u201e ignoreUnexpectedElements \u201d \u00e9rt\u00e9ket \u201efalse\u201d-ra a \u201e webServiceClient \u201d konfigur\u00e1ci\u00f3ban.
+
+#{0}=portName value
+info.ignore.unexpected.elements.provider.named=CWWKW0065I: Az \u201e ignoreUnexpectedElements \u201d attrib\u00fatum enged\u00e9lyezve van az \u201e {0} \u201d JAX-WS-szolg\u00e1ltat\u00f3n. Az e szolg\u00e1ltat\u00f3hoz be\u00e9rkez\u0151 SOAP-k\u00e9relmekben tal\u00e1lhat\u00f3 ismeretlen elemeket a rendszer figyelmen k\u00edv\u00fcl hagyja.
+info.ignore.unexpected.elements.provider.named.explanation=A \u201e webService \u201d konfigur\u00e1ci\u00f3ban, amely a \u201e {0} \u201d portName f\u00e1jlban tal\u00e1lhat\u00f3, a \u201e ignoreUnexpectedElements \u201d attrib\u00fatum \u00e9rt\u00e9ke \u201etrue\u201d-ra van be\u00e1ll\u00edtva. Amikor a JAXB kibontja a be\u00e9rkez\u0151 SOAP-k\u00e9relmeket, az ismeretlen elemeket figyelmen k\u00edv\u00fcl hagyja.
+info.ignore.unexpected.elements.provider.named.useraction=Nincs teend\u0151. Ha ezt a viselked\u00e9st ki szeretn\u00e9 kapcsolni, \u00e1ll\u00edtsa a \u201e ignoreUnexpectedElements \u201d \u00e9rt\u00e9ket \u201efalse\u201d-ra a \u201e webService \u201d konfigur\u00e1ci\u00f3ban.
+
+info.ignore.unexpected.elements.global=CWWKW0066I: A \u201e ignoreUnexpectedElements \u201d attrib\u00fatum enged\u00e9lyezve van. A kibont\u00e1s sor\u00e1n felt\u00e1rt ismeretlen elemeket a rendszer figyelmen k\u00edv\u00fcl hagyja.
+info.ignore.unexpected.elements.global.explanation=A glob\u00e1lis webServiceClient vagy webService konfigur\u00e1ci\u00f3ban a ignoreUnexpectedElements attrib\u00fatum \u00e9rt\u00e9ke \u201etrue\u201d. Amikor a JAXB kibontja a be\u00e9rkez\u0151 SOAP-\u00fczeneteket, az ismeretlen elemeket figyelmen k\u00edv\u00fcl hagyja.
+info.ignore.unexpected.elements.global.useraction=Nincs teend\u0151. Ha ezt a viselked\u00e9st ki szeretn\u00e9 kapcsolni, \u00e1ll\u00edtsa a konfigur\u00e1ci\u00f3ban a \u201e ignoreUnexpectedElements \u201d \u00e9rt\u00e9ket \u201efalse\u201d-ra.
+
+info.schema.validation.global=CWWKW0067I: Az \u201e enableSchemaValidation \u201d attrib\u00fatum \u00e9rt\u00e9ke \u201etrue\u201d-ra van \u00e1ll\u00edtva. A be\u00e9rkez\u0151 SOAP-\u00fczeneteket feldolgoz\u00e1suk el\u0151tt a s\u00e9m\u00e1val \u00f6sszehasonl\u00edtva ellen\u0151rzik.
+info.schema.validation.global.explanation=A glob\u00e1lis webServiceClient vagy webService be\u00e1ll\u00edt\u00e1sban a enableSchemaValidation \u00e9rt\u00e9ke \u201etrue\u201d-ra van \u00e1ll\u00edtva. Amikor a JAXB kibontja a be\u00e9rkez\u0151 SOAP-\u00fczeneteket, teljes s\u00e9mav\u00e1lid\u00e1ci\u00f3t hajt v\u00e9gre.
+info.schema.validation.global.useraction=Nincs teend\u0151. A s\u00e9mav\u00e1lid\u00e1l\u00e1s letilt\u00e1s\u00e1hoz \u00e1ll\u00edtsa a \u201e enableSchemaValidation \u201d \u00e9rt\u00e9ket \u201efalse\u201d-ra a konfigur\u00e1ci\u00f3ban.
+
+#{0}=serviceName value
+info.schema.validation.client.named=CWWKW0068I: Az \u201e enableSchemaValidation \u201d attrib\u00fatum enged\u00e9lyezve van az {0} JAX-WS kliensen. Az adott klienshez \u00e9rkez\u0151 SOAP-v\u00e1laszokat a feldolgoz\u00e1s el\u0151tt a s\u00e9m\u00e1val \u00f6sszehasonl\u00edtva ellen\u0151rzik.
+info.schema.validation.client.named.explanation=A \u201e webServiceClient \u201d konfigur\u00e1ci\u00f3ban, amely a \u201e {0} \u201d ( serviceName ) be\u00e1ll\u00edt\u00e1ssal rendelkezik, a \u201e enableSchemaValidation \u201d \u00e9rt\u00e9ke \u201etrue\u201d-ra van \u00e1ll\u00edtva. Amikor a JAXB kibontja az erre az \u00fcgyf\u00e9lre \u00e9rkez\u0151 SOAP-v\u00e1laszokat, teljes s\u00e9mav\u00e1lid\u00e1l\u00e1st hajt v\u00e9gre.
+info.schema.validation.client.named.useraction=Nincs teend\u0151. A s\u00e9mav\u00e1lid\u00e1ci\u00f3 letilt\u00e1s\u00e1hoz \u00e1ll\u00edtsa a \u201e enableSchemaValidation \u201d \u00e9rt\u00e9ket \u201efalse\u201d-ra az \u201e webServiceClient \u201d konfigur\u00e1ci\u00f3ban.
+
+#{0}=portName value
+info.schema.validation.provider.named=CWWKW0069I: Az \u201e enableSchemaValidation \u201d attrib\u00fatum enged\u00e9lyezve van az \u201e {0} \u201d JAX-WS-szolg\u00e1ltat\u00f3n. Az e szolg\u00e1ltat\u00f3hoz be\u00e9rkez\u0151 SOAP-k\u00e9relmeket a feldolgoz\u00e1s el\u0151tt a s\u00e9m\u00e1val \u00f6sszehasonl\u00edtva ellen\u0151rzik.
+info.schema.validation.provider.named.explanation=A \u201e webService \u201d konfigur\u00e1ci\u00f3ban, amely a \u201e {0} \u201d ( portName ) be\u00e1ll\u00edt\u00e1ssal rendelkezik, a \u201e enableSchemaValidation \u201d \u00e9rt\u00e9ke \u201etrue\u201d-ra van \u00e1ll\u00edtva. Amikor a JAXB kibontja az adott szolg\u00e1ltat\u00f3hoz be\u00e9rkez\u0151 SOAP-k\u00e9relmeket, teljes s\u00e9mav\u00e1lid\u00e1ci\u00f3t hajt v\u00e9gre.
+info.schema.validation.provider.named.useraction=Nincs teend\u0151. A s\u00e9mav\u00e1lid\u00e1ci\u00f3 letilt\u00e1s\u00e1hoz \u00e1ll\u00edtsa a \u201e enableSchemaValidation \u201d \u00e9rt\u00e9ket \u201efalse\u201d-ra az \u201e webService \u201d konfigur\u00e1ci\u00f3ban.

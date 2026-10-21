@@ -290,7 +290,8 @@ public record ToolMetadata(String name,
         String argName = resolveArgumentName(param, argAnnotation);
         String description = argAnnotation != null ? argAnnotation.description() : "";
         boolean required = isArgumentRequired(argAnnotation, param.getBaseType());
-        String defaultValue = argAnnotation != null ? argAnnotation.defaultValue() : "";
+        String rawDefault = argAnnotation != null ? argAnnotation.defaultValue() : "";
+        String defaultValue = (rawDefault == null || rawDefault.isEmpty()) ? null : rawDefault;
 
         result.add(new ToolMethodArgument(param,
                                           new ToolArgumentImpl(argName,

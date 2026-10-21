@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package io.openliberty.depScanner;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.maven.model.Dependency;
@@ -39,13 +37,19 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 
 public class BestMatch {
 
-    /**
-     * @param args[0] = wlp dir to scan args[1] = dependency pom file location.
-     * @throws Exception
-     */
+    /** Maximum number of Maven dependencies written to a single pom.xml file. */
+    private static final int MAX_DEPS_PER_POM = 50;
+
     private static int pomFiles = 1;
     private static final Map<String, List<String>> depVersionMap = new HashMap<>();
 
+    /**
+     * Scans a WLP installation for third-party dependencies and writes Maven pom files.
+     *
+     * @param args[0] wlp directory to scan
+     * @param args[1] output directory for generated files
+     * @throws Exception if scanning or writing fails
+     */
     public static void main(String[] args) throws Exception {
         Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"), false);
         Repository gradleRepo = findGradleCacheRepo();
@@ -58,141 +62,132 @@ public class BestMatch {
         Set<String> uniqueMissingPackages = new HashSet<>();
 
         liberty.stream()
-                        .sorted(Comparator.comparing(Jar::getOriginalFile))
-                        .forEach(jar -> {
-                            List<Module> modules = repo.stream()
-                                            .map(moduleInfo -> {
-                                                List<Module> moduleInfoList = moduleInfo.getValue();
-                                                moduleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
+            .sorted(Comparator.comparing(Jar::getOriginalFile))
+            .forEach(jar -> {
+                List<Module> modules = repo.stream()
+                    .map(moduleInfo -> {
+                        List<Module> moduleInfoList = moduleInfo.getValue();
+                        moduleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
+                        return moduleInfoList.get(0);
+                    })
+                    .filter(jar::contains)
+                    .collect(Collectors.toList());
 
-                                                return moduleInfoList.get(0);
-                                            })
-                                            .filter(jar::contains)
-                                            .collect(Collectors.toList());
+                matched.addAll(modules);
 
-                            matched.addAll(modules);
+                List<Module> gradleModules = gradleRepo.stream()
+                    .map(gradleModuleInfo -> {
+                        List<Module> gradleModuleInfoList = gradleModuleInfo.getValue();
+                        gradleModuleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
+                        return gradleModuleInfoList.get(0);
+                    })
+                    .filter(jar::contains)
+                    .collect(Collectors.toList());
 
-                            List<Module> gradleModules = gradleRepo.stream()
-                                            .map(gradleModuleInfo -> {
-                                                List<Module> gradleModuleInfoList = gradleModuleInfo.getValue();
-                                                gradleModuleInfoList.sort((o1, o2) -> o2.containsCount(jar) - o1.containsCount(jar));
+                matched.addAll(gradleModules);
 
-                                                return gradleModuleInfoList.get(0);
-                                            })
-                                            .filter(jar::contains)
-                                            .collect(Collectors.toList());
+                Set<String> matchedNames = new TreeSet<>();
+                modules.stream()
+                    .map(module -> "\t" + module + "\t" + jar.getPackages(module))
+                    .sorted()
+                    .forEach(matchedNames::add);
+                gradleModules.stream()
+                    .map(gradleModule -> "\t" + gradleModule + "\t" + jar.getPackages(gradleModule))
+                    .sorted()
+                    .forEach(matchedNames::add);
 
-                            matched.addAll(gradleModules);
+                List<String> foundPackages = modules.stream()
+                    .flatMap(module -> jar.getPackages(module).stream())
+                    .collect(Collectors.toList());
+                List<String> foundGradlePackages = gradleModules.stream()
+                    .flatMap(gradleModule -> jar.getPackages(gradleModule).stream())
+                    .collect(Collectors.toList());
 
-                            List<String> moduleNames = modules.stream()
-                                            .map(module -> "\t" + module + "\t" + jar.getPackages(module))
-                                            .sorted()
-                                            .collect(Collectors.toList());
-                            List<String> gradleModuleNames = gradleModules.stream()
-                                            .map(gradleModule -> "\t" + gradleModule + "\t" + jar.getPackages(gradleModule))
-                                            .sorted()
-                                            .collect(Collectors.toList());
+                Collection<String> missingPackages = jar.getPackages();
+                missingPackages.removeAll(foundPackages);
+                missingPackages.removeAll(foundGradlePackages);
 
-                            Set<String> matchedNames = new TreeSet<>();
-                            matchedNames.addAll(moduleNames);
-                            matchedNames.addAll(gradleModuleNames);
+                missingPackages = missingPackages.stream()
+                    .filter(name -> !name.startsWith("com.ibm.ws"))
+                    .filter(name -> !name.startsWith("com.ibm.websphere"))
+                    .filter(name -> !name.startsWith("com.ibm.wsspi"))
+                    .filter(name -> !name.startsWith("io.openliberty"))
+                    .filter(name -> !name.startsWith("com.ibm.ejs"))
+                    .filter(name -> !name.startsWith("com.ibm.json"))
+                    .filter(name -> !name.startsWith("com.ibm.tx"))
+                    .filter(name -> !name.startsWith("com.ibm.oauth"))
+                    .filter(name -> !name.startsWith("com.ibm.jbatch"))
+                    .filter(name -> !name.startsWith("javax.servlet.sip"))
+                    .filter(name -> !name.startsWith("com.ibm.sip"))
+                    .filter(name -> !name.startsWith("jain.protocol.ip.sip"))
+                    .filter(name -> !name.startsWith("javax.batch"))
+                    .filter(name -> !name.startsWith("com.ibm"))
+                    .collect(Collectors.toList());
 
-                            List<String> foundPackages = modules.stream().flatMap(module -> jar.getPackages(module).stream()).collect(Collectors.toList());
-                            List<String> foundGradlePackages = gradleModules.stream().flatMap(gradleModule -> jar.getPackages(gradleModule).stream()).collect(Collectors.toList());
+                uniqueMissingPackages.addAll(missingPackages);
 
-                            Collection<String> missingPackages = jar.getPackages();
+                if (!matchedNames.isEmpty()) {
+                    modOut.println(jar.getOriginalFile().getAbsolutePath());
+                    matchedNames.forEach(modOut::println);
+                }
 
-                            missingPackages.removeAll(foundPackages);
-                            missingPackages.removeAll(foundGradlePackages);
+                if (!missingPackages.isEmpty()) {
+                    mpOut.println(jar.getOriginalFile().getAbsolutePath());
+                    missingPackages.stream().map(name -> "\t" + name).forEach(mpOut::println);
+                }
+            });
 
-                            missingPackages = missingPackages.stream()
-                                            .filter(name -> !name.startsWith("com.ibm.ws"))
-                                            .filter(name -> !name.startsWith("com.ibm.websphere"))
-                                            .filter(name -> !name.startsWith("com.ibm.wsspi"))
-                                            .filter(name -> !name.startsWith("io.openliberty"))
-                                            .filter(name -> !name.startsWith("com.ibm.ejs"))
-                                            .filter(name -> !name.startsWith("com.ibm.json"))
-                                            .filter(name -> !name.startsWith("com.ibm.tx"))
-                                            .filter(name -> !name.startsWith("com.ibm.oauth"))
-                                            .filter(name -> !name.startsWith("com.ibm.jbatch"))
-                                            .filter(name -> !name.startsWith("javax.servlet.sip"))
-                                            .filter(name -> !name.startsWith("com.ibm.sip"))
-                                            .filter(name -> !name.startsWith("jain.protocol.ip.sip"))
-                                            .filter(name -> !name.startsWith("javax.batch"))
-                                            .filter(name -> !name.startsWith("com.ibm"))
-                                            .collect(Collectors.toList());
-
-                            uniqueMissingPackages.addAll(missingPackages);
-
-                            if (!matchedNames.isEmpty()) {
-                                modOut.println(jar.getOriginalFile().getAbsolutePath());
-                                matchedNames.forEach(modOut::println);
-                            }
-                            matchedNames = new TreeSet<>();
-
-                            if (!missingPackages.isEmpty()) {
-                                mpOut.println(jar.getOriginalFile().getAbsolutePath());
-                                missingPackages.stream().map(name -> "\t" + name).forEach(mpOut::println);
-                            }
-
-                        });
         manageWSJars(matched, outputDir);
         writePom(matched, outputDir);
-
     }
 
     /**
-     * @return
+     * Locates the Gradle file cache repository under the user's home directory.
+     *
+     * @return a {@link Repository} backed by the Gradle files cache
      */
     private static Repository findGradleCacheRepo() {
         File cacheFolder = new File(System.getProperty("user.home"), ".gradle/caches");
-        File modulesFolder = null;
-        File filesFolder = null;
-        String[] moduleFiles = cacheFolder.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return (name.startsWith("modules-"));
-            }
-        });
-        if (moduleFiles.length > 0)
-            modulesFolder = new File(cacheFolder.getPath(), moduleFiles[0]);
 
-        String[] files = modulesFolder.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return (name.startsWith("files-"));
-            }
-        });
-        if (files.length > 0)
-            filesFolder = new File(modulesFolder.getPath(), files[0]);
+        String[] moduleFiles = cacheFolder.list((dir, name) -> name.startsWith("modules-"));
+        File modulesFolder = (moduleFiles != null && moduleFiles.length > 0)
+                ? new File(cacheFolder.getPath(), moduleFiles[0]) : null;
+        if (modulesFolder == null) {
+            System.err.println("No module found in user gradle repo [ " + cacheFolder.getAbsolutePath() + " ]");
+        }
+
+        String[] files = (modulesFolder != null) ? modulesFolder.list((dir, name) -> name.startsWith("files-")) : null;
+        File filesFolder = (files != null && files.length > 0)
+                ? new File(modulesFolder.getPath(), files[0]) : null;
+        if (filesFolder == null) {
+            System.err.println("No file found in gradle module folder [ "
+                               + (modulesFolder != null ? modulesFolder.getAbsolutePath() : cacheFolder.getAbsolutePath()) + " ]");
+        }
 
         return new Repository(filesFolder, true);
     }
 
     /**
-     * @param matched
-     * @param outputDir
-     * @param path
+     * Copies IBM WebSphere rebundled jars from the matched set into the wsJars output directory.
+     *
+     * @param matched   the full set of matched modules
+     * @param outputDir the root output directory
      */
     private static void manageWSJars(Set<Module> matched, String outputDir) {
-
         new File(outputDir + "/wsJars").mkdirs();
-        matched.forEach(library -> {
-            if (wsLibraries(library)) {
-                manageLibrary(library, outputDir);
-            }
-        });
+        matched.stream()
+            .filter(BestMatch::wsLibraries)
+            .forEach(library -> manageLibrary(library, outputDir));
     }
 
     /**
-     * @param library
-     * @param outputDir
-     * @param path
+     * Copies a single IBM WebSphere rebundled jar into the wsJars output directory.
+     *
+     * @param library   the module to copy
+     * @param outputDir the root output directory
      */
     private static void manageLibrary(Module library, String outputDir) {
-
         // If the proper group name can be detected in the rebundled ibm ws jar, then we will use it for scanning purposes
-
         String fileName = library.getArtifactId() + "-" + library.getVersion() + ".jar";
         System.out.println(library);
 
@@ -201,17 +196,21 @@ public class BestMatch {
         try {
             Files.copy(originalPath, copied, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     /**
-     * @param matched
+     * Writes Maven pom.xml files for all matched dependencies, grouped by version slot and
+     * split into files of at most {@value #MAX_DEPS_PER_POM} dependencies each.
+     * <p>
+     * Output directories use zero-padded indices for clean lexicographic sorting, e.g.
+     * {@code proj_00}, {@code proj_01}, {@code proj_00_01} for overflow chunks.
+     *
+     * @param matched the full set of matched modules
+     * @param path    the root output directory
      */
     private static void writePom(Set<Module> matched, String path) {
-
         matched.forEach(library -> {
             if (!filteredLibraries(library)) {
                 List<String> versions = depVersionMap.computeIfAbsent(library.getModuleId(), k -> new ArrayList<>());
@@ -221,99 +220,114 @@ public class BestMatch {
             }
         });
 
-        for (AtomicInteger count = new AtomicInteger(0); count.intValue() < pomFiles; count.incrementAndGet()) {
+        for (int versionSlot = 0; versionSlot < pomFiles; versionSlot++) {
+            final int slot = versionSlot;
 
-            Model model = new Model();
-            model.setModelVersion("4.0.0");
-            model.setVersion("1.0-SNAPSHOT");
-            model.setGroupId("liberty");
-            model.setArtifactId("dependency-report");
-            new File(path + "/proj_" + count.intValue()).mkdirs(); //Make sure directory is created first
+            class ComparedDependency extends Dependency {
+                @Override
+                public boolean equals(Object obj) {
+                    return this.getGroupId().equals(((Dependency) obj).getGroupId())
+                           && this.getArtifactId().equals(((Dependency) obj).getArtifactId());
+                }
+
+                @Override
+                public int hashCode() {
+                    int result = 17;
+                    result = 31 * result + getGroupId().hashCode();
+                    result = 31 * result + getArtifactId().hashCode();
+                    return result;
+                }
+            }
+
+            // Collect all unique dependencies for this version slot into a model,
+            // then chunk the model's dependency list for writing.
+            Model baseModel = new Model();
+            baseModel.setModelVersion("4.0.0");
+            baseModel.setVersion("1.0-SNAPSHOT");
+            baseModel.setGroupId("liberty");
+            baseModel.setArtifactId("dependency-report");
 
             matched.forEach(library -> {
-                if (!(filteredLibraries(library))) {
+                if (!filteredLibraries(library)) {
                     List<String> versions = depVersionMap.get(library.getModuleId());
-                    if (versions.size() > count.intValue()) {
-
-                        class ComparedDependency extends Dependency {
-
-                            /*
-                             * (non-Javadoc)
-                             *
-                             * @see java.lang.Object#equals(java.lang.Object)
-                             */
-                            @Override
-                            public boolean equals(Object obj) {
-
-                                return this.getGroupId().equals(((Dependency) obj).getGroupId())
-                                       && this.getArtifactId().equals(((Dependency) obj).getArtifactId());
-                            }
-
-                            /*
-                             * (non-Javadoc)
-                             *
-                             * @see java.lang.Object#hashCode()
-                             */
-                            @Override
-                            public int hashCode() {
-
-                                int result = 17;
-                                result = 31 * result + getGroupId().hashCode();
-                                result = 31 * result + getArtifactId().hashCode();
-                                return result;
-                            }
-
-                        }
+                    if (versions.size() > slot) {
                         ComparedDependency dependency = new ComparedDependency();
                         dependency.setGroupId(library.getGroupId());
                         dependency.setArtifactId(library.getArtifactId());
-                        dependency.setVersion(versions.get(count.intValue()));
-
-                        if (!model.getDependencies().contains(dependency))
-                            model.addDependency(dependency);
+                        dependency.setVersion(versions.get(slot));
+                        if (!baseModel.getDependencies().contains(dependency)) {
+                            baseModel.addDependency(dependency);
+                        }
                     }
                 }
             });
 
-            MavenXpp3Writer writer = new MavenXpp3Writer();
-            try {
-                writer.write(new FileWriter(path + "/proj_" + count.intValue() + "/pom.xml"), model);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            List<Dependency> allDeps = baseModel.getDependencies();
+
+            // Compute zero-padded widths from the maximum possible indices so that
+            // directory names sort correctly in a file listing (proj_00, proj_01, ...).
+            int slotWidth = String.valueOf(pomFiles - 1).length();
+            int maxChunks = (allDeps.size() + MAX_DEPS_PER_POM - 1) / MAX_DEPS_PER_POM;
+            int chunkWidth = String.valueOf(Math.max(maxChunks - 1, 0)).length();
+            String slotPart = String.format("%0" + slotWidth + "d", slot);
+
+            // Split into chunks of MAX_DEPS_PER_POM and write a separate pom for each chunk
+            int chunkIndex = 0;
+            for (int start = 0; start < allDeps.size(); start += MAX_DEPS_PER_POM, chunkIndex++) {
+                List<Dependency> chunk = allDeps.subList(start, Math.min(start + MAX_DEPS_PER_POM, allDeps.size()));
+
+                String projectDir = path + "/proj_" + slotPart
+                                    + (maxChunks > 1 ? "_" + String.format("%0" + chunkWidth + "d", chunkIndex) : "");
+                new File(projectDir).mkdirs();
+
+                Model model = new Model();
+                model.setModelVersion(baseModel.getModelVersion());
+                model.setVersion(baseModel.getVersion());
+                model.setGroupId(baseModel.getGroupId());
+                model.setArtifactId(baseModel.getArtifactId());
+                chunk.forEach(model::addDependency);
+
+                MavenXpp3Writer writer = new MavenXpp3Writer();
+                try {
+                    writer.write(new FileWriter(projectDir + "/pom.xml"), model);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
     }
 
     /**
-     * When libraries are found to be false positives through transitive dependencies, or test artifacts are found to have "shipped" packages that are actually picked up from
-     * alternative libraries
-     * This list will remove these libraries from consideration - Need to be very careful adding files that "could" be shipped - so these files tend to be much older versions of
-     * libraries that are mainly used in test/build only
+     * Returns {@code true} for libraries that are known false positives (transitive test/build
+     * dependencies whose packages coincidentally overlap with shipped code) and should be
+     * excluded from the dependency report.
+     *
+     * @param library the module to test
+     * @return {@code true} if the library should be excluded
      */
     private static boolean filteredLibraries(Module library) {
-        return (library.getGroupId().equals("org.glassfish") && (library.getArtifactId().equals("javax.faces"))) ||
-               (library.getArtifactId().equals("tomcat-embed-core")) ||
-               (library.getArtifactId().equals("mockserver-netty")) ||
-               (library.getArtifactId().equals("woodstox-core") && (library.getVersion().equals("6.2.6") || library.getVersion().equals("6.2.4"))) ||
-               (library.getArtifactId().equals("commons-io") && (library.getVersion().equals("2.13.0"))) ||
-               (library.getArtifactId().equals("netty-codec-http2") && (library.getVersion().equals("4.1.110.Final"))) ||
-               (library.getArtifactId().equals("netty-codec-http")
-                && (library.getVersion().equals("4.1.73.Final") || library.getVersion().equals("4.1.78.Final") || library.getVersion().equals("4.1.92.Final")))
-               ||
-               (library.getArtifactId().equals("wlp-docGen"));
+        String artifactId = library.getArtifactId();
+        String version = library.getVersion();
+
+        return (library.getGroupId().equals("org.glassfish") && artifactId.equals("javax.faces"))
+               || artifactId.equals("tomcat-embed-core")
+               || artifactId.equals("mockserver-netty")
+               || (artifactId.equals("woodstox-core") && (version.equals("6.2.6") || version.equals("6.2.4")))
+               || (artifactId.equals("commons-io") && version.equals("2.13.0"))
+               || (artifactId.equals("netty-codec-http2") && version.equals("4.1.110.Final"))
+               || (artifactId.equals("netty-codec-http")
+                   && (version.equals("4.1.73.Final") || version.equals("4.1.78.Final") || version.equals("4.1.92.Final")))
+               || artifactId.equals("wlp-docGen");
     }
 
     /**
-     * @param library
-     * @return
+     * Returns {@code true} if the library is an IBM WebSphere rebundled jar that should be
+     * copied to the wsJars output directory.
+     *
+     * @param library the module to test
+     * @return {@code true} if the library is an IBM WebSphere jar
      */
     private static boolean wsLibraries(Module library) {
-        return (library.getGroupId().startsWith("com.ibm.ws") && !(library.getArtifactId().equals("wlp-docGen")));
-    }
-
-    private static String toMavenCoords(String coords) {
-        return coords.substring(10).replace("/", ":").replace("/", ":").replace("@", ":");
+        return library.getGroupId().startsWith("com.ibm.ws") && !library.getArtifactId().equals("wlp-docGen");
     }
 }

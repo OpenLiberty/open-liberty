@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,10 +39,9 @@ import javax.servlet.AsyncEvent;
 import javax.servlet.AsyncListener;
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 import com.google.common.io.BaseEncoding;
 import com.ibm.ejs.ras.TraceNLS;
@@ -148,10 +146,7 @@ public final class ServletAdapter {
 			return;
 		}
 
-		boolean libertyAuth = true;
-		if (GrpcServerComponent.isSecurityEnabled()) {
-			libertyAuth = GrpcServerSecurity.doServletAuth(req, resp, method);
-		}
+		boolean libertyAuth = GrpcServerComponent.doServletAuth(req, resp, method);
 
 		AsyncContext asyncCtx = req.startAsync(req, resp);
 		ServletRequest asyncRq = asyncCtx.getRequest();

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=Az elemek teljes sz\u00e1ma nem \u00e1ll rendelkez\u00e9sre
 011.unknown.attr.type=A {0} p\u00e9ld\u00e1nyt \u00fagy kapt\u00e1k meg, hogy az attrib\u00fatum t\u00edpusa nem azonos\u00edthat\u00f3. Statikus metamodell oszt\u00e1lyok eset\u00e9n haszn\u00e1lja az attrib\u00fatum alt\u00edpuson defini\u00e1lt.of met\u00f3dust az entit\u00e1s oszt\u00e1ly \u00e9s az entit\u00e1s attrib\u00fatum t\u00edpus\u00e1nak megad\u00e1s\u00e1ra.
 012.unknown.decl.type=A {0} p\u00e9ld\u00e1nyt olyan m\u00f3don szerezt\u00e9k meg, amely nem azonos\u00edtja az attrib\u00fatumot deklar\u00e1l\u00f3 entit\u00e1soszt\u00e1lyt. Statikus metamodell oszt\u00e1lyok eset\u00e9n haszn\u00e1lja az attrib\u00fatum alt\u00edpuson defini\u00e1lt.of met\u00f3dust az entit\u00e1s oszt\u00e1ly \u00e9s az entit\u00e1s attrib\u00fatum t\u00edpus\u00e1nak megad\u00e1s\u00e1ra.
+013.arg.invalid=Az ` {0} ` argumentumnak nem lehet ` {1} ` \u00e9rt\u00e9ke.
+014.mode.disallows.offset=Egy oldalk\u00e9r\u00e9s nem tartalmazhat egyszerre offsetet \u00e9s \u201e {0} \u201d m\u00f3dot.
+015.cursor.uncomputable=A k\u00e9rt m\u0171velet nem hajthat\u00f3 v\u00e9gre, mivel kifejez\u00e9st tartalmaz\u00f3 rendez\u00e9si felt\u00e9telekb\u0151l nem lehet kurzort kisz\u00e1m\u00edtani.
