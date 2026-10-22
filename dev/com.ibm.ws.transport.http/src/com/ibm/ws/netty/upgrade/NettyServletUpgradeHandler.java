@@ -102,10 +102,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "NettyServletUpgradeHandler ChannelInputShutdownEvent reading async found!!");
                 }
-                // TODO VLAD
-                fireAsyncReadError(operation,
-                                   new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
-                                                    channel.localAddress() + " remote=" + channel.remoteAddress()));
+                fireAsyncReadError(operation, createEOFException());
                 return;
             }
             if(queuedDataSize() > 0){
@@ -150,9 +147,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
                 return;
             }
 
-            fireAsyncReadError(operation,
-                               new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
-                                                channel.localAddress() + " remote=" + channel.remoteAddress()));
+            fireAsyncReadError(operation, createEOFException());
         }
         super.channelInactive(context);
     }
@@ -182,6 +177,11 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         return new SocketTimeoutException(Tr.formatMessage(tc, "netty.socket.timeout",
                                             local.getHostName(), local.getAddress().getHostAddress(), local.getPort(),
                                             remote.getHostName(), remote.getAddress().getHostAddress(), remote.getPort()));
+    }
+
+    EOFException createEOFException() {
+        return new EOFException(Tr.formatMessage(tc, "netty.read.failed.end.of.stream",
+                                                 channel.localAddress(), channel.remoteAddress()));
     }
 
     private void signalReadReady() {
@@ -417,9 +417,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
         //Input shutdown does not discard bytes received before the peer's FIN
         if ((peerClosed.get() || !channel.isActive()) && queuedBytes.get() < operation.minimumBytes) {
-            fireAsyncReadError(operation,
-                               new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
-                                                channel.localAddress() + " remote=" + channel.remoteAddress()));
+            fireAsyncReadError(operation, createEOFException());
             return;
         }
 

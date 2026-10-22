@@ -11,6 +11,9 @@ package com.ibm.ws.http.internal.netty;
 
 import java.util.List;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.netty.exception.InvalidRequestMetadataException;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
@@ -22,6 +25,7 @@ import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /** Protocol and stream details captured once for an inbound request. */
 public final class RequestMetadata {
+    private static final TraceComponent tc = Tr.register(RequestMetadata.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
     private static final CharSequence STREAM_ID = HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text();
 
     private final ProtocolName protocol;
@@ -44,8 +48,7 @@ public final class RequestMetadata {
             return new RequestMetadata(requestProtocol, -1);
         }
         if (connectionProtocol != ProtocolName.HTTP2) {
-            // TODO VLAD
-            throw new InvalidRequestMetadataException("Request received before the connection protocol was established: " + connectionProtocol);
+            throw new InvalidRequestMetadataException(Tr.formatMessage(tc, "netty.request.before.protocol.established", connectionProtocol));
         }
 
         List<String> values = request.headers().getAll(STREAM_ID);

@@ -131,7 +131,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         if (in == null) {
-            // TODO VLAD
             throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
         }
         return in;
@@ -140,7 +139,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     @Override
     public long read(long numBytes, int timeout) throws IOException {
         if(nettyChannel.eventLoop().inEventLoop()){
-            throw new IllegalStateException("Blocking read cannot be done in Netty thread");
+            throw new IllegalStateException(Tr.formatMessage(tc, "netty.blocking.read.on.event.loop"));
         }
 
         if(aborted) throw new IOException("I/O Aborted");
@@ -149,10 +148,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Found closed connection on read for channel: " + nettyChannel);
             }
-            throw new EOFException("Connection closed: Read failed. Possible end of stream encountered. local="
-                                   + nettyChannel.localAddress()
-                                   + " remote="
-                                   + nettyChannel.remoteAddress());
+            throw new EOFException(Tr.formatMessage(tc, "netty.read.failed.end.of.stream",
+                                                   nettyChannel.localAddress(), nettyChannel.remoteAddress()));
         }
 
         final boolean logicalUpg = isLogicallyUpgraded();
@@ -720,7 +717,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 }
                 if (callback != null) {
                     if(inputShutdownPending){
-                        // TODO VLAD
                         callback.error(vc, this, new EOFException("Peer input shutdown before request body completed. local="
                                     + nettyChannel.localAddress() + " remote=" + nettyChannel.remoteAddress()));
                     } else{

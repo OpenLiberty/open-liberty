@@ -261,3 +261,23 @@ h2.encode.header.failed.useraction=Check the server logs for related HTTP/2 erro
 write.to.closed.connection=CWWKT0058E: The server cannot write to the inbound connection because the connection is closed.
 write.to.closed.connection.explanation=The remote client closed the connection before the server completes writing the response.
 write.to.closed.connection.useraction=No action is required. The server stops processing this request.
+
+netty.content.length.exceeded=CWWKT0059E: The request chunk size exceeded the maximum limit of {0} bytes.
+netty.content.length.exceeded.explanation=The incoming HTTP request body exceeded the configured maximum message size limit.
+netty.content.length.exceeded.useraction=Increase the maximum message size limit in the server configuration or reduce the request payload size.
+
+netty.read.failed.end.of.stream=CWWKT0060E: Connection closed: Read failed. Possible end of stream encountered. Local: {0} Remote: {1}
+netty.read.failed.end.of.stream.explanation=The remote endpoint closed the connection or reached the end of stream while reading.
+netty.read.failed.end.of.stream.useraction=Verify network connectivity between the client and server.
+
+netty.request.before.protocol.established=CWWKT0061E: A request was received before the connection protocol was established: {0}
+netty.request.before.protocol.established.explanation=A request arrived on a connection before protocol negotiation or initialization was complete.
+netty.request.before.protocol.established.useraction=Verify that the client adheres to the supported connection and protocol handshake sequence.
+
+netty.request.metadata.already.initialized=CWWKT0062E: Netty request metadata is already initialized.
+netty.request.metadata.already.initialized.explanation=An attempt was made to initialize the request metadata on a request context where it had already been set.
+netty.request.metadata.already.initialized.useraction=This indicates an internal server state error. If the error persists, contact IBM Support.
+
+netty.blocking.read.on.event.loop=CWWKT0063E: A blocking read operation cannot be invoked on the Netty event loop thread.
+netty.blocking.read.on.event.loop.explanation=Performing a blocking read operation on the Netty event loop thread causes a deadlock.
+netty.blocking.read.on.event.loop.useraction=Ensure that blocking read operations are dispatched to a separate thread and are not called from within a Netty event loop handler.
