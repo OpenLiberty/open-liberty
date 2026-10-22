@@ -137,6 +137,7 @@ class ClassLoaderFactory extends GatewayBundleFactory {
                         : new AppClassLoader(parentClassLoader, config, classPath, access, redefiner, generator, globalConfig, systemTransformers);
         addSharedLibPaths(result);
         runPostCreateAction(result);
+        registerOwnerAppNames(result);
         return result;
     }
 
@@ -179,6 +180,63 @@ class ClassLoaderFactory extends GatewayBundleFactory {
                 result.addLibraryFile(f);
             }
         }
+    }
+
+    /**
+     * Registers the owning app name on the GCL of every gateway that this ACL
+     * depends on — its own GCL (for top-level app modules) and the GCL of each
+     * common-library delegate (for the reverse-link case).
+     *
+     * <p>Only top-level app-domain ACLs carry a meaningful app name.
+     * Library, thread-context, and bundle-add-on ACLs are skipped.</p>
+     */
+    private void registerOwnerAppNames(AppClassLoader result) {
+        String domain = result.getKey().getDomain();
+        if (!isTopLevelAppDomain(domain) && !"EARApplication".equals(domain)) {
+            return; // library / thread-context / bundle-add-on — nothing to register
+        }
+        String appName = "EARApplication".equals(domain)
+                        ? result.getKey().getId()
+                        : extractAppName(result.getKey().getId());
+
+        // Register on the ACL's own GCL (parentClassLoader was set by inferParentLoader).
+        // Normal path: parentClassLoader is a GatewayClassLoader directly.
+        // GSL path: parentClassLoader is the GSL AppClassLoader (app -> GSL ACL -> GCL);
+        // walk up the AppClassLoader parent chain to reach the GCL.
+        ClassLoader ownerGateway = parentClassLoader;
+        while (ownerGateway instanceof AppClassLoader) {
+            ownerGateway = ownerGateway.getParent();
+        }
+        if (ownerGateway instanceof GatewayClassLoader) {
+            ((GatewayClassLoader) ownerGateway).addOwnerAppName(appName);
+        }
+
+        // Register on each common-library delegate's GCL.
+        for (LibertyLoader delegate : result.getBeforeAppDelegateLoaders()) {
+            registerOnDelegateGcl(delegate, appName);
+        }
+        for (LibertyLoader delegate : result.getAfterAppDelegateLoaders()) {
+            registerOnDelegateGcl(delegate, appName);
+        }
+    }
+
+    private static void registerOnDelegateGcl(LibertyLoader delegate, String appName) {
+        if (!(delegate instanceof AppClassLoader)) {
+            return;
+        }
+        // The delegate ACL's Java parent is its GCL.
+        ClassLoader parent = ((AppClassLoader) delegate).getParent();
+        if (parent instanceof GatewayClassLoader) {
+            ((GatewayClassLoader) parent).addOwnerAppName(appName);
+        }
+    }
+
+    private static boolean isTopLevelAppDomain(String domain) {
+        return ClassLoadingServiceImpl.isTopLevelAppDomain(domain);
+    }
+
+    private static String extractAppName(String id) {
+        return ClassLoadingServiceImpl.extractAppName(id);
     }
 
     private void runPostCreateAction(AppClassLoader result) {

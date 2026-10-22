@@ -26,6 +26,9 @@
         <classloader commonLibraryRef="testFeatureSharedLib"/>
     </webApplication>
 
+    <!-- Does not reference the library; must not be restarted by library changes. -->
+    <webApplication location="testUnrelatedFeatureApp.war"/>
+
     <!--
         getClassLoader permission is required by the probe servlet to log classloader
         identity strings for architectural analysis.

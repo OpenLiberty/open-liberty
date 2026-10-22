@@ -27,6 +27,7 @@ src: \
 	test-applications/testOverrideLib.war/src, \
 	test-applications/testLibraryUser.war/src, \
 	test-applications/testDynamicFeatureApp.war/src, \
+	test-applications/testDynamicFeatureUnrelatedApp.war/src, \
 	test-applications/testClient1.jar/src, \
 	test-applications/testEjb1.jar/src, \
 	test-applications/testEjb2.jar/src, \
