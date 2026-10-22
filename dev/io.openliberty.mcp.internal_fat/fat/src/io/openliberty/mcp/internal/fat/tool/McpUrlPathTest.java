@@ -79,7 +79,7 @@ public class McpUrlPathTest extends FATServletClient {
     public void testMcpEndpointWithTrailingForwardSlashAndMoreTestAppended() throws Exception {
 
         int expectedErrorCode = 404;
-        client.callMCPCustomized(REQUEST, "/mcpUrlPathTest/mcp/something-else", expectedErrorCode);
+        client.callMCPRaw(REQUEST).mcpPath("/mcpUrlPathTest/mcp/something-else").expectedStatus(expectedErrorCode).run();
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark(EXPECTED_ERROR_MESSAGE, serverLifecycle.getServer().getDefaultLogFile()));
     }
 
