@@ -3426,6 +3426,54 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that imposes restrictions and constraints on
+     * a find-and-delete operation.
+     */
+    @Test
+    public void testRestrictedFindAndDelete() {
+        ads.removeBySponsorIn(List.of("IBM", "Open Liberty"));
+
+        ads.add(Billboard.create(7,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(8,
+                                 "IBM",
+                                 LocalDate.now().minusDays(8),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(9,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(9),
+                                 LocalDate.now().minusDays(1),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(10,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "2800 37th Street NW, Rochester, MN 55901"));
+
+        List<Billboard> removed = ads //
+                        .dismantle("3222 40th Avenue NW, Rochester, MN 55901",
+                                   _Advertisement.sponsor //
+                                                   .upper()
+                                                   .equalTo("OPEN LIBERTY"));
+
+        assertEquals(List.of(7, 9),
+                     removed.stream()
+                                     .map(b -> b.id)
+                                     .sorted()
+                                     .toList());
+
+        assertEquals(2L,
+                     ads.removeBySponsorIn(List.of("IBM", "Open Liberty")));
+    }
+
+    /**
      * Use a repository method that includes a Restriction and also has
      * sorting by expressions.
      */
