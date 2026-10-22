@@ -1,0 +1,31 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="WsLogHandler FAT Test Server - Invalid Wildcard IDs">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>wsLogHandler-1.0</feature>
+    </featureManager>
+
+    <!-- Every pattern below violates the wildcard syntax <prefix>*[<level>], where level is
+         one of I, A, W, E. The router must reject each one and emit CWWKE0710W for it.
+         Keep this list in sync with INVALID_PATTERNS in WsLogHandlerInvalidWildcardTest.
+
+         Invalid log level : CWWF*K, CWWKF*X, CWWKF*1, CWWKF*i
+         Multiple asterisks: CWK**, CWK**I, CW*L*I, CW*K*, **
+         Asterisk misplaced: CW*1I, CWWKF*EFJ
+         No prefix         : *I -->
+    <wsLogHandler routerThing="CWWF*K,CWWKF*X,CWWKF*1,CWWKF*i,CWK**,CWK**I,CW*L*I,CW*K*,**,CW*1I,CWWKF*EFJ,*I" />
+
+</server>
