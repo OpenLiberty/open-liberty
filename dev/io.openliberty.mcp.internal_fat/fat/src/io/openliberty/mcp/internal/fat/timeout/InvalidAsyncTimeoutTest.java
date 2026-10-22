@@ -41,7 +41,6 @@ public class InvalidAsyncTimeoutTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        // Deploy app with invalid timeout ("sheep")
         WebArchive invalidTimeoutWar = ShrinkWrap.create(WebArchive.class, "invalidTimeoutTest.war")
                                                  .addPackage(AsyncTools.class.getPackage())
                                                  .addPackage(ToolStatus.class.getPackage());
