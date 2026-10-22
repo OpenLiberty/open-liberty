@@ -48,10 +48,10 @@ public class AsyncToolsTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolsTest");
+    public McpClient client = McpClient.builder(server, "/asyncToolsTest").build();
 
     @Rule
-    public McpClient shortTimeoutClient = new McpClient(server, "/asyncToolsTestShortTimeout");
+    public McpClient shortTimeoutClient = McpClient.builder(server, "/asyncToolsTestShortTimeout").build();
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");

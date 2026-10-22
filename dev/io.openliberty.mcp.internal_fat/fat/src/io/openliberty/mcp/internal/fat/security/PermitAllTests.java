@@ -40,7 +40,7 @@ public class PermitAllTests extends AbstractPermitAll {
     Logger logger = Logger.getLogger(PermitAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/permitAllTools");
+    public McpClient client = McpClient.builder(server, "/permitAllTools").build();
 
     /** {@inheritDoc} */
     @Override

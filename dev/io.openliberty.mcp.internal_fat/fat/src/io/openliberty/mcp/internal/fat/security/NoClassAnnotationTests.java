@@ -40,7 +40,7 @@ public class NoClassAnnotationTests extends AbstractNoClassAnnotation {
     Logger logger = Logger.getLogger(NoClassAnnotationTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/noClassAnnotationTools");
+    public McpClient client = McpClient.builder(server, "/noClassAnnotationTools").build();
 
     /** {@inheritDoc} */
     @Override

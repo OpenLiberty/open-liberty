@@ -40,7 +40,7 @@ public class DenyAllTests extends AbstractDenyAll {
     Logger logger = Logger.getLogger(DenyAllTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/denyAllTools");
+    public McpClient client = McpClient.builder(server, "/denyAllTools").build();
 
     /** {@inheritDoc} */
     @Override

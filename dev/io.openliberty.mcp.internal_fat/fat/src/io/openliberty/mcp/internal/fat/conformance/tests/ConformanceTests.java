@@ -82,7 +82,7 @@ public class ConformanceTests extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/conformanceTests");
+    public McpClient client = McpClient.builder(server, "/conformanceTests").build();
     private final static Logger logger = Logger.getLogger(ConformanceTests.class.getName());
 
     @SuppressWarnings("resource")

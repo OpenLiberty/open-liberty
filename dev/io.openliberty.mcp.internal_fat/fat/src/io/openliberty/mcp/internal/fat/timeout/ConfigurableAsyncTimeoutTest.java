@@ -49,10 +49,10 @@ public class ConfigurableAsyncTimeoutTest {
     private static final Class<?> c = ConfigurableAsyncTimeoutTest.class;
 
     @Rule
-    public McpClient shortTimeoutClient = new McpClient(server, "/shortTimeoutTest");
+    public McpClient shortTimeoutClient = McpClient.builder(server, "/shortTimeoutTest").build();
 
     @Rule
-    public McpClient defaultTimeoutClient = new McpClient(server, "/defaultTimeoutTest");
+    public McpClient defaultTimeoutClient = McpClient.builder(server, "/defaultTimeoutTest").build();
 
     @Server("mcp-server-configurable-async-timeout")
     public static LibertyServer server;
@@ -221,10 +221,9 @@ public class ConfigurableAsyncTimeoutTest {
 
         // Re-initialize the session after config update since the old session was invalidated
         // Create a new client which will automatically establish a new session
-        McpClient newShortTimeoutClient = new McpClient(server, "/shortTimeoutTest");
-        newShortTimeoutClient.initializeSession();
+        try (McpClient newShortTimeoutClient = McpClient.builder(server, "/shortTimeoutTest").build()) {
+            newShortTimeoutClient.initialize();
 
-        try {
             // Verify that with the updated timeout (5 seconds), the same operation still times out
             // but takes longer (since asyncToolThatNeverCompletes never completes)
             startTime = System.nanoTime();
@@ -255,9 +254,6 @@ public class ConfigurableAsyncTimeoutTest {
             String response = newShortTimeoutClient.callMCP(quickRequest);
             assertTrue("Response should contain the echoed input after config update",
                        response.contains("Quick response after config update"));
-        } finally {
-            // Clean up the new client's session
-            newShortTimeoutClient.cleanupSession();
         }
     }
 

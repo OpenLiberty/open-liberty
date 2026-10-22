@@ -41,7 +41,7 @@ public class DenyAllTestsStateless extends AbstractDenyAll {
     Logger logger = Logger.getLogger(DenyAllTestsStateless.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/securityTests", StateMode.STATELESS);
+    public McpClient client = McpClient.builder(server, "/securityTests").mode(StateMode.STATELESS).build();
 
     /** {@inheritDoc} */
     @Override

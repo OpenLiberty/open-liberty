@@ -44,7 +44,7 @@ public class AsyncAdminsRoleAllowedTests extends FATServletClient {
     Logger logger = Logger.getLogger(AsyncAdminsRoleAllowedTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncAdminsRoleTools");
+    public McpClient client = McpClient.builder(server, "/asyncAdminsRoleTools").build();
 
     @BeforeClass
     public static void setup() throws Exception {

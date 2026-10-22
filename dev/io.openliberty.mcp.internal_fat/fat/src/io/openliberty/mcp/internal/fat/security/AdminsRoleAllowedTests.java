@@ -40,7 +40,7 @@ public class AdminsRoleAllowedTests extends AbstractRolesAllowed {
     Logger logger = Logger.getLogger(AdminsRoleAllowedTests.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/adminsRoleTools");
+    public McpClient client = McpClient.builder(server, "/adminsRoleTools").build();
 
     /** {@inheritDoc} */
     @Override

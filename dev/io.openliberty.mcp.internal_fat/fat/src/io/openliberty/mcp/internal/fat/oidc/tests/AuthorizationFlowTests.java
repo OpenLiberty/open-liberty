@@ -119,14 +119,14 @@ public class AuthorizationFlowTests extends FATServletClient {
         // The Keycloak discovery client is attached so that fetchJson/fetchAccessToken can
         // follow HTTPS discovery URLs (Keycloak AS metadata, token endpoint) even though
         // the MCP calls themselves go over plain HTTP.
-        httpClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS)
+        httpClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS).build()
                         .withDiscoveryClient(keycloakContainer.getHttpClient());
 
         // HTTPS client — built now that key.p12 exists on disk.
         // This SSLContext trusts both Liberty's auto-generated cert and the Keycloak self-signed cert,
         // so it handles every URL in the discovery chain over TLS.
-        httpsClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
-                                    HttpsRequestHelper.buildCombinedSslContext(keycloakContainer, server));
+        httpsClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS)
+                        .sslContext(HttpsRequestHelper.buildCombinedSslContext(keycloakContainer, server)).build();
     }
 
     @AfterClass
@@ -154,7 +154,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * (RFC 9728 §3).
      */
     private static void assertUnauthenticated401WithResourceMetadata(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse response = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
+        McpDetailedAuthResponse response = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
 
         assertEquals("Expected HTTP 401 for unauthenticated call", 401, response.statusCode());
 
@@ -183,7 +183,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * fetch the Protected Resource Metadata document, and validate its structure.
      */
     private static void assertProtectedResourceMetadataDiscoverable(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse authResponse = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
+        McpDetailedAuthResponse authResponse = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
         assertEquals(401, authResponse.statusCode());
 
         String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
@@ -213,7 +213,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * the Authorization Server Metadata document.
      */
     private static void assertAuthorizationServerMetadataDiscoverable(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse authResponse = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
+        McpDetailedAuthResponse authResponse = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
         String resourceMetadataUrl = extractResourceMetadataUrl(authResponse.wwwAuthenticate());
         assertNotNull("resource_metadata URL must be present in WWW-Authenticate header", resourceMetadataUrl);
 
@@ -271,9 +271,9 @@ public class AuthorizationFlowTests extends FATServletClient {
         String accessToken = keycloakContainer.obtainAccessToken(tokenEndpoint, username, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
-        McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
-                                                      accessToken, unauthClient.getSslContext());
-        String response = authenticatedClient.callMCPWithBearerToken(toolCallRequest(toolName));
+        McpClient authenticatedClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS)
+                        .bearerToken(accessToken).sslContext(unauthClient.getSslContext()).build();
+        String response = authenticatedClient.callMCP(toolCallRequest(toolName));
 
         JSONAssert.assertEquals(expectedResponse, response, true);
     }
@@ -298,9 +298,9 @@ public class AuthorizationFlowTests extends FATServletClient {
         String accessToken = keycloakContainer.obtainAccessToken(tokenEndpoint, TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
-        McpClient authenticatedClient = new McpClient(server, CONTEXT_ROOT, StateMode.STATELESS,
-                                                      accessToken, unauthClient.getSslContext());
-        authenticatedClient.callMCPWithBearerTokenAuthorisationErrorExpected(toolCallRequest("adminTool"));
+        McpClient authenticatedClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS)
+                        .bearerToken(accessToken).sslContext(unauthClient.getSslContext()).build();
+        authenticatedClient.callMCPRaw(toolCallRequest("adminTool")).expectedStatus(403).run();
     }
 
     // Private helpers
@@ -309,7 +309,7 @@ public class AuthorizationFlowTests extends FATServletClient {
      * Runs the full discovery flow and returns the {@code token_endpoint} URL.
      */
     private static String discoverTokenEndpoint(McpClient client, String toolName) throws Exception {
-        McpDetailedAuthResponse authChallenge = client.callMCP401AuthErrorExpected(toolCallRequest(toolName));
+        McpDetailedAuthResponse authChallenge = client.callMCPRaw(toolCallRequest(toolName)).expectedStatus(401).run();
         assertEquals("Unauthenticated request must return 401", 401, authChallenge.statusCode());
 
         String resourceMetadataUrl = extractResourceMetadataUrl(authChallenge.wwwAuthenticate());
