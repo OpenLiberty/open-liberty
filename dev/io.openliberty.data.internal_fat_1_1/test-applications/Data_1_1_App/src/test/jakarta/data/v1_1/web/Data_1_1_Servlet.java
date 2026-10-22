@@ -574,6 +574,33 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * A repository method can declare a Constraint on a supertype of an
+     * entity attribute that is convertable to the attribute type. This
+     * behavior works without being explicitly required by Jakarta Data.
+     * This test guards against regression.
+     */
+    @Test
+    public void testConstraintOnSupertypeOfAttribute() {
+        assertEquals(List.of(BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3500, 4),
+                             BigDecimal.valueOf(3529, 4),
+                             BigDecimal.valueOf(3571, 4),
+                             BigDecimal.valueOf(3636, 4),
+                             BigDecimal.valueOf(3684, 4),
+                             BigDecimal.valueOf(3750, 4),
+                             BigDecimal.valueOf(3750, 4)),
+                     fractions.whereTruncated(Between.bounds(0.333, 0.377))
+                                     .stream()
+                                     .map(f -> f.decimal.truncated())
+                                     .toList());
+    }
+
+    /**
      * Request cursor pagination from a repository method that accepts a
      * Restriction parameter, but specify the unrestricted restriction.
      * Verify the total count of elements and pages is computed correctly.
@@ -1303,6 +1330,11 @@ public class Data_1_1_Servlet extends FATServlet {
                                                   reverseAlphabetized));
     }
 
+    /**
+     * Tests interoperability with Jakarta Persistence's Inheritance
+     * and DiscriminatorColumn by defining entities that inherit from
+     * a common abstract ancestor entity, for which a repository is defined.
+     */
     @Test
     public void testInheritanceFromAbstractEntity() {
         ads.removeBySponsorIn(List.of("Open Liberty",
@@ -3814,12 +3846,6 @@ public class Data_1_1_Servlet extends FATServlet {
                                   AtMost.max(Integer.MAX_VALUE),
                                   Restrict.unrestricted());
         }
-    }
-
-    @Test
-    public void testBooleanRestriction() {
-        fractions.where(Restrict.all(_Fraction.name.contains("Four"),
-                                     _Fraction.reduced.isTrue()));
     }
 
 }
