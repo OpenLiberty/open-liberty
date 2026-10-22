@@ -182,6 +182,13 @@ public class EJBEventLoggingTest extends FATServletClient {
     /** How long to watch for events after eventLogging has been removed. */
     private static final long QUIET_PERIOD_MS = 5000;
 
+    /**
+     * How long, in milliseconds, to wait for an END entry after the test servlet has returned. The END
+     * entry is logged when the bean method returns, which for async, timer and mdb can be after the
+     * HTTP response has been sent.
+     */
+    private static final long POST_INVOKE_DELAY = 500;
+
     // -----------------------------------------------------------------------
     // Lifecycle
     // -----------------------------------------------------------------------
@@ -798,7 +805,7 @@ public class EJBEventLoggingTest extends FATServletClient {
     /** Asserts exactly one well-formed END entry (exact context info and duration) since the mark. */
     private void assertSingleEnd(String type, String contextInfo) throws Exception {
         assertEquals("Expected exactly 1 websphere.ejb." + type + " END entry for " + contextInfo,
-                     1, findInLog(endRegex(type, contextInfo)).size());
+                     1, awaitInLog(endRegex(type, contextInfo)).size());
     }
 
     /**
@@ -810,7 +817,7 @@ public class EJBEventLoggingTest extends FATServletClient {
      */
     private String assertBeginEndPaired(String type, String contextInfo) throws Exception {
         List<String> begins = findInLog(beginRegex(type, contextInfo));
-        List<String> ends = findInLog(endRegex(type, contextInfo));
+        List<String> ends = awaitInLog(endRegex(type, contextInfo));
         assertEquals("Expected exactly 1 websphere.ejb." + type + " BEGIN entry for " + contextInfo, 1, begins.size());
         assertEquals("Expected exactly 1 websphere.ejb." + type + " END entry for " + contextInfo, 1, ends.size());
         String requestId = requestIdOf(begins.get(0));
@@ -823,6 +830,20 @@ public class EJBEventLoggingTest extends FATServletClient {
         Matcher m = REQUEST_ID.matcher(line);
         assertTrue("No request ID in: " + line, m.find());
         return m.group(1);
+    }
+
+    /**
+     * Like {@link #findInLog}, but if there is no match yet, polls every 50 ms for up to
+     * {@link #POST_INVOKE_DELAY} ms. The mark is not moved, so BEGIN entries can still be found.
+     */
+    private List<String> awaitInLog(String regexp) throws Exception {
+        List<String> matches = findInLog(regexp);
+        long deadline = System.currentTimeMillis() + POST_INVOKE_DELAY;
+        while (matches.isEmpty() && System.currentTimeMillis() < deadline) {
+            Thread.sleep(50);
+            matches = findInLog(regexp);
+        }
+        return matches;
     }
 
     private List<String> findInLog(String regexp) throws Exception {
