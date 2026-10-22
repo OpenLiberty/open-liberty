@@ -83,11 +83,11 @@ Service-Component: \
     sharedLib=com.ibm.wsspi.library.Library; \
     properties:='sharedLib.target=(id=unbound)', \
   com.ibm.ws.jdbc.DataSourceResourceFactoryBuilder; \
-    implementation:=com.ibm.ws.jdbc.DataSourceResourceFactoryBuilder; \
-    provide:=com.ibm.ws.resource.ResourceFactoryBuilder; \
-    configAdmin=org.osgi.service.cm.ConfigurationAdmin; \
-    connectorService=com.ibm.ws.jca.cm.ConnectorService;\
-    properties:='creates.objectClass=javax.sql.DataSource', \
+     implementation:=com.ibm.ws.jdbc.DataSourceResourceFactoryBuilder; \
+     provide:=com.ibm.ws.resource.ResourceFactoryBuilder; \
+     configAdmin=org.osgi.service.cm.ConfigurationAdmin; \
+     connectorService=com.ibm.ws.jca.cm.ConnectorService;\
+     properties:='creates.objectClass=javax.sql.DataSource', \
   com.ibm.ws.jdbc.serialization; \
     implementation:=com.ibm.ws.rsadapter.jdbc.SerializationObjectReplacerImpl; \
     resRefConfigFactory=com.ibm.ws.resource.ResourceRefConfigFactory;\
@@ -95,7 +95,8 @@ Service-Component: \
   com.ibm.ws.jdbc.deserialization; \
     implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
-    properties:='classes=com.ibm.ws.rsadapter.jdbc.SerializedDataSourceWrapper'
+    properties:='classes=com.ibm.ws.rsadapter.jdbc.SerializedDataSourceWrapper', \
+  OSGI-INF/com.ibm.ws.jdbc.DataSourceValidationMBean.xml
 
 DynamicImport-Package: \
     com.ibm.wsspi.timedoperations, \

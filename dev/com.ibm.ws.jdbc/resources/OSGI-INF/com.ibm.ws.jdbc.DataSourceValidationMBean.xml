@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+
+    IMPORTANT — Prerequisites:
+      The server must include servlet-3.x (or any feature that loads
+      com.ibm.ws.app.manager) so that ApplicationRecycleCoordinator is available.
+      Without it, DataSourceService is unsatisfied and DS never publishes its
+      ServiceReference; this MBean's dynamic reference will never bind anything.
+ -->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0"
+               name="com.ibm.ws.jdbc.DataSourceValidationMBean"
+               immediate="true">
+  <property name="jmx.objectname" type="String"
+            value="WebSphere:type=com.ibm.ws.jdbc.DataSourceValidationMBean"/>
+  <property name="ibm.beta" type="Boolean" value="true"/>
+  <service>
+    <provide interface="javax.management.DynamicMBean"/>
+  </service>
+  <!--
+    Dynamic optional-multiple reference to ResourceFactory services.
+    DataSourceService registers as ResourceFactory with a jndiName property.
+    When all of DataSourceService's required references are satisfied (requires
+    servlet-3.x for ApplicationRecycleCoordinator), DS publishes its ServiceReference
+    and immediately binds it here via addResourceFactory, triggering lazy instantiation.
+    The bind/unbind callbacks keep the MBean's internal map current.
+  -->
+  <reference name="dataSourceFactory"
+             cardinality="0..n"
+             policy="dynamic"
+             policy-option="greedy"
+             interface="com.ibm.wsspi.resource.ResourceFactory"
+             bind="addResourceFactory"
+             unbind="removeResourceFactory"/>
+  <implementation class="com.ibm.ws.jdbc.DataSourceValidationMBeanImpl"/>
+</scr:component>

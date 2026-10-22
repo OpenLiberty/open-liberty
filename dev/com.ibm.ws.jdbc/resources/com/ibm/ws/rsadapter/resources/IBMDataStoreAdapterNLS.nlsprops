@@ -596,3 +596,18 @@ KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Disable Kerberos authentication 
 
 # 9600-9603 deleted 
 # 9900 deleted
+
+# ----- DataSourceValidationRecorder messages (MoRE Test Connection) -----
+
+DSRA8800_VALIDATION_SUCCESS=DSRA8800I: The {0} data source was validated successfully in {1} ms.
+DSRA8800_VALIDATION_SUCCESS.explanation=Data source validation recording is enabled. A connection was obtained, validated, and closed after the data source configuration was added or modified, and the result was written to the validation status file.
+DSRA8800_VALIDATION_SUCCESS.useraction=No action is required.
+
+DSRA8801_VALIDATION_FAILED=DSRA8801W: Validation of the {0} data source failed: {1}
+DSRA8801_VALIDATION_FAILED.explanation=Data source validation recording is enabled. A connection could not be obtained or validated after the data source configuration was added or modified. The result was written to the validation status file.
+DSRA8801_VALIDATION_FAILED.useraction=Correct the data source configuration or make the database available. The data source is validated again when its configuration is modified.
+
+DSRA8802_VALIDATION_TIMEOUT=DSRA8802W: Validation of the {0} data source did not complete within {1} seconds.
+DSRA8802_VALIDATION_TIMEOUT.explanation=Data source validation recording is enabled. The attempt to obtain and validate a connection did not complete within the configured timeout. The result was written to the validation status file.
+DSRA8802_VALIDATION_TIMEOUT.useraction=Verify that the database is reachable, or increase the timeout by setting the com.ibm.ws.jdbc.validation.record.timeoutSec bootstrap property.
+

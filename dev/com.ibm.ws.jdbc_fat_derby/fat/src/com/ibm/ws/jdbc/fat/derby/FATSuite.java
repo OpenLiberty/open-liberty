@@ -28,7 +28,8 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JDBCDerbyTest.class,
                 JDBCDynamicConfigTest.class,
                 JDBCDerbyPathLibTest.class,
-                JDBCDerbyPathToFolderLibTest.class
+                JDBCDerbyPathToFolderLibTest.class,
+                ConnectionManagerMBeanValidateTest.class
 })
 public class FATSuite {
 
