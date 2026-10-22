@@ -48,7 +48,6 @@ import componenttest.topology.utils.HttpUtils;
  *
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
 public class PartitionReducerTest extends BatchFATHelper {
 
     private static final Class<PartitionReducerTest> testClass = PartitionReducerTest.class;
@@ -60,8 +59,10 @@ public class PartitionReducerTest extends BatchFATHelper {
         HttpUtils.trustAllCertificates();
         BatchFATHelper.setConfig("BatchManagementEnabledTests/server.xml", testClass);
 
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.jdbcContainer);
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.jdbcContainer).getDriverName());
+        DatabaseContainerUtil.build(server, FATSuite.jdbcContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .modify();
 
         BatchRestUtils.updateDatabaseStoreIfNecessary(server, DatabaseContainerType.valueOf(FATSuite.jdbcContainer));
 
@@ -76,7 +77,7 @@ public class PartitionReducerTest extends BatchFATHelper {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKY0011W", "CWWKY0041W", "CWWKS9582E");
+            server.stopServer("CWWKY0011W", "CWWKY0041W", "CWWKS9582E", "DSRA8020E");
         }
     }
 
