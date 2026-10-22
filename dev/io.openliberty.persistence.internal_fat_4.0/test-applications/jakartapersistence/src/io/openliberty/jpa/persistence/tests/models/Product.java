@@ -10,11 +10,25 @@
 package io.openliberty.jpa.persistence.tests.models;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.Version;
 
 @Entity
+@EntityListeners(AuditListener.class)
+@NamedQuery(
+    name = "Product.findAllWithLockScope",
+    query = "SELECT p FROM Product p ORDER BY p.name",
+    lockScope = PessimisticLockScope.FETCHED
+)
+@NamedQuery(
+    name = "Product.findByNameWithExtendedScope",
+    query = "SELECT p FROM Product p WHERE p.name = :name",
+    lockScope = PessimisticLockScope.EXTENDED
+)
 public class Product {
 
     @Id
