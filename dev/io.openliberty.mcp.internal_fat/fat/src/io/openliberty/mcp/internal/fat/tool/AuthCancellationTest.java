@@ -46,7 +46,7 @@ public class AuthCancellationTest extends FATServletClient {
     private static ExecutorService executor;
 
     @Rule
-    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/asyncToolCancellationTest").basicAuth("BobTheAdmin", "testpassword").build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).basicAuth("BobTheAdmin", "testpassword").build();
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(serverLifecycle.getServer(), "/" + APP_NAME);

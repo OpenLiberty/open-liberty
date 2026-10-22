@@ -36,6 +36,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
+import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
 @RunWith(FATRunner.class)
 public class AsyncToolsTest extends FATServletClient {
@@ -45,7 +46,7 @@ public class AsyncToolsTest extends FATServletClient {
     private static final String APP_NAME = "asyncToolsTest";
     private static final String SHORT_TIMEOUT_APP_NAME = "asyncToolsTestShortTimeout";
 
-   @Rule
+    @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @Rule
@@ -53,7 +54,7 @@ public class AsyncToolsTest extends FATServletClient {
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(serverLifecycle.getServer(), "/" + APP_NAME);
-    
+
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().addIgnoredErrors(List.of("Method call caused runtime exception. This is expected if the input was 'throw error'"));
