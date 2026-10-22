@@ -15,12 +15,16 @@ package io.openliberty.classloading.classpath.fat;
 import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST_SERVER;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_WAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_WAR;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -102,6 +106,11 @@ public class DynamicFeatureLibJarRemovedTest {
         ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_WAR,
                                        DeployOptions.SERVER_ONLY);
 
+        // Second app that does NOT reference the shared library or feature API. It must be left alone
+        // by the library change, which proves the restart is targeted and not global.
+        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_UNRELATED_WAR,
+                                       DeployOptions.SERVER_ONLY);
+
         // Deploy the shared library JAR to the server's sharedLibs directory — this
         // corresponds to the <fileset dir="${server.config.dir}/sharedLibs"> in server.xml.
         ShrinkHelper.exportToServer(server, "sharedLibs", TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR,
@@ -159,10 +168,23 @@ public class DynamicFeatureLibJarRemovedTest {
         // This is required because the config swap triggers an app restart cycle; the
         // servlet is briefly unavailable between CWWKG0017I and the app-ready message.
         // Using only CWWKG0017I caused a 404 "Context Root Not Found" response.
+        //
+        // The stop and start messages for the app are passed as extra regexps so the
+        // wait itself requires them. getInstalledAppNames() scans the whole log, so the
+        // initial CWWKZ0001I would satisfy the app-name wait without any restart.
+        int unrelatedMessagesBefore = countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP);
         server.setMarkToEndOfLog();
         server.setServerConfigurationFromFilePath("server_no_lib.xml");
-        server.waitForConfigUpdateInLogUsingMark(
-            Collections.singleton(TEST_DYNAMIC_FEATURE_APP));
+        List<String> libRemovedMessages = server.waitForConfigUpdateInLogUsingMark(
+            Collections.singleton(TEST_DYNAMIC_FEATURE_APP),
+            "CWWKZ0009I.*" + TEST_DYNAMIC_FEATURE_APP,
+            "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_APP);
+        assertAppStoppedThenStarted("State 2", libRemovedMessages);
+        assertEquals("State 2: app that does not reference the library must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        // Exact count guards against double-restart: initial-start(1) + stop(1) + restart(1) = 3.
+        assertEquals("State 2: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once",
+                     3, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
 
         // State 2a: cached-interface eviction-detection probe (informational — does not fail on class-visible)
         server.setMarkToEndOfLog();
@@ -188,29 +210,49 @@ public class DynamicFeatureLibJarRemovedTest {
         // server_no_lib.xml content that was written there in State 2.
         server.setMarkToEndOfLog();
         server.setServerConfigurationFromFilePath("server_with_lib.xml");
-        server.waitForConfigUpdateInLogUsingMark(
-            Collections.singleton(TEST_DYNAMIC_FEATURE_APP));
+        List<String> libRestoredMessages = server.waitForConfigUpdateInLogUsingMark(
+            Collections.singleton(TEST_DYNAMIC_FEATURE_APP),
+            "CWWKZ0009I.*" + TEST_DYNAMIC_FEATURE_APP,
+            "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_APP);
+        assertAppStoppedThenStarted("State 3", libRestoredMessages);
+        assertEquals("State 3: app that does not reference the library must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        // State 2 cycle(3) + stop(1) + restart(1) = 5.
+        assertEquals("State 3: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once",
+                     5, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
 
         server.setMarkToEndOfLog();
         FATServletClient.runTest(server, SERVLET_PATH,
             "testLibraryJarRemovedFromSharedLib_LibraryRestored");
-        assertNotNull("State 3 marker not found in log",
+        assertNotNull("State 3 SUCCESS marker not found in log",
             server.waitForStringInLogUsingMark(
-                "DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 -"));
+                "DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - SUCCESS"));
+    }
+
+    private static void assertAppStoppedThenStarted(String state, List<String> messages) {
+        int stopped = -1;
+        int started = -1;
+        for (int i = 0; i < messages.size(); i++) {
+            String line = messages.get(i);
+            if (!line.contains(TEST_DYNAMIC_FEATURE_APP)) continue;
+            if (line.contains("CWWKZ0009I") && stopped < 0) stopped = i;
+            else if ((line.contains("CWWKZ0001I") || line.contains("CWWKZ0003I")) && started < 0) started = i;
+        }
+        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not stopped (CWWKZ0009I)", stopped >= 0);
+        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not started again (CWWKZ0001I/0003I)", started >= 0);
+        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " started before it stopped", stopped < started);
+    }
+
+    private static int countAppMessages(String appName) throws Exception {
+        return server.findStringsInLogs("CWWKZ000[139]I.*" + appName).size();
     }
 
     @AfterClass
     public static void stopServer() throws Exception {
-        // TODO: Future extension — after server stop/restart, verify the application was
-        // reported as "updated" (CWWKZ0003I) rather than simply restarted, confirming that
-        // Liberty correctly re-initialises the app classloader on config restore.
-        // See background document Section 7 for details.
         try {
-            // CWWKL0041W — classloader no longer valid; expected when the library
-            // AppClassLoader is evicted while the WAR still has a reference to it.
             // CWWKG0014W — config element referencing a non-existent file may be emitted
             // when server_no_lib.xml is active (unmatched glob pattern in fileset).
-            server.stopServer("CWWKL0041W", "CWWKG0014W");
+            server.stopServer("CWWKG0014W");
         } finally {
             server.uninstallSystemFeature("testFeatureApi-1.0");
             assertFalse("testFeatureApi-1.0.mf was not cleaned up",

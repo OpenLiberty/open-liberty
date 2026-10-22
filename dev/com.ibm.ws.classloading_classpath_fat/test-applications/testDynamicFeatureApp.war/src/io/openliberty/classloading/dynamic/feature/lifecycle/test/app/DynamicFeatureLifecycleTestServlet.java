@@ -121,14 +121,13 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
 
     /**
      * Test 1, State 2a: verifies that {@link AppFeatureApiImplState2a} — which
-     * implements the already-cached {@link TestFeatureApi} — still loads successfully
+     * implements {@link TestFeatureApi}, loaded in State 1 — can no longer be loaded
      * after the feature bundle has been dynamically removed.
      * <p>
-     * Because {@code TestFeatureApi} was loaded in State 1, it remains in the WAR
-     * classloader's internal cache. The JVM resolves the supertype from the cache
-     * without walking the delegation chain to the (now-absent) bundle, so the load
-     * succeeds. This documents the "app classloader is not recycled on feature removal"
-     * invariant.
+     * Removing the feature recycles this application, so the WAR is served by a new
+     * classloader whose cache does not contain {@code TestFeatureApi}. Resolving the
+     * supertype has to walk the delegation chain to the (now-absent) bundle and fails.
+     * A successful load here would mean the pre-removal, stale classloader is still in use.
      */
     public void testAppDirectlyDependsOnFeatureApi_FeatureRemoved_CachedInterface() throws Exception {
         ClassLoader cl = getClass().getClassLoader();
@@ -136,16 +135,14 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
 
         try {
             Class<?> removedClass = cl.loadClass(APP_IMPL_CLASS_STATE2A);
-            println("DYNAMIC_FEATURE_TEST STATE2a - CLASS_STILL_VISIBLE (cached interface, expected): "
+            println("DYNAMIC_FEATURE_TEST STATE2a - CLASS_STILL_VISIBLE (unexpected — stale loader): "
                 + "AppFeatureApiImplState2a loaded by " + removedClass.getClassLoader());
-            if (!removedClass.getClassLoader().toString().contains("WebModule")) {
-                Assert.fail("STATE2a: unexpected classloader for AppFeatureApiImplState2a: "
-                    + removedClass.getClassLoader());
-            }
-            println("DYNAMIC_FEATURE_TEST STATE2a - SUCCESS");
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            Assert.fail("STATE2a: AppFeatureApiImplState2a (cached interface) should have loaded but got: "
-                + e.getClass().getSimpleName() + ": " + e.getMessage());
+            Assert.fail("STATE2a: AppFeatureApiImplState2a should not load after the feature was removed "
+                + "and the application recycled, but it loaded successfully via a stale classloader.");
+        } catch (NoClassDefFoundError | ClassNotFoundException e) {
+            println("DYNAMIC_FEATURE_TEST STATE2a - " + e.getClass().getSimpleName()
+                + " (expected — fresh loader, feature absent): " + e.getMessage());
+            println("DYNAMIC_FEATURE_TEST STATE2a - NOT_LOADABLE");
         }
     }
 
@@ -193,10 +190,9 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
      * impl classes are then loaded to confirm the WAR classloader is fully functional
      * after the feature re-add.
      * <p>
-     * <b>Expected baseline (pre-fix):</b> All four loads succeed because the same
-     * OSGi bundle object was reused on re-add (same {@code EquinoxClassLoader} instance,
-     * same bundle id — Failure Mode A). The cast succeeds for the wrong reason: the
-     * stale never-invalidated loader is still in place.
+     * The WAR classloader here is the one created when the app was recycled in State 2 (not the
+     * State 1 loader). The re-added feature is a new bundle (a different bundle id), and the
+     * cast succeeds because this loader resolves the API through that new bundle.
      */
     public void testAppDirectlyDependsOnFeatureApi_FeatureReAdded() throws Exception {
         ClassLoader cl = getClass().getClassLoader();
@@ -281,13 +277,15 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
 
     /**
      * Test 2, State 2a: verifies that {@code LibraryFeatureApiImplState2a} — which
-     * implements the already-cached {@link TestFeatureApi} — still loads successfully
-     * after the feature bundle has been dynamically removed.
+     * implements the already-cached {@link TestFeatureApi} interface — cannot be loaded
+     * after the feature bundle has been dynamically removed and the application has been recycled.
      * <p>
-     * Because {@code TestFeatureApi} was loaded by the shared-library classloader in
-     * State 1, it remains in that loader's internal cache. The load succeeds without
-     * the delegation chain reaching the absent bundle, documenting that the shared-library
-     * {@code AppClassLoader} is not recycled on feature removal.
+     * Feature removal evicts both the shared-library {@code AppClassLoader} and the WAR
+     * {@code AppClassLoader} from {@code aclStore} and recycles the application. The recycled
+     * application gets a new WAR loader and a new library loader; neither has {@code TestFeatureApi}
+     * in its cache. Resolving {@code LibraryFeatureApiImplState2a}'s supertype walks the delegation
+     * chain to the absent feature bundle and fails with {@code NoClassDefFoundError}.
+     * A successful load here would mean the pre-removal, stale library classloader is still in use.
      */
     public void testLibraryDependsOnFeatureApi_FeatureRemoved_CachedInterface() throws Exception {
         ClassLoader cl = getClass().getClassLoader();
@@ -295,16 +293,14 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
 
         try {
             Class<?> removedClass = cl.loadClass(LIB_IMPL_CLASS_STATE2A);
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - CLASS_STILL_VISIBLE (cached interface, expected): "
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - CLASS_STILL_VISIBLE (unexpected — stale loader): "
                 + "LibraryFeatureApiImplState2a loaded by " + removedClass.getClassLoader());
-            if (!removedClass.getClassLoader().toString().contains("testFeatureSharedLib")) {
-                Assert.fail("STATE2a: unexpected classloader for LibraryFeatureApiImplState2a: "
-                    + removedClass.getClassLoader());
-            }
-            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - SUCCESS");
-        } catch (ClassNotFoundException | NoClassDefFoundError e) {
-            Assert.fail("STATE2a: LibraryFeatureApiImplState2a (cached interface) should have loaded but got: "
-                + e.getClass().getSimpleName() + ": " + e.getMessage());
+            Assert.fail("STATE2a: LibraryFeatureApiImplState2a should not load after the feature was removed "
+                + "and the application and library classloaders recycled, but it loaded via a stale loader.");
+        } catch (NoClassDefFoundError | ClassNotFoundException e) {
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - " + e.getClass().getSimpleName()
+                + " (expected — fresh loaders, feature absent): " + e.getMessage());
+            println("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - NOT_LOADABLE");
         }
     }
 
@@ -347,11 +343,11 @@ public class DynamicFeatureLifecycleTestServlet extends FATServlet {
      * library impl classes are then loaded to confirm the full library chain is functional
      * after the feature re-add.
      * <p>
-     * <b>Failure Mode B watch:</b> If Liberty produces a new bundle revision on re-add
-     * while the stale library {@code AppClassLoader} is still cached in {@code aclStore},
-     * the cast will fail with {@code ClassCastException}. This is the architectural bug
-     * described in the background document. The assertion is locked in to the currently
-     * observed {@code SUCCESS} baseline and will fail loudly if behaviour changes.
+     * No application restart is expected for re-add: the recycled loader from State 2 has a new
+     * gateway and a new library loader, both using {@code DynamicImport-Package=*}. When the new
+     * feature bundle is installed, both gateways resolve feature API packages lazily from it.
+     * The new bundle is a different bundle id, but both loaders resolve through the same
+     * {@code EquinoxClassLoader} so the type bindings are consistent and no cast fails.
      */
     public void testLibraryDependsOnFeatureApi_FeatureReAdded() throws Exception {
         ClassLoader cl = getClass().getClassLoader();

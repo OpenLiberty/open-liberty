@@ -27,6 +27,9 @@
         <classloader commonLibraryRef="testFeatureSharedLib"/>
     </webApplication>
 
+    <!-- Does not reference the library; must not be restarted by library changes. -->
+    <webApplication location="testUnrelatedFeatureApp.war"/>
+
     <javaPermission
         codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
         className="java.lang.RuntimePermission"

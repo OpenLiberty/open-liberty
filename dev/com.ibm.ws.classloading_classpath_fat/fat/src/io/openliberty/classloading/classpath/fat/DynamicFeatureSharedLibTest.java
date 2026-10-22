@@ -15,12 +15,16 @@ package io.openliberty.classloading.classpath.fat;
 import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_SHARED_LIB_TEST_SERVER;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_WAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_WAR;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -91,6 +95,9 @@ public class DynamicFeatureSharedLibTest {
         // Deploy the WAR to the apps directory.
         ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_WAR, DeployOptions.SERVER_ONLY);
 
+        // Second app deployed with no dependency on the feature API or shared library; used to prove restart is targeted.
+        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_UNRELATED_WAR, DeployOptions.SERVER_ONLY);
+
         // Deploy the shared library JAR to the server's sharedLibs directory — this
         // corresponds to the <fileset dir="${server.config.dir}/sharedLibs"> in server.xml.
         ShrinkHelper.exportToServer(server, "sharedLibs", TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR, DeployOptions.SERVER_ONLY);
@@ -102,30 +109,13 @@ public class DynamicFeatureSharedLibTest {
      * Walks State 1 → State 2 → State 3 in a single ordered sequence.
      * <p>
      * Each state is probed via an HTTP call to a named servlet method. After each
-     * feature-change, the test waits for {@code CWWKF0008I} (feature update complete)
-     * before proceeding to the next probe.
-     *
-     * <h3>Expected baseline summary (pre-fix)</h3>
-     * <pre>
-     * State 1  Shared-library AppClassLoader → GatewayClassLoader → EquinoxClassLoader@X [bundle id=N]
-     *          — doWork() succeeds, cast succeeds ✓
-     *
-     * State 2  Shared-library AppClassLoader (cached in aclStore, never evicted)
-     *          — feature API class still visible via stale loader (CLASS_STILL_VISIBLE)
-     *
-     * State 3  If same bundle object reused on re-add (id=N unchanged) → SUCCESS (Failure Mode A)
-     *          If new bundle revision produced (id changes) → CLASSCAST (Failure Mode B — the bug)
-     * </pre>
-     *
-     * <p><b>Key observation to capture:</b>
-     * The {@code EquinoxClassLoader} address and bundle id logged in States 1 and 3 reveal
-     * whether Liberty produces a new bundle revision on re-add. If the id is the same across
-     * all three states, the test observes Failure Mode A (silent stale loader). If the id
-     * changes between State 1 and State 3, the test observes Failure Mode B
-     * ({@code ClassCastException}).
+     * feature-change, the test asserts that the affected app was stopped and restarted
+     * and that a second unrelated app was not touched.
      */
     @Test
     public void testDynamicFeatureSharedLibLifecycle() throws Exception {
+        int unrelatedMessagesBefore = countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP);
+
         // ── STATE 1: Feature present ─────────────────────────────────────────
         server.setMarkToEndOfLog();
         FATServletClient.runTest(server, SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeaturePresent");
@@ -135,15 +125,26 @@ public class DynamicFeatureSharedLibTest {
         // ── STATE 2: Remove feature dynamically ──────────────────────────────
         server.setMarkToEndOfLog();
         server.changeFeatures(Arrays.asList("servlet-4.0", "componenttest-1.0"));
-        assertNotNull("Feature update (removal) did not complete — CWWKF0008I not found",
-                      server.waitForStringInLogUsingMark("CWWKF0008I"));
+        List<String> removalMessages = server.waitForConfigUpdateInLogUsingMark(
+            null, true,
+            "CWWKZ0009I.*" + TEST_DYNAMIC_FEATURE_APP,
+            "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_APP);
+        assertAppStoppedThenStarted("State 2", removalMessages);
+        assertEquals("State 2: unrelated app must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        // Exact count guards against double-restart: initial-start(1) + stop(1) + restart(1) = 3.
+        assertEquals("State 2: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once",
+                     3, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
 
-        // State 2a: cached-interface probe — expects success (TestFeatureApi already in loader cache)
+        // State 2a: cached-interface probe — expects NOT_LOADABLE because the library
+        // classloader was also evicted along with the WAR classloader on feature removal.
+        // The recycled app gets a fresh library loader with no cache; resolving TestFeatureApi
+        // through it fails with NoClassDefFoundError (feature bundle is absent).
         server.setMarkToEndOfLog();
         FATServletClient.runTest(server, SERVLET_PATH,
             "testLibraryDependsOnFeatureApi_FeatureRemoved_CachedInterface");
-        assertNotNull("State 2a SUCCESS marker not found in log",
-                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - SUCCESS"));
+        assertNotNull("State 2a NOT_LOADABLE marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - NOT_LOADABLE"));
 
         // State 2b: fresh-interface probe — expects NCDFE (TestFeatureApi2 never cached, bundle gone)
         server.setMarkToEndOfLog();
@@ -153,27 +154,46 @@ public class DynamicFeatureSharedLibTest {
                       server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2b -"));
 
         // ── STATE 3: Re-add feature dynamically ──────────────────────────────
+        // No application restart is expected: the recycled loader from State 2 has a fresh
+        // gateway and fresh library loader, both with DynamicImport-Package=*. They resolve
+        // feature API packages lazily from the new bundle. The count stays at 3.
         server.setMarkToEndOfLog();
         server.changeFeatures(Arrays.asList("servlet-4.0", "componenttest-1.0", "testFeatureApi-1.0"));
-        assertNotNull("Feature update (re-add) did not complete — CWWKF0008I not found",
-                      server.waitForStringInLogUsingMark("CWWKF0008I"));
+        server.waitForConfigUpdateInLogUsingMark(null, true);
+        assertEquals("State 3: unrelated app must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        // State 2 cycle(3) — no extra stop/restart on re-add.
+        assertEquals("State 3: " + TEST_DYNAMIC_FEATURE_APP + " must not have restarted again",
+                     3, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
 
         server.setMarkToEndOfLog();
         FATServletClient.runTest(server, SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeatureReAdded");
-        assertNotNull("State 3 marker not found in log",
-                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 -"));
+        assertNotNull("State 3 SUCCESS marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SUCCESS"));
+    }
+
+    private static void assertAppStoppedThenStarted(String state, List<String> messages) {
+        int stopped = -1;
+        int started = -1;
+        for (int i = 0; i < messages.size(); i++) {
+            String line = messages.get(i);
+            if (!line.contains(TEST_DYNAMIC_FEATURE_APP)) continue;
+            if (line.contains("CWWKZ0009I") && stopped < 0) stopped = i;
+            else if ((line.contains("CWWKZ0001I") || line.contains("CWWKZ0003I")) && started < 0) started = i;
+        }
+        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not stopped (CWWKZ0009I)", stopped >= 0);
+        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not started again (CWWKZ0001I/0003I)", started >= 0);
+        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " started before it stopped", stopped < started);
+    }
+
+    private static int countAppMessages(String appName) throws Exception {
+        return server.findStringsInLogs("CWWKZ000[139]I.*" + appName).size();
     }
 
     @AfterClass
     public static void stopServer() throws Exception {
-        // TODO: Future extension — after server stop/restart, verify the application was
-        // reported as "updated" (CWWKZ0003I) rather than simply restarted, confirming that
-        // Liberty correctly refreshes the shared-library AppClassLoader on feature re-add.
-        // See background document Section 7 for details.
         try {
-            // CWWKL0041W — classloader no longer valid; expected when the feature bundle
-            // is removed while a stale AppClassLoader still holds a reference to it.
-            server.stopServer("CWWKL0041W");
+            server.stopServer();
         } finally {
             server.uninstallSystemFeature("testFeatureApi-1.0");
             assertFalse("testFeatureApi-1.0.mf was not cleaned up",

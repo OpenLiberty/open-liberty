@@ -54,6 +54,7 @@ import io.openliberty.classloading.classpath.test.war2.ClassPathDefaultLoaderSer
 import io.openliberty.classloading.classpath.test.war3.ClassPathDefaultLoaderServletTest3;
 import io.openliberty.classloading.classpath.util.TestUtils;
 import io.openliberty.classloading.dynamic.feature.lifecycle.test.app.DynamicFeatureLifecycleTestServlet;
+import io.openliberty.classloading.dynamic.feature.unrelated.test.app.DynamicFeatureUnrelatedServlet;
 import io.openliberty.classloading.feature.message.test.app.ParentLastFeatureMessageTestServlet;
 import io.openliberty.classloading.lib.path.test.app.LibPathTestServlet;
 import io.openliberty.classloading.library.precedence.test.app.LibPrecedenceBeforeAppTestServlet;
@@ -151,6 +152,8 @@ public class FATSuite {
     public static final String TEST_OVERRIDE_LIB_APP = "testOverrideLib";
     public static final String TEST_LIBRARY_USER_APP = "testLibraryUser";
     public static final String TEST_DYNAMIC_FEATURE_APP = "testDynamicFeatureApp";
+    // Second copy of the dynamic feature WAR deployed without a library reference; used to assert it is NOT restarted
+    public static final String TEST_DYNAMIC_FEATURE_UNRELATED_APP = "testUnrelatedFeatureApp";
     public static final String TEST_DYNAMIC_FEATURE_SHARED_LIB = "testSharedFeatureLib";
     // Servlet class name is shared across tests
     static final String DYNAMIC_FEATURE_LIFECYCLE_SERVLET = "DynamicFeatureLifecycleTestServlet";
@@ -239,6 +242,7 @@ public class FATSuite {
     static final WebArchive TEST_LIB_PRECEDENCE_WAR;
     static final WebArchive TEST_LIBRARY_USER_WAR;
     static final WebArchive TEST_DYNAMIC_FEATURE_WAR;
+    static final WebArchive TEST_DYNAMIC_FEATURE_UNRELATED_WAR;
     static final JavaArchive TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
 
     // EJB archives
@@ -393,6 +397,11 @@ public class FATSuite {
             TEST_DYNAMIC_FEATURE_WAR = ShrinkHelper.buildDefaultApp(TEST_DYNAMIC_FEATURE_APP + ".war",
                                                                      DynamicFeatureLifecycleTestServlet.class.getPackage().getName(),
                                                                      "io.openliberty.classloading.dynamic.feature.test.app");
+
+            // Independent application with no dependency on the dynamic feature or its shared library.
+            // Used to assert the unrelated app is NOT restarted when only the feature or library changes.
+            TEST_DYNAMIC_FEATURE_UNRELATED_WAR = ShrinkHelper.buildDefaultApp(TEST_DYNAMIC_FEATURE_UNRELATED_APP + ".war",
+                                                                              DynamicFeatureUnrelatedServlet.class.getPackage().getName());
 
             // Shared library JAR: contains the four implementation classes for Tests 2 and 3.
             TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR = ShrinkHelper.buildJavaArchive(TEST_DYNAMIC_FEATURE_SHARED_LIB + ".jar",

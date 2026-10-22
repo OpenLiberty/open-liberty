@@ -9,6 +9,9 @@
 
     <webApplication location="testDynamicFeatureApp.war" />
 
+    <!-- Does not reference the feature API; must not be restarted when the feature is removed. -->
+    <webApplication location="testUnrelatedFeatureApp.war"/>
+
     <javaPermission
         codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
         className="java.lang.RuntimePermission"
