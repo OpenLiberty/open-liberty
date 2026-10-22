@@ -21,8 +21,6 @@ import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.mcp.internal.fat.conformance.tests.ConformanceTests;
-import io.openliberty.mcp.internal.fat.monitor.McpMonitorMXBeanAccessTest;
-import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
 import io.openliberty.mcp.internal.fat.oidc.tests.AuthorizationFlowTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
@@ -32,15 +30,18 @@ import io.openliberty.mcp.internal.fat.suite.McpAsyncAuthServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpMainServerSuite;
+import io.openliberty.mcp.internal.fat.suite.McpMonitorServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpStatelessAuthServerSuite;
 import io.openliberty.mcp.internal.fat.suite.McpTelemetryServerSuite;
 import io.openliberty.mcp.internal.fat.timeout.ConfigurableAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.timeout.InvalidAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableSessionTelemetryTest;
+import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
 import io.openliberty.mcp.internal.fat.tool.InvalidSessionTimeoutTest;
+import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
 
 /**
@@ -49,13 +50,12 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 // --- Servers with shared suite lifecycle ---
-                McpAsyncServerSuite.class,         // mcp-server-async
-                McpAuthServerSuite.class,          // mcp-server-auth
-                McpAsyncAuthServerSuite.class,     // mcp-server-async-auth
+                McpAsyncServerSuite.class, // mcp-server-async
+                McpAuthServerSuite.class, // mcp-server-auth
+                McpAsyncAuthServerSuite.class, // mcp-server-async-auth
                 McpStatelessAuthServerSuite.class, // mcp-stateless-server-auth
-                McpTelemetryServerSuite.class,     // mcp-server-telemetry
-
-                // --- mcp-server: all 24 tests share one server (batches 1-5) ---
+                McpTelemetryServerSuite.class, // mcp-server-telemetry
+                McpMonitorServerSuite.class, // mcp-server-monitor-only
                 McpMainServerSuite.class,
 
                 // --- Tests on their own dedicated servers ---
@@ -67,10 +67,12 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 DynamicMcpPathUpdateTest.class,
                 InvalidAsyncTimeoutTest.class,
                 InvalidSessionTimeoutTest.class,
-                McpMonitorMXBeanAccessTest.class,
-                McpMonitorTest.class,
                 StatelessConfigChangeOnRestoreTest.class,
                 StatelessModeTest.class,
+                // These deploy intentionally failing apps on "mcp-server" and start/stop it
+                // themselves, so they must run after McpMainServerSuite has stopped it.
+                DeploymentProblemTest.class,
+                NoParamNameTest.class,
                 // ToolTest must be last on "mcp-server": its LITE-mode @ClassRule repeat
                 // requires server restarts between runs and must not affect prior tests.
                 ToolTest.class,

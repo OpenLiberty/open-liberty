@@ -58,6 +58,15 @@ public class ToolCallEventTraceTest extends FATServletClient {
         serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
+    /**
+     * Marks messages.log and trace.log so that the event trace assertions only see
+     * entries logged after this point. The event trace messages are written to trace.log.
+     */
+    private static void markLogAndTrace() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        serverLifecycle.getServer().setTraceMarkToEndOfDefaultTrace();
+    }
+
     @Test
     public void testEventTraceForSyncToolCall() throws Exception {
         String request = """
@@ -73,12 +82,13 @@ public class ToolCallEventTraceTest extends FATServletClient {
                           }
                         }
                         """;
+        markLogAndTrace();
         client.callMCP(request);
         List<String> expectedEventTraceMsgs = List.of("A tool call request has arrived", "The tool method 'textContentTool' is about to be called",
                                                       "The tool method 'textContentTool' returned: 'Echo: hello'");
 
         for (String traceMsg : expectedEventTraceMsgs) {
-            assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+            assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTraceUsingMark(Pattern.quote(traceMsg)).isEmpty());
         }
 
     }
@@ -98,9 +108,10 @@ public class ToolCallEventTraceTest extends FATServletClient {
                           }
                         }
                         """;
+        markLogAndTrace();
         client.callMCP(request);
         String traceMsg = "The tool method 'echo' returned the following error to the user: 'An internal server error occurred while running the tool.'";
-        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTraceUsingMark(Pattern.quote(traceMsg)).isEmpty());
     }
 
     @Test
@@ -118,9 +129,10 @@ public class ToolCallEventTraceTest extends FATServletClient {
                           }
                         }
                         """;
+        markLogAndTrace();
         client.callMCP(request);
         String traceMsg = "The following error was returned to the user: 'JSONRPCException {code=-32603, message='Internal error', data=[Could not call privateEcho]}'";
-        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTraceUsingMark(Pattern.quote(traceMsg)).isEmpty());
     }
 
     @Test
@@ -136,9 +148,10 @@ public class ToolCallEventTraceTest extends FATServletClient {
                         }
                         """;
 
+        markLogAndTrace();
         client.callMCP(request);
         String traceMsg = "The tool method 'echo' returned the following error to the user: 'The method expected the following arguments but did not receive them: [input].'";
-        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTraceUsingMark(Pattern.quote(traceMsg)).isEmpty());
 
     }
 
@@ -147,6 +160,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
         String sessionId = client.getSessionId();
         assertNotNull("Expected session ID from MCP initialization", sessionId);
 
+        markLogAndTrace();
         client.deleteSession();
 
         String request = """
@@ -173,7 +187,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
                                                               .run(String.class);
 
         String traceMsg = "The following error was returned to the user: 'HTTP 404 - Invalid or Expired Session Id'";
-        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
+        assertTrue("Expected event trace not found: " + traceMsg, !serverLifecycle.getServer().findStringsInLogsAndTraceUsingMark(Pattern.quote(traceMsg)).isEmpty());
     }
 
 }

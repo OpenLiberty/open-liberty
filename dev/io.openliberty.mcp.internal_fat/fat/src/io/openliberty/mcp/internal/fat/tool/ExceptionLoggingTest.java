@@ -43,6 +43,7 @@ public class ExceptionLoggingTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
+        // Expected: the tool method throws an unexpected exception
         serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E"));
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(ExceptionToolApp.class.getPackage());
@@ -67,13 +68,15 @@ public class ExceptionLoggingTest extends FATServletClient {
                           }
                         }
                         """;
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
         List<String> expectedErrorHeaders = List.of("Caused by: java.lang.RuntimeException: Root Exception", "Caused by: java.lang.Exception: Exception at level 0",
                                                     "Caused by: java.lang.Exception: Exception at level 1", "Caused by: java.lang.Exception: Exception at level 2",
                                                     "CWMCM0010E: The exceptionTool tool method threw an unexpected exception. The exception is java.lang.Exception: Exception at level 3");
 
         for (String exc : expectedErrorHeaders) {
-            assertTrue("Expected header not found: " + exc, !serverLifecycle.getServer().findStringsInLogs(exc).isEmpty());
+            assertTrue("Expected header not found: " + exc,
+                       !serverLifecycle.getServer().findStringsInLogsUsingMark(exc, serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
         }
 
     }

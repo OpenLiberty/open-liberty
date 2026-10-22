@@ -13,6 +13,7 @@ import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLif
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -23,8 +24,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
-
-import java.util.List;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
@@ -37,16 +36,32 @@ public class DefaultValueTest extends FATServletClient {
     // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
     private static final String APP_NAME = "defaultValueTest";
 
+    // Messages logged while the app deploys. They are read in setup(), because the request-driven
+    // tests move the log mark forward and would otherwise leave these lines behind it.
+    private static String invalidNoParameterTypeWarning;
+    private static String invalidGenericWarning;
+    private static String endpointMessage;
+
     @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
     
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
-        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0034W", "CWMCM0035W"));
+        serverLifecycle.getServer().addIgnoredErrors(List.of(
+                                                             "CWMCM0034W", // Converter implementation without type parameter
+                                                             "CWMCM0035W" // Converter implementation returns a generic type
+        ));
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(DefaultValueApp.class.getPackage());
         serverLifecycle.deployDropinApp(war);
+
+        invalidNoParameterTypeWarning = serverLifecycle.getServer()
+                                                       .waitForStringInLogUsingMark(Pattern.quote("CWMCM0034W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidNoParameterTypeCustomConverter DefaultValueConverter implementation must specify a type parameter."));
+        invalidGenericWarning = serverLifecycle.getServer()
+                                               .waitForStringInLogUsingMark(Pattern.quote("CWMCM0035W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidGenericConverter DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type."));
+        endpointMessage = serverLifecycle.getServer()
+                                         .waitForStringInLogUsingMark("CWMCM0008I: The MCP server endpoint: .*/defaultValueTest/mcp$");
     }
 
     @AfterClass
@@ -110,6 +125,8 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
 
+        // Only look at log entries produced by this tool call
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String response = client.callMCP(request);
         String expectedResponseString = """
                         {
@@ -127,8 +144,8 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNotNull((serverLifecycle.getServer().waitForStringInLog(Pattern.quote("[PriorityCityConverter] City converter with HIGHER priority used"))));
-        assertNull(serverLifecycle.getServer().waitForStringInLog(Pattern.quote("[CityConverter] City converter with LOWER priority used"), TestConstants.NEGATIVE_TIMEOUT_MS));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark(Pattern.quote("[PriorityCityConverter] City converter with HIGHER priority used")));
+        assertNull(serverLifecycle.getServer().waitForStringInLogUsingMark(Pattern.quote("[CityConverter] City converter with LOWER priority used"), TestConstants.NEGATIVE_TIMEOUT_MS));
     }
 
     @Test
@@ -201,6 +218,8 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
 
+        // Only look at log entries produced by this tool call
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String response = client.callMCP(request);
         String expectedResponseString = """
                         {
@@ -218,18 +237,17 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNull(serverLifecycle.getServer().waitForStringInLog(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), TestConstants.NEGATIVE_TIMEOUT_MS));
+        assertNull(serverLifecycle.getServer().waitForStringInLogUsingMark(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), TestConstants.NEGATIVE_TIMEOUT_MS));
     }
 
     @Test
     public void testWarningsForInvalidCustomConverters() throws Exception {
-        assertNotNull(serverLifecycle.getServer().waitForStringInLog(Pattern.quote("CWMCM0034W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidNoParameterTypeCustomConverter DefaultValueConverter implementation must specify a type parameter.")));
-        assertNotNull(serverLifecycle.getServer().waitForStringInLog(Pattern.quote("CWMCM0035W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidGenericConverter DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type.")));
+        assertNotNull("Expected CWMCM0034W for InvalidNoParameterTypeCustomConverter to be logged at deploy", invalidNoParameterTypeWarning);
+        assertNotNull("Expected CWMCM0035W for InvalidGenericConverter to be logged at deploy", invalidGenericWarning);
     }
 
     @Test
     public void testMcpEndpointMessageCodeIsLogged() throws Exception {
-        assertNotNull("Expected CWMCM0008I message with full MCP URL to appear in the log",
-                      serverLifecycle.getServer().waitForStringInLog("CWMCM0008I: The MCP server endpoint: .*/defaultValueTest/mcp$"));
+        assertNotNull("Expected CWMCM0008I message with full MCP URL to appear in the log", endpointMessage);
     }
 }

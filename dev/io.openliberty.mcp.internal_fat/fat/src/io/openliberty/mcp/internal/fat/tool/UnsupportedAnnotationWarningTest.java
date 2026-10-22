@@ -55,33 +55,33 @@ public class UnsupportedAnnotationWarningTest extends FATServletClient {
     @Test
     public void testWarnOnPromptAnnotation() throws Exception {
         String expected = Pattern.quote("CWMCM0043W: The " + BEAN_CLASS + ".promptMethod method uses the @Prompt annotation which is not supported. This method is ignored.");
-        assertNotNull("Expected CWMCM0043W for @Prompt not found in logs", serverLifecycle.getServer().waitForStringInLog(expected));
+        assertNotNull("Expected CWMCM0043W for @Prompt not found in logs", serverLifecycle.getServer().waitForStringInLogUsingMark(expected)); // Expected unsupported annotation warnings
     }
 
     @Test
     public void testWarnOnResourceAnnotation() throws Exception {
         String expected = Pattern.quote("CWMCM0043W: The " + BEAN_CLASS + ".resourceMethod method uses the @Resource annotation which is not supported. This method is ignored.");
-        assertNotNull("Expected CWMCM0043W for @Resource not found in logs", serverLifecycle.getServer().waitForStringInLog(expected));
+        assertNotNull("Expected CWMCM0043W for @Resource not found in logs", serverLifecycle.getServer().waitForStringInLogUsingMark(expected)); // Expected unsupported annotation warnings
     }
 
     @Test
     public void testWarnOnResourceTemplateAnnotation() throws Exception {
         String expected = Pattern.quote("CWMCM0043W: The " + BEAN_CLASS
                                         + ".resourceTemplateMethod method uses the @ResourceTemplate annotation which is not supported. This method is ignored.");
-        assertNotNull("Expected CWMCM0043W for @ResourceTemplate not found in logs", serverLifecycle.getServer().waitForStringInLog(expected));
+        assertNotNull("Expected CWMCM0043W for @ResourceTemplate not found in logs", serverLifecycle.getServer().waitForStringInLogUsingMark(expected)); // Expected unsupported annotation warnings
     }
 
     @Test
     public void testWarnOnCompletePromptAnnotation() throws Exception {
         String expected = Pattern.quote("CWMCM0043W: The " + BEAN_CLASS
                                         + ".completePromptMethod method uses the @CompletePrompt annotation which is not supported. This method is ignored.");
-        assertNotNull("Expected CWMCM0043W for @CompletePrompt not found in logs", serverLifecycle.getServer().waitForStringInLog(expected));
+        assertNotNull("Expected CWMCM0043W for @CompletePrompt not found in logs", serverLifecycle.getServer().waitForStringInLogUsingMark(expected)); // Expected unsupported annotation warnings
     }
 
     @Test
     public void testWarnOnCompleteResourceTemplateAnnotation() throws Exception {
         String expected = Pattern.quote("CWMCM0043W: The " + BEAN_CLASS
                                         + ".completeResourceTemplateMethod method uses the @CompleteResourceTemplate annotation which is not supported. This method is ignored.");
-        assertNotNull("Expected CWMCM0043W for @CompleteResourceTemplate not found in logs", serverLifecycle.getServer().waitForStringInLog(expected));
+        assertNotNull("Expected CWMCM0043W for @CompleteResourceTemplate not found in logs", serverLifecycle.getServer().waitForStringInLogUsingMark(expected)); // Expected unsupported annotation warnings
     }
 }

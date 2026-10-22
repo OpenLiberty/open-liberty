@@ -59,7 +59,7 @@ public class CancellationTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
-        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E"));
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E")); // Internal server error
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                     .addPackage(CancellationTools.class.getPackage())
@@ -80,7 +80,7 @@ public class CancellationTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        serverLifecycle.undeployDropinApp(EAR_NAME);
+        serverLifecycle.undeployDropinApp(EAR_NAME + ".ear");
     }
 
     @AfterClass

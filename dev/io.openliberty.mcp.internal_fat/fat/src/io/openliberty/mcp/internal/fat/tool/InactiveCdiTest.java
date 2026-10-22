@@ -42,7 +42,7 @@ public class InactiveCdiTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
-        serverLifecycle.getServer().addIgnoredErrors(List.of(CDI_INACTIVE_TRACE_MESSAGE, FILE_NOT_FOUND_ERROR_MESSAGE));
+        serverLifecycle.getServer().addIgnoredErrors(List.of(FILE_NOT_FOUND_ERROR_MESSAGE));
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(InactiveCdiTool.class.getPackage());
         serverLifecycle.deployDropinApp(war);
     }

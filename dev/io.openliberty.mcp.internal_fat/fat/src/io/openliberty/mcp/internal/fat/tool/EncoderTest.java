@@ -623,13 +623,15 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when ContentEncoder throws",
-                      serverLifecycle.getServer().waitForStringInLog("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
-                   serverLifecycle.getServer().findStringsInLogs("CWMCM0010E.*testThrowingContentEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testThrowingContentEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 
     /**
@@ -650,13 +652,15 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when ToolResponseEncoder throws",
-                      serverLifecycle.getServer().waitForStringInLog("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
-                   serverLifecycle.getServer().findStringsInLogs("CWMCM0010E.*testThrowingToolResponseEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testThrowingToolResponseEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 
     /**
@@ -676,13 +680,15 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when async ContentEncoder throws",
-                      serverLifecycle.getServer().waitForStringInLog("CWMCM0019E.*ThrowingContentEncoder.*testAsyncThrowingContentEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingContentEncoder.*testAsyncThrowingContentEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
-                   serverLifecycle.getServer().findStringsInLogs("CWMCM0010E.*testAsyncThrowingContentEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testAsyncThrowingContentEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 
     /**
@@ -702,12 +708,14 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when async ToolResponseEncoder throws",
-                      serverLifecycle.getServer().waitForStringInLog("CWMCM0019E.*ThrowingToolResponseEncoder.*testAsyncThrowingToolResponseEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingToolResponseEncoder.*testAsyncThrowingToolResponseEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
-                   serverLifecycle.getServer().findStringsInLogs("CWMCM0010E.*testAsyncThrowingToolResponseEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testAsyncThrowingToolResponseEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 }

@@ -24,14 +24,12 @@ import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
-import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
-import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
 import io.openliberty.mcp.internal.fat.tool.ToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
@@ -57,37 +55,38 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
  * excluded because its LITE-mode {@code @ClassRule} repeat requires a server restart
  * between repeat runs. It runs as a standalone flat entry in {@code FATSuite} after
  * this suite completes.
+ *
+ * <p>{@link io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest} and
+ * {@link io.openliberty.mcp.internal.fat.tool.NoParamNameTest} are also excluded.
+ * They deploy apps that are meant to fail and need many error codes to be allowed,
+ * and {@code addIgnoredErrors} would apply those to every other test on the shared
+ * server. Their log assertions also do not use a log mark, so on a shared server they
+ * could match entries from earlier tests. They run as standalone flat entries in
+ * {@code FATSuite} on their own server start.
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                // Batch 1
                 BeanLifecycleTest.class,
                 CancellationTest.class,
                 DefaultValueTest.class,
                 EncoderTest.class,
                 ExceptionLoggingTest.class,
-                // Batch 2
                 GenericToolTest.class,
                 HttpTest.class,
                 InactiveCdiTest.class,
                 IntrospectorMultiAppTest.class,
                 LifecycleTest.class,
-                // Batch 3
                 McpUrlPathTest.class,
                 MultiAppIsolationTest.class,
                 MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
-                // Batch 4
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
                 ToolCallEventTraceTest.class,
                 ToolErrorHandlingTest.class,
-                // Batch 5
                 ToolManagerTest.class,
                 UnsupportedAnnotationWarningTest.class,
-                NoParamNameTest.class,
-                DeploymentProblemTest.class,
 })
 public class McpMainServerSuite {
 

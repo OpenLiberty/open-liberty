@@ -90,7 +90,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
         JavaArchive sharedConvertersLib = ShrinkWrap.create(JavaArchive.class, "shared-converters.jar")
                                                     .addPackage("io.openliberty.mcp.internal.fat.convertertools.sharedConverters");
 
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "multi-module.ear")
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME + ".ear")
                                           .addAsModule(encoderModule)
                                           .addAsModule(defaultEncoderModule)
                                           .addAsModule(customConverterModule)
@@ -104,7 +104,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        serverLifecycle.undeployDropinApp(EAR_NAME);
+        serverLifecycle.undeployDropinApp(EAR_NAME + ".ear");
     }
 
     private static String toolCallRequest(String id, String toolName) {
