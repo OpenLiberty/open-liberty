@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpAuthServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
@@ -21,11 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.securityApps.PermitAllTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -35,12 +31,14 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class PermitAllTests extends AbstractPermitAll {
 
-    @Server("mcp-server-auth")
-    public static LibertyServer server;
+    private static final String APP_NAME = "permitAllTools";
+
+    // Do NOT copy McpAuthServerSuite.server into a local static field — it would capture null
+    // because suite fields are assigned after static initializers run in the test class.
     Logger logger = Logger.getLogger(PermitAllTests.class.getName());
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/permitAllTools").build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     /** {@inheritDoc} */
     @Override
@@ -50,16 +48,14 @@ public class PermitAllTests extends AbstractPermitAll {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "permitAllTools.war").addClass(PermitAllTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-        assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
-        // Wait for LTPA configuration to be ready
-        server.waitForLTPAConfigReady();
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addClass(PermitAllTools.class);
+        serverLifecycle.deployDropinApp(war);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLog("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 }
