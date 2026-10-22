@@ -74,6 +74,8 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
+import test.jakarta.data.v1_1.web.Mail.RecipientAddress;
+import test.jakarta.data.v1_1.web.Mail.SenderAddress;
 
 @SuppressWarnings("serial")
 @WebServlet(loadOnStartup = 1, // ensure data from init is available to other servlets
@@ -94,6 +96,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    Mailbox mailbox;
 
     @Inject
     Sectors sectors; // has security roles that will eventually be enforced
@@ -1057,6 +1062,199 @@ public class Data_1_1_Servlet extends FATServlet {
                     throw x;
             }
         }
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the value of
+     * an ElementCollection attribute of an embeddable. This verifies that a dot
+     * can be used to navigate from attributes to subattributes and so on.
+     */
+    @Test
+    public void testFetchingAttributeOfEmbeddable() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(101L, 82, 0.42f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "H115",
+                                                "Building 50, Floor 2",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jay Karta",
+                                                "C220",
+                                                "Building 30, Floor 2",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        mail = mailbox.withRecipientLines(101L)
+                        .orElseThrow();
+
+        // detach the freshly loaded instance so lazy loading can't happen
+        mailbox.detach(mail);
+
+        assertEquals(101L,
+                     mail.id);
+
+        assertEquals(82,
+                     mail.postage);
+
+        assertEquals(0.42f,
+                     mail.weight,
+                     0.001f);
+
+        assertNotNull(mail.recipient);
+        assertNotNull(mail.recipient.address);
+        assertEquals("Rochester",
+                     mail.recipient.address.city);
+        assertEquals("MN",
+                     mail.recipient.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.recipient.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "H115",
+                             "Building 50, Floor 2",
+                             "IBM Rochester Campus"),
+                     mail.recipient.address.lines);
+
+        assertNotNull(mail.sender);
+        assertNotNull(mail.sender.address);
+        assertEquals("Rochester",
+                     mail.sender.address.city);
+        assertEquals("MN",
+                     mail.sender.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.sender.address.zip);
+        // sender.address.lines was not requested by the Fetching annotation,
+        // but we cannot assert that it is unloaded: Hibernate 8.0.0 Beta 3
+        // loads collection attributes under a nested embeddable eagerly even
+        // with a fetch graph that excludes them, EclipseLink loads them eagerly
+        // regardless, and PersistenceUtil.isLoaded raises an exception for them
+        // on EclipseLink.
+
+        mailbox.empty();
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the values of
+     * two ElementCollection attributes of an embeddable. This verifies that a dot
+     * can be used to navigate from attributes to subattributes and so on.
+     */
+    @Test
+    public void testFetchingAttributesOfEmbeddable() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(102L, 140, 1.81f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jake Arta",
+                                                "E206",
+                                                "Building 30, Floor 3",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "A215",
+                                                "Building 50, Floor 3",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        mail = mailbox.withBothLines(102L)
+                        .orElseThrow();
+
+        // detach the freshly loaded instance so lazy loading can't happen
+        mailbox.detach(mail);
+
+        assertEquals(102L,
+                     mail.id);
+
+        assertEquals(140,
+                     mail.postage);
+
+        assertEquals(1.81f,
+                     mail.weight,
+                     0.001f);
+
+        assertNotNull(mail.recipient);
+        assertNotNull(mail.recipient.address);
+        assertEquals("Rochester",
+                     mail.recipient.address.city);
+        assertEquals("MN",
+                     mail.recipient.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.recipient.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jake Arta",
+                             "E206",
+                             "Building 30, Floor 3",
+                             "IBM Rochester Campus"),
+                     mail.recipient.address.lines);
+
+        assertNotNull(mail.sender);
+        assertNotNull(mail.sender.address);
+        assertEquals("Rochester",
+                     mail.sender.address.city);
+        assertEquals("MN",
+                     mail.sender.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.sender.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "A215",
+                             "Building 50, Floor 3",
+                             "IBM Rochester Campus"),
+                     mail.sender.address.lines);
+
+        mailbox.empty();
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the value of
+     * an ElementCollection attribute of an embeddable. The method is also
+     * annotated Select to retrieve only the value of the ElementCollection
+     * attribute.
+     */
+    @Test
+    public void testFetchingSelected() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(103L, 82, 0.36f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jie Karta",
+                                                "G124",
+                                                "Building 25, Floor 3",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "B115",
+                                                "Building 50, Floor 2",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        List<String> lines = mailbox.senderLines(103L)
+                        .orElseThrow();
+
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "B115",
+                             "Building 50, Floor 2",
+                             "IBM Rochester Campus"),
+                     lines);
+
+        mailbox.empty();
     }
 
     /**

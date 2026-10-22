@@ -3272,7 +3272,8 @@ public abstract class QueryInfo {
     }
 
     @Trivial
-    private String getAttributeName(final String name, final boolean failIfNotFound) {
+    protected String getAttributeName(final String name,
+                                      final boolean failIfNotFound) {
         String attributeName;
         int len = name.length();
         if (len > 6 && name.charAt(len - 1) == ')') {
