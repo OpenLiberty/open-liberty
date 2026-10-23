@@ -662,6 +662,11 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     @Override
     public final long getElapsedRunTime(TimeUnit unit) {
+        // Read state first: abort() sets nsQueueEnd/nsRunEnd *before* transitioning
+        // the state to ABORTED. An aborted task never ran, so the run time is
+        // always 0, regardless of timestamp values.
+        if (state.get() == ABORTED)
+            return 0;
         long begin = nsQueueEnd;
         long elapsed = nsRunEnd - begin;
         if (elapsed < 0)

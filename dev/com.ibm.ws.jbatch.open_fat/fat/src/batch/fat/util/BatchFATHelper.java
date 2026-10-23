@@ -53,7 +53,6 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 public abstract class BatchFATHelper {
 
     protected final String DFLT_CTX_ROOT = "batchFAT";
-    public final static String DFLT_PERSISTENCE_DDL = "common/batch-derby.ddl";
     public final static String DFLT_SERVER_XML = "common/server.xml";
     public final static String DFLT_PERSISTENCE_JNDI = "jdbc/batch";
     public final static String DFLT_PERSISTENCE_SCHEMA = "JBATCH";
@@ -215,10 +214,11 @@ public abstract class BatchFATHelper {
         String[] inputVals = { "AAA", "BB", "C", "DDDD", "EEE", "FF", "G", "HHHHH", "IIII", "JJJ", "KK", "L" };
 
         StringBuilder retMe = new StringBuilder();
-        retMe.append("DROP TABLE APP.INTABLE;");
+        retMe.append("DROP TABLE IF EXISTS APP.INTABLE;");
         retMe.append("CREATE TABLE APP.INTABLE("
-                     + "id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) CONSTRAINT APP.INTABLE_PK PRIMARY KEY,"
-                     + "name VARCHAR(512));");
+                     + "id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),"
+                     + "name VARCHAR(512),"
+                     + "CONSTRAINT APP.INTABLE_PK PRIMARY KEY (id));");
 
         for (String inputVal : inputVals) {
             retMe.append("INSERT INTO APP.INTABLE (name) VALUES('" + inputVal + "');");
@@ -231,9 +231,9 @@ public abstract class BatchFATHelper {
      * @return SQL for CREATEing the output table. This table is used by Chunk tests.
      */
     public static String getChunkOutTableSql(String tableName) {
-        return "DROP TABLE " + tableName + ";"
+        return "DROP TABLE IF EXISTS " + tableName + ";"
                + "CREATE TABLE " + tableName
-               + "(name VARCHAR(512) CONSTRAINT " + tableName + "_PK PRIMARY KEY,"
+               + "(name VARCHAR(512) CONSTRAINT " + tableName.replace(".", "_") + "_PK PRIMARY KEY,"
                + "lettercount BIGINT);";
     }
 

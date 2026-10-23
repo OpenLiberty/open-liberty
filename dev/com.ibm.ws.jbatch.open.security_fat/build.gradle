@@ -19,7 +19,7 @@ configurations {
 }
 
 addRequiredLibraries {
-	dependsOn addDerby
+	dependsOn addH2
 	dependsOn addJakartaTransformer
 }
 
