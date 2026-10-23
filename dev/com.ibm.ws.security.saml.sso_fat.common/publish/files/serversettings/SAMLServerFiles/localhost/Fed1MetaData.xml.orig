@@ -19,6 +19,7 @@
 <EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
 	xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:shibmd="urn:mace:shibboleth:metadata:1.0"
 	xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
+        xmlns:xenc11="http://www.w3.org/2009/xmlenc11#"
 	entityID="https://localhost:xxx_IdpSecurePort_xxx/idp/shibboleth">
 
 	<IDPSSODescriptor
@@ -131,7 +132,11 @@
 					</ds:X509Certificate>
 				</ds:X509Data>
 			</ds:KeyInfo>
-
+                        <!-- use rsa-oaep with sha256 digest and mgf1sha256 -->
+			<EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#rsa-oaep">
+				<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+				<xenc11:MGF Algorithm="http://www.w3.org/2009/xmlenc11#mgf1sha256"/>
+			</EncryptionMethod>
 		</KeyDescriptor>
 
 		<ArtifactResolutionService
@@ -253,7 +258,11 @@
 					</ds:X509Certificate>
 				</ds:X509Data>
 			</ds:KeyInfo>
-
+                        <!-- use rsa-oaep with sha256 digest and mgf1sha256 -->
+			<EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#rsa-oaep">
+				<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+				<xenc11:MGF Algorithm="http://www.w3.org/2009/xmlenc11#mgf1sha256"/>
+			</EncryptionMethod>
 		</KeyDescriptor>
 
 		<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding"
