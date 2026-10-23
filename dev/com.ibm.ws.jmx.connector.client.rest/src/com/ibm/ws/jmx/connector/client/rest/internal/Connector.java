@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -278,13 +278,17 @@ public class Connector implements JMXConnector {
         if (!ConnectorSettings.CERTIFICATE_AUTHENTICATION.equals(credentials)) {
             String[] userPass = (String[]) credentials;
             user = userPass[0];
-            JSONConverter converter = JSONConverter.getConverter();
-            try {
-                basicAuthHeader = "Basic " + converter.encodeStringAsBase64(user + ":" + userPass[1]);
-            } catch (ConversionException ce) {
-                throw new IOException("Failure encoding credentials", ce);
-            } finally {
-                JSONConverter.returnConverter(converter);
+            if ("Bearer".equals(user)) {
+                basicAuthHeader = "Bearer " + userPass[1];
+            } else {
+                JSONConverter converter = JSONConverter.getConverter();
+                try {
+                    basicAuthHeader = "Basic " + converter.encodeStringAsBase64(user + ":" + userPass[1]);
+                } catch (ConversionException ce) {
+                    throw new IOException("Failure encoding credentials", ce);
+                } finally {
+                    JSONConverter.returnConverter(converter);
+                }
             }
         }
 
