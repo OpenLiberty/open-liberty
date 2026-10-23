@@ -14,6 +14,8 @@ package com.ibm.ws.security.utility.tasks;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -539,5 +541,44 @@ public class BaseCommandTaskTest {
             }
         }
     }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.utility.tasks.BaseCommandTask#getValue(String)}.
+     * Ensures that Base64 values with single and double '=' trailing padding are preserved.
+     */
+    @Test
+    public void getValue_base64WithPadding() {
+        TestTask task = new TestTask();
+        assertEquals("FAIL: Base64 single '=' trailing padding was stripped",
+                     "SGVsbG8=", task.getValue("--passwordBase64Key=SGVsbG8="));
+        assertEquals("FAIL: Base64 double '==' trailing padding was stripped",
+                     "TWFu==", task.getValue("--base64Key=TWFu=="));
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.utility.tasks.BaseCommandTask#getValue(String)}.
+     * Ensures that a value containing multiple '=' (e.g. a DN) is preserved.
+     */
+    @Test
+    public void getValue_multiEqualsDN() {
+        TestTask task = new TestTask();
+        assertEquals("FAIL: DN value with multiple '=' was not preserved",
+                     "cn=foo,o=ibm,c=us", task.getValue("--dn=cn=foo,o=ibm,c=us"));
+        assertEquals("FAIL: password with leading '=' was not preserved",
+                    "=pass", task.getValue("--passwordBase64Key==pass"))
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.utility.tasks.BaseCommandTask#getValue(String)}.
+     * Ensures that an argument with no value, an empty value, or null returns null.
+     */
+    @Test
+    public void getValue_returnsNullForNoValue() {
+        TestTask task = new TestTask();
+        assertNull("FAIL: Expected null for argument with no '='", task.getValue("--key"));
+        assertNull("FAIL: Expected null for empty value after '='", task.getValue("--key="));
+        assertNull("FAIL: Expected null for null argument", task.getValue(null));
+    }
+
 
 }
