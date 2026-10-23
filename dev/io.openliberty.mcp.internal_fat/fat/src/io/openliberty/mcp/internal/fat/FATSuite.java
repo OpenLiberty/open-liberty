@@ -48,6 +48,11 @@ import io.openliberty.mcp.internal.fat.tool.ConfigurableSessionTelemetryTest;
 import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathAddedToServerXmlAfterStartupTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathFeatureAddedAfterStartupTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathFeatureInServerXmlAppInIncludeTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathIncludePresentAtStartupTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathInlineAtStartupTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateUsingServerXMLIncludesTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
@@ -123,7 +128,12 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 // TestContainer Tests
                 ConformanceTests.class,
                 OidcTests.class,
-                AuthorizationFlowTests.class
+                AuthorizationFlowTests.class,
+                DynamicMcpPathFeatureInServerXmlAppInIncludeTest.class,
+                DynamicMcpPathIncludePresentAtStartupTest.class,
+                DynamicMcpPathAddedToServerXmlAfterStartupTest.class,
+                DynamicMcpPathInlineAtStartupTest.class,
+                DynamicMcpPathFeatureAddedAfterStartupTest.class
 })
 
 public class FATSuite extends TestContainerSuite {
