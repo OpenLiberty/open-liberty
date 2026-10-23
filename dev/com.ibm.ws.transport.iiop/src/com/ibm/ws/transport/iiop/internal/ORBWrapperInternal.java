@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.rmi.CORBA.Util;
 
 import org.apache.felix.scr.ext.annotation.DSExt;
+import org.apache.yoko.osgi.locator.Register;
 import org.omg.CORBA.LocalObject;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
@@ -141,6 +142,14 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
     protected void setConfigAdapter(ConfigAdapter configAdapter) {
         this.configAdapter = configAdapter;
     }
+
+    /**
+     * A mandatory reference to the yoko provider registry, which ensures that the
+     * ORB implementation classes (org.apache.yoko.orb.CORBA.ORB etc.) are registered
+     * in the ProviderLocator before ORB.init() is called during activation.
+     */
+    @Reference
+    protected void setRegister(Register register) {}
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.STATIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setIiopEndpoint(IIOPEndpoint ep) {
