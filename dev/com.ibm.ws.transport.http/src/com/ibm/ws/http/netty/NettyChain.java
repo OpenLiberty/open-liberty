@@ -201,7 +201,20 @@ public class NettyChain extends AbstractHttpChain {
                     Tr.debug(this, tc, "This configuration differs and should cause an update ");
                 }
                 currentConfig = newConfig;
-                if (state.get() != ChainState.UNINITIALIZED) {
+                ChainState currentState = state.get();
+                if (currentState == ChainState.STARTING) {
+                    // A deferred bind (initial startup path) is running on the Liberty
+                    // executor thread inside runWhenServerStarted.  That thread holds no
+                    // lock on NettyChain and will call channelFutureHandler() when it
+                    // finishes, transitioning state to STARTED or STOPPED.
+                    // Calling stopAndWait() here would fire notifyStopped() without a
+                    // matching notifyStarted(), spuriously removing all web apps from
+                    // the virtual host.  Skip the stop; the next update() after the bind
+                    // resolves will see STARTED/STOPPED and handle the config change.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Deferred bind in progress (STARTING), skipping stopAndWait for config change on " + endpointName);
+                    }
+                } else if (currentState != ChainState.UNINITIALIZED) {
                     stopAndWait();
                 }
             }
