@@ -34,8 +34,8 @@ public interface NettyConstants {
     /** Netty enablement */
     String USE_NETTY = "useNettyTransport";
     /** Netty scaler and metrics properties */
-    public static final String SCALER_MIN_THREADS_PROPERTY = "scalerMinThreads";
-    public static final String SCALER_MAX_THREADS_PROPERTY = "scalerMaxThreads";
+    public static final String SCALER_MIN_THREADS_PROPERTY = "eventGroupMinThreads";
+    public static final String SCALER_MAX_THREADS_PROPERTY = "eventGroupMaxThreads";
     public static final String SCALER_WINDOW_PROPERTY = "scalerWindowSize";
     public static final String SCALER_DOWN_THRESHOLD_PROPERTY = "scalerDownThreshold";
     public static final String SCALER_UP_THRESHOLD_PROPERTY = "scalerUpThreshold";
