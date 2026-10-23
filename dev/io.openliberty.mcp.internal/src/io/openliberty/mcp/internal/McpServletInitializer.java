@@ -50,9 +50,6 @@ public class McpServletInitializer implements ServletContainerInitializer {
     public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
         try {
             ToolRegistry registry = ToolRegistry.get();
-            if (!registry.hasTools()) {
-                return;
-            }
             // Register introspector context listener
             context.addListener(new McpIntrospectorContextListener(registry));
 
