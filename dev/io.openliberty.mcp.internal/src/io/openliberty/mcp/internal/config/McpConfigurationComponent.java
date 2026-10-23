@@ -29,7 +29,7 @@ import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
  * determine which application this configuration belongs to.
  */
 @Component(service = McpConfigurationComponent.class,
-           configurationPid = "io.openliberty.mcp.internal.config.McpConfigurationComponent",
+           configurationPid = "mcp",
            configurationPolicy = org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE)
 public class McpConfigurationComponent {
 
@@ -58,9 +58,15 @@ public class McpConfigurationComponent {
         this.servicePid = (String) properties.get("service.pid");
         String moduleName = (String) properties.get("moduleName");
         String path = (String) properties.get("path");
-        boolean stateless = (boolean) properties.get("stateless");
-        long asyncTimeout = (long) properties.get("asyncTimeout");
-        Duration sessionTimeout = Duration.ofSeconds((Long) properties.get("sessionTimeout"));
+        // Use null-safe unboxing with metatype defaults as fallback.
+        // Properties may arrive without metatype-injected defaults when the mcp-1.0 bundle
+        // loads after the <mcp> config element has already been evaluated (late-feature scenario).
+        Boolean statelessObj = (Boolean) properties.get("stateless");
+        boolean stateless = statelessObj != null ? statelessObj : false;
+        Long asyncTimeoutObj = (Long) properties.get("asyncTimeout");
+        long asyncTimeout = asyncTimeoutObj != null ? asyncTimeoutObj : McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS;
+        Long sessionTimeoutObj = (Long) properties.get("sessionTimeout");
+        Duration sessionTimeout = Duration.ofSeconds(sessionTimeoutObj != null ? sessionTimeoutObj : 600L);
 
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);

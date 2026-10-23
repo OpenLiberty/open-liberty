@@ -63,7 +63,7 @@ public class McpServletInitializer implements ServletContainerInitializer {
             McpServerConfigProps configProps = null;
 
             if (appName != null) {
-                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName)).get();
+                configProps = mcpAppTrackerService.run(tracker -> tracker.waitForConfigForModule(appName, moduleName, 30_000)).get();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + moduleName +
                                        ", found: " + (configProps));

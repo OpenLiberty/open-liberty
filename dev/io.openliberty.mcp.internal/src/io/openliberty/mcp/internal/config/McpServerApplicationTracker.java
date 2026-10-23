@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2026 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -93,12 +94,14 @@ public class McpServerApplicationTracker {
         synchronized (this) {
             mcpPidToMcpConfigComponent.put(config.getServicePid(), config);
             updateAppsUsingMcpConfig(config.getServicePid());
+            notifyAll();
         }
     }
 
     protected void updatedMcpConfiguration(McpConfigurationComponent config) {
         synchronized (this) {
             updateAppsUsingMcpConfig(config.getServicePid());
+            notifyAll();
         }
     }
 
@@ -107,6 +110,7 @@ public class McpServerApplicationTracker {
         synchronized (this) {
             mcpPidToMcpConfigComponent.remove(mcpPid);
             updateAppsUsingMcpConfig(mcpPid);
+            notifyAll();
         }
     }
 
@@ -222,6 +226,67 @@ public class McpServerApplicationTracker {
         } else {
             appNameToMcpConfigProps.put(appName, newPropsList);
         }
+    }
+
+    /**
+     * Waits up to {@code timeoutMs} milliseconds for a non-default {@link McpServerConfigProps} to become available
+     * for the given application and module, then returns it.
+     * <p>
+     * Use this in preference to {@link #getConfigForModule} when the caller runs during application startup and
+     * the {@link McpConfigurationComponent} may not yet have been activated by DS (for example when the
+     * {@code mcp-1.0} feature bundle is loading concurrently with the application's servlet initializer).
+     *
+     * @param appName    application name
+     * @param moduleName module name (may include .war suffix for EAR deployments)
+     * @param timeoutMs  maximum time to wait in milliseconds
+     * @return the resolved {@link McpServerConfigProps}, or {@link McpServerConfigProps#DEFAULT_CONFIG} if the timeout
+     *         expires before config becomes available
+     */
+    public McpServerConfigProps waitForConfigForModule(String appName, String moduleName, long timeoutMs) {
+        if (appName == null) {
+            return DEFAULT_CONFIG;
+        }
+
+        // Only wait if the app is known to reference at least one mcp PID.
+        // If it has no mcp configuration at all, return DEFAULT_CONFIG immediately.
+        boolean appHasMcpPids;
+        synchronized (this) {
+            appHasMcpPids = appPidToAppEntry.values().stream()
+                                            .anyMatch(e -> e.appName().equals(appName) && !e.mcpPids().isEmpty());
+        }
+        if (!appHasMcpPids) {
+            return DEFAULT_CONFIG;
+        }
+
+        long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMs);
+        McpServerConfigProps result = getConfigForModule(appName, moduleName);
+
+        while (result == DEFAULT_CONFIG) {
+            long remainingNs = deadline - System.nanoTime();
+            if (remainingNs <= 0) {
+                break;
+            }
+            synchronized (this) {
+                // Re-check under lock before waiting to avoid a missed-notify race
+                result = getConfigForModule(appName, moduleName);
+                if (result != DEFAULT_CONFIG) {
+                    break;
+                }
+                try {
+                    TimeUnit.NANOSECONDS.timedWait(this, Math.min(remainingNs, TimeUnit.MILLISECONDS.toNanos(50)));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+            result = getConfigForModule(appName, moduleName);
+        }
+
+        if (isTracingAndDebugEnabled) {
+            Tr.debug(this, tc, "waitForConfigForModule appName=" + appName + " module=" + moduleName +
+                               " result=" + result + (result == DEFAULT_CONFIG ? " (timed out or no config)" : ""));
+        }
+        return result;
     }
 
     /**

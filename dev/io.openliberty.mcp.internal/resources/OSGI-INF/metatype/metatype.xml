@@ -4,12 +4,12 @@
                    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
-<Designate factoryPid="io.openliberty.mcp.internal.config.McpConfigurationComponent">
-    <Object ocdref="io.openliberty.mcp.internal.config.McpConfigurationComponent" />
+<Designate factoryPid="mcp">
+    <Object ocdref="mcp" />
 </Designate>
 
 <OCD name="%mcp.name" description="%mcp.description"
-     id="io.openliberty.mcp.internal.config.McpConfigurationComponent"
+     id="mcp"
      ibm:childAlias="mcp"
      ibm:parentPid="com.ibm.ws.app.manager"
      ibm:supportHiddenExtensions="true">
