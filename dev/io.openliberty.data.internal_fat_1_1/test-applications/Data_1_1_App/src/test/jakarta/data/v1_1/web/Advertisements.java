@@ -48,7 +48,7 @@ public interface Advertisements extends DataRepository<Advertisement, Integer> {
     boolean changeTimeShown(int id, LocalDateTime newTime);
 
     @Delete
-    List<Billboard> dismantle(@By("location") String position,
+    List<Billboard> dismantle(@By(_Billboard.LOCATION) String position,
                               Restriction<? super Billboard> filter);
 
     @Update
