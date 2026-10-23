@@ -58,20 +58,100 @@ public class McpConfigurationComponent {
         this.servicePid = (String) properties.get("service.pid");
         String moduleName = (String) properties.get("moduleName");
         String path = (String) properties.get("path");
-        // Use null-safe unboxing with metatype defaults as fallback.
-        // Properties may arrive without metatype-injected defaults when the mcp-1.0 bundle
-        // loads after the <mcp> config element has already been evaluated (late-feature scenario).
-        Boolean statelessObj = (Boolean) properties.get("stateless");
-        boolean stateless = statelessObj != null ? statelessObj : false;
-        Long asyncTimeoutObj = (Long) properties.get("asyncTimeout");
-        long asyncTimeout = asyncTimeoutObj != null ? asyncTimeoutObj : McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS;
-        Long sessionTimeoutObj = (Long) properties.get("sessionTimeout");
-        Duration sessionTimeout = Duration.ofSeconds(sessionTimeoutObj != null ? sessionTimeoutObj : 600L);
+        // Properties for duration and boolean fields may arrive in three forms depending
+        // on when Config Admin delivers the configuration relative to metatype processing:
+        //   (a) already converted: Long (for durations) or Boolean
+        //   (b) raw string from XML: e.g. "5s", "600s", "true" — when a transient
+        //       pre-metatype config entry is activated before type conversion runs
+        //   (c) absent (null): when the mcp-1.0 bundle loads after the config was first
+        //       evaluated and the entry carries no defaults yet
+        // All three cases are handled below; defaults match the metatype declarations.
+        boolean stateless = toBoolean(properties.get("stateless"), false);
+        long asyncTimeout = toDurationMs(properties.get("asyncTimeout"), McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS);
+        Duration sessionTimeout = Duration.ofSeconds(toDurationS(properties.get("sessionTimeout"), 600L));
 
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);
 
         this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout);
+    }
+
+    /**
+     * Converts a config property value to a boolean.
+     * Handles Long (already converted by metatype, though unusual for Boolean),
+     * Boolean (normal metatype-converted case), String ("true"/"false" from
+     * a pre-metatype config entry), or null (absent — use defaultValue).
+     */
+    private static boolean toBoolean(Object value, boolean defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        }
+        return Boolean.parseBoolean(value.toString());
+    }
+
+    /**
+     * Converts a config property value to a duration in milliseconds.
+     * The metatype declares {@code ibm:type="duration(ms)"} which Liberty converts
+     * to a Long. A pre-metatype config entry delivers the raw XML string instead
+     * (e.g. "5s", "30s", "500ms"). Null means the property is absent; use defaultMs.
+     */
+    private static long toDurationMs(Object value, long defaultMs) {
+        if (value == null) {
+            return defaultMs;
+        }
+        if (value instanceof Long) {
+            return (Long) value;
+        }
+        return parseLibertyDurationToMs(value.toString(), defaultMs);
+    }
+
+    /**
+     * Converts a config property value to a duration in seconds.
+     * The metatype declares {@code ibm:type="duration(s)"} which Liberty converts
+     * to a Long. A pre-metatype config entry delivers the raw XML string instead
+     * (e.g. "600s", "10m"). Null means the property is absent; use defaultS.
+     */
+    private static long toDurationS(Object value, long defaultS) {
+        if (value == null) {
+            return defaultS;
+        }
+        if (value instanceof Long) {
+            return (Long) value;
+        }
+        // Convert to ms first, then to seconds
+        return parseLibertyDurationToMs(value.toString(), defaultS * 1000L) / 1000L;
+    }
+
+    /**
+     * Parses a Liberty duration string (e.g. "5s", "500ms", "2m", "1h") to milliseconds.
+     * Returns {@code defaultMs} if the string is null, empty, or not parseable.
+     * Liberty duration strings use suffix units: ms, s, m, h, d.
+     */
+    private static long parseLibertyDurationToMs(String value, long defaultMs) {
+        if (value == null || value.isEmpty()) {
+            return defaultMs;
+        }
+        try {
+            if (value.endsWith("ms")) {
+                return Long.parseLong(value.substring(0, value.length() - 2).trim());
+            } else if (value.endsWith("s")) {
+                return Long.parseLong(value.substring(0, value.length() - 1).trim()) * 1000L;
+            } else if (value.endsWith("m")) {
+                return Long.parseLong(value.substring(0, value.length() - 1).trim()) * 60_000L;
+            } else if (value.endsWith("h")) {
+                return Long.parseLong(value.substring(0, value.length() - 1).trim()) * 3_600_000L;
+            } else if (value.endsWith("d")) {
+                return Long.parseLong(value.substring(0, value.length() - 1).trim()) * 86_400_000L;
+            } else {
+                // Plain number with no unit — treat as milliseconds
+                return Long.parseLong(value.trim());
+            }
+        } catch (NumberFormatException e) {
+            return defaultMs;
+        }
     }
 
     /**
