@@ -575,7 +575,7 @@ public class Data_1_1_Servlet extends FATServlet {
 
     /**
      * A repository method can declare a Constraint on a supertype of an
-     * entity attribute that is convertable to the attribute type. This
+     * entity attribute that is convertible to the attribute type. This
      * behavior works without being explicitly required by Jakarta Data.
      * This test guards against regression.
      */
