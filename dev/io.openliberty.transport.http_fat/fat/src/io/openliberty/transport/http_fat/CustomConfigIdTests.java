@@ -103,6 +103,8 @@ public class CustomConfigIdTests {
      */
     @Test
     public void testCustomCompressionApplied() throws Exception {
+        System.out.println("[DIAG] >>> testCustomCompressionApplied START - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
         
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -121,6 +123,8 @@ public class CustomConfigIdTests {
         } finally {
             conn.disconnect();
         }
+        System.out.println("[DIAG] <<< testCustomCompressionApplied END - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
     }
 
     /**
@@ -142,6 +146,8 @@ public class CustomConfigIdTests {
      */
     @Test
     public void testCustomSameSiteApplied() throws Exception {
+        System.out.println("[DIAG] >>> testCustomSameSiteApplied START - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort()
                           + "/" + APP_NAME + "/cookie");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -178,12 +184,18 @@ public class CustomConfigIdTests {
             while (elapsed < cookieTimeout) {
                 List<String> cookieLines = server.findStringsInFileInLibertyServerRoot(
                         "GET /ConfigTest/cookie", "logs/http_access.log");
+                System.out.println("[DIAG] testCustomSameSiteApplied finally poll elapsed=" + elapsed
+                         + "ms - http_access.log lines: "
+                         + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size()
+                         + ", cookieLines found: " + cookieLines.size());
                 if (!cookieLines.isEmpty()) {
                     break;
                 }
                 Thread.sleep(pollInterval);
                 elapsed += pollInterval;
             }
+            System.out.println("[DIAG] <<< testCustomSameSiteApplied END - http_access.log lines: "
+                     + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
         }
     }
 
@@ -211,7 +223,10 @@ public class CustomConfigIdTests {
      */
     @Test
     public void testDefaultAccessLoggingNotIgnored() throws Exception {
+        System.out.println("[DIAG] >>> testDefaultAccessLoggingNotIgnored START - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
         Integer initialLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
+        System.out.println("[DIAG] testDefaultAccessLoggingNotIgnored initialLineCount=" + initialLineCount);
 
         // Make a request to generate access log entry
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/");

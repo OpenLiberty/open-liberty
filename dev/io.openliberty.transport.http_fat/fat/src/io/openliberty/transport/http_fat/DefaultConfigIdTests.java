@@ -97,6 +97,8 @@ public class DefaultConfigIdTests {
      */
     @Test
     public void testDefaultCompressionIgnored() throws Exception {
+        System.out.println("[DIAG] >>> testDefaultCompressionIgnored START - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -114,10 +116,12 @@ public class DefaultConfigIdTests {
         } finally {
             conn.disconnect();
         }
+        System.out.println("[DIAG] <<< testDefaultCompressionIgnored END - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
     }
 
     /**
-     * Testing that defaultRemoteIp configuration is ignored. No messages should appear in the trace. 
+     * Testing that defaultRemoteIp configuration is ignored. No messages should appear in the trace.
      */
     @Test
     public void testDefaultRemoteIpIgnored() throws Exception {
@@ -136,6 +140,8 @@ public class DefaultConfigIdTests {
      */
     @Test
     public void testDefaultSameSiteIgnored() throws Exception {
+        System.out.println("[DIAG] >>> testDefaultSameSiteIgnored START - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
 
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort()
                           + "/" + APP_NAME + "/cookie");
@@ -171,12 +177,18 @@ public class DefaultConfigIdTests {
             while (elapsed < cookieTimeout) {
                 List<String> cookieLines = server.findStringsInFileInLibertyServerRoot(
                         "GET /ConfigTest/cookie", "logs/http_access.log");
+                System.out.println("[DIAG] testDefaultSameSiteIgnored finally poll elapsed=" + elapsed
+                         + "ms - http_access.log lines: "
+                         + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size()
+                         + ", cookieLines found: " + cookieLines.size());
                 if (!cookieLines.isEmpty()) {
                     break;
                 }
                 Thread.sleep(pollInterval);
                 elapsed += pollInterval;
             }
+            System.out.println("[DIAG] <<< testDefaultSameSiteIgnored END - http_access.log lines: "
+                     + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
         }
     }
 
@@ -211,9 +223,12 @@ public class DefaultConfigIdTests {
      */
     @Test
     public void testDefaultAccessLoggingNotIgnored() throws Exception {
+        System.out.println("[DIAG] >>> testDefaultAccessLoggingNotIgnored START - http_access.log lines: "
+                 + server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size());
         LOG.info("Testing that defaultAccessLogging configuration is NOT ignored (exception)");
 
         Integer initialLineCount = server.findStringsInFileInLibertyServerRoot("GET", "logs/http_access.log").size();
+        System.out.println("[DIAG] testDefaultAccessLoggingNotIgnored initialLineCount=" + initialLineCount);
 
         // Make a request to generate access log entry
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/");
@@ -252,5 +267,6 @@ public class DefaultConfigIdTests {
         // Pattern: %h %u "%r" %s %b
         assertTrue("Access log entry does not match expected format '%h %u \"%r\" %s %b'. Entry: " + lastLine,
                    lastLine.matches(".*127\\.0\\.0\\.1 - \"GET / HTTP/1\\.1\" 200 \\d+.*"));
+        System.out.println("[DIAG] <<< testDefaultAccessLoggingNotIgnored END - http_access.log lines: " + lines.size());
     }
 }
