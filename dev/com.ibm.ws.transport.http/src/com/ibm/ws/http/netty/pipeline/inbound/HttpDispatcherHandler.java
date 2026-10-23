@@ -527,10 +527,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
 
         final ChannelPipeline p = ctx.pipeline();
-        CompletableFuture<Void> promise = null;
+        CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise == null) {
+            promise = new CompletableFuture<>();
+            ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        }
         try{
-            promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-
+            if (promise.isCompletedExceptionally()) {
+                return;
+            }
             // Remove HTTP handlers that must not see post-101 bytes
             removeIfPresent(p, HttpServerCodec.class);
             removeIfPresent(p, HttpObjectAggregator.class);
@@ -605,7 +610,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 try {
                     upgrade.channelReadComplete(upgCtx);
                 } catch (Exception ignore) {}
-            } 
+            } else {
+                throw new IllegalStateException("101 upgrade handler was not installed");
+            }
 
             ctx.channel().attr(NettyHttpConstants.UPGRADED).set(Boolean.TRUE);
             ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
@@ -632,19 +639,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 }
             }
 
+            promise.complete(null);
+        } catch (RuntimeException | Error failure) {
+            promise.completeExceptionally(failure);
+            throw failure;
         } finally{
-            try {
-                promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-                if (promise == null){
-                    ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(CompletableFuture.completedFuture(null));
-                } else if(!promise.isDone()){
-                    promise.complete(null);
-                }
-            } catch (Throwable ignore) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "onUpgradeCommitted: callback not called due to promise exception.");
-                }
-            }
             upgradingNow = false;
         }
     }
