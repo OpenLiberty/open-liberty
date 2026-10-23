@@ -34,7 +34,7 @@ public interface _Billboard extends _Advertisement {
     TemporalAttribute<Billboard, LocalDate> lastDay = TemporalAttribute //
                     .of(Billboard.class, LASTDAY, LocalDate.class);
 
-    TextAttribute<Billboard> sponsor = TextAttribute //
+    TextAttribute<Billboard> location = TextAttribute //
                     .of(Billboard.class, LOCATION);
 
 }
