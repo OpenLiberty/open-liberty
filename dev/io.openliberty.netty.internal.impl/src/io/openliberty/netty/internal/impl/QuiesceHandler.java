@@ -10,12 +10,15 @@
 package io.openliberty.netty.internal.impl;
 
 import java.util.concurrent.Callable;
+import java.util.function.BooleanSupplier;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.AttributeKey;
 
 /**
  * Channel handler added to the pipeline that reacts to quiesce events.
@@ -25,6 +28,20 @@ import io.netty.channel.ChannelHandlerContext;
 public class QuiesceHandler extends ChannelDuplexHandler {
 
     public static final QuiesceEvent QUIESCE_EVENT = new QuiesceEvent();
+
+    /**
+     * Set on a channel once the quiesce event has been handled and has propagated through the
+     * rest of its pipeline. For an endpoint channel this means its registered quiesce task has run.
+     * This is the Netty equivalent of a chain having been quiesced in the channel framework.
+     */
+    public static final AttributeKey<Boolean> QUIESCE_COMPLETE = AttributeKey.valueOf("io.openliberty.netty.quiesceComplete");
+
+    /**
+     * Optional. A protocol layer can set this on a connection to report whether it is still serving
+     * work that quiesce should wait for (for example an HTTP request in progress). A connection
+     * without one is treated as idle once its quiesce handling has completed.
+     */
+    public static final AttributeKey<BooleanSupplier> IN_FLIGHT = AttributeKey.valueOf("io.openliberty.netty.quiesceInFlight");
 
     private static final TraceComponent tc = Tr.register(QuiesceHandler.class, NettyConstants.NETTY_TRACE_NAME,
                                                          NettyConstants.BASE_BUNDLE);
@@ -77,12 +94,32 @@ public class QuiesceHandler extends ChannelDuplexHandler {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received Quiesce Event for " + ctx.channel() + " with callable: " + quiesceTask);
             }
-            handleQuiesce();
-            ctx.fireUserEventTriggered(evt);
+            try {
+                handleQuiesce();
+                ctx.fireUserEventTriggered(evt);
+            } finally {
+                ctx.channel().attr(QUIESCE_COMPLETE).set(Boolean.TRUE);
+            }
             return;
         }
             super.userEventTriggered(ctx, evt);
         
+    }
+
+    /**
+     * @return true if the channel has finished handling the quiesce event.
+     */
+    public static boolean isQuiesceComplete(Channel channel) {
+        return Boolean.TRUE.equals(channel.attr(QUIESCE_COMPLETE).get());
+    }
+
+    /**
+     * @return true if the protocol layer reports that the connection is still serving work.
+     *         A connection that has not registered an {@link #IN_FLIGHT} supplier is never in flight.
+     */
+    public static boolean isInFlight(Channel channel) {
+        BooleanSupplier inFlight = channel.attr(IN_FLIGHT).get();
+        return inFlight != null && inFlight.getAsBoolean();
     }
 
     /**
