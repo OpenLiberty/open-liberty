@@ -45,6 +45,7 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
  * UT-5 externalURLPrefix overrides virtual host URL construction (regression guard)
  * UT-6 deactivate() releases the directly-obtained virtual host service
  * UT-7 the beta propagation attribute is ignored outside a beta edition and honoured within one
+ * UT-8 modified() preserves active configuration without mutating state
  */
 public class WSATConfigServiceImplTest {
 
@@ -413,5 +414,37 @@ public class WSATConfigServiceImplTest {
 
         // No value at all: no default was supplied (the public feature is not enabled)
         assertFalse(activate(baseProperties()).isCheckWsdlMode());
+    }
+
+    // -----------------------------------------------------------------------
+    // UT-8: modified() preserves active configuration
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void testModifiedPreservesActiveConfiguration() throws Exception {
+        System.setProperty(BETA_PROPERTY, "true");
+
+        Map<String, Object> props = baseProperties();
+        props.put("virtualHostRef", "default_host");
+        props.put("sslEnabled", false);
+        props.put("propagation", "always");
+
+        WSATConfigServiceImpl impl = activate(props);
+        assertEquals("http://host:9080/ibm/wsatservice", impl.getWSATUrl());
+        assertFalse(impl.isSSLEnabled());
+        assertFalse(impl.isCheckWsdlMode());
+
+        // Invoke modified with changed properties
+        Map<String, Object> updatedProps = baseProperties();
+        updatedProps.put("virtualHostRef", "wsatHost");
+        updatedProps.put("sslEnabled", true);
+        updatedProps.put("propagation", "check_wsdl");
+
+        impl.modified(updatedProps);
+
+        // Active instance must continue returning original configuration (deferred to restart)
+        assertEquals("http://host:9080/ibm/wsatservice", impl.getWSATUrl());
+        assertFalse(impl.isSSLEnabled());
+        assertFalse(impl.isCheckWsdlMode());
     }
 }
