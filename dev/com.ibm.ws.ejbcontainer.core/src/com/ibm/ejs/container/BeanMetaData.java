@@ -2604,6 +2604,21 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
     }
 
     /**
+     * Returns the logical name of the application containing this bean, or
+     * <tt>null</tt> if the bean is in a standalone module.
+     */
+    public String getApplicationLogicalName() {
+        return _moduleMetaData.getEJBApplicationMetaData().getLogicalName();
+    }
+
+    /**
+     * Returns the logical name of the module containing this bean.
+     */
+    public String getModuleLogicalName() {
+        return _moduleMetaData.ivLogicalName;
+    }
+
+    /**
      * Returns true if this stateful session EJB can be passivated.
      */
     public boolean isPassivationCapable() {
