@@ -14,6 +14,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -222,10 +223,11 @@ public class ServerLifecycleRule implements TestRule {
 
     /**
      * Removes the {@code <application>} entry for {@code appName} from server.xml,
-     * waits for the app to stop, then deletes the WAR file.
+     * waits for the app to stop, then deletes the application file.
      *
-     * @param appName the application name (without {@code .war} suffix) that was
-     *     previously deployed via {@link #deployWithConfiguration(WebArchive, Consumer)}
+     * @param appName the application name that was previously deployed via
+     *     {@link #deployWithConfiguration(WebArchive, Consumer)}. May include a
+     *     {@code .war} or {@code .ear} extension; {@code .war} is assumed if there is none.
      * @throws RuntimeException if the app does not stop
      * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, String)
      */
@@ -250,23 +252,24 @@ public class ServerLifecycleRule implements TestRule {
     }
 
     /**
-     * Deploys {@code war} to the server's {@code dropins/} directory.
+     * Deploys {@code archive} to the server's {@code dropins/} directory.
      *
      * The method waits for the app to start before returning.
      *
-     * @param war the archive to deploy; its name is used as the file name
+     * @param archive the {@code .war} or {@code .ear} to deploy; its name is used as the file name
      * @throws Exception if the app does not start
      */
-    public void deployDropinApp(WebArchive war) throws Exception {
+    public void deployDropinApp(Archive<?> archive) throws Exception {
         assertRunning();
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, archive, SERVER_ONLY);
     }
 
     /**
-     * Removes a dropin WAR from the server's {@code dropins/} directory and
+     * Removes a dropin application from the server's {@code dropins/} directory and
      * deregisters it from framework validation.
      *
-     * @param appName the application name (without {@code .war} suffix)
+     * @param appName the application name. May include a {@code .war} or {@code .ear}
+     *     extension; {@code .war} is assumed if there is none.
      * @throws RuntimeException if the app does not stop
      * @see McpDeployHelper#undeployDropinApp(LibertyServer, String)
      */

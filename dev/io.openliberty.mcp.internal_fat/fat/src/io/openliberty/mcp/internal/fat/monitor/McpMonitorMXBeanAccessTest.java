@@ -9,8 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.monitor;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertNotNull;
+import static io.openliberty.mcp.internal.fat.suite.McpMonitorServerSuite.serverLifecycle;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -20,11 +21,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.monitor.mxbeanAccessApp.McpMXBeanAccessServlet;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
@@ -47,11 +44,9 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     private static final String APP_NAME = "mcpMXBeanAccessTest";
     private static final String SERVLET = APP_NAME + "/McpMXBeanAccessServlet";
 
-    @Server("mcp-server-monitor-only")
-    public static LibertyServer server;
-
+    // Server is managed by McpMonitorServerSuite — do NOT add @Server or copy the field here.
     @Rule
-    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     /** Calls the {@code add} tool which succeeds (status "ok", no error type). */
     private static final String ADD_REQUEST = """
@@ -86,22 +81,19 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E"));
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage())
                                    .addPackage(McpMXBeanAccessServlet.class.getPackage())
                                    .addAsManifestResource(McpMonitorMXBeanAccessTest.class.getResource("permissions.xml"), "permissions.xml");
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
-        assertNotNull("Server should be ready (CWWKF0011I)",
-                      server.waitForStringInLog("CWWKF0011I"));
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("CWMCM0010E");
-        }
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     /**
@@ -112,7 +104,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     @Test
     public void testOperationMXBeanStringAttributesReadable() throws Exception {
         client.callMCP(ADD_REQUEST);
-        runTest(server, SERVLET, "testOperationMXBeanStringAttributesReadable");
+        runTest(serverLifecycle.getServer(), SERVLET, "testOperationMXBeanStringAttributesReadable");
     }
 
     /**
@@ -123,7 +115,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public void testOperationMXBeanNumericAttributesReadable() throws Exception {
         client.callMCP(ADD_REQUEST);
         client.callMCP(ADD_REQUEST);
-        runTest(server, SERVLET, "testOperationMXBeanNumericAttributesReadable");
+        runTest(serverLifecycle.getServer(), SERVLET, "testOperationMXBeanNumericAttributesReadable");
     }
 
     /**
@@ -134,7 +126,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     @Test
     public void testOperationMXBeanCompositeAttributesReadable() throws Exception {
         client.callMCP(ADD_REQUEST);
-        runTest(server, SERVLET, "testOperationMXBeanCompositeAttributesReadable");
+        runTest(serverLifecycle.getServer(), SERVLET, "testOperationMXBeanCompositeAttributesReadable");
     }
 
     /**
@@ -144,7 +136,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public void testOperationMXBeanCountAccumulates() throws Exception {
         client.callMCP(TOOLS_LIST_REQUEST);
         client.callMCP(TOOLS_LIST_REQUEST);
-        runTest(server, SERVLET, "testOperationMXBeanCountAccumulates");
+        runTest(serverLifecycle.getServer(), SERVLET, "testOperationMXBeanCountAccumulates");
     }
 
     /**
@@ -155,7 +147,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public void testSessionMXBeanStringAttributesReadable() throws Exception {
         client.callMCP(ADD_REQUEST);
         client.deleteSession();
-        runTest(server, SERVLET, "testSessionMXBeanStringAttributesReadable");
+        runTest(serverLifecycle.getServer(), SERVLET, "testSessionMXBeanStringAttributesReadable");
     }
 
     /**
@@ -166,7 +158,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public void testSessionMXBeanNumericAttributesReadable() throws Exception {
         client.callMCP(ADD_REQUEST);
         client.deleteSession();
-        runTest(server, SERVLET, "testSessionMXBeanNumericAttributesReadable");
+        runTest(serverLifecycle.getServer(), SERVLET, "testSessionMXBeanNumericAttributesReadable");
     }
 
     /**
@@ -177,7 +169,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public void testSessionMXBeanCompositeAttributesReadable() throws Exception {
         client.callMCP(ADD_REQUEST);
         client.deleteSession();
-        runTest(server, SERVLET, "testSessionMXBeanCompositeAttributesReadable");
+        runTest(serverLifecycle.getServer(), SERVLET, "testSessionMXBeanCompositeAttributesReadable");
     }
 
     /**
@@ -188,7 +180,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     @Test
     public void testOperationMBeanObjectNameKeyProperties() throws Exception {
         client.callMCP(ADD_REQUEST);
-        runTest(server, SERVLET, "testOperationMBeanObjectNameKeyProperties");
+        runTest(serverLifecycle.getServer(), SERVLET, "testOperationMBeanObjectNameKeyProperties");
     }
 
     /**
@@ -198,7 +190,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     @Test
     public void testNonToolCallMBeanHasNoToolNameProperty() throws Exception {
         client.callMCP(TOOLS_LIST_REQUEST);
-        runTest(server, SERVLET, "testNonToolCallMBeanHasNoToolNameProperty");
+        runTest(serverLifecycle.getServer(), SERVLET, "testNonToolCallMBeanHasNoToolNameProperty");
     }
 
     /**
@@ -209,7 +201,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public void testSessionMBeanObjectNameKeyProperties() throws Exception {
         client.callMCP(PING_REQUEST);
         client.deleteSession();
-        runTest(server, SERVLET, "testSessionMBeanObjectNameKeyProperties");
+        runTest(serverLifecycle.getServer(), SERVLET, "testSessionMBeanObjectNameKeyProperties");
     }
 
     /**
@@ -219,7 +211,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     @Test
     public void testOperationMBeanInfoContainsAllInterfaceAttributes() throws Exception {
         client.callMCP(ADD_REQUEST);
-        runTest(server, SERVLET, "testOperationMBeanInfoContainsAllInterfaceAttributes");
+        runTest(serverLifecycle.getServer(), SERVLET, "testOperationMBeanInfoContainsAllInterfaceAttributes");
     }
 
     /**
@@ -230,6 +222,6 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public void testSessionMBeanInfoContainsAllInterfaceAttributes() throws Exception {
         client.callMCP(PING_REQUEST);
         client.deleteSession();
-        runTest(server, SERVLET, "testSessionMBeanInfoContainsAllInterfaceAttributes");
+        runTest(serverLifecycle.getServer(), SERVLET, "testSessionMBeanInfoContainsAllInterfaceAttributes");
     }
 }

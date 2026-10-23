@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.protocol;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
@@ -26,11 +26,7 @@ import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.protocolVersionApp.ProtocolVersionTestTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -38,24 +34,22 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class ProtocolVersionSchemaTest {
 
-    @Rule
-    public McpClient client = McpClient.builder(server, "/protocolVersionSchemaTest").build();
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "protocolVersionSchemaTest";
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    @Rule
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "protocolVersionSchemaTest.war").addPackage(ProtocolVersionTestTools.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(ProtocolVersionTestTools.class.getPackage());
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -72,7 +66,7 @@ public class ProtocolVersionSchemaTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionSchemaTest/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                    .requestProp(MCP_PROTOCOL_VERSION, "2025-03-26")
                                                                                    .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                                    .jsonBody(request)
@@ -112,7 +106,7 @@ public class ProtocolVersionSchemaTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionSchemaTest/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                    .requestProp(MCP_PROTOCOL_VERSION, "2025-11-25")
                                                                                    .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                                    .jsonBody(request)
@@ -155,7 +149,7 @@ public class ProtocolVersionSchemaTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionSchemaTest/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                    .requestProp(MCP_PROTOCOL_VERSION, "2025-11-25")
                                                                                    .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                                    .jsonBody(request)
@@ -228,7 +222,7 @@ public class ProtocolVersionSchemaTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionSchemaTest/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                    .requestProp(MCP_PROTOCOL_VERSION, "2025-03-26")
                                                                                    .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                                    .jsonBody(request)
@@ -282,7 +276,7 @@ public class ProtocolVersionSchemaTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionSchemaTest/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp").requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                    .requestProp(MCP_PROTOCOL_VERSION, "2025-03-26")
                                                                                    .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                                    .jsonBody(request)
