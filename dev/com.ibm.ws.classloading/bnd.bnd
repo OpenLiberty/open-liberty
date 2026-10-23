@@ -66,6 +66,7 @@ Service-Component: \
 instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.artifact.url;version=latest,\
 	com.ibm.ws.kernel.security.thread,\

@@ -19,6 +19,7 @@ import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIP
 import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
 
+import java.util.HashSet;
 import java.io.File;
 import java.io.PrintWriter;
 import java.lang.instrument.ClassFileTransformer;
@@ -53,6 +54,10 @@ import org.osgi.framework.BundleListener;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
+import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -93,6 +98,7 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.classloading.ClassTransformer;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.classloading.ResourceProvider;
+import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
@@ -125,6 +131,28 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     private final CanonicalStore<String, ThreadContextClassLoader> tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
     private final RegionDigraph digraph;
     private final ClassRedefiner redefiner;
+    /**
+     * Optional reference to the application recycle coordinator; used to recycle applications
+     * when a feature bundle is uninstalled. OPTIONAL/DYNAMIC to avoid an OSGi dependency cycle
+     * (com.ibm.ws.app.manager.lifecycle must not depend on com.ibm.ws.classloading).
+     */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
+    protected volatile ApplicationRecycleCoordinator recycleCoordinator;
+
+    /**
+     * Synchronous so that it runs while the stopping bundle's wiring is still intact.
+     * By {@code UNINSTALLED} the wiring is gone; at {@code UNRESOLVED} it is only readable on a
+     * best-effort basis.
+     */
+    private final SynchronousBundleListener stoppingListener = new SynchronousBundleListener() {
+        @Override
+        public void bundleChanged(BundleEvent event) {
+            if (event.getType() == BundleEvent.STOPPING) {
+                evictLoadersWiredToBundle(event.getBundle());
+            }
+        }
+    };
+
     private final BundleListener listener = new BundleListener() {
         @Override
         public void bundleChanged(BundleEvent event) {
@@ -224,6 +252,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
         systemContext.addBundleListener(listener);
+        systemContext.addBundleListener(stoppingListener);
     }
 
     @Deactivate
@@ -233,6 +262,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
         systemContext.removeBundleListener(listener);
+        systemContext.removeBundleListener(stoppingListener);
         this.cleanupRememberedBundles();
         this.resourceProviders.clear();
     }
@@ -566,8 +596,11 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
 
     /** create a listener to remove a loader from the canonical store on library update */
     private void listenForLibraryChanges(String libid, AppClassLoader acl) {
+        // Capture the identity at listener-creation time. The ACL may be GC'd by the time
+        // update() fires, but the identity is needed to determine whether to recycle an app.
+        final ClassLoaderIdentity identity = acl.getKey();
         // ensure this loader is removed from the canonical store when the library is updated
-        new WeakLibraryListener(libid, acl.getKey().getId(), acl, bundleContext) {
+        new WeakLibraryListener(libid, identity.getId(), acl, bundleContext) {
             @Override
             protected void update() {
                 AppClassLoader cl = get();
@@ -575,6 +608,19 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                     aclStore.remove(cl);
                 }
                 deregister();
+
+                // E3b: a fileset on-disk change fires notifyListeners(false) via FilesetListener
+                // and reaches this update() callback. The bundle-wiring based eviction
+                // (evictLoadersWiredToBundle) is not involved, so we must push the recycle here.
+                // Only top-level module loaders represent a running application to recycle;
+                // shared-library loaders (domain "Shared Library" / SPI) are eviction-only.
+                if (isTopLevelAppDomain(identity.getDomain())) {
+                    String appName = extractAppName(identity.getId());
+                    ApplicationRecycleCoordinator coord = recycleCoordinator;
+                    if (coord != null) {
+                        coord.recycleApplications(Collections.singleton(appName));
+                    }
+                }
             }
         };
     }
@@ -897,6 +943,146 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                 out.println("    " + ste.toString());
             }
         }
+    }
+
+    /**
+     * Called on {@code BundleEvent.STOPPING} of a (feature) bundle. {@link #classloaders} and
+     * {@link AppClassLoader#getBundle()} are keyed by <em>gateway</em> bundles, never by the bundle
+     * being stopped, so the link is the bundle wiring: the gateway bundles that are the requirers of
+     * the stopping bundle's provided package wires are the ones whose loaders have resolved classes
+     * from it. Evicts the {@link AppClassLoader}s of those gateways from {@code aclStore} and
+     * recycles the corresponding top-level applications.
+     *
+     * <p>Pass 1 finds top-level app loaders (WAR/EJB/etc.) whose gateway was directly wired to the
+     * stopping bundle. Pass 2 finds top-level app loaders that delegate to a <em>shared-library</em>
+     * {@code AppClassLoader} whose gateway was wired to the stopping bundle; shared-library loaders
+     * are stored only in {@code aclStore}, not in {@code appClassLoaders}, so they are not visible
+     * to Pass 1 but are reachable via the app loader's delegate lists.</p>
+     *
+     * <p>Lock ordering: {@code classloaders} outer, {@code appClassLoaders} inner. This must be
+     * kept consistent with every other site in this class that holds both locks simultaneously.</p>
+     */
+    private void evictLoadersWiredToBundle(Bundle bundle) {
+        // Gateway bundles also stop on normal app stop - skip them to avoid re-entering the
+        // active UpdateEpisodeState.
+        if ("true".equals(bundle.getHeaders().get(GatewayBundleFactory.GATEWAY_BUNDLE_MARKER))) {
+            return;
+        }
+
+        BundleWiring wiring = bundle.adapt(BundleWiring.class);
+        if (wiring == null) {
+            return;
+        }
+        Set<Bundle> requirers = new HashSet<>();
+        for (BundleWire wire : wiring.getProvidedWires(BundleRevision.PACKAGE_NAMESPACE)) {
+            requirers.add(wire.getRequirer().getBundle());
+        }
+
+        Set<String> appsToRecycle = new HashSet<>();
+        Set<AppClassLoader> loadersToEvict = new HashSet<>();
+
+        // Lock ordering: classloaders outer, appClassLoaders inner (pitfall 8.2).
+        synchronized (classloaders) {
+            requirers.retainAll(classloaders.keySet());
+            if (requirers.isEmpty()) {
+                return;
+            }
+
+            synchronized (appClassLoaders) {
+                // Pass 1: top-level app loaders whose own gateway is a direct requirer.
+                for (AppClassLoader acl : appClassLoaders) {
+                    // 1-to-1: each GatewayClassLoader is the direct parent of exactly one
+                    // AppClassLoader. acl.getBundle() returns the OSGi bundle of that gateway.
+                    if (requirers.contains(acl.getBundle())) {
+                        loadersToEvict.add(acl);
+                        ClassLoaderIdentity id = acl.getKey();
+                        // Only top-level module loaders carry an app name. Shared-library loaders
+                        // (domain "Shared Library" / "Shared Library SPI") are evicted from
+                        // aclStore but are NOT added to appsToRecycle directly.
+                        if (isTopLevelAppDomain(id.getDomain())) {
+                            appsToRecycle.add(extractAppName(id.getId()));
+                        }
+                    }
+                }
+
+                // Pass 2: top-level app loaders that delegate to a shared-library AppClassLoader
+                // whose gateway is a requirer. Shared-library loaders live only in aclStore (not
+                // appClassLoaders), so they are not found by Pass 1. We reach them through the
+                // app loader's before/after delegate lists. The library ACL itself is also evicted.
+                for (AppClassLoader acl : appClassLoaders) {
+                    for (LibertyLoader delegate : acl.getBeforeAppDelegateLoaders()) {
+                        if (delegate instanceof AppClassLoader) {
+                            AppClassLoader libAcl = (AppClassLoader) delegate;
+                            if (requirers.contains(libAcl.getBundle())) {
+                                loadersToEvict.add(libAcl); // evict the library loader
+                                if (loadersToEvict.add(acl)) { // evict the app loader if not already
+                                    ClassLoaderIdentity id = acl.getKey();
+                                    if (isTopLevelAppDomain(id.getDomain())) {
+                                        appsToRecycle.add(extractAppName(id.getId()));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (LibertyLoader delegate : acl.getAfterAppDelegateLoaders()) {
+                        if (delegate instanceof AppClassLoader) {
+                            AppClassLoader libAcl = (AppClassLoader) delegate;
+                            if (requirers.contains(libAcl.getBundle())) {
+                                loadersToEvict.add(libAcl); // evict the library loader
+                                if (loadersToEvict.add(acl)) { // evict the app loader if not already
+                                    ClassLoaderIdentity id = acl.getKey();
+                                    if (isTopLevelAppDomain(id.getDomain())) {
+                                        appsToRecycle.add(extractAppName(id.getId()));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Effect 1: evict all affected loaders (top-level and shared-library) from aclStore.
+        // aclStore.remove() takes the AppClassLoader instance, not a key (pitfall 8.3).
+        for (AppClassLoader acl : loadersToEvict) {
+            aclStore.remove(acl);
+        }
+
+        // Effect 2: recycle affected applications.
+        // Pitfall 8.4: null means ALL apps; empty set means NO apps. Guard before calling.
+        if (!appsToRecycle.isEmpty()) {
+            ApplicationRecycleCoordinator coord = recycleCoordinator;
+            if (coord != null) {
+                coord.recycleApplications(appsToRecycle);
+            }
+        }
+    }
+
+    /**
+     * Returns {@code true} for {@link ClassLoaderIdentity} domains that represent a running
+     * application module whose app name can be recycled: {@code "WebModule"}, {@code "EJBModule"},
+     * {@code "ClientModule"}, {@code "ConnectorModule"}.
+     *
+     * <p>Returns {@code false} for {@code "Shared Library"}, {@code "Shared Library SPI"},
+     * and {@code "Thread Context"} — those loaders are evicted from {@code aclStore} only.</p>
+     */
+    private static boolean isTopLevelAppDomain(String domain) {
+        return "WebModule".equals(domain)
+            || "EJBModule".equals(domain)
+            || "ClientModule".equals(domain)
+            || "ConnectorModule".equals(domain);
+    }
+
+    /**
+     * Extracts the application name from a {@link ClassLoaderIdentity#getId()} string.
+     *
+     * <p>For WAR, EJB, RAR, and EAR sub-modules the id is {@code "appName#moduleName"} (set in
+     * {@code WARDeployedAppInfo}, {@code EJBDeployedAppInfo}, {@code RARDeployedAppInfo}, etc.).
+     * Split on {@code #} and take the first segment.</p>
+     */
+    private static String extractAppName(String id) {
+        int hash = id.indexOf('#');
+        return hash >= 0 ? id.substring(0, hash) : id;
     }
 
     private void addAppExtensionLibs(ClassLoaderConfiguration config) {
