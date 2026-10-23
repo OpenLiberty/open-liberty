@@ -219,7 +219,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
         webClient.getOptions().setUseInsecureSSL(true); 
      
-        String partToCheck = "pass:true::FatSamlC02aService";
+        String partToCheck = "pass:true::FatSamlC02aService"; // HashiCorpIgnore
         String testMode = "positive";
 
         SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);
@@ -247,7 +247,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
         webClient.getOptions().setUseInsecureSSL(true); 
 
-        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*security token could not be authenticated or authorized.*";
+        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*security token could not be authenticated or authorized.*"; // HashiCorpIgnore
         
         String testMode = "negative";
 
@@ -271,7 +271,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
         webClient.getOptions().setUseInsecureSSL(true); 
 
-        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*An error happened processing a SAML Token: \"invalid user ID\"*";//@AV999 TODO set the message depending on the runtime
+        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*An error happened processing a SAML Token: \"invalid user ID\"*"; // HashiCorpIgnore //@AV999 TODO set the message depending on the runtime
         
         String testMode = "negative";
 
@@ -305,7 +305,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
         webClient.getOptions().setUseInsecureSSL(true); 
 
-        String partToCheck = ".*pass:false::FatSamlC02aService.*CWWKW0228E.*\\[" + badValueString + "\\].*\\[" + attrName + "\\].*";
+        String partToCheck = ".*pass:false::FatSamlC02aService.*CWWKW0228E.*\\[" + badValueString + "\\].*\\[" + attrName + "\\].*"; // HashiCorpIgnore
         String testMode = "negative";
 
         SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);

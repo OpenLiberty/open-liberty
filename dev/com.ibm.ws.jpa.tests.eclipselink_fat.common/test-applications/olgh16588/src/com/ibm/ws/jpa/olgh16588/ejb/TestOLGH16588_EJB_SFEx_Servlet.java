@@ -40,7 +40,7 @@ public class TestOLGH16588_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testJPQLAggregateCollection
     @Test
     public void jpa_eclipselink_olgh16588_testJPQLAggregateCollection_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh16588_testJPQLAggregateCollection_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh16588_testJPQLAggregateCollection_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testJPQLAggregateCollection";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -58,7 +58,7 @@ public class TestOLGH16588_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testJPQLNestedEmbeddable
     @Test
     public void jpa_eclipselink_olgh16588_testJPQLNestedEmbeddable_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh16588_testJPQLNestedEmbeddable_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh16588_testJPQLNestedEmbeddable_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testJPQLNestedEmbeddable";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

@@ -260,7 +260,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -333,7 +333,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -356,7 +356,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_AMRL";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -379,7 +379,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -452,7 +452,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameLibJar_PRO_NOOVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameLibJar_PRO_NOOVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameLibJar_PRO_NOOVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -558,7 +558,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -631,7 +631,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -654,7 +654,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_AMRL";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -677,7 +677,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -750,7 +750,7 @@ public class DFIProNoInhTestServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_NoInheritance_testUniquePUNameLibJar_PRO_OVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameLibJar_PRO_OVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DFI_NoInheritance_testUniquePUNameLibJar_PRO_OVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

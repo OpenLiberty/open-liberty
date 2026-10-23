@@ -71,11 +71,11 @@ public abstract class DFIPkgYesInhDDOvrdTestEXSuperclass extends BMTEJBTestVehic
 
     // This EntityManager should refer to the COMMON_JTA in the jar in the Application's Library directory
     @PersistenceContext(unitName = "../lib/jpapulib.jar#COMMON_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmex_common_earlib")
+                        name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmex_common_earlib") // pragma: allowlist secret
     EntityManager ovdem_cmex_common_earlib;
 
     // This EntityManager should refer to the JPALIB_JTA in the jar in the Application's Library directory
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     EntityManager ovdem_cmex_jpalib_earlib;
 }

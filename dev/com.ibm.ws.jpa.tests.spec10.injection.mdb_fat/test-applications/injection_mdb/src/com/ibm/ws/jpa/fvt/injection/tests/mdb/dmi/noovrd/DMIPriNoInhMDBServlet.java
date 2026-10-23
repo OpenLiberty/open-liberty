@@ -126,7 +126,7 @@ public class DMIPriNoInhMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_MDB_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_MDB_AMJTA";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_MDB_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

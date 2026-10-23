@@ -81,11 +81,11 @@ public class OIDCClientAuthenticatorUtilTest {
         }
     };
 
-    //private static final String TEST_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMSIsImlhdCI6MTM4OTk3NjkzMCwic3ViIjoidGVzdHVzZXIiLCJleHAiOjEzODk5ODA1MzAsImF1ZCI6ImNsaWVudDAxIn0.79VNXveAqipBzK5wB-cWTCJN7gXzECgj60w5K4GfZe4";
+    //private static final String TEST_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMSIsImlhdCI6MTM4OTk3NjkzMCwic3ViIjoidGVzdHVzZXIiLCJleHAiOjEzODk5ODA1MzAsImF1ZCI6ImNsaWVudDAxIn0.79VNXveAqipBzK5wB-cWTCJN7gXzECgj60w5K4GfZe4"; // pragma: allowlist secret
     // need one signed with new secret for jose4j
-    private static final String TEST_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMSIsImlhdCI6MTM4OTk3NjkzMCwic3ViIjoidGVzdHVzZXIiLCJleHAiOjEzODk5ODA1MzAsImF1ZCI6ImNsaWVudDAxIn0.vPZ0Hg5HY7-lDhBZTOkuVBE5GrV5uSphdyi1AZgbEbI";
-    private static final String TEST_ACCESS_TOKEN = "w3sYFV4Xrp4JzzfYdLKuQM0aVIVY6na8qzcGmEdg";
-    private static final String TEST_COOKIE_VALUE = "rO0ABXNyABNqYXZhLnV0aWwuSGFzaHRhYmxlE7sPJSFK5LgDAAJGAApsb2FkRmFjdG9ySQAJdGhyZXNob2xkeHA/QAAAAAAACHcIAAAACwAAAAJ0AARjb2RldAAeS1FISUhFOEZVWkFZWWV2THBCWTdVbnFZVE8zbEZ3dAAFc3RhdGV0ABQzNFcybmIwTFlUREw5RnJ5dmgzWHg=";
+    private static final String TEST_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMSIsImlhdCI6MTM4OTk3NjkzMCwic3ViIjoidGVzdHVzZXIiLCJleHAiOjEzODk5ODA1MzAsImF1ZCI6ImNsaWVudDAxIn0.vPZ0Hg5HY7-lDhBZTOkuVBE5GrV5uSphdyi1AZgbEbI"; // pragma: allowlist secret
+    private static final String TEST_ACCESS_TOKEN = "w3sYFV4Xrp4JzzfYdLKuQM0aVIVY6na8qzcGmEdg"; // pragma: allowlist secret
+    private static final String TEST_COOKIE_VALUE = "rO0ABXNyABNqYXZhLnV0aWwuSGFzaHRhYmxlE7sPJSFK5LgDAAJGAApsb2FkRmFjdG9ySQAJdGhyZXNob2xkeHA/QAAAAAAACHcIAAAACwAAAAJ0AARjb2RldAAeS1FISUhFOEZVWkFZWWV2THBCWTdVbnFZVE8zbEZ3dAAFc3RhdGV0ABQzNFcybmIwTFlUREw5RnJ5dmgzWHg="; // pragma: allowlist secret
     private static final long TEST_CLOCK_SKEW_IN_SECONDS = 300L;
     private static final String TEST_ORIGINAL_STATE = "orignalStateThatIsAtLeastAsLongAsRequired";
     private static final String ANOTHER_ORIGINAL_STATE = "34W2nb0LYTDL9Fryvh3X";

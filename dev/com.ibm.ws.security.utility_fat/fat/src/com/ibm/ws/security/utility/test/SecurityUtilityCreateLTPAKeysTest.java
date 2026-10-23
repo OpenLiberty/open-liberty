@@ -821,7 +821,7 @@ public class SecurityUtilityCreateLTPAKeysTest {
      */
     @Test
     public void testCreateLTPAKeysWithPasswordEncodingAndNotNormalizedBase64Key() throws Exception {
-    	String key = "3ORhx1L0ME//P2JDl1elDjOqhhagCoMAZ4XFbhQxJoM=";
+    	String key = "3ORhx1L0ME//P2JDl1elDjOqhhagCoMAZ4XFbhQxJoM="; // pragma: allowlist secret
         // Run createLTPAKeys with passwordEncoding=aes for the test server
         ProgramOutput commandOutput = testMachine.execute(
             securityUtilityPath,

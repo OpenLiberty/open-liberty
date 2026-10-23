@@ -10,11 +10,11 @@
 	<include location="../fatTestPorts.xml" />
 
 	<basicRegistry id="basic" realm="customRealm">
-		<user name="user1" password="{xor}LDo8Ki02KyY=" />
-		<user name="user2" password="{xor}LDo8Ki02KyY=" />
+		<user name="user1" password="{xor}LDo8Ki02KyY=" /> <!-- HashiCorpIgnore -->
+		<user name="user2" password="{xor}LDo8Ki02KyY=" /> <!-- HashiCorpIgnore -->
 	</basicRegistry>
 	<wsSecurityClient id="default"
-		ws-security.password="{xor}LDo8Ki02KyY=" ws-security.username="user2">
+		ws-security.password="{xor}LDo8Ki02KyY=" ws-security.username="user2"> <!-- HashiCorpIgnore -->
 	</wsSecurityClient>
 
 	<sslDefault sslRef="DefaultSSLSettings" />

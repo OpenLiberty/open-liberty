@@ -213,8 +213,8 @@ public class Jose4jEllipticCurveJWK extends EllipticCurveJsonWebKey implements J
     //    "kty": "EC",
     //    "kid": "jwt_ec384_signer",
     //    "use": "sig",
-    //    "x": "OhrGpYrRC_u6eDXUYosmfmM1sWF8zkDgifztbJ694bVu3nUV6xY7jWZhWhUk0Kfe",
-    //    "y": "1zSvB8He-QmBhqXlQ1FYUQyrFTDjDfSFj52StSJNFXbH_B2v8frhmNVv5UOaLBAM",
+    //    "x": "OhrGpYrRC_u6eDXUYosmfmM1sWF8zkDgifztbJ694bVu3nUV6xY7jWZhWhUk0Kfe", // pragma: allowlist secret
+    //    "y": "1zSvB8He-QmBhqXlQ1FYUQyrFTDjDfSFj52StSJNFXbH_B2v8frhmNVv5UOaLBAM", // pragma: allowlist secret
     //    "crv": "P-384"
     //}
 

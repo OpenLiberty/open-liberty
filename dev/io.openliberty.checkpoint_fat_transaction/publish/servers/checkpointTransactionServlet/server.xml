@@ -44,7 +44,7 @@
 
     <!-- Potential overrides to datasource config at restore -->
     <variable name="DERBY_DS_UID" defaultValue="dbuser1" />
-    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" />
+    <variable name="DERBY_DS_PW" defaultValue="{xor}Oz0vKDtu" /> <!-- HashiCorpIgnore --> <!-- password="dbpwd1" -->
     <variable name="DERBY_DS_JNDINAME" defaultValue="OVERRIDE_TO_jdbc/derby" />
 
     <dataSource jndiName="${DERBY_DS_JNDINAME}" jdbcDriverRef="DerbyEmbedded">
@@ -53,7 +53,7 @@
         createDatabase="create"
         user="${DERBY_DS_UID}"
         password="${DERBY_DS_PW}"
-      />  <!-- password="dbpwd1" -->
+      />
     </dataSource>
 
     <application location="transactionservlet.war"/>

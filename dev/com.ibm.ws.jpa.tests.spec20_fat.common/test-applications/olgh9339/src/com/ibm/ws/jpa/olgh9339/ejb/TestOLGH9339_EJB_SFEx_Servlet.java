@@ -39,7 +39,7 @@ public class TestOLGH9339_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testCoalesceJPQLQueryWithNullParameterValue";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

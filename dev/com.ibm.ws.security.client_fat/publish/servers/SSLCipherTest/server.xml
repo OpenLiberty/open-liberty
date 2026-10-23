@@ -18,7 +18,7 @@
 		<feature>transportSecurity-1.0</feature>
 	</featureManager>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- HashiCorpIgnore -->
 
 	<sslDefault sslRef="supportedClientAuthenticationSSLConfig" />
 

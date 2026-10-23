@@ -414,7 +414,7 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBDBTestVehic
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_CallbackListener_MSC_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException003";
         final String testResource = "test-jpa-resource-amjta";
 

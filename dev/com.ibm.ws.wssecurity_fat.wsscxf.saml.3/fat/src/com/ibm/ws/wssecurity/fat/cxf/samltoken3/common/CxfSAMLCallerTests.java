@@ -84,7 +84,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String webServicePort = "SamlCallerToken01";
         String policyName = "CallerHttpPolicy";
         String titleToCheck = "CXF SAML Caller Service Client";
-        String partToCheck = "pass:true::FatSamlC01Service";
+        String partToCheck = "pass:true::FatSamlC01Service"; // HashiCorpIgnore
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -117,7 +117,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String webServicePort = "SamlCallerToken03";
         String policyName = "CallerHttpsPolicy";
         String titleToCheck = "CXF SAML Caller Service Client";
-        String partToCheck = "pass:true::FatSamlC03Service";
+        String partToCheck = "pass:true::FatSamlC03Service"; // HashiCorpIgnore
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -152,7 +152,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String webServicePort = "SamlCallerToken02";
         String policyName = "CallerHttpsPolicy";
         String titleToCheck = "CXF SAML Caller Service Client";
-        String partToCheck = "pass:true::FatSamlC02Service";
+        String partToCheck = "pass:true::FatSamlC02Service"; // HashiCorpIgnore
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
      
@@ -185,7 +185,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String webServicePort = "SamlCallerToken04";
         String policyName = "CallerHttpsPolicy";
         String titleToCheck = "CXF SAML Caller Service Client";
-        String partToCheck = "pass:false::FatSamlC04Service";
+        String partToCheck = "pass:false::FatSamlC04Service"; // HashiCorpIgnore
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 

@@ -141,7 +141,7 @@ public class HeaderTest {
         H2HeaderTable writeTable = new H2HeaderTable();
 
         WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(26);
-        byte[] expected = HpackUtils.hexStringToByteArray("400a637573746f6d2d6b65790d637573746f6d2d686561646572");
+        byte[] expected = HpackUtils.hexStringToByteArray("400a637573746f6d2d6b65790d637573746f6d2d686561646572"); // pragma: allowlist secret
         H2HeaderField expectedHeader = new H2HeaderField("custom-key", "custom-header");
 
         verifyHeaderEncodeDecode(buffer, readTable, writeTable, expectedHeader, LiteralIndexType.INDEX, expected);
@@ -166,7 +166,7 @@ public class HeaderTest {
         H2HeaderTable readTable = new H2HeaderTable();
         H2HeaderTable writeTable = new H2HeaderTable();
         WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(28);
-        byte[] expected = HpackUtils.hexStringToByteArray("040c2f73616d706c652f70617468");
+        byte[] expected = HpackUtils.hexStringToByteArray("040c2f73616d706c652f70617468"); // pragma: allowlist secret
         H2HeaderField expectedHeader = new H2HeaderField(":path", "/sample/path");
 
         verifyHeaderEncodeDecode(buffer, readTable, writeTable, expectedHeader, LiteralIndexType.NOINDEXING, expected);
@@ -206,7 +206,7 @@ public class HeaderTest {
         byte[] received = null;
 
         //First Request
-        received = HpackUtils.hexStringToByteArray("828684410f7777772e6578616d706c652e636f6d");
+        received = HpackUtils.hexStringToByteArray("828684410f7777772e6578616d706c652e636f6d"); // pragma: allowlist secret
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(20);
         buffer.put(received);
         buffer.flip();
@@ -243,7 +243,7 @@ public class HeaderTest {
         Assert.assertTrue("Table size does not match expected size. " + readTable.printDynamicTable(), readTable.getDynamicTableUsedAddressSpace() == 110);
 
         //Third Request
-        received = HpackUtils.hexStringToByteArray("828785bf400a637573746f6d2d6b65790c637573746f6d2d76616c7565");
+        received = HpackUtils.hexStringToByteArray("828785bf400a637573746f6d2d6b65790c637573746f6d2d76616c7565"); // pragma: allowlist secret
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(29);
         buffer.put(received);
         buffer.flip();
@@ -281,7 +281,7 @@ public class HeaderTest {
         byte[] received = null;
 
         //First Request
-        received = HpackUtils.hexStringToByteArray("828684418cf1e3c2e5f23a6ba0ab90f4ff");
+        received = HpackUtils.hexStringToByteArray("828684418cf1e3c2e5f23a6ba0ab90f4ff"); // pragma: allowlist secret
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(17);
         buffer.put(received);
         buffer.flip();
@@ -297,7 +297,7 @@ public class HeaderTest {
         Assert.assertTrue("Table size does not match expected size. " + readTable.printDynamicTable(), readTable.getDynamicTableUsedAddressSpace() == 57);
 
         //Second Request
-        received = HpackUtils.hexStringToByteArray("828684be5886a8eb10649cbf");
+        received = HpackUtils.hexStringToByteArray("828684be5886a8eb10649cbf"); // pragma: allowlist secret
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(12);
         buffer.put(received);
         buffer.flip();
@@ -318,7 +318,7 @@ public class HeaderTest {
         Assert.assertTrue("Table size does not match expected size. " + readTable.printDynamicTable(), readTable.getDynamicTableUsedAddressSpace() == 110);
 
         //Third Request
-        received = HpackUtils.hexStringToByteArray("828785bf408825a849e95ba97d7f8925a849e95bb8e8b4bf");
+        received = HpackUtils.hexStringToByteArray("828785bf408825a849e95ba97d7f8925a849e95bb8e8b4bf"); // pragma: allowlist secret
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(24);
         buffer.put(received);
         buffer.flip();
@@ -357,9 +357,9 @@ public class HeaderTest {
         byte[] expected = null;
 
         //First Response
-        expected = HpackUtils.hexStringToByteArray("4803333032580770726976617465611d"
+        expected = HpackUtils.hexStringToByteArray("4803333032580770726976617465611d" // pragma: allowlist secret
                                                    + "4d6f6e2c203231204f63742032303133"
-                                                   + "2032303a31333a323120474d546e1768"
+                                                   + "2032303a31333a323120474d546e1768" // pragma: allowlist secret
                                                    + "747470733a2f2f7777772e6578616d70"
                                                    + "6c652e636f6d");
 
@@ -403,11 +403,11 @@ public class HeaderTest {
 
         //Third Response: Several header fields are evicted from the dynamic table during the
         //processing of this header list
-        expected = HpackUtils.hexStringToByteArray("88c1611d4d6f6e2c203231204f637420"
+        expected = HpackUtils.hexStringToByteArray("88c1611d4d6f6e2c203231204f637420" // pragma: allowlist secret
                                                    + "323031332032303a31333a323220474d"
-                                                   + "54c05a04677a69707738666f6f3d4153"
+                                                   + "54c05a04677a69707738666f6f3d4153" // pragma: allowlist secret
                                                    + "444a4b48514b425a584f5157454f5049"
-                                                   + "5541585157454f49553b206d61782d61"
+                                                   + "5541585157454f49553b206d61782d61" // pragma: allowlist secret
                                                    + "67653d333630303b2076657273696f6e"
                                                    + "3d31");
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(98);
@@ -449,9 +449,9 @@ public class HeaderTest {
         byte[] expected = null;
 
         //First Response
-        expected = HpackUtils.hexStringToByteArray("488264025885aec3771a4b6196d07abe"
-                                                   + "941054d444a8200595040b8166e082a6"
-                                                   + "2d1bff6e919d29ad171863c78f0b97c8"
+        expected = HpackUtils.hexStringToByteArray("488264025885aec3771a4b6196d07abe" // pragma: allowlist secret
+                                                   + "941054d444a8200595040b8166e082a6" // pragma: allowlist secret
+                                                   + "2d1bff6e919d29ad171863c78f0b97c8" // pragma: allowlist secret
                                                    + "e9ae82ae43d3");
 
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(54);
@@ -473,7 +473,7 @@ public class HeaderTest {
 
         //Second Request: The (":status", "302) header field is evicted from the dynamic table
         //to free space to allow adding the (":status", "307") header field;
-        expected = HpackUtils.hexStringToByteArray("4883640effc1c0bf");
+        expected = HpackUtils.hexStringToByteArray("4883640effc1c0bf"); // pragma: allowlist secret
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(8);
         headers = new H2HeaderField[] {
                                         new H2HeaderField(":status", "307"),
@@ -494,11 +494,11 @@ public class HeaderTest {
 
         //Third Response: Several header fields are evicted from the dynamic table during the
         //processing of this header list
-        expected = HpackUtils.hexStringToByteArray("88c16196d07abe941054d444a8200595"
-                                                   + "040b8166e084a62d1bffc05a839bd9ab"
-                                                   + "77ad94e7821dd7f2e6c7b335dfdfcd5b"
-                                                   + "3960d5af27087f3672c1ab270fb5291f"
-                                                   + "9587316065c003ed4ee5b1063d5007");
+        expected = HpackUtils.hexStringToByteArray("88c16196d07abe941054d444a8200595" // pragma: allowlist secret
+                                                   + "040b8166e084a62d1bffc05a839bd9ab" // pragma: allowlist secret
+                                                   + "77ad94e7821dd7f2e6c7b335dfdfcd5b" // pragma: allowlist secret
+                                                   + "3960d5af27087f3672c1ab270fb5291f" // pragma: allowlist secret
+                                                   + "9587316065c003ed4ee5b1063d5007"); // pragma: allowlist secret
         buffer = ChannelFrameworkFactory.getBufferManager().allocate(79);
         headers = new H2HeaderField[] {
                                         new H2HeaderField(":status", "200"),

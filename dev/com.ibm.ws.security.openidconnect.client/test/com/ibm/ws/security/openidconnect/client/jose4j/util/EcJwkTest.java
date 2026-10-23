@@ -471,10 +471,10 @@ public class EcJwkTest {
             //"use": "sig",
             String strUse = (String) ecJsonObject.get("use");
             assertEquals("strUse is not sig but " + strUse, strUse, "sig");
-            //"x": "OhrGpYrRC_u6eDXUYosmfmM1sWF8zkDgifztbJ694bVu3nUV6xY7jWZhWhUk0Kfe",
+            //"x": "OhrGpYrRC_u6eDXUYosmfmM1sWF8zkDgifztbJ694bVu3nUV6xY7jWZhWhUk0Kfe", // pragma: allowlist secret
             String strX = (String) ecJsonObject.get("x");
             assertFalse("strX should not be null " + strX, strX == null);
-            //"y": "1zSvB8He-QmBhqXlQ1FYUQyrFTDjDfSFj52StSJNFXbH_B2v8frhmNVv5UOaLBAM",
+            //"y": "1zSvB8He-QmBhqXlQ1FYUQyrFTDjDfSFj52StSJNFXbH_B2v8frhmNVv5UOaLBAM", // pragma: allowlist secret
             String strY = (String) ecJsonObject.get("y");
             assertFalse("strY should not be null " + strY, strY == null);
             //"crv": "P-256"

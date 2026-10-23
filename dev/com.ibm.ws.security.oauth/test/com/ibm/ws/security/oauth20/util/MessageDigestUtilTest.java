@@ -29,6 +29,6 @@ public class MessageDigestUtilTest {
     public void getDigest() {
         String digest = MessageDigestUtil.getDigest("bob");
         //System.out.println("Message digest of bob = " + digest);
-        assertTrue("Wrong digest value", digest.equals("48181acd22b3edaebc8a447868a7df7ce629920a"));
+        assertTrue("Wrong digest value", digest.equals("48181acd22b3edaebc8a447868a7df7ce629920a")); // pragma: allowlist secret
     }
 }

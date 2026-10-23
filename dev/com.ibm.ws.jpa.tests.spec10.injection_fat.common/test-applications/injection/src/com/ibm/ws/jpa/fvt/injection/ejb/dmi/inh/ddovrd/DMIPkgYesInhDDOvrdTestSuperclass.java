@@ -190,7 +190,7 @@ public abstract class DMIPkgYesInhDDOvrdTestSuperclass extends DMIInhCommonEJBSu
     }
 
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.TRANSACTION,
-                        name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib")
+                        name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib") // pragma: allowlist secret
     void setOvdem_cmts_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmts_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }
@@ -221,7 +221,7 @@ public abstract class DMIPkgYesInhDDOvrdTestSuperclass extends DMIInhCommonEJBSu
         return ovdemf_amjta_common_earlib;
     }
 
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib") // pragma: allowlist secret
     void setOvdemf_amjta_common_earlib(
                                        EntityManagerFactory ovdemfAmjtaCommonEarlib) {
         ovdemf_amjta_common_earlib = ovdemfAmjtaCommonEarlib;
@@ -265,7 +265,7 @@ public abstract class DMIPkgYesInhDDOvrdTestSuperclass extends DMIInhCommonEJBSu
         return ovdemf_amrl_common_earlib;
     }
 
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL", name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL", name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib") // pragma: allowlist secret
     void setOvdemf_amrl_common_earlib(
                                       EntityManagerFactory ovdemfAmrlCommonEarlib) {
         ovdemf_amrl_common_earlib = ovdemfAmrlCommonEarlib;
@@ -276,7 +276,7 @@ public abstract class DMIPkgYesInhDDOvrdTestSuperclass extends DMIInhCommonEJBSu
         return ovdemf_amrl_jpalib_earlib;
     }
 
-    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib")
+    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib") // pragma: allowlist secret
     void setOvdemf_amrl_jpalib_earlib(
                                       EntityManagerFactory ovdemfAmrlJpalibEarlib) {
         ovdemf_amrl_jpalib_earlib = ovdemfAmrlJpalibEarlib;

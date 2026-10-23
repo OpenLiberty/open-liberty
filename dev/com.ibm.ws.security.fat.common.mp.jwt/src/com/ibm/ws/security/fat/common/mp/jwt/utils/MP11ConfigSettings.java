@@ -27,7 +27,7 @@ public class MP11ConfigSettings {
     // if you recreate the rsa_cert.pem file, please update the PublicKey value saved here.
     public final static String rsaPrefix = "-----BEGIN PUBLIC KEY-----";
     public final static String rsaSuffix = "-----END PUBLIC KEY-----";
-    public final static String SimplePublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3dxGYp7LZLwUgmn6ts091rymORWnZH34OWjovHR8JQx7Evc1eFqAlDBZptk7pET9xav5568wvYUJJ1cK9CdY/frP9saV7xas49xqo8o47AgzbhfB9Qkm3RTkK3Qv2Y43CSckkAAaKoG2rZQl4e9T1i9Mi3Qh7k8Iq4iwEYtX+iSo3ZytjhX9RkPR+IlkAAK1DEae8oDdoEDvCUB3lCRig+R3hKhi2xayGt0OX13bGC/OC+h76onzDJkGrNX7YRf01D6wdhikzWkzR3NNp7ko8VhhXK+1PrSKflPIUQfL3JmwRm8iqZK9z5ivVm4LT19ZE9ZI+a8GftN1nioaStJ8pQIDAQAB";
+    public final static String SimplePublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3dxGYp7LZLwUgmn6ts091rymORWnZH34OWjovHR8JQx7Evc1eFqAlDBZptk7pET9xav5568wvYUJJ1cK9CdY/frP9saV7xas49xqo8o47AgzbhfB9Qkm3RTkK3Qv2Y43CSckkAAaKoG2rZQl4e9T1i9Mi3Qh7k8Iq4iwEYtX+iSo3ZytjhX9RkPR+IlkAAK1DEae8oDdoEDvCUB3lCRig+R3hKhi2xayGt0OX13bGC/OC+h76onzDJkGrNX7YRf01D6wdhikzWkzR3NNp7ko8VhhXK+1PrSKflPIUQfL3JmwRm8iqZK9z5ivVm4LT19ZE9ZI+a8GftN1nioaStJ8pQIDAQAB"; // pragma: allowlist secret
     public final static String ComplexPublicKey = rsaPrefix + SimplePublicKey + rsaSuffix;
     public final static String PemFile = "rsa_key.pem";
     public final static String ComplexPemFile = "rsa_key_withCert.pem";

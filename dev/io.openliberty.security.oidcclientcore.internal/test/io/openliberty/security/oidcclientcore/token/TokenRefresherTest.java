@@ -27,7 +27,7 @@ public class TokenRefresherTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
-    private static final String refreshToken = "QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv";
+    private static final String refreshToken = "QGCYpfziPZY2saAagbsf5jxbMucqcF3743euknBxzkUlof7uSv"; // pragma: allowlist secret
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

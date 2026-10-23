@@ -28,7 +28,7 @@ public class KeyTools {
 
     public final static String rsaPublicPrefix = "-----BEGIN PUBLIC KEY-----";
     public final static String rsaPublicSuffix = "-----END PUBLIC KEY-----";
-    public final static String rsaPrivatePrefix = "-----BEGIN PRIVATE KEY-----";
+    public final static String rsaPrivatePrefix = "-----BEGIN PRIVATE KEY-----"; // pragma: allowlist secret
     public final static String rsaPrivateSuffix = "-----END PRIVATE KEY-----";
 
     public static String getComplexKey(LibertyServer server, String fileName) throws Exception {

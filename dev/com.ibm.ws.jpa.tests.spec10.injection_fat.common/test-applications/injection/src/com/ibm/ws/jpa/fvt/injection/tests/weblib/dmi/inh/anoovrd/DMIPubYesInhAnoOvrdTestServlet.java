@@ -215,7 +215,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
      */
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testCommonPUName_PUB_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUName_PUB_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUName_PUB_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -292,7 +292,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -315,7 +315,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -338,7 +338,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -365,7 +365,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -388,7 +388,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -411,7 +411,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PUB_NOOVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -438,7 +438,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testUniquePUNameLibJar_PUB_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameLibJar_PUB_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameLibJar_PUB_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -484,7 +484,7 @@ public class DMIPubYesInhAnoOvrdTestServlet extends DMIPubYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testUniquePUNameLibJar_PUB_NOOVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameLibJar_PUB_NOOVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameLibJar_PUB_NOOVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

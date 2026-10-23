@@ -32,11 +32,11 @@
     <openidConnectClient
         id="oidcClientPlainRestore"
         clientId="client01"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterPlainRestore">
+        authFilterRef="authFilterPlainRestore"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- HashiCorpIgnore -->>
         <protectedResourceMetadata />
     </openidConnectClient>
 
@@ -52,11 +52,11 @@
     <openidConnectClient
         id="oidcClientScopes"
         clientId="client02"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterScopes">
+        authFilterRef="authFilterScopes"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- HashiCorpIgnore -->
         <protectedResourceMetadata advertisedScopes="openid" />
     </openidConnectClient>
 
@@ -72,11 +72,11 @@
     <openidConnectClient
         id="oidcClientSigning"
         clientId="client03"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterSigning">
+        authFilterRef="authFilterSigning"
+        clientSecret="{xor}LDo8LTorbm1saw==" > <!-- HashiCorpIgnore -->
         <protectedResourceMetadata />
     </openidConnectClient>
 
@@ -95,11 +95,11 @@
     <openidConnectClient
         id="oidcClientMetadataEnabled"
         clientId="client04"
-        clientSecret="{xor}LDo8LTorbm1saw=="
         issuerIdentifier="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample"
         authorizationEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
         tokenEndpointUrl="http://localhost:${bvt.prop.security_2_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
-        authFilterRef="authFilterMetadataEnabled">
+        authFilterRef="authFilterMetadataEnabled"
+        clientSecret="{xor}LDo8LTorbm1saw=="> <!-- HashiCorpIgnore -->
     </openidConnectClient>
 
     <authFilter id="authFilterMetadataEnabled">

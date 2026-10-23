@@ -41,7 +41,7 @@ import test.common.SharedOutputManager;
  *
  */
 public class OIDCBrowserStateUtilTest {
-    private static String EXPECTED_OUTPUT = "MSk6/ePHZUtvvpdE3DgngS1neAkIctAwuVU5HYf97Vw=";
+    private static String EXPECTED_OUTPUT = "MSk6/ePHZUtvvpdE3DgngS1neAkIctAwuVU5HYf97Vw="; // pragma: allowlist secret
     private final Mockery mock = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);

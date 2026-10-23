@@ -31,14 +31,14 @@ public class ChecksumTest {
     public void testSHA1() throws NoSuchAlgorithmException, IOException {
         InputStream is = ChecksumTest.class.getResourceAsStream("dependency.txt");
         String sha1 = TCKUtilities.generateSHA1(is);
-        assertEquals("1799590f9c3039a6d243a8e72ee84e65c4e0fa44", sha1);
+        assertEquals("1799590f9c3039a6d243a8e72ee84e65c4e0fa44", sha1); // pragma: allowlist secret
     }
 
     @Test
     public void testSHA256() throws NoSuchAlgorithmException, IOException {
         InputStream is = ChecksumTest.class.getResourceAsStream("dependency.txt");
         String sha256 = TCKUtilities.generateSHA256(is);
-        assertEquals("123f2ccf71ac99f57ea296b071b1d03478a2e89d7973cc25f9eb1946bb83b4c8", sha256);
+        assertEquals("123f2ccf71ac99f57ea296b071b1d03478a2e89d7973cc25f9eb1946bb83b4c8", sha256); // pragma: allowlist secret
     }
 
 }

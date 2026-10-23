@@ -41,7 +41,7 @@
 		<group name="group4">
 			<member name="user4" />
 		</group>
-		<user name="user5" password="{xor}Lz4sLCgwLTs=" />
+		<user name="user5" password="{xor}Lz4sLCgwLTs=" /> <!-- HashiCorpIgnore -->
 		<group name="group5">
 			<member name="user5" />
 		</group>
@@ -51,7 +51,7 @@
 	<application type="war" id="delegation" name="delegation" location="delegation.war">
 		<application-bnd>
             <security-role name="Employee">
-				<run-as userid="user5" password="{xor}Lz4sLCgwLTs=" />
+				<run-as userid="user5" password="{xor}Lz4sLCgwLTs=" /> <!-- HashiCorpIgnore -->
                 <user name="user1"/>
                 <user name="user5"/>
                 <group name="group1"/>

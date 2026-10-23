@@ -42,10 +42,10 @@ public class UserInfoServlet extends HttpServlet {
 
     private static final long serialVersionUID = -417476984908088827L;
 
-    protected final String clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger";
-    private static final String BEGIN_PRIV_KEY = "-----BEGIN PRIVATE KEY-----";
+    protected final String clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"; // pragma: allowlist secret
+    private static final String BEGIN_PRIV_KEY = "-----BEGIN PRIVATE KEY-----"; // pragma: allowlist secret
     private static final String END_PRIV_KEY = "-----END PRIVATE KEY-----";
-    private static final String BEGIN_EC_PRIV_KEY = "-----BEGIN EC PRIVATE KEY-----";
+    private static final String BEGIN_EC_PRIV_KEY = "-----BEGIN EC PRIVATE KEY-----"; // pragma: allowlist secret
     private static final String END_EC_PRIV_KEY = "-----END EC PRIVATE KEY-----";
 
     String getAccessToken(HttpServletRequest request) throws Exception {

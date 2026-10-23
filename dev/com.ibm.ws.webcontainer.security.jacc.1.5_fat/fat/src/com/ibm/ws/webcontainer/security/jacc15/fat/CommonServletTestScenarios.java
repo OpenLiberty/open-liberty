@@ -1016,7 +1016,7 @@ public abstract class CommonServletTestScenarios {
 //    @Test
 //    public void testLoginWithInvalidCookie() throws Exception {
 //        // log in a protected servlet with an invalid cookie
-//        String invalidCookie = "rrNT6b/hVfjPMFQrLk55LhW5WF58drhbF6HFyg6phovi20AWio06hqQ5tBHA5eV05cRDB5Rir0rYd69lfoLPQzQTuDInvalidCookie";
+//        String invalidCookie = "rrNT6b/hVfjPMFQrLk55LhW5WF58drhbF6HFyg6phovi20AWio06hqQ5tBHA5eV05cRDB5Rir0rYd69lfoLPQzQTuDInvalidCookie"; // pragma: allowlist secret
 //        assertTrue("An invalid cookie should result in authorization challenge",
 //                   client.accessProtectedServletWithInvalidCookie(BasicAuthClient.PROTECTED_SIMPLE, invalidCookie));
 //    }

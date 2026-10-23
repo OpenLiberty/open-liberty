@@ -115,7 +115,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  * <ol>
  * <li>An {@link HttpRequest},</li>
  * <li>The first {@link HttpContent} whose content is {@code 'abcdefghijklmnopqrstuvwxyz'},</li>
- * <li>The second {@link LastHttpContent} whose content is {@code '1234567890abcdef'}, which marks
+ * <li>The second {@link LastHttpContent} whose content is {@code '1234567890abcdef'}, which marks // pragma: allowlist secret
  * the end of the content.</li>
  * </ol>
  *

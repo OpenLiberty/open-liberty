@@ -460,7 +460,7 @@ public class RegistryTest {
     public void testGenerateAuthToken() throws Exception {
         String testUsername = "test.email@example.com";
         String testToken = "aToTallyFakeTokenThaTWouldNeverBeUsed";
-        String expectedAuthToken = "dGVzdC5lbWFpbEBleGFtcGxlLmNvbTphVG9UYWxseUZha2VUb2tlblRoYVRXb3VsZE5ldmVyQmVVc2Vk";
+        String expectedAuthToken = "dGVzdC5lbWFpbEBleGFtcGxlLmNvbTphVG9UYWxseUZha2VUb2tlblRoYVRXb3VsZE5ldmVyQmVVc2Vk"; // pragma: allowlist secret
 
         Method generateAuthToken = getGenerateAuthToken();
 

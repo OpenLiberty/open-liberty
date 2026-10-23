@@ -72,7 +72,7 @@ public class DMIProYesInhAnoOvrdTestSFEXEJB extends DMIProYesInhAnoOvrdTestEXSup
 
     @Override
     @PersistenceContext(unitName = "OVRD_JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIProYesInhAnoOvrdTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DMIProYesInhAnoOvrdTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     protected void setOvdem_cmex_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmex_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }

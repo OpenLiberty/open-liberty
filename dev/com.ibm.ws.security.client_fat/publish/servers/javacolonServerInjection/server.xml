@@ -24,7 +24,7 @@
 		<feature>servlet-3.1</feature>
 	</featureManager>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- HashiCorpIgnore -->
 
 	<sslDefault sslRef="supportedClientAuthenticationSSLConfig" />
 
@@ -79,8 +79,7 @@
 		storeProtocol="imap"
 		host="localhost"
 		user="imap@testserver.com"
-		password="imapPa$$word4U2C"
-		from="smtp@testserver.com" >
+		password="imapPa$$word4U2C" from="smtp@testserver.com" > <!-- HashiCorpIgnore -->
 		<property name="mail.imap.host" value="localhost" />
 		<property name="mail.imap.port" value="${bvt.prop.imap_port}" />
 		<property name="scope" value="global" />
@@ -92,8 +91,7 @@
 		storeProtocol="imap"
 		host="localhost"
 		user="imap@testserver.com"
-		password="imapPa$$word4U2C"
-		from="smtp@testserver.com" >
+		password="imapPa$$word4U2C"	from="smtp@testserver.com" > <!-- HashiCorpIgnore -->
 		<property name="mail.imap.host" value="localhost" />
 		<property name="mail.imap.port" value="${bvt.prop.imap_port}" />
 		<property name="scope" value="app" />

@@ -523,7 +523,7 @@ public class HttpResponseMessageImplTest {
 
             // test appendHeader
             getResponse().clear();
-            String sTemp = "0123456789abcdef0123";
+            String sTemp = "0123456789abcdef0123"; // pragma: allowlist secret
             byte[] temp = sTemp.getBytes();
             getResponse().appendHeader("Host", temp, 0, 20);
             assertEquals(sTemp, getResponse().getHeader("Host").asString());

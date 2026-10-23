@@ -108,7 +108,7 @@ public class OidcUtilTest {
         assertEquals(null, OidcUtil.encodeQuery(null));
         assertEquals("", OidcUtil.encodeQuery(""));
         assertEquals("+", OidcUtil.encodeQuery(" "));
-        assertEquals("0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", OidcUtil.encodeQuery("0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+        assertEquals("0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", OidcUtil.encodeQuery("0123456789abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")); // pragma: allowlist secret
         assertEquals("+%21%22%23%24%25" + "&" + "%27%28%29" + "*" + "%2B%2C" + "-." + "%2F", OidcUtil.encodeQuery(" !\"#$%&'()*+,-./"));
     }
 

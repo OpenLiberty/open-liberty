@@ -697,7 +697,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
@@ -719,7 +719,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
@@ -796,7 +796,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
@@ -819,7 +819,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
@@ -842,7 +842,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
                 + "/validKey.asc";
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
@@ -859,7 +859,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      */
     /**
      * @throws Exception
-     */
+     */ // pragma: allowlist secret
     @Test
     public void testVerifyRevokedKey() throws Exception {
         final String METHOD_NAME = "testVerifyRevokedKey";
@@ -914,7 +914,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/expired/expiredKey.asc");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "61B792CE2DAA8C02");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "61B792CE2DAA8C02"); // pragma: allowlist secret
 
         String[] param1s = { "installFeature", "testesa1",
                 "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
@@ -967,7 +967,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "warn");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 "https://keyserver.invalid.ibm.com");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
                 "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
@@ -990,7 +990,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         envProps.put("FEATURE_VERIFY", "all");
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 "ftp:///repo/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
@@ -1022,7 +1022,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
                 Paths.get(mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc"));
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
                 mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 
@@ -1080,7 +1080,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String containerUrl = "http://keyserver:8080/validKey.asc";
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
@@ -1105,7 +1105,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     }
 
     /*
-     * Test installFeature --verify=all from external test container with proxy
+     * Test installFeature --verify=all from external test container with proxy // pragma: allowlist secret
      * through env
      */
     @Test
@@ -1119,11 +1119,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String containerUrl = "http://keyserver:8080/validKey.asc";
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
         Properties envProps = new Properties();
-        envProps.put("http_proxy", "http://wasngi:test@" + proxyHost + ":" + proxyPort);
+        envProps.put("http_proxy", "http://wasngi:test@" + proxyHost + ":" + proxyPort); // pragma: allowlist secret
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 
@@ -1157,11 +1157,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String containerUrl = "http://keyserver:8080/validKey.asc";
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
         Properties envProps = new Properties();
-        envProps.put("http_proxy", "http://wasngi:test@" + "://" + proxyHost + ":" + proxyPort);
+        envProps.put("http_proxy", "http://wasngi:test@" + "://" + proxyHost + ":" + proxyPort); // pragma: allowlist secret
 
         String[] param1s = { "installFeature", "testesa1", "json-1.0",
                 "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
@@ -1277,7 +1277,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
@@ -1315,7 +1315,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "http.nonProxyHosts", "keyserver");
 
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa"); // pragma: allowlist secret
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
 
         String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };

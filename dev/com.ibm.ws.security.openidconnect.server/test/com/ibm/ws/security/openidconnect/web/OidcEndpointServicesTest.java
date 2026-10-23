@@ -848,8 +848,8 @@ public class OidcEndpointServicesTest {
     @Test
     public void testHandleIdTokenHintCacheMissValidTokenButExpiredGood() {
         final String methodName = "testHandleIdTokenHintCacheMissValidTokenButExpiredGood";
-        //final String idTokenHint = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3lhbW1lcmxwOjgwMjAvb2lkYy9lbmRwb2ludC9vaWRjT3BDb25maWdTYW1wbGUiLCJub25jZSI6ImRlZmF1bHRfbm9uY2UiLCJpYXQiOjE0MDc4NzUyNjksInN1YiI6InVzZXIxIiwiZXhwIjoxNDA3ODgyNDY5LCJhdWQiOiJjbGllbnQwMSIsInJlYWxtTmFtZSI6IkJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiJSNHVPdl9JbTc5dDgteWRFZDl1TGVBIn0.E20YvyWVhZ2X6Cx46PHjlHZCQZaQqks_6sxfF9_cmDk"; //this is valid but expired.
-        final String idTokenHint = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3lhbW1lcmxwOjgwMjAvb2lkYy9lbmRwb2ludC9vaWRjT3BDb25maWdTYW1wbGUiLCJub25jZSI6ImRlZmF1bHRfbm9uY2UiLCJpYXQiOjE0MDc4NzUyNjksInN1YiI6InVzZXIxIiwiZXhwIjoxNDA3ODgyNDY5LCJhdWQiOiJjbGllbnQwMSIsInJlYWxtTmFtZSI6IkJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiJSNHVPdl9JbTc5dDgteWRFZDl1TGVBIn0.Gg6V8Qslmf4F0Xhj87cHx_nY86ILp7T8HDqC1465YgY";
+        //final String idTokenHint = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3lhbW1lcmxwOjgwMjAvb2lkYy9lbmRwb2ludC9vaWRjT3BDb25maWdTYW1wbGUiLCJub25jZSI6ImRlZmF1bHRfbm9uY2UiLCJpYXQiOjE0MDc4NzUyNjksInN1YiI6InVzZXIxIiwiZXhwIjoxNDA3ODgyNDY5LCJhdWQiOiJjbGllbnQwMSIsInJlYWxtTmFtZSI6IkJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiJSNHVPdl9JbTc5dDgteWRFZDl1TGVBIn0.E20YvyWVhZ2X6Cx46PHjlHZCQZaQqks_6sxfF9_cmDk"; //this is valid but expired. // pragma: allowlist secret
+        final String idTokenHint = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3lhbW1lcmxwOjgwMjAvb2lkYy9lbmRwb2ludC9vaWRjT3BDb25maWdTYW1wbGUiLCJub25jZSI6ImRlZmF1bHRfbm9uY2UiLCJpYXQiOjE0MDc4NzUyNjksInN1YiI6InVzZXIxIiwiZXhwIjoxNDA3ODgyNDY5LCJhdWQiOiJjbGllbnQwMSIsInJlYWxtTmFtZSI6IkJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiJSNHVPdl9JbTc5dDgteWRFZDl1TGVBIn0.Gg6V8Qslmf4F0Xhj87cHx_nY86ILp7T8HDqC1465YgY"; // pragma: allowlist secret
 
         final String username = "user1";
         final String clientId = "client01";
@@ -896,7 +896,7 @@ public class OidcEndpointServicesTest {
     @Test
     public void testHandleIdTokenHintCacheMissInvalidSecret() {
         final String methodName = "testHandleIdTokenHintCacheMissValidTokenButExpiredGood";
-        final String idTokenHint = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3lhbW1lcmxwOjgwMjAvb2lkYy9lbmRwb2ludC9vaWRjT3BDb25maWdTYW1wbGUiLCJub25jZSI6ImRlZmF1bHRfbm9uY2UiLCJpYXQiOjE0MDc4NzUyNjksInN1YiI6InVzZXIxIiwiZXhwIjoxNDA3ODgyNDY5LCJhdWQiOiJjbGllbnQwMSIsInJlYWxtTmFtZSI6IkJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiJSNHVPdl9JbTc5dDgteWRFZDl1TGVBIn0.E20YvyWVhZ2X6Cx46PHjlHZCQZaQqks_6sxfF9_cmDk"; //this is valid but expired.
+        final String idTokenHint = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3lhbW1lcmxwOjgwMjAvb2lkYy9lbmRwb2ludC9vaWRjT3BDb25maWdTYW1wbGUiLCJub25jZSI6ImRlZmF1bHRfbm9uY2UiLCJpYXQiOjE0MDc4NzUyNjksInN1YiI6InVzZXIxIiwiZXhwIjoxNDA3ODgyNDY5LCJhdWQiOiJjbGllbnQwMSIsInJlYWxtTmFtZSI6IkJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiJSNHVPdl9JbTc5dDgteWRFZDl1TGVBIn0.E20YvyWVhZ2X6Cx46PHjlHZCQZaQqks_6sxfF9_cmDk"; //this is valid but expired. // pragma: allowlist secret
         final String username = "user1";
         final String clientId = "client01";
         final String secret = "bad_secret";

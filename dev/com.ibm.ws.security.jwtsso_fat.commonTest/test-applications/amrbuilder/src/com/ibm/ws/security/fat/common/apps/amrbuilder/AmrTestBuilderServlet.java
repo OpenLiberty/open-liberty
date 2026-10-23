@@ -118,7 +118,7 @@ public class AmrTestBuilderServlet extends HttpServlet {
     }
 
     protected String JwtDecoder(String jwt) throws UnsupportedEncodingException {
-        //String jwt="eyJraWQiOiJxaWhZLW5lVHlKd0tNWG81c29yT3F3bkhCWHpvb2JrakJ3aXlkZnZvVzJzIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwic3ViIjoib2lkY0xvZ2luVXNlciIsIm5hbWUiOiJvaWRjTG9naW5Vc2VyIiwiaXNzIjoiaHR0cHM6Ly8xMC4zNC4xLjQwOjgwMjAvand0L2dvb2RKd3RCdWlsZGVyIiwiZXhwIjoxNTc1NDc1NzM2LCJpYXQiOjE1NzU0Njg1MzZ9.j3bswEPqsOR4zVd97mf2E6aoU5A6A/rwIxcND8dgDEmUt7PsryV9YBVd0YpiWzRXMzgg1uPTKg2MHAG3smEGKo7pcuihWfdhyejW3pXiC2iTT/KrjGa8+2sCEolRTxbRRroNy2LvTPDF5qU4tPLSg2T91ZArTF4h4ZGsalX/+mcvgf1ATvvrEpo9dgsNJcijKsJWf6NsucI85fluAmHskkqNfTWB+uJIUG21O/qyZoArTs8Q7YD1jjplaN4Fg7Hp7RO6ngcYvlEp9z0WVV70CGKE58n0NFNo6uKVGYdmLU3DIIF/VOyhZU6G68zosu0WQuVWPdrC/p5NZNUeSOuXqA";
+        //String jwt="eyJraWQiOiJxaWhZLW5lVHlKd0tNWG81c29yT3F3bkhCWHpvb2JrakJ3aXlkZnZvVzJzIiwidHlwIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJ0b2tlbl90eXBlIjoiQmVhcmVyIiwic3ViIjoib2lkY0xvZ2luVXNlciIsIm5hbWUiOiJvaWRjTG9naW5Vc2VyIiwiaXNzIjoiaHR0cHM6Ly8xMC4zNC4xLjQwOjgwMjAvand0L2dvb2RKd3RCdWlsZGVyIiwiZXhwIjoxNTc1NDc1NzM2LCJpYXQiOjE1NzU0Njg1MzZ9.j3bswEPqsOR4zVd97mf2E6aoU5A6A/rwIxcND8dgDEmUt7PsryV9YBVd0YpiWzRXMzgg1uPTKg2MHAG3smEGKo7pcuihWfdhyejW3pXiC2iTT/KrjGa8+2sCEolRTxbRRroNy2LvTPDF5qU4tPLSg2T91ZArTF4h4ZGsalX/+mcvgf1ATvvrEpo9dgsNJcijKsJWf6NsucI85fluAmHskkqNfTWB+uJIUG21O/qyZoArTs8Q7YD1jjplaN4Fg7Hp7RO6ngcYvlEp9z0WVV70CGKE58n0NFNo6uKVGYdmLU3DIIF/VOyhZU6G68zosu0WQuVWPdrC/p5NZNUeSOuXqA"; // pragma: allowlist secret
         String[] parts = jwt.split("\\.");       
         String ENCODING="UTF-8";
         byte[] ba = parts[1].getBytes(ENCODING);

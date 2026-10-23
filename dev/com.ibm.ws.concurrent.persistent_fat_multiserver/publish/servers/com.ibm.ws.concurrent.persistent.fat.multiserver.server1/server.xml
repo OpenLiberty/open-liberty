@@ -32,7 +32,7 @@
   <databaseStore id="DBTaskStore">
     <dataSource>
       <jdbcDriver libraryRef="FATJDBCClientLib"/>
-      <properties.derby.client createDatabase="create" databaseName="memory:scheddb" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.derby.client createDatabase="create" databaseName="memory:scheddb" user="dbuser1" password="{xor}Oz0vKDtu"/> <!-- HashiCorpIgnore -->
     </dataSource>
   </databaseStore>
 
