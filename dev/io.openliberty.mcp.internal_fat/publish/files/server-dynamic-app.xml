@@ -1,0 +1,12 @@
+<server>
+
+  <featureManager>
+    <feature>mcp-1.0</feature>
+  </featureManager>
+
+  <enterpriseApplication location="dynamicMcpPathUpdateTest.ear">
+  	<mcp path="/dynamic-mcp-updated">
+  	    <info name="ibm-mq-mcp-server" version="1.0.0"/>
+        </mcp>
+  </enterpriseApplication>
+</server>

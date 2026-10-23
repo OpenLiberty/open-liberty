@@ -63,6 +63,7 @@ import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateUsingServerXMLIncludesTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
@@ -86,71 +87,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-                AsyncToolsTest.class,
-                AsyncToolCallEventTraceTest.class,
-                AsyncToolCancellationTest.class,
-                AsyncToolsErrorHandlingTest.class,
-                AsyncToolLifecycleTest.class,
-                AuthCancellationTest.class,
-                BeanLifecycleTest.class,
-                CancellationTest.class,
-                ConfigurableMcpPathTest.class,
-                ConfigurableSessionTelemetryTest.class,
-                ConfigurableAsyncTimeoutTest.class,
-                CustomServerInfoTest.class,
-                DefaultValueTest.class,
-                DeploymentProblemTest.class,
-                DualConfigurableMcpPathTest.class,
-                DynamicMcpPathUpdateTest.class,
-                EncoderTest.class,
-                ToolCallEventTraceTest.class,
-                ExceptionLoggingTest.class,
-                HttpTest.class,
-                GenericToolTest.class,
-                InactiveCdiTest.class,
-                IntrospectorMultiAppTest.class,
-                InvalidAsyncTimeoutTest.class,
-                LocaleTest.class,
-                LifecycleTest.class,
-                McpMonitorMXBeanAccessTest.class,
-                McpMonitorTest.class,
-                McpUrlPathTest.class,
-                MultiAppIsolationTest.class,
-                MultiModuleToolTestToolManager.class,
-                NonRequiredArgsToolsTest.class,
-                NoParamNameTest.class,
-                ProtocolVersionTest.class,
-                ProtocolVersionSchemaTest.class,
-                StatefulModeTest.class,
-                StatelessConfigChangeOnRestoreTest.class,
-                StatelessModeTest.class,
-                TelemetryOperationsTest.class,
-                TelemetrySessionsTest.class,
-                ToolErrorHandlingTest.class,
-                ToolManagerTest.class,
-                UnsupportedAnnotationWarningTest.class,
-                // Authorisation Tests
-                AdminsRoleAllowedTests.class,
-                DenyAllTests.class,
-                NoClassAnnotationTests.class,
-                PermitAllTests.class,
-                // Async Authorisation Tests
-                AsyncAdminsRoleAllowedTests.class,
-                AsyncDenyAllTests.class,
-                AsyncNoClassAnnotationTests.class,
-                AsyncPermitAllTests.class,
-                // Stateless Authorisation Tests
-                PermitAllTestsStateless.class,
-                DenyAllTestsStateless.class,
-                NoClassAnnotationTestsStateless.class,
-                AdminsRoleAllowedTestsStateless.class,
-                // Tool test must be last the last test on "mcp-server" because
-                // it has special repeats in lite mode which would affect later tests
-                ToolTest.class,
-                // TestContainer Tests
-                ConformanceTests.class,
-                OidcTests.class,
-                AuthorizationFlowTests.class
+                DynamicMcpPathUpdateUsingServerXMLIncludesTest.class
 })
 
 public class FATSuite extends TestContainerSuite {
