@@ -410,14 +410,14 @@ JWT_ERROR_GETTING_CERT_ENTRIES.explanation=An error occurred while the system wa
 JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Verify that the truststore is configured correctly in your server configuration and that it is accessible. Check the error message for more information about the failure.
 
 # Do not translate "JSON Web Token", "JWT"
-JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED=CWWKS6071E: An attempt to overwrite or remove the [{0}] workload identity claim from the JSON Web Token (JWT) was ignored by the [{1}] JWT builder.
-JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED.explanation=The application used the JWT builder API to try to overwrite or remove the claim that is configured as the workload identity. The operation is not performed because the workload identity claim is protected and the server-generated value remains in the JWT.
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED=CWWKS6071E: An attempt to overwrite or remove the [{0}] workload identity claim from the JSON Web Token (JWT) was rejected by the [{1}] JWT builder.
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED.explanation=The application used the JWT builder API to try to overwrite or remove the claim that is configured as the workload identity. The operation is rejected because the workload identity claim is protected.
 JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED.useraction=Remove any JWT builder API calls that attempt to overwrite or remove the workload identity claim.
 
 # Do not translate "JSON Web Token", "JWT", "workloadIdentityClaim"
 # 0=Builder config ID, 1=workloadIdentityClaim value (claim name), 2=conflicting attribute name, 3=conflicting attribute value
-JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG=CWWKS6072E: The [{0}] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [{1}] and the {2} attribute with a value of [{3}]. The JWT builder will set the [{1}] claim to the workload identity and the {2} attribute will be ignored.
-JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG.explanation=When the workloadIdentityClaim attribute specifies a claim name that is also populated by another configuration attribute, the workload identity value takes precedence and the other value is ignored in the resulting JWT.
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG=CWWKS6072E: The [{0}] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [{1}] and the {2} attribute with a value of [{3}]. The [{1}] claim cannot be set to both the workload identity and the {2} value, so the JWT builder configuration is not valid.
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG.explanation=The workloadIdentityClaim attribute specifies a claim name that is also populated by another configuration attribute. This conflict is not allowed because the workload identity claim is protected.
 JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG.useraction=Choose a claim name for the workloadIdentityClaim attribute that is not already used by another JWT builder configuration attribute, or remove the conflicting attribute from the configuration.
 
 # Do not translate "JSON Web Token", "JWT"

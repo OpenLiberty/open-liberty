@@ -222,21 +222,21 @@ public class JwtComponent implements JwtConfig {
 
         if (workloadIdentityClaim.equals("iss") && issuerUrl != null) {
             String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER, issuerUrl, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER });
-            Tr.error(tc, msg);
+            throw new IllegalStateException(msg);
         } else if (workloadIdentityClaim.equals("aud") && audiences != null) {
             String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES, audiences, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES });
-            Tr.error(tc, msg);
+            throw new IllegalStateException(msg);
         } else if (workloadIdentityClaim.equals("scope") && scope != null) {
             String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE, scope, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE });
-            Tr.error(tc, msg);
+            throw new IllegalStateException(msg);
         } else if (workloadIdentityClaim.equals("jti") && jti) {
             String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI, jti, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI });
-            Tr.error(tc, msg);
+            throw new IllegalStateException(msg);
         }
 
         if (claims != null && claims.contains(workloadIdentityClaim)) {
             String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS, claims, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS });
-            Tr.error(tc, msg);
+            throw new IllegalStateException(msg);
         }
     }
 
