@@ -1078,20 +1078,21 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
     /**
      * Registers an {@link javax.net.ssl.SSLSessionContext} with the
-     * {@link WSX509TrustManager} session invalidation registry.  Calling this
-     * after each completed TLS handshake allows the SSL infrastructure to
-     * invalidate all cached sessions whenever trust material is reloaded, forcing
-     * affected connections to re-authenticate on the next request.
+     * {@link WSX509TrustManager} session invalidation registry, keyed by SSL config alias.
+     * Calling this after each completed TLS handshake allows the SSL infrastructure to
+     * invalidate only the sessions belonging to the affected SSL config when its truststore
+     * is reloaded, leaving unrelated endpoints undisturbed.
      *
      * <p>This method is a thin bridge that exposes the functionality from the
      * private {@code com.ibm.ws.ssl.core} package through the exported
      * {@code com.ibm.ws.ssl.provider} package so that the SSL channel bundle
      * (which imports this package) can call it without a circular dependency.
      *
-     * @param context the session context to register; silently ignored if {@code null}
+     * @param context      the session context to register; silently ignored if {@code null}
+     * @param sslCfgAlias  the SSL config alias that owns this context; silently ignored if {@code null}
      */
-    public static void registerSSLSessionContext(javax.net.ssl.SSLSessionContext context) {
-        WSX509TrustManager.registerSessionContext(context);
+    public static void registerSSLSessionContext(javax.net.ssl.SSLSessionContext context, String sslCfgAlias) {
+        WSX509TrustManager.registerSessionContext(context, sslCfgAlias);
     }
 
     /**

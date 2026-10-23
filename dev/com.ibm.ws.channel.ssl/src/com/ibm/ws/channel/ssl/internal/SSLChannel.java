@@ -1048,9 +1048,10 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
         this.sessionContext = context;
         context.setSessionCacheSize(getConfig().getSSLSessionCacheSize());
         context.setSessionTimeout(getConfig().getSSLSessionTimeout());
-        // Register the session context so that a truststore reload can invalidate
-        // all cached sessions, forcing fresh TLS handshakes against the new trust material.
-        AbstractJSSEProvider.registerSSLSessionContext(context);
+        // Register the session context keyed by SSL config alias so that a truststore
+        // reload can invalidate only the sessions for the affected SSL config, leaving
+        // unrelated endpoints undisturbed.
+        AbstractJSSEProvider.registerSSLSessionContext(context, this.alias);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Session cache size set to " + context.getSessionCacheSize());
             Tr.debug(tc, "Session timeout set to " + context.getSessionTimeout());

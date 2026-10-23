@@ -82,13 +82,13 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
     private static final ConcurrentHashMap<String, CopyOnWriteArrayList<WeakReference<WSX509TrustManager>>> REGISTRY = new ConcurrentHashMap<String, CopyOnWriteArrayList<WeakReference<WSX509TrustManager>>>();
 
     /**
-     * Registry of live {@link SSLSessionContext} instances contributed by the SSL channel layer.
-     * Weak references prevent this registry from keeping session caches alive beyond their
-     * natural lifetime.  All registered contexts are invalidated whenever trust material is
-     * reloaded so that the next request triggers a fresh TLS handshake against the updated
-     * trust anchors.
+     * Registry of live {@link SSLSessionContext} instances keyed by SSL config alias
+     * (e.g. {@code "app1SSLConfig"}).  Weak references prevent this registry from keeping
+     * session caches alive beyond their natural lifetime.  On a truststore reload only the
+     * context(s) belonging to the affected SSL config are invalidated, so that a targeted
+     * single-keystore refresh does not force re-handshakes on unrelated endpoints.
      */
-    private static final CopyOnWriteArrayList<WeakReference<SSLSessionContext>> SESSION_CONTEXT_REGISTRY = new CopyOnWriteArrayList<WeakReference<SSLSessionContext>>();
+    private static final ConcurrentHashMap<String, WeakReference<SSLSessionContext>> SESSION_CONTEXT_REGISTRY = new ConcurrentHashMap<String, WeakReference<SSLSessionContext>>();
 
     private volatile TrustManager[] tm;
     private final String tsCfgAlias;
@@ -223,63 +223,63 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
     }
 
     /**
-     * Registers an {@link SSLSessionContext} so that it will be invalidated whenever
-     * trust material is reloaded.  Called by the SSL channel layer after each completed
-     * TLS handshake.  Duplicate registrations of the same context object are silently
-     * ignored.
+     * Registers an {@link SSLSessionContext} for the given SSL config alias so that it
+     * can be invalidated when the truststore backing that SSL config is reloaded.
+     * Called by the SSL channel layer after each completed TLS handshake.
      *
-     * @param context the session context to register; must not be {@code null}
+     * @param context      the session context to register; silently ignored if {@code null}
+     * @param sslCfgAlias  the SSL config alias (e.g. {@code "app1SSLConfig"}) that owns
+     *                     this context; silently ignored if {@code null}
      */
-    public static void registerSessionContext(SSLSessionContext context) {
-        if (context == null)
+    public static void registerSessionContext(SSLSessionContext context, String sslCfgAlias) {
+        if (context == null || sslCfgAlias == null)
             return;
-        // Avoid registering the same context twice: scan existing live refs first.
-        for (WeakReference<SSLSessionContext> ref : SESSION_CONTEXT_REGISTRY) {
-            if (context.equals(ref.get()))
-                return;
-        }
-        SESSION_CONTEXT_REGISTRY.add(new WeakReference<SSLSessionContext>(context));
+        SESSION_CONTEXT_REGISTRY.put(sslCfgAlias, new WeakReference<SSLSessionContext>(context));
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "registerSessionContext: registered " + context);
+            Tr.debug(tc, "registerSessionContext: registered context for alias '" + sslCfgAlias + "': " + context);
     }
 
     /**
-     * Invalidates every session stored in every registered {@link SSLSessionContext}.
-     * Stale (GC'd) weak references are pruned during the sweep.
+     * Invalidates all cached TLS sessions for the given SSL config alias.
+     * Stale (GC'd) weak references are pruned on access.
      *
-     * <p>After a truststore reload, existing TLS sessions whose peer certificates are
-     * no longer trusted under the new trust material would otherwise be resumed without
-     * re-validation.  Invalidating the entire session cache forces a fresh handshake —
-     * and therefore a fresh {@code checkClientTrusted} / {@code checkServerTrusted} call —
-     * on the next request on any affected connection.
+     * <p>After a truststore reload, existing sessions for the affected SSL config
+     * could be resumed without re-validation.  Invalidating them forces a fresh
+     * handshake — and therefore a fresh {@code checkClientTrusted} /
+     * {@code checkServerTrusted} call — on the next request on any affected connection.
+     * Sessions belonging to other SSL configs are left untouched.
+     *
+     * @param sslCfgAlias the SSL config alias whose cached sessions should be invalidated
      */
-    private static void invalidateAllCachedSessions() {
+    private static void invalidateSessionsForAlias(String sslCfgAlias) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "invalidateAllCachedSessions");
+            Tr.entry(tc, "invalidateSessionsForAlias", sslCfgAlias);
 
-        List<WeakReference<SSLSessionContext>> dead = new ArrayList<WeakReference<SSLSessionContext>>();
-        for (WeakReference<SSLSessionContext> ref : SESSION_CONTEXT_REGISTRY) {
+        WeakReference<SSLSessionContext> ref = SESSION_CONTEXT_REGISTRY.get(sslCfgAlias);
+        if (ref != null) {
             SSLSessionContext ctx = ref.get();
             if (ctx == null) {
-                dead.add(ref);
-                continue;
-            }
-            java.util.Enumeration<byte[]> ids = ctx.getIds();
-            int count = 0;
-            while (ids.hasMoreElements()) {
-                SSLSession session = ctx.getSession(ids.nextElement());
-                if (session != null) {
-                    session.invalidate();
-                    count++;
+                SESSION_CONTEXT_REGISTRY.remove(sslCfgAlias);
+            } else {
+                java.util.Enumeration<byte[]> ids = ctx.getIds();
+                int count = 0;
+                while (ids.hasMoreElements()) {
+                    SSLSession session = ctx.getSession(ids.nextElement());
+                    if (session != null) {
+                        session.invalidate();
+                        count++;
+                    }
                 }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "invalidateSessionsForAlias: invalidated " + count + " session(s) for alias '" + sslCfgAlias + "' in " + ctx);
             }
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "invalidateAllCachedSessions: invalidated " + count + " session(s) in " + ctx);
+                Tr.debug(tc, "invalidateSessionsForAlias: no registered context for alias '" + sslCfgAlias + "'");
         }
-        SESSION_CONTEXT_REGISTRY.removeAll(dead);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "invalidateAllCachedSessions");
+            Tr.exit(tc, "invalidateSessionsForAlias", sslCfgAlias);
     }
 
     /**
@@ -322,11 +322,12 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
                 Tr.debug(tc, "refreshTrustManagers: no registered managers for path " + trustStoreFilePath);
         }
 
-        // Always invalidate all cached TLS sessions after a trust material change,
-        // regardless of whether any WSX509TrustManager was registered for this path.
-        // This ensures that sessions established before the reload are not resumed
-        // without re-authentication, even when no new handshakes have occurred yet.
-        invalidateAllCachedSessions();
+        // Invalidate cached TLS sessions only for the SSL configs whose trust material
+        // was just reloaded.  This prevents sessions on unrelated endpoints from being
+        // forced into unnecessary re-handshakes when a single targeted keystore is refreshed.
+        for (String alias : refreshed.keySet()) {
+            invalidateSessionsForAlias(alias);
+        }
 
         // Selectively close only those live inbound connections whose peer certificate
         // chain is no longer trusted under the reloaded trust manager for their SSL config.
