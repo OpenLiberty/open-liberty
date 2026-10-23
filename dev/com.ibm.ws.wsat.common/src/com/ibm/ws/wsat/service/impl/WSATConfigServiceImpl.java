@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
@@ -44,9 +45,10 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 /**
  * The WS-AT configuration service.
  *
- * <p>This component is immutable: all of its state is established by the constructor and there is no
- * {@code @Modified} method. Any change to the {@code wsAtomicTransaction} configuration, or to one of
- * the injected services, therefore causes DS to deactivate this component and create a new instance.
+ * <p>This component is immutable: all of its state is established by the constructor.
+ * Dynamic configuration updates are handled by {@link #modified(Map)}, which emits an
+ * informational message indicating that a server restart is required and keeps the active
+ * configuration intact without deactivating or recreating the component.
  */
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
            immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -231,6 +233,11 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      */
     public static WSATConfigService getInstance() {
         return INSTANCE;
+    }
+
+    @Modified
+    protected void modified(Map<String, Object> properties) {
+        Tr.info(TC, "WSAT_CONFIG_RESTART_REQUIRED_CWLIB0212");
     }
 
     @Deactivate
