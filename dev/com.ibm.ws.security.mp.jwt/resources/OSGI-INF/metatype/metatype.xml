@@ -55,6 +55,10 @@
         </AD>
         <AD id="cookieName" name="%cookieName" description="%cookieName.desc" required="false" type="String" />
         <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" />
+        <AD id="realmName" name="%realmName" description="%realmName.desc"
+            required="false" type="String" />
+        <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc"
+            required="false" type="String" default="realm" />
 
         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" >
             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
