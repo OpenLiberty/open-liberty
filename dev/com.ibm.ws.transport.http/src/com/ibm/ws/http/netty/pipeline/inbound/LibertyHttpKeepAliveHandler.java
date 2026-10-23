@@ -14,6 +14,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
+import com.ibm.ws.http.netty.ProtocolState;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -21,7 +23,6 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  * Extends Netty's {@link HttpServerKeepAliveHandler} to enforce Liberty-specific
@@ -50,10 +51,12 @@ public class LibertyHttpKeepAliveHandler extends HttpServerKeepAliveHandler {
     /**
      * Intercepts each incoming {@link HttpRequest} to:
      * <ol>
-     *   <li>Skip keep-alive enforcement for HTTP/2 requests — these are identified
-     *       by the presence of the {@code x-http2-stream-id} header injected by
-     *       Netty's HTTP/2-to-HTTP/1 adapter. Keep-alive is an HTTP/1.1 concept
-     *       and the H2 codec manages its own connection lifecycle.</li>
+     *   <li>Skip keep-alive enforcement for HTTP/2 connections — identified by the
+     *       connection's established {@link ProtocolState}, never by a request
+     *       header, because a client can spoof headers such as
+     *       {@code x-http2-stream-id} on an HTTP/1.x connection. Keep-alive is an
+     *       HTTP/1.1 concept and the H2 codec manages its own connection
+     *       lifecycle.</li>
      *   <li>Increment the per-channel HTTP/1.x request counter.</li>
      *   <li>Set {@code Connection: close} if keep-alive is disabled or the
      *       maximum number of persistent requests has been reached, so that
@@ -66,9 +69,9 @@ public class LibertyHttpKeepAliveHandler extends HttpServerKeepAliveHandler {
         if (msg instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) msg;
 
-            // Keep-alive is an HTTP/1.x concept only. HTTP/2 requests are identified
-            // by the x-http2-stream-id header injected by Netty's H2-to-H1 adapter.
-            boolean isHttp2 = request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+            // Keep-alive is an HTTP/1.x concept only. Use the connection's established
+            // protocol rather than a client-supplied header, which can be spoofed.
+            boolean isHttp2 = ProtocolState.current(ctx.channel()) == ProtocolName.HTTP2;
 
             if (!isHttp2) {
                 // Increment request counter
